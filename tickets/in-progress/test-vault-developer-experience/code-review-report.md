@@ -3,27 +3,27 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md` @ SR-008 (approved; SR-006/SR-007 by the user)
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (A-01..A-26, used through the design spec's evidence table)
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001..SR-008)
-- Design Spec Reviewed As Context: `design-spec.md` @ SR-008 (commit `67d1aaaacc`)
-- Supplemental Task Artifacts Reviewed As Context: `test-vault-evaluation-report.md` @ SR-008 (§5.0 usage model, via requirements/design)
-- Relevant Solution Revision IDs: SR-006, SR-007, SR-008
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002, Pass; AR-007/AR-008 non-blocking)
+- Requirements Doc Reviewed As Context: `requirements-doc.md` @ SR-009 (REQ-005c, REQ-014, AC-009, AC-013, AC-018, DEC-013 revised by the user's direction of 2026-10-20)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (A-01..A-29; through the design spec)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001..SR-010)
+- Design Spec Reviewed As Context: `design-spec.md` @ SR-010 ("SR-009 Design Delta", authoritative where it differs)
+- Supplemental Task Artifacts Reviewed As Context: `test-vault-evaluation-report.md` @ SR-008
+- Relevant Solution Revision IDs: SR-006..SR-010
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-004, Pass; AR-013 guidance; P-004)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation_engineer handoff of IR-001 (branch `codex/test-vault-developer-experience`, head `12a23e7b8a`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): the delta moves the vault read-side format modules from the server into autobyteus-ts and changes the DS-003 key-resolution spine. It also changes shared contracts (`SecretVaultStore` location, `SecretCredentialSlot` → `ProviderApiKeySlot`, removal of `setDefaultProviderApiKeyResolver`, new `disableEnvironmentProviderApiKeySource`) across about 60 code files. All structural checks and the full scorecard were redone. Evidence for areas the delta does not touch (CLI/commands logic, Electron forwarding, harness opt-ins, live-suite gating) is carried forward from CRR-001 after confirming those files changed only in their imports.
+- Trigger: implementation_engineer handoff of IR-002 (head `07fcc5969c`; code `9498de5f8b`; docs `e40b0fe6ce`, `3c9a4e799a`)
+- Prior Review Round Reviewed: Round 1 (CRR-001, Pass, IR-001 `12a23e7b8a`)
+- Latest Authoritative Round: 2
+- Coverage Investigation / Execution Coverage / API/E2E Revision Record: present from API-REV-001 (put on hold before SR-009); not an input to this implementation review
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
 
@@ -33,128 +33,135 @@
 - Architectural risk: `High`
 - Selected route: `Implementation Review`
 - Independent source review required by the classification: `Yes`
-- Classification evidence or correction required: None. 130 files in the feature commit; production credential-source input (security boundary), shared contracts (`SecretVaultStore`, `initialize(source)`, autobyteus-ts public signatures) and Electron env policy. Confirmed.
+- Classification evidence or correction required: None. Security-critical format code moved across packages, the core library gained an environment-driven credential source, and public autobyteus-ts exports changed. Confirmed.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: commits `6f38cd51e6` (autobyteus-ts baseline test fix), `855842b8f1` (feature: code and tests), `3f01a6013a` and `198c9066dc` (docs). The merge `303a04e945` was checked only for its effect on scope (more live suites on the old env helper); upstream content itself is not under review.
+- Changed implementation and behavior reviewed: `12a23e7b8a..07fcc5969c`. Code is in `9498de5f8b`; docs are in `e40b0fe6ce` and `3c9a4e799a`.
 - Files / areas reviewed:
-  - server `src/secret-management/`: `secret-vault-source.ts`, `secret-vault-runtime.ts`, `domain/secret-vault-types.ts`, `persistence/{secret-vault-store, read-only-secret-vault-store, secret-vault-sqlite-schema, secret-vault-repository, secret-entry-repository}.ts`, `bootstrap/secret-vault-bootstrap.ts`, `services/{secret-management-service, secret-vault-inspection-service}.ts`, `catalog/provider-credential-catalog.ts`, `test-vault/{test-vault-location, read-only-test-vault, test-vault-commands}.ts`, `cli/{test-vault-cli, import-local-environment-secrets}.ts`, `provisioning/{writable-vault-target, local-environment-secret-import-service}.ts`, `resolution/*`;
-  - startup sites `src/server-runtime.ts`, `src/standalone-application-host/start-standalone-application-host.ts`;
-  - autobyteus-ts `src/secrets/provider-api-key-resolver.ts` and the client/factory/model signature changes; `tests/setup.ts`, `vitest.config.ts`, `package.json`; the live test files (DeepSeek in full, the rest by diff stat and pattern);
-  - `test-support/test-vault/*`, `test-support/live-e2e/{test-runtime-bootstrap.mjs,.d.mts, run-live-e2e.mjs, live-e2e-harness.ts}`;
-  - server tests: `tests/setup/test-environment-isolation.ts`, the 15 migrated live suites + `native-runtime-live-harness.ts` (gating of every `initializeLiveServerVault` call), `test-vault-selection.e2e.test.ts`, `test-vault-module-graph.test.ts`, `real-e2e-compaction-quality.e2e.test.ts`;
-  - Electron `serverRuntimeEnv.ts` (+spec), `appDataPaths.ts`, `electronApplication.ts` (policy selection); web probe `provider-api-key-save-probe.mjs`;
-  - root `package.json`; `AGENTS.md`, `TESTING.md` (REQ-013/015 grep).
-- Explicit exclusions: the 1,147 upstream commits brought by the merge; real-key live runs, isolated-instance smoke and full `pnpm test:e2e` (left to API/E2E, as the handoff states). No check was rerun: the code each recorded check exercises has not changed since `855842b8f1`, and no finding needed a new check.
+  - autobyteus-ts `src/secrets/provider-api-key-resolver.ts` (environment default, cache, disable, exit close), `src/secrets/test-vault-setting.ts`, and every file in `src/secrets/vault/` (moved and new);
+  - `scripts/verify-runtime-dependencies.mjs`, `tests/setup.ts`, `vitest.config.ts`, and the new and updated unit tests (`provider-api-key-resolver`, `vault-module-graph`, `read-secret-entry`, `test-setup-credential-isolation`, `package-self-alias`);
+  - server: `catalog/provider-credential-catalog.ts` (old/new authorization equivalence traced branch by branch), `domain/secret-id.ts`, `services/secret-management-service.ts` (`readSecretEntry` + `CORRUPT_VAULT` → `markCorrupt`), `bootstrap/secret-vault-bootstrap.ts`, `test-vault/read-only-test-vault.ts`, `test-vault/test-vault-commands.ts`, `secret-vault-source.ts` (`isRealAppServerDataDir`), and both startup sites (disable call);
+  - the import-only changes in persistence, provisioning, resolution and the inspection service; removal of `secret-management/index.ts`;
+  - `test-support/test-vault/{live-provider-test, live-server-vault, synthetic-test-vault, test-vault-selection, test-vault}.ts`, `test-support/module-graph/module-graph.ts`, and removal of `test-vault-default-resolver.ts`;
+  - E2E `environment-key-source.e2e.test.ts`; the server module-graph and read-path unit tests;
+  - `AGENTS.md`, `TESTING.md`, `secret_management.md`, autobyteus-ts docs.
+- Explicit exclusions: API/E2E artifacts from API-REV-001 (not inputs here); real-key and isolated-instance runs. No recorded check was rerun: IMP-14..IMP-25 ran on `9498de5f8b`, which is the reviewed code. One local Node probe confirmed that promise callbacks queued in an `exit` handler still run (C-14).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. One selector `AUTOBYTEUS_TEST_VAULT` selects a read-only test vault "like a database"; unset → today's behavior; real app data ignores it; unusable selected vault stops startup; deterministic workspace harnesses keep their own vaults and live runs opt in through existing gates; no credential via env; docs tell runners to set the variable.
-- Design-spec behavior map verified against the implementation: Yes (table below).
-- Design review report and round confirmed: ARCH-REV-002 Pass; AR-007 applied (server-free facade, separate `live-server-vault.ts` / `test-vault-default-resolver.ts`, module-graph test).
+- Approved requirements basis understood: Yes. SR-009 applies the database model to autobyteus-ts:
+  - any process (Vitest, `tsx`, `node`) using a client without a resolver reads `AUTOBYTEUS_TEST_VAULT` itself, read-only, with REQ-004 locations refused;
+  - the AutoByteus server turns that default off and keeps its own source selection (AC-018);
+  - Vitest's default suite removes the selector unless `RUN_LIVE_PROVIDER_TESTS=1` (AC-009).
+- Design-spec behavior map verified against the implementation: Yes (table below). The SR-009 move table matches the moves `git diff -M` reports. The server keeps no copies or re-exports.
+- Design review report and round confirmed: ARCH-REV-004 Pass. AR-013 is applied: the bindings are ported exactly, and `SECRET_PROVIDER_UNKNOWN` names the provider and slot. P-004 (two autobyteus-ts instances in server tests) is confirmed with no consequence.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior: None. The handoff's deviations were checked against the approved basis (see candidate gate C-01..C-04); none introduces product behavior outside the requirements.
+- Changed or newly discovered behavior: None. Implementation assumptions 12–17 were checked (C-09..C-13); none adds product behavior.
 - Remaining material ambiguity: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting / Newly Discovered Evidence |
 | --- | --- | --- | --- |
-| BEH-001, 007 | Confirmed | `test-vault-cli.ts` → `TestVaultCommands.setup` → `location()` (`parseTestVaultSetting` + `resolveTestVaultLocation`, forbidden refused before `mkdir`) → `LocalEnvironmentSecretImportService.execute` with `testVaultTargetDecision` → `openWritableVaultTarget` → `saveBatch`; `0700`/`0600`; `SETTING AUTOBYTEUS_TEST_VAULT=<dir>`. `status` via `openReadOnlyTestVault` + `getStatusForSecretId`; `remove` deletes DB, key, `-wal/-shm/-journal` only. `secrets:import` keeps the TTY challenge (`createTerminalImportDecision`). IMP-09. | — |
-| BEH-002, 008 | Confirmed | Both startup sites: `selectSecretVaultSource({config.get('AUTOBYTEUS_TEST_VAULT'), appDataDir, databaseLocation})` → `SecretVaultRuntime.initialize(source)`; `test` → `openReadOnlyTestVault` (invalid / forbidden / not found / not READY → throw → existing `SECRET_VAULT_INITIALIZATION_FAILED` fatal path); `application` unchanged; `isRealAppServerDataDir` matches Electron's canonical `~/.autobyteus/server-data` (`appDataPaths.ts`). Electron `isolated-baseline` forwards the selector; production `inherit-caller` is guarded server-side. IMP-04, IMP-05, IMP-11. | — |
-| BEH-004 | Confirmed | `initializeLiveServerVault()` reads the setup-captured selector; every call site is inside a `RUN_*`-gated describe (checked: agent-runtime-graphql, all-runtime-send-message-matrix, autobyteus-team-runtime-graphql, mixed-task-delegation, mixed-team-runtime-graphql, native harness callers, collaborators, skill-update-notice, work-journal suites). `startBuiltTestServer` forwards only an explicit `testVaultSetting`; `run-live-e2e.mjs` passes it to server and vitest child; harness uses the live initializer with `appDataDir: runtimeRoot`. | — |
-| BEH-003, 009 | Confirmed | `autobyteus-ts/tests/setup.ts`: strip `*_API_KEY`; with selector + `RUN_LIVE_PROVIDER_TESTS=1` dynamic-imports `test-vault-default-resolver.ts` → `openReadOnlyTestVault` → `setDefaultProviderApiKeyResolver`; clients call `resolveProviderApiKeyResolver(explicit)`, default looked up at resolve time, none → `MissingApiKeyError`. Vitest self alias unifies class identity (`package-self-alias.test.ts`). IMP-07, IMP-08. | — |
-| BEH-005 | Confirmed | Server setup: `captureTestVaultSelection()` + `stripCredentialEnvironment()` for every test folder; `createSanitizedTestEnvironment` never forwards the selector; key-saving web probe deletes it; autobyteus-ts default slot empty without the gate. AC-017 nested run of the secret-lifecycle suites with the selector exported passes (IMP-05). All importer aliases end in `_API_KEY` (grep of `secret-management/`), so the strip pattern covers them. | — |
-| BEH-006 | Confirmed | `liveProviderTest` (gate; "no test vault selected" skip; `missing_api_key` by `kind`; classifier; strict `AUTOBYTEUS_LIVE_STRICT=1`), `requireLiveCapability` for server suites. IMP-08. | — |
+| BEH-001, 007 | Confirmed | Unchanged logic. `TestVaultCommands` now takes its location policy from `autobyteus-ts/secrets/vault/test-vault-location.js` and builds the importer's `ApplicationDatabaseLocation` from `location.databasePath`; `rootKeyPath` follows the same `<db>.secret.key` convention. IMP-24 covers setup, skip, forbidden, remove and status. | — |
+| BEH-002, 008 | Confirmed | Startup: `disableEnvironmentProviderApiKeySource()` runs first at both sites, then `selectSecretVaultSource` → `SecretVaultRuntime.initialize`. The test source goes through `openReadOnlyTestVault` → autobyteus-ts `openVerifiedTestVault` (one opener sequence) + the server's `SecretManagementService`; the failure codes are unchanged. `isRealAppServerDataDir` stays in the server, built on the shared `comparablePath`. | — |
+| BEH-004 | Confirmed | Unchanged. `initializeLiveServerVault` also calls disable (C-15). | — |
+| BEH-003, 009 | Confirmed | Any process: client → `resolveProviderApiKeyResolver(undefined)` → environment default. At key time it reads `process.env.AUTOBYTEUS_TEST_VAULT`; if set, it dynamically imports `vault/test-vault-provider-api-key-resolver.js` → `openTestVaultReader` (location policy, existence, read-only store, `verifyEstablishedVault`) → `providerSecretId` → `readSecretEntry`. The opened vault is cached per directory, a failed open is not cached, and the vault is closed on exit. Unset or disabled gives `MissingApiKeyError`. IMP-17, IMP-18 (plain script with and without the variable; `process.moduleLoadList` has no sqlite until a lookup), IMP-22, IMP-23. | — |
+| BEH-005 | Confirmed | autobyteus-ts setup strips `*_API_KEY` and deletes the selector unless the gate is set (IMP-17 with 13 inherited keys and the selector exported). The server test setup capture/strip is unchanged, so the server's dist copy of autobyteus-ts sees no selector in deterministic runs (P-004). Only the server depends on autobyteus-ts (`*/package.json`), and the application workers the server spawns do not import it. | — |
+| BEH-006 | Confirmed | `liveProviderTest` classifies by `kind`/`code`. Vault failures (`TEST_VAULT_*`, `PROVIDER_UNKNOWN`, health codes) count as failures; missing keys and provider refusals are reasoned skips. | — |
+| BEH-009 / AC-018 | Confirmed | Built-server E2E: inside the server process, a resolver-less client gets `missing_api_key`, while the server's own resolver reads the selected vault. The negative control (IMP-19) fails when the disable call is removed. | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
-The review relies on the approved scenarios SCN-001..SCN-009 as recorded in the requirements doc (all `Supported Normal Scenario`). No additional scenario was needed.
+SCN-001..SCN-009 and CTR-REQ-016 from CRR-001 are carried forward. SCN-008 is updated by SR-009.
 
 | Scenario ID | Related Behavior / Contract IDs | Kind | Actor / Initiator | Coherent Goal Or Governing Event | Supported Entry Surface / Event | Scenario Shape | Forward Production Path / Lifecycle | Expected Outcome / Consequence | Independent Evidence | Scenario Validity | Review Use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001/002 | BEH-001, 007 | Operational | Developer / agent asked by the user | Create, inspect, remove the test vault | `pnpm test-vault setup\|status\|remove` | Normal | CLI → `TestVaultCommands` → importer / read-only entry / file removal | Vault created / reported / removed; forbidden refused | REQ-001..004, IMP-09 | Supported Normal Scenario | Use |
-| SCN-003/008 | BEH-003, 009 | Operational | Developer / agent | Real-provider tests or probes in autobyteus-ts | selector + `RUN_LIVE_PROVIDER_TESTS=1` + vitest | Normal | setup → default resolver → client | Real requests; reasoned skips | REQ-005, 014, IMP-08 | Supported Normal Scenario | Use |
-| SCN-004/005 | BEH-002, 004 | Operational | Developer / agent | Real-provider server E2E / gated suites | selector + `test:e2e:real` / `RUN_*` | Normal | runner/suite → live initializer / built server → runtime(test) | Keys from the vault; vault unchanged | REQ-005, 007, 010, IMP-05 | Supported Normal Scenario | Use |
-| SCN-006/009 | BEH-005 | Operational | Developer / agent | Deterministic suites in a live-testing shell | `pnpm -C autobyteus-ts test`, `pnpm test:e2e` with selector exported | Normal | setups capture/strip; harnesses do not forward | Same results as without it | REQ-005, 011, AC-017, IMP-05, IMP-07 | Supported Normal Scenario | Use |
-| SCN-007 | BEH-008 | Operational | Developer / agent | Isolated instance with model access | selector + `pnpm isolated-app start` | Normal | Electron isolated-baseline forwards → server startup selects test | Providers configured; saves refused | REQ-012, IMP-11 (unit) | Supported Normal Scenario | Use |
-| CTR-REQ-016 | BEH-002 | Contract | Production desktop app launched from a shell that exports the selector | Production safety | Electron `inherit-caller` launch | Explicit Edge | server startup → `isRealAppServerDataDir` → application source + warning | Production vault used, notice logged | REQ-016, AC-015, `appDataPaths.ts` | Supported Explicit Edge Scenario | Use |
+| SCN-008 (SR-009) | BEH-009 | Operational | Solution designer / implementation / API-E2E engineer | Use a real provider from investigation code | `AUTOBYTEUS_TEST_VAULT=… node probe.mjs` / `tsx probe.ts` / Vitest live run | Normal | client → environment default → reader → provider | Real key resolved; a missing key gives a clear error | REQ-014, AC-013, IMP-18, IMP-23 | Supported Normal Scenario | Use |
+| CTR-AC-018 | BEH-002, REQ-014 | Contract | AutoByteus server started with the selector in its env | The server owns its vault | Any server startup (`startConfiguredServer`, standalone host) | Explicit Edge | disable first → source selection | Resolver-less clients fail; the server's resolvers follow its source | AC-018, IMP-18, IMP-19 | Supported Explicit Edge Scenario | Use |
+| SCN-006 (SR-009) | BEH-005 | Operational | Developer / agent | Default core tests in a live-testing shell | `pnpm -C autobyteus-ts test` with the selector exported, no gate | Normal | setup deletes the selector → default unused | Same results; no vault opened | AC-009, IMP-17 | Supported Normal Scenario | Use |
+| SCN-001..005, 007, 009; CTR-REQ-016 | as CRR-001 | — | — | — | — | — | Paths unchanged apart from imports | — | CRR-001 | Supported | Use |
 
 ### Candidate Finding And Mechanism Gate
 
+CRR-001 candidates C-01..C-08 are carried forward unchanged (all Reject). New this round:
+
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope, if promoted | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | Deviation 3: agent file tools denied the selected test-vault directory (`selectedTestVaultPaths`) | REQ-006 / REQ-007; existing contract that the server denies its own vault DB/key to file tools | Agent run inside an isolated instance started with the selector (SCN-007) | Without it, an agent could read `test-vault.db.secret.key` + DB and surface key material in chat | `server-runtime.ts`, `start-standalone-application-host.ts`; `workspace-path-utils.ts` `isWithin` covers directory roots | Reject (as a finding) | — | Implements approved REQ-006 by extending an existing guard to the new vault location; not new product behavior. Non-blocking note: the Solution Designer may record it in the design's ownership map on the next revision. |
-| C-02 | Deviation 2: removal of custom-provider migration batch methods, receipt, `SecretEntryRepository.deleteEntry` | Core Principle 7; `SecretVaultStore` interface tightness | — (structural) | — | `git grep` at `855842b8f1`: no remaining references; at base only their own unit tests called them | Reject (as a finding) | — | Correct dead-code removal in touched files; keeps the store interface to the 7 methods actually used. |
-| C-03 | Deviation 4: leading `~` expands to home in the selector | REQ-013 (exact documented setting must work where no shell expands it: data-dir `.env`, quoted values) | User writes the documented setting in `.env` | `parseTestVaultSetting` → absolute path; forbidden/real-data checks after expansion | `test-vault-location.ts:50-57` | Reject (as a finding) | — | Serves the approved documented setting; validation still applies after expansion. |
-| C-04 | Standalone application host (devkit) honors an inherited selector because its data dir is not `~/.autobyteus/server-data` | REQ-016 guard scope | `autobyteus-application-devkit start` from a shell with the selector | Devkit host opens the test vault read-only | Only the devkit calls `startStandaloneApplicationHost`; production desktop uses the main server on the canonical data dir | Reject | — | A developer tool on its own data dir is a server "started with the variable" (REQ-005a), not production data. |
-| C-05 | autobyteus-ts live run opens one read-only vault handle per test file and never closes it | SCN-003 | Live run across several files | Handles live until the worker exits; read-only, no write or lock | `test-vault-default-resolver.ts`, `tests/setup.ts` | Reject | — | No supported consequence (read-only `query_only` handle, short-lived test worker). |
-| C-06 | Default resolver uses the `llm` consumer subject also for media clients | SCN-003/008 | Live media test | `llm` subject is a superset of `media` authorizations in the catalog | `provider-credential-catalog.ts:48-71` | Reject | — | Resolves the same secret IDs; matches the design (DS-003). |
-| C-07 | `run-live-e2e.mjs` prints the raw selector (e.g. unexpanded `~`) in the `Vault:` line | REQ-010 | `test:e2e:real` with a quoted `~` value | Display only; server/harness expand it correctly | `run-live-e2e.mjs:29-31` | Reject | — | Cosmetic; the location is still correct and value-free. |
-| C-08 | `live-e2e-harness.ts` is 1,364 lines (base 1,360) | Size rule | — | — | `wc -l` | Reject | — | Test-support harness, not implementation source; the source size rule does not apply to tests. |
+| C-09 | The Vitest self-alias (`autobyteus-ts/vitest.config.ts` `resolve.alias`) and its test `tests/unit/secrets/package-self-alias.test.ts` have no remaining purpose | Core Principle 7 (dead code in touched files; code only its own tests call); the alias's own comment states its purpose | — (structural) | The alias exists so that "server code loaded by live test setup imports `autobyteus-ts` by package name" and shares classes. That loader (`test-support/test-vault/test-vault-default-resolver.ts`) is removed in IR-002, and nothing else loaded in the autobyteus-ts Vitest run imports `autobyteus-ts` by package name except the alias test itself. The config comment is now false. | `git grep -nE "['\"]autobyteus-ts(/[^'\"]*)?['\"]" -- autobyteus-ts/tests autobyteus-ts/vitest*.ts test-support/test-vault test-support/module-graph` → only `package-self-alias.test.ts`; no autobyteus-ts test imports `autobyteus-server-ts`; the alias was added by this ticket in `855842b8f1` | Promote | This ticket | **CR-001.** Remove the alias block (and its now-unused `path`/`fileURLToPath`/`sourceRoot` lines if nothing else uses them) and `package-self-alias.test.ts`. Introduced by this ticket and made dead by this ticket's IR-002. |
+| C-10 | Assumption 12: one opener sequence (`openVerifiedTestVault`) shared by the autobyteus-ts reader and the server's `openReadOnlyTestVault` | Design "one owner" / no duplicated format code | — | Removes the server's duplicate open/verify sequence | `read-only-test-vault.ts` diff (−66 lines) | Reject (as a finding) | — | Correct consolidation; failure codes unchanged. |
+| C-11 | Assumption 13: vault-open failure re-thrown as a new `Error` with `(key for <provider>)`, keeping `name`/`code`/`instructionCode`/`cause` | REQ-014 "clear error naming the provider" | Script with a missing or forbidden vault | Callers that classify by `code` still work; the cached rejection is not mutated | `provider-api-key-resolver.ts:57-63` | Reject | — | Meets REQ-014. A `SecretVaultError` from a vault open is not caught as one by `instanceof` in callers, but `liveProviderTest` and the design classify by code (P-004). |
+| C-12 | Assumption 15: runtime-deps verifier accepts any `node:` specifier | Build contract | `pnpm -C autobyteus-ts build` with `node:sqlite` | Otherwise the build fails on a valid built-in | verifier diff; IMP-14 `[verify:runtime-deps] OK` | Reject | — | `node:` is reserved for built-ins; this cannot admit a third-party package. |
+| C-13 | Catalog rewrite on `providerSecretId`: authorization equivalence | REQ-016 / preserved behavior; AR-013 | Every server key lookup | Traced old vs new for agentRuntime, search, custom provider (llm/llmMetadata only; non-apiKey slot), Gemini slots (incl. media), OPENAI media, other media, unknown provider: same results | catalog diff; existing catalog tests unchanged and passing (IMP-15) | Reject (as a finding) | — | One difference: an invalid custom provider ID now yields `SECRET_CONSUMER_NOT_AUTHORIZED` instead of `INVALID_CUSTOM_PROVIDER_ID`. The service already wraps every catalog error as `ACCESS_DENIED`/`SECRET_CONSUMER_NOT_AUTHORIZED` (`authorize`), and nothing references the old code. No consequence. |
+| C-14 | Exit-time close: `closeEnvironmentVaults` closes through `promise.then` inside a `process.once('exit')` handler | Design: "process exit closes the reader (zeroizes the key)" | Script finishes | Would be a no-op if microtasks did not run after exit listeners | Local probe (`/tmp/crr-exit-probe`): the `.then` callback ran after the handler | Reject | — | Works as claimed for normal exit. |
+| C-15 | `initializeLiveServerVault` disables the **src** copy of autobyteus-ts, while server code under test uses the dist copy (P-004) | AC-018 for in-process suites | Gated in-process live suite | The dist copy's default is not disabled, but it reads no selector, because the server test setup captured and deleted it from `process.env` | `live-server-vault.ts:4,54`; `test-environment-isolation.ts`; ARCH-REV-004 P-004 "reachable with no consequence" | Reject | — | No supported consequence. The call is still right for in-process code that loads the src copy. |
+| C-16 | Environment default in other product processes (application workers, Electron main, other packages) | REQ-014 "applications that manage their own vault … never read the variable through autobyteus-ts" | A production process inherits the selector | Only `autobyteus-server-ts` depends on autobyteus-ts; the application worker entry and backend SDK do not import it; both server entry points disable it | `grep '"autobyteus-ts"' */package.json`; `git grep autobyteus-ts autobyteus-server-ts/src/application-engine` (none) | Reject | — | No unguarded production consumer. |
+| C-17 | `disableEnvironmentProviderApiKeySource` closes cached vaults asynchronously while a lookup might be in flight | — | Disable called after lookups started | In-flight lookup could hit a closed store | Only callers run at process start, before any lookup | Reject | — | No supported trigger. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved | Pass | One source decision (`selectSecretVaultSource`) and one default slot replace the four credential paths; env helper deleted | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Usage model: set one variable (+ the existing gate); setup prints the setting; no import per run | — |
-| Data-flow spine inventory clarity and preservation | Pass | DS-001..DS-005 map 1:1 to CLI/commands, startup/runtime, autobyteus-ts setup/slot, setup stripping, harness opt-ins | — |
-| Ownership boundary preservation and clarity | Pass | Source decided only in `selectSecretVaultSource`; failure rule only in `openReadOnlyTestVault`/runtime; only `TestVaultCommands` writes the vault | — |
-| Off-spine concern clarity | Pass | Location predicates, credential stripping, classifier, announcer each serve one owner | — |
-| Existing capability/subsystem reuse | Pass | Service, resolver class, catalog, crypto, importer, inspection SQL reused; schema SQL extracted into `secret-vault-sqlite-schema.ts` and shared with the inspection service | — |
-| Reusable owned structures | Pass | `WritableVaultTarget` extracted from the importer; `assertRootKeyOpensDomain` shared by both bootstrap paths | — |
-| Shared-structure/data-model tightness | Pass | `SecretVaultSource` two-variant union; `SecretVaultStore` = 7 used methods; `TestVaultStatus` single meaning per field | — |
-| Repeated coordination ownership | Pass | Live opt-in decided by the four DS-005 owners; suites call one initializer | — |
-| Empty indirection | Pass | `test-vault.ts` facade exists for the AR-007 server-free import boundary; `runtime-provider-api-key-resolvers.ts` binds to the runtime (owns that binding) | — |
-| Separation of concerns and file responsibility | Pass | Prisma-free read entry separate from Prisma-backed commands; runtime-touching test support separate from server-free policy | — |
-| Ownership-driven dependency check | Pass | Module-graph test proves `read-only-test-vault.ts`, the default resolver and the facade are Prisma/runtime-free, with a positive control; autobyteus-ts `src` imports nothing from server/test-support | — |
-| Authoritative Boundary Rule | Pass | Test code never opens SQLite or the key file itself; suites go through `initializeLiveServerVault`/`openReadOnlyTestVault`; no caller uses both runtime and repository | — |
-| File placement | Pass | `secret-management/test-vault/`, `test-support/test-vault/` as designed | — |
-| Flat-vs-over-split layout | Pass | Small, single-concern files; no artificial layers | — |
-| Interface/API boundary clarity | Pass | `initialize(source)` explicit union; `getStatusForSecretId` value-free and catalog-checked; `startBuiltTestServer({testVaultSetting})` explicit, never read from env | — |
-| Naming quality | Pass | Names match responsibilities (`openReadOnlyTestVault`, `isRealAppServerDataDir`, `captureTestVaultSelection`) | — |
-| No unjustified duplication | Pass | Selector name repeated in Electron and test-support by dependency rule (Electron/autobyteus-ts may not import server); acceptable | — |
-| Patch-on-patch complexity control | Pass | Clean replacement of env helper; no layered workarounds | — |
-| Dead code removed in touched files | Pass | C-02; env helper; `provider-access.ts`; resolver default runtime parameter; dead `getUsageJson` test | — |
-| Test scenarios and assertions requirement-aligned | Pass | AC-016/017 E2E asserts log line, configured status, `SECRET_VAULT_READ_ONLY`, byte digests, fatal start, nested AC-017 run | — |
-| Test fixtures/helpers reusable and coherent | Pass | `synthetic-test-vault.ts`, shared live helpers | — |
-| No stale, duplicated, or compatibility-only tests | Pass | Silent-pass catches removed (OpenAI audio, Gemini handler) | — |
-| API/E2E readiness | Pass | Real-key, isolated-instance and full-suite scenarios listed with exact commands in the handoff | — |
+| Task design health assessment preserved | Pass | One owner of the read-side format (autobyteus-ts `secrets/vault/`); the server keeps lifecycle and authorization | — |
+| Matches approved supplemental artifacts | Pass | Usage model now also covers scripts | — |
+| Data-flow spine clarity | Pass | DS-003 now starts at any process and ends at the provider through one default; DS-002 unchanged apart from disable-first | — |
+| Ownership boundary preservation | Pass | Format primitives, reader and naming are in autobyteus-ts; consumer kinds and authorization are in the server (AR-009); `isRealAppServerDataDir` is in the server | — |
+| Off-spine concern clarity | Pass | Location policy, classifier and exit close are each attached to one owner | — |
+| Existing capability reuse | Pass | Moves, not rewrites: `git diff -M` shows R070–R100 renames; the server bootstrap and service call the shared functions | — |
+| Reusable owned structures | Pass | `openVerifiedTestVault`, `verifyEstablishedVault`, `readSecretEntry`, `providerSecretId`; module-graph walker shared in `test-support/module-graph/` | — |
+| Shared-structure tightness | Pass | `SecretCredentialSlot` replaced by `ProviderApiKeySlot` (no second union); `TestVaultLocation` drops the server-only `databaseLocation` | — |
+| Repeated coordination ownership | Pass | Resolution order lives only in `resolveProviderApiKeyResolver` | — |
+| Empty indirection | Pass | `TestVaultProviderApiKeyResolver` owns provider→secret mapping and missing-key translation | — |
+| Separation of concerns / file responsibility | Pass | Selector name in its own file so naming it loads no vault code | — |
+| Ownership-driven dependency check | Pass | autobyteus-ts → nothing outside `src` (module-graph test); index and clients reach the vault only through the dynamic import, with a positive control | — |
+| Authoritative Boundary Rule | Pass | Server code uses `openReadOnlyTestVault` or the runtime, never the store and the service together | — |
+| File placement | Pass | `autobyteus-ts/src/secrets/vault/` as designed | — |
+| Flat-vs-over-split layout | Pass | 15 small single-concern files | — |
+| Interface/API boundary clarity | Pass | `disableEnvironmentProviderApiKeySource()` replaces the global setter; explicit resolver still wins | — |
+| Naming quality | Pass | Clear and consistent | — |
+| No unjustified duplication | Pass | No server copies or re-exports; the selector name is defined once in autobyteus-ts and imported by server and test-support (Electron keeps its own constant under its dependency rule) | — |
+| Patch-on-patch complexity control | Pass | The IR-001 installer was removed rather than layered over | — |
+| Dead code removed in touched files | **Fail** | CR-001: the Vitest self-alias and its test are dead after the installer's removal | Remove (Local Fix) |
+| Test scenarios requirement-aligned | Pass | The AC-018 E2E has a negative control; plain-script cases with and without the variable; loading is checked through `moduleLoadList` | — |
+| Test fixtures/helpers coherent | Pass | `synthetic-test-vault.ts` on the moved crypto; shared module-graph walker | — |
+| No stale or compatibility-only tests | **Fail** | `package-self-alias.test.ts` only guards the dead alias (CR-001) | Remove with CR-001 |
+| API/E2E readiness | Pass (after CR-001) | Exact commands in the handoff; AC-013 now includes a plain script | — |
 
 ## Source File Size And Structure Audit
 
-| Source File | Before | After | `>500` Check | `>220` Delta | SoC / Ownership | Placement | Classification | Required Action |
+| Source File | Before | After | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `secret-management/test-vault/test-vault-commands.ts` | new | 158 | Pass | Pass | Pass | Pass | Pass | — |
-| `secret-management/test-vault/test-vault-location.ts` | new | 158 | Pass | Pass | Pass | Pass | Pass | — |
-| `secret-management/persistence/read-only-secret-vault-store.ts` | new | 122 | Pass | Pass | Pass | Pass | Pass | — |
-| `secret-management/cli/test-vault-cli.ts` | new | 120 | Pass | Pass | Pass | Pass | Pass | — |
-| `secret-management/test-vault/read-only-test-vault.ts` | new | 90 | Pass | Pass | Pass | Pass | Pass | — |
-| `secret-management/secret-vault-runtime.ts` | ~52 | ~95 | Pass | Pass | Pass | Pass | Pass | — |
-| `start-standalone-application-host.ts` | 393 | 404 | Pass | Pass | Pass | Pass | Pass | — |
-| `autobyteus-ts/src/llm/api/openai-responses-llm.ts` | 474 | 477 | Pass | Pass | Pass | Pass | Pass | — |
-| Other changed `src` files (all < 420 lines, deltas ≤ 96) | — | — | Pass | Pass | Pass | Pass | Pass | — |
+| `autobyteus-ts/src/secrets/provider-api-key-resolver.ts` | 40 | 92 | Pass | Pass | Pass | Pass | Pass | — |
+| `autobyteus-ts/src/secrets/vault/verify-established-vault.ts` | new | 116 | Pass | Pass | Pass | Pass | Pass | — |
+| `autobyteus-ts/src/secrets/vault/open-test-vault.ts` | new | 109 | Pass | Pass | Pass | Pass | Pass | — |
+| `autobyteus-ts/src/secrets/vault/test-vault-location.ts` | 158 (server) | 147 | Pass | Pass | Pass | Pass | Pass | — |
+| `autobyteus-ts/src/secrets/vault/secret-root-key-file.ts` | moved | 105 | Pass | Pass | Pass | Pass | Pass | — |
+| `server .../bootstrap/secret-vault-bootstrap.ts` | ~240 | ~140 | Pass | Pass | Pass | Pass | Pass | — |
+| `server .../catalog/provider-credential-catalog.ts` | ~100 | ~90 | Pass | Pass | Pass | Pass | Pass | — |
+| Other changed `src` files (deltas ≤ 48 lines) | — | — | Pass | Pass | Pass | Pass | Pass | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No env-key path; no fallback from a selected vault; default slot empty unless live setup fills it |
-| No legacy old-behavior retention | Pass | Env→vault helper and env gates removed in all 15 suites + native harness and 18 autobyteus-ts files |
-| Dead code removed in touched files | Pass | See C-02 |
-| Approved persisted-data transition followed | Pass | Production `Not Affected`; test vault new data; consumers read-only (`readOnly` + `query_only`), bytes unchanged (IMP-05) |
+| No backward-compatibility mechanisms | Pass | No server re-export shims for the moved modules; `setDefaultProviderApiKeyResolver` removed outright |
+| No legacy old-behavior retention | Pass | The test-setup installer is removed |
+| Dead code removed in touched files | Fail | CR-001 |
+| Persisted-data transition followed | Pass | `Not Affected`: format and bytes unchanged |
 | No version-specific dual reads/writes | Pass | — |
-| Transition mechanics match the design | Pass | No migration; P-002 observed (IMP-10) |
+| Transition mechanics match the design | Pass | No migration |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None remaining.
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `autobyteus-ts/vitest.config.ts` `resolve.alias` block (+ `sourceRoot`, `path`, `fileURLToPath` if then unused) | DeadCode | Its stated consumer, the server code loaded by the removed `test-vault-default-resolver.ts`, is gone. No module in the autobyteus-ts Vitest run imports `autobyteus-ts` by package name except the alias test (grep in C-09). | Principle 7; the comment now misstates why it exists | Remove |
+| `autobyteus-ts/tests/unit/secrets/package-self-alias.test.ts` | UnusedTest | Tests only the dead alias | Principle 7 (tests for code that has no purpose) | Remove |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes` (done in `3f01a6013a`, `198c9066dc`)
-- Why: REQ-013/REQ-015.
-- Files or areas affected: `TESTING.md` "Test vault" section, Rule 4 and five real-key examples with the variable; `AGENTS.md` entry linking `TESTING.md#test-vault`; secret_management.md, READMEs, isolated-app guide/skill, autobyteus-ts docs. Delivery should still run its doc sync.
+- Docs impact: `Yes` (done in `e40b0fe6ce`, `3c9a4e799a`)
+- Why: REQ-013/REQ-015 under SR-009. Scripts need only the variable; Vitest live runs keep the gate.
+- Files or areas affected: `TESTING.md`, `AGENTS.md`, `secret_management.md` ("core clients remain storage-neutral" replaced), `autobyteus-ts/docs/llm_module_design_nodejs.md` (resolution order), `nodejs_architecture.md`.
 
 ## Additional Material Premise Validation
 
@@ -162,61 +169,72 @@ None remaining.
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| P-001 (exported selector reaches deterministic servers) | Confirmed resolved | DS-005 owners implemented; AC-017 nested run passes |
-| P-002 (older worktree setup vs newer vault) | Confirmed | IMP-10 observed: no pending migrations, READY, newer table kept |
+| P-001 | Confirmed | Unchanged |
+| P-002 | Confirmed | IMP-24 re-ran setup on the moved modules |
+| P-004 (two autobyteus-ts instances in server tests) | Confirmed | Reachable with no consequence (C-15); AC-018 also proven against the built server |
 
-No new or reclassified premises.
+No new premises.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
+- Overall score (`/10`): 9.2
+- Overall score (`/100`): 92
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | Each spine is visible in code with one entry and one owner | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Single source decision, single vault writer, Prisma-free read entry proven by module-graph test | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.2 | Explicit source union, explicit `testVaultSetting`, value-free status method | Optional resolver parameters on 28 public signatures widen the autobyteus-ts API (approved trade-off) | Keep the "production passes explicitly" rule visible in docs |
-| 4 | Separation of Concerns and File Placement | 9.4 | Server-free vs runtime-touching test support split per AR-007 | — | — |
-| 5 | Shared-Structure / Data-Model Tightness | 9.3 | `SecretVaultStore` reduced to used methods; schema SQL shared | — | — |
-| 6 | Naming Quality and Local Readability | 9.3 | Clear names and short doc comments | — | — |
-| 7 | API/E2E Readiness | 9.1 | Mechanics covered with synthetic vaults; exact commands handed off | Real-key, isolated-instance and full `test:e2e` runs still open | API/E2E runs them |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Failure rule, guard, read-only enforcement, harness opt-ins traced and tested | Windows paths only through injected policy | — |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut | — | — |
-| 10 | Cleanup Completeness | 9.3 | Helper, env gates, dead methods and stale tests removed | — | — |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | DS-003 is now one process-independent path; DS-002 adds one first step | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Read-side format and naming in autobyteus-ts; lifecycle and authorization in the server; checked by module graph | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.2 | Explicit → environment → missing; one disable call; no global setter | Core library carries a process-global env-driven source (approved trade-off) | — |
+| 4 | Separation of Concerns and File Placement | 9.4 | Small owned files; selector name split out to keep imports vault-free | — | — |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | Single slot union; trimmed location type | — | — |
+| 6 | Naming Quality and Local Readability | 9.2 | Clear names; good contract comments | `vitest.config.ts` comment now false (CR-001) | Remove with CR-001 |
+| 7 | API/E2E Readiness | 9.1 | Plain-script and AC-018 mechanics automated with a negative control | Real-key runs still open | API/E2E |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Catalog equivalence traced; corrupt-entry mapping preserved; failed opens not cached; disable-first at both sites | — | — |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut, no shims | — | — |
+| 10 | Cleanup Completeness | 8.5 | Installer, setter, server copies and unused `index.ts` removed | The Vitest self-alias and its test survived the removal of their only consumer (CR-001) | Remove both |
 
 ## Findings
 
-None.
+### CR-001 — Dead Vitest self-alias and its test after the installer's removal (Low)
+
+- Type: Dead code in touched files (Core Principle 7), this ticket.
+- Contract: Principle 7 ("code that only its own tests call"; "tests … for code that no longer exists"; remove dead code in the files a change touches).
+- Evidence:
+  - `autobyteus-ts/vitest.config.ts:8-15` says the alias is for "server code loaded by live test setup [that] imports `autobyteus-ts` by package name".
+  - That loader, `test-support/test-vault/test-vault-default-resolver.ts` → server `secret-management-provider-api-key-resolver.ts`, was removed in `9498de5f8b`.
+  - A grep of everything the autobyteus-ts Vitest run can load (C-09) finds no package-name import of `autobyteus-ts` except `tests/unit/secrets/package-self-alias.test.ts`, which tests only the alias.
+  - Both the alias and the test were added by this ticket in `855842b8f1`.
+- Required action: remove the `resolve.alias` block and the helpers only it uses, and delete `package-self-alias.test.ts`. Confirm with `pnpm -C autobyteus-ts test` (default suite) and one gated live file against a synthetic vault (IMP-22 shape).
+- Classification: `Local Fix` → `/software_engineering_team/implementation_engineer`.
 
 ## Follow-ups
 
-None new. FU-01..FU-05 in the design spec stand (FU-03 now also covers `pnpm test-vault` rebuilding the server on every call).
+None new. FU-01..FU-05 stand.
 
 - Sent to: `None`
 
 ## Classification
 
-N/A (Pass)
+`Local Fix` (CR-001)
 
 ## Recommended Recipient
 
-`/software_engineering_team/api_e2e_engineer` (per handoff rules)
+`/software_engineering_team/implementation_engineer`
 
 ## Residual Risks
 
-- Not yet executed, for API/E2E: real-key runs (AC-005, AC-006 incl. `Vault:` line and F-08 exit code, AC-007, AC-013); the isolated-instance smoke (AC-010); full `pnpm test:e2e` with and without the selector exported (AC-017 at full scale). They need the user's `pnpm test-vault setup` (DEC-003).
-- R-D accepted: 21 other web probes inherit an exported selector (FU-05).
-- Windows/Linux exercised only through injected platform policy.
-- An installed pre-change desktop app does not forward the selector; docs point to `--build`/`--from-worktree`.
+- Real-key runs (AC-005, AC-006, AC-007, AC-013 live, now including a plain script), the isolated-instance smoke (AC-010) and the full `pnpm test:e2e` comparison remain for API/E2E and need the user's `pnpm test-vault setup` (DEC-003).
+- The core library carries a process-global, environment-driven credential source. It is constrained by lazy loading, REQ-004 locations, the Vitest gate, disable-first in the server and explicit server resolvers (ARCH-REV-004 residual).
+- Server tests run two autobyteus-ts copies (P-004). Classification must stay by `kind`/`code`.
+- Windows/Linux exercised only through injected policy.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Fail` (one Low Local Fix)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10 (93/100); every category ≥ 9.0
+- Score Summary: 9.2/10 (92/100); Cleanup Completeness 8.5, all other categories ≥ 9.1
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: classification `Large`/`High` preserved. The eight implementation deviations were each checked; none adds product behavior (C-01..C-04).
+- Recommended Recipient: `/software_engineering_team/implementation_engineer`
+- Notes: Large/High preserved. Apart from CR-001, the SR-009/SR-010 delta is implemented as designed and reviewed. Round 3 can be a Targeted Delta Review limited to CR-001.
