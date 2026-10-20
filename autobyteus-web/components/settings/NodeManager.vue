@@ -140,6 +140,16 @@
         />
       </div>
       <div
+        v-else-if="activeTab === 'remoteCollaboration'"
+        id="node-manager-panel-remoteCollaboration"
+        class="mx-auto w-full max-w-7xl"
+        role="tabpanel"
+        aria-labelledby="node-manager-tab-remoteCollaboration"
+        data-testid="node-manager-panel-remoteCollaboration"
+      >
+        <RemoteCollaborationCard />
+      </div>
+      <div
         v-else-if="activeTab === 'phoneSetup'"
         id="node-manager-panel-phoneSetup"
         class="mx-auto w-full max-w-7xl space-y-5"
@@ -179,6 +189,7 @@ import { nfsPublishedRelease } from '~/utils/nfsLauncherCommands';
 import NfsGuideCard from '~/components/settings/NfsGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import MemorySyncCard from '~/components/settings/MemorySyncCard.vue';
+import RemoteCollaborationCard from '~/components/settings/RemoteCollaborationCard.vue';
 import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
 import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
 import { useLocalization } from '~/composables/useLocalization';
@@ -189,7 +200,7 @@ import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
 const { t } = useLocalization();
 
-type NodeManagerTabId = 'manage' | 'memorySync' | 'phoneSetup' | 'dockerGuide' | 'nfsGuide';
+type NodeManagerTabId = 'manage' | 'memorySync' | 'remoteCollaboration' | 'phoneSetup' | 'dockerGuide' | 'nfsGuide';
 
 const nodeStore = useNodeStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -206,7 +217,7 @@ const busyNodeId = ref<string | null>(null);
 const addError = ref<string | null>(null);
 const addInfo = ref<string | null>(null);
 const addWarnings = ref<string[]>([]);
-const validTabs = new Set<NodeManagerTabId>(['manage', 'memorySync', 'phoneSetup', 'dockerGuide', 'nfsGuide']);
+const validTabs = new Set<NodeManagerTabId>(['manage', 'memorySync', 'remoteCollaboration', 'phoneSetup', 'dockerGuide', 'nfsGuide']);
 const initialActiveTab = (): NodeManagerTabId => {
   const queryTab = typeof route.query.nodeTab === 'string' ? route.query.nodeTab : '';
   return validTabs.has(queryTab as NodeManagerTabId) ? queryTab as NodeManagerTabId : 'manage';

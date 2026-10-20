@@ -18,7 +18,7 @@ import type {
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
 export type PeerGatewayResponse<TAnswer> =
   | Readonly<{ status: 200; answer: TAnswer }>
-  | Readonly<{ status: 400; answer: Readonly<{ accepted: false; code: string; message: string }> }>;
+  | Readonly<{ status: 400; answer: Readonly<{ accepted: false; nodeId: string; code: string; message: string }> }>;
 
 /** A refusal as a handler returns it; the gateway adds this node's ID. */
 export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string }>;
@@ -107,7 +107,7 @@ export class PeerGateway {
     try { request = parse(body); }
     catch (error) {
       if (!(error instanceof MalformedRequestError)) throw error;
-      return { status: 400, answer: { accepted: false, code: REMOTE_REFUSAL.BAD_REQUEST, message: error.message } };
+      return { status: 400, answer: { accepted: false, nodeId, code: REMOTE_REFUSAL.BAD_REQUEST, message: error.message } };
     }
     const refuse = (code: string, message: string) => ({ status: 200 as const, answer: { accepted: false as const, nodeId, code, message } });
     if (request.toNodeId !== nodeId) return refuse(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, "This request was meant for another node.");

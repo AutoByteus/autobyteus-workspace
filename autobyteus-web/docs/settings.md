@@ -201,6 +201,18 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Nodes: Remote Collaboration
+
+Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`) sets up
+cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
+off by default, through `remoteCollaborationCapabilityStore`, a
+`createBoundNodeCapabilityStore` capability), the peer nodes (add by URL and name,
+rename, remove; adding needs the switch on) and the published Agents (publish a shared
+Agent with its runtime, model, workspace on this node and tool auto-approve, off by
+default; edit; unpublish). `stores/remoteCollaborationStore.ts` loads and changes them
+through GraphQL; a refused change shows the server's reason next to the section that
+failed. The server side is described in the server's `docs/modules/remote_collaboration.md`.
+
 ## Server Settings: Feature Capability Toggles
 
 Settings -> Server Settings -> Basics shows one toggle card per node-bound

@@ -1,6 +1,5 @@
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { BUILT_IN_AGENT_DEFINITIONS } from "../../built-in-agents/built-in-agent-registry.js";
 import { CatalogAddressMap } from "../../agent-collaboration/collaborators/catalog-address-map.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { PublishedAgent, PublishedAgentLaunchSettings } from "../domain/published-agent.js";
@@ -16,9 +15,9 @@ export type PublishedAgentView = Readonly<{
   address: AgentTeamAddress | null;
 }>;
 
-const BUILT_IN_IDS: ReadonlySet<string> = new Set(BUILT_IN_AGENT_DEFINITIONS.map((entry) => entry.id));
+/** A shared Agent definition (REQ-103); team-local and application-owned definitions are not offered. */
 const isPublishable = (definition: AgentDefinition | null): definition is AgentDefinition & { id: string } =>
-  Boolean(definition?.id) && definition!.ownershipScope === "shared" && !BUILT_IN_IDS.has(definition!.id!);
+  Boolean(definition?.id) && definition!.ownershipScope === "shared";
 
 /**
  * What this node offers its peers (DEC-102, REQ-103): publish, update and unpublish shared Agent definitions

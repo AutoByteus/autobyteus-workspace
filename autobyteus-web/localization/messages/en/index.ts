@@ -18,6 +18,7 @@ import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
+import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import embeddingSettingsMessages from './embeddingSettings';
 import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
@@ -53,6 +54,7 @@ const enMessages: TranslationCatalog = {
   ...packageMigrationSettingsMessages,
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
+  ...remoteCollaborationSettingsMessages,
   ...embeddingSettingsMessages,
   ...projectMessages,
   ...generatedShellMessages,

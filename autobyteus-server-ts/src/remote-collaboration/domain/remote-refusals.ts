@@ -7,8 +7,6 @@ export { REMOTE_REFUSAL };
  * the channel port. A refusal that comes from the peer keeps the peer's code; this node words it for its
  * own agent, naming the peer by this owner's label.
  */
-export type RemoteRefusalCode = (typeof REMOTE_REFUSAL)[keyof typeof REMOTE_REFUSAL];
-
 /** Texts for refusals decided on this node (before anything is sent). */
 export const localRefusalText = Object.freeze({
   off: () => REMOTE_ROOT_REFUSAL_TEXT.off,

@@ -38,6 +38,3 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
 export type RemoteRefusalAnswer = Readonly<{ accepted: false; nodeId: string; code: string; message: string }>;
 export type StartDelegatedRunAnswer = Readonly<{ accepted: true; nodeId: string; agentRunId: string }> | RemoteRefusalAnswer;
 export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
-
-/** What `GET /rest/remote-access/status` answers, as far as a peer reads it. */
-export type PeerIdentityAnswer = Readonly<{ serverInstanceId: string }>;

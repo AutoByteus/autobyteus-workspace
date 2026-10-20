@@ -57,7 +57,7 @@
         </button>
       </div>
       <p class="text-xs text-slate-500">
-        {{ $t('applications.components.applications.ApplicationWorkspaceRootSelector.customPathHelp') }}
+        {{ customPathHelp ?? $t('applications.components.applications.ApplicationWorkspaceRootSelector.customPathHelp') }}
       </p>
     </div>
   </div>
@@ -76,8 +76,11 @@ import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates'
 const props = withDefaults(defineProps<{
   modelValue: string
   disabled?: boolean
+  /** The custom path's help text where the path is used for something else than application launches. */
+  customPathHelp?: string
 }>(), {
   disabled: false,
+  customPathHelp: undefined,
 })
 
 const emit = defineEmits<{
