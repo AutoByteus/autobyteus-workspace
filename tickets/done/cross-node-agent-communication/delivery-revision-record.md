@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/deployment report remai
 | DR-001 | CRR-007 Pass (after API-REV-003 Pass), from the code reviewer | N/A | Integrated and docs synced. Verification open: AC-113 user check, RC-10 test race sent to API/E2E | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `follow-ups.md` (FU-005 renumbered, FU-006 added), `evidence/delivery/` |
 | DR-002 | CRR-008 Pass on API-REV-004 (RC-10 fix, API-23b), from the code reviewer | DR-001: verification open | RC-10 race closed and AC-110 evidence replaced (accepted). Second integration refresh blocked: merging `origin/personal` `3b9014215e` conflicts in five server source files; merge aborted, sent to implementation | `delivery-revision-record.md`, `release-deployment-report.md` |
 | DR-003 | CRR-009 Pass / API-REV-005 Pass / CRR-010 N/A on the IR-005 integration, from the code reviewer | DR-002: integration blocked | Integrated with `origin/personal` `d9439919e2` (clean merge `a58fbab73c`); DEL-08 … DEL-12 pass apart from FU-009 (outside the ticket); verification open only for AC-113 | `handoff-summary.md`, `release-deployment-report.md`, `follow-ups.md` (FU-009), `evidence/delivery/DEL-08…12` |
+| DR-004 | The user's confirmation of AC-113 and request to finalize (2026-10-20) | DR-003: verification open (AC-113) | Verified; no release; ticket archived; finalized into `origin/personal` (see `release-deployment-report.md` § Finalization Record) | `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, ticket folder moved to `tickets/done/` |
 
 ## Revision Entries
 
@@ -91,3 +92,25 @@ The latest docs sync report, handoff summary and release/deployment report remai
 - Why this baseline or delivery revision was recorded: the integration blocker closed and the latest base was integrated.
 - Next recipient/action: the user. AC-113, and the choice between a local desktop build plus Docker image before merge, and a beta `1.5.8-beta.5` after merge.
 - Remaining blockers, rollback concerns, or untested scope: AC-113.
+
+### DR-004 — AC-113 confirmed by the user; finalization
+
+- Delivery round and trigger: the user, 2026-10-20: "ahhh. it was already checked earlier. so you can finalize" (in answer to what AC-113 is).
+- Triggering upstream report, verification, or evidence: the user's confirmation of AC-113; DR-003's integrated-state checks.
+- Prior authoritative result: DR-003, verification open for AC-113 only.
+- Current authoritative result:
+  - Verification complete.
+  - Release decision: `No release`.
+  - Base advance `1f5e0bf028` (another ticket's documents) merged as `623e0d830d`, with no rerun needed.
+  - Ticket archived to `tickets/done/cross-node-agent-communication/`.
+  - Repository finalization per `release-deployment-report.md` § Finalization Record.
+- Docs sync report: unchanged.
+- Handoff summary: updated (status, AC-113, release).
+- Release/publication/deployment report: § DR-004 Addendum and § Finalization Record.
+- Integration and post-integration verification: DEL-08 … DEL-12 on `a58fbab73c`, still valid for `623e0d830d`.
+- Verification (evidence judgement or user check) and finalization state: AC-101 … AC-112 from the evidence; AC-113 the user's confirmation; finalization per the Finalization Record.
+- Terminal return to the Solution Designer: after the finalization record is pushed.
+- Terminal return message/reference: the message to `/software_engineering_team/solution_designer`.
+- Why this baseline or delivery revision was recorded: the last verification gate closed, and the ticket was finalized.
+- Next recipient/action: the Solution Designer (terminal receipt; it sends FU-002 … FU-006, FU-008 and FU-009).
+- Remaining blockers, rollback concerns, or untested scope: none blocking; RSK-106 / FU-002; RSK-103 until S6. AC-113's earlier run has no artifact in the ticket.

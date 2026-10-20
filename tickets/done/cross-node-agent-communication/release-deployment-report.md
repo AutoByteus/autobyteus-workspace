@@ -174,3 +174,15 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 - **Docs sync:** no change needed for these merges. The ticket's long-lived docs do not mention `launchPurpose`, `server_helper` or Skill Improvement, and the base's own docs changes (`content_rendering.md`, `electron_packaging.md`) do not overlap.
 - **Handoff state current with latest tracked remote base:** `Yes`, as of `d9439919e2`. It is refetched before finalization.
 - **Verification:** AC-101 … AC-112 proven; AC-113 `User Check`, pending. Repository finalization: `Blocked` on AC-113 only.
+
+## DR-004 Addendum — Verification Closed, Finalization (2026-10-20)
+
+- **Base:** `origin/personal` advanced from `d9439919e2` to `1f5e0bf028`: `tickets/done/dependency-security-and-unused-cleanup/` delivery records only. Merged as `623e0d830d`. No rerun was needed, because no code, test or long-lived doc changed; DEL-08 … DEL-12 stand.
+- **Verification:**
+  - Evidence judged `Sufficient` for AC-101 … AC-112.
+  - AC-113: `User Check`, confirmed. On 2026-10-20 the user wrote: "ahhh. it was already checked earlier. so you can finalize". The ticket holds no artifact of that earlier desktop + Docker run; the user's confirmation is the reference. API-23b is the related recorded evidence (integrated build, two desktop instances, real model, both directions, watched by the user).
+  - Verification complete: `Yes`.
+- **Release decision:** `No release`. Decided by the user's request to finalize, which did not ask for a release, and `RELEASE.md`'s default (finalize only). A beta `1.5.8-beta.5` is available on request.
+- **Release notes:** `Not required` (no stable release).
+- **Ticket state:** moved to `tickets/done/cross-node-agent-communication/`.
+- **Repository finalization:** recorded in the Finalization Record below.

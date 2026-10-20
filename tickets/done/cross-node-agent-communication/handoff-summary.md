@@ -1,6 +1,6 @@
 # Handoff Summary — cross-node-agent-communication (autobyteus-191, slice 1: remote delegation, text only)
 
-Status: **verification open** (DR-003). Integrated with `origin/personal` `d9439919e2`, docs synced and checked; not finalized, not pushed. One open item: your AC-113 check (desktop ↔ Docker). The RC-10 test race is fixed (API-REV-004, CRR-008), and the autobyteus-205 integration is reviewed (IR-005, CRR-009, API-REV-005).
+Status: **verified; finalized into `personal`** (DR-004). Integrated with `origin/personal` `1f5e0bf028` (the last advance was ticket documents only). AC-101 … AC-112 were verified from the evidence; for AC-113, the user confirmed on 2026-10-20 that the desktop + Docker check was done earlier. No release. Archived at `tickets/done/cross-node-agent-communication/`.
 
 ## Ticket
 
@@ -83,12 +83,14 @@ Status: **verification open** (DR-003). Integrated with `origin/personal` `d9439
   - API-23b, the integrated build in two isolated desktop instances with a real model, watched by the user;
   - DEL-12 on the final integrated state.
 - **AC-110:** the duplicate round-2 screenshot was replaced by `API-23b-isolated-beta-composer-message.png`, which shows the run in B's history, its reply to A, and the owner's composer message with its answer.
-- **AC-113 needs your check.** It is the desktop node and a Docker node, set up in the node windows, running AC-104 … AC-106 in both directions with real runtimes. API/E2E tried a test-owned Docker node (API-24) and TESTING did not allow it: the published image differs from this branch in 31 unrelated files. The check needs your desktop, nodes and runtime sign-ins.
+- **AC-113: the user's check, confirmed.** The check covers the desktop node and a Docker node, set up in the node windows, running AC-104 … AC-106 in both directions with real runtimes. API/E2E could not run it (API-24): the published Docker image differs from this branch in 31 unrelated files.
+  - On 2026-10-20 the user answered: "ahhh. it was already checked earlier. so you can finalize". The ticket holds no artifact of that earlier run; the user's confirmation is the record.
+  - API-23b is the closest recorded evidence: two desktop instances of the integrated build, a real model, both directions, watched by the user.
 - **RC-10 test race** (DEL-06): fixed in API-REV-004. RC-10 takes the remote run from the `delegate_task` result; CRR-008 passed it. Every run since is 20/20 (r4-1, r4-2, r5-1, r5-2, DEL-12).
 
 ## Release
 
-- Not decided yet. `RELEASE.md` defaults to finalize only. A beta (`1.5.8-beta.5`; `beta.4` was taken by autobyteus-205) is one way to give AC-113 a desktop build and a Docker image that contain this change; that is your decision.
+- `No release`. The user asked to finalize and did not ask for a release; `RELEASE.md` defaults to finalize only. The change ships with the next release. A beta (`1.5.8-beta.5`) can be cut on request.
 
 ## Residual Risks And Follow-ups
 
