@@ -15,13 +15,15 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
 type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
 /**
  * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
- * it. Absent on records written before sources existed ("not recorded").
+ * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
+ * records written before sources existed ("not recorded").
  */
 export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodObject<{
     origin: z.ZodEnum<{
         agent_default: "agent_default";
         team_default: "team_default";
         inherited: "inherited";
+        configured: "configured";
     }>;
     fallbacks: z.ZodArray<z.ZodObject<{
         layer: z.ZodEnum<{
@@ -40,22 +42,21 @@ export declare const collaborationLaunchConfigurationSourceDtoSchema: z.ZodObjec
     }, z.core.$strict>>;
 }, z.core.$strict>;
 export type CollaborationLaunchConfigurationSourceDto = Readonly<z.infer<typeof collaborationLaunchConfigurationSourceDtoSchema>>;
-/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+/**
+ * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
+ * reaches it (`followsTeam`). `launchSource` is present only when its agent definition had a default.
+ */
 type MemberLaunchDto = Readonly<{
-    launchConfiguration?: LaunchConfigurationDto;
+    launchConfiguration: LaunchConfigurationDto;
+    followsTeam: boolean;
     launchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{
     defaultLaunchConfiguration: LaunchConfigurationDto;
     defaultLaunchSource?: CollaborationLaunchConfigurationSourceDto;
 }>;
-/**
- * The launch a catalog-Team-copy member runs with: its own, else its Team's.
- * Every reader of such a member's launch uses this, never the Team's value directly.
- */
-export declare const collaborationMemberLaunchConfiguration: (team: Pick<TeamLaunchDto, "defaultLaunchConfiguration">, member: MemberLaunchDto) => LaunchConfigurationDto;
-/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
-export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: MemberLaunchDto) => CollaborationLaunchConfigurationSourceDto | null;
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
+export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: Pick<MemberLaunchDto, "launchSource">) => CollaborationLaunchConfigurationSourceDto | null;
 /**
  * The user's model choice for one delegated copy: it replaces only the
  * model and its settings. Absent when the user made no choice (every older record).
@@ -80,9 +81,7 @@ export declare const collaborationCopyAgentLaunch: (input: Readonly<{
     launch: LaunchConfigurationDto;
     selected: "agent" | "team" | null;
 }>;
-/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
-export declare const collaborationMemberFollowsTeam: (member: MemberLaunchDto) => boolean;
-/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
     agentDefinitionId: string;
@@ -110,7 +109,7 @@ type TaskAgentExecutionDto = Readonly<{
     /** Absent for children recorded before the delegator was stored. */
     delegatorAgentRunId?: string;
     startedAt: string;
-    source?: TaskAgentExecutionSourceDto;
+    source: TaskAgentExecutionSourceDto;
     userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
@@ -127,7 +126,7 @@ type TaskTeamExecutionDto = Readonly<{
     /** Absent for children recorded before the delegator was stored. */
     delegatorAgentRunId?: string;
     startedAt: string;
-    source?: TaskTeamExecutionSourceDto;
+    source: TaskTeamExecutionSourceDto;
     userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;

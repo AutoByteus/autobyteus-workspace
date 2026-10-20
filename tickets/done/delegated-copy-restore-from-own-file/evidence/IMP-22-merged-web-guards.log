@@ -1,0 +1,18 @@
+# Check: IMP-22
+# Command: pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary
+# Commit: 26ad4ace20 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T19:12:09Z
+
+
+> autobyteus@1.5.7-beta.3 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.7-beta.3 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+# Exit code: 0

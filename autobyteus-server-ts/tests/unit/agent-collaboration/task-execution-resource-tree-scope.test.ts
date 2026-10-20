@@ -29,7 +29,7 @@ const forest = () => [{
   members: [{ address: '/workers/lead', agentRunId: 'A-lead', platformAgentRunId: null }],
   taskExecutions: [copy('A-child', devStamp)],
   source: { kind: 'agent_team', teamDefinitionId: 'workers', coordinatorAddress: '/workers/lead',
-    members: [{ address: '/workers/lead', agentDefinitionId: 'lead' }], handoffs: [], defaultLaunchConfiguration: launch },
+    members: [{ address: '/workers/lead', agentDefinitionId: 'lead', launchConfiguration: launch, followsTeam: true }], handoffs: [], defaultLaunchConfiguration: launch },
 }, copy('A-helper'), copy('B-worker'), copy('borrowed')];
 type Kind = 'agent' | 'agent_team' | 'agent_org';
 function subject(kind: Kind, tasks = forest()) {

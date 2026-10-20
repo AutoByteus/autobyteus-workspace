@@ -15,8 +15,9 @@ import {
 import { taskExecutionConversationUnavailable } from "../../agent-collaboration/execution/task/task-execution-conversation-availability.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
+import { placementSourceOf, projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
+import { projectTaskExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
@@ -38,7 +39,6 @@ import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/te
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
 import type { TeamRunRegistrationReservation } from "../services/team-run-resolver.js";
 import { requirePreparedTaskTeamNode } from "./task-delegation-execution-resolution.js";
-import { TeamTaskSourceResolver } from "./team-task-source-resolver.js";
 import { taskExecutionStartedEvent, taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "./task-execution-event-factory.js";
 import type { TeamTaskExecutionServiceOptions } from "./team-task-execution-service-contract.js";
 
@@ -54,12 +54,10 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   get root() { return createTeamRootExecutionIdentity(this.options.rootTeamRunId); }
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
   private readonly memoryLocator: AgentRunMemoryLocator;
-  private readonly sources: TeamTaskSourceResolver;
 
   constructor(private readonly options: TeamTaskExecutionServiceOptions) {
     this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
     this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
-    this.sources = new TeamTaskSourceResolver({ config: options.config });
   }
 
   isOpen(): boolean { return this.options.isRootOpen(); }
@@ -74,12 +72,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     let ownedAgentRunIds: readonly string[];
     let command: Parameters<import("../domain/team-run.js").TeamRun["beginTaskAgent"]>[0] | Parameters<import("../domain/team-run.js").TeamRun["beginTaskTeam"]>[0];
     if (input.placement.kind === "agent") {
-      const source = this.sources.requireAgent(input.placement.address, input.placement.source);
+      const source = projectTaskExecutionSource(input.placement.address, input.placement.source).node;
       const agentRunId = await this.options.taskExecutionIdentity.agentRuns.allocateForAgentDefinition(source.agentDefinitionId);
       execution = { agentRunId }; ingressAgentRunId = agentRunId; ownedAgentRunIds = [agentRunId];
       command = { address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket };
     } else {
-      const source = this.sources.requireTeam(input.placement.address, input.placement.source);
+      const source = projectTaskExecutionSource(input.placement.address, input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
       const coordinator = materialized.teamNode.children.find((node) => node.address === materialized.teamNode.coordinatorAddress);
       if (!coordinator) throw new Error("Planned Team has no exact coordinator.");
@@ -110,10 +108,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       prepared.sealForCommit();
       const execution: TaskExecution = prepared.binding.kind === "agent"
         ? projectTaskAgentExecution({ address: prepared.binding.address, agentRunId: prepared.binding.agentRunId,
-          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt,
-          source: plan.placement.kind === "agent" ? plan.placement.source : null })
+          delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt, source: placementSourceOf(plan.placement, "agent") })
         : projectTaskTeamExecution({ node: requirePreparedTaskTeamNode(prepared), delegatorAgentRunId: plan.identity.agentRunId,
-          startedAt: plan.startedAt, source: plan.placement.kind === "agent_team" ? plan.placement.source : null });
+          startedAt: plan.startedAt, source: placementSourceOf(plan.placement, "agent_team") });
       let work: CommittedTaskExecution | null = null;
       return Object.freeze({
         targetAgentRunId: plan.target.ingressAgentRunId,
@@ -218,12 +215,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
           address: indexed.address,
           agentRunId: indexed.agentRunId,
           platformAgentRunId: indexed.source.platformAgentRunId,
-          sourceNode: restoreTaskAgentNode({ source: this.sources.requireAgent(indexed.address, indexed.source.source), execution: indexed.source }),
+          sourceNode: restoreTaskAgentNode({ source: projectTaskExecutionSource(indexed.address, indexed.source.source).node, execution: indexed.source }),
         });
         assertOpen();
         continue;
       }
-      const source = this.sources.requireTeam(indexed.address, indexed.source.source);
+      const source = projectTaskExecutionSource(indexed.address, indexed.source.source);
       const run = await host.restoreTaskTeam({ assertOpen,
         handoffs: source.handoffs,
         teamNode: restoreTaskTeamNode({ source: source.node, execution: indexed.source, followerAddresses: source.followerAddresses }),
@@ -271,11 +268,8 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   /** The AgentRun a message to this copy enters through: the Agent itself, or the Team's coordinator. */
   private ingressMember(indexed: IndexedTaskExecution): Readonly<{ address: string; agentRunId: string }> {
     if (indexed.kind === "agent") return { address: indexed.address, agentRunId: indexed.agentRunId };
-    const source = this.sources.resolve(indexed.address, indexed.source.source);
-    if (!source || source.kind !== "agent_team") {
-      throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `AgentTeam '${indexed.address}' is not configured in this run.`);
-    }
-    const coordinatorAddress = source.node.coordinatorAddress;
+    // A Team copy is led by the coordinator its own recorded source names (REQ-001).
+    const coordinatorAddress = indexed.source.source.coordinatorAddress;
     const coordinator = indexed.source.members.find((member) =>
       "agentRunId" in member && member.address === coordinatorAddress);
     if (!coordinator || !("agentRunId" in coordinator)) {

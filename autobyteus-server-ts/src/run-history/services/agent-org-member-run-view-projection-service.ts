@@ -146,14 +146,14 @@ export class AgentOrgMemberRunViewProjectionService {
       throw new CollaborationMemberNotFoundError(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
     }
     if (!locatedExecutionSource(location)) {
-      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured AgentOrg launch placement or catalog source.`);
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' has no configured AgentOrg launch placement or recorded source.`);
     }
     return location;
   }
 }
 
 const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata => {
-  // A catalog-copy run has no configured placement: its recorded source supplies it.
+  // A configured member's placement, or a delegated copy's own recorded source (by execution kind).
   const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {

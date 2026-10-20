@@ -16,6 +16,7 @@ const location = {
   agentRunId: "professor-run",
   memberAddress: "/professor",
   configuredPlacement: configured,
+  executionKind: "configured",
   memoryDir: "/memory/agent_teams/team-1/professor-run",
   tree: executionTree,
   isActive: false,
@@ -63,8 +64,26 @@ const taskAgentTree = {
   },
 };
 const taskAgentLocation = {
-  ...location, agentRunId: "reviewer-copy", memberAddress: "/reviewer", configuredPlacement: null,
+  ...location, agentRunId: "reviewer-copy", memberAddress: "/reviewer", configuredPlacement: null, executionKind: "task",
   memoryDir: "/memory/agents/reviewer-copy", tree: taskAgentTree,
+};
+/** A copy of the configured member itself: same address, its own snapshot and its own runtime session. */
+const copyOfMemberTree = {
+  ...executionTree,
+  rootTeam: {
+    ...executionTree.rootTeam,
+    members: [{ ...configured, platformAgentRunId: "slot-session" }],
+    taskExecutions: [{
+      address: "/professor", agentRunId: "professor-copy", platformAgentRunId: "copy-session", delegatorAgentRunId: "professor-run",
+      startedAt: "2026-08-15T00:00:00.000Z",
+      source: { kind: "agent", agentDefinitionId: "professor", launchConfiguration: { ...configured.launchConfiguration, llmModelIdentifier: "started-model" },
+        launchSource: { origin: "configured", fallbacks: [] } },
+    }],
+  },
+};
+const copyOfMemberLocation = {
+  ...location, agentRunId: "professor-copy", configuredPlacement: { ...configured, platformAgentRunId: "slot-session" }, executionKind: "task",
+  memoryDir: "/memory/agents/professor-copy", tree: copyOfMemberTree,
 };
 
 describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
@@ -105,10 +124,18 @@ describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
       .rejects.toThrow("AgentRun 'missing' was not found");
   });
 
-  it("rejects executions that have neither a configured launch placement nor a catalog source", async () => {
+  it("rejects executions that have neither a configured launch placement nor a recorded source", async () => {
     const { service } = harness({ ...location, configuredPlacement: null });
     await expect(service.getProjection("team-1", "professor-run"))
-      .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' has no configured launch placement or catalog source."));
+      .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' has no configured launch placement or recorded source."));
+  });
+
+  it("projects a copy of a configured member with its own settings and runtime session, never the member's (AC-004)", async () => {
+    const { service, agentViews } = harness(copyOfMemberLocation);
+    await service.getProjection("team-1", "professor-copy");
+    expect(agentViews.getProjectionFromMetadata).toHaveBeenCalledWith(expect.objectContaining({
+      metadata: expect.objectContaining({ runId: "professor-copy", llmModelIdentifier: "started-model", platformAgentRunId: "copy-session" }),
+    }));
   });
 
   it("projects a team task agent from its catalog source", async () => {

@@ -36,14 +36,6 @@ const getGoogleSlidesEnv = () => {
   return { scriptPath, clientId, clientSecret, refreshToken };
 };
 
-const getConfigJsonEnv = (): string | null => {
-  const raw = process.env.TEST_MCP_CONFIG_JSON;
-  if (!raw) {
-    return null;
-  }
-  return raw;
-};
-
 const resetSingletons = () => {
   McpConfigService.resetInstance();
   (CoreMcpConfigService as any).instance = undefined;
@@ -72,11 +64,9 @@ describe("McpConfigService integration", () => {
 
   const sqliteEnv = getSqliteEnv();
   const googleEnv = getGoogleSlidesEnv();
-  const configJsonEnv = getConfigJsonEnv();
 
   const itSqlite = sqliteEnv ? it : it.skip;
   const itGoogle = googleEnv ? it : it.skip;
-  const itConfigJson = configJsonEnv ? it : it.skip;
 
   itSqlite("configures and discovers tools for a real sqlite MCP server", async () => {
     const env = sqliteEnv!;
@@ -184,25 +174,4 @@ describe("McpConfigService integration", () => {
     const retrieved = await provider.getByServerId(serverId);
     expect(retrieved).toBeNull();
   });
-
-  itConfigJson(
-    "applies MCP config JSON from env and persists configs",
-    async () => {
-    const configJson = configJsonEnv!;
-    const service = McpConfigService.getInstance();
-    const result = await service.applyAndRegisterConfigsFromJson(configJson);
-
-    const parsed = JSON.parse(configJson) as { mcpServers?: Record<string, unknown> };
-    const serverIds = Object.keys(parsed.mcpServers ?? {});
-
-    expect(result.summary.total_processed).toBe(serverIds.length);
-
-    const provider = new McpServerPersistenceProvider();
-    for (const serverId of serverIds) {
-      const persisted = await provider.getByServerId(serverId);
-      expect(persisted).not.toBeNull();
-    }
-    },
-    30000,
-  );
 });

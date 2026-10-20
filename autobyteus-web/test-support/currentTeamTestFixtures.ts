@@ -165,13 +165,30 @@ export interface TestDelegation {
 
 export const testDelegation = (input: TestDelegation): TestDelegation => Object.freeze({ ...input });
 
-const executionForDelegation = (delegation: TestDelegation): TaskExecutionDto => {
+/**
+ * A delegated child as the server records it: every copy carries the snapshot it started from. An Agent copy at a
+ * configured member's address records that member's settings (origin `configured`); any other Agent copy a
+ * catalog-like snapshot named after its address.
+ */
+const executionForDelegation = (
+  delegation: TestDelegation,
+  rootChildren: readonly TestAgentNode[],
+  workspaceRootPath: string | null,
+): TaskExecutionDto => {
   const startedAt = delegation.startedAt ?? NOW;
-  if ('agentRunId' in delegation.target) return {
-    kind: 'task_agent', address: delegation.recipientAddress,
-    agent_run_id: delegation.target.agentRunId,
-    platform_agent_run_id: null, delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
-  };
+  if ('agentRunId' in delegation.target) {
+    const slot = rootChildren.find((node) => node.address === delegation.recipientAddress);
+    const name = delegation.recipientAddress.split('/').filter(Boolean).at(-1) ?? 'agent';
+    return {
+      kind: 'task_agent', address: delegation.recipientAddress,
+      agent_run_id: delegation.target.agentRunId,
+      platform_agent_run_id: null, delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
+      source: slot
+        ? { kind: 'agent', agent_definition_id: slot.agentDefinitionId, launch_configuration: withWorkspaceFallback(launch(slot), workspaceRootPath),
+          launch_source: { origin: 'configured', fallbacks: [] } }
+        : { kind: 'agent', agent_definition_id: name, launch_configuration: withWorkspaceFallback(launch(testAgentNode(delegation.recipientAddress)), workspaceRootPath) },
+    };
+  }
   const { team, teamRunId } = delegation.target;
   if (team.address !== delegation.recipientAddress) {
     throw new Error(`Test Team layout '${team.address}' is not at '${delegation.recipientAddress}'.`);
@@ -186,7 +203,8 @@ const executionForDelegation = (delegation: TestDelegation): TaskExecutionDto =>
     task_executions: [], delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
     source: {
       kind: 'agent_team', team_definition_id: team.teamDefinitionId, coordinator_address: team.coordinatorAddress,
-      members: team.children.map((child) => ({ address: child.address, agent_definition_id: child.agentDefinitionId })),
+      members: team.children.map((child) => ({ address: child.address, agent_definition_id: child.agentDefinitionId,
+        launch_configuration: launch(child), follows_team: true })),
       handoffs: [], default_launch_configuration: team.defaultLaunchConfiguration,
     },
   };
@@ -215,7 +233,7 @@ export const buildTestTeamContext = (input: {
   if (!coordinatorAddress) throw new Error('Test Team requires one Agent coordinator.');
   const taskExecutions = input.taskExecutions
     ? [...input.taskExecutions]
-    : (input.delegations ?? []).map(executionForDelegation);
+    : (input.delegations ?? []).map((delegation) => executionForDelegation(delegation, input.rootChildren, input.workspaceRootPath ?? null));
   const coordinator = input.rootChildren.find((node) => node.address === coordinatorAddress);
   if (!coordinator) throw new Error(`No configured coordinator exists at '${coordinatorAddress}'.`);
   const rootLaunch = withWorkspaceFallback(launch(coordinator), input.workspaceRootPath ?? null);

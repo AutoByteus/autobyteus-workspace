@@ -1,12 +1,10 @@
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
-  catalogAgentSourceAt,
-  catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaborationInstanceSource,
+  copyAgentSourceOf,
+  copyTeamSourceOf,
   type CollaborationAgentSource,
-  type CollaborationInstances,
   type CollaborationTeamSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -24,7 +22,7 @@ export type OrgWorkspaceSelection =
   | Readonly<{ kind: 'agent_execution'; agentRunId: string }>
   | Readonly<{ kind: 'configured_team'; teamRunId: string }>
 export type OrgExecutionHost = Readonly<{ kind: 'root' | 'team'; runId: string }>
-/** A configured member, or the catalog source a delegated copy was started from. */
+/** A configured member's own source, or a delegated copy's recorded source with its user choice applied. */
 export type OrgAgentSource = CollaborationAgentSource
 export type OrgTeamSource = CollaborationTeamSource
 /** Membership in a delegated child: its execution run ID and the AgentRun that started it. */
@@ -117,19 +115,9 @@ export class AgentOrgExecutionViewIndex {
     if (matches.length !== 1) throw new Error(`Team '${teamRunId}' has no unique exact coordinator.`)
     return matches[0]!
   }
-  /** Catalog copies carry their own source (REQ-011). */
-  private catalogTasks() {
+  /** Every copy carries its own source (REQ-001), wherever the root records it. */
+  private copyTasks() {
     return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
-  }
-  /** The root's copies: what each of their agents runs with (its user choice, DS-003). */
-  private instances(): CollaborationInstances {
-    return {
-      taskExecutions: this.catalogTasks(),
-      configuredTeamLaunchAt: (address) => {
-        const team = this.configured.get(address as AgentTeamAddress)
-        return team && 'teamRunId' in team ? team.defaultLaunchConfiguration : null
-      },
-    }
   }
   private register(runId: string): void {
     if (this.allRunIds.has(runId)) throw new Error(`Duplicate Org execution '${runId}'.`)
@@ -138,21 +126,19 @@ export class AgentOrgExecutionViewIndex {
   private addAgent(execution: OrgAgentNode, host: OrgExecutionHost, delegation: OrgDelegationBinding | null,
     live: boolean, kind: OrgAgentViewIdentity['kind']): void {
     this.register(execution.agentRunId)
-    const configured = this.configured.get(execution.address)
-    const source = configured
-      ? ('agentRunId' in configured ? configured : null)
-      : catalogAgentSourceAt(this.catalogTasks(), execution.address)
+    // By execution kind, never by address: a copy at a configured address runs with its own source (REQ-004).
+    const source = kind === 'configured'
+      ? ('agentDefinitionId' in execution ? execution : null)
+      : copyAgentSourceOf(this.copyTasks(), execution.agentRunId)
     if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
-      address: parseAgentTeamAddress(execution.address), source: collaborationInstanceSource(this.instances(), execution.agentRunId, source),
-      execution, host, delegation, kind, live }))
+      address: parseAgentTeamAddress(execution.address), source, execution, host, delegation, kind, live }))
   }
   private addTeam(execution: OrgTeamNode, delegation: OrgDelegationBinding | null, live: boolean): void {
     this.register(execution.teamRunId)
-    const configured = this.configured.get(execution.address)
-    const source = configured
-      ? ('teamRunId' in configured ? configured : null)
-      : catalogTeamSourceAt(this.catalogTasks(), execution.address)
+    const source = delegation
+      ? copyTeamSourceOf(this.copyTasks(), execution.teamRunId)
+      : ('coordinatorAddress' in execution ? execution : null)
     if (!source) throw new Error(`No captured Team source at '${execution.address}'.`)
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))

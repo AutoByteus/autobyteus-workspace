@@ -5,20 +5,23 @@ import {
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
   teamCopyAgentLaunch,
-  teamMemberFollowsTeam,
 } from "../dist/index.js";
 
 const claude = { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus", llm_config: null, auto_execute_tools: false, workspace_root_path: "/w" };
 const sonnet = { llm_model_identifier: "sonnet", llm_config: { thinking: "low" }, selected_at: "2026-10-13T00:00:00.000Z" };
 const haiku = { llm_model_identifier: "haiku", llm_config: null, selected_at: "2026-10-13T00:00:00.000Z" };
 
+const agentSource = { kind: "agent", agent_definition_id: "ie", launch_configuration: claude };
+const teamSource = { kind: "agent_team", team_definition_id: "se", coordinator_address: "/se/lead", handoffs: [], default_launch_configuration: claude,
+  members: [{ address: "/se/lead", agent_definition_id: "lead", launch_configuration: claude, follows_team: true }] };
+
 test("copy DTOs carry optional user choices; malformed ones are refused", () => {
   const agent = { kind: "task_agent", address: "/ie", agent_run_id: "ie", platform_agent_run_id: null, delegator_agent_run_id: "pm",
-    started_at: "t", user_launch_selection: haiku };
+    started_at: "t", source: agentSource, user_launch_selection: haiku };
   assert.deepEqual(taskAgentExecutionDtoSchema.parse(agent), agent);
   const team = { kind: "task_team", address: "/se", team_run_id: "copy", task_executions: [], delegator_agent_run_id: "pm", started_at: "t",
     members: [{ kind: "task_team_agent", address: "/se/lead", agent_run_id: "l", platform_agent_run_id: null, user_launch_selection: haiku }],
-    user_team_launch_selection: sonnet };
+    source: teamSource, user_team_launch_selection: sonnet };
   assert.deepEqual(taskTeamExecutionDtoSchema.parse(team), team);
   assert.throws(() => taskAgentExecutionDtoSchema.parse({ ...agent, user_launch_selection: { llm_model_identifier: "x", llm_config: null } }));
   const { user_launch_selection: _omitted, ...older } = agent;
@@ -32,8 +35,6 @@ test("the copy launch rule: own choice, else the followed Team's, else started; 
     { launch: { ...claude, llm_model_identifier: "sonnet", llm_config: { thinking: "low" } }, selected: "team" });
   assert.deepEqual(teamCopyAgentLaunch({ started: claude, followsTeam: true, teamSelection: sonnet, agentSelection: haiku }),
     { launch: { ...claude, llm_model_identifier: "haiku", llm_config: null }, selected: "agent" });
-  assert.equal(teamMemberFollowsTeam({}), true);
-  assert.equal(teamMemberFollowsTeam({ launch_configuration: claude }), false);
 });
 
 test("a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID", () => {

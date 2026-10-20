@@ -27,13 +27,13 @@ const team = (linked: boolean) => [{
   ],
   taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "packet-definition", coordinatorAddress: "/packet/lead",
-    members: [{ address: "/packet/lead", agentDefinitionId: "lead-definition" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
+    members: [{ address: "/packet/lead", agentDefinitionId: "lead-definition", launchConfiguration: projectionLaunch, followsTeam: true }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
 }, {
   address: "/packet/subteam", teamRunId: "delegated-subteam", startedAt, delegatorAgentRunId: "packet-lead", ...stamp(linked),
   members: [{ address: "/packet/subteam/worker", agentRunId: "subteam-worker", platformAgentRunId: "provider-subteam" }],
   taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "subteam-definition", coordinatorAddress: "/packet/subteam/worker",
-    members: [{ address: "/packet/subteam/worker", agentDefinitionId: "worker-definition" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
+    members: [{ address: "/packet/subteam/worker", agentDefinitionId: "worker-definition", launchConfiguration: projectionLaunch, followsTeam: true }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
 },
 taskAgent("/packet/subteam/helper", "subteam-helper", linked, "subteam-worker"),
 taskAgent("/packet/researcher", "follow-on-agent", linked, "packet-lead"), {
@@ -41,7 +41,8 @@ taskAgent("/packet/researcher", "follow-on-agent", linked, "packet-lead"), {
   members: [{ address: "/packet/review/lead", agentRunId: "review-lead", platformAgentRunId: null }],
   taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "review-definition", coordinatorAddress: "/packet/review/lead",
-    members: [{ address: "/packet/review/lead", agentDefinitionId: "reviewer" }], handoffs: [], defaultLaunchConfiguration: projectionLaunch },
+    members: [{ address: "/packet/review/lead", agentDefinitionId: "reviewer", launchConfiguration: projectionLaunch, followsTeam: true }],
+    handoffs: [], defaultLaunchConfiguration: projectionLaunch },
 },
 taskAgent("/packet/review/helper", "review-helper", linked, "review-lead")];
 /** Root-level delegated runs started by `manager` for catalog Agents and Teams (formerly collaborators). */
@@ -52,7 +53,7 @@ const delegatedRuns = (linked: boolean) => [
     members: [{ address: "/shared/lead", agentRunId: "shared-lead", platformAgentRunId: "shared-provider" }],
     taskExecutions: [],
     source: { kind: "agent_team", teamDefinitionId: "shared-definition", coordinatorAddress: "/shared/lead",
-      members: [{ address: "/shared/lead", agentDefinitionId: "shared-lead-definition" }],
+      members: [{ address: "/shared/lead", agentDefinitionId: "shared-lead-definition", launchConfiguration: projectionLaunch, followsTeam: true }],
       handoffs: [{ from: "/shared/lead", to: "/shared/lead", rules: ["deliver"] }], defaultLaunchConfiguration: projectionLaunch },
   },
   taskAgent("/shared/helper", "shared-helper", linked, "shared-lead"),

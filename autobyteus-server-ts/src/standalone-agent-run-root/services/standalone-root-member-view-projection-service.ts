@@ -122,7 +122,7 @@ export class StandaloneRootMemberViewProjectionService {
 }
 
 const metadataFor = (location: LocatedStandaloneRootAgentExecution): AgentRunMetadata => {
-  // A delegated copy's definition and launch come from its recorded catalog source.
+  // A delegated copy's definition and launch come from its recorded source.
   const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {

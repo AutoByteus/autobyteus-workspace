@@ -23,6 +23,8 @@ const haiku = { llmModelIdentifier: "haiku", llmConfig: null, selectedAt: at };
 const copy: TaskTeamExecution = {
   address: "/se" as never, teamRunId: "copy", startedAt: at, taskExecutions: [], delegatorAgentRunId: "pm", userTeamLaunchSelection: sonnet,
   members: [{ address: "/se/lead" as never, agentRunId: "copy-lead", platformAgentRunId: null, userLaunchSelection: haiku }],
+  source: { kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [], defaultLaunchConfiguration: claude,
+    members: [{ address: "/se/lead" as never, agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true }] },
 };
 
 describe("user launch choices in run views", () => {

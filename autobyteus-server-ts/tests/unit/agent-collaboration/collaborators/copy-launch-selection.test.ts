@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  configuredTeamFollowerAddresses,
   projectTaskExecutionSource,
 } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import {
@@ -9,7 +8,6 @@ import {
 } from "../../../../src/agent-collaboration/execution/task/task-team-node-restoration.js";
 import {
   effectiveCopyAgentLaunch,
-  memberFollowsTeam,
   type TaskTeamExecution,
   type TaskTeamExecutionSource,
   type UserLaunchSelection,
@@ -52,38 +50,15 @@ describe("effectiveCopyAgentLaunch", () => {
   });
 });
 
-describe("memberFollowsTeam (AR-003)", () => {
-  it("recorded members follow iff they record no own launch", () => {
-    expect(memberFollowsTeam({ kind: "recorded", member: {} })).toBe(true);
-    expect(memberFollowsTeam({ kind: "recorded", member: { launchConfiguration: claude } })).toBe(false);
-  });
-
-  it("configured members follow iff runtime, model and settings equal the team's", () => {
-    expect(memberFollowsTeam({ kind: "configured", team: claude, member: { ...claude, autoExecuteTools: false } })).toBe(true);
-    expect(memberFollowsTeam({ kind: "configured", team: claude, member: { ...claude, llmConfig: { thinking: "low" } } })).toBe(false);
-    expect(memberFollowsTeam({ kind: "configured", team: claude, member: { ...claude, runtimeKind: RuntimeKind.CODEX_APP_SERVER } })).toBe(false);
-    expect(memberFollowsTeam({ kind: "configured", team: codex, member: { ...codex, llmConfig: { effort: "high" } } })).toBe(true);
-  });
-
-  it("configured Team placements name their followers", () => {
-    const node: TeamRunAgentTeamNode = {
-      kind: "agent_team", address: "/eng" as never, teamDefinitionId: "eng", teamRunId: "eng-run",
-      coordinatorAddress: "/eng/lead" as never, defaultLaunchConfiguration: claude,
-      children: [
-        { kind: "agent", address: "/eng/lead" as never, agentDefinitionId: "lead", agentRunId: "a", platformAgentRunId: null, role: null, description: null, ...claude },
-        { kind: "agent", address: "/eng/ie" as never, agentDefinitionId: "ie", agentRunId: "b", platformAgentRunId: null, role: null, description: null, ...codex },
-      ],
-    };
-    expect(configuredTeamFollowerAddresses(node)).toEqual(["/eng/lead"]);
-  });
-});
-
-describe("catalog copies start on the snapshot's started values (AR-005)", () => {
-  it("starts catalog copies on the snapshot's started values", () => {
+describe("copies start on the snapshot's started values (AR-005)", () => {
+  it("starts copies on each member's recorded launch; followers are the members recorded as following", () => {
     const source: TaskTeamExecutionSource = {
       kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [],
       defaultLaunchConfiguration: claude,
-      members: [{ address: "/se/lead" as never, agentDefinitionId: "lead" }, { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex }],
+      members: [
+        { address: "/se/lead" as never, agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true },
+        { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: false },
+      ],
     };
     const projected = projectTaskExecutionSource("/se" as never, source);
     expect(projected.kind === "agent_team" && projected.followerAddresses).toEqual(["/se/lead"]);
@@ -137,7 +112,8 @@ describe("restore of a stopped copy (DS-003)", () => {
 });
 
 describe("tolerant readers", () => {
-  const taskAgent = { address: "/ie", agentRunId: "ie-copy", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: selectedAt };
+  const taskAgent = { address: "/ie", agentRunId: "ie-copy", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: selectedAt,
+    source: { kind: "agent", agentDefinitionId: "ie", launchConfiguration: codex } };
 
   it("read selections exactly when present and add no key when absent (AC-005)", () => {
     expect(Object.keys(parseTaskExecution(taskAgent, "t"))).not.toContain("userLaunchSelection");
@@ -147,6 +123,11 @@ describe("tolerant readers", () => {
       address: "/se", teamRunId: "copy", startedAt: selectedAt, taskExecutions: [],
       userTeamLaunchSelection: sonnet,
       members: [{ address: "/se/lead", agentRunId: "l", platformAgentRunId: null, userLaunchSelection: haiku }, { address: "/se/ie", agentRunId: "i", platformAgentRunId: null }],
+      source: { kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead", handoffs: [], defaultLaunchConfiguration: claude,
+        members: [
+          { address: "/se/lead", agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true },
+          { address: "/se/ie", agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: false },
+        ] },
     }, "t") as TaskTeamExecution;
     expect(team.userTeamLaunchSelection).toEqual(sonnet);
     expect(team.members[0]).toEqual({ address: "/se/lead", agentRunId: "l", platformAgentRunId: null, userLaunchSelection: haiku });

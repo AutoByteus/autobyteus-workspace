@@ -164,10 +164,11 @@ const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigura
     reason: fallback.reason, detail: fallback.detail,
   })),
 });
-/** A recorded Team member's own launch fields, emitted only when recorded. */
+/** A Team copy member's complete launch and follower fact; its own launch source only when recorded. */
 const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
-  ...(member.launchConfiguration ? { launch_configuration: projectLaunchConfiguration(member.launchConfiguration) } : {}),
-  ...(member.launchSource ? { launch_source: projectLaunchSource(member.launchSource) } : {}),
+  launch_configuration: projectLaunchConfiguration(member.launchConfiguration),
+  follows_team: member.followsTeam,
+  ...optionalSource("launch_source", member.launchSource),
 });
 /** A user model choice, emitted only when recorded. */
 const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection" | "selection">(key: K, selection: UserLaunchSelection | undefined) =>
@@ -203,11 +204,11 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     kind: "task_agent", address: execution.address, agent_run_id: execution.agentRunId,
     platform_agent_run_id: execution.platformAgentRunId,
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
-    ...(execution.source ? { source: {
-      kind: "agent" as const, agent_definition_id: execution.source.agentDefinitionId,
+    source: {
+      kind: "agent", agent_definition_id: execution.source.agentDefinitionId,
       launch_configuration: projectLaunchConfiguration(execution.source.launchConfiguration),
       ...optionalSource("launch_source", execution.source.launchSource),
-    } } : {}),
+    },
     ...optionalSelection("user_launch_selection", execution.userLaunchSelection),
   };
   return {
@@ -215,8 +216,8 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     members: execution.members.map(projectTaskTeamMember),
     task_executions: execution.taskExecutions.map(projectTaskExecution),
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
-    ...(execution.source ? { source: {
-      kind: "agent_team" as const, team_definition_id: execution.source.teamDefinitionId,
+    source: {
+      kind: "agent_team", team_definition_id: execution.source.teamDefinitionId,
       coordinator_address: execution.source.coordinatorAddress,
       members: execution.source.members.map((member) => ({
         address: member.address, agent_definition_id: member.agentDefinitionId, ...projectMemberLaunch(member),
@@ -224,7 +225,7 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
       handoffs: execution.source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(execution.source.defaultLaunchConfiguration),
       ...optionalSource("default_launch_source", execution.source.defaultLaunchSource),
-    } } : {}),
+    },
     ...optionalSelection("user_team_launch_selection", execution.userTeamLaunchSelection),
   };
 };

@@ -1,9 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AgentLaunchConfiguration, TeamRunAgentNode, TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
+import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
   effectiveCopyAgentLaunch,
   type TaskExecution,
-  type TaskExecutionSource,
   type UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentTeamAddress } from "./agent-team-address.js";
@@ -11,7 +10,8 @@ import type { AgentTeamAddress } from "./agent-team-address.js";
 /**
  * Pure policy of the per-instance user model choice on delegated copies
  * (DS-001): which records a change addresses, what each must have stopped, the launch it is
- * validated against, and the tree mutation. Roots supply their tree's lists and source reader.
+ * validated against, and the tree mutation. Roots supply their tree's lists; each copy's started
+ * launch is its own recorded `source`.
  */
 
 /** A copy's run identity: exactly one of the two. */
@@ -34,14 +34,6 @@ export type DelegatedLaunchForest = Readonly<{
   /** Every task-execution list of the tree (root and mounted Teams), as `taskExecutionListsOf`. */
   taskExecutionLists: readonly (readonly TaskExecution[])[];
 }>;
-
-/** The started runtime source of a task copy at an address (a root's task-source resolver). */
-export type DelegatedTaskSourceReader = (
-  address: AgentTeamAddress,
-  recorded: TaskExecutionSource | undefined,
-) => Readonly<{ kind: "agent"; node: AgentLaunchConfiguration }>
-  | Readonly<{ kind: "agent_team"; node: TeamRunAgentTeamNode; followerAddresses: readonly AgentTeamAddress[] }>
-  | null;
 
 /**
  * What must be stopped (offline) for a change to be saved (AR-001): a task copy is one unit (a
@@ -68,17 +60,6 @@ export class DelegatedLaunchTargetError extends Error {
   }
 }
 
-const findNode = (node: TeamRunAgentTeamNode, address: string): TeamRunAgentNode | null =>
-  node.children.find((child) => child.address === address) ?? null;
-
-const launchOf = (node: AgentLaunchConfiguration): AgentLaunchConfiguration => Object.freeze({
-  runtimeKind: node.runtimeKind,
-  llmModelIdentifier: node.llmModelIdentifier,
-  llmConfig: node.llmConfig,
-  autoExecuteTools: node.autoExecuteTools,
-  workspaceRootPath: node.workspaceRootPath,
-});
-
 /** Every task execution of the forest at any depth. */
 const visitTaskExecutions = (
   forest: DelegatedLaunchForest,
@@ -100,7 +81,6 @@ const visitTaskExecutions = (
 export const resolveDelegatedLaunchTargets = (input: Readonly<{
   forest: DelegatedLaunchForest;
   changes: readonly DelegatedLaunchChange[];
-  readTaskSource: DelegatedTaskSourceReader;
   /** Closed copies (Task DONE or CANCELLED) are not editable. */
   isClosed?: (reference: DelegatedRunReference) => boolean;
 }>): readonly DelegatedLaunchTarget[] => {
@@ -138,23 +118,19 @@ const resolveAgentTarget = (
     if (found) return;
     if ("agentRunId" in task) {
       if (task.agentRunId !== agentRunId) return;
-      const source = input.readTaskSource(task.address, task.source);
-      if (source?.kind !== "agent") return;
       found = { scope: "agent", runId: agentRunId, address: task.address,
         stopUnit: { kind: "task_execution", reference: { agentRunId } },
-        current: effectiveCopyAgentLaunch({ started: launchOf(source.node), agentSelection: task.userLaunchSelection }).launch };
+        current: effectiveCopyAgentLaunch({ started: task.source.launchConfiguration, agentSelection: task.userLaunchSelection }).launch };
       return;
     }
     const member = task.members.find((candidate) => candidate.agentRunId === agentRunId);
-    if (!member) return;
-    const source = input.readTaskSource(task.address, task.source);
-    const node = source?.kind === "agent_team" ? findNode(source.node, member.address) : null;
-    if (!source || source.kind !== "agent_team" || !node) return;
+    const recorded = member && task.source.members.find((candidate) => candidate.address === member.address);
+    if (!member || !recorded) return;
     found = { scope: "agent", runId: agentRunId, address: member.address,
       stopUnit: { kind: "task_execution", reference: { teamRunId: task.teamRunId } },
       current: effectiveCopyAgentLaunch({
-        started: launchOf(node),
-        followsTeam: source.followerAddresses.includes(member.address),
+        started: recorded.launchConfiguration,
+        followsTeam: recorded.followsTeam,
         teamSelection: task.userTeamLaunchSelection,
         agentSelection: member.userLaunchSelection,
       }).launch };
@@ -169,11 +145,9 @@ const resolveTeamTarget = (
   let found: ResolvedTarget | null = null;
   visitTaskExecutions(input.forest, (task) => {
     if (found || !("teamRunId" in task) || task.teamRunId !== teamRunId) return;
-    const source = input.readTaskSource(task.address, task.source);
-    if (source?.kind !== "agent_team") return;
     found = { scope: "team", runId: teamRunId, address: task.address,
       stopUnit: { kind: "task_execution", reference: { teamRunId } },
-      current: effectiveCopyAgentLaunch({ started: source.node.defaultLaunchConfiguration, followsTeam: true, teamSelection: task.userTeamLaunchSelection }).launch };
+      current: effectiveCopyAgentLaunch({ started: task.source.defaultLaunchConfiguration, followsTeam: true, teamSelection: task.userTeamLaunchSelection }).launch };
   });
   return found;
 };
@@ -262,11 +236,10 @@ export const recordedDelegatedLaunchSelections = (
 
 /**
  * Every editable copy of the forest (agent-level and Team-level) with its current
- * effective launch, for the options query. Closed copies and records whose source cannot be read are left out.
+ * effective launch, for the options query. Closed copies are left out.
  */
 export const listDelegatedLaunchTargets = (input: Readonly<{
   forest: DelegatedLaunchForest;
-  readTaskSource: DelegatedTaskSourceReader;
   isClosed?: (reference: DelegatedRunReference) => boolean;
 }>): readonly Omit<DelegatedLaunchTarget, "index" | "selection">[] => {
   const references: DelegatedRunReference[] = [];

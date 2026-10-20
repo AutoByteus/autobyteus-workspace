@@ -17,10 +17,10 @@ import {
 } from "../../../fixtures/current-agent-org-run-fixtures.js";
 
 /**
- * `locatedExecutionSource` (AR-002): the one owner of "what a located execution runs with" — its
- * configured placement, else its catalog-copy source recorded in the located tree — for all three
- * families. `locatedLaunchConfiguration` delegates to it, so a team's or org's task agent keeps its
- * own launch workspace.
+ * `locatedExecutionSource` (AR-002, D-3): the one owner of "what a located execution runs with", decided
+ * by execution kind — a configured member's placement, or a copy's own source recorded in the located
+ * tree (never the placement at its address) — for all three families. `locatedLaunchConfiguration`
+ * delegates to it, so a team's or org's task agent keeps its own launch workspace.
  */
 const T0 = "2026-10-19T00:00:00.000Z";
 const copyLaunch = (workspaceRootPath: string) => testOrgLaunchConfiguration(workspaceRootPath);
@@ -74,6 +74,7 @@ const orgLocation = (agentRunId: string, configuredPlacement: unknown): LocatedC
   rootRunId: "org-1",
   agentRunId,
   configuredPlacement,
+  executionKind: configuredPlacement ? "configured" : "task",
   tree: orgTree,
 }) as never;
 
@@ -97,6 +98,11 @@ describe("locatedExecutionSource", () => {
     expect(locatedExecutionSource(location)).toBe(teamTree.rootTeam.members[0]);
     expect(locatedLaunchConfiguration(location)?.workspaceRootPath).toBe("/ws/team");
     expect(locatedExecutionSource(orgLocation("org-director", director))).toBe(director);
+  });
+
+  it("a copy at a configured address returns its own source, not the placement there (AC-004)", () => {
+    const location = tagTeamAgentExecution({ ...teamLocation("team-copy", false), configuredPlacement: teamTree.rootTeam.members[0] as never });
+    expect(locatedExecutionSource(location)).toEqual({ agentDefinitionId: "definition-team-copy", launchConfiguration: copyLaunch("/ws/team-copy") });
   });
 
   it("returns a team task agent's catalog source from the root team's task executions", () => {

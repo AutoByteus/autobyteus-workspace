@@ -106,8 +106,7 @@ const buildHistoricalProjection = () => {
     delegations: [taskRecord],
     taskExecutions: [{
       kind: 'task_agent', address: worker.address, agent_run_id: taskAgentRunId(teamRunId),
-      platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: timestamp,
-    }],
+      platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: timestamp, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }],
   });
   return buildRunHistoryNavigationProjection({
     workspaceGroups: [],

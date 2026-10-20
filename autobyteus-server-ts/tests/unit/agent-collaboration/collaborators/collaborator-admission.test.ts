@@ -204,7 +204,10 @@ describe("catalog policy and mention resolution", () => {
     const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm" });
     expect(source).toEqual({ name: "Product Team", launchNotes: [], source: {
       kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
-      members: [{ address: "/product_team/lead", agentDefinitionId: "lead" }, { address: "/product_team/designer", agentDefinitionId: "designer" }],
+      members: [
+        { address: "/product_team/lead", agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true },
+        { address: "/product_team/designer", agentDefinitionId: "designer", launchConfiguration: launch, followsTeam: true },
+      ],
       handoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }],
       defaultLaunchConfiguration: launch,
       defaultLaunchSource: { origin: "inherited", fallbacks: [] },

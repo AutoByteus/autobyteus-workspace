@@ -10,7 +10,7 @@ import { buildActivitiesFromProjection } from './runProjectionActivityHydration'
 import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
 import { commitMemberRunStates, fetchMemberRunState } from './memberRunStateHydration';
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 import {
   primeRecentEventMonitorBaseline,
   resetRecentEventMonitorBaseline,
@@ -58,7 +58,7 @@ const attemptHydration = async (
   }
   const rootTeamRunId = team.view.getRootTeamRunId();
   const location = team.view.getAgentExecutionLocation(agentRunId)!;
-  const configured = teamAgentSourceAt(team.view.getExecutionTree(), location.memberAddress, agentRunId);
+  const configured = teamAgentSourceOf(team.view.getExecutionTree(), agentRunId);
   if (!configured) {
     throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
   }

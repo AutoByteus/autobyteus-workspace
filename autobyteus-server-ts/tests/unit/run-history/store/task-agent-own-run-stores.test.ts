@@ -19,6 +19,7 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { configuredPlacementSource } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 
 /** Design D-1 (compose at load, split at save), D-3 (G1, G2, task-agent readers / writers), contract §3, L4–L6. */
 
@@ -51,8 +52,8 @@ const teamCopy = (teamRunId: string, extra: Record<string, unknown> = {}) => ({
   ],
   taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead",
-    members: [{ address: "/product_team/lead", agentDefinitionId: "lead" }, { address: "/product_team/designer", agentDefinitionId: "designer",
-      launchConfiguration: { ...launch, llmModelIdentifier: "designer-model" } }],
+    members: [{ address: "/product_team/lead", agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true },
+      { address: "/product_team/designer", agentDefinitionId: "designer", launchConfiguration: { ...launch, llmModelIdentifier: "designer-model" }, followsTeam: false }],
     handoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["deliver"] }], defaultLaunchConfiguration: launch },
   ...extra,
 });
@@ -83,7 +84,7 @@ describe("a delegation writes the task agent's own files first, then its link (D
       runId: "reviewer-run", agentDefinitionId: "code-reviewer", workspaceRootPath: "/workspace",
       memoryDir: path.join(f.memory, "agents", "reviewer-run"), llmModelIdentifier: "test-model", llmConfig: null,
       autoExecuteTools: true, runtimeKind: launch.runtimeKind, platformAgentRunId: null, startedAt: T0,
-      taskAgent: { coordinatingRun: { kind: "agent", runId: HOST }, delegatorAgentRunId: HOST, address: "/code_reviewer", origin: "catalog",
+      taskAgent: { coordinatingRun: { kind: "agent", runId: HOST }, delegatorAgentRunId: HOST, address: "/code_reviewer",
         userLaunchSelection: { llmModelIdentifier: "edited", llmConfig: null, selectedAt: T0 } },
     });
     const ownTeam = await readJson(path.join(f.memory, "agent_teams", "team-run", "team_run_execution_tree.json"));
@@ -92,12 +93,15 @@ describe("a delegation writes the task agent's own files first, then its link (D
       handoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["deliver"] }],
       rootTeam: { address: "/product_team", teamDefinitionId: "product-team", teamRunId: "team-run", coordinatorAddress: "/product_team/lead",
         members: [
-          { address: "/product_team/lead", agentDefinitionId: "lead", agentRunId: "team-run-lead", platformAgentRunId: "provider-lead", role: null, description: null },
+          { address: "/product_team/lead", agentDefinitionId: "lead", agentRunId: "team-run-lead", platformAgentRunId: "provider-lead", role: null, description: null,
+            launchConfiguration: launch, followsTeam: true },
           { address: "/product_team/designer", agentDefinitionId: "designer", agentRunId: "team-run-designer", platformAgentRunId: null, role: null, description: null,
-            launchConfiguration: { ...launch, llmModelIdentifier: "designer-model" } },
+            launchConfiguration: { ...launch, llmModelIdentifier: "designer-model" }, followsTeam: false },
         ], taskExecutions: [] },
-      taskAgent: { coordinatingRun: { kind: "agent", runId: HOST }, delegatorAgentRunId: HOST, address: "/product_team", origin: "catalog" },
+      taskAgent: { coordinatingRun: { kind: "agent", runId: HOST }, delegatorAgentRunId: HOST, address: "/product_team" },
     });
+    // No own file carries the obsolete origin (REQ-005).
+    expect("origin" in own.taskAgent || "origin" in ownTeam.taskAgent).toBe(false);
     expect("teamDefinitionName" in ownTeam.rootTeam).toBe(false);
     // A new task agent team gets an empty log in the append-only layout (BEH-007).
     expect(await fs.readFile(path.join(f.memory, "agent_teams", "team-run", "team_communication_messages_active.jsonl"), "utf8")).toBe("");
@@ -173,7 +177,7 @@ describe("G1 and G2: a task agent is never read as a run the user started (D-3, 
     const metadata = new AgentRunMetadataStore(f.memory);
     expect(await metadata.readMetadata("reviewer-run")).toBeNull();
     expect(await metadata.readMetadataState("reviewer-run")).toEqual({ kind: "missing" });
-    expect(await metadata.readTaskAgentMetadata("reviewer-run")).toMatchObject({ runId: "reviewer-run", taskAgent: { origin: "catalog" } });
+    expect(await metadata.readTaskAgentMetadata("reviewer-run")).toMatchObject({ runId: "reviewer-run", taskAgent: { address: "/code_reviewer" } });
     // The synchronous task-agent reader (the stores' sync composed reads) shares the same parse path.
     expect(metadata.readTaskAgentMetadataStateSync("reviewer-run")).toEqual(await metadata.readTaskAgentMetadataState("reviewer-run"));
     expect(metadata.readTaskAgentMetadataStateSync("no-such-run")).toEqual({ kind: "missing" });
@@ -249,36 +253,47 @@ describe("L4–L6: a save never removes what it did not load", () => {
   });
 });
 
-describe("copies of a configured place (U-4) and organization links (C6)", () => {
-  it("records the place's definition and started launch, composes without source and keeps following the place", async () => {
+describe("copies of a configured place restore from their own file (REQ-001, REQ-003) and organization links (C6)", () => {
+  it("records the place's snapshot from when it started; a later edit of the place does not change the copy", async () => {
     const memory = await memoryRoot();
     const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
     const base = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead",
       children: [testAgentNode("/lead", { agentRunId: "lead-run" }), testAgentNode("/writer", { agentRunId: "writer-run", agentDefinitionId: "writer" })] });
-    const copy = { address: "/writer", agentRunId: "writer-copy", platformAgentRunId: null, delegatorAgentRunId: "lead-run", startedAt: T0 };
+    const placed = validateTeamRunExecutionTreePayload(base, "team-root");
+    const placeLaunch = placed.rootTeam.members[1]!.launchConfiguration;
+    // Activation records the placement's snapshot as the copy's source (D-1).
+    const copy = { address: "/writer", agentRunId: "writer-copy", platformAgentRunId: null, delegatorAgentRunId: "lead-run", startedAt: T0,
+      source: configuredPlacementSource(placed.rootTeam.members[1]!, placed.handoffs) };
     const tree = validateTeamRunExecutionTreePayload({ ...base, rootTeam: { ...base.rootTeam, taskExecutions: [copy] } }, "team-root");
     const store = new TeamRunExecutionTreeStore();
     await store.write(dir, tree);
     const own = await readJson(path.join(memory, "agents", "writer-copy", "run_metadata.json"));
-    const placeLaunch = base.rootTeam.members[1]!.launchConfiguration;
     expect(own).toMatchObject({ agentDefinitionId: "writer", llmModelIdentifier: placeLaunch.llmModelIdentifier, runtimeKind: placeLaunch.runtimeKind,
-      taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-root" }, origin: "configured_place", delegatorAgentRunId: "lead-run" } });
+      taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-root" }, delegatorAgentRunId: "lead-run",
+        launchSource: { origin: "configured", fallbacks: [] } } });
+    expect("origin" in own.taskAgent).toBe(false);
     expect(await store.read(dir, "team-root")).toEqual(tree);
-    // The place changes later: the copy follows it (no source) and its own file keeps what it started with.
+    // The place changes later: only the place changes; the copy keeps its own source on disk and when composed.
     const changed = validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, members: tree.rootTeam.members.map((member) =>
       member.address === "/writer" ? { ...member, launchConfiguration: { ...member.launchConfiguration, llmModelIdentifier: "newer" } } : member) } }, "team-root");
     await store.write(dir, changed);
     expect((await readJson(path.join(memory, "agents", "writer-copy", "run_metadata.json"))).llmModelIdentifier).toBe(placeLaunch.llmModelIdentifier);
-    expect((await store.read(dir, "team-root"))!.rootTeam.taskExecutions).toEqual([copy]);
+    const reread = (await store.read(dir, "team-root"))!;
+    expect(reread.rootTeam.members[1]!.launchConfiguration.llmModelIdentifier).toBe("newer");
+    expect(reread.rootTeam.taskExecutions).toEqual([copy]);
   });
 
-  it("keeps older links under a configured team, and records a copy of a mounted team as configured_place", async () => {
+  it("keeps older links under a configured team, and records a copy of a mounted team with its members' facts and Org handoffs", async () => {
     const memory = await memoryRoot();
     const dir = new AgentMemoryLayout(memory).getOrgDirPath("org-root");
-    const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run"),
-      testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", "lead-run")] })] });
+    const base = { ...testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run"),
+      testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", "lead-run")] })] }),
+      handoffs: [{ from: "/team/lead", to: "/director", rules: ["report"] }, { from: "/director", to: "/team", rules: ["assign"] }] } as never as ReturnType<typeof testAgentOrgExecutionTree>;
+    const placed = validateAgentOrgRunExecutionTreePayload(base, "org-root");
+    const mounted = placed.rootOrg.members[1] as never;
     const teamCopyOfPlace = { address: "/team", teamRunId: "team-copy", delegatorAgentRunId: "director-run", startedAt: T0, taskExecutions: [],
-      members: [{ address: "/team/lead", agentRunId: "team-copy-lead", platformAgentRunId: null }] };
+      members: [{ address: "/team/lead", agentRunId: "team-copy-lead", platformAgentRunId: null }],
+      source: configuredPlacementSource(mounted, placed.handoffs) };
     const older = { address: "/team/lead", agentRunId: "older-copy", platformAgentRunId: null, delegatorAgentRunId: "lead-run", startedAt: T0,
       source: { kind: "agent", agentDefinitionId: "helper", launchConfiguration: launch } };
     const tree = validateAgentOrgRunExecutionTreePayload({ ...base, rootOrg: { ...base.rootOrg, taskExecutions: [teamCopyOfPlace],
@@ -287,10 +302,14 @@ describe("copies of a configured place (U-4) and organization links (C6)", () =>
     await store.write(dir, tree);
     const raw = await readJson(path.join(dir, "agent_org_run_execution_tree.json"));
     expect(raw.rootOrg.members[1].taskExecutions).toEqual([{ address: "/team/lead", agentRunId: "older-copy", delegatorAgentRunId: "lead-run", startedAt: T0 }]);
-    expect(await readJson(path.join(memory, "agent_teams", "team-copy", "team_run_execution_tree.json"))).toMatchObject({
-      rootTeam: { teamDefinitionId: (base.rootOrg.members[1] as { teamDefinitionId: string }).teamDefinitionId, coordinatorAddress: "/team/lead" },
-      taskAgent: { coordinatingRun: { kind: "agent_org", runId: "org-root" }, origin: "configured_place" },
+    const ownTeam = await readJson(path.join(memory, "agent_teams", "team-copy", "team_run_execution_tree.json"));
+    expect(ownTeam).toMatchObject({
+      handoffs: [{ from: "/team/lead", to: "/director", rules: ["report"] }],
+      rootTeam: { teamDefinitionId: (base.rootOrg.members[1] as { teamDefinitionId: string }).teamDefinitionId, coordinatorAddress: "/team/lead",
+        members: [{ address: "/team/lead", followsTeam: true, launchConfiguration: (mounted as { members: { launchConfiguration: unknown }[] }).members[0]!.launchConfiguration }] },
+      taskAgent: { coordinatingRun: { kind: "agent_org", runId: "org-root" }, launchSource: { origin: "configured", fallbacks: [] } },
     });
+    expect("origin" in ownTeam.taskAgent).toBe(false);
     expect(await store.read(dir, "org-root")).toEqual(tree);
   });
 });

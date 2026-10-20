@@ -73,12 +73,28 @@ configured origin:
 ## Supported Transports
 
 External MCP servers use `stdio` or `streamable_http` (GraphQL offers only
-`STDIO` and `STREAMABLE_HTTP`). Any other `transport_type` in MCP JSON, such as
-`websocket`, is rejected when the core config parser reads it, as in bulk
-import, with `… Valid types are: stdio, streamable_http.`. A bulk import reports such
-entries in its failed count, and the per-entry reason is in the server log. At
-startup, a stored entry that does not parse as one of these transports is
-skipped, and the other entries still register.
+`STDIO` and `STREAMABLE_HTTP`). The core config parser
+(`McpConfigService` in `autobyteus-ts`) decides an entry's transport with one
+rule, for bulk import and for loading `mcps.json` alike:
+
+- an explicit `transport_type` (or the `transportType` alias) is used as given;
+- otherwise a non-empty `url` means `streamable_http`, and a non-empty
+  `command` means `stdio`. This is the shape the app writes to `mcps.json`, so
+  that file's content can be bulk-imported into another install;
+- otherwise the entry fails with "needs 'command' (stdio) or 'url'
+  (streamable_http), or an explicit 'transport_type'".
+
+Any other `transport_type`, such as `websocket`, is rejected with
+`… Valid types are: stdio, streamable_http.`.
+
+Bulk import (`importMcpServerConfigs`) imports each entry on its own. The
+result keeps `success`, `message`, `importedCount` and `failedCount`, and adds
+`failures`: one `{ serverId, reason }` per entry that was not imported.
+Reasons name fields and never contain env, header or token values. A
+whole-input error (invalid JSON, no top-level `mcpServers`) returns
+`success: false` with its message and an empty `failures` list. At startup, a
+stored entry that does not parse is skipped, and the other entries still
+register.
 
 ## Server Instance Lifetime
 

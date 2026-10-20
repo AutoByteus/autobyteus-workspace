@@ -176,13 +176,14 @@ const richTeam = buildTestTeamContext({
     {
       kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
       platform_agent_run_id: null, delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
+      source: { kind: 'agent', agent_definition_id: 'worker-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } },
     },
     {
       // A catalog Review Team copy (Teams are flat).
       kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
       source: {
         kind: 'agent_team', team_definition_id: 'review-team', coordinator_address: '/ReviewTeam/reviewer',
-        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition' }], handoffs: [],
+        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
         default_launch_configuration: {
           runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
           auto_execute_tools: true, workspace_root_path: null,

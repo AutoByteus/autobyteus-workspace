@@ -261,15 +261,10 @@ const delegatedRows = computed<readonly RunMemberNode[]>(() => {
     ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
   if (current.kind === 'agent' && !view) return []
   const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
-  const configured = (org?.members ?? []).flatMap((member) => 'agentRunId' in member ? [member] : member.members)
-  const teams = (org?.members ?? []).flatMap((member) => 'teamRunId' in member ? [member] : [])
   return collaborationDelegatedLaunchNodes({
     taskExecutions: collaborationTaskExecutionLists({
       taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [],
     }),
-    launchAt: (address) => configured.find((agent) => agent.address === address)?.launchConfiguration
-      ?? teams.find((team) => team.address === address)?.defaultLaunchConfiguration ?? null,
-    coordinatorAt: (address) => teams.find((team) => team.address === address)?.coordinatorAddress ?? null,
     closed: current.kind === 'agent_org' ? history.agentOrgHistory.find((run) => run.rootRunId === current.orgRunId)?.closedTaskExecutions ?? []
       : view!.closed_task_executions,
   }, deps, delegatedControl.value)

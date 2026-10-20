@@ -6,7 +6,6 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-e
 import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import { agentOrgDelegatedLaunchForest, applyAgentOrgDelegatedLaunchSelections } from "./agent-org-run-execution-tree-mutator.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
-import { AgentOrgTaskSourceResolver } from "./agent-org-task-source-resolver.js";
 
 /** The AgentOrg root's port for the user Stop and model choice of its delegated copies (DS-001, DS-002). */
 export const createAgentOrgDelegatedLaunchCommand = (options: Readonly<{
@@ -18,11 +17,9 @@ export const createAgentOrgDelegatedLaunchCommand = (options: Readonly<{
   replaceTree(tree: AgentOrgRunExecutionTreeSnapshot): void;
   publishSelectionsChanged: DelegatedLaunchSelectionPublisher;
 }>): DelegatedLaunchSelectionCommand => {
-  const sources = new AgentOrgTaskSourceResolver(options.getTree);
   return createRootHostedDelegatedLaunchCommand({
     tasks: options.taskExecutions,
     forest: () => agentOrgDelegatedLaunchForest(options.getTree()),
-    readTaskSource: (address, recorded) => sources.resolve(address, recorded ?? null),
     publishSelectionsChanged: options.publishSelectionsChanged,
     isUnchanged: (selections) => isDeepStrictEqual(applyAgentOrgDelegatedLaunchSelections(options.getTree(), selections), options.getTree()),
     commitTree: (selections, afterDurability) => options.persistence.commitTreeMutation({

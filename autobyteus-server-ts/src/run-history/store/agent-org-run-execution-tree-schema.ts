@@ -21,7 +21,7 @@ import {
   requiredArray,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
   validateConfiguredPlacementUniqueness,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
@@ -85,7 +85,7 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
   ];
   validateTaskExecutionDelegators(agents.values(), owners);
-  validateCatalogCopyLayouts(owners);
+  validateCopyLayouts(owners);
 };
 
 /**

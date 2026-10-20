@@ -1,0 +1,13 @@
+# Case: API-07
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: da1d7f5524 (source = 96de77efb3)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-10-19T18:10:41Z
+
+# Excerpt of API-07-server-integration.log (summary lines). The full log (  933339 bytes) is not committed; it stays at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/API-07-server-integration.log until the worktree is removed.
+
+68:# prepare exit: 0
+7865: Test Files  78 passed | 19 skipped (97)
+7866:      Tests  419 passed | 70 skipped (489)
+7868:   Duration  203.16s (transform 7.24s, setup 791ms, import 67.88s, tests 125.54s, environment 7ms)
+7870:# Exit code: 0

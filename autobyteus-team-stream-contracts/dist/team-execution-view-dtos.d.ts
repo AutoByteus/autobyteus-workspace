@@ -23,10 +23,11 @@ export type ConfiguredAgentExecutionDto = Readonly<{
 }>;
 /**
  * Where an agent's (or a Team's) launch values came from and the configured layers skipped before
- * it. Absent on records written before sources existed ("not recorded").
+ * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
+ * records written before sources existed ("not recorded").
  */
 export type LaunchConfigurationSourceDto = Readonly<{
-    origin: "agent_default" | "team_default" | "inherited";
+    origin: "agent_default" | "team_default" | "inherited" | "configured";
     fallbacks: readonly Readonly<{
         layer: "agent_default" | "team_default";
         runtime_kind: string | null;
@@ -35,22 +36,21 @@ export type LaunchConfigurationSourceDto = Readonly<{
         detail: string;
     }>[];
 }>;
-/** A recorded Team member's own launch: present only when it runs on its own agent default. */
+/**
+ * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
+ * reaches it (`follows_team`). `launch_source` is present only when its agent definition had a default.
+ */
 type MemberLaunchDto = Readonly<{
-    launch_configuration?: AgentLaunchConfigurationDto;
+    launch_configuration: AgentLaunchConfigurationDto;
+    follows_team: boolean;
     launch_source?: LaunchConfigurationSourceDto;
 }>;
 type TeamLaunchDto = Readonly<{
     default_launch_configuration: AgentLaunchConfigurationDto;
     default_launch_source?: LaunchConfigurationSourceDto;
 }>;
-/**
- * The launch a catalog-Team-copy member runs with: its own, else its Team's.
- * Every reader of such a member's launch uses this, never the Team's value directly.
- */
-export declare const teamMemberLaunchConfiguration: (team: Pick<TeamLaunchDto, "default_launch_configuration">, member: MemberLaunchDto) => AgentLaunchConfigurationDto;
-/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
-export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: MemberLaunchDto) => LaunchConfigurationSourceDto | null;
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
+export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: Pick<MemberLaunchDto, "launch_source">) => LaunchConfigurationSourceDto | null;
 /**
  * The user's model choice for one delegated copy: it replaces only the
  * model and its settings. Absent when the user made no choice (every older record).
@@ -74,9 +74,7 @@ export declare const teamCopyAgentLaunch: (input: Readonly<{
     launch: AgentLaunchConfigurationDto;
     selected: "agent" | "team" | null;
 }>;
-/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
-export declare const teamMemberFollowsTeam: (member: MemberLaunchDto) => boolean;
-/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+/** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
     agent_definition_id: string;
@@ -105,7 +103,7 @@ export type TaskAgentExecutionDto = Readonly<{
     platform_agent_run_id: string | null;
     delegator_agent_run_id: string | null;
     started_at: string;
-    source?: TaskAgentExecutionSourceDto;
+    source: TaskAgentExecutionSourceDto;
     user_launch_selection?: UserLaunchSelectionDto;
 }>;
 export type TaskTeamAgentExecutionDto = Readonly<{
@@ -124,7 +122,7 @@ export type TaskTeamExecutionDto = Readonly<{
     task_executions: readonly TaskExecutionDto[];
     delegator_agent_run_id: string | null;
     started_at: string;
-    source?: TaskTeamExecutionSourceDto;
+    source: TaskTeamExecutionSourceDto;
     user_team_launch_selection?: UserLaunchSelectionDto;
 }>;
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;

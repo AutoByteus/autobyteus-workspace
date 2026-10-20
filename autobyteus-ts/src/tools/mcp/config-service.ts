@@ -101,6 +101,26 @@ export class McpConfigService extends Singleton {
     }
   }
 
+  /**
+   * The entry's explicit `transport_type`; without one, a non-empty `url` means streamable HTTP and a non-empty
+   * `command` means stdio. This is the one rule for imported JSON and for the app's own stored entries.
+   */
+  private static transportTypeOf(serverId: string, configData: ConfigDict): string {
+    const explicit = configData['transport_type'];
+    if (explicit !== undefined && explicit !== null && explicit !== '') {
+      if (typeof explicit !== 'string') {
+        throw new Error(`'transport_type' for server '${serverId}' must be a string.`);
+      }
+      return explicit;
+    }
+    const nonEmpty = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
+    if (nonEmpty(configData['url'])) return McpTransportType.STREAMABLE_HTTP;
+    if (nonEmpty(configData['command'])) return McpTransportType.STDIO;
+    throw new Error(
+      `Config for server '${serverId}' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.`
+    );
+  }
+
   static parseMcpConfigDict(configDict: ConfigDict): BaseMcpConfig {
     if (!configDict || typeof configDict !== 'object' || Array.isArray(configDict)) {
       throw new Error(
@@ -132,12 +152,10 @@ export class McpConfigService extends Singleton {
       delete configData.toolNamePrefix;
     }
 
-    const transportTypeValue = configData['transport_type'];
-    if (typeof transportTypeValue !== 'string' || !transportTypeValue) {
-      throw new Error(`Config data for server '${serverId}' is missing 'transport_type' field.`);
-    }
-
-    const transportType = McpConfigService.parseTransportType(transportTypeValue, serverId);
+    const transportType = McpConfigService.parseTransportType(
+      McpConfigService.transportTypeOf(serverId, configData),
+      serverId
+    );
     return McpConfigService.createSpecificConfig(serverId, transportType, configData as ConfigDict);
   }
 

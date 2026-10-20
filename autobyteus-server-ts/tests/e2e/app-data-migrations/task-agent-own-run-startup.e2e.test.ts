@@ -7,6 +7,7 @@ import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 
 // The startup migration `20261017_task_agent_own_run_v1` through the BUILT Studio server (`dist/app.js`) on a FAITHFUL
@@ -14,7 +15,8 @@ import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../..
 // ran. The ledger is made by a first start of this build on an empty folder (every migration records itself) and then
 // removing this migration's row and the rows of the migrations registered after it (they never ran on such an install
 // either: `20261018_append_only_message_logs_v1`, which converts the message logs this migration reads and writes at the
-// end of the same start); then the released-layout test data is written (hand-built, never real user data:
+// end of the same start, and `20261019_delegated_copy_own_file_complete_v1`, which completes the own files this migration
+// writes with each copy's own source in the same start); then the released-layout test data is written (hand-built, never real user data:
 // `released-task-agent-layout-fixtures.ts`). Its runtime values are set to the scripted AGY CLI so a migrated task agent's model can
 // be configured (Settings model edit needs a model catalog); the record shapes stay the released ones.
 // - TAU-1 (AC-008, AC-011, AC-006, AC-013, AC-005): the migration completes; every task agent's memory is at its own folder with the
@@ -32,7 +34,7 @@ import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../..
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts --no-watch
 const ID = TASK_AGENT_OWN_RUN_V1_MIGRATION_ID;
 /** Registered after own-run: an install that never ran own-run never ran these either. */
-const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID];
+const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
 const MODEL = "gemini-3.8-flash-low";
 const ALT = "tau-alt-model";
@@ -150,6 +152,32 @@ const MOVED = Object.entries(OLD_FOLDERS).flatMap(([id, old]) => old ? [[id, old
 const ownMemory = (files: Record<string, string>, old: string) => Object.fromEntries(Object.entries(taskAgentFiles(files, old))
   .filter(([file]) => !MOVED.some(([, other]) => other !== old && other.startsWith(`${old}/`) && `${old}/${file}`.startsWith(`${other}/`))));
 
+/** Every delegated copy's own file (agent `run_metadata.json` or team tree with a `taskAgent` section) under the memory root. */
+const ownFiles = async (memory: string): Promise<Array<[string, Json]>> => {
+  const out: Array<[string, Json]> = [];
+  for (const file of await jsonFiles(memory)) {
+    if (file.includes(`${path.sep}imports${path.sep}`)) continue;
+    const value = JSON.parse(await fs.readFile(file, "utf8"));
+    if (value && typeof value === "object" && "taskAgent" in value) out.push([path.relative(memory, file), value]);
+  }
+  return out;
+};
+/** Every own file is in the current shape: no released `origin`, and each records its own source (REQ-001, M4). */
+const expectOwnFilesComplete = async (memory: string) => {
+  const files = await ownFiles(memory);
+  expect(files.length, "the released data has delegated copies").toBeGreaterThan(0);
+  for (const [file, own] of files) {
+    expect(own.taskAgent, file).not.toHaveProperty("origin");
+    if ("rootTeam" in own) {
+      expect(own.rootTeam.defaultLaunchConfiguration, file).toBeTruthy();
+      for (const member of own.rootTeam.members) expect(member, `${file} ${member.address}`).toMatchObject({ launchConfiguration: expect.any(Object), followsTeam: expect.any(Boolean) });
+    } else {
+      expect(own, file).toMatchObject({ runtimeKind: expect.any(String), llmModelIdentifier: expect.any(String), autoExecuteTools: expect.any(Boolean) });
+    }
+    expect(JSON.stringify(own), `${file} carries no obsolete skillAccessMode`).not.toContain("skillAccessMode");
+  }
+};
+
 const historyRunIds = async (gql: (q: string) => Promise<any>) => objectsIn(await gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}"))
   .flatMap((record) => typeof record["runId"] === "string" ? [record["runId"] as string] : []);
 const hubTaskAgents = async (gql: (q: string, v?: Json) => Promise<any>) => objectsIn((await gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" }))
@@ -169,6 +197,12 @@ describe("task agent own run: the built server upgrades a faithful released inst
     // The same start ends with the message log conversion: every message log own-run read or wrote is append-only now.
     expect(await first.migration(APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID)).toMatchObject({ status: "SUCCEEDED" });
     expect((await jsonFiles(memory)).filter((file) => /communication_messages\.json$/.test(file)), "no JSON message log is left").toEqual([]);
+    // The same start completes every copy's own file with its own source.
+    const completion = await first.migration(DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID);
+    expect(completion, JSON.stringify(completion)).toMatchObject({ status: "SUCCEEDED" });
+    const completionLog = await fs.readFile(completion.logPath, "utf8");
+    expect(completionLog, completionLog).not.toMatch(/FAILED_OPERATION|PRESERVED_/);
+    await expectOwnFilesComplete(memory);
 
     // AC-008: every task agent's memory is at its own folder (contract L1) with the same files and bytes; none is left at the old place.
     const after = await snapshot(memory);
@@ -216,6 +250,7 @@ describe("task agent own run: the built server upgrades a faithful released inst
     // A second start changes nothing.
     const second = await studio(root);
     expect((await second.migration()).status).toBe("SUCCEEDED");
+    expect(await second.migration(DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     expect(await snapshot(memory)).toEqual(after);
     await second.stop();
   }, 300_000);
@@ -250,12 +285,16 @@ describe("task agent own run: the built server upgrades a faithful released inst
 
     // The next start completes the move with the same bytes and keeps the edit in the task agent's own file.
     const second = await studio(root);
-    expect((await second.migration()).status, JSON.stringify(await second.migration())).toMatch(/^SUCCEEDED/);
+    const retried = await second.migration();
+    expect(retried.status, `${JSON.stringify(retried)}\n${retried.logPath ? await fs.readFile(retried.logPath, "utf8") : ""}`).toMatch(/^SUCCEEDED/);
     const after = await snapshot(memory);
     for (const [id, old, now] of MOVED) expect(taskAgentFiles(after, now), `${id} at ${now}`).toMatchObject(ownMemory(before, old));
     expect(await hubTaskAgents(second.gql)).toEqual(expect.arrayContaining(["c1-reviewer", "c2-team-a", "c2-team-b"]));
     const ndOwn = JSON.parse(await fs.readFile(path.join(memory, "agents", "nd-copy", "run_metadata.json"), "utf8"));
     expect(JSON.stringify(ndOwn), "the model edit is in the task agent's own file").toContain(ALT);
+    // The own-file completion waited for the move on the first start and completes on this one.
+    expect((await second.migration(DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)).status).toMatch(/^SUCCEEDED/);
+    await expectOwnFilesComplete(memory);
     await second.stop();
   }, 300_000);
 

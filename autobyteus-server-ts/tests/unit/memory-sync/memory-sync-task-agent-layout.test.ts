@@ -1,7 +1,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
+import { link, releasedAgentOwnFile, releasedTeamOwnTree } from "../../fixtures/app-data-migrations/released-delegated-copy-own-file-fixtures.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { LocalMemoryExportScanner } from "../../../src/memory-sync/source/local-memory-export-scanner.js";
 import {
@@ -71,7 +73,8 @@ const seedUpgradedNode = async (memory: string) => {
   const teamDir = layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
   const base = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead", createdAt: T0,
     children: [testAgentNode("/lead", { agentRunId: "team-lead" }), testAgentNode("/writer", { agentRunId: "team-writer", agentDefinitionId: "writer" })] });
-  const writerCopy = { address: "/writer", agentRunId: "team-copy", platformAgentRunId: null, delegatorAgentRunId: "team-lead", startedAt: T0 };
+  const writerCopy = { address: "/writer", agentRunId: "team-copy", platformAgentRunId: null, delegatorAgentRunId: "team-lead", startedAt: T0,
+    source: { kind: "agent", agentDefinitionId: "writer", launchConfiguration: base.rootTeam.members[1]!.launchConfiguration } };
   await writeCurrentTeamRunPackage(teamDir, validateTeamRunExecutionTreePayload({ ...base, rootTeam: { ...base.rootTeam, taskExecutions: [writerCopy] } }, "team-root"));
 
   const orgBase = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "org-director")] });
@@ -130,6 +133,64 @@ describe("Memory Sync on the task-agent layout (REQ-015, AC-018)", () => {
     } finally {
       resetRootRunPackageReadinessIndex(importRoot);
     }
+  });
+
+  it("F-X3: mirrors from a node on the 10-17 shape stay byte-identical; readable copies are shown, the rest are left out and the source still lists its other runs", async () => {
+    const root = await tempRoot();
+    const memory = path.join(root, "hub", "memory");
+    const importRoot = path.join(memory, "imports", "node-c");
+    const released = { coordinating: { kind: "agent" as const, runId: "hub" }, delegator: "hub" };
+    await writeHubMetadata(importRoot, "hub");
+    await put(path.join(new AgentMemoryLayout(importRoot).getAgentRunCollaborationDirPath("hub"), "collaboration_tree.json"), JSON.stringify({
+      ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "hub", agentDefinitionId: "assistant" }, createdAt: T0 }),
+      taskExecutions: [link("/code_reviewer", { agentRunId: "mirror-catalog" }, "hub"), link("/writer", { agentRunId: "mirror-configured" }, "hub"),
+        link("/product_team", { teamRunId: "mirror-team" }, "hub")],
+    }, null, 2));
+    // F-X3: a catalog agent copy with `origin` (readable: the current reader ignores it and it has a launch).
+    await put(path.join(importRoot, "agents", "mirror-catalog", "run_metadata.json"), JSON.stringify(releasedAgentOwnFile(importRoot, "mirror-catalog",
+      { ...released, address: "/code_reviewer", origin: "catalog", agentDefinitionId: "code-reviewer", launch: { ...launch } })));
+    // F-X3b: a configured-place agent copy with null launch; F-X3c: a catalog team copy in the released member shape.
+    await put(path.join(importRoot, "agents", "mirror-configured", "run_metadata.json"), JSON.stringify(releasedAgentOwnFile(importRoot, "mirror-configured",
+      { ...released, address: "/writer", origin: "configured_place", agentDefinitionId: "writer", launch: null })));
+    await put(path.join(importRoot, "agent_teams", "mirror-team", "team_run_execution_tree.json"), JSON.stringify(releasedTeamOwnTree("mirror-team",
+      { ...released, address: "/product_team", origin: "catalog", teamDefinitionId: "product-team", members: [{ name: "lead" }], defaultLaunchConfiguration: { ...launch } })));
+    for (const id of ["hub", "mirror-catalog", "mirror-configured"]) await put(path.join(importRoot, "agents", id, "raw_traces_active.jsonl"), `${id} memory\n`);
+    const contents = async (dir: string): Promise<Record<string, string>> => {
+      const out: Record<string, string> = {};
+      for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+        const file = path.join(dir, entry.name);
+        if (entry.isDirectory()) Object.assign(out, await contents(file)); else out[path.relative(importRoot, file)] = await fs.readFile(file, "utf-8");
+      }
+      return out;
+    };
+    const before = await contents(importRoot);
+
+    // The hub's own startup migration never discovers mirrors.
+    const migrated = await new DelegatedCopyOwnFileCompleteV1AppDataMigration(memory, {
+      ledger: { getRecord: async (migrationId: string) => ({ migrationId, status: "SUCCEEDED" }) as never },
+    }).execute();
+    expect(migrated.summary.scannedCount).toBe(0);
+    expect(await contents(importRoot)).toEqual(before);
+
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const agents = createImportedAgentMemoryExplorerService(importRoot);
+      const groups = (await agents.listAgentsWithMemory()).entries;
+      // The hub and the readable mirrored copy are shown by definition. The unreadable configured-place copy is not
+      // attributed to its definition: like any run whose metadata cannot be read, its memory stays reachable under
+      // "Unattributed runs" (nothing lost, DESIGN rule 7). The team copy has no memory of its own here.
+      expect(groups.map((group) => [group.attribution, group.agentDefinitionId, group.runCount])).toEqual(expect.arrayContaining([
+        ["DEFINITION", "assistant", 1], ["DEFINITION", "code-reviewer", 1], ["UNATTRIBUTED", null, 1],
+      ]));
+      expect(groups).toHaveLength(3);
+      expect((await agents.listAgentsWithMemory("writer")).entries).toEqual([]);
+      const unattributed = (await agents.listAgentRunsWithMemory({ attribution: "UNATTRIBUTED" })).entries;
+      expect(unattributed.map((run) => run.runId)).toEqual(["mirror-configured"]);
+    } finally {
+      resetRootRunPackageReadinessIndex(importRoot);
+      warn.mockRestore();
+    }
+    expect(await contents(importRoot)).toEqual(before);
   });
 
   it("F-SYNC-OLD: an import from a node not yet upgraded shows its hubs without their nested task agents, and nothing is deleted", async () => {

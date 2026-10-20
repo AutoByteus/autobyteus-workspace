@@ -22,8 +22,8 @@ export const agentRootView = (): MutableView => ({
         taskExecutions: [],
         source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
           members: [
-            { address: '/product_team/prototyper', agentDefinitionId: 'prototyper' },
-            { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper' },
+            { address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch, followsTeam: true },
+            { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch, followsTeam: true },
           ], defaultLaunchConfiguration: launch } },
     ],
   },

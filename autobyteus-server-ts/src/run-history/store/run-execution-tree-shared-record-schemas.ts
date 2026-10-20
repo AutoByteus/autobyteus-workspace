@@ -181,7 +181,7 @@ const parseDelegator = (execution: Record<string, unknown>, label: string): { de
 export const parseTaskExecution = (value: unknown, label: string): TaskExecution => {
   const execution = objectRecord(value, label);
   if ("agentRunId" in execution) {
-    requireKeys(execution, ["address", "agentRunId", "platformAgentRunId", "startedAt"], label);
+    requireKeys(execution, ["address", "agentRunId", "platformAgentRunId", "startedAt", "source"], label);
     return {
       address: canonicalNonRootAddress(execution.address, `${label}.address`),
       agentRunId: requiredString(execution.agentRunId, `${label}.agentRunId`),
@@ -192,7 +192,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
       ...parseOptionalUserLaunchSelection(execution, "userLaunchSelection", label),
     };
   }
-  requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt"], label);
+  requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt", "source"], label);
   const address = canonicalNonRootAddress(execution.address, `${label}.address`);
   return {
     address,
@@ -307,19 +307,17 @@ export const collectTaskExecutionRunIds = (tasks: readonly TaskExecution[]): str
 };
 
 /**
- * A catalog copy (a task Team with a recorded `source`) has the member layout of its own source.
- * `owners` are every holder of task executions.
+ * A Team copy (a task Team) has the member layout of its own source. `owners` are every holder of task
+ * executions.
  */
-export const validateCatalogCopyLayouts = (
+export const validateCopyLayouts = (
   owners: readonly Readonly<{ taskExecutions: readonly TaskExecution[] }>[],
 ): void => {
   const visit = (task: TaskExecution): void => {
     if ("teamRunId" in task) {
-      if (task.source) {
-        const layout = new Set<string>(task.source.members.map((member) => member.address));
-        if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
-          throw new Error(`Task TeamRun '${task.teamRunId}' does not match its catalog source.`);
-        }
+      const layout = new Set<string>(task.source.members.map((member) => member.address));
+      if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
+        throw new Error(`Task TeamRun '${task.teamRunId}' does not match its source.`);
       }
       task.taskExecutions.forEach(visit);
     }

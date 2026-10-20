@@ -37,6 +37,9 @@ const nestedTree = (): OrgTree => {
           address: '/reviewers', teamRunId: 'reviewers-task',
           members: [{ address: '/reviewers/chair', agentRunId: 'agent-chair-task', platformAgentRunId: null }],
           taskExecutions: [], delegatorAgentRunId: 'agent-task-lead', startedAt: '2026-09-01T00:00:03.000Z',
+          source: { kind: 'agent_team', teamDefinitionId: 'reviewers-definition', coordinatorAddress: '/reviewers/chair', handoffs: [],
+            defaultLaunchConfiguration: launch, defaultLaunchSource: { origin: 'configured', fallbacks: [] },
+            members: [{ address: '/reviewers/chair', agentDefinitionId: 'definition-agent-chair-configured', launchConfiguration: launch, followsTeam: true }] },
         }],
       } : task),
     },
@@ -168,6 +171,7 @@ describe('projectAgentOrgHistoryRows Team status', () => {
     ;(configured as { taskExecutions: unknown[] }).taskExecutions = [{
       address: '/worker', agentRunId: 'agent-configured-helper', platformAgentRunId: null,
       delegatorAgentRunId: 'agent-lead-configured', startedAt: '2026-09-01T00:00:05.000Z',
+      source: { kind: 'agent', agentDefinitionId: 'worker-definition', launchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
     }]
     const statuses = {
       'agent-task-lead': AgentStatus.Idle, 'agent-chair-task': AgentStatus.Running,

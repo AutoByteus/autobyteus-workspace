@@ -1,0 +1,11 @@
+# Check: IMP-16
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 26ad4ace20 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T18:54:12Z
+
+# Excerpt of IMP-16-merged-server-unit.log: summary and failure lines. The full log (1166584 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/IMP-16-merged-server-unit.log until the worktree is removed.
+
+      Tests  6169 passed | 7 skipped (6176)
+ Test Files  748 passed | 4 skipped (752)
+# Exit code: 0

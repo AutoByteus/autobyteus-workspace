@@ -25,6 +25,7 @@ const teamMember = (input: { isActive?: boolean; configuredPlacement?: unknown; 
   rootSubjectKind: "agent_team", rootRunId: "team-1", rootTeamRunId: "team-1",
   containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: input.agentRunId ?? "worker-run",
   memberAddress: "/worker", configuredPlacement: "configuredPlacement" in input ? input.configuredPlacement : configured,
+  executionKind: ("configuredPlacement" in input ? input.configuredPlacement : configured) ? "configured" : "task",
   memoryDir: `/memory/agent_teams/team-1/${input.agentRunId ?? "worker-run"}`, tree: input.tree ?? tree, isActive: Boolean(input.isActive),
 }) as never;
 const orgMember = () => ({
@@ -36,6 +37,7 @@ const orgMember = () => ({
     agentRunId: "org-worker-run",
     launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/org" },
   },
+  executionKind: "configured",
   memoryDir: "/memory/agent_orgs/org-1/mounted-team-1/org-worker-run",
   tree: { schemaVersion: 1, subjectKind: "agent_org" },
   isActive: false,
@@ -248,6 +250,7 @@ describe("RunFileChangeProjectionService reads the live process authority", () =
       containingTeamRunId: "team-1", ancestorTeamRunIds: [], agentRunId: "worker-run",
       memberAddress: "/worker", configuredPlacement: { ...configured, launchConfiguration: {
         ...configured.launchConfiguration, workspaceRootPath: null } },
+      executionKind: "configured",
       memoryDir, tree, isActive: true,
     } as never;
     const expectLiveMember = async (names: string[]) => {

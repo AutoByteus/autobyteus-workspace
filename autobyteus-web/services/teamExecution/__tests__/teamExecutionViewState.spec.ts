@@ -26,8 +26,8 @@ const launch = {
 const studyGroupSource = {
   kind: 'agent_team' as const, team_definition_id: 'study-definition', coordinator_address: '/StudentStudyGroup/Coordinator',
   members: [
-    { address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition' },
-    { address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition' },
+    { address: '/StudentStudyGroup/Coordinator', agent_definition_id: 'coordinator-definition', launch_configuration: launch, follows_team: true },
+    { address: '/StudentStudyGroup/Student', agent_definition_id: 'student-definition', launch_configuration: launch, follows_team: true },
   ],
   handoffs: [], default_launch_configuration: launch,
 };
@@ -137,6 +137,8 @@ const taskAgent = (
 ): TaskExecutionDto => ({
   kind: 'task_agent', address, agent_run_id: agentRunId,
   platform_agent_run_id: null, delegator_agent_run_id: delegatorAgentRunId, started_at: createdAt,
+  // A copy of the configured placement at `address`: its recorded snapshot of that placement.
+  source: { kind: 'agent', agent_definition_id: 'student', launch_configuration: launch, launch_source: { origin: 'configured', fallbacks: [] } },
 });
 
 const started = (

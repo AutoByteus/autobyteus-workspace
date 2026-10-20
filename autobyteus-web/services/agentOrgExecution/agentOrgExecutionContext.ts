@@ -28,7 +28,6 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import {
@@ -353,18 +352,14 @@ export class AgentOrgExecutionContext {
   private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
     const execution = event.execution
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
-    const address = parseAgentTeamAddress(execution.address)
-    const configured = this.index.configured.get(address)
-    // A catalog copy carries its own source (REQ-011).
-    const source = configured
-      ?? catalogAgentSourceAt([execution], address)
-      ?? catalogTeamSourceAt([execution], address)
+    // Every copy carries the source it started with (REQ-002), of its own kind.
+    const source = execution.source
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)
     // A newly started child always records its delegator.
-    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
-      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
+    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown
+      || (source.kind === 'agent') !== ('agentRunId' in execution)
       || this.index.agents.has(runId) || this.index.teams.has(runId)) {
       this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
     }

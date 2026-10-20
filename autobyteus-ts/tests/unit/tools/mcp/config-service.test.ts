@@ -228,6 +228,45 @@ describe('McpConfigService', () => {
     expect(parsed.server_id).toBe('server_one');
   });
 
+  describe('transport inference without transport_type', () => {
+    it('treats a non-empty url as streamable HTTP, and prefers it over a command', () => {
+      const http = McpConfigService.parseMcpConfigDict({ remote: { url: 'http://127.0.0.1:9000/mcp' } });
+      expect(http).toBeInstanceOf(StreamableHttpMcpServerConfig);
+      const both = McpConfigService.parseMcpConfigDict({ both: { url: 'http://127.0.0.1:9000/mcp', command: 'node' } });
+      expect(both.transport_type).toBe(McpTransportType.STREAMABLE_HTTP);
+    });
+
+    it('treats a non-empty command as stdio', () => {
+      const stdio = McpConfigService.parseMcpConfigDict({ local: { command: 'node', args: ['server.js'] } });
+      expect(stdio).toBeInstanceOf(StdioMcpServerConfig);
+      expect((stdio as StdioMcpServerConfig).args).toEqual(['server.js']);
+    });
+
+    it.each([{}, { url: '  ', command: '' }, { transport_type: '' }])('names both options when neither is given (%j)', (entry) => {
+      expect(() => McpConfigService.parseMcpConfigDict({ empty: entry })).toThrowError(
+        "Config for server 'empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'."
+      );
+    });
+
+    it('uses an explicit transport_type or transportType as given', () => {
+      expect(() =>
+        McpConfigService.parseMcpConfigDict({ explicit: { transport_type: 'stdio', url: 'http://127.0.0.1:9000/mcp' } })
+      ).toThrowError("StdioMcpServerConfig 'explicit' 'command' must be a non-empty string.");
+      const alias = McpConfigService.parseMcpConfigDict({
+        alias: { transportType: 'streamable_http', url: 'http://127.0.0.1:9000/mcp', command: 'node' }
+      });
+      expect(alias).toBeInstanceOf(StreamableHttpMcpServerConfig);
+      expect(() => McpConfigService.parseMcpConfigDict({ ws: { transport_type: 'websocket', url: 'ws://127.0.0.1/mcp' } }))
+        .toThrowError("Invalid 'transport_type' string 'websocket' for server 'ws'. Valid types are: stdio, streamable_http.");
+    });
+
+    it('rejects a transport_type that is not a string', () => {
+      expect(() => McpConfigService.parseMcpConfigDict({ odd: { transport_type: 3, command: 'node' } })).toThrowError(
+        "'transport_type' for server 'odd' must be a string."
+      );
+    });
+  });
+
   it('rejects an imported HTTP server that sets both a token and an Authorization header', () => {
     expect(() =>
       McpConfigService.parseMcpConfigDict({

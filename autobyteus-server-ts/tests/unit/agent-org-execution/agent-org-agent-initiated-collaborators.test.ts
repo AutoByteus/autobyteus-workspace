@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { AgentOrgTaskSourceResolver } from "../../../src/agent-org-execution/services/agent-org-task-source-resolver.js";
+import { projectTaskExecutionSource } from "../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { flushMicrotasks } from "./helpers/task-publication-handles.js";
 import { buildOrg, cleanupDirectories } from "./helpers/org-collaborator-harness.js";
@@ -44,7 +44,9 @@ describe("agent-initiated delegation, messaging and team instances in an AgentOr
     await f.owner.delegateToNewCopy({ identity: director }, { recipient_address: "/target", description: "Copy two" });
     await flushMicrotasks();
     const [one, two] = f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions as TaskTeamExecution[];
-    expect(one!.source).toBeUndefined(); // copies of a mounted Team keep reading the configured source
+    // A copy of a mounted Team records the Team's snapshot when it starts (D-1, D-5, D-6).
+    expect(one!.source).toMatchObject({ kind: "agent_team", coordinatorAddress: "/target/lead", defaultLaunchSource: { origin: "configured", fallbacks: [] } });
+    expect(one!.source.members.every((member) => member.followsTeam)).toBe(true);
     await expect(f.owner.deliverLogicalMessage(identity(f, "/target/lead", memberRun(one!, "/target/lead")), { recipientAddress: "/target/writer", content: "Write it" }))
       .resolves.toMatchObject({ accepted: true });
     await expect(f.owner.deliverLogicalMessage(identity(f, "/target/lead", memberRun(two!, "/target/lead")), { recipientAddress: "/target/writer", content: "Write it too" }))
@@ -95,12 +97,10 @@ describe("agent-initiated delegation, messaging and team instances in an AgentOr
     expect(copy).toMatchObject({ address: "/product_team", delegatorAgentRunId: "configured-lead", source: { kind: "agent_team", teamDefinitionId: "product-team" } });
     expect(reviewer).toEqual(expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) }));
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
-    // Restore reads the recorded source first.
-    const sources = new AgentOrgTaskSourceResolver(() => f.owner.getExecutionTreeSnapshot());
-    expect(sources.require(copy!.address, "agent_team", copy!.source)).toMatchObject({
+    // Restore projects only the recorded source.
+    expect(projectTaskExecutionSource(copy!.address, copy!.source)).toMatchObject({
       node: { address: "/product_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" },
     });
-    expect(() => sources.require(copy!.address, "agent_team")).toThrow("is not configured");
   });
 
   it("places a copy from inside a mounted Team at the root and refuses the Team's own addresses at any depth (REQ-012, AC-003, DEC-008)", async () => {
@@ -116,6 +116,10 @@ describe("agent-initiated delegation, messaging and team instances in an AgentOr
     const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;
     expect("teamRunId" in mounted && mounted.taskExecutions).toEqual([]);
     expect(tree.rootOrg.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId])).toEqual([["/director", "configured-lead"]]);
+    // A copy of a configured placement records the placement's snapshot as it is now (D-1, D-6).
+    const director = tree.rootOrg.members.find((member) => member.address === "/director")!;
+    expect(tree.rootOrg.taskExecutions[0]!.source).toEqual({ kind: "agent", agentDefinitionId: (director as { agentDefinitionId: string }).agentDefinitionId,
+      launchConfiguration: (director as { launchConfiguration: unknown }).launchConfiguration, launchSource: { origin: "configured", fallbacks: [] } });
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
   });
 

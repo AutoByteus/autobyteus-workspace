@@ -71,12 +71,13 @@ describe("admission honors definition launch defaults", () => {
     expect(copy?.source).toMatchObject({
       kind: "agent_team", defaultLaunchConfiguration: root, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
       members: [
-        { address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer" },
-        { address: "/software_engineering_team/implementation_engineer", launchConfiguration: codexLaunch, launchSource: { origin: "agent_default" } },
-        { address: "/software_engineering_team/code_reviewer", launchConfiguration: codexLaunch, launchSource: { origin: "agent_default" } },
+        { address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer", launchConfiguration: root, followsTeam: true },
+        { address: "/software_engineering_team/implementation_engineer", launchConfiguration: codexLaunch, followsTeam: false, launchSource: { origin: "agent_default" } },
+        { address: "/software_engineering_team/code_reviewer", launchConfiguration: codexLaunch, followsTeam: false, launchSource: { origin: "agent_default" } },
       ],
     });
-    expect(copy?.source.kind === "agent_team" && "launchConfiguration" in copy.source.members[0]!).toBe(false);
+    // A member on the Team's launch records no own source (it shares the Team's).
+    expect(copy?.source.kind === "agent_team" && "launchSource" in copy.source.members[0]!).toBe(false);
   });
 
   it("AC-005: when the configured runtime is unavailable, the copy starts on the root's launch and returns one note per skipped agent", async () => {
@@ -86,6 +87,7 @@ describe("admission honors definition launch defaults", () => {
       `${name}: its agent default codex_app_server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on claude_agent_sdk / opus (inherited from the run).`));
     expect(copy?.source.kind === "agent_team" && copy.source.members[1]).toEqual({
       address: "/software_engineering_team/implementation_engineer", agentDefinitionId: "implementation_engineer",
+      launchConfiguration: root, followsTeam: true,
       launchSource: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1",
         reason: "runtime_unavailable", detail: "Codex App Server command 'codex' is not available." }] },
     });

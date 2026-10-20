@@ -69,11 +69,13 @@ describe("CollaboratorLaunchResolver", () => {
       kind: "agent_team", defaultLaunchConfiguration: root, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
     });
     expect(plan!.kind === "agent_team" && plan!.members).toEqual([
-      { address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer" },
+      // D-5: every member records its complete launch and whether it follows the Team (no own default).
+      { address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer",
+        launchConfiguration: root, followsTeam: true },
       { address: "/software_engineering_team/implementation_engineer", agentDefinitionId: "implementation_engineer",
-        launchConfiguration: codexLaunch(), launchSource: { origin: "agent_default", fallbacks: [] } },
+        launchConfiguration: codexLaunch(), followsTeam: false, launchSource: { origin: "agent_default", fallbacks: [] } },
       { address: "/software_engineering_team/code_reviewer", agentDefinitionId: "code_reviewer",
-        launchConfiguration: codexLaunch({ effort: "low" }), launchSource: { origin: "agent_default", fallbacks: [] } },
+        launchConfiguration: codexLaunch({ effort: "low" }), followsTeam: false, launchSource: { origin: "agent_default", fallbacks: [] } },
     ]);
   });
 
@@ -86,9 +88,10 @@ describe("CollaboratorLaunchResolver", () => {
       runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-b", llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/work",
     });
     expect(plan!.defaultLaunchSource).toEqual({ origin: "team_default", fallbacks: [] });
-    expect(plan!.members[0]).toMatchObject({ launchConfiguration: codexLaunch(), launchSource: { origin: "agent_default" } });
-    // A member without its own default records nothing: it runs on the Team's launch.
-    expect(plan!.members[1]).toEqual({ address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer" });
+    expect(plan!.members[0]).toMatchObject({ launchConfiguration: codexLaunch(), followsTeam: false, launchSource: { origin: "agent_default" } });
+    // A member without its own default runs on the Team's launch and follows it; it records no own source.
+    expect(plan!.members[1]).toEqual({ address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer",
+      launchConfiguration: plan!.defaultLaunchConfiguration, followsTeam: true });
   });
 
   it("AC-003: an Agent copy runs on its own usable default, else on the root's, with root workspace and auto-approve", async () => {
@@ -112,7 +115,7 @@ describe("CollaboratorLaunchResolver", () => {
     })], root);
     if (plan!.kind !== "agent_team") throw new Error("team plan expected");
     const fallbacks = plan!.members.map((member) => {
-      expect(member.launchConfiguration).toBeUndefined();
+      expect(member).toMatchObject({ launchConfiguration: root, followsTeam: true });
       expect(member.launchSource?.origin).toBe("inherited");
       return member.launchSource!.fallbacks;
     });
@@ -133,11 +136,14 @@ describe("CollaboratorLaunchResolver", () => {
     expect(plan!.defaultLaunchConfiguration).toEqual(root);
     expect(plan!.defaultLaunchSource).toEqual({ origin: "inherited", fallbacks: [{ layer: "team_default", ...skipped }] });
     // The member's own source records its own skipped layer; the Team's fallback stays on the Team.
+    // AR-003: a follower whose own default was skipped keeps its own source with that fallback.
     expect(plan!.members[0]).toEqual({
       address: "/software_engineering_team/implementation_engineer", agentDefinitionId: "implementation_engineer",
+      launchConfiguration: root, followsTeam: true,
       launchSource: { origin: "inherited", fallbacks: [{ layer: "agent_default", ...skipped }] },
     });
-    expect(plan!.members[1]).toEqual({ address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer" });
+    expect(plan!.members[1]).toEqual({ address: "/software_engineering_team/solution_designer", agentDefinitionId: "solution_designer",
+      launchConfiguration: root, followsTeam: true });
   });
 
   it("AC-006: when an agent has no usable layer, the plan fails with today's message and names the definition", async () => {

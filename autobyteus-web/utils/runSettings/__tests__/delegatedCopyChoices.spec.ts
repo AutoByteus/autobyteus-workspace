@@ -41,9 +41,9 @@ const tree = (): TeamRunExecutionTreeDto => ({
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [],
         default_launch_configuration: claude, default_launch_source: { origin: 'inherited', fallbacks: [] },
         members: [
-          { address: '/se/lead', agent_definition_id: 'lead' },
-          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
-          { address: '/se/cr', agent_definition_id: 'cr' },
+          { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
+          { address: '/se/ie', agent_definition_id: 'ie', launch_configuration: codex, follows_team: false, launch_source: { origin: 'agent_default', fallbacks: [] } },
+          { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true },
         ],
       },
     }],
@@ -96,16 +96,23 @@ describe('copy rows with user choices (SR-007)', () => {
     expect(map.get('/se@se-copy')?.delegated?.original.llmModelIdentifier).toBe('sonnet')
   })
 
-  it('a copy of a configured Team placement: members follow its Team when they ran on the Team\'s launch (AR-003)', () => {
+  it('a copy of a configured Team placement: members follow its Team as recorded in its source (AR-003, D-5)', () => {
     const team = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/w' }
     const own = { ...team, llmModelIdentifier: 'opus-own' }
+    const configured = { origin: 'configured' as const, fallbacks: [] }
     const nodes = delegatedRowsByKey(collaborationDelegatedLaunchNodes({
       taskExecutions: [{ address: '/target', teamRunId: 'copy', startedAt: at, taskExecutions: [], userTeamLaunchSelection: { llmModelIdentifier: 'sonnet', llmConfig: null, selectedAt: at },
-        members: [{ address: '/target/lead', agentRunId: 'l', platformAgentRunId: null }, { address: '/target/writer', agentRunId: 'w', platformAgentRunId: null }] }],
-      launchAt: (address) => address === '/target' || address === '/target/lead' ? team : address === '/target/writer' ? own : null,
-      coordinatorAt: () => '/target/lead',
+        members: [{ address: '/target/lead', agentRunId: 'l', platformAgentRunId: null }, { address: '/target/writer', agentRunId: 'w', platformAgentRunId: null }],
+        source: { kind: 'agent_team', teamDefinitionId: 'target', coordinatorAddress: '/target/lead', handoffs: [],
+          defaultLaunchConfiguration: team, defaultLaunchSource: configured,
+          members: [
+            { address: '/target/lead', agentDefinitionId: 'lead', launchConfiguration: team, followsTeam: true },
+            { address: '/target/writer', agentDefinitionId: 'writer', launchConfiguration: own, followsTeam: false },
+          ] } }],
     }, deps, control()))
     expect(nodes.get('/target/lead@l')?.values.llmModelIdentifier).toBe('sonnet')
     expect(nodes.get('/target/writer@w')?.values.llmModelIdentifier).toBe('opus-own')
+    // The member without a choice shows its recorded origin.
+    expect(nodes.get('/target/writer@w')?.sourceKey).toBe('configured')
   })
 })

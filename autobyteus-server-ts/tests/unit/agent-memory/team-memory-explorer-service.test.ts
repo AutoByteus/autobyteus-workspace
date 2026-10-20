@@ -16,7 +16,7 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
-import { testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -30,6 +30,7 @@ const withTaskInstance = (tree: TeamRunExecutionTreeSnapshot, agentRunId: string
       platformAgentRunId: null,
       delegatorAgentRunId: "teacher-run",
       startedAt: "2026-08-15T00:01:00.000Z",
+      source: testAgentCopySource("teacher"),
     }],
   },
 });
@@ -288,7 +289,8 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     });
     const withTaskAgent = addTaskExecutionToTree({
       tree: base,
-      execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:01:00.000Z" }),
+      execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", delegatorAgentRunId: "structure-writer-run",
+        startedAt: "2026-08-15T00:01:00.000Z", source: testAgentCopySource("writer") }),
     });
     const withTaskTeam = addTaskExecutionToTree({
       tree: withTaskAgent,

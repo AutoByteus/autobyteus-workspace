@@ -10,7 +10,7 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-ex
 import type { TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const orgRunId = "org-status-traversal";
 const startedAt = "2026-09-06T00:00:01.000Z";
@@ -27,6 +27,7 @@ const taskTeam = (
   taskExecutions,
   delegatorAgentRunId,
   startedAt,
+  source: testOrgTeamCopySource({ teamDefinitionId: "target", coordinatorAddress: "/target/lead", memberAddresses: ["/target/lead"] }),
 });
 
 const fixture = (): AgentOrgRunExecutionTreeSnapshot => {
@@ -64,6 +65,7 @@ const fixture = (): AgentOrgRunExecutionTreeSnapshot => {
         platformAgentRunId: null,
         delegatorAgentRunId: "direct-agent",
         startedAt,
+        source: testOrgAgentCopySource("director"),
       }, rootTask, shutDownRootTask],
     },
   }, orgRunId);

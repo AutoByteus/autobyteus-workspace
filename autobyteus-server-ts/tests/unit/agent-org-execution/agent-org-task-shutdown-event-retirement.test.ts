@@ -10,7 +10,7 @@ import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/e
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
 
@@ -41,6 +41,7 @@ describe("AgentOrg mounted-Team delegated execution shutdown event retirement", 
             platformAgentRunId: "provider-task-analyst",
             delegatorAgentRunId: "delegator-run",
             startedAt: "2026-09-01T00:00:01.000Z",
+            source: testOrgAgentCopySource("analyst"),
           }]),
         },
       ],

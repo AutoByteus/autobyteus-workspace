@@ -1,6 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import { effectiveMemberLaunchConfiguration } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { getAgentTeamAddressBasename } from "../domain/agent-team-address.js";
 import type {
   LaunchConfigurationFallback,
@@ -25,6 +24,7 @@ const ORIGIN_LABEL: Readonly<Record<LaunchConfigurationOrigin, string>> = {
   agent_default: "its agent default",
   team_default: "its team default",
   inherited: "inherited from the run",
+  configured: "as configured in this run",
 };
 
 const configured = (fallback: LaunchConfigurationFallback): string =>
@@ -52,7 +52,7 @@ export const entryPlanLaunchNotes = (plan: CollaboratorEntryPlan): string[] => {
     ...plan.members.flatMap((member) => member.launchSource ? [{
       name: getAgentTeamAddressBasename(member.address) ?? member.address,
       subject: "agent" as const,
-      launch: effectiveMemberLaunchConfiguration(plan, member),
+      launch: member.launchConfiguration,
       source: member.launchSource,
     }] : []),
   ]);

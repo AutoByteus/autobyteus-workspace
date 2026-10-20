@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
-import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
 import type { TaskExecution } from "../domain/run-execution-tree-shared-records.js";
 import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
@@ -18,7 +17,6 @@ import {
   taskAgentTeamOwnTree,
   taskExecutionLinkOf,
   taskExecutionRunId,
-  type ConfiguredPlaceResolver,
 } from "./task-agent-own-records.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 
@@ -47,8 +45,6 @@ export type CoordinatingTreeShape<TTree> = Readonly<{
   withRawTaskLists(raw: Record<string, unknown>, lists: ReadonlyMap<TaskExecutionListKey, readonly unknown[]>): Record<string, unknown>;
   /** AgentRun ids of the coordinating run's own parts (host, members, configured agents). */
   ownAgentRunIdsOfRaw(raw: Record<string, unknown>): readonly string[];
-  resolvePlace(tree: TTree): ConfiguredPlaceResolver;
-  handoffs(tree: TTree): readonly CollaborationHandoff[];
 }>;
 
 type OwnFileStates = Readonly<{
@@ -180,13 +176,12 @@ export const splitTaskExecutions = async <TTree>(input: Readonly<{
   let ownFiles: TaskAgentOwnFiles | null = null;
   const files = (): TaskAgentOwnFiles => ownFiles ??= input.files();
   const coordinatingRun = shape.coordinatingRun(tree);
-  const resolvePlace = shape.resolvePlace(tree);
   const memoryLists = shape.taskLists(tree);
   for (const records of memoryLists.values()) {
     for (const record of records) {
       const write = "agentRunId" in record
-        ? await writeAgentIfChanged(files(), record, coordinatingRun, resolvePlace)
-        : await writeTeamIfChanged(files(), record, coordinatingRun, resolvePlace, shape.handoffs(tree));
+        ? await writeAgentIfChanged(files(), record, coordinatingRun)
+        : await writeTeamIfChanged(files(), record, coordinatingRun);
       if (write && write.outcome !== "committed") return { kind: "own_file_failed", result: write as Exclude<RunPackageFileWriteResult, { outcome: "committed" }> };
     }
   }
@@ -212,12 +207,11 @@ const writeAgentIfChanged = async (
   files: TaskAgentOwnFiles,
   record: Extract<TaskExecution, { agentRunId: string }>,
   coordinatingRun: TaskAgentCoordinatingRun,
-  resolvePlace: ConfiguredPlaceResolver,
 ): Promise<RunPackageFileWriteResult | null> => {
   const state = await files.readAgent(record.agentRunId);
   const existing = state.kind === "present" ? state.metadata : null;
   const candidate = parseTaskAgentRunMetadata(taskAgentOwnMetadata({
-    record, coordinatingRun, memoryDir: files.agentMemoryDir(record.agentRunId), resolvePlace, existing,
+    record, coordinatingRun, memoryDir: files.agentMemoryDir(record.agentRunId),
   }), record.agentRunId);
   return existing && isDeepStrictEqual(candidate, existing) ? null : files.writeAgent(candidate);
 };
@@ -226,14 +220,10 @@ const writeTeamIfChanged = async (
   files: TaskAgentOwnFiles,
   record: Extract<TaskExecution, { teamRunId: string }>,
   coordinatingRun: TaskAgentCoordinatingRun,
-  resolvePlace: ConfiguredPlaceResolver,
-  treeHandoffs: readonly CollaborationHandoff[],
 ): Promise<RunPackageFileWriteResult | null> => {
   const state = await files.readTeam(record.teamRunId);
   const existing = state.kind === "present" ? state.tree : null;
-  const candidate = validateTaskAgentTeamTreePayload(taskAgentTeamOwnTree({
-    record, coordinatingRun, resolvePlace, treeHandoffs, existing,
-  }), record.teamRunId);
+  const candidate = validateTaskAgentTeamTreePayload(taskAgentTeamOwnTree({ record, coordinatingRun }), record.teamRunId);
   return existing && isDeepStrictEqual(candidate, existing) ? null : files.writeTeam(candidate);
 };
 

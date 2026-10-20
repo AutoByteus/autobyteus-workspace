@@ -1,12 +1,17 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { parseTaskAgentRunMetadata } from "../../../run-history/store/task-agent-own-file-schema.js";
-import { TaskAgentOwnFiles } from "../../../run-history/store/task-agent-own-files.js";
-import { taskAgentOwnMetadata, taskAgentTeamOwnTree, taskExecutionLinkOf } from "../../../run-history/store/task-agent-own-records.js";
-import { validateTaskAgentTeamTreePayload } from "../../../run-history/store/task-agent-team-tree-schema.js";
+import { TaskAgentMessageLogs } from "../../../run-history/store/task-agent-message-logs.js";
+import { taskExecutionLinkOf } from "../../../run-history/store/task-agent-own-records.js";
+import {
+  ReleasedTaskAgentOwnFiles,
+  parseReleasedTaskAgentRunMetadata,
+  releasedTaskAgentOwnMetadata,
+  releasedTaskAgentTeamOwnTree,
+  validateReleasedTaskAgentTeamTreePayload,
+  type ReleasedTaskAgentCoordinatingRun,
+} from "../../legacy/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedStandaloneRootMessagesReader,
@@ -58,7 +63,7 @@ const plan = (tree: ReleasedCoordinatingTree): PlannedTaskAgent[] => {
 };
 
 export class CoordinatingRunMigration {
-  private readonly files: TaskAgentOwnFiles;
+  private readonly files: ReleasedTaskAgentOwnFiles;
   private readonly logs: ReleasedTaskAgentMessageLogs;
 
   constructor(private readonly input: Readonly<{
@@ -68,11 +73,13 @@ export class CoordinatingRunMigration {
     /** Reads the reduced tree back with the current store (composes and validates). */
     readBackWithCurrentStore(): Promise<unknown>;
   }>) {
-    this.files = new TaskAgentOwnFiles(input.memoryDir, input.writer);
+    // Own files are read and written in their released shape (with `origin`); the team log as the released writer made it.
+    const teamLogs = new TaskAgentMessageLogs(input.memoryDir, input.writer);
+    this.files = new ReleasedTaskAgentOwnFiles(input.memoryDir, input.writer, (teamRunId) => teamLogs.createTeamLogIfMissing(teamRunId));
     this.logs = new ReleasedTaskAgentMessageLogs(input.memoryDir, input.writer);
   }
 
-  private get coordinatingRun(): TaskAgentCoordinatingRun {
+  private get coordinatingRun(): ReleasedTaskAgentCoordinatingRun {
     return { kind: this.input.tree.family, runId: this.input.tree.runId };
   }
 
@@ -126,12 +133,20 @@ export class CoordinatingRunMigration {
     return { runId, disposition: "MIGRATED" };
   }
 
-  /** The own file at L1 names this coordinating run. */
+  /**
+   * The own file at L1 names this coordinating run. Only its ownership is read (D-9): on a retry the file may already
+   * be in the shape 20261019_delegated_copy_own_file_complete_v1 writes. A damaged file is never owned, so it is
+   * never overwritten.
+   */
   private async isOwnedHere(record: TaskExecution): Promise<boolean> {
-    const state = "agentRunId" in record ? await this.files.readAgent(record.agentRunId) : await this.files.readTeam(record.teamRunId);
-    if (state.kind !== "present") return false;
-    const own = "metadata" in state ? state.metadata.taskAgent : state.tree.taskAgent;
-    return own.coordinatingRun.kind === this.coordinatingRun.kind && own.coordinatingRun.runId === this.coordinatingRun.runId;
+    const state = "agentRunId" in record
+      ? await this.files.readOwnership("agent", record.agentRunId)
+      : await this.files.readOwnership("team", record.teamRunId);
+    return state.kind === "present" && this.isThisRun(state.value.coordinatingRun);
+  }
+
+  private isThisRun(run: ReleasedTaskAgentCoordinatingRun): boolean {
+    return run.kind === this.coordinatingRun.kind && run.runId === this.coordinatingRun.runId;
   }
 
   private resolvePlace = (address: AgentTeamAddress) => {
@@ -147,18 +162,18 @@ export class CoordinatingRunMigration {
 
   /** A migrated copy of a configured place never recorded the launch it started with (U-4): `null`. */
   private ownMetadata(record: Extract<TaskExecution, { agentRunId: string }>) {
-    const metadata = taskAgentOwnMetadata({
+    const metadata = releasedTaskAgentOwnMetadata({
       record, coordinatingRun: this.coordinatingRun, memoryDir: this.files.agentMemoryDir(record.agentRunId),
       resolvePlace: this.resolvePlace, existing: null,
     });
-    return parseTaskAgentRunMetadata(metadata.taskAgent.origin === "catalog" ? metadata : {
+    return parseReleasedTaskAgentRunMetadata(metadata.taskAgent.origin === "catalog" ? metadata : {
       ...metadata, workspaceRootPath: null, llmModelIdentifier: null, llmConfig: null, autoExecuteTools: null, runtimeKind: null,
     }, record.agentRunId);
   }
 
   /** Nested records are lifted to the coordinating run's links (CM-7, U-5): a team's own tree holds none. */
   private ownTeamTree(record: Extract<TaskExecution, { teamRunId: string }>) {
-    return validateTaskAgentTeamTreePayload(taskAgentTeamOwnTree({
+    return validateReleasedTaskAgentTeamTreePayload(releasedTaskAgentTeamOwnTree({
       record: { ...record, taskExecutions: [] }, coordinatingRun: this.coordinatingRun,
       resolvePlace: this.resolvePlace, treeHandoffs: this.input.tree.handoffs, existing: null,
     }), record.teamRunId);
@@ -170,8 +185,8 @@ export class CoordinatingRunMigration {
       : await this.input.writer.write({ file: "task_agent_team_tree", filePath: path.join(dir, TEAM_TREE_FILE), payload: this.ownTeamTree(record) });
     if (result.outcome !== "committed") throw result.cause;
     const readBack = JSON.parse(await fs.readFile(path.join(dir, "agentRunId" in record ? RUN_METADATA_FILE : TEAM_TREE_FILE), "utf8")) as unknown;
-    if ("agentRunId" in record) parseTaskAgentRunMetadata(readBack, record.agentRunId);
-    else validateTaskAgentTeamTreePayload(readBack, record.teamRunId);
+    if ("agentRunId" in record) parseReleasedTaskAgentRunMetadata(readBack, record.agentRunId);
+    else validateReleasedTaskAgentTeamTreePayload(readBack, record.teamRunId);
   }
 
   /**
@@ -245,11 +260,9 @@ export class CoordinatingRunMigration {
 
   /** The task agent's parts when its own file at L1 names this run; `null` otherwise. */
   private async partsAtL1(runId: string, kind: "agent" | "team"): Promise<ReadonlySet<string> | null> {
-    const state = kind === "agent" ? await this.files.readAgent(runId) : await this.files.readTeam(runId);
-    if (state.kind !== "present") return null;
-    const own = "metadata" in state ? state.metadata.taskAgent : state.tree.taskAgent;
-    if (own.coordinatingRun.kind !== this.coordinatingRun.kind || own.coordinatingRun.runId !== this.coordinatingRun.runId) return null;
-    return new Set("metadata" in state ? [runId] : state.tree.rootTeam.members.map((member) => member.agentRunId));
+    const state = await this.files.readOwnership(kind, runId);
+    if (state.kind !== "present" || !this.isThisRun(state.value.coordinatingRun)) return null;
+    return new Set(state.value.memberAgentRunIds ?? [runId]);
   }
 
   private async readCoordinatingLog(): Promise<readonly CollaborationCommunicationMessage[]> {

@@ -34,6 +34,7 @@ const taskBearingPackage = () => {
   const taskAgent = {
     address: worker.address, agentRunId: "agent-worker-task", platformAgentRunId: null,
     delegatorAgentRunId: agent.agentRunId, startedAt: "2026-09-01T00:00:01.000Z",
+    source: { kind: "agent", agentDefinitionId: worker.agentDefinitionId, launchConfiguration: worker.launchConfiguration },
   } as const;
   const taskTeam = {
     address: team.address, teamRunId: "team-run-task",
@@ -42,6 +43,10 @@ const taskBearingPackage = () => {
       { address: teamWorker.address, agentRunId: "agent-task-worker", platformAgentRunId: null },
     ],
     taskExecutions: [], delegatorAgentRunId: agent.agentRunId, startedAt: "2026-09-01T00:00:02.000Z",
+    source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, handoffs: [],
+      defaultLaunchConfiguration: team.defaultLaunchConfiguration,
+      members: [lead, teamWorker].map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
+        launchConfiguration: member.launchConfiguration, followsTeam: true })) },
   } as const;
   const executionTree = {
     ...base,

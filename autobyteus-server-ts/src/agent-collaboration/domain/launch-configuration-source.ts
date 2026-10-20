@@ -1,8 +1,11 @@
 /** A configured launch layer an agent can take its runtime, model and model settings from. */
 export type ConfiguredLaunchLayer = "agent_default" | "team_default";
 
-/** Where an agent's (or a Team's) launch values came from: a configured layer, or the run root. */
-export type LaunchConfigurationOrigin = ConfiguredLaunchLayer | "inherited";
+/**
+ * Where an agent's (or a Team's) launch values came from: a configured layer, the run root, or (for a
+ * delegated copy) the configured placement of the coordinating run it was started from (`configured`).
+ */
+export type LaunchConfigurationOrigin = ConfiguredLaunchLayer | "inherited" | "configured";
 
 export type LaunchConfigurationFallbackReason =
   | "incomplete"
@@ -28,7 +31,7 @@ export type LaunchConfigurationSource = Readonly<{
   fallbacks: readonly LaunchConfigurationFallback[];
 }>;
 
-export const LAUNCH_CONFIGURATION_ORIGINS: readonly LaunchConfigurationOrigin[] = ["agent_default", "team_default", "inherited"];
+export const LAUNCH_CONFIGURATION_ORIGINS: readonly LaunchConfigurationOrigin[] = ["agent_default", "team_default", "inherited", "configured"];
 export const CONFIGURED_LAUNCH_LAYERS: readonly ConfiguredLaunchLayer[] = ["agent_default", "team_default"];
 export const LAUNCH_CONFIGURATION_FALLBACK_REASONS: readonly LaunchConfigurationFallbackReason[] = [
   "incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid",

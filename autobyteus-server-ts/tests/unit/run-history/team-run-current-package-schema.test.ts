@@ -63,8 +63,9 @@ describe("TeamRun current (tree + messages) state package", () => {
 /** REQ-018: read tolerantly (AC-020), write exactly (AC-021). */
 describe("TeamRun execution tree tolerant reading and exact writing", () => {
   const TOP_LEVEL_KEYS = ["applicationBinding", "archivedAt", "createdAt", "handoffs", "rootTeam"];
-  const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "startedAt"];
-  const TASK_TEAM_KEYS = ["address", "delegatorAgentRunId", "members", "startedAt", "taskExecutions", "teamRunId"];
+  const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "source", "startedAt"];
+  const TASK_TEAM_KEYS = ["address", "delegatorAgentRunId", "members", "source", "startedAt", "taskExecutions", "teamRunId"];
+  const launch = () => currentTree().rootTeam.defaultLaunchConfiguration;
   const keys = (value: unknown) => Object.keys(value as object).sort();
 
   const withTasks = (taskExecutions: readonly Record<string, unknown>[], extra: Record<string, unknown> = {}) => {
@@ -73,12 +74,15 @@ describe("TeamRun execution tree tolerant reading and exact writing", () => {
   };
   const taskAgent = (extra: Record<string, unknown> = {}) => ({
     address: "/reviewer", agentRunId: "task-reviewer-run", platformAgentRunId: null,
-    startedAt: "2026-09-01T00:00:00.000Z", ...extra,
+    startedAt: "2026-09-01T00:00:00.000Z", source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: launch() }, ...extra,
   });
   const taskTeam = (extra: Record<string, unknown> = {}) => ({
     address: "/reviewer", teamRunId: "task-team-run", startedAt: "2026-09-01T00:00:00.000Z",
     members: [{ address: "/reviewer/lead", agentRunId: "task-team-lead-run", platformAgentRunId: null, legacyNote: "x" }],
-    taskExecutions: [], ...extra,
+    taskExecutions: [],
+    source: { kind: "agent_team", teamDefinitionId: "review-team", coordinatorAddress: "/reviewer/lead", handoffs: [], defaultLaunchConfiguration: launch(),
+      members: [{ address: "/reviewer/lead", agentDefinitionId: "lead", launchConfiguration: launch(), followsTeam: true }] },
+    ...extra,
   });
   /** The released (pre-change) shape: a version number and `settledAt`, no delegator. */
   const releasedShape = () => withTasks(
@@ -132,9 +136,7 @@ describe("TeamRun execution tree tolerant reading and exact writing", () => {
       const loaded = validateTeamRunExecutionTreePayload(releasedShape());
       const launch = loaded.rootTeam.defaultLaunchConfiguration;
       // A team run is flat: a Team copy is always a catalog copy with its recorded source.
-      const catalogTeam = { ...loaded.rootTeam.taskExecutions[1]!, source: { kind: "agent_team", teamDefinitionId: "review-team",
-        coordinatorAddress: "/reviewer/lead", members: [{ address: "/reviewer/lead", agentDefinitionId: "lead" }], handoffs: [],
-        defaultLaunchConfiguration: launch } };
+      const catalogTeam = loaded.rootTeam.taskExecutions[1]!;
       const withNewChild = validateTeamRunExecutionTreePayload({
         ...loaded,
         rootTeam: {
