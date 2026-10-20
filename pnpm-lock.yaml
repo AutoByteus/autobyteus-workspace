@@ -356,7 +356,7 @@ importers:
         version: 5.0.0(vue@3.5.44(typescript@5.9.3))
       '@mdit/plugin-katex':
         specifier: ^0.23.2
-        version: 0.23.2(markdown-it@14.1.1)
+        version: 0.23.2(markdown-it@14.3.3)
       '@novnc/novnc':
         specifier: 1.7.0-g7c36fab
         version: 1.7.0-g7c36fab
@@ -382,8 +382,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       dompurify:
-        specifier: ^3.2.2
-        version: 3.4.17
+        specifier: 3.4.7
+        version: 3.4.7
       electron-is-dev:
         specifier: ^2.0.0
         version: 2.0.0
@@ -394,8 +394,8 @@ importers:
         specifier: ^0.16.25
         version: 0.16.47
       markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.1
+        specifier: ^14.3.3
+        version: 14.3.3
       mermaid:
         specifier: ^11.17.2
         version: 11.17.2
@@ -4695,8 +4695,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.17:
-    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
+  dompurify@3.4.7:
+    resolution: {integrity: sha512-2jBxDJY4RR06tQNy4w5FlFH7kfxsQZlufd0sbv+chfHCxeJwrFw2baUDsSwvBISD4K4RDbd0PTfy3uNXsR6siA==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -6066,8 +6066,8 @@ packages:
     resolution: {integrity: sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==}
     engines: {node: '>=0.10.0'}
 
-  markdown-it@14.1.1:
-    resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
+  markdown-it@14.3.3:
+    resolution: {integrity: sha512-L//tDAkjTjJCU6pBUSBTgs3Kg4InVaZuUZog/b6V12UKhcDQ7S78877ibbCanRExwPuYP1CZD7Gd2dxSy1GXRg==}
     hasBin: true
 
   marked@16.4.2:
@@ -10406,26 +10406,26 @@ snapshots:
       - encoding
       - supports-color
 
-  '@mdit/helper@0.22.1(markdown-it@14.1.1)':
+  '@mdit/helper@0.22.1(markdown-it@14.3.3)':
     dependencies:
       '@types/markdown-it': 14.1.2
     optionalDependencies:
-      markdown-it: 14.1.1
+      markdown-it: 14.3.3
 
-  '@mdit/plugin-katex@0.23.2(markdown-it@14.1.1)':
+  '@mdit/plugin-katex@0.23.2(markdown-it@14.3.3)':
     dependencies:
-      '@mdit/helper': 0.22.1(markdown-it@14.1.1)
-      '@mdit/plugin-tex': 0.22.2(markdown-it@14.1.1)
+      '@mdit/helper': 0.22.1(markdown-it@14.3.3)
+      '@mdit/plugin-tex': 0.22.2(markdown-it@14.3.3)
       '@types/markdown-it': 14.1.2
       katex: 0.16.47
     optionalDependencies:
-      markdown-it: 14.1.1
+      markdown-it: 14.3.3
 
-  '@mdit/plugin-tex@0.22.2(markdown-it@14.1.1)':
+  '@mdit/plugin-tex@0.22.2(markdown-it@14.3.3)':
     dependencies:
       '@types/markdown-it': 14.1.2
     optionalDependencies:
-      markdown-it: 14.1.1
+      markdown-it: 14.3.3
 
   '@mermaid-js/parser@1.2.1':
     dependencies:
@@ -13431,7 +13431,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.17:
+  dompurify@3.4.7:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -15037,7 +15037,7 @@ snapshots:
 
   map-cache@0.2.2: {}
 
-  markdown-it@14.1.1:
+  markdown-it@14.3.3:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
@@ -15099,7 +15099,7 @@ snapshots:
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.14
       dayjs: 1.11.23
-      dompurify: 3.4.17
+      dompurify: 3.4.7
       es-toolkit: 1.52.0
       fastdom: 1.0.12
       katex: 0.16.47
