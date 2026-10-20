@@ -9,6 +9,7 @@ Ticket `remove-skill-improvement` (autobyteus-205). Task size `Large`, architect
 | DR-001 | Code reviewer's delivery handoff (CRR-002 Pass; API-REV-001 Pass) | N/A | `Blocked`: INT-001 merge conflicts with `origin/personal`, routed as `Local Fix` | `release-deployment-report.md`, this record |
 | DR-002 | Code reviewer's handoff after INT-001 (CRR-003 Pass; API-REV-002 Pass; CRR-004 N/A) | DR-001 `Blocked` | `Blocked` on evidence: the origin of the DCP-003/DCR-003 Org save failures (FU-005) is not established; discriminating base run requested from API/E2E | this record |
 | DR-003 | API/E2E's DR-002 result (API-REV-003: FU-005 pre-existing on base) | DR-002 `Blocked` on evidence | Verified; docs synced; finalized and beta released (see the report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record |
+| DR-004 | Release workflows completed | DR-003 | Beta `v1.5.8-beta.4` published completely; waiting for the user's data check | `release-deployment-report.md`, this record |
 
 ## Revision Entries
 
@@ -49,3 +50,8 @@ Ticket `remove-skill-improvement` (autobyteus-205). Task size `Large`, architect
 - Prior authoritative result: DR-002 (`Blocked` on the FU-005 origin)
 - Current authoritative result: verification complete (AC-001..AC-005; the user's own data check follows the beta). Docs synced with no delivery edits. Ticket archived. Finalization and the advance-decided beta follow; the outcome is in `release-deployment-report.md`.
 - Terminal return to the Solution Designer: after the release and the user's check
+
+### DR-004: beta v1.5.8-beta.4 published
+
+- Result: merge `562ad15070` and release commit `3b9014215e` are on `origin/personal`, with tag `v1.5.8-beta.4`. All four workflows succeeded. The pre-release has 17 assets, and Docker `1.5.8-beta.4` = `:beta`. The Secret Gate passed before the first push, on the merged state and over `v1.5.8-beta.3..HEAD`.
+- Terminal return to the Solution Designer: `Not yet eligible` (the user's data check of AC-004, then cleanup)
