@@ -1,6 +1,6 @@
 # Code Review Report
 
-Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement`, branch `codex/remove-skill-improvement`, design commit `04aac13a77`, head reviewed `1f0ae5ea9c`.
+Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement`, branch `codex/remove-skill-improvement`, design commit `04aac13a77`, head reviewed `e022d9a570` (round 2: merge `5cfccd66c7`, Secret Gate entry `bda3731947`). Round 1 reviewed `1f0ae5ea9c`.
 
 ## Review Round Meta
 
@@ -16,15 +16,24 @@ Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autob
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-003` (CRR-002 was the separate test-code review)
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round 2): IR-002 merges `origin/personal` @ `3b2c86ca9e` (20 commits) and adds one `.gitleaks.toml` entry.
+  - **Conflicts, compared with `git diff 3b2c86ca9e 5cfccd66c7`:** each resolved file differs from the base only by this ticket's removals.
+    - `schema.ts` loses only `SkillImprovementResolver` and keeps base's `UpdateNotificationResolver`.
+    - `server-settings-service.ts` loses only the feature's imports, the 2 predefined settings and the getter, and keeps `UPDATE_CHECKS_SETTING_KEY`.
+    - `ServerSettingsBasicsPanel.vue` loses only the Skill Improvement card and keeps `ApplicationsFeatureToggleCard` and base's `UpdateChecksCard`.
+    - web `settings.md` loses the feature text, and the capability paragraph is reworded to agree with base's Update checks section.
+  - **Base content:** no new app-data migration, so 20261020 stays last. Typecheck, the AC-001 sweep (IMP-21) and the build smoke pass on the merge, so base reintroduces no removed symbol.
+  - **`.gitleaks.toml` entry:** checked against RELEASE.md "False positives". Both flagged lines (`skill-improvement-removal-cases.mjs:20` and `api-e2e-coverage-investigation.md:156`) are prose naming the retired setting with a boolean. The entry is `targetRules = ["generic-api-key"]`, `regexTarget = "secret"`, regex `^ENABLE_SKILL_IMPROVEMENT=true$`, with its reason: the narrowest possible, and it cannot hide a provider rule or `env-style-secret`. The Secret Gate passes on `bda3731947` and at the head (IMP-23).
+  - **Evidence:** IMP-14..IMP-23 on the merge (typecheck; server unit 6314; integration 421; build and smoke; removal startup e2e 4; web unit 4617; guards; sweep; SIR-001/002 probe 2 Pass; secret gate).
+  - Every other check carries forward from round 1.
+- Trigger: implementation handoff IR-002 (INT-001 Local Fix requested by delivery in DR-001) from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: 1 (`CRR-001`, Pass)
+- Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -198,10 +207,10 @@ Findings outside this ticket go in the ticket's `follow-ups.md`. They do not fai
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review of the INT-001 merge)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.45 / 10 (94.5 / 100); every category ≥ 9.0
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: `CRR-001`, against IR-001 @ `1f0ae5ea9c`. The classification Large / High is preserved. FU-003 was added to `follow-ups.md`; following the updated skill, it is not sent by this role.
+- Notes: `CRR-003`, against IR-002 @ `e022d9a570`. The merge resolution keeps base and does not restore the feature, and the Secret Gate entry is confirmed narrow. Product code changed after API-REV-001, so API/E2E revalidates by impact. Round 1: `CRR-001` against IR-001 @ `1f0ae5ea9c`. The classification Large / High is preserved. FU-003 was added to `follow-ups.md`; following the updated skill, it is not sent by this role.
