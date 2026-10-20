@@ -84,8 +84,26 @@ Repository finalization of `codex/mcp-bulk-import-errors` into `origin/personal`
 
 | Step | Result |
 | --- | --- |
-| Ticket archive | pending |
+| Ticket archive | `git mv tickets/in-progress/mcp-bulk-import-errors tickets/done/mcp-bulk-import-errors`. 45 tracked files; longest ticket path 87 characters; no Windows-hostile names; no build output |
+| Pre-commit checks | Hygiene check passed; licensing consistent; nothing unstaged before the push |
+| Ticket branch commit | `07c15e2a19` "docs(delivery): sync docs and archive mcp-bulk-import-errors (DR-001)" |
+| Ticket branch push | `origin/codex/mcp-bulk-import-errors` → `07c15e2a19` (new remote branch) |
+| Target refresh after verification | `origin/personal` still `3d4d9d0a95`, the integrated and verified base |
+| Merge | `finalize/mcp-bulk-import-errors` from `origin/personal`; `git merge --no-ff` → `b70caf79c8`; tree identical to the ticket branch; checks passed on the merged state |
+| Push target | `origin/personal` unchanged before the push; `3d4d9d0a95..b70caf79c8` |
+| Follow-up routed | O-1 sent to `/project_task_manager` (create a Task; not started) |
+| Release / publication / deployment | `Not required` (No release); no tag, no pipelines |
+| Delivery record commit | Committed on top of `b70caf79c8` and pushed to `personal` after a fresh fetch |
+| Worktree cleanup | After the record push: `git worktree remove --force` (only untracked build output), `git worktree prune` |
+| Local branch cleanup | `codex/mcp-bulk-import-errors` and `finalize/mcp-bulk-import-errors` deleted once `origin/personal` contains them |
+| Remote branch cleanup | `Not required` (merged `codex/*` branches stay on `origin`) |
 
 ## Final Status
 
-- pending
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`b70caf79c8`, then this record)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete: `Yes` (after the record push)
+- Unresolved blocker: `None` (O-1 is pre-existing on `personal` and routed)
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/software_engineering_team/solution_designer`: `Yes`, after this record commit and cleanup (DR-001)
