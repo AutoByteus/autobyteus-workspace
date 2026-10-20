@@ -1,0 +1,5 @@
+# Follow-ups: remove-skill-improvement
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, investigation-notes F-07 | The location services (`team-run-execution-tree-location-service.ts:186`, `agent-org-execution-tree-location-service.ts:117`) fill `configuredPlacement` by address, also for task copies. `collaboration-member-memory-targets.ts:64` takes the memory target's `agentDefinitionId` from it: a configured-place copy gets the slot's definition (correct within a run), a catalog copy gets `null` | Code read; autobyteus-197 F-1 / R-1 | Skill improvement's use goes away in this ticket. The remaining use changes how the Memory page attributes copies (catalog copies would gain a definition id): its own decision | No | "Location services set `configuredPlacement` only for configured executions; memory targets take a task copy's definition from its own source (`locatedExecutionSource`). Decide how the Memory page attributes catalog copies." | — |
