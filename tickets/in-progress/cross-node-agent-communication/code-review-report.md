@@ -2,9 +2,62 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication`
 
-## Current Result — Implementation Review Round 4 (CRR-006)
+## Current Result — Implementation Review Round 5: Integration Merges (CRR-009)
 
-This section is the latest result. Earlier results follow as context: CRR-005 (F-002 origin), CRR-004 (round-3 re-audit), and rounds 1–2.
+This section is the latest result. Earlier results follow as context.
+
+- Review Entry Point: `Implementation Review`, round 5
+- Current Code Review Revision ID: `CRR-009`
+- Trigger: IR-005 (delivery DR-002).
+  - Merge `c59c6f7359` with `origin/personal` `3b9014215e` (autobyteus-205 Skill Improvement removal, 1.5.8-beta.4).
+  - New test `300bf4c09a`; documents `2155dc1aef`.
+  - At delivery's request, also DR-001's merge `4f03cce09d`.
+- Review Scope: `Targeted Delta Review` of the two integration merges.
+  - Every file both sides changed was checked, against the base side (`^2`) and against the merge base.
+  - The base's own changes (autobyteus-205, update checks, runtime status) are not reviewed here. They are reviewed in their own tickets.
+  - No remote-collaboration source changed in either merge.
+- Classification: `Large` / `High`, unchanged.
+
+### Merge resolution checks
+
+| Merge | Files changed on both sides | Result vs the base side | Status |
+| --- | --- | --- | --- |
+| `4f03cce09d` (DR-001) | `server-settings-service.ts` (the one conflict), `api/graphql/schema.ts`, `compositions/build-studio-server.ts`, `autobyteus-web/docs/settings.md`, `localization/messages/{en,zh-CN}/index.ts` | Only this branch's additions: the remote-collaboration setting registration next to the base's update-checks setting; the resolver; the composition bind/release next to the base's update-notification and runtime-status resources; the docs section; the message imports. Nothing of the base is dropped. | Correct |
+| `c59c6f7359` (IR-005) | The 5 conflicts (`agent-run-metadata-types.ts`, `agent-run-metadata-store.ts`, `agent-run-provisioning-service.ts`, `agent-run-service.ts`, `server-settings-service.ts`); auto-merged `schema.ts`, `agent_tools.md`, `standalone_agent_run_root.md`, `autobyteus-web/docs/settings.md` | Only this branch's additions: the `delegatedFrom` type, its parse in `normalizeMetadata`, its write at prepare, `CreateAgentRunInput.delegatedFrom`, and the remote-collaboration setting. The base's removals of `launchPurpose` and Skill Improvement are taken whole. | Correct |
+
+- No leftovers: no `launchPurpose`, `AgentRunLaunchPurpose` or Skill Improvement reference remains in this branch's source, tests or docs.
+  - `remote_collaboration.md`, `standalone_agent_run_root.md`, `remote-collaboration/`, `execution/remote/` and the web settings files are clean.
+  - The only remaining mention outside migrations is the base's retired-setting policy entry.
+- Eligibility unchanged in intent: `isCollaborationEligibleStandaloneRun` lost its `launchPurpose` clause with the base. Peer-delegated runs remain eligible standalone runs (`applicationExecutionContext` is null for them).
+- The removal migration never affects a peer-delegated run.
+  - Its helper rule is `agentDefinitionId === improver || launchPurpose === "server_helper"` (`remove-skill-improvement-data-migration.ts:200-221`). A peer-delegated run carries neither.
+  - The migration reads metadata as raw JSON and never writes it.
+  - `delegated-run-metadata-across-migrations.test.ts` runs the real migration. Metadata and the index stay identical byte for byte, and the store still reads `delegatedFrom` (IMP-20). The test is proportionate: one case, the real migration and store, a temp root.
+- Checks relied on, at the merge:
+  - IMP-18: install, prebuild, typecheck.
+  - IMP-19: 72 files and 550 tests across remote, metadata, catalog and every migration.
+  - IMP-20: the new test.
+  - IMP-21: server suite, 6,391 passed, 1 failed under load (`native-compaction-terminal-drain`, outside this branch, passes alone 6/6).
+  - IMP-22: web suite, 4 timeouts under load in 3 files outside this branch; they pass alone 8/8.
+  - The load-only failures are in code this branch does not touch. I accept them as environment, not attributable to the merge.
+
+### Candidates
+
+| Candidate | Disposition | Reason |
+| --- | --- | --- |
+| The base's removal migration also deletes any `launchPurpose: "server_helper"` run, possibly old compaction helper runs (implementation engineer's note) | Follow-up FU-008 | Outside this ticket (autobyteus-205's migration, already in `origin/personal`); it does not touch this branch's data; the release window is unconfirmed |
+
+### Result
+
+- Review Decision: `Pass`. No findings.
+- Follow-ups this review added: FU-008.
+- Next: API/E2E.
+  - Recommended: rerun the two-server E2E on a dist rebuilt at the merge (`pnpm -C autobyteus-server-ts build`). The conflicts were in the `delegatedFrom` write-at-prepare and read-at-restore paths that RC-05 … RC-13 exercise end to end.
+  - The proportional test-code review of `300bf4c09a` is included here; it is an implementation test.
+
+## Earlier Result — Implementation Review Round 4 (CRR-006)
+
+This section was the CRR-006 result; superseded by CRR-009 only in recency. Earlier results follow as context: CRR-005 (F-002 origin), CRR-004 (round-3 re-audit), and rounds 1–2.
 
 - Review Entry Point: `Implementation Review`, round 4
 - Current Code Review Revision ID: `CRR-006`
@@ -446,10 +499,10 @@ Round-2 verification of CR-001:
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`, round 4 (CRR-006, targeted delta)
+- Review Entry Point: `Implementation Review`, round 5 (CRR-009, integration merges `4f03cce09d` and `c59c6f7359`)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 / 10; every category is at least 9.0.
+- Score Summary: 9.4 / 10, unchanged (no source change to the slice).
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (primary); informational notice to `/software_engineering_team/implementation_engineer`
-- Notes: Classification `Large` / `High`, unchanged. Reviewed code `7a5a9af077`. Open findings: none (CR-001, CR-002 and F-002 resolved). Follow-ups outside this ticket: FU-002, FU-003, FU-004.
+- Notes: Classification `Large` / `High`, unchanged. No open findings. Follow-ups outside this ticket: FU-002 … FU-008 (FU-008 added here).

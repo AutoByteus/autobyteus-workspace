@@ -14,6 +14,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` is authori
 | CRR-006 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-017; targeted delta) | Fail | Pass | F-002 (resolved) |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-003 Pass) | N/A (first test review) | Pass | None |
 | CRR-008 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 2 (API-REV-004 Pass; DR-001 RC-10 race) | Pass | Pass | None |
+| CRR-009 | `code-review-report.md` | Implementation Review, round 5 (IR-005 integration merges `4f03cce09d`, `c59c6f7359`) | Pass | Pass | None (FU-008 added) |
+| CRR-010 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 3 (API-REV-005 Pass) | Pass | Not Applicable | None |
 
 ## Revision Entries
 
@@ -272,3 +274,60 @@ None. CRR-007 had no findings; its three non-blocking notes are resolved.
 - Material score or classification changes: none. Classification `Large` / `High`.
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: AC-113's Docker part stays with the user; RSK-106 (FU-002); FU-003 and FU-004 are pre-existing.
+
+### CRR-009 — Integration merges with origin/personal: Pass
+
+- Canonical review report updated: `code-review-report.md` (new Current Result section; Latest Authoritative Result); `follow-ups.md` (FU-008)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` of merges `4f03cce09d` (DR-001) and `c59c6f7359` (IR-005), plus test `300bf4c09a`. Every file both sides changed was checked against the base side and the merge base. The base's own content is not reviewed here.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-005), on delivery's DR-002 request
+- Relevant solution revision IDs: SR-017
+- Relevant architecture-review revision IDs: ARCH-REV-007
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001, DR-002
+- Prior authoritative result: `Pass` (CRR-008 test review; CRR-006 source review)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - Both merges keep the base whole and add only this branch's lines: `delegatedFrom` (type, parse, prepare write, input) and the remote-collaboration setting, resolver, composition, docs and messages.
+  - No `launchPurpose` or Skill Improvement leftovers remain.
+  - The removal migration's helper rule cannot match a peer-delegated run, and the new test proves it with the real migration.
+  - The load-only suite failures are outside this branch.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None open; CR-001, CR-002 and F-002 remain resolved.
+
+- New or remaining finding IDs: none
+- Follow-ups this review added: FU-008 (the base migration's `server_helper` rule may also delete old compaction helper runs; unconfirmed; owner autobyteus-205)
+- Material score or classification changes: none. Classification `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (rerun the two-server E2E on a rebuilt dist); informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: AC-113's Docker part (the user); RSK-106 (FU-002).
+
+### CRR-010 — Test-code review round 3: no durable test changed
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (Current Result section; Latest Authoritative Result)
+- Review entry point and round: Successful API/E2E test-code review, round 3
+- Review scope: `N/A`. API/E2E's commit `2db0190aa1` changes only documents and evidence; the E2E file is unchanged since `a777af6b1d`.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-005 Pass)
+- Relevant solution revision IDs: SR-017
+- Relevant architecture-review revision IDs: ARCH-REV-007
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: DR-001, DR-002
+- Prior authoritative result: `Pass` (CRR-008)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why:
+  - No durable test file was added, updated or removed during API/E2E round 5.
+  - The test diffs in the range belong to the merged base (its own ticket) and to IR-005's test (reviewed in CRR-009).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Classification `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: AC-113's Docker part (the user); RSK-106 (FU-002); FU-003 … FU-008 outside this ticket.

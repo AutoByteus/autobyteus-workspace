@@ -2,7 +2,20 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication`
 
-## Current Result — Round 2 (CRR-008)
+## Current Result — Round 3 (CRR-010): Not Applicable
+
+- Trigger: API/E2E round 5 Pass (API-REV-005, on the integration merge `c59c6f7359`, HEAD `2155dc1aef`; evidence commit `2db0190aa1`).
+- Changed durable test paths this round: none.
+  - `2db0190aa1` changes only ticket documents and evidence.
+  - The E2E file is unchanged since `a777af6b1d` (CRR-008).
+  - The test diffs between `a777af6b1d` and `2db0190aa1` come from the merged `origin/personal` (autobyteus-205; reviewed in its own ticket) and from the IR-005 implementation test `300bf4c09a`, which was reviewed with source in CRR-009.
+- No durable test file changed: `Yes`. Result: `Not Applicable`.
+- Evidence noted, not reviewed as test code:
+  - r5-1 and r5-2: 20/20 each on a dist rebuilt at the merge;
+  - API-22: 36/37, the one failure FU-003 at the same lines as before.
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+
+## Earlier Result — Round 2 (CRR-008)
 
 - Trigger: API/E2E round 4 (API-REV-004, commit `a777af6b1d`). Delivery's DR-001 / DEL-06 saw RC-10 fail once under load on the integrated state (HEAD `303eb6ca1d`, which includes the `origin/personal` merge `4f03cce09d`).
 - Changed durable test path: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`, updated in `a777af6b1d`. The commit touches only test code and evidence; no source changed.
@@ -115,7 +128,7 @@ Non-blocking notes for the API/E2E owner, at their discretion. None affects requ
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, CRR-008; round 1 CRR-007 also Pass)
+- Result: `Not Applicable` (round 3, CRR-010: no durable test changed); round 2 CRR-008 and round 1 CRR-007 `Pass`
 - Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (through `a777af6b1d`)
 - Unresolved finding IDs: none (the CRR-007 notes are resolved)
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
