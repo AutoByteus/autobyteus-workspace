@@ -1,0 +1,6 @@
+# IMP-21-live-suites-gates-off 15 server live suites load and skip with gates off
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: pnpm -C autobyteus-server-ts exec vitest run <15 live suites> --no-watch
+
+ Test Files  15 skipped (15)
+      Tests  121 skipped (121)

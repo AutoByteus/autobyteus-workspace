@@ -1,0 +1,10 @@
+# IMP-23 plain node script, only autobyteus-ts, no resolver and no setup code (AC-013 mechanics)
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: node probe.mjs <sha256 of expected value>  (probe: LLMFactory.createLLM(id) then getClient(); run from autobyteus-server-ts so autobyteus-ts resolves to its dist)
+
+--- variable unset
+deepseek-v4-flash -> missing_api_key: API key not provided for DEEPSEEK. Configure the DEEPSEEK API key before sending a request.
+grok-4.7          -> missing_api_key: API key not provided for GROK. Configure the GROK API key before sending a request.
+--- only AUTOBYTEUS_TEST_VAULT=<tmp>/vault set
+deepseek-v4-flash -> key resolved (sha256 matches expected DeepSeek value: true)
+grok-4.7          -> missing_api_key: missing capability provider.grok.api-key for GROK (test vault <tmp>/vault); add it with pnpm test-vault setup

@@ -1,0 +1,9 @@
+# IMP-25 canary scan (AC-011, QR-001)
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# method: python3 scan comparing in memory (values never printed) the synthetic values and every inherited *_API_KEY value against every log of this round and 'git diff 12a23e7b8a..HEAD -- . :!tickets'
+
+log files scanned: 20; inherited real key values checked: 12
+synthetic canary occurrences in logs: 0
+real key value matches in logs and diff: 0
+synthetic values in the diff (test constants only): 2
+note: the 2 diff occurrences are the constants of environment-key-source.e2e.test.ts, not output
