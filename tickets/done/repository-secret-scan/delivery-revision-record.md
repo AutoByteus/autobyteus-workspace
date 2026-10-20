@@ -96,7 +96,11 @@
   scoped to `generic-api-key`, and the new `env-style-secret` rule covers
   `*_API_KEY=<hex>`.
 - Finalization: committed on `codex/secret-gate` from `origin/personal`
-  `4c513759fb`, gate run, then pushed to `personal` (fast-forward, by the
-  user's direction to commit directly).
+  `4c513759fb`. The pre-push check found `personal` had moved to
+  `18d37c7d6d` (runtime-lifecycle-review record; no overlap), so the commit
+  was rebased onto it, the gate rerun (PASS on the change and on the new base
+  range) and the hygiene check rerun. It was pushed to `personal` as
+  `8525065075` (fast-forward, by the user's direction to commit directly).
+  This correction is the following commit.
 - Terminal return to the Solution Designer: `Sent` (`Delivery Completed`).
 - Remaining: FU-002, a CI check for pushes that skip the guide.
