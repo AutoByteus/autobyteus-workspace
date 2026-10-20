@@ -64,9 +64,10 @@ configured origin:
 - A same-origin redirect (for example 307/308 from `/mcp` to `/mcp-new`) is
   followed, and the credentials are sent to the new path.
 - A redirect to another origin is not followed. Preview, connect or the tool
-  call fails with `Redirect to <url> not followed; use that URL as the endpoint
-  if it is the intended server (redirectPolicy: 'same-origin')`, and the other
-  origin receives no request. Configure the final URL instead.
+  call fails with `HTTP 307 Temporary Redirect: Redirect to <url> not followed;
+  use that URL as the endpoint if it is the intended server (redirectPolicy:
+  'same-origin')` (the redirect's own status first), and the other origin
+  receives no request. Configure the final URL instead.
 - 301/302 on a POST are not followed even within the origin; this is the
   SDK's contract.
 
@@ -123,11 +124,26 @@ called tool is an external MCP-origin tool. The client keeps the SDK's default
 handshake (2025-11-25) and starts a stdio server once; AutoByteus sets no
 `versionNegotiation`. Tool listing walks every page of a paginating server.
 
-Preview, discovery and tool calls show the SDK's error text unchanged;
-AutoByteus does not reword it, and no AutoByteus code parses it:
+Preview, discovery and tool calls show the SDK's error text, and no AutoByteus
+code parses it. The one addition is the HTTP status of a failed remote connect:
 
-- A remote HTTP failure reads `SdkHttpError: Error POSTing to endpoint:
-  <response body>` (a 401, for example, or a refused cross-origin redirect).
+- When a remote server answers the connect with an HTTP error, the SDK keeps
+  the status on its `SdkHttpError`, not in the message. `HttpManagedMcpServer`
+  in `autobyteus-ts` therefore puts it first, followed by the SDK's text:
+  `Error: HTTP 401 Unauthorized: Error POSTing to endpoint: <response body>`.
+  The reason phrase is left out when the response has none (`HTTP 401: …`). A
+  404 with an empty body reads `HTTP 404 Not Found: Error POSTing to endpoint: `.
+  The text carries no header or token value. Preview prefixes it with `Failed to
+  preview tools for MCP server: `; discovery returns it as the `message` of a
+  `success: false` result; a native agent's tool call that has to connect
+  reports it inside `Error executing tool '<name>' (ID: …): …`. Agents on the
+  other runtimes reach the tool through the Agent Tools MCP endpoint, which
+  currently answers any external tool failure with JSON-RPC `Internal error`,
+  so they do not see this text.
+- A failure without an HTTP answer keeps the SDK's or Node's text with no
+  status, for example `TypeError: fetch failed` when nothing listens.
+- An HTTP error on a session that is already connected (listing tools, a tool
+  call) keeps the SDK's text unchanged.
 - A stdio server that exits at start fails with `SdkError: Connection closed`.
 - A stdio server that does not answer `initialize` fails after 60 seconds (the
   SDK's default request timeout) with `SdkError: Request timed out`.
