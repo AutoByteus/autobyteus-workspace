@@ -6,7 +6,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 Pass (+ ARCH-REV-003 Pass for SR-011) | N/A (AR-008 implementation note applied) | `Initial Baseline` | SR-010, SR-011, ARCH-REV-002, ARCH-REV-003 | Implemented; to code review |
+| IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 Pass (+ ARCH-REV-003 Pass for SR-011) | N/A (AR-008 implementation note applied) | `Initial Baseline` | SR-010, SR-011, ARCH-REV-002, ARCH-REV-003 | Implemented; code review Fail (CRR-001) |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 Fail | CR-001, CR-002 (CR-003 → SR-012, no code change) | `Local Fix` | SR-012, CRR-001 | Fixed; to code review (delta) |
 
 ## Revision Entries
 
@@ -29,3 +30,25 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-01…IMP-10 in the handoff's Checks Run. All pass except one baseline architecture-guard case (IMP-05, FU-005), which this change does not cause.
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (Large/High).
 - Remaining limitations or risks: handoff "Known Risks".
+
+### IR-002 — Claude signed-out reading; agent count never defaults to zero
+
+- Triggering role, report path, and round: code reviewer (run `code_reviewer_064191c97ef649089bdbc6f42050e984`), `code-review-report.md`, CRR-001 (Fail, Local Fix).
+- Triggering finding IDs: CR-001 (Medium), CR-002 (Low). CR-003, the table/stacked switch, was decided by the Solution Designer as SR-012 (container-width switch kept), so no code change.
+- Classification: Local Fix.
+- Prior authoritative result: IR-001, code review Fail.
+- Current authoritative result: fixed at `52aa663edd`; affected checks pass; ready for the targeted delta review.
+- Related solution revision IDs: SR-012.
+- Related architecture-review revision IDs: N/A.
+- Related code-review revision IDs: CRR-001.
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: N/A.
+- Why this implementation revision is recorded: a signed-out Claude showed "Sign-in unknown". Claude 2.1.302 prints `{"loggedIn": false}` and exits 1, and IR-001 treated every non-zero exit as unknown. Separately, a failing running-agent count was silently read as 0.
+- Approved behavior or requirement IDs affected: BEH-005, REQ-005, AC-006 and AC-009 (Claude "Not signed in" + "Sign in from its command line."); BEH-003, REQ-003, AC-004 (no Update when the count is unreadable).
+- Implementation delta:
+  - `claude-agent-runtime-strategy.ts`: the status JSON is read whatever the exit code. `loggedIn === true` → signedIn. `loggedIn === false` → signedOut with `describeFailure` detail, so the readiness reason text is unchanged. A JSON object without a boolean `loggedIn` at exit 0 → signedOut, as before. With no JSON, exit 0 plus "logged in" text → signedIn; anything else → unknown.
+  - `agent-runtime-status-service.ts`: `runningAgents()` calls the port directly; the try/catch that returned 0 is removed.
+- Changed files or areas: the two source files above; `agent-runtime-strategies.test.ts` (the signed-out fake now exits 1 like the vendor; new cases for a JSON object without `loggedIn`, and for "logged in" text with exit 1 → unknown); `agent-runtime-status-service.test.ts` (an unreadable count blocks Update and starts no process).
+- Local validation and result: IMP-12 (server typecheck clean; agent-runtimes, resolver, application-platform and Grok-registration tests: 17 files, 149 tests pass). IMP-11 ran the real Claude 2.1.302 in an empty temporary HOME through the strategy: `RAW exitCode=1`, `READING {"state":"signedOut","detail":""}`.
+- Next recipient or routing: `/software_engineering_team/code_reviewer` (targeted delta review).
+- Remaining limitations or risks: unchanged from IR-001 except that the UI-breakpoint question is closed by SR-012.
