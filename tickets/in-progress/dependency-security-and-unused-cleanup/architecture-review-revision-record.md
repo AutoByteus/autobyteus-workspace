@@ -10,6 +10,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-002 | Round 2 / SR-002 re-review | SR-001, SR-002 | Fail | Pass | AR-001 (resolved) |
 | ARCH-REV-003 | Round 3 / SR-003 (after IMP-DI-001) | SR-003 | Pass | Fail (Design Impact) | AR-002 |
 | ARCH-REV-004 | Round 4 / SR-004 re-review | SR-004 | Fail | Pass | AR-002 (resolved) |
+| ARCH-REV-005 | Round 5 / SR-005 (after IMP-DI-002) | SR-005 | Pass | Pass | none (MP-002) |
 
 ## Revision Entries
 
@@ -114,3 +115,29 @@ None.
 - Material classification changes: none (`Medium`/`High`)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: R-001…R-004 remain step 7 validation items.
+
+### ARCH-REV-005 — Review of SR-005 (DEC-008: `dompurify` held at 3.4.7, after IMP-DI-002)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/design-review-report.md`
+- Review round and trigger: Round 5; Solution Designer's SR-005 (`handoff-sr-005.md`), after the implementation engineer's Design Impact IMP-DI-002 (`evidence/IMP-09`)
+- Triggering role, report path, and finding IDs: Implementation Engineer, IMP-DI-002 → Solution Designer, DEC-008; no reviewer finding
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed:
+  - DEC-008 is accepted: an exact same-major pin, not an override. DOMPurify has no high/critical advisory, and 3.4.7 still closes 12 of base 3.3.1's moderates.
+  - MP-002 closes IMP-09's open point about mermaid: mermaid calls only `sanitize` and `addHook`, so no advisory open at 3.4.7 is reachable from either caller.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Still resolved | — | Unchanged |
+| AR-002 | Resolved | Still resolved | SR-005 adds no source change | The DEC-008 change is a manifest specifier only |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (`Medium`/`High`)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty:
+  - Which `dompurify` copy mermaid resolves after dedupe should be recorded in the handoff.
+  - R-001…R-004 remain step 7 items.

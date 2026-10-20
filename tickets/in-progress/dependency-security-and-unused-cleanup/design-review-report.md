@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/requirements-doc.md` (SR-004: SR-003 [REQ-006 revised, DEC-007 added after IMP-DI-001] with the scope wording aligned after ARCH-REV-003; approved by the Solution Designer within the Task's direction; user informed; no change of intended behavior)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/requirements-doc.md` (SR-005: SR-004 plus DEC-008 [`dompurify` held at 3.4.7] after IMP-DI-002; SR-004 aligned the scope wording; SR-003 revised REQ-006 and added DEC-007; approved by the Solution Designer within the Task's direction; user informed; no change of intended behavior)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/design-spec.md` (SR-004)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/design-spec.md` (SR-005)
 - Supplemental Task Artifacts Reviewed: `evidence/SD-00…SD-08`, `probes/` (`update-inrange-loop.sh`, `fixability.mjs`, `apply-manifest-changes.mjs`, `import-provider-check.mjs`), `follow-ups.md`, `handoff-sr-001.md`, `handoff-sr-002.md`, `handoff-sr-003.md`, `implementation-handoff.md`, `evidence/IMP-04-lockfile-review.txt`, `evidence/IMP-07-axios-typing-design-impact.txt`
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
+- Relevant Solution Revision IDs: SR-001…SR-005
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/dependency-security-and-unused-cleanup/tickets/in-progress/dependency-security-and-unused-cleanup/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: SR-004, the re-review of AR-002 (scope wording)
-- Prior Review Round Reviewed: 3 (`ARCH-REV-003`, Fail)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: SR-005, design revised after the implementation engineer's Design Impact IMP-DI-002 (`dompurify` 3.4.8+ under happy-dom)
+- Prior Review Round Reviewed: 4 (`ARCH-REV-004`, Pass)
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: worktree `codex/dependency-security-and-unused-cleanup` @ `3b2c86ca9e`, installed and clean.
   - Read: the web, `autobyteus-ts` and server manifests; the root `pnpm-lock.yaml` (importer and snapshot sections); the trial evidence `SD-02`/`SD-03`/`SD-05`/`SD-06`; the loop and fixability probes.
   - For each removal candidate, I grepped the name across the package, excluding build output and tickets.
@@ -33,6 +33,11 @@
     - Change Scope L61 now lists `download-media-tool.ts` (L118) and its existing test; L64 reads "all other source code (… DEC-007 is the only one)".
     - Non-Goals L78, DEC-001 L173 and Architecture Phase Input L203 now refer to REQ-006/DEC-007.
     - The Dependency Rules (L190) and the handoff refer to `evidence/IMP-04` for the list.
+  - Round 5: the code is at `79ece48bf4`, the docs at `6a33c4600d`; the SR-005 edits are uncommitted.
+    - Read `handoff-sr-005.md` and `evidence/IMP-09` (failing tests, the version bisect, the cause in DOMPurify 3.4.8's `Node.prototype` `nodeName` getter, happy-dom returning `""`, the Chromium/Electron product check, and the two failed workarounds).
+    - Read the SR-005 diff: DEC-008, the file mapping, the Findings Table row, FU-009.
+    - `gh api /advisories/<id>` for the 7 DOMPurify advisories still open at 3.4.7, to read their preconditions.
+    - Grepped `mermaid@11.17.2` `dist/chunks/mermaid.core/*.mjs` for DOMPurify API use.
 
 ## Routing Classification Review
 
@@ -128,6 +133,7 @@ N/A.
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/package.json` | Pass | Pass | N/A | Pass | 7 dependencies + 4 devDependencies removed; `@nuxtjs/apollo` kept |
 | `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` + its existing unit test | Pass | Pass | N/A | Pass | DEC-007: L118 `String(contentType).split(';')`. Runtime value: a string. Axios' Node adapter wraps the Node `IncomingMessage` headers, where `content-type` is a single string, so `String()` is the identity and only the types change. The existing test already mocks `content-type`, so the new assertions fit there. |
+| `autobyteus-web/package.json` `dompurify` (DEC-008) | Pass | Pass | N/A | Pass | `^3.2.2` → exact `3.4.7`: a direct specifier within its major, not an override, so it fits the Dependency Rules. The Guidance already allows holding at the newest working version that is still patched for the targeted severities, and DOMPurify has no high/critical advisory. Compared with base 3.3.1, 3.4.7 closes 12 moderate advisories, so security still improves on base. |
 | `autobyteus-ts/package.json` | Pass | Pass | N/A | Pass | `dotenv`/`ts-node`: grep finds only a test label and a regex. No script or config loads them. Web declares its own `dotenv` for `codegen`. |
 | 4 small packages | Pass | Pass | N/A | Pass | `@types/node` (measured) |
 | Other manifests, `pnpm-lock.yaml` | Pass | Pass | N/A | Pass | Specifier raises by `pnpm update` within range only |
@@ -173,7 +179,19 @@ The one-name-per-update loop is well argued by the trial: a single multi-name up
 
 ## Material Premise Validation (Only When Needed)
 
-None. AR-001 needs no assumed scenario: it follows from today's lockfile and source, and every build and web start goes through it (SCN-003, SCN-004).
+### `MP-002` — An advisory still open at `dompurify` 3.4.7 is reachable in the shipped app
+
+- Related approved requirement or established contract: REQ-001/REQ-003 (high/critical targeted; moderates not targeted); DEC-008's claim that none is reachable
+- Relevant behavior ID(s): BEH-001
+- Initiating basis kind: `System`
+- Independent product-supported initiating trigger: the renderer sanitizes agent output with `DOMPurify.sanitize` in two places. Markdown goes through `useMarkdownSegments.ts` L370-383; mermaid diagrams go through mermaid's own calls. Both handle model-produced, untrusted input.
+- Support evidence: the 7 advisories open at 3.4.7 (`gh api`) each need one of these: `setConfig` (GHSA-cmwh-pvxp-8882, medium), `IN_PLACE` (GHSA-55q2-fjhq-7xh7 medium; GHSA-6688-9rhm-gjv2 and GHSA-x4vx-rjvf-j5p4 low), `SAFE_FOR_TEMPLATES` with DOM output (GHSA-gvmj-g25r-r7wr), Trusted Types with `clearConfig` (GHSA-vxr8-fq34-vvx9), or `CUSTOM_ELEMENT_HANDLING` (GHSA-c2j3-45gr-mqc4).
+- Forward production path:
+  - Our code calls only `sanitize(html, { ADD_ATTR, ADD_TAGS, USE_PROFILES })` (IMP-09 grep).
+  - IMP-09 left mermaid "not analysed". I grepped `mermaid@11.17.2`: it uses only `DOMPurify.sanitize(…)` and `DOMPurify.addHook('beforeSanitizeAttributes' | 'afterSanitizeAttributes', …)`. It never uses `setConfig`/`clearConfig`/`removeHook`, `IN_PLACE`, `SAFE_FOR_TEMPLATES`, `RETURN_TRUSTED_TYPE` or `CUSTOM_ELEMENT_HANDLING`.
+- Lifecycle preconditions and material consequence: none of the required options or calls occurs in either caller.
+- Reachability: `Not Reachable` (from the vulnerable feature use; the input itself is untrusted)
+- Review consequence / proportionate response: DEC-008 holds, and FU-009 (not urgent) is proportionate. This also covers mermaid's copy, whether pnpm dedupes it to 3.4.7 (as the file mapping expects) or keeps 3.4.17.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -188,7 +206,8 @@ None.
 None open.
 
 - AR-001 is resolved (ARCH-REV-002).
-- AR-002 is resolved (ARCH-REV-004). The five places listed in ARCH-REV-003 are aligned with REQ-006/DEC-007, and the Change Scope names both files.
+- AR-002 is resolved (ARCH-REV-004).
+- SR-005/DEC-008 is accepted (ARCH-REV-005): no new finding.
 
 ## Classification
 
@@ -203,6 +222,10 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 - **RR-001 (R-001…R-004).** Semver slips, Electron 42.4 → 42.11, new advisories, and hidden removal paths remain validation items under step 7. The matrix is complete for the surfaces touched.
 - **RR-002 (resolved).** Step 3 has an explicit parent pass (`electron-updater`, `vue`, `express-rate-limit`, `mermaid`, `@mermaid-js/parser`, plus the parent of any remaining runtime row). The corrected trial shows it was needed: without it, `lodash-es` 4.17.23 remained.
 - **Note on the step-4 rule.** The rule is "identical to SD-07, otherwise stop". Only a change *to* `MISSING` means a lost provider. A line that moves between `package`, `root` and `hidden-hoist-only` after a refresh is harmless, so the implementer may judge it rather than escalate. Non-blocking: in the trial the diff was empty.
+- **DEC-008 notes (non-blocking).**
+  - Record in the implementation handoff which `dompurify` copy `mermaid` resolves after `pnpm dedupe`. Either is acceptable (MP-002).
+  - Mermaid's `addHook` calls register global hooks on the default DOMPurify instance. If the dedupe leaves a single copy, our `sanitize` call shares those hooks. This was already so at base (one 3.3.1 copy) and is not new.
+  - IMP-09's open detail (why `<p>` survives while `<h1>` is dropped) doesn't affect the decision: the bisect and the Chromium check settle it.
 - **Count (resolved).** The design and `handoff-sr-003.md` now say "as listed in `evidence/IMP-04`".
 - **DEC-007 (accepted).** axios 1.20.0 is the only release that fixes GHSA-3pq3-5fj3-cg6v and GHSA-542g-h47m-68v8 (`IMP-07` hold-back check), so holding it back would leave two high advisories. Option (a) is a type-only change on the real runtime path. The diagnostic build passed with only that line changed.
 - **Audit baseline (non-blocking).** Step 5 compares with `SD-05`; `SD-08` is the corrected trial. Their high/critical totals and sets match, so either works.
@@ -212,4 +235,4 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass` (no premise needed)
-- Notes: Ready for implementation per `design-spec.md` SR-004. IR-001 steps 1-6 (`9936445f55`) stay valid. What remains: the DEC-007 line and test, then step 7 validation. Classification `Medium`/`High` is preserved.
+- Notes: Ready for implementation per `design-spec.md` SR-005. What remains: the `dompurify` pin, reinstall, dedupe, rechecks of steps 4-6, then step 7. Classification `Medium`/`High` is preserved.

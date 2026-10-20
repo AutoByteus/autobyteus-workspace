@@ -1,0 +1,118 @@
+# IMP-11 — DEC-008 (dompurify exact 3.4.7) + in-range markdown-it for a newly published high; steps 4-6 rechecked
+# Commit: 7da874ed2b
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T17:05:49Z
+
+## 1. DEC-008: minimal text edit "dompurify": "^3.2.2" -> "3.4.7"; pnpm install; pnpm dedupe; pnpm dedupe --check exit=0
+   lockfile diff (only dompurify):
+   385,386c385,386
+   <         specifier: ^3.2.2
+   <         version: 3.4.17
+   ---
+   >         specifier: 3.4.7
+   >         version: 3.4.7
+   4698,4699c4698,4699
+   <   dompurify@3.4.17:
+   <     resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
+   ---
+   >   dompurify@3.4.7:
+   >     resolution: {integrity: sha512-2jBxDJY4RR06tQNy4w5FlFH7kfxsQZlufd0sbv+chfHCxeJwrFw2baUDsSwvBISD4K4RDbd0PTfy3uNXsR6siA==}
+   13434c13434
+   <   dompurify@3.4.17:
+   ---
+   >   dompurify@3.4.7:
+   15102c15102
+   <       dompurify: 3.4.17
+   ---
+   >       dompurify: 3.4.7
+
+## mermaid's copy after dedupe: snapshot mermaid@11.17.2 -> dompurify: 3.4.7; node_modules/.pnpm/mermaid@11.17.2/node_modules/dompurify/package.json version = 3.4.7
+   (one dompurify in the lockfile: 2 entries = packages + snapshots of 3.4.7)
+
+## 2. Audit after DEC-008 showed a high outside the explained set: markdown-it@14.1.1 (prod, web direct dependency)
+   moderate <=14.1.1 -> >=14.2.0 GHSA-6v5v-wf23-fmfq created 2026-06-15T20:41:06.000Z
+   moderate <14.3.1 -> >=14.3.1 GHSA-253c-mchw-3w2r created 2026-09-29T17:57:56.000Z
+   high <14.3.2 -> >=14.3.2 GHSA-r7fv-28h4-cvq7 created 2026-10-20T14:34:50.000Z
+   GHSA-r7fv-28h4-cvq7 was created 2026-10-20T14:34:50Z, after the IR-001 audit; newest in range 14.3.3 (web ^14.1.0) -> step 5: fixed here.
+   pnpm update -r --depth Infinity markdown-it; pnpm dedupe; dedupe --check exit=0; lockfile diff:
+   359c359
+   <         version: 0.23.2(markdown-it@14.1.1)
+   ---
+   >         version: 0.23.2(markdown-it@14.3.3)
+   397,398c397,398
+   <         specifier: ^14.1.0
+   <         version: 14.1.1
+   ---
+   >         specifier: ^14.3.3
+   >         version: 14.3.3
+   6069,6070c6069,6070
+   <   markdown-it@14.1.1:
+   <     resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
+   ---
+   >   markdown-it@14.3.3:
+   >     resolution: {integrity: sha512-L//tDAkjTjJCU6pBUSBTgs3Kg4InVaZuUZog/b6V12UKhcDQ7S78877ibbCanRExwPuYP1CZD7Gd2dxSy1GXRg==}
+   10409c10409
+   <   '@mdit/helper@0.22.1(markdown-it@14.1.1)':
+   ---
+   >   '@mdit/helper@0.22.1(markdown-it@14.3.3)':
+   10413c10413
+   <       markdown-it: 14.1.1
+   ---
+   >       markdown-it: 14.3.3
+   10415c10415
+   <   '@mdit/plugin-katex@0.23.2(markdown-it@14.1.1)':
+   ---
+   >   '@mdit/plugin-katex@0.23.2(markdown-it@14.3.3)':
+   10417,10418c10417,10418
+   <       '@mdit/helper': 0.22.1(markdown-it@14.1.1)
+   <       '@mdit/plugin-tex': 0.22.2(markdown-it@14.1.1)
+   ---
+   >       '@mdit/helper': 0.22.1(markdown-it@14.3.3)
+   >       '@mdit/plugin-tex': 0.22.2(markdown-it@14.3.3)
+   10422c10422
+   <       markdown-it: 14.1.1
+   ---
+   >       markdown-it: 14.3.3
+   10424c10424
+   <   '@mdit/plugin-tex@0.22.2(markdown-it@14.1.1)':
+   ---
+   >   '@mdit/plugin-tex@0.22.2(markdown-it@14.3.3)':
+   10428c10428
+   <       markdown-it: 14.1.1
+   ---
+   >       markdown-it: 14.3.3
+   15040c15040
+   <   markdown-it@14.1.1:
+   ---
+   >   markdown-it@14.3.3:
+   web manifest rebuilt in base key order (pnpm sorted it); content asserted equal to pnpm output; frozen install exit=0
+
+## 3. Steps 4-6 rechecked on 7da874ed2b
+### manifests vs IR-001: git diff 79ece48bf4 7da874ed2b -- "*package.json"
+-    "dompurify": "^3.2.2",
++    "dompurify": "3.4.7",
+-    "markdown-it": "^14.1.0",
++    "markdown-it": "^14.3.3",
+### lockfile vs base and vs IR-001
+# vs base: removed 68 added 23 NEW-MAJOR 130
+# vs IR-001 lockfile (9936445f55): changed packages:
+  dompurify: 3.4.17 -> 3.4.7
+  markdown-it: 14.1.1 -> 14.3.3
+### import providers vs SD-07
+identical to SD-07 (136 lines)
+### peers (pnpm install --resolution-only; lockfile unchanged by it)
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.11
+  └─┬ @nuxt/cli 3.37.0
+    └── ✕ unmet peer @nuxt/schema@^4.4.6: found 3.21.11
+
+### audit
+ALL {'info': 0, 'low': 17, 'moderate': 40, 'high': 46, 'critical': 6} | IR-001 {'info': 0, 'low': 13, 'moderate': 40, 'high': 46, 'critical': 6} | same high/critical set: True
+    @fastify/busboy@2.1.1(high) @fastify/static@7.0.4(high) @graphql-tools/utils@10.11.0(high) @graphql-tools/utils@11.0.0(high) @graphql-tools/utils@9.2.1(high) app-builder-lib@25.1.8(high) braces@3.0.3(high) builder-util-runtime@9.2.10(high) fastify@4.29.1(high) find-my-way@8.2.2(high) form-data@2.3.3(critical/high) happy-dom@15.11.7(critical/high) http-cache-semantics@4.2.0(high) immutable@3.7.6(high) jpeg-js@0.1.2(high) jpeg-js@0.2.0(high) lodash@4.17.23(high) minimatch@9.0.1(high) minimist@0.0.8(critical) node-forge@1.4.0(high) sharp@0.33.5(high) tar@6.2.1(critical/high) tinypool@1.1.1(critical) undici@5.28.3(high) undici@6.27.0(high) url-regex@3.2.0(high) xlsx@0.18.5(high)
+PROD {'info': 0, 'low': 14, 'moderate': 18, 'high': 13, 'critical': 0} | IR-001 {'info': 0, 'low': 10, 'moderate': 18, 'high': 13, 'critical': 0} | same high/critical set: True
+    @fastify/busboy@2.1.1(high) @fastify/static@7.0.4(high) fastify@4.29.1(high) find-my-way@8.2.2(high) undici@5.28.3(high) xlsx@0.18.5(high)
+dompurify open now: [('low', 'GHSA-6688-9rhm-gjv2'), ('low', 'GHSA-c2j3-45gr-mqc4'), ('low', 'GHSA-gvmj-g25r-r7wr'), ('low', 'GHSA-vxr8-fq34-vvx9'), ('moderate', 'GHSA-55q2-fjhq-7xh7'), ('moderate', 'GHSA-cmwh-pvxp-8882')]
+markdown-it open now: []
+### remaining IN-RANGE rows
+IN-RANGE undici@6.27.0 <- node-gyp (^6.25.0) -> newest in range 6.29.1 | high x1 | via autobyteus-web>@electron/rebuild>node-gyp

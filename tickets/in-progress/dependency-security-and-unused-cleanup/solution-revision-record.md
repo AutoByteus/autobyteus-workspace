@@ -89,3 +89,22 @@
   - The transitive-major count now says "as listed in `evidence/IMP-04`", replacing my "131" (the review counts 130). The SR-003 entry above keeps its original text as history.
 - Intended behavior changed: No. Approval: unchanged (SR-003 basis). Classification: unchanged, `Medium` / `High`
 - Handoff: `get_handoff_rules` → architecture review rule → `/software_engineering_team/architecture_reviewer`, for AR-002 only
+
+#### Review outcome for SR-004 (informational, recorded late)
+
+- 2026-10-20: ARCH-REV-004 = **Pass** (AR-002 resolved). The reviewer delivered the implementation handoff; not repeated. It was recorded late because the implementation engineer was working in the worktree.
+
+### SR-005 — `dompurify` held at 3.4.7 (DEC-008)
+
+- Phase and classification: `Design Impact`. A design decision under the existing rule, which allows holding a package at the newest working version. REQ-001 targets high/critical, so no requirement changes; DEC-008 is added to the decision log.
+- Trigger: `/software_engineering_team/implementation_engineer` IMP-DI-002 (IR-002; commits `9936445f55`, `79ece48bf4`, `6a33c4600d`; `evidence/IMP-08`, `IMP-09`, `IMP-10`). The implementer later corrected the follow-ups path: FU-008 lives in the ticket folder's `follow-ups.md`.
+- Verified independently:
+  - `gh api /advisories?affects=dompurify@3.4.7`: 2 medium, 5 low, none high/critical. Each needs `IN_PLACE`, `CUSTOM_ELEMENT_HANDLING`, `setConfig` + hooks, Trusted Types or `SAFE_FOR_TEMPLATES`.
+  - Our only call is `sanitize(html, opts)` (IMP-09 probe, `useMarkdownSegments.ts` L370-383).
+- Decision:
+  - DEC-008 = option (c): pin `dompurify` exactly to 3.4.7 in `autobyteus-web`, then reinstall, dedupe and recheck steps 4-6.
+  - FU-009: fix the test DOM, report upstream, lift the pin.
+  - Mermaid's own DOMPurify use was not analysed (IMP-09); it resolves to the same 3.4.7 and stays below high/critical either way.
+- FU-008 (auto-refresh test flake, 1 in 10, implementer) is acknowledged; it was not caused by this ticket.
+- Classification: unchanged, `Medium` / `High`
+- Handoff: `get_handoff_rules` → revised package with High risk → `/software_engineering_team/architecture_reviewer` (`handoff-sr-005.md`)

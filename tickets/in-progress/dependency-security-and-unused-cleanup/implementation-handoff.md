@@ -5,21 +5,23 @@
 - Implementation commits:
   - `9936445f55`: manifests and lockfile, steps 1–6.
   - `79ece48bf4`: DEC-007, the one source line and its test.
+  - `7da874ed2b`: DEC-008, `dompurify` exact 3.4.7, and the in-range `markdown-it` 14.3.3.
   - The ticket documents and evidence are committed after them.
-- **Status (IR-002): blocked by Design Impact IMP-DI-002.**
-  - IMP-DI-001 is resolved by DEC-007 (SR-004, ARCH-REV-004). All builds now pass, and so do the server typecheck, `test:unit` and `test:integration`.
-  - Web `test:nuxt` fails 4 heading-rendering tests. The in-range `dompurify` 3.4.17 drops `<h1>`/`<h2>` under happy-dom, the web test DOM. It keeps them in real Chromium.
-  - Every fix needs a decision outside DEC-007: hold `dompurify` back, change the test harness, or something else.
-- Earlier status (IR-001): blocked by IMP-DI-001, the `axios` 1.20 typing change, now resolved.
+- **Status (IR-003): implementation complete; ready for code review.**
+  - IMP-DI-001 is resolved by DEC-007 and IMP-DI-002 by DEC-008.
+  - The steps 1–6 results hold on the final tree (IMP-11).
+  - The implementation-scoped builds and suites pass. Two intermittent test defects are not caused by this change: FU-008 (server) and FU-010 (web).
+  - The step-7 matrix (e2e, packaged app, Docker, LM Studio) is left to API/E2E.
+- Earlier rounds: IR-001 was blocked by IMP-DI-001 (`axios` typing); IR-002 by IMP-DI-002 (`dompurify` under happy-dom).
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: architecture review selected and passed (`ARCH-REV-002`, then `ARCH-REV-004` after SR-003/SR-004). This round routes to the Solution Designer again (IMP-DI-002).
-- Requirements doc: `requirements-doc.md` (SR-004 basis, including REQ-006/DEC-007)
+- Upstream review applicability and handoff-rule result: architecture review selected and passed (`ARCH-REV-002`, then `ARCH-REV-004` after SR-003/SR-004). Then `ARCH-REV-005` after SR-005. This round routes to the Code Reviewer.
+- Requirements doc: `requirements-doc.md` (SR-005 basis, including REQ-006/DEC-007 and DEC-008)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
-- Design spec: `design-spec.md` (SR-004)
-- Supplemental task artifacts: `evidence/SD-00…SD-08`, `probes/`, `follow-ups.md`, `handoff-sr-002.md`
+- Design spec: `design-spec.md` (SR-005)
+- Supplemental task artifacts: `evidence/SD-00…SD-08`, `probes/`, `follow-ups.md`, `handoff-sr-002.md`, `handoff-sr-003.md`, `handoff-sr-005.md`
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
 - Triggering rework report: N/A
@@ -28,11 +30,23 @@
 
 - Implementation cycle: `Rework` (after IMP-DI-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: SR-002, SR-003, SR-004
-- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: SR-002, SR-003, SR-004, SR-005
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004, ARCH-REV-005
 - Related code-review, API/E2E and delivery revision IDs: N/A
-- Triggering finding IDs: IMP-DI-001 (resolved by DEC-007). Raised: IMP-DI-002.
+- Triggering finding IDs: IMP-DI-001 (resolved by DEC-007) and IMP-DI-002 (resolved by DEC-008)
+
+DEC-008 and the `markdown-it` fix (`7da874ed2b`, IMP-11):
+- **`dompurify`:** `^3.2.2` → exact `3.4.7` in `autobyteus-web`, as a minimal text edit. After `pnpm install` and `pnpm dedupe`, the lockfile has a single `dompurify` 3.4.7.
+- **Which copy `mermaid` resolves:** the snapshot `mermaid@11.17.2` → `dompurify: 3.4.7`, and `node_modules/.pnpm/mermaid@11.17.2/node_modules/dompurify` is 3.4.7. This is the copy the design expected.
+- **Why DEC-008 holds for `mermaid` too:** MP-002 in the review. `mermaid` calls only `sanitize` and `addHook`. Every advisory still open at 3.4.7 needs `setConfig`, `IN_PLACE`, `SAFE_FOR_TEMPLATES`, Trusted Types or `CUSTOM_ELEMENT_HANDLING`.
+  - Open at 3.4.7: GHSA-cmwh-pvxp-8882 and GHSA-55q2-fjhq-7xh7 (moderate); GHSA-6688-9rhm-gjv2, GHSA-c2j3-45gr-mqc4, GHSA-gvmj-g25r-r7wr and GHSA-vxr8-fq34-vvx9 (low).
+  - Our own code calls only `sanitize(html, opts)`. A grep for the other APIs and modes finds nothing (IMP-09).
+- **`markdown-it`:** after DEC-008 the audit showed a high outside the explained set: GHSA-r7fv-28h4-cvq7 (`markdown-it` <14.3.2, quadratic smartquotes). It was published 2026-10-20T14:34Z, after the IR-001 audit.
+  - Design step 5 fixes a newly published in-range advisory. So I ran one-name `pnpm update -r --depth Infinity markdown-it`: 14.1.1 → 14.3.3, and pnpm raised web's specifier to `^14.3.3`. Then dedupe.
+  - The lockfile change is only `markdown-it` and the `@mdit/*` snapshot keys that reference it.
+  - The two `markdown-it` moderates are fixed too.
+- **The web manifest is rebuilt in base key order.** Diff against `79ece48bf4`: only the `dompurify` and `markdown-it` lines.
 
 DEC-007 (`79ece48bf4`):
 - `download-media-tool.ts` L118 now reads `const mimeType = String(contentType).split(';')[0].trim();`. Nothing else in the file changed.
@@ -65,11 +79,13 @@ What is committed (`9936445f55`, manifests and lockfile only):
 - Design classification section / evidence reference: `design-spec.md`, "Task Size And Architectural Risk"
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: the footprint matches the design. The blocker is a requirement and design decision, not a scope change.
-- Selected route: `Solution Designer` (Design Impact)
+- Selected route: `Code Review` (Medium/High)
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: **IMP-DI-002**, below. IMP-DI-001 is resolved by DEC-007 and kept below as history.
+- New design impact or escalation trigger: `None`. IMP-DI-001 and IMP-DI-002 are resolved and kept below as history.
+  - The step-5 `markdown-it` fix is the design's own rule for a newly published in-range advisory. It is not an escalation: no source change, no override, no direct-specifier major.
+- Conflict with TESTING.md, recorded as the skill requires: Rule 9 would fix the FU-010 test-timing defect as a baseline commit. This ticket's escalation trigger allows no source change beyond DEC-007, so I left it as a follow-up with its cause.
 
-### IMP-DI-002 — the in-range `dompurify` 3.4.17 breaks 4 web markdown tests under happy-dom
+### IMP-DI-002 (resolved by DEC-008, SR-005) — the in-range `dompurify` 3.4.17 breaks 4 web markdown tests under happy-dom
 
 How each part was established:
 - The failure: Reproduced (`test:nuxt`, then the 3 files alone).
@@ -127,10 +143,10 @@ How each part was established: build failure Reproduced; typing cause Read (both
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Runtime libraries at patched versions | lockfile and manifests (`9936445f55`); DEC-007 (`79ece48bf4`) | Prod audit: 0 critical / 13 high, only the explained set (IMP-03). Builds, server typecheck, `test:unit` and `test:integration` pass (IMP-08). **Blocked:** 4 web tests fail with `dompurify` 3.4.17 under happy-dom (IMP-DI-002) |
+| BEH-001 | Runtime libraries at patched versions | lockfile and manifests (`9936445f55`); DEC-007 (`79ece48bf4`) | Prod audit: 0 critical / 13 high, only the explained set (IMP-03). Builds, server typecheck, `test:unit` and `test:integration` pass (IMP-08). DEC-008: `dompurify` 3.4.7, the same copy for `mermaid`; `markdown-it` 14.3.3 (IMP-11). The final audit is the same high/critical set (IMP-11). Markdown specs pass again (IMP-12) |
 | BEH-002 | Build and test tooling at patched versions | same | All audit: 6 critical / 46 high, all in the Findings Table (IMP-03). All builds pass after DEC-007 (IMP-08) |
 | BEH-003 | Unused packages removed | 6 manifests | All 17 removals absent from the manifests and lockfile importers. `@nuxtjs/apollo` and `monaco-editor` kept. Import providers identical to `SD-07` (IMP-05) |
-| BEH-004 | `pnpm dedupe --check` exits 0 | lockfile | Exit 0 (IMP-02) |
+| BEH-004 | `pnpm dedupe --check` exits 0 | lockfile | Exit 0 (IMP-02, and again on `7da874ed2b`, IMP-11) |
 | BEH-005 | Electron 42.11.x | `autobyteus-web/package.json` | `process.versions.electron` = `42.11.16`; `test:electron` 215 passed (IMP-06) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`. The only source change is DEC-007. The IMP-DI-002 fix is not made; it is routed.
@@ -166,13 +182,15 @@ How each part was established: build failure Reproduced; typing cause Read (both
 - `autobyteus-ts/dist` (untracked) was rebuilt from `79ece48bf4` in IMP-08.
 - IMP-06's build failures are resolved by DEC-007 (IMP-08).
 - FU-008: `package-auto-refresh` failed once in 10 runs. It is not caused by this change, and its root cause is not established. API/E2E may see it in the integration suite.
+- FU-010: the `NotificationCenter.spec.ts` order assertion depends on a millisecond tick. It is not caused by this change; the cause is proven and reproduced (IMP-12). API/E2E may see it in `test:nuxt`.
+- FU-009: `dompurify` stays held at 3.4.7 until the happy-dom issue is solved.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: Cleanup (security maintenance)
 - Reviewed root-cause classification: Legacy Or Compatibility Pressure
 - Reviewed refactor decision: no code refactor; removals yes
-- Implementation matched the reviewed assessment: `No`. The "no source change" premise does not hold for `axios` 1.20.
+- Implementation matched the reviewed assessment: `Yes`, as revised by SR-003…SR-005. The original "no source change" premise did not hold for `axios` 1.20 (DEC-007), nor did the plain in-range rule for `dompurify` (DEC-008).
 - If challenged, routed as `Design Impact`: `Yes` (IMP-DI-001)
 - Evidence / notes: IMP-06, IMP-07
 
@@ -216,9 +234,13 @@ Evidence is in the ticket's `evidence/` folder. Full logs are in `/tmp/dep229/` 
 | IMP-09 | DOMPurify bisect under happy-dom vs jsdom with the exact sanitize options; 3.4.7 → 3.4.8 diff; happy-dom `nodeName` getter probe (15.11.7 and 21.0.3); real-Chromium probe page; tried a per-file jsdom switch and a setup shim (both reverted) | `79ece48bf4` + reverted diagnostics | macOS, happy-dom 15.11.7, jsdom 25.0.1, Chromium 148 | `useMarkdownSegments.ts` sanitize path, `dompurify` | IMP-DI-002 | Pass (diagnosis) | `IMP-09-dompurify-happy-dom-design-impact.txt`, `IMP-09-chromium-probe.html`, `IMP-09-nodename-probe.cjs.txt` | `3.4.8 happy-dom profile+ADD_TAGS : "Hello World\n<p>…`; `3.4.7 happy-dom … "<h1>Hello World</h1>…`; `happy-dom H1 … Node.prototype nodeName getter= ""`; Chromium `"result":"<h1>Hello World</h1>…` |
 | IMP-10 | `package-auto-refresh.integration.test.ts`: 5 runs alone, 3 alone under full CPU load, 1 full-suite rerun; watcher package versions base vs now | `79ece48bf4` | macOS | agent package folder watcher | FU-008 | Not caused by this change (root cause not established) | `IMP-10-auto-refresh-intermittent.txt` | `Condition not met within 5000 ms; last value: ["agent:Planner","agent:Scout"]` once; 9 × `Tests 14 passed (14)`; chokidar/readdirp lists identical |
 
-- Not run, and why: blocked by IMP-DI-002. The remaining step-7 matrix belongs to API/E2E after the decision:
+| IMP-11 | DEC-008 edit + `pnpm install`/`dedupe`/`--check`; audit → new `markdown-it` high → one-name in-range update + dedupe; manifest order restored + frozen install; steps 4–6 rechecked: providers, peers, audit, in-range rows, lockfile review | `7da874ed2b` | macOS, pnpm 10.28.2 | manifests, lockfile | DEC-008, AC-001…AC-004, REQ-005 | Pass | `IMP-11-dec008-markdown-it-steps4-6.txt` | `mermaid@11.17.2 -> dompurify: 3.4.7`; `identical to SD-07`; `same high/critical set: True` (ALL and PROD); `# vs IR-001 … dompurify: 3.4.17 -> 3.4.7`, `markdown-it: 14.1.1 -> 14.3.3`; only IN-RANGE row `undici@6.27.0 <- node-gyp` |
+| IMP-12 | Web: the 3 markdown specs; `test:nuxt --run`; `pnpm build`; `test:electron --run`; NotificationCenter spec 6× alone + temporary 5 ms diagnostic (reverted) | `7da874ed2b` | macOS, happy-dom 15.11.7 | web units, build | IMP-DI-002 closure, AC-005/AC-006 (web) | Pass, except 1 `test:nuxt` failure from a test timing defect (FU-010) | `IMP-12-web-after-dec008.txt` | `web-3-specs: Test Files 3 passed (3); Tests 24 passed (24)`; `web-test-nuxt … Tests 1 failed \| 4629 passed`; `web-test-electron … Tests 215 passed`; diag `Received: "2 updates available: 1 skill update, 1 agent package update"` |
+
+- Still valid from IMP-08 (`79ece48bf4`): `autobyteus-ts` build and test, server build, typecheck, `test:unit` and `test:integration`. `7da874ed2b` moved only `dompurify` and `markdown-it`, which load only in `autobyteus-web`; neither is in the `autobyteus-ts` or server manifests.
+- Not run, and why: the step-7 matrix belongs to API/E2E (design Change Sequence step 7):
   - `pnpm test:e2e`;
-  - web guards (`test:nuxt` ran: IMP-08);
+  - web guards;
   - the applications' typecheck and build;
   - packaged macOS app, packaged Electron harness and isolated instance;
   - Docker image;
@@ -230,11 +252,10 @@ Evidence is in the ticket's `evidence/` folder. Full logs are in `/tmp/dep229/` 
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- After the decision:
-  - rerun IMP-06's failed rows;
-  - add a unit assertion that the download tool still picks the extension from `content-type`, for example `image/png; charset=binary` → `.png`.
 - The step-7 matrix as designed. The lockfile change touches every package, so everything is marked Rerun (TESTING.md).
+- Markdown rendering with `dompurify` 3.4.7 and `markdown-it` 14.3.3 in the packaged app: headings, code blocks, KaTeX math and a mermaid diagram in a conversation.
+- `xlsx` and the Fastify chain remain in the explained set (FU-001, FU-002).
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-All of step 7 (AC-005…AC-008), after IMP-DI-001 is resolved.
+All of step 7 (AC-005…AC-008).

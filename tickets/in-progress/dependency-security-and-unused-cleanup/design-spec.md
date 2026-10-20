@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (scope wording aligned after ARCH-REV-003)
+- Current solution revision ID: `SR-005` (`dompurify` hold after IMP-DI-002)
 - Approved requirements: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction of Task `autobyteus-229` (user informed 2026-10-20)
 - Behavior-defining supplements: none
 - Design status: `Ready`
@@ -231,6 +231,7 @@ N/A.
 | File | Change |
 | --- | --- |
 | `autobyteus-web/package.json` | `tar` → `^7.5.22`; `electron` → `42.11.16` (or the newest 42.x at implementation time, exact); remove the 7 dependencies and 4 devDependencies of DEC-005 (**not** `@nuxtjs/apollo`); specifiers raised by `pnpm update` (e.g. `axios`, `electron-updater`, `nuxt`, `postcss`, `vitest`, `ws`) are accepted |
+| `autobyteus-web/package.json` (addition, SR-005) | `dompurify`: `^3.2.2` → exact `3.4.7` (DEC-008). Afterwards `pnpm install` + `pnpm dedupe`; `mermaid`'s `^3.3.3` should resolve to the same 3.4.7. Rerun steps 4-6 checks: `dedupe --check`, import providers, audit vs the explained set. No other package moves |
 | `autobyteus-ts/package.json` | `undici` → `^7.29.1` or higher in 7.x; remove `dotenv`, `ts-node`; raised specifiers accepted (`axios`, `vitest`) |
 | `autobyteus-ts/src/tools/multimedia/download-media-tool.ts` | L118: `const mimeType = String(contentType).split(';')[0].trim();` (DEC-007). Nothing else in the file changes |
 | `autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts` (existing; it already mocks `content-type`) | Assert the content-type → extension mapping: `image/png; charset=binary` → `.png`; no content-type → extension from the URL |
@@ -309,6 +310,7 @@ N/A.
 | `happy-dom@15`, `tinypool@1` (vitest), `@graphql-tools/utils` 9/10/11, `immutable`, `lodash`, `braces`, `minimatch@9.0.1`, `node-forge` | No (test/codegen/nuxt CLI) | critical/high | Majors or no fix | FU-003 |
 | `electron-builder` chain: `tar@6.2.1`, `app-builder-lib@25`, `builder-util-runtime@9.2.10`, `http-cache-semantics` | No (packaging) | critical/high | `electron-builder` 26 major | FU-003 |
 | `undici@6.27.0` (node-gyp) | No (native rebuild) | high | In range, but pnpm keeps it | FU-003 |
+| `dompurify@3.4.7` (held, DEC-008) | Yes (markdown sanitizer) | medium/low only (not targeted) | 3.4.8+ breaks the happy-dom test DOM; open advisories need features we don't use | FU-009 |
 | `to-ico` chain: `minimist@0.0.8`, `form-data@2.3.3`, `jpeg-js`, `url-regex`; `sharp@0.33.5` | No (manual icon generator) | critical/high | Replacement / 0.x minor | FU-004 |
 
 ## Risks
