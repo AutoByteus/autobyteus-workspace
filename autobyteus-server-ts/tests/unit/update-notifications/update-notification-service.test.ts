@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { UpdateNotificationService } from "../../../src/update-notifications/services/update-notification-service.js";
 import type { UpdateNotificationRecord } from "../../../src/update-notifications/domain/update-notification.js";
 import type { GitHubSourceUpdateState } from "../../../src/integrations/github/github-source-update-state.js";
@@ -126,15 +126,78 @@ describe("UpdateNotificationService reconcile (DS-007)", () => {
     expect(views.map((view) => [view.kind, view.latestRevision])).toEqual([["AGENT_PACKAGE", B], ["SKILL_SOURCE", C]]);
   });
 
-  it("leaves the records untouched when a source owner cannot be read", async () => {
-    const h = harness({ records: [waiting()] });
-    const failing = new UpdateNotificationService({
-      sources: [{ kind: "AGENT_PACKAGE", listGitHubSourceUpdateStates: () => { throw new Error("registry unreadable"); } }],
-      store: { read: async () => [waiting()], write: async () => { throw new Error("must not write"); } },
-      publish: h.publish,
+});
+
+/** CR-001: one owner that cannot be listed (an unreadable skill source registry) must not stop the other kinds. */
+describe("UpdateNotificationService with an owner that cannot be read", () => {
+  const skillRecord = (overrides: Partial<UpdateNotificationRecord> = {}): UpdateNotificationRecord =>
+    waiting({ kind: "SKILL_SOURCE", sourceId: "s1", latestRevision: C, ...overrides });
+
+  const harnessWithFailingSkills = (records: UpdateNotificationRecord[], packages: GitHubSourceUpdateState[]) => {
+    let stored = structuredClone(records);
+    const publish = vi.fn();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const service = new UpdateNotificationService({
+      sources: [
+        { kind: "AGENT_PACKAGE", listGitHubSourceUpdateStates: async () => packages },
+        { kind: "SKILL_SOURCE", listGitHubSourceUpdateStates: () => { throw new Error("GitHub skill sources unavailable"); } },
+      ],
+      store: { read: async () => structuredClone(stored), write: async (next) => { stored = structuredClone(next); } },
+      publish,
+      now: () => new Date("2026-10-20T10:00:00.000Z"),
     });
-    await expect(failing.reconcile()).rejects.toThrow("registry unreadable");
-    expect(h.publish).not.toHaveBeenCalled();
+    return { service, publish, warn, get stored() { return stored; } };
+  };
+
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it("still reconciles, persists and lists the other kinds, and names the failing owner in a warning", async () => {
+    const h = harnessWithFailingSkills([skillRecord()], [pkg({ latestRevision: B })]);
+    const views = await h.service.listNotifications();
+    expect(views.map((view) => [view.kind, view.sourceId])).toEqual([["AGENT_PACKAGE", "github:acme/agents"]]);
+    expect(h.publish).toHaveBeenCalledOnce();
+    expect(h.warn).toHaveBeenCalledWith("UPDATE_NOTIFICATIONS_SOURCE_UNAVAILABLE:SKILL_SOURCE", expect.any(Error));
+  });
+
+  it("keeps the failing kind's stored records (hidden, not deleted as source gone)", async () => {
+    const h = harnessWithFailingSkills([skillRecord(), waiting()], [pkg({ installedRevision: B, latestRevision: B })]);
+    await h.service.reconcile();
+    expect(h.stored).toEqual([
+      skillRecord(),
+      waiting({ handledRevision: B, handledAt: "2026-10-20T10:00:00.000Z" }),
+    ]);
+  });
+
+  it("marks the listed kinds read and clears their handled records; hidden records are not touched", async () => {
+    const handledPackage = waiting({ sourceId: "p2", handledRevision: B, handledAt: "2026-10-20T09:00:00.000Z" });
+    const h = harnessWithFailingSkills(
+      [skillRecord({ read: false }), waiting({ read: false }), handledPackage],
+      [pkg({ latestRevision: B }), pkg({ sourceId: "p2", installedRevision: B, latestRevision: B })],
+    );
+    const read = await h.service.markAllRead();
+    expect(read.find((view) => view.sourceId === "github:acme/agents")?.read).toBe(true);
+    expect(h.stored.find((record) => record.kind === "SKILL_SOURCE")?.read).toBe(false);
+
+    await h.service.clear("AGENT_PACKAGE", "p2");
+    expect(h.stored.map((record) => record.sourceId)).toEqual(["s1", "github:acme/agents"]);
+    await expect(h.service.clear("SKILL_SOURCE", "s1")).rejects.toThrow("Update notification not found.");
+  });
+
+  it("shows the kind's records again once its owner can be read", async () => {
+    let failing = true;
+    let stored = [skillRecord()];
+    const service = new UpdateNotificationService({
+      sources: [{ kind: "SKILL_SOURCE", listGitHubSourceUpdateStates: () => {
+        if (failing) throw new Error("unavailable");
+        return [pkg({ sourceId: "s1", displayName: "acme/skills", latestRevision: C })];
+      } }],
+      store: { read: async () => structuredClone(stored), write: async (next) => { stored = structuredClone(next); } },
+      publish: vi.fn(),
+    });
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(await service.listNotifications()).toEqual([]);
+    failing = false;
+    expect((await service.listNotifications()).map((view) => view.sourceId)).toEqual(["s1"]);
   });
 });
 

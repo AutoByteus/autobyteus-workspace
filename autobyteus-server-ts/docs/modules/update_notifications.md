@@ -42,6 +42,10 @@ The desktop app's own update notification is kept by the desktop shell (see
 
 Records are derived from the owners' state plus the user's read and clear
 actions, so they cannot drift from the packages and skill sources themselves.
+When one owner cannot be read (for example an unreadable skill source registry,
+which the Skills page reports), the other kinds keep working; that kind's
+stored records are kept unchanged and hidden until its owner can be read again,
+and a warning `UPDATE_NOTIFICATIONS_SOURCE_UNAVAILABLE:<kind>` is logged.
 
 ## Rules (per source)
 

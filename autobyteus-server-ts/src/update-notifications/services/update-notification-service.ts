@@ -13,6 +13,8 @@ import { UpdateNotificationStore } from "../stores/update-notification-store.js"
 import { getUpdateNotificationChangeHub } from "../changes/update-notification-change-messages.js";
 
 type SourceState = GitHubSourceUpdateState & { kind: UpdateNotificationKind };
+/** The owners' facts this operation could read; the kinds whose owner failed are unavailable. */
+type SourceStates = { states: Map<string, SourceState>; unavailableKinds: Set<UpdateNotificationKind> };
 type Store = Pick<UpdateNotificationStore, "read" | "write">;
 
 const isWaiting = (record: UpdateNotificationRecord): boolean => record.handledRevision === null;
@@ -57,12 +59,12 @@ export class UpdateNotificationService {
     return this.run(() => false);
   }
 
-  /** Marks every waiting notification read (the user opened the notification area). */
+  /** Marks every listed waiting notification read (the user opened the notification area). */
   markAllRead(): Promise<UpdateNotificationView[]> {
-    return this.run((records) => {
+    return this.run((records, isListed) => {
       let changed = false;
       for (const record of records) {
-        if (isWaiting(record) && !record.read) {
+        if (isListed(record) && isWaiting(record) && !record.read) {
           record.read = true;
           changed = true;
         }
@@ -73,8 +75,8 @@ export class UpdateNotificationService {
 
   /** Removes a handled notification; a waiting one goes only by an update or a newer version. */
   clear(kind: UpdateNotificationKind, sourceId: string): Promise<UpdateNotificationView[]> {
-    return this.run((records) => {
-      const index = records.findIndex((record) => record.kind === kind && record.sourceId === sourceId);
+    return this.run((records, isListed) => {
+      const index = records.findIndex((record) => isListed(record) && record.kind === kind && record.sourceId === sourceId);
       if (index < 0) throw new Error("Update notification not found.");
       if (isWaiting(records[index]!)) throw new Error("Only an updated notification can be cleared.");
       records.splice(index, 1);
@@ -82,13 +84,19 @@ export class UpdateNotificationService {
     });
   }
 
-  /** Reconciles, applies the command, persists and announces when anything changed. */
-  private run(command: (records: UpdateNotificationRecord[]) => boolean): Promise<UpdateNotificationView[]> {
+  /**
+   * Reconciles, applies the command, persists and announces when anything changed. A command acts
+   * on listed records only: those whose owner could be read in this operation.
+   */
+  private run(
+    command: (records: UpdateNotificationRecord[], isListed: (record: UpdateNotificationRecord) => boolean) => boolean,
+  ): Promise<UpdateNotificationView[]> {
     const next = this.queue.catch(() => undefined).then(async () => {
-      const states = await this.readSourceStates();
+      const { states, unavailableKinds } = await this.readSourceStates();
       const stored = await this.deps.store.read();
-      const { records, changed } = reconcileRecords(stored, states, this.now().toISOString());
-      const commandChanged = command(records);
+      const { records, changed } = reconcileRecords(stored, states, unavailableKinds, this.now().toISOString());
+      const isListed = (record: UpdateNotificationRecord) => states.has(notificationKey(record.kind, record.sourceId));
+      const commandChanged = command(records, isListed);
       if (changed || commandChanged) {
         await this.deps.store.write(records);
         this.deps.publish();
@@ -99,14 +107,27 @@ export class UpdateNotificationService {
     return next;
   }
 
-  private async readSourceStates(): Promise<Map<string, SourceState>> {
+  /**
+   * Each owner is read on its own: one that cannot be read (for example an unreadable skill source
+   * registry, which its owner reports elsewhere) leaves the other kinds working.
+   */
+  private async readSourceStates(): Promise<SourceStates> {
     const states = new Map<string, SourceState>();
+    const unavailableKinds = new Set<UpdateNotificationKind>();
     for (const source of this.deps.sources) {
-      for (const state of await source.listGitHubSourceUpdateStates()) {
+      let ownerStates: GitHubSourceUpdateState[];
+      try {
+        ownerStates = await source.listGitHubSourceUpdateStates();
+      } catch (error) {
+        console.warn(`UPDATE_NOTIFICATIONS_SOURCE_UNAVAILABLE:${source.kind}`, error);
+        unavailableKinds.add(source.kind);
+        continue;
+      }
+      for (const state of ownerStates) {
         states.set(notificationKey(source.kind, state.sourceId), { ...state, kind: source.kind });
       }
     }
-    return states;
+    return { states, unavailableKinds };
   }
 
   private now(): Date {
@@ -114,17 +135,21 @@ export class UpdateNotificationService {
   }
 }
 
-/** DS-007: the records that match the sources' current facts. */
+/**
+ * DS-007: the records that match the sources' current facts. Records of a kind whose owner could
+ * not be read are kept unchanged: their source is unknown, not gone.
+ */
 export const reconcileRecords = (
   stored: readonly UpdateNotificationRecord[],
   states: ReadonlyMap<string, SourceState>,
+  unavailableKinds: ReadonlySet<UpdateNotificationKind>,
   now: string,
 ): { records: UpdateNotificationRecord[]; changed: boolean } => {
   let changed = false;
   const byKey = new Map<string, UpdateNotificationRecord>();
   for (const record of stored) {
     const key = notificationKey(record.kind, record.sourceId);
-    if (!states.has(key) || byKey.has(key)) {
+    if (byKey.has(key) || (!states.has(key) && !unavailableKinds.has(record.kind))) {
       changed = true; // Source gone, or a duplicate row.
       continue;
     }

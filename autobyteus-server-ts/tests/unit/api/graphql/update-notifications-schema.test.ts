@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
@@ -83,6 +83,20 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
 
     const stored = JSON.parse(fs.readFileSync(path.join(data, "update-notifications", "notifications.json"), "utf8"));
     expect(stored).toEqual([expect.objectContaining({ kind: "AGENT_PACKAGE", latestRevision: B, fromRevision: A, read: true })]);
+  });
+
+  it("lists package notifications while the skill source registry is unreadable (CR-001)", async () => {
+    fs.mkdirSync(path.join(data, "skill-sources", "github"), { recursive: true });
+    fs.writeFileSync(path.join(data, "skill-sources", "github", "registry.json"), "{not json");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(SkillSourceService.getInstance().getRegistryError()).toContain("GitHub skill sources unavailable");
+
+    const listed = await run(documents.GET_UPDATE_NOTIFICATIONS!);
+    expect(listed.updateNotifications.map((entry: { kind: string; sourceId: string }) => [entry.kind, entry.sourceId]))
+      .toEqual([["AGENT_PACKAGE", "github:acme/agents"]]);
+    expect((await run(documents.MARK_UPDATE_NOTIFICATIONS_READ!)).markUpdateNotificationsRead[0].read).toBe(true);
+    expect(warn).toHaveBeenCalledWith("UPDATE_NOTIFICATIONS_SOURCE_UNAVAILABLE:SKILL_SOURCE", expect.anything());
+    warn.mockRestore();
   });
 
   it("reads and switches the Update checks setting (on by default)", async () => {
