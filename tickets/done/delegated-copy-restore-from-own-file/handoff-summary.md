@@ -44,7 +44,8 @@
 
 ## Release
 
-- See `release-deployment-report.md` and the delivery revision record for the user's decision and the outcome. The release cannot be rolled back (data migration; `release-notes.md` says so).
+- The user chose a beta. **`v1.5.7-beta.4`** (release commit `41be799edb`, merge `d7c0222eb7` on `personal`) was published completely: all four workflows succeeded, the GitHub pre-release has 17 assets, and Docker `autobyteus/autobyteus-server:1.5.7-beta.4` = `:beta`. `release-notes.md` is kept for the next stable. The release cannot be rolled back (data migration; the notes say so).
+- **AC-010:** the user upgraded after his backup and reports all good. Delivery's read-only check of his data: 110/110 own files `MIGRATED`, 0 with `origin`, the 4 + 2 copies complete, no restore errors since the upgrade.
 
 ## Follow-ups
 

@@ -8,6 +8,8 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Task size `Large
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer's delivery handoff (CRR-003 Pass; API-REV-001 Pass) | N/A | `Blocked`: INT-001 merge conflict with the latest base, routed as `Local Fix` | `release-deployment-report.md`, this record |
 | DR-002 | Code reviewer's handoff after INT-001 (CRR-004 Pass; API-REV-002 Pass; CRR-005 N/A) | `Blocked` (DR-001) | Integrated and verified from evidence apart from AC-010; docs synced; waiting for the user's release decision | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, this record; `autobyteus-web/docs/agent_teams.md` |
+| DR-003 | The user's release decision ("yes please beta", 2026-10-20) | DR-002: waiting for decision | Finalized into `personal`; beta `v1.5.7-beta.4` published completely; waiting for the user's AC-010 check | `release-deployment-report.md`, this record |
+| DR-004 | The user's check on `v1.5.7-beta.4` (2026-10-20) | DR-003: waiting for the AC-010 check | `Delivery Completed`: AC-010 proven; cleanup done; terminal return sent | `release-deployment-report.md`, `handoff-summary.md`, this record |
 
 ## Revision Entries
 
@@ -42,3 +44,23 @@ Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Task size `Large
 - Why this delivery revision was recorded: it records the integrated, verified delivery state and the open release decision, which AC-010 depends on.
 - Next recipient/action: the user decides the release (beta recommended). On beta: finalize into `personal`, cut `vX.Y.Z-beta.N`, watch all four workflows, then the user backs up, upgrades and checks his copies (AC-010). On no release: finalize only; AC-010 stays open until a release carries the change.
 - Remaining blockers, rollback concerns, or untested scope: AC-010 (user). The release cannot be rolled back (data migration). Accepted residual: docker-node-1 mirrored copies until that node updates.
+
+### DR-003: finalized and released as beta v1.5.7-beta.4
+
+- Delivery round and trigger: the user's answer to the DR-002 release question, 2026-10-20: "yes please beta".
+- Prior authoritative result: DR-002 (verified apart from AC-010; waiting for the release decision)
+- Current authoritative result: ticket archived to `tickets/done/`. Ticket branch pushed at `b7e762acda`. `--no-ff` merge `d7c0222eb7` and release commit `41be799edb` pushed to `origin/personal`, with tag `v1.5.7-beta.4`. All four release workflows succeeded: the GitHub pre-release has 17 assets, and Docker `1.5.7-beta.4` = `:beta`.
+- Integration and post-integration verification: `origin/personal` unchanged since DR-002 (`ad784b0a8f`); licensing and hygiene exit 0 on the merged state.
+- Verification and finalization state: finalization and release `Completed`; AC-010 user check pending.
+- Terminal return to `/solution_designer`: `Not yet eligible` (AC-010)
+- Next recipient/action: the user backs up, upgrades to `v1.5.7-beta.4` and checks his copies (the 4 agent copies and 2 StudentStudyGroup Team copies). Then delivery records the check, cleans up the worktree and returns `Delivery Completed`.
+- Remaining blockers, rollback concerns, or untested scope: AC-010. The release cannot be rolled back (data migration).
+
+### DR-004: AC-010 checked by the user; delivery completed
+
+- Delivery round and trigger: the user, 2026-10-20: "i am runnign the latest run. seems all good? you can check".
+- Prior authoritative result: DR-003 (released; waiting for the AC-010 check)
+- Current authoritative result: `Delivery Completed`. The user upgraded to `1.5.7-beta.4` after his backup, and his app runs. Delivery checked his data read-only: the migration converted 110 of 110 own files (0 failed, 0 skipped); 0 own files have `taskAgent.origin`; the 4 agent copies and 2 `StudentStudyGroup` Team copies are complete; the server log since the upgrade shows no restore or migration error.
+- Verification and finalization state: verification complete; finalization, beta release and cleanup `Completed`.
+- Terminal return to `/solution_designer`: `Sent`
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Accepted residual: docker-node-1 mirrored copies until that node updates and syncs. Follow-ups: F-1 and the retire-old-migrations suggestion (Solution Designer); TO-001 (optional comment).

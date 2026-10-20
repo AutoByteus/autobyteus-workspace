@@ -3,7 +3,7 @@
 Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`, branch `codex/delegated-copy-restore-from-own-file`.
 
 - Task size: `Large`. Architectural risk: `High`. Route: `Reviewed`. Delivery does not reclassify.
-- Current delivery revision: `DR-002`. Status: **waiting for the user's release decision.** AC-010, the user's check of his own data, needs a released build. Nothing is merged into `personal` yet.
+- Current delivery revision: `DR-004`. Status: **Delivery Completed.** Finalized and released as beta `v1.5.7-beta.4` (complete). AC-010 checked by the user on his upgraded install, with delivery's read-only check of his data.
 
 ## Release / Publication / Deployment Scope
 
@@ -64,12 +64,19 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 | AC-004 | API-11 round 2 run view and contexts; API-03 via IMP-21 | `runView {c1HasOwn: true, c1HasSlot: false}`. Screenshots `API-11-r2-DCR-001-settings-two-copies-1280.png` and `API-12-r2-DCR-002-org-settings-four-copies-1280.png` | Proven |
 | AC-005, AC-006, AC-007, AC-008 | API-05 (migration units within IMP-16); API-09 via IMP-20; DLP-006 in the r2 probe | IMP-20 `Tests 9 passed (9)` with TAU-1 ("a second start changes nothing") and TAU-2 ✓. The migration source is unchanged by the merge, base adds no migration, and `20261019` stays last | Proven |
 | AC-009 | IMP-15, IMP-23 | Typecheck exit 0. The sweep found none of the removed concepts | Proven |
-| AC-010 | — | Only the user can check this: his real data, converted by a released build after his backup. Tests may not use it (REQ-010, TESTING.md). Every released shape found read-only in his data has a synthesized fixture | User Check (needs a release) |
+| AC-010 | The user's check on `v1.5.7-beta.4`; delivery's read-only data check (see User check reference) | 110/110 `MIGRATED`, 0 `origin`, the 4 + 2 copies complete, no restore errors | Proven (user check) |
 | AC-011 | API-13 round 2 | `gcpFacts["/gpair/lead"] {auto: false, followsTeam: true}`. `leadResumed [["gemini-3.8-flash-low","6fb60d11…"]]` = `leadSession`. `leadRowAfter "Gemini test · Antigravity · Auto-approve"` | Proven |
 
 - More evidence requested: `None`
 - User check needed: `Yes`, AC-010 only. It cannot be done without the user: his real data must be converted only by the released app after his backup (REQ-011, DEC-002). He then checks his copies in the app, including the 4 converted agent copies (`article_reviewer`, `investigator`, `vp_sales`, `prototype_bootstrapper`) and the 2 `StudentStudyGroup` Team copies.
-- User check reference: pending
+- User check reference: the user, 2026-10-20, after backing up and upgrading the desktop app to `1.5.7-beta.4`: "i am runnign the latest run. seems all good? you can check". Delivery's read-only check of `~/.autobyteus/server-data` (nothing written):
+  - installed app `CFBundleShortVersionString` = `1.5.7-beta.4`, running;
+  - migration log `logs/app-data-migrations/20261019_delegated_copy_own_file_complete_v1-2026-10-20T03-26-12-133Z.log`: `statusSummary={"scannedCount":110,"migratedCount":110,"skippedCount":0,"failedCount":0}`, every item `MIGRATED`;
+  - own files on disk: 110 with a `taskAgent` section, 0 with `taskAgent.origin`, none unreadable;
+  - the 4 converted agent copies now carry their slot's definition and complete launch (`article_reviewer` antigravity_cli/gemini-3.1-pro-high; `investigator` codex_app_server/gpt-5.6-luna; `vp_sales` autobyteus/deepseek-v4-flash at `/revenue_org/vp_sales`; `prototype_bootstrapper` codex_app_server/gpt-6.1-sol), each with workspace and auto-approve;
+  - the 2 `StudentStudyGroup` Team copies: each member (`student_one`, `student_two`) has a complete launch and `followsTeam: true`, and the 3 handoff rules are kept, including `student_one → /Teacher`;
+  - `logs/server.log` since the upgrade start: no restore, unavailable or migration error; the only error line is an unrelated Codex configuration notice.
+- AC-010 judgement: `Proven` (the user's check plus the data above)
 - Re-verification after later re-integration: `Not needed` so far
 
 ## Release Decision
@@ -90,22 +97,39 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Version / Tag / Release Commit
 
-- Pending the release decision.
+- `bash scripts/desktop-release.sh beta --branch finalize/delegated-copy-restore-from-own-file --no-push` created release commit `41be799edb` ("chore(release): bump workspace release version to 1.5.7-beta.4"; `autobyteus-web/package.json` = `1.5.7-beta.4`) and the annotated tag `v1.5.7-beta.4` (tag object `588374d1e4`).
 
 ## Repository Finalization
 
-- Ticket branch: `codex/delegated-copy-restore-from-own-file` (local; not pushed)
-- Finalization target: `origin` / `personal`, with `--no-ff` from a `finalize/delegated-copy-restore-from-own-file` branch (RELEASE.md)
-- Repository finalization status: `Not started`. It waits for the release decision.
+- Bootstrap context source: implementation handoff (base `origin/personal`); RELEASE.md Finalization Target
+- Ticket branch: `codex/delegated-copy-restore-from-own-file` @ `b7e762acda` (ticket archived to `tickets/done/`)
+- Ticket branch commit result: `Completed`
+- Ticket branch push result: `Completed` (`origin/codex/delegated-copy-restore-from-own-file`)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `No`. Still `ad784b0a8f` at the merge and again just before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/delegated-copy-restore-from-own-file` from `origin/personal` @ `ad784b0a8f`
+- Merge into target result: `--no-ff` merge `d7c0222eb7`, tree identical to the ticket branch. Licensing and artifact-hygiene checks exit 0 on the merged state
+- Push target branch result: `origin/personal` = `41be799edb` (merge plus release commit)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Release notes: `release-notes.md` written (stable-quality). A beta uses GitHub generated notes.
+- Applicable: `Yes` (Beta, the user's decision)
+- Method: `Project Release Guide` (`scripts/desktop-release.sh beta … --no-push`, then `git push origin HEAD:personal` and `git push origin v1.5.7-beta.4`)
+- Pipelines triggered and their results: all four succeeded. Desktop Release `39359167729`, Android APK Release `39359167694`, iOS App Store Connect Release `39359167699`, Server Docker Release `39359167669`. A local power-off interrupted delivery's local watcher, not the GitHub runs; watching was resumed until all four completed.
+- Published artifacts checked: GitHub pre-release `v1.5.7-beta.4` (`isPrerelease: true`) with 17 assets: Android APK and `.sha256`; Linux x64 and ARM64 AppImages; macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps; Windows `.exe`; `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`. Docker Hub `autobyteus/autobyteus-server:1.5.7-beta.4` (amd64, arm64), with `:beta` at the same digest `sha256:bad18888f91e…`. iOS: TestFlight upload workflow succeeded.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for a beta (GitHub generated notes). `tickets/done/delegated-copy-restore-from-own-file/release-notes.md` is kept for the next stable.
 
 ## Post-Finalization Cleanup
 
-- Not started.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`
+- Worktree cleanup result: `Completed` after the DR-004 commit was pushed: `git worktree remove`, then `git worktree prune`
+- Local ticket branch cleanup result: `Completed` (`codex/delegated-copy-restore-from-own-file` and `finalize/delegated-copy-restore-from-own-file` deleted locally; both are contained in `origin/personal`)
+- Remote branch cleanup result: `Not required` (the remote ticket branch is kept, as for earlier tickets)
+- Untracked full logs (not committed, excerpts committed) were moved to `/tmp/ab197-full-logs/` before the release script, which needs a clean worktree.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -119,10 +143,11 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Final Status
 
-- Verification complete: `No` (AC-010 waits for the user, after a release)
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
+- Verification complete: `Yes` (evidence for AC-001..AC-009 and AC-011; the user's check for AC-010)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta complete; the user upgrades with the desktop beta channel or `autobyteus-docker upgrade --all --tag beta`)
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: none. Waiting for the user's release decision.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Applicable safe cleanup: see Post-Finalization Cleanup (DR-004)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (DR-004)
