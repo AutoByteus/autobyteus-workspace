@@ -83,21 +83,27 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     }), "did not answer in time; the message may have been delivered", () => Object.freeze({ accepted: true as const }));
   }
 
-  /** `PeerIdentityProbe`: the server identity behind a URL, read from its public status route (DS-004). */
+  /**
+   * `PeerIdentityProbe`: the server identity behind a URL, read from its public status route (DS-004). Only a
+   * transport failure or a timeout is `PEER_UNREACHABLE`; a server that answered with anything but its identity
+   * (another status, a page that is not JSON, JSON without `serverInstanceId`) is not an AutoByteus node (CR-002).
+   */
   async fetchServerInstanceId(baseUrl: string): Promise<string> {
-    let answer: Record<string, unknown>;
+    const unreachable = (error: unknown) => new RemoteCollaborationSettingsError("PEER_UNREACHABLE",
+      `${baseUrl} could not be reached: ${isTimeout(error) ? "it did not answer in time" : messageOf(error)}.`);
+    const notAutobyteus = () => new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", `${baseUrl} is not an AutoByteus node.`);
+    const response = await this.fetchJson(`${baseUrl}/rest/remote-access/status`, { method: "GET" })
+      .catch((error: unknown) => { throw unreachable(error); });
+    if (!response.ok) throw notAutobyteus();
+    let answer: unknown;
     try {
-      const response = await this.fetchJson(`${baseUrl}/rest/remote-access/status`, { method: "GET" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      answer = await response.json() as Record<string, unknown>;
+      answer = await response.json();
     } catch (error) {
-      throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE",
-        `${baseUrl} could not be reached: ${isTimeout(error) ? "it did not answer in time" : messageOf(error)}.`);
+      // The body stopped arriving in time is still the transport; a body that is not JSON is an answer.
+      throw isTimeout(error) ? unreachable(error) : notAutobyteus();
     }
-    const id = answer?.serverInstanceId;
-    if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) {
-      throw new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", `${baseUrl} is not an AutoByteus node.`);
-    }
+    const id = (answer as { serverInstanceId?: unknown } | null)?.serverInstanceId;
+    if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) throw notAutobyteus();
     return id;
   }
 

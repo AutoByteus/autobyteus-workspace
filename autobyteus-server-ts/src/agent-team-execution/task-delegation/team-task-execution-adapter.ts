@@ -66,7 +66,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   assertCurrentSchemaReady(): void { this.tokenUsageReadiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<TeamDelegationPlacement>): Promise<TaskExecutionActivationPlan<TeamDelegationPlacement>> {
-    if (input.placement.kind === "remote_agent") return this.options.remoteLinks.planActivation(input, input.placement);
+    if (input.placement.kind === "remote_agent") return this.options.remoteDelegation.planActivation(input, input.placement);
     // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted by the root TeamRun.
     const hostTeamRunId = this.options.rootTeamRunId;
     let execution: TaskExecutionReference;
@@ -97,7 +97,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
 
   beginActivation(plan: TaskExecutionActivationPlan<TeamDelegationPlacement>): TaskExecutionActivationOperation {
     if (plan.placement.kind === "remote_agent") {
-      return this.options.remoteLinks.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
+      return this.options.remoteDelegation.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
     }
     const placement = plan.placement;
     const facts = this.plans.get(plan);
@@ -136,8 +136,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     const chain = this.taskExecutionChainFor(agentRunId);
     if (chain.length) return chain;
-    const remote = this.options.remoteLinks.ownershipChainFor(agentRunId);
-    return remote.length ? remote : [...this.registrations.values()]
+    // A remote endpoint's Task chain is its kind's: the link's Task on the delegating node, none on the other (N-11).
+    const remote = this.options.remoteLinks.endpointFor(agentRunId);
+    return remote ? remote.ownershipChain() : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {

@@ -19,7 +19,8 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources,
+      remoteRunLinks: options.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => options.remoteLinks.has(agentRunId) } });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }

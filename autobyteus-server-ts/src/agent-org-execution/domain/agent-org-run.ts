@@ -1,5 +1,7 @@
 import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
 import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import type {
   DelegatedLaunchSelectionCommand,
   DelegatedLaunchUpdateResult,
@@ -96,7 +98,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       const agent = this.index.getAgent(agentRunId);
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
-    this.remoteLinks = new RemoteRunLinks({ root: options.root, remoteRuns: () => this.tree.rootOrg.remoteTaskExecutions ?? [] });
+    this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.rootOrg.remoteTaskExecutions ?? [] });
+    const remoteDelegation = new RemoteDelegation({ root: options.root });
     this.taskExecutions = new RootTaskExecutionLifecycle(new AgentOrgTaskExecutionAdapter({
       root: options.root,
       taskExecutionIdentity: options.taskExecutionIdentity,
@@ -107,6 +110,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       getTree: () => this.tree,
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
+      remoteDelegation,
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
@@ -121,7 +125,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
+      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId) } });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -148,6 +153,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       teams: options.teams,
       publisher: options.publisher,
       remoteLinks: this.remoteLinks,
+      remoteDelegation,
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(new AgentOrgCommunicationAdapter({

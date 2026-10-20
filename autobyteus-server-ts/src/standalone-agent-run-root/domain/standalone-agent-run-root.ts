@@ -63,6 +63,8 @@ import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from
 import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
 import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindingWithoutConversation } from "../services/standalone-root-tree-mutator.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
@@ -133,9 +135,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
-    this.remoteLinks = new RemoteRunLinks({ root: options.root, remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
+    this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
       backLink: options.delegatedFrom ? { hostRunId: this.hostRunId, delegatedFrom: options.delegatedFrom } : null,
       channel: options.remoteRunChannel });
+    const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
     this.hostIdle = options.delegatedFrom && options.agentRunManager ? new StandaloneHostIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), hasOpenChildWork: () => this.hasOpenExecutionWork(),
@@ -160,6 +163,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       getTree: () => this.tree,
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
+      remoteDelegation,
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       replaceTree: (tree) => this.replaceTree(tree),
@@ -173,7 +177,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
+      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId) } });
     this.delegatedLaunches = createStandaloneDelegatedLaunchCommand({
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,
@@ -197,6 +202,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       teams: options.teams,
       publisher: options.publisher,
       remoteLinks: this.remoteLinks,
+      remoteDelegation,
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       onHostReady: (run) => this.hostIdle?.watch(run),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });

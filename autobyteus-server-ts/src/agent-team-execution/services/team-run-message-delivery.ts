@@ -19,7 +19,9 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
+import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 
 export type ExactTeamAgentMessageInput = Readonly<{
   sender: InterAgentMessageParticipant;
@@ -47,32 +49,37 @@ export class TeamRunMessageDelivery {
     /** Target lease that records the receiver's first accepted message. */
     withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
     remoteLinks: RemoteRunLinks;
+    remoteSend: RemoteMessageSend;
   }>) {}
 
   /**
-   * `send_message_to(run ID)` from an agent of this Team: a remote endpoint goes through the link under the
-   * sender's live lease (never reactivated, S3); any other run ID through today's exact delivery (`local`).
+   * `send_message_to(run ID)` from an agent of this Team: the routing decision only. A remote endpoint goes to
+   * the shared remote send under the sender's live lease (never reactivated, S3); any other run ID through
+   * today's exact delivery (`local`).
    */
   deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     const sender = input.sender.identity;
-    const route = this.options.remoteLinks.route(sender.agentRunId, input.targetAgentRunId);
-    if (route.kind === "refused") return Promise.resolve(route.result);
-    if (route.kind === "local") return local();
+    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
+    if (!endpoint) return local();
     this.options.authorizeIdentity(sender);
-    return this.options.withLiveLease(sender.agentRunId, () => this.options.communication.sendToRemote(this.options.remoteLinks, route.endpoint,
-      { senderIdentity: sender, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+    return this.options.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
   }
 
-  /** A message from a linked run on a peer node: its paired agent here is woken or restored first (N-8). */
+  /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
-    return this.options.communication.acceptFromRemote(this.options.remoteLinks, input, {
-      receiver: (agentRunId) => {
-        const execution = this.options.getIndex().getAgent(agentRunId);
-        return execution ? { identity: this.identityFor(execution.address, execution.agentRunId),
-          displayName: getAgentTeamAddressBasename(execution.address) ?? execution.agentRunId } : null;
-      },
-      wake: (agentRunId, operation) => this.options.withLiveLease(agentRunId, operation),
-    });
+    const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
+    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
+    if (!endpoint || !receiver) {
+      return Promise.resolve({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
+    }
+    return this.options.withLiveLease(receiver.agentRunId, () => this.options.communication.acceptFromRemote({
+      message: input.message,
+      endpoint,
+      receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+      senderNodeName: input.fromNodeName,
+    }));
   }
 
   /** `send_message_to(address)`: the sender's own instance, then run-wide standing instances; else not found. */

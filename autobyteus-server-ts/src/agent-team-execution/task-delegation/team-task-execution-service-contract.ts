@@ -15,6 +15,7 @@ import type {
 import type { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { TaskExecutionIdentityCapabilities } from "./task-execution-identity-capabilities.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 
 /** Host capabilities required by the Team task-execution adapter and lifecycle. */
 export type TeamTaskExecutionServiceOptions = Readonly<{
@@ -22,8 +23,10 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   taskExecutionResources?: TaskExecutionResourcePort;
   getTree(): TeamRunExecutionTreeSnapshot;
   getIndex(): TeamExecutionIndex;
-  /** The root's remote endpoints: remote placements, and the remote runs' Task ownership. */
+  /** The root's remote endpoints: the remote runs' Task ownership, the closure fence and AR-003. */
   remoteLinks: RemoteRunLinks;
+  /** Remote placements: planning and activation (DS-001). */
+  remoteDelegation: RemoteDelegation;
   isRootOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;

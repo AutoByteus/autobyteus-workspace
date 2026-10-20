@@ -1,3 +1,9 @@
+import type { RemoteRunLinks } from "../remote/remote-run-links.js";
+import { REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
+
+/** The narrow port a lifecycle gets from its root: which run IDs are runs on a peer node (AR-003). */
+export type RemoteEndpointLookup = Readonly<{ isRemoteEndpoint(agentRunId: string): boolean }>;
+const NO_REMOTE_ENDPOINTS: RemoteEndpointLookup = Object.freeze({ isRemoteEndpoint: () => false });
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
@@ -70,6 +76,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
   /** Live leases and user Stops in progress (SR-006). */
   private readonly holds = new TaskExecutionLiveHolds();
+  private readonly remoteEndpoints: RemoteEndpointLookup;
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -77,9 +84,14 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       gracePeriodMs?: () => number;
       timers?: TaskExecutionIdleTimers;
       taskExecutionResources?: TaskExecutionResourcePort;
+      /** The root's remote endpoints, for the Task-closure fence of remote runs (AR-007). */
+      remoteRunLinks?: RemoteRunLinks;
+      /** AR-003: which run IDs name runs on a peer node (backed by the root's `RemoteRunLinks.has`). */
+      remoteEndpoints?: RemoteEndpointLookup;
     }> = {},
   ) {
-    this.resourceScope = new RootTaskExecutionResourceScope(adapter, options.taskExecutionResources);
+    this.remoteEndpoints = options.remoteEndpoints ?? NO_REMOTE_ENDPOINTS;
+    this.resourceScope = new RootTaskExecutionResourceScope(adapter, options.taskExecutionResources, options.remoteRunLinks);
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
       onFire: (reference) => this.onGraceElapsed(reference),
@@ -168,6 +180,11 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       // The agent's task_id (key or ID) is resolved once; only the stored ID goes on, the key only into texts.
       const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
       ({ taskId, taskReference, description } = saved);
+      // AR-003: a saved Task is never given to a run on a peer node; refused after the named Task's own refusals
+      // and before the copy is resolved or any Task change.
+      if ("agentRunId" in input.copy && this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId)) {
+        return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
+      }
       const found = resolveExistingCopy(this.adapter, input.copy);
       if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
       target = found;

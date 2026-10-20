@@ -239,7 +239,7 @@ and [memory](agent_memory.md) for the persistence boundaries.
 
 A run a peer node delegated to this node (CM-10) is an ordinary eligible standalone run whose
 `run_metadata.json` carries `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root
-knows the delegator as its back-link endpoint (`RemoteRunLinks`), admits the work packet (the prepared
+knows the delegator as its `delegator` endpoint (`RemoteRunLinks`), admits the work packet (the prepared
 host is activated, then the system task notification naming the delegator's node is posted), creates
 its `collaboration/` package with the first message, and shuts the host down after the idle grace period
 (`StandaloneHostIdleShutdown`); the next message restores it. A standalone host that delegated to a peer

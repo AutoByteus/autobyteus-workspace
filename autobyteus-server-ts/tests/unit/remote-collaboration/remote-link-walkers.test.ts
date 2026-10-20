@@ -6,7 +6,6 @@ import { delegatedStopSet } from "../../../src/agent-collaboration/domain/delega
 import {
   createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
-  createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
@@ -90,7 +89,7 @@ const standalone = (): Walkers => {
     taskExecutions: [localCopy(HOST)], remoteTaskExecutions: [remoteLink(HOST)],
   }, HOST);
   const index = new StandaloneRootExecutionIndex(tree);
-  const links = () => new RemoteRunLinks({ root: createAgentRootExecutionIdentity(HOST), remoteRuns: () => tree.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.remoteTaskExecutions ?? [] });
   return {
     delegator: HOST,
     indexAgents: () => index.listAgents().map((agent) => agent.agentRunId),
@@ -125,7 +124,7 @@ const team = (): Walkers => {
     publisher: new TeamRunEventPublisher(),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "x" }),
   });
-  const links = () => new RemoteRunLinks({ root: createTeamRootExecutionIdentity("team-root"), remoteRuns: () => tree.rootTeam.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootTeam.remoteTaskExecutions ?? [] });
   return {
     delegator: "lead-run",
     indexAgents: () => index.listAgentExecutions().map((agent) => agent.agentRunId),
@@ -157,7 +156,7 @@ const org = (): Walkers => {
     teams: { get: vi.fn(), list: vi.fn(() => []) } as never,
     callbacks: {} as never, persistence: {} as never, publisher: new RootEventPublisher<AgentOrgRunEvent>(), taskExecutionIdentity: {} as never,
   });
-  const links = () => new RemoteRunLinks({ root: createAgentOrgRootExecutionIdentity("org-root"), remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] });
   return {
     delegator: "director-run",
     indexAgents: () => index.listAgents().map((agent) => agent.agentRunId),
@@ -202,8 +201,11 @@ describe.each([
     expect(w.hasAgentExecution(REMOTE)).toBe(true);
     expect(w.hasAgentExecution("unrelated-run")).toBe(false);
     expect(w.adapter(w.links()).ownershipChainFor(REMOTE)).toEqual([{ agentRunId: REMOTE }]);
-    expect(w.links().route(w.delegator, REMOTE)).toMatchObject({ kind: "remote", endpoint: { localAgentRunId: w.delegator } });
-    expect(w.links().route(LOCAL, REMOTE)).toMatchObject({ kind: "refused", result: { code: "REMOTE_TARGET_NOT_PERMITTED" } });
+    const endpoint = w.links().endpointFor(REMOTE);
+    expect(endpoint).toMatchObject({ kind: "delegated_run", pairedAgentRunId: w.delegator });
+    expect(endpoint?.allowsSender(w.delegator)).toBe(true);
+    expect(endpoint?.allowsSender(LOCAL)).toBe(false);
+    expect(w.links().endpointFor(LOCAL)).toBeNull();
     expect(await w.storedView()).toEqual(["collabmsg_out", "collabmsg_in", "collabmsg_local"]);
   });
 });

@@ -18,6 +18,8 @@ import { delegateToResolvedTarget } from "../../agent-collaboration/execution/ta
 import { buildTaskAssigneeWorkPacket, buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -37,6 +39,8 @@ import type { StandaloneRootExecutionIndex } from "./standalone-root-execution-i
 import type { StandaloneRootCollaborators } from "./standalone-root-collaborators.js";
 import type { StandaloneRootRecipientResolver } from "./standalone-root-recipient-resolver.js";
 import type { StandaloneRootPlacement } from "./standalone-root-task-execution-adapter.js";
+
+const notLinked: AgentOperationResult = Object.freeze({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
 
 type DeliveryInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
@@ -66,6 +70,8 @@ export class StandaloneRootMessageDelivery {
     teams: RootTeamExecutionDirectory;
     publisher: RootEventPublisher<StandaloneRootEvent>;
     remoteLinks: RemoteRunLinks;
+    remoteDelegation: RemoteDelegation;
+    remoteSend: RemoteMessageSend;
     /** Told each time the host is made ready (the host idle schedule of a run started by a peer). */
     onHostReady?(run: AgentRun): void;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
@@ -124,40 +130,41 @@ export class StandaloneRootMessageDelivery {
   }
 
   /**
-   * `send_message_to(run ID)` from an agent of this root: a remote endpoint goes through the link under the
-   * sender's live lease (never reactivated, S3); any other run ID through today's exact delivery.
+   * `send_message_to(run ID)` from an agent of this root: the routing decision only. A remote endpoint goes to
+   * the shared remote send under the sender's live lease (never reactivated, S3); any other run ID through
+   * today's exact delivery.
    */
   deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     const sender = input.sender.identity;
-    const route = this.options.remoteLinks.route(sender.agentRunId, input.targetAgentRunId);
-    if (route.kind === "refused") return Promise.resolve(route.result);
-    if (route.kind === "remote") {
-      this.options.authorizeIdentity(sender);
-      return this.options.taskExecutions.withLiveLease(sender.agentRunId, () => this.options.remoteLinks.send(this.options.getCommunication(),
-        route.endpoint, { senderIdentity: sender, content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
-    }
-    return this.options.taskExecutions.deliverToExactTarget(sender.agentRunId, input.targetAgentRunId, () => this.deliverToRunId(input));
+    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
+    if (!endpoint) return this.options.taskExecutions.deliverToExactTarget(sender.agentRunId, input.targetAgentRunId, () => this.deliverToRunId(input));
+    this.options.authorizeIdentity(sender);
+    return this.options.taskExecutions.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
   }
 
-  /** A message from a linked run on a peer node: its paired agent here is woken or restored first (N-8). */
+  /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
-    return this.options.remoteLinks.accept(this.options.getCommunication(), input, {
-      receiver: (agentRunId) => {
-        const agent = this.options.getIndex().getAgent(agentRunId);
-        return agent ? { identity: this.identityFor(agent.agentRunId, agent.address), displayName: getAgentTeamAddressBasename(agent.address) ?? agent.agentRunId } : null;
-      },
-      wake: (agentRunId, operation) => this.wakeAndRun(agentRunId, operation),
-    });
+    const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
+    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
+    if (!endpoint || !receiver) return Promise.resolve(notLinked);
+    return this.wakeAndRun(receiver.agentRunId, () => this.options.getCommunication().acceptFromRemote({
+      message: input.message,
+      endpoint,
+      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+      senderNodeName: input.fromNodeName,
+    }));
   }
 
   /**
-   * N-6: the work packet that starts this run, a peer's delegation. The link check (the delegator on that node,
-   * for the host), then the prepared host is activated, then the system task notification is posted. No log line.
+   * N-6: the work packet that starts this run, a peer's delegation. The `delegator` endpoint's link check, then
+   * the prepared host is activated, then the system task notification is posted. No log line.
    */
   async acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
-    const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId);
-    if (endpoint?.side !== "receiving" || input.targetAgentRunId !== this.options.hostRunId) {
-      return { accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." };
+    const endpoint = this.options.remoteLinks.endpointFor(input.senderAgentRunId);
+    if (endpoint?.kind !== "delegator" || !endpoint.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) {
+      return notLinked;
     }
     let run;
     try { run = await this.readyHost(); }
@@ -188,7 +195,7 @@ export class StandaloneRootMessageDelivery {
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteLinks.delegate({ ...input, node: input.node },
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node },
         (local, placement) => this.options.taskExecutions.delegateToNewCopy(context, local, placement));
     }
     return delegateToResolvedTarget(
@@ -200,8 +207,6 @@ export class StandaloneRootMessageDelivery {
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    const remote = this.options.remoteLinks.refuseExistingCopy(input.copy);
-    if (remote) return Promise.resolve(remote);
     return this.options.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
       this.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
   }

@@ -22,7 +22,7 @@ import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig 
 import { testAgentOrgExecutionTree, testOrgAgentNode } from './current-agent-org-run-fixtures.js';
 
 /** A root without remote links (CM-10): its adapters see only local copies. */
-const noRemoteLinks = (root: any) => new RemoteRunLinks({ root, remoteRuns: () => [] });
+const noRemoteLinks = (_root: unknown) => new RemoteRunLinks({ remoteRuns: () => [] });
 
 /** Concrete local factory/registries/quiet/restore; provider and business admission boundaries controlled. */
 export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', abort?: (id: string) => Promise<any>, rejectBindingFor?: string) {

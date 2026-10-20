@@ -24,7 +24,8 @@ export type RemoteMessageTransmission = Readonly<{
 
 /**
  * The outbound channel to peer nodes, as collaboration roots use it (owned here, implemented by
- * `remote-collaboration`'s `PeerClient`). Roots reach it only through `RemoteRunLinks`; it never exposes HTTP.
+ * `remote-collaboration`'s `PeerClient`). Roots reach it only through `RemoteRunLinks` and `RemoteDelegation`; it never
+ * exposes HTTP.
  * Every call applies this node's switch and peer registration and returns a refusal instead of throwing.
  */
 export interface RemoteRunChannel {
@@ -56,3 +57,7 @@ export const releaseProcessRemoteRunChannel = (channel: RemoteRunChannel): void 
 
 /** The process's channel; `null` where remote collaboration is not composed (nothing is ever sent then). */
 export const findProcessRemoteRunChannel = (): RemoteRunChannel | null => processChannel;
+
+/** A root's channel: the one it was given (tests, isolated roots), else the process's channel. */
+export const resolveRemoteRunChannel = (given?: () => RemoteRunChannel | null): RemoteRunChannel | null =>
+  given ? given() : findProcessRemoteRunChannel();

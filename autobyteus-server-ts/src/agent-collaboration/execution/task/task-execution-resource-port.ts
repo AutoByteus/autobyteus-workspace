@@ -100,9 +100,13 @@ export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boo
 /** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
 export type TaskExecutionReleaseRequest = (hostRoot: RootExecutionIdentity, executions: readonly TaskExecutionReference[])
   => Promise<readonly TaskExecutionStopResult[]> | null;
-export type TaskExecutionStopResult = Readonly<{
+/** The release of a run this root hosts: `stopped`, or why not. */
+export type TaskExecutionReleaseResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
 }>;
+/** A run on a peer node (AR-007): fenced by the closed Task, not stopped; `message` says where it keeps running. */
+export type TaskExecutionRemoteFence = Readonly<{ execution: TaskExecutionReference; outcome: "fenced_remote"; stopped: false; message: string }>;
+export type TaskExecutionStopResult = TaskExecutionReleaseResult | TaskExecutionRemoteFence;
 
 /** Coded port rejections; implementations throw errors carrying one of these `code`s. */
 export const TASK_EXECUTION_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER"] as const;

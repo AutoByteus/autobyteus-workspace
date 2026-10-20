@@ -28,7 +28,9 @@ export class TaskExecutionResourceRelease {
         return;
       }
       for (const result of await pending) {
-        if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, hostRoot, execution: result.execution, error: result.error });
+        // A run on a peer node is fenced, not stopped (AR-007): its message says where it keeps running.
+        if ("outcome" in result) console.info("TASK_AGENT_RESOURCE_FENCED_REMOTE", { taskId, hostRoot, execution: result.execution, message: result.message });
+        else if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, hostRoot, execution: result.execution, error: result.error });
       }
     } catch (error) {
       console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, hostRoot, executions, error: error instanceof Error ? error.message : String(error) });

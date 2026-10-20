@@ -8,8 +8,9 @@ this document describes the mechanics.
 `src/remote-collaboration/` lets an agent on one node delegate a text task to an Agent another node
 publishes, and lets the two runs message each other by run ID. It owns the node-level concerns: the
 switch, the registered peer nodes, the published Agents, the outbound client and the inbound gateway.
-The collaboration roots own the runs and their messages; they reach other nodes through the shared
-`RemoteRunLinks` in `src/agent-collaboration/execution/remote/`.
+The collaboration roots own the runs and their messages; they reach other nodes through the shared owners in
+`src/agent-collaboration/execution/remote/`: `RemoteRunLinks` (membership and transmit), `RemoteMessageSend`
+(the outbound message order) and `RemoteDelegation` (remote delegation).
 
 Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
 authentication between nodes and no credential ever crosses them. Attachments, lifecycle control from the
@@ -58,22 +59,35 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
 
 ## In the roots
 
-- **Delegating node.** `delegate_task({node, recipient_address, description})`: the root resolves a
+- **Delegating node.** `delegate_task({node, recipient_address, description})`: `RemoteDelegation` resolves a
   `remote_agent` placement (refusing `task_id` and `reference_files` first), and the unchanged
-  `RootTaskExecutionLifecycle` runs it. Planning asks the peer to create the run, so the peer's run ID is
-  known before the Task link; `RemoteTaskActivation` then commits the link (`taskExecutions` entry with
-  `nodeId` in the topmost coordinating tree) and sends the work packet. A refusal by the peer leaves
-  nothing on this node.
+  `RootTaskExecutionLifecycle` runs it. Each root's task adapter hands the remote placement's planning and
+  activation to `RemoteDelegation`, the one caller of `startDelegatedRun`: planning asks the peer to create
+  the run, so the peer's run ID is known before the Task link; `RemoteTaskActivation` then commits the link
+  (`taskExecutions` entry with `nodeId` in the topmost coordinating tree) and sends the work packet. A
+  refusal by the peer leaves nothing on this node.
 - **Receiving node.** The run is an ordinary standalone run; `run_metadata.json` carries `delegatedFrom`
   `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root admits the work packet (link check, host
   made ready, system task notification naming the node), knows the delegator as its back-link endpoint,
   creates its `collaboration/` package with the first message, and shuts the host down after the idle
   grace period (`StandaloneHostIdleShutdown`); the next message restores it.
+- **Endpoints.** `RemoteRunLinks` holds a root's remote endpoints, of two kinds (`remote-endpoint.ts`):
+  `delegated_run` on the delegating node (built from a link; only its delegator messages it; it belongs to
+  the Task the link was recorded under) and `delegator` on the node that runs the delegated run (built from
+  `delegatedFrom`; only the host messages it; no Task there; its messages carry `coordinatingRun`). Each kind
+  carries its own rules; `RemoteRunLinks` itself has membership (`endpointFor`, `inboundEndpoint`, `has`) and
+  `deliver` (the channel only).
 - **Messages.** A root's `hasAgentExecution` answers for its remote endpoints too, so `send_message_to`
-  by run ID reaches the root. `RemoteRunLinks` applies the pair rule (only the delegator and the remote
-  run message each other) and calls `RootCommunicationEngine.sendToRemote` / `acceptFromRemote`. The
-  sender's node assigns the message ID; each node writes only its own run's log line (CM-9). Headers and
-  results name the other run's node.
+  by run ID reaches the root. The root's delivery only routes: a remote endpoint goes to the root's
+  `RemoteMessageSend`, which runs the endpoint's pair rule → `RootCommunicationEngine.prepareRemoteSend` (the
+  checks and the message ID, no state change) → `RemoteRunLinks.deliver` → `commitSentToRemote` (the
+  sender's log), so nothing is written unless the peer accepted. Inbound, the root's `acceptRemoteMessage`
+  runs the shared link check (`inboundEndpoint`), its own wake, then `engine.acceptFromRemote` (the
+  receiver's log). The sender's node assigns the message ID; each node writes only its own run's log line
+  (CM-9). Headers and results name the other run's node.
+- **Saved Task.** `delegate_task({target_agent_run_id, task_id})` naming a remote run is refused once, in
+  `RootTaskExecutionLifecycle.assignToExistingCopy` (through its `RemoteEndpointLookup`), before any Task
+  change.
 - **Remote links in memory.** The stores load entries with `nodeId` into the tree's own
   `remoteTaskExecutions` (absent when none), never into `taskExecutions`, so every walker of local copies
   (index, Stop, launch selections, run tree, idle shutdown, Task closure release) excludes them. Run-ID
@@ -81,5 +95,7 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   with a remote endpoint are kept out of the public run views: the root never publishes them to its view
   stream (`publishToRootView`, so the stream's change sequence has no gap), and the view snapshots filter
   them out. The local agent's own stream and the message logs show them.
-- **Task closure** fences a remote run (its messages are refused with the closed-Task reason); it keeps
-  running on its node until idle (stopping it from the delegating node is S3).
+- **Task closure** fences a remote run: the closed Task refuses its messages, no release is invoked, and the
+  result is `fenced_remote` with the text "… runs on node "X". This Task sends it no more messages; it stops
+  there when it goes idle." It keeps running on its node until idle (stopping it from the delegating node is
+  S3).

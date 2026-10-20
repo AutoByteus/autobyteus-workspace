@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
+import { delegatedRunEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
@@ -47,13 +48,15 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
     receiverIdentity: member(root, WRITER), receiverDisplayName: "writer", content,
   });
   await expect(deliverLocal("first local")).resolves.toMatchObject({ accepted: true });
-  await expect(engine.sendToRemote({ senderIdentity: member(root, LEAD), remoteAgentRunId: REMOTE, receiverDisplayName: REMOTE, content: "to remote" },
-    async () => ({ accepted: true as const }))).resolves.toMatchObject({ accepted: true });
+  const endpoint = delegatedRunEndpoint({ address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T09:00:00.000Z" });
+  const prepared = engine.prepareRemoteSend({ senderIdentity: member(root, LEAD), endpoint, content: "to remote" });
+  if (!prepared.ok) throw new Error(prepared.refusal.message);
+  await expect(engine.commitSentToRemote(prepared)).resolves.toMatchObject({ accepted: true });
   const reply: CollaborationCommunicationMessage = Object.freeze({
     messageId: "msg_from_remote", senderAgentRunId: REMOTE, receiverAgentRunId: LEAD, content: "reply from remote",
     messageType: "agent_message", referenceFiles: Object.freeze([]), createdAt: "2026-10-20T10:00:00.000Z",
   });
-  await expect(engine.acceptFromRemote({ message: reply, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker" }))
+  await expect(engine.acceptFromRemote({ message: reply, endpoint, receiverIdentity: member(root, LEAD), receiverDisplayName: "lead", senderNodeName: "docker" }))
     .resolves.toMatchObject({ accepted: true });
   await expect(deliverLocal("second local")).resolves.toMatchObject({ accepted: true });
   // The root's message state keeps both remote messages (logs and the local agent's stream show them).

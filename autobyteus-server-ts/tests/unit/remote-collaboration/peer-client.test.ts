@@ -85,4 +85,15 @@ describe("PeerClient", () => {
     const down = client(async () => { throw new TypeError("fetch failed"); });
     await expect(down.client.fetchServerInstanceId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
+
+  it("calls a server that answered with a page, or with another status, not an AutoByteus node, never unreachable (CR-002)", async () => {
+    const page = client(async () => ({ ok: true, status: 200, json: async () => JSON.parse("<!DOCTYPE html><html></html>") }));
+    await expect(page.client.fetchServerInstanceId("http://127.0.0.1:3000"))
+      .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:3000 is not an AutoByteus node." });
+    const missing = client(async () => ({ ok: false, status: 404, json: async () => { throw new Error("no body"); } }));
+    await expect(missing.client.fetchServerInstanceId("http://127.0.0.1:8080"))
+      .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:8080 is not an AutoByteus node." });
+    const slowBody = client(async () => ({ ok: true, status: 200, json: async () => { throw Object.assign(new Error("aborted"), { name: "TimeoutError" }); } }));
+    await expect(slowBody.client.fetchServerInstanceId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+  });
 });

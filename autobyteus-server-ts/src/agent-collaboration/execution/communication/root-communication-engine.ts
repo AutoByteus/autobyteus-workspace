@@ -18,39 +18,43 @@ import {
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 import { buildRemoteCommunicationInputMessage } from "./root-communication-runtime-builder.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
+import type { RemoteEndpoint } from "../remote/remote-endpoint.js";
 
 const DELIVERY_REFUSAL_CODES: ReadonlySet<string> = new Set(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"]);
 const NOT_HERE = "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given.";
 
 type Refusal = Readonly<{ accepted: false; code: string; message: string }>;
 
-/** A message from a local agent of this root to a remote run it is linked with (CM-11). */
+/** A message from a local agent of this root to a remote endpoint it is paired with (CM-11). */
 export type RemoteSendInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
-  remoteAgentRunId: string;
-  receiverDisplayName: string;
+  endpoint: RemoteEndpoint;
   content: string;
   messageType?: string | null;
   referenceFiles?: readonly string[] | null;
 }>;
 
-/** A message a peer node accepted from its run, for a local agent of this root that is linked with it. */
+/** A message checked and given its ID, not yet sent: nothing changed in the root (`prepareRemoteSend`). */
+export type PreparedRemoteSend =
+  | Readonly<{ ok: true; message: CollaborationCommunicationMessage; endpoint: RemoteEndpoint }>
+  | Readonly<{ ok: false; refusal: Refusal }>;
+
+/** A message a peer node accepted from its run, for a local agent of this root that is paired with it. */
 export type RemoteAcceptInput = Readonly<{
   message: CollaborationCommunicationMessage;
+  endpoint: RemoteEndpoint;
   receiverIdentity: CollaborationMemberExecutionIdentity;
   receiverDisplayName: string;
   /** This owner's label for the sender's node, named in the receiver's header. */
   senderNodeName: string;
 }>;
 
-/** The peer's answer to one transmitted message: accepted, or a refusal the agent reads. */
-export type RemoteTransmitReceipt = Readonly<{ accepted: true }> | Refusal;
-
 /**
- * The only owner of a root's message state (`current`, the duplicate-ID check, the commit). Same-root
- * delivery (`deliver`), and the two remote entry points (design § Remote Delivery In The Engine):
- * `sendToRemote` (a local sender, a remote receiver: the peer stores the receiver's side) and
- * `acceptFromRemote` (a remote sender, a local receiver: the peer stored the sender's side).
+ * The only owner of a root's message state (`current`, the duplicate-ID check, the commit). It never sends.
+ * Same-root delivery (`deliver`), and the remote steps the root's message delivery orders (design § Remote
+ * Messaging, AR-005): `prepareRemoteSend` → (the root transmits) → `commitSentToRemote` for a local sender
+ * and a remote receiver; `acceptFromRemote` for a remote sender and a local receiver. Each node writes only
+ * its own run's log line (CM-9).
  */
 export class RootCommunicationEngine {
   private current: readonly CollaborationCommunicationMessage[];
@@ -96,57 +100,73 @@ export class RootCommunicationEngine {
   }
 
   /**
-   * DS-002 on the delegating node, DS-003 on the receiving node. The caller already applied the pair rule
-   * (`RemoteRunLinks`). The sender's node assigns the message ID; the receiving node uses it. Nothing is
-   * written unless the peer accepted; then only the sender's log gets the message.
+   * Outbound, step 1 (DS-002 on the delegating node, DS-003 on the receiving node): the checks and the message
+   * ID, with no state change. The root's delivery applied the endpoint's pair rule before; it transmits after.
+   * The Task check uses the endpoint's run ID, whose Task chain the endpoint kind gives (`ownershipChain`).
    */
-  async sendToRemote(input: RemoteSendInput, transmit: (message: CollaborationCommunicationMessage) => Promise<RemoteTransmitReceipt>): Promise<AgentOperationResult> {
+  prepareRemoteSend(input: RemoteSendInput): PreparedRemoteSend {
+    const refuse = (refusal: Refusal): PreparedRemoteSend => Object.freeze({ ok: false as const, refusal });
     const closed = this.refuseUnlessOpen();
-    if (closed) return closed;
-    if (!this.isCurrent(input.senderIdentity)) return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
-    if (input.senderIdentity.agentRunId === input.remoteAgentRunId) {
-      return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." };
+    if (closed) return refuse(closed);
+    const remoteAgentRunId = input.endpoint.reference.agentRunId;
+    if (!this.isCurrent(input.senderIdentity)) return refuse({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE });
+    if (input.senderIdentity.agentRunId === remoteAgentRunId) {
+      return refuse({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." });
     }
-    const scope = this.refuseOutsideTaskScope(() => this.adapter.assertDeliveryAllowed(input.senderIdentity.agentRunId, input.remoteAgentRunId));
-    if (scope) return scope;
+    const scope = this.refuseOutsideTaskScope(() => this.adapter.assertDeliveryAllowed(input.senderIdentity.agentRunId, remoteAgentRunId));
+    if (scope) return refuse(scope);
     const content = input.content.trim();
-    if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
+    if (!content) return refuse({ accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." });
     if (input.referenceFiles?.some((file) => file.trim())) {
-      return { accepted: false, code: REMOTE_REFUSAL.ATTACHMENTS_NOT_SUPPORTED, message: REMOTE_ROOT_REFUSAL_TEXT.attachments };
+      return refuse({ accepted: false, code: REMOTE_REFUSAL.ATTACHMENTS_NOT_SUPPORTED, message: REMOTE_ROOT_REFUSAL_TEXT.attachments });
     }
     const createdAt = new Date().toISOString();
     const message = validateCollaborationCommunicationMessage({
-      messageId: this.messageId(input.senderIdentity.agentRunId, input.remoteAgentRunId, content, createdAt),
+      messageId: this.messageId(input.senderIdentity.agentRunId, remoteAgentRunId, content, createdAt),
       senderAgentRunId: input.senderIdentity.agentRunId,
-      receiverAgentRunId: input.remoteAgentRunId,
+      receiverAgentRunId: remoteAgentRunId,
       content,
       messageType: input.messageType?.trim() || "agent_message",
       referenceFiles: [],
       createdAt,
     });
-    const receipt = await transmit(message);
-    if (!receipt.accepted) return { accepted: false, code: receipt.code, message: receipt.message };
-    const result = await this.adapter.commitSentToRemote({
-      message,
-      getCurrentMessages: () => this.current,
-      commitMessages: (messages) => { this.current = messages; },
-    });
-    return result.committed
-      ? { accepted: true, agentRunId: input.remoteAgentRunId, displayName: input.receiverDisplayName }
-      : { accepted: false, code: result.code, message: result.message };
+    return Object.freeze({ ok: true as const, message, endpoint: input.endpoint });
   }
 
   /**
-   * DS-002 on the receiving node, DS-003 on the delegating node. The caller already applied the link check
-   * and woke or restored the receiver (N-8). The message keeps the sender's ID; a second message with the
-   * same ID is the existing commit-conflict refusal. Only the receiver's log gets the message.
+   * Outbound, step 3: the peer accepted the prepared message, so it is delivered. Only the sender's log gets
+   * it, without a second Task check (the truthful record is "delivered"). If this root can no longer write
+   * (closed or failed after the peer accepted), the result stays accepted and a warning names the message
+   * (the RSK-106 class, FU-002).
+   */
+  async commitSentToRemote(prepared: Extract<PreparedRemoteSend, { ok: true }>): Promise<AgentOperationResult> {
+    const { message, endpoint } = prepared;
+    const missing = (reason: string) => console.warn(
+      `Message '${message.messageId}' to remote run '${endpoint.reference.agentRunId}' was accepted by its node but not recorded here: ${reason}`);
+    try {
+      const result = await this.adapter.commitSentToRemote({
+        message,
+        getCurrentMessages: () => this.current,
+        commitMessages: (messages) => { this.current = messages; },
+      });
+      if (!result.committed) missing(result.message);
+    } catch (error) {
+      missing(error instanceof Error ? error.message : String(error));
+    }
+    return { accepted: true, agentRunId: endpoint.reference.agentRunId, displayName: endpoint.displayName };
+  }
+
+  /**
+   * Inbound (DS-002 on the receiving node, DS-003 on the delegating node). The root's delivery already
+   * applied the link check and woke or restored the receiver (N-8). The message keeps the sender's ID; a
+   * second message with the same ID is the existing commit-conflict refusal. Only the receiver's log gets it.
    */
   async acceptFromRemote(input: RemoteAcceptInput): Promise<AgentOperationResult> {
     const closed = this.refuseUnlessOpen();
     if (closed) return closed;
     if (!this.isCurrent(input.receiverIdentity)) return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     const message = validateCollaborationCommunicationMessage({ ...input.message, referenceFiles: [] });
-    if (message.receiverAgentRunId !== input.receiverIdentity.agentRunId || message.senderAgentRunId === message.receiverAgentRunId) {
+    if (message.receiverAgentRunId !== input.receiverIdentity.agentRunId || message.senderAgentRunId !== input.endpoint.reference.agentRunId) {
       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: NOT_HERE };
     }
     const assertAllowed = () => this.adapter.assertDeliveryAllowed(message.senderAgentRunId, message.receiverAgentRunId);

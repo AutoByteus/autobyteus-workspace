@@ -47,6 +47,7 @@ import type {
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 import { addStandaloneRootRemoteTaskExecution, addStandaloneRootTaskExecution, adoptStandaloneRootPlatformBinding } from "./standalone-root-tree-mutator.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** A delegation target in an Agent root: always a catalog definition copied into the run. */
@@ -66,8 +67,10 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   persistence: StandaloneRootPersistenceCoordinator;
   getTree(): StandaloneRootTreeSnapshot;
   getIndex(): StandaloneRootExecutionIndex;
-  /** The root's remote endpoints: remote placements, and the remote runs' Task ownership. */
+  /** The root's remote endpoints: the remote runs' Task ownership (the endpoint kind's chain). */
   remoteLinks: RemoteRunLinks;
+  /** Remote placements: planning and activation (DS-001). */
+  remoteDelegation: RemoteDelegation;
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
@@ -103,7 +106,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<StandaloneRootPlacement>): Promise<TaskExecutionActivationPlan<StandaloneRootPlacement>> {
-    if (input.placement.kind === "remote_agent") return this.options.remoteLinks.planActivation(input, input.placement);
+    if (input.placement.kind === "remote_agent") return this.options.remoteDelegation.planActivation(input, input.placement);
     // The copy is placed by its address (shared owner), not under the delegator's host.
     // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted at the root.
     const host = createTaskExecutionHostIdentity({ root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
@@ -137,7 +140,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
 
   beginActivation(plan: TaskExecutionActivationPlan<StandaloneRootPlacement>): TaskExecutionActivationOperation {
     if (plan.placement.kind === "remote_agent") {
-      return this.options.remoteLinks.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
+      return this.options.remoteDelegation.beginActivation(plan, plan.placement, (link) => this.commitRemoteLink(link));
     }
     const source = plan.placement.source;
     const facts = this.plans.get(plan);
@@ -176,8 +179,9 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     const chain = this.taskExecutionChainFor(agentRunId);
     if (chain.length) return chain;
-    const remote = this.options.remoteLinks.ownershipChainFor(agentRunId);
-    return remote.length ? remote : [...this.registrations.values()]
+    // A remote endpoint's Task chain is its kind's: the link's Task on the delegating node, none on the other (N-11).
+    const remote = this.options.remoteLinks.endpointFor(agentRunId);
+    return remote ? remote.ownershipChain() : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {

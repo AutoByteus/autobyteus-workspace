@@ -1,11 +1,11 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+import { RootCommunicationEngine, type RemoteAcceptInput } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamCommunicationAdapter, type TeamCommunicationAdapterOptions } from "./team-communication-adapter.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
-import type { RemoteEndpoint, RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteSendEngine } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 
 /** Team-private facade over the root-neutral accepted-message engine. */
 export class TeamCommunicationService {
@@ -25,14 +25,12 @@ export class TeamCommunicationService {
   }
   closeAdmission(): void { this.accepting = false; this.engine.closeAdmission(); }
 
-  /** A message from an agent of this Team to its linked remote run (through the link, AR-002). */
-  sendToRemote(links: RemoteRunLinks, endpoint: RemoteEndpoint, input: Parameters<RemoteRunLinks["send"]>[2]): Promise<AgentOperationResult> {
-    return links.send(this.engine, endpoint, input);
-  }
+  /** The engine's outbound remote steps, for the Team's shared `RemoteMessageSend` (the engine stays private). */
+  remoteSendEngine(): RemoteSendEngine { return this.engine; }
 
-  /** A message from a linked remote run for an agent of this Team (link check, wake, admit). */
-  acceptFromRemote(links: RemoteRunLinks, input: RemoteInboundMessage, root: Parameters<RemoteRunLinks["accept"]>[2]): Promise<AgentOperationResult> {
-    return links.accept(this.engine, input, root);
+  /** A message from a linked remote run for an agent of this Team, after the delivery's link check and wake. */
+  acceptFromRemote(input: RemoteAcceptInput): Promise<AgentOperationResult> {
+    return this.engine.acceptFromRemote(input);
   }
 
   deliver(input: {
