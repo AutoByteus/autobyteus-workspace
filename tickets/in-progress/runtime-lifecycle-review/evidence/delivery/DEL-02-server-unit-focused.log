@@ -1,0 +1,28 @@
+# DEL-02 commit 62aad6624d 2026-10-20T10:12:41Z
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management tests/unit/api/graphql/agent-runtimes-resolver.test.ts tests/unit/application-platform tests/unit/agent-execution/backends/grok --no-watch
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/application-platform/application-portable-launch-config-policy.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+ [32m✓[39m tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/application-platform/application-execution-shutdown-coordinator.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-tool-projection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/application-platform/application-definition-runtime-readiness.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/codex-sandbox-mode-setting.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/model-context-capacity.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 1[2mms[22m[39m
+[2m Test Files [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m      Tests [22m [1m[32m305 passed[39m[22m[90m (305)[39m
+[2m   Start at [22m 12:12:41
+[2m   Duration [22m 67.27s[2m (transform 4.42s, setup 455ms, import 17.89s, tests 44.80s, environment 3ms)[22m
+EXIT 0
