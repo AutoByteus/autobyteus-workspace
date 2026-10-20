@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-013, SR-014, ARCH-REV-002 | Implemented; handed to code review |
 | IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | CRR-001, SR-014, ARCH-REV-002 | Fixed; back to code review for a targeted delta review |
 | IR-003 | Architecture reviewer (ARCH-REV-004, ARCH-REV-006) for SR-015 / SR-016; code reviewer CRR-003 (from API/E2E F-001) | AR-005 … AR-009; CR-002 | `Design Impact` (upstream, resolved) + `Local Fix` | SR-015, SR-016, ARCH-REV-004, ARCH-REV-006, CRR-003, API-REV-001 | Steps 3–6 brought in line; CR-002 fixed; to code review (targeted delta) |
+| IR-004 | Architecture reviewer ARCH-REV-007 (SR-017), from code reviewer CRR-005 (API/E2E F-002, API-REV-002) | F-002 | `Design Impact` (upstream, resolved) | SR-017, ARCH-REV-007, CRR-005, API-REV-002 | Package validators accept remote message endpoints; to code review (targeted) |
 
 ## Revision Entries
 
@@ -101,3 +102,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Full server unit suite at `31d46978ad` passes: 762 files, 6,273 tests (IMP-14).
 - Next recipient or routing: code reviewer (targeted delta covering SR-015 / SR-016 and CR-002), then API/E2E (RC-03 and the held RC-02, RC-04 … RC-19).
 - Remaining limitations or risks: unchanged from IR-002 (RSK-106 / FU-002; Team and Org delegators are exercised end to end only by API/E2E).
+
+### IR-004 — F-002: package validators accept remote message endpoints (SR-017)
+
+- Triggering role, report path, and round: architecture reviewer, `design-review-report.md` ARCH-REV-007 (SR-017, Pass), from the code reviewer's failure-origin review CRR-005 (`code-review-report.md`) of API/E2E F-002 (API-REV-002, `api-e2e-execution-coverage-report.md`, `evidence/api-e2e/API-13-F002-*.log`).
+- Triggering finding IDs: F-002 (AR-001 walker table lacked "Package-state validation").
+- Classification: `Design Impact`, resolved upstream as SR-017; implemented here.
+- Prior authoritative result: IR-003. `validateTeamRunStatePackage` and `validateAgentOrgStatePackage` required both endpoints of every stored message to be tree agents (`index.requireAgent`). The stores (AR-001) compose delegator ↔ remote messages into the view, so a Team or Org delegator's package was dropped by the admission scan and the restore (AC-106 for Team and Org delegators).
+- Current authoritative result: both validators check endpoints against `agentRunIdsOfTree(shape, tree)` (the store-owned set that composed the view; it includes the remote runs), keep the distinct-endpoints check, and require at least one endpoint to be an agent of the index. The index stays local-only.
+- Related solution revision IDs: SR-017
+- Related architecture-review revision IDs: ARCH-REV-007
+- Related code-review revision IDs: CRR-004 (Pass of IR-003), CRR-005
+- Related API/E2E revision IDs: API-REV-002 (F-002)
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the bounded F-002 fix.
+- Approved behavior or requirement IDs affected: REQ-107, REQ-108, AC-106 (Team and Org delegators); AC-112 preserved (local packages validate as before, N-15).
+- Implementation delta: `run-history/services/team-run-state-package-validator.ts`, `agent-org-execution/services/agent-org-state-package-validator.ts` (the two files SR-017 names). The migration `agent-org-history-first-message-summary-v1` imports the current Org validator; left unchanged as the review directs (FU-004).
+- Changed files or areas: the two validators; `tests/unit/remote-collaboration/remote-link-walkers.test.ts` (Team and Org: admission scan + restore with a stored delegator ↔ remote message; refusals kept; N-15 set equality). Commit `7a5a9af077`.
+- Local validation and result:
+  - The guard test fails on the IR-003 validators (4 cases) and passes on the fix (IMP-15).
+  - Typecheck and 910 tests of the validators' consumers (run history, Org, app-data migrations, remote collaboration, the Org integration test) pass (IMP-16).
+  - Full server unit suite at `7a5a9af077` passes: 762 files, 6,279 tests (IMP-17).
+- Next recipient or routing: code reviewer (targeted source review), then API/E2E (full two-server E2E plus API-21 / API-22).
+- Remaining limitations or risks: unchanged (RSK-106 / FU-002). The code reviewer's readability note on `root-task-execution-lifecycle.ts` (move `RemoteEndpointLookup` below the imports) waits until that file is next changed; this round does not touch it.

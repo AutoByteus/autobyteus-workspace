@@ -2,7 +2,7 @@
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`, branch `codex/cross-node-agent-communication-r2`; base `origin/personal` `5de6a698b9`; finalization target `origin/personal`.
 
-Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016 `213a5d9668`):
+Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016 `213a5d9668`, SR-017 `b9f630de6b`):
 
 | Commit | Content |
 | --- | --- |
@@ -14,31 +14,33 @@ Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016
 | `744641b35c` | IR-002 (CR-001): remote-endpoint messages are not published to the root view stream; stream-sequence test |
 | `676ecbbb7a` | IR-002 documents; IMP-09 … IMP-11 evidence |
 | `31d46978ad` | IR-003: clean ownership of remote messaging (SR-015, SR-016) and CR-002 |
-| the IR-003 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-12 … IMP-14 evidence |
+| `7383e89a0f` | IR-003 documents; IMP-12 … IMP-14 evidence |
+| `7a5a9af077` | IR-004 (SR-017, F-002): package validators accept remote message endpoints; guard test |
+| the IR-004 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-15 … IMP-17 evidence |
 
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: independent architecture review selected (Large / High). ARCH-REV-002 Pass, reopened at the user's direction (ARCH-REV-003 → SR-015 → ARCH-REV-004 Pass; ARCH-REV-005 → SR-016 → ARCH-REV-006 Pass). The review sent the package here.
 - Requirements doc: `tickets/in-progress/cross-node-agent-communication/requirements-doc.md` (approved baseline SR-007)
 - Investigation notes: `tickets/in-progress/cross-node-agent-communication/investigation-notes.md`
-- Solution revision record: `tickets/in-progress/cross-node-agent-communication/solution-revision-record.md` (current SR-016)
+- Solution revision record: `tickets/in-progress/cross-node-agent-communication/solution-revision-record.md` (current SR-017)
 - Design spec: `tickets/in-progress/cross-node-agent-communication/design-spec.md` (SR-016; authoritative: § Remote Messaging: Owners And Order, § Task Closure Of A Remote Run)
 - Supplemental task artifacts: `slice-plan.md` (approved); `follow-ups.md` (FU-001 done as autobyteus-197; FU-002 added by the architecture reviewer)
-- Design review report: `tickets/in-progress/cross-node-agent-communication/design-review-report.md` (ARCH-REV-006; notes N-6 … N-14)
+- Design review report: `tickets/in-progress/cross-node-agent-communication/design-review-report.md` (ARCH-REV-007; notes N-6 … N-16)
 - Architecture review revision record: `tickets/in-progress/cross-node-agent-communication/architecture-review-revision-record.md`
 - Triggering rework: SR-015 / SR-016 (ARCH-REV-004, ARCH-REV-006) for steps 3–6; `code-review-report.md` CRR-003 (finding CR-002, from API/E2E F-001 in `api-e2e-execution-coverage-report.md`); earlier CRR-001 (CR-001, IR-002)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-003 on top of IR-002)
+- Implementation cycle: `Rework` (IR-004 on top of IR-003)
 - Implementation revision record: `tickets/in-progress/cross-node-agent-communication/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
-- Related solution revision IDs: SR-014, SR-015, SR-016
-- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-006
-- Related code-review revision IDs: CRR-001, CRR-002, CRR-003
-- Related API/E2E revision IDs: API-REV-001 (F-001)
+- Current implementation revision ID: `IR-004`
+- Related solution revision IDs: SR-014, SR-015, SR-016, SR-017
+- Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-006, ARCH-REV-007
+- Related code-review revision IDs: CRR-001 … CRR-005
+- Related API/E2E revision IDs: API-REV-001 (F-001), API-REV-002 (F-002)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: AR-005 … AR-009 (design), CR-002 (IR-003); CR-001 (IR-002)
+- Triggering finding IDs: F-002 (IR-004, SR-017); AR-005 … AR-009 and CR-002 (IR-003); CR-001 (IR-002)
 
 What exists now:
 
@@ -91,6 +93,7 @@ Review notes:
 | AR-007 closure (replaces N-9) | `RootTaskExecutionResourceScope.releaseTaskExecutions` asks `RemoteRunLinks.endpointFor`; a closed `delegated_run` gets `endpoint.closureFence(...)` → `fenced_remote` with its message; no release; the release logger logs it as info |
 | N-10 `delegatedFrom` survives activation | catalog test: `delegatedFrom` kept through `recordRunStarted`; metadata store round trip |
 | N-11 ownership chain on B | the adapters' `ownershipChainFor` returns `endpoint.ownershipChain()`: `[{agentRunId}]` for `delegated_run`, `[]` for `delegator` |
+| SR-017 package-state validation (F-002) | `validateTeamRunStatePackage` / `validateAgentOrgStatePackage`: endpoints in `agentRunIdsOfTree` (includes remote runs), distinct, at least one an index agent; the admission scan and the restore keep a delegator ↔ remote message (guard test per root kind) |
 | N-13 one caller of `startDelegatedRun` | the three task adapters' `planActivation` / `beginActivation` hand a remote placement to `RemoteDelegation` |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -196,6 +199,9 @@ Evidence is in `tickets/in-progress/cross-node-agent-communication/evidence/`. E
 | IMP-12 | `pnpm -C autobyteus-server-ts typecheck` | `31d46978ad` | as above | all server source | IR-003 (SR-015, SR-016, CR-002) | Pass | `IMP-12-server-typecheck-ir003.log` | `exit=0` |
 | IMP-13 | `npx vitest run tests/unit/remote-collaboration tests/unit/run-history/store/remote-task-execution-links.test.ts tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts tests/unit/agent-collaboration/execution/communication tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts` | `31d46978ad` | as above | endpoint kinds, `RemoteRunLinks`, `RemoteMessageSend`, routing per root, lifecycle AR-003, `fenced_remote`, `PeerClient` (CR-002), in-process A↔B | BEH-101 … BEH-106; AR-003 … AR-008; CR-002 | Pass | `IMP-13-server-remote-focused-ir003.log` | `Test Files  12 passed (12)`, `Tests  88 passed (88)`; `remote-messaging-owners.test.ts (11 tests)`, `remote-message-routing.test.ts (6 tests)` |
 | IMP-14 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `31d46978ad` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-14-server-unit-full-ir003.excerpt.log` | `Test Files  762 passed \| 4 skipped (766)`, `Tests  6273 passed \| 7 skipped (6280)`, `exit=0` |
+| IMP-15 | `npx vitest run tests/unit/remote-collaboration/remote-link-walkers.test.ts`, on the fix and with the two validators from `7383e89a0f` | `7a5a9af077` and `7383e89a0f` | as above | the two package validators, `RootRunPackageCurrentValidator` scan, the Team and Org state loaders | F-002; AC-106; N-15 | Pass (fails before the fix) | `IMP-15-f002-guard-test.log` | after: `Tests  12 passed (12)`; before: `Tests  4 failed \| 8 passed (12)` |
+| IMP-16 | typecheck; `npx vitest run tests/unit/run-history tests/unit/agent-org-execution tests/unit/app-data-migrations tests/unit/remote-collaboration tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts` | `7a5a9af077` | as above | every consumer of the two validators, including migrations | AC-112 | Pass | `IMP-16-f002-consumers.log` | `Test Files  138 passed (138)`, `Tests  910 passed (910)` |
+| IMP-17 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `7a5a9af077` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-17-server-unit-full-ir004.excerpt.log` | `Test Files  762 passed \| 4 skipped (766)`, `Tests  6279 passed \| 7 skipped (6286)`, `exit=0` |
 | IMP-08 | Rendered web tab against the two-server stack (Nuxt dev, browser) | web as in `8491e0d916` | Chromium via the agent browser tool | Nodes → Remote Collaboration | BEH-101, BEH-102, REQ-115 | Pass (observed) | `IMP-08-ui-remote-collaboration-tab.png`, `IMP-08-ui-peer-refusal-and-rename.png`, `IMP-08-ui-publish-form.png` | the switch on; peer "docker" listed with its node ID; the refusal next to the peer form; the publish form with runtime, model, workspace and auto-approve |
 
 - Not run, and why:
