@@ -122,7 +122,19 @@ called tool is an external MCP-origin tool. The client keeps the SDK's default
 `legacy` protocol negotiation: `connect()` runs the 2025 `initialize`
 handshake (2025-11-25) and starts a stdio server once; AutoByteus sets no
 `versionNegotiation`. Tool listing walks every page of a paginating server.
-Remote HTTP failures read `Error POSTing to endpoint: <response body>`.
+
+Preview, discovery and tool calls show the SDK's error text unchanged;
+AutoByteus does not reword it, and no AutoByteus code parses it:
+
+- A remote HTTP failure reads `SdkHttpError: Error POSTing to endpoint:
+  <response body>` (a 401, for example, or a refused cross-origin redirect).
+- A stdio server that exits at start fails with `SdkError: Connection closed`.
+- A stdio server that does not answer `initialize` fails after 60 seconds (the
+  SDK's default request timeout) with `SdkError: Request timed out`.
+
+The v1 SDK worded these as `Streamable HTTP error: Error POSTing to endpoint:
+…`, `McpError: MCP error -32000: Connection closed` and `McpError: MCP error
+-32001: Request timed out`.
 
 Tests use the v2 packages as devDependencies: `@modelcontextprotocol/server`
 and `@modelcontextprotocol/node` for the test servers, `@modelcontextprotocol/client`
