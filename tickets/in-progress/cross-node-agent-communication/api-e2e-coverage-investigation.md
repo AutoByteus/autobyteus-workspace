@@ -11,18 +11,19 @@
 - Supplemental Task Artifacts: `…/slice-plan.md` (approved), `…/follow-ups.md` (FU-001 done, FU-002 RSK-106)
 - Design Review Report: `…/design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Implementation Handoff: `…/implementation-handoff.md` (IR-003)
+- Implementation Handoff: `…/implementation-handoff.md` (IR-004)
 - Implementation Revision Record: `…/implementation-revision-record.md`
-- Code Review Report: `…/code-review-report.md` (CRR-004, Pass; CRR-003 was the failure-origin review of F-001)
+- Code Review Report: `…/code-review-report.md` (CRR-006, Pass; CRR-003 and CRR-005 were the failure-origin reviews of F-001 and F-002)
 - Code Review Revision Record: `…/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3
 - Trigger: code review pass CRR-002 (reviewed code `744641b35c`, documents `676ecbbb7a`), Large / High. Then, during round 1, the Solution Designer's hold of steps 3–6 (ARCH-REV-003 Fail / Design Impact, SR-015 `f1d7dd9337`, docs only)
-- Prior Investigation Reviewed: round 1 (API-REV-001)
-- Latest Authoritative Investigation: this document, round 2
+- Prior Investigation Reviewed: rounds 1 and 2 (API-REV-001, API-REV-002)
+- Latest Authoritative Investigation: this document, round 3
+- Round 3 trigger: CRR-006 pass of IR-004 (code `7a5a9af077`, documents `284769f392`): the F-002 fix in `validateTeamRunStatePackage` and `validateAgentOrgStatePackage` (SR-017, ARCH-REV-007). Rerun by impact: every case of the E2E file (each one starts both servers, and the validators run at every package scan); API-21 and API-22 (the suites go through the same validators); API-23 reused (the receiving node's standalone run view does not use the Team/Org validators). RC-13 adds the reviewer's checks: the owner reopens the Team and Org runs after alpha's restart and after another root is created, and the woken delegators follow up.
 - Round 2 trigger: CRR-004 pass of IR-003 (code `31d46978ad`, documents `7383e89a0f`): SR-015/SR-016 (ARCH-REV-004, ARCH-REV-006 Pass) and CR-002 (F-001). The roots, engine, `RemoteRunLinks`, Task lifecycle and `PeerClient` changed, so every E2E case reruns; nothing is held any more.
 
 ## Current Requirement And Design Basis
@@ -139,8 +140,8 @@ Round 1 was split by the Solution Designer's hold (ARCH-REV-003, SR-015, 2026-10
 | Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why | Now |
 | --- | --- | --- | --- | --- | --- | --- |
 | API-00 | all | build | Existing Test | `pnpm -C autobyteus-server-ts build` | TESTING: `dist/app.js` suites need a current build | Run |
-| API-R1 | AC-112, unit level | unit | Reused | IMP-14 (full unit suite at `31d46978ad`; round 1 used IMP-11) | HEAD `7383e89a0f` changes only `tickets/` after `31d46978ad` | Reuse |
-| API-R2 | BEH-101 … BEH-106 in process, AR-003 … AR-008, CR-002 | unit | Reused | IMP-13 (88 focused tests at `31d46978ad`; round 1 used IMP-03/IMP-10) | same source | Reuse |
+| API-R1 | AC-112, unit level | unit | Reused | IMP-17 (full unit suite at `7a5a9af077`; earlier rounds used IMP-11, IMP-14) | HEAD `284769f392` changes only `tickets/` after `7a5a9af077` | Reuse |
+| API-R2 | BEH-101 … BEH-106 in process, AR-003 … AR-008, CR-002, F-002 | unit | Reused | IMP-13 (at `31d46978ad`), IMP-15 and IMP-16 (at `7a5a9af077`) | IMP-13's files are unchanged by the two-validator delta except `remote-link-walkers.test.ts`, which IMP-15 reran | Reuse |
 | API-R3 | REQ-115 | web | Reused | IMP-04, IMP-05, IMP-08 | `autobyteus-web` unchanged since `8491e0d916` | Reuse |
 | API-R4 | REQ-114 (N-3) | route policy | Reused | IMP-07 (a mobile credential on `/rest/remote/*` → 403) | `api/security/` and `api/rest/remote.ts` unchanged since `4c07f5b268`; IMP-07's gateway and settings parts are superseded by API-01/03 | Reuse |
 | API-01 | AC-101, AC-111 | settings, gateway | Durable | RC-01: off by default (`DEFAULT_DISABLED`, nothing in `.env`); both inbound kinds → `REMOTE_COLLABORATION_OFF`; `addPeerNode` refused; nothing contacted or recorded | — | Run |
@@ -163,9 +164,10 @@ Round 1 was split by the Solution Designer's hold (ARCH-REV-003, SR-015, 2026-10
 | API-18 | AC-101, SCN-107 | delegation, messages | Durable | RC-18: B off, then A off: "turned off" refusals, nothing sent from A | — | Run (round 2) |
 | API-19 | AC-102, SCN-107 | delegation, messages | Durable | RC-19: removal on B, then on A: refusals both ways; history stays | — | Run (round 2) |
 | API-20 | AC-111, REQ-113, REQ-114 | channel | Durable | RC-20: every captured request: only the contract paths; no credential header; no canary key or token-like text; exact body keys per kind | runs over whatever was captured | Run (round 2: full) |
-| API-21 | AC-112, QR-105 | same-node E2E suites | Existing Test | `tests/e2e/projects`, `run-history`, `agent-team-runs`, `agent-org-runs` with the AGY gate, switch off | — | Round 3 (after the F-002 fix, which changes run-history code these suites use) |
-| API-22 | AC-112, QR-105 | same-node E2E suites | Existing Test | the same with `ENABLE_REMOTE_COLLABORATION=true` | — | Run (round 2), and again after the F-002 fix |
-| API-23 | AC-110, REQ-112 | browser | Journey | two nodes + one remote delegation (`evidence/api-e2e/API-23-setup-two-nodes.mjs`, temporary), Nuxt dev against B: history lists the run, open it, work packet visible, composer message, stop | DOM/state assertions; a durable browser probe would need a two-node stack the web probe harness does not provide, and the E2E already proves the same server behavior (RC-05 composer) | Run (round 2) |
+| API-21 | AC-112, QR-105 | same-node E2E suites | Existing Test | `tests/e2e/projects`, `run-history`, `agent-team-runs`, `agent-org-runs` with the AGY gate, switch off | — | Run (round 3) |
+| API-22 | AC-112, QR-105 | same-node E2E suites | Existing Test | the same with `ENABLE_REMOTE_COLLABORATION=true` | — | Run (rounds 2 and 3) |
+| API-23 | AC-110, REQ-112 | browser | Journey | two nodes + one remote delegation (`evidence/api-e2e/API-23-setup-two-nodes.mjs`, temporary), Nuxt dev against B: history lists the run, open it, work packet visible, composer message, stop | DOM/state assertions; a durable browser probe would need a two-node stack the web probe harness does not provide, and the E2E already proves the same server behavior (RC-05 composer) | Reused in round 3 (round 2 result; the fix does not touch the receiving node's standalone run view) |
+| API-24 | AC-113 (Docker networking part) | Docker node | Temporary Probe | a test-owned container from `autobyteus/autobyteus-server` with this dist mounted read-only (TESTING § Docker server nodes), reaching a host node through `host.docker.internal` | tried in round 3 to shrink the user-only part; allowed only when the image's dist differs just in this branch's files | Not run: the image differs in 31 other files (`API-24-docker-node-attempt.log`) |
 
 - Test progress log needed: `Yes`
 
@@ -215,7 +217,7 @@ None.
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | F-001 (round 1; resolved by CR-002 in IR-003, rechecked in API-03 round 2): registering a URL that answers but is not an AutoByteus node (an HTML page, or a web server answering 404) is refused as `PEER_UNREACHABLE` "could not be reached: …" instead of `PEER_NOT_AUTOBYTEUS` "is not an AutoByteus node." | `Local Fix` (preliminary) | API-03; `peer-client.ts:89-100` (`response.json()` and the `!ok` throw are inside the transport `try`) | Implementation Engineer, via the code reviewer's failure-origin review |
-| F-002 (round 2): Team and Org root packages whose message log holds a message with a remote endpoint fail the current root-package validator (`validateTeamRunStatePackage` / `validateAgentOrgStatePackage` require both endpoints of every message to be agents of the tree). The next package re-scan (any new root, every startup) excludes them: their member views fail while they run, and after a restart replies from the remote run are refused "no longer exists" and the runs cannot be reopened (`…_STATE_PACKAGE_NOT_CATALOGED`). The AR-001 walker table has no row for this validator; the design names this as its escalation trigger. | `Design Impact` (preliminary; the fix looks bounded) | API-13 (RC-13), `API-13-F002-package-validator-scan.log`, `API-13-F002-restart-reopen.log` | Solution Designer / Implementation Engineer, via the code reviewer's failure-origin review |
+| F-002 (round 2; resolved by SR-017/IR-004, rechecked in API-13 round 3): Team and Org root packages whose message log holds a message with a remote endpoint fail the current root-package validator (`validateTeamRunStatePackage` / `validateAgentOrgStatePackage` require both endpoints of every message to be agents of the tree). The next package re-scan (any new root, every startup) excludes them: their member views fail while they run, and after a restart replies from the remote run are refused "no longer exists" and the runs cannot be reopened (`…_STATE_PACKAGE_NOT_CATALOGED`). The AR-001 walker table has no row for this validator; the design names this as its escalation trigger. | `Design Impact` (preliminary; the fix looks bounded) | API-13 (RC-13), `API-13-F002-package-validator-scan.log`, `API-13-F002-restart-reopen.log` | Solution Designer / Implementation Engineer, via the code reviewer's failure-origin review |
 
 ## Investigation Decision
 
@@ -223,4 +225,4 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (one new E2E file)
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: —
-- Notes: round 2 runs every case on IR-003; API-21 waits for the F-002 fix. Round 1 ran API-00, API-01, API-03 and API-20; the held cases run on the revised code (SR-015), together with a rerun of these by impact. The E2E is long (idle grace and two restarts, about 6–10 minutes); it runs alone, not in parallel with other runtime suites.
+- Notes: round 3 reruns every E2E case and API-21/22 on IR-004. Round 2 ran every case on IR-003 (API-21 waited for the F-002 fix). Round 1 ran API-00, API-01, API-03 and API-20; the held cases run on the revised code (SR-015), together with a rerun of these by impact. The E2E is long (idle grace and two restarts, about 6–10 minutes); it runs alone, not in parallel with other runtime suites.

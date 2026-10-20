@@ -1,0 +1,213 @@
+--- start 2026-10-20T17:33:02.522Z pid 83744
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53217
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53217
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:83744) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agents/delegator_16a6abfbec5c4a18aa3054e55e9edee6/raw_traces_active.jsonl
+{"level":40,"time":1792517585985,"pid":83744,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.26100000739097595,"msg":"http request completed"}
+{"level":40,"time":1792517586719,"pid":83744,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.21979200839996338,"msg":"http request completed"}
+{"level":40,"time":1792517587308,"pid":83744,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.2137499898672104,"msg":"http request completed"}
+{"level":40,"time":1792517587638,"pid":83744,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.18424999713897705,"msg":"http request completed"}
+{"level":40,"time":1792517588615,"pid":83744,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.22612500190734863,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_teams/remote_squad_8cc0e13c99fc4f9a9c0eff0ec1ce1c4c/delegator_13560aa185204b458cb3dba56d51cc52/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_teams/remote_squad_8cc0e13c99fc4f9a9c0eff0ec1ce1c4c/delegator_13560aa185204b458cb3dba56d51cc52/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_teams/remote_squad_8cc0e13c99fc4f9a9c0eff0ec1ce1c4c/delegator_13560aa185204b458cb3dba56d51cc52/raw_traces_active.jsonl
+{"level":40,"time":1792517591303,"pid":83744,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_vkt067grtV7YT3QhbQiYkABeed8LjQW9krgiN1DxrMk","statusCode":405,"elapsedMs":0.20075000822544098,"msg":"http request completed"}
+{"level":40,"time":1792517592206,"pid":83744,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_vkt067grtV7YT3QhbQiYkABeed8LjQW9krgiN1DxrMk","statusCode":405,"elapsedMs":0.24170899391174316,"msg":"http request completed"}
+{"level":40,"time":1792517592437,"pid":83744,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_vkt067grtV7YT3QhbQiYkABeed8LjQW9krgiN1DxrMk","statusCode":405,"elapsedMs":0.16429099440574646,"msg":"http request completed"}
+{"level":40,"time":1792517592878,"pid":83744,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_hpi-8d9QabftFZsPRN27E7uOIF6eLyENbeETXR2-V5I","statusCode":405,"elapsedMs":0.1811250001192093,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_orgs/remote_org_21ab31edf341471b9214fc50ec6424ca/delegator_e313d30e9ec44b6799f0755fbbb060dc/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_orgs/remote_org_21ab31edf341471b9214fc50ec6424ca/delegator_e313d30e9ec44b6799f0755fbbb060dc/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agent_orgs/remote_org_21ab31edf341471b9214fc50ec6424ca/delegator_e313d30e9ec44b6799f0755fbbb060dc/raw_traces_active.jsonl
+{"level":40,"time":1792517595626,"pid":83744,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_ryWrAG7tyS4ejfYL4Wa3rm-aYBznVcRM0NUh6FYaNYA","statusCode":405,"elapsedMs":0.21241600811481476,"msg":"http request completed"}
+{"level":40,"time":1792517596522,"pid":83744,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_ryWrAG7tyS4ejfYL4Wa3rm-aYBznVcRM0NUh6FYaNYA","statusCode":405,"elapsedMs":0.14616699516773224,"msg":"http request completed"}
+{"level":40,"time":1792517596764,"pid":83744,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_ryWrAG7tyS4ejfYL4Wa3rm-aYBznVcRM0NUh6FYaNYA","statusCode":405,"elapsedMs":0.13854201138019562,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agents/delegator_b55c960555b44dc2a80622e16f427997/raw_traces_active.jsonl
+{"level":40,"time":1792517597380,"pid":83744,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_IhlEzU1dwbCryZcv-Yrm7ZgzQuBRZbL7JG_-JTdW1yg","statusCode":405,"elapsedMs":0.1737920045852661,"msg":"http request completed"}
+{"level":40,"time":1792517599175,"pid":83744,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.1421249955892563,"msg":"http request completed"}
+{"level":40,"time":1792517599392,"pid":83744,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.17625001072883606,"msg":"http request completed"}
+{"level":40,"time":1792517599607,"pid":83744,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.10554198920726776,"msg":"http request completed"}
+{"level":40,"time":1792517599826,"pid":83744,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.414124995470047,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory/agents/remote_manager_47f9ce4832f5412084ce2529509dddd8/raw_traces_active.jsonl
+{"level":40,"time":1792517601430,"pid":83744,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/mcp/agent-tools/agtrun_28gA98KHfsfpuPXb9Pw7I5VRfpsfGzRtuUjPeynlqA4","statusCode":405,"elapsedMs":0.1837500035762787,"msg":"http request completed"}
+{"level":40,"time":1792517601929,"pid":83744,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/mcp/agent-tools/agtrun_Rl6hcd_bhMiKusyPUFx8JGjLjpxmRH_GXPiv77Pi6fE","statusCode":405,"elapsedMs":0.180417001247406,"msg":"http request completed"}
+{"level":40,"time":1792517602923,"pid":83744,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/mcp/agent-tools/agtrun_28gA98KHfsfpuPXb9Pw7I5VRfpsfGzRtuUjPeynlqA4","statusCode":405,"elapsedMs":0.16995899379253387,"msg":"http request completed"}
+{"level":40,"time":1792517606362,"pid":83744,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.1887499988079071,"msg":"http request completed"}
+{"level":40,"time":1792517607006,"pid":83744,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.14229099452495575,"msg":"http request completed"}
+{"level":40,"time":1792517607227,"pid":83744,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.3525409996509552,"msg":"http request completed"}
+{"level":40,"time":1792517648957,"pid":83744,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.5317499935626984,"msg":"http request completed"}
+{"level":40,"time":1792517654014,"pid":83744,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.20475000143051147,"msg":"http request completed"}
+--- start 2026-10-20T17:34:14.819Z pid 17058
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53217
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53217
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-uVGdot/alpha/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:17058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+{"level":40,"time":1792517660855,"pid":17058,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.47608301043510437,"msg":"http request completed"}
+{"level":40,"time":1792517661543,"pid":17058,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_vkt067grtV7YT3QhbQiYkABeed8LjQW9krgiN1DxrMk","statusCode":405,"elapsedMs":0.2989159971475601,"msg":"http request completed"}
+{"level":40,"time":1792517661926,"pid":17058,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_ryWrAG7tyS4ejfYL4Wa3rm-aYBznVcRM0NUh6FYaNYA","statusCode":405,"elapsedMs":0.2987920045852661,"msg":"http request completed"}
+{"level":40,"time":1792517662119,"pid":17058,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.23279200494289398,"msg":"http request completed"}
+{"level":40,"time":1792517662884,"pid":17058,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.20487499237060547,"msg":"http request completed"}
+{"level":40,"time":1792517663102,"pid":17058,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.38008400797843933,"msg":"http request completed"}
+{"level":40,"time":1792517683278,"pid":17058,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.3083750009536743,"msg":"http request completed"}
+{"level":40,"time":1792517703688,"pid":17058,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.19016599655151367,"msg":"http request completed"}
+{"level":40,"time":1792517706850,"pid":17058,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.24674999713897705,"msg":"http request completed"}
+{"level":40,"time":1792517707069,"pid":17058,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.15275000035762787,"msg":"http request completed"}
+{"level":40,"time":1792517707307,"pid":17058,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.22766700387001038,"msg":"http request completed"}
+{"level":40,"time":1792517707525,"pid":17058,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.17991700768470764,"msg":"http request completed"}
+{"level":40,"time":1792517708318,"pid":17058,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.10112500190734863,"msg":"http request completed"}
+{"level":40,"time":1792517708763,"pid":17058,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.12358400225639343,"msg":"http request completed"}
+{"level":40,"time":1792517709142,"pid":17058,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.15929199755191803,"msg":"http request completed"}
+{"level":40,"time":1792517709583,"pid":17058,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_6mUAL98faWhlaD61FEMyxf_w-IEmDZVvxVXC92m0rOI","statusCode":405,"elapsedMs":0.23366700112819672,"msg":"http request completed"}

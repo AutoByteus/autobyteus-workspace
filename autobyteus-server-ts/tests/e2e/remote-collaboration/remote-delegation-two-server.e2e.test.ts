@@ -944,6 +944,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(observed[kind], `${kind} delegator after alpha's restart`).toMatchObject({ reply: { accepted: true }, inAlphaLog: true, delegatorRelaunched: true, conversation: "readable" });
       await receives(actor, marker);
     }
+    // The owner opens the Team and Org runs (their configuration and views load), also after another root is created
+    // (a new root re-scans every package), and the woken delegators follow up to their remote runs.
+    await createStandalone(alpha, ids.delegator, "alpha root created after the restart");
+    const teamConfig = (await alpha.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){teamRunId executionTree}}`, { id: ids.team.teamRunId })).getTeamRunResumeConfig;
+    const orgConfig = (await alpha.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: ids.org.orgRunId })).getAgentOrgRunConfig;
+    expect(flattenE2eConfiguredAgentExecutions(teamConfig.executionTree).map((member) => member.agentRunId)).toContain(ids.team.lead);
+    expect((orgConfig.executionTree.rootOrg.members as Rec[]).map((member) => member.agentRunId)).toContain(ids.org.lead);
+    for (const [actor, remoteId, marker] of [[teamLead, ids.team.r2, "AFTER-ALPHA-RESTART-FROM-TEAM"], [orgLead, ids.org.r5, "AFTER-ALPHA-RESTART-FROM-ORG"]] as const) {
+      expect(await calls(actor, "send_message_to", { target_agent_run_id: remoteId, content: marker })).toMatchObject({ accepted: true });
+      await receives(composeOnBeta(remoteId), marker);
+      await assertBothLogs(marker, actor, composeOnBeta(remoteId));
+    }
+    record("RC-13", { reopened: { teamRunId: teamConfig.teamRunId, orgMembers: (orgConfig.executionTree.rootOrg.members as Rec[]).length } });
   }, 420_000);
 
   it("RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'", async () => {
@@ -1078,14 +1091,18 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       toAlpha: ["content", "coordinatingRun", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "toNodeId"],
     };
     const counts: Record<string, number> = {};
-    const secretPattern = /sk-[A-Za-z0-9_-]{8,}|mra_[A-Za-z0-9]|mhub_[A-Za-z0-9]|bearer\s|api[_-]?key|password|secret|token/i;
+    // Credential shapes (provider keys, mobile and Memory Hub tokens) start a value or follow a non-identifier character,
+    // so a random run or message ID that happens to contain "Sk-" is not one; credential words are matched in any case.
+    const keyPattern = /(?<![A-Za-z0-9_])(?:sk-[A-Za-z0-9_-]{8,}|mra_[A-Za-z0-9]|mhub_[A-Za-z0-9])/;
+    const wordPattern = /\bbearer\s|api[_-]?key|password|secret|token/i;
+    const secretLike = (text: string) => keyPattern.test(text) || wordPattern.test(text);
     for (const entry of captured) {
       const text = JSON.stringify({ headers: entry.headers, body: entry.body });
       expect(text.includes(CANARY.alpha) || text.includes(CANARY.beta), `canary key in request ${entry.seq}`).toBe(false);
       expect(Object.keys(entry.headers).filter((name) => /auth|cookie|key|token|secret/i.test(name)), `credential header in request ${entry.seq}`).toEqual([]);
       if (entry.path === PATHS.status) { expect(entry.method).toBe("GET"); counts.status = (counts.status ?? 0) + 1; continue; }
       const body = entry.body as Rec;
-      expect(secretPattern.test(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
+      expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
       const kind = entry.path === PATHS.runs ? PATHS.runs : body.kind === "work_packet" ? "work_packet" : entry.via;
       expect(sortedKeys(body), `fields of request ${entry.seq} (${kind})`).toEqual(keysByKind[kind]);
       expect(entry.method).toBe("POST");

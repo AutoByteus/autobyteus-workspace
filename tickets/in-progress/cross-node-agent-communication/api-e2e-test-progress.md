@@ -26,3 +26,18 @@
 | 2026-10-20 17:59 | API-22 | Started | — | same-node E2E suites with ENABLE_REMOTE_COLLABORATION=true (projects, run-history, agent-team-runs, agent-org-runs), log /tmp/api22-switch-on.log |
 | 2026-10-20 18:18 | API-22 | Completed | Pass (FU-003 outside scope) | 36/37 files pass with the switch on; delegated-launch-config-defaults fails the same alone with the switch off; cause: stale expectation from autobyteus-197 (in base) → FU-003 |
 | 2026-10-20 18:18 | — | Checkpoint | — | Round 2 result Fail (F-002). Report, revision record API-REV-002, FU-003 written; temp data removed. Next: commit, failure-origin request to the code reviewer; round 3 after the fix: whole E2E, API-21, API-22 |
+| 2026-10-20 18:46 | — | Checkpoint | — | Round 3: CRR-006 pass, code `7a5a9af077` (IR-004, F-002 fix: the two package validators), docs `284769f392`. Plan: API-00, whole E2E (RC-13 extended: reopen Team/Org after restart + new root, follow-ups from the woken delegators), API-21 + API-22; API-23 reused (beta side untouched) |
+| 2026-10-20 18:46 | API-00 | Started | — | rebuild dist |
+| 2026-10-20 18:46 | API-00 | Completed | Pass | `evidence/api-e2e/API-00-server-build-round3.log` |
+| 2026-10-20 18:46 | API-01 … API-20 | Started | — | run r3-1, evidence `evidence/api-e2e/API-r3-run1` |
+| 2026-10-20 18:48 | API-01 … API-20 | Completed | Pass | run r3-1: 20/20 (RC-13 Team/Org restored, reopened, follow-ups) |
+| 2026-10-20 18:48 | API-21 | Started | — | same-node E2E suites, switch off, log /tmp/api21-switch-off.log |
+| 2026-10-20 19:03 | API-21 | Completed | see report | switch off done; API-22 (switch on) started, log /tmp/api2x-switch-on.log |
+| 2026-10-20 19:21 | API-21 | Checkpoint | — | switch off: FU-003 + task-reactivation-root-visibility QR-001 race timeout (1/7). Alone: off 5/5 pass, on 4/5 pass (1 same timeout). Bisect: temp worktree at base 5de6a698b9 |
+| 2026-10-20 19:28 | API-21/22 | Completed | Pass (FU-003, FU-004 outside scope) | switch off: 35/37 files (FU-003 + the base-reproduced QR-001 race, FU-004); switch on: 36/37 (FU-003). Race: branch 1/10, base 1/10 |
+| 2026-10-20 19:28 | API-01 … API-20 | Started | — | stability rerun r3-2, evidence `evidence/api-e2e/API-r3-run2` |
+| 2026-10-20 19:30 | API-01 … API-20 | Completed | Fail (test defect) | r3-2: 19 pass; RC-20 false positive: the 'sk-' heuristic matched 'Sk-S-5a77…' inside a random messageId (canary and header checks passed). Pattern made case-sensitive with a left boundary |
+| 2026-10-20 19:30 | API-01 … API-20 | Started | — | r3-3 and r3-4 with the final test file |
+| 2026-10-20 19:38 | API-01 … API-20 | Completed | Pass | r3-3 and r3-4: 20/20 each with the final test file |
+| 2026-10-20 19:38 | API-24 | Completed | Not Tested | image dist differs in 31 files outside this branch; TESTING forbids the dist mount; no container started |
+| 2026-10-20 19:38 | — | Checkpoint | — | Round 3 result Pass / 95%. Report, API-REV-003, FU-004 written. Next: commit, test-code review request to the code reviewer |
