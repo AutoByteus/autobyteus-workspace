@@ -1,0 +1,35 @@
+# node probe.mjs (2026-10-20, Node 22.23.1; client 2.3.1 vs sdk 1.32.1 servers)
+{"transport":"stdio","mode":"default","connectMs":118,"tools":["echo","env"],"r1":"echo:hi","r2":"dummy-123|/private/tmp","spawns":1}
+{"transport":"stdio","mode":"auto","connectMs":242,"tools":["echo","env"],"r1":"echo:hi","r2":"dummy-123|/private/tmp","spawns":2}
+{"transport":"http","mode":"default","tools":["ping_tool"],"r":"pong","era":"legacy","version":"2025-11-25","requests":["POST auth=Bearer dummy-token pv=-","POST auth=Bearer dummy-token pv=2025-11-25","GET auth=Bearer dummy-token pv=2025-11-25","POST auth=Bearer dummy-token pv=2025-11-25","POST auth=Bearer dummy-token pv=2025-11-25"]}
+{"transport":"http","mode":"auto","tools":["ping_tool"],"r":"pong","era":"legacy","version":"2025-11-25","requests":["POST auth=Bearer dummy-token pv=2026-07-28","POST auth=Bearer dummy-token pv=-","POST auth=Bearer dummy-token pv=2025-11-25","GET auth=Bearer dummy-token pv=2025-11-25","POST auth=Bearer dummy-token pv=2025-11-25","POST auth=Bearer dummy-token pv=2025-11-25"]}
+{"case":"401","error":"SdkHttpError: Error POSTing to endpoint: "}
+
+# node probe401-v1.mjs
+v1 401 StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: nope-body code= 401 status= undefined
+v1 403 StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: nope-body code= 403 status= undefined
+v1 404 StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: nope-body code= 404 status= undefined
+v1 500 StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: nope-body code= 500 status= undefined
+v1 xorigin-redirect StreamableHTTPError: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://localhost:<port>/mcp not followed (redirectPolicy: 'same-origin')
+v1 refused TypeError: fetch failed
+v2 401 SdkHttpError: Error POSTing to endpoint: nope-body code= CLIENT_HTTP_NOT_IMPLEMENTED status= 401
+v2 403 SdkHttpError: Error POSTing to endpoint: nope-body code= CLIENT_HTTP_NOT_IMPLEMENTED status= 403
+v2 404 SdkHttpError: Error POSTing to endpoint: nope-body code= CLIENT_HTTP_NOT_IMPLEMENTED status= 404
+v2 500 SdkHttpError: Error POSTing to endpoint: nope-body code= CLIENT_HTTP_NOT_IMPLEMENTED status= 500
+v2 xorigin-redirect SdkHttpError: Error POSTing to endpoint: Redirect to http://localhost:<port>/mcp not followed; use that URL as the endpoint if it is the intended server (redirectPolicy: 'same-origin')
+v2 refused TypeError: fetch failed
+
+# node fs-probe.mjs /tmp/mcp-v2-probe (server-filesystem 2026.8.31 = sdk ^1.30, 2.0.0 = server ^2.3.1)
+{"label":"fs-v1-2026.8.31","mode":"legacy","era":"legacy","version":"2025-11-25","tools":14,"text":"hello","isError":false}
+{"label":"fs-v1-2026.8.31","mode":"auto","era":"legacy","version":"2025-11-25","tools":14,"text":"hello","isError":false}
+{"label":"fs-v2-2.0.0","mode":"legacy","era":"legacy","version":"2025-11-25","tools":14,"text":"hello","isError":false}
+{"label":"fs-v2-2.0.0","mode":"auto","era":"modern","version":"2026-07-28","tools":14,"text":"hello","isError":false}
+# node probe-design.mjs (2026-10-20): v2 McpServer + NodeStreamableHTTPServerTransport; paged low-level Server; hand-written JSON-RPC server like ours (-32601 for unknown methods) in legacy and auto mode
+1 v2-server {"tools":["echo","add"],"sc":{"sum":5},"era":"legacy"}
+2 paged ["tool_p1_0","tool_p1_1","tool_p2_0","tool_p2_1"]
+3 own-like legacy {"era":"legacy","tools":["own_tool"],"seen":["initialize","notifications/initialized","GET","tools/list"]}
+3 own-like auto {"era":"legacy","tools":["own_tool"],"seen":["server/discover","initialize","notifications/initialized","GET","tools/list"]}
+
+# node probe-route-header.mjs (2026-10-20, SR-004): stand-in with our routes' mcp-protocol-version check first (400 + -32600 for 2026-07-28), then the dispatcher
+legacy {"era":"legacy","version":"2025-11-25","tools":["own_tool"],"call":"called","seen":["POST initialize pv=2025-03-26","POST notifications/initialized pv=2025-11-25","GET - pv=2025-11-25","POST tools/list pv=2025-11-25","POST tools/call pv=2025-11-25"]}
+auto {"era":"legacy","version":"2025-11-25","tools":["own_tool"],"call":"called","seen":["POST server/discover pv=2026-07-28 -> 400/-32600","POST initialize pv=2025-03-26","POST notifications/initialized pv=2025-11-25","GET - pv=2025-11-25","POST tools/list pv=2025-11-25","POST tools/call pv=2025-11-25"]}
