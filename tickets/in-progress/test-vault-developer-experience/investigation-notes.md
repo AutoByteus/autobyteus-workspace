@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: Worktree created from freshly fetched `origin/personal`; `pnpm install --frozen-lockfile` succeeded (10 s).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-009`
+- Current solution revision ID: `SR-010`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-10); repository `AGENTS.md`, `TESTING.md` (full, 2026-10-10); `autobyteus-server-ts/docs/modules/secret_management.md` (full, 2026-10-10)
 - Investigation status: Evaluation complete and revised on 2026-10-17 for the user update (SR-002). Requirements approved within the user's direction (SR-004, 2026-10-19). Architecture investigation complete (2026-10-19).
 
@@ -207,7 +207,7 @@ Authorities read for design (2026-10-19), all from `/Users/normy/autobyteus_org/
 | A-10 | `test-support/live-e2e/*.ts` import `../../autobyteus-server-ts/src/...` and `../../autobyteus-ts/src/...`; server unit tests import `../../../../test-support/live-e2e/...` | Established workspace pattern: cross-package test glue lives in `test-support/` and imports package sources | `test-support/test-vault/` holds test policy (gates, skip/strict, per-process lifecycle) over the server capability; autobyteus-ts and server tests import it |
 | A-11 | `test-support/live-e2e/live-e2e-harness.ts` l.500, l.1253 | Each scenario sets its Gemini mode through Settings; nothing depends on persisted runtime state | `test:e2e:real` can use a run-owned temporary runtime root and DB, removed after the run, instead of the persistent per-worktree `db/test.db` |
 | A-12 | `test-support/live-e2e/test-runtime-bootstrap.mjs` `resolveTestDatabaseLocation`, `removeOwnedTestRuntime`, `startBuiltTestServer({databaseUrlOverride, runtimeRoot})` | Run-owned DB/root and fenced cleanup already exist | Reuse; add a provisioning step before the server launch |
-| A-13 | `docs/isolated-app-instances.md` l.270-285; `skills/autobyteus-isolated-app/SKILL.md` l.44-49 | Contract today: import into the instance `databaseUrl`, then `isolated-app restart` | `start --test-vault` performs a transfer into that `databaseUrl` and then the existing restart, as a subprocess call to the server CLI (the web scripts do not import the server) |
+| A-13 | `docs/isolated-app-instances.md` l.270-285; `skills/autobyteus-isolated-app/SKILL.md` l.44-49 | Contract today: import into the instance `databaseUrl`, then `isolated-app restart` | Superseded since SR-006: isolated launches forward `AUTOBYTEUS_TEST_VAULT` to the instance's server (A-20); no transfer, no `--test-vault` option, no restart (corrected for ARCH-REV-003 AR-008) |
 | A-14 | `autobyteus-server-ts/tests/setup/test-environment-isolation.ts`; TESTING.md "E2E … keep the inherited environment" | Inherited env stays for E2E (CLI logins need HOME etc.) | For E2E, strip only credential variables, not the whole env |
 | A-15 | `grep` inventory | 8 server suites + 1 helper use the env→vault helper; 18 autobyteus-ts live files read credential env (the unit test `gemini-helper.test.ts` sets synthetic env only) | Sizing input |
 | A-16 | `/Users/normy/autobyteus_org/autobyteus-agents/**` (`grep secrets:import\|API_KEY`) | Team skills do not repeat importer mechanics | No team-skill edits needed; the `AGENTS.md` entry reaches every agent |

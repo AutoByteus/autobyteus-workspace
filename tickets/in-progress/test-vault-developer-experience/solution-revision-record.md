@@ -13,6 +13,7 @@
 | SR-007 | Requirements (user) | User 2026-10-19: "write in TESTING.md to set the test vault environment variable … important in the requirement" | N/A | Approved @ SR-006; design under architecture review | Approved; design updated (docs guidance only) | REQ-013, AC-012 | TESTING.md must instruct setting `AUTOBYTEUS_TEST_VAULT` (section, rule, every real-key example) |
 | SR-008 | Mixed (Design Impact + editorial Requirement Gap) | Architecture review ARCH-REV-001 (Fail): AR-001..AR-006 | AR-001..AR-006 | Approved @ SR-007; design Ready (failed review) | Approved @ SR-008; design Ready (revised) | REQ-004, 005, 011, 013, 014, 016; AC-004, 009, 010, 016, 017; UC-009; SCN-009; DEC-007, 012 | Live opt-in at harnesses; concrete refused set; one failure rule; Prisma-free read path; docs aligned |
 | SR-009 | Requirement change (user) + Design | User via code review (2026-10-20, user's words relayed by `/software_engineering_team/code_reviewer`): normal logic never has to know; plain scripts too; "do it in this ticket" | Code-review Requirement Gap / Design Impact (CRR-001 passed IR-001) | Approved @ SR-008; implemented IR-001 `12a23e7b8a`; code review passed | Approved @ SR-009; design Ready (delta) | REQ-005(c), REQ-014; AC-009, AC-013, AC-018; DEC-011 → DEC-013 | autobyteus-ts owns the vault read side and reads the selector itself; the server disables that default |
+| SR-010 | Design (Design Impact) | Architecture review ARCH-REV-003 (Fail): AR-009 blocking; AR-010..AR-012, AR-008 | AR-008..AR-012 | Approved @ SR-009; design Ready (failed review) | Approved @ SR-009 (unchanged); design Ready @ SR-010 | DEC-013 wording; design delta | Only provider-key naming moves to core; server keeps consumer authorization; `readSecretEntry` error contract; AC-018 on the built server; A-13 corrected |
 
 ## Revision Entries
 
@@ -185,3 +186,16 @@
   - Vitest setup deletes the selector unless the live gate is set.
 - Review impact: the ARCH-REV-002 pass covered SR-008 only. The SR-009 delta goes back to architecture review before implementation continues.
 - Next action: handoff to `/software_engineering_team/architecture_reviewer`
+
+### SR-010 — Answering architecture review ARCH-REV-003
+
+- Classification: Design Impact. Requirements are unchanged apart from DEC-013 wording.
+- Trigger: `/software_engineering_team/architecture_reviewer`, ARCH-REV-003 (Fail) on the SR-009 delta (commit `a55dbc4a44`)
+- Changes:
+  - **AR-009.** autobyteus-ts gets only secret ids and a pure `providerSecretId(providerId, slot)`. The server keeps `SecretConsumerIdentity`, `serializeSecretConsumerIdentity` and `ProviderCredentialCatalog`, built on `providerSecretId`. `readProviderApiKey(providerId, slot)`. There is one mapping and no server policy in core.
+  - **AR-010.** Wording: "vault format primitives + read-only reader".
+  - **AR-011.** `readSecretEntry` error contract (NOT_FOUND / CORRUPT_VAULT → server `markCorrupt`; zeroization inside).
+  - **AR-012.** AC-018 is also proven against the built server.
+  - **AR-008.** A-13 implication corrected.
+- Intended behavior changed: No
+- Next action: return to architecture review

@@ -1,4 +1,4 @@
-# Handoff: test-vault-developer-experience — SR-009, Architecture Design Complete (delta after code review)
+# Handoff: test-vault-developer-experience — SR-010, Architecture Design Complete (SR-009 delta revised after ARCH-REV-003)
 
 - Package: `test-vault-developer-experience` (Project Task `c15a77b2-18b8-4ac6-b3de-8afcba81211e`)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the user. The user decides directly in the Solution Designer conversation.
@@ -16,7 +16,16 @@
 - One message in TESTING.md, `AGENTS.md` and the skills.
 - The user's model (2026-10-19): "like a database". One environment variable (`AUTOBYTEUS_TEST_VAULT`) selects the vault, normal logic is unchanged, and when it is unset production uses its own vault.
 
-## SR-009 delta (current)
+## SR-010 revision (answers ARCH-REV-003)
+
+- AR-009: only secret ids and a pure `providerSecretId(providerId, slot)` move to autobyteus-ts; the server keeps consumer identities and `ProviderCredentialCatalog` (authorization, search bindings, `isKnownSecretId`), built on it.
+- AR-010: wording.
+- AR-011: `readSecretEntry` error contract.
+- AR-012: AC-018 also on the built server.
+- AR-008: A-13 corrected.
+- See the review-response rows at the end of `design-spec.md`.
+
+## SR-009 delta
 
 - Trigger: the user's direction relayed by the code reviewer (2026-10-20): autobyteus-ts must reach the test vault from plain scripts too, with "normal logic never has to know".
 - Base: IR-001 (`12a23e7b8a`) passed code review CRR-001. API/E2E is holding.

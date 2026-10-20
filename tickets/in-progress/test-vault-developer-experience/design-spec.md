@@ -2,45 +2,45 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009`
+- Current solution revision ID: `SR-010`
 - Approved requirements baseline / revision, who approved, and approval reference:
   - Baseline: `requirements-doc.md` @ SR-009. SR-009 is the user's direction relayed with the user's own words from the code-review conversation, 2026-10-20: autobyteus-ts reads the selector itself (REQ-014, AC-009, AC-013, AC-018, DEC-013).
   - SR-006 and SR-007 were approved by the user in the Solution Designer conversation on 2026-10-19: the database model, the production default, and TESTING.md telling runners to set the variable.
   - The SR-008 clarifications (REQ-004 refused folders, REQ-005 live opt-in for workspace harnesses, REQ-016 no-fallback failure, AC-017) are decided within that direction; the user was informed on 2026-10-19.
 - Behavior-defining supplements and their approval references: `test-vault-evaluation-report.md` @ SR-008 (§5.0, §5.1), same approval
-- Design status: `Ready` (SR-009 delta over the SR-008 design, which passed ARCH-REV-002 and was implemented at IR-001 `12a23e7b8a`)
+- Design status: `Ready`. This is the SR-009 delta, revised at SR-010 to answer ARCH-REV-003 (AR-009..AR-012, AR-008), over the SR-008 design that passed ARCH-REV-002 and was implemented at IR-001 `12a23e7b8a`.
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/tickets/in-progress/test-vault-developer-experience/investigation-notes.md` (W-*, F-*, A-01..A-25)
 - Authorities read (design reading gate; 2026-10-19), from the solution-designer skill: `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`; project `DESIGN.md` (repository root); `autobyteus-server-ts/AGENTS.md`; `autobyteus-web/AGENTS.md`. `references/design-examples.md` was not needed.
 - Project design-principle conflicts or discrepancies: None. The documented `secret_management.md` contract ("no `SECRET_STORE_DATABASE_URL` … default-versus-E2E Store"; "no test wrapper / never a test-runner fallback") is revised for the test vault with the user's approval (DEC-001) and updated in this change.
 - Review history: ARCH-REV-001 failed SR-006/SR-007 (AR-001..AR-004 blocking). The response to each finding is in the table at the end of this document.
 
-## SR-009 Design Delta (Authoritative Where It Differs)
+## SR-009 Design Delta (Authoritative Where It Differs; Revised At SR-010)
 
 **Why.** IR-001 meets the database model for servers. autobyteus-ts still depends on its test setup installing a default key source (DEC-011), so a plain `tsx`/`node` probe gets `MissingApiKeyError` (code-review evidence). The user asked for the full model in this ticket (SR-009).
 
-**Change in one sentence.** The read side of the encrypted vault, plus the test-vault location policy, moves into autobyteus-ts `src/secrets/vault/` as its single owner. autobyteus-ts's default key source then opens the vault named by `AUTOBYTEUS_TEST_VAULT` lazily and read-only for any client built without a resolver. The server keeps the vault lifecycle and turns that environment default off at startup.
+**Change in one sentence.** The **vault format primitives** and a **read-only reader**, plus the test-vault location policy and provider-key naming, move into autobyteus-ts `src/secrets/vault/` as their single owner. Format primitives means: encryption and decryption, verifier creation and checking, root-key file read/create, the Windows ACL, record types, the store interface and the read-only store (AR-010). autobyteus-ts's default key source then opens the vault named by `AUTOBYTEUS_TEST_VAULT` lazily and read-only for any client built without a resolver. The server keeps the vault lifecycle and turns that environment default off at startup.
 
-**Vault read side** (moves from `autobyteus-server-ts/src/secret-management/` to `autobyteus-ts/src/secrets/vault/`; one owner; the server imports it from `autobyteus-ts/secrets/vault/*`):
+**Vault format primitives + read-only reader** (move from `autobyteus-server-ts/src/secret-management/` to `autobyteus-ts/src/secrets/vault/`; one owner; the server imports them from `autobyteus-ts/secrets/vault/*`):
 
 | Moves (clean cut, no re-export shims) | From | To | Notes |
 | --- | --- | --- | --- |
-| Secret identity (`SecretId`, `secretId`, consumer identity types, `customProviderSecretId`) | `domain/secret-id.ts` | `vault/secret-id.ts` | ~25 server importers update paths |
+| Secret ids only: `SecretId`, `secretId`, `customProviderSecretId`. The credential slot type uses autobyteus-ts's existing `ProviderApiKeySlot`, so the server's `SecretCredentialSlot` becomes that type, with no second union. | `domain/secret-id.ts` (part) | `vault/secret-id.ts` | The server **keeps** `SecretConsumerIdentity` and `serializeSecretConsumerIdentity` in `domain/secret-id.ts` (AR-009) |
 | Vault errors and health (`SecretVaultError`, health types, `vaultHealthFromError`, codes incl. `TEST_VAULT_*`, `READ_ONLY`) | `domain/secret-vault-types.ts` | `vault/secret-vault-types.ts` | |
 | Crypto (encrypt/decrypt entry, verifier, constants) | `crypto/secret-vault-crypto.ts` | `vault/secret-vault-crypto.ts` | Encrypt moves too, so the format has one owner |
 | Root key file (read, inspect, create) + Windows exclusive ACL | `root-key/secret-root-key-file.ts`, `windows-exclusive-acl.ts` | `vault/secret-root-key-file.ts`, `vault/windows-exclusive-acl.ts` | Takes `{ databasePath, rootKeyPath }` (`VaultFileLocation`), not the server's `ApplicationDatabaseLocation` |
 | Persistence record types and the store interface | `persistence/secret-vault-persistence-types.ts`, `persistence/secret-vault-store.ts` | `vault/secret-vault-records.ts`, `vault/secret-vault-store.ts` | The Prisma repository stays in the server and implements it |
 | Read-only store | `persistence/read-only-secret-vault-store.ts` | `vault/read-only-secret-vault-store.ts` | `node:sqlite`, read-only/query-only |
 | Established-vault verification | validators + `verifyEstablished` in `bootstrap/secret-vault-bootstrap.ts` | `vault/verify-established-vault.ts` | The server bootstrap keeps init/create and calls it |
-| Read-and-decrypt one entry | inside `SecretManagementService.resolveForUse` | `vault/read-secret-entry.ts` (`readSecretEntry(store, rootKey, metadata, secretId): SecretValue`) | The server service calls it after its authorization/event logic |
-| Provider credential catalog (consumer → SecretId) | `catalog/provider-credential-catalog.ts` | `vault/provider-credential-catalog.ts` | One mapping for the server and the autobyteus-ts default |
+| Read-and-decrypt one entry | inside `SecretManagementService.resolveForUse` | `vault/read-secret-entry.ts` (`readSecretEntry(store, rootKey, metadata, secretId): SecretValue`) | The server service calls it after its authorization/event logic. **Error contract (AR-011):** absent entry → `SecretVaultError('NOT_FOUND', …, 'SECRET_NOT_FOUND')`; a nonce or tag of the wrong length, or a decrypt/authentication failure → `SecretVaultError('CORRUPT_VAULT', …, 'SECRET_VAULT_CORRUPT')`. The server service maps `CORRUPT_VAULT` to its existing `markCorrupt` (health CORRUPT), exactly as today. Plaintext and derived keys are zeroized inside `readSecretEntry` on every path. |
+| Provider-key naming only: a pure `providerSecretId(providerId, slot): SecretId` covering the API-key bindings (OPENAI…AUTOBYTEUS), the Gemini AI Studio / Vertex Express slots and `provider_*` custom ids; throws `SECRET_PROVIDER_UNKNOWN` for an unknown provider/slot | `API_KEY_BINDINGS` + the Gemini and custom branches of `catalog/provider-credential-catalog.ts` | `vault/provider-secret-id.ts` | The server **keeps** `ProviderCredentialCatalog`: consumer kinds, authorization rules (agentRuntime/claude_agent_sdk, search bindings, modelDiscovery, llmMetadata, media restrictions, custom-provider-only-for-llm) and `isKnownSecretId`, built on `providerSecretId`. That gives one mapping with no server policy in core (AR-009). |
 | Test-vault location policy (selector parsing, default dir, file names, `isForbiddenTestVaultLocation`, setup command name) | `test-vault/test-vault-location.ts` | `vault/test-vault-location.ts` | `isRealAppServerDataDir` stays in the server (server data-dir concept) |
 
 **New in autobyteus-ts:**
-- `vault/open-test-vault.ts`, `openTestVaultReader(directory)`:
+- `vault/open-test-vault.ts`, `openTestVaultReader(directory)`; `readProviderApiKey(providerId, slot)` (AR-009):
   - location policy (forbidden → `TEST_VAULT_LOCATION_FORBIDDEN`), existence (`TEST_VAULT_NOT_FOUND`), read-only store, root key, `verifyEstablishedVault` (not READY → `TEST_VAULT_UNAVAILABLE`);
-  - returns `{ location, readProviderApiKey(consumer), close() }`.
+  - returns `{ location, readProviderApiKey(providerId, slot), close() }`.
 - `vault/test-vault-provider-api-key-resolver.ts`:
-  - a `ProviderApiKeyResolver` that maps `{kind:'llm', providerId, credentialSlot}` through the catalog and reads the key with `readSecretEntry`;
+  - a `ProviderApiKeyResolver` that maps `(providerId, slot)` with `providerSecretId` and reads the key with `readSecretEntry`;
   - a missing key → `TestVaultMissingCapabilityError` (`kind: 'missing_api_key'`; message names the secret id, vault directory and `pnpm test-vault setup`). This moves from test-support.
 - `secrets/provider-api-key-resolver.ts` changes. The order is: explicit resolver → environment default → `MissingApiKeyError`.
   - The **environment default** reads `process.env.AUTOBYTEUS_TEST_VAULT` at the moment a key is needed.
@@ -70,7 +70,8 @@
 - Forbidden:
   - autobyteus-ts → server or test-support;
   - server copies or re-exports of moved modules (clean cut);
-  - any second implementation of crypto, key-file reading or catalog mapping;
+  - any second implementation of crypto, key-file reading or provider-key naming;
+  - server consumer kinds or authorization rules in autobyteus-ts (AR-009);
   - the environment default being active in the AutoByteus server process.
 - Module-graph check: importing `autobyteus-ts` (index) or any LLM client loads no `node:sqlite` and no vault module while the variable is unset.
 
@@ -82,6 +83,11 @@
 **Persisted data:** `Not Affected`. The format and bytes are unchanged; only code ownership moves.
 
 **Classification (unchanged):** `Large`, `High`. Security-critical code moves across packages, the core library gains an environment-driven credential source, and public autobyteus-ts exports change.
+
+**Verification (AR-012):** AC-018 is proven twice:
+- a unit test at the startup sites;
+- an E2E against the **built** server (`startBuiltTestServer` with `AUTOBYTEUS_TEST_VAULT` in its env), which asserts that a client constructed without a resolver in the server process gets `MissingApiKeyError` and that the server's own resolvers follow `selectSecretVaultSource`.
+Server tests load autobyteus-ts from dist and test-support from src (P-004). Classification is by `kind`/`code`, never `instanceof` across that boundary.
 
 **Escalation triggers (added):**
 - any vault module loading in autobyteus-ts while the variable is unset;
@@ -295,7 +301,7 @@
 
   After either branch: `product resolvers → provider SDK`
 - DS-003 (SR-009):
-  `any process (tsx / node / Vitest live) → new DeepSeekLLM(model, config) or LLMFactory.createLLM(id) → resolveProviderApiKeyResolver(undefined) → environment default: AUTOBYTEUS_TEST_VAULT set? → dynamic import secrets/vault → openTestVaultReader (forbidden/not found/not READY → throw) → TestVaultProviderApiKeyResolver (catalog → readSecretEntry) → provider`
+  `any process (tsx / node / Vitest live) → new DeepSeekLLM(model, config) or LLMFactory.createLLM(id) → resolveProviderApiKeyResolver(undefined) → environment default: AUTOBYTEUS_TEST_VAULT set? → dynamic import secrets/vault → openTestVaultReader (forbidden/not found/not READY → throw) → TestVaultProviderApiKeyResolver (providerSecretId → readSecretEntry) → provider`
   - In Vitest, `tests/setup.ts` deletes the selector unless `RUN_LIVE_PROVIDER_TESTS=1`.
   - In the server, startup calls `disableEnvironmentProviderApiKeySource()`.
 
@@ -355,7 +361,7 @@ Servers started directly (isolated instances, manual) honor the selector as the 
 - autobyteus-ts `secrets/provider-api-key-resolver.ts` (SR-009):
   - `resolveProviderApiKeyResolver(explicit?)`: explicit → environment default (`AUTOBYTEUS_TEST_VAULT`, lazy read-only reader) → `MissingApiKeyError`;
   - `disableEnvironmentProviderApiKeySource()`.
-- autobyteus-ts `secrets/vault/` (SR-009): the vault format's read side and the test-vault location policy (see the SR-009 Design Delta).
+- autobyteus-ts `secrets/vault/` (SR-009/SR-010): vault format primitives, the read-only reader, provider-key naming (`providerSecretId`) and the test-vault location policy (see the SR-009 Design Delta). The server keeps consumer identities and `ProviderCredentialCatalog` authorization.
 - `test-support/test-vault` owns test policy:
   - `captureTestVaultSelection()` (server setup);
   - `initializeLiveServerVault(databaseLocation, appDataDir)` (live in-process suites and the real-E2E harness);
@@ -413,7 +419,7 @@ N/A. All paths are synchronous call/return.
 
 - Only `selectSecretVaultSource` decides the source inside a server; callers pass config.
 - Only the DS-005 harness owners decide whether a **test run** applies the selector.
-- autobyteus-ts `secrets/vault/` owns the vault format's read side and the test-vault location policy (SR-009). Server secret-management owns the lifecycle (create, migrate, write, import, source selection, real-data guard).
+- autobyteus-ts `secrets/vault/` owns the vault format primitives, the read-only reader, provider-key naming and the test-vault location policy (SR-009/SR-010). Server secret-management owns the lifecycle (create, migrate, write, import, source selection, real-data guard) and consumer authorization (`ProviderCredentialCatalog`, `SecretConsumerIdentity`).
 - autobyteus-ts reads the selector only in its environment default; the server disables that default.
 
 ## Boundary Encapsulation Map
@@ -653,7 +659,7 @@ N/A
    - guard unit tests (never start against real data).
 
 SR-009 follow-on, on top of IR-001:
-- S9-1. Move the vault read-side modules into `autobyteus-ts/src/secrets/vault/` (table in the SR-009 delta). Update server imports (clean cut). Extract `verifyEstablishedVault` and `readSecretEntry`; the server bootstrap and service call them. Server unit tests unchanged in behavior.
+- S9-1. Move the vault format primitives into `autobyteus-ts/src/secrets/vault/` (table in the SR-009 delta). Split `secret-id.ts` and the catalog per AR-009 (`providerSecretId` in autobyteus-ts; the server catalog is built on it). Update server imports (clean cut). Extract `verifyEstablishedVault` and `readSecretEntry` with the AR-011 error contract; the server bootstrap and service call them (service maps `CORRUPT_VAULT` → `markCorrupt`). Server unit tests unchanged in behavior; the existing catalog tests keep passing against the split.
 - S9-2. `openTestVaultReader` + `TestVaultProviderApiKeyResolver` + the environment default + `disableEnvironmentProviderApiKeySource`; remove `setDefaultProviderApiKeyResolver`. Unit tests:
   - explicit wins;
   - variable unset → `MissingApiKeyError` with no vault module loaded (module-graph check);
@@ -661,7 +667,7 @@ SR-009 follow-on, on top of IR-001:
   - forbidden / not found / not READY codes;
   - disabled → `MissingApiKeyError`;
   - opened once per process.
-- S9-3. The server startup sites and `initializeLiveServerVault` disable the default (AC-018 test). autobyteus-ts `tests/setup.ts` deletes the selector without the gate; remove `test-support/test-vault/test-vault-default-resolver.ts`; `liveProviderTest` classifies by `kind`/`code`.
+- S9-3. The server startup sites and `initializeLiveServerVault` disable the default (AC-018: unit test + built-server E2E, AR-012). autobyteus-ts `tests/setup.ts` deletes the selector without the gate; remove `test-support/test-vault/test-vault-default-resolver.ts`; `liveProviderTest` classifies by `kind`/`code`.
 - S9-4. Docs per the delta. A plain-script probe (`tsx`, AC-013) is validated against a synthetic vault in automation and once live.
 
 ## Key Tradeoffs
@@ -711,3 +717,8 @@ SR-009 follow-on, on top of IR-001:
 | AR-004 (Low) | One failure rule for the test source: invalid / forbidden / not found / not READY → `initialize` throws → fatal startup; application source unchanged. | Ownership Map; Bounded Local spine; AC-016 |
 | AR-005 (rec.) | Accepted: Prisma-free `read-only-test-vault.ts`; resolver class split from the runtime-bound factories; lazy gated import in autobyteus-ts setup; module-graph check. | Ownership Map; Dependency Rules; sequence step 1 |
 | AR-006 (note) | Accepted: Gemini passes an explicit `GeminiRuntimeResolver`; REQ-014 says so. | REQ-014; Guidance |
+| AR-009 (ARCH-REV-003, Medium) | autobyteus-ts gets only `SecretId`/`secretId`/`customProviderSecretId` and a pure `providerSecretId(providerId, slot)`. The server keeps `SecretConsumerIdentity`, `serializeSecretConsumerIdentity` and `ProviderCredentialCatalog` (authorization, search bindings, `isKnownSecretId`), built on `providerSecretId`. `readProviderApiKey(providerId, slot)`. | SR-009 delta move table; ownership; dependency rules |
+| AR-010 | Renamed "vault format primitives + read-only reader". | SR-009 delta |
+| AR-011 | `readSecretEntry` error contract: NOT_FOUND / CORRUPT_VAULT; the server maps to `markCorrupt`; zeroization inside. | SR-009 delta move table |
+| AR-012 | AC-018 proven against the built server; classification by `kind`/`code`. | SR-009 delta Verification |
+| AR-008 | Investigation notes A-13 implication corrected (selector forwarded; no transfer, no option). | investigation-notes A-13 |
