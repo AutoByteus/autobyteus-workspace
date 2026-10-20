@@ -150,7 +150,8 @@ describe("Remote MCP redirects and unsupported transports through the built serv
     const crossDiscover = await graphql<{ discoverAndRegisterMcpServerTools: { success: boolean; message: string } }>(
       url, DISCOVER, { serverId: "cross" });
     expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.success).toBe(false);
-    expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toContain("not followed (redirectPolicy: 'same-origin')");
+    expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toContain(`Redirect to ${other.url} not followed`);
+    expect(crossDiscover.data!.discoverAndRegisterMcpServerTools.message).toContain("(redirectPolicy: 'same-origin')");
     expect(JSON.stringify([crossPreview, crossDiscover])).not.toContain(CANARY);
     expect(JSON.stringify([crossPreview, crossDiscover])).not.toContain(DUMMY);
     expect(other.observations).toEqual([]);
