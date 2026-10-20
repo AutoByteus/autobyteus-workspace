@@ -1,0 +1,18 @@
+--- run on fc46a7b5fc ---
+IMP-01 server-typecheck exit=0
+IMP-02 server-unit exit=1
+IMP-03 server-integration exit=0
+IMP-04 focused-unit exit=0
+IMP-05 server-build-and-smoke exit=0
+IMP-06 e2e-startup-migrations exit=0
+IMP-07 e2e-edited-suites exit=0
+IMP-08 web-unit exit=0
+IMP-09 web-guards exit=0
+IMP-10 web-typecheck-relevant exit=1
+IMP-11 ac001-sweep exit=0
+IMP-12 generated-graphql-proof exit=0
+done
+--- rerun on a71e93a7f2 (registry-order tests; refined IMP-10) ---
+IMP-02 server-unit exit=0
+IMP-10 web-typecheck-relevant exit=0
+done

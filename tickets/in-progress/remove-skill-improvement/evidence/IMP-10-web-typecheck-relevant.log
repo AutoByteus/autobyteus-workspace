@@ -1,0 +1,16 @@
+# Check: IMP-10
+# Command: bash /tmp/ab205/web-typecheck.sh
+# Commit: a71e93a7f2 (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T15:08:16Z
+
+Version 5.9.3
+tsc exit 2 ; total errors: 696 (the project carries errors before this change)
+--- errors in touched files (listed; environment-level module resolution for .vue files and the generated file's two packages excluded):
+components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts(98,59): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+--- errors on lines this change added or changed (fails the check):
+--- removed generated declarations still referenced anywhere in the web (expect none):
+(68 declarations)
+result: PASS
+
+# Exit code: 0

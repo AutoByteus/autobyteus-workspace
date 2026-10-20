@@ -1,0 +1,15 @@
+# Check: IMP-12
+# Command: bash /tmp/ab205/graphql-proof.sh
+# Commit: fc46a7b5fc (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T14:58:16Z
+
+server: http://127.0.0.1:63731
+codegen exit 0
+removed declarations: 68
+committed diff against base (expect deletions only):
+0	474	autobyteus-web/generated/graphql.ts
+full regeneration differs from the committed file by (pre-existing drift, not committed): 702 lines
+result: PASS
+
+# Exit code: 0
