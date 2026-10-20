@@ -57,16 +57,16 @@ currently stored in plain text, like stdio `env` values.
 ### Redirects
 
 Remote requests follow redirects only within the configured URL's origin. This
-is the default `redirectPolicy: 'same-origin'` of `@modelcontextprotocol/sdk`
-1.32.x, and AutoByteus does not override it. So a credential never leaves the
+is the default `redirectPolicy: 'same-origin'` of `@modelcontextprotocol/client`
+2.x, and AutoByteus does not override it. So a credential never leaves the
 configured origin:
 
 - A same-origin redirect (for example 307/308 from `/mcp` to `/mcp-new`) is
   followed, and the credentials are sent to the new path.
 - A redirect to another origin is not followed. Preview, connect or the tool
-  call fails with `Redirect to <url> not followed (redirectPolicy:
-  'same-origin')`, and the other origin receives no request. Configure the
-  final URL instead.
+  call fails with `Redirect to <url> not followed; use that URL as the endpoint
+  if it is the intended server (redirectPolicy: 'same-origin')`, and the other
+  origin receives no request. Configure the final URL instead.
 - 301/302 on a POST are not followed even within the origin; this is the
   SDK's contract.
 
@@ -113,14 +113,25 @@ Preview and tool discovery open their own short-lived sessions.
 
 ## Verifying An MCP SDK Upgrade
 
-In AutoByteus code, only `autobyteus-ts/src/tools/mcp/server/` imports
-`@modelcontextprotocol/sdk`. `autobyteus-server-ts/src` does not: the Agent
-Tools MCP server and `/mcp/gateway` are hand-written JSON-RPC, and they reach
-the SDK only when the called tool is an external MCP-origin tool. The Claude
-Agent SDK and Google GenAI packages also resolve the same SDK copy as a peer
-dependency; keep a single copy in `pnpm-lock.yaml`. An SDK upgrade therefore
-changes the external-server client path for every runtime. Rerun these with
-the new SDK:
+The MCP client is `@modelcontextprotocol/client` (2.x, pinned exactly in
+`autobyteus-ts/package.json`). In AutoByteus code, only
+`autobyteus-ts/src/tools/mcp/server/` imports it, lazily on first connect.
+`autobyteus-server-ts/src` imports no MCP SDK: the Agent Tools MCP server and
+`/mcp/gateway` are hand-written JSON-RPC, and they reach the SDK only when the
+called tool is an external MCP-origin tool. The client keeps the SDK's default
+`legacy` protocol negotiation: `connect()` runs the 2025 `initialize`
+handshake (2025-11-25) and starts a stdio server once; AutoByteus sets no
+`versionNegotiation`. Tool listing walks every page of a paginating server.
+Remote HTTP failures read `Error POSTing to endpoint: <response body>`.
+
+Tests use the v2 packages as devDependencies: `@modelcontextprotocol/server`
+and `@modelcontextprotocol/node` for the test servers, `@modelcontextprotocol/client`
+for test clients of our own endpoints, and `@modelcontextprotocol/core` for the
+spec schemas. The v1 package `@modelcontextprotocol/sdk` stays in
+`pnpm-lock.yaml` only as the peer the Claude Agent SDK (and, optionally, Google
+GenAI) requires; that peer is used for types only, and AutoByteus does not
+depend on it. An SDK upgrade changes the external-server client path for every
+runtime. Rerun these with the new SDK:
 
 - `autobyteus-ts/tests/integration/tools/mcp` (ungated; the command is the
   "Core library MCP integration" row of `TESTING.md`). These tests run the
@@ -128,11 +139,18 @@ the new SDK:
   (`autobyteus-ts/tests/fixtures/mcp-test-server/`, Python via `uv run`, and
   `mcp-stdio-fixture-server.mjs`, Node) over stdio and streamable HTTP. They
   cover tools, structured content, tool errors, slow calls, env and cwd, exit
-  and hang at start, closing, and the auth header. Without `uv`, or when `uv`
+  and hang at start, closing, and the auth header. The unit tests in
+  `autobyteus-ts/tests/unit/tools/mcp` add the 2025 handshake (one stdio start,
+  `initialize` first), cancellation, the timeout options and paged tool
+  listing. Without `uv`, or when `uv`
   cannot prepare the fixture, the Python cases skip with the reason and the
   Node cases still run. The opt-in `real-user-kind-mcp-server.test.ts`
   (`RUN_REAL_MCP_SERVER_E2E=1`, `AUTOBYTEUS_MCPS_DIR`) also lists the tools of a
   real `uv` server folder from a temp copy.
+- `tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
+  and `tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts`:
+  SDK clients, in default and in `auto` negotiation mode, against our own
+  endpoints.
 - `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` and
   `mcp-http-redirect-and-transport.e2e.test.ts` (ungated; need a current
   server build): credentials on every request, the redirect rule and the

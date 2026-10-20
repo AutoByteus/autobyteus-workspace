@@ -1,6 +1,7 @@
 /**
  * A local streamable HTTP MCP server that requires one exact `Authorization` value, for E2E tests of
- * remote-server credentials. Real `@modelcontextprotocol/sdk` server, 127.0.0.1, OS-assigned port.
+ * remote-server credentials. Real `@modelcontextprotocol/server` server with the
+ * `@modelcontextprotocol/node` transport, 127.0.0.1, OS-assigned port.
  *
  * Every request without the required value is answered with 401. Each request is recorded value-free:
  * HTTP method, JSON-RPC method, called tool name and whether `Authorization` was the expected value,
@@ -14,8 +15,8 @@
  */
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { NodeStreamableHTTPServerTransport } from "@modelcontextprotocol/node";
+import { McpServer } from "@modelcontextprotocol/server";
 
 export const AUTH_PROBE_TOOL = "auth_probe";
 
@@ -90,10 +91,10 @@ export const startAuthRequiredMcpServer = async (input: {
       return;
     }
     const mcp = new McpServer({ name: "auth-required-e2e", version: "1.0.0" });
-    mcp.tool(AUTH_PROBE_TOOL, "Returns this server's marker text. Takes no arguments.", async () => ({
+    mcp.registerTool(AUTH_PROBE_TOOL, { description: "Returns this server's marker text. Takes no arguments." }, async () => ({
       content: [{ type: "text", text: input.marker }],
     }));
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    const transport = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on("close", () => {
       void transport.close();
       void mcp.close();
