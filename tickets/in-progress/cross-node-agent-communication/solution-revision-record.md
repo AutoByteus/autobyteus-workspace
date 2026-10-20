@@ -206,3 +206,18 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - Implementation details accepted within the design (the engineer records them in the handoff): (a) `RootCommunicationAdapter.assertDeliveryAllowed` takes run IDs; (b) on B, the stored message view counts `delegatedFrom.delegatorAgentRunId` as loaded; (c) on B, the first message creates the remote run's `collaboration/` package.
 - Sections changed: data model item 5, lifecycle table, DS-001, ownership (`RemoteTaskActivation`), tradeoffs, classification rationale.
 - Review impact: a local correction aligning the design with the existing dispatch, within the reviewed boundaries (ARCH-REV-002). No re-review requested; the code review checks it against SR-014.
+
+### SR-015 — Clean ownership of remote messaging (ARCH-REV-003, 2026-10-20)
+
+- Phase and classification: Design / `Design Impact` (ARCH-REV-003: AR-005 … AR-007; notes N-6 … N-11). The review was reopened after the round-2 Pass at the user's direction: "if the ownership is not clean and you found like a problem, you should definitely … improve it … architecture is extremely important … we will use this functionality a lot." Approved intent unchanged.
+- Basis: design at SR-014 (`a3b0cf1028`; the review read SR-013 `910f024ec5`, and SR-014 changed only the DS-001 order). The implementation already exists (steps 0–7, code review CRR-002); it is reviewed against the code (`remote-run-links.ts` with `side`, the `sendToRemote` callback, the closure fence via NO_AUTHORITY).
+- Changes in `design-spec.md`, new § Remote Messaging: Owners And Order (replaces § Remote Delivery In The Engine):
+  - **AR-005:** the root's message delivery is the single governing owner of each node's half: outbound pair rule → `engine.prepareRemoteSend` (no state change) → `RemoteRunLinks.deliver` (channel only) → `engine.commitSentToRemote` (sender's log, no Task re-check); inbound link check → wake (N-8) → `engine.acceptFromRemote`. No callback.
+  - **AR-006:** `RemoteEndpoint` union `delegated_run` (A) / `delegator` (B), each owning its pair rule, Task chain (`[{agentRunId}]` / `[]`, N-11) and kind rules; `RemoteRunLinks` is a shared core (membership, deliver) with no side branch; remote delegation (placement, planning, activation) moved to its own owner `RemoteDelegation`.
+  - **AR-007:** new § Task Closure Of A Remote Run: an explicit `fenced_remote` result, no release invoked, a truthful message (replaces N-9); the hook for S3's stop on the peer.
+  - **N-6:** `acceptRemoteWorkPacket` in the standalone root. **N-7:** the compose shortcut accounts for remote-only trees. **N-10:** the prepared-run metadata example; `delegatedFrom` kept at activation; round-trip test.
+  - Spine inventory and spines DS-002/DS-003 now have one owner per node; ownership map, walker table, interface rows, file mapping, steps 3–4 and health assessment are updated.
+- Follow-ups: FU-002 (reliable delivery: outbox plus idempotent inbox), recorded by the architecture reviewer with the user's agreement; sent when the ticket leaves the team.
+- Coordination: steps 3–6 are on hold at the implementation engineer; API/E2E is asked to limit validation to steps 0–2.
+- Intended behavior changed: `No`.
+- Next action: round 3 to the architecture reviewer.

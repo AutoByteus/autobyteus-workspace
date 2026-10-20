@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-014`
+- Current solution revision ID: `SR-015`
 - Approved requirements baseline: `requirements-doc.md` at SR-007 (approved by the User 2026-10-19: SR-004 for the slice, SR-005 for no version check, SR-007 for `node` on `delegate_task` only)
 - Behavior-defining supplements: `slice-plan.md` (approved 2026-10-19)
-- Design status: `Ready` (SR-014: activation order per DI-1. SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
+- Design status: `Ready` (SR-015: ARCH-REV-003 AR-005 … AR-007 and N-6 … N-11. SR-014: activation order per DI-1. SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
 - Canonical investigation notes: `investigation-notes.md` (S-01 … S-15; architecture evidence A-01 … A-10 below are added there)
 - Authorities read (2026-10-19; re-read after the skill update 2026-10-20: `SKILL.md`, `references/design-principles.md`, `references/handoff.md`, `references/ticket-scope.md`, `templates/design-spec-template.md`): `references/architecture-design.md`, `references/design-principles.md`, `/DESIGN.md` (rules 1–9, project documents), `autobyteus-server-ts/docs/design/collaboration_model.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (§1–§3). `design-examples.md`: not used.
 - Project design-principle conflicts: one, found and resolved. DESIGN.md rule 9 (no version checks between nodes) conflicted with REQ-114's version check. The user removed the check (SR-005).
@@ -80,11 +80,11 @@ Add a node-to-node channel and a **remote endpoint**. A run on a peer becomes a 
   - **Repeated coordination:** fires potentially. Three root kinds would each need remote delivery. Response: one shared owner (`RemoteRunLinks`) that each root plugs in, as roots already share `RootCommunicationEngine` and `RootTaskExecutionLifecycle`.
   - **Ambiguous boundary:** ruled out. The remote endpoint has its own explicit identity (`RemoteRunReference`), and the tool takes an explicit `node`.
   - **Shared-structure looseness:** avoided. There is no optional `nodeId` on the existing local identity types; a distinct type is used instead (DEC-111 reasoning).
-  - **Authoritative boundary (AR-002):** `RootCommunicationEngine` alone owns message state (`current`, the duplicate-ID check, the commit). It refuses a sender or receiver that is not a current agent of the root (`root-communication-engine.ts:36-41`). Response: two named engine entry points, `sendToRemote` and `acceptFromRemote` (§ Remote Delivery In The Engine). `RemoteRunLinks` reaches messages only through them, never through the adapter.
+  - **Authoritative boundary (AR-002):** `RootCommunicationEngine` alone owns message state (`current`, the duplicate-ID check, the commit). It refuses a sender or receiver that is not a current agent of the root (`root-communication-engine.ts:36-41`). Response: the root's message delivery governs each node's half (AR-005). The engine only checks, prepares and commits (`prepareRemoteSend`, `commitSentToRemote`, `acceptFromRemote`) and never sends. `RemoteRunLinks` only resolves endpoints and transmits, and endpoint kinds hold the per-side rules (AR-006). There is no callback between them (§ Remote Messaging).
   - **Repeated decision across walkers (AR-001):** about 170 checks tell links apart by `"agentRunId" in value`, so a remote link would be treated as a local copy. Response: the store loads remote links into their own in-memory list, which existing walkers never see; the few places that must see them are listed (§ Remote Links In Memory).
 - Root cause classification: `No Design Issue Found` (new capability on healthy owners)
 - Refactor needed now: `No` refactor of existing behavior. Two bounded extensions of existing owners:
-  - `RootCommunicationEngine` gains `sendToRemote` and `acceptFromRemote`;
+  - `RootCommunicationEngine` gains `prepareRemoteSend`, `commitSentToRemote` and `acceptFromRemote`;
   - the shared tree compose/split owner (`task-execution-tree-split.ts`, `CoordinatingTreeShape`) partitions links with `nodeId` into their own in-memory list.
 - Evidence: A-01 … A-08.
 - Design response: extend the existing owners. Add a new `remote-collaboration` subsystem for node concerns. Keep remote-collaboration knowledge out of runtime adapters and tools, except for the `node` parameter.
@@ -249,7 +249,8 @@ One line per message, the existing seven fields, for example:
   "autoExecuteTools": false,
   "runtimeKind": "claude_agent_sdk",
   "platformAgentRunId": null,
-  "startedAt": "2026-10-20T10:00:00.000Z",
+  "preparedAt": "2026-10-20T10:00:00.000Z",
+  "preparedExpiresAt": "2026-10-21T10:00:00.000Z",
   "delegatedFrom": {
     "nodeId": "srv_A7k…",
     "coordinatingRun": { "kind": "agent", "runId": "agent_a1…" },
@@ -257,6 +258,8 @@ One line per message, the existing seven fields, for example:
   }
 }
 ```
+
+**Prepared, then activated (N-10).** `RemoteDelegationReceiver` writes the file through the prepared-run path (`preparedAt`, `preparedExpiresAt`, no `startedAt`). Activation by the work packet adds `startedAt` and clears the prepared fields, as for any prepared run. The metadata writer used at activation must keep `delegatedFrom`; a round-trip test covers prepare → activate → restore.
 
 Each field has a reader on B:
 - `nodeId`: which peer replies go to;
@@ -330,13 +333,13 @@ Each field has a reader on B:
 
 | Category | Examples (files) | Remote link | How |
 | --- | --- | --- | --- |
-| Run-ID membership for messages | `StandaloneRootExecutionIndex`, Team/Org indexes; root `hasAgentExecution` | **Include**, as a remote endpoint (not a hosted agent) | Each root's `hasAgentExecution` also asks `RemoteRunLinks.has(runId)`. `visitTask` and the index see only local runs, so `isLiveChild` / `withLiveLease` never touch it |
-| Message delivery to it | root `deliverExactAgentMessage` | **Include** | The root routes a `RemoteRunLinks` target to `engine.sendToRemote` (AR-002) |
+| Run-ID membership for messages | `StandaloneRootExecutionIndex`, Team/Org indexes; root `hasAgentExecution` | **Include**, as a remote endpoint (not a hosted agent) | Each root's `hasAgentExecution` also asks `RemoteRunLinks.has(runId)` (a `delegated_run` or `delegator` endpoint). `visitTask` and the index see only local runs, so `isLiveChild` / `withLiveLease` never touch it |
+| Message delivery to it | root `deliverExactAgentMessage` | **Include** | The root delivery runs the outbound order (§ Remote Messaging: pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote`) |
 | Stored message view | `composeMessageLogs` (L6 loaded-endpoint filter) in the three stores | **Include** as a loaded endpoint | Each store adds the `remoteTaskExecutions` run IDs to `loadedAgentRunIds`, so delegator↔remote messages stay in the root's view after a restore |
-| Task ownership of messages | `assertDeliveryAllowed` → `TaskExecutionResourcePort.ownerOf` | **Include**: its chain is the remote link alone | `RemoteRunLinks.ownershipChainFor(runId)` → `[{agentRunId}]`; the Task record holds it as `{kind: agent, agentRunId}` (item 5) |
-| Task closure (DONE/CANCELLED) | `RootTaskExecutionResourceScope.releaseTaskExecutions` | **Fence only** (DEC-107) | Not in the local tree, so it is not published as closed. `releaseOwnedExecution` finds no authority → `stopped` (NO_AUTHORITY). Messages to and from it are refused by the Task check (AC-109) |
-| Reactivation by the assigner | root exact delivery's reactivation branch | **Exclude** (S3) | `sendToRemote` never reactivates: a closed Task refuses with `TASK_AGENT_RESOURCE_CLOSED` |
-| Existing-copy assignment / reopen | `delegate_task({target_agent_run_id, task_id})` → `RootTaskExecutionLifecycle.assignToExistingCopy` | **Refuse** (AR-003) | Each root's `assignToExistingCopy` first asks `RemoteRunLinks.has(copy run ID)` and refuses with `REMOTE_SAVED_TASK_NOT_SUPPORTED`, before any Task resolution, `assertAssignable`, `reopen` or delivery |
+| Task ownership of messages | `assertDeliveryAllowed` → `TaskExecutionResourcePort.ownerOf` | **Include** on A; none on B | `endpoint.ownershipChain()`: `delegated_run` → `[{agentRunId}]` (the Task record holds it as `{kind: agent, agentRunId}`, item 5); `delegator` → `[]` (N-11) |
+| Task closure (DONE/CANCELLED) | `RootTaskExecutionResourceScope.releaseTaskExecutions` | **Fence, explicitly** (DEC-107, AR-007) | See § Task Closure Of A Remote Run. No release is invoked and the result is `fenced_remote`, never `stopped` |
+| Reactivation by the assigner | root exact delivery's reactivation branch | **Exclude** (S3) | The outbound order never reactivates: `prepareRemoteSend` refuses a closed Task with `TASK_AGENT_RESOURCE_CLOSED` |
+| Existing-copy assignment / reopen | `delegate_task({target_agent_run_id, task_id})` → `RootTaskExecutionLifecycle.assignToExistingCopy` | **Refuse** (AR-003) | Each root's `assignToExistingCopy` first asks `RemoteRunLinks.endpointFor(copy run ID)` (a `delegated_run`) and refuses with `REMOTE_SAVED_TASK_NOT_SUPPORTED`, before any Task resolution, `assertAssignable`, `reopen` or delivery |
 | User stop / stop set | `delegated-stop-set.ts` | Exclude (S3) | By construction |
 | Model change / launch selections | `delegated-launch-selection.ts`, `delegated-launch-selection-command.ts` | Exclude | By construction |
 | Own files, own message logs | `task-agent-own-records.ts`, `taskAgentLogOwners` | Exclude: stored whole, no own log on A | By construction; `messageLogOwnerOf` returns the remote owner kind for a `RemoteRunLinks` run ID (skipped) |
@@ -347,46 +350,90 @@ Each field has a reader on B:
 
 **Guard against drift.** `RemoteRunLinks` is the only reader of `remoteTaskExecutions` outside the store. A unit test per root kind loads a tree with one local and one remote link and asserts:
 - the index, the stop set, the launch selections, the run-tree projection and the adapter's `listTaskExecutions` contain only the local run;
-- `hasAgentExecution`, the stored message view and `ownershipChainFor` include the remote run.
+- `hasAgentExecution`, the stored message view and the endpoint's `ownershipChain()` include the remote run.
 
-## Remote Delivery In The Engine (AR-002)
+**Compose shortcut (N-7).** `composeTreeFile` / `composeTreeFileSync` return the raw tree unchanged when no local task agent is listed. A tree whose only link is remote must still be partitioned, so the shortcut also checks for `nodeId` entries. The guard test includes a tree with only a remote link.
 
-`RootCommunicationEngine` stays the only owner of a root's message state and commit. It gains two entry points. `RemoteRunLinks` calls only these and never the adapter.
+## Task Closure Of A Remote Run (AR-007)
 
-**`sendToRemote(input, transmit)`**, from a local sender to a remote endpoint of this root (DS-002 on A, DS-003 on B).
-- Input: `{senderIdentity, remote: {identity, reference: RemoteRunReference}, receiverDisplayName, content, messageType}`.
-- Checks, in order:
-  1. root open (`isOpen`, `accepting`);
-  2. the sender is a current agent of this root;
-  3. not self;
-  4. the pair rule (`RemoteRunLinks`, before the call: the sender is the link's delegator on A, or the host on B);
-  5. Task scope: `assertDeliveryAllowed(sender, remote.identity)` with the remote chain; the same refusal codes;
-  6. content non-empty;
-  7. no `reference_files` (`REMOTE_ATTACHMENTS_NOT_SUPPORTED`, REQ-110).
-- Not checked: that the receiver is a current agent. It is remote; the receiving node checks it.
-- Message ID: assigned here by the existing hash (`collabmsg_…`). **The sender's node assigns the ID; the receiver uses it.**
-- Then `await transmit(message)` sends it through `RemoteRunChannel.deliverMessage`. On `accepted`, the engine commits the message through the adapter's new `commitSentToRemote(message)`: it appends to **the sender's log only**, updates `current` through the same commit callback, and publishes the sender-side presentation. On a refusal or timeout nothing is written, and the refusal is returned.
+The decision point is `RootTaskExecutionResourceScope.releaseTaskExecutions`, where DONE or CANCELLED asks a root to stop a Task's runs. For each closed execution, it first asks `remoteRunLinks.endpointFor(runId)`. For a `delegated_run` endpoint:
+- **it records the fence:** the Task's entry is closed by the Task service as for any copy, so the Task check refuses messages to and from the run (AC-109);
+- **it invokes no release:** neither `releaseOwnedExecution` nor the registration release;
+- **it returns an explicit result:** `{execution, outcome: "fenced_remote", stopped: false, message: "<address> runs on node \"<peer>\". This Task sends it no more messages; it stops there when it goes idle."}`. `TaskExecutionStopResult` gains this variant, and every caller that renders DONE/CANCELLED results shows its message instead of "stopped" (replaces N-9);
+- **it publishes nothing as closed in the tree view:** the remote link is not in the local tree (S3).
 
-**`acceptFromRemote(input)`**, from a remote endpoint to a local receiver (DS-002 on B, DS-003 on A).
-- Input: `{message: {messageId, senderAgentRunId: remote, receiverAgentRunId, content, messageType, createdAt}, remote: {identity, reference}, receiverIdentity, senderNodeName}`.
-- Checks:
-  1. root open;
-  2. the receiver is a current agent of this root;
-  3. the link check (`RemoteRunLinks`, before the call: the sender is this root's linked remote run from that `fromNodeId`, and the receiver is its delegator on A, or the host on B);
-  4. Task scope: `assertDeliveryAllowed(remote.identity, receiver)`;
-  5. content non-empty;
-  6. duplicate `messageId` → the existing `…_MESSAGE_COMMIT_CONFLICT` refusal (no retries exist, so a supported flow never sends one twice; N-5).
-- Not checked: that the sender is a current agent.
-- Then the engine runs the existing path: `buildRecipientInput` (header with the node: `… sender run id "<id>" on node "<name>"`), then `reserveRecipientInput` (wakes or restores the receiver, as same-root delivery does), then `commitAppend` with the supplied message. `messageLogOwners` yields **the receiver's log only**, because the remote owner kind is skipped.
+S3's "stop on the peer" replaces the second bullet with a `stopRemoteRun` request at this same point.
 
-Shape example (A side, DS-002):
+## Remote Messaging: Owners And Order (AR-002, AR-005, AR-006)
+
+### One governing owner per node: the root's message delivery
+
+The root's message delivery (`StandaloneRootMessageDelivery`, `TeamRunMessageDelivery`, the Org run's delivery) already orders local delivery: wake, then engine. It is also the **single governing owner** of each node's half of DS-002 and DS-003. It calls owned mechanisms in order; none of them calls back into another.
+
+**Outbound** (a local agent sends to a remote endpoint; DS-002 on A, DS-003 on B), the same shape in the three roots:
 
 ```ts
-// TeamRunMessageDelivery / StandaloneRootMessageDelivery / Org delivery, exact run-ID path:
-const remote = this.remoteRunLinks.endpointFor(sender, targetAgentRunId);   // null → today's local path
-if (remote) return this.engine.sendToRemote({ senderIdentity: sender, remote, receiverDisplayName, content, messageType },
-                                            (message) => this.remoteRunLinks.transmit(remote.reference, message));
+// root delivery, exact run-ID path
+const endpoint = this.remoteRunLinks.endpointFor(targetAgentRunId);               // null → today's local path
+if (endpoint) {
+  if (!endpoint.allowsSender(sender.agentRunId)) return endpoint.refusal.notPermitted;   // the kind's pair rule
+  const prepared = this.engine.prepareRemoteSend({ senderIdentity: sender, endpoint, content, messageType, referenceFiles });
+  if (!prepared.ok) return prepared.refusal;                                   // no state changed
+  const answer = await this.remoteRunLinks.deliver(endpoint, prepared.message);   // channel only
+  return answer.accepted ? this.engine.commitSentToRemote(prepared) : answer.refusal;
+}
 ```
+
+**Inbound** (a peer delivers to a local agent; DS-002 on B, DS-003 on A), in the root's `acceptRemoteMessage`:
+1. Link check: `remoteRunLinks.inboundEndpoint(fromNodeId, sender, target)`. The endpoint must exist, and its kind's rule must allow the local target.
+2. Wake (N-8), exactly as local delivery does before the engine: `withLiveLease` for a hosted agent, `host.ensureReady()` for a standalone host.
+3. `engine.acceptFromRemote(...)`.
+
+### The engine owns message state, nothing else
+
+`RootCommunicationEngine` is the only owner of a root's message state (`current`, duplicate IDs, commit). It does not send.
+
+| Method | Checks that apply | Checks that do not | State change | Log |
+| --- | --- | --- | --- | --- |
+| `prepareRemoteSend({senderIdentity, endpoint, content, messageType, referenceFiles})` → `{ok: true, message, endpoint} \| {ok: false, refusal}` | root open; sender is a current agent; not self; Task scope `assertDeliveryAllowed(sender, endpoint.identity)` with `endpoint.ownershipChain()`; content non-empty; no `reference_files` (`REMOTE_ATTACHMENTS_NOT_SUPPORTED`) | receiver current (it is remote) | none | none |
+| `commitSentToRemote(prepared)` | root persistence available | **no Task re-check**: the peer accepted, so the truthful record is "delivered" | appends to `current` through the commit callback; publishes the sender-side presentation | **sender's log only** (adapter `commitSentToRemote`) |
+| `acceptFromRemote({message, endpoint, receiverIdentity, senderNodeName})` | root open; receiver is a current agent (the root woke it); Task scope `assertDeliveryAllowed(endpoint.identity, receiver)` with `endpoint.ownershipChain()`; content non-empty; duplicate `messageId` → the existing commit-conflict refusal | sender current (it is remote) | `buildRecipientInput` (header `… sender run id "<id>" on node "<name>"`) → `reserveRecipientInput` → `commitAppend` with the supplied message | **receiver's log only** (the remote owner kind is skipped) |
+
+- **Message ID:** assigned by `prepareRemoteSend` on the sender's node, with the existing hash. The receiver uses the supplied ID.
+- **If the root closed after the peer accepted:** `commitSentToRemote` cannot write, so the tool result is still `accepted`, the sender-side record is missing, and a warning names the message. This is the same class as RSK-106, which FU-002 addresses.
+
+### Two endpoint kinds, each with its own rules (AR-006)
+
+`RemoteRunLinks` is a **shared core with no side-dependent rule**. It owns:
+- membership: `endpointFor(runId)`, `inboundEndpoint(fromNodeId, sender, target)`, `has(runId)`;
+- `deliver(endpoint, message)` over `RemoteRunChannel` (the channel only).
+
+Its endpoints are a discriminated union (`remote-endpoint.ts`). Each kind carries its own rules:
+
+| Kind | Where | Built from | `allowsSender` / `allowsTarget` (pair rule) | `ownershipChain()` (Task check) | Transmit adds | Extra rules |
+| --- | --- | --- | --- | --- | --- | --- |
+| `delegated_run` | the delegating node (A) | a `remoteTaskExecutions` link | only the link's `delegatorAgentRunId` | `[{agentRunId}]`: the Task the link was recorded under (item 5) | — | existing-copy refusal (AR-003); Task-closure fence (AR-007); never reactivated (S3) |
+| `delegator` | the node that runs it (B) | the host's `delegatedFrom` | only the root's host (the remote run) | `[]`: no Task on B (N-11) | `coordinatingRun` (echoed to A) | the work packet (N-6, below) |
+
+Each rule is a method on its kind, so no code asks "which side am I on". S3 (lifecycle) and S4 (Teams) add methods to a kind, not branches.
+
+### The work packet on B (N-6)
+
+`kind: "work_packet"` arrives at the remote run's standalone root through `acceptRemoteWorkPacket`, owned by that root:
+1. the `delegator` endpoint's link check: the sender is `delegatedFrom.delegatorAgentRunId`, from `delegatedFrom.nodeId`;
+2. `host.ensureReady()`, which activates the prepared run;
+3. it posts the system task notification built by `task-execution-input.ts` (`buildTaskAssigneeWorkPacket`, with the node in the header).
+
+It writes no message-log line (item 9).
+
+### Remote delegation has its own owner
+
+Placement, planning and activation of a remote delegation (DS-001) are a different concern from messaging. They live in `RemoteDelegation` (`remote-delegation.ts`), which uses the same channel:
+- `delegationPlacement(input)`: the `node` refusals of REQ-110, then the peer lookup;
+- `planActivation`: `startDelegatedRun`, whose result becomes the copy's identity (SR-014);
+- `beginActivation`: a `RemoteTaskActivation` with the root's tree-commit callback and the work-packet send.
+
+`RemoteRunLinks` keeps only membership and transmit.
 
 ## Contract Between Nodes (AR-004)
 
@@ -416,8 +463,8 @@ Every answer names the responder (`nodeId`). `PeerClient` refuses an answer whos
 | Spine ID | Scope | Behavior | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary | BEH-103/105/106 | Agent on A calls `delegate_task({node,…})` | Remote run on B working on the packet; A's tool result | A: the root's `RootTaskExecutionLifecycle`; B: `RemoteDelegationReceiver` | The handoff |
-| DS-002 | Primary | BEH-104 | Delegator on A calls `send_message_to(remote run id)` | Admitted into the remote run on B; both logs written | A: root + `RemoteRunLinks`; B: the remote run's standalone root | Follow-up A→B |
-| DS-003 | Primary | BEH-104 | Remote run on B calls `send_message_to(delegator run id)` | Admitted into the delegator on A (woken if needed) | B: standalone root + `RemoteRunLinks`; A: the coordinating root | Reply B→A |
+| DS-002 | Primary | BEH-104 | Delegator on A calls `send_message_to(remote run id)` | Admitted into the remote run on B; both logs written | A: the root's message delivery (outbound order); B: the remote run's standalone root (`acceptRemoteMessage`) | Follow-up A→B |
+| DS-003 | Primary | BEH-104 | Remote run on B calls `send_message_to(delegator run id)` | Admitted into the delegator on A (woken if needed) | B: the standalone root's message delivery (outbound order); A: the coordinating root (`acceptRemoteMessage`) | Reply B→A |
 | DS-004 | Primary | BEH-101/102 | Owner in the Nodes tab | Settings stored | `PeerDirectory`, `PublishedAgentService` | Setup |
 | DS-005 | Bounded local | BEH-101 | Inbound HTTP request | Handler result | `PeerGateway` | The single entry point (REQ-114, S6 hook) |
 | DS-006 | Bounded local | BEH-104/106 | Remote-started host goes quiet | Host shut down, restorable | `StandaloneAgentRunRoot` (host idle schedule) | REQ-107 "shut down for being idle" |
@@ -434,16 +481,17 @@ DS-001  Agent tool call → delegate_task parser (node) → A root.delegateToNew
         → acceptSeed: work packet sent as the first deliverMessage → B admits → tool result {node, run id}
 
 DS-002  Delegator send_message_to(remote id) → GlobalAgentRunMessageRouter (sender root hasAgentExecution: yes, remote endpoint)
-        → A root.deliverExactAgentMessage → RemoteRunLinks.endpointFor (pair check) → engine.sendToRemote (Task check, message id)
+        → A root delivery: RemoteRunLinks.endpointFor → endpoint.allowsSender (delegated_run: the delegator) → engine.prepareRemoteSend (Task check, message id)
+        → RemoteRunLinks.deliver
         → PeerClient.deliverMessage → B PeerGateway → RemoteMessageReceiver
-        → B StandaloneAgentRunRoot.acceptRemoteMessage (link check) → engine.acceptFromRemote → host ensureReady (restore) → reserve + commit (host log) → admitted
-        ← accepted → A engine commits to the delegator's log (commitSentToRemote) → tool result
+        → B StandaloneAgentRunRoot.acceptRemoteMessage: link check (delegator endpoint) → host.ensureReady (restore) → engine.acceptFromRemote → reserve + commit (host log) → admitted
+        ← accepted → A root delivery → engine.commitSentToRemote (delegator's log) → tool result
 
 DS-003  Remote run send_message_to(delegator id) → router (B root hasAgentExecution: yes, back-link endpoint)
-        → B root.deliverExactAgentMessage → RemoteRunLinks.endpointFor → engine.sendToRemote → PeerClient.deliverMessage (with coordinatingRun)
+        → B root delivery: RemoteRunLinks.endpointFor → endpoint.allowsSender (delegator: the host) → engine.prepareRemoteSend → RemoteRunLinks.deliver → PeerClient.deliverMessage (with coordinatingRun)
         → A PeerGateway → RemoteMessageReceiver → resolve/restore A's root by coordinatingRun
-        → root.acceptRemoteMessage (link check) → engine.acceptFromRemote (Task check, wake delegator) → commit (delegator's log) → admitted
-        ← accepted → B engine commits to the host's log (commitSentToRemote) → tool result
+        → root.acceptRemoteMessage: link check (delegated_run endpoint) → wake the delegator (withLiveLease / host.ensureReady) → engine.acceptFromRemote (Task check) → commit (delegator's log) → admitted
+        ← accepted → B root delivery → engine.commitSentToRemote (host's log) → tool result
 ```
 
 ## Spine Narratives (Mandatory)
@@ -470,15 +518,11 @@ Delegate tool parser · root (`StandaloneAgentRunRoot` / `RootTeamRun` / `AgentO
 - **`PeerGateway`**: owns inbound admission (no mobile credential, `toNodeId` is this node, switch on, registered peer) and dispatch to one handler per request kind. **This is the S6 hook** (REQ-114).
 - **`RemoteDelegationReceiver`** (B): owns `startDelegatedRun`. It checks that the Agent is published and its launch settings are valid, then **prepares** the standalone run (`AgentRunService.prepareAgentRun`, N-2) with the published launch settings, workspace and `delegatedFrom`, and returns the run ID. Nothing is activated. The work packet activates the prepared run through the root's `ensureReady()`. A prepared run that never receives its packet expires and is removed by `cleanupStalePreparedRuns` (TTL 24 h, `agent-run-provisioning-service.ts:42`).
 - **`RemoteMessageReceiver`** (both nodes): owns resolving the target root of an inbound message. On B, it resolves the remote run's own standalone root. On A, it uses `coordinatingRun`, restoring the root if it is not active. It then calls `root.acceptRemoteMessage`.
-- **`RemoteRunLinks`** (shared, one per root): owns the root's remote endpoints, loaded from `remoteTaskExecutions` (A) or `delegatedFrom` (B). It provides:
-  - membership (`has`, `endpointFor`);
-  - the pair rule and the inbound link check;
-  - the remote ownership chain;
-  - the existing-copy refusal (AR-003);
-  - `transmit` over `RemoteRunChannel`.
-
-  It reaches messages only through `RootCommunicationEngine.sendToRemote` / `acceptFromRemote` (AR-002), and it is the only reader of `remoteTaskExecutions` outside the store (AR-001).
-- **`RootCommunicationEngine`** (extended): the only owner of message state and commit, including the two remote entry points (§ Remote Delivery In The Engine).
+- **The root's message delivery** (each root kind): the **governing owner** of each node's half of DS-002/DS-003. It runs the outbound order and the inbound order (§ Remote Messaging), including the wake.
+- **`RemoteRunLinks`** (shared core, one per root): membership (`endpointFor`, `inboundEndpoint`, `has`) and `deliver` over `RemoteRunChannel`. It has no side-dependent rule and is the only reader of `remoteTaskExecutions` outside the store (AR-001).
+- **`RemoteEndpoint`** (`delegated_run` | `delegator`): each kind owns its pair rule, its Task ownership chain and its kind-specific rules (AR-006).
+- **`RemoteDelegation`** (shared): remote placement, planning (`startDelegatedRun`) and activation for DS-001.
+- **`RootCommunicationEngine`** (extended): the only owner of message state and commit: `prepareRemoteSend`, `commitSentToRemote`, `acceptFromRemote` (§ Remote Messaging). It never sends.
 - **Remote placement planning + `RemoteTaskActivation`** (shared; DI-1, SR-014):
   - each root adapter's `planActivation` for a remote placement calls `startDelegatedRun`, and B's run ID becomes `target.execution` (the step that allocates a local copy's run ID today);
   - `RemoteTaskActivation` is the remote variant of `TaskExecutionActivationOperation`: `prepare` does nothing remote, `commit` writes the tree link with `nodeId`, and `acceptSeed` sends the work packet.
@@ -555,7 +599,8 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 | `POST /rest/remote/messages` | Deliver one message or the work packet | Admit into the target run | See § Contract Between Nodes | `messageId` is shared by both logs (CM-9); a duplicate is the existing commit-conflict refusal |
 | `RemoteRunChannel` | Outbound channel | Two methods above | `RemoteRunReference` | Port owned by `agent-collaboration` |
 | Root `acceptRemoteMessage(input)` | Inbound into one root | Link check, then `engine.acceptFromRemote` | `{fromNodeId, sender: RemoteRunReference, targetAgentRunId, messageId, …}` | All three root kinds |
-| `RootCommunicationEngine.sendToRemote` / `acceptFromRemote` | A root's message state | § Remote Delivery In The Engine | Engine-owned | Only `RemoteRunLinks` (via the root) calls them |
+| `RootCommunicationEngine.prepareRemoteSend` / `commitSentToRemote` / `acceptFromRemote` | A root's message state | § Remote Messaging | Engine-owned | Called only by the root's message delivery |
+| `RemoteRunLinks.endpointFor` / `inboundEndpoint` / `deliver` | Membership and transmit | § Remote Messaging | Run ID; `(fromNodeId, sender, target)` | No pair rule inside; the endpoint kind holds it |
 | GraphQL `peerNodes` / `addPeerNode` / `renamePeerNode` / `removePeerNode` / `publishedAgents` / `publishAgent` / `updatePublishedAgent` / `unpublishAgent` | Settings | CRUD | `nodeId`, `definitionId` | — |
 
 ## Interface Boundary Check
@@ -639,14 +684,17 @@ Naming rule (the user, SR-012):
 | `src/remote-collaboration/inbound/remote-message-receiver.ts` | Both | Resolve the target root and call `acceptRemoteMessage` |
 | `src/agent-collaboration/execution/remote/remote-run-reference.ts` | Shared | `RemoteRunReference` |
 | `src/agent-collaboration/execution/remote/remote-run-channel.ts` | Shared | Port interface |
-| `src/agent-collaboration/execution/remote/remote-run-links.ts` | Shared | Endpoints, pair rule, send, accept |
+| `src/agent-collaboration/execution/remote/remote-run-links.ts` | Shared | Membership and `deliver` (shared core) |
+| `src/agent-collaboration/execution/remote/remote-endpoint.ts` | Shared | `RemoteEndpoint` union: `delegated_run`, `delegator`, each with its rules |
+| `src/agent-collaboration/execution/remote/remote-delegation.ts` | Shared | Remote placement, planning, activation (DS-001) |
+| Modified: `agent-collaboration/execution/task/root-task-execution-resource-scope.ts`, `task-execution-resource-port.ts` (`TaskExecutionStopResult`) and the DONE/CANCELLED result renderers | Task | `fenced_remote` (AR-007) |
 | `src/agent-collaboration/execution/remote/remote-task-activation.ts` | Shared | The remote activation operation |
 | `src/api/rest/remote.ts`, `src/api/graphql/types/remote-collaboration-settings.ts` | Facades | Bindings |
 | Modified: `remote-access-route-policy.ts` | API | New class `REMOTE_PEER`, allowed without a credential; the gateway checks |
 | Modified: `task-delegation-tool-input-parsers.ts`, `-parameter-schemas.ts`, `task-delegation-tool-serialization.ts`, `agent-team-collaboration-llm-contract.ts` | Tools | `node` parameter of `delegate_task`, its description, result `node` |
 | Modified: `catalog-delegation.ts` | Collaborators | `DelegationPlacement` kind `remote_agent` |
 | Modified: `task-execution-input.ts`, `root-communication-runtime-builder.ts` | Builders | Node in headers |
-| Modified: `root-communication-engine.ts`, `root-communication-adapter.ts` and the three adapters | Shared | `sendToRemote`, `acceptFromRemote`; adapter `commitSentToRemote` (AR-002) |
+| Modified: `root-communication-engine.ts`, `root-communication-adapter.ts` and the three adapters | Shared | `prepareRemoteSend`, `commitSentToRemote`, `acceptFromRemote`; adapter `commitSentToRemote` (AR-002, AR-005) |
 | Modified: `run-history/store/task-execution-tree-split.ts`, `coordinating-tree-shapes.ts` | Run history | Partition `nodeId` links into `remoteTaskExecutions` on compose; keep and append them on split (AR-001) |
 | Modified: the three stores' `composeMessageLogs` callers (`standalone-root-package-store.ts`, `team-communication-store.ts`, `agent-org-communication-messages-store.ts`) | Run history | Remote run IDs are loaded endpoints (AR-001) |
 | Modified: the three roots' `hasAgentExecution`, exact delivery and `assignToExistingCopy` (`standalone-root-message-delivery.ts`, `agent-team-execution/services/team-run-message-delivery.ts`, `agent-org-execution/domain/agent-org-run.ts`) | Roots | `RemoteRunLinks` membership, remote routing, AR-003 refusal |
@@ -680,8 +728,8 @@ Naming rule (the user, SR-012):
 0. **Contract and data model first** (the user, 2026-10-19). The collaboration model is updated in this branch (CM-10 … CM-12, § 3 storage, § 4, § 5; drafted by the Solution Designer and reviewed with this design). Then the on-disk types, readers and writers of § On-Disk Data Model, with their key-set tests, before any routing code.
 1. `src/remote-collaboration/` settings, store, switch, GraphQL, web tab (DS-004). This can be tested on its own.
 2. Channel: `PeerClient`, gateway, REST routes, route-policy class (DS-005).
-3. `agent-collaboration/execution/remote/`: reference, port, `RemoteRunLinks`, `RemoteTaskActivation`. Engine `sendToRemote` / `acceptFromRemote` and adapter `commitSentToRemote`; remote log owner. The store partition of `nodeId` links (AR-001), with the walker-decision tests.
-4. Standalone root: back-link, endpoint, `acceptRemoteMessage`, host idle schedule. `RemoteDelegationReceiver`, `RemoteMessageReceiver`.
+3. `agent-collaboration/execution/remote/`: reference, port, `RemoteRunLinks` (core), `RemoteEndpoint` kinds, `RemoteDelegation`, `RemoteTaskActivation`. Engine `prepareRemoteSend` / `commitSentToRemote` / `acceptFromRemote`, adapter `commitSentToRemote`, remote log owner. The store partition of `nodeId` links (AR-001), with the walker-decision tests.
+4. Standalone root: the `delegator` endpoint, `acceptRemoteMessage` (link check → wake → accept), `acceptRemoteWorkPacket` (N-6), host idle schedule; the outbound order in its delivery. `RemoteDelegationReceiver`, `RemoteMessageReceiver`. Task closure `fenced_remote` (AR-007).
 5. Delegation: `node` parameter, remote placement, tree array in the standalone root (A side), headers. **First end-to-end: a standalone run on A ↔ B.**
 6. Team and Org roots: tree array, `RemoteRunLinks` wiring, `acceptRemoteMessage`, restore by `coordinatingRun`.
 7. Docs; two-server E2E (two server instances on different ports and data dirs); the user's desktop + Docker check.

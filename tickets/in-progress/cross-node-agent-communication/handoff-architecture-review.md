@@ -85,3 +85,14 @@ Prerequisites: none. Follow-ups: `follow-ups.md`, FU-001 (done as autobyteus-197
 | N-1 … N-5 | `requestId` dropped; prepared-run path on B (TTL 24 h); mobile credentials refused; A-09 aligned; idempotency claim dropped | Contract; `RemoteDelegationReceiver`; Risks; investigation notes |
 
 The reviewer's `design-review-report.md` and `architecture-review-revision-record.md` are committed unchanged with this round.
+
+## Round 3 — 2026-10-20 (SR-015), answering ARCH-REV-003
+
+| Finding | Resolution | Where in `design-spec.md` |
+| --- | --- | --- |
+| AR-005 | The root's message delivery governs each node's half: pair rule → `prepareRemoteSend` → `RemoteRunLinks.deliver` → `commitSentToRemote`; inbound link check → wake → `acceptFromRemote`. No callback | § Remote Messaging: Owners And Order; spine inventory; DS-002/DS-003 |
+| AR-006 | `RemoteEndpoint` kinds `delegated_run` / `delegator` with their own pair rule, Task chain and kind rules; `RemoteRunLinks` is a core without side branches; remote delegation is its own owner `RemoteDelegation` | § Remote Messaging (endpoint kinds, delegation owner); ownership; mapping |
+| AR-007 | An explicit `fenced_remote` closure result, no release, truthful text | § Task Closure Of A Remote Run; walker table |
+| N-6, N-7, N-8, N-10, N-11 | Work packet on B; compose shortcut; wake placement; prepared-run metadata; no Task chain on B | the sections above; data model item 7 |
+
+Basis: SR-014 (`a3b0cf1028`) is also included. It changed only the DS-001 order to match `dispatchTaskCopy` (DI-1 from implementation).

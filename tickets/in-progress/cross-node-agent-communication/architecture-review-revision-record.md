@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete`, revision 1 | SR-011, SR-012 | N/A | Fail | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-002 | Round 2 / SR-013 answers ARCH-REV-001 | SR-013 | Fail | Pass | AR-001 … AR-004 resolved |
+| ARCH-REV-003 | Round 3 / the user's direction on ownership quality | SR-013 | Pass | Fail | AR-005, AR-006, AR-007 (new) |
 
 ## Revision Entries
 
@@ -59,3 +60,28 @@ None.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-101, RSK-103, RSK-106, RSK-107, RSK-108 as accepted; Linux `host-gateway` still to check in the E2E.
+
+### ARCH-REV-003 — Reopened on ownership: one governing owner for the remote send, explicit endpoint roles, explicit fence
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication/design-review-report.md`
+- Review round and trigger: round 3. The user's direction, 2026-10-20, in the reviewer conversation after discussing DS-002/DS-003: "if the ownership is not clean and you found like a problem, you should definitely … improve it … architecture is extremely important … we will use this functionality a lot." The design is unchanged (SR-013, `910f024ec5`).
+- Triggering role, report path, and finding IDs: the user via the architecture reviewer; the ownership observations from the post-pass discussion.
+- Relevant solution revision IDs: SR-013
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Fail` (`Design Impact`)
+- What changed in the review result: three ownership points that round 2 had accepted as implementation-level are raised to design findings, because the user set the bar: clean ownership now, for a feature that will keep growing (S2 … S6). The behavior basis and AR-001 … AR-004 are unchanged. Steps 0 … 2 of the change sequence are unaffected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 … AR-004 | Resolved | Resolved (unchanged) | SR-013 | No design change since ARCH-REV-002 |
+| N-9 | Implementation note | Superseded by AR-007 | — | The fence is now a design decision |
+
+- New or remaining finding IDs:
+  - AR-005 (Medium): the root's delivery is the single governing owner of the remote send and accept; `prepareRemoteSend` / `commitSentToRemote` with no callback.
+  - AR-006 (Medium): explicit endpoint roles (`delegated_run` / `delegator`) instead of one side-branching `RemoteRunLinks`.
+  - AR-007 (Low): an explicit remote fence on Task closure instead of `NO_AUTHORITY` counting as stopped.
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-002; FU-002 (reliable delivery) recorded as a follow-up.

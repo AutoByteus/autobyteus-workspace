@@ -9,11 +9,11 @@
 - Supplemental Task Artifacts Reviewed: `slice-plan.md`, `follow-ups.md`, contract draft `autobyteus-server-ts/docs/design/collaboration_model.md`, `handoff-architecture-review.md` § Round 2
 - Relevant Solution Revision IDs: SR-011, SR-012, SR-013
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: the Solution Designer's round-2 revision (SR-013), answering ARCH-REV-001 (AR-001 … AR-004, N-1 … N-5)
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: the user's direction, 2026-10-20, after discussing the ownership of DS-002/DS-003 with the reviewer: ownership that is not clean must be improved now ("architecture is extremely important … we will use this functionality a lot"). The design is unchanged since round 2 (SR-013, commit `910f024ec5`); this round reopens the ARCH-REV-002 `Pass` for the ownership of the remote send/accept path and of Task closure.
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, `Pass`)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: the round-1 code reading (still valid; SR-013 changed documents only), plus these round-2 checks:
   - `run-history/store/task-execution-tree-split.ts` (`splitTaskExecutions` keeps on-disk entries it did not load, in place; `composeTreeFile` / `agentRunIdsOfTree`);
   - `agent-collaboration/execution/task/root-task-execution-resource-scope.ts` (`releaseTaskExecutions`; `NO_AUTHORITY` counts as stopped);
@@ -74,8 +74,8 @@
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 delegate to a peer | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 follow-up A→B | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass (AR-002 resolved) |
-| DS-003 reply B→A | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass (AR-002 resolved) |
+| DS-002 follow-up A→B | Primary | Fail | Pass | Fail | Pass | Fail | Pass | Fail (AR-005: two governing owners and a callback zig-zag; AR-006) |
+| DS-003 reply B→A | Primary | Fail | Pass | Fail | Pass | Fail | Pass | Fail (AR-005, AR-006) |
 | DS-004 settings | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 `PeerGateway` | Bounded local | Pass | Pass | Pass | Pass | Pass | Pass | Pass (the narrative row still lists only switch → peer; the authoritative gateway order is in § Contract Between Nodes) |
 | DS-006 host idle schedule | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
@@ -88,7 +88,7 @@
 | `PeerClient` / `RemoteRunChannel` | Pass | Pass | Pass | Pass | Checks the responder's `nodeId` |
 | Root `acceptRemoteMessage` | Pass | Pass | Pass | Pass | — |
 | `RootCommunicationEngine` | Pass | Pass | Pass | Pass | `sendToRemote` / `acceptFromRemote`; `RemoteRunLinks` never touches the adapter |
-| `RemoteRunLinks` | Pass | Pass | Pass | Pass | The only reader of `remoteTaskExecutions` outside the store |
+| `RemoteRunLinks` | Fail | Pass | Pass | Fail | AR-006: one component with two roles (A: links to the remote runs it started; B: the back-link to the delegator), with different pair rules and Task semantics per side |
 | `PeerDirectory` / `PublishedAgentService` / `RemoteCollaborationCapability` | Pass | Pass | Pass | Pass | — |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -212,11 +212,67 @@ None.
 
 ## Review Decision
 
-`Pass`. The behavior basis is confirmed, and AR-001 … AR-004 and N-1 … N-5 are resolved in the current design spec and verified against the code. No in-scope machinery depends on an unsupported premise. The design is ready for implementation.
+`Fail` (`Design Impact`). The behavior basis stays confirmed, and AR-001 … AR-004 stay resolved. Three ownership findings (AR-005 … AR-007) reopen the round-2 `Pass` for the remote send/accept path and Task closure. Change sequence steps 0 … 2 (contract, on-disk data model, settings, channel and gateway) are not affected and may continue. Steps 3 … 6 (engine entry points, `RemoteRunLinks`, roots) wait for the revision.
 
 ## Findings
 
-None blocking. Earlier findings AR-001 … AR-004 are resolved (see `ARCH-REV-002`).
+Earlier findings AR-001 … AR-004 stay resolved (see `ARCH-REV-002`).
+
+### AR-005 — The remote send has two governing owners, and control goes back and forth between the engine and `RemoteRunLinks`
+
+- Type: Design Impact
+- Severity: Medium (blocking)
+- Protects: REQ-106, REQ-107, REQ-108 (the send/accept path and CM-9's one message ID in both logs); design principles 2 and 13 (one governing owner per spine), 3 (ownership) and 14 (spine-first)
+- Scope status: Within Approved Scope (user direction 2026-10-20)
+- Changes approved behavior: No
+- Evidence: § Remote Delivery In The Engine shapes the send as `engine.sendToRemote(input, (message) => remoteRunLinks.transmit(...))`. The spine is `root → RemoteRunLinks.endpointFor → engine.sendToRemote → transmit callback → RemoteRunLinks → channel → back into the engine to commit`. The spine inventory names two governing owners for DS-002 ("A: root + `RemoteRunLinks`") and for DS-003. The step that orders the work (decide remote → check → assign ID → send → record) is spread over three objects, and the engine both checks and sends (through the callback).
+- Required update: name **the root's message delivery** as the single governing owner of each node's half of DS-002/DS-003. It sequences owned mechanisms, and none of them calls back into another:
+
+  ```ts
+  // root delivery, exact run-ID path (same shape in the three roots)
+  const endpoint = this.remoteRunLinks.endpointFor(sender, targetAgentRunId);   // null → local path; pair rule
+  if (endpoint) {
+    const prepared = this.engine.prepareRemoteSend({ senderIdentity: sender, endpoint, content, messageType });
+    if (!prepared.ok) return prepared.refusal;                               // open, sender current, Task, content, no files
+    const answer = await this.remoteRunLinks.deliver(endpoint, prepared.message);   // channel only
+    return answer.accepted ? this.engine.commitSentToRemote(prepared) : answer.refusal;
+  }
+  ```
+
+  - `prepareRemoteSend` checks and assigns the message ID without changing state.
+  - `commitSentToRemote` records the delivered message in the sender's log. It does not re-check the Task: once the peer has accepted, the truthful record is that it was delivered.
+  - Inbound mirrors this: the root's `acceptRemoteMessage` sequences the `RemoteRunLinks` link check, then the wake (N-8), then `engine.acceptFromRemote`.
+  - Update the spine inventory (one owner per spine per node), the spines, the ownership map and the example.
+- Why proportionate: it moves the ordering to the owner that already orders local delivery. It removes the callback and adds no component.
+- Recommended recipient: Solution Designer
+
+### AR-006 — `RemoteRunLinks` serves two different endpoint roles with side-dependent rules
+
+- Type: Design Impact
+- Severity: Medium (blocking)
+- Protects: REQ-106 (the pair rule both ways), REQ-111 / AC-109 (the Task check on A only), REQ-107; design principles 3 and 11 (one clear meaning per structure)
+- Scope status: Within Approved Scope
+- Changes approved behavior: No
+- Evidence: on A, `RemoteRunLinks` holds the remote runs this root started (source `remoteTaskExecutions`; pair rule: only the link's delegator; ownership chain; existing-copy refusal). On B, it holds the back-link to the delegator (source `delegatedFrom`; pair rule: only the host; no Task chain, N-11). The ownership map names both under one component, so every rule needs an "A side or B side" branch inside it. That is the drift a growing feature brings (S3 lifecycle and S4 Teams add more rules per side).
+- Required update: make the two roles explicit, for example a discriminated `RemoteEndpoint`:
+  - `delegated_run`, on the delegating node: its link, its delegator-only pair rule, its Task ownership chain, the existing-copy refusal;
+  - `delegator`, on the running node: its `delegatedFrom`, its host-only pair rule, no Task chain.
+
+  Each kind holds its own rules, behind one shared membership and transmit core. Alternatively use two small owners over a shared core; either is fine if no rule branches on the side. Update the ownership map, the file mapping and the walker table rows that cite `RemoteRunLinks`.
+- Why proportionate: the same component count, with the per-side rules in one place each.
+- Recommended recipient: Solution Designer
+
+### AR-007 — Fencing a remote run on Task closure relies on "no release authority" counting as "stopped"
+
+- Type: Design Impact
+- Severity: Low (blocking)
+- Protects: REQ-111 / AC-109, DEC-107 (fence only in slice 1); REQ-109 (specific, truthful results)
+- Scope status: Within Approved Scope
+- Changes approved behavior: No
+- Evidence: walker table row "Task closure": the remote link is not in the local tree, `releaseOwnedExecution` finds no authority, and `root-task-execution-resource-scope.ts:118-130` counts `NO_AUTHORITY` as `stopped: true`. So the remote run is reported stopped although it keeps running on B. The fence works because of what the code does not know, not because of a rule. S3 (stop from A) will need an explicit remote case here anyway.
+- Required update: name the remote case explicitly in Task closure. The resource scope (or the lifecycle) asks `RemoteRunLinks` whether the execution is a remote link, records it as closed and fenced (messages refused by the Task check), invokes no release, and returns an explicit result (for example `fenced_remote`) whose text says the run continues on the peer until it goes idle (this replaces N-9). Update the walker table row.
+- Why proportionate: one explicit branch at the existing closure decision point. It gives S3 an obvious place for "stop on the peer".
+- Recommended recipient: Solution Designer
 
 ### Implementation notes (non-blocking; for the implementation engineer)
 
@@ -235,22 +291,22 @@ None blocking. Earlier findings AR-001 … AR-004 are resolved (see `ARCH-REV-00
 
 ## Classification
 
-N/A (Pass).
+`Design Impact` (AR-005 … AR-007).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
+Solution Designer (`/software_engineering_team/solution_designer`). The implementation engineer received the round-2 `Pass`; the Solution Designer tells it which steps wait (3 … 6) and which may continue (0 … 2).
 
 ## Residual Risks
 
 - RSK-101 / RSK-103: accepted until S6. P-1 and P-3 confirm no new class of access, and mobile credentials are refused on `/rest/remote/*`.
-- RSK-106: timeout ambiguity (no retries). A delegation that times out leaves a prepared run on B, which is cleaned up after 24 h.
+- RSK-106: timeout ambiguity (no retries). A delegation that times out leaves a prepared run on B, which is cleaned up after 24 h. A message the peer accepted but whose answer was lost stays out of the sender's log. Reliable delivery (outbox plus idempotent inbox) is recorded as follow-up FU-002.
 - RSK-107: restoring a whole Team or Org root for a reply.
 - RSK-108: writer exactness. The partition plus the split's keep-unloaded behavior and the round-trip tests per kind cover it.
 - Linux Docker `host-gateway`: still to check in the E2E (P-2 covers macOS).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Fail` (`Design Impact`, AR-005 … AR-007)
 - Material-Premise Gate: `Pass`
-- Notes: classification `Large` / `High`. Reviewed commit `910f024ec5` (SR-013). The next step is implementation, following the design's change sequence (contract and data model first; a standalone end-to-end run before the Team and Org roots).
+- Notes: classification `Large` / `High`. Design at commit `910f024ec5` (SR-013). Reopened at the user's direction on ownership quality. Steps 0 … 2 may continue; steps 3 … 6 wait for the revision. N-9 is replaced by AR-007; N-6, N-7, N-8, N-10 and N-11 still apply.
