@@ -1,0 +1,168 @@
+# API-03 MCP through the packaged desktop server (isolated instance iso-51062-8fa3, backend :51063) of the worktree build from IMP-06 (tree = 54c9259858; its packaged autobyteus-ts dependencies equal the committed manifest, checked with diff); macOS arm64; 2026-10-20T10:43:14Z
+# command: node mcp-journey.mjs <backendUrl> node <worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs http://127.0.0.1:47510/mcp <out> (H_CWD=/tmp/hyg224/cwd); HTTP server: the same fixture, --transport http --port 47510 --require-token test-dummy
+== start
+{"instanceId":"iso-51062-8fa3","backendUrl":"http://127.0.0.1:51063","executablePath":"<worktree>/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"}
+== probe result
+{
+  "backend": "http://127.0.0.1:51063",
+  "at": "2026-10-20T10:42:59.990Z",
+  "health": 200,
+  "hyg_stdio": {
+    "preview": {
+      "ms": 231,
+      "tools": [
+        "hyg_stdio_echo",
+        "hyg_stdio_add",
+        "hyg_stdio_fail",
+        "hyg_stdio_slow",
+        "hyg_stdio_report_env_and_cwd"
+      ],
+      "error": null
+    },
+    "configured": true,
+    "discover": {
+      "ms": 179,
+      "success": true,
+      "message": "Successfully discovered and registered 5 tools."
+    }
+  },
+  "hyg_http": {
+    "preview": {
+      "ms": 67,
+      "tools": [
+        "hyg_http_echo",
+        "hyg_http_add",
+        "hyg_http_fail",
+        "hyg_http_slow",
+        "hyg_http_report_env_and_cwd"
+      ],
+      "error": null
+    },
+    "configured": true,
+    "discover": {
+      "ms": 20,
+      "success": true,
+      "message": "Successfully discovered and registered 5 tools."
+    }
+  },
+  "gateway": {
+    "toolCount": 10,
+    "hygTools": [
+      "hyg_http_add",
+      "hyg_http_echo",
+      "hyg_http_fail",
+      "hyg_http_report_env_and_cwd",
+      "hyg_http_slow",
+      "hyg_stdio_add",
+      "hyg_stdio_echo",
+      "hyg_stdio_fail",
+      "hyg_stdio_report_env_and_cwd",
+      "hyg_stdio_slow"
+    ],
+    "calls": {
+      "hyg_stdio_report_env_and_cwd": {
+        "ms": 344,
+        "isError": false,
+        "text": "{\"value\":\"hyg-env-dummy\",\"cwd\":\"/private/tmp/hyg224/cwd\"}",
+        "structured": null
+      },
+      "hyg_stdio_add": {
+        "ms": 6,
+        "isError": false,
+        "text": "{\"sum\":5}",
+        "structured": {
+          "sum": 5
+        }
+      },
+      "hyg_stdio_fail": {
+        "ms": 5,
+        "isError": true,
+        "text": "hyg-tool-error",
+        "structured": null
+      },
+      "hyg_http_echo": {
+        "ms": 29,
+        "isError": false,
+        "text": "hyg-http-echo",
+        "structured": null
+      }
+    }
+  }
+}
+== HTTP fixture request log: auth=ok 12, auth=missing|wrong 0
+== instance log lines mentioning hono / cannot find module / ERR_MODULE_NOT_FOUND: 0
+== processes from the fixture before stop
+80353 node <worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs --transport http --port 47510 --require-token test-dummy
+88775 node <worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs
+== stop
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-51062-8fa3",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-t3nfrL",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+== fixture processes after stop (the HTTP fixture is the probe's own, stopped next)
+80353 node <worktree>/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs --transport http --port 47510 --require-token test-dummy
+== correction (written 2026-10-20T10:45:02Z): the process listings above are filtered to the fixture processes; the probe's own HTTP fixture (pid 80353) was stopped by pid after this stop, and afterwards no fixture process was left (ps).
+== the stop above reported "forced": true (the app did not quit within the 10 s grace period of isolated-app stop, instanceLifecycle.mjs L95). The instance log is deleted by stop, so the cause could not be read afterwards. Reproduction on the same build, with the log copied before each stop:
+== idle-1  load: 45.45 40.83 34.43
+instance iso-51200-4128 http://127.0.0.1:51201
+stop: wasRunning true forced false dataRootRemoved true ports released true
+stop took 2 s
+== mcp-1  load: 43.80 40.62 34.44
+instance iso-51277-d39f http://127.0.0.1:51278
+journey exit=0 gateway calls: ok,ok,err,ok
+stop: wasRunning true forced false dataRootRemoved true ports released true
+stop took 1 s
+== idle-2  load: 41.23 40.24 34.41
+instance iso-51379-21e9 http://127.0.0.1:51380
+stop: wasRunning true forced false dataRootRemoved true ports released true
+stop took 1 s
+fixture processes left after the three runs: 0 (ps, filtered)
+idle-1 instance log: 0 lines mentioning hono / cannot find module / ERR_MODULE_NOT_FOUND
+mcp-1 instance log: 0 lines mentioning hono / cannot find module / ERR_MODULE_NOT_FOUND
+idle-2 instance log: 0 lines mentioning hono / cannot find module / ERR_MODULE_NOT_FOUND
+Result: 3 of 3 stops graceful in 1-2 s, including one after the same MCP journey; the first forced stop did not reproduce. Machine load average 41-45 during the runs.
+
+== probe source (mcp-journey.mjs; run with node_modules -> <worktree>/autobyteus-ts/node_modules)
+// Temporary API/E2E probe (autobyteus-224, API-03/API-04): MCP through a running AutoByteus server's public
+// GraphQL and /mcp/gateway. Preview, configure + discover a stdio server (the repo's Node fixture, env and cwd set)
+// and a streamable HTTP server (the same fixture in HTTP mode with a dummy token), then call tools via the gateway.
+// Usage: node mcp-journey.mjs <backendUrl> <stdioCommand> <fixturePathAsSeenByServer> <httpUrlAsSeenByServer> <out.json> [gatewayToken]
+import fs from 'node:fs';
+import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
+const [BACKEND, CMD, FIXTURE, HTTP_URL, OUT, GW_TOKEN] = process.argv.slice(2);
+const gql = async (query, variables) => (await (await fetch(`${BACKEND}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json());
+const timed = async (fn) => { const t0 = Date.now(); const v = await fn(); return { ms: Date.now() - t0, v }; };
+const r = { backend: BACKEND, at: new Date().toISOString() };
+const servers = [
+  { serverId: 'hyg_stdio', transportType: 'STDIO', enabled: true, toolNamePrefix: 'hyg_stdio', stdioConfig: { command: CMD, args: [FIXTURE], env: { HYG_ENV: 'hyg-env-dummy' }, cwd: process.env.H_CWD ?? '/tmp', } },
+  { serverId: 'hyg_http', transportType: 'STREAMABLE_HTTP', enabled: true, toolNamePrefix: 'hyg_http', streamableHttpConfig: { url: HTTP_URL, token: 'test-dummy', headers: null } },
+];
+r.health = (await fetch(`${BACKEND}/rest/health`)).status;
+for (const input of servers) {
+  const p = await timed(() => gql('query($input: McpServerInput!) { previewMcpServerTools(input: $input) { name } }', { input }));
+  const c = await gql('mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }', { input });
+  const d = await timed(() => gql('mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message discoveredTools { name } } }', { id: input.serverId }));
+  r[input.serverId] = { preview: { ms: p.ms, tools: p.v.data?.previewMcpServerTools?.map((t) => t.name) ?? null, error: p.v.errors?.[0]?.message ?? null },
+    configured: Boolean(c.data?.configureMcpServer), discover: { ms: d.ms, success: d.v.data?.discoverAndRegisterMcpServerTools?.success ?? null, message: d.v.data?.discoverAndRegisterMcpServerTools?.message ?? JSON.stringify(d.v.errors) } };
+}
+const client = new Client({ name: 'hyg-gateway-probe', version: '1' });
+await client.connect(new StreamableHTTPClientTransport(new URL(`${BACKEND}/mcp/gateway`), { requestInit: { headers: GW_TOKEN ? { authorization: `Bearer ${GW_TOKEN}` } : {} } }));
+const tools = (await client.listTools()).tools.map((t) => t.name);
+r.gateway = { toolCount: tools.length, hygTools: tools.filter((t) => t.startsWith('hyg_')).sort(), calls: {} };
+for (const [name, args] of [['hyg_stdio_report_env_and_cwd', { name: 'HYG_ENV' }], ['hyg_stdio_add', { a: 2, b: 3 }], ['hyg_stdio_fail', { message: 'hyg-tool-error' }], ['hyg_http_echo', { text: 'hyg-http-echo' }]]) {
+  const c = await timed(() => client.callTool({ name, arguments: args }));
+  r.gateway.calls[name] = { ms: c.ms, isError: c.v.isError ?? false, text: (c.v.content ?? []).map((x) => x.text).join(''), structured: c.v.structuredContent ?? null };
+}
+await client.close();
+fs.writeFileSync(OUT, JSON.stringify(r, null, 2)); console.log(JSON.stringify(r, null, 1)); process.exit(0);

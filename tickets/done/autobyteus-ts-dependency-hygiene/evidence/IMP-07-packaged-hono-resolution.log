@@ -1,0 +1,16 @@
+# IMP-07 — packaged server: who needs hono, and does it resolve for each (AC-006)
+# Commit: base 5de6a698b9 + uncommitted ticket edits (identical to the ticket commit); packaged app from IMP-06
+# Environment: macOS 26.5.2, packaged runtime ELECTRON_RUN_AS_NODE=1 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+# Date: 2026-10-20T10:35:35Z
+
+$ grep -n hono <server>/node_modules/autobyteus-ts/package.json
+exit=1 (1 = no match)
+$ packages whose package.json names "hono" or "@hono/node-server"
+node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6/node_modules/@modelcontextprotocol/sdk/package.json
+node_modules/.pnpm/@modelcontextprotocol+node@2.1.1_@modelcontextprotocol+server@2.3.1/node_modules/@modelcontextprotocol/node/package.json
+node_modules/.pnpm/@hono+node-server@1.19.9_hono@4.12.0/node_modules/@hono/node-server/package.json
+$ createRequire(<pkg>).resolve("hono") with the packaged runtime
+OK   node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6/node_modules/@modelcontextprotocol/sdk -> hono 4.12.0
+OK   node_modules/.pnpm/@modelcontextprotocol+node@2.1.1_@modelcontextprotocol+server@2.3.1/node_modules/@modelcontextprotocol/node -> hono 4.12.0
+OK   node_modules/.pnpm/@hono+node-server@1.19.9_hono@4.12.0/node_modules/@hono/node-server -> hono 4.12.0
+autobyteus-ts: hono not resolvable from its own folder (MODULE_NOT_FOUND) — expected, it no longer depends on it
