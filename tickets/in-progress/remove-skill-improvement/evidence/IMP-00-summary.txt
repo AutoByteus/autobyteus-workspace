@@ -16,3 +16,18 @@ done
 IMP-02 server-unit exit=0
 IMP-10 web-typecheck-relevant exit=0
 done
+--- integration round on 5cfccd66c7 (INT-001, merge of origin/personal @ 3b2c86ca9e) ---
+IMP-14 merged-server-typecheck exit=0
+IMP-15 merged-server-unit exit=0
+IMP-16 merged-server-integration exit=0
+IMP-17 merged-server-build-and-smoke exit=0
+IMP-18 merged-e2e-startup-migrations exit=0
+IMP-19 merged-web-unit exit=0
+IMP-20 merged-web-guards exit=0
+IMP-21 merged-ac001-sweep exit=0
+IMP-22 merged-browser-sir exit=0
+IMP-23 secret-gate exit=1
+done
+--- rerun on bda3731947 (secret-gate false positive allowlisted) ---
+IMP-23 secret-gate exit=0
+done

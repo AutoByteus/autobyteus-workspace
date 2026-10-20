@@ -23,21 +23,24 @@ Skill Improvement is gone, together with everything only it used:
 
 The three settings are retired through `retiredSettingNames`. The startup migration `20261020_remove_skill_improvement_data` deletes the feature's data once (M1..M6).
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, INT-001 Local Fix from delivery; IR-001 was the initial handoff)
 - Implementation revision record: `tickets/in-progress/remove-skill-improvement/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-001..SR-004
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001, CRR-002
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: DR-001
+- Triggering finding IDs: INT-001 (IR-002)
 
 Commits:
 - `1f12b46b8b` server;
 - `fc46a7b5fc` web;
 - `a71e93a7f2` registry-order tests;
-- the handoff commit, with these documents and evidence.
+- `1f0ae5ea9c` the IR-001 documents and evidence;
+- `5cfccd66c7` the merge of `origin/personal` @ `3b2c86ca9e`, resolving INT-001 (IR-002);
+- `bda3731947` the Secret Gate false-positive allowlist entry in `.gitleaks.toml` (IR-002);
+- the IR-002 handoff commit, with these documents and the integration-round evidence.
 
 ## Routing Classification (Mandatory)
 
@@ -204,6 +207,22 @@ Commits:
 
 Evidence is in `tickets/in-progress/remove-skill-improvement/evidence/`; `IMP-00-summary.txt` lists every run.
 - The full logs of IMP-02, IMP-03 and IMP-08 are committed as excerpts because of their size.
+- **Integration round (IR-002, INT-001) on the merge `5cfccd66c7`.** These rows supersede the earlier ones for the merged state; all pass:
+
+  | Check ID | What | Result | Evidence | Look For |
+  | --- | --- | --- | --- | --- |
+  | IMP-14 | server typecheck | Pass | `IMP-14-merged-server-typecheck.log` | `# Exit code: 0` |
+  | IMP-15 | server unit | Pass | `IMP-15-merged-server-unit.excerpt.txt` | `Tests  6314 passed \| 7 skipped (6321)` |
+  | IMP-16 | server integration | Pass | `IMP-16-merged-server-integration.excerpt.txt` | `Tests  421 passed \| 69 skipped (490)` |
+  | IMP-17 | build and built-in smoke | Pass | `IMP-17-merged-server-build-and-smoke.log` | `Built-in agents bootstrap smoke check passed.` |
+  | IMP-18 | startup e2e (removal migration, work-trace) | Pass | `IMP-18-merged-e2e-startup-migrations.log` | `Tests  4 passed (4)` |
+  | IMP-19 | web unit | Pass | `IMP-19-merged-web-unit.excerpt.txt` | `Tests  4617 passed \| 5 skipped (4622)` |
+  | IMP-20 | web guards | Pass | `IMP-20-merged-web-guards.log` | `# Exit code: 0` |
+  | IMP-21 | AC-001 sweep | Pass | `IMP-21-merged-ac001-sweep.log` | `result: PASS` |
+  | IMP-22 | browser probe `test:e2e:skill-improvement-removal` (SIR-001, SIR-002) | Pass | `IMP-22-merged-browser-sir.log`, `IMP-22-sir-evidence.json` | `Summary: 2 Pass, 0 Fail` |
+  | IMP-23 | Secret Gate `scripts/check_secrets.sh origin/personal..HEAD`, on `bda3731947` | Pass | `IMP-23-secret-gate.log` | `secret gate: PASS (no secrets found)` |
+
+  The full logs of IMP-15, IMP-16 and IMP-19 are committed as excerpts.
 - IMP-02's first run, on `fc46a7b5fc`, failed only the two registry-order tests. They were fixed in `a71e93a7f2`, and IMP-02 was rerun there.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
