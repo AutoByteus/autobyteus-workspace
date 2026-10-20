@@ -1,0 +1,36 @@
+# Case: API-01 red on base: the two files exactly as on dc530fdcb0, run as temporary sibling copies (zz-base-*.e2e.test.ts, removed after)
+# Command: git show dc530fdcb0:<file> > <dir>/zz-base-<name>; env -i … pnpm -C autobyteus-server-ts exec vitest run <2 zz-base files> --no-watch
+# Commit: worktree at cf88b340c0 (product code identical to dc530fdcb0; only the two test files differ)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; clean env (env -i PATH HOME=<resolved temp> TMPDIR)
+# Date: 2026-10-20
+
+ ❯ tests/e2e/memory/zz-base-memory-collaboration-graphql.e2e.test.ts (8 tests | 8 skipped) 6ms
+ ❯ tests/e2e/runtime/zz-base-team-task-event-current-contract.e2e.test.ts (2 tests | 1 failed) 7ms
+ FAIL  tests/e2e/memory/zz-base-memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e
+Error: rootTeam.taskExecutions[0] is missing required field(s): source.
+ ❯ requireKeys src/run-history/store/run-execution-tree-shared-record-schemas.ts:38:33
+ ❯ parseTaskExecution src/run-history/store/run-execution-tree-shared-record-schemas.ts:184:5
+ ❯ src/run-history/store/run-execution-tree-shared-record-schemas.ts:226:52
+ ❯ parseTaskExecutions src/run-history/store/run-execution-tree-shared-record-schemas.ts:226:31
+ ❯ parseRootTeam src/run-history/store/team-run-execution-tree-schema.ts:60:21
+ ❯ validateTeamRunExecutionTreePayload src/run-history/store/team-run-execution-tree-schema.ts:99:15
+ ❯ TeamRunExecutionTreeStore.write src/run-history/store/team-run-execution-tree-store.ts:50:24
+ ❯ writeTeamRoot tests/e2e/memory/zz-base-memory-collaboration-graphql.e2e.test.ts:44:41
+ ❯ tests/e2e/memory/zz-base-memory-collaboration-graphql.e2e.test.ts:149:11
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/zz-base-team-task-event-current-contract.e2e.test.ts > current Team delegated-execution stream contract > parses exact task-Agent and task-Team TASK_EXECUTION_STARTED payloads carrying the delegator
+          "expected": "object",
+          "message": "Invalid input: expected object, received undefined"
+          "message": "Invalid input: expected \"task_team\""
+          "expected": "string",
+          "message": "Invalid input: expected string, received undefined"
+          "expected": "array",
+          "message": "Invalid input: expected array, received undefined"
+          "expected": "array",
+          "message": "Invalid input: expected array, received undefined"
+          "expected": "object",
+          "message": "Invalid input: expected object, received undefined"
+ ❯ parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:107:55
+ ❯ tests/e2e/runtime/zz-base-team-task-event-current-contract.e2e.test.ts:8:26
+ Test Files  2 failed (2)
+      Tests  1 failed | 1 passed | 8 skipped (10)

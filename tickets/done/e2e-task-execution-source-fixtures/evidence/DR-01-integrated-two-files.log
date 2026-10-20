@@ -1,0 +1,11 @@
+# Case: DR-01 the two fixed e2e files on the integrated state
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts --no-watch
+# Commit: 1c1ab41303 (codex/e2e-task-execution-source-fixtures merged with origin/personal fde87e0c11)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20 (delivery, integrated state)
+
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 939ms
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 7ms
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Duration  10.53s (transform 6.52s, setup 51ms, import 8.87s, tests 947ms, environment 0ms)
