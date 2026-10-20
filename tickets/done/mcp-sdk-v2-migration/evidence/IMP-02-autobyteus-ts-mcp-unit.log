@@ -1,0 +1,30 @@
+# IMP-02 — autobyteus-ts MCP unit tests (real v2 client/server for stdio and HTTP; AC-004/005/006)
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp
+# Commit: ae7e907bf2
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T08:32:16Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-ts
+
+ ✓ tests/unit/tools/mcp/types.test.ts (22 tests) 6ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts (6 tests) 5ms
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts (11 tests) 7ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts (18 tests) 8ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts (3 tests) 5ms
+ ✓ tests/unit/tools/mcp/tool.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts (6 tests) 9ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts (3 tests) 4ms
+ ✓ tests/unit/tools/mcp/factory.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (8 tests) 178ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (4 tests) 2783ms
+     ✓ aborts a running tool call when the signal is aborted  2346ms
+
+ Test Files  11 passed (11)
+      Tests  87 passed (87)
+   Start at  10:32:17
+   Duration  3.04s (transform 987ms, setup 447ms, import 955ms, tests 3.01s, environment 1ms)
+

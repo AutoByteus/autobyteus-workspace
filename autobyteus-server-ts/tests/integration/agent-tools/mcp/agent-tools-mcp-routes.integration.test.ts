@@ -3,8 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
@@ -41,6 +40,18 @@ const requestHeaders = (extra: Record<string, string> = {}): Record<string, stri
 });
 
 const sessionUrl = (sessionId: string): string => "/mcp/agent-tools/" + sessionId;
+
+type HttpExchange = { rpcMethod: string | null; status: number };
+
+/** A test-owned fetch for the SDK transport that records each POST's JSON-RPC method and HTTP status. */
+const recordingFetch = (exchanges: HttpExchange[]): typeof fetch => async (input, init) => {
+  const response = await fetch(input, init);
+  if (init?.method === "POST" && typeof init.body === "string") {
+    const body = JSON.parse(init.body) as { method?: unknown };
+    exchanges.push({ rpcMethod: typeof body.method === "string" ? body.method : null, status: response.status });
+  }
+  return response;
+};
 
 const registerRoutes = async (
   app: FastifyInstance,
@@ -327,6 +338,45 @@ describe("Agent Tools MCP tokenless route integration", () => {
       await expect(client.callTool({
         name: SEND_MESSAGE_TO_TOOL_NAME,
         arguments: { target_agent_run_id: "target-run", content: "hello-sdk" },
+      })).resolves.toMatchObject({
+        content: [{ type: "text", text: "Delivered via MCP." }],
+      });
+    } finally {
+      await client.close();
+    }
+  });
+
+  it("serves an SDK client in auto negotiation mode, which falls back to the 2025 handshake", async () => {
+    await app.listen({ host: "127.0.0.1", port: 0 });
+    const address = app.server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected Fastify to listen on a loopback TCP port.");
+    }
+    const exchanges: HttpExchange[] = [];
+    const client = new Client(
+      { name: "autobyteus-agent-tools-auto-probe", version: "0.0.1" },
+      { versionNegotiation: { mode: "auto" } },
+    );
+    const transport = new StreamableHTTPClientTransport(
+      new URL("http://127.0.0.1:" + address.port + sessionUrl(enabledSessionId)),
+      { fetch: recordingFetch(exchanges) },
+    );
+    try {
+      await client.connect(transport);
+      expect(client.getProtocolEra()).toBe("legacy");
+      // The route answers initialize with the version of the request's mcp-protocol-version header; the
+      // initialize request has none, so the route's default 2025-03-26 is negotiated, as for every client today.
+      expect(client.getNegotiatedProtocolVersion()).toBe("2025-03-26");
+      expect(exchanges.slice(0, 2)).toEqual([
+        { rpcMethod: "server/discover", status: 400 },
+        { rpcMethod: "initialize", status: 200 },
+      ]);
+
+      const listed = await client.listTools();
+      expect(listed.tools.map((tool) => tool.name)).toEqual([SEND_MESSAGE_TO_TOOL_NAME]);
+      await expect(client.callTool({
+        name: SEND_MESSAGE_TO_TOOL_NAME,
+        arguments: { target_agent_run_id: "target-run", content: "hello-auto" },
       })).resolves.toMatchObject({
         content: [{ type: "text", text: "Delivered via MCP." }],
       });

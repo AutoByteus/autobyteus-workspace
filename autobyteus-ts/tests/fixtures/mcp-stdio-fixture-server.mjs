@@ -1,7 +1,7 @@
 /**
- * Tiny MCP test server (Node, `@modelcontextprotocol/sdk`): the fallback twin of the Python server in
- * `./mcp-test-server/server.py`, with the same tools, modes and output lines, so tests are
- * implementation-agnostic. Also used as-is (`node <this file>`, stdio) by the autobyteus-ts stdio unit
+ * Tiny MCP test server (Node, `@modelcontextprotocol/server` and `@modelcontextprotocol/node`): the
+ * fallback twin of the Python server in `./mcp-test-server/server.py`, with the same tools, modes and
+ * output lines, so tests are implementation-agnostic. Also used as-is (`node <this file>`, stdio) by the autobyteus-ts stdio unit
  * test and by the autobyteus-server-ts runtime × MCP matrix suite, which rely on `report_env_and_cwd`.
  *
  * Tools: echo(text) -> text | add(a, b) -> structured {"sum"} | fail(message) -> tool error
@@ -11,14 +11,16 @@
  *   every request without "Authorization: Bearer T" gets 401). HTTP prints "MCP_TEST_SERVER_READY <url>"
  *   and one "MCP_TEST_SERVER_REQUEST auth=ok|missing|wrong method=<M>" line per request to stderr.
  * Env: MCP_TEST_SERVER_PID_FILE=<path> makes the server write its pid there first.
+ *      MCP_TEST_SERVER_START_LOG=<path> makes every start (any mode) append "<pid>\n" there, so a test
+ *      can count how often the server was started.
  * Prerequisites: none. Values: the tests pass dummy values only.
  */
 import fs from 'node:fs';
 import http from 'node:http';
 import { parseArgs } from 'node:util';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
+import { McpServer } from '@modelcontextprotocol/server';
+import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
 import { z } from 'zod';
 
 const { values: args } = parseArgs({
@@ -34,23 +36,23 @@ const text = (value) => ({ content: [{ type: 'text', text: value }] });
 
 const createServer = () => {
   const server = new McpServer({ name: 'autobyteus-mcp-test-server', version: '1.0.0' });
-  server.registerTool('echo', { description: 'Returns the given text.', inputSchema: { text: z.string() } },
+  server.registerTool('echo', { description: 'Returns the given text.', inputSchema: z.object({ text: z.string() }) },
     async ({ text: value }) => text(value));
   server.registerTool('add', {
     description: 'Adds two numbers and returns the sum as structured content.',
-    inputSchema: { a: z.number(), b: z.number() },
-    outputSchema: { sum: z.number() }
+    inputSchema: z.object({ a: z.number(), b: z.number() }),
+    outputSchema: z.object({ sum: z.number() })
   }, async ({ a, b }) => ({ ...text(JSON.stringify({ sum: a + b })), structuredContent: { sum: a + b } }));
-  server.registerTool('fail', { description: 'Always fails with the given message as a tool error.', inputSchema: { message: z.string() } },
+  server.registerTool('fail', { description: 'Always fails with the given message as a tool error.', inputSchema: z.object({ message: z.string() }) },
     async ({ message }) => ({ ...text(message), isError: true }));
-  server.registerTool('slow', { description: 'Waits the given number of milliseconds, then answers.', inputSchema: { ms: z.number().int() } },
+  server.registerTool('slow', { description: 'Waits the given number of milliseconds, then answers.', inputSchema: z.object({ ms: z.number().int() }) },
     async ({ ms }) => {
       await new Promise((resolve) => setTimeout(resolve, ms));
       return text(`slept ${ms} ms`);
     });
   server.registerTool('report_env_and_cwd', {
     description: 'Reports one environment variable and the working directory of this server.',
-    inputSchema: { name: z.string() }
+    inputSchema: z.object({ name: z.string() })
   }, async ({ name }) => text(JSON.stringify({ value: process.env[name] ?? null, cwd: process.cwd() })));
   return server;
 };
@@ -67,7 +69,7 @@ const serveHttp = (port, token) => {
     let body = '';
     for await (const chunk of req) body += chunk;
     const server = createServer();
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    const transport = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on('close', () => {
       void transport.close();
       void server.close();
@@ -80,6 +82,9 @@ const serveHttp = (port, token) => {
   });
 };
 
+if (process.env.MCP_TEST_SERVER_START_LOG) {
+  fs.appendFileSync(process.env.MCP_TEST_SERVER_START_LOG, `${process.pid}\n`);
+}
 if (process.env.MCP_TEST_SERVER_PID_FILE) {
   fs.writeFileSync(process.env.MCP_TEST_SERVER_PID_FILE, String(process.pid));
 }

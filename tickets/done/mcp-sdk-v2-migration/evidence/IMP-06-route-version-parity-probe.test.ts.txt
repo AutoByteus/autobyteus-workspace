@@ -1,0 +1,40 @@
+// Scratch probe (not committed): which protocol version do v1 1.32.1, v2 default and v2 auto clients
+// negotiate with the REAL /mcp/gateway route, and which mcp-protocol-version header do later requests carry?
+import fastify from "fastify";
+import { it } from "vitest";
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+// @ts-ignore
+import { Client as V1Client } from "/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6/node_modules/@modelcontextprotocol/sdk/dist/esm/client/index.js";
+// @ts-ignore
+import { StreamableHTTPClientTransport as V1Transport } from "/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/node_modules/.pnpm/@modelcontextprotocol+sdk@1.32.1_zod@4.3.6/node_modules/@modelcontextprotocol/sdk/dist/esm/client/streamableHttp.js";
+import { registerMcpGatewayRoutes } from "../../src/mcp-gateway/mcp-gateway-routes.js";
+import { McpGatewayAccessGate } from "../../src/mcp-gateway/mcp-gateway-access.js";
+import { McpGatewayMethodDispatcher } from "../../src/mcp-gateway/mcp-gateway-method-dispatcher.js";
+import { McpGatewayToolCatalog } from "../../src/mcp-gateway/mcp-gateway-tool-catalog.js";
+
+it("version parity", async () => {
+  const app = fastify();
+  const seen: string[] = [];
+  app.addHook("onRequest", async (req) => { seen.push(String(req.headers["mcp-protocol-version"] ?? "-")); });
+  const registry = { listTools: () => [], getToolDefinition: () => undefined, createTool: () => { throw new Error("x"); } };
+  await registerMcpGatewayRoutes(app, {
+    dispatcher: new McpGatewayMethodDispatcher({ catalog: new McpGatewayToolCatalog({ registry: registry as any }) }),
+    accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => null }),
+  });
+  await app.ready();
+  await app.listen({ host: "127.0.0.1", port: 0 });
+  const url = new URL("http://127.0.0.1:" + (app.server.address() as any).port + "/mcp/gateway");
+  const variants: Array<[string, () => Promise<any>]> = [
+    ["v1 1.32.1", async () => { const c = new V1Client({ name: "p", version: "1" }); await c.connect(new V1Transport(url)); return c; }],
+    ["v2 default", async () => { const c = new Client({ name: "p", version: "1" }); await c.connect(new StreamableHTTPClientTransport(url)); return c; }],
+    ["v2 auto", async () => { const c = new Client({ name: "p", version: "1" }, { versionNegotiation: { mode: "auto" } }); await c.connect(new StreamableHTTPClientTransport(url)); return c; }],
+  ];
+  for (const [label, connect] of variants) {
+    seen.length = 0;
+    const c = await connect();
+    await c.listTools();
+    console.log(JSON.stringify({ client: label, negotiated: typeof c.getNegotiatedProtocolVersion === "function" ? c.getNegotiatedProtocolVersion() : (c as any)._transport?.protocolVersion, era: c.getProtocolEra?.() ?? "n/a (v1)", requestHeaders: [...seen] }));
+    await c.close();
+  }
+  await app.close();
+});

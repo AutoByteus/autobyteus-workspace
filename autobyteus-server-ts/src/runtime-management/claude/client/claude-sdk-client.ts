@@ -36,17 +36,14 @@ import {
 
 type ClaudeSdkFunctionName =
   | "query"
-  | "getSessionMessages"
-  | "createSdkMcpServer";
+  | "getSessionMessages";
 
 export type ClaudeSdkModuleLike = {
   query?: (...args: unknown[]) => unknown;
   getSessionMessages?: (...args: unknown[]) => unknown;
-  createSdkMcpServer?: (...args: unknown[]) => unknown;
   default?: {
     query?: (...args: unknown[]) => unknown;
     getSessionMessages?: (...args: unknown[]) => unknown;
-    createSdkMcpServer?: (...args: unknown[]) => unknown;
   };
 };
 
@@ -288,67 +285,6 @@ export class ClaudeSdkClient {
     });
   }
 
-  async createToolDefinition(options: {
-    name: string;
-    description: string;
-    inputSchema: Record<string, unknown>;
-    handler: (args: unknown) => Promise<Record<string, unknown>>;
-  }): Promise<Record<string, unknown>> {
-    return {
-      name: options.name,
-      description: options.description,
-      inputSchema: options.inputSchema,
-      handler: options.handler,
-    };
-  }
-
-  async createMcpServer(options: {
-    name: string;
-    tools: Record<string, unknown>[];
-  }): Promise<Record<string, unknown> | null> {
-    const sdk = await this.loadModuleSafe();
-    const createSdkMcpServerFn = this.resolveFunction(sdk, "createSdkMcpServer");
-    if (!createSdkMcpServerFn) {
-      return null;
-    }
-
-    const normalizedTools = options.tools.map((tool, index) => {
-      const payload = asObject(tool);
-      const name = asString(payload?.name);
-      if (!name) {
-        throw new Error(
-          `CLAUDE_MCP_TOOL_INVALID: Tool at index ${String(index)} is missing a valid name.`,
-        );
-      }
-      const description = asString(payload?.description) ?? "";
-      const inputSchema = asObject(payload?.inputSchema) ?? {};
-      const handler =
-        typeof payload?.handler === "function"
-          ? (payload.handler as (args: unknown) => Promise<Record<string, unknown>>)
-          : null;
-      if (!handler) {
-        throw new Error(
-          `CLAUDE_MCP_TOOL_INVALID: Tool '${name}' is missing a valid handler.`,
-        );
-      }
-
-      const annotations = asObject(payload?.annotations);
-      return {
-        name,
-        description,
-        inputSchema,
-        handler,
-        ...(annotations ? { annotations } : {}),
-      };
-    });
-
-    const mcpServerConfig = await this.callSdkFunction(createSdkMcpServerFn, {
-      name: options.name,
-      tools: normalizedTools,
-    });
-    return asObject(mcpServerConfig);
-  }
-
   private async loadModuleSafe(): Promise<ClaudeSdkModuleLike | null> {
     if (this.cachedSdkModule) {
       return this.cachedSdkModule;
@@ -440,13 +376,6 @@ export class ClaudeSdkClient {
     } catch {
       throw new Error(CLAUDE_API_KEY_UNAVAILABLE);
     }
-  }
-
-  private async callSdkFunction(
-    fn: (...args: unknown[]) => unknown,
-    ...args: unknown[]
-  ): Promise<unknown> {
-    return Promise.resolve(fn(...args));
   }
 
   private async tryGetSupportedModelsFromQueryControl(

@@ -4,7 +4,6 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { z } from "zod";
 import {
   ClaudeSdkClient,
   type ClaudeSdkCanUseTool,
@@ -240,60 +239,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live streaming 
       await resumed.nextResult();
 
       expect(resultMentions(resumed, codeword)).toBe(true);
-    },
-    FLOW_TEST_TIMEOUT_MS,
-  );
-
-  it(
-    "configures a custom MCP server and executes a simple custom MCP tool",
-    async () => {
-      const workspaceRoot = await createWorkspace("claude-sdk-client-mcp");
-      createdWorkspaces.add(workspaceRoot);
-      const client = new ClaudeSdkClient();
-      const modelIdentifier = await resolveHaikuModelIdentifier(client);
-      const invocationTokens: string[] = [];
-      const toolToken = `CLAUDE_SDK_MCP_${Date.now()}`;
-      const echoTool = await client.createToolDefinition({
-        name: "echo_token",
-        description: "Echoes back the provided token.",
-        inputSchema: {
-          token: z.string().min(1).describe("Token to echo back verbatim."),
-        },
-        handler: async (args) => {
-          const token =
-            args && typeof args === "object" && !Array.isArray(args) && "token" in args &&
-            typeof (args as { token?: unknown }).token === "string"
-              ? (args as { token: string }).token
-              : "";
-          invocationTokens.push(token);
-          return { content: [{ type: "text", text: `ECHO:${token}` }] };
-        },
-      });
-      const mcpServer = await client.createMcpServer({ name: "integration_echo", tools: [echoTool] });
-      expect(mcpServer).not.toBeNull();
-
-      const live = await open(client, {
-        systemPrompt: "",
-        sessionBinding: createSessionBinding(),
-        model: modelIdentifier,
-        workingDirectory: workspaceRoot,
-        mcpServers: { integration_echo: mcpServer! },
-        permissionMode: "default",
-        canUseTool: allowAllTools,
-      });
-      live.send([
-        "Use the custom MCP tool exactly once.",
-        "The tool is exposed from MCP server 'integration_echo'.",
-        "Its tool name is 'echo_token'.",
-        "If Claude shows the fully qualified MCP tool name, use 'mcp__integration_echo__echo_token'.",
-        `Pass this exact token argument value: ${toolToken}`,
-        "Do not use any other tool.",
-        "After the tool succeeds, reply with exactly DONE.",
-      ].join("\n"));
-      await live.nextResult();
-
-      expect(invocationTokens).toEqual([toolToken]);
-      expect(resultMentions(live, "DONE")).toBe(true);
     },
     FLOW_TEST_TIMEOUT_MS,
   );

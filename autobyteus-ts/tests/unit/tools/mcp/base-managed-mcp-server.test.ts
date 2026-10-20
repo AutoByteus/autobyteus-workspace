@@ -59,10 +59,23 @@ describe('BaseManagedMcpServer', () => {
     const result = await server.callTool('tool-x', { value: 1 });
     expect(callTool).toHaveBeenCalledWith(
       { name: 'tool-x', arguments: { value: 1 } },
-      undefined,
       { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }
     );
     expect(result).toEqual({ result: 'done' });
+  });
+
+  it('passes the caller signal with the timeout in the SDK request options', async () => {
+    const listTools = vi.fn().mockResolvedValue({ tools: [] });
+    const callTool = vi.fn().mockResolvedValue({ result: 'done' });
+    server.createSessionMock.mockResolvedValue({ listTools, callTool, close: vi.fn() });
+    const controller = new AbortController();
+
+    await server.callTool('tool-x', { value: 1 }, { signal: controller.signal });
+
+    expect(callTool).toHaveBeenCalledWith(
+      { name: 'tool-x', arguments: { value: 1 } },
+      { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: controller.signal }
+    );
   });
 
   it('runs cleanup on close', async () => {

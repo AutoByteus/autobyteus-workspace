@@ -1,0 +1,462 @@
+# API-04 after commit=9715f94db0 2026-10-20T09:08:33Z cmd: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts --no-watch --reporter=verbose (server dist built by build-side.sh at this commit)
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:17669) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: cleanup_stdio
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+In-memory cache: Added new MCP config cleanup_stdio.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Attempting to discover and register tools for server ID: cleanup_stdio
+
+stderr | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Overwriting existing MCP config with server_id 'cleanup_stdio'.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'cleanup_stdio_echo'
+Successfully registered tool definition: 'cleanup_stdio_add'
+Successfully registered tool definition: 'cleanup_stdio_fail'
+Successfully registered tool definition: 'cleanup_stdio_slow'
+Successfully registered tool definition: 'cleanup_stdio_report_env_and_cwd'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully discovered and registered 5 tools for server ID: cleanup_stdio
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Agent Definition created successfully with ID: cleanup-terminate-1e9a6e
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Created and registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+AGY compaction detection off for run cleanup_terminate_1e9a6e_bc37c63c172b437491f9f56ba4e36cb6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Agent websocket attached for run cleanup_terminate_1e9a6e_bc37c63c172b437491f9f56ba4e36cb6
+Created agent session fda2fb1d-8af1-47cf-b1e2-e65b56fac828 for run cleanup_terminate_1e9a6e_bc37c63c172b437491f9f56ba4e36cb6
+Agent WebSocket connected: session=fda2fb1d-8af1-47cf-b1e2-e65b56fac828, run=cleanup_terminate_1e9a6e_bc37c63c172b437491f9f56ba4e36cb6
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated 838ms
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Agent Definition created successfully with ID: cleanup-delete-58e52f
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+AGY compaction detection off for run cleanup_delete_58e52f_6491006713574105becf753a49f44e02: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Agent websocket attached for run cleanup_delete_58e52f_6491006713574105becf753a49f44e02
+Created agent session 2ac22d19-a5b6-42ed-8e2e-f7855cb60491 for run cleanup_delete_58e52f_6491006713574105becf753a49f44e02
+Agent WebSocket connected: session=2ac22d19-a5b6-42ed-8e2e-f7855cb60491, run=cleanup_delete_58e52f_6491006713574105becf753a49f44e02
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted 771ms
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent Definition created successfully with ID: cleanup-wake-8398e4
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+AGY compaction detection off for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent websocket attached for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+Created agent session e8b66faa-bfe8-48a9-959e-0d53daf05dd4 for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+Agent WebSocket connected: session=e8b66faa-bfe8-48a9-959e-0d53daf05dd4, run=cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+AGY compaction detection off for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent websocket attached for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+Created agent session b5b5e1d0-a851-4428-8712-80642960b2e8 for run cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+Agent WebSocket connected: session=b5b5e1d0-a851-4428-8712-80642960b2e8, run=cleanup_wake_8398e4_c3a9e936e9c44df4bdcda27450b476c2
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process 1429ms
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent Definition created successfully with ID: cleanup-pair-cc29f8
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+AGY compaction detection off for run cleanup_pair_cc29f8_00b957fe7c4145bbb1d224baf6553434: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent websocket attached for run cleanup_pair_cc29f8_00b957fe7c4145bbb1d224baf6553434
+Created agent session f129b890-b732-4281-b8b2-7ba133b695f5 for run cleanup_pair_cc29f8_00b957fe7c4145bbb1d224baf6553434
+Agent WebSocket connected: session=f129b890-b732-4281-b8b2-7ba133b695f5, run=cleanup_pair_cc29f8_00b957fe7c4145bbb1d224baf6553434
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+AGY compaction detection off for run cleanup_pair_cc29f8_116c8bc6e6494878bf90d8a8a34c4284: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent websocket attached for run cleanup_pair_cc29f8_116c8bc6e6494878bf90d8a8a34c4284
+Created agent session 774b8d88-de50-4e36-9d2c-a2eeb5f9ff45 for run cleanup_pair_cc29f8_116c8bc6e6494878bf90d8a8a34c4284
+Agent WebSocket connected: session=774b8d88-de50-4e36-9d2c-a2eeb5f9ff45, run=cleanup_pair_cc29f8_116c8bc6e6494878bf90d8a8a34c4284
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends 1597ms
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent Definition created successfully with ID: cleanup-manager-ee8745
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+AGY compaction detection off for run cleanup_manager_ee8745_a728d880957844428a2d81d309d97dc4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent Definition created successfully with ID: cleanup-worker-a59ad0
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent websocket attached for run cleanup_manager_ee8745_a728d880957844428a2d81d309d97dc4
+Created agent session 9759f2d2-e63b-4123-8f11-43529a645b44 for run cleanup_manager_ee8745_a728d880957844428a2d81d309d97dc4
+Agent WebSocket connected: session=9759f2d2-e63b-4123-8f11-43529a645b44, run=cleanup_manager_ee8745_a728d880957844428a2d81d309d97dc4
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-0j5gB9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_1c636742f149f49f0e2e2be4ee1fe7b9e124f524b6732705eedc5e77a3dea04c
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+AGY compaction detection off for run cleanup_worker_a59ad0_158cee5f7b8b484b8a798837b776dd63: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period 60929ms
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 9759f2d2-e63b-4123-8f11-43529a645b44
+Agent WebSocket disconnected: 9759f2d2-e63b-4123-8f11-43529a645b44
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 774b8d88-de50-4e36-9d2c-a2eeb5f9ff45
+Agent WebSocket disconnected: 774b8d88-de50-4e36-9d2c-a2eeb5f9ff45
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session f129b890-b732-4281-b8b2-7ba133b695f5
+Agent WebSocket disconnected: f129b890-b732-4281-b8b2-7ba133b695f5
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session b5b5e1d0-a851-4428-8712-80642960b2e8
+Agent WebSocket disconnected: b5b5e1d0-a851-4428-8712-80642960b2e8
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session e8b66faa-bfe8-48a9-959e-0d53daf05dd4
+Agent WebSocket disconnected: e8b66faa-bfe8-48a9-959e-0d53daf05dd4
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 2ac22d19-a5b6-42ed-8e2e-f7855cb60491
+Agent WebSocket disconnected: 2ac22d19-a5b6-42ed-8e2e-f7855cb60491
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session fda2fb1d-8af1-47cf-b1e2-e65b56fac828
+Agent WebSocket disconnected: fda2fb1d-8af1-47cf-b1e2-e65b56fac828
+
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts > Remote MCP redirects and unsupported transports through the built server > refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import 3309ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts > Remote MCP redirects and unsupported transports through the built server > starts with WebSocket-era entries in mcps.json and registers the valid entry next to them 2325ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts > Remote MCP server credentials through the built server > sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization 405ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts > Remote MCP server credentials through the built server > re-registers saved credentials at startup after a restart and keeps sending them 3390ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  11:08:34
+   Duration  87.96s (transform 6.44s, setup 67ms, import 9.27s, tests 77.91s, environment 0ms)
+

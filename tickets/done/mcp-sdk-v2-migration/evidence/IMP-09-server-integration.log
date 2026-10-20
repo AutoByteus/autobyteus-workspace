@@ -1,0 +1,21 @@
+# IMP-09 — server integration suite (excerpt)
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: bc8c1d72f3 (ae7e907bf2 changes only an e2e file this suite does not run)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20 (run 10:25-10:28 local)
+# Full log (841768 bytes, not committed): /tmp/mcpv2-server-int.log
+
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+ ✓ tests/integration/agent-execution/claude-session-manager.integration.test.ts (9 tests | 8 skipped) 264ms
+ ↓ tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts (8 tests | 8 skipped)
+ ✓ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts (1 test) 155ms
+ ✓ tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts (5 tests) 585ms
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (10 tests) 160ms
+ ✓ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts (1 test) 178ms
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (5 tests | 5 skipped)
+ ✓ tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts (1 test) 53ms
+ ↓ tests/integration/services/claude-model-catalog.integration.test.ts (1 test | 1 skipped)
+ ✓ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts (1 test) 9ms
+ ↓ tests/integration/mcp-server-management/mcp-config-service.integration.test.ts (4 tests | 4 skipped)

@@ -1,0 +1,99 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-ts
+
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > connects and caches the client session 1ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > lists remote tools via the client session 0ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > calls a tool using the client session 1ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > passes the caller signal with the timeout in the SDK request options 1ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > runs cleanup on close 0ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts > BaseManagedMcpServer > marks failed state on connect error 1ms
+ ✓ tests/unit/tools/mcp/types.test.ts > McpTransportType > uses expected string values 1ms
+ ✓ tests/unit/tools/mcp/types.test.ts > McpServerInstanceKey > stores agent and server identifiers 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > BaseMcpConfig > defaults enabled and tool_name_prefix 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > BaseMcpConfig > validates server_id 1ms
+ ✓ tests/unit/tools/mcp/types.test.ts > BaseMcpConfig > validates enabled flag 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > BaseMcpConfig > validates tool_name_prefix type 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > normalizes defaults and sets transport type 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > converts empty cwd to null 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > requires a non-empty command 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > validates args list 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > validates env dictionary 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StdioMcpServerConfig > validates cwd type 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > defaults headers and token 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > requires a non-empty url 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > validates token type 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > validates headers map 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > trims the token and treats a blank token as no token 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > derives the request headers from the headers and the token 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > rejects a token together with an Authorization header without echoing values 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > rejects a token together with an authorization header without echoing values 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > rejects a token together with an AUTHORIZATION header without echoing values 0ms
+ ✓ tests/unit/tools/mcp/types.test.ts > StreamableHttpMcpServerConfig > accepts an Authorization header when the token is blank 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps basic object schema 2ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps enum types 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps arrays of primitives 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps nullable anyOf arrays to arrays while preserving outer metadata 1ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps nullable anyOf objects to objects instead of strings 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps nullable type-array shorthand to the single non-null type 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > does not guess an arbitrary branch for complex multi-type unions 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps nested objects recursively 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps deeply nested objects 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > rejects unsupported root schema types 0ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts > McpSchemaMapper > maps real-world nested MCP schemas 0ms
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > loads a single config from dict 2ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > loads multiple configs from dict 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > loads configs from file with list 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > loads configs from file with dict 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > rejects invalid config data 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > removes configs and clears all configs 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > parses transport types 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > rejects the removed websocket transport and lists the supported transports 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > parses a single mcp config dict 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > treats a non-empty url as streamable HTTP, and prefers it over a command 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > treats a non-empty command as stdio 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({}) 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({"url":"  ","command":""}) 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({"transport_type":""}) 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > uses an explicit transport_type or transportType as given 0ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > rejects a transport_type that is not a string 1ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts > McpConfigService > rejects an imported HTTP server that sets both a token and an Authorization header 0ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts > McpServerInstanceManager > creates server instances based on config transport 1ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts > McpServerInstanceManager > detaches an agent's instances before closing them, so a request during the close gets new ones 2ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts > McpServerInstanceManager > closes every instance of the agent and logs a failed close with the agent and server ids 1ms
+ ✓ tests/unit/tools/mcp/tool.test.ts > GenericMcpTool > exposes instance-specific properties 2ms
+ ✓ tests/unit/tools/mcp/tool.test.ts > GenericMcpTool > delegates execution to the proxy 1ms
+ ✓ tests/unit/tools/mcp/tool.test.ts > GenericMcpTool > passes execution AbortSignal to the remote MCP proxy call 1ms
+ ✓ tests/unit/tools/mcp/tool.test.ts > GenericMcpTool > propagates proxy failures 1ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > reloads all MCP tools and replaces stale registrations 3ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > registers a single server and unregisters old tools 1ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > loads and registers a server from a config dict 0ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > continues reload when discovery fails 1ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > lists remote tools without registering them 1ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts > McpToolRegistrar > unregisters tools from a server 0ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts > McpServerProxy > requires agentId and serverId 1ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts > McpServerProxy > delegates tool calls to server instance 1ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts > McpServerProxy > forwards abort signals to the server instance 0ms
+ ✓ tests/unit/tools/mcp/factory.test.ts > McpToolFactory > stores configuration identifiers 1ms
+ ✓ tests/unit/tools/mcp/factory.test.ts > McpToolFactory > creates a configured GenericMcpTool instance 0ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > sends configured headers on initialize, tool listing and tool call 105ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > sends the token as a Bearer Authorization header on every request 18ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > connects to an unauthenticated server without sending an Authorization header 13ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > fails to connect when the server rejects the configured credential 3ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > connects with the 2025 initialize handshake and no server/discover probe 9ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > lists the tools of every page when the server pages tools/list 11ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > redirects > does not follow a redirect to another origin, so the credential never reaches it 2ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > redirects > follows a redirect within the same origin 15ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with a real stdio MCP server > starts the server with the configured env and cwd, lists its tools and calls one 315ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with a real stdio MCP server > fails to connect when the command does not exist 2ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with a real stdio MCP server > starts the server process exactly once for connect, list and call 142ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer with a real stdio MCP server > aborts a running tool call when the signal is aborted 2342ms
+
+ Test Files  11 passed (11)
+      Tests  87 passed (87)
+   Start at  11:27:45
+   Duration  3.05s (transform 980ms, setup 440ms, import 956ms, tests 3.03s, environment 1ms)
+

@@ -1,4 +1,4 @@
-import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import type { Client } from '@modelcontextprotocol/client';
 import type { BaseMcpConfig } from '../types.js';
 
 export enum ServerState {
@@ -112,7 +112,6 @@ export abstract class BaseManagedMcpServer {
 
     return await this.clientSession.callTool(
       { name: toolName, arguments: argumentsPayload },
-      undefined,
       { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: options.signal ?? undefined }
     );
   }

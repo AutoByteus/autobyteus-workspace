@@ -3,7 +3,9 @@
  *
  * Purpose: prove that the stdio client starts the configured command with its `args`,
  * `env` and `cwd`, and can initialize, list tools and call a tool, using the real
- * `@modelcontextprotocol/sdk` client and the fixture server (no SDK mock).
+ * `@modelcontextprotocol/client` and the fixture server (no SDK mock). Also proves that one
+ * connect starts the server exactly once (the 2025 handshake, no discovery probe process) and
+ * that the run's abort signal reaches the SDK call.
  * Prerequisites: none. The fixture is `tests/fixtures/mcp-stdio-fixture-server.mjs`, run with
  * the current `node`.
  * Values: dummy only (`test-dummy`).
@@ -66,5 +68,40 @@ describe('StdioManagedMcpServer with a real stdio MCP server', () => {
 
     await expect(client.connect()).rejects.toThrow();
     expect(client.connectionState).toBe(ServerState.FAILED);
+  });
+
+  it('starts the server process exactly once for connect, list and call', async () => {
+    const startLog = path.join(workDir, 'starts.log');
+    client = new StdioManagedMcpServer(
+      new StdioMcpServerConfig({
+        server_id: 'stdio-fixture-starts',
+        command: process.execPath,
+        args: [fixtureServerPath],
+        env: { MCP_TEST_SERVER_START_LOG: startLog }
+      })
+    );
+
+    await client.connect();
+    await client.listRemoteTools();
+    const result = (await client.callTool('echo', { text: 'test-dummy' })) as { content: Array<{ text: string }> };
+    await client.close();
+
+    expect(result.content[0]?.text).toBe('test-dummy');
+    expect(fs.readFileSync(startLog, 'utf8').trim().split('\n')).toHaveLength(1);
+  });
+
+  it('aborts a running tool call when the signal is aborted', async () => {
+    client = new StdioManagedMcpServer(
+      new StdioMcpServerConfig({ server_id: 'stdio-fixture-abort', command: process.execPath, args: [fixtureServerPath] })
+    );
+    await client.connect();
+
+    const controller = new AbortController();
+    const startedAt = Date.now();
+    const call = client.callTool('slow', { ms: 10_000 }, { signal: controller.signal });
+    setTimeout(() => controller.abort(new Error('run cancelled')), 200);
+
+    await expect(call).rejects.toThrow();
+    expect(Date.now() - startedAt).toBeLessThan(5_000);
   });
 });
