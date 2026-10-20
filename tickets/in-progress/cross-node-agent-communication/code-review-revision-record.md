@@ -13,6 +13,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` is authori
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-002, F-002) | Pass | Fail (Design Impact) | F-002 |
 | CRR-006 | `code-review-report.md` | Implementation Review, round 4 (IR-004, SR-017; targeted delta) | Fail | Pass | F-002 (resolved) |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-003 Pass) | N/A (first test review) | Pass | None |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 2 (API-REV-004 Pass; DR-001 RC-10 race) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -242,3 +243,32 @@ None (first test review). Source findings CR-001, CR-002 and F-002 remain resolv
 - Material score or classification changes: none. Classification `Large` / `High`.
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: AC-113 (the user), RSK-106 (FU-002), FU-003 and FU-004 pre-existing.
+
+### CRR-008 — Test-code review round 2: RC-10 race fix and the CRR-007 notes
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new Current Result section; Latest Authoritative Result)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). The test-file diff of `a777af6b1d`; that commit touches only test code and evidence.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-004 Pass); delivery DR-001 / DEL-06; RC-10
+- Relevant solution revision IDs: SR-017
+- Relevant architecture-review revision IDs: ARCH-REV-007
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-007)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - RC-10 now takes the remote run ID from the task agent's `delegate_task` result, which returns after the work packet. That removes the race on a prepared, not-yet-admitted run. No assertion is weaker: `delegatedFrom` is still exact, and the result is asserted before use.
+  - The CRR-007 notes are resolved: the header duration, separate `defs` / `ids`, and `sequenced > 0` in RC-06/07.
+  - r4-1 and r4-2 pass 20/20 under load.
+  - The AC-110 duplicate screenshot is replaced by API-23b from the real desktop app; it is distinct and consistent with its log.
+- Supported product scenario / material-premise basis changes: none. The race was a test-only observation window (a prepared run before its packet), not a supported user path.
+
+#### Prior Finding Resolution
+
+None. CRR-007 had no findings; its three non-blocking notes are resolved.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Classification `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: AC-113's Docker part stays with the user; RSK-106 (FU-002); FU-003 and FU-004 are pre-existing.

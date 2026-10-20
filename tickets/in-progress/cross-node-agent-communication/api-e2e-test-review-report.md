@@ -2,6 +2,48 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication`
 
+## Current Result — Round 2 (CRR-008)
+
+- Trigger: API/E2E round 4 (API-REV-004, commit `a777af6b1d`). Delivery's DR-001 / DEL-06 saw RC-10 fail once under load on the integrated state (HEAD `303eb6ca1d`, which includes the `origin/personal` merge `4f03cce09d`).
+- Changed durable test path: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`, updated in `a777af6b1d`. The commit touches only test code and evidence; no source changed.
+- Prior notes rechecked (CRR-007), all three addressed:
+  - the header now says "About 2–3 minutes", and the round-4 runs took 140 s and 148 s;
+  - definition IDs are in a separate `defs` record and `ids` holds run IDs only. Grep: no `ids.delegator`, `ids.publisher`, `ids.fragile`, `ids.worker` or `ids.manager` remains;
+  - RC-06 and RC-07 assert `sequenced > 0`, and RC-05 explains why its view carries no sequence.
+
+### RC-10 race fix
+
+- **Cause, agreed: a test race, not a product defect.**
+  - The old RC-10 found the remote run by scanning beta's folders for `delegatedFrom`. Beta writes that file when it prepares the run, before the work packet activates it (SR-014 order).
+  - A prepared run is not an admitted package, so its projection answers "unavailable" until it starts. That is existing behavior for prepared runs, and no real user follows a remote run on B before its packet.
+  - The test's `until()` let the error escape instead of retrying.
+- **Fix: the test now follows the real actor.**
+  - RC-10 reads the remote run ID from the task agent's own `delegate_task` result. That result returns only after `acceptSeed` delivered the work packet, the same way RC-05 … RC-07 obtain their IDs.
+  - No assertion is weaker. The result's `delegated: true`, `node` and missing `task_id` are asserted before use. `delegatedFrom` is still checked exactly, which binds `r3` to `workerRunId` and the manager's root, and the Task record and link assertions are unchanged.
+- **Evidence.** Both r4-1 and r4-2 pass 20/20 at load average 100–157. In both receipts:
+  - `RC-10.workerResult.target_agent_run_id` equals `r3`;
+  - RC-06 has 99 and RC-07 has 83 sequenced frames, with `gaps: []`;
+  - RC-20 audits 44 clean requests;
+  - cleanup is clean.
+
+### Evidence correction (AC-110)
+
+- The duplicate `API-23-beta-composer-message.png` (byte-identical to the history PNG, a stale frame) is removed. It is replaced by API-23b from two isolated desktop instances of the integrated build, with real runtimes, watched by the user.
+- `API-23b-isolated-beta-composer-message.png` (a distinct hash) shows:
+  - the remote run under `node-b-workspace → Text Reviewer (1)`;
+  - its `send_message_to` back to node A;
+  - the owner's composer message `OWNER-COMPOSER-MSG` and the run's answer.
+
+  It matches `API-23b-isolated-app-journey.log`.
+- Evidence only; no durable test code is involved.
+
+### Result
+
+- Result: `Pass`. No findings; the CRR-007 notes are resolved.
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+
+## Earlier Result — Round 1 (CRR-007)
+
 ## Review Meta
 
 - Review Round: 1
@@ -73,9 +115,9 @@ Non-blocking notes for the API/E2E owner, at their discretion. None affects requ
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`
-- Unresolved finding IDs: none
+- Result: `Pass` (round 2, CRR-008; round 1 CRR-007 also Pass)
+- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (through `a777af6b1d`)
+- Unresolved finding IDs: none (the CRR-007 notes are resolved)
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
 - Notes:
   - Classification `Large` / `High`.
