@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: **Approved** (SR-010; SR-007 basis plus the user's SR-010 changes UD-007/UD-008)
-- Current solution revision ID: SR-010
+- Current solution revision ID: SR-012
 - Package identifier: `runtime-lifecycle-review` (continues predecessor `runtime-lifecycle-usability`)
 - Request / ticket: Project Task "Runtime lifecycle usability … the Solution Designer of a NEW team reviews the existing design independently, then continues"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) on the user's behalf
@@ -174,3 +174,5 @@ Findings that add behavior, policy or a new contract are Requirement Gaps for th
 
 ## UI note (SR-010)
 The approved UI/UX spec (a74ecd4) stays normative with two user-directed differences recorded here: (1) the Not installed row adds the line "After installing, restart AutoByteus." under "Install instructions" (same grey note style as "Couldn't reach the update source…"; zh-CN: 安装后请重启 AutoByteus。); (2) Antigravity uses the command-line state (VIS-013 treatment) instead of the terminal journey UXJ-009 — VIS-010/011/012/021/023 no longer apply.
+
+(3) Added SR-012 (Solution Designer decision, CR-003, user informed): the table/stacked switch follows the width of the runtime list itself (table when the list is at least ~58 rem wide, stacked otherwise), not the 640 px window width. Reason: the spec also requires no horizontal overflow, and beside the Settings menu the five-column table does not fit until the window is about 1250 px wide (API/E2E measurement ARP-02: the table starts at a 1252 px window, list 58.1 rem); at 739 px the literal rule overlapped the columns (code-review evidence IMP-10a), the switch shows the approved stacked layout instead (IMP-10b). The spec's reference sizes are unchanged: table at 1440 and 1280 px, stacked at 390 px. Windows roughly 640–1250 px wide now show the stacked layout.

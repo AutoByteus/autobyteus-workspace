@@ -4,6 +4,7 @@
 
 | Revision ID | Phase | Trigger | Finding IDs | Prior Status | Current Status | Affected IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-012 | Mixed | Code review CRR-001 CR-003 (responsive switch) + Claude rule correction | CR-003 | Approved | Approved (UI note addition, Solution Designer decision) | REQ-001, UI note | No code change; design-spec Claude line corrected |
 | SR-011 | Design | Implementation Design Impact: Application agents not counted | — | Architecture Design Complete (ARCH-REV-002 Pass) | Architecture Design Complete (Large/High) | REQ-003, AC-004 | Count via hostManagement.activeAgentRuns |
 | SR-010 | Mixed | User decisions UD-007 (lookup unchanged + restart hint), UD-008 (no Antigravity sign-in) | AR-001…007 | Design revised, delta pending | Approved; Architecture Design Complete (Large/High) | REQ-004, REQ-006, AC-005, AC-008, SCN-004, REQ-009, DEC-008 | Re-review requested |
 | SR-009 | Mixed | ARCH-REV-001 Fail (AR-001…AR-007) | AR-001…007 | Architecture Design Complete | Design revised; requirement delta Ready for Approval | REQ-009, DEC-008 | Waiting for the user on AR-003 |
@@ -124,3 +125,12 @@
 ### Receipt — ARCH-REV-003 Pass (informational)
 
 - `design-review-report.md` "SR-011 Delta Review": **Pass** (Large/High). The reviewer delivered to the implementation engineer; no duplicate forwarding. AR-008 (non-blocking) applied as a factual file-mapping addition: `application-execution-scope-kernel-builder.ts` exposes a narrow active-run reader.
+
+### SR-012 — Responsive switch decision (CR-003) and Claude rule correction
+
+- Trigger: code reviewer (run code_reviewer_064191c97ef649089bdbc6f42050e984), CRR-001 CR-003 Requirement Gap: the approved spec's "table from 640 px" and "no horizontal overflow" cannot both hold beside the Settings menu; the implementation switches on the list's own width.
+- Decision (Solution Designer, a gap in the approved design, user informed): record option 1 in requirements "UI note (SR-010)" item (3); no code change. Evidence IMP-10a/b.
+- Correction (evidence-only): design-spec Claude sign-in rule reads the JSON whatever the exit code (2.1.302 exits 1 when signed out).
+- Intended behavior: visible layout between ~640 and ~1100 px windows changes to the approved stacked layout; recorded as a Solution Designer decision with the user informed.
+- SR-012 addendum (factual correction, code reviewer note): design-spec Claude rule keeps today's plain-text fallback (exit 0 + "logged in" → signedIn), matching the code and ARCH-REV-003.
+- SR-012 addendum (factual correction from API/E2E ARP-02): UI note (3) window range corrected to roughly 640–1250 px; the rule (list width ~58 rem) is unchanged.

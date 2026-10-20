@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Fail | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (targeted delta) / IR-002, SR-012 | Fail | Pass | CR-001, CR-002, CR-003 (all resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 Pass | Pass (CRR-002) | Pass | None (FU-007 follow-up) |
 
 ## Revision Entries
 
@@ -64,3 +65,28 @@ None.
 - Material score or classification changes: overall 9.0 → 9.4; all categories ≥ 9.0; Large/High confirmed
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational to `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: `codex login` browser opening and Grok signed-in output unverified until delivery; AR-008 live Application team count left to API/E2E.
+
+### CRR-003 — Proportional test-code review after API-REV-001
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review) — six durable test paths added in `76570a40e4` plus the web `package.json` probe script
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-10, API-11, API-20)
+- Relevant solution revision IDs: SR-012
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002, implementation review)
+- Current authoritative result: Pass
+- What changed in the review result and why: tests are coherent, requirement-aligned, isolated and reuse one fake CLI and harness; the fakes match the real signed-out answers including Claude's exit 1. One repository-wide probe pattern (deleting an existing output folder) recorded as FU-007 rather than a finding.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (first test review; implementation findings CR-001…CR-003 were resolved in CRR-002).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Large/High carried
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: user-only delivery checks (real desktop, one real update, real signed-in outputs incl. `grok models`, browser opening for `codex login` / `grok login --oauth`, a real remote node window).

@@ -216,7 +216,7 @@ type SignInReading =
 ```
 
 - Codex: `account != null` → signedIn; else `requiresOpenaiAuth === false` → notRequired; else signedOut ("no logged-in account."). Errors → unknown.
-- Claude: exit 0 and `loggedIn === true` → signedIn; exit 0, `loggedIn` false → signedOut; otherwise unknown with today's `describeFailure` text.
+- Claude: read the `auth status --json` JSON whatever the exit code (Claude 2.1.302 exits 1 when signed out — code-review probe, CR-001): `loggedIn === true` → signedIn; `loggedIn === false` → signedOut; no parsable JSON → today's fallback kept (preserves application readiness, ARCH-REV-003): exit 0 with plain text matching "logged in" → signedIn, otherwise unknown with today's `describeFailure` text.
 - Grok: output contains "You are not authenticated." → signedOut; other exit 0 → signedIn; failure → unknown.
 - Antigravity: model listing succeeds → signedIn; `AGY_SIGN_IN_REQUIRED` → signedOut; other failure → unknown.
 

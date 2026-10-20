@@ -79,3 +79,5 @@ Pass of SR-010 recorded; reviewer delivered to the implementation engineer (run 
 - Classification: Large/High unchanged. Route: Large/High rule → architecture reviewer for a focused review of the delta; the implementation engineer is told the decision and holds only that wiring until the review passes.
 - Routing: get_handoff_rules → Large/High rule → /software_engineering_team/architecture_reviewer (DELIVERED, run architecture_reviewer_7ebca9c9153f477cb5a5c6cd16d04a85). Decision answer sent to the asking implementation engineer (DELIVERED, run implementation_engineer_40c3051b92cb4a71afadf8349f6cf4f5).
 - ARCH-REV-003 Pass of SR-011 recorded (informational; no rule matches, no message sent). AR-008 file-mapping note applied.
+- SR-012: CR-003 decided (option 1, UI note (3)); Claude rule line corrected. Reply sent to the code reviewer.
+- SR-012 final; UI note (3) range corrected to ~640–1250 px (ARP-02). Delivery engineer asked to include the ticket documents in its checkpoint commit.
