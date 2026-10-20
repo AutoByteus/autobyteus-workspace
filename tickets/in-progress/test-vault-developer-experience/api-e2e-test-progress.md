@@ -52,3 +52,11 @@
 | 10-20 06:37 | AE-09 | Completed | Pass | fresh build; same outcomes as round 1; evidence AE-09-* |
 | 10-20 06:37 | AE-10 | Completed | Pass | 0 real / 0 synthetic / 0 env matches (scanner script excluded; it lists the fake values by design) |
 | 10-20 06:39 | AE-11..AE-14 | Completed | Not Tested | round 2: still Blocked (no ~/.autobyteus-test/vault); result Blocked, API-REV-002 |
+| 10-20 06:51 | AE-18 | Completed | Pass | standing vault ~/.autobyteus-test/vault from user-named source; 9 secrets; setup output: 0 real values |
+| 10-20 06:51 | AE-11 | Started | | deepseek-llm live + setup isolation test, agent shell with inherited keys |
+| 10-20 06:51 | AE-11 | Completed | Pass | 7 passed (6 DeepSeek live); hash unchanged |
+| 10-20 06:51 | AE-12 | Started | | plain node probe live |
+| 10-20 06:52 | AE-12 | Completed | Pass | real completion (length 2), no credential env, hash unchanged |
+| 10-20 06:52 | AE-13 | Started | | test:e2e:real preflight + --scenarios=deepseek.llm with the standing vault |
+| 10-20 06:53 | AE-13 | Completed | Pass | preflight exit 0; deepseek.llm executed, exit 0; hash unchanged |
+| 10-20 06:54 | — | Completed | Pass | API-REV-003: AE-18, AE-11..AE-13 pass on the standing vault; AE-14 not requested; vault kept |

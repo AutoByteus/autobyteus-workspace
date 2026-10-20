@@ -3,14 +3,14 @@
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md` (round 2: `## Round 2 Delta`)
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003` (live completion of round 2)
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2. code_reviewer CRR-003 Pass on the cumulative package (IR-001 + IR-002 SR-009/SR-010 + IR-003 CR-001), head `a525ca02ac`. This lifts the 2026-10-20 hold.
+- Round and trigger: round 2, completed live as API-REV-003. On 2026-10-20 the user named the source file for the standing vault ("here is the api keys file you can use to setup for once /Users/normy/.autobyteus/server-data/.env"). The agent ran `pnpm test-vault setup` with it (AE-18), then the live cases AE-11..AE-13 on the same head `a525ca02ac`. Before that: code_reviewer CRR-003 Pass on the cumulative package (IR-001 + IR-002 SR-009/SR-010 + IR-003 CR-001), head `a525ca02ac`. This lifts the 2026-10-20 hold.
 - Prior round reviewed: round 1 (API-REV-001, `Blocked`, 87%; report and evidence in commit `17d0d5c0b5`).
 - Deviations from the investigation's plan, and why:
   - **AE-06 run 3 was rerun.** The first attempt exited 127 because of an argument-order bug in my wrapper (`env` read `-u` after an assignment as a command). The bad attempt and the rerun are both in the log.
   - **AE-10 excludes the scanner's own source** (`AE-10-canary-scan-script.py.txt`). It lists the fake values it searches for by design.
-  - **AE-11..AE-14 not run.** The user's standing test vault still does not exist (checked 2026-10-20, 06:4x).
+  - **AE-11..AE-13 ran after the user provided the source (AE-18).** AE-14 (costlier collaborators suite, AC-007 live) was not run: AC-007 leaves the live run to the user's discretion, and the user has not asked for it.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/tickets/in-progress/test-vault-developer-experience/evidence/`. `AE-*` files are this round's (each round-2 log is headed `ROUND 2`; round-1 contents are in `17d0d5c0b5`). `IMP-*` files belong to the implementation handoff.
 
 ## Routing Classification
@@ -49,28 +49,30 @@
 | AE-08b | AC-006 (F-08 part), REQ-009 | runner single-scenario | `pnpm test:e2e:real -- --scenarios=deepseek.llm` with `<v-full>` (synthetic key → 401) | ENV-1 | Pass (expected failure) | `AE-08b-real-e2e-single-scenario-fake-key.log` | `× executes deepseek.llm …`, `LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.llm`, `↓ … real-e2e-compaction-quality.e2e.test.ts (0 test)`, `exit=1` | Exit 0 with a real key remains for AE-13 |
 | AE-09 | AC-010, AC-018 (user side), REQ-012, REQ-016, REQ-007, QR-005 | Electron forwarding → embedded server → Settings UI | Fresh `isolated-app start --build` with `<v-full>`; log; GraphQL; Settings → DeepSeek → Save Key; GraphQL save; `restart`; `stop`; hashes; missing-vault start; no-selector start | ENV-3 | Pass | `AE-09-isolated-instance-journey.log`, `AE-09-settings-deepseek-configured.png`, `AE-09-settings-save-refused-toast.png` | `Secret vault: test vault /private/tmp/tv-r2/v-full (read-only)` (×2). Configured `['ANTHROPIC', 'DEEPSEEK', 'LMSTUDIO', 'OPENAI']`. Toast `Failed to save API key for DeepSeek` + console `SECRET_VAULT_READ_ONLY`. GraphQL `{"message":"SECRET_VAULT_READ_ONLY"…}`. Hashes identical. Missing vault: `APP_EXITED_BEFORE_READY` + `TEST_VAULT_NOT_FOUND: … run pnpm test-vault setup`. No selector: `Secret vault: application database`, configured `[]`. | AC-018 from the user's side: the embedded server (which disables the env default) still serves the vault through its own resolvers |
 | AE-10 | AC-011, QR-001 | all round-2 outputs | `python3 -I canary_scan.py` over 43 files incl. full E2E/suite logs and instance logs | ENV-1 | Pass | `AE-10-canary-scan.log`, `AE-10-canary-scan-script.py.txt` | `real key value matches: 0`; `synthetic vault canary matches: 0`; `env canary matches: 0` | Scanner source excluded (lists the fake values by design) |
-| AE-11 | AC-005, REQ-008 | autobyteus-ts live → DeepSeek | `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts tests/unit/test-setup-credential-isolation.test.ts` | — | Not Tested | — | — | Blocked: no standing test vault (`~/.autobyteus-test/vault` absent on 2026-10-20). DEC-003. |
-| AE-12 | AC-013 (live, plain script) | plain `node` → DeepSeek | `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node probe.mjs live` (source `AE-15-probe-source.mjs.txt`; one real completion) | — | Not Tested | — | — | Blocked, as AE-11 |
-| AE-13 | AC-006 (exit 0, live) | runner → DeepSeek | `… pnpm test:e2e:real:preflight`; `… pnpm test:e2e:real -- --scenarios=deepseek.llm`; hash before/after | — | Not Tested | — | — | Blocked, as AE-11 |
-| AE-14 | AC-007 (live, optional) | collaborators suite → DeepSeek | `… RUN_DEEPSEEK_E2E=1 ANTHROPIC_API_KEY=<canary> OPENAI_API_KEY=<canary> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch` | — | Not Tested | — | — | Blocked; at the user's discretion (cost) |
+| AE-18 (new) | AC-001 (real use), REQ-002, REQ-004 (named source read once) | `pnpm test-vault setup` root script | `env <real keys removed> -u AUTOBYTEUS_TEST_VAULT pnpm test-vault setup --source /Users/normy/.autobyteus/server-data/.env </dev/null` (source named by the user) | ENV-1 | Pass | `AE-18-standing-vault-setup.log` | `TEST_VAULT ~/.autobyteus-test/vault` (default location), `CONFIGURED 9`, `SETTING AUTOBYTEUS_TEST_VAULT=…/.autobyteus-test/vault`, `drwx------`/`-rw-------`, `STATE READY`; source still `-rw------- 3672 … Oct 14 13:33`; setup output `real key value matches: 0` | The standing vault for every live case; its SHA-256 is the baseline for the later hash checks |
+| AE-11 | AC-005, REQ-008, REQ-006 | autobyteus-ts live → DeepSeek | `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts tests/unit/test-setup-credential-isolation.test.ts`, in the agent shell carrying 13 inherited production `*_API_KEY` | ENV-1 | Pass | `AE-11-autobyteus-ts-deepseek-live.log` | `✓ tests/integration/llm/api/deepseek-llm.test.ts (6 tests)`; `✓ … test-setup-credential-isolation.test.ts`; `Tests  7 passed \| 1 skipped`; `exit=0`; vault hashes = AE-18 | The documented TESTING.md command verbatim. The isolation test shows no credential variable in the test process, so the key used is the vault's. |
+| AE-12 | AC-013 (live, plain script), REQ-014 | plain `node` → autobyteus-ts → DeepSeek | `cd /private/tmp/tv-r3/plain && env <all *_API_KEY removed> AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node probe.mjs live` (source `AE-15-probe-source.mjs.txt`; imports only autobyteus-ts) | ENV-4 | Pass | `AE-12-plain-node-script-live.log` | `credential env names visible to script: []`; `sqlite modules loaded before any key lookup: []`; `deepseek completion length: 2`; `result: PASS`; `exit=0`; vault hashes = AE-18 | One real completion; no resolver, setup or test-support |
+| AE-13 | AC-006, REQ-010, F-08, QR-005 | runner + built server + harness → DeepSeek | `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight`; `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm` (agent shell) | ENV-1 | Pass | `AE-13-real-e2e-deepseek-live.log` | `Vault: test vault …/.autobyteus-test/vault`; `"deepseek.llm","health":"READY","configured":["provider.deepseek.api-key"]`; `✓ executes deepseek.llm through its reviewed product boundary`; `↓ … real-e2e-compaction-quality.e2e.test.ts (0 test)`; both `exit=0`; `vault unchanged after AE-13` | No import anywhere |
+| AE-14 | AC-007 (live, optional) | collaborators suite → DeepSeek | `… RUN_DEEPSEEK_E2E=1 ANTHROPIC_API_KEY=<canary> OPENAI_API_KEY=<canary> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch` | — | Not Tested | — | — | Not requested: AC-007 leaves the live run to the user's discretion (costlier multi-step suite). Its automated part is proven by AE-05/AE-07. It can run on request with the standing vault. |
+| AE-10 (live round) | AC-011 | live-round outputs | `python3 -I canary_scan.py` over AE-18, AE-11, AE-12, AE-13 and the raw setup output | ENV-1 | Pass | `AE-10-canary-scan-live-round.log` | `files scanned: 5`; `real key value matches: 0` | The user's `.env` was not opened by the scan; the real values come from the agent shell, which holds the same provider keys |
 
 ## Acceptance-Criteria Proof
 
 | AC ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | IMP-24, IMP-05, AE-01 | Proven | — |
+| AC-001 | Yes | IMP-24, IMP-05, AE-01, AE-18 (real source, default location) | Proven | — |
 | AC-002 | No | IMP-09, IMP-24 | Proven | — |
 | AC-003 | Yes | IMP-24, AE-01 | Proven | — |
 | AC-004 | Yes | IMP-15/17 (per-OS policy), IMP-24, AE-15 run 3 (on the autobyteus-ts path) | Proven | — |
-| AC-005 | Yes | AE-04 (env clause, key identity; network stubbed); AE-11 pending | Not Proven | A real request with the vault key. Not user-only: the user provides the vault, then the agent runs AE-11. |
-| AC-006 | Yes | AE-08, AE-08b; AE-13 pending | Not Proven | exit 0 for a passing scenario needs a real key |
-| AC-007 | Yes | AE-05, AE-07, IMP-20; AE-14 pending | Automated part Proven; live run Not Proven | live run at the user's discretion |
+| AC-005 | Yes | AE-11 (live, shell with production keys), AE-04 (key identity) | Proven | — |
+| AC-006 | Yes | AE-13 (live: vault line, preflight, exit 0, hash), AE-08, AE-08b | Proven | — |
+| AC-007 | Yes | AE-05, AE-07, IMP-20 (automated: aliases ignored, keys from the vault) | Proven (automated part). The live run is optional per AC-007 and was not requested (AE-14). | The live run is at the user's discretion (AC-007). Available on request. |
 | AC-008 | Yes | AE-06, AE-07, AE-08b, IMP-27 | Proven | — |
 | AC-009 | Yes | AE-17, IMP-26, IMP-17 (graph) | Proven | — |
 | AC-010 | Yes | AE-09 | Proven | — |
-| AC-011 | Yes | AE-10, IMP-25 | Proven (recheck after live runs) | — |
+| AC-011 | Yes | AE-10 (both scans), IMP-25 | Proven | — |
 | AC-012 | No | code review (doc grep) | Proven by review | — |
-| AC-013 | Yes | AE-15 (plain node), AE-04 (Vitest), IMP-23, IMP-18; AE-12 pending | Not Proven (live completion) | as AC-005 |
+| AC-013 | Yes | AE-12 (live plain `node` script), AE-15, AE-04, AE-05 (server-side resolver), IMP-23, IMP-18 | Proven | — |
 | AC-014 | No | code review | Proven by review | — |
 | AC-015 | Yes | IMP-15; AE-09 step 10 | Proven | — |
 | AC-016 | Yes | IMP-20, AE-05, AE-09 | Proven | — |
@@ -81,29 +83,29 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 75% | 15 of 18 ACs proven (incl. AC-009 revised, AC-018 new); AC-007 automated part | AC-005, AC-006 (exit 0), AC-013 have no real provider success | AE-11..AE-13 with the user's vault |
-| Changed-boundary execution directness | 90% | 90% | Plain script on `dist` (AE-15), Vitest (AE-04), full suites both packages, runner, packaged Electron + UI | Provider HTTP stubbed/refused | Live cases |
-| Cross-boundary integration realism and mock gap | 75% | 75% | Only `fetch` to `api.deepseek.com` stubbed | No real provider has accepted a vault key | Live cases |
-| Environment, configuration, identity, and fixture fidelity | 90% | 90% | Agent shell (canaries; real keys for AC-009), clean-env E2E, vaults from the real setup, plain script resolving the package like a user | Not the default location with the user's real file; macOS only | Live cases on the user's vault |
+| Requirement and acceptance-criteria proof | 75% | 95% | All 18 ACs proven. AC-005/006/013 live on the user's vault (AE-11..AE-13). | AC-007 live run optional, not requested | AE-14 on request |
+| Changed-boundary execution directness | 90% | 95% | Real provider calls through every changed path: Vitest (AE-11), plain script (AE-12), built server + runner (AE-13); plus AE-02..AE-09, AE-15, AE-17 | Gated server suites ran only up to the capability check (AE-07) | AE-14 |
+| Cross-boundary integration realism and mock gap | 75% | 95% | DeepSeek accepted the vault key on three surfaces; the stubs remain only in the key-identity probes | Other providers only shown configured, not called (cost; out of the ACs) | — |
+| Environment, configuration, identity, and fixture fidelity | 90% | 95% | The user's standing vault at the default location from the user-named source (AE-18); documented commands verbatim in the agent shell with inherited production keys | macOS only | — |
 | Failure, edge-case, lifecycle, and recovery evidence | 95% | 95% | Missing/forbidden vault on the script path, missing key, vault failure ≠ skip, strict on both packages, restart, read-only save, hashes, AC-018 control | Windows/Linux injected only (accepted) | — |
 | User-surface, browser, and desktop-shell confidence | 95% | 95% | AE-09 on a fresh build | The toast is generic (UI unchanged by design) | — |
-| Durable regression coverage quality and relevance | 90% | 90% | IR-001/IR-002 durable tests (resolution order, graph, `readSecretEntry`, environment-key-source E2E with negative control) | Key identity with env aliases present is proven only by temporary probes | — |
+| Durable regression coverage quality and relevance | 90% | 95% | IR-001/IR-002 durable tests (resolution order, graph, `readSecretEntry`, environment-key-source E2E with negative control); the repaired durable DeepSeek live file and the real-E2E scenario executed for real (AE-11, AE-13) | Key identity with env aliases present is proven only by temporary probes (the durable isolation test covers the stripping) | — |
 
 - Overall post-repository confidence: 87%
-- Overall final confidence: 87% (the live part is blocked; the score repeats)
+- Overall final confidence: 95%
 - Calculation method: simple average of the seven categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No`. AC-005, AC-006 (exit 0) and AC-013 need a real provider call with the user's vault.
-- Any final applicable category below `90%`: `Yes`. Requirement proof 75%; integration realism 75%.
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: no real-provider success with a test-vault key yet.
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`. AC-007's optional live run is left to the user by the AC itself.
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: AC-007 live run not requested; Windows/Linux via injected policy only; R-D (FU-05).
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Blocked` (live part). The desktop, full-E2E and plain-script parts were `Required` and ran: AE-03, AE-09, AE-15, AE-17.
+- Decision: `Required`, and executed. The live part, blocked earlier this round, ran after the user named the source (AE-18, AE-11..AE-13). The desktop, full-E2E and plain-script parts ran earlier (AE-03, AE-09, AE-15, AE-17).
 - Execution mode: Live API
 - Confidence gap it addresses and expected gain: direct proof of AC-005/006/013 (and AC-007 live). Expected to raise categories 1 and 3 to ≥95% and overall to ≥95%.
 - Browser validation needed: done in AE-09.
-- If `Blocked`:
+- Earlier `Blocked` state (resolved):
   - Missing dependency: the user's standing test vault, holding at least the DeepSeek key (`pnpm test-vault setup --source <owner-private file the user chooses>`).
   - Tried: synthetic vaults through the real setup; fake keys; network stub; refusal paths.
   - Not done: building a vault from environment keys or `~/.autobyteus/server-data/.env`. That is forbidden by DEC-003, REQ-004 and REQ-006.
@@ -159,20 +161,16 @@
 | AE-15 plain script and its `node_modules` link (`/private/tmp/tv-r2/plain`) | Yes | removed with the temp root; source in evidence | Done |
 | Vaults `v-full`, `v-nods`, synthetic source files, temp homes, full logs (`/private/tmp/tv-r2`) | Yes | `test-vault remove` (logged in AE-01) + `rm -rf` | Done |
 | Isolated instances `iso-63433-65b4`, `iso-64008-1d5e`; the failed missing-vault start | Yes | `isolated-app stop` (data roots removed, ports released); the failed start removed its own root and record | Done; none of mine listed |
+| Live round scratch (`/private/tmp/tv-r3`: plain script copy and `node_modules` link, setup output, hashes) | Yes | `rm -rf` | Done |
+| Standing test vault `~/.autobyteus-test/vault` (AE-18) | Created at the user's request | **kept on purpose**: it is the user's standing vault for future live testing (`pnpm test-vault remove` deletes it) | Kept |
 | Rebuilt `autobyteus-ts`/server `dist`, `autobyteus-web/electron-dist/` | Yes (build outputs) | left in place, untracked; reusable for the live cases | `git status`: no tracked changes |
 
 ## Latest Authoritative Result
 
-- Result: `Blocked`
-- Criteria not proven:
-  - AC-005 (live run).
-  - AC-006 (exit 0 and hash around a passing scenario).
-  - AC-013 (live completion from a plain script).
-  - AC-007 live run (optional).
-  - None of these is a user-only check. The user only provides the missing vault.
-- Preliminary classification and recommended owner: N/A (no failure found)
-- Next recipient: the user (Blocked → request), per the skill. No team handoff.
-- How work resumes:
-  1. The user runs `pnpm test-vault setup --source <absolute path to an owner-private secrets file with at least DEEPSEEK_API_KEY=…>` and checks it with `pnpm test-vault status`.
-  2. The agent runs AE-11, AE-12 (plain `node` script, live), AE-13, and AE-14 if the user approves its cost.
-  3. The agent reruns AE-10 over the new outputs, records API-REV-003, and on `Pass` hands off for proportional test-code review.
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check: None. AC-007's live run is optional and was not requested (AE-14); its automated part is proven.
+- Preliminary classification and recommended owner: N/A
+- Next recipient from `get_handoff_rules`: see the handoff message (proportional test-code review). No durable test code changed in this ticket's API/E2E rounds.
+- Notes:
+  - The standing test vault `~/.autobyteus-test/vault` now exists. It was created from the user-named source and is left in place for future live testing.
+  - Hashes were unchanged after AE-11, AE-12 and AE-13.

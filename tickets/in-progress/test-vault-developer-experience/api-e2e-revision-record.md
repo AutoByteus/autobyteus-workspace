@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer, `code-review-report.md` CRR-001, round 1 | SR-008, ARCH-REV-002, IR-001, CRR-001 | N/A | Blocked / 87% |
 | API-REV-002 | code_reviewer, `code-review-report.md` CRR-003, round 2 (hold lifted) | SR-009, SR-010, ARCH-REV-004, IR-002, IR-003, CRR-003 | Blocked / 87% | Blocked / 87% |
+| API-REV-003 | user provided the vault source (2026-10-20); live completion of round 2 | same as API-REV-002 | Blocked / 87% | Pass / 95% |
 
 ## Revision Entries
 
@@ -77,3 +78,39 @@ None. Round 1 found no failure; its live cases are still blocked on the same dep
   - Blocked: AC-005, AC-006 (exit 0), AC-013 live (now via a plain `node` script), and AC-007 live (optional).
   - Accepted residuals: R-D (FU-05); Windows/Linux via injected policy only; in the environment default, media clients resolve without the server's media restrictions (accepted in ARCH-REV-004).
   - Observation (unchanged): the Settings toast after a refused save is generic; the read-only code appears in the console and GraphQL.
+
+### API-REV-003 — Live cases on the user's standing test vault; Pass
+
+- Triggering role, report path, and round: the user, 2026-10-20. They named the source file for the one-time setup: "here is the api keys file you can use to setup for once /Users/normy/.autobyteus/server-data/.env". This completes round 2 on the same head `a525ca02ac`.
+- Triggering finding or case IDs: AE-11, AE-12, AE-13 (blocked in API-REV-001/002).
+- Related revision IDs: SR-009, SR-010, ARCH-REV-004, IR-003, CRR-003.
+- Why this revision was recorded: the missing dependency (the standing vault) was provided.
+- Coverage decisions or durable test paths changed: none.
+- Cases added, changed, removed, or rechecked:
+  - New AE-18: `pnpm test-vault setup --source <user-named file>` at the default `~/.autobyteus-test/vault`. 9 secrets; the source was read once and left unchanged; the output is value-free.
+  - AE-11 Pass: the documented autobyteus-ts DeepSeek live command, with 6 live tests and the isolation test, in a shell with production keys.
+  - AE-12 Pass: a plain `node` script, with only the variable set, got a real completion.
+  - AE-13 Pass: the real-E2E preflight and `--scenarios=deepseek.llm` exit 0.
+  - AE-10 live-round scan: 0 real values.
+  - AE-14 not requested (optional per AC-007).
+- Commands, environment, fixture, or broader-validation delta: the user's standing vault, used read-only. Hashes were unchanged after every live case. The vault is kept for future use.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| AE-11..AE-13 `Not Tested` (Blocked: no standing vault) | Blocked (missing dependency) | Resolved; the user provided the source | AE-18, AE-11, AE-12, AE-13 |
+
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md`: Round, Cases, AC proof, scorecard, decision, cleanup, result;
+  - `api-e2e-test-progress.md`;
+  - `evidence/AE-18`, `AE-11`, `AE-12`, `AE-13`, `AE-10-canary-scan-live-round`.
+- Prior result and confidence: `Blocked`, 87%.
+- Current result and confidence: `Pass`, 95%. All 18 ACs proven; no category below 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: proportional test-code review per the handoff rules. No durable test code changed.
+- Remaining risks, blocked evidence, or untested scope:
+  - AC-007's live run is optional and not requested.
+  - R-D (FU-05).
+  - Windows/Linux via injected policy only.
+  - The Settings toast is generic (observation).
