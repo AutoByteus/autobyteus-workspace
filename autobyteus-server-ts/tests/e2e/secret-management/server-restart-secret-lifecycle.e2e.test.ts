@@ -2,8 +2,6 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from '../../../src/built-in-agents/built-in-agent-registry.js';
-import { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from '../../../src/skill-improvement/domain/settings.js';
 import {
   executeGraphql,
   materializeTestRuntime,
@@ -62,22 +60,6 @@ const lmStudioStatus = async (serverUrl: string) => {
   };
 };
 
-const retrospectiveSkillImproverRuntimeDefault = async (serverUrl: string) => {
-  const settings = await executeGraphql<{
-    getServerSettings: Array<{ key: string; value: string }>;
-  }>(serverUrl, `
-    query RuntimeDefault {
-      getServerSettings {
-        key
-        value
-      }
-    }
-  `);
-  return settings.getServerSettings.find(
-    (entry) => entry.key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-  );
-};
-
 afterEach(async () => {
   for (const server of runningServers) {
     if (server.child.exitCode === null) server.child.kill('SIGKILL');
@@ -89,7 +71,7 @@ afterEach(async () => {
 });
 
 describe('server restart one-database secret-vault lifecycle', () => {
-  it('materializes the immutable template, migrates, initializes one adjacent key, and reopens value-free', async () => {
+  it('materializes the immutable template, migrates, and reopens value-free', async () => {
     const suffix = `${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const runtimeRoot = path.join(testRuntimeRoot, `restart-${suffix}`);
     const database = resolveTestDatabaseLocation(`file:./db/restart-${suffix}.db`);
@@ -104,11 +86,6 @@ describe('server restart one-database secret-vault lifecycle', () => {
     const runtimeEnvironmentBeforeFirstStart = fs.readFileSync(
       materialized.runtimeEnvironmentPath,
     );
-    expect(
-      runtimeEnvironmentBeforeFirstStart
-        .toString('utf8')
-        .includes(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
-    ).toBe(false);
     const syntheticCanary = 'synthetic-restart-secret-canary';
 
     const firstServer = await startBuiltTestServer({
@@ -117,10 +94,6 @@ describe('server restart one-database secret-vault lifecycle', () => {
       port,
     });
     runningServers.add(firstServer);
-    expect(await retrospectiveSkillImproverRuntimeDefault(firstServer.serverUrl)).toEqual({
-      key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-    });
     const missing = await lmStudioStatus(firstServer.serverUrl);
     expect(missing).toEqual({
       vaultHealth: 'READY',
@@ -148,13 +121,8 @@ describe('server restart one-database secret-vault lifecycle', () => {
     const runtimeEnvironmentAfterFirstStart = fs.readFileSync(
       materialized.runtimeEnvironmentPath,
     );
-    expect(runtimeEnvironmentAfterFirstStart).not.toEqual(runtimeEnvironmentBeforeFirstStart);
-    expect(
-      runtimeEnvironmentAfterFirstStart
-        .toString('utf8')
-        .split(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)
-        .length - 1,
-    ).toBe(1);
+    // Saving a provider key goes to the secret vault, never to the runtime environment file.
+    expect(runtimeEnvironmentAfterFirstStart).toEqual(runtimeEnvironmentBeforeFirstStart);
 
     expect(fs.existsSync(database.databasePath)).toBe(true);
     expect(fs.existsSync(database.rootKeyPath)).toBe(true);
@@ -174,21 +142,12 @@ describe('server restart one-database secret-vault lifecycle', () => {
     const runtimeEnvironmentAtSecondListen = fs.readFileSync(
       materialized.runtimeEnvironmentPath,
     );
-    expect(
-      runtimeEnvironmentAtSecondListen
-        .toString('utf8')
-        .split(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)
-        .length - 1,
-    ).toBe(1);
+    expect(runtimeEnvironmentAtSecondListen).toEqual(runtimeEnvironmentBeforeFirstStart);
     const reopened = await lmStudioStatus(secondServer.serverUrl);
     expect(reopened).toEqual({
       vaultHealth: 'READY',
       storageState: 'CONFIGURED',
       instructionCode: null,
-    });
-    expect(await retrospectiveSkillImproverRuntimeDefault(secondServer.serverUrl)).toEqual({
-      key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     });
     expect(JSON.stringify(reopened)).not.toContain(syntheticCanary);
     expect(digest(database.databasePath)).toBe(firstDatabaseHash);

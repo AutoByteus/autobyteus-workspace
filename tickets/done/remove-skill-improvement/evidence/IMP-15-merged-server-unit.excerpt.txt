@@ -1,0 +1,11 @@
+# Check: IMP-15
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 5cfccd66c7 (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:32:52Z
+
+# Excerpt of IMP-15-merged-server-unit.log: summary and failure lines. The full log (1195974 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/tickets/in-progress/remove-skill-improvement/evidence/IMP-15-merged-server-unit.log until the worktree is removed.
+
+      Tests  6314 passed | 7 skipped (6321)
+ Test Files  766 passed | 4 skipped (770)
+# Exit code: 0

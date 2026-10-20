@@ -1,0 +1,42 @@
+# Case: API-13 summary
+# Batch: /tmp/ab205e2e/api13.sh (sequential), then the warm rerun and the direct node run of task-agent-peer-sidebar
+# Date: 2026-10-20
+
+=== agent-org-draft-retention 2026-10-20T15:29:18Z
+exit=1 agent-org-draft-retention
+=== agent-org-task-team-disclosure 2026-10-20T15:31:03Z
+exit=1 agent-org-task-team-disclosure
+=== composer-mention-discoverability 2026-10-20T15:32:41Z
+exit=0 composer-mention-discoverability
+=== fresh-run-auto-approval 2026-10-20T15:33:09Z
+exit=1 fresh-run-auto-approval
+=== standalone-agent-error-stop 2026-10-20T15:34:11Z
+exit=1 standalone-agent-error-stop
+=== task-agent-monitor-visibility 2026-10-20T15:34:23Z
+exit=1 task-agent-monitor-visibility
+=== task-agent-peer-sidebar 2026-10-20T15:36:05Z
+exit=254 task-agent-peer-sidebar
+=== workspaces-sidebar-dock 2026-10-20T15:36:05Z
+exit=0 workspaces-sidebar-dock
+rerun agent-org-draft-retention (warm): exit=1
+node task-agent-peer-sidebar-probe.mjs: exit=1
+
+# GraphQL operations recorded by the probes (no Skill Improvement operation):
+  37 "operationName": "ListWorkspaceRunHistory"
+  37 "operationName": "ListCollaborationRootHistory"
+  32 "operationName": "GetRuntimeAvailability"
+  14 "operationName": "GetTeamMemberRunProjection"
+  13 "operationName": "GetAgentTeamDefinitions"
+  13 "operationName": "GetAgentDefinitions"
+  12 "operationName": "GetAllWorkspaces"
+  11 "operationName": "GetAgentOrgDefinitions"
+  10 "operationName": "TerminateAgentRun"
+   9 "operationName": "GetProviderModelCatalogSnapshots"
+   8 "operationName": "GetRuntimeAvailabilityKinds"
+   7 "operationName": "GetSkills"
+   4 "operationName": "GetApplicationsCapability"
+   2 "operationName": "RuntimeCurrentModelDescriptors"
+   2 "operationName": "PrepareAgentRun"
+   2 "operationName": "CreateAgentTeamRun"
+   1 "operationName": "CreateWorkspace"
+# grep -i skillImprovement over all API-13 outputs: 0 files

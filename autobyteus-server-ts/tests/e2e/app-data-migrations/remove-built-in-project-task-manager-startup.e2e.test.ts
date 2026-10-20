@@ -20,7 +20,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 const MIGRATION_ID = "20261006_remove_built_in_project_task_manager";
 const RETIRED_ID = "autobyteus-project-task-manager";
 const REPOSITORY_ID = "project-task-manager";
-const BUILT_IN_IDS = ["autobyteus-daily-assistant", "autobyteus-retrospective-skill-improver"];
+const BUILT_IN_IDS = ["autobyteus-daily-assistant"];
 const FAILED_MESSAGE = "The retired built-in Project Task Manager folder could not be removed; the cleanup retries on the next start.";
 const installedCopyFixture = fileURLToPath(new URL("../../fixtures/app-data-migrations/retired-built-in-project-task-manager", import.meta.url));
 

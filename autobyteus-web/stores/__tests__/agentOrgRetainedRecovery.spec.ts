@@ -79,7 +79,7 @@ describe('retained Org disconnected recovery through real service/store/hydratio
     retained.contextFilePaths = [{ locator: '/draft/note.txt' } as never]
     if (address.startsWith('/team/')) {
       wrapper = mount(defineComponent({ setup: () => () => h(TeamWorkspaceSurface, { target: target.value as any }) }), {
-        global: { stubs: { AgentEventMonitor: true, SkillImprovementComposerCta: true, WorkspaceHeaderActions: true } },
+        global: { stubs: { AgentEventMonitor: true, WorkspaceHeaderActions: true } },
       })
       expect(wrapper.text()).toContain('Idle')
     }

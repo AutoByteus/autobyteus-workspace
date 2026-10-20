@@ -1,0 +1,602 @@
+{
+  "startedAt": "2026-10-20T15:29:19.150Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/fixtures/agent-org-draft-retention.page.vue",
+  "scenarios": {},
+  "uploadRequests": [],
+  "otherRequests": [
+    {
+      "method": "GET",
+      "url": "/ws/agent-package-definitions",
+      "receivedAt": "2026-10-20T15:29:36.950Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-10-20T15:29:37.259Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-10-20T15:29:37.260Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:29:37.260Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:29:37.261Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-10-20T15:29:37.263Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-10-20T15:29:37.264Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentOrgDefinitions",
+      "receivedAt": "2026-10-20T15:29:37.264Z"
+    },
+    {
+      "method": "GET",
+      "url": "/ws/agent-package-definitions",
+      "receivedAt": "2026-10-20T15:29:40.259Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-10-20T15:29:40.482Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-10-20T15:29:40.483Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:29:40.484Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:29:40.484Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-10-20T15:29:40.486Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-10-20T15:29:40.487Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentOrgDefinitions",
+      "receivedAt": "2026-10-20T15:29:40.488Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:29:45.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:29:45.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:29:50.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:29:50.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:29:55.501Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:29:55.501Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:00.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:00.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:05.502Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:05.503Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:10.496Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:10.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:15.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:15.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:20.496Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:20.496Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:25.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:25.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:30.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:30.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:35.500Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:35.500Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:40.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:40.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:45.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:45.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:50.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:50.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:30:55.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:30:55.497Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "receivedAt": "2026-10-20T15:31:00.498Z"
+    },
+    {
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "ListCollaborationRootHistory",
+      "receivedAt": "2026-10-20T15:31:00.498Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/components/conversation/segments/renderer/MermaidDiagram.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/chunk-US53JEWZ.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/markdown-it.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/chunk-V226WHAP.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/chunk-LQBIKZ6L.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/services/highlightService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/components/conversation/segments/renderer/MermaidDiagramViewer.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/chunk-RZ55PUNP.js?v=d6fa4059 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65283/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 404"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid vnode type when creating vnode: undefined. \n  at <ApiE2eAgentOrgDraftRetention onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > \n  at <RouteProvider key=\"/api-e2e-agent-org-draft-retention\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-agent-org-draft-retention?probeSurface=or…memberAddress=/director&agentRunId=org-a-director, hash: , query: Object, name: api-e2e-agent-org-draft-retention, path: /api-e2e-agent-org-draft-retention}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< undefined > > \n  at <AsyncComponentWrapper ref=Ref< undefined > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/builds/meta/dev.json net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65284/_nuxt/node_modules/.cache/vite/client/deps/vue-pdf-embed.js?v=fe5c153c net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65283/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 404"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid vnode type when creating vnode: undefined. \n  at <ApiE2eAgentOrgDraftRetention onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > \n  at <RouteProvider key=\"/api-e2e-agent-org-draft-retention\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-agent-org-draft-retention?probeSurface=or…memberAddress=/director&agentRunId=org-a-director, hash: , query: Object, name: api-e2e-agent-org-draft-retention, path: /api-e2e-agent-org-draft-retention}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< undefined > > \n  at <AsyncComponentWrapper ref=Ref< undefined > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 97371,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "restServer": "closed",
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run Agent Org draft-retention browser probe",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-org-draft-retention-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:65284/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\" navigation to finish...\n      - navigated to \"http://127.0.0.1:65284/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\"\n",
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"agent-org-draft-retention-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:65284/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\" navigation to finish...\n      - navigated to \"http://127.0.0.1:65284/api-e2e-agent-org-draft-retention?probeSurface=org&rootSubjectKind=agent_org&mode=history&orgRunId=org-a&memberAddress=%2Fdirector&agentRunId=org-a-director\"\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web/tests/e2e/agent-org-draft-retention-probe.mjs:303:71"
+    }
+  ],
+  "restBaseUrl": "http://127.0.0.1:65283",
+  "port": 65284,
+  "baseUrl": "http://127.0.0.1:65284",
+  "result": "Fail",
+  "finishedAt": "2026-10-20T15:31:03.799Z",
+  "artifacts": {
+    "evidencePath": "/tmp/ab205e2e/api13-agent-org-draft-retention/evidence.json",
+    "nuxtLogPath": "/tmp/ab205e2e/api13-agent-org-draft-retention/nuxt.log",
+    "orgScreenshotPath": "/tmp/ab205e2e/api13-agent-org-draft-retention/org-cross-root-retention.png",
+    "parityScreenshotPath": "/tmp/ab205e2e/api13-agent-org-draft-retention/agent-team-parity.png",
+    "narrowScreenshotPath": "/tmp/ab205e2e/api13-agent-org-draft-retention/org-return-narrow.png"
+  }
+}

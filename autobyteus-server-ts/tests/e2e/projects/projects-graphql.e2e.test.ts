@@ -47,7 +47,7 @@ const resetProjectsSingletons = () => {
   resetProjectTaskServiceForTests();
 };
 
-// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_SKILL_IMPROVEMENT=true):
+// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_APPLICATIONS=true):
 // process.env overrides settings, which would make capability assertions depend on the machine.
 const stashFeatureFlagEnv = (): Record<string, string> => {
   const stashed: Record<string, string> = {};
@@ -252,7 +252,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   it("API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)", async () => {
     // A node upgraded from a release that stored the retired flag as false.
     appConfigProvider.config.set("ENABLE_PROJECTS", "false");
-    appConfigProvider.config.set("ENABLE_SKILL_IMPROVEMENT", "false");
+    appConfigProvider.config.set("ENABLE_APPLICATIONS", "false");
 
     const removed = await exec(`query { projectsCapability { enabled } }`);
     expect(removed.errors?.[0]?.message).toMatch(/Cannot query field "projectsCapability"/);
@@ -264,11 +264,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect((await listProjects()).map((project) => project.projectId)).toEqual([created.projectId]);
     expect(appConfigProvider.config.get("ENABLE_PROJECTS")).toBe("false");
 
-    // Other capabilities keep their own settings.
-    const others = await execOk<{
-      skillImprovementCapability: { enabled: boolean; settingKey: string; source: string };
-    }>(`query { skillImprovementCapability { enabled settingKey source } }`);
-    expect(others.skillImprovementCapability).toMatchObject({ enabled: false, settingKey: "ENABLE_SKILL_IMPROVEMENT", source: "SERVER_SETTING" });
+    // Other capabilities keep their own stored settings.
+    expect(appConfigProvider.config.get("ENABLE_APPLICATIONS")).toBe("false");
   });
 
   it("API-002: creates, lists, edits and rejects invalid or duplicate Project names", async () => {

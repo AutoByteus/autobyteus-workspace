@@ -196,28 +196,6 @@ tab reference entries. Their `reference_files` are visible to the target runtime
 through the generated message block and metadata, but Team Communication
 reference persistence remains exclusive to accepted team-route messages.
 
-## Optional Direct-Message Grants
-
-`DirectAgentRunMessageGrantRegistry` is an optional policy overlay for
-server-created helper runs. A grant can narrow:
-
-- allowed target run ids;
-- allowed `message_type` values;
-- allowed `reference_files` paths or roots;
-- maximum accepted deliveries; and
-- expiry time.
-
-Grants do not discover, resolve, restore, or revive targets. Target liveness is
-still decided only by `AgentRunManager.getActiveRun(...)`, and rejected grant
-checks return typed delivery failures before the target receives input.
-
-The Retrospective Skill Improver uses this seam to send at most one
-`skill_update` message to the active target run after meaningful durable
-skill package file changes. That message should explain what changed, why it
-matters, and how the target should use or reload the updated guidance, while its
-dynamic `reference_files` are absolute paths limited to changed or directly
-relevant surviving files inside editable skill roots.
-
 ## Runtime Projection
 
 Runtime adapters expose one logical `send_message_to` capability through their

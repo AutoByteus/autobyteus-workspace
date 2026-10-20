@@ -1,0 +1,10 @@
+# Case: API-13 round 2 (task-agent-monitor-visibility)
+# Commit: 2147206408 (merged web source)
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:task-agent-monitor-visibility /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/task-agent-monitor-visibility-probe.mjs --output-dir /tmp/ab205e2e/r2-api13-task-agent-monitor-visibility
+
+Task Agent monitor visibility browser probe failed. See /tmp/ab205e2e/r2-api13-task-agent-monitor-visibility/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

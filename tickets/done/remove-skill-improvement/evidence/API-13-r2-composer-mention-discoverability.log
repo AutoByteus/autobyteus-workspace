@@ -1,0 +1,12 @@
+# Case: API-13 round 2 (composer-mention-discoverability)
+# Commit: 2147206408 (merged web source)
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:composer-mention-discoverability /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/composer-mention-discoverability-probe.mjs --output-dir /tmp/ab205e2e/r2-api13-composer-mention-discoverability
+
+B01 Pass: capability gating and native exact copy across supported scope shapes
+B02 Pass: chosen-only selection, caret, native deletion/undo/whole-token/name-edit and paste
+B03 Pass: keyboard dismissal/no-match, slash skills and completed upload held rejection/acceptance
+B04 Pass: layout at 1512/1024/300 panel, scroll/resize, locale, forced colors and context isolation

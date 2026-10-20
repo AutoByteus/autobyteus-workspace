@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.8-beta.3",
+  "version": "1.5.8-beta.4",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -89,6 +89,7 @@
     "test:e2e:settings-saved-model-refresh": "node tests/e2e/delegated-launch-defaults-probe.mjs --desktop --cases SSR-001,SSR-002,SSR-003,SSR-004,DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
     "test:e2e:delegated-copy-model-change": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
     "test:e2e:delegated-copy-own-file": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCR-001,DCR-002,DCR-003",
+    "test:e2e:skill-improvement-removal": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases SIR-001,SIR-002",
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
     "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",

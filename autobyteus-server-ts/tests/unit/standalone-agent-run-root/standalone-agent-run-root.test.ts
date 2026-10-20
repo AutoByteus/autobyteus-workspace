@@ -172,8 +172,6 @@ describe("Agent root of a standalone run", () => {
     await f.manager.stopRoot(HOST);
     expect(await context!.tasks.delegateToNewCopy(context!.identity, { recipient_address: "/x", description: "d" }))
       .toEqual({ delegated: false, message: "This work is stopping or has stopped, so the message or delegation was not sent." });
-    f.setMetadata({ launchPurpose: "server_helper" });
-    expect(await f.manager.resolveRoot(HOST)).toBeNull();
     f.setMetadata({
       applicationExecutionContext: { applicationId: "app", bindingId: "b", producer: { agentRunId: HOST, displayName: "x" } } as never,
     });
@@ -397,7 +395,8 @@ describe("Agent root of a standalone run", () => {
 
   it("rejects the command entry for runs that cannot host delegated copies", async () => {
     const f = await buildManager();
-    let stored: AgentRunMetadata | null = metadata(f.memoryDir, { launchPurpose: "server_helper" });
+    // An application-owned run cannot host delegated copies.
+    let stored: AgentRunMetadata | null = metadata(f.memoryDir, { applicationExecutionContext: { applicationId: "app", bindingId: "b", producer: { agentRunId: HOST, displayName: "x" } } as never });
     const activateHost = vi.fn();
     const helper = new StandaloneAgentRunRootManager({
       memoryDir: f.memoryDir,

@@ -39,7 +39,6 @@ const server = http.createServer(async (req, res) => {
       evidence.requests.push({ path: req.url, operation: payload.operationName, variables: payload.variables });
       const q = payload.query || '';
       const data = q.includes('collaboratorMentionCandidates') ? { collaboratorMentionCandidates: { availability: 'AVAILABLE', candidates } }
-        : q.includes('skillImprovementCapability') ? { skillImprovementCapability: { enabled: false, settingKey: 'ENABLE_SKILL_IMPROVEMENT', source: 'INITIALIZED_EMPTY_CATALOG' } }
         : q.includes('applicationsCapability') ? { applicationsCapability: { enabled: false, scope: 'BOUND_NODE', settingKey: 'ENABLE_APPLICATIONS', source: 'INITIALIZED_EMPTY_CATALOG' } }
         : q.includes('serverSettings') ? { serverSettings: [] } : q.includes('workspaces') ? { workspaces: [] } : {};
       return json(res, { data });

@@ -21,8 +21,7 @@ Delegation, `@` resolution and the candidate policy are shared by all roots; see
 
 ## Which runs have a root
 
-A standalone run has a root unless it is a server helper run (`launchPurpose: "server_helper"`,
-such as the skill improver) or an application-owned run (`applicationExecutionContext`). This one
+A standalone run has a root unless it is an application-owned run (`applicationExecutionContext`). This one
 rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
 An eligible host always has `send_message_to` and `delegate_task` from
 its first turn and a short

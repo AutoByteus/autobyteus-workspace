@@ -3,10 +3,6 @@ import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/d
 import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import { UPDATE_CHECKS_SETTING_KEY } from "../update-notifications/domain/settings.js";
 import {
-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-  SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-} from "../skill-improvement/domain/settings.js";
-import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
@@ -72,7 +68,6 @@ const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?K
 const isSensitiveSettingName = (key: string): boolean =>
   // This exact public key counts context tokens; it does not contain an access token.
   key !== ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY && SENSITIVE_SETTING_NAME.test(key);
-export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -138,11 +133,6 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-      "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
-    );
-
-    this.registerPredefinedSetting(
       REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY,
       "Controls whether this node collaborates with registered peer nodes (trusted private network only). Defaults to disabled.",
     );
@@ -150,11 +140,6 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       UPDATE_CHECKS_SETTING_KEY,
       "Controls whether this node checks its imported GitHub agent packages and skill sources for updates in the background. Defaults to enabled.",
-    );
-
-    this.registerPredefinedSetting(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
     );
 
     this.registerPredefinedSetting(
@@ -417,10 +402,6 @@ export class ServerSettingsService {
 
   getEffectiveStreamingContentFlushIntervalMs(): number {
     return resolveStreamingContentFlushIntervalMs();
-  }
-
-  getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {
-    return this.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   }
 
   getFeaturedCatalogItemsSettingValue(): string | null {

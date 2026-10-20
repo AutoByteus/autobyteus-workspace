@@ -60,7 +60,6 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
-  ...(metadata.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
 });
 

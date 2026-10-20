@@ -72,12 +72,12 @@ describe("system task notification memory trace (REQ-003, ARCH-F-004)", () => {
     })]);
   });
 
-  it("does not record notices from other producers, such as skill improvement (history behavior unchanged)", async () => {
+  it("does not record notices from other producers (history behavior unchanged)", async () => {
     const { accumulator, readTraces } = await setup();
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
-      sender_id: "system.skill_improvement",
-      content: "Improve skills finished for this run.",
+      sender_id: "system.other_producer",
+      content: "Another producer finished its work for this run.",
     }));
 
     expect(readTraces()).toEqual([]);

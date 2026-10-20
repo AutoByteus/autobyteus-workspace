@@ -1,0 +1,33 @@
+# Case: API-15 DCP-003 reproduction attempts (after the full-run failure)
+# Commit: 46c1c6b83d + the SIR probe changes; backend dist from IMP-05
+# Date: 2026-10-20
+# Temporary diagnostics (rep2, rep3 only): page console errors/warnings, GraphQL responses with errors, failed GraphQL requests, appended to diag.log by a temporary edit of delegated-launch-defaults-probe.mjs; removed afterwards, never committed.
+
+rep1: --cases DCP-003
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+Summary: 1 Pass, 0 Fail
+
+rep2: --cases DLP-004,DCP-002,DCP-003 (diagnostics)
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose man
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a T
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopp
+Summary: 3 Pass, 0 Fail
+diag.log GraphQL error lines: 0 (no diag.log means no console error at all)
+
+rep3: --cases DLP-001..DLP-010 (as ordered),DLP-007,DCP-001,DCP-002,DCP-003 (diagnostics)
+DLP-001 Pass AC-011/AC-013: New chat for a Team seeds members from their default
+DLP-002 Pass AC-012: Org launch page seeds the placed team from its team default
+DLP-003 Pass AC-001/003/004/005/010: Manager chat from the UI; copies and a seco
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose man
+DLP-005 Pass AC-006/REQ-004: the root model is retired mid-run; delegation that 
+DLP-006 Pass AC-009/QR-002: runs saved before this change (stripped while the ba
+DLP-008 Pass SR-005 (AC-011): plain New chat → typed text → heading switcher
+DLP-009 Pass SR-005 (AC-011, AC-012): carried starts seed members: Team A → Te
+DLP-010 Pass Preserved (DS-006): "+" on a Team run copies its recorded member se
+DLP-007 Pass AC-008/DEC-008: copy A; the engineer's default edited in the Agents
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running 
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a T
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopp
+Summary: 13 Pass, 0 Fail
+diag.log GraphQL error lines: 0
+diag.log other lines: the WebSocket connection-refused errors of DLP-006's deliberate backend restart
