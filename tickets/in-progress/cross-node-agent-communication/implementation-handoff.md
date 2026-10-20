@@ -10,7 +10,9 @@ Implementation commits (on top of the reviewed design `910f024ec5` and SR-014 `a
 | `4c07f5b268` | Steps 1–6: settings, channel, `RemoteRunLinks`, engine entry points, standalone root, `delegate_task` `node`, Team and Org roots |
 | `8491e0d916` | Steps 1 and 7: web Nodes → Remote Collaboration tab, server follow-ups, docs |
 | `6076a3aadf` | Engine takes the attachment refusal from the one code/text owner; idle-shutdown unit test |
-| the documents commit (named in the handoff message) | This handoff, the revision record, evidence |
+| `37224bf2dc` | This handoff, the revision record, evidence (IR-001) |
+| `744641b35c` | IR-002 (CR-001): remote-endpoint messages are not published to the root view stream; stream-sequence test |
+| the IR-002 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-09 … IMP-11 evidence |
 
 ## Upstream Artifact Package
 
@@ -22,19 +24,19 @@ Implementation commits (on top of the reviewed design `910f024ec5` and SR-014 `a
 - Supplemental task artifacts: `slice-plan.md` (approved); `follow-ups.md` (FU-001 done as autobyteus-197; FU-002 added by the architecture reviewer)
 - Design review report: `tickets/in-progress/cross-node-agent-communication/design-review-report.md` (ARCH-REV-002, notes N-6 … N-11)
 - Architecture review revision record: `tickets/in-progress/cross-node-agent-communication/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: `tickets/in-progress/cross-node-agent-communication/code-review-report.md` (CRR-001, finding CR-001); `code-review-revision-record.md`
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on top of IR-001)
 - Implementation revision record: `tickets/in-progress/cross-node-agent-communication/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-013, SR-014
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001 (IR-002; see the revision record for the delta)
 
 What exists now:
 
@@ -45,7 +47,7 @@ What exists now:
 - **Engine**: `RootCommunicationEngine.sendToRemote` (sender log committed only after the peer accepted) and `acceptFromRemote` (receiver log only, the sender's message ID kept); each adapter's `commitSentToRemote`; message log owner `REMOTE_RUN_LOG` skipped when writing.
 - **Roots**: standalone, Team and Org roots answer `hasAgentExecution` for their remote endpoints, route `deliverExact` through `RemoteRunLinks`, accept inbound messages (`acceptRemoteMessage`), and record remote links in the topmost tree through their task adapters. The standalone root on B also admits the work packet (N-6) and runs `StandaloneHostIdleShutdown` (DS-006).
 - **Tool**: `delegate_task` has `node`; the result names the node. `send_message_to` is unchanged (DEC-111).
-- **Views**: messages with a remote endpoint are kept out of the public run views (the web asserts that every message's sender and receiver are participants).
+- **Views**: messages with a remote endpoint are kept out of the public run views (the web asserts that every message's sender and receiver are participants). The root never publishes them to its view stream: `commitAppend` takes `publishToRootView` (`false` from `acceptFromRemote`) and `commitSentToRemote` never publishes, so the change sequence has no gap (IR-002, CR-001). The view snapshots filter them with `isPublicMessage`. A reply from a remote run still produces the receiver's member-input or presentation event.
 - **Web**: Nodes → Remote Collaboration tab (switch, peers, published Agents), en and zh-CN.
 - **Docs**: `autobyteus-server-ts/docs/modules/remote_collaboration.md` (new); sections in `agent_tools.md`, `standalone_agent_run_root.md`, `autobyteus-web/docs/settings.md`.
 
@@ -171,6 +173,9 @@ Evidence is in `tickets/in-progress/cross-node-agent-communication/evidence/`. E
 | IMP-04 | `pnpm -C autobyteus-web test:nuxt` (full web suite) | `8491e0d916` (web unchanged since) | as above | all web code | BEH-101, BEH-102 (UI) | Pass | `IMP-04-web-tests.excerpt.log` | `Test Files  644 passed \| 2 skipped (646)`, `Tests  4582 passed \| 5 skipped (4587)` |
 | IMP-05 | web guards: `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `8491e0d916` (web unchanged since) | as above | web boundary and localization rules | REQ-115 | Pass | `IMP-05-web-guards.log` | `[guard:web-boundary] Passed.`, `[guard:localization-boundary] Passed.`, `[audit:localization-literals] Passed with zero unresolved findings.` |
 | IMP-07 | Two built servers (dist), separate temp data roots and ports; GraphQL and `/rest/remote/*` over real HTTP with curl | dist of `4c07f5b268` + capability `source` (in `8491e0d916`) | as above | settings, gateway, route policy over HTTP | BEH-101; AC-101, AC-102, AC-111 (partial) | Pass | `IMP-07-two-server-http-smoke.log` | `"source":"DEFAULT_DISABLED"`; `REMOTE_COLLABORATION_OFF`; `PEER_NOT_REGISTERED`; `PEER_IDENTITY_MISMATCH`; `403` for a mobile credential; `400` for a malformed body. The case labelled "A URL that is not an AutoByteus node" used the frontend URL proxied to A and so shows `PEER_IS_THIS_NODE` |
+| IMP-09 | `pnpm -C autobyteus-server-ts typecheck` | `744641b35c` | as above | all server source | CR-001 | Pass | `IMP-09-server-typecheck-cr001.log` | `exit=0` |
+| IMP-10 | `npx vitest run tests/unit/remote-collaboration/remote-message-view-sequence.test.ts`, on the fix and with `src/` from `37224bf2dc` | `744641b35c` and `37224bf2dc` | as above | the three adapters, engine, append plan, view projectors | CR-001; BEH-104 | Pass (fails before the fix) | `IMP-10-cr001-stream-sequence.log` | after: `Tests  3 passed (3)`; before: `Tests  3 failed (3)` |
+| IMP-11 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `744641b35c` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-11-server-unit-full-cr001.excerpt.log` | `Test Files  760 passed \| 4 skipped (764)`, `Tests  6255 passed \| 7 skipped (6262)`, `exit=0` |
 | IMP-08 | Rendered web tab against the two-server stack (Nuxt dev, browser) | web as in `8491e0d916` | Chromium via the agent browser tool | Nodes → Remote Collaboration | BEH-101, BEH-102, REQ-115 | Pass (observed) | `IMP-08-ui-remote-collaboration-tab.png`, `IMP-08-ui-peer-refusal-and-rename.png`, `IMP-08-ui-publish-form.png` | the switch on; peer "docker" listed with its node ID; the refusal next to the peer form; the publish form with runtime, model, workspace and auto-approve |
 
 - Not run, and why:
