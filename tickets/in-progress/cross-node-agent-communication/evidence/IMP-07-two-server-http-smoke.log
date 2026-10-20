@@ -1,0 +1,35 @@
+# IMP-07 two built servers (autobyteus-server-ts/dist built from 4c07f5b268 plus the capability `source` field, committed next; the malformed-body answer gained `nodeId` after this run), separate data roots and ports, GraphQL + /rest/remote/* over real HTTP
+# command: /tmp/cn-scratch/stack.mjs (throwaway launcher, not in repo) then curl; environment: macOS, node v22.23.1; date 2026-10-20
+## IMP smoke: real built servers (dist), two data roots; 2026-10-20T13:53:10Z
+# A capability (fresh node: off by default)
+{"data":{"remoteCollaborationCapability":{"enabled":false,"settingKey":"ENABLE_REMOTE_COLLABORATION","source":"DEFAULT_DISABLED"}}}
+# Inbound to A while off
+{"accepted":false,"nodeId":"srv_TnSS4NDqoy5MK4M32feeYMuGqK1ZfdHG","code":"REMOTE_COLLABORATION_OFF","message":"Remote collaboration is turned off on this node."}
+# Add peer while off (refused)
+{"data":null,"errors":[{"message":"Turn on Remote Collaboration before adding a peer node.","locations":[{"line":1,"column":12}],"path":["addPeerNode"],"extensions":{"code":"REMOTE_COLLABORATION_OFF"}}]}
+# Turn on A and B
+{"data":{"setRemoteCollaborationEnabled":{"enabled":true,"source":"SERVER_SETTING"}}}
+{"data":{"setRemoteCollaborationEnabled":{"enabled":true,"source":"SERVER_SETTING"}}}
+# A registers B, B registers A
+{"data":{"addPeerNode":{"nodeId":"srv_oHyfe-_Nc2O9zILxXJg3PUNmFnrt8XNr","name":"docker","baseUrl":"http://127.0.0.1:60081"}}}
+{"data":{"addPeerNode":{"nodeId":"srv_TnSS4NDqoy5MK4M32feeYMuGqK1ZfdHG","name":"desktop","baseUrl":"http://127.0.0.1:60063"}}}
+# A URL that is not an AutoByteus node
+{"data":null,"errors":[{"message":"http://127.0.0.1:60101 is this node itself.","locations":[{"line":1,"column":12}],"path":["addPeerNode"],"extensions":{"code":"PEER_IS_THIS_NODE"}}]}
+# A's peers.json
+{
+  "peers": [
+    {
+      "nodeId": "srv_oHyfe-_Nc2O9zILxXJg3PUNmFnrt8XNr",
+      "name": "docker",
+      "baseUrl": "http://127.0.0.1:60081",
+      "addedAt": "2026-10-20T13:53:11.268Z"
+    }
+  ]
+}
+# Inbound to B from an unregistered node / to the wrong node
+{"accepted":false,"nodeId":"srv_oHyfe-_Nc2O9zILxXJg3PUNmFnrt8XNr","code":"PEER_NOT_REGISTERED","message":"The calling node is not a registered peer of this node."}
+{"accepted":false,"nodeId":"srv_oHyfe-_Nc2O9zILxXJg3PUNmFnrt8XNr","code":"PEER_IDENTITY_MISMATCH","message":"This request was meant for another node."}
+# Mobile credential on a peer route
+403
+# Malformed body
+{"accepted":false,"code":"REMOTE_REQUEST_INVALID","message":"kind must be 'work_packet' or 'message'."} 400

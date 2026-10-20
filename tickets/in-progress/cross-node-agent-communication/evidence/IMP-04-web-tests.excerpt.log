@@ -1,0 +1,24 @@
+# IMP-04 full web suite: pnpm -C autobyteus-web test:nuxt
+# commit: web files as committed in 8491e0d916 (run 2026-10-20 15:59 local, just before that commit; no web change since); macOS, node v22.23.1
+# excerpt: header, remote-collaboration spec lines, summary. The full log (1.9 MB) is not committed.
+
+> autobyteus@1.5.8-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run
+...
+stderr | components/settings/__tests__/NodeManager.spec.ts
+stdout | components/settings/__tests__/NodeManager.spec.ts
+ ✓ components/settings/__tests__/NodeManager.spec.ts (11 tests) 55ms
+stderr | components/settings/__tests__/RemoteCollaborationCard.spec.ts
+stdout | components/settings/__tests__/RemoteCollaborationCard.spec.ts
+ ✓ components/settings/__tests__/RemoteCollaborationCard.spec.ts (5 tests) 61ms
+stderr | stores/__tests__/remoteCollaborationStore.spec.ts
+stdout | stores/__tests__/remoteCollaborationStore.spec.ts
+ ✓ stores/__tests__/remoteCollaborationStore.spec.ts (4 tests) 6ms
+...
+
+ Test Files  644 passed | 2 skipped (646)
+      Tests  4582 passed | 5 skipped (4587)
+   Start at  15:59:38
+   Duration  282.77s (transform 44.00s, setup 1836.11s, collect 204.41s, tests 90.86s, environment 179.63s, prepare 99.27s)
+
+exit=0

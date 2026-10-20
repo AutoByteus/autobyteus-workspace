@@ -1,0 +1,14 @@
+# IMP-03 focused remote tests (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration tests/unit/run-history/store/remote-task-execution-links.test.ts tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts tests/unit/agent-collaboration/execution/communication; commit 6076a3aadf; macOS, node v22.23.1; 2026-10-20T14:16:13Z
+ ✓ tests/unit/run-history/store/remote-task-execution-links.test.ts (12 tests) 332ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts (7 tests) 336ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts (6 tests) 162ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts (7 tests) 113ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts (6 tests) 28ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts (4 tests) 6ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-refusals.test.ts (4 tests) 4ms
+ Test Files  8 passed (8)
+      Tests  50 passed (50)
+   Start at  16:16:14
+   Duration  7.58s (transform 2.85s, setup 106ms, import 5.30s, tests 983ms, environment 1ms)
+exit=0
