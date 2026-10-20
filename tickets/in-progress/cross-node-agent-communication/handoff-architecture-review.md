@@ -96,3 +96,10 @@ The reviewer's `design-review-report.md` and `architecture-review-revision-recor
 | N-6, N-7, N-8, N-10, N-11 | Work packet on B; compose shortcut; wake placement; prepared-run metadata; no Task chain on B | the sections above; data model item 7 |
 
 Basis: SR-014 (`a3b0cf1028`) is also included. It changed only the DS-001 order to match `dispatchTaskCopy` (DI-1 from implementation).
+
+## Round 5 — 2026-10-20 (SR-016), answering ARCH-REV-005
+
+| Finding | Resolution | Where in `design-spec.md` |
+| --- | --- | --- |
+| AR-008 | Shared `RemoteMessageSend` owns the outbound sequence once; roots keep only the routing line; inbound stays per root only for the wake, with the shared link check and `acceptFromRemote`; the existing-copy refusal is checked once in `RootTaskExecutionLifecycle.assignToExistingCopy` through `RemoteEndpointLookup`; tests: one shared sequence test, one lifecycle test, one routing test per root kind | § Remote Messaging (Owners: the root routes, `RemoteMessageSend` sends, the root receives); spine inventory; DS-002/DS-003; ownership; walker table; interfaces; mapping |
+| AR-009 | Narratives DS-002/DS-003/DS-005 and Spine Actors aligned; remote planning stated once (`RemoteDelegation`, the only caller of `startDelegatedRun`); DS-001 spine and the dependency rule aligned | § Spine Narratives; § Spine Actors; § Ownership Map; DS-001; § Dependency Rules |

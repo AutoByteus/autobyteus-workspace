@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-002 | Round 2 / SR-013 answers ARCH-REV-001 | SR-013 | Fail | Pass | AR-001 … AR-004 resolved |
 | ARCH-REV-003 | Round 3 / the user's direction on ownership quality | SR-013 | Pass | Fail | AR-005, AR-006, AR-007 (new) |
 | ARCH-REV-004 | Round 4 / SR-015 answers ARCH-REV-003 | SR-014, SR-015 | Fail | Pass | AR-005 … AR-007 resolved |
+| ARCH-REV-005 | Round 5 / the user's direction: remaining problems become findings | SR-015 | Pass | Fail | AR-008, AR-009 (new; AR-009 promotes N-12, N-13) |
 
 ## Revision Entries
 
@@ -111,3 +112,25 @@ None.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer (bring steps 3 … 6 in line); informational notice to the Solution Designer.
 - Remaining risks or uncertainty: MP-004 (a prepared run left on B after a lost answer or a race, removed after 24 h); RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.
+
+### ARCH-REV-005 — Reopened: one owner for the repeated remote coordination; consistent summaries
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication/design-review-report.md`
+- Review round and trigger: round 5. The user's direction, 2026-10-20, after the reviewer said it still saw problems following the round-4 `Pass`: "since you still see problems … you should continue to improve it … give a review revision." The design is unchanged (SR-015, `f1d7dd9337`).
+- Triggering role, report path, and finding IDs: the user via the architecture reviewer; the reviewer's post-pass assessment.
+- Relevant solution revision IDs: SR-015
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Fail` (`Design Impact`)
+- What changed in the review result: the outbound remote sequence is written as "the same shape in the three roots", and the existing-copy refusal is placed in each root although that resolution is shared. Under principle 13 that needs one owner (AR-008); round 4 missed it. N-12 and N-13 are promoted to a blocking text finding (AR-009), because code review checks against these summaries.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 … AR-007 | Resolved | Resolved (unchanged) | SR-013, SR-015 | No design change since ARCH-REV-004 |
+| N-12, N-13 | Text corrections (non-blocking) | Promoted to AR-009 | — | — |
+
+- New or remaining finding IDs: AR-008 (Medium): a shared owner for the outbound sequence and the existing-copy refusal; inbound stays per root because of the root-specific wake. AR-009 (Low): align the summary sections.
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: MP-004 (residual); RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.

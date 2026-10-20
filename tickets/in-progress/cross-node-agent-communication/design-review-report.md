@@ -9,11 +9,11 @@
 - Supplemental Task Artifacts Reviewed: `slice-plan.md`, `follow-ups.md`, contract draft `autobyteus-server-ts/docs/design/collaboration_model.md`, `handoff-architecture-review.md` § Round 2
 - Relevant Solution Revision IDs: SR-011, SR-012, SR-013, SR-014, SR-015
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: the Solution Designer's SR-015 (commit `f1d7dd9337`), answering ARCH-REV-003 (AR-005 … AR-007, N-6 … N-11). The basis also includes SR-014 (`a3b0cf1028`, implementation's DI-1: B's run ID comes from `planActivation`, as `dispatchTaskCopy` requires).
-- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, `Fail`)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: the user's direction, 2026-10-20, after the round-4 `Pass`: problems the reviewer still sees must be raised as review findings and improved, not left as remarks. The design is unchanged since round 4 (SR-015, commit `f1d7dd9337`).
+- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, `Pass`)
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: the round-1 code reading (still valid; SR-013 changed documents only), plus these round-2 checks:
   - `run-history/store/task-execution-tree-split.ts` (`splitTaskExecutions` keeps on-disk entries it did not load, in place; `composeTreeFile` / `agentRunIdsOfTree`);
   - `agent-collaboration/execution/task/root-task-execution-resource-scope.ts` (`releaseTaskExecutions`; `NO_AUTHORITY` counts as stopped);
@@ -229,7 +229,7 @@ None.
 
 ## Review Decision
 
-`Pass`. AR-005 … AR-007 are resolved in the authoritative sections (§ Remote Messaging: Owners And Order, § Task Closure Of A Remote Run, the spine inventory and the ownership map), and AR-001 … AR-004 stay resolved. SR-014's change to the DS-001 order is sound against `dispatchTaskCopy`. Two text corrections (N-12, N-13) are left for the spec and are not blocking: the authoritative sections are unambiguous. The design is ready for implementation; the existing implementation is to be brought in line with it (SR-015).
+`Fail` (`Design Impact`). AR-001 … AR-007 stay resolved. Two findings remain. AR-008: the remote coordination is repeated in the three roots. AR-009: the spec's summary sections contradict its authoritative sections; this promotes N-12 and N-13. Both are small and within approved scope, and neither changes behavior. Steps 0 … 2 and the parts of steps 3 … 6 that AR-008 does not touch (endpoint kinds, engine methods, closure fence, `RemoteDelegation`, work packet) may continue.
 
 ## Findings
 
@@ -239,7 +239,50 @@ None blocking. AR-001 … AR-004 resolved in ARCH-REV-002; AR-005 … AR-007 res
 - AR-006 (resolved): `RemoteEndpoint` kinds `delegated_run` (delegator-only pair rule, chain `[{agentRunId}]`, existing-copy refusal, closure fence) and `delegator` (host-only pair rule, chain `[]`, `coordinatingRun` on transmit, the work packet). `RemoteRunLinks` keeps only membership and `deliver`. DS-001 moved to its own owner, `RemoteDelegation`.
 - AR-007 (resolved): an explicit `fenced_remote` result at `releaseTaskExecutions`: no release is invoked, the text is truthful, and it is the S3 hook for "stop on the peer". It replaces N-9.
 
-### Text corrections for the design spec (non-blocking)
+### AR-008 — The remote coordination is written once per root kind instead of having one owner
+
+- Type: Design Impact
+- Severity: Medium (blocking)
+- Protects: REQ-106, REQ-108, REQ-110 / AC-108 (the same refusal and recording rules in every root); preserved behavior AC-112 (no drift between root kinds); design principle 13 (one owner for coordination that repeats across callers) and principle 4 (reuse a shared capability)
+- Scope status: Within Approved Scope (user direction 2026-10-20)
+- Changes approved behavior: No
+- Evidence:
+  - § Remote Messaging gives the outbound order (pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote`) as "the same shape in the three roots" (`StandaloneRootMessageDelivery`, `TeamRunMessageDelivery`, the Org run's delivery). No step of it depends on the root kind.
+  - The walker table puts the existing-copy refusal in "each root's `assignToExistingCopy`", although the existing-copy resolution is shared in `RootTaskExecutionLifecycle.assignToExistingCopy` (`root-task-execution-lifecycle.ts:159-170`: `resolveExistingCopy(this.adapter, input.copy)`).
+  - The same policy written three times is the drift risk this feature will meet as S2 (attachments in `prepareRemoteSend`), S3 and S4 add rules.
+- Required update: give the repeated remote coordination one owner in `agent-collaboration/execution/remote/`, as the roots already share `RootCommunicationEngine` and `RootTaskExecutionLifecycle`.
+  - **Outbound:** a shared `RemoteMessageSend` (or a `RemoteRunLinks` method; name it after the concern), one per root, built with the root's engine and links. It runs pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote` once. The root's message delivery stays the governing owner of *routing*: it decides "remote endpoint, not local" and calls it.
+
+    ```ts
+    // root delivery, exact run-ID path (the same line in the three roots, no sequence of its own)
+    const endpoint = this.remoteRunLinks.endpointFor(targetAgentRunId);
+    if (endpoint) return this.remoteSend.send({ sender, endpoint, content, messageType, referenceFiles });
+    ```
+
+  - **Inbound:** keep it in each root, because its middle step (the wake: `withLiveLease` for a hosted agent, `host.ensureReady()` for a standalone host) is root-specific. Use the shared core's `inboundEndpoint` and the engine's `acceptFromRemote`, and do not copy the checks.
+  - **Existing-copy refusal:** once, in `RootTaskExecutionLifecycle.assignToExistingCopy`, before `resolveExistingCopy`, through the root's `RemoteRunLinks` (the lifecycle gains a narrow "is this a remote endpoint" port). Not in each root.
+  - Update the spine inventory and DS-002/DS-003. The outbound half is governed by the root's routing plus the shared send owner, with one owner of the sequence. Also update the ownership map, the walker table rows, the file mapping, the example and the guard tests (one shared test for the sequence, one routing test per root kind).
+- Why proportionate: it moves code that is already planned into one place; no new behavior and no new layer that only forwards (the shared owner owns the sequence and its refusals).
+- Recommended recipient: Solution Designer
+
+### AR-009 — The spec's summary sections contradict its authoritative sections
+
+- Type: Design Impact
+- Severity: Low (blocking)
+- Protects: REQ-106 (the DS-002/DS-003 owners the code review checks against); design principle 14 (a spine-first, consistent design document)
+- Scope status: Within Approved Scope
+- Changes approved behavior: No
+- Evidence (the former N-12 and N-13):
+  - § Spine Narratives still names `RemoteRunLinks` as the owner of DS-002/DS-003 and has it apply the Task check and pair rule. Its DS-005 row lists only the switch and peer checks.
+  - § Spine Actors omits the root's message delivery, `RemoteEndpoint` and `RemoteDelegation`.
+  - The ownership map describes remote planning twice: `RemoteDelegation` "planning (`startDelegatedRun`)", and "each root adapter's `planActivation` … calls `startDelegatedRun`".
+- Required update:
+  - Align the three summary places with § Remote Messaging, § Contract Between Nodes and AR-008.
+  - State once that each root adapter's `planActivation` / `beginActivation` delegates a remote placement to `RemoteDelegation`, the only caller of `startDelegatedRun`.
+- Why proportionate: text only. Code review and later slices read these summaries first.
+- Recommended recipient: Solution Designer
+
+### Text corrections for the design spec (superseded by AR-009)
 
 - N-12: § Spine Narratives still names `RemoteRunLinks` as the owner of DS-002/DS-003 and describes it applying the Task check and the pair rule. That contradicts the authoritative inventory and § Remote Messaging. The DS-005 narrative still lists only the switch and peer checks (the gateway order is in § Contract Between Nodes). § Spine Actors omits the root's message delivery, `RemoteEndpoint` and `RemoteDelegation`. Align these three places.
 - N-13: the ownership map has two bullets for the same concern: "`RemoteDelegation` … planning (`startDelegatedRun`)" and "each root adapter's `planActivation` for a remote placement calls `startDelegatedRun`". State the relationship once: the root adapter's `planActivation` delegates a remote placement to `RemoteDelegation.planActivation`, the one caller of `startDelegatedRun`. The same holds for `beginActivation`.
@@ -264,11 +307,11 @@ Status in SR-015: N-6, N-7, N-8, N-10 and N-11 are now in the design; N-9 is rep
 
 ## Classification
 
-N/A (Pass).
+`Design Impact` (AR-008, AR-009).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`), to bring steps 3 … 6 in line with SR-015; informational notice to the Solution Designer.
+Solution Designer (`/software_engineering_team/solution_designer`). The implementation engineer received the round-4 `Pass`; the Solution Designer tells it that the outbound sequence and the existing-copy refusal each move into one shared owner (AR-008), and that the rest of the rework may continue.
 
 ## Residual Risks
 
@@ -281,6 +324,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`), 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Fail` (`Design Impact`, AR-008, AR-009)
 - Material-Premise Gate: `Pass`
-- Notes: classification `Large` / `High`. Design at commit `f1d7dd9337` (SR-015, including SR-014). AR-001 … AR-007 are resolved. N-12 and N-13 are text corrections for the spec. The existing implementation is to be brought in line with § Remote Messaging and § Task Closure Of A Remote Run; the code review checks it.
+- Notes: classification `Large` / `High`. Design at commit `f1d7dd9337` (SR-015). Reopened at the user's direction so that the problems the reviewer still saw become findings. AR-001 … AR-007 stay resolved. MP-004 is unchanged (residual only).

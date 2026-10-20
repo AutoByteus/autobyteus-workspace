@@ -226,3 +226,18 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 
 - The architecture reviewer passed SR-014 and SR-015 (commit `f1d7dd9337`) as ARCH-REV-004. Large / High; AR-005 … AR-007 are resolved; MP-004 (a prepared run left on B) is a residual risk only. The reviewer released steps 3–6 to the implementation engineer.
 - Text corrections N-12 (Spine Narratives DS-002/DS-003/DS-005, the Spine Actors list) and N-13 (one ownership bullet for `RemoteDelegation`) were applied to `design-spec.md` the same day. They are editorial and change no decision.
+
+### SR-016 — One owner for the remote send and the existing-copy refusal (ARCH-REV-005, 2026-10-20)
+
+- Phase and classification: Design / `Design Impact` (ARCH-REV-005: AR-008, AR-009). The review was reopened after the round-4 Pass at the user's direction that remaining problems become findings and get fixed. Approved intent unchanged. The Solution Designer had proposed the same change to the user before this finding.
+- Changes in `design-spec.md`:
+  - **AR-008:**
+    - The new shared owner `RemoteMessageSend` (`remote-message-send.ts`, one per root) runs the outbound sequence once: pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote`. Each root's delivery keeps only the routing decision.
+    - The inbound order stays per root only for its root-specific wake, using the shared link check and `acceptFromRemote`.
+    - The existing-copy refusal is checked once in `RootTaskExecutionLifecycle.assignToExistingCopy`, after `resolveAssignment` (a read) and before `resolveExistingCopy`, through the port `RemoteEndpointLookup.isRemoteEndpoint`.
+    - Tests: one shared sequence test, one shared lifecycle refusal test, one routing test per root kind.
+    - Updated: the spine inventory, DS-002/DS-003, narratives, actors, ownership map, walker table, interface rows, file mapping and health assessment.
+  - **AR-009:** the summaries are aligned (narratives DS-002/DS-003/DS-005, Spine Actors). Remote planning is stated once: root adapters delegate to `RemoteDelegation`, the only caller of `startDelegatedRun`. The DS-001 spine and the dependency rule are aligned.
+- Coordination: the implementation engineer was told on 2026-10-20 that the outbound sequence and the existing-copy refusal each move into one shared owner, and that the rest continues.
+- Intended behavior changed: `No`.
+- Next action: round 5 to the architecture reviewer.
