@@ -1,0 +1,11 @@
+# Check: IMP-07
+# Command: cd autobyteus-web && pnpm exec cross-env NUXT_TEST=true vitest run
+# Commit: 96de77efb3 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T17:57:01Z
+
+# Excerpt of IMP-07-web-unit.log: summary and failure lines. The full log (1729208 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/IMP-07-web-unit.log until the worktree is removed.
+
+      Tests  4549 passed | 5 skipped (4554)
+ Test Files  639 passed | 2 skipped (641)
+# Exit code: 0

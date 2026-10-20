@@ -41,7 +41,7 @@ import {
   collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -193,7 +193,7 @@ const stageProjection = (input: {
 }): MemberRunStateCommit | null => {
   if (!input.state) return null;
   const { projection } = input.state;
-  const configured = teamAgentSourceAt(input.tree, input.address, input.agentRunId);
+  const configured = teamAgentSourceOf(input.tree, input.agentRunId);
   if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured placement.`);
   input.context.state.conversation = buildConversationFromProjection(
     input.agentRunId,

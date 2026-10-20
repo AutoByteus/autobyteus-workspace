@@ -9,7 +9,6 @@ import {
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import { StandaloneRootTaskSourceResolver } from "./standalone-root-task-source-resolver.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -316,10 +315,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   private delegatedLaunchReader(hostRunId: string, tree: StandaloneRootTreeSnapshot) {
     const closed = new Set(this.closedTaskExecutionsFor(hostRunId, tree).map(taskExecutionReferenceKey));
-    const sources = new StandaloneRootTaskSourceResolver();
     return {
       forest: standaloneDelegatedLaunchForest(tree),
-      readTaskSource: (address: string, recorded: Parameters<StandaloneRootTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
       isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
     };
   }

@@ -1,0 +1,9 @@
+# Check: IMP-06
+# Command: git status --porcelain -- autobyteus-team-stream-contracts/dist autobyteus-collaboration-stream-contracts/dist && echo 'dist matches the committed files: no output above'
+# Commit: 7d689455ad (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T16:36:14Z
+
+dist matches the committed files: no output above
+
+# Exit code: 0

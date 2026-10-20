@@ -8,7 +8,7 @@ import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execu
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgAgentCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 
 const dirs: string[] = [];
@@ -20,7 +20,8 @@ const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) 
     { ...testOrgAgentNode('/assistant', 'configured'), platformAgentRunId: 'configured-provider' },
   ] }));
   tree.rootOrg.taskExecutions = [{ address: '/assistant', agentRunId: 'task-run', platformAgentRunId: 'task-provider',
-    delegatorAgentRunId: 'configured', startedAt: tree.createdAt }];
+    // A copy of the configured assistant: activation recorded the placement's definition.
+    delegatorAgentRunId: 'configured', startedAt: tree.createdAt, source: testOrgAgentCopySource('definition-configured') }];
   const messages = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] };
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
   await new AgentOrgCommunicationMessagesStore().write(dir, messages as never);

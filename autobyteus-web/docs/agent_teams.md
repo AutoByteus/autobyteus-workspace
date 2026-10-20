@@ -306,14 +306,18 @@ persisted data.
 A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is not in the
 run) is an ordinary task row, Offline until its first message. The Team view has no collaborator
 concept: runs that earlier releases recorded as collaborators were converted at startup into
-these rows. No configured member describes a catalog copy, so its task DTO carries `source`,
-and the view reads the definition and launch settings from there:
-- `agentSourceSelectors.teamCatalogAgentSourceAt` for the copy and its members;
+these rows. Every copy, a catalog copy or a copy of a configured member, carries on its task DTO
+the `source` it started with. The view reads a copy's definition and launch settings only from
+that `source`, by run ID, never from the configured member at its address:
+- `agentSourceSelectors.teamAgentSourceOf` for the copy and its members: the started launch with the
+  copy's own model choice, else its Team's when the member's recorded `follows_team` says it follows;
 - `source.coordinator_address` for a Team copy's coordinator.
 
 A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
-`utils/collaboration/memberDisplayName.ts`; rows for catalog-copy addresses use the
-display-name formatter (`readsAsDisplayName`). New copies are always placed at the run's
+`utils/collaboration/memberDisplayName.ts`. Rows for addresses outside the root Team's configured
+members (catalog copies, their members and copies) use the display-name formatter
+(`readsAsDisplayName`); a configured member and every copy started from it keep the address
+basename. New copies are always placed at the run's
 top level (CM-1: delegation to the sender's own team is refused on the server); copies already
 stored inside a Team instance keep their recorded host.
 See [Chat](./chat.md#-in-a-live-run-delegation).

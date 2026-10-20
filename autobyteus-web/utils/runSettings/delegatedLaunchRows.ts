@@ -1,7 +1,5 @@
 import {
   teamCopyAgentLaunch,
-  teamMemberFollowsTeam,
-  teamMemberLaunchConfiguration,
   teamMemberLaunchSource,
   type AgentLaunchConfigurationDto,
   type LaunchConfigurationSourceDto,
@@ -11,18 +9,14 @@ import {
 } from '@autobyteus/team-stream-contracts'
 import {
   collaborationCopyAgentLaunch,
-  collaborationMemberFollowsTeam,
-  collaborationMemberLaunchConfiguration,
   collaborationMemberLaunchSource,
   type CollaborationLaunchConfigurationSourceDto,
   type CollaborationTaskExecutionDto,
   type TaskAgentExecutionSourceDto,
   type UserLaunchSelectionDto as CamelSelectionDto,
 } from '@autobyteus/collaboration-stream-contracts'
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure'
 import { MEMBER_RUN_SETTING_FIELDS, type RunSettingFlags, type RunSettingsValues } from '~/types/runSettings/RunSettings'
-import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import {
   memberNode,
   type RunMemberDelegatedFacts,
@@ -39,8 +33,10 @@ import {
  * One row per copy, with a badge; a Team row edits its Team-level choice and has its
  * agents as child rows. Each row shows what it runs with by the single launch rule (its own user
  * choice, else its Team's when it follows the Team, else its started value; the contract packages'
- * functions), with this edit's choices applied. A row with a choice shows no origin; others say where
- * their launch came from, with recorded fallbacks as notes (a Team-level one once, on the Team row).
+ * functions), with this edit's choices applied. Every value comes from the copy's own recorded source
+ * (a copy of a configured placement records it too, with the `configured` origin: "As configured in this
+ * run"). A row with a choice shows no origin; others say where their launch came from, with recorded
+ * fallbacks as notes (a Team-level one once, on the Team row).
  * Model and its settings are editable only while the copy is stopped; runtime, approval and
  * workspace never are. The copy itself carries the stop target. Closed copies (Task
  * DONE or CANCELLED) are left out, with everything under one. Keys are `<address>@<run ID>`.
@@ -52,7 +48,7 @@ type Launch = Readonly<{
   autoExecuteTools: boolean
 }> | null
 type RecordedSource = Readonly<{
-  origin: Exclude<RunMemberLaunchSource, 'configured' | 'not_recorded'>
+  origin: Exclude<RunMemberLaunchSource, 'not_recorded'>
   fallbacks: readonly RunMemberLaunchFallback[]
 }>
 type Selection = Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
@@ -115,18 +111,12 @@ const camelRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
   })
   return { launch: camelLaunch(launch), chosen: selected !== null }
 }
-/** A configured placement's member follows its Team iff runtime, model and settings equal the Team's (AR-003). */
-const configuredFollows = (member: Launch, team: Launch): boolean => Boolean(member && team
-  && member.runtimeKind === team.runtimeKind && member.llmModelIdentifier === team.llmModelIdentifier
-  && modelConfigsEqual(member.llmConfig ?? null, team.llmConfig ?? null))
-
 /** A row's source label and the fallbacks it shows itself (`ownNotes` false: a member whose source is its Team's). */
 const factsOf = (source: RecordedSource | null, ownNotes = true, badge?: RunMemberNode['badge']): RunMemberLaunchFacts => ({
   ...(badge ? { badge } : {}),
   sourceKey: source?.origin ?? 'not_recorded',
   notes: ownNotes ? (source?.fallbacks ?? []).map((fallback): RunMemberNote => ({ kind: 'fallback', ...fallback })) : [],
 })
-const CONFIGURED: RunMemberLaunchFacts = { sourceKey: 'configured', notes: [] }
 
 /** One row's control: its target and the choice applied, whether its copy runs, and its locks. */
 type RowInput = Readonly<{
@@ -217,33 +207,31 @@ export const teamDelegatedLaunchNodes = (
       if (task.kind === 'task_agent') {
         if (closedKeys.has(`agent:${task.agent_run_id}`)) continue
         result.push(build.agent({ key: `${task.address}@${task.agent_run_id}`, address: task.address,
-          started: task.source ? snakeLaunch(task.source.launch_configuration) : snakeLaunch(teamAgentSourceAt(tree, task.address)?.launch_configuration),
+          started: snakeLaunch(task.source.launch_configuration),
           recorded: { agent: snakeChoice(task.user_launch_selection) },
           target: `agent:${task.agent_run_id}`, stop: { agentRunId: task.agent_run_id }, running: live([task.agent_run_id]),
-          facts: task.source ? factsOf(snakeSource(task.source.launch_source), true, 'delegated_copy') : { ...CONFIGURED, badge: 'delegated_copy' } }))
+          facts: factsOf(snakeSource(task.source.launch_source), true, 'delegated_copy') }))
         continue
       }
       if (closedKeys.has(`team:${task.team_run_id}`)) continue
       const source = task.source
-      const teamStarted = snakeLaunch(source?.default_launch_configuration)
+      const teamStarted = snakeLaunch(source.default_launch_configuration)
       const teamChoice = snakeChoice(task.user_team_launch_selection)
       const teamTarget: TargetKey = `team:${task.team_run_id}`
       const running = live(task.members.map((member) => member.agent_run_id))
       const members = task.members.map((member) => {
-        const recorded = source?.members.find((candidate) => candidate.address === member.address)
-        const started = recorded && source
-          ? snakeLaunch(teamMemberLaunchConfiguration(source, recorded))
-          : snakeLaunch(teamAgentSourceAt(tree, member.address)?.launch_configuration)
-        return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address, started,
+        const recorded = source.members.find((candidate) => candidate.address === member.address)
+        return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address,
+          started: snakeLaunch(recorded?.launch_configuration),
           recorded: { agent: snakeChoice(member.user_launch_selection), team: teamChoice },
-          followsTeam: recorded ? teamMemberFollowsTeam(recorded) : configuredFollows(started, teamStarted),
+          followsTeam: recorded?.follows_team ?? false,
           target: `agent:${member.agent_run_id}`, teamTarget, stop: null, running,
-          facts: recorded && source ? factsOf(snakeSource(teamMemberLaunchSource(source, recorded)), Boolean(recorded.launch_source)) : CONFIGURED },
-        member.address === source?.coordinator_address)
+          facts: factsOf(snakeSource(teamMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launch_source)) },
+        member.address === source.coordinator_address)
       })
       result.push(build.team({ key: `${task.address}@${task.team_run_id}`, address: task.address, started: teamStarted,
         recorded: { team: teamChoice }, target: teamTarget, stop: { teamRunId: task.team_run_id }, running,
-        facts: source ? factsOf(snakeSource(source.default_launch_source), true, 'delegated_copy') : { ...CONFIGURED, badge: 'delegated_copy' } }, members))
+        facts: factsOf(snakeSource(source.default_launch_source), true, 'delegated_copy') }, members))
       visit(task.task_executions)
     }
   }
@@ -269,10 +257,6 @@ const camelChoice = (selection: CamelSelectionDto | undefined): Selection | null
 export const collaborationDelegatedLaunchNodes = (input: Readonly<{
   /** Every task-execution list of the root (see `collaborationTaskExecutionLists`). */
   taskExecutions: readonly CollaborationTaskExecutionDto[]
-  /** The launch of an in-run Agent or Team at an address (configured placement), for copies without a recorded source. */
-  launchAt(address: string): CamelLaunch | null
-  /** The coordinator address of the in-run Team at an address, for Team copies without a recorded source. */
-  coordinatorAt(address: string): string | null
   closed?: readonly TaskExecutionReference[]
 }>, deps: RunMemberTreeDeps, control: DelegatedRowControl = NO_CONTROL): RunMemberNode[] => {
   const build = builders(deps, control, camelRule)
@@ -284,33 +268,31 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
       if ('agentRunId' in task) {
         if (closedKeys.has(`agent:${task.agentRunId}`)) continue
         result.push(build.agent({ key: `${task.address}@${task.agentRunId}`, address: task.address,
-          started: camelLaunch(task.source ? task.source.launchConfiguration : input.launchAt(task.address)),
+          started: camelLaunch(task.source.launchConfiguration),
           recorded: { agent: camelChoice(task.userLaunchSelection) },
           target: `agent:${task.agentRunId}`, stop: { agentRunId: task.agentRunId }, running: live([task.agentRunId]),
-          facts: task.source ? factsOf(camelSource(task.source.launchSource), true, 'delegated_copy') : { ...CONFIGURED, badge: 'delegated_copy' } }))
+          facts: factsOf(camelSource(task.source.launchSource), true, 'delegated_copy') }))
         continue
       }
       if (closedKeys.has(`team:${task.teamRunId}`)) continue
       const source = task.source
-      const teamStarted = camelLaunch(source ? source.defaultLaunchConfiguration : input.launchAt(task.address))
+      const teamStarted = camelLaunch(source.defaultLaunchConfiguration)
       const teamChoice = camelChoice(task.userTeamLaunchSelection)
       const teamTarget: TargetKey = `team:${task.teamRunId}`
       const running = live(task.members.map((member) => member.agentRunId))
       const members = task.members.map((member) => {
-        const recorded = source?.members.find((candidate) => candidate.address === member.address)
-        const started = recorded && source
-          ? camelLaunch(collaborationMemberLaunchConfiguration(source, recorded))
-          : camelLaunch(input.launchAt(member.address))
-        return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address, started,
+        const recorded = source.members.find((candidate) => candidate.address === member.address)
+        return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address,
+          started: camelLaunch(recorded?.launchConfiguration),
           recorded: { agent: camelChoice(member.userLaunchSelection), team: teamChoice },
-          followsTeam: recorded ? collaborationMemberFollowsTeam(recorded) : configuredFollows(started, teamStarted),
+          followsTeam: recorded?.followsTeam ?? false,
           target: `agent:${member.agentRunId}`, teamTarget, stop: null, running,
-          facts: recorded && source ? factsOf(camelSource(collaborationMemberLaunchSource(source, recorded)), Boolean(recorded.launchSource)) : CONFIGURED },
-        member.address === (source ? source.coordinatorAddress : input.coordinatorAt(task.address)))
+          facts: factsOf(camelSource(collaborationMemberLaunchSource(source, recorded ?? {})), Boolean(recorded?.launchSource)) },
+        member.address === source.coordinatorAddress)
       })
       result.push(build.team({ key: `${task.address}@${task.teamRunId}`, address: task.address, started: teamStarted,
         recorded: { team: teamChoice }, target: teamTarget, stop: { teamRunId: task.teamRunId }, running,
-        facts: source ? factsOf(camelSource(source.defaultLaunchSource), true, 'delegated_copy') : { ...CONFIGURED, badge: 'delegated_copy' } }, members))
+        facts: factsOf(camelSource(source.defaultLaunchSource), true, 'delegated_copy') }, members))
       visit(task.taskExecutions)
     }
   }

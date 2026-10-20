@@ -132,8 +132,7 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
       const member = this.findInstanceAgent(team, address);
       return member ? messagePlacement("agent", member.address, member) : null;
     }
-    const coordinatorAddress = this.instanceCoordinatorAddress(team);
-    const coordinator = coordinatorAddress ? this.findInstanceAgent(team, coordinatorAddress) : null;
+    const coordinator = this.findInstanceAgent(team, this.instanceCoordinatorAddress(team));
     return coordinator ? messagePlacement("agent_team", team.address, coordinator) : null;
   }
 
@@ -142,13 +141,9 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
     return this.listDirectAgents(host).find((agent) => agent.executionKind !== "task" && agent.address === address) ?? null;
   }
 
-  /** A mounted Team's own; a task copy's catalog source, else its source Team's at the same address. */
-  private instanceCoordinatorAddress(team: AgentOrgIndexedTeamExecution): AgentTeamAddress | null {
-    if ("coordinatorAddress" in team.source) return team.source.coordinatorAddress;
-    if ("source" in team.source && team.source.source) return team.source.source.coordinatorAddress;
-    const configured = this.configuredByAddress.get(team.address);
-    if (configured && "coordinatorAddress" in configured) return configured.coordinatorAddress;
-    return null;
+  /** A mounted Team's own; a Team copy's from its own source. */
+  private instanceCoordinatorAddress(team: AgentOrgIndexedTeamExecution): AgentTeamAddress {
+    return "coordinatorAddress" in team.source ? team.source.coordinatorAddress : team.source.source.coordinatorAddress;
   }
 
   getTaskExecution(reference: TaskExecutionReference): AgentOrgIndexedTaskExecution | null {

@@ -1,10 +1,8 @@
 import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
-  catalogAgentSourceAt,
-  catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaborationInstanceSource,
+  copyAgentSourceOf,
   type CollaborationAgentSource,
 } from '~/services/collaborators/agentSourceSelectors'
 
@@ -89,22 +87,20 @@ export class AgentRunCollaborationIndex {
   private addAgent(agentRunId: string, address: string, kind: AgentRootChildAgent['kind'],
     teamRunId: string | null, delegatorAgentRunId: string | null): void {
     this.register(agentRunId)
-    // A catalog copy (or its member) carries its own source (REQ-011).
-    const source = catalogAgentSourceAt(collaborationTaskExecutionLists(this.tree), address)
-    if (!source) throw new Error(`No catalog source at '${address}'.`)
-    // What this agent runs with: its user choice, else its Team's when it follows, else the started source (DS-003).
-    const own = collaborationInstanceSource({ taskExecutions: collaborationTaskExecutionLists(this.tree) }, agentRunId, source)
+    // A copy (or its member) carries its own source; what it runs with is its user choice, else its Team's
+    // when it follows, else the started source (DS-003).
+    const source = copyAgentSourceOf(collaborationTaskExecutionLists(this.tree), agentRunId)
+    if (!source) throw new Error(`No recorded source for AgentRun '${agentRunId}' at '${address}'.`)
     this.agents.set(agentRunId, Object.freeze({
-      agentRunId, address: parseAgentTeamAddress(address), kind, source: own, teamRunId, delegatorAgentRunId,
+      agentRunId, address: parseAgentTeamAddress(address), kind, source, teamRunId, delegatorAgentRunId,
     }))
   }
 
   private addTeam(team: AgentRootChildTeam['execution'], delegatorAgentRunId: string | null): void {
     this.register(team.teamRunId)
-    const source = catalogTeamSourceAt(collaborationTaskExecutionLists(this.tree), team.address)
-    const coordinatorAddress = source?.coordinatorAddress ?? team.members[0]?.address ?? team.address
     this.teams.set(team.teamRunId, Object.freeze({
-      teamRunId: team.teamRunId, address: parseAgentTeamAddress(team.address), coordinatorAddress, delegatorAgentRunId, execution: team,
+      teamRunId: team.teamRunId, address: parseAgentTeamAddress(team.address), coordinatorAddress: team.source.coordinatorAddress,
+      delegatorAgentRunId, execution: team,
     }))
     for (const member of team.members) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
     team.taskExecutions.forEach((task) => this.addTask(task, team.teamRunId))

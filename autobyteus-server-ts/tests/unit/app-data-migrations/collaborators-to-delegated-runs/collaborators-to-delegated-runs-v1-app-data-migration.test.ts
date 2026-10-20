@@ -128,8 +128,10 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
     const ours = definitions[index]!;
     expect(definitions[index + 1]!.id).toBe(TASK_AGENT_OWN_RUN_V1_MIGRATION_ID);
     expect(definitions[index + 2]!.id).toBe("20261018_append_only_message_logs_v1");
-    // Only later cleanups that write no run tree or message log follow (the work-trace export removal).
-    expect(definitions.slice(index + 3).map((definition) => definition.id)).toEqual(["20261019_remove_work_trace_exports"]);
+    // Only later steps that write no run tree or message log follow: the work-trace export removal, and the
+    // completion of delegated copies' own files (they write own files only).
+    expect(definitions.slice(index + 3).map((definition) => definition.id))
+      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1"]);
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });

@@ -268,7 +268,9 @@ it('exposes the exact selected Org task source root even with no metadata projec
   const view = JSON.parse(JSON.stringify(taskBearingView()));
   view.is_active = false;
   view.execution_tree.rootOrg.members[0].launchConfiguration.workspaceRootPath = '/parent';
-  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/child';
+  // The copy runs from its own recorded source, not from what its configured placement says now (REQ-001).
+  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/placement-now';
+  view.execution_tree.rootOrg.taskExecutions[0].source.launchConfiguration.workspaceRootPath = '/child';
   mocks.resolveWorkspaceMetadataByRootPath.mockResolvedValue(null);
   mocks.query.mockImplementation(async ({ variables }: any) => ({ data: { getAgentOrgMemberRunProjection: {
     ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,

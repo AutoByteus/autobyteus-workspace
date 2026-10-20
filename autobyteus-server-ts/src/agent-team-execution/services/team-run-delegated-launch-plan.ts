@@ -10,8 +10,6 @@ import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../ag
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import { TeamTaskSourceResolver } from "../task-delegation/team-task-source-resolver.js";
-import { buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
 import { applyTeamDelegatedLaunchSelections, teamDelegatedLaunchForest } from "./team-run-execution-tree-mutator.js";
 import {
   applyTeamRunModelConfigPatches,
@@ -22,10 +20,8 @@ import {
 /** The delegated copies of one (stored or live) Team tree, their started sources and closed copies. */
 const reader = (tree: TeamRunExecutionTreeSnapshot, closed: readonly TaskExecutionReference[]) => {
   const closedKeys = new Set(closed.map(taskExecutionReferenceKey));
-  const sources = new TeamTaskSourceResolver({ config: buildTeamRunConfigFromExecutionTree(tree) });
   return {
     forest: teamDelegatedLaunchForest(tree),
-    readTaskSource: (address: string, recorded: Parameters<TeamTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
     isClosed: (reference: TaskExecutionReference) => closedKeys.has(taskExecutionReferenceKey(reference)),
   };
 };

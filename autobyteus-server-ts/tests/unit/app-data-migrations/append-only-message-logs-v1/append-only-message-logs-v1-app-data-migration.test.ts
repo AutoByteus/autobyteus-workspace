@@ -16,6 +16,7 @@ import {
   LOG_WRITING_PREDECESSOR_IDS,
 } from "../../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { TaskAgentOwnRunV1AppDataMigration, TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "../../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { TeamRunMigrationStateClassifier } from "../../../../src/app-data-migrations/migrations/team-run-migration-state-classifier.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -56,6 +57,11 @@ const ledgerWith = (pending: readonly string[] = []) => ({
 const convert = (memory: string, pending: readonly string[] = []) =>
   new AppendOnlyMessageLogsV1AppDataMigration(memory, { ledger: ledgerWith(pending) }).execute();
 const ownRun = (memory: string) => new TaskAgentOwnRunV1AppDataMigration(memory, { ledger: ledgerWith() }).execute();
+/**
+ * The own-file completion (`20261019_delegated_copy_own_file_complete_v1`) runs in the same start; it touches no
+ * message log, so it runs here right after own-run and the current stores compose every copy, as the app sees them.
+ */
+const completeOwnFiles = (memory: string) => new DelegatedCopyOwnFileCompleteV1AppDataMigration(memory, { ledger: ledgerWith() }).execute();
 
 const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 const put = async (file: string, value: unknown) => {
@@ -158,6 +164,7 @@ const releasedInstall = async () => {
   const { root, memory } = await dataRoot();
   await writeReleasedDataRoot(memory);
   expect((await ownRun(memory)).status).toBe("SUCCEEDED");
+  expect((await completeOwnFiles(memory)).status).toBe("SUCCEEDED");
   await writeTeamRun(memory, "team-empty", []);
   await writeOrgRun(memory, "org-empty", []);
   await writeOrgRun(memory, "org-unordered", [

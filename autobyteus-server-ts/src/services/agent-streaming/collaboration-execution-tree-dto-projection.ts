@@ -36,16 +36,17 @@ const projectSource = (value: LaunchConfigurationSource): CollaborationLaunchCon
   fallbacks: value.fallbacks.map(({ layer, runtimeKind, llmModelIdentifier, reason, detail }) =>
     ({ layer, runtimeKind, llmModelIdentifier, reason, detail })),
 });
-/** Optional launch fields, emitted only when recorded. */
-const projectOptionalLaunch = <K extends "launchSource" | "defaultLaunchSource">(
-  value: Readonly<{ launchConfiguration?: AgentLaunchConfiguration }> & Partial<Record<K, LaunchConfigurationSource>>,
+/** An optional launch source, emitted only when recorded. */
+const projectOptionalSource = <K extends "launchSource" | "defaultLaunchSource">(
+  value: Partial<Record<K, LaunchConfigurationSource>>,
   sourceKey: K,
-  includeLaunch: boolean,
-) => ({
-  ...(includeLaunch && value.launchConfiguration ? { launchConfiguration: projectLaunch(value.launchConfiguration) } : {}),
-  ...(value[sourceKey] ? { [sourceKey]: projectSource(value[sourceKey]!) } : {}),
+) => (value[sourceKey] ? { [sourceKey]: projectSource(value[sourceKey]!) } : {}) as Partial<Record<K, CollaborationLaunchConfigurationSourceDto>>;
+/** A Team copy member's complete launch and follower fact; its own launch source only when recorded. */
+const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
+  launchConfiguration: projectLaunch(member.launchConfiguration),
+  followsTeam: member.followsTeam,
+  ...projectOptionalSource(member, "launchSource"),
 });
-const projectMemberLaunch = (member: RecordedMemberLaunch) => projectOptionalLaunch(member, "launchSource", true);
 /** A user model choice, emitted only when recorded. */
 const projectSelection = <K extends "userLaunchSelection" | "userTeamLaunchSelection">(key: K, selection: UserLaunchSelection | undefined) =>
   (selection ? { [key]: userLaunchSelectionDtoSchema.parse({
@@ -71,25 +72,25 @@ export const projectCollaborationTaskExecution = (execution: TaskExecution): Col
     ...(execution.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: execution.delegatorAgentRunId }),
   };
   if ("agentRunId" in execution) {
-    const source: TaskAgentExecutionSourceDto | undefined = execution.source && {
+    const source: TaskAgentExecutionSourceDto = {
       kind: "agent", agentDefinitionId: execution.source.agentDefinitionId,
       launchConfiguration: projectLaunch(execution.source.launchConfiguration),
-      ...projectOptionalLaunch(execution.source, "launchSource", false),
+      ...projectOptionalSource(execution.source, "launchSource"),
     };
     return { ...identity, agentRunId: execution.agentRunId, platformAgentRunId: execution.platformAgentRunId,
-      ...(source === undefined ? {} : { source }), ...projectSelection("userLaunchSelection", execution.userLaunchSelection) };
+      source, ...projectSelection("userLaunchSelection", execution.userLaunchSelection) };
   }
-  const source: TaskTeamExecutionSourceDto | undefined = execution.source && {
+  const source: TaskTeamExecutionSourceDto = {
     kind: "agent_team", teamDefinitionId: execution.source.teamDefinitionId,
     coordinatorAddress: execution.source.coordinatorAddress,
     members: execution.source.members.map((member) =>
       ({ address: member.address, agentDefinitionId: member.agentDefinitionId, ...projectMemberLaunch(member) })),
     handoffs: execution.source.handoffs.map(projectHandoff),
     defaultLaunchConfiguration: projectLaunch(execution.source.defaultLaunchConfiguration),
-    ...projectOptionalLaunch(execution.source, "defaultLaunchSource", false),
+    ...projectOptionalSource(execution.source, "defaultLaunchSource"),
   };
   return { ...identity, teamRunId: execution.teamRunId, members: execution.members.map(projectTaskMember),
-    taskExecutions: execution.taskExecutions.map(projectCollaborationTaskExecution), ...(source === undefined ? {} : { source }),
+    taskExecutions: execution.taskExecutions.map(projectCollaborationTaskExecution), source,
     ...projectSelection("userTeamLaunchSelection", execution.userTeamLaunchSelection) };
 };
 

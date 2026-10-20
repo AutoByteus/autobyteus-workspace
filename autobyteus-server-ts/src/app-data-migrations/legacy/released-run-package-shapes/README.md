@@ -29,6 +29,13 @@ layout read through these copies (contract §5.4):
 - `released-memory-locations-before-task-agent-own-run.ts`: today's runtime memory location
   classifier and stored location derivation. Used by both `20260731` working-context snapshot migrations.
 
+These modules (and `20260905` directly) keep using the current execution indexes, state-package
+validators and Org history-row projector on these released trees: their results are unchanged by
+task-agent-own-run and by delegated-copy-own-file-complete (which makes a copy's `source` required). The
+released tree reaches them only through `asSourceIndependentIndexInput` in
+`released-trees-before-task-agent-own-run.ts`, whose comment lists the calls that may be made with it; none
+reads a copy's `source`. Whoever makes one of them read `source` must first freeze it for these migrations.
+
 Current runtime code must never import this module.
 
 ## Message logs before and after append-only message logs (as of `origin/personal@65cf41c6b4`)
@@ -46,3 +53,20 @@ Current runtime code must never import this module.
   sources in `src/context-files/services/context-file-record-locators.ts` (R-C).
 
 Current runtime code must never import these modules.
+
+## Task agents' own files with `origin` (as of `origin/personal@f171032e88`)
+
+- `released-task-agent-own-files-with-origin.ts`: the own files of delegated copies as
+  `20261017_task_agent_own_run_v1` writes them: the `taskAgent` section with `origin`
+  (`catalog` | `configured_place`), an agent own file whose launch is all `null` when never recorded, a
+  task team member whose launch is present only when it runs on its own agent default; their readers, the
+  two released writers and the own-file reads and writes under one memory root. Used by
+  `20261017_task_agent_own_run_v1` (every own-file read and write) and by
+  `20261019_delegated_copy_own_file_complete_v1` (its classifier of the released shape). One addition
+  after the release, a same-ID repair of 20261017 (D-9): `readReleasedOwnFileOwnership` reads only an own
+  file's coordinating run and, for a team, its members' run IDs, in the released shape and in the shape
+  20261019 writes. 20261017's retry uses it to recognize its own earlier output (`isOwnedHere`,
+  `partsAtL1`) after 20261019 has completed that file in the same start. A damaged file is never owned.
+  Every other 20261017 read and write stays strict and released.
+
+Current runtime code must never import this module.

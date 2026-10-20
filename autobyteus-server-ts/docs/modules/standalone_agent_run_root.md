@@ -94,8 +94,8 @@ operation gate: the sender's own Team instance first (REQ-007), then the host; a
 the sender's own address and any address inside a Team copy that contains the sender; the host
 address is the host's own address) with `send_message_to` guidance and
 `COLLABORATION_SELF_TARGET_REJECTED`, then a catalog copy with a recorded `source`, which
-`StandaloneRootTaskSourceResolver` reads first (the first copy creates the package). Every task
-execution of this tree carries its `source`. `listAvailableAgents(sender)` serves
+`StandaloneRootTaskExecutionAdapter` projects on activation and restore (the first copy creates
+the package). Every task execution of this tree carries its `source`. `listAvailableAgents(sender)` serves
 `list_available_agents` and never writes, so a run that only lists has no `collaboration/` package
 and no `hasCollaboration` flag (AR-005).
 

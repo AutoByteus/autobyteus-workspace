@@ -6,11 +6,11 @@ import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-histor
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 /** REQ-018 for AgentOrg trees: read tolerantly (AC-020), write exactly (AC-021). */
 const TOP_LEVEL_KEYS = ["applicationBinding", "archivedAt", "createdAt", "handoffs", "rootOrg", "subjectKind"];
-const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "startedAt"];
+const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "source", "startedAt"];
 const keys = (value: unknown) => Object.keys(value as object).sort();
 const withoutDelegator = (list: readonly string[]) => list.filter((key) => key !== "delegatorAgentRunId");
 
@@ -29,7 +29,8 @@ const currentOrg = () => testAgentOrgExecutionTree({
 
 const taskAgent = (extra: Record<string, unknown> = {}) => ({
   address: "/director", agentRunId: "task-director-run", platformAgentRunId: null,
-  startedAt: "2026-09-01T00:00:00.000Z", ...extra,
+  startedAt: "2026-09-01T00:00:00.000Z",
+  source: { kind: "agent", agentDefinitionId: "director", launchConfiguration: testOrgLaunchConfiguration("/workspace") }, ...extra,
 });
 
 const withRootTasks = (taskExecutions: readonly Record<string, unknown>[], extra: Record<string, unknown> = {}) => {

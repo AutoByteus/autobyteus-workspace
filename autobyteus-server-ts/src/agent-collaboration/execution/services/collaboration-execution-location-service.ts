@@ -5,7 +5,7 @@ import type { AgentLaunchConfiguration } from "../../../agent-team-execution/dom
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
 import type { TaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import {
-  catalogCopyExecutionSource,
+  copyExecutionSource,
   taskExecutionListsOf,
   type CollaboratorExecutionSource,
 } from "../../collaborators/collaborator-source-projector.js";
@@ -28,7 +28,7 @@ type Family = "findAgent" | "findAgentSync" | "listAgents";
 export const tagTeamAgentExecution = (item: LocatedTeamAgentExecution): LocatedTeamCollaborationAgentExecution =>
   Object.freeze({ ...item, rootSubjectKind: "agent_team", rootRunId: item.rootTeamRunId });
 
-/** Every task-execution list of the located tree: the lists its catalog copies are recorded in. */
+/** Every task-execution list of the located tree: the lists its delegated copies are recorded in. */
 const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExecution): readonly (readonly TaskExecution[])[] => {
   switch (location.rootSubjectKind) {
     case "agent_team":
@@ -44,12 +44,14 @@ const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExec
 };
 
 /**
- * The definition and launch a located execution runs with: its configured placement, else its
- * catalog-copy source recorded in the located tree. Reads only that tree; null when it has neither.
+ * The definition and started launch a located execution runs with, decided by its execution kind: a
+ * configured member's placement, or a delegated copy's own recorded source (never the placement at its
+ * address). Reads only the located tree; null when the execution has neither.
  */
 export const locatedExecutionSource = (location: LocatedCollaborationAgentExecution): CollaboratorExecutionSource | null =>
-  location.configuredPlacement
-  ?? catalogCopyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
+  location.executionKind === "configured"
+    ? location.configuredPlacement
+    : copyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
 
 /** The launch settings a located execution runs with (see `locatedExecutionSource`). */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null =>

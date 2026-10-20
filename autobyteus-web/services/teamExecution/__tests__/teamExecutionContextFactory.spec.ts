@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { AgentLaunchConfigurationDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults'
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors'
 import {
   createTeamAgentContext,
   createTeamConfigurationView,
@@ -146,7 +146,7 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
 
   it('creates one locked Agent context from the exact configured Agent snapshot', () => {
     const source = tree()
-    expect(teamAgentSourceAt(source, '/student_one')?.agent_definition_id).toBeTruthy()
+    expect(teamAgentSourceOf(source, 'student-one-run')?.agent_definition_id).toBeTruthy()
 
     const context = createTeamAgentContext({
       tree: source,

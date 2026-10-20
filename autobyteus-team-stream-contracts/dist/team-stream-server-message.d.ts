@@ -1023,7 +1023,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             platform_agent_run_id: string | null;
             delegator_agent_run_id: string | null;
             started_at: string;
-            source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
             user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_agent";
@@ -1032,7 +1032,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             platform_agent_run_id: string | null;
             delegator_agent_run_id: string | null;
             started_at: string;
-            source?: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
             user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>, z.ZodType<Readonly<{
             kind: "task_team";
@@ -1042,7 +1042,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;
-            source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
             user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_team";
@@ -1052,7 +1052,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;
-            source?: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
             user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>]>;
     }, z.core.$strict>;

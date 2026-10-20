@@ -1,11 +1,5 @@
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
-import type { TeamRunAgentTeamNode, TeamRunNode } from "../domain/team-run-config.js";
-
-export const findTaskConfigNode = (
-  root: TeamRunAgentTeamNode,
-  address: string,
-): TeamRunNode | null =>
-  root.address === address ? root : root.children.find((child) => child.address === address) ?? null;
+import type { TeamRunAgentTeamNode } from "../domain/team-run-config.js";
 
 export const requirePreparedTaskTeamNode = (
   prepared: PreparedTaskExecution,

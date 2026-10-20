@@ -23,7 +23,7 @@ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
 }) }));
 const ROOT = 'flat-team';
 const execution = (id = 'fresh-verifier') => ({ kind: 'task_agent' as const, address: '/verifier' as const,
-  agent_run_id: id, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-08-10T12:00:01.000Z' });
+  agent_run_id: id, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-08-10T12:00:01.000Z', source: { kind: 'agent', agent_definition_id: 'verifier', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } });
 const makeTeam = () => buildTestTeamContext({ teamRunId: ROOT, coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
   rootChildren: [testAgentNode('/lead', { agentRunId: 'lead' }), testAgentNode('/verifier', { agentRunId: 'configured-verifier' })],
 });

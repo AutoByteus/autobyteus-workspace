@@ -174,8 +174,7 @@ describe('openTeamRun current exact execution identity', () => {
       active: false,
       taskExecutions: [{
         kind: 'task_agent', address: '/member-b', agent_run_id: 'settled-task-agent-run-1',
-        platform_agent_run_id: null, delegator_agent_run_id: 'run-a', started_at: '2026-08-14T12:00:00.000Z',
-      }],
+        platform_agent_run_id: null, delegator_agent_run_id: 'run-a', started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'member-b', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }],
     })
     getTeamContextByIdMock.mockReturnValue(null)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
@@ -286,8 +285,7 @@ describe('openTeamRun current exact execution identity', () => {
   it('preserves an exact shut-down delegated focus when replacing a failed active-root stream', async () => {
     const candidate = makeTeam({ focus: 'retained-task', active: true, taskExecutions: [{
       kind: 'task_agent', address: '/member-b', agent_run_id: 'retained-task', platform_agent_run_id: null,
-      delegator_agent_run_id: 'run-a', started_at: '2026-09-01T00:02:00.000Z',
-    }] })
+      delegator_agent_run_id: 'run-a', started_at: '2026-09-01T00:02:00.000Z', source: { kind: 'agent', agent_definition_id: 'member-b', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }] })
     getTeamContextByIdMock.mockReturnValue(makeTeam())
     hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({ ...hydration(candidate), expectedBaseChangeSequence: 12 })
     await expect(reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'retained-task',

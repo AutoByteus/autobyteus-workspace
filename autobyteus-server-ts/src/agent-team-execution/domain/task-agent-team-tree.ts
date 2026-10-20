@@ -6,9 +6,9 @@ import type { IsoTimestamp, UserLaunchSelection } from "../../run-history/domain
 import type { TaskAgentSection } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
- * One member of a task agent team's own tree (contract §3.2, U-3): its definition and run, plus the
- * launch fields present only when recorded (an absent `launchConfiguration` means the member follows
- * the team default).
+ * One member of a task agent team's own tree (contract §3.2, U-3, D-5): its definition and run, the complete
+ * launch it started with and whether a team-level user selection reaches it (`followsTeam`). `launchSource`
+ * is display provenance, present only when the member's agent definition had a default.
  */
 export type TaskAgentTeamMemberNode = Readonly<{
   address: AgentTeamAddress;
@@ -17,7 +17,8 @@ export type TaskAgentTeamMemberNode = Readonly<{
   platformAgentRunId: string | null;
   role: null;
   description: null;
-  launchConfiguration?: AgentLaunchConfiguration;
+  launchConfiguration: AgentLaunchConfiguration;
+  followsTeam: boolean;
   launchSource?: LaunchConfigurationSource;
   userLaunchSelection?: UserLaunchSelection;
 }>;

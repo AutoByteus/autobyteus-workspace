@@ -56,7 +56,8 @@ const teamCopy = (teamRunId: string, delegatorAgentRunId: string) => ({
     { address: "/squad/designer", agentRunId: `${teamRunId}-designer`, platformAgentRunId: null },
   ],
   source: { kind: "agent_team", teamDefinitionId: "squad", coordinatorAddress: "/squad/lead", handoffs: [], defaultLaunchConfiguration: launch,
-    members: [{ address: "/squad/lead", agentDefinitionId: "lead" }, { address: "/squad/designer", agentDefinitionId: "designer" }] },
+    members: [{ address: "/squad/lead", agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true },
+      { address: "/squad/designer", agentDefinitionId: "designer", launchConfiguration: launch, followsTeam: true }] },
 });
 
 const teamRun = async () => {

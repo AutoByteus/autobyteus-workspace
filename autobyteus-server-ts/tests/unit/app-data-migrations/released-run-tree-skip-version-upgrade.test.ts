@@ -9,6 +9,10 @@ import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-d
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, AppendOnlyMessageLogsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import {
+  DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID,
+  DelegatedCopyOwnFileCompleteV1AppDataMigration,
+} from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID as FAMILY } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as LOCATORS } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID as SUMMARY } from "../../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
@@ -113,7 +117,9 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   // The production list in its order; the append-only log conversion reads this test's ledger (the
   // production default is the process database).
   const productionRegistry = () => new AppDataMigrationRegistry(new AppDataMigrationRegistry().listDefinitions().map((definition) =>
-    definition.id === APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID ? new AppendOnlyMessageLogsV1AppDataMigration(memory, { ledger: repository }) : definition));
+    definition.id === APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID ? new AppendOnlyMessageLogsV1AppDataMigration(memory, { ledger: repository })
+      : definition.id === DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID ? new DelegatedCopyOwnFileCompleteV1AppDataMigration(memory, { ledger: repository })
+        : definition));
   const registry = productionRegistry();
   const ids = registry.listDefinitions().map((definition) => definition.id);
   const released = ids.filter((id) => id < FAMILY);
@@ -133,17 +139,29 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   }
   expect(ids.some((id) => id.includes("delegator"))).toBe(false);
 
-  // (1) 20261017 (last) gave the task agent its own run: the released Team tree keeps everything else and
+  // (1) 20261017 gave the task agent its own run: the released Team tree keeps everything else and
   // links the task agent; it never wrote memory, so its own file is written at L1 (SKIPPED_UNMATERIALIZED).
   expect(await sha(path.join(teamDir, "team_run_execution_tree.json"))).not.toBe(teamTreeHash);
   const rawTeamTree = JSON.parse(await fs.readFile(path.join(teamDir, "team_run_execution_tree.json"), "utf8"));
   expect(rawTeamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", startedAt: T0 }]);
+  // 20261019_delegated_copy_own_file_complete_v1 (same start, registered last) completed that copy of the configured
+  // `/worker` from its slot and removed `origin`: the own file is in the current shape.
+  expect(results.find((candidate) => candidate.migrationId === DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)?.status).toBe("SUCCEEDED");
+  const slot = rawTeamTree.rootTeam.members[0];
   const own = JSON.parse(await fs.readFile(path.join(memory, "agents", "task-run", "run_metadata.json"), "utf8"));
-  expect(own).toMatchObject({ runId: "task-run", llmModelIdentifier: null, runtimeKind: null,
-    taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-a" }, address: "/worker", origin: "configured_place" } });
-  // …and the current store composes today's record; the old child carries no delegator.
+  expect(own).toMatchObject({ runId: "task-run", agentDefinitionId: slot.agentDefinitionId, llmModelIdentifier: slot.launchConfiguration.llmModelIdentifier,
+    runtimeKind: slot.launchConfiguration.runtimeKind,
+    taskAgent: { coordinatingRun: { kind: "agent_team", runId: "team-a" }, address: "/worker", launchSource: { origin: "configured", fallbacks: [] } } });
+  expect("origin" in own.taskAgent).toBe(false);
+  // …and the current store composes today's record from its own file; the old child carries no delegator.
   const teamTree = (await new TeamRunExecutionTreeStore().read(teamDir, "team-a"))!;
-  expect(teamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, startedAt: T0 }]);
+  expect(teamTree.rootTeam.taskExecutions).toEqual([{ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, startedAt: T0,
+    source: { kind: "agent", agentDefinitionId: slot.agentDefinitionId, launchSource: { origin: "configured", fallbacks: [] },
+      // The slot's launch projected to its 5 current keys (its obsolete `skillAccessMode` is not carried over, AR-002).
+      launchConfiguration: { runtimeKind: slot.launchConfiguration.runtimeKind, llmModelIdentifier: slot.launchConfiguration.llmModelIdentifier,
+        llmConfig: slot.launchConfiguration.llmConfig, autoExecuteTools: slot.launchConfiguration.autoExecuteTools,
+        workspaceRootPath: slot.launchConfiguration.workspaceRootPath } } }]);
+  expect(own.launchConfiguration ?? own).not.toHaveProperty("skillAccessMode");
   // (2) 20260901 produced the Org exactly as released (Org tree V1); the current reader loads it.
   const orgTreeRaw = JSON.parse(await fs.readFile(path.join(memory, "agent_orgs", "org-a", "agent_org_run_execution_tree.json"), "utf8"));
   expect(orgTreeRaw).toMatchObject({ schemaVersion: 1, subjectKind: "agent_org", rootOrg: { orgRunId: "org-a" } });

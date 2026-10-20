@@ -1,4 +1,3 @@
-import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
 import {
   CONFIGURED_LAUNCH_LAYERS,
@@ -10,7 +9,6 @@ import {
   isoTimestamp,
   nullableString,
   objectRecord,
-  parseLaunchConfiguration,
   requireKeys,
   requiredArray,
   requiredString,
@@ -42,22 +40,19 @@ export const parseLaunchConfigurationSource = (value: unknown, label: string): L
 };
 
 /**
- * Optional launch fields of catalog-copy records: absent keys truthfully mean
- * "runs on the Team's launch" (member `launchConfiguration`) or "source not recorded"; present
- * values are validated and projected exactly.
+ * The optional launch source of a copy record (`launchSource` of an agent or a Team member,
+ * `defaultLaunchSource` of a Team): absent truthfully means "source not recorded"; present values are
+ * validated and projected exactly.
  */
 export const parseOptionalLaunchFields = (
   record: Record<string, unknown>,
-  keys: Readonly<{ launch?: "launchConfiguration"; source: "launchSource" | "defaultLaunchSource" }>,
+  keys: Readonly<{ source: "launchSource" | "defaultLaunchSource" }>,
   label: string,
-): { launchConfiguration?: AgentLaunchConfiguration; launchSource?: LaunchConfigurationSource; defaultLaunchSource?: LaunchConfigurationSource } => ({
-  ...(keys.launch && record[keys.launch] !== undefined
-    ? { launchConfiguration: parseLaunchConfiguration(record[keys.launch], `${label}.${keys.launch}`) }
-    : {}),
-  ...(record[keys.source] !== undefined
+): { launchSource?: LaunchConfigurationSource; defaultLaunchSource?: LaunchConfigurationSource } => (
+  record[keys.source] !== undefined
     ? { [keys.source]: parseLaunchConfigurationSource(record[keys.source], `${label}.${keys.source}`) }
-    : {}),
-});
+    : {}
+);
 
 /**
  * The optional user model choice of a copy record (`userLaunchSelection` on

@@ -159,8 +159,7 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
       const member = this.findInstanceAgent(teamRunId, address);
       return member ? messagePlacement("agent", member.address, member) : null;
     }
-    const coordinatorAddress = this.instanceCoordinatorAddress(team);
-    const coordinator = coordinatorAddress ? this.findInstanceAgent(teamRunId, coordinatorAddress) : null;
+    const coordinator = this.findInstanceAgent(teamRunId, this.instanceCoordinatorAddress(team));
     return coordinator ? messagePlacement("agent_team", team.address, coordinator) : null;
   }
 
@@ -169,11 +168,9 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
       .find((agent) => agent.executionKind !== "task" && agent.address === address) ?? null;
   }
 
-  /** A task copy's catalog source (every Team instance below the root records one). */
-  private instanceCoordinatorAddress(team: IndexedTeamExecution): AgentTeamAddress | null {
-    if ("coordinatorAddress" in team.source) return team.source.coordinatorAddress;
-    if ("source" in team.source && team.source.source) return team.source.source.coordinatorAddress;
-    return null;
+  /** The root Team's own; a Team copy's from its own source. */
+  private instanceCoordinatorAddress(team: IndexedTeamExecution): AgentTeamAddress {
+    return "coordinatorAddress" in team.source ? team.source.coordinatorAddress : team.source.source.coordinatorAddress;
   }
 
   getTaskExecution(reference: TaskExecutionReference): IndexedTaskExecution | null {

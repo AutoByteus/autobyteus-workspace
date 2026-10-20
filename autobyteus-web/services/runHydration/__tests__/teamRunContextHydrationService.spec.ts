@@ -77,13 +77,17 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     ]);
   });
 
+  /** A copy of the configured `/member-a` records that placement's snapshot (REQ-001). */
+  const memberACopySource = { kind: 'agent' as const, agent_definition_id: 'agent-a', launch_source: { origin: 'configured' as const, fallbacks: [] },
+    launch_configuration: { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'gpt-test', llm_config: null, auto_execute_tools: false, workspace_root_path: null } };
+
   it('hydrates the stored closed task executions so closed rows are absent from the first render (REQ-004)', async () => {
     const delegatedTree = buildTestTeamContext({
       teamRunId: 'team-live-recovery', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Recovery Team',
       coordinatorAddress: '/member-a',
       rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a', agentDefinitionId: 'agent-a', llmModelIdentifier: 'gpt-test' })],
       taskExecutions: [{ kind: 'task_agent', address: '/member-a', agent_run_id: 'closed-copy', platform_agent_run_id: null,
-        delegator_agent_run_id: 'run-a', started_at: '2026-10-06T00:00:00.000Z' }],
+        delegator_agent_run_id: 'run-a', started_at: '2026-10-06T00:00:00.000Z', source: memberACopySource }],
     }).view.getExecutionTree();
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
       variables.agentRunId
@@ -105,7 +109,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     const retainedTree = structuredClone(tree);
     retainedTree.root_team.task_executions.push({ kind: 'task_agent', address: '/member-a',
       agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
-      started_at: retainedTree.created_at });
+      started_at: retainedTree.created_at, source: memberACopySource });
     queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
       : { data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });

@@ -17,16 +17,11 @@ import {
 } from "./run-execution-tree-shared-record-schemas.js";
 import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
-/**
- * `source` of a catalog task copy is optional: its absence truthfully means the copy's source
- * is the configured placement at its address (every record written before
- * catalog copies existed). Present values are validated and projected exactly.
- */
+/** `source` of a delegated copy: the snapshot it runs with, validated and projected exactly. */
 export const parseTaskAgentExecutionSource = (
   execution: Record<string, unknown>,
   label: string,
-): { source?: TaskAgentExecutionSource } => {
-  if (execution.source === undefined) return {};
+): { source: TaskAgentExecutionSource } => {
   const source = objectRecord(execution.source, `${label}.source`);
   requireKeys(source, ["kind", "agentDefinitionId", "launchConfiguration"], `${label}.source`);
   if (source.kind !== "agent") throw new Error(`${label}.source.kind must be 'agent'.`);
@@ -44,8 +39,7 @@ export const parseTaskTeamExecutionSource = (
   execution: Record<string, unknown>,
   teamAddress: AgentTeamAddress,
   label: string,
-): { source?: TaskTeamExecutionSource } => {
-  if (execution.source === undefined) return {};
+): { source: TaskTeamExecutionSource } => {
   const at = `${label}.source`;
   const source = objectRecord(execution.source, at);
   requireKeys(source, [
@@ -53,16 +47,20 @@ export const parseTaskTeamExecutionSource = (
   ], at);
   if (source.kind !== "agent_team") throw new Error(`${at}.kind must be 'agent_team'.`);
   const members = requiredArray(source.members, `${at}.members`).map((value, index) => {
-    const member = objectRecord(value, `${at}.members[${index}]`);
-    requireKeys(member, ["address", "agentDefinitionId"], `${at}.members[${index}]`);
-    const address = canonicalNonRootAddress(member.address, `${at}.members[${index}].address`);
+    const memberAt = `${at}.members[${index}]`;
+    const member = objectRecord(value, memberAt);
+    requireKeys(member, ["address", "agentDefinitionId", "launchConfiguration", "followsTeam"], memberAt);
+    const address = canonicalNonRootAddress(member.address, `${memberAt}.address`);
     if (getParentAgentTeamAddress(address) !== teamAddress) {
-      throw new Error(`${at}.members[${index}].address '${address}' is not a direct member of '${teamAddress}'.`);
+      throw new Error(`${memberAt}.address '${address}' is not a direct member of '${teamAddress}'.`);
     }
+    if (typeof member.followsTeam !== "boolean") throw new Error(`${memberAt}.followsTeam must be boolean.`);
     return {
       address,
-      agentDefinitionId: requiredString(member.agentDefinitionId, `${at}.members[${index}].agentDefinitionId`),
-      ...parseOptionalLaunchFields(member, { launch: "launchConfiguration", source: "launchSource" }, `${at}.members[${index}]`),
+      agentDefinitionId: requiredString(member.agentDefinitionId, `${memberAt}.agentDefinitionId`),
+      launchConfiguration: parseLaunchConfiguration(member.launchConfiguration, `${memberAt}.launchConfiguration`),
+      followsTeam: member.followsTeam,
+      ...parseOptionalLaunchFields(member, { source: "launchSource" }, memberAt),
     };
   });
   const memberAddresses = new Set<string>(members.map((member) => member.address));
@@ -70,9 +68,10 @@ export const parseTaskTeamExecutionSource = (
   const coordinatorAddress = canonicalNonRootAddress(source.coordinatorAddress, `${at}.coordinatorAddress`);
   if (!memberAddresses.has(coordinatorAddress)) throw new Error(`${at}.coordinatorAddress is not one of its members.`);
   const handoffs = normalizeCollaborationHandoffs(source.handoffs, `${at}.handoffs`);
+  // The handoff rules of its members: each starts at a member; it may lead to the coordinating run (D-4).
   for (const handoff of handoffs) {
-    if (!memberAddresses.has(handoff.from) || !memberAddresses.has(handoff.to)) {
-      throw new Error(`${at} handoff '${handoff.from}' -> '${handoff.to}' leaves the Team.`);
+    if (!memberAddresses.has(handoff.from)) {
+      throw new Error(`${at} handoff '${handoff.from}' -> '${handoff.to}' does not start at a member of the Team.`);
     }
   }
   return {

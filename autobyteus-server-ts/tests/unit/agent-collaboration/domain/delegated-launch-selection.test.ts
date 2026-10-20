@@ -5,32 +5,32 @@ import {
   recordedDelegatedLaunchSelections,
   resolveDelegatedLaunchTargets,
   type DelegatedLaunchForest,
-  type DelegatedTaskSourceReader,
 } from "../../../../src/agent-collaboration/domain/delegated-launch-selection.js";
 import { delegatedStopSet } from "../../../../src/agent-collaboration/domain/delegated-stop-set.js";
 import type {
+  TaskAgentExecutionSource,
   TaskExecution,
   TaskTeamExecution,
+  TaskTeamExecutionSource,
 } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
-import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/work" };
 const codex = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1", llmConfig: { effort: "high" }, autoExecuteTools: true, workspaceRootPath: "/work" };
 const at = "2026-10-13T00:00:00.000Z";
-const agentNode = (address: string, launch = claude) => ({ kind: "agent" as const, address: address as never, agentDefinitionId: address, agentRunId: "pending", platformAgentRunId: null, role: null, description: null, ...launch });
-const seTeam: TeamRunAgentTeamNode = {
-  kind: "agent_team", address: "/se" as never, teamDefinitionId: "se", teamRunId: "pending", coordinatorAddress: "/se/lead" as never,
-  defaultLaunchConfiguration: claude,
-  children: [agentNode("/se/lead"), agentNode("/se/ie", codex)],
+// Every copy's started launch is its own recorded source (no reader of the configured placement).
+const agentSource: TaskAgentExecutionSource = { kind: "agent", agentDefinitionId: "writer", launchConfiguration: codex };
+const seSource: TaskTeamExecutionSource = {
+  kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [], defaultLaunchConfiguration: claude,
+  members: [
+    { address: "/se/lead" as never, agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true },
+    { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: false },
+  ],
 };
-const readTaskSource: DelegatedTaskSourceReader = (address) => address === "/se"
-  ? { kind: "agent_team", node: seTeam, followerAddresses: ["/se/lead"] as never }
-  : address === "/writer" || address === "/se/ie" ? { kind: "agent", node: codex } : null;
 
-const helper: TaskExecution = { address: "/writer" as never, agentRunId: "helper", platformAgentRunId: null, delegatorAgentRunId: "copy-ie", startedAt: at };
-const nestedHelper: TaskExecution = { address: "/writer" as never, agentRunId: "helper-2", platformAgentRunId: null, delegatorAgentRunId: "helper", startedAt: at };
-const hosted: TaskExecution = { address: "/se/ie" as never, agentRunId: "hosted", platformAgentRunId: null, startedAt: at };
+const helper: TaskExecution = { address: "/writer" as never, agentRunId: "helper", platformAgentRunId: null, delegatorAgentRunId: "copy-ie", startedAt: at, source: agentSource };
+const nestedHelper: TaskExecution = { address: "/writer" as never, agentRunId: "helper-2", platformAgentRunId: null, delegatorAgentRunId: "helper", startedAt: at, source: agentSource };
+const hosted: TaskExecution = { address: "/se/ie" as never, agentRunId: "hosted", platformAgentRunId: null, startedAt: at, source: agentSource };
 const seCopy: TaskTeamExecution = {
   address: "/se" as never, teamRunId: "se-copy", startedAt: at, delegatorAgentRunId: "pm",
   members: [
@@ -38,17 +38,18 @@ const seCopy: TaskTeamExecution = {
     { address: "/se/ie" as never, agentRunId: "copy-ie", platformAgentRunId: null, userLaunchSelection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null, selectedAt: at } },
   ],
   taskExecutions: [hosted],
+  source: seSource,
 };
-const older: TaskExecution = { address: "/writer" as never, agentRunId: "older", platformAgentRunId: null, startedAt: at };
-const unrelated: TaskExecution = { address: "/writer" as never, agentRunId: "unrelated", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: at };
-const reviewerCopy: TaskExecution = { address: "/writer" as never, agentRunId: "reviewer-helper", platformAgentRunId: null, delegatorAgentRunId: "reviewer-run", startedAt: at };
+const older: TaskExecution = { address: "/writer" as never, agentRunId: "older", platformAgentRunId: null, startedAt: at, source: agentSource };
+const unrelated: TaskExecution = { address: "/writer" as never, agentRunId: "unrelated", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: at, source: agentSource };
+const reviewerCopy: TaskExecution = { address: "/writer" as never, agentRunId: "reviewer-helper", platformAgentRunId: null, delegatorAgentRunId: "reviewer-run", startedAt: at, source: agentSource };
 const rootTasks = [seCopy, helper, nestedHelper, older, unrelated, reviewerCopy];
 const forest: DelegatedLaunchForest = { taskExecutionLists: [rootTasks] };
 const choice = { llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } };
 
 describe("resolveDelegatedLaunchTargets", () => {
   it("resolves an agent copy, a Team copy, and a Team copy member with their stop units and current launches", () => {
-    const targets = resolveDelegatedLaunchTargets({ forest, readTaskSource, changes: [
+    const targets = resolveDelegatedLaunchTargets({ forest, changes: [
       { agentRunId: "helper", selection: choice },
       { teamRunId: "se-copy", selection: choice },
       { agentRunId: "copy-ie", selection: choice },
@@ -68,7 +69,7 @@ describe("resolveDelegatedLaunchTargets", () => {
 
   it("refuses configured members, unknown runs, ambiguous or repeated changes and closed copies", () => {
     const resolve = (changes: Parameters<typeof resolveDelegatedLaunchTargets>[0]["changes"], isClosed?: () => boolean) =>
-      () => resolveDelegatedLaunchTargets({ forest, readTaskSource, changes, isClosed });
+      () => resolveDelegatedLaunchTargets({ forest, changes, isClosed });
     expect(resolve([{ agentRunId: "pm", selection: choice }])).toThrow(/not an open delegated copy/);
     expect(resolve([{ agentRunId: "helper", teamRunId: "se-copy", selection: choice }])).toThrow(/exactly one/);
     expect(resolve([{ selection: choice }])).toThrow(/exactly one/);
@@ -79,7 +80,7 @@ describe("resolveDelegatedLaunchTargets", () => {
 
 describe("applyDelegatedLaunchSelections", () => {
   it("records only the selection fields and leaves started values and unrelated records untouched", () => {
-    const targets = resolveDelegatedLaunchTargets({ forest, readTaskSource, changes: [
+    const targets = resolveDelegatedLaunchTargets({ forest, changes: [
       { teamRunId: "se-copy", selection: choice }, { agentRunId: "hosted", selection: { llmModelIdentifier: "x", llmConfig: null } },
     ] });
     const selections = delegatedLaunchSelections(targets, at);

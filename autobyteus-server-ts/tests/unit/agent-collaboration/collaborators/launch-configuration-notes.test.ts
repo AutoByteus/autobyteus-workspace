@@ -38,10 +38,10 @@ describe("launch configuration notes (REQ-003, REQ-008)", () => {
       defaultLaunchConfiguration: codex,
       defaultLaunchSource: { origin: "team_default", fallbacks: [] },
       members: [
-        { address: "/se/lead" as never, agentDefinitionId: "lead" },
-        { address: "/se/implementation_engineer" as never, agentDefinitionId: "ie",
+        { address: "/se/lead" as never, agentDefinitionId: "lead", launchConfiguration: codex, followsTeam: true },
+        { address: "/se/implementation_engineer" as never, agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: true,
           launchSource: { origin: "team_default", fallbacks: [{ ...codexMissing, runtimeKind: "grok_build", llmModelIdentifier: "grok-4", detail: "no grok." }] } },
-        { address: "/se/code_reviewer" as never, agentDefinitionId: "cr", launchConfiguration: codex, launchSource: { origin: "agent_default", fallbacks: [] } },
+        { address: "/se/code_reviewer" as never, agentDefinitionId: "cr", launchConfiguration: codex, followsTeam: false, launchSource: { origin: "agent_default", fallbacks: [] } },
       ],
     };
     expect(entryPlanLaunchNotes(plan)).toEqual([

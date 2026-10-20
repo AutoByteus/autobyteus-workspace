@@ -74,7 +74,8 @@ const agentSource = (n: any) => ({ kind: 'agent', agentDefinitionId: n.agentDefi
     autoExecuteTools: n.autoExecuteTools, workspaceRootPath: n.workspaceRootPath } });
 const teamSource = (n: any) => ({ kind: 'agent_team', teamDefinitionId: n.teamDefinitionId,
   coordinatorAddress: n.coordinatorAddress, defaultLaunchConfiguration: n.defaultLaunchConfiguration, handoffs: [],
-  members: n.children.map((c: any) => ({ address: c.address, agentDefinitionId: c.agentDefinitionId })) });
+  members: n.children.map((c: any) => ({ address: c.address, agentDefinitionId: c.agentDefinitionId, followsTeam: true,
+    launchConfiguration: agentSource(c).launchConfiguration })) });
 
 export async function nestedReleaseScenario(kind: RootSubjectKind) {
   const f = releaseGenerationFixture(kind);

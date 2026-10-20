@@ -5,7 +5,6 @@ import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execu
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 import type { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
-import { StandaloneRootTaskSourceResolver } from "./standalone-root-task-source-resolver.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 
 /** The Agent root's port for the user Stop and model choice of its delegated copies (DS-001, DS-002). */
@@ -18,11 +17,9 @@ export const createStandaloneDelegatedLaunchCommand = (options: Readonly<{
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
   publishSelectionsChanged: DelegatedLaunchSelectionPublisher;
 }>): DelegatedLaunchSelectionCommand => {
-  const sources = new StandaloneRootTaskSourceResolver();
   return createRootHostedDelegatedLaunchCommand({
     tasks: options.taskExecutions,
     forest: () => standaloneDelegatedLaunchForest(options.getTree()),
-    readTaskSource: (address, recorded) => sources.resolve(address, recorded ?? null),
     publishSelectionsChanged: options.publishSelectionsChanged,
     isUnchanged: (selections) => isDeepStrictEqual(applyStandaloneDelegatedLaunchSelections(options.getTree(), selections), options.getTree()),
     commitTree: (selections, afterDurability) => options.persistence.commitTreeMutation({

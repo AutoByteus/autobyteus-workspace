@@ -1,0 +1,12 @@
+# Check: IMP-17
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: 26ad4ace20 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T19:03:08Z
+
+# Excerpt of IMP-17-merged-server-integration.log: summary and failure lines. The full log (836731 bytes) is not committed; it is at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/tickets/in-progress/delegated-copy-restore-from-own-file/evidence/IMP-17-merged-server-integration.log until the worktree is removed.
+
+      Tests  419 passed | 71 skipped (490)
+ Test Files  78 passed | 20 skipped (98)
+# Exit code: 0
+Integration test prerequisites are present.

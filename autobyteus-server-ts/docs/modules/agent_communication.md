@@ -499,15 +499,17 @@ Team copy:
   notes.
 - **Recorded, not re-read.** The resolved values and their source
   (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
-  written into the copy's `source` when it starts. A member that runs on its own
-  default also records its own `launchConfiguration` (see
-  [Run History](./run_history.md)). Restore uses these recorded values through
-  `effectiveMemberLaunchConfiguration`. Editing a definition default later changes
-  only copies started afterwards. Records written before this rule have no source
-  and restore on their recorded Team-level value.
-- **Unchanged.** Delegation to a configured placement uses that placement's
-  launch configuration. Single-agent starts and application launch baselines
-  have their own rules. An installed but unauthenticated runtime passes these
+  written into the copy's `source` when it starts. Every member records its complete
+  `launchConfiguration` (its own default, else the Team's) and `followsTeam` (true iff it
+  does not run on its own default; see [Run History](./run_history.md)). Restore uses
+  these recorded values only. Editing a definition default later changes only copies
+  started afterwards.
+- **Configured placements.** Delegation to a configured placement starts the copy from
+  that placement's launch configuration as it is now and records it as the copy's
+  `source` with origin `configured` ("As configured in this run"); a Team copy's members
+  follow the Team iff their runtime, model and model settings equal the Team's. Editing
+  the placement later changes only copies started afterwards. Single-agent starts and
+  application launch baselines have their own rules. An installed but unauthenticated runtime passes these
   checks and fails at its first turn as a run error, not as a fallback.
 
 ### User Model Choice And Stop Of Copies

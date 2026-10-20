@@ -60,3 +60,28 @@ export const testAgentOrgExecutionTree = (input: {
     taskExecutions: [],
   },
 }, input.orgRunId);
+
+/** The recorded source of an Agent copy (every copy records the snapshot it started from). */
+export const testOrgAgentCopySource = (agentDefinitionId: string, launchConfiguration = testOrgLaunchConfiguration()) => ({
+  kind: "agent" as const, agentDefinitionId, launchConfiguration,
+});
+
+/** The recorded source of a Team copy: every member with its complete launch, following the Team. */
+export const testOrgTeamCopySource = (input: {
+  teamDefinitionId: string;
+  coordinatorAddress: string;
+  memberAddresses: readonly string[];
+  launchConfiguration?: ReturnType<typeof testOrgLaunchConfiguration>;
+}) => {
+  const launch = input.launchConfiguration ?? testOrgLaunchConfiguration();
+  return {
+    kind: "agent_team" as const,
+    teamDefinitionId: input.teamDefinitionId,
+    coordinatorAddress: assertAgentTeamAddress(input.coordinatorAddress),
+    members: input.memberAddresses.map((member) => ({
+      address: assertAgentTeamAddress(member), agentDefinitionId: member.split("/").at(-1)!, launchConfiguration: launch, followsTeam: true,
+    })),
+    handoffs: [],
+    defaultLaunchConfiguration: launch,
+  };
+};

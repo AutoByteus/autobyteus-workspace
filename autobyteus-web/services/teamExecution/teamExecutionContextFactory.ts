@@ -15,7 +15,7 @@ import type {
 } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import { teamAgentSourceAt, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
+import { teamAgentSourceOf, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import { readsAsDisplayName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
@@ -62,7 +62,7 @@ export const createTeamAgentContext = (input: {
   workspaceMetadata: WorkspaceMetadata | null
 }): AgentContext | null => {
   // What this agent instance runs with: its user choice, else its Team's when it follows (DS-003).
-  const source = teamAgentSourceAt(input.tree, input.address, input.agentRunId)
+  const source = teamAgentSourceOf(input.tree, input.agentRunId)
   if (!source) return null
   // F-03 / CR-002: a catalog copy (and its members) reads as a spaced name, as in its row.
   const name = readsAsDisplayName(input.tree, source.address)
@@ -90,7 +90,7 @@ export const refreshTeamAgentLaunches = (
 ): void => {
   for (const [agentRunId, context] of contexts) {
     const location = locations.get(agentRunId)
-    const launch = location ? teamAgentSourceAt(tree, location.memberAddress, agentRunId)?.launch_configuration : null
+    const launch = location ? teamAgentSourceOf(tree, agentRunId)?.launch_configuration : null
     if (!launch || (context.config.llmModelIdentifier === launch.llm_model_identifier
       && modelConfigsEqual(context.config.llmConfig, launch.llm_config))) continue
     context.config = { ...context.config, llmModelIdentifier: launch.llm_model_identifier, llmConfig: immutableLlmConfig(launch.llm_config) }

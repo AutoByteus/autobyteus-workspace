@@ -460,7 +460,7 @@ Standalone agent persisted files:
   a link per task agent) and the host's own message log (`communication_messages_*.jsonl`,
   see Message logs below).
   Each task agent is a run of its own: an agent at `memory/agents/<childRunId>/`
-  (its `run_metadata.json` carries a `taskAgent` section and its catalog source,
+  (its `run_metadata.json` carries a `taskAgent` section, its definition and the launch it started with,
   plus its own `communication_messages` log), a task Team at
   `memory/agent_teams/<taskTeamRunId>/` (its own tree and log, members inside).
   The standalone metadata reader treats a task agent's `run_metadata.json` as
@@ -468,6 +468,16 @@ Standalone agent persisted files:
   [Standalone Agent Run Root](./standalone_agent_run_root.md).
 - deleting a run from history removes only its own folder: its task agents'
   folders are kept (they become detached: not listed, not restored, not reported).
+- startup migration `20261019_delegated_copy_own_file_complete_v1` converts own files written
+  with `taskAgent.origin` once: a copy of a configured place takes its definition and launch (a
+  Team copy: its team facts, each member's complete launch and `followsTeam` by the configured
+  rule, and its members' handoff rules) from its slot in the coordinating tree as it is at upgrade
+  (each launch projected to its five current keys); every Team copy's members get their complete
+  launch and `followsTeam`; `origin` is removed from every own file. One atomic write per file, read
+  back with the current reader; a file already in the current shape is not rewritten. A copy whose
+  slot is gone, or whose file cannot be read or converted, is left unchanged and reported, and the
+  current reader leaves it out (not loaded). The result stays non-terminal while
+  `20261017_task_agent_own_run_v1` has not succeeded.
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -487,45 +497,51 @@ Team persisted files:
   list: earlier releases recorded shared Agents and Agent Teams brought in with `@`
   or by an agent's first message there, and the startup migration
   `20261015_collaborators_to_delegated_runs_v1` converted each into a delegated run
-  (below). A delegated child that is a **catalog copy** carries an optional `source`
-  (`store/task-execution-source-schema.ts`):
+  (below). Every delegated child (a **copy**, started from the catalog or from a
+  configured placement of the run) carries a required `source`, the snapshot it runs
+  with (`store/task-execution-source-schema.ts`):
   - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration, launchSource?}`;
   - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration, defaultLaunchSource?}`.
+    `handoffs` are the handoff rules of its members: each starts at a member and may
+    lead to the coordinating run (a copy of a mounted Org Team keeps its members' rules
+    to the Org).
 
-  Activation and restore read it first. When it is absent, the copy's source is
-  the configured placement at its address, as for every record
-  written before catalog copies (the standalone Agent root requires it on every copy). The same field is used in the Org and Agent-root
-  trees.
+  A copy of a configured placement records the placement's definition and launch as
+  they were when it started. Activation records it, and restore reads only it, never the
+  placement at the copy's address: editing a configured member of a stopped run changes
+  only that member and the copies started after the edit. The same field is used in the
+  Org and Agent-root trees.
 
-  Per-agent launch records (catalog-copy sources; see
+  Per-agent launch records (see
   [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies)):
   - `launchSource` (an Agent, or a Team member) and `defaultLaunchSource` (a
     Team) are `{origin, fallbacks}`. `origin` is `agent_default`,
-    `team_default` or `inherited`. Each fallback is `{layer, runtimeKind,
+    `team_default`, `inherited`, or `configured` (a copy of a configured placement:
+    "As configured in this run"). Each fallback is `{layer, runtimeKind,
     llmModelIdentifier, reason, detail}` for a configured layer that was skipped.
     Note text is rendered from it and never stored.
-  - A Team member (`members[]` of a Team-copy source)
-    carries its own `launchConfiguration` only when it runs on its own agent
-    default, and a `launchSource` only when its agent definition had a default
-    (used or skipped). Otherwise the member runs on the Team's
-    `defaultLaunchConfiguration` and shares its source. The run-history domain
-    functions `effectiveMemberLaunchConfiguration` and
-    `effectiveMemberLaunchSource` are the only readers of a member's launch.
+  - A Team member (`members[]` of a Team-copy source) carries its complete
+    `launchConfiguration` and `followsTeam` (whether a Team-level user choice reaches
+    it). A catalog copy's member follows iff it does not run on its own agent default;
+    a configured-placement copy's member follows iff its runtime, model and model
+    settings equal the Team's. A member carries a `launchSource` only when its agent
+    definition had a default (used or skipped); otherwise it shares the Team's
+    (`effectiveMemberLaunchSource`). The source is provenance only: it never decides
+    the launch or the following.
   - The user's model choice for one copy instance (see
     [User model choice of copies](./agent_communication.md#user-model-choice-and-stop-of-copies))
     is `userLaunchSelection: {llmModelIdentifier, llmConfig, selectedAt}` on an
     agent-level record (a task Agent, a task Team's member Agent) and
     `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces only the
     model and its settings, beside the started values, which are never changed. The
-    run-history domain function `effectiveCopyAgentLaunch` (with
-    `memberFollowsTeam`) is the single rule: the agent's own choice, else the Team's
+    run-history domain function `effectiveCopyAgentLaunch` (with the member's
+    `followsTeam`) is the single rule: the agent's own choice, else the Team's
     when the member follows its Team, else the started launch.
-  - All of these fields are optional, with truthful absence, so no migration is
-    needed. A record written before them restores every member on the Team
-    value, and its source reads as not recorded. Writers emit the fields only
-    when they carry information. A build older than these fields ignores them
-    on restore and runs every member of such a Team on the Team value (downgrade
-    only).
+  - `launchSource`, `defaultLaunchSource` and the user choices are optional, with
+    truthful absence: a source written before sources existed reads as not recorded.
+    Own files written before a copy recorded its complete snapshot (with
+    `taskAgent.origin`) are converted once by the startup migration
+    `20261019_delegated_copy_own_file_complete_v1` (below).
 
   The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
