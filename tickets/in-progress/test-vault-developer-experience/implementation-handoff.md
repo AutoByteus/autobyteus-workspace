@@ -20,13 +20,13 @@ Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-
 
 - Implementation cycle: `Rework` (requirement/design revision on top of IR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003` (Local Fix CR-001 on IR-002)
 - Related solution revision IDs: `SR-009`, `SR-010` (on `SR-006`..`SR-008`)
 - Related architecture-review revision IDs: `ARCH-REV-004` (earlier `ARCH-REV-002`)
-- Related code-review revision IDs: `CRR-001` (Pass on IR-001)
+- Related code-review revision IDs: `CRR-002` (Fail on IR-002: CR-001, Low Local Fix), `CRR-001` (Pass on IR-001)
 - Related API/E2E revision IDs: `API-REV-001` (Blocked on the live vault; on hold for this revision)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (user revision SR-009). AR-013 guidance applied.
+- Triggering finding IDs: `CR-001` (IR-003). IR-002: `N/A` (user revision SR-009), AR-013 guidance applied.
 
 Commits on the branch (above the design commit `67d1aaaacc`):
 
@@ -41,7 +41,9 @@ Commits on the branch (above the design commit `67d1aaaacc`):
 | `9498de5f8b` | **IR-002** `feat(secrets)`: autobyteus-ts owns the vault read side and reads `AUTOBYTEUS_TEST_VAULT` (S9-1..S9-3). **All IR-002 checks ran on this tree.** |
 | `e40b0fe6ce` | IR-002 `docs(testing)`: scripts need only the variable; Vitest live runs keep the gate. |
 | `3c9a4e799a` | IR-002 `docs`: Secret Management, AGENTS.md, autobyteus-ts key-resolution section (S9-4). |
-| (next) | `docs(ticket)`: reviewer documents of ARCH-REV-004/CRR-001, this handoff, the revision record and IR-002 evidence. |
+| `d4cbc132a8`, `07fcc5969c` | `docs(ticket)`: reviewer documents of ARCH-REV-004/CRR-001; IR-002 handoff, record and evidence. |
+| `469de3d47e` | **IR-003** `test(autobyteus-ts)`: remove the dead Vitest self alias and its test (CR-001). `vitest.config.ts` is back to its pre-ticket form. IMP-26/IMP-27 ran on this tree. |
+| (next) | `docs(ticket)`: CRR-002 reviewer documents; IR-003 handoff, record and evidence. |
 
 What exists now (IR-001 base, with the IR-002 changes folded in):
 
@@ -97,7 +99,7 @@ IR-001 items (some superseded as marked):
 - autobyteus-ts: `src/secrets/provider-api-key-resolver.ts`; the client/factory files; `tests/setup.ts`, `vitest.config.ts`, `package.json`.
 - Test support: `test-support/test-vault/*`, `test-support/live-e2e/{test-runtime-bootstrap.mjs,.d.mts, run-live-e2e.mjs, live-e2e-harness.ts}`.
 - IR-002: `autobyteus-ts/src/secrets/{provider-api-key-resolver.ts, test-vault-setting.ts, vault/*}`; server `catalog/provider-credential-catalog.ts`, `domain/secret-id.ts`, `services/secret-management-service.ts`, `bootstrap/secret-vault-bootstrap.ts`, `test-vault/read-only-test-vault.ts`, `secret-vault-source.ts`, the two startup sites; `autobyteus-ts/scripts/verify-runtime-dependencies.mjs`; `test-support/{module-graph/module-graph.ts, test-vault/*}`; new tests `autobyteus-ts/tests/unit/secrets/{provider-api-key-resolver,vault-module-graph}.test.ts`, `tests/unit/secrets/vault/read-secret-entry.test.ts`, server `tests/e2e/secret-management/environment-key-source.e2e.test.ts`.
-- New tests: server `tests/unit/secret-management/test-vault-{read-path,module-graph,policy}.test.ts`, `tests/e2e/secret-management/test-vault-selection.e2e.test.ts`; autobyteus-ts `tests/unit/secrets/{provider-api-key-resolver,package-self-alias}.test.ts`, `tests/unit/test-setup-credential-isolation.test.ts`; Electron `serverRuntimeEnv.spec.ts` (+2 cases).
+- New tests: server `tests/unit/secret-management/test-vault-{read-path,module-graph,policy}.test.ts`, `tests/e2e/secret-management/test-vault-selection.e2e.test.ts`; autobyteus-ts `tests/unit/secrets/provider-api-key-resolver.test.ts` (`package-self-alias.test.ts` was added at IR-001 and removed at IR-003), `tests/unit/test-setup-credential-isolation.test.ts`; Electron `serverRuntimeEnv.spec.ts` (+2 cases).
 
 ## Important Assumptions
 
@@ -123,7 +125,7 @@ Implementation decisions and deviations from the design text, for review:
 
 ## Known Risks
 
-- R-A resolved: the Vitest self alias unifies class identity (`package-self-alias.test.ts`); classification across dist/src is by `kind`/`code` anyway.
+- R-A no longer applies: since IR-002 no code the autobyteus-ts Vitest run loads imports `autobyteus-ts` by package name, so the IR-001 self alias was removed at IR-003 (CR-001). Classification across dist/src copies is by `kind`/`code`.
 - IR-002: the core library holds a process-global, environment-driven key source. Constrained by lazy loading (IMP-17/18), REQ-004 forbidden locations (also on this path, IMP-17), the Vitest gate, and the server disabling it (AC-018).
 - IR-002: in the environment default, media clients resolve through `providerSecretId` without the server's media restrictions (accepted in ARCH-REV-004: the user's own test vault).
 - R-B: `node:sqlite` prints an ExperimentalWarning on stderr for the CLI and servers (already true for the inspection service).
@@ -171,7 +173,14 @@ Implementation decisions and deviations from the design text, for review:
 
 Evidence: `tickets/in-progress/test-vault-developer-experience/evidence/`.
 
-**IR-002 checks (current; commit `9498de5f8b`).** IR-001 rows IMP-01..IMP-13 below record the IR-001 tree (`855842b8f1`). After IR-002 they are superseded by IMP-14..IMP-25, except IMP-11 (Electron: no Electron change since, still valid) and IMP-10 (P-002: the setup path changed only by module moves; IMP-24 re-ran setup, skip, status, forbidden and remove on the new build).
+**IR-003 checks (commit `469de3d47e`).** CR-001 changes only `autobyteus-ts/vitest.config.ts` (alias removed) and deletes `package-self-alias.test.ts`; nothing else the code exercises changed, so IMP-14..IMP-25 stay valid except IMP-17 and IMP-22, which ran through that Vitest config and are superseded by:
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-26 | `AUTOBYTEUS_TEST_VAULT=<synthetic vault> pnpm -C autobyteus-ts test` (13 inherited `*_API_KEY`) | `469de3d47e` | as above | default suite without the alias | AC-009, REQ-011 | Pass | `IMP-26-autobyteus-ts-default.log` | `Test Files 392 passed \| 21 skipped (413)` |
+| IMP-27 | `AUTOBYTEUS_TEST_VAULT=<synthetic vault> RUN_LIVE_PROVIDER_TESTS=1` vitest on 3 live files + setup test | `469de3d47e` | one 401 from DeepSeek for a fake key | Vitest live mode through the environment default, without the alias | BEH-003, AC-008 | Pass | `IMP-27-autobyteus-ts-live-environment-default.log` | `missing capability provider.grok.api-key for GROK (test vault <tmp>/vault)`; `provider refused DeepSeek: invalid_or_missing_credentials` |
+
+**IR-002 checks (commit `9498de5f8b`).** IR-001 rows IMP-01..IMP-13 below record the IR-001 tree (`855842b8f1`). After IR-002 they are superseded by IMP-14..IMP-25, except IMP-11 (Electron: no Electron change since, still valid) and IMP-10 (P-002: the setup path changed only by module moves; IMP-24 re-ran setup, skip, status, forbidden and remove on the new build).
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |

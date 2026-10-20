@@ -7,7 +7,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / round 2 (Pass) | N/A (AR-007, AR-008 guidance) | `Initial Baseline` | `SR-008`, `ARCH-REV-002` | Implemented; ready for code review |
-| IR-002 | Architecture Reviewer / `design-review-report.md` / round 4 (Pass on the SR-009/SR-010 delta) | N/A (user revision SR-009; AR-013 guidance) | `Requirement Gap` (user-approved revision, designed upstream) | `SR-009`, `SR-010`, `ARCH-REV-004`, `CRR-001`, `API-REV-001` | Implemented; ready for code review |
+| IR-002 | Architecture Reviewer / `design-review-report.md` / round 4 (Pass on the SR-009/SR-010 delta) | N/A (user revision SR-009; AR-013 guidance) | `Requirement Gap` (user-approved revision, designed upstream) | `SR-009`, `SR-010`, `ARCH-REV-004`, `CRR-001`, `API-REV-001` | Implemented; CRR-002 Fail on CR-001 |
+| IR-003 | Code Reviewer / `code-review-report.md` / round 2 (`CRR-002`, Fail) | `CR-001` (Low) | `Local Fix` | `CRR-002`, `SR-010`, `ARCH-REV-004` | Fixed; ready for targeted delta review |
 
 ## Revision Entries
 
@@ -61,3 +62,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-14..IMP-25 Pass (server unit 749 files, integration 78, autobyteus-ts default 393, affected E2E 13, AC-018 E2E 3 + control).
 - Next recipient or routing: Code Reviewer (Large/High).
 - Remaining limitations or risks: real-key live runs and the isolated-instance smoke still need the user's vault (DEC-003); `tsx` not installed (probe ran with `node` on `dist`); the core library's process-global environment default is constrained as recorded under Known Risks.
+
+### IR-003 — Remove the dead Vitest self alias (CR-001)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, round 2 (`CRR-002`, Fail).
+- Triggering finding IDs: `CR-001` (Low, Local Fix, Core Principle 7).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 at `9498de5f8b` (CRR-002 Fail on CR-001 only; the rest of the re-audit passed).
+- Current authoritative result: IR-003 at `469de3d47e`; IMP-26 and IMP-27 pass.
+- Related solution revision IDs: `SR-010`
+- Related architecture-review revision IDs: `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `API-REV-001` (on hold)
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: the `autobyteus-ts/vitest.config.ts` alias existed for server code that the IR-001 test-setup installer loaded; IR-002 removed that installer, leaving the alias and its own test as dead code.
+- Approved behavior or requirement IDs affected: none (test configuration only); AC-009 and REQ-011 rechecked.
+- Implementation delta: removed the `resolve.alias` block and the now-unused `path`, `fileURLToPath` and `sourceRoot` from `autobyteus-ts/vitest.config.ts` (identical to the pre-ticket file); deleted `autobyteus-ts/tests/unit/secrets/package-self-alias.test.ts`. Evidence that nothing needs it: `git grep -nE "['\"]autobyteus-ts(/[^'\"]*)?['\"]" -- autobyteus-ts/tests autobyteus-ts/src 'autobyteus-ts/vitest*.ts' test-support/test-vault test-support/module-graph` finds only that test (other hits are path strings in a JSON fixture).
+- Changed files or areas: `autobyteus-ts/vitest.config.ts`, `autobyteus-ts/tests/unit/secrets/package-self-alias.test.ts` (deleted).
+- Local validation and result: IMP-26 (`pnpm -C autobyteus-ts test`, 392 files, selector exported, 13 inherited keys) Pass; IMP-27 (gated live files against a synthetic vault, as IMP-22) Pass.
+- Next recipient or routing: Code Reviewer, targeted delta review of CR-001 (Large/High).
+- Remaining limitations or risks: unchanged from IR-002.
