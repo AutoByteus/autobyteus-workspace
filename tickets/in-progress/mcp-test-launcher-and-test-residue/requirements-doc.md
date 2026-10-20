@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `mcp-test-launcher-and-test-residue`
-- Request / ticket: Project Task `autobyteus-199` (part of `autobyteus-195`): "MCP test launcher: don't depend on the code under test for the uv environment; and tidy files and folders that other tests leave behind"
+- Request / ticket: Project Task `autobyteus-199` (part of `autobyteus-195`): "MCP test launcher: don't depend on the code under test for the uv environment; and tidy files and folders that other tests leave behind"; extended 2026-10-20 by the Project Task Manager with FU-003 of `autobyteus-211`
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-10-20
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer's conversation message of 2026-10-20 stating the decisions below
-- Exact approved requirements baseline / solution revision: this document at `SR-001`
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer's conversation messages of 2026-10-20 stating the decisions below (SR-001), and the addition from the Project Task Manager's Task edit (SR-002)
+- Exact approved requirements baseline / solution revision: this document at `SR-002`
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -29,6 +29,7 @@
 | BEH-003 | Operational | SCN-003 | `pnpm -C autobyteus-ts test` leaves 36 entries in `autobyteus-ts/`: `mcp-config-*`, `tmp-edit-file-*`, `tmp-read-file-*`, `tmp-write-file-*`, `memory/agents/…` | Each of these tests works in a temporary directory outside the package and removes it in teardown | What each test asserts | Notes: probe P-3 |
 | BEH-004 | Operational | SCN-004 | `pnpm test:e2e` writes `autobyteus-server-ts/workspaces.json` (five e2e files use the default app data dir, the package root) | Those tests use a temporary data directory, removed in teardown | What each test asserts | Notes: probe P-4 |
 | BEH-005 | Operational | SCN-003 | Server unit tests leave nothing | Unchanged | Yes | Notes: probe P-5 |
+| BEH-006 | Contract | SCN-005 | In `team-task-event-current-contract.e2e.test.ts`, the case "rejects the retired task-record events and settlement fields" builds its two `TASK_EXECUTION_STARTED` payloads without the required `source`, so each `toThrow()` passes because `source` is missing, whatever field it names | Each rejection payload is valid except for the one field it names (`settled_at` present; `delegator_agent_run_id` missing), so each `toThrow()` fails only for that field | The case's three rejections and the first case stay; the contract is unchanged | Notes: probe P-6; `autobyteus-211` FU-003 |
 
 ## Stakeholders, Actors, And Outcomes
 
@@ -47,6 +48,7 @@
 | UC-002 | Report a complete reason when the Python fixture cannot be prepared | SCN-002 |
 | UC-003 | Run the core library tests without leaving files or folders in the worktree | SCN-003 |
 | UC-004 | Run the server e2e tests without leaving files or folders in the worktree | SCN-004 |
+| UC-005 | Prove that the Team stream contract rejects each retired field for that field's own reason | SCN-005 |
 
 ### Out Of Scope
 
@@ -88,6 +90,7 @@ None.
 | REQ-003 | When `uv` cannot prepare the fixture, the skip reason contains uv's complete error message with all its cause lines, joined on one line | BEH-002 | Low | Cosmetic but misleading today | Task O-2 |
 | REQ-004 | The core library tests (`pnpm -C autobyteus-ts test`) create their temporary files and folders outside the worktree (under the OS temp directory) and remove them in teardown; this includes the agent memory written by the runtime test | BEH-003 | Low | Test hygiene | Task O-4; DEC-001 |
 | REQ-005 | The server e2e tests that register workspaces use a temporary app data directory outside the worktree, removed in teardown; `pnpm test:e2e` no longer writes `autobyteus-server-ts/workspaces.json` | BEH-004 | Low | Test hygiene | Task 193 O-2; DEC-001 |
+| REQ-007 | In the rejection case of `team-task-event-current-contract.e2e.test.ts`, every `TASK_EXECUTION_STARTED` payload carries a valid `source` and differs from a valid payload only in the field it names, so each `toThrow()` fails only for that field | BEH-006 | Low | The assertions must prove what they name | Task addition (FU-003 of `autobyteus-211`); DEC-007 |
 | REQ-006 | After a core library, server unit and server e2e run, `git status --ignored` shows no new entry compared with before the runs, except build outputs and `autobyteus-server-ts/tests/.tmp/` | BEH-003, BEH-004, BEH-005 | Low | The Task's "Done when" | Task; DEC-005 |
 
 ## Acceptance Criteria
@@ -99,7 +102,8 @@ None.
 | AC-003 | REQ-002 | BEH-001 / SCN-001 | MCP integration tests | "delivers the configured env and cwd to the server" and pid-file-based cases pass for both implementations | — | Run |
 | AC-004 | REQ-003 | BEH-002 / SCN-002 | Preparation forced to fail (e.g. `UV_OFFLINE=1` and an empty `UV_CACHE_DIR`, or a fresh `UV_PROJECT_ENVIRONMENT`) | Python cases skip; the reason printed in the console and describe title contains the full uv message, including the cause text up to its end (for the offline case, the package URL) | `uv` not on PATH still gives `uv unavailable (not on PATH)` | Run with forced failure |
 | AC-005 | REQ-004, REQ-005, REQ-006 | BEH-003, BEH-004, BEH-005 / SCN-003, SCN-004 | Worktree with install and server build done; record `git status --ignored --porcelain --untracked-files=all` (minus `node_modules`); run `pnpm -C autobyteus-ts test`, `pnpm -C autobyteus-server-ts test:unit`, `pnpm test:e2e` with a clean env (TESTING.md) | The before/after diff has no new entries except build outputs and `autobyteus-server-ts/tests/.tmp/`; in particular no `mcp-config-*`, `tmp-*-file-*`, `autobyteus-ts/memory/`, `autobyteus-server-ts/workspaces.json` | Pre-existing failures unrelated to this change are reported with their cause or as FU-001 | Before/after diff |
-| AC-006 | REQ-004, REQ-005 | BEH-003, BEH-004 | Same runs | Every touched test passes as before (same counts, no new skips) | — | Run |
+| AC-006 | REQ-004, REQ-005, REQ-007 | BEH-003, BEH-004, BEH-006 | Same runs | Every touched test passes as before (same counts, no new skips) | — | Run |
+| AC-007 | REQ-007 | BEH-006 / SCN-005 | Run the file (`pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts --no-watch`), then two uncommitted mutations, one at a time: remove `settled_at` from its payload; add `delegator_agent_run_id` to the other payload | The file passes; under each mutation the case fails at that payload's `toThrow()` (the payload is now accepted) | Without `source` in the payload, the mutation would still pass, which is the defect being removed | Run + mutation |
 
 ## Relevant Scenarios And Journeys
 
@@ -108,6 +112,7 @@ None.
 | SCN-001 | Operational | Developer / agent; TESTING.md "Core library MCP integration" | Prove the MCP client against the real Python test server | The documented vitest command | `uv` on PATH | Prepare fixture → start server per case through the product client → assert → close | Tests pass; venv only in temp | Env delivery regressed: tests fail, repository untouched | Supported Normal Scenario | TESTING.md; launcher header | REQ-001, REQ-002; AC-001…AC-003 |
 | SCN-002 | Operational | Developer / agent | Learn why the Python cases skipped | Same command when `uv sync` fails (offline, cache missing) | Preparation fails | Prepare → skip with reason | Complete reason | `uv` missing → its own reason | Supported Explicit Edge Scenario (the launcher contract: "A preparation failure makes the Python cases skip with the reason") | Launcher header L11 | REQ-003; AC-004 |
 | SCN-003 | Operational | Developer / agent; TESTING.md layers | Run the core library and server unit suites | `pnpm -C autobyteus-ts test`; `pnpm -C autobyteus-server-ts test:unit` | Clean worktree | Run | No residue | — | Supported Normal Scenario | TESTING.md | REQ-004, REQ-006; AC-005, AC-006 |
+| SCN-005 | Contract | `@autobyteus/team-stream-contracts` `parseTeamStreamServerMessage` (current Team stream contract) | Reject retired task-record events and settlement fields | The e2e contract test | Built contracts package | Parse each retired-shape payload | Each is rejected for its own field | — | Supported Normal Scenario (governing contract) | `autobyteus-211` FU-003; probe P-6 | REQ-007; AC-007 |
 | SCN-004 | Operational | Developer / agent; TESTING.md "Server E2E" | Run the server e2e suite | `pnpm test:e2e` | Built server | Run | No residue | — | Supported Normal Scenario | TESTING.md | REQ-005, REQ-006; AC-005, AC-006 |
 
 ## UI, Interaction, And Experience Requirements
@@ -150,6 +155,7 @@ None.
 | DEC-003 | `/usr/bin/env NAME=value uv run …` (Task's suggestion) or start the venv's `python` directly? | Both make the location independent of env delivery | Direct python skips `uv run`; the 189 fixtures deliberately start the server with `uv run` like users do | Keep `uv run` behind `/usr/bin/env` as the Task says; it keeps 189's intent and changes the least. Python already skips where `/usr/bin/env` is absent (Windows) | Solution Designer | Decided |
 | DEC-004 | Change the opt-in `real-user-kind-mcp-server.test.ts` the same way? | It passes `UV_PROJECT_ENVIRONMENT` via config env too | It configures the server like a user does, in a temp copy; a regression writes only into that copy, which is removed; the fingerprint check guards the user's folder | Leave it; changing it would remove what it is meant to mirror | Solution Designer | Decided |
 | DEC-005 | Is `autobyteus-server-ts/tests/.tmp/` residue? | It appears in `git status --ignored` | It is the designated, gitignored test-database location, reset at the start of every server run, and the documented output folder of gated TPS probes | Not residue: keep it and exclude it (and build outputs) from the clean check. Deleting it in teardown would change a shared harness for every server suite and the probes' evidence location, outside this Task's intent | Solution Designer | Decided |
+| DEC-007 | How to make the rejection assertions specific? | FU-003 asks for a valid `source` and a mutation | Options: add a valid `source` only; also assert the error text | Add the same valid agent `source` as the first case uses; prove specificity by mutation (AC-007). Do not add error-text matching: the zod union error lists every branch, so text matching would be brittle and is not asked | Solution Designer | Decided |
 | DEC-006 | Remove `.gitignore` rules that hide residue (`tmp-*/`, `mcp-config-*/`, `/memory/`, `/workspaces.json`)? | Visible regressions | The rules also cover developer runs (server from the package root, examples writing `memory/`) | Leave them; the check uses `--ignored`, so they hide nothing from it | Solution Designer | Decided |
 
 ## Traceability
@@ -162,10 +168,11 @@ None.
 | REQ-004 | UC-003 | BEH-003 | AC-005, AC-006 | SCN-003 | — |
 | REQ-005 | UC-004 | BEH-004 | AC-005, AC-006 | SCN-004 | — |
 | REQ-006 | UC-003, UC-004 | BEH-003, BEH-004, BEH-005 | AC-005 | SCN-003, SCN-004 | — |
+| REQ-007 | UC-005 | BEH-006 | AC-006, AC-007 | SCN-005 | — |
 
 ## Architecture Phase Input
 
-- Approved scenario IDs: SCN-001…SCN-004.
+- Approved scenario IDs: SCN-001…SCN-005.
 - Constraints: test-only; preserve MCP env/cwd assertions; skip-never-pass on preparation failure.
 - Decisions deferred to design: exact error-block parsing; per-file teardown shape; realpath use.
 - Technical facts to verify: `/usr/bin/env` keeps pid identity; file-tool path messages with temp dirs.

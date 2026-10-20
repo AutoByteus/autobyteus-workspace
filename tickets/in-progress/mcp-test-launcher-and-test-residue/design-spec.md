@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-001`; approved by the Solution Designer within the Task's direction, user informed in the Solution Designer conversation on 2026-10-20
+- Current solution revision ID: `SR-002`
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-002`; approved by the Solution Designer within the Task's direction (SR-002 adds REQ-007/AC-007 from the Project Task Manager's Task addition); user informed in the Solution Designer conversation on 2026-10-20
 - Behavior-defining supplements and their approval references: None
 - Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-test-launcher-and-test-residue/tickets/in-progress/mcp-test-launcher-and-test-residue/investigation-notes.md`
@@ -20,7 +20,7 @@
 ## Task Size And Architectural Risk (Mandatory)
 
 - Task size: `Small`
-- Size rationale and supporting evidence: one test launcher function pair and local setup/teardown edits in 10 test files (5 core library, 5 server e2e), all mechanical and following patterns already in the same folders. No product `src`, no fixture, no config change.
+- Size rationale and supporting evidence: one test launcher function pair, local setup/teardown edits in 10 test files (5 core library, 5 server e2e), and one fixture fix in a contract e2e test (D-6). All are mechanical and follow patterns already in the same folders or file. No product `src`, no fixture, no config change.
 - Architectural risk: `Low`
 - Risk rationale and supporting evidence: test-only; no contract, persistence, security, concurrency, deployment or ownership-boundary change. `/usr/bin/env` execs `uv` in place (same pid), so process-lifetime assertions are unaffected (probe P-1 B). The product env-delivery assertions stay in place (REQ-002).
 - Escalation trigger if implementation or validation discovers new impact: a needed change in product `src`; an e2e file that cannot set its data dir before `AppConfig.initialize()`; residue from the build-dependent e2e cases (RSK-001) that needs more than the same local teardown pattern; any change to what a test asserts.
@@ -41,7 +41,7 @@ Fix the uv location variables on the launch command, report the whole uv error, 
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001…UC-004. Areas: the MCP test launcher (`autobyteus-ts/tests/integration/tools/mcp/`), the core library file-tool, MCP config-service and agent-runtime tests that leak, and five server e2e files under `autobyteus-server-ts/tests/e2e/` (`file-explorer/`, `workspaces/`).
+- In scope: UC-001…UC-005. Areas: the MCP test launcher (`autobyteus-ts/tests/integration/tools/mcp/`), the core library file-tool, MCP config-service and agent-runtime tests that leak, and five server e2e files under `autobyteus-server-ts/tests/e2e/` (`file-explorer/`, `workspaces/`). Also the second case of `tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts` (D-6).
 - Deliberately left alone:
   - `real-user-kind-mcp-server.test.ts`: mirrors a user's config by design (DEC-004).
   - `workspace-content-rest.e2e.test.ts`: already correct.
@@ -61,6 +61,7 @@ Fix the uv location variables on the launch command, report the whole uv error, 
 | BEH-003 | Operational | REQ-004, REQ-006; AC-005, AC-006 | `pnpm -C autobyteus-ts test` | Notes BEH-003, P-3 | OS temp dirs removed in teardown | DS-003 |
 | BEH-004 | Operational | REQ-005, REQ-006; AC-005, AC-006 | `pnpm test:e2e` | Notes BEH-004, P-4 | Temp app data dir per file, removed in teardown | DS-004 |
 | BEH-005 | Operational | REQ-006; AC-005 | `test:unit` | Notes P-5 | Preserved (no change) | — |
+| BEH-006 | Contract | REQ-007; AC-006, AC-007 | Team stream contract parser | Notes P-6 | Each rejection payload valid except its named field | DS-005 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -94,6 +95,8 @@ None.
 - **D-4 Agent memory (REQ-004).** In `tests/integration/agent/runtime/agent-runtime.test.ts`, the "Agent facade delegates start/stop to runtime" case sets `config.memoryDir` to a temp dir registered in the existing `memoryDirs` list (which `afterEach` already removes), as the restore case does with `memoryDir`. Then no case in the file falls back to `<cwd>/memory`. Check the other `factory.createAgent…` calls in the file the same way: a case that writes memory and has no `memoryDir` gets the same treatment.
 - **D-5 Server e2e data dir (REQ-005).** In `file-explorer-websocket-lifecycle`, `file-explorer-graphql`, `file-explorer-path-boundary`, `file-operations-graphql` (all `tests/e2e/file-explorer/`) and `tests/e2e/workspaces/workspaces-graphql.e2e.test.ts`, the file's `beforeAll` first creates `mkdtemp(os.tmpdir()/<file-specific prefix>-appdata-)` and calls `appConfigProvider.config.setCustomAppDataDir(dir)` before anything initializes the config. The file's `afterAll` removes the dir after the file's existing cleanup. This is the pattern of `workspace-content-rest.e2e.test.ts`. Write the minimal `.env` only if a file needs it to run quietly or correctly (that file does it because it starts a full server). The `workspaces-graphql` per-case `useIsolatedWorkspaceConfig` mocks stay. Its real-config cases now write into the file's temp data dir.
 
+- **D-6 Contract rejection payloads (REQ-007).** First rebase the branch onto current `origin/personal` (≥ `aac5da3112`, which contains `autobyteus-211`'s change to this file; no conflicts with this branch's files). In the second case of `team-task-event-current-contract.e2e.test.ts`, add `source: { kind: "agent", agent_definition_id: "worker", launch_configuration: launch }` (the first case's agent source) to both `TASK_EXECUTION_STARTED` payloads. Leave `settled_at: null` in the first one and leave out `delegator_agent_run_id` in the second, so each differs from a valid payload in that field only. The `TASK_DELEGATION_EVENT` rejection and the first case stay unchanged. Show specificity with the two uncommitted mutations of AC-007. Do not add error-text matching (DEC-007).
+
 ## Section Fill Order
 
 Followed; sections that do not apply say `N/A` with the reason.
@@ -114,6 +117,7 @@ Followed; sections that do not apply say `N/A` with the reason.
 | DS-001 | Primary End-to-End | BEH-001 | MCP integration test case | Python test server process with venv in temp | Launcher `serverCommand` | Where the launch settings travel |
 | DS-002 | Primary End-to-End | BEH-002 | `prepareMcpTestServers` | Skip reason in describe title/console | Launcher `preparePython` | Honest skip |
 | DS-003 | Primary End-to-End | BEH-003 | Core test case | Temp dir removed in `afterEach` | Each test file's lifecycle hooks | No residue |
+| DS-005 | Primary End-to-End | BEH-006 | Rejection case payload | `toThrow()` | The test case | Assertion proves its named field |
 | DS-004 | Primary End-to-End | BEH-004 | e2e file `beforeAll` | Data dir removed in `afterAll` | Each e2e file's lifecycle hooks | No residue |
 
 ## Primary Execution Spine(s)
@@ -250,6 +254,7 @@ N/A: no shared structure.
 | `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts` | Server e2e | File hooks | D-5 | Existing | No |
 | `autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts` | Server e2e | File hooks | D-5 | Existing | No |
 | `autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts` | Server e2e | File hooks | D-5 | Existing | No |
+| `autobyteus-server-ts/tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts` | Server e2e | Rejection case | D-6 | Existing | Reuses the file's `launch` constant |
 
 ## Applied Patterns (If Any)
 
@@ -288,7 +293,8 @@ N/A.
 1. Launcher D-1, D-2; run the MCP integration folder (both implementations), and force a preparation failure once (AC-004).
 2. D-3, D-4 in the core test files; run `pnpm -C autobyteus-ts test`.
 3. D-5 in the five e2e files; run each file, then the full `pnpm test:e2e` with a server build.
-4. Residue check (AC-005) around the three suites, starting from a worktree with the residue removed.
+4. D-6: rebase onto current `origin/personal`, then fix the payloads; run the file and the two AC-007 mutations.
+5. Residue check (AC-005) around the three suites, starting from a worktree with the residue removed.
 
 ## Key Tradeoffs
 
@@ -297,6 +303,7 @@ N/A.
 
 ## Risks
 
+- Rebase while implementation is under way: the branch has the implementation commit `33fc5f4e16`. `personal` changed only two files that the branch does not touch, so the rebase should be clean. The implementation engineer owns it.
 - RSK-001: build-dependent e2e cases were not probed for residue; AC-005 in validation covers them. A new writer found there that needs a different fix is an escalation trigger.
 - A file-tool test that compares a path string could break if the temp path is not canonical; `realpath` (D-3) prevents it.
 

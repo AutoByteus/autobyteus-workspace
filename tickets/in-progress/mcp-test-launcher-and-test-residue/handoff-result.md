@@ -65,3 +65,12 @@ The implementation and its handoff per the team route. Validation evidence for A
 - `solution-revision-record.md`
 - `follow-ups.md`
 - this file
+
+## SR-002 addition (2026-10-20)
+
+- Trigger: the Project Task Manager added FU-003 of `autobyteus-211` to the Task.
+- New: REQ-007 / AC-007 / D-6. Implementation of SR-001 continues unchanged.
+- **Rebase first.** Rebase the branch onto current `origin/personal` (`aac5da3112`, which contains `autobyteus-211`'s merge `e9a76b84ab`) before touching `autobyteus-server-ts/tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts`. `personal` changed only that file and `memory-collaboration-graphql.e2e.test.ts` since our base, so there are no conflicts with this branch's files. The rebase also removes the base's failures of those two e2e files seen in probe P-4.
+- D-6: in the second case, add the first case's agent `source` to both `TASK_EXECUTION_STARTED` payloads, keeping each named defect (`settled_at: null`; missing `delegator_agent_run_id`).
+- AC-007 proof: the file passes; then two uncommitted mutations, one at a time (remove `settled_at`; add `delegator_agent_run_id`), each make that case fail. Probe P-6 confirms that the product parser accepts the valid control and rejects each field on its own.
+- Route: still `Small` / `Low` → `/software_engineering_team/implementation_engineer`.
