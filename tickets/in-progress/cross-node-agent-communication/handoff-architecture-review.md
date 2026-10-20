@@ -56,3 +56,20 @@ Prerequisites: none. Follow-ups: `follow-ups.md`, FU-001 (done as autobyteus-197
 
 - `get_handoff_rules` (2026-10-20): the rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`. No other rule matches.
 - Milestone also reported to `/project_task_manager`, at its request (milestone reports for autobyteus-191).
+
+## Revision 1 — 2026-10-20 (SR-012), sent while the review may be running
+
+- Commit `e15408025fc49c869c364922845b87c8ca3d7903` (was `9fb04f2ddc`). Documents only; same scope and decisions.
+- **Naming (the user):**
+  - peer = the other node; remote = what lives on a peer; the feature = remote collaboration; no "cross-node" in names.
+  - `RootRemoteLinks` → `RemoteRunLinks`; `CrossNodeChannelPort` → `RemoteRunChannel`; `CrossNodeGateway` → `PeerGateway`.
+  - `CrossNodeSettingsService` split into `PeerDirectory`, `PublishedAgentService` and `RemoteCollaborationCapability`.
+  - `/rest/cross-node/*` → `/rest/remote/*` (route class `REMOTE_PEER`); `ENABLE_CROSS_NODE` → `ENABLE_REMOTE_COLLABORATION`; `src/cross-node/` → `src/remote-collaboration/`; `<data>/remote-collaboration/`.
+  - `coordinatingRoot` unified to `coordinatingRun`. `PeerNode` kept over `RemoteNode`.
+  - See design § Main Domain Subject Naming Check; contract § 4 retitled.
+- **Premise checks** (investigation notes P-1 … P-5):
+  - the route policy admits credential-less network callers (Reproduced: unit, and a real call from a container);
+  - a Docker container reaches the host (Reproduced);
+  - a standalone host is made ready again after going offline (Reproduced, unit);
+  - an existing two-server E2E harness exists (Read).
+- Review the latest commit; nothing else changed.
