@@ -1,0 +1,17 @@
+# API-09 base-only web failure rerun (the branch test:nuxt had no failure)
+== excerpt from the base test:nuxt run (3b2c86ca9e)
+42916: FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list
+42917-Error: Test timed out in 5000ms.
+42918-If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+42919- ❯ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts:147:3
+42920-    145|   })
+42921-    146| 
+42922-    147|   it('reveals and opens the last reference with the server identity; s…
+42923-       |   ^
+42924-    148|     const { wrapper, org } = mountOrgMessages()
+
+# API-09/API-B: rerun of components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts alone (it timed out at 5000 ms in the base test:nuxt run at load ~130-150); 2026-10-20T18:26:12Z
+base load=40.06:  Tests 3 passed (3) 
+branch load=34.69:  Tests 3 passed (3) 
+base load=29.37:  Tests 3 passed (3) 
+branch load=28.68:  Tests 3 passed (3) 

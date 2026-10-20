@@ -1,0 +1,56 @@
+# Trial of the designed change (SR-001 design), 2026-10-20, then reverted: manifests edited (probes/apply-manifest-changes.mjs),
+# pnpm install, probes/update-inrange-loop.sh (one name per `pnpm update -r --depth Infinity`), pnpm dedupe; dedupe --check exit 0
+# totals ALL: {'info': 0, 'low': 13, 'moderate': 40, 'high': 46, 'critical': 6}  PROD: {'info': 0, 'low': 10, 'moderate': 18, 'high': 13, 'critical': 0}
+# remaining critical/high: severity | module@version | runtime(prod)? | patched | GHSA | path
+@fastify/busboy | 2.1.1 | high | PROD | >=3.2.1 | GHSA-x8mw-p69m-v3mx | autobyteus-server-ts>mercurius>undici>@fastify/busboy
+@fastify/static | 7.0.4 | high | PROD | >=10.1.1 | GHSA-83w8-p2f5-377r | autobyteus-server-ts>mercurius>@fastify/static
+@graphql-tools/utils | 10.11.0 | high | dev | >=12.0.1 | GHSA-7mx3-vvmw-hjmv | autobyteus-web>@graphql-codegen/cli>@graphql-tools/utils
+@graphql-tools/utils | 11.0.0 | high | dev | >=12.0.1 | GHSA-7mx3-vvmw-hjmv | autobyteus-web>@graphql-codegen/cli>@graphql-codegen/client-preset>@graphql-codegen/visitor-plugin-common
+@graphql-tools/utils | 9.2.1 | high | dev | >=12.0.1 | GHSA-7mx3-vvmw-hjmv | autobyteus-web>@graphql-codegen/typescript-vue-apollo>@graphql-codegen/plugin-helpers>@graphql-tools/utils
+app-builder-lib | 25.1.8 | high | dev | >=26.15.0 | GHSA-7g7r-gx96-252g | autobyteus-web>electron-builder>app-builder-lib
+braces | 3.0.3 | high | dev | <0.0.0 | GHSA-vfj7-8cjw-p6xm | autobyteus-web>@graphql-codegen/cli>micromatch>braces
+builder-util-runtime | 9.2.10 | high | dev | >=9.7.0 | GHSA-p2f4-r6v6-j797 | autobyteus-web>electron-builder>builder-util-runtime
+fastify | 4.29.1 | high | PROD | >=5.12.2 | GHSA-667r-xxjv-c9mm | autobyteus-server-ts>fastify
+fastify | 4.29.1 | high | PROD | >=5.12.2 | GHSA-9q9j-q6p8-xq58 | autobyteus-server-ts>fastify
+fastify | 4.29.1 | high | PROD | >=5.12.2 | GHSA-hwr6-493r-vm6h | autobyteus-server-ts>fastify
+fastify | 4.29.1 | high | PROD | >=5.12.2 | GHSA-p68q-wchp-6fh7 | autobyteus-server-ts>fastify
+fastify | 4.29.1 | high | PROD | >=5.7.2 | GHSA-jx2c-rxcm-jvmq | autobyteus-server-ts>fastify
+find-my-way | 8.2.2 | high | PROD | >=9.7.0 | GHSA-c96f-x56v-gq3h | autobyteus-server-ts>fastify>find-my-way
+form-data | 2.3.3 | critical | dev | >=2.5.4 | GHSA-fjxv-7rqg-78g4 | autobyteus-web>to-ico>resize-img>jimp
+form-data | 2.3.3 | high | dev | >=2.5.6 | GHSA-hmw2-7cc7-3qxx | autobyteus-web>to-ico>resize-img>jimp
+happy-dom | 15.11.7 | critical | dev | >=20.0.0 | GHSA-37j7-fg3j-429f | autobyteus-web>happy-dom
+happy-dom | 15.11.7 | high | dev | >=20.8.8 | GHSA-6q6h-j7hj-3r64 | autobyteus-web>happy-dom
+happy-dom | 15.11.7 | high | dev | >=20.8.9 | GHSA-w4gp-fjgq-3q4g | autobyteus-web>happy-dom
+http-cache-semantics | 4.2.0 | high | dev | <0.0.0 | GHSA-ch52-4w7c-c8xp | autobyteus-web>electron-builder>app-builder-lib>@electron/rebuild
+immutable | 3.7.6 | high | dev | >=3.8.3 | GHSA-wf6x-7x77-mvgw | autobyteus-web>@graphql-codegen/cli>@graphql-codegen/client-preset>@graphql-codegen/visitor-plugin-common
+immutable | 3.7.6 | high | dev | >=3.8.4 | GHSA-v56q-mh7h-f735 | autobyteus-web>@graphql-codegen/cli>@graphql-codegen/client-preset>@graphql-codegen/visitor-plugin-common
+immutable | 3.7.6 | high | dev | >=3.8.4 | GHSA-xvcm-6775-5m9r | autobyteus-web>@graphql-codegen/cli>@graphql-codegen/client-preset>@graphql-codegen/visitor-plugin-common
+jpeg-js | 0.1.2 | high | dev | >=0.4.4 | GHSA-xvf7-4v9q-58w6 | autobyteus-web>to-ico>resize-img>jpeg-js
+jpeg-js | 0.2.0 | high | dev | >=0.4.4 | GHSA-xvf7-4v9q-58w6 | autobyteus-web>to-ico>resize-img>jimp
+lodash | 4.17.23 | high | dev | >=4.18.0 | GHSA-r5fr-rjxr-66jc | autobyteus-web>@graphql-codegen/cli>@graphql-codegen/plugin-helpers>lodash
+minimatch | 9.0.1 | high | dev | >=9.0.6 | GHSA-3ppc-4f35-3m26 | autobyteus-web>@vue/test-utils>js-beautify>editorconfig
+minimatch | 9.0.1 | high | dev | >=9.0.7 | GHSA-23c5-xmqv-rm74 | autobyteus-web>@vue/test-utils>js-beautify>editorconfig
+minimatch | 9.0.1 | high | dev | >=9.0.7 | GHSA-7r86-cg39-jmmj | autobyteus-web>@vue/test-utils>js-beautify>editorconfig
+minimist | 0.0.8 | critical | dev | >=0.2.4 | GHSA-xvch-5gv4-984h | autobyteus-web>to-ico>resize-img>jimp
+node-forge | 1.4.0 | high | dev | <0.0.0 | GHSA-86w9-cpqp-85rv | autobyteus-web>nuxt>@nuxt/cli>listhen
+sharp | 0.33.5 | high | dev | >=0.35.0 | GHSA-f88m-g3jw-g9cj | autobyteus-web>sharp
+sharp | 0.33.5 | high | dev | >=0.35.4 | GHSA-rgj7-g3m4-5g8c | autobyteus-web>sharp
+sharp | 0.33.5 | high | dev | >=0.35.5 | GHSA-wq5f-xc86-pv6w | autobyteus-web>sharp
+tar | 6.2.1 | critical | dev | >=7.5.19 | GHSA-23hp-3jrh-7fpw | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.10 | GHSA-qffp-2rhf-9h96 | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.11 | GHSA-9ppj-qmqm-q256 | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.18 | GHSA-8x88-c5mf-7j5w | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.21 | GHSA-r292-9mhp-454m | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.3 | GHSA-8qq5-rm4j-mr97 | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.4 | GHSA-r6q2-hw4h-h46w | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.7 | GHSA-34x7-hfp2-rc4v | autobyteus-web>electron-builder>app-builder-lib>tar
+tar | 6.2.1 | high | dev | >=7.5.8 | GHSA-83g3-92jg-28cx | autobyteus-web>electron-builder>app-builder-lib>tar
+tinypool | 1.1.1 | critical | dev | >=2.1.1 | GHSA-5gmw-xhrv-c9v3 | autobyteus-web>vitest>tinypool
+tinypool | 1.1.1 | critical | dev | >=2.1.2 | GHSA-85c8-ppgw-ccpr | autobyteus-web>vitest>tinypool
+undici | 5.28.3 | high | PROD | >=6.24.0 | GHSA-v9p9-hfj2-hcw8 | autobyteus-server-ts>mercurius>undici
+undici | 5.28.3 | high | PROD | >=6.24.0 | GHSA-vrm6-8vpv-qv8q | autobyteus-server-ts>mercurius>undici
+undici | 5.28.3 | high | PROD | >=6.27.0 | GHSA-vxpw-j846-p89q | autobyteus-server-ts>mercurius>undici
+undici | 6.27.0 | high | dev | >=6.28.1 | GHSA-rfgv-xxqx-mfg5 | autobyteus-web>@electron/rebuild>node-gyp>undici
+url-regex | 3.2.0 | high | dev | <0.0.0 | GHSA-v4rh-8p82-6h5w | autobyteus-web>to-ico>resize-img>jimp
+xlsx | 0.18.5 | high | PROD | <0.0.0 | GHSA-4r6h-8v6p-xvw6 | autobyteus-web>xlsx
+xlsx | 0.18.5 | high | PROD | <0.0.0 | GHSA-5pgg-2g8v-p4x9 | autobyteus-web>xlsx

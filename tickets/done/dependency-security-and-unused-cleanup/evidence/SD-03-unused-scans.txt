@@ -1,0 +1,41 @@
+# node probes/unused-scan.mjs (lenient: any quoted mention counts)
+.: 151 files scanned; 0 deps; no reference: none
+autobyteus-ts: 918 files scanned; 20 deps; no reference: none
+autobyteus-server-ts: 3042 files scanned; 43 deps; no reference: @anthropic-ai/sdk (dep)
+autobyteus-web: 2072 files scanned; 79 deps; no reference: chart.js (dep), diff-match-patch (dep), html2canvas (dep), jsonrepair (dep), markdown-it-katex (dep), markdown-it-prism (dep), monaco-editor (dep), vue-chartjs (dep), @graphql-codegen/typescript (dev), @graphql-codegen/typescript-operations (dev), @graphql-codegen/typescript-vue-apollo (dev), @nuxtjs/apollo (dev), @vitejs/plugin-vue (dev), autoprefixer (dev), nuxt-electron (dev), postcss (dev), xmldom (dev)
+autobyteus-message-gateway: 192 files scanned; 6 deps; no reference: typescript (dev)
+autobyteus-application-sdk-contracts: 17 files scanned; 2 deps; no reference: none
+autobyteus-application-backend-sdk: 8 files scanned; 4 deps; no reference: @types/node (dev)
+autobyteus-application-frontend-sdk: 25 files scanned; 3 deps; no reference: @types/node (dev)
+autobyteus-application-devkit: 43 files scanned; 9 deps; no reference: none
+autobyteus-team-stream-contracts: 20 files scanned; 4 deps; no reference: @types/node (dev)
+autobyteus-agent-presentation-contracts: 13 files scanned; 3 deps; no reference: @types/node (dev)
+autobyteus-collaboration-stream-contracts: 16 files scanned; 4 deps; no reference: @types/node (dev)
+applications/brief-studio: 44 files scanned; 5 deps; no reference: @types/node (dev)
+applications/socratic-math-teacher: 36 files scanned; 5 deps; no reference: none
+
+# node probes/unused-scan-strict.mjs (docs .md/.html excluded)
+.: 117 files scanned; 0 deps; no reference: none
+autobyteus-ts: 893 files scanned; 20 deps; no reference: none
+autobyteus-server-ts: 2948 files scanned; 43 deps; no reference: @anthropic-ai/sdk (dep)
+autobyteus-web: 1990 files scanned; 79 deps; no reference: chart.js (dep), diff-match-patch (dep), html2canvas (dep), jsonrepair (dep), markdown-it-katex (dep), markdown-it-prism (dep), monaco-editor (dep), vue-chartjs (dep), @graphql-codegen/typescript (dev), @graphql-codegen/typescript-operations (dev), @graphql-codegen/typescript-vue-apollo (dev), @nuxtjs/apollo (dev), @vitejs/plugin-vue (dev), autoprefixer (dev), concurrently (dev), nuxt-electron (dev), postcss (dev), xmldom (dev)
+autobyteus-message-gateway: 190 files scanned; 6 deps; no reference: typescript (dev)
+autobyteus-application-sdk-contracts: 16 files scanned; 2 deps; no reference: none
+autobyteus-application-backend-sdk: 7 files scanned; 4 deps; no reference: @types/node (dev)
+autobyteus-application-frontend-sdk: 24 files scanned; 3 deps; no reference: @types/node (dev)
+autobyteus-application-devkit: 40 files scanned; 9 deps; no reference: none
+autobyteus-team-stream-contracts: 19 files scanned; 4 deps; no reference: @types/node (dev)
+autobyteus-agent-presentation-contracts: 12 files scanned; 3 deps; no reference: @types/node (dev)
+autobyteus-collaboration-stream-contracts: 15 files scanned; 4 deps; no reference: @types/node (dev)
+applications/brief-studio: 39 files scanned; 5 deps; no reference: @types/node (dev)
+applications/socratic-math-teacher: 32 files scanned; 5 deps; no reference: none
+
+# npx knip@5 --workspace autobyteus-ts|autobyteus-server-ts --include dependencies,unlisted
+Unused devDependencies (2)
+dotenv   autobyteus-ts/package.json:27:6
+ts-node  autobyteus-ts/package.json:28:6
+Unlisted dependencies (4)
+@autobyteus/application-backend…  …-server-ts/tests/unit/application-backend/socratic-lesson-target-address.test.ts:2:51
+@autobyteus/application-backend…  …erver-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts:5:9
+jsdom                             …eus-server-ts/tests/unit/application-backend/socratic-live-tutor-renderer.test.ts:1:2
+jsdom                             …yteus-server-ts/tests/unit/application-backend/socratic-runtime-lifecycle.test.ts:1:2

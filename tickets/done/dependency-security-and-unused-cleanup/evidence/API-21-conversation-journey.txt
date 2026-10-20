@@ -1,0 +1,132 @@
+# API-21 isolated packaged instance iso-62256-32b4 (backend :62257, control :62256) of 10126a016a; native AutoByteus agent on LM Studio qwen/qwen3.6-35b-a3b replies with a fixed markdown document; the run is opened from the sidebar (Workspaces > ws > agent > run row), as a user does; DOM read over the control port with render-check.js; 2026-10-20T18:41:59Z
+== agent run (markdown-run.mjs)
+{"model":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","runId":"markdown_render_probe_0c5543_1c6c12fbedf949199630956e8cde9f54","turnMs":19411,"turnCompleted":true,"errors":[],"replyChars":282,"replyContains":{"# Parity Heading One":true,"## Parity Heading Two":true,"$e^{i\\pi} + 1 = 0$":true,"```python":true,"```mermaid":true,"ParityStart --> ParityEnd":true,"onerror":true,"END-OF-PARITY-DOC":false}}
+
+== rendered DOM facts (render-check.js result)
+{
+ "userAgentElectron": "Electron/42.11.16",
+ "userAgentChrome": "Chrome/148.0.7778.280",
+ "location": "#/chat?id=markdown_render_probe_0c5543_1c6c12fbedf949199630956e8cde9f54",
+ "h1": "Parity Heading One",
+ "h2": [
+  "Parity Heading Two"
+ ],
+ "katexCount": 2,
+ "katexDisplayCount": 1,
+ "katexMathml": 2,
+ "codeBlock": {
+  "tag": "PRE",
+  "classes": "language-python",
+  "prismTokens": 7,
+  "text": "def parity_square(x):\n    return x * x"
+ },
+ "mermaidSvg": {
+  "nodes": 2,
+  "hasStart": true,
+  "hasEnd": true
+ },
+ "imgWithOnerror": 0,
+ "imgCount": 1,
+ "xssFlag": "undefined",
+ "endMarker": true
+}
+== note: a first attempt set location.hash to '#/chat?id=<runId>' directly; the app stayed on '#/chat' (the run was not opened). Opening the same run from the sidebar row sets that exact hash and renders it. Not investigated further: route code is not changed by this ticket.
+
+== markdown-run.mjs
+// Temporary API/E2E probe (autobyteus-229, API-21): a native AutoByteus agent on LM Studio replies with a fixed
+// markdown document (headings, a code block, KaTeX math, a mermaid diagram, and an <img onerror> that DOMPurify must
+// neutralize). Drives only the instance's public GraphQL and agent WebSocket. Prints {runId, ...} as JSON.
+// Usage: node markdown-run.mjs <backendUrl> <workspaceDir>
+import { randomUUID } from 'node:crypto';
+const [BACKEND, WS_DIR] = process.argv.slice(2);
+const gql = async (query, variables) => (await (await fetch(`${BACKEND}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json());
+export const MARKDOWN = [
+  '# Parity Heading One',
+  '',
+  '## Parity Heading Two',
+  '',
+  'Euler identity inline: $e^{i\\pi} + 1 = 0$.',
+  '',
+  '$$\\int_0^1 x^2 \\, dx = \\frac{1}{3}$$',
+  '',
+  '```python',
+  'def parity_square(x):',
+  '    return x * x',
+  '```',
+  '',
+  '```mermaid',
+  'graph TD',
+  '  ParityStart --> ParityEnd',
+  '```',
+  '',
+  '<img src="x" onerror="window.__parityXss = 1">',
+  '',
+  'END-OF-PARITY-DOC',
+].join('\n');
+const out = {};
+const cat = await gql('mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }', { p: 'LMSTUDIO', r: 'autobyteus' });
+const model = cat.data?.ensureProviderModelCatalog?.llmModels?.map((m) => m.modelIdentifier).find((m) => m.includes('qwen3.6-35b-a3b'));
+out.model = model ?? null;
+if (!model) { console.log(JSON.stringify({ error: 'no LM Studio model', cat })); process.exit(2); }
+const def = await gql('mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }', { input: {
+  name: `markdown-render-probe-${randomUUID().slice(0, 6)}`, role: 'assistant', category: 'runtime-e2e', description: 'Rendering probe agent.', toolNames: [],
+  instructions: 'You are a test agent. When the user gives you a document between BEGIN and END markers, reply with exactly that document, verbatim, character for character, without the markers, without code fences around it, and without any other text.' } });
+const run = await gql('mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }', { input: {
+  agentDefinitionId: def.data?.createAgentDefinition?.id, workspaceRootPath: WS_DIR, llmModelIdentifier: model, llmConfig: { temperature: 0 }, autoExecuteTools: true, runtimeKind: 'autobyteus' } });
+if (!run.data?.createAgentRun?.success) { console.log(JSON.stringify({ error: 'createAgentRun', run })); process.exit(3); }
+out.runId = run.data.createAgentRun.runId;
+const socket = new WebSocket(`${BACKEND.replace('http', 'ws')}/ws/agent/${out.runId}`);
+const msgs = [];
+socket.onmessage = (ev) => { try { const m = JSON.parse(String(ev.data)); if (typeof m.type === 'string') msgs.push(m); } catch { /* */ } };
+await new Promise((r, j) => { socket.onopen = r; socket.onerror = j; });
+const id = `e2e-${randomUUID()}`;
+socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [], agent_run_id: out.runId,
+  content: `Reply with exactly this document:\nBEGIN\n${MARKDOWN}\nEND` } }));
+const t0 = Date.now();
+while (Date.now() - t0 < 600_000 && !msgs.some((m) => m.type === 'TURN_COMPLETED' || m.type === 'ERROR')) await new Promise((r) => setTimeout(r, 250));
+out.turnMs = Date.now() - t0;
+out.turnCompleted = msgs.some((m) => m.type === 'TURN_COMPLETED');
+out.errors = msgs.filter((m) => m.type === 'ERROR').map((m) => JSON.stringify(m.payload).slice(0, 300));
+const text = msgs.filter((m) => m.type === 'SEGMENT_CONTENT' && m.payload?.segment_type === 'text').map((m) => m.payload.delta ?? '').join('');
+out.replyChars = text.length;
+out.replyContains = Object.fromEntries(['# Parity Heading One', '## Parity Heading Two', '$e^{i\\pi} + 1 = 0$', '```python', '```mermaid', 'ParityStart --> ParityEnd', 'onerror', 'END-OF-PARITY-DOC'].map((s) => [s, text.includes(s)]));
+socket.close();
+console.log(JSON.stringify(out));
+process.exit(0);
+
+== render-check.js
+async () => {
+  // Temporary API/E2E check (autobyteus-229, API-21), run in the isolated instance's renderer over its control port.
+  // Waits for the agent's markdown reply to render in the open conversation, then reports DOM facts.
+  const deadline = Date.now() + 60000;
+  const h1Of = () => [...document.querySelectorAll('h1')].find((e) => e.textContent.includes('Parity Heading One'));
+  while (Date.now() < deadline && !h1Of()) await new Promise((r) => setTimeout(r, 500));
+  const h1 = h1Of();
+  // The rendered reply: the closest ancestor of the heading that also contains the end marker.
+  let root = h1 ?? document.body;
+  while (root && root.parentElement && !root.textContent.includes('END-OF-PARITY-DOC')) root = root.parentElement;
+  const mdeadline = Date.now() + 30000;
+  while (Date.now() < mdeadline && !(root.querySelector('svg') && root.querySelector('svg').textContent.includes('ParityStart'))) await new Promise((r) => setTimeout(r, 500));
+  const svg = [...root.querySelectorAll('svg')].find((s) => s.textContent.includes('ParityStart'));
+  const code = [...root.querySelectorAll('pre code, pre')].find((c) => c.textContent.includes('parity_square'));
+  return {
+    userAgentElectron: (navigator.userAgent.match(/Electron\/[\d.]+/) || [null])[0],
+    userAgentChrome: (navigator.userAgent.match(/Chrome\/[\d.]+/) || [null])[0],
+    location: location.hash,
+    h1: h1 ? h1.textContent.trim() : null,
+    h2: [...root.querySelectorAll('h2')].map((e) => e.textContent.trim()).filter((t) => t.includes('Parity')),
+    katexCount: root.querySelectorAll('.katex').length,
+    katexDisplayCount: root.querySelectorAll('.katex-display').length,
+    katexMathml: root.querySelectorAll('.katex math').length,
+    codeBlock: code ? { tag: code.tagName, classes: code.className, prismTokens: code.querySelectorAll('.token').length, text: code.textContent.trim().slice(0, 60) } : null,
+    mermaidSvg: svg ? { nodes: svg.querySelectorAll('g.node, .node').length, hasStart: svg.textContent.includes('ParityStart'), hasEnd: svg.textContent.includes('ParityEnd') } : null,
+    imgWithOnerror: root.querySelectorAll('img[onerror]').length,
+    imgCount: root.querySelectorAll('img').length,
+    xssFlag: typeof window.__parityXss,
+    endMarker: root.textContent.includes('END-OF-PARITY-DOC'),
+  };
+}
+== stop
+{'wasRunning': True, 'forced': False, 'dataRootRemoved': True, 'controlPortReleased': True, 'serverPortReleased': True}
+== lms unload --all: Unloaded 1 model.
+No models are currently loaded.

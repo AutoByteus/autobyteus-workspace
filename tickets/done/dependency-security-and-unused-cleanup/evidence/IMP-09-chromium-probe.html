@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="purify.js"></script></head><body><pre id="out"></pre>
+<script>
+const html = '<h1>Hello World</h1>\n<p>para <strong>b</strong></p>\n';
+const opts = { ADD_ATTR: ['class','style'], ADD_TAGS: ['math','semantics','mrow','mi','mo','mn','msup','msub','annotation','mtext'], USE_PROFILES: { html: true } };
+document.getElementById('out').textContent = JSON.stringify({ version: DOMPurify.version, ua: navigator.userAgent, result: DOMPurify.sanitize(html, opts) });
+</script></body></html>
