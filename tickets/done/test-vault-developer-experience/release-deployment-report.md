@@ -59,7 +59,7 @@
 - More evidence requested: `None`
 - User check needed: `No`. Every criterion is proven by evidence, including live runs on the user's vault. The user did not ask to check.
 - User check reference: N/A
-- Re-verification after later re-integration: see Repository Finalization (`Target advanced after verification`).
+- Re-verification after later re-integration: `Not needed` (the target did not advance)
 
 ## Release Decision
 
@@ -86,17 +86,17 @@ None. No release, so no version bump, tag or release commit.
 
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin/personal`) and `RELEASE.md` § Finalization Target
 - Ticket branch: `codex/test-vault-developer-experience`
-- Ticket branch commit result: see `delivery-revision-record.md` DR-001 (final hashes recorded after the push)
-- Ticket branch push result: see DR-001
+- Ticket branch commit result: `Completed`. `edf957426a` (delivery documents and archive) on top of `ee78ab81a1` (integration merge) and `bd3d4fb0c3` (checkpoint)
+- Ticket branch push result: `Completed` (`origin/codex/test-vault-developer-experience` new branch @ `edf957426a`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: see DR-001
-- Delivery-owned edits protected before re-integration: see DR-001
-- Re-integration before final merge result: see DR-001
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `79b638e787` when fetched before the merge and again before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
 - Target branch update result: `finalize/test-vault-developer-experience` created from a freshly fetched `origin/personal`
-- Merge into target result: `git merge --no-ff codex/test-vault-developer-experience`, see DR-001
-- Push target branch result: see DR-001
-- Repository finalization status: see DR-001
+- Merge into target result: `Completed`. `git merge --no-ff codex/test-vault-developer-experience` on `finalize/test-vault-developer-experience` → `89741cecec`; its tree is identical to `edf957426a`. `check_licensing.py`: consistent; `check_repository_artifact_hygiene.py`: passed
+- Push target branch result: `Completed` (`79b638e787..89741cecec  HEAD -> personal`); this report's record commit follows on `personal`
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
@@ -113,9 +113,9 @@ None. No release, so no version bump, tag or release commit.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience`
-- Worktree cleanup result: see DR-001
-- Worktree prune result: see DR-001
-- Local ticket branch cleanup result: see DR-001
+- Worktree cleanup result: `Completed` after the record push: `git worktree remove --force` (only untracked build output remained). A read-only copy of the archived ticket folder, exported from `personal` with `git archive`, is kept at `/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-receipts/test-vault-developer-experience-89741cecec/` for the receipt check
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` (`codex/test-vault-developer-experience` and `finalize/test-vault-developer-experience` deleted once `origin/personal` contained them)
 - Remote branch cleanup result: `Not required` (the ticket branch stays on `origin` as a record, as with other tickets)
 - Kept on purpose: the user's standing test vault `~/.autobyteus-test/vault` (outside the worktree; the user's, for future live testing). The user's old stores and worktree test DBs (DEC-008, FU-004).
 - Blocker: None
@@ -143,7 +143,7 @@ None. This repository deploys no hosted service, and no release was cut.
 
 ## Verification Checks
 
-DEL-01..DEL-06 on `ee78ab81a1` (logs in `evidence/`), plus the pre-tagging-equivalent checks on the merged `personal` state: `python3 scripts/check_licensing.py` and `python3 scripts/check_repository_artifact_hygiene.py` (results in DR-001).
+DEL-01..DEL-06 on `ee78ab81a1` (logs in `evidence/`), plus the guide's checks on the merged `personal` state `89741cecec`: `python3 scripts/check_licensing.py` ("Licensing is consistent.") and `python3 scripts/check_repository_artifact_hygiene.py` ("Repository artifact hygiene check passed.", longest path of this ticket 107 characters, no Windows-hostile names).
 
 ## Rollback Criteria
 
@@ -152,9 +152,9 @@ Revert the merge commit on `personal`. No data migration: production vaults are 
 ## Final Status
 
 - Verification complete: `Yes` (from the evidence)
-- Repository finalization complete: see DR-001
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see DR-001
+- Applicable safe cleanup complete or not required: `Yes` (after the record push)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: see DR-001
-- Terminal package sent to `/solution_designer`: see DR-001
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, after the record commit and cleanup, via `get_handoff_rules` and `send_message_to` (DR-001)
