@@ -48,3 +48,13 @@
 | 2026-10-20 20:25 | API-01 … API-20 | Completed | Pass | run r4-2:  Tests 20 passed (20) |
 | 2026-10-20 20:29 | API-23b | Completed | Pass | isolated-app composer screenshot on node B (integrated build, real model); duplicate PNG removed |
 | 2026-10-20 20:29 | — | Checkpoint | — | Round 4 result Pass / 95%. Report, API-REV-004 written. Next: commit, test-code review request |
+| 2026-10-20 21:09 | — | Checkpoint | — | Round 5: CRR-009 pass of the integration merge c59c6f7359 (origin/personal 3b9014215e, autobyteus-205) + test 300bf4c09a; HEAD 2155dc1aef. Plan: API-00, E2E ×2, API-22 once |
+| 2026-10-20 21:09 | API-00 | Started | — | rebuild dist at 2155dc1aef |
+| 2026-10-20 21:10 | API-00 | Completed | exit=0 | API-00-server-build-round5.log |
+| 2026-10-20 21:10 | API-01 … API-20 | Started | — | run r5-1 |
+| 2026-10-20 21:12 | API-01 … API-20 | Completed | Pass | run r5-1:  Tests 20 passed (20) |
+| 2026-10-20 21:12 | API-01 … API-20 | Started | — | run r5-2 |
+| 2026-10-20 21:14 | API-01 … API-20 | Completed | Pass | run r5-2:  Tests 20 passed (20) |
+| 2026-10-20 21:14 | API-22 | Started | — | same-node E2E suites, switch on, at 2155dc1aef; log /tmp/api22-r5.log |
+| 2026-10-20 21:29 | API-22 | Completed | Pass (FU-003 outside scope) | 36/37 files; only delegated-launch-config-defaults (FU-003), same lines as before |
+| 2026-10-20 21:29 | — | Checkpoint | — | Round 5 result Pass / 95%. Report, API-REV-005 written. Next: commit, handoff |

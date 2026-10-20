@@ -5,9 +5,15 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `…/api-e2e-coverage-investigation.md` (round 3)
-- API/E2E revision record and current revision ID: `…/api-e2e-revision-record.md`, `API-REV-004`
+- API/E2E revision record and current revision ID: `…/api-e2e-revision-record.md`, `API-REV-005`
 - Test progress log: `…/api-e2e-test-progress.md`
-- Round 4 (current), from delivery DR-001:
+- Round 5 (current), from CRR-009 (Pass):
+  - CRR-009 reviewed the integration merge `c59c6f7359`: `origin/personal` `3b9014215e`, i.e. autobyteus-205's Skill Improvement removal and 1.5.8-beta.4. It also reviewed the new unit test `300bf4c09a` (IMP-20). HEAD is `2155dc1aef`.
+  - Its conflicts sat on the `delegatedFrom` write at prepare and its read at restore.
+  - Rerun by impact: the whole two-server E2E twice, because RC-05 … RC-13 exercise that write and read end to end. API-22 once, because the shared run-metadata reading changed; the switch does not affect it, so one setting is enough.
+  - API-23/API-23b are reused: this ticket's views and the receiving node's run view did not change.
+  - The test file is unchanged since round 4 (`a777af6b1d`).
+- Round 4, from delivery DR-001:
   - on the integrated state (HEAD `303eb6ca1d`: this branch merged with `origin/personal` at `4f03cce09d`, plus delivery docs), under machine load, delivery's DEL-06 run failed RC-10 once (19/20), on a race in the test;
   - DEL-07 passed 20/20.
   - Round 4 fixes the race, applies CRR-007's three notes, reruns the E2E twice on the integrated state, and replaces the duplicate API-23 screenshot.
@@ -49,13 +55,16 @@
 | ENV-6 | `7a5a9af077` | as ENV-5 | in-process E2E servers (vitest) | `RUN_AGY_FAILURE_E2E=1`, clean environment, switch off (API-21) or `ENABLE_REMOTE_COLLABORATION=true` (API-22) |
 | ENV-8 | HEAD `303eb6ca1d` (integrated; source as `4f03cce09d`) | as ENV-5 | `autobyteus-server-ts/dist` rebuilt at API-00 round 4 | as ENV-5; load average 100–157 during the runs (other agents' work on the machine) |
 | ENV-9 | `4f03cce09d` (integrated) | as ENV-5 | two isolated desktop instances of this worktree (`pnpm --silent isolated-app start --build` / `--from-worktree`), with `AUTOBYTEUS_TEST_VAULT`; AutoByteus runtime, `deepseek-v4-flash` | instances `iso-56211-d507` (A) and `iso-56346-3c73` (B); driven through each window's control port with the browser-automation skill, watched by the user |
+| ENV-10 | HEAD `2155dc1aef` (merge `c59c6f7359`: `origin/personal` `3b9014215e`) | as ENV-5 | `autobyteus-server-ts/dist` rebuilt at API-00 round 5 | as ENV-5; load average 10–40 |
 | ENV-7 | base `5de6a698b9` | as ENV-5 | temporary detached worktree `/tmp/api-bisect-base` (`pnpm install --offline`, prebuild), in-process E2E | used only to bisect FU-004; removed afterwards |
 
 ## Cases
 
 `RC-NN` is the E2E case of the same number in `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`. Command for API-01 … API-20 (from `autobyteus-server-ts`): `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$PWD/tests/fixtures/agy-failure-cli.mjs" REMOTE_E2E_EVIDENCE_DIR=<dir> ./node_modules/.bin/vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch`.
 
-Round-4 runs on ENV-8, with the final test file (RC-10 fix and CRR-007 notes): **r4-1 20/20, r4-2 20/20** (`API-r4-run1.log`, `API-r4-run2.log` and the receipts `API-r4-run1/…`, `API-r4-run2/remote-two-server-receipt.json`). These are the authoritative runs. The machine's load average was 100–157 during them. Delivery's DEL-06 (19/20, RC-10) and DEL-07 (20/20) ran on the same state with the previous file.
+Round-5 runs on ENV-10 (HEAD `2155dc1aef`, dist rebuilt at API-00 round 5): **r5-1 20/20, r5-2 20/20** (`API-r5-run1.log`, `API-r5-run2.log`, receipts `API-r5-run1/…`, `API-r5-run2/remote-two-server-receipt.json`). These are the authoritative runs. In both, RC-05's remote-run metadata has `delegatedFrom` and no `launchPurpose`. RC-13's Team/Org replies are accepted, delivered and wake the delegators, whose views stay readable. RC-06/07 carry 99/83 frames with no gap; RC-20 has 44 clean requests.
+
+Round-4 runs on ENV-8, with the RC-10 fix and CRR-007 notes: **r4-1 20/20, r4-2 20/20** (`API-r4-run1.log`, `API-r4-run2.log` and the receipts `API-r4-run1/…`, `API-r4-run2/remote-two-server-receipt.json`). The machine's load average was 100–157 during them. Delivery's DEL-06 (19/20, RC-10) and DEL-07 (20/20) ran on the same state with the previous file.
 
 Round-3 runs on ENV-5:
 - r3-1: 20/20 with the RC-13 additions.
@@ -66,7 +75,7 @@ The default reporter lists only cases slower than 300 ms; the fast RC-01 and RC-
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-00 | all | build | `pnpm -C autobyteus-server-ts build` | ENV-8 | Pass | `API-00-server-build-round4.log` | `exit=0` | round 3: `API-00-server-build-round3.log` |
+| API-00 | all | build | `pnpm -C autobyteus-server-ts build` | ENV-10 | Pass | `API-00-server-build-round5.log` | `exit=0` | earlier rounds: `API-00-server-build-round3.log`, `-round4.log` |
 | API-R1 | AC-112 (unit, switch off), all | unit | Reused: IMP-17 | — | Pass | IMP-17 | `Tests  6279 passed` | full unit suite at `7a5a9af077` |
 | API-R2 | BEH-101 … BEH-106 in process; F-002 guard | unit | Reused: IMP-13 (`31d46978ad`), IMP-15, IMP-16 (`7a5a9af077`) | — | Pass | IMP-13, IMP-15, IMP-16 | — | IMP-15 runs the real admission scan and the Team/Org loaders with a stored delegator ↔ remote message, and fails before the fix |
 | API-R3 | REQ-115 | web | Reused: IMP-04, IMP-05, IMP-08 | — | Pass | — | — | `autobyteus-web` unchanged since `8491e0d916` |
@@ -92,7 +101,7 @@ The default reporter lists only cases slower than 300 ms; the fast RC-01 and RC-
 | API-19 | AC-102, SCN-107 | peer removal | RC-19 | ENV-5 | Pass | receipts `RC-19` | "… does not have this node registered as a peer, …"; "… is no longer a registered peer of this node, …"; "No peer node named …" | history readable on both nodes |
 | API-20 | AC-111, REQ-113, REQ-114 | captured requests | RC-20 | ENV-5 | Pass | receipts `RC-20`, `captured` | `"total": 44, "counts": {"status": 2, "/rest/remote/delegated-runs": 11, "work_packet": 6, "toAlpha": 11, "toBeta": 14}`; header names only `accept`, `accept-encoding`, `accept-language`, `connection`, `content-length`, `content-type`, `host`, `sec-fetch-mode`, `user-agent` | no canary key, no credential header or key shape, exact body keys per kind |
 | API-21 | AC-112, QR-105 | same-node E2E suites, switch off | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… vitest run tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs tests/e2e/agent-org-runs --no-watch` | ENV-6 | Pass (FU-003, FU-004 outside scope) | `API-21-same-node-e2e-switch-off-round3.log`; `API-21-race-repeat-and-base-bisect.log` | `Test Files  2 failed \| 35 passed (37)`. The failures: `delegated-launch-config-defaults` (FU-003) and one race timeout in `task-reactivation-root-visibility` › "QR-001: a DONE from another root racing …". The race case, run alone: 9/10 pass on this branch; on the base `5de6a698b9` also 9/10, with the identical "Timed out waiting for tool result of / for CALL_TOOL:{\"name\":\"send_message_to\"…" | Both failures reproduce independently of this change: FU-003 with the switch off and on (round 2); FU-004 on the base at the same rate, without any remote-collaboration code (ENV-7) |
-| API-22 | AC-112, QR-105 | same-node E2E suites, switch on | the same with `ENABLE_REMOTE_COLLABORATION=true` | ENV-6 | Pass (FU-003 outside scope) | `API-22-same-node-e2e-switch-on-round3.log` | `Test Files  1 failed \| 36 passed (37)`; the one failure is `delegated-launch-config-defaults` (FU-003) | round 2 gave the same result (`API-22-same-node-e2e-switch-on.log`) |
+| API-22 | AC-112, QR-105 | same-node E2E suites, switch on | the same with `ENABLE_REMOTE_COLLABORATION=true` | ENV-10 (round 5); ENV-6 (round 3) | Pass (FU-003 outside scope) | `API-22-same-node-e2e-switch-on-round5.log`; round 3: `API-22-same-node-e2e-switch-on-round3.log` | `Test Files  1 failed \| 36 passed (37)`; the one failure is `delegated-launch-config-defaults` (FU-003), at the same lines 521/639 | rounds 2, 3 and 5 gave the same result |
 | API-23 | AC-110, REQ-112 | browser on the receiving node | round 2 journey (ENV-4) | ENV-4 | Pass (reused) | `API-23-browser-journey.log`, `API-23-beta-run-history-and-packet.png`, `API-23-beta-composer-message.png` | "workspace … Publisher (1)"; packet "… on node \"alpha-node\". … Marker BROWSER-PACKET."; composer "… OWNER-COMPOSER-MSG" then "OK"; after Stop `"status":["Offline"]` | Still valid: `git diff 31d46978ad 7a5a9af077` touches only the Team and Org package validators, which beta's standalone remote run, history and view do not use. The same server behavior (composer and stop on beta) also runs in every E2E run (RC-05, RC-14) |
 | API-23b | AC-110, REQ-112 | the receiving node in the real desktop app | ENV-9 journey: setup in Nodes → Remote Collaboration on both windows, publish on B, Daily Assistant on A delegates by `delegate_task` (node "beta"), reply and follow-up both ways; on B, open the run from history and send an owner composer message | ENV-9 | Pass | `API-23b-isolated-app-journey.log`, `API-23b-isolated-beta-composer-message.png` | screenshot: run row under node-b-workspace → Text Reviewer (1); the reviewer's `send_message_to`; the owner message "… Marker OWNER-COMPOSER-MSG." and the answer "Confirmed: my review … is finished …"; status Idle | Real model and real app on the integrated build. It replaces the round-2 composer screenshot, which was a byte-identical copy of the history screenshot (delivery's note) and has been removed; the round-2 DOM and server records in `API-23-browser-journey.log` stand |
 | API-24 | AC-113 (Docker networking part) | Docker node | Compared the dist of `autobyteus/autobyteus-server:latest` with this worktree's dist (TESTING § Docker server nodes) | — | Not Tested | `API-24-docker-node-attempt.log` | "31 differing files are NOT changed by this branch" | TESTING allows mounting this dist only when the image's dist differs just in this branch's files. No container was started, and the user's containers were not touched |
@@ -229,6 +238,7 @@ N/A (Pass).
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review; Large / High)
 - Notes:
+  - Round 5 changed no test code. It validates the integration merge `c59c6f7359` (two-server E2E ×2, API-22) on top of CRR-009 and IMP-19 … IMP-21.
   - Round 4 changed only test code and evidence; this ticket's product source is unchanged since round 3.
   - The `origin/personal` merge (`4f03cce09d`) brought other work. On that integrated state this round reran the two-server E2E (r4-1, r4-2) and the app journey (API-23b). The same-node suites are covered by delivery's DEL-03/DEL-04 (unit and web; DEL-03's one failure is FU-006, which also fails on the base). API-21/22 are the round-3 results on `7a5a9af077`.
   - FU-003 (stale suite from autobyteus-197) and FU-004 (a Task race timeout that reproduces on the base) are recorded in `follow-ups.md` for the Solution Designer to send on.

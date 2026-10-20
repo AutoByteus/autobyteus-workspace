@@ -8,6 +8,7 @@
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-004; round 2 | SR-015, SR-016, ARCH-REV-004, ARCH-REV-006, IR-003, CRR-003, CRR-004 | Fail (F-001; partial) / 49% | Fail (F-002) / 85% |
 | API-REV-003 | Code Reviewer, `code-review-report.md` CRR-006; round 3 | SR-017, ARCH-REV-007, IR-004, CRR-005, CRR-006 | Fail (F-002) / 85% | Pass / 95% |
 | API-REV-004 | Delivery Engineer, DR-001 (`release-deployment-report.md`, DEL-06); round 4 | DR-001, CRR-007 | Pass / 95% | Pass / 95% |
+| API-REV-005 | Code Reviewer, CRR-009 (integration merge `c59c6f7359`); round 5 | IR-005, CRR-009, DR-002 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -144,3 +145,33 @@ None.
 - Remaining risks, blocked evidence, or untested scope:
   - AC-113's Docker part (only the user can check);
   - RSK-106 (accepted, FU-002).
+
+### API-REV-005 — Integration merge with origin/personal (autobyteus-205) validated
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` (CRR-009, Pass), round 5. Delivery's DR-002 asked for the integration.
+- Triggering finding or case IDs: none. This is a rerun by impact after the merge `c59c6f7359` (`origin/personal` `3b9014215e`), whose conflicts sat on the `delegatedFrom` write at prepare and its read at restore.
+- Related revision IDs: IR-005, CRR-009, DR-002.
+- Coverage decisions or durable test paths changed: none. The E2E file is unchanged since `a777af6b1d`. The merge brought IMP-20, the reviewer-verified unit test `300bf4c09a`.
+- Cases rechecked:
+  - API-00 (round 5);
+  - API-01 … API-20: r5-1 and r5-2, 20/20 each;
+  - API-22: 36/37, with FU-003 as before.
+  - API-23/23b and API-21 are reused: the views are unchanged, and the switch does not affect the run-metadata reading the merge changed.
+- Commands, environment, fixture, or broader-validation delta: ENV-10.
+
+#### Prior Failure Resolution
+
+None.
+
+- Canonical artifacts and sections updated:
+  - `api-e2e-execution-coverage-report.md`: Round, environments, Cases, Notes;
+  - `api-e2e-test-progress.md`;
+  - `evidence/api-e2e/` (`API-00-server-build-round5.log`, `API-r5-run1/2*`, `API-22-same-node-e2e-switch-on-round5.log`).
+- Prior result and confidence: Pass / 95%
+- Current result and confidence: Pass / 95%
+- New or remaining failure IDs: none in scope.
+- Recommended owner: the Code Reviewer, by the pass rule. No test code changed this round, so there is nothing new for test-code review.
+- Remaining risks, blocked evidence, or untested scope:
+  - AC-113's Docker part (only the user can check);
+  - RSK-106 (accepted, FU-002);
+  - FU-003/004/006/008 (outside scope).
