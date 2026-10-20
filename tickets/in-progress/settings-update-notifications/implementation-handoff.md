@@ -1,7 +1,7 @@
 # Implementation Handoff — settings-update-notifications
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications`, branch `codex/settings-update-notifications`.
-Code commits: `da74c13406` (server), `eba4674616` (desktop shell), `71cfcd7d32` (web, docs). These documents and `evidence/` are in the ticket commit that follows.
+Code commits: `da74c13406` (server), `eba4674616` (desktop shell), `71cfcd7d32` (web, docs), `c42bf2abc4` (CR-001 fix, IR-002). These documents and `evidence/` are in the ticket commit that follows.
 
 ## Upstream Artifact Package
 
@@ -13,23 +13,23 @@ Code commits: `da74c13406` (server), `eba4674616` (desktop shell), `71cfcd7d32` 
 - Supplemental task artifacts: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/ui-ux-spec.md` and `visual-references/VIS-001..028` (design repository `288ef06`); `follow-ups.md` (FU-001, FU-002, unchanged)
 - Design review report: `.../design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md` (ARCH-REV-002)
-- Triggering rework report, revision record, or evidence: N/A (initial)
+- Triggering rework report, revision record, or evidence: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, finding CR-001) for IR-002
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on the IR-001 baseline)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 What exists now:
 
-- **Server** (`src/update-notifications/`): `UpdateNotificationService` (DS-007 rules, one serialized operation at a time, persist + broadcast only on change), `UpdateNotificationStore` (tolerant read / exact write of `notifications.json`), `UpdateCheckScheduler` (60 s first pass, 30 min tick, 6 h due rule, packages then skills, oldest first, setting and gate read before every source), `UpdateChecksCapabilityService` (`ENABLE_UPDATE_CHECKS`, absent = on), change messages + process hub on the new generic `utils/change-feed-hub.ts`, `/ws/update-notifications`, GraphQL resolver, composition started in `buildStudioServer` and closed on `onClose`.
+- **Server** (`src/update-notifications/`): `UpdateNotificationService` (DS-007 rules, one serialized operation at a time, persist + broadcast only on change; each owner read on its own, so an owner that cannot be read leaves the other kinds working and its records kept and hidden — CR-001), `UpdateNotificationStore` (tolerant read / exact write of `notifications.json`), `UpdateCheckScheduler` (60 s first pass, 30 min tick, 6 h due rule, packages then skills, oldest first, setting and gate read before every source), `UpdateChecksCapabilityService` (`ENABLE_UPDATE_CHECKS`, absent = on), change messages + process hub on the new generic `utils/change-feed-hub.ts`, `/ws/update-notifications`, GraphQL resolver, composition started in `buildStudioServer` and closed on `onClose`.
 - **GitHub transport**: `GitHubRateLimitGate` in `publicGitHubRequest` for `api.github.com` only; blocked-until time persisted in `<app-data>/github/rate-limit.json` (AR-001).
 - **Source owners**: `AgentPackageService` split — the GitHub check/update lifecycle moved to `github-agent-package-updates.ts`; per-package serialization of check/update/remove with a fresh read inside the lock (AR-003); projection + listener on both owners; `canUpdate` when latest known ≠ installed (packages in the mapper, skills in `SkillSourceRow.vue`).
 - **Desktop shell**: `AppUpdateNotificationRecord` (`userData/app-update-notification.json`), `appReleasePage.ts`, `AppUpdater` record calls, re-check before Download, two IPC intents, `AppUpdateState.notification`; e2e-only `AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL` (loopback http) → `AppUpdater` with a generic feed and `releasePageUrl = null` (DEC-017); `isolated-app start --test-update-feed <url>` (kept on `restart`).
@@ -133,9 +133,11 @@ Evidence is in `tickets/in-progress/settings-update-notifications/evidence/`.
 | IMP-06 | `node --test scripts/electron-launch/__tests__/*.node-test.mjs scripts/isolated-app/__tests__/*.node-test.mjs` (in `autobyteus-web`) | `71cfcd7d32` | macOS | launch environment, isolated-app CLI | REQ-019 | Pass | `IMP-06-scripts-node-tests.log` | `# pass 52`, `# fail 0` |
 | IMP-07 | `pnpm -C autobyteus-web test:nuxt --run` | `71cfcd7d32` | macOS | whole web unit/component suite | BEH-005, 009; AC-002, 006, 009..011, 016, 018 | Pass | `IMP-07-web-unit-excerpt.log` | `Test Files  646 passed | 2 skipped (648)` |
 | IMP-08 | `pnpm guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` (in `autobyteus-web`) | `71cfcd7d32` | macOS | web boundary, localization | AC-019 | Pass | `IMP-08-web-guards.log` | `Passed with zero unresolved findings.` |
+| IMP-11 | CR-001 fix: server typecheck + `vitest run tests/unit/update-notifications tests/unit/integrations tests/unit/compositions/update-notifications-composition.test.ts tests/unit/api/graphql/update-notifications-schema.test.ts tests/unit/skills/github/source-update-state.test.ts --no-watch`; the new GraphQL test also run against the `da74c13406` service | `c42bf2abc4` | macOS | `UpdateNotificationService` with a real `SkillSourceService` over a malformed registry | BEH-009, REQ-008, QR-005; DESIGN.md rule 7 | Pass (fails on the previous service) | `IMP-11-cr-001-fix.log` | `tsc exit 0`, `Tests  49 passed (49)`, previous service `Tests  1 failed | 2 passed (3)` |
 | IMP-10 | Rendered check: `pnpm dev`, seeded dev data, browser tab: pill, panel, details, Show more, skill confirmation, failed update, Esc/focus, restart persistence, strip layout, live removal, Update checks card on/off, zh-CN | working tree that became `71cfcd7d32` (web code unchanged since) | macOS, Nuxt dev + built server | web UI + server feed/GraphQL | AC-002, 004, 010, 011 (removal), 016, 018 (browser), 019; VIS-001, 003..005, 009, 010, 018, 022, 023, 024 | Pass (with the Known Risk overlap) | `IMP-10-rendered-check.txt`, `IMP-10-*.png` | items 1–10 in the text file |
 
 - IMP-07: a first run of the same commit, made while IMP-04 ran in parallel, had 2 timeouts in `CollaborationMessagesOrgRoot.integration.spec.ts` (untouched; its 42,000-reference tests take 3.2–3.8 s of the 5 s default and passed alone). Cause: CPU contention from the parallel run. The rerun without parallel load passed; both runs are recorded in the excerpt.
+- Rerun by impact for IR-002: only `update-notification-service.ts` (and its tests and doc) changed after `71cfcd7d32`. IMP-01 and the notification/GraphQL part of IMP-02 are superseded by IMP-11; IMP-03..IMP-08 and IMP-10 exercise no changed code (the web reads the same GraphQL contract) and stay valid at `71cfcd7d32`. IMP-04 (full server unit suite) was not rerun: the changed file is exercised only by the IMP-11 set.
 - Not run, and why: server `test:integration` and server E2E (the change adds no integration-suite surface beyond IMP-02's GraphQL test; API/E2E owns E2E); packaged Electron harness and isolated desktop instances with `--test-update-feed` and real public GitHub repositories (AC-001, AC-003, AC-005..007, AC-013, AC-015, AC-021 in a real instance) — API/E2E; a web type-check gate does not exist (see Known Risks).
 
 ## Frontend Rendered-Result Check (When Applicable)
