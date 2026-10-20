@@ -76,7 +76,6 @@ export const projectAgentCollaborationEvent = (
       };
       break;
     case "communication":
-      if (!isPublicMessage(source.message, agentsOf(tree))) return null;
       event = { kind: "communication" as const, message: source.message };
       break;
     case "delegated_launch_selections_changed":

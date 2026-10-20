@@ -13,6 +13,8 @@ type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail
  * The service retains message policy; this owner alone derives the next immutable
  * message snapshot from the latest authoritative state. `receiver` is the local receiver's reserved input;
  * it is `null` for a message sent to a remote run (the peer admitted it; nothing is reserved here).
+ * `publishToRootView` is false for a message with a remote endpoint: the team view shows messages between
+ * its own members, so no `COMMUNICATION` event (and no change sequence) is published for it.
  */
 export const createTeamCommunicationMessageAppendPlan = (input: {
   rootTeamRunId: string;
@@ -21,6 +23,7 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
     inputMessage: Parameters<typeof buildTeamMemberInputEventPayload>[0]["message"];
     reservation: AgentRunInputReservation;
   }> | null;
+  publishToRootView: boolean;
   isAccepting(): boolean;
   getCurrent(): TeamCommunicationMessagesSnapshot;
   /** The logs the message belongs to, resolved against the current tree. */
@@ -82,10 +85,12 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
             state = "committed";
             input.replaceCurrent(nextMessages);
             const committed = input.receiver?.reservation.commit() ?? null;
-            input.publish({
-              eventSourceType: TeamRunEventSourceType.COMMUNICATION,
-              payload: input.message,
-            });
+            if (input.publishToRootView) {
+              input.publish({
+                eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+                payload: input.message,
+              });
+            }
             if (input.receiver) {
               input.publish({
                 eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,

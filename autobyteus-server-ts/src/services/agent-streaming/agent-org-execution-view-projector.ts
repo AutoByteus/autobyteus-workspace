@@ -89,7 +89,6 @@ export const projectAgentOrgExecutionEvent = (
       };
       break;
     case "communication":
-      if (!isPublicMessage(source.message, agentsOf(run.getExecutionTreeSnapshot()))) return null;
       event = { kind: "communication" as const, message: source.message };
       break;
     case "delegated_launch_selections_changed":

@@ -29,6 +29,7 @@ describe("current Team communication append plan", () => {
       message,
       receiver: { inputMessage: new AgentInputUserMessage("hello", SenderType.AGENT),
         reservation: Object.freeze({ agentRunId: "receiver-run", cancel, commit }) },
+      publishToRootView: true,
       isAccepting: () => true,
       getCurrent: () => current,
       resolveLogOwners: () => [COORDINATING_LOG],

@@ -78,6 +78,8 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   `remoteTaskExecutions` (absent when none), never into `taskExecutions`, so every walker of local copies
   (index, Stop, launch selections, run tree, idle shutdown, Task closure release) excludes them. Run-ID
   membership, the stored message view and Task ownership include them through `RemoteRunLinks`. Messages
-  with a remote endpoint are kept out of the public run views.
+  with a remote endpoint are kept out of the public run views: the root never publishes them to its view
+  stream (`publishToRootView`, so the stream's change sequence has no gap), and the view snapshots filter
+  them out. The local agent's own stream and the message logs show them.
 - **Task closure** fences a remote run (its messages are refused with the closed-Task reason); it keeps
   running on its node until idle (stopping it from the delegating node is S3).

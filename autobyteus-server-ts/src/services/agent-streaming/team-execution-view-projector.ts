@@ -69,13 +69,12 @@ export const projectTeamExecutionViewSnapshot = (
 export const projectSequencedTeamRunEvent = (
   root: RootTeamRun,
   sequenced: SequencedRootEvent<TeamRunEvent>,
-): TeamStreamServerMessage | null => {
+): TeamStreamServerMessage => {
   const { event, changeSequence } = sequenced;
   switch (event.eventSourceType) {
     case TeamRunEventSourceType.AGENT:
       return projectTeamAgentEventMessage(event.execution, event.payload, changeSequence);
     case TeamRunEventSourceType.COMMUNICATION:
-      if (!isPublicMessage(event.payload, agentsOf(root.getExecutionTreeSnapshot()))) return null;
       return parseTeamStreamServerMessage({ type: "TEAM_COMMUNICATION_MESSAGE", payload: {
         change_sequence: changeSequence,
         message: projectCommunicationMessage(event.payload),

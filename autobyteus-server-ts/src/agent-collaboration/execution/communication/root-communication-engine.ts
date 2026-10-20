@@ -92,7 +92,7 @@ export class RootCommunicationEngine {
       createdAt,
     });
     const inputMessage = this.adapter.buildRecipientInput({ delivery: input, message });
-    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed);
+    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, true);
   }
 
   /**
@@ -156,7 +156,8 @@ export class RootCommunicationEngine {
     const inputMessage = buildRemoteCommunicationInputMessage({
       root: this.adapter.root, message, receiverIdentity: input.receiverIdentity, senderNodeName: input.senderNodeName,
     });
-    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed);
+    // A message from a remote run is not published to the root's view (it shows its own agents' messages).
+    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, false);
   }
 
   private async reserveAndCommit(
@@ -165,6 +166,7 @@ export class RootCommunicationEngine {
     receiverAgentRunId: string,
     receiverDisplayName: string,
     assertAllowed: () => void,
+    publishToRootView: boolean,
   ): Promise<AgentOperationResult> {
     const reservationResult = await this.adapter.reserveRecipientInput(receiverAgentRunId, inputMessage);
     if (!reservationResult.reserved) {
@@ -182,6 +184,7 @@ export class RootCommunicationEngine {
       reservation: guarded,
       getCurrentMessages: () => this.current,
       commitMessages: (messages) => { this.current = messages; },
+      publishToRootView,
     });
     return result.committed
       ? { accepted: true, agentRunId: receiverAgentRunId, displayName: receiverDisplayName }

@@ -41,10 +41,16 @@ export interface RootCommunicationAdapter {
     reservation: Extract<AgentRunInputReservationResult, { reserved: true }>["reservation"];
     getCurrentMessages(): readonly CollaborationCommunicationMessage[];
     commitMessages(messages: readonly CollaborationCommunicationMessage[]): void;
+    /**
+     * Whether the root publishes the message to its view stream. The view shows messages between its own
+     * agents; a message from a remote run is not published, so it takes no change sequence.
+     */
+    publishToRootView: boolean;
   }>): Promise<RootCommunicationAppendResult>;
   /**
    * A message a local agent sent to a remote run, after the peer accepted it: appended to the sender's log
-   * only (the peer stores its side, CM-9), then committed to `current` and published to this root's view.
+   * only (the peer stores its side, CM-9) and committed to `current`. It is never published to the root's
+   * view, which shows messages between its own agents.
    */
   commitSentToRemote(input: Readonly<{
     message: CollaborationCommunicationMessage;

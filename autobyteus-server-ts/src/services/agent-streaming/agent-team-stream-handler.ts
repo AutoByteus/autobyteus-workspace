@@ -136,10 +136,7 @@ export class AgentTeamStreamHandler {
       }));
       egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection.snapshot, connection.baseChangeSequence));
       const unsubscribeEvents = connection.subscribe((event) => {
-        try {
-          const projected = projectSequencedTeamRunEvent(root, event);
-          if (projected) egress.send(projected);
-        }
+        try { egress.send(projectSequencedTeamRunEvent(root, event)); }
         catch (error) { console.error(`Error projecting TeamRun event: ${String(error)}`); }
       });
       const lifecycle = this.teamRunManager.getLifecycleSnapshot(root.teamRunId);

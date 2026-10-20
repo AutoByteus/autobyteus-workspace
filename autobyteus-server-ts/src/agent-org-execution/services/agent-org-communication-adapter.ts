@@ -34,7 +34,7 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
   assertDeliveryAllowed(...runIds: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
     this.options.assertDeliveryAllowed(...runIds);
   }
-  /** The peer admitted the message: only the sender's log here, then the view (no local receiver). */
+  /** The peer admitted the message: only the sender's log here; not published to the root's view. */
   async commitSentToRemote(input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0]) {
     if (!this.options.isOpen() || input.getCurrentMessages().some((message) => message.messageId === input.message.messageId)) {
       return Object.freeze({ committed: false as const, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." });
@@ -51,7 +51,6 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
       commitAfterDurability: () => {
         input.commitMessages(next.messages);
         this.options.replaceMessages(next);
-        this.options.publish(input.message);
       },
     });
   }
@@ -88,7 +87,7 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
           const committed = input.reservation.commit();
           reservationCommitted = true;
           try {
-            this.options.publish(input.message);
+            if (input.publishToRootView) this.options.publish(input.message);
             this.options.presentCommittedMessage(input.message, input.inputMessage);
           } finally {
             committed.release();

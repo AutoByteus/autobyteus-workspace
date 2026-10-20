@@ -75,19 +75,22 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     return receiverRun.reserveDirectAgentInput(agentRunId, message);
   }
   commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
-    return this.commitPlan(input, { inputMessage: input.inputMessage, reservation: input.reservation });
+    return this.commitPlan(input, { inputMessage: input.inputMessage, reservation: input.reservation }, input.publishToRootView);
   }
 
+  /** Not published to the team view, which shows messages between its own members. */
   commitSentToRemote(input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0]) {
-    return this.commitPlan(input, null);
+    return this.commitPlan(input, null, false);
   }
 
   private async commitPlan(
     input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0],
     receiver: Parameters<typeof createTeamCommunicationMessageAppendPlan>[0]["receiver"],
+    publishToRootView: boolean,
   ) {
     const plan = createTeamCommunicationMessageAppendPlan({
       rootTeamRunId: this.options.rootTeamRunId,
+      publishToRootView,
       message: input.message,
       receiver,
       isAccepting: this.isAccepting,
