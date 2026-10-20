@@ -75,7 +75,13 @@ const location = computed(() => props.source.github?.repositoryUrl ?? props.sour
 const kindLabel = computed(() => t(props.source.github ? 'skills.sources.github' : 'skills.sources.local'))
 const copyLabel = computed(() => t(props.source.github ? 'skills.sources.copyUrl' : 'skills.sources.copyPath'))
 const isRemoving = computed(() => props.source.github?.status === 'REMOVING')
-const canUpdate = computed(() => !!props.source.github && ['UPDATE_AVAILABLE', 'UPDATE_FAILED'].includes(props.source.github.status))
+// A known newer revision stays updatable after a failed later check (REQ-006).
+const canUpdate = computed(() => {
+  const github = props.source.github
+  if (!github || github.status === 'REMOVING') return false
+  return ['UPDATE_AVAILABLE', 'UPDATE_FAILED'].includes(github.status)
+    || (!!github.latestRevision && github.latestRevision !== github.installedRevision)
+})
 // The Retry removal button already says what to do, so the status only names the problem.
 const statusLabel = computed(() => props.pending ? t('skills.sources.status.' + props.pending.toUpperCase())
   : isRemoving.value ? t('skills.sources.status.REMOVING_SHORT') : t('skills.sources.status.' + props.source.github!.status))

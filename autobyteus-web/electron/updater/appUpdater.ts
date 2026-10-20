@@ -231,9 +231,9 @@ export class AppUpdater implements AppUpdateController {
     // After a restart the notification exists before this process has seen the update: check first.
     if (this.state.status !== 'available' && this.state.notification?.state === 'waiting'
       && this.state.status !== 'checking' && this.state.status !== 'downloaded') {
-      await this.checkForUpdates('manual');
-      if (this.state.status !== 'available') {
-        return this.getState();
+      const checked = await this.checkForUpdates('manual');
+      if (checked.status !== 'available') {
+        return checked;
       }
     }
 

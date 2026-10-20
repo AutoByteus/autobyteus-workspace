@@ -55,8 +55,8 @@ vi.mock('~/components/app/AppLocalizationGate.vue', () => ({
   },
 }));
 
-vi.mock('~/components/app/AppUpdateNotice.vue', () => ({
-  default: { template: '<div data-testid="app-update-notice" />' },
+vi.mock('~/components/notifications/NotificationCenter.vue', () => ({
+  default: { template: '<div data-testid="notification-center" />' },
 }));
 
 vi.mock('~/components/ui/UiErrorPanel.vue', () => ({
@@ -82,7 +82,7 @@ describe('app.vue', () => {
     expect(wrapper.find('[data-testid="app-localization-gate"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="server-shutdown"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="app-update-notice"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="notification-center"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="toast-container"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
   });
@@ -92,7 +92,9 @@ describe('app.vue', () => {
 
     expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="server-shutdown"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="app-update-notice"]').exists()).toBe(true);
+    // The self-opening app-update card is gone; the Notification Center opens only on a click (DEC-001).
+    expect(wrapper.find('[data-testid="app-update-notice"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="notification-center"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="toast-container"]').exists()).toBe(true);
   });

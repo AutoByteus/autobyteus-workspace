@@ -35,6 +35,7 @@ export interface NodeEndpoints {
   projectsWs: string;
   /** The node's agent, team, org and package catalog change feed. */
   agentPackageDefinitionsWs: string;
+  updateNotificationsWs: string;
   terminalWs: string;
   fileExplorerWs: string;
   health: string;

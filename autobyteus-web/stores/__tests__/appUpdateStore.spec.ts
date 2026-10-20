@@ -40,7 +40,6 @@ describe('appUpdateStore', () => {
 
     expect(store.initialized).toBe(true);
     expect(store.isElectron).toBe(false);
-    expect(store.shouldShow).toBe(false);
   });
 
   it('loads initial state and reacts to update-state events', async () => {
@@ -71,7 +70,6 @@ describe('appUpdateStore', () => {
 
     expect(store.status).toBe('available');
     expect(store.availableVersion).toBe('1.2.0');
-    expect(store.shouldShow).toBe(true);
 
     listener?.({
       status: 'downloaded',
@@ -189,123 +187,6 @@ describe('appUpdateStore', () => {
     expect(store.message).toContain('The app will close automatically');
   });
 
-  it('dismisses currently available update notice', async () => {
-    setElectronApiMock({
-      getAppUpdateState: vi.fn().mockResolvedValue({
-        status: 'available',
-        currentVersion: '1.1.9',
-        availableVersion: '1.2.0',
-        downloadPercent: null,
-        downloadTransferredBytes: null,
-        downloadTotalBytes: null,
-        releaseNotes: null,
-        message: 'Version 1.2.0 is available.',
-        errorKind: null,
-        errorOperation: null,
-        checkedAt: '2026-02-26T00:00:00.000Z',
-      }),
-      onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
-    });
-
-    const store = useAppUpdateStore();
-    await store.initialize();
-
-    expect(store.shouldShow).toBe(true);
-    store.dismissNotice();
-    expect(store.shouldShow).toBe(false);
-  });
-
-  it('keeps no-update notice visible for at least three seconds', async () => {
-    vi.useFakeTimers();
-    let listener: ((payload: any) => void) | null = null;
-
-    setElectronApiMock({
-      getAppUpdateState: vi.fn().mockResolvedValue({
-        status: 'idle',
-        currentVersion: '1.1.12',
-        availableVersion: null,
-        downloadPercent: null,
-        downloadTransferredBytes: null,
-        downloadTotalBytes: null,
-        releaseNotes: null,
-        message: '',
-        errorKind: null,
-        errorOperation: null,
-        checkedAt: null,
-      }),
-      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
-        listener = callback;
-        return vi.fn();
-      }),
-    });
-
-    const store = useAppUpdateStore();
-    await store.initialize();
-
-    listener?.({
-      status: 'no-update',
-      message: 'You already have the latest version.',
-      currentVersion: '1.1.12',
-      availableVersion: null,
-      checkedAt: '2026-02-27T00:00:00.000Z',
-    });
-
-    expect(store.shouldShow).toBe(true);
-    vi.advanceTimersByTime(2999);
-    expect(store.shouldShow).toBe(true);
-    vi.advanceTimersByTime(1);
-    expect(store.shouldShow).toBe(false);
-  });
-
-  it('cancels pending no-update auto-hide when a new state arrives', async () => {
-    vi.useFakeTimers();
-    let listener: ((payload: any) => void) | null = null;
-
-    setElectronApiMock({
-      getAppUpdateState: vi.fn().mockResolvedValue({
-        status: 'idle',
-        currentVersion: '1.1.12',
-        availableVersion: null,
-        downloadPercent: null,
-        downloadTransferredBytes: null,
-        downloadTotalBytes: null,
-        releaseNotes: null,
-        message: '',
-        errorKind: null,
-        errorOperation: null,
-        checkedAt: null,
-      }),
-      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
-        listener = callback;
-        return vi.fn();
-      }),
-    });
-
-    const store = useAppUpdateStore();
-    await store.initialize();
-
-    listener?.({
-      status: 'no-update',
-      message: 'You already have the latest version.',
-      currentVersion: '1.1.12',
-      availableVersion: null,
-      checkedAt: '2026-02-27T00:00:00.000Z',
-    });
-    expect(store.shouldShow).toBe(true);
-
-    listener?.({
-      status: 'available',
-      message: 'Version 1.1.13 is available.',
-      currentVersion: '1.1.12',
-      availableVersion: '1.1.13',
-      checkedAt: '2026-02-27T00:00:05.000Z',
-    });
-    vi.advanceTimersByTime(3000);
-
-    expect(store.status).toBe('available');
-    expect(store.shouldShow).toBe(true);
-  });
-
   it('keeps startup transient update errors quiet and avoids raw diagnostic toasts', async () => {
     let listener: ((payload: any) => void) | null = null;
 
@@ -343,8 +224,83 @@ describe('appUpdateStore', () => {
     });
 
     expect(store.status).toBe('error');
-    expect(store.shouldShow).toBe(false);
     expect(addToastMock).not.toHaveBeenCalled();
+  });
+
+  it('raises the downloaded toast once per download, not on every later state broadcast', async () => {
+    let listener: ((payload: any) => void) | null = null;
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({ status: 'downloading', currentVersion: '1.1.9', message: '' }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+    const store = useAppUpdateStore();
+    await store.initialize();
+    addToastMock.mockClear();
+
+    listener?.({ status: 'downloaded', message: 'Update downloaded. Restart to install.' });
+    listener?.({ status: 'downloaded', message: 'Update downloaded. Restart to install.', notification: null });
+
+    expect(addToastMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps every startup-check error quiet, not only network ones (DEC-016)', async () => {
+    let listener: ((payload: any) => void) | null = null;
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({ status: 'idle', currentVersion: '1.1.12', message: '', checkedAt: null }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+    addToastMock.mockClear();
+
+    listener?.({ status: 'error', message: 'bad metadata', errorKind: 'metadata', errorOperation: 'startup-check' });
+    listener?.({ status: 'error', message: 'unknown', errorKind: 'unknown', errorOperation: 'startup-check' });
+
+    expect(store.status).toBe('error');
+    expect(addToastMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the shell notification record and sends the read and clear intents to the shell', async () => {
+    let listener: ((payload: any) => void) | null = null;
+    const waiting = { version: '1.2.0', fromVersion: '1.1.9', foundAt: '2026-10-20T10:00:00.000Z', read: false,
+      state: 'waiting', handledVersion: null, releasePageUrl: null };
+    const markAppUpdateNotificationRead = vi.fn().mockResolvedValue({ notification: { ...waiting, read: true } });
+    const clearAppUpdateNotification = vi.fn().mockResolvedValue({ notification: null });
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({ status: 'available', currentVersion: '1.1.9', availableVersion: '1.2.0', notification: waiting }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+      markAppUpdateNotificationRead,
+      clearAppUpdateNotification,
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+    expect(store.notification).toEqual(waiting);
+
+    await store.markNotificationRead();
+    expect(markAppUpdateNotificationRead).toHaveBeenCalledTimes(1);
+    expect(store.notification?.read).toBe(true);
+    await store.markNotificationRead();
+    expect(markAppUpdateNotificationRead).toHaveBeenCalledTimes(1);
+
+    listener?.({ status: 'idle', notification: { ...waiting, read: true, state: 'handled', handledVersion: '1.2.0' } });
+    expect(store.notification?.state).toBe('handled');
+    listener?.({ status: 'idle' });
+    expect(store.notification?.state).toBe('handled');
+
+    await store.clearNotification();
+    expect(clearAppUpdateNotification).toHaveBeenCalledTimes(1);
+    expect(store.notification).toBeNull();
   });
 
   it('shows manual update errors with safe toast copy and dedupes repeated error events', async () => {
@@ -389,8 +345,6 @@ describe('appUpdateStore', () => {
       errorOperation: 'updater-event',
       checkedAt: '2026-02-27T00:00:01.000Z',
     });
-
-    expect(store.shouldShow).toBe(true);
     expect(addToastMock).toHaveBeenCalledTimes(1);
     expect(addToastMock.mock.calls[0][0]).toContain('still being prepared');
     expect(addToastMock.mock.calls[0][0]).not.toContain('latest-mac.yml');
@@ -427,8 +381,6 @@ describe('appUpdateStore', () => {
       await store.initialize();
 
       expect(store.status).toBe('disabled');
-      expect(store.visible).toBe(false);
-      expect(store.shouldShow).toBe(false);
       expect(addToastMock).not.toHaveBeenCalled();
     });
 
@@ -455,7 +407,6 @@ describe('appUpdateStore', () => {
       expect(api.installAppUpdateAndRestart).not.toHaveBeenCalled();
       expect(api.setAppUpdateChannel).not.toHaveBeenCalled();
       expect(store.status).toBe('disabled');
-      expect(store.shouldShow).toBe(false);
       expect(addToastMock).not.toHaveBeenCalled();
     });
   });

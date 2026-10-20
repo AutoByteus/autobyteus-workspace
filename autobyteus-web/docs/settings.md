@@ -240,7 +240,62 @@ always available on desktop (see `projects.md`). Both share one mechanism:
 
 Add a new per-node feature capability as another factory instance plus a card
 wrapper, never as a copied store or card. See `applications.md` and
-`projects.md` for feature-specific behavior.
+`projects.md` for feature-specific behavior. One exception keeps the factory
+but not the card: **Update checks** (`ENABLE_UPDATE_CHECKS`, on when absent) is
+`stores/capabilities/updateChecksCapabilityStore.ts` with its own
+`UpdateChecksCard.vue`, because its approved design is the Basics inner-row card
+without a status badge (see Notification Center below).
+
+## Notification Center (Update Notifications)
+
+The quiet place where waiting updates of the app, imported GitHub agent
+packages and imported GitHub skill sources are shown. Nothing opens by itself;
+nothing is updated without the user's Update.
+
+- **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
+  ("3 updates") on the right of the sidebar's Settings row
+  (`AppLeftPanel.vue`), or an icon with a count badge above the cog in the
+  collapsed strip (`LeftSidebarStrip.vue`). The count is the number of waiting
+  (not handled) rows, the app included. Solid `sky-700` while any is unread,
+  soft `sky-100` once all are read, absent at 0. Hover or focus lists the kinds.
+  It shows where Settings does (`isFeatureAvailableInRuntime('desktopSettings')`):
+  desktop and browser windows, not the mobile client.
+- **Panel.** `components/notifications/NotificationCenter.vue` (mounted in
+  `app.vue`, teleported, `z-[90]`) with `NotificationSection.vue` and
+  `NotificationRow.vue`. One section per kind (Software update first, then by
+  newest waiting update), one row per update (waiting rows newest first, then
+  handled), first three rows then "Show N more". A row's name or change line
+  toggles its details: repository · branch and "See changes on GitHub" (the
+  compare page of the two revisions); for the app, the release notes and the
+  Release page. ✕, Esc or a click outside closes it; ✕ and Esc return focus to
+  the entry. Opening marks every waiting row read on the node and in the shell;
+  the "New" dots stay until the panel closes.
+- **Row actions** run the existing explicit update of their kind:
+  `agentPackagesStore.updateAgentPackage`; for a skill source, the shared
+  `components/skills/SkillSourceUpdateConfirmation.vue` (also used by the skill
+  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for the
+  app, Download (`appUpdateStore.downloadUpdate`) → progress → Install and
+  restart. A failure shows "Update failed. Nothing was changed." with the reason
+  and Try again; a handled row shows "Updated to …" and Clear. There is no
+  dismiss or skip.
+- **Data.** `stores/updateNotificationsStore.ts` is the only place that combines
+  the bound node's records (GraphQL `updateNotifications`,
+  `markUpdateNotificationsRead`, `clearUpdateNotification(kind, sourceId)`) with
+  the shell's app record (`AppUpdateState.notification`, IPC
+  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). It re-reads on
+  every `/ws/update-notifications` frame
+  (`services/updateNotifications/updateNotificationChangeFeed.ts`, retained
+  app-wide by `useUpdateNotificationChangeFeed`) and drops the rows when the
+  window is bound to another node. A browser window has no app row.
+  `stores/notificationCenterStore.ts` owns open/closed, position and the "New"
+  dots.
+- **Setting.** Settings → Server Settings → Basics → **Update checks** (last
+  card): the node's switch for background checks, with the description of the
+  network calls (at most every 6 hours, `api.github.com`, no account or token,
+  nothing sent to AutoByteus; the desktop app also checks GitHub releases for
+  its own update at start). Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
+- The former self-opening app update card (`AppUpdateNotice`) is gone; Settings
+  → Updates keeps all app update controls.
 
 ## Server Settings: Embedding
 

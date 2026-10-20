@@ -69,9 +69,10 @@
       </footer>
     </section>
 
-    <ConfirmationModal :show="!!confirmation" :pending="confirming"
-      :title="t(confirmation?.action === 'update' ? 'skills.sources.updateTitle' : 'skills.components.skills.SkillSourcesModal.remove_skill_source')"
-      :confirm-button-text="t(confirmation?.action === 'update' ? 'skills.sources.update' : 'skills.sources.remove')"
+    <SkillSourceUpdateConfirmation :show="confirmation?.action === 'update'" :pending="confirming" :source="updateTarget"
+      @confirm="confirmAction" @cancel="confirmation = null" />
+    <ConfirmationModal :show="confirmation?.action === 'remove'" :pending="confirming"
+      :title="t('skills.components.skills.SkillSourcesModal.remove_skill_source')" :confirm-button-text="t('skills.sources.remove')"
       variant="danger" @confirm="confirmAction" @cancel="confirmation = null">
       <p class="confirm-copy text-sm leading-6 text-slate-600">{{ confirmationMessage }}</p>
       <div v-if="confirmation" class="confirm-source mt-3 flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
@@ -81,12 +82,6 @@
         <span class="min-w-0">
           <span class="block truncate text-sm font-medium text-slate-900">{{ skillSourceDisplayName(confirmation.source) }}</span>
           <span class="mt-0.5 block break-all font-mono text-[11.5px] leading-4 text-slate-500">{{ confirmation.source.github?.repositoryUrl ?? confirmation.source.path }}</span>
-          <span v-if="confirmation.action === 'update' && confirmation.source.github?.latestRevision" class="version-change mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-slate-600">
-            <span>{{ confirmation.source.github.defaultBranch }}</span>
-            <span class="font-mono text-[11.5px]" :title="confirmation.source.github.installedRevision">{{ confirmation.source.github.installedRevision.slice(0, 10) }}</span>
-            <Icon icon="heroicons:arrow-right-20-solid" class="h-3.5 w-3.5 text-slate-400" :aria-label="t('skills.sources.latest')" />
-            <span class="font-mono text-[11.5px] font-medium text-slate-900" :title="confirmation.source.github.latestRevision">{{ confirmation.source.github.latestRevision.slice(0, 10) }}</span>
-          </span>
         </span>
       </div>
     </ConfirmationModal>
@@ -105,6 +100,7 @@ import { pickFolderPath } from '~/composables/useNativeFolderDialog'
 import { skillSourceDisplayName } from '~/utils/skills/skillSourceDisplay'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import SkillSourceRow from './SkillSourceRow.vue'
+import SkillSourceUpdateConfirmation, { type SkillSourceUpdateTarget } from './SkillSourceUpdateConfirmation.vue'
 
 const { t } = useLocalization()
 const emit = defineEmits(['close'])
@@ -124,9 +120,15 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const busy = computed(() => loading.value || scanning.value || Object.keys(pending.value).length > 0)
 const sources = computed(() => [...skillSources.value].sort((a, b) =>
   Number(b.isDefault) - Number(a.isDefault) || a.path.localeCompare(b.path)))
-const confirmationMessage = computed(() => t(confirmation.value?.action === 'update'
-  ? 'skills.sources.updateWarning' : confirmation.value?.source.github
-    ? 'skills.sources.removeWarning' : 'skills.sources.unlinkWarning'))
+const confirmationMessage = computed(() => t(confirmation.value?.source.github
+  ? 'skills.sources.removeWarning' : 'skills.sources.unlinkWarning'))
+const updateTarget = computed<SkillSourceUpdateTarget | null>(() => {
+  const source = confirmation.value?.action === 'update' ? confirmation.value.source : null
+  return source?.github ? {
+    name: skillSourceDisplayName(source), repositoryUrl: source.github.repositoryUrl, branch: source.github.defaultBranch,
+    installedRevision: source.github.installedRevision, latestRevision: source.github.latestRevision,
+  } : null
+})
 // One input for both kinds: a web address is imported as a GitHub repository (the import validates it and
 // rejects non-GitHub or non-root URLs with its existing message); anything else is added as a local folder.
 const isRepositoryUrl = computed(() => /^\s*(https?:\/\/|www\.|github\.com\/)/i.test(newPath.value))
