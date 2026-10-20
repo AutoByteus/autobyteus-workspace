@@ -4,7 +4,7 @@
 
 - Package: `runtime-lifecycle-review` (Settings → Agent Runtimes). It continues and replaces the predecessor `runtime-lifecycle-usability`.
 - Classification: `task_size=Large`, `architectural_risk=High`. Route: reviewed (architecture review ARCH-REV-003, code review CRR-002, API/E2E API-REV-001 at 95.3%, test-code review CRR-003).
-- Revisions: requirements approved by the user at SR-007/SR-010, current SR-012. IR-002, CRR-003, API-REV-001, DR-001.
+- Revisions: requirements approved by the user at SR-007/SR-010, current SR-012. IR-002, CRR-003, API-REV-001, API-REV-002 (real accounts, 97.1%), DR-001.
 
 ## What Changed
 
@@ -26,16 +26,26 @@
   - DEL-04: web guards + Settings specs, 60 files / 303 tests
   - DEL-05: the browser probe on the merged state: 10/10 cases, no browser errors, table from a 1252 px window, 0 secret hits
 
+- Second refresh before finalizing: `origin/personal` had moved to `66d834b0ac` (`autobyteus-ts-dependency-hygiene`: autobyteus-ts lockfile/workflow/`hono` removal, root lockfile). Merged as `6f0c4eaea9`, no conflicts. DEL-06 passed: typecheck, 143 focused unit tests, both e2e suites (12/12, 4/4), web specs 35/35.
+
 ## Verification
 
-- Judged from the evidence: see `release-deployment-report.md` → Verification.
+- Judged from the evidence: sufficient. Every critical acceptance criterion is proven directly (table in `release-deployment-report.md`). Final confidence is 97.1%.
+- Round 1 (API-REV-001) had left the real-account parts open. At the user's direction ("api e2e should use my real account", with no custom vendor homes), API/E2E ran API-REV-002 in an isolated desktop instance of this branch. It used his real HOME, login-shell PATH, installed runtimes and accounts:
+  - real states of all four runtimes matched each CLI's own report; Grok's signed-in `grok models` reads Signed in;
+  - a real Claude update 2.1.302 → 2.1.304 from the page;
+  - real sign-out detected, then Codex and Grok signed in from the page: the vendor page opened in his browser and the rows reached Signed in;
+  - 0 secret hits in 103 files.
+- No separate user check: the user did the browser step inside the API/E2E run, and nothing else needs him.
 
 ## Release
 
-- See `release-deployment-report.md` → Release Decision.
+- Decision: `Beta`, decided by the user on 2026-10-20 in the Delivery Engineer conversation ("lets release a new beta by teh way"). Beta `v1.5.8-beta.2`; the outcome is recorded in `release-deployment-report.md`.
 
 ## Residual Risks And Follow-ups
 
-- Vendor behavior that only the real vendors and the user's accounts can show: `codex login` / `grok login --oauth` opening the browser when started without a terminal, real signed-in output (Grok), and package-manager updaters (Homebrew) refusing `update`. In that last case the vendor's message is shown, a non-goal.
+- Real browser sign-in, real signed-in output and a real update are now proven on the user's Mac (API-REV-002). Still not exercised for real:
+  - package-manager installs (Homebrew/WinGet) whose `update` refuses; the vendor's message is shown, a non-goal;
+  - a window on a real remote/Docker node; the renderer gate is proven by ARP-08 against a non-embedded node binding, and the Electron window-context code is unchanged.
 - Grok and Antigravity Application launch readiness stays `unsupported` (unchanged, documented).
 - Follow-ups FU-001…FU-007 are in `follow-ups.md`; none blocks. FU-005 is the architecture-suite failure already on the base. The Solution Designer sends them.

@@ -41,29 +41,33 @@ Finalize Settings → Agent Runtimes to `personal`. Release only as the user dec
 
 ## Verification
 
-- Evidence judged: `Sufficient` for everything except the parts that need the user's own accounts and installs.
-- Evidence relied on: the execution report's Acceptance-Criteria Proof and Cases (API-REV-001, 95.3% final confidence, no category below 95%), the evidence files opened below, and the DEL-05 rerun on the merged state.
+- Evidence judged: `Sufficient`. Every critical acceptance criterion is directly proven.
+- Evidence relied on:
+  - the execution report's Acceptance-Criteria Proof and Cases: API-REV-001 at 95.3%, then API-REV-002, the user's real accounts, at 97.1% with no category below 95%;
+  - the evidence files opened below;
+  - the DEL-05 browser rerun and the DEL-06 recheck on the merged states.
 
 | Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement |
 | --- | --- | --- | --- |
-| AC-001 | API-20 / DEL-05 `ARP-01b-VIS-001-table-1440-en.png`, `ARP-09-VIS-018-load-error.png`, `result.json`; API-12 log lines 218–224 | Four rows, the approved copy, menu order API Keys → Agent Runtimes, load error + Retry; real installs read through the unchanged resolvers (codex 0.163.0, claude 2.1.302, agy 1.4.3, grok 1.0.62) | Proven (renderer + real resolvers). The packaged desktop is part of the user's sign-in check below |
-| AC-002 | API-10 AR-01/02; API-12 (real sources: Claude `UPDATE_AVAILABLE/2.1.304`); DEL-05 ARP-01a/05 | Independent rows, one failing source only marks its row, Check again recovers | Proven |
-| AC-003 | API-10 AR-03/04/05, DEL-05 `ARP-04a/04b`, `ARP-05` | `codex update · Installing…`, "Updated from 0.150.0 to 0.163.0." kept after the re-check, failure + vendor text + Try again; exit 0 + same version → failed | Proven with a scripted updater. A real update only shows the vendor's own command working (a non-goal); offered to the user, not required |
-| AC-004 | API-11 RA-03/04; DEL-03; DEL-05 `ARP-03-VIS-007-blocked-by-agent.png` | "Update unavailable while 1 agent is running." with a real Codex run, and Brief Studio's Application run counted | Proven |
-| AC-005 | API-10 AR-01/06/09; DEL-05 ARP-01b | Grok "Not installed", vendor link, restart hint, "–"; found on the next check after it appears | Proven |
-| AC-006 | API-02 (real CLIs signed out), API-12, API-10 AR-10 | Real signed-out answers from all four CLIs read correctly; signed-in states only from scripted answers | Signed out: Proven. Signed in with real accounts: **User Check** (the user's accounts; automated runs must not read them) |
-| AC-007 | API-10 AR-07/08/09/12; DEL-05 `ARP-06a/06b` | Signing in…, browser line, Cancel kills the process, 10-minute time-out (6 s in test, constant asserted), completion → Signed in; no URL or code passes through | Proven up to the browser hand-off. Browser opening from AutoByteus + real completion: **User Check** (needs the user's account) |
-| AC-009 | API-02 (`claude auth status --json` exit 1 + `"loggedIn": false`), API-12, DEL-05 ARP-01b | Claude/Antigravity "Not signed in" + "Sign in from its command line.", no button | Proven |
-| AC-010 | API-20 / DEL-05 `ARP-08-VIS-019-remote-node.png` | Window bound to a non-embedded node: same rows, status-only note, no Update/Sign in/command-line hint; install link and restart hint kept for a missing runtime (approved spec UXJ-010 + UI note (1)) | Proven. The binding uses the same store action a node window uses; the Electron window-context code is unchanged. No user check needed |
-| AC-011 | API-10 AR-11 (`hits 0`), DEL-03, DEL-05 ARP-10 (`hits: []`, 724 responses, 1,122 data files) | No marker in API, logs or data | Proven |
+| AC-001 | DEL-05 `ARP-01b`, `ARP-09`; API-12 log lines 218–224; API-40, API-45 `API-45-real-page-after-update-and-sign-in.png` + DOM log | Real desktop window (isolated instance of this branch, login-shell PATH): four rows with his real versions 0.163.0 / 2.1.304 / 1.4.3 / 1.0.62, Up to date, Signed in, the approved table layout | Proven |
+| AC-002 | API-10 AR-01/02; API-12; DEL-05 ARP-01a/05; API-40 | Independent rows; failing source isolated; real source showed Claude `UPDATE_AVAILABLE 2.1.304` | Proven |
+| AC-003 | API-10 AR-03/04/05; DEL-05 ARP-04a/04b/05; API-41 `API-41-claude-real-update-watch.log` | Real `claude update` from the page: RUNNING (step line) → SUCCEEDED 2.1.302 → 2.1.304 → re-check UP_TO_DATE with the result kept; `claude --version` 2.1.304 | Proven |
+| AC-004 | API-11 RA-03/04; DEL-03/06; DEL-05 ARP-03 | Real Codex run and Brief Studio Application run block Update with the count | Proven |
+| AC-005 | API-10 AR-01/06/09; DEL-05 ARP-01b | Not installed, vendor link, restart hint, "–" | Proven |
+| AC-006 | API-02, API-12 (signed out, real CLIs); API-40, API-42, API-44 `API-44-real-cli-answers-redacted.log` | Real signed-in states of all four match each CLI's own report; Grok signed in prints "You are logged in with grok.com." + models, exit 0 → Signed in; real sign-out detected | Proven |
+| AC-007 | API-10 AR-07/08/09/12; DEL-05 ARP-06a/06b; API-42 | `codex login` and `grok login --oauth` started by the app's server opened the vendor page in his browser; the rows reached Signed in (final GraphQL state recorded; the browser step was the user's own action within the run) | Proven |
+| AC-009 | API-02 (`"loggedIn": false` + exit 1), API-12, DEL-05 ARP-01b | Command-line hint, no button | Proven |
+| AC-010 | DEL-05 `ARP-08-VIS-019-remote-node.png` | Non-embedded node binding: same rows, status-only note, no Update/Sign in/command-line hint | Proven (renderer; Electron window-context code unchanged) |
+| AC-011 | API-10 AR-11, DEL-03/06 (`hits 0`), DEL-05 ARP-10, API-43 `API-43-real-secret-scan.log` | 0 hits with scripted secrets, and 0 hits in 103 files after real sign-ins (positive control hit all 7 patterns); committed evidence redacted | Proven |
 
-- More evidence requested: `None`. The remaining parts need the user's own accounts, which API/E2E showed it must not read (API-30 note).
-- User check needed: `Yes` (pending). AC-006 needs real signed-in states and AC-007 a real browser sign-in. Both need the user's accounts, the "user's own accounts" case in the delivery rules. One sitting in the desktop app with this change covers AC-001's packaged-app view at the same time.
-- User check reference: pending.
+- More evidence requested: yes, once. On 2026-10-20 the user directed that API/E2E use his real accounts, with no custom vendor homes. Delivery sent this to API/E2E (run `api_e2e_engineer_5f1ec328cd5744b9a0eb711936d2471b`). Result: API-REV-002 Pass, commit `d1922a9ca7`, no durable test changed.
+- User check needed: `No`. The only user-only step, completing a browser sign-in, was done by the user inside the API/E2E run.
+- Re-verification after later re-integration: `origin/personal` moved to `66d834b0ac` (dependency-hygiene ticket: lockfiles, unused `hono`). It merged cleanly as `6f0c4eaea9`, and DEL-06 passed: typecheck, focused unit 143/143, e2e 12/12 and 4/4, web specs 35/35. No product behavior changed.
 
 ## Release Decision
 
-- Decision: pending (asked of the user together with the check).
+- Decision: `Beta`
+- Decided by: the user, 2026-10-20, Delivery Engineer conversation: "Its done lets release a new beta by teh way. thanks".
 
 ## Docs Sync Result
 
