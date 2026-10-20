@@ -73,7 +73,19 @@
 
 ## Repository Finalization
 
-- Pending
+- Bootstrap context source: API/E2E handoff (worktree, branch `codex/autobyteus-ts-dependency-hygiene`, base `origin/personal` @ `5de6a698b9`) and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/autobyteus-ts-dependency-hygiene`
+- Ticket branch commit result: `5a53bd962c` (delivery docs), `f1880ab3a8` (archive)
+- Ticket branch push result: pushed to `origin/codex/autobyteus-ts-dependency-hygiene` @ `f1880ab3a8`
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `5de6a698b9` at merge and immediately before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/autobyteus-ts-dependency-hygiene` created from `origin/personal` @ `5de6a698b9`
+- Merge into target result: `--no-ff` merge `ccacc87ca8`; tree identical to the ticket branch (`git diff` empty)
+- Push target branch result: `5de6a698b9..ccacc87ca8`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -83,7 +95,13 @@
 
 ## Post-Finalization Cleanup
 
-- Pending
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-dependency-hygiene`
+- Worktree cleanup result: `Completed`. Removed with `git worktree remove --force`; it held only ignored build output, including the implementation's packaged app. Everything tracked was pushed, and no process was running from it.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Deleted `codex/autobyteus-ts-dependency-hygiene` (`f1880ab3a8`, contained in `origin/personal`) and `finalize/autobyteus-ts-dependency-hygiene` (`ccacc87ca8`).
+- Remote branch cleanup result: `Not required`. The remote ticket branch is kept, as on earlier tickets.
+- API/E2E had already removed its isolated instances, Docker container and image, and temporary checkout.
+- This record was written from a temporary detached checkout of `origin/personal` (`/tmp/hyg224-record`), which is removed after the push.
 
 ## Release Notes Summary
 
@@ -100,7 +118,7 @@
 
 ## Verification Checks
 
-- `python3 scripts/check_licensing.py`, `python3 scripts/check_repository_artifact_hygiene.py` on the archived state: pending
+- `python3 scripts/check_licensing.py` → `Licensing is consistent.`; `python3 scripts/check_repository_artifact_hygiene.py` → `Repository artifact hygiene check passed.` (on the archived state `f1880ab3a8`, whose tree equals the merge)
 
 ## Rollback Criteria
 
@@ -108,4 +126,11 @@
 
 ## Final Status
 
-- Pending finalization and cleanup
+- Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence; no user check needed)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push, via `send_message_to` `/software_engineering_team/solution_designer` (the "Delivery Completed" rule from `get_handoff_rules`)
+- Terminal message/reference: Delivery Completed for `autobyteus-ts-dependency-hygiene` (`autobyteus-224`), DR-001
