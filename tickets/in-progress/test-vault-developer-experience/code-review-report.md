@@ -12,17 +12,18 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-004, Pass; AR-013 guidance; P-004)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-003)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Full Re-Audit`
-- Review Scope Evidence (round >1): the delta moves the vault read-side format modules from the server into autobyteus-ts and changes the DS-003 key-resolution spine. It also changes shared contracts (`SecretVaultStore` location, `SecretCredentialSlot` → `ProviderApiKeySlot`, removal of `setDefaultProviderApiKeyResolver`, new `disableEnvironmentProviderApiKeySource`) across about 60 code files. All structural checks and the full scorecard were redone. Evidence for areas the delta does not touch (CLI/commands logic, Electron forwarding, harness opt-ins, live-suite gating) is carried forward from CRR-001 after confirming those files changed only in their imports.
-- Trigger: implementation_engineer handoff of IR-002 (head `07fcc5969c`; code `9498de5f8b`; docs `e40b0fe6ce`, `3c9a4e799a`)
-- Prior Review Round Reviewed: Round 1 (CRR-001, Pass, IR-001 `12a23e7b8a`)
-- Latest Authoritative Round: 2
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3
+- Review Scope: `Targeted Delta Review` (round 3). Round 2 was a `Full Re-Audit`; its evidence below stands.
+- Review Scope Evidence (round 3): the IR-003 code delta is commit `469de3d47e` only. It removes the `resolve.alias` block and its helpers from `autobyteus-ts/vitest.config.ts` (the file is now byte-identical to `855842b8f1^`) and deletes `package-self-alias.test.ts`. That stays within CR-001's files and behavior, so all other round-2 checks and scores carry forward.
+- Review Scope Evidence (round 2): the delta moves the vault read-side format modules from the server into autobyteus-ts and changes the DS-003 key-resolution spine. It also changes shared contracts (`SecretVaultStore` location, `SecretCredentialSlot` → `ProviderApiKeySlot`, removal of `setDefaultProviderApiKeyResolver`, new `disableEnvironmentProviderApiKeySource`) across about 60 code files. All structural checks and the full scorecard were redone. Evidence for areas the delta does not touch (CLI/commands logic, Electron forwarding, harness opt-ins, live-suite gating) is carried forward from CRR-001 after confirming those files changed only in their imports.
+- Trigger: implementation_engineer handoff of IR-003 (head `a525ca02ac`; code `469de3d47e`) answering CR-001. Round 2 reviewed IR-002 (head `07fcc5969c`; code `9498de5f8b`; docs `e40b0fe6ce`, `3c9a4e799a`).
+- Prior Review Round Reviewed: Round 2 (CRR-002, Fail, CR-001)
+- Latest Authoritative Round: 3
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: present from API-REV-001 (put on hold before SR-009); not an input to this implementation review
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
@@ -120,11 +121,11 @@ CRR-001 candidates C-01..C-08 are carried forward unchanged (all Reject). New th
 | Naming quality | Pass | Clear and consistent | — |
 | No unjustified duplication | Pass | No server copies or re-exports; the selector name is defined once in autobyteus-ts and imported by server and test-support (Electron keeps its own constant under its dependency rule) | — |
 | Patch-on-patch complexity control | Pass | The IR-001 installer was removed rather than layered over | — |
-| Dead code removed in touched files | **Fail** | CR-001: the Vitest self-alias and its test are dead after the installer's removal | Remove (Local Fix) |
+| Dead code removed in touched files | Pass | CR-001 resolved in `469de3d47e`: alias block and helpers removed; `vitest.config.ts` identical to its pre-ticket form | — |
 | Test scenarios requirement-aligned | Pass | The AC-018 E2E has a negative control; plain-script cases with and without the variable; loading is checked through `moduleLoadList` | — |
 | Test fixtures/helpers coherent | Pass | `synthetic-test-vault.ts` on the moved crypto; shared module-graph walker | — |
-| No stale or compatibility-only tests | **Fail** | `package-self-alias.test.ts` only guards the dead alias (CR-001) | Remove with CR-001 |
-| API/E2E readiness | Pass (after CR-001) | Exact commands in the handoff; AC-013 now includes a plain script | — |
+| No stale or compatibility-only tests | Pass | `package-self-alias.test.ts` deleted (CR-001) | — |
+| API/E2E readiness | Pass | Exact commands in the handoff; AC-013 now includes a plain script | — |
 
 ## Source File Size And Structure Audit
 
@@ -145,7 +146,7 @@ CRR-001 candidates C-01..C-08 are carried forward unchanged (all Reject). New th
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | No server re-export shims for the moved modules; `setDefaultProviderApiKeyResolver` removed outright |
 | No legacy old-behavior retention | Pass | The test-setup installer is removed |
-| Dead code removed in touched files | Fail | CR-001 |
+| Dead code removed in touched files | Pass | CR-001 resolved |
 | Persisted-data transition followed | Pass | `Not Affected`: format and bytes unchanged |
 | No version-specific dual reads/writes | Pass | — |
 | Transition mechanics match the design | Pass | No migration |
@@ -154,8 +155,7 @@ CRR-001 candidates C-01..C-08 are carried forward unchanged (all Reject). New th
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| `autobyteus-ts/vitest.config.ts` `resolve.alias` block (+ `sourceRoot`, `path`, `fileURLToPath` if then unused) | DeadCode | Its stated consumer, the server code loaded by the removed `test-vault-default-resolver.ts`, is gone. No module in the autobyteus-ts Vitest run imports `autobyteus-ts` by package name except the alias test (grep in C-09). | Principle 7; the comment now misstates why it exists | Remove |
-| `autobyteus-ts/tests/unit/secrets/package-self-alias.test.ts` | UnusedTest | Tests only the dead alias | Principle 7 (tests for code that has no purpose) | Remove |
+None remaining. CR-001's two items (the Vitest `resolve.alias` block and `package-self-alias.test.ts`) were removed in `469de3d47e`. A re-run of the C-09 grep, widened to `autobyteus-ts/src`, finds no package-name import of `autobyteus-ts`, only path strings in a JSON fixture.
 
 ## Docs-Impact Verdict
 
@@ -177,8 +177,8 @@ No new premises.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -187,15 +187,19 @@ No new premises.
 | 3 | API / Interface / Query / Command Clarity | 9.2 | Explicit → environment → missing; one disable call; no global setter | Core library carries a process-global env-driven source (approved trade-off) | — |
 | 4 | Separation of Concerns and File Placement | 9.4 | Small owned files; selector name split out to keep imports vault-free | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.3 | Single slot union; trimmed location type | — | — |
-| 6 | Naming Quality and Local Readability | 9.2 | Clear names; good contract comments | `vitest.config.ts` comment now false (CR-001) | Remove with CR-001 |
+| 6 | Naming Quality and Local Readability | 9.3 | Clear names; good contract comments; the misleading alias comment is gone | — | — |
 | 7 | API/E2E Readiness | 9.1 | Plain-script and AC-018 mechanics automated with a negative control | Real-key runs still open | API/E2E |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | Catalog equivalence traced; corrupt-entry mapping preserved; failed opens not cached; disable-first at both sites | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut, no shims | — | — |
-| 10 | Cleanup Completeness | 8.5 | Installer, setter, server copies and unused `index.ts` removed | The Vitest self-alias and its test survived the removal of their only consumer (CR-001) | Remove both |
+| 10 | Cleanup Completeness | 9.3 | Installer, setter, server copies, unused `index.ts`, and (IR-003) the dead Vitest self-alias and its test removed | — | — |
 
 ## Findings
 
-### CR-001 — Dead Vitest self-alias and its test after the installer's removal (Low)
+None open.
+
+### CR-001 — Dead Vitest self-alias and its test after the installer's removal (Low) — Resolved in IR-003
+
+- Resolution: commit `469de3d47e` removed the alias block and its helpers (the file now equals `855842b8f1^`) and deleted `package-self-alias.test.ts`. Verified by diff and grep. IMP-26 (default suite with the selector and 13 inherited keys: 392 passed | 21 skipped) and IMP-27 (gated live files against a synthetic vault: the OpenAI-compatible key resolved, Grok gave a missing-capability skip, DeepSeek a classified refusal) pass on that commit.
 
 - Type: Dead code in touched files (Core Principle 7), this ticket.
 - Contract: Principle 7 ("code that only its own tests call"; "tests … for code that no longer exists"; remove dead code in the files a change touches).
@@ -205,7 +209,7 @@ No new premises.
   - A grep of everything the autobyteus-ts Vitest run can load (C-09) finds no package-name import of `autobyteus-ts` except `tests/unit/secrets/package-self-alias.test.ts`, which tests only the alias.
   - Both the alias and the test were added by this ticket in `855842b8f1`.
 - Required action: remove the `resolve.alias` block and the helpers only it uses, and delete `package-self-alias.test.ts`. Confirm with `pnpm -C autobyteus-ts test` (default suite) and one gated live file against a synthetic vault (IMP-22 shape).
-- Classification: `Local Fix` → `/software_engineering_team/implementation_engineer`.
+- Round-2 classification: `Local Fix` → `/software_engineering_team/implementation_engineer` (now resolved).
 
 ## Follow-ups
 
@@ -215,11 +219,11 @@ None new. FU-01..FU-05 stand.
 
 ## Classification
 
-`Local Fix` (CR-001)
+N/A (Pass)
 
 ## Recommended Recipient
 
-`/software_engineering_team/implementation_engineer`
+`/software_engineering_team/api_e2e_engineer`
 
 ## Residual Risks
 
@@ -230,11 +234,11 @@ None new. FU-01..FU-05 stand.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (one Low Local Fix)
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10 (92/100); Cleanup Completeness 8.5, all other categories ≥ 9.1
+- Score Summary: 9.3/10 (93/100); every category ≥ 9.1
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: Large/High preserved. Apart from CR-001, the SR-009/SR-010 delta is implemented as designed and reviewed. Round 3 can be a Targeted Delta Review limited to CR-001.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: Large/High preserved. CR-001 is resolved, and the cumulative package (IR-001 + IR-002 + IR-003, SR-010) is ready for API/E2E.
