@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: Worktree created from freshly fetched `origin/personal`; `pnpm install --frozen-lockfile` succeeded (10 s).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-008`
+- Current solution revision ID: `SR-009`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-10); repository `AGENTS.md`, `TESTING.md` (full, 2026-10-10); `autobyteus-server-ts/docs/modules/secret_management.md` (full, 2026-10-10)
 - Investigation status: Evaluation complete and revised on 2026-10-17 for the user update (SR-002). Requirements approved within the user's direction (SR-004, 2026-10-19). Architecture investigation complete (2026-10-19).
 
@@ -221,6 +221,9 @@ Authorities read for design (2026-10-19), all from `/Users/normy/autobyteus_org/
 | A-24 | `grep -rln "runtime.initialize(" autobyteus-server-ts/tests` → 6 files; env helper used by 8 suites | In-process suites initialize the vault runtime themselves | They pass an explicit source (application, or the live initializer) |
 | A-25 | `autobyteus-web/tests/e2e/*.mjs`: 22 probes spawn `dist/app.js` with `...process.env`; `provider-api-key-save-probe.mjs` saves keys | No shared probe env owner | The key-saving probe strips the selector; others: residual R-D; FU-05 |
 | A-26 | `test-support/live-e2e/live-e2e-harness.ts:1195-1232` | The real-E2E harness opens an in-process runtime on the run DB; preflight reads the server's GraphQL vault status | The harness uses the live initializer; preflight follows the server's selected source |
+| A-27 | Code review CRR-001 (`code-review-report.md`); `git grep installTestVaultDefaultResolver\|setDefaultProviderApiKeyResolver` @ `12a23e7b8a` | Only `autobyteus-ts/tests/setup.ts` installs the default; a plain `tsx`/`node` probe gets `MissingApiKeyError` | SR-009: autobyteus-ts must read the selector itself |
+| A-28 | `grep` importer counts in `autobyteus-server-ts/src`, `tests`, `test-support` @ `17d0d5c0b5`: `secret-id` 25, `secret-vault-types` 12, `test-vault-location` 12, `crypto` 7, `persistence-types` 7, `catalog` 7, `root-key` 4, `secret-vault-store` 4, `windows-exclusive-acl` 2, `read-only-store` 1 | Size of the read-side move | Mechanical import updates; clean cut |
+| A-29 | `autobyteus-server-ts/src/secret-management/test-vault/read-only-test-vault.ts`; `test-support/test-vault/test-vault-default-resolver.ts`; `autobyteus-ts/src/secrets/provider-api-key-resolver.ts` @ `12a23e7b8a` | The read-only open composes the server bootstrap + service; the installer is the only setter of the autobyteus-ts default | Extract `verifyEstablishedVault` and `readSecretEntry`; remove the setter and installer |
 
 
 ## Requirement Implications

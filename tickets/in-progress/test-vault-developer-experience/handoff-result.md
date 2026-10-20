@@ -1,4 +1,4 @@
-# Handoff: test-vault-developer-experience — SR-008, Architecture Design Complete (revised after ARCH-REV-001)
+# Handoff: test-vault-developer-experience — SR-009, Architecture Design Complete (delta after code review)
 
 - Package: `test-vault-developer-experience` (Project Task `c15a77b2-18b8-4ac6-b3de-8afcba81211e`)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`) for the user. The user decides directly in the Solution Designer conversation.
@@ -15,6 +15,19 @@
 - Live tests stay opt-in.
 - One message in TESTING.md, `AGENTS.md` and the skills.
 - The user's model (2026-10-19): "like a database". One environment variable (`AUTOBYTEUS_TEST_VAULT`) selects the vault, normal logic is unchanged, and when it is unset production uses its own vault.
+
+## SR-009 delta (current)
+
+- Trigger: the user's direction relayed by the code reviewer (2026-10-20): autobyteus-ts must reach the test vault from plain scripts too, with "normal logic never has to know".
+- Base: IR-001 (`12a23e7b8a`) passed code review CRR-001. API/E2E is holding.
+- Change:
+  - the vault read side and location policy move to `autobyteus-ts/src/secrets/vault/` (single owner; the server imports it);
+  - autobyteus-ts's environment default key source opens the vault named by `AUTOBYTEUS_TEST_VAULT` lazily and read-only;
+  - the server disables that default at startup (AC-018);
+  - Vitest setup deletes the selector unless `RUN_LIVE_PROVIDER_TESTS=1` (AC-009);
+  - the test-support installer and `setDefaultProviderApiKeyResolver` are removed.
+- Detail: see "SR-009 Design Delta" at the top of `design-spec.md`.
+- Classification: still Large/High → architecture review.
 
 ## SR-008 revision (answers ARCH-REV-001)
 

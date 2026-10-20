@@ -1,6 +1,6 @@
 # Test Vault Developer Experience: Evaluation Report
 
-Revision SR-008, 2026-10-19. The test vault is selected like a database (one environment variable); approved by the user on 2026-10-19 (SR-006/SR-007). SR-008 aligns the details with architecture review ARCH-REV-001.
+Revision SR-009, 2026-10-20 (autobyteus-ts reads the variable itself). Earlier: SR-008, 2026-10-19. The test vault is selected like a database (one environment variable); approved by the user on 2026-10-19 (SR-006/SR-007). SR-008 aligns the details with architecture review ARCH-REV-001.
 Worktree: `codex/test-vault-developer-experience` from `origin/personal` @ `d28c56d5d`.
 Evidence: [investigation-notes.md](investigation-notes.md), raw logs in [walkthrough/](walkthrough/).
 Requirements for approval: [requirements-doc.md](requirements-doc.md).
@@ -115,7 +115,7 @@ itself."
 | Selector | `DATABASE_URL` | `AUTOBYTEUS_TEST_VAULT` (a directory; never a key) |
 | Unset | the app's own database | the vault inside the app's own database (today's production behavior) |
 | Set | every query goes to the test database | every key lookup reads the test vault (read-only) |
-| Code changes | none | none: server code unchanged; autobyteus-ts uses a default key source that its test setup installs |
+| Code changes | none | none: server code unchanged; autobyteus-ts reads the variable itself when a client is created without a key resolver, like an ORM reads `DATABASE_URL` (SR-009) |
 
 | Who / when | What they do |
 | --- | --- |
@@ -147,7 +147,7 @@ Safety:
 3. **Live runs opt in; deterministic runs are unaffected.**
    - Live tests already need their gate (`RUN_LIVE_PROVIDER_TESTS=1` for autobyteus-ts, `RUN_*` for server suites). With the gate and the variable set, they use the test vault.
    - The deterministic harnesses (default `pnpm test:e2e`, built test servers started without the live opt-in, unit/integration, default autobyteus-ts) keep their own vaults even if the variable is exported in your shell, so their results do not change.
-4. **autobyteus-ts with no extra code.** In a live run, the test setup installs a default key source backed by the test vault, so `LLMFactory.createLLM(id)` and `new XLLM(model, config)` just work. Gemini still takes its mode selection explicitly.
+4. **autobyteus-ts with no extra code (SR-009).** autobyteus-ts reads `AUTOBYTEUS_TEST_VAULT` itself. In any process (a Vitest live run, `tsx probe.ts`, plain `node`), `LLMFactory.createLLM(id)` and `new XLLM(model, config)` get their key from the test vault, read-only, with no setup code. In Vitest, the paid-call decision stays with `RUN_LIVE_PROVIDER_TESTS=1`: without it, the test setup removes the selector so default runs are unchanged. The AutoByteus server switches this default off and uses its own vault selection. Gemini still takes its mode explicitly.
 5. **No key in the environment.**
    - The env → vault helper is removed.
    - Tests strip inherited `*_API_KEY` variables, so production keys cannot reach a test.

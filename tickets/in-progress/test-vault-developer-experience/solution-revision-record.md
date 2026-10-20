@@ -12,6 +12,7 @@
 | SR-006 | Requirements (approval) + Design | User 2026-10-19: answers on production default and the "like a database" direction ("I think we should go into this direction") | N/A | Ready for Approval @ SR-005 | Approved; design reworked | REQ-001, 005, 007, 012, 014, 016; AC-015, AC-016; DEC-010, DEC-011 | Selector env var; read-only vault selected by the normal vault runtime; production default; autobyteus-ts default resolver |
 | SR-007 | Requirements (user) | User 2026-10-19: "write in TESTING.md to set the test vault environment variable … important in the requirement" | N/A | Approved @ SR-006; design under architecture review | Approved; design updated (docs guidance only) | REQ-013, AC-012 | TESTING.md must instruct setting `AUTOBYTEUS_TEST_VAULT` (section, rule, every real-key example) |
 | SR-008 | Mixed (Design Impact + editorial Requirement Gap) | Architecture review ARCH-REV-001 (Fail): AR-001..AR-006 | AR-001..AR-006 | Approved @ SR-007; design Ready (failed review) | Approved @ SR-008; design Ready (revised) | REQ-004, 005, 011, 013, 014, 016; AC-004, 009, 010, 016, 017; UC-009; SCN-009; DEC-007, 012 | Live opt-in at harnesses; concrete refused set; one failure rule; Prisma-free read path; docs aligned |
+| SR-009 | Requirement change (user) + Design | User via code review (2026-10-20, user's words relayed by `/software_engineering_team/code_reviewer`): normal logic never has to know; plain scripts too; "do it in this ticket" | Code-review Requirement Gap / Design Impact (CRR-001 passed IR-001) | Approved @ SR-008; implemented IR-001 `12a23e7b8a`; code review passed | Approved @ SR-009; design Ready (delta) | REQ-005(c), REQ-014; AC-009, AC-013, AC-018; DEC-011 → DEC-013 | autobyteus-ts owns the vault read side and reads the selector itself; the server disables that default |
 
 ## Revision Entries
 
@@ -162,3 +163,25 @@
   - **Design.** Harness owners (DS-005), failure rule, Prisma-free `read-only-test-vault.ts`, resolver split, `startBuiltTestServer({testVaultSetting})`, web-probe strip, review-response table.
 - Intended behavior changed: clarified (REQ-005 scope for deterministic harnesses; REQ-016 failure); no change to the user's model
 - Next action: return to architecture review (round 2)
+
+### SR-009 — autobyteus-ts reads the test vault itself
+
+- Classification: user change to intended behavior (Requirement Gap) with Design Impact
+- Trigger:
+  - `/software_engineering_team/code_reviewer` (run `code_reviewer_d7dd6fff4f6b4ef5a6afc43d26371de7`), 2026-10-20, relaying the user's direction from the code-review conversation, with the user's words: "do you think we can do it in this ticket? if yes that would be great";
+  - the bar is the database model: normal logic never has to know.
+- Evidence: A-27..A-29
+- Prior status: requirements Approved @ SR-008; design passed ARCH-REV-002; implemented IR-001 (`12a23e7b8a`); code review CRR-001 passed; API/E2E on hold
+- Current status: requirements Approved @ SR-009 (user's relayed words); design `Ready` with the SR-009 delta; classification still Large/High
+- IDs affected:
+  - REQ-005(c) and REQ-014 rewritten;
+  - AC-009 and AC-013 rewritten; AC-018 new;
+  - DEC-011 superseded by DEC-013.
+- Design:
+  - the vault read side and location policy move to `autobyteus-ts/src/secrets/vault/` (one owner);
+  - autobyteus-ts gets an environment default key source;
+  - the server disables that default;
+  - the test-support installer and `setDefaultProviderApiKeyResolver` are removed;
+  - Vitest setup deletes the selector unless the live gate is set.
+- Review impact: the ARCH-REV-002 pass covered SR-008 only. The SR-009 delta goes back to architecture review before implementation continues.
+- Next action: handoff to `/software_engineering_team/architecture_reviewer`
