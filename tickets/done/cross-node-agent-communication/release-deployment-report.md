@@ -220,19 +220,22 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 
 ### Post-Finalization Cleanup
 
-- Dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`: removed after this record's push with `git worktree remove --force`. Everything tracked is pushed; no process was running from it; the untracked `*/dist/` build output goes with it. Prune: `Completed`.
+- Dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`: **held** (correction to the first version of this record, which said no process was running).
+  - Two isolated desktop instances of API-23b run from its `autobyteus-web/electron-dist/` build (debug ports 56211 and 56346, started about 1 h 50 min before finalization). These are the windows the user watched.
+  - Removing the worktree would delete the files under them, so it waits for the user to close them or let delivery stop them.
+  - Everything tracked is pushed.
 - Local branches `codex/cross-node-agent-communication-r2` and `finalize/cross-node-agent-communication`: deleted after the record's push.
 - Remote ticket branch: kept on `origin`, as on earlier tickets (`Not required`).
 - Delivery temporaries:
   - `/tmp/dr001-base` and `/tmp/dr001-branch` were removed and pruned during DR-001;
-  - `/tmp/dr001` and `/tmp/dr003` are removed with the cleanup.
+  - `/tmp/dr001` and `/tmp/dr003` were removed after finalization.
 
 ### Final Status
 
 - Verification complete: `Yes`. AC-101 … AC-112 from the evidence; AC-113 by the user's confirmation, 2026-10-20.
 - Repository finalization complete: `Yes` (`d51ef843f6` on `personal`).
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`).
-- Applicable safe cleanup complete or not required: `Yes`, after this record's push (see the terminal message).
+- Applicable safe cleanup complete or not required: `No`. The worktree and local branches wait for the two running desktop instances (above); the result is reported in the terminal message.
 - Unresolved blocker: `None`.
 - Successful terminal package eligible for return: `Yes`.
 - Terminal package sent to the Solution Designer: sent after this record's push.
