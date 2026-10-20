@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 initial implementation | N/A | Pass | None |
+| CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 Pass | Pass (CRR-001) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -32,3 +33,28 @@ None
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E Engineer; informational notice to the Implementation Engineer
 - Remaining risks or uncertainty: R-002, R-003/RR-001, REQ-013 during the parity run
+
+### CRR-002 — Proportional test-code review after the API/E2E pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-001, Pass, 95.4%)
+- Relevant solution revision IDs: SR-002, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-001, implementation review)
+- Current authoritative result: Not Applicable. `git diff --name-only ae7e907bf2 51c82101bd` touches only `tickets/`, so no durable test changed; the temporary parity probes are evidence only
+- What changed in the review result and why: added the separate test-review result; the implementation-review result is unchanged
+- Supported product scenario / material-premise basis changes: none. MP-001/RR-001 settled by API-14 (no draft-04 dialect)
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: as listed in the execution report (Codex live turn, Grok model mismatch, tts/image-audio not run)
