@@ -68,7 +68,7 @@ describe('McpBulkImportView results', () => {
     await runImport(wrapper)
 
     expect(wrapper.find('#bulk-import-failures').exists()).toBe(false)
-    expect(lastToast(wrapper)).toEqual({ message: 'Imported 2 MCP server configurations.', type: 'success' })
+    expect(lastToast(wrapper)).toEqual({ message: 'MCP server configurations imported: 2.', type: 'success' })
     expect(wrapper.emitted('save-complete')).toHaveLength(1)
   })
 

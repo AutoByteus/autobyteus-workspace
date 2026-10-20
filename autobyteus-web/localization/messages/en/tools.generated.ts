@@ -34,7 +34,7 @@ const messages = {
   'tools.components.tools.McpBulkImportView.entries_not_imported': 'These entries were not imported:',
   'tools.components.tools.McpBulkImportView.import_none': 'No servers were imported; {{failed}} failed. See the entries below.',
   'tools.components.tools.McpBulkImportView.import_partial': 'Imported {{imported}}; {{failed}} failed. See the entries below.',
-  'tools.components.tools.McpBulkImportView.import_succeeded': 'Imported {{count}} MCP server configurations.',
+  'tools.components.tools.McpBulkImportView.import_succeeded': 'MCP server configurations imported: {{count}}.',
   'tools.components.tools.McpBulkImportView.json_configuration': 'JSON Configuration',
   'tools.components.tools.McpBulkImportView.placeholderjson': 'placeholderJson',
   'tools.components.tools.McpBulkImportView.the_json_must_have_a_top': 'The JSON must have a top-level `mcpServers` key containing an object of server configurations.',

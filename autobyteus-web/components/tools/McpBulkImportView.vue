@@ -42,7 +42,7 @@
       </div>
 
     <!-- Entries that were not imported -->
-    <div v-if="failures.length > 0" id="bulk-import-failures" class="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+    <div v-if="failures.length > 0" id="bulk-import-failures" ref="failuresRef" class="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
       <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.entries_not_imported') }}</p>
       <ul class="mt-2 space-y-1">
         <li v-for="failure in failures" :key="failure.serverId">
@@ -65,6 +65,7 @@ const { t } = useLocalization();
 
 const jsonString = ref('');
 const failures = ref<Array<{ serverId: string; reason: string }>>([]);
+const failuresRef = ref<HTMLElement | null>(null);
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
 const placeholderJson = `{
@@ -101,6 +102,10 @@ const runImport = async () => {
     try {
         const result = await store.importMcpServerConfigs(jsonString.value);
         failures.value = result.failures;
+        if (failures.value.length > 0) {
+            // The list is below a tall editor; bring it into view so the toast's "see below" holds.
+            nextTick(() => failuresRef.value?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' }));
+        }
         const key = 'tools.components.tools.McpBulkImportView';
         const imported = result.importedCount;
         const failed = result.failedCount;
