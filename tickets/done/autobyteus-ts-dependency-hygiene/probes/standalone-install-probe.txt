@@ -1,0 +1,13 @@
+# 2026-10-20, worktree base origin/personal @ 5de6a698b9, pnpm 10.28.2
+$ (cd autobyteus-ts && pnpm install --lockfile-only)
+Scope: all 13 workspace projects
+Done in 258ms using pnpm v10.28.2
+$ git status --short   (empty = neither lockfile changed)
+?? tickets/in-progress/autobyteus-ts-dependency-hygiene/
+$ md5 root pnpm-lock.yaml before/after
+b075ed9e64315268bb27cedf48ea1d38
+b075ed9e64315268bb27cedf48ea1d38
+
+$ gh repo view AutoByteus/autobyteus-ts / autobyteus-server-ts
+AutoByteus/autobyteus-ts archived=true pushed=2026-02-25T06:06:44Z
+AutoByteus/autobyteus-server-ts archived=true pushed=2026-02-26T07:55:00Z
