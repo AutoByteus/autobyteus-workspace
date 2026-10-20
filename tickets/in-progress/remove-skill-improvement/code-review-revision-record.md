@@ -7,6 +7,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 handoff | N/A | Pass | None (FU-003 recorded as a follow-up) |
+| CRR-002 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None |
 
 ## Revision Entries
 
@@ -37,3 +38,33 @@ None.
   - the user's check after backup (delivery);
   - the missing web typecheck command (FU-002);
   - R-3, accepted.
+
+### CRR-002 — Proportional review of the API/E2E test code: Pass
+
+- Canonical review report updated: `tickets/in-progress/remove-skill-improvement/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). `d21842c77b`:
+  - `skill-improvement-removal-cases.mjs` (added; SIR-001, SIR-002);
+  - `delegated-launch-defaults-probe.mjs` (registration and the `restartBackend` hook);
+  - `autobyteus-web/package.json` (script).
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-001, Pass); SIR-001, SIR-002
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-001: Pass)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the new cases use real triggers and a faithful pre-upgrade state. They assert result codes, byte-identity, ledger state, `.env` bytes and UI absence through real hooks, and they reuse the server fixture module's shapes.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A. Classification Large / High preserved.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - FU-004 and FU-005 (API/E2E's follow-ups, outside this ticket);
+  - AC-004's user check after backup and AC-005 (delivery).
