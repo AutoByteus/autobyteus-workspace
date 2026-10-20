@@ -246,3 +246,18 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 
 - The architecture reviewer passed SR-016 (commit `213a5d9668`) as ARCH-REV-006. Large / High; AR-001 … AR-009 are all resolved. The reviewer handed off to `/software_engineering_team/implementation_engineer`.
 - N-14 (text): the DS-001 narrative now describes the SR-014 order (B asked in `planActivation`, before the Task link, outside the queue), and the `RemoteDelegation` ownership bullet now says only `dispatchTaskCopy` is unchanged. Applied the same day; editorial.
+
+### SR-017 — Package validators accept remote message endpoints (CRR-005, 2026-10-20)
+
+- Phase and classification: Design / `Design Impact` from the code reviewer's failure-origin review of API/E2E F-002 (CRR-005, API-REV-002, code `31d46978ad`). Approved intent unchanged; this protects REQ-107/REQ-108 and AC-106 for Team and Org delegators.
+- Finding: by AR-001, the Team and Org stores compose delegator ↔ remote messages into the stored view. `validateTeamRunStatePackage` and `validateAgentOrgStatePackage` still require both endpoints to be tree agents (`index.requireAgent`), so the package is dropped by the admission scan and the state loaders. The AR-001 walker table lacked a row for this. Verified by reading (A-16); reproduced by API/E2E (`API-13-F002-*.log`).
+- Decision:
+  - A walker-table row "Package-state validation: Include as message endpoints".
+  - Both validators check endpoints against the store-owned `agentRunIdsOfTree` (the set that composed the view), keep the distinct-endpoints check, and add "at least one endpoint is a local agent". The index stays local-only.
+  - The single-reader rule is restated: `agentRunIdsOfTree` is the one owner of the message-endpoint set.
+  - The guard test per root kind is extended (a stored delegator ↔ remote message passes admission and restore).
+  - The escalation trigger is extended.
+  - The code change is bounded to the two validators.
+- Sections changed: the walker table, the guard paragraph, the guard tests, the file mapping and the escalation trigger. Evidence A-16.
+- Intended behavior changed: `No`.
+- Route: a revised Large/High package → architecture review (handoff rule), then implementation, then the code reviewer's targeted source review, then the full two-server E2E plus API-21/API-22.

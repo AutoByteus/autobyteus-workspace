@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-016`
+- Current solution revision ID: `SR-017`
 - Approved requirements baseline: `requirements-doc.md` at SR-007 (approved by the User 2026-10-19: SR-004 for the slice, SR-005 for no version check, SR-007 for `node` on `delegate_task` only)
 - Behavior-defining supplements: `slice-plan.md` (approved 2026-10-19)
-- Design status: `Ready` (SR-016: ARCH-REV-005 AR-008, AR-009. SR-015: ARCH-REV-003 AR-005 … AR-007 and N-6 … N-11. SR-014: activation order per DI-1. SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
+- Design status: `Ready` (SR-017: CRR-005 package-validation row. SR-016: ARCH-REV-005 AR-008, AR-009. SR-015: ARCH-REV-003 AR-005 … AR-007 and N-6 … N-11. SR-014: activation order per DI-1. SR-013, revised for ARCH-REV-001 AR-001 … AR-004 and N-1 … N-5; was `Ready` at SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
 - Canonical investigation notes: `investigation-notes.md` (S-01 … S-15; architecture evidence A-01 … A-10 below are added there)
 - Authorities read (2026-10-19; re-read after the skill update 2026-10-20: `SKILL.md`, `references/design-principles.md`, `references/handoff.md`, `references/ticket-scope.md`, `templates/design-spec-template.md`): `references/architecture-design.md`, `references/design-principles.md`, `/DESIGN.md` (rules 1–9, project documents), `autobyteus-server-ts/docs/design/collaboration_model.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (§1–§3). `design-examples.md`: not used.
 - Project design-principle conflicts: one, found and resolved. DESIGN.md rule 9 (no version checks between nodes) conflicted with REQ-114's version check. The user removed the check (SR-005).
@@ -336,6 +336,7 @@ Each field has a reader on B:
 | Run-ID membership for messages | `StandaloneRootExecutionIndex`, Team/Org indexes; root `hasAgentExecution` | **Include**, as a remote endpoint (not a hosted agent) | Each root's `hasAgentExecution` also asks `RemoteRunLinks.has(runId)` (a `delegated_run` or `delegator` endpoint). `visitTask` and the index see only local runs, so `isLiveChild` / `withLiveLease` never touch it |
 | Message delivery to it | root `deliverExactAgentMessage` | **Include** | The root delivery routes it to the shared `RemoteMessageSend` (pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote`; AR-008) |
 | Stored message view | `composeMessageLogs` (L6 loaded-endpoint filter) in the three stores | **Include** as a loaded endpoint | Each store adds the `remoteTaskExecutions` run IDs to `loadedAgentRunIds`, so delegator↔remote messages stay in the root's view after a restore |
+| Package-state validation (CRR-005, SR-017) | `validateTeamRunStatePackage` (`run-history/services/team-run-state-package-validator.ts`), `validateAgentOrgStatePackage` (`agent-org-execution/services/agent-org-state-package-validator.ts`): the admission scan (`root-run-package-current-validator.ts`, at startup and on every `admitCurrent`) and the Team/Org state loaders | **Include** as message endpoints | Each validator checks a stored message's endpoints against the store-owned endpoint set `agentRunIdsOfTree(shape, tree)`, the same set that composed the stored view, instead of `index.requireAgent`. It keeps the distinct-endpoints check, and adds that at least one endpoint is a local agent of the index (a message between two remote runs is invalid). The index stays local-only |
 | Task ownership of messages | `assertDeliveryAllowed` → `TaskExecutionResourcePort.ownerOf` | **Include** on A; none on B | `endpoint.ownershipChain()`: `delegated_run` → `[{agentRunId}]` (the Task record holds it as `{kind: agent, agentRunId}`, item 5); `delegator` → `[]` (N-11) |
 | Task closure (DONE/CANCELLED) | `RootTaskExecutionResourceScope.releaseTaskExecutions` | **Fence, explicitly** (DEC-107, AR-007) | See § Task Closure Of A Remote Run. No release is invoked and the result is `fenced_remote`, never `stopped` |
 | Reactivation by the assigner | root exact delivery's reactivation branch | **Exclude** (S3) | The outbound order never reactivates: `prepareRemoteSend` refuses a closed Task with `TASK_AGENT_RESOURCE_CLOSED` |
@@ -348,9 +349,10 @@ Each field has a reader on B:
 | Team-run-ID guidance | `teamCoordinatorOf` | N/A (Agents only, DEC-109) | — |
 | Location service | `collaboration-execution-location-service.ts`, `standalone-root-location-service.ts` | Exclude: there is no folder to locate on A | By construction |
 
-**Guard against drift.** `RemoteRunLinks` is the only reader of `remoteTaskExecutions` outside the store. A unit test per root kind loads a tree with one local and one remote link and asserts:
+**Guard against drift.** Outside the store, `remoteTaskExecutions` is read only by `RemoteRunLinks`. Every other consumer that needs "who may appear in this root's messages" (the stored view, the package validators) uses the store-owned `agentRunIdsOfTree`, the one owner of the message-endpoint set (SR-017). A unit test per root kind loads a tree with one local and one remote link and asserts:
 - the index, the stop set, the launch selections, the run-tree projection and the adapter's `listTaskExecutions` contain only the local run;
-- `hasAgentExecution`, the stored message view and the endpoint's `ownershipChain()` include the remote run.
+- `hasAgentExecution`, the stored message view and the endpoint's `ownershipChain()` include the remote run;
+- for Team and Org: a stored delegator ↔ remote message passes `validateTeamRunStatePackage` / `validateAgentOrgStatePackage`, the admission scan and a restore of the root (CRR-005).
 
 **Compose shortcut (N-7).** `composeTreeFile` / `composeTreeFileSync` return the raw tree unchanged when no local task agent is listed. A tree whose only link is remote must still be partitioned, so the shortcut also checks for `nodeId` entries. The guard test includes a tree with only a remote link.
 
@@ -711,6 +713,7 @@ Naming rule (the user, SR-012):
 | Modified: the three stores' `composeMessageLogs` callers (`standalone-root-package-store.ts`, `team-communication-store.ts`, `agent-org-communication-messages-store.ts`) | Run history | Remote run IDs are loaded endpoints (AR-001) |
 | Modified: the three roots' `hasAgentExecution`, exact delivery and `acceptRemoteMessage` (`standalone-root-message-delivery.ts`, `agent-team-execution/services/team-run-message-delivery.ts`, `agent-org-execution/domain/agent-org-run.ts`) | Roots | `RemoteRunLinks` membership; routing to `RemoteMessageSend`; inbound order with the root's wake; the `RemoteEndpointLookup` given to the lifecycle |
 | Add: `src/agent-collaboration/execution/remote/remote-message-send.ts` | Shared | `RemoteMessageSend` (AR-008) |
+| Modified: `run-history/services/team-run-state-package-validator.ts`, `agent-org-execution/services/agent-org-state-package-validator.ts` | Run history / Org | Message endpoints checked against `agentRunIdsOfTree` (CRR-005, SR-017) |
 | Modified: `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | Task | The existing-copy refusal through `RemoteEndpointLookup` (AR-008) |
 | Modified: `remote-access-route-policy.ts` | API | `REMOTE_PEER` class for `/rest/remote/*`; mobile credentials refused (N-3) |
 | Add: tests per root kind for the walker decisions (AR-001 guard) | Tests | One local plus one remote link |
@@ -783,7 +786,7 @@ Naming rule (the user, SR-012):
   - **Security:** a new inbound surface on the trusted network (RSK-101; no authentication by design until S6).
   - **Concurrency and lifecycle:** remote activation around the root's task queue (planning before it, commit at its head); inbound wake and root restore across processes; timeout ambiguity (RSK-106).
   - **Ownership boundary:** the run delivery path gains remote endpoints.
-- Escalation trigger: implementation finds a walker of `taskExecutions` that must see remote links and is not in the AR-001 table, or a writer of `taskExecutions` that bypasses the shared split. Either is a Design Impact back to the Solution Designer.
+- Escalation trigger: implementation finds a walker of `taskExecutions` that must see remote links and is not in the AR-001 table, a consumer of the stored message view that asserts tree membership other than the two package validators (SR-017), or a writer of `taskExecutions` that bypasses the shared split. Either is a Design Impact back to the Solution Designer.
 
 ## Guidance For Implementation
 

@@ -103,3 +103,10 @@ Basis: SR-014 (`a3b0cf1028`) is also included. It changed only the DS-001 order 
 | --- | --- | --- |
 | AR-008 | Shared `RemoteMessageSend` owns the outbound sequence once; roots keep only the routing line; inbound stays per root only for the wake, with the shared link check and `acceptFromRemote`; the existing-copy refusal is checked once in `RootTaskExecutionLifecycle.assignToExistingCopy` through `RemoteEndpointLookup`; tests: one shared sequence test, one lifecycle test, one routing test per root kind | § Remote Messaging (Owners: the root routes, `RemoteMessageSend` sends, the root receives); spine inventory; DS-002/DS-003; ownership; walker table; interfaces; mapping |
 | AR-009 | Narratives DS-002/DS-003/DS-005 and Spine Actors aligned; remote planning stated once (`RemoteDelegation`, the only caller of `startDelegatedRun`); DS-001 spine and the dependency rule aligned | § Spine Narratives; § Spine Actors; § Ownership Map; DS-001; § Dependency Rules |
+
+## Round 6 — 2026-10-20 (SR-017), from the code reviewer's CRR-005 (API/E2E F-002)
+
+- Finding: Team and Org package validators (`validateTeamRunStatePackage`, `validateAgentOrgStatePackage`) require both endpoints of every stored message to be tree agents. They drop a package that holds a delegator ↔ remote message (admission scan, state loaders). The AR-001 walker table had no row for them.
+- Resolution: a new walker-table row, "Package-state validation: Include as message endpoints". The validators check endpoints against the store-owned `agentRunIdsOfTree` (the set that composes the stored view), keep the distinct check, and require one local endpoint. The guard tests and the escalation trigger are extended. The change is bounded to the two validators.
+- Evidence: A-16 (Read); `evidence/api-e2e/API-13-F002-package-validator-scan.log`, `API-13-F002-restart-reopen.log` (Reproduced by API/E2E).
+- Next after review: implementation, then targeted code review, then a full two-server E2E plus API-21/API-22.
