@@ -163,7 +163,7 @@
 
 ## Latest Authoritative Result
 
-- Result: `Blocked`
+- Result: `Blocked`. **On hold since 2026-10-20:** code_reviewer reported a user-requested revision (autobyteus-ts reads `AUTOBYTEUS_TEST_VAULT` at its own key-source connection point). The package returns through implementation and code review. No real-key runs on `12a23e7b8a`. On return, recheck AE-04, AE-06, AE-11, AE-12 and AC-005/AC-009/AC-013 against the revised package. The other cases are reused only where the diff leaves their code unchanged.
 - Criteria not proven:
   - AC-005 (live run).
   - AC-006 (exit 0 and hash around a passing scenario).

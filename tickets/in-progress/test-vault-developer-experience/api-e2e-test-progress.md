@@ -28,3 +28,4 @@
 | 21:47 | AE-01 | Completed | Pass | root-script status exit 0 appended |
 | 21:47 | AE-10 | Completed | Pass | 39 files; 0 real / 0 synthetic / 0 env canary matches |
 | 21:49 | AE-11..AE-14 | Completed | Not Tested | Blocked: no standing test vault (DEC-003); round result Blocked; resume = run AE-11..14 after the user's pnpm test-vault setup |
+| 10-20 05:03 | — | Checkpoint | | HOLD from code_reviewer (2026-10-20): user requested a revision (autobyteus-ts reads AUTOBYTEUS_TEST_VAULT at its own key-source point); package returns via implementation + code review. No real-key runs on head 12a23e7b8a. On return: recheck AE-04/AE-06/AE-11/AE-12 and AC-005/009/013 against the revised package |
