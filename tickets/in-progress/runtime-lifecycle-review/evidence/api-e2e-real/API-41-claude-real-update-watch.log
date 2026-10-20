@@ -1,0 +1,8 @@
+# API-41 real Claude Update clicked by the user in the isolated instance; Claude row polled every 0.5 s via agentRuntimes
+# command: node watch-claude.mjs (source in API-41 notes); commit 0c27f0a3b5
+2026-10-20T12:59:40.596Z +0s {"runtimeKind":"claude_agent_sdk","installedVersion":"2.1.302","updates":{"state":"UPDATE_AVAILABLE","latestVersion":"2.1.304"},"account":{"state":"SIGNED_IN"},"operation":{"kind":"UPDATE","state":"RUNNING","command":"claude update","step":"Successfully updated from 2.1.302 to version 2.1.304","fromVersion":"2.1.302","toVersion":null,"error":null},"checkedAt":"2026-10-20T12:58:50.918Z"}
+2026-10-20T12:59:42.136Z +2s {"runtimeKind":"claude_agent_sdk","installedVersion":"2.1.304","updates":{"state":"CHECKING","latestVersion":"2.1.304"},"account":{"state":"SIGNED_IN"},"operation":{"kind":"UPDATE","state":"SUCCEEDED","command":"claude update","step":null,"fromVersion":"2.1.302","toVersion":"2.1.304","error":null},"checkedAt":"2026-10-20T12:58:50.918Z"}
+2026-10-20T12:59:42.640Z +2s {"runtimeKind":"claude_agent_sdk","installedVersion":"2.1.304","updates":{"state":"UP_TO_DATE","latestVersion":"2.1.304"},"account":{"state":"SIGNED_IN"},"operation":{"kind":"UPDATE","state":"SUCCEEDED","command":"claude update","step":null,"fromVersion":"2.1.302","toVersion":"2.1.304","error":null},"checkedAt":"2026-10-20T12:58:50.918Z"}
+
+## independent check 2026-10-20T12:59:58Z: claude --version (real install, real HOME)
+2.1.304 (Claude Code)

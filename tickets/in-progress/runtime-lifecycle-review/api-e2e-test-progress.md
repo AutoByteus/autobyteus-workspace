@@ -23,3 +23,4 @@ Working log. `Started` before a case, `Completed` with its result right after.
 | 2026-10-20 | API-12 | Started | temporary: real CLIs signed out + real sources |
 | 2026-10-20 | API-12 | Completed | Pass — real installs: versions = own --version, 4× SIGNED_OUT, sources answered; temp file removed |
 | 2026-10-20 | — | Note | durable tests committed in 76570a40e4; reports written |
+| 2026-10-20 | API-40…45 | Completed | Pass — round 2 real accounts on isolated desktop iso-56551-47f6: real Claude update 2.1.302→2.1.304, real Codex/Grok sign-out detection and in-app sign-in, secret scan 0 hits/103 files |
