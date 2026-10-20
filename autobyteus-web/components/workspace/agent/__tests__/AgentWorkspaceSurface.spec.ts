@@ -55,7 +55,6 @@ const mountSubject = () => shallowMount(AgentWorkspaceSurface, {
       AgentStatusDisplay: true,
       WorkspaceHeaderActions: true,
       WorkspaceRecoveryNotice: true,
-      SkillImprovementComposerCta: true,
     },
   },
 })

@@ -94,7 +94,7 @@ const stop = async child => {
   return `terminated:${child.pid}`;
 };
 
-// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_SKILL_IMPROVEMENT).
+// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_APPLICATIONS).
 const scrubbedEnv = () => Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('ENABLE_')));
 
 // ---------------------------------------------------------------- backend nodes
@@ -145,7 +145,7 @@ const api = {
   // projects-always-on: settings are written through the ordinary server-settings API (Advanced).
   setSetting: async (node, key, value) => (await gql(node, 'mutation($k: String!, $v: String!) { updateServerSetting(key: $k, value: $v) }', { k: key, v: value })).updateServerSetting,
   settings: async node => (await gql(node, '{ getServerSettings { key value isDeletable } }')).getServerSettings,
-  others: async node => gql(node, '{ applicationsCapability { enabled source } skillImprovementCapability { enabled source } }'),
+  others: async node => gql(node, '{ applicationsCapability { enabled source } }'),
   projects: async node => (await gql(node, `{ projects { ${PROJECT_FIELDS} } }`)).projects,
   project: async (node, projectId) => (await gql(node, `query($id: String!) { project(projectId: $id) { ${PROJECT_FIELDS} } }`, { id: projectId })).project,
   createProject: async (node, name, description = '') => (await gql(node, `mutation($i: CreateProjectInput!) { createProject(input: $i) { ${PROJECT_FIELDS} } }`, { i: { name, description } })).createProject,

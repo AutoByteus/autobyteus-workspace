@@ -422,12 +422,6 @@ settings whose `resourceKind` is `AGENT_TEAM`.
 - Search removes featured grouping and searches admitted root Teams normally.
 - Unknown featured IDs remain operator-cleanup concerns in Settings.
 
-## Manual Skill Improvement
-
-Manual Skill Improvement is selected-Agent owned. The composer-adjacent action
-targets the active focused Agent execution, not the Team container. Definition
-and launch config do not persist a Team-wide or task-Team eligibility flag.
-
 ## Main Files
 
 - `pages/agent-teams.vue`

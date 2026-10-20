@@ -36,11 +36,7 @@
         :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
         :browse-subject="target.browse"
         class="h-full"
-      >
-        <template v-if="skillTarget" #composerContext>
-          <SkillImprovementComposerCta :target="skillTarget" />
-        </template>
-      </AgentEventMonitor>
+      />
     </div>
   </div>
 </template>
@@ -52,8 +48,6 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue'
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
-import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue'
-import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 
 type TeamTarget = Extract<ActiveAgentWorkspaceTarget,
@@ -79,16 +73,5 @@ const showAvatar = computed(() => Boolean(avatarUrl.value) && !avatarFailed.valu
 const senderNameByAgentRunId = computed(() => Object.freeze(Object.fromEntries(Object.entries(
   props.target.collaborationMessages.memberIdentityByAgentRunId(),
 ).map(([agentRunId, identity]) => [agentRunId, identity.label]))))
-const skillTarget = computed<SkillImprovementComposerCtaTarget | null>(() =>
-  props.target.kind === 'standalone_team_member'
-    ? {
-        kind: 'team-member',
-        teamRunId: props.target.team.rootRunId,
-        agentRunId: props.target.context.state.runId,
-        isHelperRun:
-          props.target.context.config.agentDefinitionId === 'autobyteus-retrospective-skill-improver'
-          || props.target.context.config.agentDefinitionName === 'Retrospective Skill Improver',
-      }
-    : null)
 watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

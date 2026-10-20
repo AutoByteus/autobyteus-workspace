@@ -76,10 +76,6 @@ describe('TeamWorkspaceView current aggregate', () => {
         : key,
     }, stubs: {
       AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
-      SkillImprovementComposerCta: {
-        props: ['target'],
-        template: '<div data-test="skill-improvement-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-agent-run-id="target && target.agentRunId" />',
-      },
       WorkspaceHeaderActions: {
         template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',
       },
@@ -93,10 +89,7 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
     expect(wrapper.get('img[alt="Professor avatar"]').attributes('src')).toBe('https://example.com/professor.png');
     expect(wrapper.find('[data-testid="agent-event-monitor"]').exists()).toBe(true);
-    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
-    expect(cta.attributes()).toMatchObject({
-      'data-kind': 'team-member', 'data-team-run-id': 'team-1', 'data-agent-run-id': 'professor-run',
-    });
+    expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).props('runId')).toBe('professor-run');
   });
 
   it('renders a different exact focused AgentRun without coordinator substitution', () => {
@@ -170,6 +163,6 @@ describe('TeamWorkspaceView current aggregate', () => {
     });
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('student');
-    expect(wrapper.get('[data-test="skill-improvement-cta"]').attributes('data-agent-run-id')).toBe('subteam-run:student-run');
+    expect(wrapper.findComponent({ name: 'AgentEventMonitor' }).props('runId')).toBe('subteam-run:student-run');
   });
 });

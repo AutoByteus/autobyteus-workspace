@@ -1208,100 +1208,6 @@ export type GitHubSkillSource = {
   status: Scalars['String']['output'];
 };
 
-export type GraphqlSkillImprovementConfigSourceTraceEntry = {
-  __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry';
-  fields: Array<Scalars['String']['output']>;
-  source: Scalars['String']['output'];
-};
-
-export type GraphqlSkillImprovementEffectiveConfig = {
-  __typename?: 'GraphqlSkillImprovementEffectiveConfig';
-  enabled: Scalars['Boolean']['output'];
-  improverAgentDefinitionId?: Maybe<Scalars['String']['output']>;
-  improverStrategy: Scalars['String']['output'];
-  resolvedAt: Scalars['String']['output'];
-  sourceTrace: Array<GraphqlSkillImprovementConfigSourceTraceEntry>;
-  triggerStrategy: Scalars['String']['output'];
-};
-
-export type GraphqlSkillImprovementEligibility = {
-  __typename?: 'GraphqlSkillImprovementEligibility';
-  effectiveConfig?: Maybe<GraphqlSkillImprovementEffectiveConfig>;
-  eligible: Scalars['Boolean']['output'];
-  reasons: Array<Scalars['String']['output']>;
-  skillTargets: Array<GraphqlSkillImprovementSkillTarget>;
-  warnings: Array<Scalars['String']['output']>;
-};
-
-export type GraphqlSkillImprovementNotificationSummary = {
-  __typename?: 'GraphqlSkillImprovementNotificationSummary';
-  error?: Maybe<Scalars['String']['output']>;
-  message?: Maybe<Scalars['String']['output']>;
-  status: Scalars['String']['output'];
-};
-
-export type GraphqlSkillImprovementRunRecord = {
-  __typename?: 'GraphqlSkillImprovementRunRecord';
-  completedAt?: Maybe<Scalars['String']['output']>;
-  effectiveConfig: GraphqlSkillImprovementEffectiveConfig;
-  errors: Array<Scalars['String']['output']>;
-  evidenceSummaryHash?: Maybe<Scalars['String']['output']>;
-  improvementRunId: Scalars['String']['output'];
-  improverAgentDefinitionId: Scalars['String']['output'];
-  improverRunId?: Maybe<Scalars['String']['output']>;
-  improverStrategy: Scalars['String']['output'];
-  llmModelIdentifier?: Maybe<Scalars['String']['output']>;
-  notificationSummary?: Maybe<GraphqlSkillImprovementNotificationSummary>;
-  requestedAt: Scalars['String']['output'];
-  runtimeKind?: Maybe<Scalars['String']['output']>;
-  skillTargets: Array<GraphqlSkillImprovementSkillTarget>;
-  sourceRunIds: Array<Scalars['String']['output']>;
-  status: Scalars['String']['output'];
-  target: GraphqlSkillImprovementTargetRef;
-  triggerStrategy: Scalars['String']['output'];
-  workspaceRootPath?: Maybe<Scalars['String']['output']>;
-};
-
-export type GraphqlSkillImprovementSkillTarget = {
-  __typename?: 'GraphqlSkillImprovementSkillTarget';
-  isWritable: Scalars['Boolean']['output'];
-  skillMdPath: Scalars['String']['output'];
-  skillName: Scalars['String']['output'];
-  skillRootPath: Scalars['String']['output'];
-  sourceLabel?: Maybe<Scalars['String']['output']>;
-};
-
-export type GraphqlSkillImprovementStartResult = {
-  __typename?: 'GraphqlSkillImprovementStartResult';
-  improvementRunId: Scalars['String']['output'];
-  improverRunId?: Maybe<Scalars['String']['output']>;
-  record: GraphqlSkillImprovementRunRecord;
-};
-
-export type GraphqlSkillImprovementStrategyCatalog = {
-  __typename?: 'GraphqlSkillImprovementStrategyCatalog';
-  defaultImproverStrategy: Scalars['String']['output'];
-  defaultTriggerStrategy: Scalars['String']['output'];
-  improverStrategies: Array<GraphqlSkillImprovementStrategyDescriptor>;
-  triggerStrategies: Array<GraphqlSkillImprovementStrategyDescriptor>;
-};
-
-export type GraphqlSkillImprovementStrategyDescriptor = {
-  __typename?: 'GraphqlSkillImprovementStrategyDescriptor';
-  description: Scalars['String']['output'];
-  label: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  status: Scalars['String']['output'];
-};
-
-export type GraphqlSkillImprovementTargetRef = {
-  __typename?: 'GraphqlSkillImprovementTargetRef';
-  agentRunId?: Maybe<Scalars['String']['output']>;
-  kind: Scalars['String']['output'];
-  runId?: Maybe<Scalars['String']['output']>;
-  teamRunId?: Maybe<Scalars['String']['output']>;
-};
-
 export type HealthStatus = {
   __typename?: 'HealthStatus';
   message: Scalars['String']['output'];
@@ -1664,10 +1570,7 @@ export type Mutation = {
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setSearchConfig: Scalars['String']['output'];
-  setSkillImprovementEnabled: SkillImprovementCapability;
-  startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
   startMemorySync: MemorySyncRunResultGql;
-  startTeamMemberSkillImprovement: GraphqlSkillImprovementStartResult;
   stopDelegatedExecution: StopDelegatedExecutionResult;
   terminateAgentOrgRun: AgentOrgRunMutationResult;
   terminateAgentRun: TerminateAgentRunResult;
@@ -2080,21 +1983,6 @@ export type MutationSetSearchConfigArgs = {
 };
 
 
-export type MutationSetSkillImprovementEnabledArgs = {
-  enabled: Scalars['Boolean']['input'];
-};
-
-
-export type MutationStartAgentRunSkillImprovementArgs = {
-  input: StartAgentRunSkillImprovementInput;
-};
-
-
-export type MutationStartTeamMemberSkillImprovementArgs = {
-  input: StartTeamMemberSkillImprovementInput;
-};
-
-
 export type MutationStopDelegatedExecutionArgs = {
   input: DelegatedExecutionTargetInput;
 };
@@ -2379,7 +2267,6 @@ export type Query = {
   getAgentOrgRunInspection: Scalars['JSON']['output'];
   getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
-  getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getEffectiveStreamingContentFlushIntervalMs: Scalars['Int']['output'];
@@ -2392,14 +2279,12 @@ export type Query = {
   getSearchConfig: SearchConfig;
   getSecretVaultStatus: SecretVaultStatus;
   getServerSettings: Array<ServerSetting>;
-  getSkillImprovementRunRecord?: Maybe<GraphqlSkillImprovementRunRecord>;
   getStandaloneRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getTeamMemberFileChanges: Array<RunFileChangeEntryObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
-  getTeamMemberSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getTeamMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
@@ -2433,8 +2318,6 @@ export type Query = {
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
   skillFileTree?: Maybe<Scalars['String']['output']>;
-  skillImprovementCapability: SkillImprovementCapability;
-  skillImprovementStrategyCatalog: GraphqlSkillImprovementStrategyCatalog;
   skillNameIssues: Array<SkillNameIssue>;
   skillSourceRegistryError?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
@@ -2640,11 +2523,6 @@ export type QueryGetAgentRunResumeConfigArgs = {
 };
 
 
-export type QueryGetAgentRunSkillImprovementEligibilityArgs = {
-  runId: Scalars['String']['input'];
-};
-
-
 export type QueryGetAgentRunTokenUsageSummaryArgs = {
   runId: Scalars['String']['input'];
 };
@@ -2663,11 +2541,6 @@ export type QueryGetRunFileChangesArgs = {
 
 export type QueryGetRunProjectionArgs = {
   runId: Scalars['String']['input'];
-};
-
-
-export type QueryGetSkillImprovementRunRecordArgs = {
-  improvementRunId: Scalars['String']['input'];
 };
 
 
@@ -2710,12 +2583,6 @@ export type QueryGetTeamMemberRunMemoryViewArgs = {
 
 
 export type QueryGetTeamMemberRunProjectionArgs = {
-  agentRunId: Scalars['String']['input'];
-  teamRunId: Scalars['String']['input'];
-};
-
-
-export type QueryGetTeamMemberSkillImprovementEligibilityArgs = {
   agentRunId: Scalars['String']['input'];
   teamRunId: Scalars['String']['input'];
 };
@@ -3171,13 +3038,6 @@ export type SkillCatalogReloadResult = {
   skills: Array<Skill>;
 };
 
-export type SkillImprovementCapability = {
-  __typename?: 'SkillImprovementCapability';
-  enabled: Scalars['Boolean']['output'];
-  settingKey: Scalars['String']['output'];
-  source: Scalars['String']['output'];
-};
-
 export type SkillNameIssue = {
   __typename?: 'SkillNameIssue';
   ignoredPaths: Array<Scalars['String']['output']>;
@@ -3200,15 +3060,6 @@ export type SkillSourceOperationResult = {
   __typename?: 'SkillSourceOperationResult';
   sources: Array<SkillSource>;
   warnings: Array<Scalars['String']['output']>;
-};
-
-export type StartAgentRunSkillImprovementInput = {
-  runId: Scalars['String']['input'];
-};
-
-export type StartTeamMemberSkillImprovementInput = {
-  agentRunId: Scalars['String']['input'];
-  teamRunId: Scalars['String']['input'];
 };
 
 export type StdioMcpServerConfig = {
@@ -4563,27 +4414,6 @@ export type SetSearchConfigMutationVariables = Exact<{
 
 export type SetSearchConfigMutation = { __typename?: 'Mutation', setSearchConfig: string };
 
-export type SetSkillImprovementEnabledMutationVariables = Exact<{
-  enabled: Scalars['Boolean']['input'];
-}>;
-
-
-export type SetSkillImprovementEnabledMutation = { __typename?: 'Mutation', setSkillImprovementEnabled: { __typename?: 'SkillImprovementCapability', enabled: boolean, settingKey: string, source: string } };
-
-export type StartAgentRunSkillImprovementMutationVariables = Exact<{
-  input: StartAgentRunSkillImprovementInput;
-}>;
-
-
-export type StartAgentRunSkillImprovementMutation = { __typename?: 'Mutation', startAgentRunSkillImprovement: { __typename?: 'GraphqlSkillImprovementStartResult', improvementRunId: string, improverRunId?: string | null, record: { __typename?: 'GraphqlSkillImprovementRunRecord', improvementRunId: string, status: string, improverRunId?: string | null, errors: Array<string> } } };
-
-export type StartTeamMemberSkillImprovementMutationVariables = Exact<{
-  input: StartTeamMemberSkillImprovementInput;
-}>;
-
-
-export type StartTeamMemberSkillImprovementMutation = { __typename?: 'Mutation', startTeamMemberSkillImprovement: { __typename?: 'GraphqlSkillImprovementStartResult', improvementRunId: string, improverRunId?: string | null, record: { __typename?: 'GraphqlSkillImprovementRunRecord', improvementRunId: string, status: string, improverRunId?: string | null, errors: Array<string> } } };
-
 export type ReloadToolSchemaMutationVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
@@ -5185,43 +5015,6 @@ export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, vaultHealth: string, instructionCode?: string | null, serperStorageState?: string | null, serpapiStorageState?: string | null, vertexAiSearchStorageState?: string | null, vertexAiSearchServingConfig?: string | null } };
-
-export type SkillImprovementCapabilityFieldsFragment = { __typename?: 'SkillImprovementCapability', enabled: boolean, settingKey: string, source: string };
-
-export type SkillImprovementEffectiveConfigFieldsFragment = { __typename?: 'GraphqlSkillImprovementEffectiveConfig', enabled: boolean, triggerStrategy: string, improverStrategy: string, improverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry', source: string, fields: Array<string> }> };
-
-export type SkillImprovementSkillTargetFieldsFragment = { __typename?: 'GraphqlSkillImprovementSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean };
-
-export type SkillImprovementEligibilityFieldsFragment = { __typename?: 'GraphqlSkillImprovementEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSkillImprovementSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSkillImprovementEffectiveConfig', enabled: boolean, triggerStrategy: string, improverStrategy: string, improverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null };
-
-export type SkillImprovementRunRecordSummaryFieldsFragment = { __typename?: 'GraphqlSkillImprovementRunRecord', improvementRunId: string, status: string, improverRunId?: string | null, errors: Array<string> };
-
-export type GetSkillImprovementCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetSkillImprovementCapabilityQuery = { __typename?: 'Query', skillImprovementCapability: { __typename?: 'SkillImprovementCapability', enabled: boolean, settingKey: string, source: string } };
-
-export type GetAgentRunSkillImprovementEligibilityQueryVariables = Exact<{
-  runId: Scalars['String']['input'];
-}>;
-
-
-export type GetAgentRunSkillImprovementEligibilityQuery = { __typename?: 'Query', getAgentRunSkillImprovementEligibility: { __typename?: 'GraphqlSkillImprovementEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSkillImprovementSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSkillImprovementEffectiveConfig', enabled: boolean, triggerStrategy: string, improverStrategy: string, improverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null } };
-
-export type GetTeamMemberSkillImprovementEligibilityQueryVariables = Exact<{
-  teamRunId: Scalars['String']['input'];
-  agentRunId: Scalars['String']['input'];
-}>;
-
-
-export type GetTeamMemberSkillImprovementEligibilityQuery = { __typename?: 'Query', getTeamMemberSkillImprovementEligibility: { __typename?: 'GraphqlSkillImprovementEligibility', eligible: boolean, reasons: Array<string>, warnings: Array<string>, skillTargets: Array<{ __typename?: 'GraphqlSkillImprovementSkillTarget', skillName: string, skillRootPath: string, skillMdPath: string, sourceLabel?: string | null, isWritable: boolean }>, effectiveConfig?: { __typename?: 'GraphqlSkillImprovementEffectiveConfig', enabled: boolean, triggerStrategy: string, improverStrategy: string, improverAgentDefinitionId?: string | null, resolvedAt: string, sourceTrace: Array<{ __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry', source: string, fields: Array<string> }> } | null } };
-
-export type GetSkillImprovementRunRecordQueryVariables = Exact<{
-  improvementRunId: Scalars['String']['input'];
-}>;
-
-
-export type GetSkillImprovementRunRecordQuery = { __typename?: 'Query', getSkillImprovementRunRecord?: { __typename?: 'GraphqlSkillImprovementRunRecord', improvementRunId: string, status: string, improverRunId?: string | null, errors: Array<string> } | null };
 
 export type GetTokenUsageAnalyticsQueryVariables = Exact<{
   input: TokenUsageAnalyticsInputGraphql;
@@ -6016,57 +5809,6 @@ export const RunModelOptionsFieldsFragmentDoc = gql`
     configSchema
     recommended
   }
-}
-    `;
-export const SkillImprovementCapabilityFieldsFragmentDoc = gql`
-    fragment SkillImprovementCapabilityFields on SkillImprovementCapability {
-  enabled
-  settingKey
-  source
-}
-    `;
-export const SkillImprovementSkillTargetFieldsFragmentDoc = gql`
-    fragment SkillImprovementSkillTargetFields on GraphqlSkillImprovementSkillTarget {
-  skillName
-  skillRootPath
-  skillMdPath
-  sourceLabel
-  isWritable
-}
-    `;
-export const SkillImprovementEffectiveConfigFieldsFragmentDoc = gql`
-    fragment SkillImprovementEffectiveConfigFields on GraphqlSkillImprovementEffectiveConfig {
-  enabled
-  triggerStrategy
-  improverStrategy
-  improverAgentDefinitionId
-  resolvedAt
-  sourceTrace {
-    source
-    fields
-  }
-}
-    `;
-export const SkillImprovementEligibilityFieldsFragmentDoc = gql`
-    fragment SkillImprovementEligibilityFields on GraphqlSkillImprovementEligibility {
-  eligible
-  reasons
-  warnings
-  skillTargets {
-    ...SkillImprovementSkillTargetFields
-  }
-  effectiveConfig {
-    ...SkillImprovementEffectiveConfigFields
-  }
-}
-    ${SkillImprovementSkillTargetFieldsFragmentDoc}
-${SkillImprovementEffectiveConfigFieldsFragmentDoc}`;
-export const SkillImprovementRunRecordSummaryFieldsFragmentDoc = gql`
-    fragment SkillImprovementRunRecordSummaryFields on GraphqlSkillImprovementRunRecord {
-  improvementRunId
-  status
-  improverRunId
-  errors
 }
     `;
 export const TokenUsageRunSummaryFieldsFragmentDoc = gql`
@@ -8928,101 +8670,6 @@ export function useSetSearchConfigMutation(options: VueApolloComposable.UseMutat
   return VueApolloComposable.useMutation<SetSearchConfigMutation, SetSearchConfigMutationVariables>(SetSearchConfigDocument, options);
 }
 export type SetSearchConfigMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetSearchConfigMutation, SetSearchConfigMutationVariables>;
-export const SetSkillImprovementEnabledDocument = gql`
-    mutation SetSkillImprovementEnabled($enabled: Boolean!) {
-  setSkillImprovementEnabled(enabled: $enabled) {
-    ...SkillImprovementCapabilityFields
-  }
-}
-    ${SkillImprovementCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useSetSkillImprovementEnabledMutation__
- *
- * To run a mutation, you first call `useSetSkillImprovementEnabledMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSetSkillImprovementEnabledMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSetSkillImprovementEnabledMutation({
- *   variables: {
- *     enabled: // value for 'enabled'
- *   },
- * });
- */
-export function useSetSkillImprovementEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetSkillImprovementEnabledMutation, SetSkillImprovementEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetSkillImprovementEnabledMutation, SetSkillImprovementEnabledMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SetSkillImprovementEnabledMutation, SetSkillImprovementEnabledMutationVariables>(SetSkillImprovementEnabledDocument, options);
-}
-export type SetSkillImprovementEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetSkillImprovementEnabledMutation, SetSkillImprovementEnabledMutationVariables>;
-export const StartAgentRunSkillImprovementDocument = gql`
-    mutation StartAgentRunSkillImprovement($input: StartAgentRunSkillImprovementInput!) {
-  startAgentRunSkillImprovement(input: $input) {
-    improvementRunId
-    improverRunId
-    record {
-      ...SkillImprovementRunRecordSummaryFields
-    }
-  }
-}
-    ${SkillImprovementRunRecordSummaryFieldsFragmentDoc}`;
-
-/**
- * __useStartAgentRunSkillImprovementMutation__
- *
- * To run a mutation, you first call `useStartAgentRunSkillImprovementMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useStartAgentRunSkillImprovementMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useStartAgentRunSkillImprovementMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useStartAgentRunSkillImprovementMutation(options: VueApolloComposable.UseMutationOptions<StartAgentRunSkillImprovementMutation, StartAgentRunSkillImprovementMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StartAgentRunSkillImprovementMutation, StartAgentRunSkillImprovementMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<StartAgentRunSkillImprovementMutation, StartAgentRunSkillImprovementMutationVariables>(StartAgentRunSkillImprovementDocument, options);
-}
-export type StartAgentRunSkillImprovementMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartAgentRunSkillImprovementMutation, StartAgentRunSkillImprovementMutationVariables>;
-export const StartTeamMemberSkillImprovementDocument = gql`
-    mutation StartTeamMemberSkillImprovement($input: StartTeamMemberSkillImprovementInput!) {
-  startTeamMemberSkillImprovement(input: $input) {
-    improvementRunId
-    improverRunId
-    record {
-      ...SkillImprovementRunRecordSummaryFields
-    }
-  }
-}
-    ${SkillImprovementRunRecordSummaryFieldsFragmentDoc}`;
-
-/**
- * __useStartTeamMemberSkillImprovementMutation__
- *
- * To run a mutation, you first call `useStartTeamMemberSkillImprovementMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useStartTeamMemberSkillImprovementMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useStartTeamMemberSkillImprovementMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useStartTeamMemberSkillImprovementMutation(options: VueApolloComposable.UseMutationOptions<StartTeamMemberSkillImprovementMutation, StartTeamMemberSkillImprovementMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<StartTeamMemberSkillImprovementMutation, StartTeamMemberSkillImprovementMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<StartTeamMemberSkillImprovementMutation, StartTeamMemberSkillImprovementMutationVariables>(StartTeamMemberSkillImprovementDocument, options);
-}
-export type StartTeamMemberSkillImprovementMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartTeamMemberSkillImprovementMutation, StartTeamMemberSkillImprovementMutationVariables>;
 export const ReloadToolSchemaDocument = gql`
     mutation ReloadToolSchema($name: String!) {
   reloadToolSchema(name: $name) {
@@ -12392,127 +12039,6 @@ export function useGetSearchConfigLazyQuery(options: VueApolloComposable.UseQuer
   return VueApolloComposable.useLazyQuery<GetSearchConfigQuery, GetSearchConfigQueryVariables>(GetSearchConfigDocument, {}, options);
 }
 export type GetSearchConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSearchConfigQuery, GetSearchConfigQueryVariables>;
-export const GetSkillImprovementCapabilityDocument = gql`
-    query GetSkillImprovementCapability {
-  skillImprovementCapability {
-    ...SkillImprovementCapabilityFields
-  }
-}
-    ${SkillImprovementCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useGetSkillImprovementCapabilityQuery__
- *
- * To run a query within a Vue component, call `useGetSkillImprovementCapabilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSkillImprovementCapabilityQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetSkillImprovementCapabilityQuery();
- */
-export function useGetSkillImprovementCapabilityQuery(options: VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>(GetSkillImprovementCapabilityDocument, {}, options);
-}
-export function useGetSkillImprovementCapabilityLazyQuery(options: VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>(GetSkillImprovementCapabilityDocument, {}, options);
-}
-export type GetSkillImprovementCapabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSkillImprovementCapabilityQuery, GetSkillImprovementCapabilityQueryVariables>;
-export const GetAgentRunSkillImprovementEligibilityDocument = gql`
-    query GetAgentRunSkillImprovementEligibility($runId: String!) {
-  getAgentRunSkillImprovementEligibility(runId: $runId) {
-    ...SkillImprovementEligibilityFields
-  }
-}
-    ${SkillImprovementEligibilityFieldsFragmentDoc}`;
-
-/**
- * __useGetAgentRunSkillImprovementEligibilityQuery__
- *
- * To run a query within a Vue component, call `useGetAgentRunSkillImprovementEligibilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAgentRunSkillImprovementEligibilityQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetAgentRunSkillImprovementEligibilityQuery({
- *   runId: // value for 'runId'
- * });
- */
-export function useGetAgentRunSkillImprovementEligibilityQuery(variables: GetAgentRunSkillImprovementEligibilityQueryVariables | VueCompositionApi.Ref<GetAgentRunSkillImprovementEligibilityQueryVariables> | ReactiveFunction<GetAgentRunSkillImprovementEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>(GetAgentRunSkillImprovementEligibilityDocument, variables, options);
-}
-export function useGetAgentRunSkillImprovementEligibilityLazyQuery(variables?: GetAgentRunSkillImprovementEligibilityQueryVariables | VueCompositionApi.Ref<GetAgentRunSkillImprovementEligibilityQueryVariables> | ReactiveFunction<GetAgentRunSkillImprovementEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>(GetAgentRunSkillImprovementEligibilityDocument, variables, options);
-}
-export type GetAgentRunSkillImprovementEligibilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunSkillImprovementEligibilityQuery, GetAgentRunSkillImprovementEligibilityQueryVariables>;
-export const GetTeamMemberSkillImprovementEligibilityDocument = gql`
-    query GetTeamMemberSkillImprovementEligibility($teamRunId: String!, $agentRunId: String!) {
-  getTeamMemberSkillImprovementEligibility(
-    teamRunId: $teamRunId
-    agentRunId: $agentRunId
-  ) {
-    ...SkillImprovementEligibilityFields
-  }
-}
-    ${SkillImprovementEligibilityFieldsFragmentDoc}`;
-
-/**
- * __useGetTeamMemberSkillImprovementEligibilityQuery__
- *
- * To run a query within a Vue component, call `useGetTeamMemberSkillImprovementEligibilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTeamMemberSkillImprovementEligibilityQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetTeamMemberSkillImprovementEligibilityQuery({
- *   teamRunId: // value for 'teamRunId'
- *   agentRunId: // value for 'agentRunId'
- * });
- */
-export function useGetTeamMemberSkillImprovementEligibilityQuery(variables: GetTeamMemberSkillImprovementEligibilityQueryVariables | VueCompositionApi.Ref<GetTeamMemberSkillImprovementEligibilityQueryVariables> | ReactiveFunction<GetTeamMemberSkillImprovementEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>(GetTeamMemberSkillImprovementEligibilityDocument, variables, options);
-}
-export function useGetTeamMemberSkillImprovementEligibilityLazyQuery(variables?: GetTeamMemberSkillImprovementEligibilityQueryVariables | VueCompositionApi.Ref<GetTeamMemberSkillImprovementEligibilityQueryVariables> | ReactiveFunction<GetTeamMemberSkillImprovementEligibilityQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>(GetTeamMemberSkillImprovementEligibilityDocument, variables, options);
-}
-export type GetTeamMemberSkillImprovementEligibilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberSkillImprovementEligibilityQuery, GetTeamMemberSkillImprovementEligibilityQueryVariables>;
-export const GetSkillImprovementRunRecordDocument = gql`
-    query GetSkillImprovementRunRecord($improvementRunId: String!) {
-  getSkillImprovementRunRecord(improvementRunId: $improvementRunId) {
-    ...SkillImprovementRunRecordSummaryFields
-  }
-}
-    ${SkillImprovementRunRecordSummaryFieldsFragmentDoc}`;
-
-/**
- * __useGetSkillImprovementRunRecordQuery__
- *
- * To run a query within a Vue component, call `useGetSkillImprovementRunRecordQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSkillImprovementRunRecordQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetSkillImprovementRunRecordQuery({
- *   improvementRunId: // value for 'improvementRunId'
- * });
- */
-export function useGetSkillImprovementRunRecordQuery(variables: GetSkillImprovementRunRecordQueryVariables | VueCompositionApi.Ref<GetSkillImprovementRunRecordQueryVariables> | ReactiveFunction<GetSkillImprovementRunRecordQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>(GetSkillImprovementRunRecordDocument, variables, options);
-}
-export function useGetSkillImprovementRunRecordLazyQuery(variables?: GetSkillImprovementRunRecordQueryVariables | VueCompositionApi.Ref<GetSkillImprovementRunRecordQueryVariables> | ReactiveFunction<GetSkillImprovementRunRecordQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>(GetSkillImprovementRunRecordDocument, variables, options);
-}
-export type GetSkillImprovementRunRecordQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSkillImprovementRunRecordQuery, GetSkillImprovementRunRecordQueryVariables>;
 export const GetTokenUsageAnalyticsDocument = gql`
     query GetTokenUsageAnalytics($input: TokenUsageAnalyticsInputGraphql!) {
   tokenUsageAnalytics(input: $input) {

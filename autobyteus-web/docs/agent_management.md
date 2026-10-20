@@ -124,13 +124,6 @@ The former launch-time all-installed-skill option is not available in the run
 config UI or generated GraphQL enum; the scope belongs to the definition.
 
 
-Skill Improvement is explicitly excluded from persisted agent definition defaults
-and run-launch configuration. `AgentDefinition`, `agent-config.json`, the agent
-create/edit forms, and the start surfaces do not own
-Skill Improvement eligibility. The composer-adjacent **Improve skills** CTA asks the
-backend for current eligibility for the selected active run, and the backend
-resolves that from global Skill Improvement settings plus current target state.
-
 ## Store Ownership
 
 `agentDefinitionStore` owns:

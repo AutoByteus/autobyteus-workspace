@@ -45,7 +45,6 @@ const mountView = () => mount(AgentWorkspaceView, {
     stubs: {
       AgentEventMonitor: { name: 'AgentEventMonitor', props: ['skillTagging', 'composerPlaceholder'], template: '<div data-test="monitor" />' },
       AgentStatusDisplay: { template: '<span data-test="status" />' },
-      SkillImprovementComposerCta: true,
       WorkspaceHeaderActions: {
         props: { showEditConfig: { type: Boolean, default: true } },
         template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button v-if="showEditConfig" data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',

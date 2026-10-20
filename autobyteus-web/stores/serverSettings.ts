@@ -53,10 +53,7 @@ const defaultSearchConfig = (): SearchConfigState => ({
   vertexAiSearchServingConfig: null,
 })
 
-/**
- * Capability stores to refresh after their backing setting is edited in the settings table.
- * ENABLE_SKILL_IMPROVEMENT is intentionally absent: its capability is not refreshed from here.
- */
+/** Capability stores to refresh after their backing setting is edited in the settings table. */
 const CAPABILITY_STORE_BY_SETTING_KEY: Readonly<Record<string, () => { refresh(): Promise<unknown> }>> = {
   ENABLE_APPLICATIONS: useApplicationsCapabilityStore,
 }

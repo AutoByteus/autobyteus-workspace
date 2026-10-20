@@ -164,8 +164,8 @@ describe('AgentStreamingService', () => {
             {
                 type: 'SYSTEM_TASK_NOTIFICATION',
                 payload: {
-                    sender_id: 'system.skill_improvement',
-                    content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
+                    sender_id: 'system.other_producer',
+                    content: 'Another producer finished its work for this run.',
                 },
             },
             mockAgentContext,
@@ -174,8 +174,8 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages).toHaveLength(1);
         expect(mockConversation.messages[0].segments).toContainEqual({
             type: 'system_task_notification',
-            senderId: 'system.skill_improvement',
-            content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
+            senderId: 'system.other_producer',
+            content: 'Another producer finished its work for this run.',
         });
     });
 
