@@ -26,7 +26,10 @@ The latest docs sync report, handoff summary and release/deployment report remai
 - Verification and finalization state:
   - verified from the evidence; every critical acceptance criterion is proven;
   - AC-003's real-feed Release page link and AC-007's install on press are the user's beta check on the first release containing the change, because neither can be reached before a signed release exists;
-  - finalization is recorded in the release/deployment report.
+  - finalized: ticket branch `3b83dc0ee1` was pushed, then merged `--no-ff` into `personal` as `36da7e2e56` and pushed (`e0df0bfd05..36da7e2e56`);
+  - the Secret Gate passed at each push;
+  - no release;
+  - cleanup: the worktree and the local branches were removed after this record was pushed, and the remote ticket branch is kept.
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup
 - Terminal return message/reference: `Delivery Completed` through `get_handoff_rules`
 - Why this baseline was recorded: first completed delivery round

@@ -89,17 +89,17 @@ None. No release.
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (remote `origin`, branch `personal`, ticket branch `codex/<ticket-name>`)
 - Ticket branch: `codex/settings-update-notifications`
-- Ticket branch commit result: Pending (recorded after finalization)
-- Ticket branch push result: Pending (recorded after finalization)
+- Ticket branch commit result: `Completed`. The archive commit is `3b83dc0ee1`, on checkpoint `6250f1f90d` and merge `6c34ce51d2`.
+- Ticket branch push result: `Completed`. `origin/codex/settings-update-notifications` is at `3b83dc0ee1`, pushed after the Secret Gate passed (14 commits).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: Pending (recorded after finalization)
+- Target advanced after verification / acceptance: `No`. `origin/personal` stayed at `e0df0bfd05` on each fetch: before the archive, before the ticket push and before the `personal` push.
 - Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: Pending (recorded after finalization)
-- Target branch update result: Pending (recorded after finalization)
-- Merge into target result: Pending (recorded after finalization)
-- Push target branch result: Pending (recorded after finalization)
-- Repository finalization status: Pending (recorded after finalization)
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. `git fetch origin personal`, then `finalize/settings-update-notifications` was created from `origin/personal` `e0df0bfd05`.
+- Merge into target result: `Completed`. `git merge --no-ff` gave `36da7e2e56`, with a tree identical to the ticket branch. The Secret Gate passed on the merged state (15 commits).
+- Push target branch result: `Completed`. `git push origin HEAD:personal` moved `e0df0bfd05..36da7e2e56`. This report is recorded in the commit that follows.
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
@@ -116,10 +116,10 @@ None. No release.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications`
-- Worktree cleanup result: Pending (recorded after finalization)
-- Worktree prune result: Pending (recorded after finalization)
-- Local ticket branch cleanup result: Pending (recorded after finalization)
-- Remote branch cleanup result: Pending (recorded after finalization)
+- Worktree cleanup result: `Completed` after the record push (see DR-001). Untracked build output `*/dist/` was removed with it.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Local `codex/settings-update-notifications` and `finalize/settings-update-notifications` were deleted.
+- Remote branch cleanup result: `Not required`. The ticket branch is kept on `origin`, as for earlier tickets.
 - Blocker: None
 
 ## Release Notes Summary
@@ -140,7 +140,7 @@ None. The repository deploys no hosted service. The change reaches users with th
 
 ## Verification Checks
 
-- Secret Gate `scripts/check_secrets.sh origin/personal..codex/settings-update-notifications` before the first push: PASS for 13 commits. It was rerun on the final range, see Pending (recorded after finalization).
+- Secret Gate `scripts/check_secrets.sh origin/personal..codex/settings-update-notifications` before the first push: PASS for 13 commits. It was rerun on the final range, PASS for 14 commits before the ticket push, and PASS for 15 commits on the merged state before the `personal` push.
 - Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py`: Pass (75256 tracked files, longest path 200 chars, pre-existing in another ticket)
 - Licensing `python3 scripts/check_licensing.py`: Pass (`Licensing is consistent.`)
 - Integrated-state rerun DEL-01..06: all passed (handoff summary, Integration)
@@ -153,10 +153,10 @@ None. The repository deploys no hosted service. The change reaches users with th
 ## Final Status
 
 - Verification complete: `Yes` (from the evidence)
-- Repository finalization complete: Pending (recorded after finalization)
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: Pending (recorded after finalization)
+- Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: Pending (recorded after finalization)
+- Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: see `delivery-revision-record.md` DR-001
 - Terminal message/reference: `Delivery Completed` to the Solution Designer
