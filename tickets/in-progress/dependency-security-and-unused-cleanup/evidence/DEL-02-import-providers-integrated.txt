@@ -1,0 +1,19 @@
+# DEL-02 — import providers on the integrated state (1c0a0e4355) vs the base record SD-07 (3b2c86ca9e)
+# 2026-10-20T18:51:57Z
+$ node probes/import-provider-check.mjs <repo> autobyteus-web autobyteus-ts autobyteus-server-ts autobyteus-application-frontend-sdk autobyteus-team-stream-contracts autobyteus-agent-presentation-contracts autobyteus-collaboration-stream-contracts autobyteus-application-backend-sdk
+lines:      136 (SD-07:      136)
+$ diff evidence/SD-07-import-providers-base.txt <integrated output>
+diff exit=0 (0 = identical: no import lost its provider; the MISSING names below are test-fixture strings, present on base too)
+== MISSING lines (same as SD-07):
+autobyteus-web	@vue/composition-api	MISSING
+autobyteus-web	B-folder	MISSING
+autobyteus-ts	Paused	MISSING
+autobyteus-ts	TBD	MISSING
+autobyteus-ts	draft	MISSING
+autobyteus-ts	rebuild	MISSING
+autobyteus-ts	test	MISSING
+autobyteus-server-ts	Agent	MISSING
+autobyteus-server-ts	DSH	MISSING
+autobyteus-server-ts	declared-lib	MISSING
+autobyteus-server-ts	parent	MISSING
+autobyteus-server-ts	template-lib	MISSING

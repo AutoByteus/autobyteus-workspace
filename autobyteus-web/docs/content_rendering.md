@@ -196,6 +196,14 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.
 
+The rendered HTML is sanitized with DOMPurify (`sanitize(html, opts)` in
+`useMarkdownSegments.ts`, its only call). `autobyteus-web/package.json` pins
+`dompurify` exactly at `3.4.7`. Versions 3.4.8 and later read tag names through
+the `Node.prototype.nodeName` getter, which happy-dom (the `test:nuxt` DOM)
+returns as `""`, so headings disappear in the web tests. The app itself
+(Chromium/Electron) works with newer versions. Lift the pin only together with a
+test DOM that returns `nodeName`, and rerun `test:nuxt`.
+
 ### Conversation Progressive Rich Rendering
 
 Conversation text and reasoning use one rich presentation path for active,

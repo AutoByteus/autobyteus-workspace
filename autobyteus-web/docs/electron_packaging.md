@@ -425,7 +425,8 @@ Flavor resolution:
 ### Electron Runtime Baseline
 
 The desktop runtime is pinned in `autobyteus-web/package.json` as exact
-`electron@42.4.1`. Keep this as an explicit, reviewed runtime baseline instead
+`electron@42.11.16` (Chromium 148, Node.js 24.19). Keep this as an explicit,
+reviewed runtime baseline instead
 of a semver range or minimum-fixed-version pin because Electron major upgrades
 change Chromium, Node.js, native-module ABI, packaging behavior, and updater
 behavior together.
