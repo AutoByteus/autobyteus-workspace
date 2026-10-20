@@ -1,6 +1,6 @@
 # Implementation Handoff — autobyteus-191 (Slice 1: Remote Delegation, Text Only)
 
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`, branch `codex/cross-node-agent-communication-r2`; base `origin/personal` `5de6a698b9`; finalization target `origin/personal`.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`, branch `codex/cross-node-agent-communication-r2`; originally based on `origin/personal` `5de6a698b9`, now merged with `origin/personal` `3b9014215e` (IR-005); finalization target `origin/personal`.
 
 Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016 `213a5d9668`, SR-017 `b9f630de6b`):
 
@@ -16,7 +16,11 @@ Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016
 | `31d46978ad` | IR-003: clean ownership of remote messaging (SR-015, SR-016) and CR-002 |
 | `7383e89a0f` | IR-003 documents; IMP-12 … IMP-14 evidence |
 | `7a5a9af077` | IR-004 (SR-017, F-002): package validators accept remote message endpoints; guard test |
-| the IR-004 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-15 … IMP-17 evidence |
+| `284769f392` | IR-004 documents; IMP-15 … IMP-17 evidence |
+| `4f03cce09d` | DR-001: delivery's merge of `origin/personal` (one additive conflict in `server-settings-service.ts`, both settings kept) |
+| `c59c6f7359` | IR-005: merge of `origin/personal` `3b9014215e` (autobyteus-205 Skill Improvement removal, 1.5.8-beta.4); 5 conflicts resolved |
+| `300bf4c09a` | IR-005: test, a delegated run survives the Skill Improvement data removal |
+| the IR-005 documents commit (named in the handoff message) | This handoff and the revision record updated; IMP-18 … IMP-22 evidence |
 
 ## Upstream Artifact Package
 
@@ -32,15 +36,15 @@ Implementation commits (design: SR-014 `a3b0cf1028`, SR-015 `f1d7dd9337`, SR-016
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-004 on top of IR-003)
+- Implementation cycle: `Rework` (IR-005, integration, on top of IR-004)
 - Implementation revision record: `tickets/in-progress/cross-node-agent-communication/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`
+- Current implementation revision ID: `IR-005`
 - Related solution revision IDs: SR-014, SR-015, SR-016, SR-017
 - Related architecture-review revision IDs: ARCH-REV-004, ARCH-REV-006, ARCH-REV-007
-- Related code-review revision IDs: CRR-001 … CRR-005
-- Related API/E2E revision IDs: API-REV-001 (F-001), API-REV-002 (F-002)
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: F-002 (IR-004, SR-017); AR-005 … AR-009 and CR-002 (IR-003); CR-001 (IR-002)
+- Related code-review revision IDs: CRR-001 … CRR-006
+- Related API/E2E revision IDs: API-REV-001 (F-001), API-REV-002 (F-002), API-REV-004
+- Related delivery revision IDs: DR-001, DR-002
+- Triggering finding IDs: DR-002 merge conflicts (IR-005); F-002 (IR-004, SR-017); AR-005 … AR-009 and CR-002 (IR-003); CR-001 (IR-002)
 
 What exists now:
 
@@ -202,6 +206,11 @@ Evidence is in `tickets/in-progress/cross-node-agent-communication/evidence/`. E
 | IMP-15 | `npx vitest run tests/unit/remote-collaboration/remote-link-walkers.test.ts`, on the fix and with the two validators from `7383e89a0f` | `7a5a9af077` and `7383e89a0f` | as above | the two package validators, `RootRunPackageCurrentValidator` scan, the Team and Org state loaders | F-002; AC-106; N-15 | Pass (fails before the fix) | `IMP-15-f002-guard-test.log` | after: `Tests  12 passed (12)`; before: `Tests  4 failed \| 8 passed (12)` |
 | IMP-16 | typecheck; `npx vitest run tests/unit/run-history tests/unit/agent-org-execution tests/unit/app-data-migrations tests/unit/remote-collaboration tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts` | `7a5a9af077` | as above | every consumer of the two validators, including migrations | AC-112 | Pass | `IMP-16-f002-consumers.log` | `Test Files  138 passed (138)`, `Tests  910 passed (910)` |
 | IMP-17 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `7a5a9af077` | as above, temp dirs only | all server unit tests | AC-112 and all | Pass | `IMP-17-server-unit-full-ir004.excerpt.log` | `Test Files  762 passed \| 4 skipped (766)`, `Tests  6279 passed \| 7 skipped (6286)`, `exit=0` |
+| IMP-18 | `pnpm install`; `pnpm -C autobyteus-server-ts prebuild`; `pnpm -C autobyteus-server-ts typecheck` | `c59c6f7359` | as above | all server source on the merged state | IR-005 | Pass | `IMP-18-server-typecheck-merge.log` | `exit=0` |
+| IMP-19 | remote-focused set (IMP-13/15) plus `tests/unit/run-history/store/agent-run-metadata-store.test.ts`, `tests/unit/run-history/services/agent-run-history-catalog-service.test.ts`, `tests/unit/app-data-migrations` | `c59c6f7359` | as above | remote collaboration, run metadata (`delegatedFrom`), every app-data migration including the base's removal | IR-005 (b), (c) | Pass | `IMP-19-remote-focused-merge.log` | `Test Files  72 passed (72)`, `Tests  550 passed (550)` |
+| IMP-20 | `npx vitest run tests/unit/remote-collaboration/delegated-run-metadata-across-migrations.test.ts` | `300bf4c09a` | as above | the base's `RemoveSkillImprovementDataMigration` over a run with `delegatedFrom` | IR-005 (b); BEH-106, N-10 | Pass | `IMP-20-delegated-run-across-removal-migration.log` | `Tests  1 passed (1)` |
+| IMP-21 | `pnpm -C autobyteus-server-ts test:unit` (full unit suite) | `c59c6f7359` | as above, temp dirs only | all server unit tests on the merged state | AC-112 and all | Pass, with 1 load-timing failure that passes alone (6 of 6) | `IMP-21-server-unit-full-merge.excerpt.log` | `Test Files  1 failed \| 775 passed \| 4 skipped (780)`, `Tests  1 failed \| 6391 passed`; the failure is `native-compaction-terminal-drain.test.ts` (an extra `failed` status under load), outside this branch's code |
+| IMP-22 | `pnpm -C autobyteus-web exec nuxi prepare`; `pnpm -C autobyteus-web test:nuxt` (full web suite) | `c59c6f7359` | as above | all web code on the merged state | BEH-101, BEH-102 | Pass, with 4 load-timeout failures in 3 files that pass alone (8 of 8) | `IMP-22-web-tests-merge.excerpt.log` | `Test Files  3 failed \| 645 passed \| 2 skipped (650)`, `Tests  4 failed \| 4624 passed`; each failure is `Test timed out in 5000ms` (voice-input extension, managed extension service, Org collaboration messages), outside this branch's code |
 | IMP-08 | Rendered web tab against the two-server stack (Nuxt dev, browser) | web as in `8491e0d916` | Chromium via the agent browser tool | Nodes → Remote Collaboration | BEH-101, BEH-102, REQ-115 | Pass (observed) | `IMP-08-ui-remote-collaboration-tab.png`, `IMP-08-ui-peer-refusal-and-rename.png`, `IMP-08-ui-publish-form.png` | the switch on; peer "docker" listed with its node ID; the refusal next to the peer form; the publish form with runtime, model, workspace and auto-approve |
 
 - Not run, and why:

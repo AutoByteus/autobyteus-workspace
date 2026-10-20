@@ -1,0 +1,24 @@
+# IMP-22 full web suite on the merge: pnpm -C autobyteus-web exec nuxi prepare; pnpm -C autobyteus-web test:nuxt; commit c59c6f7359; macOS, node v22.23.1; 2026-10-20
+# excerpt: failures, summary, isolated rerun. The full log is not committed.
+     → Test timed out in 5000ms.
+     → ENOTEMPTY: directory not empty, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/voice-input-extension-integration-xBsYOZ/extensions'
+     → Test timed out in 5000ms.
+     → Test timed out in 5000ms.
+     → Test timed out in 5000ms.
+ FAIL  tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft
+Error: Test timed out in 5000ms.
+ FAIL  tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft
+Error: ENOTEMPTY: directory not empty, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/voice-input-extension-integration-xBsYOZ/extensions'
+ FAIL  electron/extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+Error: Test timed out in 5000ms.
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list
+...
+ Test Files  3 failed | 645 passed | 2 skipped (650)
+      Tests  4 failed | 4624 passed | 3 skipped (4631)
+   Start at  20:49:30
+   Duration  906.68s (transform 97.56s, setup 5853.43s, collect 510.34s, tests 275.83s, environment 674.34s, prepare 406.13s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1
+## the 3 failing files rerun alone: Test Files  3 passed (3), Tests  8 passed (8)
+## not in this branch's code: git diff origin/personal HEAD is empty for autobyteus-web/electron, autobyteus-web/tests/integration and components/workspace/collaboration

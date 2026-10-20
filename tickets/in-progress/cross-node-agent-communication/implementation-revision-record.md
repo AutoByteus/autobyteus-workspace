@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | CRR-001, SR-014, ARCH-REV-002 | Fixed; back to code review for a targeted delta review |
 | IR-003 | Architecture reviewer (ARCH-REV-004, ARCH-REV-006) for SR-015 / SR-016; code reviewer CRR-003 (from API/E2E F-001) | AR-005 … AR-009; CR-002 | `Design Impact` (upstream, resolved) + `Local Fix` | SR-015, SR-016, ARCH-REV-004, ARCH-REV-006, CRR-003, API-REV-001 | Steps 3–6 brought in line; CR-002 fixed; to code review (targeted delta) |
 | IR-004 | Architecture reviewer ARCH-REV-007 (SR-017), from code reviewer CRR-005 (API/E2E F-002, API-REV-002) | F-002 | `Design Impact` (upstream, resolved) | SR-017, ARCH-REV-007, CRR-005, API-REV-002 | Package validators accept remote message endpoints; to code review (targeted) |
+| IR-005 | Delivery engineer DR-002 (`delivery-revision-record.md`): integration refresh blocked by source conflicts | DR-002 merge conflicts | `Local Fix` (integration) | DR-001, DR-002 | `origin/personal` `3b9014215e` merged; to code review (merge), then API/E2E |
 
 ## Revision Entries
 
@@ -125,3 +126,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Full server unit suite at `7a5a9af077` passes: 762 files, 6,279 tests (IMP-17).
 - Next recipient or routing: code reviewer (targeted source review), then API/E2E (full two-server E2E plus API-21 / API-22).
 - Remaining limitations or risks: unchanged (RSK-106 / FU-002). The code reviewer's readability note on `root-task-execution-lifecycle.ts` (move `RemoteEndpointLookup` below the imports) waits until that file is next changed; this round does not touch it.
+
+### IR-005 — Integration with `origin/personal` `3b9014215e` (autobyteus-205, 1.5.8-beta.4)
+
+- Triggering role, report path, and round: delivery engineer (`delivery_engineer_bf0429c6cd784c2abd8aa8e53a23ad23`), `delivery-revision-record.md` DR-002: `git merge origin/personal` conflicted in 5 server source files; delivery aborted and handed the resolution here.
+- Triggering finding IDs: DR-002 merge conflicts.
+- Classification: `Local Fix` (integration).
+- Prior authoritative result: IR-004 on base `5de6a698b9` plus DR-001's merge `4f03cce09d` (one additive conflict in `server-settings-service.ts`, resolved by delivery: remote collaboration and update checks both kept).
+- Current authoritative result: merged with `origin/personal` `3b9014215e`, which removes Skill Improvement (autobyteus-205: `src/skill-improvement/` deleted, `launchPurpose` removed from run metadata, a one-time data-removal migration) and bumps to `1.5.8-beta.4`. Merge commit `c59c6f7359`.
+- Related solution revision IDs: SR-017 (unchanged)
+- Related architecture-review revision IDs: ARCH-REV-007 (unchanged)
+- Related code-review revision IDs: CRR-006 (Pass of IR-004)
+- Related API/E2E revision IDs: API-REV-004 (latest)
+- Related delivery revision IDs: DR-001, DR-002
+- Why this implementation revision is recorded: the integration resolution, owned by implementation at delivery's request.
+- Approved behavior or requirement IDs affected: none changed. `delegatedFrom` (BEH-106, N-10) and the remote-collaboration setting (REQ-101) kept; the base's removal of `launchPurpose` and Skill Improvement taken whole.
+- Implementation delta (conflict resolution; each was the same pair, the base's removal beside this branch's addition):
+  - `run-history/store/agent-run-metadata-types.ts`: `delegatedFrom?` kept, `launchPurpose?` dropped.
+  - `run-history/store/agent-run-metadata-store.ts` `normalizeMetadata`: the `delegatedFrom: parseDelegatedFrom(...)` spread kept, the `launchPurpose` spread dropped.
+  - `agent-execution/services/agent-run-provisioning-service.ts` (prepared-run metadata): the `delegatedFrom` spread kept, `launchPurpose` dropped.
+  - `agent-execution/services/agent-run-service.ts`: the `DelegatedFrom` import and `CreateAgentRunInput.delegatedFrom` kept, `AgentRunLaunchPurpose` / `launchPurpose` dropped.
+  - `services/server-settings-service.ts`: `REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY` kept, the Skill Improvement import and setting dropped.
+- Checks delivery asked for:
+  - (a) No `launchPurpose`, `AgentRunLaunchPurpose` or Skill Improvement reference remains from this branch, in source, tests or auto-merged files. The remaining mentions belong to the base itself: `remove-skill-improvement-data-migration.ts`, its registry entry, its fixtures, the retired-setting policy entry (`ENABLE_SKILL_IMPROVEMENT`) and older migrations that name the old folders.
+  - (b) The base's `remove-skill-improvement-data-migration.ts` reads `run_metadata.json` as raw JSON only to recognise helper runs (`agentDefinitionId` of the improver, or `launchPurpose: "server_helper"`), skips delegated copies' own files, and never writes `run_metadata.json`. It writes only `run_history_index.json` (dropping helper rows) and deletes helper-run folders. A run a peer delegated here is neither, so its folder, metadata, history row and `delegatedFrom` are untouched. New test `tests/unit/remote-collaboration/delegated-run-metadata-across-migrations.test.ts` runs the real migration over such a run and checks the metadata and the index byte for byte and the store's `delegatedFrom` read (IMP-20, commit `300bf4c09a`).
+  - (c) `pnpm install` + prebuild + typecheck (IMP-18); the remote-focused set (IMP-13/15) plus run metadata, catalog and every app-data migration test (IMP-19); the full server and web suites (IMP-21, IMP-22).
+- Changed files or areas: the 5 resolved files (merge `c59c6f7359`); one new test (`300bf4c09a`).
+- Local validation and result (handoff's Checks Run, IMP-18 … IMP-22):
+  - Typecheck passes; the focused set passes (72 files, 550 tests); the migration-interaction test passes.
+  - Full server suite: 6,391 passed, 1 failed (`native-compaction-terminal-drain.test.ts`, an extra `failed` status under load); it passes alone 6 of 6 and checks code this branch does not touch.
+  - Full web suite: 4,624 passed, 4 failed in 3 files, all `Test timed out in 5000ms` under load (voice-input extension, managed extension service, Org collaboration messages); the 3 files pass alone (8 of 8); this branch changes none of those areas.
+  - FU-006 (`team-member-run-view-projection-service.import.test.ts`) did not fail in this run.
+- Next recipient or routing: code reviewer (the merge, and DR-001's merge `4f03cce09d` as delivery asks), then API/E2E as the reviewers decide (the two-server E2E needs `pnpm -C autobyteus-server-ts build` first), then delivery.
+- Remaining limitations or risks: the known pre-existing failure `team-member-run-view-projection-service.import.test.ts` (5 s cold-import timeout under load; also on the base, FU-006) may appear in the full suite.
