@@ -3,8 +3,8 @@ import {
   type SecretEntry,
 } from "@prisma/client";
 import { BaseRepository } from "repository_prisma";
-import type { SecretId } from "../domain/secret-id.js";
-import type { EncryptedSecretEntryRecord } from "./secret-vault-persistence-types.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
+import type { EncryptedSecretEntryRecord } from "autobyteus-ts/secrets/vault/secret-vault-records.js";
 
 const toWriteData = (record: EncryptedSecretEntryRecord) => ({
   secretId: String(record.secretId),

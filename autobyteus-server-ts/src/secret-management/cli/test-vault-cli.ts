@@ -1,6 +1,6 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { SecretVaultError } from "../domain/secret-vault-types.js";
+import { SecretVaultError } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import { LocalEnvironmentSecretImportError } from "../provisioning/local-environment-secret-import.js";
 import {
   TestVaultCommands,
@@ -9,7 +9,7 @@ import {
   type TestVaultSetupResult,
   type TestVaultStatus,
 } from "../test-vault/test-vault-commands.js";
-import { TEST_VAULT_SETTING_NAME } from "../test-vault/test-vault-location.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 
 export type TestVaultCliCommand =
   | Readonly<{ command: "setup"; sourcePath: string; replace: boolean }>

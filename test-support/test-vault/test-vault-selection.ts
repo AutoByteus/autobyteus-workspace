@@ -1,5 +1,4 @@
-/** The selector (a directory, never a key); same name as the server's `TEST_VAULT_SETTING_NAME`. */
-export const TEST_VAULT_SETTING_NAME = 'AUTOBYTEUS_TEST_VAULT';
+import { TEST_VAULT_SETTING_NAME } from '../../autobyteus-ts/src/secrets/test-vault-setting.js';
 
 const CAPTURED = Symbol.for('autobyteus.test-vault.captured-selection');
 type CapturedSelection = { value: string | undefined };

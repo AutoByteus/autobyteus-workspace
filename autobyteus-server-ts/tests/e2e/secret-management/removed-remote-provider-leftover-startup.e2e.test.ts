@@ -26,8 +26,8 @@ import path from 'node:path';
 import type { AddressInfo } from 'node:net';
 import { DatabaseSync } from 'node:sqlite';
 import { afterEach, describe, expect, it } from 'vitest';
-import { encryptSecretEntry } from '../../../src/secret-management/crypto/secret-vault-crypto.js';
-import type { SecretId } from '../../../src/secret-management/domain/secret-id.js';
+import { encryptSecretEntry } from 'autobyteus-ts/secrets/vault/secret-vault-crypto.js';
+import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import {
   createSanitizedTestEnvironment,
   executeGraphql,

@@ -492,9 +492,36 @@ can override the default live model for targeted provider compatibility checks.
 The test is a provider-acceptance and simple transcription-signal guard; token
 accounting and broad transcription-quality validation remain separate concerns.
 
+### Key resolution
+
+Every client and factory takes an optional `ProviderApiKeyResolver`
+(`src/secrets/provider-api-key-resolver.ts`). A client resolves its key when it
+first builds its SDK client, in this order:
+
+1. the resolver it was given (the AutoByteus server always passes its own);
+2. the environment default: when `AUTOBYTEUS_TEST_VAULT` names a test vault
+   directory, the key is read from that vault, read-only, the way an ORM reads
+   `DATABASE_URL`. The vault modules (`src/secrets/vault/`) and `node:sqlite`
+   are loaded by dynamic import only then, and each vault is opened once per
+   process;
+3. otherwise `MissingApiKeyError(provider)`.
+
+`src/secrets/vault/` is the single owner of the vault format's read side:
+crypto, root-key file, records and store interface, the read-only store,
+verification, `readSecretEntry`, provider-key naming (`providerSecretId`) and
+the test-vault location policy (refusing the user's app data folders). A key
+the vault lacks fails with a missing-capability error naming the secret, the
+vault and `pnpm test-vault setup`; a provider without a vault entry fails with
+`SECRET_PROVIDER_UNKNOWN`. Applications that own a vault call
+`disableEnvironmentProviderApiKeySource()` at startup. Usage is in
+[TESTING.md](../../TESTING.md#test-vault).
+
 ## 9. Testing
 
 Focused unit coverage for this contract lives in:
+
+- `tests/unit/secrets/provider-api-key-resolver.test.ts` (resolution order, environment default)
+- `tests/unit/secrets/vault-module-graph.test.ts` (no vault module loads unless the variable is used)
 
 - `tests/unit/llm/models.test.ts`
 - `tests/unit/llm/openai-compatible-endpoint-provider.test.ts`

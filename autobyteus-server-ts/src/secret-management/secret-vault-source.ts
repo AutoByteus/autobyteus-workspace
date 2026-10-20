@@ -1,12 +1,20 @@
-import type { ApplicationDatabaseLocation } from "../config/application-database-location.js";
+import path from "node:path";
 import {
+  comparablePath,
   currentPathPolicyEnvironment,
-  isRealAppServerDataDir,
   parseTestVaultSetting,
   type PathPolicyEnvironment,
-} from "./test-vault/test-vault-location.js";
+} from "autobyteus-ts/secrets/vault/test-vault-location.js";
+import type { ApplicationDatabaseLocation } from "../config/application-database-location.js";
 
 export const TEST_VAULT_IGNORED_ON_REAL_APP_DATA = "TEST_VAULT_IGNORED_ON_REAL_APP_DATA";
+
+/** True when `dataDir` is the real desktop app's server data folder, `~/.autobyteus/server-data`. */
+export const isRealAppServerDataDir = (
+  dataDir: string,
+  policy: Pick<PathPolicyEnvironment, "platform" | "homeDir"> = currentPathPolicyEnvironment(),
+): boolean => comparablePath(dataDir, policy.platform)
+  === comparablePath(path.join(policy.homeDir, ".autobyteus", "server-data"), policy.platform);
 
 /**
  * Where a server's key lookups read from, chosen once at startup:

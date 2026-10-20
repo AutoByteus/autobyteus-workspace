@@ -3,12 +3,17 @@ import { randomBytes } from "node:crypto";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { ApplicationDatabaseLocation } from "../../config/application-database-location.js";
-import { assertWindowsExclusiveAcl } from "../windows-exclusive-acl.js";
+import { assertWindowsExclusiveAcl } from "./windows-exclusive-acl.js";
 import {
   SECRET_VAULT_ROOT_KEY_BYTES,
-} from "../crypto/secret-vault-crypto.js";
-import { SecretVaultError } from "../domain/secret-vault-types.js";
+} from "./secret-vault-crypto.js";
+import { SecretVaultError } from "./secret-vault-types.js";
+
+/** A vault database file and its sibling root-key file (`<database>.secret.key`). */
+export type VaultFileLocation = Readonly<{
+  databasePath: string;
+  rootKeyPath: string;
+}>;
 
 export type SecretRootKeyInspection =
   | { state: "ABSENT" }
@@ -42,7 +47,7 @@ const hardenWindowsAcl = (filePath: string): void => {
 };
 
 export class SecretRootKeyFile {
-  constructor(private readonly location: ApplicationDatabaseLocation) {}
+  constructor(private readonly location: VaultFileLocation) {}
 
   async inspectExisting(): Promise<SecretRootKeyInspection> {
     let stat: Awaited<ReturnType<typeof fsp.lstat>>;

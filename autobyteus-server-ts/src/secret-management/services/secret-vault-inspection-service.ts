@@ -7,16 +7,16 @@ import {
   SECRET_VAULT_NONCE_BYTES,
   SECRET_VAULT_TAG_BYTES,
   verifyVaultVerifier,
-} from "../crypto/secret-vault-crypto.js";
-import type { SecretId } from "../domain/secret-id.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-crypto.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 import {
   hasRequiredSecretVaultColumns,
   openReadOnlyVaultDatabase,
   presentSecretVaultTables,
   SECRET_VAULT_METADATA_ROWS_QUERY,
   type SecretVaultMetadataRow,
-} from "../persistence/secret-vault-sqlite-schema.js";
-import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-sqlite-schema.js";
+import { SecretRootKeyFile } from "autobyteus-ts/secrets/vault/secret-root-key-file.js";
 
 export type ImportTargetState =
   | "INITIALIZATION_REQUIRED"

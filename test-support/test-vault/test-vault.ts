@@ -1,11 +1,10 @@
 /*
  * Test-vault policy for test setups and live tests (server-free).
  *
- * Runtime-touching pieces live in their own modules and are loaded only by
- * live opt-ins:
- * - `live-server-vault.ts`: in-process server live suites (vault runtime, Prisma);
- * - `test-vault-default-resolver.ts`: the autobyteus-ts default key source, which
- *   autobyteus-ts setup imports lazily, only with the selector and the live gate.
+ * The runtime-touching piece, `live-server-vault.ts` (in-process server live
+ * suites: vault runtime, Prisma), is a separate module loaded only by live
+ * opt-ins. autobyteus-ts clients read the test vault themselves
+ * (`AUTOBYTEUS_TEST_VAULT`, see autobyteus-ts `secrets/provider-api-key-resolver.ts`).
  */
 export {
   CREDENTIAL_ENVIRONMENT_NAME,
@@ -15,7 +14,6 @@ export {
 export {
   captureTestVaultSelection,
   capturedTestVaultSetting,
-  TEST_VAULT_SETTING_NAME,
 } from './test-vault-selection.js';
 export {
   LIVE_PROVIDER_TESTS_GATE,

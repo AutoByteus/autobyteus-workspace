@@ -5,7 +5,7 @@ import type {
 } from 'autobyteus-ts';
 import { MissingApiKeyError as MissingApiKeyErrorClass } from 'autobyteus-ts';
 import type { SecretConsumerIdentity } from '../domain/secret-id.js';
-import { SecretVaultError } from '../domain/secret-vault-types.js';
+import { SecretVaultError } from 'autobyteus-ts/secrets/vault/secret-vault-types.js';
 import type { SecretManagementService } from '../services/secret-management-service.js';
 
 export type ProviderApiKeyResolverSubject =

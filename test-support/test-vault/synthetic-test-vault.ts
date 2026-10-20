@@ -8,9 +8,9 @@ import {
   SECRET_VAULT_DOMAIN_ID_BYTES,
   SECRET_VAULT_ENCRYPTION_FORMAT_VERSION,
   SECRET_VAULT_ROOT_KEY_BYTES,
-} from '../../autobyteus-server-ts/src/secret-management/crypto/secret-vault-crypto.js';
-import { secretId } from '../../autobyteus-server-ts/src/secret-management/domain/secret-id.js';
-import { TEST_VAULT_DATABASE_FILE_NAME } from '../../autobyteus-server-ts/src/secret-management/test-vault/test-vault-location.js';
+} from '../../autobyteus-ts/src/secrets/vault/secret-vault-crypto.js';
+import { secretId } from '../../autobyteus-ts/src/secrets/vault/secret-id.js';
+import { TEST_VAULT_DATABASE_FILE_NAME } from '../../autobyteus-ts/src/secrets/vault/test-vault-location.js';
 
 /*
  * Tests only: writes a minimal test vault (the two secret tables, a root key,

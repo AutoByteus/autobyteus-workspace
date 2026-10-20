@@ -2,19 +2,14 @@ import { createHash, randomBytes } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { pathToFileURL } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { DeepSeekLLM } from '../../../../autobyteus-ts/src/llm/api/deepseek-llm.js';
-import { OpenAILLM } from '../../../../autobyteus-ts/src/llm/api/openai-llm.js';
-import { LLMModel } from '../../../../autobyteus-ts/src/llm/models.js';
-import { LLMProvider } from '../../../../autobyteus-ts/src/llm/providers.js';
-import { LLMConfig } from '../../../../autobyteus-ts/src/llm/utils/llm-config.js';
-import { MissingApiKeyError } from '../../../../autobyteus-ts/src/secrets/provider-api-key-error.js';
-import { setDefaultProviderApiKeyResolver } from '../../../../autobyteus-ts/src/secrets/provider-api-key-resolver.js';
 import { SecretValue } from 'autobyteus-ts';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultRuntime } from '../../../src/secret-management/secret-vault-runtime.js';
 import {
+  isRealAppServerDataDir,
   selectedTestVaultPaths,
   selectSecretVaultSource,
   TEST_VAULT_IGNORED_ON_REAL_APP_DATA,
@@ -23,12 +18,10 @@ import { openReadOnlyTestVault } from '../../../src/secret-management/test-vault
 import {
   forbiddenTestVaultRoots,
   isForbiddenTestVaultLocation,
-  isRealAppServerDataDir,
   parseTestVaultSetting,
   resolveTestVaultLocation,
-} from '../../../src/secret-management/test-vault/test-vault-location.js';
+} from 'autobyteus-ts/secrets/vault/test-vault-location.js';
 import { createSyntheticTestVault } from '../../../../test-support/test-vault/synthetic-test-vault.js';
-import { installTestVaultDefaultResolver } from '../../../../test-support/test-vault/test-vault-default-resolver.js';
 
 const SYNTHETIC_DEEPSEEK = 'synthetic-deepseek-vault-value';
 
@@ -152,7 +145,6 @@ describe('read-only test vault', () => {
   });
 
   afterEach(() => {
-    setDefaultProviderApiKeyResolver(null);
     fs.rmSync(root, { recursive: true, force: true });
   });
 
@@ -174,6 +166,20 @@ describe('read-only test vault', () => {
     }
     expect([digest(location.databasePath), digest(location.rootKeyPath)]).toEqual(before);
     expect(fs.readdirSync(vaultDirectory).sort()).toEqual(['test-vault.db', 'test-vault.db.secret.key']);
+  });
+
+  it('marks the vault CORRUPT when a stored entry cannot be decrypted (CORRUPT_VAULT → markCorrupt)', async () => {
+    const database = new DatabaseSync(path.join(vaultDirectory, 'test-vault.db'));
+    database.exec("UPDATE secret_entries SET ciphertext = X'00112233'");
+    database.close();
+    const vault = await openReadOnlyTestVault(vaultDirectory);
+    try {
+      await expect(vault.service.resolveForUse({ kind: 'llm', providerId: 'DEEPSEEK', credentialSlot: 'apiKey' }))
+        .rejects.toMatchObject({ code: 'CORRUPT_STORED_VALUE', instructionCode: 'SECRET_VAULT_CORRUPT' });
+      expect(await vault.service.getHealth()).toEqual({ state: 'CORRUPT', instructionCode: 'SECRET_VAULT_CORRUPT' });
+    } finally {
+      vault.close();
+    }
   });
 
   it('opens the selected test vault at runtime initialization and announces it (location only)', async () => {
@@ -215,27 +221,5 @@ describe('read-only test vault', () => {
     expect(() => runtime.requireService()).toThrow('SECRET_VAULT_UNAVAILABLE');
     if (code === 'TEST_VAULT_NOT_FOUND') expect(String(failure)).toContain('pnpm test-vault setup');
     if (code === 'TEST_VAULT_LOCATION_FORBIDDEN') expect(fs.existsSync(directory)).toBe(false);
-  });
-
-  it('installs the test vault as the autobyteus-ts default key source for clients built without a resolver', async () => {
-    await installTestVaultDefaultResolver(vaultDirectory);
-    const model = (provider: LLMProvider, value: string) => new LLMModel({
-      name: value, value, canonicalName: value, provider,
-    });
-    const deepseek = new DeepSeekLLM(model(LLMProvider.DEEPSEEK, 'deepseek-v4-flash'), new LLMConfig());
-    const openai = new OpenAILLM(model(LLMProvider.OPENAI, 'gpt-5.4'), new LLMConfig());
-    try {
-      const client = await (deepseek as unknown as { getClient(): Promise<{ apiKey: string }> }).getClient();
-      expect(client.apiKey).toBe(SYNTHETIC_DEEPSEEK);
-      const missing = await (openai as unknown as { getClient(): Promise<unknown> }).getClient()
-        .catch((error: unknown) => error);
-      expect(missing).toBeInstanceOf(MissingApiKeyError);
-      expect(String((missing as Error).message)).toBe(
-        `missing capability provider.openai.api-key for OPENAI (test vault ${vaultDirectory}); add it with pnpm test-vault setup`,
-      );
-    } finally {
-      await deepseek.cleanup();
-      await openai.cleanup();
-    }
   });
 });

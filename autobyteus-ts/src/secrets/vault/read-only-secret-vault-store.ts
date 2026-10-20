@@ -1,11 +1,11 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { SecretId } from "../domain/secret-id.js";
-import { SecretVaultError } from "../domain/secret-vault-types.js";
+import type { SecretId } from "./secret-id.js";
+import { SecretVaultError } from "./secret-vault-types.js";
 import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
-} from "./secret-vault-persistence-types.js";
+} from "./secret-vault-records.js";
 import {
   hasRequiredSecretVaultColumns,
   openReadOnlyVaultDatabase,

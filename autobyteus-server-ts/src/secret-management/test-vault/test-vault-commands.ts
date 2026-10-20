@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { ApplicationDatabaseLocation } from "../../config/application-database-location.js";
 import { providerCredentialCatalog } from "../catalog/provider-credential-catalog.js";
-import type { SecretId } from "../domain/secret-id.js";
-import { SecretVaultError } from "../domain/secret-vault-types.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
+import { SecretVaultError } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import {
   LocalEnvironmentSecretImportService,
   type LocalImportDecisionPort,
@@ -20,7 +22,7 @@ import {
   resolveTestVaultLocation,
   type PathPolicyEnvironment,
   type TestVaultLocation,
-} from "./test-vault-location.js";
+} from "autobyteus-ts/secrets/vault/test-vault-location.js";
 
 export type TestVaultSetupResult = Readonly<{
   location: TestVaultLocation;
@@ -91,7 +93,9 @@ export class TestVaultCommands {
     const result = await this.importer.execute(
       Object.freeze({
         sourcePath: input.sourcePath,
-        targetLocation: location.databaseLocation,
+        targetLocation: ApplicationDatabaseLocation.fromAbsoluteFileUrl(
+          pathToFileURL(location.databasePath).href,
+        ),
         dryRun: false,
         overwrite: input.replace,
       }),

@@ -5,7 +5,7 @@ import {
   randomBytes,
   timingSafeEqual,
 } from "node:crypto";
-import type { SecretId } from "../domain/secret-id.js";
+import type { SecretId } from "./secret-id.js";
 
 export const SECRET_VAULT_ENCRYPTION_FORMAT_VERSION = 1;
 export const SECRET_VAULT_ROOT_KEY_BYTES = 32;

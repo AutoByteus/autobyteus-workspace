@@ -1,6 +1,6 @@
 import { describe, it, type TestContext } from 'vitest';
 import { classifyProviderAccessError } from './provider-access-classification.js';
-import { TEST_VAULT_SETTING_NAME } from './test-vault-selection.js';
+import { TEST_VAULT_SETTING_NAME } from '../../autobyteus-ts/src/secrets/test-vault-setting.js';
 
 /*
  * Live provider test policy (gate, reasoned skip, strict mode). The default
@@ -25,12 +25,24 @@ export type LiveProviderTest = Readonly<{
   it(name: string, body: LiveTestBody, timeout?: number): void;
 }>;
 
+/*
+ * Classification is by `kind` and `code`, never `instanceof`: server code and
+ * tests may load different copies of autobyteus-ts (dist and src).
+ */
 const isMissingApiKeyError = (error: unknown): error is Error =>
   error instanceof Error && (error as { kind?: unknown }).kind === 'missing_api_key';
+
+/** A test-vault or vault-format failure (missing or unusable vault, unknown provider): a real failure. */
+const isVaultError = (error: unknown): boolean => {
+  const code = (error as { code?: unknown } | null)?.code;
+  return typeof code === 'string'
+    && (code.startsWith('TEST_VAULT_') || ['PROVIDER_UNKNOWN', 'CORRUPT_VAULT', 'VAULT_UNAVAILABLE', 'VAULT_LOCKED', 'INCOMPATIBLE_FORMAT'].includes(code));
+};
 
 /** The reason a live test could not exercise its provider, or `null` for a real failure. */
 export const liveUnavailableReason = (provider: string, error: unknown): string | null => {
   if (isMissingApiKeyError(error)) return error.message;
+  if (isVaultError(error)) return null;
   const refusal = classifyProviderAccessError(error);
   return refusal ? `provider refused ${provider}: ${refusal}` : null;
 };

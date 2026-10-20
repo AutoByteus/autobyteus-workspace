@@ -4,24 +4,21 @@ import {
   providerCredentialCatalog,
   type ProviderCredentialCatalog,
 } from "../catalog/provider-credential-catalog.js";
-import {
-  decryptSecretEntry,
-  encryptSecretEntry,
-  SECRET_VAULT_NONCE_BYTES,
-  SECRET_VAULT_TAG_BYTES,
-} from "../crypto/secret-vault-crypto.js";
-import type { SecretConsumerIdentity, SecretId } from "../domain/secret-id.js";
+import { readSecretEntry } from "autobyteus-ts/secrets/vault/read-secret-entry.js";
+import { encryptSecretEntry } from "autobyteus-ts/secrets/vault/secret-vault-crypto.js";
+import type { SecretConsumerIdentity } from "../domain/secret-id.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 import {
   SecretVaultError,
   type SecretStorageState,
   type SecretVaultHealth,
-} from "../domain/secret-vault-types.js";
-import type { SecretVaultStore } from "../persistence/secret-vault-store.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-types.js";
+import type { SecretVaultStore } from "autobyteus-ts/secrets/vault/secret-vault-store.js";
 import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
-} from "../persistence/secret-vault-persistence-types.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-records.js";
 
 export type SecretOperationEvent = {
   operation:
@@ -110,34 +107,17 @@ export class SecretManagementService {
     const id = this.authorize(consumer);
     this.requireReady();
     return this.withEvent("RESOLVE", async () => {
-      const record = await this.store.readEntry(id);
-      if (!record) throw new SecretVaultError("NOT_FOUND", false, "SECRET_NOT_FOUND");
-      if (
-        record.nonce.length !== SECRET_VAULT_NONCE_BYTES
-        || record.authenticationTag.length !== SECRET_VAULT_TAG_BYTES
-      ) {
-        this.markCorrupt();
-      }
-      let plaintext: Buffer;
       try {
-        plaintext = decryptSecretEntry(
+        return await readSecretEntry(
+          this.store,
           this.rootKey as Buffer,
-          (this.metadata as SecretVaultMetadataRecord).encryptionDomainId,
+          this.metadata as SecretVaultMetadataRecord,
           id,
-          {
-            nonce: record.nonce,
-            ciphertext: record.ciphertext,
-            authenticationTag: record.authenticationTag,
-          },
-          (this.metadata as SecretVaultMetadataRecord).encryptionFormatVersion,
         );
-      } catch (cause) {
-        this.markCorrupt(cause);
-      }
-      try {
-        return SecretValue.fromString(plaintext.toString("utf8"));
-      } finally {
-        plaintext.fill(0);
+      } catch (error) {
+        // A malformed or undecryptable stored entry marks the vault CORRUPT (by code).
+        if ((error as { code?: unknown }).code === "CORRUPT_VAULT") this.markCorrupt(error);
+        throw error;
       }
     });
   }

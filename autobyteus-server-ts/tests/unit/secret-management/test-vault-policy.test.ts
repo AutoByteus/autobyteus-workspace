@@ -1,21 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { MissingApiKeyError } from 'autobyteus-ts';
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from '../../../src/secret-management/provisioning/local-import-credential-alias-registry.js';
-import { TEST_VAULT_SETTING_NAME as SERVER_SETTING_NAME } from '../../../src/secret-management/test-vault/test-vault-location.js';
+import { TEST_VAULT_SETTING_NAME } from 'autobyteus-ts/secrets/test-vault-setting.js';
 import {
   captureTestVaultSelection,
   capturedTestVaultSetting,
   isCredentialEnvironmentName,
   liveUnavailableReason,
   stripCredentialEnvironment,
-  TEST_VAULT_SETTING_NAME,
 } from '../../../../test-support/test-vault/test-vault.js';
 
 describe('test-vault test policy', () => {
-  it('names the same selector as the server', () => {
-    expect(TEST_VAULT_SETTING_NAME).toBe(SERVER_SETTING_NAME);
-  });
-
   it('treats every importer credential alias as a credential variable', () => {
     for (const alias of LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES) expect(isCredentialEnvironmentName(alias)).toBe(true);
     expect(isCredentialEnvironmentName('RUN_DEEPSEEK_E2E')).toBe(false);

@@ -7,9 +7,9 @@ import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
-import { secretId } from '../../../src/secret-management/domain/secret-id.js';
+import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import { SecretVaultRepository } from '../../../src/secret-management/persistence/secret-vault-repository.js';
-import { SecretRootKeyFile } from '../../../src/secret-management/root-key/secret-root-key-file.js';
+import { SecretRootKeyFile } from 'autobyteus-ts/secrets/vault/secret-root-key-file.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
 
 const TABLES = `

@@ -1,21 +1,18 @@
-import fs from "node:fs";
-import { SecretVaultBootstrap } from "../bootstrap/secret-vault-bootstrap.js";
-import { SecretVaultError } from "../domain/secret-vault-types.js";
-import { ReadOnlySecretVaultStore } from "../persistence/read-only-secret-vault-store.js";
-import { SecretManagementService } from "../services/secret-management-service.js";
+import { openVerifiedTestVault } from "autobyteus-ts/secrets/vault/open-test-vault.js";
+import { READY_SECRET_VAULT_HEALTH } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import {
   currentPathPolicyEnvironment,
-  resolveTestVaultLocation,
-  TEST_VAULT_SETUP_COMMAND,
   type PathPolicyEnvironment,
   type TestVaultLocation,
-} from "./test-vault-location.js";
+} from "autobyteus-ts/secrets/vault/test-vault-location.js";
+import { SecretManagementService } from "../services/secret-management-service.js";
 
 /*
- * The read-only entry to the test vault. It is loaded by the server runtime,
- * by `pnpm test-vault status` and by test setups that have no server database
- * (autobyteus-ts), so it must never load Prisma, the vault runtime, migrations
- * or the importer.
+ * The server's read-only entry to the test vault (runtime test source,
+ * `pnpm test-vault status`): the autobyteus-ts verified opener (location policy,
+ * read-only store, verification) with the server's `SecretManagementService`
+ * on top, so product lookups keep their authorization and events. It must
+ * never load Prisma, the vault runtime, migrations or the importer.
  */
 
 export type ReadOnlyTestVault = Readonly<{
@@ -25,66 +22,27 @@ export type ReadOnlyTestVault = Readonly<{
   close(): void;
 }>;
 
-const exists = (candidate: string): boolean => {
-  try {
-    fs.lstatSync(candidate);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
 /**
- * Opens the test vault in `directory` read-only and verifies it.
- *
- * Throws `SecretVaultError` and opens nothing when the location is invalid
- * (`TEST_VAULT_LOCATION_INVALID`) or forbidden (`TEST_VAULT_LOCATION_FORBIDDEN`),
- * when the database or key file is missing (`TEST_VAULT_NOT_FOUND`), or when
- * verification is not READY (`TEST_VAULT_UNAVAILABLE`).
+ * Opens the test vault in `directory` read-only and verifies it; throws
+ * `SecretVaultError` with the `TEST_VAULT_*` codes of `openVerifiedTestVault`.
  */
 export const openReadOnlyTestVault = async (
   directory: string,
   policy: PathPolicyEnvironment = currentPathPolicyEnvironment(),
 ): Promise<ReadOnlyTestVault> => {
-  const location = resolveTestVaultLocation(directory, policy);
-  if (!exists(location.databasePath) || !exists(location.rootKeyPath)) {
-    throw new SecretVaultError("TEST_VAULT_NOT_FOUND", false, "TEST_VAULT_NOT_FOUND", {
-      detail: `no test vault in ${location.directory}; run ${TEST_VAULT_SETUP_COMMAND}`,
-    });
-  }
-
-  let store: ReadOnlySecretVaultStore;
-  try {
-    store = ReadOnlySecretVaultStore.open(location.databasePath);
-  } catch (cause) {
-    throw unavailable(location, cause instanceof SecretVaultError ? cause.instructionCode : "SECRET_VAULT_UNAVAILABLE", cause);
-  }
-  const verified = await SecretVaultBootstrap.verifyEstablished(store, location.databaseLocation);
-  if (verified.health.state !== "READY") {
-    store.close();
-    throw unavailable(location, verified.health.instructionCode);
-  }
+  const vault = await openVerifiedTestVault(directory, policy);
   const service = new SecretManagementService(
-    store,
-    verified.rootKey,
-    verified.metadata,
-    verified.health,
+    vault.store,
+    vault.rootKey,
+    vault.metadata,
+    READY_SECRET_VAULT_HEALTH,
   );
   return Object.freeze({
-    location,
+    location: vault.location,
     service,
     close: () => {
       service.close();
-      store.close();
+      vault.close();
     },
   });
 };
-
-const unavailable = (
-  location: TestVaultLocation,
-  healthInstruction: string,
-  cause?: unknown,
-): SecretVaultError => new SecretVaultError("TEST_VAULT_UNAVAILABLE", false, "TEST_VAULT_UNAVAILABLE", {
-  cause,
-  detail: `test vault ${location.directory} cannot be used (${healthInstruction})`,
-});

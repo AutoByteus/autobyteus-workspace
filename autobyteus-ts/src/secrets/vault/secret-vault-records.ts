@@ -1,4 +1,4 @@
-import type { SecretId } from "../domain/secret-id.js";
+import type { SecretId } from "./secret-id.js";
 
 export type SecretVaultMetadataRecord = {
   encryptionDomainId: Buffer;

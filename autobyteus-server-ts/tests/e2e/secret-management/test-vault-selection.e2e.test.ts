@@ -6,7 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
-import { secretId } from '../../../src/secret-management/domain/secret-id.js';
+import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import { getSecretVaultRuntime } from '../../../src/secret-management/secret-vault-runtime.js';
 import {
   createSanitizedTestEnvironment,
@@ -19,7 +19,8 @@ import {
   testRuntimeRoot,
 } from '../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
 import { closeLiveServerVault, initializeLiveServerVault } from '../../../../test-support/test-vault/live-server-vault.js';
-import { captureTestVaultSelection, TEST_VAULT_SETTING_NAME } from '../../../../test-support/test-vault/test-vault.js';
+import { TEST_VAULT_SETTING_NAME } from 'autobyteus-ts/secrets/test-vault-setting.js';
+import { captureTestVaultSelection } from '../../../../test-support/test-vault/test-vault.js';
 
 /*
  * The test vault selected like a database (REQ-005, REQ-007, REQ-016):

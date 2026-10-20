@@ -35,7 +35,7 @@ mutation or reorder that terminal append.
 - Unit tests live in `autobyteus-ts/tests/unit/...`.
 - Integration tests live in `autobyteus-ts/tests/integration/...`.
 - Runner: `pnpm exec vitest --run <test-paths>`.
-- Credentials: tests never read provider keys from `.env` files or the environment; `tests/setup.ts` deletes inherited `*_API_KEY` variables. Live provider tests run with `RUN_LIVE_PROVIDER_TESTS=1` and `AUTOBYTEUS_TEST_VAULT` (the test vault becomes the default key resolver); see [TESTING.md](../../TESTING.md#test-vault).
+- Credentials: tests never read provider keys from `.env` files or the environment; `tests/setup.ts` deletes inherited `*_API_KEY` variables. Clients built without a key resolver read the test vault named by `AUTOBYTEUS_TEST_VAULT` (see [LLM Module Design, key resolution](llm_module_design_nodejs.md#key-resolution)); Vitest keeps the variable only with `RUN_LIVE_PROVIDER_TESTS=1`. See [TESTING.md](../../TESTING.md#test-vault).
 - Policy: tests are migrated from Python to preserve behavior and coverage; avoid dummy tests.
 - If integration tests are blocked by unmigrated dependencies or external services, mark them as **Deferred** in `MIGRATION_PROGRESS.md` with a reason.
 

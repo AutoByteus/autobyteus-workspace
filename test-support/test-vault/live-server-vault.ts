@@ -1,7 +1,9 @@
 import type { TestContext } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../autobyteus-server-ts/src/config/application-database-location.js';
 import { appConfigProvider } from '../../autobyteus-server-ts/src/config/app-config-provider.js';
-import { secretId } from '../../autobyteus-server-ts/src/secret-management/domain/secret-id.js';
+import { disableEnvironmentProviderApiKeySource } from '../../autobyteus-ts/src/secrets/provider-api-key-resolver.js';
+import { TEST_VAULT_SETTING_NAME } from '../../autobyteus-ts/src/secrets/test-vault-setting.js';
+import { secretId } from '../../autobyteus-ts/src/secrets/vault/secret-id.js';
 import {
   getSecretVaultRuntime,
   resetSecretVaultRuntimeForTests,
@@ -10,9 +12,9 @@ import {
   selectSecretVaultSource,
   type SecretVaultSource,
 } from '../../autobyteus-server-ts/src/secret-management/secret-vault-source.js';
-import { TEST_VAULT_SETUP_COMMAND } from '../../autobyteus-server-ts/src/secret-management/test-vault/test-vault-location.js';
+import { TEST_VAULT_SETUP_COMMAND } from '../../autobyteus-ts/src/secrets/vault/test-vault-location.js';
 import { LIVE_STRICT_GATE } from './live-provider-test.js';
-import { capturedTestVaultSetting, TEST_VAULT_SETTING_NAME } from './test-vault-selection.js';
+import { capturedTestVaultSetting } from './test-vault-selection.js';
 
 /*
  * The vault of an in-process server live suite. Only gated live suites (and
@@ -48,6 +50,8 @@ const testRunVaultTarget = (): LiveServerVaultTarget => {
 export const initializeLiveServerVault = async (
   target: LiveServerVaultTarget = testRunVaultTarget(),
 ): Promise<SecretVaultSource> => {
+  // As at server startup: the server's vault is the only key source in this process.
+  disableEnvironmentProviderApiKeySource();
   await resetSecretVaultRuntimeForTests();
   const source = selectSecretVaultSource({
     testVaultSetting: capturedTestVaultSetting(),

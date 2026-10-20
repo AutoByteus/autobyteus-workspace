@@ -16,15 +16,18 @@ export type SecretVaultErrorCode =
   | "CORRUPT_VAULT"
   | "CORRUPT_STORED_VALUE"
   | "READ_ONLY"
+  | "PROVIDER_UNKNOWN"
   | "TEST_VAULT_LOCATION_INVALID"
   | "TEST_VAULT_LOCATION_FORBIDDEN"
   | "TEST_VAULT_NOT_FOUND"
   | "TEST_VAULT_UNAVAILABLE";
 
 export class SecretVaultError extends Error {
+  /** Value-free guidance (a location, a command, a provider), when given. */
+  readonly detail: string | undefined;
+
   /**
-   * The message is the instruction code. `detail` adds value-free guidance
-   * (a location, a command) to it, for errors that stop startup.
+   * The message is the instruction code, followed by `detail` when given.
    */
   constructor(
     readonly code: SecretVaultErrorCode,
@@ -36,6 +39,7 @@ export class SecretVaultError extends Error {
       options?.detail ? `${instructionCode}: ${options.detail}` : instructionCode,
       options?.cause === undefined ? undefined : { cause: options.cause },
     );
+    this.detail = options?.detail;
     this.name = "SecretVaultError";
   }
 

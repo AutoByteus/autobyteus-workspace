@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MissingApiKeyError, SecretValue } from 'autobyteus-ts';
 import { SecretManagementProviderApiKeyResolver } from '../../../src/secret-management/resolution/secret-management-provider-api-key-resolver.js';
-import { SecretVaultError } from '../../../src/secret-management/domain/secret-vault-types.js';
+import { SecretVaultError } from 'autobyteus-ts/secrets/vault/secret-vault-types.js';
 
 describe('SecretManagementProviderApiKeyResolver', () => {
   it.each([

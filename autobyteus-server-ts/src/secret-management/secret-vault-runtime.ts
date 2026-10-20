@@ -1,11 +1,11 @@
 import { createServerLogger } from "../logging/server-app-logger.js";
 import { SecretVaultBootstrap } from "./bootstrap/secret-vault-bootstrap.js";
-import { SecretVaultError, type SecretVaultHealth } from "./domain/secret-vault-types.js";
+import { SecretVaultError, type SecretVaultHealth } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import { SecretVaultRepository } from "./persistence/secret-vault-repository.js";
 import type { SecretVaultSource } from "./secret-vault-source.js";
 import { SecretManagementService } from "./services/secret-management-service.js";
 import { openReadOnlyTestVault } from "./test-vault/read-only-test-vault.js";
-import { TEST_VAULT_SETTING_NAME } from "./test-vault/test-vault-location.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 
 /** Where the runtime announces which vault it opened (location only). */
 export type SecretVaultAnnouncer = Readonly<{

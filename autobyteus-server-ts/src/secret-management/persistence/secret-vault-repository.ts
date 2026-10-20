@@ -2,7 +2,7 @@ import {
   runInTransaction,
   type RunInTransactionOptions,
 } from "repository_prisma";
-import type { SecretId } from "../domain/secret-id.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 import { SecretEncryptionMetadataRepository } from "./secret-encryption-metadata-repository.js";
 import { SecretEntryRepository } from "./secret-entry-repository.js";
 import type {
@@ -10,8 +10,8 @@ import type {
   SecretVaultBatchResult,
   SecretVaultDomainIdentity,
   SecretVaultMetadataRecord,
-} from "./secret-vault-persistence-types.js";
-import type { SecretVaultStore } from "./secret-vault-store.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-records.js";
+import type { SecretVaultStore } from "autobyteus-ts/secrets/vault/secret-vault-store.js";
 
 const INITIALIZATION_TRANSACTION_OPTIONS = {
   maxWait: 2_000,

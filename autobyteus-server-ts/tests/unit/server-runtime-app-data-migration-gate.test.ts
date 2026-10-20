@@ -29,6 +29,7 @@ const mocks = vi.hoisted(() => {
       packageRegistryService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
+    disableEnvironmentKeySource: vi.fn(),
     shutdownPrisma: vi.fn(async () => undefined),
     runDatabaseMigrations: vi.fn(),
     assertTokenUsageCurrentSchema: vi.fn(async () => undefined),
@@ -44,6 +45,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 
+vi.mock("autobyteus-ts/secrets/provider-api-key-resolver.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("autobyteus-ts/secrets/provider-api-key-resolver.js")>(),
+  disableEnvironmentProviderApiKeySource: mocks.disableEnvironmentKeySource,
+}));
 vi.mock("repository_prisma", async (importOriginal) => ({
   ...await importOriginal<typeof import("repository_prisma")>(),
   initializePrisma: mocks.initializePrisma,
@@ -172,6 +177,10 @@ describe("Studio readable-provider migration startup gate", () => {
         datasourceUrl: "file:/tmp/server-runtime-gate/test.db",
       });
       expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
+      // AC-018: the server owns its vault; the autobyteus-ts environment default is off first.
+      expect(mocks.disableEnvironmentKeySource).toHaveBeenCalledTimes(1);
+      expect(mocks.disableEnvironmentKeySource.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.runDatabaseMigrations.mock.invocationCallOrder[0]!);
       expect(mocks.initializeSecretVault).toHaveBeenCalledWith({
         kind: "application",
         location: expect.objectContaining({ databasePath: "/tmp/server-runtime-gate/test.db" }),

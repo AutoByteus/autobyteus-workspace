@@ -8,8 +8,8 @@ import { ApplicationDatabaseLocation } from '../../../src/config/application-dat
 import {
   createVaultVerifier,
   SECRET_VAULT_ENCRYPTION_FORMAT_VERSION,
-} from '../../../src/secret-management/crypto/secret-vault-crypto.js';
-import { secretId } from '../../../src/secret-management/domain/secret-id.js';
+} from 'autobyteus-ts/secrets/vault/secret-vault-crypto.js';
+import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import { SecretVaultInspectionService } from '../../../src/secret-management/services/secret-vault-inspection-service.js';
 
 const TABLES = `
