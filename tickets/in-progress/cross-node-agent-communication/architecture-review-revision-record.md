@@ -12,6 +12,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-004 | Round 4 / SR-015 answers ARCH-REV-003 | SR-014, SR-015 | Fail | Pass | AR-005 … AR-007 resolved |
 | ARCH-REV-005 | Round 5 / the user's direction: remaining problems become findings | SR-015 | Pass | Fail | AR-008, AR-009 (new; AR-009 promotes N-12, N-13) |
 | ARCH-REV-006 | Round 6 / SR-016 answers ARCH-REV-005 | SR-016 | Fail | Pass | AR-008, AR-009 resolved |
+| ARCH-REV-007 | Round 7 / SR-017 from CRR-005 (API/E2E F-002) | SR-017 | Pass | Pass | None new; N-15, N-16; FU-004 |
 
 ## Revision Entries
 
@@ -155,6 +156,28 @@ None.
 | AR-001 … AR-007 | Resolved | Resolved (unchanged) | — | — |
 
 - New or remaining finding IDs: none blocking. N-14 is a text correction (the lifecycle "unchanged" sentence; the DS-001 narrative before SR-014).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: MP-004; RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.
+
+### ARCH-REV-007 — Round 7: package validators accept remote message endpoints (F-002); Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication/design-review-report.md`
+- Review round and trigger: round 7; the Solution Designer's SR-017 (commit `b9f630de6ba09c002ee876463c49b0866f07fdb2`). It comes from the code reviewer's failure-origin review CRR-005 of API/E2E F-002: after a restart, a Team or Org package holding a delegator ↔ remote message is rejected by the admission scan and the state loaders, so replies are refused and the run can't be reopened.
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 6; `code-review-report.md` CRR-005; API/E2E F-002 (`evidence/api-e2e/API-13-F002-*.log`).
+- Relevant solution revision IDs: SR-017
+- Prior authoritative decision: `Pass` (ARCH-REV-006)
+- Current authoritative decision: `Pass`
+- What changed in the review result: the design's AR-001 walker table lacked the package-state validators. The round-1 review that asked for the table had the same gap: it inventoried walkers of `taskExecutions`, not consumers of the stored message view that cross-check endpoints against the index. SR-017's response was verified against the code. I also searched every non-migration lookup of a message endpoint in an index; none other asserts membership. Added: N-15 (local-data equality test), N-16 (name the message-consumer rule and the CR-001 exclusion in the table), and FU-004.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 (walker inventory) | Resolved | Resolved, extended | SR-017; walker-table row "Package-state validation" | The validators use `agentRunIdsOfTree` (own parts + task agents + remote links), keep distinct endpoints, and add "one endpoint local"; the index stays local-only; the guard test is extended |
+| AR-002 … AR-009 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: none blocking. N-15 and N-16 are notes; FU-004 is a follow-up.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: MP-004; RSK-101, RSK-103, RSK-106 (FU-002), RSK-107, RSK-108.

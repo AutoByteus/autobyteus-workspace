@@ -261,3 +261,11 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - Sections changed: the walker table, the guard paragraph, the guard tests, the file mapping and the escalation trigger. Evidence A-16.
 - Intended behavior changed: `No`.
 - Route: a revised Large/High package → architecture review (handoff rule), then implementation, then the code reviewer's targeted source review, then the full two-server E2E plus API-21/API-22.
+
+#### Review note — ARCH-REV-007 Pass (2026-10-20)
+
+- The architecture reviewer passed SR-017 (commit `b9f630de6b`) as ARCH-REV-007. Large / High. It handed off to `/software_engineering_team/implementation_engineer`.
+- Applied the same day (editorial, design-spec walker table):
+  - N-16: the rule "consumers of the stored message view take endpoints from `agentRunIdsOfTree`, never the index", plus a row for the CR-001 exclusion in `public-message-scope.ts` (S3);
+  - N-15: the guard-test assertion `agentRunIdsOfTree` = the index agent set for local-only trees.
+- FU-004 (the reviewer's; pre-existing, not urgent: the migration `agent-org-history-first-message-summary-v1` imports the current Org validator) is in `follow-ups.md`. It is sent when the ticket leaves the team, together with FU-002 and FU-003.

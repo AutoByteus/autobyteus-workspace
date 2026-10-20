@@ -5,21 +5,28 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved; SR-004, SR-005, SR-007; unchanged in SR-013)
 - Upstream Investigation Notes: `…/investigation-notes.md` (SR-013; S-01 … S-15, A-01 … A-15, P-1 … P-5)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-013)
-- Reviewed Design Spec: `…/design-spec.md` at commit `213a5d9668e80fbf89691e27cf5a01c37dfb8025` (SR-016; includes SR-014 and SR-015)
+- Reviewed Design Spec: `…/design-spec.md` at commit `b9f630de6ba09c002ee876463c49b0866f07fdb2` (SR-017; includes SR-014 … SR-016)
 - Supplemental Task Artifacts Reviewed: `slice-plan.md`, `follow-ups.md`, contract draft `autobyteus-server-ts/docs/design/collaboration_model.md`, `handoff-architecture-review.md` § Round 2
-- Relevant Solution Revision IDs: SR-011 … SR-016
+- Relevant Solution Revision IDs: SR-011 … SR-017
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: 6
-- Trigger: the Solution Designer's SR-016 (commit `213a5d9668`), answering ARCH-REV-005 (AR-008, AR-009)
-- Prior Review Round Reviewed: round 5 (`ARCH-REV-005`, `Fail`)
-- Latest Authoritative Round: 6
+- Current Architecture Review Revision ID: `ARCH-REV-007`
+- Current Review Round: 7
+- Trigger: the Solution Designer's SR-017 (commit `b9f630de6b`): a revised design from the code reviewer's failure-origin review CRR-005 of API/E2E finding F-002. Team and Org package validators reject stored delegator ↔ remote messages, because they check endpoints against the local-only index.
+- Prior Review Round Reviewed: round 6 (`ARCH-REV-006`, `Pass`)
+- Latest Authoritative Round: 7
 - Current-State Evidence Basis: the round-1 code reading (still valid; SR-013 changed documents only), plus these round-2 checks:
   - `run-history/store/task-execution-tree-split.ts` (`splitTaskExecutions` keeps on-disk entries it did not load, in place; `composeTreeFile` / `agentRunIdsOfTree`);
   - `agent-collaboration/execution/task/root-task-execution-resource-scope.ts` (`releaseTaskExecutions`; `NO_AUTHORITY` counts as stopped);
   - `agent-execution/services/agent-run-provisioning-service.ts` (prepared-run TTL 24 h; `cleanupStalePreparedRuns` skips started runs);
   - `agent-execution/services/standalone-agent-run-eligibility.ts`;
   - `run-history/services/agent-run-history-catalog-service.ts:97` (how prepared runs are detected).
+- Round-7 checks (code at `b9f630de6b`, implementation `31d46978ad`):
+  - `run-history/services/team-run-state-package-validator.ts:23-26` and `agent-org-execution/services/agent-org-state-package-validator.ts:20-22` call `index.requireAgent` on both message endpoints (the F-002 cause, confirmed);
+  - `run-history/services/root-run-package-current-validator.ts:163,195` (the admission scan calls both);
+  - `task-execution-tree-split.ts:303-313` `agentRunIdsOfTree` (own parts + task agents + `shape.remoteLinks`, `?? []` in each shape);
+  - the three message stores compose the stored view with that set (standalone adds the back-link endpoint, `standalone-root-package-store.ts:81`);
+  - every non-migration lookup of a message endpoint in an index: the two validators; Org delivery (skips a remote sender, `agent-org-run-message-delivery.ts:178`); standalone presentation (`getAgent`, tolerant, `standalone-root-message-delivery.ts:236`); `public-message-scope.ts` (filters remote-endpoint messages out of the root view stream, CR-001);
+  - the callers of the validators among migrations (`agent-org-history-first-message-summary-v1` imports the *current* Org validator; the others import released copies).
 - Round-4 checks: `agent-collaboration/execution/task/root-task-dispatch.ts` (`dispatchTaskCopy`: `planActivation` → `linkNewTaskExecution` → queue `beginActivation` → `prepare` → `commit` → `acceptSeed` → `markStarted`; failure path `markFailed`); `agent-run-history-catalog-service.ts` (`recordPreparedRun` writes a history row for a prepared run). SR-015 notes that an implementation of steps 0 … 7 already exists (code review CRR-002) and is to be brought in line with this design; the code review checks it.
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/tickets/in-progress/cross-node-agent-communication`
@@ -229,7 +236,7 @@ None.
 
 ## Review Decision
 
-`Pass`. AR-001 … AR-009 are resolved. The remote send sequence now has one shared owner (`RemoteMessageSend`); the roots keep only routing and their root-specific wake. The existing-copy refusal is checked once in the shared lifecycle, and the summary sections match the authoritative ones. Two leftover sentences (N-14) are text corrections and do not block. The design is ready for implementation.
+`Pass`. SR-017 closes the gap F-002 exposed: one consumer category, the package-state validators, was missing from the AR-001 walker table. The round-1 review that asked for that table missed it too; it inventoried walkers of `taskExecutions`, not consumers of the stored message view that cross-check endpoints against the index. The response stays inside the AR-001 ownership: the index stays local-only, the two validators take endpoints from the store-owned set `agentRunIdsOfTree` (the same set that composes the stored view), they keep the distinct-endpoints check, and they add "at least one endpoint is a local agent". The change is bounded to the two validators. I found no other consumer that asserts index membership of a stored message endpoint. Two non-blocking notes (N-15, N-16) and one pre-existing follow-up (FU-004). The design is ready for implementation.
 
 ## Findings
 
@@ -239,7 +246,18 @@ None blocking. AR-001 … AR-004 resolved in ARCH-REV-002; AR-005 … AR-007 res
 - AR-006 (resolved): `RemoteEndpoint` kinds `delegated_run` (delegator-only pair rule, chain `[{agentRunId}]`, existing-copy refusal, closure fence) and `delegator` (host-only pair rule, chain `[]`, `coordinatingRun` on transmit, the work packet). `RemoteRunLinks` keeps only membership and `deliver`. DS-001 moved to its own owner, `RemoteDelegation`.
 - AR-007 (resolved): an explicit `fenced_remote` result at `releaseTaskExecutions`: no release is invoked, the text is truthful, and it is the S3 hook for "stop on the peer". It replaces N-9.
 
-None blocking. Resolved in ARCH-REV-006:
+None blocking (round 7). SR-017 is accepted:
+- The walker-table row "Package-state validation (admission scan, Team/Org state loaders): Include as message endpoints" is correct and bounded.
+- The single-reader rule is restated: `RemoteRunLinks` is the only reader of `remoteTaskExecutions` outside the store, and `agentRunIdsOfTree` is the one owner of the message-endpoint set. This is the right owner: the validators must accept exactly what the store composes.
+- The extended guard test per root kind (a stored delegator ↔ remote message passing admission and restore) covers the F-002 path.
+
+### Round-7 notes (non-blocking)
+
+- N-15, local data unchanged (AC-112 / QR-105): for a tree without remote links, `agentRunIdsOfTree` must equal the index's agent set, so validation of every existing local package is unchanged. Add that equality to the guard test per root kind (a tree with configured members, a task Agent and a task Team), so a later divergence between the index and the set cannot silently widen or narrow admission.
+- N-16, name the rule for message consumers in the walker table: consumers of the stored message view take endpoints from `agentRunIdsOfTree`, never from the index. Record the current exclusion as its own row too: `public-message-scope.ts` keeps remote-endpoint messages out of the root view stream (CR-001, S3). S3's run tree then has an explicit rule to follow.
+- FU-004 (follow-up, pre-existing, outside this ticket): the released migration `agent-org-history-first-message-summary-v1` imports the current `validateAgentOrgStatePackage` instead of a released copy (the other migrations use copies under `app-data-migrations/legacy/…`). SR-017's change is safe for it: it runs over pre-remote data, and `remoteLinks` reads `?? []`. Still, a migration that depends on current validation code changes whenever that code changes (principle 5: historical-schema knowledge stays in the migration).
+
+Resolved in ARCH-REV-006:
 - AR-008 (resolved): `RemoteMessageSend` (`remote-message-send.ts`, one per root, built with the root's engine and links) owns pair rule → `prepareRemoteSend` → `deliver` → `commitSentToRemote` and its refusals. Each root keeps one routing line. Inbound stays per root only for the wake, using the shared `inboundEndpoint` and `acceptFromRemote`. The existing-copy refusal is checked once in `RootTaskExecutionLifecycle.assignToExistingCopy`, after `resolveAssignment` (a read) and before `resolveExistingCopy` or any Task change, through `RemoteEndpointLookup.isRemoteEndpoint`. Tests: shared sequence, shared refusal, routing per root kind.
 - AR-009 (resolved): the DS-002/DS-003/DS-005 narratives, § Spine Actors and the ownership map are aligned. Remote planning is stated once (root adapters delegate to `RemoteDelegation`, the only caller of `startDelegatedRun`).
 
@@ -323,7 +341,7 @@ N/A (Pass).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer (including N-14).
+Implementation Engineer (`/software_engineering_team/implementation_engineer`), for the bounded validator change and the extended guard test; informational notice to the Solution Designer (N-15, N-16, FU-004).
 
 ## Residual Risks
 
@@ -338,4 +356,4 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: classification `Large` / `High`. Design at commit `213a5d9668` (SR-016). AR-001 … AR-009 are resolved. N-14 is a text correction. Residual: MP-004, RSK-106 (FU-002), RSK-107.
+- Notes: classification `Large` / `High`. Design at commit `b9f630de6b` (SR-017). AR-001 … AR-009 are resolved, and the F-002 consumer category is added. N-15 and N-16 are non-blocking; FU-004 is recorded. Residual: MP-004, RSK-106 (FU-002), RSK-107.
