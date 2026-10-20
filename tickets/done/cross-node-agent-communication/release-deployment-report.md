@@ -220,11 +220,11 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 
 ### Post-Finalization Cleanup
 
-- Dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`: **held** (correction to the first version of this record, which said no process was running).
-  - Two isolated desktop instances of API-23b run from its `autobyteus-web/electron-dist/` build (debug ports 56211 and 56346, started about 1 h 50 min before finalization). These are the windows the user watched.
-  - Removing the worktree would delete the files under them, so it waits for the user to close them or let delivery stop them.
-  - Everything tracked is pushed.
-- Local branches `codex/cross-node-agent-communication-r2` and `finalize/cross-node-agent-communication`: deleted after the record's push.
+- Dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2`: `Completed`. It was removed with `git worktree remove --force` right after this record's push. Prune: `Completed`.
+  - It was briefly held: two isolated desktop instances of API-23b were running from its `autobyteus-web/electron-dist/` build (debug ports 56211 and 56346), and the first version of this record wrongly said nothing was running.
+  - The user stopped both on 2026-10-20. Delivery then confirmed that no process ran from the worktree.
+  - Everything tracked was pushed. The untracked `*/dist/` and `electron-dist/` build output went with the worktree.
+- Local branches `codex/cross-node-agent-communication-r2` (`930112e7b2`, contained in `origin/personal`) and `finalize/cross-node-agent-communication`: `Completed`, deleted with the worktree.
 - Remote ticket branch: kept on `origin`, as on earlier tickets (`Not required`).
 - Delivery temporaries:
   - `/tmp/dr001-base` and `/tmp/dr001-branch` were removed and pruned during DR-001;
@@ -235,7 +235,7 @@ Revert the merge on `personal` and cut a new release (`RELEASE.md` § Rollback).
 - Verification complete: `Yes`. AC-101 … AC-112 from the evidence; AC-113 by the user's confirmation, 2026-10-20.
 - Repository finalization complete: `Yes` (`d51ef843f6` on `personal`).
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`).
-- Applicable safe cleanup complete or not required: `No`. The worktree and local branches wait for the two running desktop instances (above); the result is reported in the terminal message.
+- Applicable safe cleanup complete or not required: `Yes`. The worktree and local branches were removed after the user stopped the desktop instances. The remote ticket branch is kept.
 - Unresolved blocker: `None`.
 - Successful terminal package eligible for return: `Yes`.
-- Terminal package sent to the Solution Designer: sent after this record's push.
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push and the cleanup.
