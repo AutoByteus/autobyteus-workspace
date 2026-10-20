@@ -196,10 +196,12 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   `SECRET_VAULT_READ_ONLY`. A selected vault that is missing or unusable stops the server
   (`TEST_VAULT_NOT_FOUND`, `TEST_VAULT_UNAVAILABLE`); a server on the real
   `~/.autobyteus/server-data` ignores the variable.
-- **Live runs opt in; deterministic runs ignore it.** `autobyteus-ts` live tests need
-  `RUN_LIVE_PROVIDER_TESTS=1`; then `new XLLM(model, config)` and `LLMFactory.createLLM(id)` get
-  keys without a resolver (Gemini still takes its mode explicitly). Server live suites use
-  their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+- **Scripts need only the variable.** autobyteus-ts reads it itself: in a script run with
+  `node` or `tsx`, `new XLLM(model, config)` and `LLMFactory.createLLM(id)` get keys without a
+  resolver or setup code (Gemini still takes its mode explicitly).
+- **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
+  also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
+  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
   `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
 - **A missing key is never a pass.** It is reported as a skip with its reason
   (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;
