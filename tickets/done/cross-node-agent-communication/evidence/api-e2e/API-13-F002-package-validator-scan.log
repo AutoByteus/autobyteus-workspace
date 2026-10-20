@@ -1,0 +1,30 @@
+# API-13 F-002 probe 1: the server's root-package validator over alpha's memory after RC-01 … RC-07 | cmd: node /tmp/api-probe/scan.mjs <server>/dist <kept alpha>/memory (probe source below) | data: REMOTE_E2E_KEEP_DATA_DIR copy of a run of -t 'RC-0[1-7] ' | code 31d46978ad (HEAD 7383e89a0f), dist API-00 round 2 | 2026-10-20T15:55:57Z
+## probe source
+// Temporary probe (API/E2E, autobyteus-191): runs the server's current root-package validator over a kept test data root.
+const [dist, memoryDir] = process.argv.slice(2);
+await import(`${dist}/../node_modules/reflect-metadata/Reflect.js`).catch(() => undefined);
+const { RootRunPackageCurrentValidator } = await import(`${dist}/run-history/services/root-run-package-current-validator.js`);
+const snapshot = await new RootRunPackageCurrentValidator(memoryDir).scan();
+console.log(JSON.stringify({ admitted: snapshot.groups.map((g) => g.key), diagnostics: snapshot.diagnostics }, null, 2));
+## output
+{
+  "admitted": [
+    "agent:delegator_ab172d2d1b0b4ccfa936d31dbf83ca6c"
+  ],
+  "diagnostics": [
+    {
+      "rootSubjectKind": "agent_org",
+      "rootRunId": "remote_org_24af1edf2a314b22bb2ecbd4e6fd1499",
+      "packagePath": "/tmp/api-r2-keep/alpha/memory/agent_orgs/remote_org_24af1edf2a314b22bb2ecbd4e6fd1499",
+      "code": "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
+      "reason": "AgentRun 'publisher_aa210c7a117741ad9d0b4a8544524467' is not in AgentOrg 'remote_org_24af1edf2a314b22bb2ecbd4e6fd1499'."
+    },
+    {
+      "rootSubjectKind": "agent_team",
+      "rootRunId": "remote_squad_cb1a40e6d96f4711a17ed36ec82995dd",
+      "packagePath": "/tmp/api-r2-keep/alpha/memory/agent_teams/remote_squad_cb1a40e6d96f4711a17ed36ec82995dd",
+      "code": "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
+      "reason": "AgentRun 'publisher_9ce469abff8040bd99e5bfd80bfd3f4f' is not in root 'remote_squad_cb1a40e6d96f4711a17ed36ec82995dd'."
+    }
+  ]
+}

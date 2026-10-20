@@ -1,0 +1,24 @@
+# DEL-07 two-server E2E run 2 | same command and state | load average 130-157
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (20 tests) 188217ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  1778ms
+     ✓ RC-03 AC-101/102/103/111: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; publishing records launch settings  1609ms
+     ✓ RC-04 AC-103: before publishing a delegation is refused; after publishing it is evaluated; an Agent that cannot run there is refused; refusals leave nothing  1773ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  5620ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  9283ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  5549ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  5050ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  2405ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  10106ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  5549ms
+     ✓ RC-12 AC-106: the remote run on beta is shut down after the idle grace period and a follow-up restores it with its conversation  21859ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  41701ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  1669ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  54730ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  530ms
+     ✓ RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups  1870ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  891ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  762ms
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Duration  191.23s (transform 472ms, setup 283ms, import 639ms, tests 188.22s, environment 0ms)
+e2e exit=0

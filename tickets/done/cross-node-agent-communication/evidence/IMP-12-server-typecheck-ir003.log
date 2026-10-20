@@ -1,0 +1,5 @@
+# IMP-12 server typecheck after IR-003: pnpm -C autobyteus-server-ts typecheck; commit 31d46978ad; macOS, node v22.23.1; 2026-10-20T15:20:49Z
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

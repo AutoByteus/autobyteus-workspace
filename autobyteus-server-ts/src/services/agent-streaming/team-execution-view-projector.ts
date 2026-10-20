@@ -30,6 +30,13 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
 import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-projector.js";
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
+import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
+import { isPublicMessage } from "./public-message-scope.js";
+
+const agentsOf = (tree: TeamRunExecutionTreeSnapshot) => {
+  const index = new TeamExecutionIndex(tree);
+  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
+};
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
   const reference = projectTeamReferenceFile(ownerId, filePath, timestamp);
@@ -53,7 +60,7 @@ export const projectTeamExecutionViewSnapshot = (
     base_change_sequence: baseChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
-    messages: snapshot.messages.messages.map(projectCommunicationMessage),
+    messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))).map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
   },

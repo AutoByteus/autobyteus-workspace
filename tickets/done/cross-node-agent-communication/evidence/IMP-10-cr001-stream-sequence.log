@@ -1,0 +1,15 @@
+# IMP-10 CR-001 stream-sequence test, before and after the fix (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration/remote-message-view-sequence.test.ts
+# after: commit 744641b35c; before: the same test file with src/ from 37224bf2dc; macOS, node v22.23.1; 2026-10-20T14:29:03Z
+## after the fix (744641b35c)
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts (3 tests) 16ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+exit=0
+## before the fix (src/ files changed by 744641b35c restored from 37224bf2dc; same test file)
+     × Team root: no COMMUNICATION event for them; the member-input of the reply follows without a gap 8ms
+     × 'Agent root (standalone)': only the local messages are published, with consecutive sequences 2ms
+     × 'Org root': only the local messages are published, with consecutive sequences 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+exit=1

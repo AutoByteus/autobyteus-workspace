@@ -41,8 +41,8 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     this.initialMessages = options.initial.messages;
   }
   isOpen(): boolean { return this.isAccepting(); }
-  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
-    this.options.assertDeliveryAllowed(...identities);
+  assertDeliveryAllowed(...runIds: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+    this.options.assertDeliveryAllowed(...runIds);
   }
   isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
     return this.options.isCurrentAgent(identity);
@@ -74,12 +74,25 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     const receiverRun = await this.options.requireContainingTeamRun(agentRunId);
     return receiverRun.reserveDirectAgentInput(agentRunId, message);
   }
-  async commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
+  commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
+    return this.commitPlan(input, { inputMessage: input.inputMessage, reservation: input.reservation }, input.publishToRootView);
+  }
+
+  /** Not published to the team view, which shows messages between its own members. */
+  commitSentToRemote(input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0]) {
+    return this.commitPlan(input, null, false);
+  }
+
+  private async commitPlan(
+    input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0],
+    receiver: Parameters<typeof createTeamCommunicationMessageAppendPlan>[0]["receiver"],
+    publishToRootView: boolean,
+  ) {
     const plan = createTeamCommunicationMessageAppendPlan({
       rootTeamRunId: this.options.rootTeamRunId,
+      publishToRootView,
       message: input.message,
-      inputMessage: input.inputMessage,
-      reservation: input.reservation,
+      receiver,
       isAccepting: this.isAccepting,
       getCurrent: () => this.envelope(input.getCurrentMessages()),
       resolveLogOwners: () => messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),

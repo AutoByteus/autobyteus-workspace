@@ -285,6 +285,12 @@ with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-an
 `recipient_address` is therefore not required by the parameter schema; the
 parser requires exactly one mode.
 
+With `node` (the name of a registered peer node), the described mode starts the
+task agent on that node from the Agent it publishes at `recipient_address`; a
+`task_id` or `reference_files` with `node` is refused before anything is sent.
+The success result then also names `node`. Follow-ups use `send_message_to` by
+the returned run ID as usual. See [Remote Collaboration](remote_collaboration.md).
+
 The result is a strict union, also published as the MCP output schema
 (`anyOf`). It names every ID for what it is:
 

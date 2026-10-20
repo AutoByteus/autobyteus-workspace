@@ -16,12 +16,15 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
+  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
+  parseRemoteTaskAgentExecutions,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
   validateCopyLayouts,
+  validateRemoteTaskAgentExecutions,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
@@ -58,6 +61,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
+    ...parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 
@@ -78,6 +82,8 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
   }
   validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
   validateCopyLayouts([tree.rootTeam]);
+  validateRemoteTaskAgentExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
+    ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)]), tree.rootTeam.remoteTaskExecutions);
 };
 
 /**

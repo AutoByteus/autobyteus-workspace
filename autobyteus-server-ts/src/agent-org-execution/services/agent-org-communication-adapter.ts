@@ -31,8 +31,28 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     this.initialMessages = options.initial.messages;
   }
   isOpen(): boolean { return this.options.isOpen(); }
-  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
-    this.options.assertDeliveryAllowed(...identities);
+  assertDeliveryAllowed(...runIds: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+    this.options.assertDeliveryAllowed(...runIds);
+  }
+  /** The peer admitted the message: only the sender's log here; not published to the root's view. */
+  async commitSentToRemote(input: Parameters<RootCommunicationAdapter["commitSentToRemote"]>[0]) {
+    if (!this.options.isOpen() || input.getCurrentMessages().some((message) => message.messageId === input.message.messageId)) {
+      return Object.freeze({ committed: false as const, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." });
+    }
+    const next: AgentOrgCommunicationMessagesFile = Object.freeze({
+      schemaVersion: 1, subjectKind: "agent_org", orgRunId: this.root.rootRunId,
+      messages: Object.freeze([...input.getCurrentMessages(), input.message]),
+    });
+    return this.options.persistence.commitCommunication({
+      nextMessages: next,
+      message: input.message,
+      logOwners: messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
+      cancelBeforeDurability: () => undefined,
+      commitAfterDurability: () => {
+        input.commitMessages(next.messages);
+        this.options.replaceMessages(next);
+      },
+    });
   }
   isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
     return this.options.isCurrentAgent(identity);
@@ -67,7 +87,7 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
           const committed = input.reservation.commit();
           reservationCommitted = true;
           try {
-            this.options.publish(input.message);
+            if (input.publishToRootView) this.options.publish(input.message);
             this.options.presentCommittedMessage(input.message, input.inputMessage);
           } finally {
             committed.release();

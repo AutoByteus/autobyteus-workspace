@@ -11,6 +11,12 @@ import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-r
 import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import { StandaloneRootExecutionIndex } from "../../standalone-agent-run-root/services/standalone-root-execution-index.js";
+import { isPublicMessage } from "./public-message-scope.js";
+
+const agentsOf = (tree: StandaloneRootTreeSnapshot) => {
+  const index = new StandaloneRootExecutionIndex(tree);
+  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
+};
 
 /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
 export const projectAgentCollaborationView = (input: Readonly<{
@@ -26,7 +32,8 @@ export const projectAgentCollaborationView = (input: Readonly<{
     is_active: input.isActive,
     execution_tree: projectAgentCollaborationTree(input.snapshot.tree),
     closed_task_executions: input.snapshot.closedTaskExecutions,
-    communication_messages: input.snapshot.messages,
+    communication_messages: { ...input.snapshot.messages,
+      messages: input.snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(input.snapshot.tree))) },
     agent_input_states: input.snapshot.inputStates,
     agent_statuses: input.snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,

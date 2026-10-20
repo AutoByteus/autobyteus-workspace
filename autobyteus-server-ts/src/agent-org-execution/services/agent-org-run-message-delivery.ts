@@ -30,6 +30,10 @@ import type { TeamMemberExecutionCommand } from "../../agent-team-execution/doma
 import type { AgentOrgRecipientResolver } from "./agent-org-recipient-resolver.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
 import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
+import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
+import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 
 /**
  * The AgentOrg's message and delegation addressing, `@` mention resolution and child input
@@ -48,8 +52,41 @@ export class AgentOrgRunMessageDelivery {
     rootAgents: RootAgentExecutionRegistry;
     teams: RootTeamExecutionDirectory;
     publisher: RootEventPublisher<AgentOrgRunEvent>;
+    remoteLinks: RemoteRunLinks;
+    remoteDelegation: RemoteDelegation;
+    remoteSend: RemoteMessageSend;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
+
+  /**
+   * `send_message_to(run ID)` from an agent of this Org: the routing decision only. A remote endpoint goes to
+   * the shared remote send under the sender's live lease (never reactivated, S3); any other run ID through
+   * today's exact delivery.
+   */
+  deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
+    const sender = input.sender.identity;
+    const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
+    if (!endpoint) return this.options.taskExecutions.deliverToExactTarget(sender.agentRunId, input.targetAgentRunId, () => this.deliverToRunId(input));
+    this.options.authorizeIdentity(sender);
+    return this.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+  }
+
+  /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
+    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
+    if (!endpoint || !receiver) {
+      return Promise.resolve({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
+    }
+    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().acceptFromRemote({
+      message: input.message,
+      endpoint,
+      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
+      senderNodeName: input.fromNodeName,
+    }));
+  }
 
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
@@ -103,6 +140,10 @@ export class AgentOrgRunMessageDelivery {
   /** `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the shared resolution). */
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
+    if (input.node !== undefined) {
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node },
+        (local, placement) => this.options.taskExecutions.delegateToNewCopy(context, local, placement));
+    }
     return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
       this.options.taskExecutions.delegateToNewCopy(context, input, placement));
   }
@@ -133,7 +174,8 @@ export class AgentOrgRunMessageDelivery {
     // Admission already succeeded. Retained identities, not current liveness,
     // correlate this post-durable presentation consequence.
     const index = this.options.getIndex();
-    index.requireAgent(message.senderAgentRunId);
+    // A sender on a peer node is a linked remote endpoint, not an agent of this Org.
+    if (!this.options.remoteLinks.has(message.senderAgentRunId)) index.requireAgent(message.senderAgentRunId);
     const receiver = index.requireAgent(message.receiverAgentRunId);
     const identity = this.identityFor(receiver.agentRunId, receiver.address);
     const event = buildMemberInputPresentationEvent({

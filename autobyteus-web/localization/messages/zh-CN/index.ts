@@ -18,6 +18,7 @@ import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
+import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import projectMessages from './projects';
@@ -54,6 +55,7 @@ const zhCnMessages: TranslationCatalog = {
   ...packageMigrationSettingsMessages,
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
+  ...remoteCollaborationSettingsMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
   ...projectMessages,

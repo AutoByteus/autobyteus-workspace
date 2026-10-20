@@ -2,7 +2,7 @@ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-c
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type {
   StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
@@ -32,6 +32,8 @@ export class StandaloneRootPersistenceCoordinator {
     store: StandaloneRootPackageStore;
     packageExists: boolean;
     getMessages(): StandaloneRootMessagesFile;
+    /** The current tree, for a package created by a run's first message (a run a peer node started). */
+    getTree(): StandaloneRootTreeSnapshot;
     onPackageCreated(): Promise<void>;
     enterPersistenceFailStop(error: Error): void;
   }>) {
@@ -108,11 +110,27 @@ export class StandaloneRootPersistenceCoordinator {
     nextMessages: StandaloneRootMessagesFile;
     /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
     message: CollaborationCommunicationMessage;
-    logOwners: readonly MessageLogOwner[];
+    logOwners: readonly StoredMessageLogOwner[];
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
     return this.withLock(async () => {
+      // A run a peer node started has no package until its first message (design § On-Disk item 8).
+      const createsPackage = !this.created;
+      if (createsPackage) {
+        for (const write of ["messages", "tree"] as const) {
+          const created = write === "messages"
+            ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
+            : await this.options.store.writeTree(this.options.collaborationDir, this.options.getTree());
+          if (created.outcome === "not_renamed") {
+            input.cancelBeforeDurability();
+            return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: created.cause.message };
+          }
+          if (created.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(created);
+        }
+        this.created = true;
+        await this.recordPackageCreated();
+      }
       const result = await this.options.store.appendMessage(
         this.options.collaborationDir, this.options.hostRunId, input.message, input.logOwners);
       if (result.outcome === "not_renamed") {

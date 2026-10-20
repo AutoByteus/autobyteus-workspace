@@ -1,0 +1,28 @@
+# IMP-19 remote-focused tests (IMP-13/15 set) plus run metadata and app-data migrations on the merge (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration tests/unit/run-history/store/remote-task-execution-links.test.ts tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts tests/unit/agent-collaboration/execution/communication tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts tests/unit/run-history/store/agent-run-metadata-store.test.ts tests/unit/run-history/services/agent-run-history-catalog-service.test.ts tests/unit/app-data-migrations; commit c59c6f7359; macOS, node v22.23.1; 2026-10-20T18:34:43Z
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+ ✓ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts (17 tests) 401ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts (12 tests) 268ms
+ ✓ tests/unit/run-history/store/remote-task-execution-links.test.ts (12 tests) 355ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts (7 tests) 354ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts (8 tests) 200ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts (7 tests) 96ms
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (4 tests) 66ms
+ ✓ tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts (17 tests) 24ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts (7 tests) 29ms
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts (3 tests) 16ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts (11 tests) 10ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts (4 tests) 6ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts (6 tests) 7ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-refusals.test.ts (4 tests) 5ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts (4 tests) 4ms
+ Test Files  72 passed (72)
+      Tests  550 passed (550)
+exit=0

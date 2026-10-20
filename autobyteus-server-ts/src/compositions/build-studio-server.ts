@@ -36,6 +36,7 @@ import {
 import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
+import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
 import {
   createGeneralProcessRunSupervisor,
   type GeneralProcessRunSupervisor,
@@ -235,10 +236,12 @@ export const buildStudioServer = async (input: {
   let studioApiHandle: StudioApiHandle | null = null;
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
+  let releaseRemoteCollaboration: (() => void) | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
+    releaseRemoteCollaboration?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
       agentPackageDefinitionFeed,
@@ -298,6 +301,14 @@ export const buildStudioServer = async (input: {
       platformInputNotices: skillUpdateNotices.service,
     });
     generalProcessAuthority = null;
+    releaseRemoteCollaboration = composeStudioRemoteCollaboration({
+      appDataDir: input.appConfig.getAppDataDir(),
+      definitions: hostDefinitionServices.agentDefinitionService,
+      modelSelectionValidator,
+      agentRuns: generalProcessRunSupervisor.agentRunService,
+      teamRuns: generalProcessRunSupervisor.teamRunService,
+      orgRuns: generalProcessRunSupervisor.agentOrgRunService,
+    });
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig,
       packages,

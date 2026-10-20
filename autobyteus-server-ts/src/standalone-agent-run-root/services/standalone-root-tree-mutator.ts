@@ -8,7 +8,7 @@ import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
-import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskAgentExecution, TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateStandaloneRootTreePayload } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
@@ -29,6 +29,12 @@ export const addStandaloneRootTaskExecution = (input: {
   }
   return revalidate({ ...input.tree, taskExecutions: [...input.tree.taskExecutions, input.execution] });
 };
+
+/** Records a remote run the host delegated to (CM-10), once, at its delegation's commit. */
+export const addStandaloneRootRemoteTaskExecution = (input: {
+  tree: StandaloneRootTreeSnapshot;
+  link: RemoteTaskAgentExecution;
+}): StandaloneRootTreeSnapshot => revalidate({ ...input.tree, remoteTaskExecutions: [...(input.tree.remoteTaskExecutions ?? []), input.link] });
 
 type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 

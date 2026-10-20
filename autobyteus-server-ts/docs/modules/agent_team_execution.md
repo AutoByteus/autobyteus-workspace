@@ -790,7 +790,9 @@ validated current package per root TeamRun:
   [Run History](./run_history.md), Message logs).
 
 On disk a team run's tree links its task agents (`{address, agentRunId |
-teamRunId, delegatorAgentRunId?, startedAt}`); each task agent's facts are in its
+teamRunId, delegatorAgentRunId?, startedAt}`; a link to a run on another node adds
+`nodeId` and has no own file here, see [Remote Collaboration](./remote_collaboration.md));
+each task agent's facts are in its
 own file (`agents/<id>/run_metadata.json` or `agent_teams/<id>/team_run_execution_tree.json`,
 each with a `taskAgent` section). `TeamRunExecutionTreeStore` composes today's
 records on load and splits them on save (a task agent's own file first, then its

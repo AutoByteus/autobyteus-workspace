@@ -97,6 +97,7 @@ export class AgentRunProvisioningService {
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
     };
 
     await this.historyCatalogService.recordPreparedRun({

@@ -1,0 +1,7 @@
+# DEL-03 server unit full | integrated 4f03cce09d | pnpm -C autobyteus-server-ts test:unit (excerpt: failures and summary); machine load average ~95
+ ❯ tests/unit/run-history/team-member-run-view-projection-service.import.test.ts (1 test | 1 failed) 5007ms
+     × does not resolve the memory dir during module import 5006ms
+ FAIL  tests/unit/run-history/team-member-run-view-projection-service.import.test.ts > team-member-run-view-projection-service import timing > does not resolve the memory dir during module import
+ Test Files  1 failed | 774 passed | 4 skipped (779)
+      Tests  1 failed | 6387 passed | 7 skipped (6395)
+server-unit exit=1

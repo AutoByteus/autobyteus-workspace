@@ -1,0 +1,28 @@
+# API-13 F-002 probe 2: a server restarted over a copy of the same kept alpha data; reopen the Team and Org runs | cmd: /tmp/api-probe/restart-probe.sh <server> <copy of kept alpha data> 63555 (script below) | code 31d46978ad (HEAD 7383e89a0f) | 2026-10-20T15:55:57Z
+## probe source
+#!/bin/bash
+# Temporary probe (API/E2E, autobyteus-191 F-002): start a built server on a copy of a kept test data root and query the
+# Team and Org runs that exchanged remote messages. Test-owned data only.
+set -u
+SERVER="$1"; DATA="$2"; PORT="$3"
+H="$(cd "$(mktemp -d)" && pwd -P)"
+env -i PATH="$PATH" HOME="$H" TMPDIR="$TMPDIR" APP_ENV=test LOG_LEVEL=WARN HTTP_ACCESS_LOG_MODE=off AUTOBYTEUS_SERVER_HOST="http://127.0.0.1:$PORT" \
+  node "$SERVER/dist/app.js" --host 127.0.0.1 --port "$PORT" --data-dir "$DATA" > "$DATA/../probe-server.log" 2>&1 &
+PID=$!
+for i in $(seq 1 100); do curl -sf "http://127.0.0.1:$PORT/rest/health" >/dev/null && break; sleep 0.3; done
+TEAM=$(ls "$DATA/memory/agent_teams"); ORG=$(ls "$DATA/memory/agent_orgs"); SOLO=$(ls "$DATA/memory/agents" | head -1)
+q() { curl -s "http://127.0.0.1:$PORT/graphql" -H 'content-type: application/json' -d "$1"; echo; }
+echo "team $TEAM"; q "{\"query\":\"query{getTeamRunResumeConfig(teamRunId:\\\"$TEAM\\\"){teamRunId}}\"}"
+echo "restore team"; q "{\"query\":\"mutation{restoreAgentTeamRun(teamRunId:\\\"$TEAM\\\"){success message}}\"}"
+echo "org $ORG"; q "{\"query\":\"query{getAgentOrgRunConfig(orgRunId:\\\"$ORG\\\"){executionTree}}\"}" | cut -c1-300
+echo "restore org"; q "{\"query\":\"mutation{restoreAgentOrgRun(agentOrgRunId:\\\"$ORG\\\"){success message}}\"}"
+kill $PID; wait $PID 2>/dev/null; rm -rf "$H"
+## output
+team remote_squad_cb1a40e6d96f4711a17ed36ec82995dd
+{"data":{"getTeamRunResumeConfig":{"teamRunId":"remote_squad_cb1a40e6d96f4711a17ed36ec82995dd"}}}
+restore team
+{"data":{"restoreAgentTeamRun":{"success":false,"message":"Error: TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun 'remote_squad_cb1a40e6d96f4711a17ed36ec82995dd' is not an admitted current package."}}}
+org remote_org_24af1edf2a314b22bb2ecbd4e6fd1499
+{"data":null,"errors":[{"message":"AgentOrg package is not admitted.","locations":[{"line":1,"column":7}],"path":["getAgentOrgRunConfig"]}]}
+restore org
+{"data":{"restoreAgentOrgRun":{"success":false,"message":"AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg 'remote_org_24af1edf2a314b22bb2ecbd4e6fd1499' is not an admitted current package."}}}

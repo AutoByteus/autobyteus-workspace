@@ -129,6 +129,20 @@ export type TaskTeamExecution = Readonly<{
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
+/**
+ * A delegated Agent run on a peer node (CM-10), recorded by the topmost coordinating run. On disk it is a
+ * `taskExecutions` entry with `nodeId` (absent `nodeId` means this node); in memory the store loads it into
+ * the root's own `remoteTaskExecutions` list, never into `taskExecutions`, so walkers of local copies never
+ * see it. It has no own file here: `agentRunId` is the ID the peer gave the run, `nodeId` the peer's server ID.
+ */
+export type RemoteTaskAgentExecution = Readonly<{
+  address: AgentTeamAddress;
+  agentRunId: string;
+  nodeId: string;
+  delegatorAgentRunId: string;
+  startedAt: IsoTimestamp;
+}>;
+
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;
   bindingId: string;

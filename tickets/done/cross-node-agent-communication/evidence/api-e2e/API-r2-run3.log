@@ -1,0 +1,101 @@
+# API-01 … API-20 round 2 run 3 | cmd: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> REMOTE_E2E_EVIDENCE_DIR=evidence/api-e2e/API-r2-run3 vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch | code 31d46978ad; test file: run 1 as in 2f60c233a8 + the round-1 soft checks, runs 2-3 with the fixes in the progress log | dist API-00 round 2 | macOS 26.5.2, node v22.23.1
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (20 tests | 1 failed) 123498ms
+     ✓ RC-01 AC-101/AC-111: off by default; with the switch off, both inbound request kinds are refused 'turned off' and no peer can be added 20ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  547ms
+     ✓ RC-03 AC-101/102/103/111: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; publishing records launch settings  502ms
+     ✓ RC-04 AC-103: before publishing a delegation is refused; after publishing it is evaluated; an Agent that cannot run there is refused; refusals leave nothing  836ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  3418ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  4219ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  1969ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  2059ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1916ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  5255ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  4295ms
+     ✓ RC-12 AC-106: the remote run on beta is shut down after the idle grace period and a follow-up restores it with its conversation  38623ms
+     × RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators 7183ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  833ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  43485ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  440ms
+     ✓ RC-17 AC-103: after unpublishing, new delegations are refused and a run already started still accepts follow-ups  1261ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  893ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  715ms
+     ✓ RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators
+AssertionError: team delegator after alpha's restart: expected { …(4) } to match object { reply: { accepted: true }, …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "conversation": "readable",
+-   "delegatorRelaunched": true,
+-   "inAlphaLog": true,
++   "conversation": "alpha GraphQL failed: [{\"message\":\"AgentRun 'delegator_a3035378936d4798aa2a9a2807ffbfc8' was not found in root TeamRun 'remote_squad_a53f70e58b7041979775d8c77132ffc1'.\",\"locations\":[{\"line\":1,\"column\":31}],\"path\":[\"getTeamMemberRunProjection\"]}]",
++   "delegatorRelaunched": false,
++   "inAlphaLog": false,
+    "reply": {
+-     "accepted": true,
++     "accepted": false,
+    },
+  }
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:944:73
+    942|     record("RC-13", { betaRelaunches, alphaRelaunches, replies: Object…
+    943|     for (const [kind, actor, marker] of [["team", teamLead, "AFTER-ALP…
+    944|       expect(observed[kind], `${kind} delegator after alpha's restart`…
+       |                                                                         ^
+    945|       await receives(actor, marker);
+    946|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  17:52:36
+   Duration  124.20s (transform 92ms, setup 41ms, import 145ms, tests 123.50s, environment 0ms)
+

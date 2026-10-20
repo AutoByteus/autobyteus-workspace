@@ -10,13 +10,17 @@ export type DelegateTaskToolInput =
 const nonEmptyString = (fieldName: string) =>
   z.string({ error: `${fieldName} is required` }).trim().min(1, `${fieldName} is required`);
 
+/** `node` (DEC-111): a registered peer's name; the root refuses it with a saved Task or files (REQ-110). */
+const PeerNodeSchema = nonEmptyString("node").optional();
+
 const DescribedTaskInputSchema = z.object({
   recipient_address: z.string(),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
+  node: PeerNodeSchema,
 }).strict();
 
-const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id: nonEmptyString("task_id") }).strict();
+const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id: nonEmptyString("task_id"), node: PeerNodeSchema }).strict();
 
 const EXISTING_COPY_TASK_ID = "task_id (the saved Task to give)";
 const ExistingTeamCopyInputSchema = z.object({
@@ -63,5 +67,6 @@ export const parseDelegateTaskInput = (
     }
     throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);
   }
-  return { subject: "new_copy", input: result.data };
+  const { node, ...input } = result.data;
+  return { subject: "new_copy", input: node === undefined ? input : { ...input, node } };
 };

@@ -3,9 +3,11 @@ import type { RegisteredTaskActivation, RootTaskExecutionAdapter } from "./root-
 import {
   taskExecutionResourceRejectionCode,
   type TaskExecutionOwner,
+  type TaskExecutionReleaseResult,
   type TaskExecutionResourcePort,
   type TaskExecutionStopResult,
 } from "./task-execution-resource-port.js";
+import type { RemoteRunLinks } from "../remote/remote-run-links.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
 import { listClosedTaskExecutions } from "./task-execution-closure.js";
@@ -28,7 +30,12 @@ const NO_AUTHORITY = "EXACT_RELEASE_AUTHORITY_UNAVAILABLE";
  * the agent's containment chain, and agents outside any task copy are never checked at all.
  */
 export class RootTaskExecutionResourceScope<T> {
-  constructor(private readonly adapter: RootTaskExecutionAdapter<T>, private readonly resources?: TaskExecutionResourcePort) {}
+  constructor(
+    private readonly adapter: RootTaskExecutionAdapter<T>,
+    private readonly resources?: TaskExecutionResourcePort,
+    /** The root's remote endpoints: a closed Task fences its remote runs instead of releasing them (AR-007). */
+    private readonly remoteRunLinks?: Pick<RemoteRunLinks, "endpointFor" | "peerName">,
+  ) {}
 
   port(): TaskExecutionResourcePort {
     if (!this.resources) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Tasks are not available here, so this delegation can't be recorded.");
@@ -79,10 +86,24 @@ export class RootTaskExecutionResourceScope<T> {
    * not stop success). Every registration and committed copy is cancelled before any await; then
    * every exact release authority the root still holds is invoked, whether or not the copy looks
    * live. `stopped` only when each invoked release is accepted or the root holds no authority at
-   * all for the agent run.
+   * all for the agent run. A run on a peer node is fenced instead (AR-007): the closed Task already refuses its
+   * messages, no release is invoked, and its result says it keeps running there until it goes idle.
    */
   async releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     const port = this.port();
+    const fenced = new Map<TaskExecutionReference, Promise<TaskExecutionStopResult>>();
+    const links = this.remoteRunLinks;
+    for (const execution of executions) {
+      const endpoint = links && "agentRunId" in execution ? links.endpointFor(execution.agentRunId) : null;
+      if (links && endpoint?.kind === "delegated_run" && isClosed(port, execution)) {
+        fenced.set(execution, links.peerName(endpoint.reference.nodeId).then((peer) => endpoint.closureFence(execution, peer)));
+      }
+    }
+    const hosted = await this.releaseHostedExecutions(port, executions.filter((execution) => !fenced.has(execution)));
+    return Promise.all(executions.map((execution) => fenced.get(execution) ?? Promise.resolve(hosted.get(execution)!)));
+  }
+
+  private async releaseHostedExecutions(port: TaskExecutionResourcePort, executions: readonly TaskExecutionReference[]): Promise<ReadonlyMap<TaskExecutionReference, TaskExecutionReleaseResult>> {
     const eligible = executions.map(execution => ({ execution, closed: isClosed(port, execution) }));
     const closedInTree = eligible.flatMap(entry => entry.closed && this.adapter.containsTaskExecution(entry.execution) ? [entry.execution] : []);
     if (closedInTree.length) this.adapter.publishTaskExecutionsClosed(Object.freeze(closedInTree));
@@ -92,9 +113,10 @@ export class RootTaskExecutionResourceScope<T> {
       registered[index]?.operation.cancel();
       this.adapter.cancelOwnedExecution(entry.execution);
     });
-    return Promise.all(eligible.map(({ execution, closed: wasClosed }, index): Promise<TaskExecutionStopResult> => wasClosed
+    const results = await Promise.all(eligible.map(({ execution, closed: wasClosed }, index): Promise<TaskExecutionReleaseResult> => wasClosed
       ? this.settleExactRelease(execution, registered[index] ?? null)
       : Promise.resolve({ execution, stopped: false, error: { code: "TASK_AGENT_RESOURCE_NOT_CLOSED", message: "Only a closed Task agent run is stopped." } })));
+    return new Map(results.map((result) => [result.execution, result]));
   }
 
   /**
@@ -116,7 +138,7 @@ export class RootTaskExecutionResourceScope<T> {
   }
 
   /** `stopped` only when each invoked release is accepted or the root holds no authority at all for the agent run. */
-  private async settleExactRelease(execution: TaskExecutionReference, registration: RegisteredTaskActivation | null): Promise<TaskExecutionStopResult> {
+  private async settleExactRelease(execution: TaskExecutionReference, registration: RegisteredTaskActivation | null): Promise<TaskExecutionReleaseResult> {
     const releases: Promise<AgentOperationResult>[] = [this.adapter.releaseOwnedExecution(execution)];
     if (registration) releases.push(registration.operation.release());
     const settled = await Promise.allSettled(releases);

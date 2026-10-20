@@ -27,7 +27,7 @@ const sender = buildDeliveryEndpointForParticipant(Object.freeze({
 }));
 
 const buildHarness = (input: {
-  assertDeliveryAllowed?: (sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity) => void;
+  assertDeliveryAllowed?: (senderAgentRunId: string, receiverAgentRunId: string) => void;
   currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
   commit?: (plan: PreparedTeamMessageAppend) => Promise<
     | { outcome: "committed" }
@@ -81,7 +81,7 @@ describe("TeamCommunicationService", () => {
     const harness = buildHarness({ assertDeliveryAllowed: () => { throw new Error("TASK_LIFETIME_CLOSED"); } });
     await expect(harness.service.deliver({ intent: intent(), receiverIdentity, receiverDisplayName: "receiver" }))
       .rejects.toThrow("TASK_LIFETIME_CLOSED");
-    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity.agentRunId, receiverIdentity.agentRunId);
     expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
     expect(harness.commit).not.toHaveBeenCalled();
     expect(harness.release).not.toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe("TeamCommunicationService", () => {
         }),
       }),
     );
-    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity.agentRunId, receiverIdentity.agentRunId);
     expect(harness.commit).toHaveBeenCalledOnce();
     expect(harness.reservationCommit).toHaveBeenCalledOnce();
     expect(harness.release).toHaveBeenCalledOnce();

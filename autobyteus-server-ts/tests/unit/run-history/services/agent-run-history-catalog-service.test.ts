@@ -180,6 +180,19 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")).resolves.toBe(before);
   });
 
+  it("keeps a remote run's delegatedFrom back-link when activation adds startedAt (N-10, DEC-112)", async () => {
+    const service = await buildService();
+    const delegatedFrom = { nodeId: "srv_peer_a", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, delegatorAgentRunId: "agent_a1" };
+    await service.recordPreparedRun({ runId: "run-1", createdAt: "2026-03-26T10:00:00.000Z",
+      metadata: buildMetadata("run-1", { memoryDir: path.join(memoryDir, "agents", "run-1"), delegatedFrom }) });
+
+    const started = await service.recordRunStarted({ runId: "run-1", platformAgentRunId: "thread-1", startedAt: "2026-03-26T10:01:00.000Z" });
+
+    const raw = JSON.parse(await fs.readFile(path.join(memoryDir, "agents", "run-1", "run_metadata.json"), "utf-8")) as Record<string, unknown>;
+    expect(raw).toMatchObject({ startedAt: "2026-03-26T10:01:00.000Z", preparedAt: "2026-03-26T10:00:00.000Z", delegatedFrom });
+    expect(started?.delegatedFrom).toEqual(delegatedFrom);
+  });
+
   it("commits only llmConfig through the serialized catalog", async () => {
     const service = await buildService();
     const metadata = buildMetadata("run-1", {

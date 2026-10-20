@@ -1,0 +1,31 @@
+# API-23b (AC-110, REQ-112) the receiving node's run view in the real desktop app | 2026-10-20T18:29:00Z
+Build: isolated desktop instances of this worktree (pnpm --silent isolated-app start --build / --from-worktree) at 4f03cce09d (the integrated state: this branch + origin/personal), started with AUTOBYTEUS_TEST_VAULT for provider keys.
+Nodes: A iso-56211-d507 (server 127.0.0.1:56212, srv_a4P854OduEUEjebhsheCbLmnwlpWsvWb), B iso-56346-3c73 (server 127.0.0.1:56347, srv_pLHxblwEnPbqXL0Jiz6BYcUcY8AwaMi8). Runtime: AutoByteus, model deepseek-v4-flash on both.
+Setup and journey driven in the app windows with the browser-automation skill (attach-only to each instance's control port), watched by the user:
+- Nodes → Remote Collaboration on both: switch on; A registered "beta" = http://127.0.0.1:56347 (pinned srv_pLHx…); B registered "alpha" = http://127.0.0.1:56212 (pinned srv_a4P8…).
+- B published "Text Reviewer" at /text_reviewer (autobyteus · deepseek-v4-flash · /tmp/ab-demo/node-b-workspace · tools auto-approved).
+- A: Daily Assistant chat; it called delegate_task(node "beta", /text_reviewer) → remote run text_reviewer_d0763b62a0ef4e7596e2cd079f5c7236; the reviewer replied by send_message_to; A received "You received a message from the agent with sender run id \"text_reviewer_d0763b…\" on node \"beta\"" and summarized; a follow-up from A by run ID was answered with an improved version.
+- B: Workspaces → node-b-workspace → Text Reviewer (1) → the run opens with the work packet "You have a new task from the agent with sender run id \"daily_assistant_caeb09878ce84950a3039df8b07d6739\" on node \"alpha\"".
+- B owner composer message "Owner of node B here: please confirm in one sentence that your review is finished. Marker OWNER-COMPOSER-MSG." → the run answered (page text, copied):
+    clarity, name the capability, professional register, “hand off”, “the two agents”, “until the work is complete”). The audience is desktop users, so “your desktop” is acceptable.
+    
+    Deliverable: reply with just the single final version — no commentary, no alternatives, no bullet list.
+    
+    Thinking
+    send_message_to
+    
+    Sent the single final version back:
+    
+    Agents on different AutoByteus nodes can now work together. An agent on your desktop can hand off a task to an agent on another machine, and the two agents stay in contact until the work is complete.
+    
+    You
+    Owner of node B here: please confirm in one sentence that your review is finished. Marker OWNER-COMPOSER-MSG.
+    TR
+    Text Reviewer
+    Thinking
+    
+    Confirmed: my review of the AutoByteus announcement is finished and the single improved version has been delivered to the requesting agent (marker OWNER-COMPOSER-MSG).
+    
+    Context Files (0)
+    (drag, paste, or upload)
+Screenshot: API-23b-isolated-beta-composer-message.png (captured with the skill's screenshot command after scrolling the owner message into view): history row under node-b-workspace → Text Reviewer (1), the reviewer's send_message_to back, the owner message and its answer, status Idle.

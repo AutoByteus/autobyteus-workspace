@@ -1,5 +1,6 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import { UPDATE_CHECKS_SETTING_KEY } from "../update-notifications/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
@@ -129,6 +130,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       "Controls whether the Applications module is available for this node at runtime.",
+    );
+
+    this.registerPredefinedSetting(
+      REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY,
+      "Controls whether this node collaborates with registered peer nodes (trusted private network only). Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(

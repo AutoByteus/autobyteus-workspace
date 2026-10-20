@@ -1,0 +1,18 @@
+# IMP-13 focused remote tests after IR-003 (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration tests/unit/run-history/store/remote-task-execution-links.test.ts tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts tests/unit/agent-collaboration/execution/communication tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts; commit 31d46978ad; macOS, node v22.23.1; 2026-10-20T15:20:49Z
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts (7 tests) 379ms
+ ✓ tests/unit/run-history/store/remote-task-execution-links.test.ts (12 tests) 332ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts (6 tests) 126ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts (7 tests) 112ms
+ ✓ tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts (17 tests) 20ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts (7 tests) 27ms
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts (3 tests) 12ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts (11 tests) 9ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts (6 tests) 7ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts (4 tests) 6ms
+ ✓ tests/unit/agent-collaboration/execution/communication/root-communication-engine-refusals.test.ts (4 tests) 4ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-host-idle-shutdown.test.ts (4 tests) 4ms
+ Test Files  12 passed (12)
+      Tests  88 passed (88)
+   Start at  17:20:49
+   Duration  8.49s (transform 3.46s, setup 153ms, import 5.78s, tests 1.04s, environment 1ms)
+exit=0

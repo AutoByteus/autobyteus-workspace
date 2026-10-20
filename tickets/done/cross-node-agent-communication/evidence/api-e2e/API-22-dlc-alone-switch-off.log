@@ -1,0 +1,15 @@
+# API-22 cause check: delegated-launch-config-defaults.e2e.test.ts alone, switch off | cmd: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture>  vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch | code 31d46978ad | 2026-10-20
+     × in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values 1306ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1474ms
+     × Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009) 4477ms
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values
+AssertionError: expected [ …(3) ] to deeply equal []
++   "agent: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "team: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "org: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AssertionError: expected [ …(2) ] to deeply equal []
++   "agent: TypeError: Cannot read properties of undefined (reading 'members')
++   "team: TypeError: Cannot read properties of undefined (reading 'members')
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)

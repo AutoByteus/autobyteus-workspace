@@ -42,6 +42,7 @@ const { t } = useLocalization();
 const nodeManagerTabs = [
   { id: 'manage', labelKey: 'settings.components.settings.NodeManager.tabs.manageNodes' },
   { id: 'memorySync', labelKey: 'settings.components.settings.NodeManager.tabs.memorySync' },
+  { id: 'remoteCollaboration', labelKey: 'settings.components.settings.NodeManager.tabs.remoteCollaboration' },
   { id: 'phoneSetup', labelKey: 'settings.components.settings.NodeManager.tabs.phoneSetup' },
   { id: 'dockerGuide', labelKey: 'settings.components.settings.NodeManager.tabs.dockerGuide' },
   { id: 'nfsGuide', labelKey: 'settings.components.settings.NodeManager.tabs.nfsGuide' },

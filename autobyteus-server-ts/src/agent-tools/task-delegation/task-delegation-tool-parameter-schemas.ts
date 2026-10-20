@@ -10,6 +10,7 @@ import {
 import {
   DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
   DELEGATE_TASK_ID_DESCRIPTION,
+  DELEGATE_TASK_NODE_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
   DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
   DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION,
@@ -32,6 +33,7 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
     description: DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
     required: false,
   }),
+  new ParameterDefinition({ name: "node", type: ParameterType.STRING, description: DELEGATE_TASK_NODE_DESCRIPTION, required: false }),
   new ParameterDefinition({
     name: "reference_files",
     type: ParameterType.ARRAY,

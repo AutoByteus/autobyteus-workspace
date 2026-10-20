@@ -1,0 +1,28 @@
+# API-21 cause check: task-reactivation-root-visibility.e2e.test.ts -t 'racing the assigner' (QR-001 race), repeated | cmd: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> [ENABLE_REMOTE_COLLABORATION=true] vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts --no-watch -t 'racing the assigner' | 2026-10-20
+## this branch, code 7a5a9af077
+switch off run 1:  Tests 1 passed | 6 skipped (7)
+switch off run 2:  Tests 1 passed | 6 skipped (7)
+switch off run 3:  Tests 1 passed | 6 skipped (7)
+switch off run 4:  Tests 1 passed | 6 skipped (7)
+switch off run 5:  Tests 1 passed | 6 skipped (7)
+switch on run 1:  Tests 1 failed | 6 skipped (7)
+switch on run 2:  Tests 1 passed | 6 skipped (7)
+switch on run 3:  Tests 1 passed | 6 skipped (7)
+switch on run 4:  Tests 1 passed | 6 skipped (7)
+switch on run 5:  Tests 1 passed | 6 skipped (7)
+## base 5de6a698b9 (temporary detached worktree /tmp/api-bisect-base; pnpm install --offline + prebuild; no remote-collaboration code)
+base run 1:  Tests 1 passed | 6 skipped (7)
+base run 2:  Tests 1 failed | 6 skipped (7)
+base run 3:  Tests 1 passed | 6 skipped (7)
+base run 4:  Tests 1 passed | 6 skipped (7)
+base run 5:  Tests 1 passed | 6 skipped (7)
+base run 6:  Tests 1 passed | 6 skipped (7)
+base run 7:  Tests 1 passed | 6 skipped (7)
+base run 8:  Tests 1 passed | 6 skipped (7)
+base run 9:  Tests 1 passed | 6 skipped (7)
+base run 10:  Tests 1 passed | 6 skipped (7)
+## the failure, identical on both
+branch (switch on, run 1):
+Error: Timed out waiting for tool result of / for CALL_TOOL:{"name":"send_message_to","arguments":{"target_agent_run_id":"tra_worker_a4cb48_9933e783394246f1afbb2adb52e42d
+base (run 2):
+Error: Timed out waiting for tool result of / for CALL_TOOL:{"name":"send_message_to","arguments":{"target_agent_run_id":"tra_worker_0e7cc2_92f4fb9ba5914ab8a01eeb338d1c6e
