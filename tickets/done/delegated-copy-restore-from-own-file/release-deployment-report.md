@@ -3,7 +3,7 @@
 Ticket `delegated-copy-restore-from-own-file` (autobyteus-197). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`, branch `codex/delegated-copy-restore-from-own-file`.
 
 - Task size: `Large`. Architectural risk: `High`. Route: `Reviewed`. Delivery does not reclassify.
-- Current delivery revision: `DR-002`. Status: **waiting for the user's release decision.** AC-010, the user's check of his own data, needs a released build. Nothing is merged into `personal` yet.
+- Current delivery revision: `DR-003`. Status: **finalized and released as beta `v1.5.7-beta.4` (complete). Waiting for the user's AC-010 check** of his own data on this build.
 
 ## Release / Publication / Deployment Scope
 
@@ -90,22 +90,37 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Version / Tag / Release Commit
 
-- Pending the release decision.
+- `bash scripts/desktop-release.sh beta --branch finalize/delegated-copy-restore-from-own-file --no-push` created release commit `41be799edb` ("chore(release): bump workspace release version to 1.5.7-beta.4"; `autobyteus-web/package.json` = `1.5.7-beta.4`) and the annotated tag `v1.5.7-beta.4` (tag object `588374d1e4`).
 
 ## Repository Finalization
 
-- Ticket branch: `codex/delegated-copy-restore-from-own-file` (local; not pushed)
-- Finalization target: `origin` / `personal`, with `--no-ff` from a `finalize/delegated-copy-restore-from-own-file` branch (RELEASE.md)
-- Repository finalization status: `Not started`. It waits for the release decision.
+- Bootstrap context source: implementation handoff (base `origin/personal`); RELEASE.md Finalization Target
+- Ticket branch: `codex/delegated-copy-restore-from-own-file` @ `b7e762acda` (ticket archived to `tickets/done/`)
+- Ticket branch commit result: `Completed`
+- Ticket branch push result: `Completed` (`origin/codex/delegated-copy-restore-from-own-file`)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `No`. Still `ad784b0a8f` at the merge and again just before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/delegated-copy-restore-from-own-file` from `origin/personal` @ `ad784b0a8f`
+- Merge into target result: `--no-ff` merge `d7c0222eb7`, tree identical to the ticket branch. Licensing and artifact-hygiene checks exit 0 on the merged state
+- Push target branch result: `origin/personal` = `41be799edb` (merge plus release commit)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Release notes: `release-notes.md` written (stable-quality). A beta uses GitHub generated notes.
+- Applicable: `Yes` (Beta, the user's decision)
+- Method: `Project Release Guide` (`scripts/desktop-release.sh beta … --no-push`, then `git push origin HEAD:personal` and `git push origin v1.5.7-beta.4`)
+- Pipelines triggered and their results: all four succeeded. Desktop Release `39359167729`, Android APK Release `39359167694`, iOS App Store Connect Release `39359167699`, Server Docker Release `39359167669`. A local power-off interrupted delivery's local watcher, not the GitHub runs; watching was resumed until all four completed.
+- Published artifacts checked: GitHub pre-release `v1.5.7-beta.4` (`isPrerelease: true`) with 17 assets: Android APK and `.sha256`; Linux x64 and ARM64 AppImages; macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps; Windows `.exe`; `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`. Docker Hub `autobyteus/autobyteus-server:1.5.7-beta.4` (amd64, arm64), with `:beta` at the same digest `sha256:bad18888f91e…`. iOS: TestFlight upload workflow succeeded.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for a beta (GitHub generated notes). `tickets/done/delegated-copy-restore-from-own-file/release-notes.md` is kept for the next stable.
 
 ## Post-Finalization Cleanup
 
-- Not started.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file`
+- Worktree cleanup result: deferred until the user's AC-010 check is recorded, so the DR record commit has a home. Then remove the worktree, prune, and delete the local branches `codex/…` and `finalize/…`. The remote ticket branch is kept, as for earlier tickets.
+- Untracked full logs (not committed, excerpts committed) were moved to `/tmp/ab197-full-logs/` before the release script, which needs a clean worktree.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -119,10 +134,10 @@ Finalize into `origin/personal` per `RELEASE.md`. Any release is the user's deci
 
 ## Final Status
 
-- Verification complete: `No` (AC-010 waits for the user, after a release)
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
+- Verification complete: `No` (AC-010 waits for the user on `v1.5.7-beta.4`)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta complete; the user upgrades with the desktop beta channel or `autobyteus-docker upgrade --all --tag beta`)
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: none. Waiting for the user's release decision.
+- Unresolved blocker: none. Waiting for the user's AC-010 check.
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
