@@ -8,6 +8,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/software_engineering_team/code_reviewer`, `code-review-report.md` CRR-001, round 1 | SR-001..SR-004, ARCH-REV-001..002, IR-001, CRR-001 | N/A | Pass / 95.0% |
 | API-REV-002 | `/software_engineering_team/code_reviewer`, `code-review-report.md` CRR-003, round 2 (INT-001 merge, Secret Gate) | IR-002, CRR-002, CRR-003, DR-001 | Pass / 95.0% | Pass / 95.0% |
+| API-REV-003 | `/software_engineering_team/delivery_engineer`, `delivery-revision-record.md` DR-002 (evidence request), round 3 | DR-002, CRR-004 | Pass / 95.0% | Pass / 95.0% |
 
 ## Revision Entries
 
@@ -66,4 +67,30 @@ None.
 - Current result and confidence: Pass / 95.0%.
 - New or remaining failure IDs: none in this ticket; FU-004, FU-005, FU-006 outside it.
 - Recommended owner: `/software_engineering_team/code_reviewer`, per `get_handoff_rules`. Test-code review: Not Applicable this round.
+- Remaining risks: AC-004's user check and AC-005 (delivery).
+
+### API-REV-003 — Delivery evidence request DR-002: FU-005 origin
+
+- Triggering role, report path, and round: delivery engineer, `delivery-revision-record.md` DR-002, round 3. Question: does FU-005 (the Org Settings post-save re-read failure) come from this ticket or from base?
+- Related revision IDs: DR-002, CRR-004.
+- Why recorded: delivery's request for stronger evidence before finalization.
+- Coverage decisions or durable test paths changed: none; no product or test code changed.
+- Cases added: API-18. The same Org save loop ran in two throwaway worktrees with their own install and build, both with identical temporary diagnostics: base `3b2c86ca9e` (without this ticket) and ticket `dd396d8820`. Order base-1, ticket-1, base-2, ticket-2; 12 saves per side.
+- Result:
+  - base: the stream reconnected and sent a view snapshot after 12 of 12 saves; stale re-read 4 of 12; probe failures 4;
+  - ticket: 12 of 12; stale re-read 3 of 12; probe failures 3.
+  - The reconnect after a Save is base behavior, and the failure rate is similar. FU-005 is pre-existing, not introduced by this ticket.
+- Commands, environment, fixture, or broader-validation delta: the two throwaway worktrees (removed afterwards; the ticket worktree untouched apart from these documents and evidence).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| FU-005 (DCP-003/DCR-003 "Timed out waiting for saved") | Outside this ticket; cause established in round 2, origin not yet measured on base | Pre-existing on base: same reconnect after every Save, similar stale re-read rate (base 4/12, ticket 3/12) | API-18 |
+
+- Canonical artifacts updated: the execution report (Round, API-18 row, Latest Authoritative Result), `follow-ups.md` (FU-005), and the progress log.
+- Prior result and confidence: Pass / 95.0%.
+- Current result and confidence: Pass / 95.0%.
+- New or remaining failure IDs: none in this ticket.
+- Recommended owner: back to `/software_engineering_team/delivery_engineer` (the requester).
 - Remaining risks: AC-004's user check and AC-005 (delivery).

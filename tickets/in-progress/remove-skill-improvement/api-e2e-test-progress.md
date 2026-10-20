@@ -19,3 +19,5 @@
 | 2026-10-20T17:40:32Z | API-13..API-17 | Completed | see report | batch: API-13 2 Pass (+standalone-agent-error-stop now Pass: 3), API-14 PT-E2E-013 Fail (meaning search), full probe 18 Pass 2 Fail (DCP-003, DCR-003 stale Org re-read). Org loop with temporary diagnostics: 3 of 6 reproduced; cause = stream reconnect snapshot during post-save AgentOrgRunConfig read; diagnostics removed |
 | 2026-10-20T17:40:32Z | API-07 | Started | | IMP-07 suites on merged dist |
 | 2026-10-20T17:42:28Z | API-07 | Completed | Pass | 19 passed; exit 0 |
+| 2026-10-20T17:51:23Z | DR-002 | Started | | FU-005 origin: throwaway worktrees base 3b2c86ca9e and ticket dd396d8820 (identical temp diagnostics), loop DCP-003/DCR-003 ×3 per run, order base-1, ticket-1, base-2, ticket-2; outputs /tmp/ab205e2e/dr002 |
+| 2026-10-20T18:20:04Z | API-18 | Completed | Done (FU-005 pre-existing) | base 3b2c86ca9e: 12 saves, reconnect 12, stale 4, failures 4; ticket dd396d8820: 12, 12, 3, 3; throwaway worktrees removed |

@@ -1,0 +1,70 @@
+# Case: API-18 (delivery request DR-002): FU-005 origin (base vs ticket, matched)
+# Base: throwaway worktree /Users/normy/autobyteus_org/autobyteus-worktrees/ab205-dr002-base-check @ 3b2c86ca9e (origin/personal, without this ticket), own install and build
+# Ticket: throwaway worktree /Users/normy/autobyteus_org/autobyteus-worktrees/ab205-dr002-ticket-check @ dd396d8820 (ticket head), own install and build
+# Both: identical TEMPORARY diagnostics (console.error of the caught error in existingRunConfigStore.ts loadAgentOrgCanonical; probe listeners for console, Org-config/delegated GraphQL responses and Org WebSocket frames -> diag.log), applied by /tmp/ab205e2e/dr002/apply-diag.py; both worktrees removed afterwards
+# Command per run: pnpm -C autobyteus-web exec node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /tmp/ab205e2e/dr002/<run> --cases DCP-003,DCR-003,DCP-003,DCR-003,DCP-003,DCR-003
+# Order: base-1, ticket-1, base-2, ticket-2 (alternating, same machine, back to back)
+# DCP-003 and DCR-003 test code is identical on both sides (git diff 3b2c86ca9e dd396d8820 touches only the SIR registration in the probe)
+# Date: 2026-10-20
+
+=== base-1 start 2026-10-20T17:51:27Z 3b2c86ca9e
+=== base-1 end exit=1 2026-10-20T17:58:24Z
+=== ticket-1 start 2026-10-20T17:58:24Z dd396d8820
+=== ticket-1 end exit=1 2026-10-20T18:03:27Z
+=== base-2 start 2026-10-20T18:03:27Z 3b2c86ca9e
+=== base-2 end exit=1 2026-10-20T18:09:42Z
+=== ticket-2 start 2026-10-20T18:09:42Z dd396d8820
+=== ticket-2 end exit=1 2026-10-20T18:17:18Z
+
+--- base-1 case results:
+DCP-003 Fail d DCR-003 Fail A DCP-003 Fail d DCR-003 Pass A DCP-003 Pass d DCR-003 Pass A 
+--- ticket-1 case results:
+DCP-003 Pass d DCR-003 Pass A DCP-003 Fail d DCR-003 Pass A DCP-003 Pass d DCR-003 Pass A 
+--- base-2 case results:
+DCP-003 Pass d DCR-003 Pass A DCP-003 Pass d DCR-003 Pass A DCP-003 Fail d DCR-003 Pass A 
+--- ticket-2 case results:
+DCP-003 Pass d DCR-003 Pass A DCP-003 Fail d DCR-003 Pass A DCP-003 Fail d DCR-003 Pass A 
+
+--- per save (timestamp, stream reconnected (CONNECTED) within 3 s, ROOT_EXECUTION_VIEW_SNAPSHOT within 3 s, stale re-read [DIAG] within 3 s):
+base-1: saves=6 reconnect_after_save=6 snapshot_after_save=6 stale_reread=3
+   ('2026-10-20T17:52:41.855Z', True, True, True)
+   ('2026-10-20T17:54:06.164Z', True, True, True)
+   ('2026-10-20T17:55:32.151Z', True, True, True)
+   ('2026-10-20T17:56:56.012Z', True, True, False)
+   ('2026-10-20T17:57:24.037Z', True, True, False)
+   ('2026-10-20T17:57:54.784Z', True, True, False)
+ticket-1: saves=6 reconnect_after_save=6 snapshot_after_save=6 stale_reread=1
+   ('2026-10-20T17:59:30.136Z', True, True, False)
+   ('2026-10-20T18:00:01.329Z', True, True, False)
+   ('2026-10-20T18:00:29.153Z', True, True, True)
+   ('2026-10-20T18:01:52.429Z', True, True, False)
+   ('2026-10-20T18:02:20.927Z', True, True, False)
+   ('2026-10-20T18:02:54.880Z', True, True, False)
+base-2: saves=6 reconnect_after_save=6 snapshot_after_save=6 stale_reread=1
+   ('2026-10-20T18:04:34.318Z', True, True, False)
+   ('2026-10-20T18:05:06.962Z', True, True, False)
+   ('2026-10-20T18:05:37.810Z', True, True, False)
+   ('2026-10-20T18:06:14.547Z', True, True, False)
+   ('2026-10-20T18:06:45.843Z', True, True, True)
+   ('2026-10-20T18:08:12.457Z', True, True, False)
+ticket-2: saves=6 reconnect_after_save=6 snapshot_after_save=6 stale_reread=2
+   ('2026-10-20T18:11:47.180Z', True, True, False)
+   ('2026-10-20T18:12:22.317Z', True, True, False)
+   ('2026-10-20T18:12:53.291Z', True, True, True)
+   ('2026-10-20T18:14:24.266Z', True, True, False)
+   ('2026-10-20T18:14:59.775Z', True, True, True)
+   ('2026-10-20T18:16:27.559Z', True, True, False)
+
+--- totals
+base   (3b2c86ca9e): 12 saves, reconnect+snapshot after 12, stale re-read 4, probe failures 4
+ticket (dd396d8820): 12 saves, reconnect+snapshot after 12, stale re-read 3, probe failures 3
+
+--- base sequence around its first stale re-read (base-1 diag.log):
+2026-10-20T17:52:41.840Z ws agent-org/hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8 ROOT_EXECUTION_EVENT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_30bd_e3b96ee435b14f47b310ed812a
+2026-10-20T17:52:41.849Z ws agent-org/hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8 CONNECTED {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8","se
+2026-10-20T17:52:41.850Z ws agent-org/hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8 ROOT_EXECUTION_VIEW_SNAPSHOT {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_30bd_e3b96ee435b14f47b3
+2026-10-20T17:52:41.851Z ws agent-org/hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8 ROOT_LIFECYCLE {"root_subject_kind":"agent_org","root_run_id":"hostorg_org_30bd_e3b96ee435b14f47b310ed812a1587b8
+2026-10-20T17:52:41.855Z graphql UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-20T17:52:41.876Z console.error [DIAG] loadAgentOrgCanonical failed: Org configuration read is stale; refresh required. current= true
+2026-10-20T17:52:41.906Z graphql AgentOrgRunConfig status=200 errors=null
+2026-10-20T17:52:41.991Z graphql DelegatedLaunchModelOptions status=200 errors=null
