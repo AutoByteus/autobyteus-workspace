@@ -17,8 +17,8 @@ Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autob
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2 (CRR-003: INT-001 merge `5cfccd66c7` + Secret Gate `bda3731947`; planned cases unchanged; the rerun-by-impact plan is in the execution report's Round section)
 - Trigger: code review CRR-001 Pass → API/E2E (message from `/software_engineering_team/code_reviewer`)
 - Prior Investigation Reviewed: N/A
 - Latest Authoritative Investigation: this file, round 1

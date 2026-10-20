@@ -1,0 +1,10 @@
+# Case: API-13 round 2 (agent-org-draft-retention)
+# Commit: 2147206408 (merged web source)
+# Date: 2026-10-20
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:agent-org-draft-retention /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/agent-org-draft-retention-probe.mjs --output-dir /tmp/ab205e2e/r2-api13-agent-org-draft-retention
+
+Agent Org draft-retention browser probe failed. See /tmp/ab205e2e/r2-api13-agent-org-draft-retention/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
