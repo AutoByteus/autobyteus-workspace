@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (per slice; this parent itself produces documents only)
 - Bootstrap result: Worktree created. Ticket folder `tickets/in-progress/cross-node-agent-communication/` created (untracked). The earlier draft was copied unchanged from the stale worktree into `history-sr-002/`.
 - Bootstrap blocker: None. The stale worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication` (branch `codex/cross-node-agent-communication` at `b0b077b02`, 1,810 commits behind `origin/personal`, with no commits of its own) was left untouched; it can be removed when the user agrees.
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-012`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-19); `references/ticket-scope.md` (2026-10-19); the templates for the requirements doc, investigation notes and solution revision record (2026-10-19). Repository: `AGENTS.md`, `TESTING.md` (layers, 2026-10-19). The architecture reading gate (`architecture-design.md`, `design-principles.md`, `DESIGN.md`) applies in slice 1's Task, where the design is made.
 - Investigation status: Requirements-phase investigation complete for slice 1 and the slice plan. Architecture investigation is for slice 1's Task.
 
@@ -113,9 +113,18 @@
 
 ## Runtime, Probe, Or Reproduction Findings
 
-| Method / Command | Scenario | Observation | Requirement Implication | Artifact / Evidence Path |
-| --- | --- | --- | --- | --- |
-| Code reading (no runtime probe needed at this level) | Network peer calling a node's GraphQL | The route policy allows non-loopback, credential-less requests to protected routes | QR-103, RSK-101 | S-11 |
+Premise checks for the slice 1 design (2026-10-20, `references/finding-the-cause.md`). Every other finding in these notes is `Read`.
+
+| ID | Method / Command | Scenario | Observation | Established | Design Implication | Artifact / Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| P-1 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access/route-policy.test.ts --no-watch` (worktree `5de6a698b9`) | A non-loopback caller without credentials on protected routes | 8/8 pass, including "allows trusted-network protected HTTP without bearer credentials" (peer `100.64.1.2` → `ok, trusted_network`) | Reproduced (unit, real policy code) | QR-103 / RSK-101: the trusted-network backend is already open to network callers; the new `/rest/remote/*` routes add no new class of access | Command output in this session |
+| P-2 | `docker run --rm curlimages/curl -s http://host.docker.internal:29811/health.json` against a throwaway `python3 -m http.server 29811 --bind 0.0.0.0` on the Mac (stopped after) | A Docker container reaching a server on the host | Returned `{"probe":"host-reachable"}` (Docker 29.0.1, macOS) | Reproduced | ASM-102 holds for the desktop + Docker setup on macOS; Linux `host-gateway` stays to check in the slice's E2E | `/tmp/cross-node-r2/probe/` |
+| P-3 | `docker run --rm curlimages/curl -s -X POST --data '{"query":"{ __typename }"}' http://host.docker.internal:29695/graphql` (read-only query against the running desktop server) | A container calling the desktop node's GraphQL without credentials | `{"data":{"__typename":"Query"}}` | Reproduced (real server, real network path) | Confirms P-1 end to end: a peer on the network can already call the full backend (RSK-001/RSK-101 basis) | Command output in this session |
+| P-4 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/standalone-agent-run-root/standalone-host-agent-handle.test.ts --no-watch` | A standalone host made ready again after it went offline | 3/3 pass, including "re-activates after a crash and lets a failed attempt be retried" | Reproduced (unit, fake backend) | DS-002/DS-006: an inbound message can restore a remote-started host through `ensureReady()`. Restore through real runtimes is for the slice's E2E | Command output in this session |
+| P-5 | `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` (read) | Two real built server processes in one E2E | An existing harness spawns two servers (`dist/app.js`) on separate ports and data directories | Read | Two-server E2E for AC-101 … AC-111 can reuse this harness | File header |
+
+- Temporary diagnostics: none in the repository. The throwaway server and probe file were only in `/tmp/cross-node-r2/probe/`; the server was stopped.
+- Reproduction for implementation to start from: `None`. This is a new capability with no bug to reproduce; P-5 is the harness to start from.
 
 ## Stakeholder And User Evidence
 

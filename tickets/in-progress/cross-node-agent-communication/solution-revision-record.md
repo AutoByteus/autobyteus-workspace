@@ -154,3 +154,17 @@ See `history-sr-002/solution-revision-record.md` § SR-002.
 - Intended behavior changed: `No`.
 - Applied handoff-rule outcome: see `handoff-architecture-review.md`.
 - Next action: architecture review.
+
+### SR-012 — Naming review (2026-10-20)
+
+- Phase and classification: Design / `Refinement` (naming only) with the user.
+- Trigger: the user: "why don't you use /rest/peers … or /remote/ instead of cross-node in the url"; "what is the RootRemoteLinks?"; "please still use Remote, remote makes me feel it's from remote"; "PeerNode or RemoteNode?" → `PeerNode` ("Good … continue").
+- Change: naming rule (peer = the other node, remote = what lives on a peer, the feature = remote collaboration, no "cross-node" in names).
+  - `RootRemoteLinks` → `RemoteRunLinks`; `CrossNodeChannelPort` → `RemoteRunChannel`; `CrossNodeGateway` → `PeerGateway`.
+  - `CrossNodeSettingsService` split into `PeerDirectory`, `PublishedAgentService` and `RemoteCollaborationCapability`.
+  - `/rest/cross-node/*` → `/rest/remote/*`; route class `REMOTE_PEER`.
+  - `ENABLE_CROSS_NODE` → `ENABLE_REMOTE_COLLABORATION`; `<data>/cross-node/` → `<data>/remote-collaboration/`; `src/cross-node/` → `src/remote-collaboration/`; module doc `remote_collaboration.md`.
+  - GraphQL: `peerNodes`, `addPeerNode`, …; `coordinatingRoot` unified to `coordinatingRun`.
+  - Contract § 4 retitled "Remote Delegated Runs".
+- Intended behavior changed: `No`.
+- Next action: premise checks (route policy, Docker host reachability, standalone restore on message), then a revision note to the architecture reviewer.

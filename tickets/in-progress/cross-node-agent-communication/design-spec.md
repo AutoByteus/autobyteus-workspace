@@ -1,8 +1,8 @@
-# Design Spec — Cross-Node Slice 1: Remote Delegation, Text Only (autobyteus-191)
+# Design Spec — Slice 1: Remote Delegation, Text Only (autobyteus-191)
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-011`
+- Current solution revision ID: `SR-012`
 - Approved requirements baseline: `requirements-doc.md` at SR-007 (approved by the User 2026-10-19: SR-004 for the slice, SR-005 for no version check, SR-007 for `node` on `delegate_task` only)
 - Behavior-defining supplements: `slice-plan.md` (approved 2026-10-19)
 - Design status: `Ready` (SR-011). The architecture was discussed with the user 2026-10-19/20 (SR-005 … SR-011): tool shape, contract, on-disk data model and back-link. Classified below.
@@ -36,7 +36,7 @@ Add a node-to-node channel and a **remote endpoint**. A run on a peer becomes a 
 ## Change Scope (Mandatory)
 
 - In scope: UC-101 … UC-105. Areas:
-  - a new `src/cross-node/` subsystem: peers, publishing, switch, channel, gateway, inbound handlers;
+  - a new `src/remote-collaboration/` subsystem: peers, publishing, switch, channel, gateway, inbound handlers;
   - remote endpoints in the shared root communication and task activation (`src/agent-collaboration/execution/remote/`);
   - the remote placement in delegation;
   - the `node` parameter of `delegate_task` (DEC-111);
@@ -70,21 +70,21 @@ Add a node-to-node channel and a **remote endpoint**. A run on a peer becomes a 
 
 | Artifact Path | Purpose | Related IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `slice-plan.md` | Foundations F-1 … F-4 | All | F-1 → `cross-node/peers`; F-2 → channel + gateway; F-3 → remote links; F-4 → remote endpoints in roots | Approved |
+| `slice-plan.md` | Foundations F-1 … F-4 | All | F-1 → `remote-collaboration/` peers and publishing; F-2 → channel + gateway; F-3 → remote links; F-4 → remote endpoints in roots | Approved |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Larger Requirement` (feature)
 - Current design issue found: `No` for the existing owners. One structural point: the shared root communication engine assumes every endpoint is local.
 - Structural triggers:
-  - **Repeated coordination:** fires potentially. Three root kinds would each need remote delivery. Response: one shared owner (`RootRemoteLinks`) that each root plugs in, as roots already share `RootCommunicationEngine` and `RootTaskExecutionLifecycle`.
+  - **Repeated coordination:** fires potentially. Three root kinds would each need remote delivery. Response: one shared owner (`RemoteRunLinks`) that each root plugs in, as roots already share `RootCommunicationEngine` and `RootTaskExecutionLifecycle`.
   - **Ambiguous boundary:** ruled out. The remote endpoint has its own explicit identity (`RemoteRunReference`), and the tool takes an explicit `node`.
   - **Shared-structure looseness:** avoided. There is no optional `nodeId` on the existing local identity types; a distinct type is used instead (DEC-111 reasoning).
-  - **Responsibility overload:** `RootCommunicationEngine` would grow. Response: the remote send/accept paths live in `RootRemoteLinks`, which uses the engine's existing adapter for the local half.
+  - **Responsibility overload:** `RootCommunicationEngine` would grow. Response: the remote send/accept paths live in `RemoteRunLinks`, which uses the engine's existing adapter for the local half.
 - Root cause classification: `No Design Issue Found` (new capability on healthy owners)
 - Refactor needed now: `No`. One small extension: the engine accepts a caller-supplied message ID for inbound messages (CM-9 needs one ID on both nodes).
 - Evidence: A-01 … A-08.
-- Design response: extend the existing owners. Add a new `cross-node` subsystem for node concerns. Keep cross-node knowledge out of runtime adapters and tools, except for the `node` parameter.
+- Design response: extend the existing owners. Add a new `remote-collaboration` subsystem for node concerns. Keep remote-collaboration knowledge out of runtime adapters and tools, except for the `node` parameter.
 - Intentional deferrals: local CM-7 conversion (DEC-110); lifecycle control across the link (S3).
 
 ## Terminology
@@ -116,9 +116,9 @@ This section is the authority for every file slice 1 adds or changes. Everything
 
 ```text
 NODE A (desktop, srv_A)                                   NODE B (docker, srv_B)
-<data>/.env            ENABLE_CROSS_NODE=true             <data>/.env            ENABLE_CROSS_NODE=true
-<data>/cross-node/peers.json   → B: srv_B, "docker", URL  <data>/cross-node/peers.json   → A: srv_A, "desktop", URL
-<data>/cross-node/published-agents.json  (A's own offers) <data>/cross-node/published-agents.json → "Publisher" + launch settings
+<data>/.env            ENABLE_REMOTE_COLLABORATION=true             <data>/.env            ENABLE_REMOTE_COLLABORATION=true
+<data>/remote-collaboration/peers.json   → B: srv_B, "docker", URL  <data>/remote-collaboration/peers.json   → A: srv_A, "desktop", URL
+<data>/remote-collaboration/published-agents.json  (A's own offers) <data>/remote-collaboration/published-agents.json → "Publisher" + launch settings
 
 <memory>/agents/agent_a1/                                 <memory>/agents/agent_7f3/          ← the remote run: B's own run
   run_metadata.json        (delegator, a normal run)        run_metadata.json  + delegatedFrom { nodeId: srv_A, coordinatingRun, agent_a1 }
@@ -132,9 +132,9 @@ The same message `collabmsg_X` appears in A's log for `agent_a1` and in B's log 
 
 ### Files on every node
 
-**1. The switch: `<data>/.env`, key `ENABLE_CROSS_NODE`.** Written by `ServerSettingsService.updateSetting`, which is the existing mechanism for `ENABLE_SKILL_IMPROVEMENT` and `ENABLE_APPLICATIONS`. Absent or not `true` means off.
+**1. The switch: `<data>/.env`, key `ENABLE_REMOTE_COLLABORATION`.** Written by `ServerSettingsService.updateSetting`, which is the existing mechanism for `ENABLE_SKILL_IMPROVEMENT` and `ENABLE_APPLICATIONS`. Absent or not `true` means off.
 
-**2. Peers: `<data>/cross-node/peers.json`.** New. Owner: `CrossNodeSettingsService`, the only reader and writer.
+**2. Peers: `<data>/remote-collaboration/peers.json`.** New. Owner: `PeerDirectory`, the only reader and writer.
 
 ```json
 {
@@ -155,7 +155,7 @@ The same message `collabmsg_X` appears in A's log for `agent_a1` and in B's log 
 - Rename changes `name` only. Remove deletes the entry. Links that name a removed peer stay on disk and refuse with "not registered" (REQ-102).
 - No secret is stored (slice 1). S6 adds its credential fields here.
 
-**3. Published agents: `<data>/cross-node/published-agents.json`.** New. Owner: `CrossNodeSettingsService`.
+**3. Published agents: `<data>/remote-collaboration/published-agents.json`.** New. Owner: `PublishedAgentService`, the only reader and writer.
 
 ```json
 {
@@ -311,10 +311,10 @@ Each field has a reader on B:
 | Spine ID | Scope | Behavior | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary | BEH-103/105/106 | Agent on A calls `delegate_task({node,…})` | Remote run on B working on the packet; A's tool result | A: the root's `RootTaskExecutionLifecycle`; B: `RemoteDelegationReceiver` | The handoff |
-| DS-002 | Primary | BEH-104 | Delegator on A calls `send_message_to(remote run id)` | Admitted into the remote run on B; both logs written | A: root + `RootRemoteLinks`; B: the remote run's standalone root | Follow-up A→B |
-| DS-003 | Primary | BEH-104 | Remote run on B calls `send_message_to(delegator run id)` | Admitted into the delegator on A (woken if needed) | B: standalone root + `RootRemoteLinks`; A: the coordinating root | Reply B→A |
-| DS-004 | Primary | BEH-101/102 | Owner in the Nodes tab | Settings stored | `CrossNodeSettingsService` | Setup |
-| DS-005 | Bounded local | BEH-101 | Inbound HTTP request | Handler result | `CrossNodeGateway` | The single entry point (REQ-114, S6 hook) |
+| DS-002 | Primary | BEH-104 | Delegator on A calls `send_message_to(remote run id)` | Admitted into the remote run on B; both logs written | A: root + `RemoteRunLinks`; B: the remote run's standalone root | Follow-up A→B |
+| DS-003 | Primary | BEH-104 | Remote run on B calls `send_message_to(delegator run id)` | Admitted into the delegator on A (woken if needed) | B: standalone root + `RemoteRunLinks`; A: the coordinating root | Reply B→A |
+| DS-004 | Primary | BEH-101/102 | Owner in the Nodes tab | Settings stored | `PeerDirectory`, `PublishedAgentService` | Setup |
+| DS-005 | Bounded local | BEH-101 | Inbound HTTP request | Handler result | `PeerGateway` | The single entry point (REQ-114, S6 hook) |
 | DS-006 | Bounded local | BEH-104/106 | Remote-started host goes quiet | Host shut down, restorable | `StandaloneAgentRunRoot` (host idle schedule) | REQ-107 "shut down for being idle" |
 
 ## Primary Execution Spine(s)
@@ -323,20 +323,20 @@ Each field has a reader on B:
 DS-001  Agent tool call → delegate_task parser (node) → A root.delegateToNewCopy
         → resolveDelegationPlacement (remote placement: peer + published address)
         → RootTaskExecutionLifecycle (Task link written, serialized)
-        → RemoteTaskActivation.prepare → PeerClient.startDelegatedRun → B CrossNodeGateway
+        → RemoteTaskActivation.prepare → PeerClient.startDelegatedRun → B PeerGateway
         → RemoteDelegationReceiver → B creates a standalone run (published launch settings, back-link)
         ← remote run id → A commit: tree write (`taskExecutions` link with `nodeId`)
         → acceptSeed: work packet sent as the first deliverMessage → B admits → tool result {node, run id}
 
 DS-002  Delegator send_message_to(remote id) → GlobalAgentRunMessageRouter (sender root hasAgentExecution: yes, remote endpoint)
-        → A root.deliverExactAgentMessage → RootRemoteLinks.sendToRemote (Task check, pair check, message id)
-        → PeerClient.deliverMessage → B CrossNodeGateway → RemoteMessageReceiver
+        → A root.deliverExactAgentMessage → RemoteRunLinks.sendToRemote (Task check, pair check, message id)
+        → PeerClient.deliverMessage → B PeerGateway → RemoteMessageReceiver
         → B StandaloneAgentRunRoot.acceptRemoteMessage → host ensureReady (restore) → reserve + commit (host log) → admitted
         ← accepted → A appends to the delegator's log → tool result
 
 DS-003  Remote run send_message_to(delegator id) → router (B root hasAgentExecution: yes, back-link endpoint)
-        → B root.deliverExactAgentMessage → RootRemoteLinks.sendToRemote → PeerClient.deliverMessage (with coordinatingRoot)
-        → A CrossNodeGateway → RemoteMessageReceiver → resolve/restore A's root by coordinatingRoot
+        → B root.deliverExactAgentMessage → RemoteRunLinks.sendToRemote → PeerClient.deliverMessage (with coordinatingRun)
+        → A PeerGateway → RemoteMessageReceiver → resolve/restore A's root by coordinatingRun
         → root.acceptRemoteMessage (link check, Task check, wake delegator) → commit (delegator's log) → admitted
         ← accepted → B appends to the host's log → tool result
 ```
@@ -346,24 +346,26 @@ DS-003  Remote run send_message_to(delegator id) → router (B root hasAgentExec
 | Spine ID | Short Narrative | Main Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | The agent names a peer and a published address. The root resolves this to a remote placement and runs the same serialized activation as a local copy. The remote activation asks B to create the run (B returns its ID without admitting work), A records the link, and only then is the work packet delivered. So the remote run can never reply before A knows the link. | Tool, root, lifecycle, remote activation, peer client, gateway, receiver | A: lifecycle; B: receiver | Peer lookup, published lookup, launch resolution on B, header text |
-| DS-002 | A follow-up to a run ID that the root knows as a remote endpoint goes through `RootRemoteLinks`. It applies the Task check and the pair rule (only the delegator), assigns the message ID and sends. B admits the message into the remote run (restoring it if needed) and writes it to that run's log. When B accepts, A writes the same message to the delegator's log. | Router, root, remote links, client, gateway, B root | `RootRemoteLinks` (A) / standalone root (B) | Channel timeout, refusal mapping |
-| DS-003 | This is the mirror of DS-002. B's root knows the delegator as the back-link endpoint. The request carries `coordinatingRoot`, which A gave at start, so A finds the root without scanning anything. It restores the root if it is not active and checks that the root really holds this link from this peer. | Router, B root, client, A gateway, A root | `RootRemoteLinks` (B) / A's root | Root restore by kind |
-| DS-004 | The owner adds a peer by URL. The service fetches `/rest/remote-access/status` and pins the `serverInstanceId`. The owner publishes Agents with their launch settings, validated by the existing model/runtime validator. | UI, GraphQL, settings service, store | `CrossNodeSettingsService` | Identity fetch, launch validation |
-| DS-005 | Every inbound request checks the switch, then that `fromNodeId` is a registered peer, then dispatches to its handler. Nothing else is reachable through these routes. | Gateway | `CrossNodeGateway` | Refusal codes |
+| DS-002 | A follow-up to a run ID that the root knows as a remote endpoint goes through `RemoteRunLinks`. It applies the Task check and the pair rule (only the delegator), assigns the message ID and sends. B admits the message into the remote run (restoring it if needed) and writes it to that run's log. When B accepts, A writes the same message to the delegator's log. | Router, root, remote links, client, gateway, B root | `RemoteRunLinks` (A) / standalone root (B) | Channel timeout, refusal mapping |
+| DS-003 | This is the mirror of DS-002. B's root knows the delegator as the back-link endpoint. The request carries `coordinatingRun`, which A gave at start, so A finds the root without scanning anything. It restores the root if it is not active and checks that the root really holds this link from this peer. | Router, B root, client, A gateway, A root | `RemoteRunLinks` (B) / A's root | Root restore by kind |
+| DS-004 | The owner adds a peer by URL. The service fetches `/rest/remote-access/status` and pins the `serverInstanceId`. The owner publishes Agents with their launch settings, validated by the existing model/runtime validator. | UI, GraphQL, settings service, store | `PeerDirectory` / `PublishedAgentService` | Identity fetch, launch validation |
+| DS-005 | Every inbound request checks the switch, then that `fromNodeId` is a registered peer, then dispatches to its handler. Nothing else is reachable through these routes. | Gateway | `PeerGateway` | Refusal codes |
 | DS-006 | A standalone host with `delegatedFrom` gets the same idle schedule and grace setting as delegated copies. The next inbound message restores it. | Standalone root | `StandaloneAgentRunRoot` | `TaskExecutionIdleShutdownSchedule` reuse |
 
 ## Spine Actors / Main-Line Nodes
 
-Delegate tool parser · root (`StandaloneAgentRunRoot` / `RootTeamRun` / `AgentOrgRun`) · `RootTaskExecutionLifecycle` · `RemoteTaskActivation` · `RootRemoteLinks` · `PeerClient` · `CrossNodeGateway` · `RemoteDelegationReceiver` · `RemoteMessageReceiver` · `CrossNodeSettingsService`.
+Delegate tool parser · root (`StandaloneAgentRunRoot` / `RootTeamRun` / `AgentOrgRun`) · `RootTaskExecutionLifecycle` · `RemoteTaskActivation` · `RemoteRunLinks` · `PeerClient` · `PeerGateway` · `RemoteDelegationReceiver` · `RemoteMessageReceiver` · `PeerDirectory` / `PublishedAgentService`.
 
 ## Ownership Map
 
-- **`CrossNodeSettingsService`**: owns peers (identity pinning, rename, remove), published Agents (validation of launch settings), and the switch reading. It is the only reader and writer of `cross-node/peers.json` and `cross-node/published-agents.json`.
+- **`PeerDirectory`**: owns the peers: add (identity check and pinning), rename, remove, and lookup by name or node ID. It is the only reader and writer of `remote-collaboration/peers.json`.
+- **`PublishedAgentService`**: owns what this node offers: publish, unpublish, update, launch-settings validation, and the published address of each Agent. It is the only reader and writer of `remote-collaboration/published-agents.json`.
+- **`RemoteCollaborationCapability`**: reads the switch `ENABLE_REMOTE_COLLABORATION` through the existing feature-capability mechanism.
 - **`PeerClient`**: owns outbound transport. It sets the bounded timeout (QR-102, proposed 20 s), sends the envelope `{fromNodeId, request}`, checks that the answering node's `serverInstanceId` matches the pinned one, and maps transport failures to refusal codes. It knows nothing about runs.
-- **`CrossNodeGateway`**: owns inbound admission (switch, registered peer) and dispatch to one handler per request kind. **This is the S6 hook** (REQ-114).
+- **`PeerGateway`**: owns inbound admission (switch, registered peer) and dispatch to one handler per request kind. **This is the S6 hook** (REQ-114).
 - **`RemoteDelegationReceiver`** (B): owns `startDelegatedRun`. It checks that the Agent is published, creates the standalone run with the published launch settings, workspace and back-link, and returns the run ID without admitting work.
-- **`RemoteMessageReceiver`** (both nodes): owns resolving the target root of an inbound message. On B, it resolves the remote run's own standalone root. On A, it uses `coordinatingRoot`, restoring the root if it is not active. It then calls `root.acceptRemoteMessage`.
-- **`RootRemoteLinks`** (shared, one per root): owns the root's remote endpoints. It provides index membership (`hasAgentExecution`), the pair rule, outbound send (Task check, then send, then sender-log append) and inbound accept (link check, Task check, then local reserve and commit to the receiver's log). Each root plugs it into its delivery and its index.
+- **`RemoteMessageReceiver`** (both nodes): owns resolving the target root of an inbound message. On B, it resolves the remote run's own standalone root. On A, it uses `coordinatingRun`, restoring the root if it is not active. It then calls `root.acceptRemoteMessage`.
+- **`RemoteRunLinks`** (shared, one per root): owns the root's remote endpoints. It provides index membership (`hasAgentExecution`), the pair rule, outbound send (Task check, then send, then sender-log append) and inbound accept (link check, Task check, then local reserve and commit to the receiver's log). Each root plugs it into its delivery and its index.
 - **`RemoteTaskActivation`** (shared): the remote variant of `TaskExecutionActivationOperation`. `prepare` calls `startDelegatedRun`; `commit` writes the tree entry; `acceptSeed` sends the work packet. The root's lifecycle is unchanged.
 - **Roots**: own their tree (including links with `nodeId`) and their gate. The standalone root also owns its back-link endpoint and host idle schedule.
 
@@ -371,8 +373,8 @@ Delegate tool parser · root (`StandaloneAgentRunRoot` / `RootTeamRun` / `AgentO
 
 | Facade | Owner Behind It | Why | Must Not Own |
 | --- | --- | --- | --- |
-| `api/rest/cross-node.ts` (`POST /rest/cross-node/delegated-runs`, `POST /rest/cross-node/messages`) | `CrossNodeGateway` | HTTP binding | Admission or business rules |
-| `api/graphql/types/cross-node-settings.ts` | `CrossNodeSettingsService` | UI API | Validation |
+| `api/rest/remote.ts` (`POST /rest/remote/delegated-runs`, `POST /rest/remote/messages`) | `PeerGateway` | HTTP binding | Admission or business rules |
+| `api/graphql/types/remote-collaboration-settings.ts` | `PeerDirectory`, `PublishedAgentService` | UI API | Validation |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -386,7 +388,7 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 
 ## Bounded Local / Internal Spines
 
-- `CrossNodeGateway` (DS-005): `request → switch on? → fromNodeId registered? → handler by kind → result | refusal`.
+- `PeerGateway` (DS-005): `request → switch on? → fromNodeId registered? → handler by kind → result | refusal`.
 - Host idle schedule (DS-006): `host status idle/offline/error → arm grace → fire → quiet? → shut down host`. A `running` status, or a message or lease, cancels it. It reuses `TaskExecutionIdleShutdownSchedule` and `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS`.
 
 ## Off-Spine Concerns Around The Spine
@@ -396,33 +398,33 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 | Published address map | DS-001, DS-004 | Receiver, settings | Address of each published Agent via the existing `CatalogAddressMap` over the published set | Same address rules as the catalog | Duplicated address policy |
 | Launch resolution on B | DS-001 | Receiver | Validate the published settings with `RunModelSelectionValidator`; refuse "cannot run there: <reason>" | REQ-109 | Mixed policy in receiver |
 | Header wording | DS-001/002/003 | Builders | `… sender run id "X" on node "<peer name>"` and the work packet's `… on node "<name>"`, in the existing builders (`task-execution-input.ts`, `root-communication-runtime-builder.ts`) | One wording owner | Wording drift across paths |
-| Refusal codes | All | Client, gateway, roots | One code list (`cross-node-refusals.ts`) mapped to `{accepted:false, code, message}` / `{delegated:false, message}` | REQ-109 | Ad hoc strings |
+| Refusal codes | All | Client, gateway, roots | One code list (`remote-refusals.ts`) mapped to `{accepted:false, code, message}` / `{delegated:false, message}` | REQ-109 | Ad hoc strings |
 
 ## Ownership Boundaries
 
 - Tools and runtime adapters know only the `node` parameter. They never touch the channel.
-- Selector rule (DEC-111): `node` exists only on `delegate_task`, naming where a new copy starts. `send_message_to` keeps its parameters: the router asks the sender's root `hasAgentExecution(run id)`, and the root answers for its local runs and its remote endpoints alike; the root then routes a remote endpoint through `RootRemoteLinks`. The global live-only path never reaches a peer. A run ID that is neither local nor linked keeps today's refusal.
-- Roots reach the channel only through `RootRemoteLinks` / `RemoteTaskActivation`. These depend on a narrow `CrossNodeChannelPort` (`startDelegatedRun`, `deliverMessage`) and a peer lookup, never on HTTP.
-- `src/cross-node/` reaches roots only through their public root APIs: `acceptRemoteMessage`, plus the managers' resolve/restore.
+- Selector rule (DEC-111): `node` exists only on `delegate_task`, naming where a new copy starts. `send_message_to` keeps its parameters: the router asks the sender's root `hasAgentExecution(run id)`, and the root answers for its local runs and its remote endpoints alike; the root then routes a remote endpoint through `RemoteRunLinks`. The global live-only path never reaches a peer. A run ID that is neither local nor linked keeps today's refusal.
+- Roots reach the channel only through `RemoteRunLinks` / `RemoteTaskActivation`. These depend on a narrow `RemoteRunChannel` (`startDelegatedRun`, `deliverMessage`) and a peer lookup, never on HTTP.
+- `src/remote-collaboration/` reaches roots only through their public root APIs: `acceptRemoteMessage`, plus the managers' resolve/restore.
 
 ## Boundary Encapsulation Map
 
 | Boundary | Encapsulates | Callers | Forbidden Bypass | If Too Thin |
 | --- | --- | --- | --- | --- |
-| `CrossNodeGateway` | Admission checks, handler dispatch | REST routes | A route calling a receiver directly | Add a handler kind |
-| `PeerClient` (via `CrossNodeChannelPort`) | HTTP, timeout, identity check | `RootRemoteLinks`, `RemoteTaskActivation`, settings | Roots using `fetch` | Extend the port |
+| `PeerGateway` | Admission checks, handler dispatch | REST routes | A route calling a receiver directly | Add a handler kind |
+| `PeerClient` (via `RemoteRunChannel`) | HTTP, timeout, identity check | `RemoteRunLinks`, `RemoteTaskActivation`, settings | Roots using `fetch` | Extend the port |
 | Root `acceptRemoteMessage` | Link check, Task check, wake, log commit | `RemoteMessageReceiver` | Receiver posting to an AgentRun directly | Extend the root API |
-| `CrossNodeSettingsService` | Settings file | Gateway, client, receiver, GraphQL | Reading the JSON file elsewhere | Add a query |
+| `PeerDirectory` / `PublishedAgentService` (each for its file) | The settings files | Gateway, client, receivers, GraphQL | Reading a JSON file elsewhere | Add a query |
 
 ## Dependency Rules
 
 - Allowed directions:
   - `agent-tools` → `agent-collaboration`;
-  - `agent-collaboration/execution/remote` → its `CrossNodeChannelPort` interface (owned by `agent-collaboration`, implemented by `cross-node`);
-  - `cross-node` → root managers' public APIs and `remote-access` (identity).
+  - `agent-collaboration/execution/remote` → its `RemoteRunChannel` interface (owned by `agent-collaboration`, implemented by `remote-collaboration`);
+  - `remote-collaboration` → root managers' public APIs and `remote-access` (identity).
 - Forbidden:
-  - `agent-collaboration` importing `cross-node` HTTP code;
-  - `cross-node` reading root trees or message logs directly;
+  - `agent-collaboration` importing `remote-collaboration` HTTP code;
+  - `remote-collaboration` reading root trees or message logs directly;
   - runtime backends (Codex/Claude/AutoByteus) knowing about nodes.
 
 ## Interface Boundary Mapping
@@ -431,11 +433,11 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 | --- | --- | --- | --- | --- |
 | `delegate_task({node?, recipient_address, description})` | Delegation | `node` given → remote placement; `task_id`/`reference_files` with `node` → refused | `node` = peer name on this node; address = published address on the peer | Result adds `node` |
 | `send_message_to({target_agent_run_id, content})` (unchanged parameters) | Message | A run ID the root knows as a remote endpoint is sent through the link; `reference_files` to a remote endpoint → refused | Run ID (unique) | The tool result and header name the node |
-| `POST /rest/cross-node/delegated-runs` | Start a remote run | B creates the run; no work yet | `{fromNodeId, requestId, publishedAddress, delegator:{agentRunId}, coordinatingRoot:{kind, runId}}` → `{agentRunId}` | Refusals as codes |
-| `POST /rest/cross-node/messages` | Deliver one message | Admit into the target run | `{fromNodeId, messageId, sender:{agentRunId}, target:{agentRunId}, coordinatingRoot?, content, messageType, kind: "work_packet" \| "message"}` | `messageId` is shared by both logs (CM-9). The receiver ignores a `messageId` it already holds (idempotent). |
-| `CrossNodeChannelPort` | Outbound channel | Two methods above | `RemoteRunReference` | Port owned by `agent-collaboration` |
+| `POST /rest/remote/delegated-runs` | Start a remote run | B creates the run; no work yet | `{fromNodeId, requestId, publishedAddress, delegator:{agentRunId}, coordinatingRun:{kind, runId}}` → `{agentRunId}` | Refusals as codes |
+| `POST /rest/remote/messages` | Deliver one message | Admit into the target run | `{fromNodeId, messageId, sender:{agentRunId}, target:{agentRunId}, coordinatingRun?, content, messageType, kind: "work_packet" \| "message"}` | `messageId` is shared by both logs (CM-9). The receiver ignores a `messageId` it already holds (idempotent). |
+| `RemoteRunChannel` | Outbound channel | Two methods above | `RemoteRunReference` | Port owned by `agent-collaboration` |
 | Root `acceptRemoteMessage(input)` | Inbound into one root | See ownership | `{fromNodeId, sender: RemoteRunReference, targetAgentRunId, messageId, …}` | All three root kinds |
-| GraphQL `crossNodeSettings` / `addCrossNodePeer` / `renameCrossNodePeer` / `removeCrossNodePeer` / `publishCrossNodeAgent` / `updatePublishedCrossNodeAgent` / `unpublishCrossNodeAgent` | Settings | CRUD | `nodeId`, `definitionId` | — |
+| GraphQL `peerNodes` / `addPeerNode` / `renamePeerNode` / `removePeerNode` / `publishedAgents` / `publishAgent` / `updatePublishedAgent` / `unpublishAgent` | Settings | CRUD | `nodeId`, `definitionId` | — |
 
 ## Interface Boundary Check
 
@@ -448,11 +450,28 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 
 ## Main Domain Subject Naming Check
 
-| Subject | Name | Natural? | Drift Risk | Action |
+Naming rule (the user, SR-012):
+- **peer** is the other node;
+- **remote** is anything that lives on a peer;
+- the feature and its subsystem are **remote collaboration**;
+- **"cross-node" is not used in names.**
+
+`PeerNode` is chosen over `RemoteNode`, because "remote node" already means a server the desktop app opens a window to (Manage Nodes, `nodeType: "remote"`).
+
+| Node / Subject | Name | Natural? | Drift Risk | Action |
 | --- | --- | --- | --- | --- |
-| Registered other node | `PeerNode` | Yes | "node" vs file-tree "node" | Use `peer` in code paths |
-| Remote run identity | `RemoteRunReference` | Yes | — | — |
-| Root-side remote participants | `RootRemoteLinks` | Yes | — | — |
+| Another registered node | `PeerNode` (`peers.json`, `PeerDirectory`) | Yes | Desktop "remote node" | Not `RemoteNode` |
+| The API a peer calls | `/rest/remote/delegated-runs`, `/rest/remote/messages`; route class `REMOTE_PEER`; `PeerGateway` | Yes | `/rest/remote-access/` (Phone Access) | Exact prefixes in the route policy |
+| Calling a peer | `PeerClient` (implements `RemoteRunChannel`) | Yes | — | — |
+| A run on a peer | `RemoteRunReference {nodeId, agentRunId}` | Yes | — | — |
+| A root's links to remote runs and messaging over them | `RemoteRunLinks` (was `RootRemoteLinks`) | Yes | — | — |
+| The link kind in memory | `RemoteTaskAgentExecution` | Yes | — | — |
+| Starting a delegated run on a peer | `RemoteTaskActivation` | Yes | — | — |
+| Handling incoming requests | `RemoteDelegationReceiver`, `RemoteMessageReceiver` | Yes | — | — |
+| What this node offers | `PublishedAgentService` (`published-agents.json`) | Yes | — | — |
+| The switch | `ENABLE_REMOTE_COLLABORATION`, `RemoteCollaborationCapability`; Nodes tab "Remote Collaboration" | Yes | — | — |
+| Back-link on B | `delegatedFrom` (type `DelegatedFrom`) | Yes | — | — |
+| The coordinating run named in requests and in `delegatedFrom` | `coordinatingRun` (one name everywhere) | Yes | `coordinatingRoot` (removed) | — |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -472,43 +491,47 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 
 | Subsystem | Owns | Spines | Decision |
 | --- | --- | --- | --- |
-| `src/cross-node/` (new) | Peers, publishing, switch reading, channel, gateway, inbound receivers | DS-001 … DS-005 | Create New |
-| `src/agent-collaboration/execution/remote/` (new folder) | `RootRemoteLinks`, `RemoteTaskActivation`, `CrossNodeChannelPort`, `RemoteRunReference` | DS-001 … DS-003 | Extend |
+| `src/remote-collaboration/` (new) | Peers, publishing, switch reading, channel, gateway, inbound receivers | DS-001 … DS-005 | Create New |
+| `src/agent-collaboration/execution/remote/` (new folder) | `RemoteRunLinks`, `RemoteTaskActivation`, `RemoteRunChannel`, `RemoteRunReference` | DS-001 … DS-003 | Extend |
 | `src/agent-collaboration/collaborators/` | Remote placement in `resolveDelegationPlacement` | DS-001 | Extend |
 | `src/agent-tools/task-delegation/` | `node` parameter, result | DS-001 | Extend |
-| `src/standalone-agent-run-root/`, `src/agent-team-execution/`, `src/agent-org-execution/` | Wiring of `RootRemoteLinks`, `nodeId` links in trees; standalone back-link and idle schedule | DS-001 … DS-003, DS-006 | Extend |
+| `src/standalone-agent-run-root/`, `src/agent-team-execution/`, `src/agent-org-execution/` | Wiring of `RemoteRunLinks`, `nodeId` links in trees; standalone back-link and idle schedule | DS-001 … DS-003, DS-006 | Extend |
 | `src/api/` | REST routes, route policy class, GraphQL | DS-004, DS-005 | Extend |
-| `autobyteus-web` | Nodes tab "Cross-Node", store, capability toggle | DS-004 | Extend |
+| `autobyteus-web` | Nodes tab "Remote Collaboration", store, capability toggle | DS-004 | Extend |
 
 ## Final File Responsibility Mapping
 
 | File | Owner | Concern |
 | --- | --- | --- |
-| `src/cross-node/domain/peer-node.ts` | Settings | `PeerNode {nodeId, name, baseUrl, addedAt}` |
-| `src/cross-node/domain/published-agent.ts` | Settings | `PublishedAgent {agentDefinitionId, runtimeKind, llmModelIdentifier, llmConfig, workspaceRootPath, autoExecuteTools, publishedAt}` |
-| `src/cross-node/domain/cross-node-requests.ts` | Channel | Request/response shapes of the two kinds and the envelope |
-| `src/cross-node/domain/cross-node-refusals.ts` | Channel | Refusal codes and agent-facing texts |
-| `src/cross-node/settings/peer-store.ts`, `published-agent-store.ts` | Settings | Tolerant read / exact write of `peers.json` and `published-agents.json` |
-| `src/cross-node/settings/cross-node-settings-service.ts` | Settings | CRUD, identity pinning, launch validation, switch reading |
-| `src/cross-node/channel/peer-client.ts` | Channel | Outbound HTTP; implements `CrossNodeChannelPort` |
-| `src/cross-node/channel/cross-node-gateway.ts` | Channel | Inbound admission + dispatch |
-| `src/cross-node/inbound/remote-delegation-receiver.ts` | B | Create the remote run |
-| `src/cross-node/inbound/remote-message-receiver.ts` | Both | Resolve the target root and call `acceptRemoteMessage` |
+| `src/remote-collaboration/domain/peer-node.ts` | Settings | `PeerNode {nodeId, name, baseUrl, addedAt}` |
+| `src/remote-collaboration/domain/published-agent.ts` | Settings | `PublishedAgent {agentDefinitionId, runtimeKind, llmModelIdentifier, llmConfig, workspaceRootPath, autoExecuteTools, publishedAt}` |
+| `src/remote-collaboration/domain/remote-requests.ts` | Channel | Request/response shapes of the two kinds and the envelope |
+| `src/remote-collaboration/domain/remote-refusals.ts` | Channel | Refusal codes and agent-facing texts |
+| `src/remote-collaboration/settings/peer-store.ts`, `published-agent-store.ts` | Settings | Tolerant read / exact write of `peers.json` and `published-agents.json` |
+| `src/remote-collaboration/settings/peer-directory.ts` | Settings | `PeerDirectory` |
+| `src/remote-collaboration/settings/published-agent-service.ts` | Settings | `PublishedAgentService` |
+| `src/remote-collaboration/settings/remote-collaboration-capability.ts` | Settings | `RemoteCollaborationCapability` (`ENABLE_REMOTE_COLLABORATION`) |
+| Modified: `src/run-history/domain/run-execution-tree-shared-records.ts` and the tree schemas | Run history | `RemoteTaskAgentExecution` kind; `nodeId` on links |
+| Modified: `src/run-history/store/agent-run-metadata-types.ts` | Run history | `DelegatedFrom` section type on standalone run metadata |
+| `src/remote-collaboration/channel/peer-client.ts` | Channel | Outbound HTTP; implements `RemoteRunChannel` |
+| `src/remote-collaboration/channel/peer-gateway.ts` | Channel | Inbound admission + dispatch |
+| `src/remote-collaboration/inbound/remote-delegation-receiver.ts` | B | Create the remote run |
+| `src/remote-collaboration/inbound/remote-message-receiver.ts` | Both | Resolve the target root and call `acceptRemoteMessage` |
 | `src/agent-collaboration/execution/remote/remote-run-reference.ts` | Shared | `RemoteRunReference` |
-| `src/agent-collaboration/execution/remote/cross-node-channel-port.ts` | Shared | Port interface |
-| `src/agent-collaboration/execution/remote/root-remote-links.ts` | Shared | Endpoints, pair rule, send, accept |
+| `src/agent-collaboration/execution/remote/remote-run-channel.ts` | Shared | Port interface |
+| `src/agent-collaboration/execution/remote/remote-run-links.ts` | Shared | Endpoints, pair rule, send, accept |
 | `src/agent-collaboration/execution/remote/remote-task-activation.ts` | Shared | The remote activation operation |
-| `src/api/rest/cross-node.ts`, `src/api/graphql/types/cross-node-settings.ts` | Facades | Bindings |
-| Modified: `remote-access-route-policy.ts` | API | New class `CROSS_NODE_PEER`, allowed without a credential; the gateway checks |
+| `src/api/rest/remote.ts`, `src/api/graphql/types/remote-collaboration-settings.ts` | Facades | Bindings |
+| Modified: `remote-access-route-policy.ts` | API | New class `REMOTE_PEER`, allowed without a credential; the gateway checks |
 | Modified: `task-delegation-tool-input-parsers.ts`, `-parameter-schemas.ts`, `task-delegation-tool-serialization.ts`, `agent-team-collaboration-llm-contract.ts` | Tools | `node` parameter of `delegate_task`, its description, result `node` |
 | Modified: `catalog-delegation.ts` | Collaborators | `DelegationPlacement` kind `remote_agent` |
 | Modified: `task-execution-input.ts`, `root-communication-runtime-builder.ts` | Builders | Node in headers |
 | Modified: `root-communication-engine.ts` | Shared | Accept a supplied message ID for inbound messages |
 | Modified: `task-agent-message-logs.ts` | Run history | Remote log owner (skipped) |
-| Modified: the three root trees' types, schemas, stores; the three roots' index, delivery, adapters | Roots | `nodeId` on links, link kinds in readers; `RootRemoteLinks` wiring |
+| Modified: the three root trees' types, schemas, stores; the three roots' index, delivery, adapters | Roots | `nodeId` on links, link kinds in readers; `RemoteRunLinks` wiring |
 | Modified: standalone run metadata type and store; `standalone-agent-run-root.ts` | Standalone | `delegatedFrom` section (standalone metadata type and store); back-link endpoint; idle schedule |
-| Web: `NodeManagerTabs.vue` (+ tab), `CrossNodeSettingsCard.vue`, `stores/crossNodeSettingsStore.ts`, GraphQL documents, localization | Web | Settings UI |
-| Docs: `collaboration_model.md` (drafted in this design round: vocabulary, CM-10 … CM-12, § 3, § 4, § 5), `agent_communication.md`, `agent_team_execution.md`, `standalone_agent_run_root.md`, `agent_tools.md`, new `docs/modules/cross_node.md`, `autobyteus-web/docs/settings.md` | Docs | — |
+| Web: `NodeManagerTabs.vue` (+ tab), `RemoteCollaborationCard.vue`, `stores/remoteCollaborationStore.ts`, GraphQL documents, localization | Web | Settings UI |
+| Docs: `collaboration_model.md` (drafted in this design round: vocabulary, CM-10 … CM-12, § 3, § 4, § 5), `agent_communication.md`, `agent_team_execution.md`, `standalone_agent_run_root.md`, `agent_tools.md`, new `docs/modules/remote_collaboration.md`, `autobyteus-web/docs/settings.md` | Docs | — |
 
 ## Concrete Examples / Shape Guidance
 
@@ -530,12 +553,12 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 ## Change / Refactor Sequence
 
 0. **Contract and data model first** (the user, 2026-10-19). The collaboration model is updated in this branch (CM-10 … CM-12, § 3 storage, § 4, § 5; drafted by the Solution Designer and reviewed with this design). Then the on-disk types, readers and writers of § On-Disk Data Model, with their key-set tests, before any routing code.
-1. `src/cross-node/` settings, store, switch, GraphQL, web tab (DS-004). This can be tested on its own.
+1. `src/remote-collaboration/` settings, store, switch, GraphQL, web tab (DS-004). This can be tested on its own.
 2. Channel: `PeerClient`, gateway, REST routes, route-policy class (DS-005).
-3. `agent-collaboration/execution/remote/`: reference, port, `RootRemoteLinks`, `RemoteTaskActivation`; engine message-ID extension; remote log owner.
+3. `agent-collaboration/execution/remote/`: reference, port, `RemoteRunLinks`, `RemoteTaskActivation`; engine message-ID extension; remote log owner.
 4. Standalone root: back-link, endpoint, `acceptRemoteMessage`, host idle schedule. `RemoteDelegationReceiver`, `RemoteMessageReceiver`.
 5. Delegation: `node` parameter, remote placement, tree array in the standalone root (A side), headers. **First end-to-end: a standalone run on A ↔ B.**
-6. Team and Org roots: tree array, `RootRemoteLinks` wiring, `acceptRemoteMessage`, restore by `coordinatingRoot`.
+6. Team and Org roots: tree array, `RemoteRunLinks` wiring, `acceptRemoteMessage`, restore by `coordinatingRun`.
 7. Docs; two-server E2E (two server instances on different ports and data dirs); the user's desktop + Docker check.
 
 ## Key Tradeoffs
@@ -557,7 +580,7 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
 
 - Task size: `Large`
 - Size rationale:
-  - A new subsystem (`src/cross-node/`: settings, channel, gateway, inbound receivers).
+  - A new subsystem (`src/remote-collaboration/`: settings, channel, gateway, inbound receivers).
   - A new shared component in `agent-collaboration/execution/remote/`, wired into all three root kinds (standalone, Team, Org): index, delivery, activation, trees.
   - Tool contract changes (`delegate_task` `node`).
   - Standalone run metadata and root changes (`delegatedFrom`, host idle schedule).
@@ -571,9 +594,11 @@ The tool results are the return path (DS-001/002/003 `←` steps). Presentation:
   - **Security:** a new inbound surface on the trusted network (RSK-101; no authentication by design until S6).
   - **Concurrency and lifecycle:** remote activation inside the serialized task queue; inbound wake and root restore across processes; timeout ambiguity (RSK-106).
   - **Ownership boundary:** the run delivery path gains remote endpoints.
-- Escalation trigger: implementation finds that a root kind cannot add remote endpoints through `RootRemoteLinks` without changing `RootCommunicationEngine`'s admission rules, or that a tree writer outside the three named stores writes `taskExecutions`. Either is a Design Impact back to the Solution Designer.
+- Escalation trigger: implementation finds that a root kind cannot add remote endpoints through `RemoteRunLinks` without changing `RootCommunicationEngine`'s admission rules, or that a tree writer outside the three named stores writes `taskExecutions`. Either is a Design Impact back to the Solution Designer.
 
 ## Guidance For Implementation
+
+- Reproduction to start from, from the investigation notes: `None` (new capability). Start the two-server E2E from the existing multiprocess harness `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` (INV P-5). The premises are checked in INV P-1 … P-4.
 
 - Follow the sequence. Prove step 5 end to end before step 6.
 - Keep every agent-facing text in the existing wording owners.

@@ -29,7 +29,7 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
   (see CM-7 for nested delegation).
 - **Node**: one AutoByteus server (the desktop's embedded server, a remote or
   Docker server), identified by its stable server ID (`serverInstanceId`).
-- **Peer**: another node that this node's owner registered for cross-node
+- **Peer**: another node that this node's owner registered for remote
   collaboration. Its name is this owner's local label for it.
 - **Remote delegated run**: a delegated run that runs on a peer. It is a run
   of the node that runs it.
@@ -77,7 +77,7 @@ message the delegated run by its run ID.**
 | CM-9 | A message is stored with the run(s) it belongs to: between parts of one run, once, in that run's message log; between two runs, in both runs' logs (sent and received), with one message ID. Each agent's own memory also records what it sent and received. | Every run is self-contained, and the same shape works when two runs are on different nodes (email model). |
 | CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the link (peer, run ID, delegator), recorded by the topmost coordinating run (CM-7, CM-8), and the run's Task (CM-6). No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
 | CM-11 | Across nodes, a remote delegated run and the run that delegated it message each other by run ID only (CM-5), in both directions; the link routes the run ID, so follow-ups never name the node. No other run is reachable across nodes. Each side stores the message in its own run's log with the shared message ID (CM-9). Results and message headers name the other run's node, so an agent always knows when a run is remote. | One way to name a run on every node; the agent copies the run ID it was given. |
-| CM-12 | A node accepts cross-node requests only while its owner has cross-node collaboration on, only from registered peers, and starts only the Agents its owner published, with the launch settings the owner chose. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner decides what peers may start; security is added in one place. |
+| CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from registered peers, and starts only the Agents its owner published, with the launch settings the owner chose. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner decides what peers may start; security is added in one place. |
 
 Task tools are configured, not automatic: an agent gets `create_task`
 (creates a Project Task) and/or `update_task` (updates, closes or reopens a Task)
@@ -119,7 +119,7 @@ memory/<kind>/<coordinatingRunId>/                   memory/agents/<remoteRunId>
 
 - On the delegating node, the link is the ordinary `taskExecutions` entry
   plus `nodeId`, the server ID of the node that runs it. Absent means this
-  node, as for every link stored before cross-node. A link with `nodeId` is
+  node, as for every link stored before remote delegation. A link with `nodeId` is
   stored whole in the tree: there is no folder for that run on the delegating
   node, and that node never restores, idle-stops or stops it.
 - On the node that runs it, the run is a standalone run, the host of its own
@@ -133,14 +133,14 @@ memory/<kind>/<coordinatingRunId>/                   memory/agents/<remoteRunId>
 
 File names and layout mechanics are owned by
 [Agent Memory](../modules/agent_memory.md), the run modules and
-[Cross-Node](../modules/cross_node.md).
+[Remote Collaboration](../modules/remote_collaboration.md).
 
-## 4. Cross-Node
+## 4. Remote Delegated Runs
 
 A delegated run can live on another node (CM-10 … CM-12). The model already
 fitted this: a delegated run owns its own storage (CM-8), messages between
 runs are recorded on each side (CM-9), and the coordinating run relates to its
-delegated runs through links. Cross-node collaboration adds:
+delegated runs through links. Collaboration with remote nodes adds:
 
 - **a channel between nodes**: request/response calls from one node to
   another, with no version negotiation (both nodes run the same release);
@@ -166,8 +166,8 @@ Status as of the change that published this document (Task 259ddae7,
 | Task tools configured, not automatic | Holds | Since `task-tool-split` (`create_task`, `update_task`). |
 | CM-8 Delegated run memory in its own folder | Holds | Since `delegated-copy-own-run-memory` (Task 8641c0ac): a task agent is a run of its own (`agents/<id>/` or `agent_teams/<id>/`) with its own file (a `taskAgent` section); the coordinating run's tree keeps links; deleting a coordinating run keeps its task agents' folders. Startup migration `20261017_task_agent_own_run_v1` moved existing data. Since `delegated-copy-restore-from-own-file` (autobyteus-197) every task agent, also one started from a configured placement, restores from its own file only; startup migration `20261019_delegated_copy_own_file_complete_v1` completed existing own files and removed `taskAgent.origin`. |
 | CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. The coordinating log keeps its older entries; the migration gave each task agent its own log. Since `append-only-message-logs`, each log is append-only JSON Lines that rotates at 4 MiB (`<base>_active.jsonl` plus sealed `<base>_<6 digits>.jsonl`; startup migration `20261018_append_only_message_logs_v1`). |
-| CM-7 through links instead of hosting | **Remote runs: holds** (since cross-node slice 1, autobyteus-191). **Local runs: hosting** | A remote delegated run is linked, not hosted (CM-10). Local delegated runs are still hosted in the coordinating run's process, and nested delegations are recorded in the topmost coordinating run's tree. |
-| CM-10 … CM-12 Cross-node | Holds for Agents, text only (since autobyteus-191) | Attachments, lifecycle control across the link, remote Teams, discovery and peer authentication come in later slices. |
+| CM-7 through links instead of hosting | **Remote runs: holds** (since remote-delegation slice 1, autobyteus-191). **Local runs: hosting** | A remote delegated run is linked, not hosted (CM-10). Local delegated runs are still hosted in the coordinating run's process, and nested delegations are recorded in the topmost coordinating run's tree. |
+| CM-10 … CM-12 Remote delegated runs | Holds for Agents, text only (since autobyteus-191) | Attachments, lifecycle control across the link, remote Teams, discovery and peer authentication come in later slices. |
 
 ## 6. Where The Mechanics Live
 
