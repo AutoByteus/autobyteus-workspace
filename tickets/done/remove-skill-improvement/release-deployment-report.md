@@ -5,19 +5,13 @@ Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autob
 - Task size `Large`, architectural risk `High`, route `Reviewed` (CRR-001 Pass; API-REV-001 Pass at 95.0%; CRR-002 Pass). Delivery does not reclassify.
 - Current delivery revision: `DR-004`. Status: finalized and released as beta `v1.5.8-beta.4` (complete). Waiting for the user's own data check (the last part of AC-004).
 
-## Release / Publication / Deployment
+## Release / Publication / Deployment Scope
 
-- Applicable: `Yes` (Beta, the user's advance decision)
-- Method: `Project Release Guide`
-- Pipelines: all `success`. Android APK Release `39474387651`, iOS App Store Connect Release `39474387629`, Desktop Release `39474387433`, Server Docker Release `39474387243`.
-- Published artifacts checked:
-  - GitHub pre-release `v1.5.8-beta.4` (`isPrerelease: true`) with 17 assets: APK and `.sha256`, Linux x64/ARM64 AppImages, macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, Windows `.exe`, and four `latest*.yml`. `latest-mac.yml` says `version: 1.5.8-beta.4`.
-  - Docker `autobyteus/autobyteus-server:1.5.8-beta.4` and `:beta` share `sha256:0496c59863a8…` (amd64, arm64). `:latest` stays on v1.5.7 (`sha256:821e777d8e88…`), as a beta should leave it.
-- Result: `Completed`
-- Release notes: `Not required` for a beta (generated notes). `release-notes.md` is kept for the next stable.
+Finalize into `origin/personal` per `RELEASE.md`, then release the beta the user decided in advance. The last part of AC-004 is the user's check of his own data on that released build.
+
 ## Project Release Guide
 
-- Release guide: `RELEASE.md`, as on `origin/personal` @ `3b2c86ca9e`. It now has a **Secret Gate**: `scripts/check_secrets.sh` before the ticket branch's first push and again on the merged state. `origin/codex/remove-skill-improvement` does not exist yet, so the first push still needs it.
+- Release guide: `RELEASE.md`, as on `origin/personal` @ `3b2c86ca9e`. It now has a **Secret Gate**: `scripts/check_secrets.sh` before the ticket branch's first push and again on the merged state. It was run before the ticket branch's first push, on the merged state, and over `v1.5.8-beta.3..HEAD` before tagging. All passed.
 - Deviations from the guide and why: `None`
 - Proposed guide fixes: `None`
 
@@ -91,6 +85,7 @@ Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autob
 
 - Ticket moved to `tickets/done/`: `Yes`
 - Archived ticket path: `tickets/done/remove-skill-improvement/`
+
 ## Version / Tag / Release Commit
 
 - `bash scripts/desktop-release.sh beta --branch finalize/remove-skill-improvement --no-push`, then release commit `3b9014215e` (`autobyteus-web/package.json` = `1.5.8-beta.4`) and the annotated tag `v1.5.8-beta.4` (object `67820bb9e3`).
@@ -107,23 +102,30 @@ Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autob
   - `check_repository_artifact_hygiene.py`.
 - Push: `origin/personal` = `3b9014215e` (merge plus release commit), then the tag.
 - Repository finalization status: `Completed`
+
 ## Release / Publication / Deployment
 
-- Applicable: undecided. Result: `Blocked`
+- Applicable: `Yes` (Beta, the user's advance decision)
+- Method: `Project Release Guide`
+- Pipelines: all `success`. Android APK Release `39474387651`, iOS App Store Connect Release `39474387629`, Desktop Release `39474387433`, Server Docker Release `39474387243`.
+- Published artifacts checked:
+  - GitHub pre-release `v1.5.8-beta.4` (`isPrerelease: true`) with 17 assets: APK and `.sha256`, Linux x64/ARM64 AppImages, macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, Windows `.exe`, and four `latest*.yml`. `latest-mac.yml` says `version: 1.5.8-beta.4`.
+  - Docker `autobyteus/autobyteus-server:1.5.8-beta.4` and `:beta` share `sha256:0496c59863a8…` (amd64, arm64). `:latest` stays on v1.5.7 (`sha256:821e777d8e88…`), as a beta should leave it.
+- Result: `Completed`
+- Release notes: `Not required` for a beta (generated notes). `release-notes.md` is kept for the next stable.
 
 ## Post-Finalization Cleanup
 
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement`: removal deferred until the user's check is recorded. Then remove and prune it, delete the local `codex/` and `finalize/` branches, and keep the remote ticket branch.
 - Untracked full logs were moved to `/tmp/ab205-full-logs/` before the release script; their excerpts are committed.
+
 ## Escalation / Reroute
 
-- Classification: `Local Fix`. An integration conflict in implementation code; the approved design already says what this ticket removes, and base's additions are kept.
-- Recommended recipient: the implementation engineer
-- Why final handoff could not complete: the latest base cannot be integrated without resolving conflicts in product code, and the merged state needs checks before docs sync, verification and finalization.
+- INT-001 (DR-001, `Local Fix`, implementation engineer) is resolved by IR-002 (merge `5cfccd66c7`). No open escalation.
 
 ## Final Status
 
-- Verification complete: `No`
+- Verification complete: `No` (evidence complete; the user's own data check of AC-004 follows the beta)
 - Repository finalization complete: `Yes`
 - Release complete or not required: `Yes`
 - Cleanup complete or not required: `No`
