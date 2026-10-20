@@ -77,6 +77,11 @@ export const IMPORT_MCP_SERVER_CONFIGS = gql`
             message
             importedCount
             failedCount
+            failures {
+                __typename
+                serverId
+                reason
+            }
         }
     }
 `;
