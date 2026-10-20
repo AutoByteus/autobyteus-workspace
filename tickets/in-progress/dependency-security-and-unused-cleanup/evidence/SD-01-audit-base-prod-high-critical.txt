@@ -1,0 +1,67 @@
+# pnpm audit (base origin/personal @ 3b2c86ca9e, 2026-10-20)
+== ALL {'info': 0, 'low': 40, 'moderate': 215, 'high': 217, 'critical': 18}
+== PROD {'info': 0, 'low': 25, 'moderate': 135, 'high': 91, 'critical': 3}
+protobufjs                   critical/high  n= 6 vers=['7.5.4'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>onnxruntime-web>protobufjs
+proxy-addr                   critical       n= 1 vers=['2.0.7'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>express
+tar                          critical/high  n= 5 vers=['7.5.9'] imp=['autobyteus-web']
+       autobyteus-web>tar
+@fastify/busboy              high           n= 2 vers=['2.1.1', '3.2.0'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@fastify/multipart>@fastify/busboy
+       autobyteus-server-ts>mercurius>undici>@fastify/busboy
+@fastify/static              high           n= 1 vers=['7.0.4'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>mercurius>@fastify/static
+@hono/node-server            high           n= 1 vers=['1.19.9'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>@hono/node-server
+@vue/server-renderer         high           n= 1 vers=['3.5.28'] imp=['autobyteus-web']
+       autobyteus-web>@fortawesome/vue-fontawesome>vue>@vue/server-renderer
+axios                        high           n=12 vers=['1.13.5'] imp=['autobyteus-ts']
+       autobyteus-ts>axios
+brace-expansion              high           n= 5 vers=['2.0.2'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>mercurius>@fastify/static>glob
+builder-util-runtime         high           n= 1 vers=['9.5.1'] imp=['autobyteus-web']
+       autobyteus-web>electron-updater>builder-util-runtime
+defu                         high           n= 1 vers=['6.1.4'] imp=['autobyteus-web']
+       autobyteus-web>@nuxt/schema>defu
+express-rate-limit           high           n= 1 vers=['8.2.1'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>express-rate-limit
+fast-uri                     high           n=16 vers=['2.4.0', '3.1.0'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>ajv>fast-uri
+       autobyteus-server-ts>fastify>@fastify/ajv-compiler>fast-uri
+fastify                      high           n= 5 vers=['4.29.1'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>fastify
+find-my-way                  high           n= 1 vers=['8.2.2'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>fastify>find-my-way
+form-data                    high           n= 1 vers=['4.0.5'] imp=['autobyteus-ts']
+       autobyteus-ts>axios>form-data
+hono                         high           n= 3 vers=['4.12.0'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>hono
+ip-address                   high           n= 1 vers=['10.0.1'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>express-rate-limit
+js-yaml                      high           n= 3 vers=['4.1.1'] imp=['autobyteus-web']
+       autobyteus-web>electron-updater>js-yaml
+linkify-it                   high           n= 2 vers=['5.0.0'] imp=['autobyteus-web']
+       autobyteus-web>markdown-it>linkify-it
+lodash-es                    high           n= 1 vers=['4.17.23'] imp=['autobyteus-web']
+       autobyteus-web>mermaid>lodash-es
+markdown-it-katex            high           n= 1 vers=['2.0.3'] imp=['autobyteus-web']
+       autobyteus-web>markdown-it-katex
+minimatch                    high           n= 3 vers=['9.0.5'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>mercurius>@fastify/static>glob
+nanoid                       high           n= 3 vers=['3.3.11'] imp=['autobyteus-web']
+       autobyteus-web>@fortawesome/vue-fontawesome>vue>@vue/compiler-sfc
+path-to-regexp               high           n= 1 vers=['8.3.0'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>express
+postcss                      high           n= 2 vers=['8.5.6'] imp=['autobyteus-web']
+       autobyteus-web>@fortawesome/vue-fontawesome>vue>@vue/compiler-sfc
+source-map-js                high           n= 1 vers=['1.2.1'] imp=['autobyteus-web']
+       autobyteus-web>@fortawesome/vue-fontawesome>vue>@vue/compiler-dom
+undici                       high           n= 9 vers=['5.28.3', '7.22.0'] imp=['autobyteus-server-ts', 'autobyteus-ts']
+       autobyteus-server-ts>mercurius>undici
+       autobyteus-ts>undici
+ws                           high           n= 1 vers=['8.19.0'] imp=['autobyteus-server-ts']
+       autobyteus-server-ts>@fastify/websocket>ws
+xlsx                         high           n= 2 vers=['0.18.5'] imp=['autobyteus-web']
+       autobyteus-web>xlsx
+prod modules with high/critical: 30

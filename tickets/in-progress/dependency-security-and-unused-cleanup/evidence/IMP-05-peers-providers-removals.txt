@@ -1,0 +1,45 @@
+# IMP-05 — step 4: peers, import providers (AR-001) and AC-004 removals
+# Commit: 9936445f55 (result of the steps below)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:07:20Z
+
+## Peer issues (pnpm install --resolution-only; lockfile unchanged by it). BASE:
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.1
+  └─┬ @nuxt/cli 3.33.1
+    ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+    └─┬ @bomb.sh/tab 0.0.12
+      └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+## AFTER:
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.11
+  └─┬ @nuxt/cli 3.37.0
+    └── ✕ unmet peer @nuxt/schema@^4.4.6: found 3.21.11
+
+## node probes/import-provider-check.mjs <repo> <8 packages>, diff vs evidence/SD-07
+identical to SD-07 (136 lines; no line changed, none MISSING)
+
+## AC-004: removed names in manifests and in the root lockfile importer blocks (detection sanity: tar/monaco-editor/undici/typescript found PRESENT)
+autobyteus-web                             chart.js             manifest=absent lock-importer=absent
+autobyteus-web                             vue-chartjs          manifest=absent lock-importer=absent
+autobyteus-web                             diff-match-patch     manifest=absent lock-importer=absent
+autobyteus-web                             html2canvas          manifest=absent lock-importer=absent
+autobyteus-web                             jsonrepair           manifest=absent lock-importer=absent
+autobyteus-web                             markdown-it-katex    manifest=absent lock-importer=absent
+autobyteus-web                             markdown-it-prism    manifest=absent lock-importer=absent
+autobyteus-web                             nuxt-electron        manifest=absent lock-importer=absent
+autobyteus-web                             @vitejs/plugin-vue   manifest=absent lock-importer=absent
+autobyteus-web                             concurrently         manifest=absent lock-importer=absent
+autobyteus-web                             xmldom               manifest=absent lock-importer=absent
+autobyteus-ts                              dotenv               manifest=absent lock-importer=absent
+autobyteus-ts                              ts-node              manifest=absent lock-importer=absent
+autobyteus-application-frontend-sdk        @types/node          manifest=absent lock-importer=absent
+autobyteus-team-stream-contracts           @types/node          manifest=absent lock-importer=absent
+autobyteus-agent-presentation-contracts    @types/node          manifest=absent lock-importer=absent
+autobyteus-collaboration-stream-contracts  @types/node          manifest=absent lock-importer=absent
+kept doubtful/used: monaco-editor True | @nuxtjs/apollo True
+autobyteus-web tar ^7.5.22
+autobyteus-web electron 42.11.16
+autobyteus-ts undici ^7.30.1

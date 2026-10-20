@@ -1,0 +1,54 @@
+# IMP-06 — implementation-scoped builds and focused tests on the committed tree
+# Commit: 9936445f55
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:12:29Z
+# Full logs (not committed): /tmp/dep229/checks/<name>.log
+
+build-autobyteus-application-sdk-contracts exit=0
+test-autobyteus-application-sdk-contracts exit=0
+build-autobyteus-team-stream-contracts exit=0
+test-autobyteus-team-stream-contracts exit=0
+build-autobyteus-agent-presentation-contracts exit=0
+test-autobyteus-agent-presentation-contracts exit=0
+build-autobyteus-collaboration-stream-contracts exit=0
+test-autobyteus-collaboration-stream-contracts exit=0
+build-autobyteus-application-frontend-sdk exit=0
+test-autobyteus-application-frontend-sdk exit=0
+build-autobyteus-application-backend-sdk exit=0
+test-autobyteus-application-backend-sdk exit=0
+build-ts exit=2
+test-ts exit=0
+server-prebuild exit=2
+server-build exit=2
+server-typecheck exit=2
+web-nuxt-prepare exit=0
+web-build exit=0
+web-voice-input exit=0
+web-test-electron exit=0
+web-electron-version exit=0
+
+## Commands
+build-<pkg>/test-<pkg>: pnpm -C <pkg> build / test (6 contract and SDK packages); git status after: no tracked change (tracked contract dist unchanged)
+build-ts: pnpm -C autobyteus-ts build
+test-ts: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-ts test
+server-prebuild/build/typecheck: pnpm -C autobyteus-server-ts prebuild|build|typecheck (prebuild runs prepare:shared, which builds autobyteus-ts)
+web-nuxt-prepare/web-build: pnpm -C autobyteus-web exec nuxt prepare; pnpm -C autobyteus-web build
+web-voice-input: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run tests/integration/voice-input-extension.integration.test.ts
+web-test-electron: pnpm -C autobyteus-web test:electron --run
+web-electron-version: ELECTRON_RUN_AS_NODE=1 autobyteus-web/node_modules/.bin/electron -p process.versions.electron
+
+## Results
+test-autobyteus-application-sdk-contracts:  # tests 6 # pass 6 # fail 0 
+test-autobyteus-team-stream-contracts:  # tests 19 # pass 19 # fail 0 
+test-autobyteus-agent-presentation-contracts:  # tests 18 # pass 18 # fail 0 
+test-autobyteus-collaboration-stream-contracts:  # tests 34 # pass 34 # fail 0 
+test-autobyteus-application-frontend-sdk:  # tests 12 # pass 12 # fail 0 
+test-autobyteus-application-backend-sdk:       Tests  10 passed (10) 
+test-ts:       Tests  2368 passed | 78 skipped (2446) 
+web-voice-input:       Tests  2 passed (2) 
+web-test-electron:       Tests  215 passed | 1 skipped (216) 
+web-electron-version: 42.11.16
+web-build: 1 x '✨ Build complete!'
+
+## FAIL build-ts (and server-prebuild/build/typecheck, which build autobyteus-ts first):
+src/tools/multimedia/download-media-tool.ts(118,38): error TS2339: Property 'split' does not exist on type 'string | number | true | string[] | AxiosHeaders'.

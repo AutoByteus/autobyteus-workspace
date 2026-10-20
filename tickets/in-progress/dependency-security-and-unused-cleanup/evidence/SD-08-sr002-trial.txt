@@ -1,0 +1,5 @@
+# SR-002 trial (2026-10-20, reverted): corrected removals (no @nuxtjs/apollo) + bumps + update loop + parent updates (electron-updater, vue, mermaid, @mermaid-js/parser) + dedupe
+# dedupe --check: 0; import-provider diff vs SD-07: empty
+# PROD: critical 0, high 13: @fastify/busboy@2.1.1 @fastify/static@7.0.4 fastify@4.29.1 find-my-way@8.2.2 undici@5.28.3 xlsx@0.18.5
+# ALL: critical 6, high 46; IN-RANGE rows left: 1 (undici 6.27.0 under node-gyp, dev)
+# Reproduction of AR-001: removing only @nuxtjs/apollo -> 0 '@apollo/client@' entries in pnpm-lock.yaml, node_modules/.pnpm/node_modules/@apollo/client and @vue/apollo-composable gone
