@@ -115,7 +115,7 @@ export class DownloadMediaTool extends BaseTool {
       const contentType = response.headers?.['content-type'];
       let correctExt = '';
       if (contentType) {
-        const mimeType = contentType.split(';')[0].trim();
+        const mimeType = String(contentType).split(';')[0].trim();
         const ext = mime.extension(mimeType);
         if (ext && ext !== 'bin') {
           correctExt = ext.startsWith('.') ? ext : `.${ext}`;
