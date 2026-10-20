@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-004, ARCH-REV-002 | Implemented; code review Fail (CRR-001, CR-001) |
-| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 | CR-001 | `Local Fix` | SR-004, ARCH-REV-002, CRR-001 | Fixed at `c42bf2abc4`; back to code review |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 | CR-001 | `Local Fix` | SR-004, ARCH-REV-002, CRR-001, CRR-002 | Fixed at `c42bf2abc4`; Targeted Delta Review Pass (CRR-002); with API/E2E |
 
 ## Revision Entries
 
@@ -50,3 +50,4 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-11 Pass; the new GraphQL test fails against the IR-001 service and passes with the fix.
 - Next recipient or routing: code reviewer (Targeted Delta Review), from `get_handoff_rules`.
 - Remaining limitations or risks: unchanged from IR-001.
+- Review result: Pass, CRR-002 (Targeted Delta Review of `c42bf2abc4`, CR-001 resolved, `code-review-report.md`); the code reviewer handed the package to API/E2E.

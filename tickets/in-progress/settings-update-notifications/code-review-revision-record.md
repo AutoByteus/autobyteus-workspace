@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Local Fix (implementation) | CR-001 |
+| CRR-002 | `code-review-report.md` | Implementation Review, round 2, Targeted Delta Review (IR-002) | Fail — Local Fix | Pass | CR-001 (resolved) |
 
 ## Revision Entries
 
@@ -31,4 +32,31 @@ None.
 - New or remaining finding IDs: CR-001
 - Material score or classification changes: N/A (initial)
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: packaged isolated generic-feed check and real-instance acceptance criteria (API/E2E); the dialog/panel overlap Product question.
+
+### CRR-002 — Targeted Delta Review of the CR-001 fix (IR-002)
+
+- Canonical review report updated: `tickets/in-progress/settings-update-notifications/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review` — the delta `71cfcd7d32..c42bf2abc4` stays within CR-001's file (`update-notification-service.ts`), its tests and one docs paragraph; no shared interface, data shape or other spine changed.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002); CR-001; RSC-001
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail — Local Fix (CRR-001)
+- Current authoritative result: Pass; score 9.3/10 (Runtime Correctness 8.4 → 9.2)
+- What changed in the review result and why: the notification service now reads each owner on its own, keeps and hides an unreadable kind's records, and limits mark-read and clear to listed records; tests and docs follow. This meets every required outcome of CR-001.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, `c42bf2abc4` | Code read of `readSourceStates` / `reconcileRecords` / `run` / `toViews`; four new service tests and the GraphQL test with a `{not json` skill registry; IMP-11 (tsc exit 0, 49 tests pass; the GraphQL test fails against the round-1 service) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Runtime Correctness 8.4 → 9.2; classification none (Pass)
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: packaged isolated generic-feed check and real-instance acceptance criteria (API/E2E); the dialog/panel overlap Product question.

@@ -12,17 +12,17 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (round 2, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer's handoff of IR-001, 2026-10-20 (code commits `da74c13406`, `eba4674616`, `71cfcd7d32`; ticket commit `a2658b031a`; base `origin/personal` `3d4d9d0a95`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the delta `71cfcd7d32..c42bf2abc4` touches only `update-notification-service.ts` (the CR-001 location), its unit test, the GraphQL schema test and one paragraph of `update_notifications.md`. The service's public methods, the GraphQL view shape and the web contract are unchanged; no other file or spine changed. Round-1 evidence for all other checks and scores carries forward.
+- Trigger: implementation engineer's handoff of IR-002 (Local Fix for CR-001), 2026-10-20; fix commit `c42bf2abc4`, ticket commit `d76332c669`. Round 1 reviewed code commits `da74c13406`, `eba4674616`, `71cfcd7d32` on base `origin/personal` `3d4d9d0a95`.
+- Prior Review Round Reviewed: round 1 (CRR-001, Fail, CR-001)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record / Delivery: N/A (implementation review)
 - Failing Scenario IDs / Commands / Evidence: N/A
 
@@ -42,7 +42,8 @@
   - Shell: `electron/updater/{appUpdater,appUpdateNotificationRecord,appReleasePage,appUpdateController,disabledAppUpdater}.ts`, `shared/appUpdateTypes.ts`, preload and type declarations, `electronLaunchProfile.ts`, `electronApplication.ts`, `scripts/isolated-app/{cli,instanceLifecycle}.mjs`, `scripts/electron-launch/launchEnvironment.mjs`.
   - Web: `stores/{updateNotificationsStore,notificationCenterStore,appUpdateStore}.ts`, `stores/capabilities/updateChecksCapabilityStore.ts`, `services/updateNotifications/updateNotificationChangeFeed.ts`, composable, `components/notifications/*`, `SidebarNotificationsEntry.vue`, `AppLeftPanel.vue`, `LeftSidebarStrip.vue`, `UpdateChecksCard.vue`, `SkillSourceUpdateConfirmation.vue`, `SkillSourcesModal.vue`, `SkillSourceRow.vue`, `app.vue`, `utils/{appUpdateErrorDisplay,notificationTime,nodeEndpoints}.ts`, en strings.
   - Tests: the new and changed server, Electron and web test names and the reconcile, scheduler, gate and race tests.
-- Explicit exclusions: rendered visual fidelity against VIS-001..028 beyond the implementation's IMP-10 evidence; packaged isolated generic-feed behavior (API/E2E, the design's open escalation trigger). Recorded checks were not rerun (they ran on the reviewed commit). One temporary probe was run for CR-001 and deleted.
+- Explicit exclusions: rendered visual fidelity against VIS-001..028 beyond the implementation's IMP-10 evidence; packaged isolated generic-feed behavior (API/E2E, the design's open escalation trigger). Recorded checks were not rerun (they ran on the reviewed commit). One temporary probe was run for CR-001 in round 1 and deleted.
+- Round 2 (Targeted Delta Review): `git diff 71cfcd7d32 c42bf2abc4` — `update-notification-service.ts`, `update-notification-service.test.ts`, `update-notifications-schema.test.ts`, `docs/modules/update_notifications.md`. IMP-11 (tsc + 49 affected tests at `c42bf2abc4`, and the new GraphQL test failing against the round-1 service) was not rerun: it ran on the reviewed commit, and nothing else the earlier checks exercise changed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -56,7 +57,7 @@
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Evidence |
 | --- | --- | --- | --- |
 | BEH-008 | Confirmed | `build-studio-server.ts` → `composeUpdateNotifications()` → `UpdateCheckScheduler.start()` (60 s, 30 min tick, 6 h due, packages then skills, oldest first; `isEnabled` and `isBlocked` before every source) → owners' `checkAgentPackageUpdates([id])` / `checkGitHubSkillSourceUpdates([id])` → `publicGitHubRequest` + `GitHubRateLimitGate` (persisted `<app-data>/github/rate-limit.json`, `api.github.com` only) | — |
-| BEH-009 | Confirmed (CR-001 affects robustness, not the path) | Owner listener → `UpdateNotificationService.reconcile` (one queued run; persist + publish only on change) → `ChangeFeedHub` → `/ws/update-notifications` → `UpdateNotificationChangeFeed` → `updateNotificationsStore.reload`; panel open → `markAllRead` (GraphQL + shell IPC); Clear → `clearUpdateNotification` / IPC | — |
+| BEH-009 | Confirmed (CR-001 resolved in round 2: an owner that cannot be read leaves the other kinds working) | Owner listener → `UpdateNotificationService.reconcile` (one queued run; persist + publish only on change) → `ChangeFeedHub` → `/ws/update-notifications` → `UpdateNotificationChangeFeed` → `updateNotificationsStore.reload`; panel open → `markAllRead` (GraphQL + shell IPC); Clear → `clearUpdateNotification` / IPC | — |
 | BEH-010 | Confirmed | Package failed check keeps `latestRevision` (`github-agent-package-updates.ts` catch); skill failed check keeps `lastCheck.latestRevision`; `canUpdate` from latest ≠ installed in `agent-package-mappers.ts` and `SkillSourceRow.vue`; reconcile keys on latest ≠ installed | — |
 | BEH-001, BEH-003 (on-open) | Confirmed | Unchanged entry points; every check settles → listener → reconcile | — |
 | BEH-002, BEH-003 (update) | Confirmed | `AgentPackageService.serialize(id, …)` around check / update / remove; moved update body identical to base (diffed); panel package Update → `agentPackagesStore.updateAgentPackage`; skill Update → shared `SkillSourceUpdateConfirmation` → `skillSourcesStore.githubOperation('update')` | — |
@@ -74,7 +75,7 @@
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | An unreadable skill-source registry makes every notification operation reject, so package notifications disappear too | RSC-001 | The skill registry in its reported error state | `listNotifications` / `reconcile` / `markAllRead` / `clear` reject → GraphQL `updateNotifications` errors → web `reload` only logs → no package rows, pill absent; the listener's reconcile after each package check/update fails (logged) | `skill-source-service.ts:80-87` (no containment, unlike lines 58 and the store's `listActiveSources`); `update-notification-service.ts:86-110`; the unit test "leaves the records untouched when a source owner cannot be read" asserts the whole call rejects; reviewer probe (temporary, deleted): registry `{not json` → `getRegistryError()` reports it and `listNotifications()` rejects while a package update is known | Promote → CR-001 | This ticket | Contain the failure per source owner; see CR-001 |
+| C-01 | An unreadable skill-source registry makes every notification operation reject, so package notifications disappear too | RSC-001 | The skill registry in its reported error state | `listNotifications` / `reconcile` / `markAllRead` / `clear` reject → GraphQL `updateNotifications` errors → web `reload` only logs → no package rows, pill absent; the listener's reconcile after each package check/update fails (logged) | `skill-source-service.ts:80-87` (no containment, unlike lines 58 and the store's `listActiveSources`); `update-notification-service.ts:86-110`; the unit test "leaves the records untouched when a source owner cannot be read" asserts the whole call rejects; reviewer probe (temporary, deleted): registry `{not json` → `getRegistryError()` reports it and `listNotifications()` rejects while a package update is known | Promote → CR-001 | This ticket | Contain the failure per source owner; see CR-001 (resolved in round 2) |
 | C-02 | `recordFound` replaces a waiting app record with any different offered version, not only a newer one (e.g., a channel switch) | DS-007 ("R.latest ≠ S.latest → new waiting") | Channel switch | Record follows what the channel offers | design-spec DS-007; electron-updater offers only versions above the running one | Reject | — | Matches the reviewed rule |
 | C-03 | Release notes are not persisted; after a restart the app row's details lack notes until the startup check (8 s) | Design "Release notes stay in `AppUpdateState.releaseNotes`" | Restart | Notes reappear after the startup check | design-spec Shared Structure table | Reject | — | Approved shape |
 | C-04 | A panel package/skill Update failure also sets the shared `agentPackagesStore.error` / `skillSourcesStore.error` | DS-003 delegation to existing stores | Failed Update from the panel | The Agent Packages page or skill dialog may later show the same error | Existing store behavior, reused as designed | Reject | — | Reuse of existing explicit actions is required (REQ-007); the message is true |
@@ -106,10 +107,10 @@
 | No unjustified duplication of code / repeated structures | Pass | Old hubs left for FU-001 as designed | — |
 | Patch-on-patch complexity control | Pass | Initial round | — |
 | Dead code removed in the touched files and modules | Pass | Card, its spec, store state, notice keys, 74 strings, duplicate restore branch removed; repository search finds no remaining references | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | DS-007, scheduler, gate, race, store, shell record, web store/panel tests are clear; the "source owner cannot be read" test asserts the whole call rejects, which pins the CR-001 behavior | Update with CR-001 |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | DS-007, scheduler, gate, race, store, shell record, web store/panel tests are clear. Round 2: the full-rejection test is replaced by four owner-unavailable tests (other kinds listed and persisted with the warning; hidden records kept; mark read / clear on listed kinds only; records shown again once readable) and a GraphQL test with the real owners and a `{not json` skill registry | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Harnesses per owner; existing skill fixtures reused | — |
 | No stale, duplicated, or compatibility-only tests are retained | Pass | `AppUpdateNotice.spec.ts` removed; `appUpdateStore.spec.ts` updated | — |
-| API/E2E readiness for the next workflow stage | Pass (after CR-001) | Isolated-app `--test-update-feed`, launch variable, docs and coverage hints present | — |
+| API/E2E readiness for the next workflow stage | Pass | Isolated-app `--test-update-feed`, launch variable, docs and coverage hints present | — |
 
 ## Source File Size And Structure Audit
 
@@ -118,8 +119,8 @@
 | `autobyteus-web/electron/updater/appUpdater.ts` | 377 | 434 (499 total) | Pass | Pass (+65/−3) | Pass (record and release link in own files) | Pass | — | None; close to 500 total lines, keep further growth out of it |
 | `autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts` | 461 (528 total) | 382 (439 total) | Pass (brought under by the designed split) | Over (+75/−164): design-mandated move | Pass | Pass | — | None |
 | `autobyteus-server-ts/src/agent-packages/services/github-agent-package-updates.ts` | new | 172 | Pass | Pass (moved code) | Pass | Pass | — | None |
-| `autobyteus-server-ts/src/skills/services/skill-source-service.ts` | 258 | 283 | Pass | Pass | Pass | Pass | CR-001 location | See CR-001 |
-| `autobyteus-server-ts/src/update-notifications/services/update-notification-service.ts` | new | 165 | Pass | Pass | Pass | Pass | CR-001 location | See CR-001 |
+| `autobyteus-server-ts/src/skills/services/skill-source-service.ts` | 258 | 283 | Pass | Pass | Pass | Pass | — | None (round 2 contains the failure in the notification service instead; the projection stays a plain read) |
+| `autobyteus-server-ts/src/update-notifications/services/update-notification-service.ts` | new | 165 → 199 after round 2 (+43/−12 in round 2) | Pass | Pass | Pass | Pass | — | None |
 | `autobyteus-web/stores/updateNotificationsStore.ts` | new | 193 | Pass | Pass | Pass | Pass | — | None |
 | Other changed sources (all ≤ 395 effective lines, deltas ≤ 35 lines or new files ≤ 135) | — | — | Pass | Pass | Pass | Pass | — | None |
 
@@ -142,7 +143,7 @@ None.
 
 - Docs impact: `Yes`
 - Why: new module, background checks, setting, Notification Center, e2e variable and isolated-app option.
-- Files or areas likely affected: already updated in `71cfcd7d32` (`update_notifications.md` + index, `agent_packages.md`, `skills.md`, `autobyteus-web/docs/settings.md`, `electron_packaging.md`, `docs/isolated-app-instances.md`). If CR-001's fix changes what the notifications do while the skill registry is unreadable, add one sentence to `update_notifications.md`.
+- Files or areas likely affected: already updated in `71cfcd7d32` (`update_notifications.md` + index, `agent_packages.md`, `skills.md`, `autobyteus-web/docs/settings.md`, `electron_packaging.md`, `docs/isolated-app-instances.md`). Round 2 added the owner-unavailable paragraph to `update_notifications.md` (`c42bf2abc4`); it matches the code.
 
 ## Additional Material Premise Validation
 
@@ -157,9 +158,9 @@ New premises: RSC-001 is recorded in the scenario gate above (governing contract
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
-- Score calculation note: simple average; the decision follows the findings.
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
+- Score calculation note: simple average; the decision follows the findings. Round 2 changes only category 8 (CR-001 resolved); the other categories carry forward from round 1, whose evidence the delta does not touch.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -170,13 +171,24 @@ New premises: RSC-001 is recorded in the scenario gate above (governing contract
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Facts-only projection; stored records without display fields | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.3 | Natural names, short comments that state rules | — | — |
 | `7` | `API/E2E Readiness` | 9.1 | Test feed, CLI option, docs and hints ready | Packaged generic-feed check still open (design trigger) | — |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.4 | DS-007, serialization, gate, scheduler, shell record and web store match the approved rules | CR-001: one unreadable skill registry disables the whole node notification area, package notifications included (RSC-001) | Contain the failure per source owner |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | DS-007, serialization, gate, scheduler, shell record and web store match the approved rules; round 2: an owner that cannot be read is contained per kind (its records kept and hidden, the other kinds reconciled, listed, marked read and cleared), verified by unit and GraphQL tests | Remaining open items are API/E2E's (packaged test feed, real GitHub) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Clean removal of the card and its state | — | — |
 | `10` | `Cleanup Completeness` | 9.4 | Dead code and strings removed; probe-free tree | — | — |
 
 ## Findings
 
-### CR-001 — An unreadable skill-source registry disables all node notifications (Local Fix, implementation)
+No open findings. CR-001 is resolved in round 2 (see below and `code-review-revision-record.md`, CRR-002).
+
+### CR-001 — An unreadable skill-source registry disables all node notifications (Local Fix, implementation) — Resolved (round 2)
+
+- Resolution verified (`c42bf2abc4`):
+  - `readSourceStates()` reads each owner on its own; a throwing owner is logged (`UPDATE_NOTIFICATIONS_SOURCE_UNAVAILABLE:<kind>`) and its kind marked unavailable.
+  - `reconcileRecords()` drops a record as "source gone" only when its owner was read; records of an unavailable kind pass through unchanged (the per-state loop never sees them) and are written back with the other kinds' changes, so they survive.
+  - `toViews()` hides them; `markAllRead` and `clear` act only on listed records (a hidden record answers "Update notification not found.", and its unread state is kept because the user has not seen it).
+  - The replaced test and the four new ones cover each required outcome; the GraphQL test uses the real owners with a `{not json` registry and fails against the round-1 service (IMP-11).
+  - Docs paragraph added to `update_notifications.md`.
+
+Round-1 record:
 
 - Basis: RSC-001 / C-01. DESIGN.md rule 7 (bad data contained; others keep working) and `skills.md` ("Invalid registry data is preserved and reported without disabling unrelated local skills"); protects BEH-009 and REQ-004 for agent packages, REQ-008/009 (Clear), REQ-010/011 (mark read, indicator).
 - Evidence:
@@ -197,13 +209,11 @@ New premises: RSC-001 is recorded in the scenario gate above (governing contract
 
 ## Classification
 
-- `Local Fix` (CR-001), owned by implementation.
+- None (round 2 passes). Round 1 was `Local Fix` (CR-001), owned by implementation, now resolved.
 
 ## Recommended Recipient
 
-- Implementation engineer, `/software_engineering_team/implementation_engineer` (rule: source review identifies an implementation-owned Local Fix that must be corrected before executable coverage).
-
-Routing note: after the fix, implementation returns through code review (a Targeted Delta Review of CR-001) and then API/E2E.
+- API/E2E engineer, `/software_engineering_team/api_e2e_engineer` (rule: implementation review passes and the package is ready for API/E2E); then the informational pass notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -213,11 +223,11 @@ Routing note: after the fix, implementation returns through code review (a Targe
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass` (round 2, CRR-002)
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10 (92/100); Runtime Correctness 8.4 (CR-001); all other categories ≥ 9.1
+- Score Summary: 9.3/10 (93/100); every category ≥ 9.1
 - Failure Origin (when applicable): N/A
-- Recommended Recipient (when applicable): `/software_engineering_team/implementation_engineer`
-- Notes: one bounded Local Fix (CR-001). The rest of the implementation matches the approved requirements, the SR-004 design and the UI spec; the architecture-review resolutions AR-001..AR-003 are implemented and tested.
+- Recommended Recipient (when applicable): `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001 is resolved at `c42bf2abc4`. The implementation matches the approved requirements, the SR-004 design and the UI spec; the architecture-review resolutions AR-001..AR-003 are implemented and tested. Reviewed code head: `c42bf2abc4` (ticket commit `d76332c669`).
