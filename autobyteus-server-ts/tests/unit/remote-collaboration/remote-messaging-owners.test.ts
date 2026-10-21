@@ -25,7 +25,7 @@ const DELEGATOR = "agent_delegator";
 const REMOTE = "publisher_7f3";
 const HOST = "publisher_host";
 const PEER_NODE = "srv_peer_b";
-const link: RemoteTaskAgentExecution = Object.freeze({ address: "/publisher", agentRunId: REMOTE, nodeId: PEER_NODE, delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
+const link: RemoteTaskAgentExecution = Object.freeze({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: PEER_NODE, delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
 const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", coordinatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: DELEGATOR });
 const message = (sender: string, receiver: string): CollaborationCommunicationMessage => Object.freeze({
   messageId: "collabmsg_1", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "hello", messageType: "agent_message",

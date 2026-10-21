@@ -69,7 +69,7 @@ const memoryRoot = async () => { const root = await fs.mkdtemp(path.join(os.tmpd
 
 const localCopy = (delegator: string) => ({ address: "/code_reviewer", agentRunId: LOCAL, platformAgentRunId: null, delegatorAgentRunId: delegator,
   startedAt: T0, source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: launch } });
-const remoteLink = (delegator: string) => ({ address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: delegator, startedAt: T0 });
+const remoteLink = (delegator: string) => ({ kind: "agent" as const, address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: delegator, startedAt: T0 });
 const messages = (delegator: string): CollaborationCommunicationMessage[] => [
   { messageId: "collabmsg_out", senderAgentRunId: delegator, receiverAgentRunId: REMOTE, content: "to remote", messageType: "agent_message", referenceFiles: [], createdAt: T0 },
   { messageId: "collabmsg_in", senderAgentRunId: REMOTE, receiverAgentRunId: delegator, content: "from remote", messageType: "agent_message", referenceFiles: [], createdAt: "2026-10-20T10:01:00.000Z" },

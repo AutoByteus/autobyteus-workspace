@@ -21,7 +21,7 @@ const LEAD = "lead_run";
 const REMOTE = "publisher_7f3";
 const LOCAL = "writer_run";
 const links = () => new RemoteRunLinks({
-  remoteRuns: () => [{ address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T10:00:00.000Z" }],
+  remoteRuns: () => [{ kind: "agent" as const, address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T10:00:00.000Z" }],
 });
 
 type Harness = Readonly<{

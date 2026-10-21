@@ -91,6 +91,7 @@ export class RemoteDelegation {
     commitLink: (link: RemoteTaskAgentExecution) => Promise<TaskExecutionActivationCommitResult>,
   ): TaskExecutionActivationOperation {
     const link: RemoteTaskAgentExecution = Object.freeze({
+      kind: "agent",
       address: placement.address,
       agentRunId: plan.target.ingressAgentRunId,
       nodeId: placement.peer.nodeId,

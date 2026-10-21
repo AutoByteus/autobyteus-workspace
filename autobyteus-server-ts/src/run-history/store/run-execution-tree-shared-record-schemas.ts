@@ -6,14 +6,16 @@ import {
   getParentAgentTeamAddress,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import type {
-  ConfiguredAgentExecutionNode,
-  ConfiguredExecutionNode,
-  ConfiguredTeamExecutionNode,
-  RemoteTaskAgentExecution,
-  TaskExecution,
-  TaskTeamAgentExecution,
-  TeamRunApplicationBinding,
+import {
+  remoteTaskExecutionRunId,
+  type ConfiguredAgentExecutionNode,
+  type ConfiguredExecutionNode,
+  type ConfiguredTeamExecutionNode,
+  type RemoteTaskExecution,
+  type RemoteTeamMember,
+  type TaskExecution,
+  type TaskTeamAgentExecution,
+  type TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
 import { parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
@@ -229,40 +231,90 @@ export const parseTaskExecutions = (value: unknown, label: string): TaskExecutio
 /** A stored link names a run on a peer node when it carries `nodeId` (absent means this node). */
 export const isRemoteTaskExecutionEntry = (entry: Record<string, unknown>): boolean => entry.nodeId !== undefined;
 
-/** A link to a delegated Agent run on a peer node (exact keys; the same shape on disk and in memory). */
-export const parseRemoteTaskAgentExecution = (value: unknown, label: string): RemoteTaskAgentExecution => {
+const parseRemoteTeamMembers = (value: unknown, label: string): RemoteTeamMember[] => {
+  const members = requiredArray(value, label).map((entry, index) => {
+    const member = objectRecord(entry, `${label}[${index}]`);
+    requireKeys(member, ["address", "agentRunId"], `${label}[${index}]`);
+    return Object.freeze({
+      address: canonicalNonRootAddress(member.address, `${label}[${index}].address`),
+      agentRunId: requiredString(member.agentRunId, `${label}[${index}].agentRunId`),
+    });
+  });
+  if (members.length === 0) throw new Error(`${label} must name at least one member.`);
+  return members;
+};
+
+/**
+ * A remote link as stored: a `taskExecutions` entry with `nodeId` and exact keys, without `kind`. An entry with
+ * `teamRunId` is a Team link (its coordinator must be one of its members); otherwise an Agent link.
+ */
+export const parseStoredRemoteTaskExecution = (value: unknown, label: string): RemoteTaskExecution => {
   const link = objectRecord(value, label);
-  requireKeys(link, ["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"], label);
-  return {
+  if (link.teamRunId === undefined) {
+    requireKeys(link, ["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"], label);
+    return Object.freeze({
+      kind: "agent",
+      address: canonicalNonRootAddress(link.address, `${label}.address`),
+      agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`),
+      nodeId: requiredString(link.nodeId, `${label}.nodeId`),
+      delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
+      startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
+    });
+  }
+  requireKeys(link, ["address", "teamRunId", "nodeId", "coordinatorAddress", "members", "delegatorAgentRunId", "startedAt"], label);
+  const members = parseRemoteTeamMembers(link.members, `${label}.members`);
+  const coordinatorAddress = canonicalNonRootAddress(link.coordinatorAddress, `${label}.coordinatorAddress`);
+  if (!members.some((member) => member.address === coordinatorAddress)) {
+    throw new Error(`${label}.coordinatorAddress '${coordinatorAddress}' is not one of its members.`);
+  }
+  return Object.freeze({
+    kind: "agent_team",
     address: canonicalNonRootAddress(link.address, `${label}.address`),
-    agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`),
+    teamRunId: requiredString(link.teamRunId, `${label}.teamRunId`),
     nodeId: requiredString(link.nodeId, `${label}.nodeId`),
+    coordinatorAddress,
+    members: Object.freeze(members),
     delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
     startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
-  };
+  });
+};
+
+/** The stored form of a remote link: its exact in-memory keys without `kind`. */
+export const storedRemoteTaskExecution = (link: RemoteTaskExecution): Record<string, unknown> => {
+  const { kind: _kind, ...stored } = link;
+  return stored;
+};
+
+/** A remote link in memory: the stored form plus its `kind`, which must agree with the stored shape. */
+const parseRemoteTaskExecution = (value: unknown, label: string): RemoteTaskExecution => {
+  const { kind, ...stored } = objectRecord(value, label);
+  const link = parseStoredRemoteTaskExecution(stored, label);
+  if (kind !== link.kind) throw new Error(`${label}.kind must be '${link.kind}'.`);
+  return link;
 };
 
 /**
  * The in-memory remote links of a composed tree, as the field to spread into the parsed holder: present only
  * when there are any, so a tree without remote links keeps exactly its stored shape.
  */
-export const parseRemoteTaskAgentExecutions = (value: unknown, label: string): { remoteTaskExecutions?: RemoteTaskAgentExecution[] } => {
-  const links = value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskAgentExecution(link, `${label}[${index}]`));
+export const parseRemoteTaskExecutions = (value: unknown, label: string): { remoteTaskExecutions?: RemoteTaskExecution[] } => {
+  const links = value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskExecution(link, `${label}[${index}]`));
   return links.length ? { remoteTaskExecutions: links } : {};
 };
 
 /** A remote link's delegator is an AgentRun of the tree, and each remote run is linked once. */
-export const validateRemoteTaskAgentExecutions = (
+export const validateRemoteTaskExecutions = (
   agentRunIdsOfTree: ReadonlySet<string>,
-  links: readonly RemoteTaskAgentExecution[] = [],
+  links: readonly RemoteTaskExecution[] = [],
 ): void => {
   const seen = new Set<string>();
   for (const link of links) {
+    const runId = remoteTaskExecutionRunId(link);
     if (!agentRunIdsOfTree.has(link.delegatorAgentRunId)) {
-      throw new Error(`Remote run '${link.agentRunId}' delegator '${link.delegatorAgentRunId}' is not an AgentRun in this tree.`);
+      throw new Error(`Remote run '${runId}' delegator '${link.delegatorAgentRunId}' is not an AgentRun in this tree.`);
     }
-    const key = `${link.nodeId}\0${link.agentRunId}`;
-    if (seen.has(key)) throw new Error(`Remote run '${link.agentRunId}' is linked twice.`);
+    const key = `${link.nodeId}\0${runId}`;
+    if (seen.has(key)) throw new Error(`Remote run '${runId}' is linked twice.`);
     seen.add(key);
   }
 };

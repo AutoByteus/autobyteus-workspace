@@ -18,15 +18,16 @@ import {
   parseConfiguredAgent,
   collectTaskExecutionRunIds,
   parseLaunchConfiguration,
-  parseRemoteTaskAgentExecutions,
+  parseRemoteTaskExecutions,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
   validateCopyLayouts,
-  validateRemoteTaskAgentExecutions,
+  validateRemoteTaskExecutions,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
+import { parseDelegatedFrom } from "./delegated-from-schema.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
@@ -61,7 +62,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
-    ...parseRemoteTaskAgentExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
+    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 
@@ -82,7 +83,7 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
   }
   validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
   validateCopyLayouts([tree.rootTeam]);
-  validateRemoteTaskAgentExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
+  validateRemoteTaskExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
     ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)]), tree.rootTeam.remoteTaskExecutions);
 };
 
@@ -103,6 +104,9 @@ export const validateTeamRunExecutionTreePayload = (
     applicationBinding: parseApplicationBinding(payload.applicationBinding),
     handoffs: normalizeCollaborationHandoffs(payload.handoffs),
     rootTeam: parseRootTeam(payload.rootTeam),
+    // A Team run a peer node started (autobyteus-247); absent otherwise. A malformed section makes the tree
+    // unreadable, as for a standalone run's `run_metadata.json`.
+    ...(payload.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(payload.delegatedFrom) }),
   };
   if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);

@@ -1,4 +1,4 @@
-import type { RemoteTaskAgentExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
@@ -27,7 +27,7 @@ export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string }
 
 export type RemoteRunLinksOptions = Readonly<{
   /** Delegating node: the root's remote links (the tree's in-memory `remoteTaskExecutions`), read at call time. */
-  remoteRuns(): readonly RemoteTaskAgentExecution[];
+  remoteRuns(): readonly RemoteTaskExecution[];
   /** Receiving node: the back-link of a root whose host a peer delegated to (`delegatedFrom`); `null` otherwise. */
   backLink?: Readonly<{ hostRunId: string; delegatedFrom: DelegatedFrom }> | null;
   channel?(): RemoteRunChannel | null;
@@ -43,7 +43,7 @@ export class RemoteRunLinks {
   constructor(private readonly options: RemoteRunLinksOptions) {}
 
   endpoints(): readonly RemoteEndpoint[] {
-    const delegated = this.options.remoteRuns().map(delegatedRunEndpoint);
+    const delegated = this.options.remoteRuns().flatMap((link) => link.kind === "agent" ? [delegatedRunEndpoint(link)] : []);
     const back = this.options.backLink;
     return back ? [...delegated, delegatorEndpoint(back.hostRunId, back.delegatedFrom)] : delegated;
   }
