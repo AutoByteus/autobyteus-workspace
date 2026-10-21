@@ -59,3 +59,14 @@
 - Health: `Shared Structure Looseness` (single-agent-shaped remote machinery); bounded refactor now.
 - Classification: `Large` / `High`.
 - Route: architecture review (see `handoff-architecture-review.md`).
+
+### SR-006 — Quiet idle shutdown of a peer-started Team (ARCH-REV-001, 2026-10-21)
+
+- Phase and classification: Design / `Design Impact` (AR-301; non-blocking N-301 … N-303 adopted).
+- Changes:
+  - **AR-301:** `RemoteTeamIdleShutdown` is a quiet shutdown. It arms and cancels on the delegated-child signals; at fire time, in the root's gate (`RootTeamRun.shutDownIfQuiet`), it skips open child work and live leases and uses the Team's existing all-or-nothing `TeamRunBackend.tryPrepareTerminationIfQuiescent()` (the same rule as a Team copy's idle shutdown). Background tasks and tool-approval waits keep it running. The package is kept. Unit cases are listed. Verified by reading `flat-team-execution-manager.ts:237-270`, `root-team-execution-directory.ts:277-300`, `standalone-host-idle-shutdown.ts`.
+  - **N-301:** `pairedAgentRunIds` is the one representation; the rules are derived.
+  - **N-302:** the starter passes every planned member and refuses a changed layout; a nested sub-team test.
+  - **N-303:** a stored-link check before restoring an inactive root.
+- Intended behavior changed: `No` (REQ-306's "once every member is quiet" is now met).
+- Next action: round 2 to the architecture reviewer.

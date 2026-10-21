@@ -34,3 +34,12 @@ RSK-201 (auto-approve, accepted), RSK-301 (an unused Team run after a failure on
 ## Route record
 
 - `get_handoff_rules` (2026-10-21): "… Large or architectural_risk=High …" → `/software_engineering_team/architecture_reviewer`.
+
+## Round 2 — 2026-10-21 (SR-006), answering ARCH-REV-001
+
+| Finding | Resolution |
+| --- | --- |
+| AR-301 | `RemoteTeamIdleShutdown` is a quiet shutdown: the delegated-child arm/cancel signals; fire in the root's gate via `RootTeamRun.shutDownIfQuiet()`, which skips open child work and leases and reuses `TeamRunBackend.tryPrepareTerminationIfQuiescent()` (the Team-copy rule, all or nothing); the package is kept, no interrupt; unit cases, including a background task and a tool-approval wait |
+| N-301 | `pairedAgentRunIds` is the single representation; `allowsSender`/`allowsTarget` derived |
+| N-302 | The starter passes every planned member; a changed layout is refused (`AGENT_CANNOT_RUN`); a nested sub-team test |
+| N-303 | A stored-link check before restoring an inactive root (`RemoteMessageReceiver`) |

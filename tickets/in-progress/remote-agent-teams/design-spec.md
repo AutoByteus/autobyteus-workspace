@@ -2,12 +2,12 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005`
+- Current solution revision ID: `SR-006`
 - Approved requirements baseline: `requirements-doc.md` at SR-002 (approved by the User on 2026-10-21), with the data model refinement SR-004 (the User: "If you think this is cleaner, then do it like this")
 - Behavior-defining supplements:
   - the contract `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-10 … CM-12, § 3), updated in this branch (SR-003, SR-004);
   - `validation-cases.md` (rounds 1 and 2) as the evidence basis.
-- Design status: `Ready`
+- Design status: `Ready` (SR-006: ARCH-REV-001 AR-301; N-301 … N-303)
 - Canonical investigation notes: `investigation-notes.md`; validation evidence in `validation-cases.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md`, `references/finding-the-cause.md`, `/DESIGN.md` (rules 1–9), `collaboration_model.md`, `data_migration_guideline.md` § 1–3; context: the designs of autobyteus-191 and 245 (`tickets/done/…`).
 - Project design-principle conflicts: None.
@@ -107,7 +107,7 @@ Generalize the remote-run machinery from "a remote run" to "a remote Agent or Ag
 | DS-001 | Primary | A: `delegate_task({node, recipient_address: "/team"})` | B: a Team run with `delegatedFrom`, coordinator started by the packet; A: the result | A: `dispatchTaskCopy` / `RemoteDelegation`; B: `RemoteDelegationReceiver` + `RemoteTeamRunStarter` |
 | DS-002 | Primary | A: delegator `send_message_to(member run ID)` | B: the member woken, the message admitted | A: root routing + `RemoteMessageSend`; B: the Team root's `acceptRemoteMessage` |
 | DS-003 | Primary | B: any member `send_message_to(delegator)` | A: the delegator woken, the message admitted | B: the Team root's routing + `RemoteMessageSend`; A: the coordinating root's `acceptRemoteMessage` |
-| DS-004 | Bounded local | B: the peer-started Team goes quiet | The Team root stopped (package kept) | `RemoteTeamIdleShutdown` |
+| DS-004 | Bounded local | B: every member of the peer-started Team is quiet for the grace period | The Team root shut down quietly (no member interrupted; package kept) | `RemoteTeamIdleShutdown` + `RootTeamRun.shutDownIfQuiet` |
 
 ```text
 DS-001  A: delegate_task({node, recipient_address:"/software_engineering_team", description})
@@ -137,7 +137,7 @@ DS-003  B: member send_message_to(delegator) → its Team root.hasAgentExecution
 
 ## Ownership Map
 
-- **`RemoteEndpoint` kinds** (`remote-endpoint.ts`; G-1). The core replaces the single `pairedAgentRunId` with the kind's `allowsSender` / `allowsTarget` rules, already the decision points, plus `pairedAgentRunIds`, a set for display and wake lookup.
+- **`RemoteEndpoint` kinds** (`remote-endpoint.ts`; G-1). The core replaces the single `pairedAgentRunId` with **one** representation: `pairedAgentRunIds`, the set of local agents the endpoint pairs with. `allowsSender` / `allowsTarget` are derived from it (`set.has`), so the two can never disagree (N-301).
   - `delegated_run` (A, an Agent link): unchanged rules.
   - **`delegated_team` (new, A):** one endpoint per member run ID of a remote Team link. `allowsSender` / `allowsTarget`: the link's delegator only. `ownershipChain()`: `[{teamRunId}]`. `transmission`: `targetRoot {agent_team, teamRunId}`. `closureFence`: the same `fenced_remote` text as for Agents.
   - `delegator` (B): its rules apply to **every local agent the back-link pairs with**: the host on a standalone root, every member on a Team root. `ownershipChain()`: `[]`. `transmission`: `targetRoot = coordinatingRun`.
@@ -150,13 +150,32 @@ DS-003  B: member send_message_to(delegator) → its Team root.hasAgentExecution
   - `delegatedFrom` passed through to the tree.
 
   It returns the team run ID, the coordinator's address and the members from the created root's tree snapshot.
+  - **The planned layout must match the resolved one (N-302).** `createTeamRun` re-plans the layout from the definition, so the starter passes a member config for every planned member (by address). If the planner's member set differs from the resolved source's (a definition edited between resolution and creation), it refuses `AGENT_CANNOT_RUN` with "the Agent Team changed while it was being started" and terminates the half-created root. A unit test covers a Team with a nested sub-team.
 - **`TeamRunService.createTeamRun`** (modified): an optional `delegatedFrom` input, threaded through the plan and config to the tree (`RootTeamRun` exposes it to its remote wiring).
 - **The Team root on B (`RootTeamRun`, G-8):**
   - builds its `RemoteRunLinks` with the back-link when its tree has `delegatedFrom`;
   - `acceptRemoteWorkPacket` (new): the link check (the sender is the delegator from that node), then the coordinator's direct input (the existing seed path that starts it), then the system task notification built by `task-execution-input.ts` with the node;
   - `acceptRemoteMessage`: the existing inbound order, with the wake through its member delivery (a not-started member starts on input, P-1).
-- **`RemoteTeamIdleShutdown`** (new, `agent-team-execution/services/remote-team-idle-shutdown.ts`; DS-004; G-8): for a Team root with `delegatedFrom`, it arms the grace timer (`AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS`) when every member is idle or offline, cancels it on activity, and on fire stops the root through the manager's normal Stop, which keeps the package (`agent_team_execution.md` § Stop). The next inbound message restores it through `RemoteRootDirectory.team`. It mirrors `StandaloneHostIdleShutdown`.
+- **`RemoteTeamIdleShutdown`** (new, `agent-team-execution/services/remote-team-idle-shutdown.ts`; DS-004; G-8; AR-301): a **quiet shutdown**, never the user Stop. It applies only to a Team root with `delegatedFrom`.
+  - **Arm:** on the same signals as the delegated-child schedule (`TaskExecutionIdleShutdownSchedule`, the grace setting `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS`):
+    - every started member reports `idle`, `offline` or `error`;
+    - a member's background task ends (`BACKGROUND_TASK_UPDATED` with `completed`/`failed`/`stopped`);
+    - a live lease is released.
+  - **Cancel:** any member `running` or `initializing`.
+  - **Fire, inside the Team root's gate (`RootTeamRun.shutDownIfQuiet()`, new):**
+    - skip if the root has open child work (a task execution with an initializing or running agent) or a live lease;
+    - otherwise call the Team's existing all-or-nothing quiescent preparation, `TeamRunBackend.tryPrepareTerminationIfQuiescent()` (`FlatTeamExecutionManager.tryPrepareTerminationIfQuiescent`: every member, prepared handle and nested task execution, each through its own `tryPrepareTerminationIfQuiescent`). That is the **same rule** a Team copy's idle shutdown uses (`RootTeamExecutionDirectory.tryShutDownRootTaskTeamIfQuiet`). A member waiting for tool approval or with a running background task (`AgentRunBackend.hasRunningBackgroundTasks()`) is not quiet, so the result is `null`;
+    - `null` → nothing happens; a later quiet signal re-arms;
+    - a prepared termination → commit and finish, then the manager unregisters the root, **keeping the package, catalog row, tree and history**, exactly as the end of a Stop. No member is interrupted.
+  - The next inbound message restores the root through `RemoteRootDirectory.team` (P-2, P-4).
+  - No second quiet rule is written: the backend's preparation is the one owner.
+  - Unit cases: all members idle → shut down after the grace period; one idle member with a running background task → no shutdown; a member waiting for tool approval → no shutdown; a message during the grace period cancels; open child work → skip.
 - **`RemoteMessageReceiver`** (modified, G-2): resolves `targetRoot` by kind for messages and work packets; it no longer guesses "standalone".
+  - **Link check before restore (N-303):** before restoring an inactive root, it reads the root's stored link data without activating anything, and refuses `TARGET_NOT_PERMITTED` when the sender is not linked from that node:
+    - for a root that runs for a peer, the stored `delegatedFrom` (`run_metadata.json` or the Team tree);
+    - for a coordinating root, the stored tree's remote links.
+
+    An active root is checked in memory as today. The root's own link check remains the authority after restore.
 - **`agentRunIdsOfTree`** (modified, G-5): adds every member run ID of a remote Team link (A). For a Team tree, it adds `delegatedFrom.delegatorAgentRunId` when present (B). The standalone store's separate back-link parameter moves into the standalone shape too, so there is one rule for every store and validator (SR-017 of slice 1).
 - **`RootTaskExecutionLifecycle`** (modified):
   - the existing-copy refusal also asks `RemoteEndpointLookup.isRemoteTeam(teamRunId)` for a `{teamRunId}` copy (G-3);
@@ -208,7 +227,8 @@ DS-003  B: member send_message_to(delegator) → its Team root.hasAgentExecution
 | `remote-collaboration/domain/remote-requests.ts`, `channel/peer-client.ts`, `channel/peer-gateway.ts`, `inbound/remote-message-receiver.ts`, `inbound/remote-delegation-receiver.ts`, `domain/remote-refusals.ts` | `targetRoot`, the answer union, the Team branch |
 | `remote-collaboration/inbound/remote-team-run-starter.ts` | Add (G-9) |
 | `agent-team-execution/services/team-run-service.ts` (+ planner/config plumbing), `domain/root-team-run.ts`, `services/team-run-message-delivery.ts` | `delegatedFrom`; back-link; `acceptRemoteWorkPacket` |
-| `agent-team-execution/services/remote-team-idle-shutdown.ts` | Add (DS-004) |
+| `agent-team-execution/services/remote-team-idle-shutdown.ts` | Add (DS-004; arm/cancel signals) |
+| `agent-team-execution/domain/root-team-run.ts` | `shutDownIfQuiet()` in its gate, reusing `TeamRunBackend.tryPrepareTerminationIfQuiescent()` (AR-301) |
 | `standalone-agent-run-root/…` | Back-link pairs `[hostRunId]`; store parameter removal |
 | `services/team-communication/team-communication-store.ts`, `run-history/services/team-run-state-package-validator.ts` | Endpoint set through `agentRunIdsOfTree` (no local rule) |
 | Docs: `remote_collaboration.md`, `agent_team_execution.md` (peer-started Team runs, idle schedule), `agent_communication.md`, `agent_tools.md` (the Team result with `node`), Nodes tab note text, web localization | Update |
@@ -238,7 +258,7 @@ DS-003  B: member send_message_to(delegator) → its Team root.hasAgentExecution
 
 - RSK-201: every member auto-approves (accepted by the user).
 - RSK-301: an unused Team run on B after a failure on A, stopped by the idle schedule (accepted).
-- RSK-302: Stop on B through the idle schedule must keep the package and restore cleanly. Covered by P-2/P-4 and the E2E (AC-304).
+- RSK-302 → designed out (AR-301): the idle shutdown is the quiet path, not Stop. It keeps the package; restore is covered by P-2/P-4 and AC-304.
 
 ## Task Size And Architectural Risk (Mandatory)
 
