@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002)
 - Upstream Investigation Notes: `…/investigation-notes.md`
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-005)
-- Reviewed Design Spec: `…/design-spec.md` at commit `73fd1e77ecf4b4d1cd88bf6487fb07e4cb623092` (SR-005)
+- Reviewed Design Spec: `…/design-spec.md` at commit `173d336a2a` (SR-006)
 - Supplemental Task Artifacts Reviewed: `validation-cases.md` (C-01 … C-35, G-1 … G-9, P-1 … P-4); the contract `autobyteus-server-ts/docs/design/collaboration_model.md`; `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: SR-001 … SR-005
+- Relevant Solution Revision IDs: SR-001 … SR-006
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` (SR-005)
-- Prior Review Round Reviewed: N/A (first review of this package)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: the Solution Designer's SR-006 (commit `173d336a2a`), answering ARCH-REV-001 (AR-301; N-301 … N-303)
+- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: code and docs read in the worktree at `73fd1e77ec` (base `4a05909457`):
   - `standalone-agent-run-root/services/standalone-host-idle-shutdown.ts` (the mirror the design names: fire-time `tryPrepareAgentRunTerminationIfQuiescent` inside the root's gate, plus `hasOpenChildWork`);
   - `docs/modules/agent_team_execution.md` § Stop (lines ~355-380: Stop interrupts and terminates every member) and § Delegated Child Lifecycle (lines ~586-600: idle shutdown only when `tryPrepareTerminationIfQuiescent` succeeds; tool-approval waits and running background tasks are never quiet; "A Team copy is quiet only when every member is");
@@ -21,6 +21,7 @@
   - `agent-team-execution/services/team-run-service.ts:99-150` (`createTeamRun` re-plans the layout from the definition through the planner);
   - `team-run-config.ts:53-60` (`TeamAgentLaunchSettings` / `TeamScopeLaunchSettings` = `AgentLaunchConfiguration` + address);
   - the validation evidence and P-1 … P-4.
+- Round-2 checks: `agent-team-execution/backends/team-run-backend.ts:47` and `local/flat-team-run-backend.ts:52` (`TeamRunBackend.tryPrepareTerminationIfQuiescent`); `local/flat-team-execution-manager.ts:237-260` (all-or-nothing over task agents, prepared handles and task teams; it cancels the prepared ones when one is not quiet); `agent-collaboration/execution/backends/root-team-execution-directory.ts:276-300` (`tryShutDownRootTaskTeamIfQuiet`, the Team-copy rule it reuses); `remote-collaboration/inbound/remote-message-receiver.ts:21-25` (`RemoteRootDirectory`).
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-agent-teams/tickets/in-progress/remote-agent-teams`
 
@@ -42,10 +43,10 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-301 | Contract | Pass | Pass | Pass | Confirmed | N-302 (member mapping into `createTeamRun`) |
+| BEH-301 | Contract | Pass | Pass | Pass | Confirmed | — (N-302 done) |
 | BEH-302 | Contract | Pass | Pass | Pass | Confirmed | — |
-| BEH-303 | Contract | Pass | Pass | Pass | Confirmed | N-301 (one representation of the pair rule) |
-| BEH-304 | System | Pass | Pass | Fail | Confirmed (basis) | AR-301 (the idle stop must be quiet-checked) |
+| BEH-303 | Contract | Pass | Pass | Pass | Confirmed | — (N-301 done; N-304 note) |
+| BEH-304 | System | Pass | Pass | Pass | Confirmed | — (AR-301 resolved) |
 | BEH-305 | User | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
@@ -73,7 +74,7 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | DS-001 delegate to a remote Team | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-002 delegator → member | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-003 member → delegator | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 idle stop of a peer-started Team | Bounded local | Pass | Fail | N/A | Pass | Fail | Pass | Fail (AR-301) |
+| DS-004 quiet shutdown of a peer-started Team | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (AR-301 resolved) |
 
 ## Boundary Encapsulation Verdict
 
@@ -82,7 +83,7 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | `RemoteRunLinks` (kinded links, back-link pairs, `teamLinkFor`) | Pass | Pass | Pass | Pass | Still membership plus `deliver` |
 | `RemoteTeamRunStarter` → `TeamRunService.createTeamRun` | Pass | Pass | Pass | Pass | One owner of the mapping (G-9); N-302 |
 | `RemoteMessageReceiver` (`targetRoot` by kind) | Pass | Pass | Pass | Pass | One rule both ways |
-| `RemoteTeamIdleShutdown` → the Team root's lifecycle | Pass | Fail | Fail | Fail | AR-301: it reaches for the user Stop instead of the Team's quiet-shutdown mechanism |
+| `RemoteTeamIdleShutdown` → `RootTeamRun.shutDownIfQuiet()` → `TeamRunBackend.tryPrepareTerminationIfQuiescent()` | Pass | Pass | Pass | Pass | One quiet rule, reused |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -107,7 +108,7 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | --- | --- | --- | --- | --- | --- |
 | Team resolution and launches | Pass | Pass | N/A | Pass | 245's admission, port and resolver |
 | Lazy member start, restore | Pass | Pass | N/A | Pass | P-1, P-2, P-4 |
-| Idle shutdown of a Team | Pass | Fail | Fail | Fail | AR-301: the quiet-shutdown rules for Teams already exist (§ Delegated Child Lifecycle: "A Team copy is quiet only when every member is"; `tryPrepareTerminationIfQuiescent`); the design uses the user Stop instead |
+| Idle shutdown of a Team | Pass | Pass | N/A | Pass | Reuses the Team-copy all-or-nothing preparation and the child schedule's signals |
 | Team creation | Pass | Pass | Pass | Pass | `createTeamRun` plus `delegatedFrom` |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -125,7 +126,7 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | --- | --- | --- | --- | --- | --- |
 | `delegatedFrom` type and parser on Team trees | Pass | Pass | Pass | Pass | The same `delegated-from-schema.ts` |
 | `agentRunIdsOfTree` covering every store and validator | Pass | Pass | Pass | Pass | The standalone back-link parameter moves in |
-| Peer-started root idle schedule (standalone and Team) | Pass | Fail | Fail | Fail | AR-301: build both on the same quiet-shutdown rule |
+| Peer-started root idle schedule (standalone and Team) | Pass | Pass | Pass | Pass | Both use the same schedule and the quiescence preparation |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -134,14 +135,14 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | Remote Team link `{address, teamRunId, nodeId, coordinatorAddress, members, delegatorAgentRunId, startedAt}` | Pass | Pass | Pass | Pass | Pass | The coordinator is stored once (SR-004) |
 | `RemoteTaskExecution` kinded union | Pass | Pass | Pass | Pass | Pass | — |
 | Message body (`targetRoot`; `coordinatingRun` removed from messages) | Pass | Pass | Pass | N/A | Pass | — |
-| Endpoint core: `allowsSender` / `allowsTarget` plus `pairedAgentRunIds` | Pass | Fail | Fail | Pass | Pass (non-blocking) | N-301 |
+| Endpoint core: `pairedAgentRunIds` (rules derived) | Pass | Pass | Pass | Pass | Pass | N-301 done |
 
 ## File Responsibility Mapping Verdict
 
 | File | Singular? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `remote-team-run-starter.ts` (new) | Pass | Pass | N/A | Pass | N-302 |
-| `remote-team-idle-shutdown.ts` (new) | Pass | Pass | N/A | Fail | AR-301 |
+| `remote-team-idle-shutdown.ts` (new) | Pass | Pass | N/A | Pass | — |
 | The rest of the mapping | Pass | Pass | N/A | Pass | — |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -181,7 +182,7 @@ The `targetRoot` cleanup is a good catch. It removes a rule that was true only b
 | Topic | Needed? | Present? | Bad Shape? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Team link JSON, spines, answer union | Yes | Pass | N/A | Pass | — |
-| Idle stop decision | Yes | Fail | N/A | Fail | AR-301 |
+| Quiet shutdown decision and its unit cases | Yes | Pass | N/A | Pass | — |
 
 ## Material Premise Validation
 
@@ -200,11 +201,27 @@ None.
 
 ## Review Decision
 
-`Fail` (`Design Impact`, AR-301). Apart from AR-301 this is a strong design. The generalization is bounded, every G-point has a single owner, the contract cleanup removes an accidental rule, and the premises are reproduced. One correction is needed in the idle stop.
+`Pass`. AR-301 is resolved and verified against the code. N-301 … N-303 are done. One clarification note (N-304) for implementation. The design is ready for implementation.
 
 ## Findings
 
-### AR-301 — The idle stop of a peer-started Team must be a quiet shutdown, not the user Stop
+None blocking. Resolved in ARCH-REV-002:
+- AR-301: `RemoteTeamIdleShutdown` is a quiet shutdown.
+  - It arms on the child schedule's signals and cancels on `running` / `initializing`.
+  - It fires in the root's gate through `RootTeamRun.shutDownIfQuiet()`, which skips open child work and live leases and reuses `TeamRunBackend.tryPrepareTerminationIfQuiescent()`, the all-or-nothing rule verified in `flat-team-execution-manager.ts:237`.
+  - It interrupts no member and keeps the package.
+  - Unit cases cover a background task, a tool-approval wait, a message during the grace period, and open child work.
+- N-301: `pairedAgentRunIds` is the one representation; the rules are derived from it.
+- N-302: a config for every planned member; layout drift → `AGENT_CANNOT_RUN`, and the half-created root is terminated; a nested sub-team test.
+- N-303: the link is checked against stored data before an inactive root is restored.
+
+### Implementation note (non-blocking)
+
+- N-304: N-303's pre-restore check "reads the root's stored link data" from `RemoteMessageReceiver`, which lives in `remote-collaboration/`. Slice 1's dependency rule forbids `remote-collaboration` from reading root trees directly. Put the read behind `RemoteRootDirectory`, for example a `storedLinkAllows(targetRoot, fromNodeId, senderAgentRunId, targetAgentRunId)` port method implemented by the root managers and their stores. Neither the receiver nor the gateway should parse `run_metadata.json` or a tree.
+
+The round-1 text follows, kept for traceability.
+
+### AR-301 (resolved) — The idle stop of a peer-started Team must be a quiet shutdown, not the user Stop
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -231,11 +248,11 @@ None.
 
 ## Classification
 
-`Design Impact` (AR-301).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -246,6 +263,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-301 reachable with a complete witness)
-- Notes: classification `Large` / `High` confirmed. Design at commit `73fd1e77ec` (SR-005). One finding: AR-301. Three non-blocking notes: N-301 … N-303.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (MP-301 resolved by AR-301)
+- Notes: classification `Large` / `High`. Design at commit `173d336a2a` (SR-006). AR-301 is resolved; N-301 … N-303 are done; N-304 is an implementation note.

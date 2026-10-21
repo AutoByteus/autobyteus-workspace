@@ -7,6 +7,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` | SR-005 | N/A | Fail | AR-301 |
+| ARCH-REV-002 | Round 2 / SR-006 answers ARCH-REV-001 | SR-006 | Fail | Pass | AR-301 resolved |
 
 ## Revision Entries
 
@@ -32,3 +33,27 @@ None.
 - Material classification changes: none.
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: RSK-201, RSK-301 (accepted); RSK-302 addressed by AR-301.
+
+### ARCH-REV-002 — Round 2: quiet shutdown; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-agent-teams/tickets/in-progress/remote-agent-teams/design-review-report.md`
+- Review round and trigger: round 2; the Solution Designer's SR-006 (commit `173d336a2a`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 2; AR-301, N-301 … N-303.
+- Relevant solution revision IDs: SR-006
+- Prior authoritative decision: `Fail` (ARCH-REV-001)
+- Current authoritative decision: `Pass`
+- What changed in the review result: AR-301 was verified against the reused code (`TeamRunBackend.tryPrepareTerminationIfQuiescent`, all-or-nothing in `flat-team-execution-manager.ts:237`; the same rule as `tryShutDownRootTaskTeamIfQuiet`). The notes were checked. N-304 was added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-301 | Open (Medium) | Resolved | SR-006; DS-004; ownership `RemoteTeamIdleShutdown`; file mapping `root-team-run.ts` | Arms on the child signals; fires in the gate through `shutDownIfQuiet()`; skips open child work and leases; reuses the backend's all-or-nothing quiescence; no member interrupted; package kept; unit cases for a background task and an approval wait |
+| N-301 | Note | Done | SR-006 | `pairedAgentRunIds` only; rules derived |
+| N-302 | Note | Done | SR-006 | A config for every planned member; drift → `AGENT_CANNOT_RUN`, root terminated; nested sub-team test |
+| N-303 | Note | Done | SR-006 | Stored link checked before restoring an inactive root; see N-304 for the owner |
+
+- New or remaining finding IDs: none blocking. N-304 (route the pre-restore read through `RemoteRootDirectory`, per slice 1's rule that `remote-collaboration` never reads root trees).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: RSK-201, RSK-301 (accepted).

@@ -171,7 +171,7 @@ DS-003  B: member send_message_to(delegator) → its Team root.hasAgentExecution
   - No second quiet rule is written: the backend's preparation is the one owner.
   - Unit cases: all members idle → shut down after the grace period; one idle member with a running background task → no shutdown; a member waiting for tool approval → no shutdown; a message during the grace period cancels; open child work → skip.
 - **`RemoteMessageReceiver`** (modified, G-2): resolves `targetRoot` by kind for messages and work packets; it no longer guesses "standalone".
-  - **Link check before restore (N-303):** before restoring an inactive root, it reads the root's stored link data without activating anything, and refuses `TARGET_NOT_PERMITTED` when the sender is not linked from that node:
+  - **Link check before restore (N-303, N-304):** before restoring an inactive root, it asks `RemoteRootDirectory` for the root's stored link (the root managers and stores read it; `remote-collaboration` parses no root files), without activating anything, and refuses `TARGET_NOT_PERMITTED` when the sender is not linked from that node:
     - for a root that runs for a peer, the stored `delegatedFrom` (`run_metadata.json` or the Team tree);
     - for a coordinating root, the stored tree's remote links.
 

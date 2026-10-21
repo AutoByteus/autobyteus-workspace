@@ -70,3 +70,4 @@
   - **N-303:** a stored-link check before restoring an inactive root.
 - Intended behavior changed: `No` (REQ-306's "once every member is quiet" is now met).
 - Next action: round 2 to the architecture reviewer.
+- Addendum after ARCH-REV-002 (Pass): N-304 adopted. The stored-link check before restore goes through `RemoteRootDirectory` (root managers and stores), following slice 1's dependency rule. Clarification only; no behavior change.
