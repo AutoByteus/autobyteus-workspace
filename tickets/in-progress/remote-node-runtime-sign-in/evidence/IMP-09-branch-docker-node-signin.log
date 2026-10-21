@@ -1,0 +1,24 @@
+# IMP-09 branch server on a throwaway Docker node (desktop: BROWSER + DISPLAY from the image)
+# Command: tickets/in-progress/remote-node-runtime-sign-in/evidence/IMP-probe-branch-docker-node.sh <worktree> autobyteus/autobyteus-server:beta
+# Commit: c0b385524 (dist mounted read-only); image autobyteus/autobyteus-server:beta 191a2073ebee; 2026-10-21T07:58:34Z
+
+== node fact
+{"data":{"agentRuntimeSignInBrowserAvailable":true}}
+{"data":{"checkAgentRuntimes":true}}
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","installed":true,"installedVersion":"0.163.0","signInRoute":"BROWSER","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"claude_agent_sdk","installed":true,"installedVersion":"2.1.306","signInRoute":"COMMAND_LINE","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"antigravity_cli","installed":true,"installedVersion":"1.4.3","signInRoute":"COMMAND_LINE","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"grok_build","installed":true,"installedVersion":"1.0.62","signInRoute":"BROWSER","account":{"state":"SIGNED_OUT"}}],"agentRuntimeSignInBrowserAvailable":true}}
+== start sign-in: codex_app_server
+{"data":{"startAgentRuntimeSignIn":true}}
+   "url": "https://auth.openai.com/log-in",
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":{"kind":"SIGN_IN","state":"RUNNING","command":null,"step":null,"error":null}},{"runtimeKind":"claude_agent_sdk","operation":null},{"runtimeKind":"antigravity_cli","operation":null},{"runtimeKind":"grok_build","operation":null}]}}
+{"data":{"cancelAgentRuntimeSignIn":true}}
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"claude_agent_sdk","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"antigravity_cli","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"grok_build","operation":null,"account":{"state":"SIGNED_OUT"}}]}}
+== start sign-in: grok_build
+{"data":{"startAgentRuntimeSignIn":true}}
+   "url": "https://accounts.x.ai/sign-in?<query redacted>
+   "url": "https://auth.openai.com/log-in",
+   "url": "blob:https://accounts.x.ai/9e61f327-5791-46d7-92f7-3c5b7aa826da",
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":null},{"runtimeKind":"claude_agent_sdk","operation":null},{"runtimeKind":"antigravity_cli","operation":null},{"runtimeKind":"grok_build","operation":{"kind":"SIGN_IN","state":"RUNNING","command":null,"step":null,"error":null}}]}}
+{"data":{"cancelAgentRuntimeSignIn":true}}
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"claude_agent_sdk","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"antigravity_cli","operation":null,"account":{"state":"SIGNED_OUT"}},{"runtimeKind":"grok_build","operation":null,"account":{"state":"SIGNED_OUT"}}]}}
+== server log lines mentioning auth hosts (expect none)
+exit 0

@@ -1,0 +1,18 @@
+# IMP-10 branch server in a throwaway container with BROWSER, DISPLAY and WAYLAND_DISPLAY set empty (a node without a desktop browser)
+# Command: docker run -d --name imp-headless-probe -p 127.0.0.1:18092:8000 -v <worktree>/autobyteus-server-ts/dist:/app/autobyteus-server-ts/dist:ro -e BROWSER= -e DISPLAY= -e WAYLAND_DISPLAY= -e AUTOBYTEUS_SERVER_HOST=http://localhost:18092 autobyteus/autobyteus-server:beta; then query agentRuntimeSignInBrowserAvailable and the server process environment
+# Commit: c0b385524; 2026-10-21T07:59:55Z
+
+{"data":{"agentRuntimeSignInBrowserAvailable":true}}
+== server process env (BROWSER/DISPLAY/WAYLAND_DISPLAY)
+WAYLAND_DISPLAY=
+DISPLAY=
+BROWSER=/usr/local/bin/open-vnc-browser-url.sh
+BROWSER=
+DISPLAY=
+WAYLAND_DISPLAY=
+container removed
+
+Reading: the image's own process setup sets BROWSER=/usr/local/bin/open-vnc-browser-url.sh for the server process even when
+the container is started with BROWSER empty, so an AutoByteus server image node always reports true (REQ-002: "A node from
+the AutoByteus server Docker image ... reports yes"). This container cannot simulate a headless node; the "no desktop" answer
+is covered by the rule's unit matrix (IMP-02) and the browser probe's headless backend (ARP-08). Not a defect.
