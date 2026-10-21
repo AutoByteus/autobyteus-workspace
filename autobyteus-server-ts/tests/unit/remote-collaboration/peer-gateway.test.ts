@@ -20,14 +20,16 @@ const messageBody = (overrides: Record<string, unknown> = {}) => ({
 const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
   const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, kind: "agent" as const, agentRunId: "publisher_7f3" })) };
   const messages = { accept: vi.fn(async () => ({ accepted: true as const })) };
+  const availableAgents = { list: vi.fn(async () => ({ accepted: true as const, agents: [{ name: "Publisher", kind: "agent" as const, address: "/publisher" }] })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
     capability: { isEnabled: () => input.enabled ?? true },
     peers: { findByNodeId: async (nodeId) => (input.registered ?? true) && nodeId === PEER.nodeId ? PEER : null },
     delegatedRuns,
     messages,
+    availableAgents,
   });
-  return { gate, delegatedRuns, messages };
+  return { gate, delegatedRuns, messages, availableAgents };
 };
 
 describe("PeerGateway", () => {
@@ -73,5 +75,28 @@ describe("PeerGateway", () => {
     f.messages.accept.mockResolvedValueOnce({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED", message: "not linked" } as never);
     await expect(f.gate.deliverMessage(messageBody())).resolves.toEqual({ status: 200,
       answer: { accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED", message: "not linked", nodeId: SELF } });
+  });
+
+  it("autobyteus-261: availability is the admission itself; available agents dispatch to the one lister; both name this node", async () => {
+    const envelope = { fromNodeId: PEER.nodeId, toNodeId: SELF };
+    const f = gateway();
+    await expect(f.gate.checkAvailability(envelope)).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
+    await expect(f.gate.listAvailableAgents(envelope)).resolves.toEqual({ status: 200,
+      answer: { accepted: true, nodeId: SELF, agents: [{ name: "Publisher", kind: "agent", address: "/publisher" }] } });
+    expect(f.availableAgents.list).toHaveBeenCalledOnce();
+  });
+
+  it("autobyteus-261: both kinds keep the admission order (target node, switch, registration) and refuse a malformed body", async () => {
+    const envelope = { fromNodeId: PEER.nodeId, toNodeId: SELF };
+    for (const call of ["checkAvailability", "listAvailableAgents"] as const) {
+      await expect(gateway().gate[call]({ ...envelope, toNodeId: "srv_other" })).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_IDENTITY_MISMATCH", nodeId: SELF } });
+      await expect(gateway({ enabled: false }).gate[call](envelope)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "REMOTE_COLLABORATION_OFF" } });
+      await expect(gateway({ registered: false }).gate[call](envelope)).resolves.toMatchObject({ status: 200, answer: { accepted: false, code: "PEER_NOT_REGISTERED" } });
+      await expect(gateway().gate[call]({ fromNodeId: PEER.nodeId })).resolves.toMatchObject({ status: 400, answer: { accepted: false, code: "REMOTE_REQUEST_INVALID" } });
+      await expect(gateway().gate[call]("not an object")).resolves.toMatchObject({ status: 400 });
+    }
+    const refused = gateway({ enabled: false });
+    await refused.gate.listAvailableAgents(envelope);
+    expect(refused.availableAgents.list).not.toHaveBeenCalled();
   });
 });

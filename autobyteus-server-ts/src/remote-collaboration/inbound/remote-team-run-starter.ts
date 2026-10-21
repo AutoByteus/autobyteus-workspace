@@ -56,7 +56,7 @@ export class RemoteTeamRunStarter {
     delegatedFrom: DelegatedFrom;
   }>): Promise<StartedRunAnswer | PeerHandlerRefusal> {
     const refuse = (message: string): PeerHandlerRefusal =>
-      Object.freeze({ accepted: false, code: REMOTE_REFUSAL.AGENT_CANNOT_RUN, message, targetName: input.name });
+      Object.freeze({ accepted: false, code: REMOTE_REFUSAL.AGENT_CANNOT_RUN, message, target: Object.freeze({ kind: "agent_team" as const, name: input.name }) });
     const memberConfigs: TeamRunMemberConfigInput[] = input.source.members.map((member) => ({
       memberAddress: unmounted(member.address, input.address),
       agentDefinitionId: member.agentDefinitionId,

@@ -7,18 +7,18 @@ this document describes the mechanics.
 
 `src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent or shared Agent
 Team of another node, and lets the delegator and the remote run (every member of a remote Team) message each
-other by run ID. It owns the node-level concerns: the switch, the
-registered peer nodes, the outbound client, the inbound gateway and the catalog port through which peers'
-targets are resolved.
+other by run ID. With the discovery tools, an agent also finds the peers and what each offers (autobyteus-261).
+It owns the node-level concerns: the switch, the registered peer nodes, the outbound client, the inbound
+gateway, the catalog port through which peers' targets are resolved, and this node's discovery of its peers.
 The collaboration roots own the runs and their messages; they reach other nodes through the shared owners in
 `src/agent-collaboration/execution/remote/`: `RemoteRunLinks` (membership and transmit), `RemoteMessageSend`
 (the outbound message order) and `RemoteDelegation` (remote delegation).
 
 Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
 authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
-switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams.
-Attachments, lifecycle control from the delegating node, discovery and peer authentication come in later
-slices.
+switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams,
+autobyteus-261 discovery. Attachments, lifecycle control from the delegating node and peer authentication come
+in later slices.
 
 ## Settings (per node)
 
@@ -46,24 +46,34 @@ slices.
 
 ## Between nodes
 
-Two requests, `POST /rest/remote/delegated-runs` and `POST /rest/remote/messages` (route class
-`REMOTE_PEER`; a mobile credential is refused). Every request carries `{fromNodeId, toNodeId}`; every
-answer carries the responder's `nodeId`. A domain refusal is `200 {accepted: false, code, message,
-targetName?}` (`message` is the responder's detail, `targetName` the target definition's name there), a
-malformed body `400`. A delegated-run request names its target by `address`, its catalog address on the
+Four requests, `POST /rest/remote/delegated-runs`, `/rest/remote/messages`, `/rest/remote/availability` and
+`/rest/remote/available-agents` (route class `REMOTE_PEER`; a mobile credential is refused). Every request
+carries `{fromNodeId, toNodeId}`; every answer carries the responder's `nodeId`. A domain refusal is `200
+{accepted: false, code, message, target?: {kind: "agent" | "agent_team", name}}` (`message` is the responder's
+detail; `target` the target definition there, for `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`, so the delegating
+node words it as an Agent or an Agent Team), a malformed body `400`. A delegated-run request names its target by `address`, its catalog address on the
 called node; its answer is `{accepted: true, nodeId, kind: "agent", agentRunId}` or `{accepted: true, nodeId,
 kind: "agent_team", teamRunId, coordinatorAddress, members: [{address, agentRunId}]}` (the member addresses
 as the delegating node addresses them, under the catalog address). Every message and work packet carries
 `targetRoot: {kind: "agent" | "agent_team" | "agent_org", runId}`, the root that receives it on the called
 node: towards a remote run, that run's root; back towards the delegator, the coordinating run its
-`delegatedFrom` names. There is no version field and no request ID; nothing retries.
+`delegatedFrom` names. The two discovery requests carry the envelope only: *availability* is answered
+`{accepted: true, nodeId}`, *available agents* `{accepted: true, nodeId, agents: [{name, kind, address,
+description?}]}`. There is no version field and no request ID; nothing retries. A node without a route (an older
+build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 
 - **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies this node's switch
   and the registration, sends with a 20 s bound (QR-102), refuses an answer from a server that is not the
-  pinned peer, and words every refusal for the agent with the peer's name.
+  pinned peer, and words every refusal for the agent with the peer's name. It reads a peer's list strictly:
+  each entry has exactly `name`, `kind`, `address` and, optionally, `description`; anything else (for example
+  a `members` field) makes the answer malformed, read as unreachable "it answered without its list".
 - **`PeerGateway`** (`channel/peer-gateway.ts`): the one entry point (REQ-114; S6 adds authentication
   here). Order: `toNodeId` is this node, the switch is on, `fromNodeId` is a registered peer, then the
-  handler of the request kind.
+  handler of the request kind. *Availability* has no handler: passing the admission is the answer.
+- **`RemoteCatalogLister`** (`inbound/remote-catalog-lister.ts`): the *available agents* answer,
+  `CollaboratorCandidatePolicy.listEligible(NodeCatalogPort)` through the one entry builder. It is the same
+  policy and port a delegation from a peer resolves its address with, so the list is exactly what a delegation
+  accepts, at the addresses it accepts. Nothing is created or written.
 - **`RemoteDelegationReceiver`**: resolves the address exactly as a local catalog copy is resolved, through
   `CollaboratorAdmission` with `NodeCatalogPort` (`catalogDefinitionAt`, then `catalogTaskSourceOf`):
   nothing there → `AGENT_NOT_FOUND`; an agent covered by no default runtime and model →
@@ -88,6 +98,28 @@ node: towards a remote run, that run's root; back towards the delegator, the coo
 
 The refusal codes are one list next to the port (`agent-collaboration/execution/remote/remote-refusal-codes.ts`);
 the agent-facing texts are in `domain/remote-refusals.ts`.
+
+## Discovery
+
+autobyteus-261. An agent with the opt-in tools (see [Agent Tools](agent_tools.md)) finds its node's peers and what
+each offers, then delegates with `delegate_task` without being told an address.
+
+- **`RemoteDiscoveryChannel`** (`agent-collaboration/execution/remote/remote-discovery-channel.ts`): the port the
+  tools use, owned by `agent-collaboration`, implemented by **`RemoteNodeDiscovery`**
+  (`discovery/remote-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
+  go through the roots: a peer's offer does not depend on the asking run.
+- `listNodes()` (`list_available_nodes`): with the switch on, the registered peers in registration order, all
+  asked for *availability* at the same time, each within the 20 s bound, so the whole call takes at most about
+  20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
+  wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.
+- `listAvailableAgents(node)` (`list_available_agents` with `node`): the peer by name, with the same refusals as
+  `delegate_task` (switch off, no peer by that name), then its *available agents*; the peer's refusal gives the
+  reason for an unavailable node.
+- Nothing is stored or cached; every call asks the peers now. A listing creates no run, writes nothing on
+  either node and is not a message.
+- A peer reveals only the name, kind, address and description of each entry: never definitions, prompts,
+  settings, members or launch settings. Identity is claimed, not proven, until S6: a listing is answered to any
+  registered peer, the same rule as a delegation.
 
 ## In the roots
 

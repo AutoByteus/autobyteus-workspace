@@ -110,7 +110,7 @@ describe("RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9)",
     const source = await node.resolve("/studio_team");
     node.team.nodes = [...node.team.nodes, new TeamMember({ memberName: "late", ref: "writer", refScope: "shared" })];
     await expect(node.starter.start({ source, address: "/studio_team" as never, name: "Studio Team", delegatedFrom: node.delegatedFrom }))
-      .resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN", message: TEAM_CHANGED_WHILE_STARTING, targetName: "Studio Team" });
+      .resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN", message: TEAM_CHANGED_WHILE_STARTING, target: { kind: "agent_team", name: "Studio Team" } });
     expect(node.created).toEqual([]);
   });
 
@@ -139,6 +139,6 @@ describe("RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9)",
   it("any other creation failure is AGENT_CANNOT_RUN with its reason", async () => {
     const node = setup();
     node.manager.createTeamRun.mockRejectedValueOnce(new Error("The workspace is not writable."));
-    await expect(node.start()).resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN", message: "The workspace is not writable.", targetName: "Studio Team" });
+    await expect(node.start()).resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN", message: "The workspace is not writable.", target: { kind: "agent_team", name: "Studio Team" } });
   });
 });
