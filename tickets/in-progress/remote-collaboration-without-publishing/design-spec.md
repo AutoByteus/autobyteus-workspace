@@ -112,7 +112,7 @@ DS-002  catalogTaskSource(port, {address}) → policy.catalogAddressMap(port).de
   - `launchBase()` → `{kind: "defaults_only", workspaceRootPath: <the node's temp workspace dir>, autoExecuteTools: true}`.
 
   It's built by the remote-collaboration services with `appConfigProvider.config.getTempWorkspaceDir()`. **The single place of the workspace rule** (REQ-205); FU-001 changes only this.
-- **`CollaboratorRootPort`** (modified): gains `launchBase(): CollaboratorLaunchBase`. The three roots implement it as `{kind: "inherited", launch: this.rootLaunchConfiguration()}`, so local behavior is unchanged. `rootLaunchConfiguration()` stays for its other readers.
+- **`CollaboratorRootPort`** (modified): gains `launchBase(): CollaboratorLaunchBase`. Every existing port (the three roots and the GraphQL `collaborator-root-port-resolver.ts`) implements it as `{kind: "inherited", launch: this.rootLaunchConfiguration()}`, so local behavior is unchanged. `rootLaunchConfiguration()` stays for its other readers.
 - **`CollaboratorLaunchResolver`** (modified): `resolve(plans, base)`.
   - `inherited`: exactly today's code.
   - `defaults_only`:
@@ -189,7 +189,7 @@ Dead-code check in touched files: implementation confirms by search and typechec
 | `src/agent-collaboration/collaborators/collaborator-launch-resolver.ts` | Modify | `resolve(plans, base)`; `defaults_only` |
 | `src/agent-collaboration/collaborators/collaborator-errors.ts` | Modify | `CollaboratorNoDefaultLaunchError` |
 | `src/agent-collaboration/collaborators/collaborator-admission.ts` | Modify | `port.launchBase()` |
-| The three roots' collaborator ports (standalone, Team, Org) | Modify | `launchBase()` → `inherited` |
+| Every `CollaboratorRootPort` implementation: `standalone-root-collaborators.ts`, `team-run-collaborators.ts`, `agent-org-run-collaborators.ts`, `api/graphql/services/collaborator-root-port-resolver.ts` | Modify | `launchBase()` → `{kind: "inherited", launch: rootLaunchConfiguration()}` |
 | `src/remote-collaboration/inbound/remote-delegation-receiver.ts` | Modify | Resolve through admission; map refusals; prepare |
 | `src/remote-collaboration/remote-collaboration-services.ts` | Modify | Wire the port and admission; remove `published` |
 | `src/remote-collaboration/domain/remote-requests.ts`, `src/agent-collaboration/execution/remote/remote-run-channel.ts`, `remote-delegation.ts`, `remote-collaboration/channel/peer-client.ts`, `peer-gateway.ts` | Modify | `address` field |
