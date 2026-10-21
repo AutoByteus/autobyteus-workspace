@@ -70,11 +70,9 @@ export const resolveCollaboratorRootPort = async (
 };
 
 const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.freeze({
-  rootKind: "agent",
   isApplicationBound: false,
-  rootLaunchConfiguration: () => { throw new Error("This run cannot host delegated copies."); },
+  launchBase: () => { throw new Error("This run cannot host delegated copies."); },
   ownDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
   inRunPlacementsByDefinition: () => new Map(),
-  collaborators: () => [],
   addressesInUse: () => new Set<string>(),
 });

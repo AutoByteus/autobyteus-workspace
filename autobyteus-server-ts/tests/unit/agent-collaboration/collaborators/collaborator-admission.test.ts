@@ -49,9 +49,8 @@ const port = (input: {
   addresses?: string[];
   applicationBound?: boolean;
 } = {}): CollaboratorRootPort => ({
-  rootKind: "agent_team",
   isApplicationBound: input.applicationBound ?? false,
-  rootLaunchConfiguration: () => launch,
+  launchBase: () => ({ kind: "inherited", launch }),
   ownDefinition: () => ({ kind: "agent_team", definitionId: "se-team" }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({
     configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
