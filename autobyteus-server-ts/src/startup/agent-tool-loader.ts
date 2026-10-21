@@ -65,7 +65,7 @@ const serverOwnedSpecs: LoaderSpec[] = [
   {
     key: "agent_discovery",
     displayName: "Agent Discovery Tools",
-    modulePath: "../agent-tools/agent-discovery/list-available-agents-tool.js",
+    modulePath: "../agent-tools/agent-discovery/register-agent-discovery-tools.js",
     exportName: "registerAgentDiscoveryTools",
   },
   {

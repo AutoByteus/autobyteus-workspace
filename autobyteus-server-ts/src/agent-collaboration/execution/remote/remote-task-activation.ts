@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import type { RemoteTaskAgentExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   PreparedTaskExecutionActivation,
   TaskExecutionActivationCommitResult,
@@ -11,13 +11,15 @@ import type {
  * when the root planned the activation (that is where the run's ID comes from), and the Task link is written
  * between planning and this operation, by the unchanged lifecycle. Then:
  * - `prepare` does nothing remote;
- * - `commit` writes the root's `taskExecutions` link with `nodeId` (the root's one atomic tree write);
+ * - `commit` writes the root's remote link, an Agent or a Team link (the root's one atomic tree write);
  * - `acceptSeed` sends the work packet, so the remote run can never reply before this node knows the link.
  * There is no local authority to cancel or release: a refused or abandoned prepared run expires on the peer.
  */
 export const beginRemoteTaskActivation = (input: Readonly<{
-  link: RemoteTaskAgentExecution;
-  commitLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult>;
+  link: RemoteTaskExecution;
+  /** The run the work packet starts: the Agent run, or the Team run's coordinator. */
+  ingressAgentRunId: string;
+  commitLink(link: RemoteTaskExecution): Promise<TaskExecutionActivationCommitResult>;
   sendWorkPacket(): Promise<AgentOperationResult>;
 }>): TaskExecutionActivationOperation => {
   let cancelled = false;
@@ -29,7 +31,7 @@ export const beginRemoteTaskActivation = (input: Readonly<{
       assertAccepting();
       let committed = false;
       return Object.freeze({
-        targetAgentRunId: input.link.agentRunId,
+        targetAgentRunId: input.ingressAgentRunId,
         commit: async () => {
           assertAccepting();
           const result = await input.commitLink(input.link);

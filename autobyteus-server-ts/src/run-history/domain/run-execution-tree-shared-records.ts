@@ -134,14 +134,45 @@ export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
  * `taskExecutions` entry with `nodeId` (absent `nodeId` means this node); in memory the store loads it into
  * the root's own `remoteTaskExecutions` list, never into `taskExecutions`, so walkers of local copies never
  * see it. It has no own file here: `agentRunId` is the ID the peer gave the run, `nodeId` the peer's server ID.
+ * In memory a remote link is kinded (`kind`); on disk the kind is not stored (a Team link has `teamRunId`).
  */
 export type RemoteTaskAgentExecution = Readonly<{
+  kind: "agent";
   address: AgentTeamAddress;
   agentRunId: string;
   nodeId: string;
   delegatorAgentRunId: string;
   startedAt: IsoTimestamp;
 }>;
+
+/** One member of a Team run on a peer node: its address in the Team and the run ID the peer gave it. */
+export type RemoteTeamMember = Readonly<{ address: AgentTeamAddress; agentRunId: string }>;
+
+/**
+ * A delegated Team run on a peer node (autobyteus-247), recorded like a remote Agent link. The peer allocated
+ * every member's run ID when it created the Team run, so the delegator reaches any member by run ID; the
+ * coordinator is the member at `coordinatorAddress` (each fact stored once).
+ */
+export type RemoteTaskTeamExecution = Readonly<{
+  kind: "agent_team";
+  address: AgentTeamAddress;
+  teamRunId: string;
+  nodeId: string;
+  coordinatorAddress: AgentTeamAddress;
+  members: readonly RemoteTeamMember[];
+  delegatorAgentRunId: string;
+  startedAt: IsoTimestamp;
+}>;
+
+export type RemoteTaskExecution = RemoteTaskAgentExecution | RemoteTaskTeamExecution;
+
+/** The run ID a remote link names on its node: the Agent run, or the Team run. */
+export const remoteTaskExecutionRunId = (link: RemoteTaskExecution): string =>
+  link.kind === "agent" ? link.agentRunId : link.teamRunId;
+
+/** The coordinator's run ID of a remote Team link (validation keeps the coordinator among the members). */
+export const remoteTeamCoordinatorRunId = (link: RemoteTaskTeamExecution): string =>
+  link.members.find((member) => member.address === link.coordinatorAddress)!.agentRunId;
 
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;

@@ -2,7 +2,8 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
-import type { RemoteTaskAgentExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
+import type { DelegatedFrom } from "./agent-run-metadata-types.js";
 import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import type { TaskAgentRunMetadataReadState } from "./agent-run-metadata-store.js";
 import type { RunPackageFileWriteResult } from "./atomic-run-package-file-commit-writer.js";
@@ -50,9 +51,11 @@ export type CoordinatingTreeShape<TTree> = Readonly<{
   /** AgentRun ids of the coordinating run's own parts (host, members, configured agents). */
   ownAgentRunIdsOfRaw(raw: Record<string, unknown>): readonly string[];
   /** The in-memory remote links (loaded from the root list's entries with `nodeId`). */
-  remoteLinks(tree: TTree): readonly RemoteTaskAgentExecution[];
+  remoteLinks(tree: TTree): readonly RemoteTaskExecution[];
   /** A copy of a tree object with the in-memory remote links set, or removed (`null`) for writing. */
-  withRemoteLinks(raw: Record<string, unknown>, links: readonly RemoteTaskAgentExecution[] | null): Record<string, unknown>;
+  withRemoteLinks(raw: Record<string, unknown>, links: readonly RemoteTaskExecution[] | null): Record<string, unknown>;
+  /** The back-link a tree of this kind stores itself (a peer-started Team run), or `null`. */
+  storedBackLink(tree: TTree): DelegatedFrom | null;
 }>;
 
 type OwnFileStates = Readonly<{
@@ -297,12 +300,23 @@ export const commitSplitTree = async <TFile extends string>(
 };
 
 /**
- * Every AgentRun of a composed tree: the coordinating run's own parts, its loaded task agents and its
- * remote runs (message endpoints, L6).
+ * Every message endpoint of a composed tree (L6), the one rule for every store and validator (SR-017 of
+ * slice 1): the coordinating run's own parts, its loaded task agents, its remote runs (an Agent link's run;
+ * every member of a Team link) and the delegator of its back-link when a peer started it. The back-link is the
+ * one the tree stores (a Team run), or the one given for a run that stores it elsewhere (a standalone run's
+ * `run_metadata.json`).
  */
-export const agentRunIdsOfTree = <TTree>(shape: CoordinatingTreeShape<TTree>, tree: TTree): Set<string> => {
+export const agentRunIdsOfTree = <TTree>(
+  shape: CoordinatingTreeShape<TTree>,
+  tree: TTree,
+  backLink: DelegatedFrom | null = shape.storedBackLink(tree),
+): Set<string> => {
   const ids = new Set(shape.ownAgentRunIdsOfRaw(tree as unknown as Record<string, unknown>));
-  shape.remoteLinks(tree).forEach((link) => ids.add(link.agentRunId));
+  for (const link of shape.remoteLinks(tree)) {
+    if (link.kind === "agent") ids.add(link.agentRunId);
+    else link.members.forEach((member) => ids.add(member.agentRunId));
+  }
+  if (backLink) ids.add(backLink.delegatorAgentRunId);
   for (const tasks of shape.taskLists(tree).values()) {
     for (const task of tasks) {
       if ("agentRunId" in task) ids.add(task.agentRunId);

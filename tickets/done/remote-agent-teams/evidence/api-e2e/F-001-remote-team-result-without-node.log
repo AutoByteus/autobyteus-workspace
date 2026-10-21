@@ -1,0 +1,25 @@
+# F-001 excerpt | remote Team delegate_task result has no node (REQ-304, AC-301) | HEAD 824562b6a2
+
+## Runs 2 and 3 (identical failure, the only one)
+AssertionError: REQ-304: the remote Team result names the node: expected undefined to be 'beta-node' // Object.is equality
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:962:83
+      Tests  1 failed | 23 passed (24)
+AssertionError: REQ-304: the remote Team result names the node: expected undefined to be 'beta-node' // Object.is equality
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:962:83
+      Tests  1 failed | 23 passed (24)
+
+## RC-21 delegate_task result (run 2 receipt)
+{"delegated": true, "target_kind": "team", "target_team_run_id": "studio_team_b2375a9ef85848b7ad0c23ba59c65cfc", "target_team_coordinator_agent_run_id": "publisher_aef197109ff64cbfaad58d786dc38017", "task_id": "ad_hoc_task_286aa1b9-face-40dd-b401-b63120fbf0b5", "isError": false, "elapsedMs": 635}
+
+## Same flow from API-26 setup (independent of the test)
+structuredContent\\\":{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"team\\\",\\\"target_team_run_id\\\":\\\"studio_team_af0845efd938450380f815334d31e093\\\",\\\"target_team_coordinator_agent_run_id\\\":\\\"publisher_14ccab4f18ea4906bc2c98bcd7322473\\\",\\\"task_id\\\":\\\"ad_hoc_task_b12e3f01-c808-47f1-9e4c-05237b34f8a5\\\"}
+
+## Code
+autobyteus-server-ts/src/agent-collaboration/execution/remote/remote-delegation.ts:69 (node set on every remote outcome):
+    return outcome.delegated ? { ...outcome, node: placement.peer.name } : outcome;
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-serialization.ts:36-40 (only the agent branch copies it):
+  return outcome.copy.kind === "agent"
+    ? { delegated: true, target_kind: "agent", target_agent_run_id: outcome.copy.agentRunId,
+      ...(outcome.node ? { node: outcome.node } : {}), ...extras }
+    : { delegated: true, target_kind: "team", target_team_run_id: outcome.copy.teamRunId,
+      target_team_coordinator_agent_run_id: outcome.copy.teamCoordinatorAgentRunId, ...extras };

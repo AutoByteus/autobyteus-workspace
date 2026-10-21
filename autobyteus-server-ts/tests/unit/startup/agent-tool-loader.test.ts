@@ -7,7 +7,7 @@ const specs = [
   ["../agent-tools/browser/register-browser-tools.js", "registerBrowserTools", "browser"],
   ["../agent-tools/task-delegation/register-task-delegation-tools.js", "registerTaskDelegationTools", "task_delegation"],
   ["../agent-tools/agent-communication/register-agent-communication-tools.js", "registerAgentCommunicationTools", "agent_communication"],
-  ["../agent-tools/agent-discovery/list-available-agents-tool.js", "registerAgentDiscoveryTools", "agent_discovery"],
+  ["../agent-tools/agent-discovery/register-agent-discovery-tools.js", "registerAgentDiscoveryTools", "agent_discovery"],
   ["../agent-tools/published-artifacts/register-published-artifact-tools.js", "registerPublishedArtifactTools", "published_artifact"],
   ["../agent-tools/media/register-media-tools.js", "registerMediaTools", "media"],
   ["../agent-tools/search/register-search-tool.js", "registerProvisionedSearchTool", "search"],

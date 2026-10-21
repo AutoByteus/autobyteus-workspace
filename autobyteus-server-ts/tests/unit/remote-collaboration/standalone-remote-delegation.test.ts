@@ -20,6 +20,7 @@ import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbo
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/node-catalog-port.js";
 import { RemoteMessageReceiver } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
+import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
@@ -96,7 +97,9 @@ const buildNode = async (input: Readonly<{
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("fetch failed");
       const body = JSON.parse(String(init.body));
-      const response = url.endsWith("/rest/remote/delegated-runs") ? await gateway.startDelegatedRun(body) : await gateway.deliverMessage(body);
+      const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
+    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
+      : route === "availability" ? await gateway.checkAvailability(body) : await gateway.listAvailableAgents(body);
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
   });
@@ -151,10 +154,12 @@ const buildNode = async (input: Readonly<{
       return { runId, activationState: "PREPARED" as const, preparedExpiresAt: T0 };
     }) } }),
     messages: new RemoteMessageReceiver({
+      storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
     }),
+    availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
   });
   input.network.set(input.nodeId, gateway);
   return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models };
@@ -263,7 +268,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a, { reference_files: ["/tmp/x.mp4"] })).resolves.toEqual({ delegated: false,
       message: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." });
     await expect(delegate(a, { node: "nas" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining('No peer node named "nas"') });
-    await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent at /unknown that can be delegated to.' });
+    await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent or Agent Team at /unknown that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.' });
     b.models.available = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
       message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk.` });

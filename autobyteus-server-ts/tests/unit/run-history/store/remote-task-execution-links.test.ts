@@ -40,9 +40,18 @@ const localCopy = (agentRunId: string, delegator: string) => ({
   address: "/code_reviewer", agentRunId, platformAgentRunId: null, delegatorAgentRunId: delegator, startedAt: T0,
   source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: launch },
 });
-const remoteLink = (agentRunId: string, delegator: string, startedAt = T0) => ({
+/** A remote Agent link as stored (no `kind`), and as loaded in memory (kinded). */
+const storedRemote = (agentRunId: string, delegator: string, startedAt = T0) => ({
   address: "/publisher", agentRunId, nodeId: "srv_peer_b", delegatorAgentRunId: delegator, startedAt,
 });
+const remoteLink = (agentRunId: string, delegator: string, startedAt = T0) => ({ kind: "agent" as const, ...storedRemote(agentRunId, delegator, startedAt) });
+/** A remote Team link (autobyteus-247) as stored (no `kind`, with `teamRunId`), and in memory. */
+const storedTeamLink = (teamRunId: string, delegator: string, overrides: Record<string, unknown> = {}) => ({
+  address: "/studio_team", teamRunId, nodeId: "srv_peer_b", coordinatorAddress: "/studio_team/lead",
+  members: [{ address: "/studio_team/lead", agentRunId: `${teamRunId}-lead` }, { address: "/studio_team/writer", agentRunId: `${teamRunId}-writer` }],
+  delegatorAgentRunId: delegator, startedAt: T0, ...overrides,
+});
+const teamLink = (teamRunId: string, delegator: string) => ({ kind: "agent_team" as const, ...storedTeamLink(teamRunId, delegator) });
 const storedLocalLink = (agentRunId: string, delegator: string) => ({ address: "/code_reviewer", agentRunId, delegatorAgentRunId: delegator, startedAt: T0 });
 
 type Kind = Readonly<{
@@ -119,7 +128,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     expect((await kind.write(dir, tree)).outcome).toBe("committed");
 
     const raw = await readJson(kind.file(dir));
-    expect(kind.rootList(raw)).toEqual([storedLocalLink("reviewer-run", kind.delegator), remoteLink("publisher_7f3", kind.delegator)]);
+    expect(kind.rootList(raw)).toEqual([storedLocalLink("reviewer-run", kind.delegator), storedRemote("publisher_7f3", kind.delegator)]);
     expect(Object.keys(kind.rootList(raw)[1] as object)).toEqual(["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"]);
     expect(JSON.stringify(raw)).not.toContain("remoteTaskExecutions");
     // No folder is created on this node for the remote run.
@@ -139,7 +148,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
       [...kind.memoryHolder(loaded).remoteTaskExecutions, remoteLink("second", kind.delegator, T1)]);
     expect((await kind.write(dir, next)).outcome).toBe("committed");
     expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([
-      remoteLink("first", kind.delegator), storedLocalLink("reviewer-run", kind.delegator), remoteLink("second", kind.delegator, T1),
+      storedRemote("first", kind.delegator), storedLocalLink("reviewer-run", kind.delegator), storedRemote("second", kind.delegator, T1),
     ]);
     expect(kind.memoryHolder(await kind.read(dir)).remoteTaskExecutions.map((link: { agentRunId: string }) => link.agentRunId)).toEqual(["first", "second"]);
   });
@@ -148,7 +157,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     const dir = kind.dir(await memoryRoot());
     await kind.write(dir, kind.tree([], []));
     const raw = await readJson(kind.file(dir));
-    await writeJson(kind.file(dir), kind.withRootList(raw, [remoteLink("only-remote", kind.delegator)]));
+    await writeJson(kind.file(dir), kind.withRootList(raw, [storedRemote("only-remote", kind.delegator)]));
     const loaded = await kind.read(dir);
     expect(kind.memoryHolder(loaded).taskExecutions).toEqual([]);
     expect(kind.memoryHolder(loaded).remoteTaskExecutions).toEqual([remoteLink("only-remote", kind.delegator)]);
@@ -160,7 +169,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], []));
     const raw = await readJson(kind.file(dir));
     const broken = { address: "/publisher", agentRunId: "broken", nodeId: "srv_peer_b", startedAt: T0 };
-    const orphan = remoteLink("orphan", "not-in-this-tree");
+    const orphan = storedRemote("orphan", "not-in-this-tree");
     await writeJson(kind.file(dir), kind.withRootList(raw, [...kind.rootList(raw), broken, orphan]));
 
     const loaded = await kind.read(dir);
@@ -170,5 +179,31 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
 
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], []));
     expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([storedLocalLink("reviewer-run", kind.delegator), broken, orphan]);
+  });
+
+  it("stores a remote Team link with its coordinator and members (exact keys, no kind), loads it kinded, and keeps it on later saves", async () => {
+    const dir = kind.dir(await memoryRoot());
+    await kind.write(dir, kind.tree([], [remoteLink("agent-remote", kind.delegator), teamLink("team-remote", kind.delegator)]));
+    const raw = await readJson(kind.file(dir));
+    expect(kind.rootList(raw)).toEqual([storedRemote("agent-remote", kind.delegator), storedTeamLink("team-remote", kind.delegator)]);
+    expect(Object.keys(kind.rootList(raw)[1] as object)).toEqual(["address", "teamRunId", "nodeId", "coordinatorAddress", "members", "delegatorAgentRunId", "startedAt"]);
+    const loaded = await kind.read(dir);
+    expect(kind.memoryHolder(loaded).remoteTaskExecutions).toEqual([remoteLink("agent-remote", kind.delegator), teamLink("team-remote", kind.delegator)]);
+    await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], kind.memoryHolder(loaded).remoteTaskExecutions));
+    expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([
+      storedRemote("agent-remote", kind.delegator), storedTeamLink("team-remote", kind.delegator), storedLocalLink("reviewer-run", kind.delegator),
+    ]);
+  });
+
+  it("leaves out a Team link whose coordinator is not among its members, or with no members, with a warning (C-32, C-33)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const dir = kind.dir(await memoryRoot());
+    await kind.write(dir, kind.tree([], []));
+    const raw = await readJson(kind.file(dir));
+    const stray = storedTeamLink("stray-coordinator", kind.delegator, { coordinatorAddress: "/studio_team/nobody" });
+    const empty = storedTeamLink("no-members", kind.delegator, { members: [] });
+    await writeJson(kind.file(dir), kind.withRootList(raw, [stray, empty]));
+    expect(kind.memoryHolder(await kind.read(dir)).remoteTaskExecutions).toBeUndefined();
+    expect(warn.mock.calls.map(([line]) => String(line)).join("\n")).toMatch(/Remote run 'stray-coordinator'[\s\S]*not one of its members[\s\S]*Remote run 'no-members'/);
   });
 });

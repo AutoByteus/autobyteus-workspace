@@ -91,7 +91,7 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(definition.origin).toBe(ToolOrigin.LOCAL);
     expect(definition.category).toBe(ToolCategory.AGENT_COMMUNICATION);
     expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("List the agents and agent teams you can work with");
-    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("This read-only tool takes no arguments.");
+    expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).toContain("With node, list what that peer node offers for delegation instead");
     expect(LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION).not.toMatch(/\bcop(y|ies)\b|spawn|brings? it into the run/i);
   });
 

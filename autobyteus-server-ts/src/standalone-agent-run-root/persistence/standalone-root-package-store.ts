@@ -11,6 +11,7 @@ import { getStandaloneRootTreePath } from "./standalone-root-tree-path.js";
 import { validateStandaloneRootTreePayload } from "./standalone-root-tree-schema.js";
 import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import { STANDALONE_ROOT_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
 import {
@@ -67,9 +68,10 @@ export class StandaloneRootPackageStore {
 
   /**
    * The stored view for a composed tree: the host's log and its loaded task agents' logs (D-4, L6); `null`
-   * without a log. `backLinkEndpoint` is the delegator of a run a peer node started (its messages stay in view).
+   * without a log. `backLink` is the run's `delegatedFrom` when a peer node started it: the endpoint set includes
+   * its delegator (`agentRunIdsOfTree`), so its messages stay in view.
    */
-  async readMessages(collaborationDir: string, tree: StandaloneRootTreeFile, backLinkEndpoint: string | null = null): Promise<StandaloneRootMessagesFile | null> {
+  async readMessages(collaborationDir: string, tree: StandaloneRootTreeFile, backLink: DelegatedFrom | null = null): Promise<StandaloneRootMessagesFile | null> {
     const hostRunId = tree.host.agentRunId;
     const own = await this.readMessagesLog(collaborationDir, hostRunId);
     if (!own) return null;
@@ -77,8 +79,7 @@ export class StandaloneRootPackageStore {
     const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(collaborationDir).read(owner)));
     return Object.freeze({
       schemaVersion: 1, subjectKind: "agent", hostRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], new Set([
-        ...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree), ...(backLinkEndpoint ? [backLinkEndpoint] : [])]))),
+      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, backLink))),
     });
   }
 

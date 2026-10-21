@@ -45,7 +45,7 @@ import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persiste
 import { addAgentOrgRemoteTaskExecution, addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
-import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 export type ResolvedAgentOrgRecipient = DelegationPlacement;
 
@@ -371,7 +371,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   }
 
   /** A remote delegation's one tree write: the link with `nodeId`. */
-  private commitRemoteLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult> {
+  private commitRemoteLink(link: RemoteTaskExecution): Promise<TaskExecutionActivationCommitResult> {
     let nextTree: AgentOrgRunExecutionTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {

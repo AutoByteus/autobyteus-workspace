@@ -20,8 +20,12 @@ import { TeamRecipientResolver } from "./team-recipient-resolver.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 import type { TeamRunCollaborators } from "./team-run-collaborators.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
-import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { buildTaskAssigneeWorkPacket } from "../../agent-collaboration/execution/task/task-execution-input.js";
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
+
+const notLinked: AgentOperationResult = Object.freeze({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
 
 export type ExactTeamAgentMessageInput = Readonly<{
   sender: InterAgentMessageParticipant;
@@ -69,10 +73,9 @@ export class TeamRunMessageDelivery {
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
-    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
-    if (!endpoint || !receiver) {
-      return Promise.resolve({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
-    }
+    // The endpoint admitted the message's target as one of its paired agents (N-301): it is the receiver.
+    const receiver = endpoint ? this.options.getIndex().getAgent(input.message.receiverAgentRunId) : null;
+    if (!endpoint || !receiver) return Promise.resolve(notLinked);
     return this.options.withLiveLease(receiver.agentRunId, () => this.options.communication.acceptFromRemote({
       message: input.message,
       endpoint,
@@ -80,6 +83,19 @@ export class TeamRunMessageDelivery {
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       senderNodeName: input.fromNodeName,
     }));
+  }
+
+  /**
+   * N-6 for a Team run a peer started (autobyteus-247 G-8): the link check (from the delegator on its node, for the
+   * coordinator), then the task notification naming the node, posted as the coordinator's input (it starts the
+   * coordinator). Called outside the gate: `post` is the root's own input path, which takes it.
+   */
+  acceptRemoteWorkPacket(input: RemoteInboundWorkPacket, coordinatorAgentRunId: string,
+    post: (message: AgentInputUserMessage, agentRunId: string) => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    if (input.targetAgentRunId !== coordinatorAgentRunId
+      || !this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return Promise.resolve(notLinked);
+    return post(buildTaskAssigneeWorkPacket({ delegator: { agentRunId: input.senderAgentRunId }, delegatorAddress: null,
+      delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }), coordinatorAgentRunId);
   }
 
   /** `send_message_to(address)`: the sender's own instance, then run-wide standing instances; else not found. */

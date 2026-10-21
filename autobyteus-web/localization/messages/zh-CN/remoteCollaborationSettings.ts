@@ -23,8 +23,8 @@ const remoteCollaborationSettingsMessages = {
   'settings.components.settings.RemoteCollaboration.peers.remove': '移除',
   'settings.components.settings.RemoteCollaboration.peers.empty': '还没有对等节点。',
   'settings.components.settings.RemoteCollaboration.peers.switchHint': '请先开启远程协作再添加对等节点：添加时会联系该节点以确认其身份。',
-  'settings.components.settings.RemoteCollaboration.availability.title': '对等节点可用的智能体',
-  'settings.components.settings.RemoteCollaboration.availability.note': '开启远程协作后，已登记的对等节点可以启动本节点的任何共享智能体。它使用自己的默认运行时和模型，在本节点的临时工作区中运行，工具调用自动批准。如果智能体的默认运行时使用本节点的本地登录（例如 Codex 或 Claude），它会为每个已登记的对等节点使用该登录。没有默认运行时和模型的智能体会被拒绝。',
+  'settings.components.settings.RemoteCollaboration.availability.title': '对等节点可用的智能体和智能体团队',
+  'settings.components.settings.RemoteCollaboration.availability.note': '开启远程协作后，已登记的对等节点可以启动本节点的任何共享智能体或智能体团队。每个智能体使用自己的默认运行时和模型（没有默认值的团队成员使用其团队的默认值），在本节点的临时工作区中运行，运行中每个智能体的工具调用都自动批准。如果智能体的默认运行时使用本节点的本地登录（例如 Codex 或 Claude），它会为每个已登记的对等节点使用该登录。没有默认运行时和模型的智能体或团队成员会被拒绝。',
 } satisfies TranslationCatalog;
 
 export default remoteCollaborationSettingsMessages;

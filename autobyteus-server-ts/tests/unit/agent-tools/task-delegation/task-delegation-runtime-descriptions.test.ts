@@ -173,6 +173,10 @@ describe("task delegation runtime descriptions", () => {
     expect((agentCopy!.properties as Record<string, unknown>).launch_notes).toMatchObject({ type: "array", minItems: 1, items: { type: "string", minLength: 1 } });
     expect((agentCopy!.required as string[])).not.toContain("launch_notes");
     expect(Object.keys(teamCopy!.properties as object)).toContain("launch_notes");
+    // autobyteus-247 REQ-304: a task agent team on a peer node is named with its node too.
+    expect(Object.keys(teamCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_team_run_id", "target_team_coordinator_agent_run_id",
+      "node", "task_id", "launch_notes"]);
+    expect((teamCopy!.required as string[])).not.toContain("node");
     expect(teamCopy).toMatchObject({
       type: "object",
       additionalProperties: false,

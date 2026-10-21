@@ -1,0 +1,32 @@
+[
+ {
+  "toolName": "list_available_nodes",
+  "toolArgs": {},
+  "toolResult": "{\"nodes\":[{\"name\":\"beta-node\",\"status\":\"available\"}]}",
+  "toolError": null
+ },
+ {
+  "toolName": "list_available_agents",
+  "toolArgs": {
+   "node": "beta-node"
+  },
+  "toolResult": "{\"agents\":[{\"name\":\"Designer\",\"kind\":\"agent\",\"address\":\"/designer\",\"description\":\"Designs logos and posters\"},{\"name\":\"Copy Lead\",\"kind\":\"agent\",\"address\":\"/copy_lead\",\"description\":\"Leads copywriting\"},{\"name\":\"Copy Checker\",\"kind\":\"agent\",\"address\":\"/copy_checker\",\"description\":\"Checks copy\"},{\"name\":\"Copy Team\",\"kind\":\"agent_team\",\"address\":\"/copy_team\",\"description\":\"Writes and checks short copy\"}]}",
+  "toolError": null
+ },
+ {
+  "toolName": "delegate_task",
+  "toolArgs": {
+   "node": "beta-node",
+   "recipient_address": "/designer",
+   "description": "Sketch a logo idea for a coffee shop called \"Night Owl\".\n\nContext: The coffee shop is named \"Night Owl\". We need a rough logo concept sketch / idea, not a finished brand package.\n\nDeliverable:\n- A short written concept description (the idea, mood, imagery, typography direction, and a simple color palette).\n- Optionally a rough ASCII/character-art sketch or simple SVG file in your workspace if you can produce one.\n\nConstraints: keep it simple and clearly a concept sketch. Deliver the concept description in your reply to me."
+  },
+  "toolResult": "{\n  \"delegated\": true,\n  \"target_kind\": \"agent\",\n  \"target_agent_run_id\": \"designer_d09746f173134bb3a5db128a7b0d0f90\",\n  \"node\": \"beta-node\",\n  \"task_id\": \"ad_hoc_task_c6b18b3f-14ed-47f1-9d51-79793032f07f\"\n}",
+  "toolError": null
+ },
+ {
+  "toolName": "list_available_agents",
+  "toolArgs": {},
+  "toolResult": "{\"agents\":[{\"name\":\"Plain Producer\",\"kind\":\"agent\",\"address\":\"/plain_producer\",\"description\":\"Coordinates work for the user\"}]}",
+  "toolError": null
+ }
+]

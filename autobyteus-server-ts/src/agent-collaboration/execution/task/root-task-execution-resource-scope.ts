@@ -8,6 +8,8 @@ import {
   type TaskExecutionStopResult,
 } from "./task-execution-resource-port.js";
 import type { RemoteRunLinks } from "../remote/remote-run-links.js";
+import type { DelegatedRunEndpoint, DelegatedTeamEndpoint } from "../remote/remote-endpoint.js";
+import { remoteTeamCoordinatorRunId } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
 import { listClosedTaskExecutions } from "./task-execution-closure.js";
@@ -34,7 +36,7 @@ export class RootTaskExecutionResourceScope<T> {
     private readonly adapter: RootTaskExecutionAdapter<T>,
     private readonly resources?: TaskExecutionResourcePort,
     /** The root's remote endpoints: a closed Task fences its remote runs instead of releasing them (AR-007). */
-    private readonly remoteRunLinks?: Pick<RemoteRunLinks, "endpointFor" | "peerName">,
+    private readonly remoteRunLinks?: Pick<RemoteRunLinks, "endpointFor" | "teamLinkFor" | "peerName">,
   ) {}
 
   port(): TaskExecutionResourcePort {
@@ -94,8 +96,8 @@ export class RootTaskExecutionResourceScope<T> {
     const fenced = new Map<TaskExecutionReference, Promise<TaskExecutionStopResult>>();
     const links = this.remoteRunLinks;
     for (const execution of executions) {
-      const endpoint = links && "agentRunId" in execution ? links.endpointFor(execution.agentRunId) : null;
-      if (links && endpoint?.kind === "delegated_run" && isClosed(port, execution)) {
+      const endpoint = links ? remoteEndpointOf(links, execution) : null;
+      if (links && endpoint && isClosed(port, execution)) {
         fenced.set(execution, links.peerName(endpoint.reference.nodeId).then((peer) => endpoint.closureFence(execution, peer)));
       }
     }
@@ -154,6 +156,17 @@ export class RootTaskExecutionResourceScope<T> {
 }
 
 const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
+/** The remote endpoint a closed Task's execution fences (AR-007): a delegated Agent run, or a delegated Team run (G-4). */
+const remoteEndpointOf = (links: Pick<RemoteRunLinks, "endpointFor" | "teamLinkFor">, execution: TaskExecutionReference): DelegatedRunEndpoint | DelegatedTeamEndpoint | null => {
+  if ("agentRunId" in execution) {
+    const endpoint = links.endpointFor(execution.agentRunId);
+    return endpoint?.kind === "delegated_run" ? endpoint : null;
+  }
+  const team = links.teamLinkFor(execution.teamRunId);
+  const endpoint = team ? links.endpointFor(remoteTeamCoordinatorRunId(team)) : null;
+  return endpoint?.kind === "delegated_team" ? endpoint : null;
+};
+
 const isClosed = (port: TaskExecutionResourcePort, execution: TaskExecutionReference): boolean => {
   try { return port.ownerOf([execution])?.open === false; } catch { return false; }
 };

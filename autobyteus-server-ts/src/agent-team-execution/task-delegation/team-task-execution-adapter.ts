@@ -35,7 +35,7 @@ import {
 } from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
 import { addRemoteTaskExecutionToTree, addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
-import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/team-run-persistence-contract.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
 import type { TeamRunRegistrationReservation } from "../services/team-run-resolver.js";
@@ -291,7 +291,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   }
 
   /** A remote delegation's one tree write: the link with `nodeId`. */
-  private async commitRemoteLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult> {
+  private async commitRemoteLink(link: RemoteTaskExecution): Promise<TaskExecutionActivationCommitResult> {
     let nextTree: TeamRunExecutionTreeSnapshot | null = null;
     const result = await this.options.commitTaskActivation({
       prepareAgainstCurrent: () => {
