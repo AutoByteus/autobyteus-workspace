@@ -39,3 +39,4 @@
 - Classification: `Medium` / `High` (the contract between nodes, a new peer exposure, approved texts).
 - Intended behavior changed: No.
 - Next: architecture review.
+- SR-003 addendum after ARCH-REV-001 (Pass): N-401 (A's strict parser decides what a peer may send; the builder only shapes) and N-402 (registration order) adopted as clarifications. FU-001 (application-owned roots and remote delegation/listing) was recorded by the reviewer; it goes to the PTM at ticket exit.

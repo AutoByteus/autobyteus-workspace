@@ -86,7 +86,7 @@ Clean cut. `targetName` on the refusal answer is replaced by `target`, with no p
 
 - **DS-001.**
   1. The tool checks that this node's switch is on through the port; if it is off, the result is the "turned off" refusal and nothing is sent.
-  2. `RemoteNodeDiscovery` reads the registered peers, in `peers.json` order.
+  2. `RemoteNodeDiscovery` reads the registered peers, in registration order (N-402).
   3. It asks each one for *availability* at the same time, each bounded by `PEER_REQUEST_TIMEOUT_MS` (20 s).
   4. An accepted answer is `available`. Anything else is `unavailable`: a refusal by the peer (switch off, this node not registered), the wrong node answering, an HTTP error (an older build without the route answers 404), a transport failure or a timeout.
   5. The whole call takes at most about 20 s.
@@ -94,7 +94,7 @@ Clean cut. `targetName` on the refusal answer is replaced by `target`, with no p
   1. The tool passes `node` to the port. `RemoteNodeDiscovery` resolves the peer by name, with the same refusal as `delegate_task` for an unknown name, and calls *available agents*.
   2. On B, the gateway admits the request in the existing order. `RemoteCatalogLister` lists `policy.listEligible(nodeCatalogPort)`: the exact set and addresses `catalogDefinitionAt(nodeCatalogPort, …)` accepts.
   3. B maps each entry through the entry builder to `{name, kind, address, description?}`.
-  4. A reads the answer strictly. If it is malformed, the result is the unreachable refusal "it answered without its list". A then rebuilds each entry through the same builder.
+  4. A reads the answer strictly, and that parser alone decides what a peer may send (N-401): each entry needs a non-empty `name` and `address`, a `kind` of `agent` or `agent_team`, and optionally a string `description`; nothing else is read. If it is malformed, the result is the unreachable refusal "it answered without its list". A then rebuilds each accepted entry through the builder, which only shapes it.
   5. A refusal becomes a tool error with the existing text.
 - **DS-003.** B knows the kind from the definition reference it resolved (`ref.kind`), or `agent_team` in the Team starter. A words it with "Agent" or "Agent Team".
 
