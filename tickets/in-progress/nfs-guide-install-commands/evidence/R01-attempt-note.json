@@ -1,0 +1,12 @@
+{
+  "case": "R01",
+  "date": "2026-10-21T20:04:52.657189+00:00",
+  "commit": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "environment": "local metadata audit",
+  "step": "Initial reuse audit asserted wrong literal",
+  "observed": "AssertionError line14: expected exit=0 in IMP-04-typecheck.log",
+  "actual": "Header explicitly records Command: ...; exit0; no diagnostic output",
+  "cause": "API evidence-parser spelling error, not failed typecheck",
+  "oldScriptSha256": "14d687a490a5e3c7d66c602ba72e67f192db8ad689e07fc0e3a5be1f2bf55526",
+  "correction": "Inspect actual header and require ; exit0. Rerun metadata audit only, no product tests repeated."
+}

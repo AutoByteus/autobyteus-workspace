@@ -1,0 +1,16 @@
+{
+  "case": "C01",
+  "step": "Validate own evidence JSON/driver syntax/expected failed-attempt preservation and current source cleanliness",
+  "commit": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "environment": "NFS guide task/macOS no product rerun",
+  "date": "2026-10-21T20:09:21.554447+00:00",
+  "ownedEvidenceFiles": 37,
+  "fourCasesCompleted": true,
+  "allFiveCriteriaProvenInScopedReport": true,
+  "productDeltaSinceImplementation": [],
+  "durableTestChanges": [],
+  "failedHarnessAttemptsPreserved": true,
+  "secretPatternHits": [],
+  "rawWhitespaceExceptions": [],
+  "pass": true
+}
