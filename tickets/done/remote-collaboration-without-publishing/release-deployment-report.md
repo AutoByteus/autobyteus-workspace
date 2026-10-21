@@ -145,3 +145,27 @@ Revert the merge on `personal`. With the switch off (the default), no remote pat
 - Unresolved blocker: `None`.
 - Successful terminal package eligible for return: `Yes`.
 - Terminal package sent to the Solution Designer: `Yes`, after this record's push and the cleanup.
+
+## DR-002 Addendum — Beta v1.5.8-beta.5 (2026-10-21)
+
+- **Release decision:** `Beta`. Decided by the user on 2026-10-21: "now release a new beta". The beta carries autobyteus-191 (merge `d51ef843f6`), autobyteus-245 (merge `2a71e49c6f`) and dependency-security-and-unused-cleanup (`d9439919e2`, Electron 42.11.16). They are the first release of both remote-collaboration tickets.
+- **Method:** `RELEASE.md` at `7d0132aed4`, from a fresh worktree of `origin/personal` `7d0132aed4` on `finalize/release-1.5.8-beta`. Deviations: none.
+- **Checks before tagging**, all passed:
+  - `check_licensing.py`: "Licensing is consistent.";
+  - `check_repository_artifact_hygiene.py`: exit 0;
+  - `check_secrets.sh v1.5.8-beta.4..HEAD`: 84 commits, PASS.
+- **Version, tag and release commit:**
+  - `python3 scripts/release_versions.py next-beta` gave `1.5.8-beta.5`.
+  - `bash scripts/desktop-release.sh beta --branch finalize/release-1.5.8-beta --no-push` made the release commit `4a05909457` (`autobyteus-web/package.json` = `1.5.8-beta.5`) and the annotated tag `v1.5.8-beta.5`.
+- **Push:** Secret Gate PASS; `origin/personal` was refetched and unchanged. `git push origin HEAD:personal` gave `7d0132aed4..4a05909457`, then `git push origin v1.5.8-beta.5` (04:41:46 UTC).
+- **Pipelines,** all `success`, watched with `gh run watch --exit-status`:
+  - Desktop Release `39545445209`;
+  - Android APK Release `39545445213`;
+  - iOS App Store Connect Release `39545445184` (TestFlight upload);
+  - Server Docker Release `39545445076`.
+- **Published artifacts:**
+  - GitHub release `v1.5.8-beta.5`: `isPrerelease: true`, not a draft, with 17 assets. They are the APK and its `.sha256`, the Linux x64 and ARM64 AppImages, the macOS ARM64 and x64 `.dmg` and `.zip` with blockmaps, the Windows `.exe`, and `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.8-beta.5` and `:beta` share `sha256:191a2073ebee…` (amd64, arm64). `:latest` stays on `1.5.7` (`sha256:821e777d8e88…`), as a beta should leave it.
+- **Release result:** `Completed`. Release notes: `Not required` (pre-release tags use GitHub generated notes).
+- **Rollout:** desktop installs with **Settings > Updates > Receive beta updates** on are offered `1.5.8-beta.5`. Docker users follow it with `autobyteus-docker upgrade --all --tag beta`. Rollback: `RELEASE.md` § Rollback (no app-data migration in these tickets; desktop updates never downgrade).
+- **Cleanup:** the release worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/release-1.5.8-beta` and the local branch `finalize/release-1.5.8-beta` are removed after this record's push.
