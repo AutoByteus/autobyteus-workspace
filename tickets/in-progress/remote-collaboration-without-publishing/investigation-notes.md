@@ -47,5 +47,5 @@ None.
 
 | ID | Type | Description | Status |
 | --- | --- | --- | --- |
-| RSK-201 | Risk | With auto-approve on, a peer's task runs tools without the owner's approval | DEC-203; trusted network; default off recommended |
+| RSK-201 | Risk | Remote runs always auto-approve (DEC-203 (c)), so a peer's task runs tools, including computer use, without the owner's approval | Accepted by the user within the trusted-network scope (2026-10-21); the switch (off by default) and peer registration stay the consent; a permission rule is S6 |
 | RSK-202 | Unknown | Whether `CollaboratorLaunchResolver` can be called without an inherited layer as is | Architecture |

@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` (2026-10-21, SR-002)
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `remote-collaboration-without-publishing`
 - Request / ticket: Project Task **autobyteus-245** "Remote collaboration without publishing", a part of **autobyteus-25** (cross-node parent). From FU-007 of autobyteus-191.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's direction of 2026-10-21
@@ -12,9 +12,9 @@
 - Approved by and reference: `User`, in the Solution Designer conversation, 2026-10-21:
   - "yesss. i think they are by default available … I would just want to be able to delegate to any agent on the other nodes. I don't want to just every time do configuration";
   - on the workspace: "if you didn't set the default workspace, then it's temporal space, yes … we use the temporal space" (and the default-workspace follow-up FU-001);
-  - on auto-approve: "Yeah, of course like auto approve … we always used Auto approve";
+  - on auto-approve: "Yeah, of course like auto approve … we always used Auto approve", then "auto-approve equal to true for remote runs" (SR-003);
   - on the refusal: "if the target node … doesn't have … default runtime setting … just report error and this error is sent to the client".
-- Exact approved requirements baseline / solution revision: this document at SR-002
+- Exact approved requirements baseline / solution revision: this document at SR-003
 - Behavior-defining supplements: None
 
 ## Problem And Desired Outcome
@@ -90,7 +90,7 @@ None.
 | REQ-203 | When the Agent has no default runtime and model on B, the delegation is refused before anything starts on B, with: "There is no default runtime configured for the target agent <name> on node <node>." | BEH-204 | Must | The user's wording | User 2026-10-21; DEC-201 |
 | REQ-204 | When the default exists but can't run on B (runtime not available, model not available, model settings invalid), the delegation is refused before anything starts on B, with the specific reason, naming the Agent and the node | BEH-204 | Must | Truthful reasons (slice 1 REQ-109) | DEC-201 |
 | REQ-205 | The remote run's workspace is the receiving node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`). No setting. A definition default workspace is FU-001 | BEH-203 | Must | Zero configuration | DEC-202 |
-| REQ-206 | The remote run's tool auto-approve is that of the delegating run on the delegating node, as for a local delegated copy (which takes the run root's). No setting | BEH-203 | Must | Zero configuration; the user always uses auto-approve | DEC-203 | Tool auto-approve for remote runs | With it off, a remote run's tool calls wait for approval in B's window; with it on, a peer's tasks run tools without asking | (a) Always off. (b) A node-level setting, default off. (c) Always on. (d) **Inherited from the delegating run**, as a local delegated copy inherits the run root's auto-approve | (d) needs no setting, matches local delegation exactly, and leaves the decision with the person who started the delegating run. The user always runs with auto-approve, so remote runs auto-approve too. Antigravity still forces auto-approve, as locally | User | Decided (d), 2026-10-21 ("Yeah, of course like auto approve … we always used Auto approve") |
+| REQ-206 | A remote run always runs with tool auto-approve on (`autoExecuteTools: true`). No setting, and nothing about it is sent between nodes | BEH-203 | Must | The user: "auto-approve equal to true for remote runs" | DEC-203 | Tool auto-approve for remote runs | With it off, a remote run's tool calls wait for approval in B's window; with it on, a peer's tasks run tools (including computer use) without asking | (a) Always off. (b) A node-level setting, default off. (c) **Always on**. (d) Inherited from the delegating run | The user, 2026-10-21: "auto-approve equal to true for remote runs"; the user always works with auto-approve and expects approval mode may go away. (c) needs no setting and nothing in the contract. Risk accepted by the user within the trusted-network scope (RSK-201) | User | Decided (c), 2026-10-21 (SR-003; replaces (d) of SR-002) |
 | REQ-207 | Nodes → Remote Collaboration no longer shows a publish list. It shows that all shared Agents are available to registered peers, and that remote runs use each agent's default runtime and model. It has no new setting | BEH-201 | Must | — | — |
 | REQ-208 | The publishing code, its stored file handling, its GraphQL API and its refusal are removed (no dead code). A leftover `published-agents.json` on a development or test machine is neither read nor written (DEC-204) | BEH-201 | Must | Clean-cut removal | DEC-204 |
 | REQ-209 | The collaboration model (CM-12) and the module docs say that a node offers all its shared Agents to registered peers while the switch is on | BEH-201 | Must | The contract stays true | — |

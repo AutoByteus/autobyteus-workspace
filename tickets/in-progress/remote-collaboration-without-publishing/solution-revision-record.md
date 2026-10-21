@@ -37,3 +37,11 @@
 - Changed: REQ-205, REQ-206, REQ-207 (no node setting), Document Status, Decisions, Readiness.
 - Intended behavior changed: `Yes` (decisions taken). Approved by the User (quotes above). Baseline: `requirements-doc.md` at SR-002.
 - Next action: architecture design.
+
+### SR-003 — Remote runs always auto-approve (2026-10-21)
+
+- Phase and classification: Requirements / user change to intended behavior.
+- Trigger: the user, 2026-10-21: "auto-approve is like recorded … I kind of even have a feeling that this approve mode will even be removed in the future … because it will always be auto-approved. But anyway, auto-approve equal to true for remote runs."
+- Change: DEC-203 (d) "inherited from the delegating run" → (c) "always on". REQ-206 updated; RSK-201 accepted by the user.
+- Approval: the User (quote above). Baseline: `requirements-doc.md` at SR-003.
+- Design impact: none yet (design not written); the contract carries no auto-approve.
