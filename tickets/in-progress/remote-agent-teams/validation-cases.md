@@ -70,3 +70,39 @@ The approach works. Every case traces to existing owners or to one of nine bound
 
 - A's remote Team link names the coordinator by **`coordinatorAddress`**, as the Team tree does, instead of a separate `coordinatorAgentRunId`. The coordinator is a member, so its run ID is the member at that address; each fact is stored once. The cases above are unaffected: wherever they need the coordinator's run ID (the result, the Task record, the work packet), it is found in `members`.
 - In memory, remote links are explicitly kinded (`agent` / `agent_team`).
+
+## Round 2 (2026-10-21): the refined data model, plus premises run
+
+### Premises reproduced
+
+Command (worktree `4a05909457`, after `pnpm install`, `prisma generate` and the shared builds):
+
+`pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration/delegated-team-lazy-member-activation.test.ts tests/unit/agent-team-execution/flat-team-topology-planner.test.ts tests/unit/agent-team-execution/agent-team-run-manager-restore-self-heal.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts --no-watch`
+
+Result: 5 files, **60 tests passed**.
+
+| Premise | Test evidence | Established |
+| --- | --- | --- |
+| P-1: a Team run starts only its coordinator; a not-started member starts when a message reaches it (C-07, C-11) | `delegated-team-lazy-member-activation.test.ts`: "delegation starts only the coordinator", "a not-started member that … receives …", "teammate delivery to a not-started member …", for agent, agent_team and agent_org roots | Reproduced |
+| P-2: idle shutdown and restore of a Team keep its members restorable (C-16, C-17) | Same file: "idle shutdown and restore …" | Reproduced |
+| P-3: member run IDs are allocated when the Team is planned (C-08) | `flat-team-topology-planner.test.ts` (9 passed) | Reproduced |
+| P-4: a Team run is restored by its team run ID (C-17, C-27) | `agent-team-run-manager-restore-self-heal.test.ts`, `agent-team-run-manager-lifecycle.test.ts`, `team-run-service.test.ts` | Reproduced |
+
+The environment needed `prisma generate` and the shared package builds in the fresh worktree. That was setup, not a finding. `prepare:shared` exited 2 on one SDK package the tests don't import.
+
+### Cases re-walked with `coordinatorAddress` and kinded links
+
+| # | Case | Result |
+| --- | --- | --- |
+| C-02 | The result's coordinator run ID | B's answer gives `coordinatorAddress` and `members`. `RemoteDelegation.planActivation` takes the member at that address as the target's ingress, so the result and the Task record (`teamCoordinatorAgentRunId`) get it. Works |
+| C-09 | The work packet target | The ingress (the member at `coordinatorAddress`) with `targetRoot = {kind: "agent_team", runId: teamRunId}`. Works (G-2) |
+| C-13 | Team-run-ID guidance | `teamCoordinatorOf(teamRunId)` answers the member at the link's `coordinatorAddress`. Works (G-6) |
+| C-18 | A's compose after a restart | The shared compose reads a `nodeId` entry with `teamRunId` as a kinded `agent_team` remote link. Works (G-5, explicit kind) |
+| C-32 (new) | A stored Team link whose `coordinatorAddress` is not among its `members` (not produced by the product; damaged data only) | Left out with a logged warning naming the root, as any unreadable link (DESIGN.md rule 7); the root loads. Contained |
+| C-33 (new) | A Team link with an empty `members` list | Same as C-32: invalid shape, contained |
+| C-34 (new) | A Team with no Team default whose members all have their own defaults | The resolver records the coordinator's launch as the Team-level launch (DEC-303). B's tree is valid; no member uses it. Works |
+| C-35 (new) | A local Team copy and a remote Team in one root at the same address | Separate lists in memory; the catalog address is per definition; two copies at one address are allowed today, so a local and a remote one may coexist. Works |
+
+### Verdict
+
+No problem found. The approach and the refined data model hold: every case traces to existing owners, to the reproduced premises, or to G-1 … G-9.
