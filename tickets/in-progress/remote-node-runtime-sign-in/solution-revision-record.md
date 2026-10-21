@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline from the Project Task (2026-10-21) | N/A | N/A | Approved (Solution Designer within the direction, user informed) | BEH-001…BEH-006, REQ-001…REQ-007, AC-001…AC-009 | Requirements approved |
 | SR-002 | Design | Architecture design on SR-001 | N/A | N/A (no design) | Design Ready; Medium / Low | All | Design complete; routed by handoff rules |
+| SR-003 | Evidence | User conversation 2026-10-21 (UD-001) | N/A | Approved (SD within direction) | Approved, scope confirmed by the user | DEC-002, FU-002 | Scope confirmed; FU-002 withdrawn; no REQ/AC/design change |
 
 ## Revision Entries
 
@@ -44,3 +45,13 @@
 - Downstream impact: implementation starts from a failing web unit test (design-spec Guidance); real Docker check uses `evidence/SD-probe-remote-signin.sh` on a branch-built image
 - Remaining gaps: R-01, R-02, R-03 (design-spec Risks)
 - Next action: route per handoff rules
+
+### SR-003 — User confirms scope; headless follow-up withdrawn
+
+- Phase and classification: Evidence, Refinement (clarification)
+- Trigger: user in the Solution Designer conversation, 2026-10-21: asked why the Docker node (which has a display) gets no Sign in; answered: the container is correct (`DISPLAY=:99`, `BROWSER` bridge, Chromium) and the cause is the web gate `isOwnNode = isEmbeddedWindow` (`AgentRuntimesManager.vue` line 97, `AgentRuntimeRow.vue` line 69). User: "this feature should be available for all node. not just embeded node"; after hearing the scope (every node with a screen; headless stays status only): "thats fine for now. no need for the follow up."
+- IDs affected: DEC-002 (now user-confirmed), UD-001 (new), FU-002 (withdrawn, not sent)
+- Intended behavior changed: No; REQ-001…REQ-007 and AC-001…AC-009 unchanged
+- Approval impact: the SR-001 basis now also carries the user's explicit confirmation (UD-001)
+- Design impact: none; `design-spec.md` SR-002 stands; implementation continues
+- Next action: none until a downstream result returns

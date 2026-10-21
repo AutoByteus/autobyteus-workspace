@@ -9,7 +9,7 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_21a48907070a400cb84ae3c055534692`), for the user
 - Requirements owner: Solution Designer
 - Date: 2026-10-21
-- Approved by and reference: Solution Designer within the direction (user informed). The Task sets the direction ("the user can sign it in on a Docker/remote node from the app's Agent Runtimes page, using the node's own browser (seen through VNC) or another workable flow"); no decision below needs the user. Reference: the Solution Designer's conversation note of 2026-10-21 (SR-001) and the handoff file `handoff.md`.
+- Approved by and reference: Solution Designer within the direction (user informed). The Task sets the direction ("the user can sign it in on a Docker/remote node from the app's Agent Runtimes page, using the node's own browser (seen through VNC) or another workable flow"); no decision below needs the user. Reference: the Solution Designer's conversation note of 2026-10-21 (SR-001) and the handoff file `handoff.md`. The user then confirmed the scope in the Solution Designer conversation on 2026-10-21 (SR-003, UD-001): the feature must work on all nodes, not only the embedded node; "every node with a screen" is "fine for now", and headless-node sign-in is not needed now.
 - Exact approved requirements baseline / solution revision: this document at SR-001.
 - Behavior-defining supplements: none.
 
@@ -162,12 +162,16 @@ None. The server already accepts sign-in on any node and the Docker image alread
 | --- | --- | --- | --- | --- |
 | ASM-001 | The user reaches the node's desktop through the workspace's VNC Viewer (the node's `AUTOBYTEUS_VNC_SERVER_HOSTS` is set, as the shipped compose does) | Where the user finishes sign-in | Verified on the user's node (E-06) | Holds for the user's node |
 
+## User Decisions
+
+- **UD-001** (2026-10-21, Solution Designer conversation): Sign in must not be limited to the embedded node ("this feature should be available for all node. not just embeded node"). Offered scope: every node that can open a browser on its own screen (all Docker nodes, other desktops, own node); headless servers stay status only. User: "thats fine for now. no need for the follow up. … if there is a need of follow up, then thats would be fine" → no change to REQ/AC; FU-002 not pursued now.
+
 ## Decisions
 
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | How does sign-in on a remote node work? | Core of the Task | (a) the vendor's own browser login on the node, opening in the node's browser; (b) device code with URL and code shown in the app | (a) works today on Docker nodes (E-08), is the flow the Task names, keeps the privacy rule (nothing shown in the app) and reuses the shipped operation. (b) would need new UI and break the privacy rule. **(a).** | Solution Designer | Decided |
-| DEC-002 | What happens on a remote node that has no desktop? | A button there would wait 10 minutes and fail (E-09) | Hide Sign in / show it anyway / device code | Hide it and keep today's status-only page; device code for such nodes is FU-002 if the user wants it. | Solution Designer | Decided |
+| DEC-002 | What happens on a remote node that has no desktop? | A button there would wait 10 minutes and fail (E-09) | Hide Sign in / show it anyway / device code | Hide it and keep today's status-only page. Confirmed by the user 2026-10-21 (UD-001): "thats fine for now. no need for the follow up"; device-code sign-in for headless nodes is not pursued now (FU-002 withdrawn). | Solution Designer; confirmed by User | Decided |
 | DEC-003 | Is the own node also subject to the "can show a browser" fact? | Regression risk | Use the fact everywhere / own node always yes | The own node is the desktop the user is looking at; its sign-in already works. Always yes, so own-node behavior cannot regress. | Solution Designer | Decided |
 | DEC-004 | Remote copy | The user must know to finish in the VNC Viewer | Texts in REQ-001, REQ-003 | Name the place ("the browser on that node", "VNC Viewer", the workspace tab's name) in short plain sentences like the page's other copy. | Solution Designer | Decided |
 | DEC-005 | Claude/Antigravity hint on remote nodes | Today remote rows give no hint, which leaves the "why no button" question open | Show "Sign in from its command line on that node." / nothing | The reason for no button is the same on every node. The node's command line exists (the app's Terminal, E-10). Show the hint on nodes that can show a browser. On those nodes the vendor page also opens there. | Solution Designer | Decided |
