@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Approved requirements baseline: `requirements-doc.md` at SR-003, approved by the User on 2026-10-21 (quotes in its Document Status)
 - Behavior-defining supplements: None
-- Design status: `Ready`
+- Design status: `Ready` (SR-005: ARCH-REV-001 AR-201 … AR-204)
 - Canonical investigation notes: `investigation-notes.md` (S-01 … S-07; A-01 … A-05 below)
 - Authorities read (2026-10-21): `references/architecture-design.md` (updated 2026-10-20), `references/design-principles.md` (updated), `references/finding-the-cause.md`, `/DESIGN.md` (rules 1–9), `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-10 … CM-12), `docs/design/data_migration_guideline.md` § 1–3; the slice 1 design (`tickets/done/cross-node-agent-communication/design-spec.md`) as context.
 - Project design-principle conflicts: None.
@@ -82,18 +82,20 @@ Node B resolves a remote target **exactly as a local catalog copy is resolved**,
 DS-001  A: delegate_task({node, recipient_address:"/publisher", description}) → (slice 1, unchanged) RemoteDelegation.planActivation
         → PeerClient POST /rest/remote/delegated-runs {fromNodeId, toNodeId, address:"/publisher", delegator, coordinatingRun}
         B: PeerGateway (unchanged order) → RemoteDelegationReceiver.start
-           → CollaboratorAdmission.catalogTaskSource(nodeCatalogPort, {address})          (DS-002)
+           → ref = CollaboratorAdmission.catalogDefinitionAt(nodeCatalogPort, address)     (the kind is decided first, AR-201)
                ├─ null                         → refuse AGENT_NOT_FOUND
-               ├─ Team source                  → refuse REMOTE_TEAMS_NOT_SUPPORTED   (until autobyteus-247)
-               ├─ CollaboratorNoDefaultLaunchError → refuse NO_DEFAULT_RUNTIME (detail: the target's name)
-               ├─ CollaboratorAddError         → refuse AGENT_CANNOT_RUN (detail: the reason)
-               └─ Agent source {agentDefinitionId, launchConfiguration}
+               ├─ ref.kind = "agent_team"      → refuse REMOTE_TEAMS_NOT_SUPPORTED (targetName)   (until autobyteus-247; no launch is resolved)
+               └─ ref.kind = "agent" → CollaboratorAdmission.catalogTaskSourceOf(nodeCatalogPort, {ref, address})   (DS-002)
+                    ├─ CollaboratorNoDefaultLaunchError → refuse NO_DEFAULT_RUNTIME (targetName)
+                    ├─ CollaboratorAddError         → refuse AGENT_CANNOT_RUN (targetName, message: the reason)
+                    └─ Agent source {agentDefinitionId, launchConfiguration}
            → AgentRunService.prepareAgentRun({...launchConfiguration, delegatedFrom})   (temp workspace, autoExecuteTools: true)
         A: ← {accepted, nodeId, agentRunId} → (slice 1, unchanged) Task link → commit → work packet → tool result
            ← refusal → peerRefusalText(node, code, detail) → {delegated:false, message}
 
-DS-002  catalogTaskSource(port, {address}) → policy.catalogAddressMap(port).definitionFor(address) → policy.requireAdmissible
+DS-002  catalogTaskSourceOf(port, {ref, address}) → policy.requireAdmissible(port, ref)
         → entries.build(definition) → launches.resolve([plan], port.launchBase())
+        (catalogTaskSource(port, {address}) for local delegation = catalogDefinitionAt → catalogTaskSourceOf: one code path, no duplicate)
 ```
 
 ## Spine Narratives (Mandatory)
@@ -101,18 +103,20 @@ DS-002  catalogTaskSource(port, {address}) → policy.catalogAddressMap(port).de
 | Spine ID | Narrative | Main Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | A's side is unchanged except the request field name. B resolves the address as a local catalog copy would, through the same owners, with the node catalog port. Every refusal happens before a run is prepared, so a refusal leaves nothing on B, and nothing on A (it comes before A's Task link, SR-014 of slice 1) | `RemoteDelegation`, `PeerClient`, `PeerGateway`, `RemoteDelegationReceiver`, `CollaboratorAdmission` | B: `RemoteDelegationReceiver` | Refusal texts on A |
-| DS-002 | The one catalog resolution, now also used without a run. The `defaults_only` base removes the inherited layer, so an agent's own default (or, for Team members, the Team default) is the only source | `CollaboratorAdmission`, `CollaboratorCandidatePolicy`, `CatalogAddressMap`, `CollaboratorEntryBuilder`, `CollaboratorLaunchResolver` | `CollaboratorAdmission` | Runtime availability, model validation (existing) |
+| DS-002 | The one catalog resolution, now also used without a run. `catalogTaskSource` is split into `catalogDefinitionAt` (address → ref, which already exists) and `catalogTaskSourceOf` (ref → source), so B can decide the kind before any launch is resolved (AR-201); local delegation calls both in order, as today. The `defaults_only` base removes the inherited layer, so an agent's own default (or, for Team members, the Team default) is the only source | `CollaboratorAdmission`, `CollaboratorCandidatePolicy`, `CatalogAddressMap`, `CollaboratorEntryBuilder`, `CollaboratorLaunchResolver` | `CollaboratorAdmission` | Runtime availability, model validation (existing) |
 | DS-003 | The card shows the switch, the peers and a note: "With remote collaboration on, registered peers can start any shared Agent of this node. It runs with its own default runtime and model, in this node's temp workspace, with tools auto-approved." | Card, store | Web card | Localization |
 
 ## Ownership Map
 
-- **`RemoteDelegationReceiver`** (B, `remote-collaboration/inbound/`; modified): handles `startDelegatedRun`. It resolves the target through `CollaboratorAdmission.catalogTaskSource` with the node catalog port, maps each result or error to a refusal code, and prepares the run from the resolved agent source (launch configuration as resolved, plus `delegatedFrom`). It no longer knows about publishing.
+- **`RemoteDelegationReceiver`** (B, `remote-collaboration/inbound/`; modified): handles `startDelegatedRun`. With the node catalog port, it first resolves the address to a definition (`catalogDefinitionAt`) and refuses a missing one or a Team before any launch is resolved (AR-201). For an Agent it resolves the source with `catalogTaskSourceOf`, maps each result or error to a refusal code, and prepares the run from the resolved agent source (launch configuration as resolved, plus `delegatedFrom`). It no longer knows about publishing.
 - **`NodeCatalogPort`** (new, `agent-collaboration/collaborators/node-catalog-port.ts`): the `CollaboratorRootPort` of "this node, no run".
   - `ownDefinition()` → `null`; `inRunPlacementsByDefinition()` → empty; `addressesInUse()` → empty; `isApplicationBound` → `false`;
   - `launchBase()` → `{kind: "defaults_only", workspaceRootPath: <the node's temp workspace dir>, autoExecuteTools: true}`.
 
-  It's built by the remote-collaboration services with `appConfigProvider.config.getTempWorkspaceDir()`. **The single place of the workspace rule** (REQ-205); FU-001 changes only this.
-- **`CollaboratorRootPort`** (modified): gains `launchBase(): CollaboratorLaunchBase`. Every existing port (the three roots and the GraphQL `collaborator-root-port-resolver.ts`) implements it as `{kind: "inherited", launch: this.rootLaunchConfiguration()}`, so local behavior is unchanged. `rootLaunchConfiguration()` stays for its other readers.
+  It's built by the remote-collaboration services with `appConfigProvider.config.getTempWorkspaceDir()`. **The single place of the workspace and auto-approve rule** (REQ-205, REQ-206); FU-001 changes only this.
+- **`CollaboratorRootPort`** (modified, AR-202):
+  - **`rootLaunchConfiguration()` is replaced by `launchBase(): CollaboratorLaunchBase`.** Its only reader was `CollaboratorAdmission` (`collaborator-admission.ts:122`). Every existing port implementation returns `{kind: "inherited", launch: <the root's launch configuration>}`, so local behavior is unchanged. The roots keep their own launch-configuration options; only the port method changes.
+  - **`rootKind` is removed.** All four implementations write it and nothing reads it: it is dead code in a touched file (principle 7).
 - **`CollaboratorLaunchResolver`** (modified): `resolve(plans, base)`.
   - `inherited`: exactly today's code.
   - `defaults_only`:
@@ -121,7 +125,7 @@ DS-002  catalogTaskSource(port, {address}) → policy.catalogAddressMap(port).de
     - there is no inherited layer: an agent (or a Team member that neither its own nor the Team's default covers) with no usable layer fails;
     - with no configured layer, or only an `incomplete` one, it fails with **`CollaboratorNoDefaultLaunchError(name, kind)`**: "There is no default runtime configured for the target agent <name>" / "… agent team <name>";
     - with a configured but unusable layer (runtime unavailable, model unavailable, settings invalid), it fails with today's `CollaboratorAddError(name, <the layer's reason>)`.
-- **`CollaboratorAdmission`** (modified, one line): `catalogTaskSource` calls `launches.resolve([plan], port.launchBase())`.
+- **`CollaboratorAdmission`** (modified): `catalogTaskSource(port, {address})` becomes `catalogDefinitionAt` then the new `catalogTaskSourceOf(port, {ref, address})`, which calls `launches.resolve([plan], port.launchBase())`. Local callers are unchanged.
 - **A side, unchanged:** `RemoteDelegation`, `PeerClient` (only the request field name), `peerRefusalText` (new codes, below).
 
 ## Removal / Decommission Plan (Mandatory)
@@ -151,20 +155,25 @@ Dead-code check in touched files: implementation confirms by search and typechec
 ## Contract Between Nodes (change)
 
 - `POST /rest/remote/delegated-runs` body: `{fromNodeId, toNodeId, address, delegator: {agentRunId}, coordinatingRun: {kind, runId}}`. `address` replaces `publishedAddress`; it's the target's catalog address on B. This is a clean cut (DESIGN.md rule 9).
+- Answers (AR-203):
+  - accepted: `{accepted: true, nodeId, agentRunId}`;
+  - refused: `{accepted: false, nodeId, code, message, targetName?}`, where `message` is B's detail (the reason) and `targetName` is the target definition's name on B. `targetName` is present for `REMOTE_TEAMS_NOT_SUPPORTED`, `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`, and absent otherwise.
+  - `PeerClient` passes both to `peerRefusalText(node, code, message, targetName)`, so A's text names the Agent, which A knows only by its address.
 - Refusal codes on this request (`remote-refusal-codes.ts`, agent-facing text composed on A by `peerRefusalText` with this owner's peer name):
 
 | Code | When (B) | Text on A |
 | --- | --- | --- |
 | `AGENT_NOT_FOUND` (replaces `AGENT_NOT_PUBLISHED`) | No eligible definition at the address (unknown, built-in, Org, team-local, application-owned) | `Node "<node>" has no Agent at <address> that can be delegated to.` |
-| `REMOTE_TEAMS_NOT_SUPPORTED` (new; removed again by autobyteus-247) | The address is a shared Agent Team | `<address> on node "<node>" is an Agent Team; Agent Teams on another node are not supported yet.` |
-| `NO_DEFAULT_RUNTIME` (new) | `CollaboratorNoDefaultLaunchError` | `There is no default runtime configured for the target agent <name> on node "<node>".` (the user's wording; "agent team" in 247) |
-| `AGENT_CANNOT_RUN` (kept) | `CollaboratorAddError`, or preparing failed | `The Agent <name> on node "<node>" cannot run there: <reason>` |
+| `REMOTE_TEAMS_NOT_SUPPORTED` (new; removed again by autobyteus-247) | The address is a shared Agent Team (decided before any launch is resolved) | `<targetName> on node "<node>" is an Agent Team; Agent Teams on another node are not supported yet.` |
+| `NO_DEFAULT_RUNTIME` (new) | `CollaboratorNoDefaultLaunchError` | `There is no default runtime configured for the target agent <targetName> on node "<node>".` (the user's wording; "agent team" in 247) |
+| `AGENT_CANNOT_RUN` (kept) | `CollaboratorAddError`, or preparing failed | `The Agent <targetName> on node "<node>" cannot run there: <message>` |
 
 ## Interface Boundary Mapping
 
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
-| `CollaboratorRootPort.launchBase()` | A root's or the node's launch base | Gives the resolver its base | — | Roots: `inherited`; `NodeCatalogPort`: `defaults_only` |
+| `CollaboratorRootPort.launchBase()` (replaces `rootLaunchConfiguration()`; `rootKind` removed) | A root's or the node's launch base | Gives the resolver its base | — | Existing ports: `inherited`; `NodeCatalogPort`: `defaults_only` |
+| `CollaboratorAdmission.catalogDefinitionAt(port, address)` (existing) / `catalogTaskSourceOf(port, {ref, address})` (new) | Address → ref; ref → task source | Lets B decide the kind first | Address; `CatalogDefinitionRef` | `catalogTaskSource` = both in order |
 | `CollaboratorLaunchResolver.resolve(plans, base: CollaboratorLaunchBase)` | Launch per agent | Layer order; `defaults_only` without the inherited layer | — | One caller (`CollaboratorAdmission`) |
 | `CollaboratorNoDefaultLaunchError(name, kind)` | Error | "No default runtime configured" | Name, `agent` \| `agent_team` | Subclass of `CollaboratorAddError`, so existing local handling still sees an add failure |
 | `RemoteDelegationReceiver.start(request, from)` | B's start | Resolve, map, prepare | `address` | — |
@@ -185,25 +194,25 @@ Dead-code check in touched files: implementation confirms by search and typechec
 | File | Change | Concern |
 | --- | --- | --- |
 | `src/agent-collaboration/collaborators/node-catalog-port.ts` | Add | `NodeCatalogPort` (the workspace and auto-approve rule for remote runs) |
-| `src/agent-collaboration/collaborators/collaborator-root-port.ts` | Modify | `launchBase()`; `CollaboratorLaunchBase` type |
+| `src/agent-collaboration/collaborators/collaborator-root-port.ts` | Modify | `launchBase()` replaces `rootLaunchConfiguration()`; `rootKind` removed; `CollaboratorLaunchBase` type |
 | `src/agent-collaboration/collaborators/collaborator-launch-resolver.ts` | Modify | `resolve(plans, base)`; `defaults_only` |
 | `src/agent-collaboration/collaborators/collaborator-errors.ts` | Modify | `CollaboratorNoDefaultLaunchError` |
-| `src/agent-collaboration/collaborators/collaborator-admission.ts` | Modify | `port.launchBase()` |
-| Every `CollaboratorRootPort` implementation: `standalone-root-collaborators.ts`, `team-run-collaborators.ts`, `agent-org-run-collaborators.ts`, `api/graphql/services/collaborator-root-port-resolver.ts` | Modify | `launchBase()` → `{kind: "inherited", launch: rootLaunchConfiguration()}` |
+| `src/agent-collaboration/collaborators/collaborator-admission.ts` | Modify | `catalogTaskSourceOf`; `catalogTaskSource` composed of `catalogDefinitionAt` + `catalogTaskSourceOf`; `port.launchBase()` |
+| Every `CollaboratorRootPort` implementation: `standalone-root-collaborators.ts`, `team-run-collaborators.ts`, `agent-org-run-collaborators.ts`, `api/graphql/services/collaborator-root-port-resolver.ts` | Modify | `launchBase()` → `{kind: "inherited", launch: <root launch>}` instead of `rootLaunchConfiguration()`; `rootKind` removed |
 | `src/remote-collaboration/inbound/remote-delegation-receiver.ts` | Modify | Resolve through admission; map refusals; prepare |
 | `src/remote-collaboration/remote-collaboration-services.ts` | Modify | Wire the port and admission; remove `published` |
 | `src/remote-collaboration/domain/remote-requests.ts`, `src/agent-collaboration/execution/remote/remote-run-channel.ts`, `remote-delegation.ts`, `remote-collaboration/channel/peer-client.ts`, `peer-gateway.ts` | Modify | `address` field |
 | `src/agent-collaboration/execution/remote/remote-refusal-codes.ts`, `src/remote-collaboration/domain/remote-refusals.ts` | Modify | Codes and texts (table above) |
 | Removed files | Remove | Removal Plan |
 | `autobyteus-web/components/settings/RemoteCollaborationCard.vue`, `stores/remoteCollaborationStore.ts`, `graphql/…`, localization | Modify / Remove | The note; publishing removed |
-| Docs: `docs/design/collaboration_model.md` (CM-12, § 5 row), `docs/modules/remote_collaboration.md`, `docs/modules/agent_communication.md` (launch layers: the `defaults_only` base), `autobyteus-web/docs/settings.md` | Modify | — |
+| Docs: `docs/design/collaboration_model.md` (CM-12, § 5 row), `docs/modules/remote_collaboration.md`, `docs/modules/agent_communication.md` (launch layers: the `defaults_only` base), `autobyteus-web/docs/settings.md` | Modify | Including one sentence in `remote_collaboration.md` and the Nodes tab note: an Agent whose default runtime uses a local CLI login (Codex, Claude) runs with this node's credentials for any registered peer, consistent with CM-12 ("a remote run uses its own node's … credentials") |
 
 ## Concrete Examples / Shape Guidance
 
 | Topic | Good | Avoided |
 | --- | --- | --- |
 | B's resolution | `catalogTaskSource(nodeCatalogPort, {address: "/publisher"})`, the same call local delegation makes | A second remote-only lookup over the catalog |
-| No default | The `delegate_task` result: `{delegated: false, message: "There is no default runtime configured for the target agent Publisher on node \"docker\"."}` | Silently picking some model on B |
+| No default | B answers `{accepted: false, nodeId: "srv_B…", code: "NO_DEFAULT_RUNTIME", message: "Publisher has no default runtime and model.", targetName: "Publisher"}`; the `delegate_task` result on A is `{delegated: false, message: "There is no default runtime configured for the target agent Publisher on node \"docker\"."}` | Silently picking some model on B |
 | Workspace rule | `NodeCatalogPort.launchBase()` is the only place that says "temp workspace, auto-approve on" | Constants spread over the receiver and the resolver |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -239,7 +248,7 @@ Dead-code check in touched files: implementation confirms by search and typechec
   - **Contract:** the inter-node request field and refusal codes change.
   - **Shared behavior:** the shared launch resolver, used by every local catalog copy, gains a mode.
   - **Security posture:** every shared Agent becomes startable by peers, with auto-approve on (RSK-201, accepted).
-- Escalation trigger: the resolver's `inherited` path cannot stay byte-for-byte equivalent, or another caller of `rootLaunchConfiguration` needs the launch base.
+- Escalation trigger: the resolver's `inherited` path cannot stay byte-for-byte equivalent, or a reader of `CollaboratorRootPort.rootLaunchConfiguration()` / `rootKind` other than the ones named here turns up.
 
 ## Guidance For Implementation
 

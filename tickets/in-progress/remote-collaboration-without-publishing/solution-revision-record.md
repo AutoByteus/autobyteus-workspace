@@ -58,3 +58,15 @@
 - Classification: `Medium` / `High` (inter-node contract change; a shared resolver mode; security posture with auto-approve on).
 - Evidence: A-01 … A-05 (Read).
 - Applied handoff rule: see `handoff-architecture-review.md`.
+
+### SR-005 — Architecture review round 1 resolved (ARCH-REV-001, 2026-10-21)
+
+- Phase and classification: Mixed / `Design Impact` (AR-201 … AR-203) plus `Requirement Gap` text-only (AR-204, no new decision).
+- Changes:
+  - **AR-201:** B decides the kind first (`catalogDefinitionAt` → null: `AGENT_NOT_FOUND`; Team: `REMOTE_TEAMS_NOT_SUPPORTED`), then `catalogTaskSourceOf` (new; `catalogTaskSource` = both in order, one code path).
+  - **AR-202:** `CollaboratorRootPort.rootLaunchConfiguration()` is replaced by `launchBase()` (one reader); dead `rootKind` is removed; A-04 corrected.
+  - **AR-203:** the refusal answer is `{accepted: false, nodeId, code, message, targetName?}`; A's texts name the target.
+  - **AR-204:** UC-204, SCN-201, AC-206 and the DEC-203 row are aligned with SR-003. The REQ-206 row is repaired: my SR-003 edit had matched "DEC-203" at the end of the REQ-206 row and pasted the decision there, leaving the real row stale.
+  - The reviewer's docs sentence about local CLI logins is added to the docs mapping.
+- Intended behavior changed: `No`.
+- Next action: round 2 to the architecture reviewer.

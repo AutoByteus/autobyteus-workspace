@@ -36,3 +36,13 @@ Requirements `Approved` by the user, SR-002/SR-003 (2026-10-21), quoted in `requ
 ## Route record
 
 - `get_handoff_rules` (2026-10-21): "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`.
+
+## Round 2 — 2026-10-21 (SR-005), answering ARCH-REV-001
+
+| Finding | Resolution |
+| --- | --- |
+| AR-201 | B resolves the address to a ref first (`catalogDefinitionAt`): null → `AGENT_NOT_FOUND`, Team → `REMOTE_TEAMS_NOT_SUPPORTED`, before any launch resolution; then `catalogTaskSourceOf` (new; `catalogTaskSource` = both in order). DS-001, DS-002, ownership, interfaces, mapping |
+| AR-202 | `launchBase()` replaces `rootLaunchConfiguration()` on the port; dead `rootKind` removed; A-04 corrected; ownership, mapping, interfaces, escalation trigger |
+| AR-203 | Refusal answer `{accepted: false, nodeId, code, message, targetName?}`; texts use `targetName`; example updated (§ Contract Between Nodes) |
+| AR-204 | UC-204, SCN-201, AC-206, the DEC-203 row aligned; the REQ-206 row repaired (my SR-003 edit had pasted the decision into it) |
+| Residual | The docs sentence about local CLI logins added (file mapping, docs row) |
