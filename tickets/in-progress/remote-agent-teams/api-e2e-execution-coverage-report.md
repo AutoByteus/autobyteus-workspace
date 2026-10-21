@@ -7,11 +7,24 @@
 - Investigation: `…/api-e2e-coverage-investigation.md` (round 1)
 - Progress log: `…/api-e2e-test-progress.md`
 - Revision record: `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Trigger: CRR-001 pass of IR-001. Code `9ec78440e2` + `13131733b9`, documents `824562b6a2`, branch `codex/remote-agent-teams`. Size Large, risk High.
-- Round: 1
-- **Result: Fail.** There is one implementation failure, F-001: the `delegate_task` result for a remote Team does not name the node (REQ-304, AC-301). Everything else passes.
-- Durable coverage changed: Yes. The two-server E2E is updated; the change is uncommitted source, and this report commits it with my documents.
+- Current API/E2E Revision ID: `API-REV-002`
+- Round 2 trigger: CRR-003 pass of IR-002, the F-001 fix `351b4dd93f` (documents `8df22369d9`). Size Large, risk High.
+- Round 1 trigger: CRR-001 pass of IR-001. Code `9ec78440e2` + `13131733b9`, documents `824562b6a2`, branch `codex/remote-agent-teams`.
+- **Result (round 2): Pass.** F-001 is resolved. The two-server E2E passes 24/24 twice on a rebuilt dist, and the fix's unit tests pass.
+- Round 1 result: Fail, on F-001 only (the remote Team `delegate_task` result did not name the node, REQ-304/AC-301).
+- Durable coverage changed: Yes. Round 1 updated the two-server E2E (`d69676f1d4`). Round 2 turns RC-21's soft `node` check into a hard check of the exact result keys.
+
+## Round 2 (API-REV-002)
+
+| Case | What runs | Result | Evidence |
+| --- | --- | --- | --- |
+| API-00 round 2 | `pnpm -C autobyteus-server-ts build` at `8df22369d9` | Pass | `API-00-server-build-round2.log` (exit 0, bootstrap smoke checks passed) |
+| API-R2 | `tests/unit/agent-tools/team-communication/collaboration-result-contracts.test.ts`, `tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts` | Pass, 13/13 | `API-R2-unit-f001.log` |
+| API-01 … API-24, run 4 | whole two-server E2E | Pass, 24/24, 152.3 s | `API-run4.log`, `API-run4/`. RC-21 result: `{"delegated":true,"target_kind":"team","target_team_run_id":"studio_team_…","target_team_coordinator_agent_run_id":"publisher_…","node":"beta-node","task_id":"ad_hoc_task_…"}`, with exactly these keys |
+| API-01 … API-24, run 5 | whole two-server E2E | Pass, 24/24, 152.1 s | `API-run5.log`, `API-run5/`. RC-20: 65 requests, same counts and header names as round 1. No temp roots or processes left |
+| API-25, API-26 | — | Still valid (round 1) | The fix changes only how the delegation result is serialized (a schema field and the serializer) plus one comment. The same-node suites and the browser views on beta do not depend on it |
+
+Round 1 follows.
 
 ## Environment
 
@@ -61,13 +74,13 @@ env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVI
 
 | ID | Severity | Criteria | Observed | Expected | Evidence | Classification |
 | --- | --- | --- | --- | --- | --- | --- |
-| F-001 | Medium (contract; the agent cannot tell from the result which node runs its Team, though messaging by run ID works) | REQ-304, AC-301 | The remote Team `delegate_task` result has `delegated, target_kind "team", target_team_run_id, target_team_coordinator_agent_run_id, task_id` and no `node` | `{…, node: "beta-node"}`, as for a remote Agent | `F-001-remote-team-result-without-node.log`; runs 2 and 3 (`:962`); API-26 setup | Preliminary: **Local Fix (Implementation Engineer)**. `remote-delegation.ts:69` sets `node` on every remote outcome, but `task-delegation-tool-serialization.ts:36-40` copies it only in the `agent` branch. One line in the Team branch, plus a unit test of the serializer for a remote Team outcome. RC-21 already asserts it (`expect.soft`, kept so the rest of the case reports) |
+| F-001 (resolved in round 2 by `351b4dd93f`) | Medium (contract; the agent cannot tell from the result which node runs its Team, though messaging by run ID works) | REQ-304, AC-301 | The remote Team `delegate_task` result has `delegated, target_kind "team", target_team_run_id, target_team_coordinator_agent_run_id, task_id` and no `node` | `{…, node: "beta-node"}`, as for a remote Agent | `F-001-remote-team-result-without-node.log`; runs 2 and 3 (`:962`); API-26 setup | Preliminary: **Local Fix (Implementation Engineer)**. `remote-delegation.ts:69` sets `node` on every remote outcome, but `task-delegation-tool-serialization.ts:36-40` copies it only in the `agent` branch. One line in the Team branch, plus a unit test of the serializer for a remote Team outcome. RC-21 already asserts it (`expect.soft`, kept so the rest of the case reports) |
 
 ## Acceptance Criteria Coverage
 
 | AC | Covered by | Status |
 | --- | --- | --- |
-| AC-301 | API-21, API-26 | **Failed (F-001)**; every other part is proven |
+| AC-301 | API-21, API-26 | Proven in round 2 (F-001 resolved; RC-21 asserts `node` and the exact result keys) |
 | AC-302 | API-04 | Proven |
 | AC-303 | API-22 | Proven |
 | AC-304 | API-12, API-13 | Proven |
@@ -96,4 +109,6 @@ env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVI
 
 ## Decision
 
-Fail. Hand off to the code reviewer for failure-origin review of F-001 (preliminary: Local Fix, Implementation Engineer). After the fix: rebuild, then rerun RC-21 (the whole E2E once, since it is one shared sequence) and the serializer unit test. The rest of this round's evidence stays valid, because the fix changes only how the result is serialized.
+Round 2: **Pass.** Next is the code reviewer, for the proportional test-code review of `d69676f1d4` and this round's RC-21 change (Large / High).
+
+Round 1: Fail. Hand off to the code reviewer for failure-origin review of F-001 (preliminary: Local Fix, Implementation Engineer). After the fix: rebuild, then rerun RC-21 (the whole E2E once, since it is one shared sequence) and the serializer unit test. The rest of this round's evidence stays valid, because the fix changes only how the result is serialized.

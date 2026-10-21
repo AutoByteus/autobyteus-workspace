@@ -959,7 +959,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const betaLaunchesBefore = (await beta.launches()).length;
     const delegated = await calls(lead, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", description: "Studio work. Marker STUDIO-PACKET." });
     expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, target_kind: "team" });
-    expect.soft(delegated.node, "REQ-304: the remote Team result names the node").toBe(LABEL.beta);
+    // REQ-304: the local Team-copy shape plus the node (F-001 of API-REV-001).
+    expect(delegated.node, "REQ-304: the remote Team result names the node").toBe(LABEL.beta);
+    expect(Object.keys(delegated).filter((key) => key !== "isError" && key !== "elapsedMs").sort()).toEqual(
+      ["delegated", "node", "target_kind", "target_team_coordinator_agent_run_id", "target_team_run_id", "task_id"]);
     const studioRunId = delegated.target_team_run_id as string;
     const coord = delegated.target_team_coordinator_agent_run_id as string;
     expect(studioRunId && coord, JSON.stringify(delegated)).toBeTruthy();

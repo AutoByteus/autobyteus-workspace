@@ -12,7 +12,7 @@
 - Implementation Handoff: `…/implementation-handoff.md` (IR-001)
 - Code Review Report: `…/code-review-report.md` (CRR-001, Pass, no findings)
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002` (round 2 is a rerun after the F-001 fix; the investigation is unchanged)
 - Current Investigation Round: 1
 - Trigger: CRR-001 pass of IR-001 (code `13131733b9`, documents `824562b6a2`), Large / High
 - Prior Investigation Reviewed: none for this ticket (the E2E file comes from autobyteus-191 and autobyteus-245)
