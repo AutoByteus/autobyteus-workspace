@@ -1,0 +1,117 @@
+# R02 actual captured body on harness failure; command R02-browser.mjs R02-attempt-1; source2c6b414/current66b00b8; Chrome155/macOS privateprofile;2026-10-21
+--- captured body ---
+对话
+智能体
+智能体团队
+智能体组织
+项目
+技能
+记忆
+节点
+Workspaces
+还没有运行历史。
+设置
+管理节点
+记忆同步
+远程协作
+手机设置
+Docker 指南
+NFS 指南
+
+共享网络工作区
+
+AutoByteus NFS
+
+AutoByteus NFS 是独立的主机存储服务。AutoByteus 只使用普通文件系统路径，不检测或管理底层存储。
+
+1. 安装命令行工具
+
+这里只复制命令，AutoByteus 不会执行。请先查看安装脚本，再在主机终端（非智能体容器）的空工作目录中粘贴。脚本会保存在该目录，安装工具并显示版本，不会配置存储。需要 curl、Shell 和下方的校验工具，无需编译器或 Homebrew。
+
+已发布安装器：v0.1.0。安装器会选择匹配系统和架构的归档并进行校验。
+
+macOS
+
+macOS 26+、APFS。提供 ARM64 / x64 下载，用于原生存储托管和主机连接。
+
+复制
+curl --fail --location --proto '=https' --tlsv1.2 \
+  'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh' \
+  -o autobyteus-nfs-install.sh &&
+printf '%s  %s\n' '65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa' 'autobyteus-nfs-install.sh' | shasum -a 256 -c - &&
+bash autobyteus-nfs-install.sh version
+Linux
+
+Ubuntu 24.04、ext4。提供 ARM64 / x64 下载，用于原生或 Linux Docker 存储托管和主机连接。
+
+复制
+curl --fail --location --proto '=https' --tlsv1.2 \
+  'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh' \
+  -o autobyteus-nfs-install.sh &&
+printf '%s  %s\n' '65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa' 'autobyteus-nfs-install.sh' | sha256sum -c - &&
+bash autobyteus-nfs-install.sh version
+查看版本下载
+查看固定版本的安装脚本
+2. 选择此计算机的角色
+
+安装后：在存储主机上创建存储，再连接其他计算机。这些命令以交互方式运行，可能要求管理员批准。
+
+创建一次存储
+复制
+
+在存储主机上选择已有或新建的源目录，以及可信计算机或私有子网。保留已有文件，请在批准前查看管理员级更改。
+
+~/.local/bin/autobyteus-nfs create
+连接其他计算机
+复制
+
+在其他每台主机上粘贴 create 输出的连接 JSON，查看并批准配置。应用和容器配置仍需单独处理。
+
+~/.local/bin/autobyteus-nfs connect
+3. 已安装工具的命令
+
+请先安装命令行工具再运行。命令使用明确路径，无需设置 PATH。除 version 外，命令可能要求管理员批准。
+
+交互菜单
+复制
+
+不带参数运行，打开配置或已保存状态的选项。
+
+~/.local/bin/autobyteus-nfs
+检查状态
+复制
+
+报告主机的实际就绪状态。检查存储或网络时可能需要等待。
+
+~/.local/bin/autobyteus-nfs status
+重新连接
+复制
+
+经批准后恢复已保存的存储连接或待完成配置。这不是数据恢复。
+
+~/.local/bin/autobyteus-nfs reconnect
+安全断开
+复制
+
+先停止使用挂载的程序，再查看并批准断开。源文件和私有数据会保留。
+
+~/.local/bin/autobyteus-nfs detach
+显示版本
+复制
+
+显示已安装版本，不配置存储。
+
+~/.local/bin/autobyteus-nfs version
+公开命令行文档和高级参数（v0.1.0）
+
+将输出的挂载路径用作普通目录。AutoByteus 不检查挂载类型或存储标识。Docker 启动器使用操作员管理的共享根目录，其中包含 shared/ 和 nodes/<name>/ 子目录。
+
+仅用于受信任的私有网络
+
+NFS 流量不加密。访问权限信任获准的电脑，而非单个用户；写入映射到所选的非 root 源文件夹所有者。连接信息不是访问令牌。请勿将此服务暴露到公共互联网。
+
+如果存储或网络离线，文件操作、预览以及其他无关工作都可能停滞。请恢复连接后重试；不提供离线副本或本地回退。
+
+不支持 Mac Docker 存储托管和 Windows。此服务不会连接或重启应用容器。Docker 指南单独配置普通目录绑定。
+
+下载已提供；物理主机、共享文件系统、独立客户端及用户测试仍待进行。可下载不代表主机已就绪。校验和不能替代对发布者的信任、签名或操作系统安全检查。

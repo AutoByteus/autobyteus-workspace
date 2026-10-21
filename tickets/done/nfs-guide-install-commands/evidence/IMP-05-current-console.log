@@ -1,0 +1,72 @@
+Check: IMP-05
+Input: 2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb
+Environment: macOS arm64; Node22.23.1; private HOME/TMPDIR
+Recorded: 2026-10-21T20:01:59.774189+00:00; execution timestamps where emitted below
+Command: Exact invocation and result below; browser invocation: node evidence/IMP-05-preview.mjs IMP-05-current
+--- original output ---
+{
+  "id": "IMP-05",
+  "date": "2026-10-21T20:00:25.986Z",
+  "commit": "2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb",
+  "sourceState": "committed product source clean",
+  "base": "http://127.0.0.1:51012",
+  "events": [],
+  "scenarios": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "keyboard": "Enter activates Copy",
+      "timer": "success clears after two seconds"
+    },
+    {
+      "denial": "manual selection message",
+      "unavailable": "both install disabled",
+      "partial": "Linux disabled only"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": "closed",
+    "fixture": "removed"
+  },
+  "browser": "155.0.8059.85",
+  "result": "Pass"
+}

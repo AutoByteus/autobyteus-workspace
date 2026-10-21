@@ -1,0 +1,7 @@
+# R02 visual review
+
+Step: personally inspect captured actual Nodes page screenshots; source2c6b414/current66b00b8c654c82f0fe8abd44a7094bf9b2799cc4; Chrome155/macOS, en/zh-CN at1280/390; 2026-10-21T20:08:00.374383+00:00
+
+Reviewed all nine current screenshots in R02-attempt-2. Actual sidebar Nodes selected (not Settings); NFS tab selected and correlated panel. Desktop two-column install/usage cards, narrow one-column with wrapping tabs and local horizontal code scrolling; names/Copy buttons visible and clickable. Literal commands checked independently and copied, not inferred from screenshots. English/Chinese labels, installed-tool prerequisites, create/connect order, trust/outage/deferred warnings readable. Feedback visible/polite and no browser errors. The narrow bottom image is a scrolled reference/warnings view, not the last page pixel; full warning/deferred text is recorded in corresponding text files. Page content scrolls vertically; no document horizontal overflow. Sticky feedback can cover the currently scrolled strip until its two-second reset; no inaccessible command or persistent loss observed, reset and all buttons exercised.
+
+Minor scoped Delivery docs-sync item: autobyteus-web/docs/nfs_guide.md intro still says “Settings → Nodes → NFS Guide”. Current page/sidebar is “Nodes → NFS Guide” (/nodes); Settings is used here only for language. Correct this navigation wording during normal docs sync, no implementation/review loop needed. No product/runtime issue or new follow-up.

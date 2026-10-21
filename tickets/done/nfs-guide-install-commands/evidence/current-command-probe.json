@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-21T19:49:32.389221+00:00",
+  "method": "Reproduced actual pure TS module in Node; not rendered UI or product validation",
+  "command": "node --experimental-strip-types --input-type=module (stdin below)",
+  "stdin": "import {nfsPublishedRelease,nfsLauncherCommand} from './autobyteus-web/utils/nfsLauncherCommands.ts';\nconsole.log(JSON.stringify({node:process.version,defaultRelease:nfsPublishedRelease,mac:nfsLauncherCommand('macos'),linux:nfsLauncherCommand('linux'),fixture:nfsLauncherCommand('macos',{tag:'v0.1.0',installerUrl:'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh',downloadUrl:'https://github.com/AutoByteus/autobyteus-nfs/releases/tag/v0.1.0',qualifiedComputers:['macos','linux']})},null,2));\n",
+  "exit": 0,
+  "stdout": "{\n  \"node\": \"v22.23.1\",\n  \"defaultRelease\": null,\n  \"mac\": null,\n  \"linux\": null,\n  \"fixture\": \"curl -fsSL 'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh' | bash\"\n}\n",
+  "stderr": "(node:24104) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/utils/nfsLauncherCommands.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+  "source": "autobyteus-web/utils/nfsLauncherCommands.ts",
+  "sourceSha256": "f2334a5de1e7025b696cbb926fe955fad2f3c8e5101a1ff7d4136e478e54ebea",
+  "sideEffects": "No installer executed; module imports no runtime/IPC/host service. No dependency installation or source edits."
+}

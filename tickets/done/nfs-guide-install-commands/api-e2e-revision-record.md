@@ -1,0 +1,8 @@
+# API/E2E revision record — nfs-guide-install-commands
+
+## API-REV-001 — initial direct validation (2026-10-21T20:08:56.537023+00:00)
+- Trigger IR001 Implementation Ready; R1/SR001 Approved/SR002 Ready, Small/Low direct. Independent architecture/source/API predecessor N/A. Current source2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb; tested intake66b00b8c654c82f0fe8abd44a7094bf9b2799cc4 identical product inputs.
+- Result **Pass96.43%**, all4planned cases/AC001–005. Reuse IMP03 5files53tests/6inert-shell cases and IMP04 typecheck/3guards, valid current code. No duplicate product suite. Broader Required→actual current /nodes with real locale UI, en/zh×1280/390,36exact real clipboard comparisons/9commands, safe links/keyboard/status/Docker preserved; controlled pending/denial/missing/unmount/manual selection. Zero browsererrors on final attempt.
+- Two API harness corrections retained: metadata exit spelling; first browser wrong Chinese synonym plus missing unrelated full-page read fixtures. No product defect/fix or passing-first-attempt claim. Raw failed attempt and corrected result linked in canonical Cases.
+- No API durable/source edits. Existing unit/component tests adequate; temporary renderer journey retained as evidence. Owned browser/Nuxt groups/ports/HOME/TMP removed, ignoreddeps/.nuxt retained; all tracked inputs unchanged.
+- Confidence86.43→96.43 scoped UI. No installer/CLI/NFS live storage/field/provider/backend/Electron/release qualification. Existing autobyteus-nfs-4 field custody untouched. No new follow-up; Delivery doc-sync intro route wording identified. Direct Delivery/testreviewNotRequired, finalizationorigin/personal/NOrelease after fresh route. No push/merge/TaskDone/Terminal.

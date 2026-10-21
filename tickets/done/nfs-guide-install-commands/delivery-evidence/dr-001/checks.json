@@ -1,0 +1,19 @@
+{
+  "licensing": {
+    "command": "python3 scripts/check_licensing.py",
+    "exit": 0,
+    "log": "licensing.log"
+  },
+  "prearchiveHygiene": {
+    "command": "python3 scripts/check_repository_artifact_hygiene.py",
+    "exit": 0,
+    "log": "hygiene-prearchive.log"
+  },
+  "inputSecretGate": {
+    "command": "scripts/check_secrets.sh origin/personal..HEAD",
+    "commits": 5,
+    "exit": 0,
+    "log": "secrets-input.log"
+  },
+  "runtime": "No rerun: same exact executable/foundation input; docs navigation correction only"
+}
