@@ -104,6 +104,19 @@ if (arg === "--version") {
       { requestInit: { headers: server.headers ?? {} } }));
     try { return await client.callTool({ name, arguments: args }); } finally { await client.close(); }
   };
+  // linked_skills: `LIST_TOOLS` replies `TOOLS:[{name, description, inputSchema}, …]`, the agent tools this run's
+  // Agent Tools MCP session exposes, so a test can prove which tools (and which texts) an agent actually has.
+  const listAgentTools = async () => {
+    const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
+    const server = config.mcpServers?.autobyteus_agent_tools;
+    if (!server) return [];
+    const { Client, StreamableHTTPClientTransport } = await import("@modelcontextprotocol/client");
+    const client = new Client({ name: "agy-fake-cli", version: "1.0.0" });
+    await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl),
+      { requestInit: { headers: server.headers ?? {} } }));
+    try { return (await client.listTools()).tools.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })); }
+    finally { await client.close(); }
+  };
   // linked_skills: `BACKGROUND_STEP:{"seconds":N,"exitCode":C}` leaves one daemon run_command step open at turn end
   // (a background task), then after N seconds writes the exit message AGY writes when such a command exits
   // (`<HOME>/.gemini/antigravity-cli/brain/<conversation>/.system_generated/messages/<uuid>.json`). The exit is
@@ -172,6 +185,7 @@ if (arg === "--version") {
       return callAgentTool(each.name, each.arguments);
     })))}`
       : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
+      : content.includes("LIST_TOOLS") ? `TOOLS:${JSON.stringify(await listAgentTools())}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
       : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`

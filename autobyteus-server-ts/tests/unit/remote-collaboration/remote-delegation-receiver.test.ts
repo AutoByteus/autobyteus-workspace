@@ -111,34 +111,38 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
   it("REQ-302 / AC-302: refuses a Team with an agent covered by no default, naming the Team, before anything starts", async () => {
     const node = setup();
     await expect(node.start("/bare_team")).resolves.toEqual({ accepted: false, code: "NO_DEFAULT_RUNTIME",
-      message: "There is no default runtime configured for the target agent team Bare Team", targetName: "Bare Team" });
+      message: "There is no default runtime configured for the target agent team Bare Team", target: { kind: "agent_team", name: "Bare Team" } });
     expect(node.startTeam).not.toHaveBeenCalled();
   });
 
   it("AC-202: refuses an Agent with no default, or an incomplete one, as NO_DEFAULT_RUNTIME, and prepares nothing", async () => {
     const node = setup();
     await expect(node.start("/reviewer")).resolves.toEqual({ accepted: false, code: "NO_DEFAULT_RUNTIME",
-      message: "There is no default runtime configured for the target agent Reviewer", targetName: "Reviewer" });
-    await expect(node.start("/drafter")).resolves.toMatchObject({ accepted: false, code: "NO_DEFAULT_RUNTIME", targetName: "Drafter" });
+      message: "There is no default runtime configured for the target agent Reviewer", target: { kind: "agent", name: "Reviewer" } });
+    await expect(node.start("/drafter")).resolves.toMatchObject({ accepted: false, code: "NO_DEFAULT_RUNTIME", target: { kind: "agent", name: "Drafter" } });
     expect(node.prepareAgentRun).not.toHaveBeenCalled();
   });
 
   it("AC-203: refuses a default that can't run here with its reason, and a run that could not be prepared", async () => {
     await expect(setup({ codexEnabled: false }).start("/coder")).resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN",
-      message: "Codex App Server command 'codex' is not available.", targetName: "Coder" });
+      message: "Codex App Server command 'codex' is not available.", target: { kind: "agent", name: "Coder" } });
     await expect(setup({ prepareFails: "The workspace is not writable." }).start("/publisher")).resolves.toEqual({ accepted: false,
-      code: "AGENT_CANNOT_RUN", message: "The workspace is not writable.", targetName: "Publisher" });
+      code: "AGENT_CANNOT_RUN", message: "The workspace is not writable.", target: { kind: "agent", name: "Publisher" } });
   });
 });
 
 describe("peerRefusalText words B's refusals on A (design § Contract Between Nodes)", () => {
-  it("names the node, the address or the target", () => {
-    expect(peerRefusalText("docker", "AGENT_NOT_FOUND", "/publisher")).toBe('Node "docker" has no Agent at /publisher that can be delegated to.');
-    expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent team Bare Team", "Bare Team"))
+  it("names the node, the address or the target, with the target's kind (autobyteus-261 DEC-407)", () => {
+    expect(peerRefusalText("docker", "AGENT_NOT_FOUND", "/publisher")).toBe(
+      'Node "docker" has no Agent or Agent Team at /publisher that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.');
+    expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent team Bare Team", { kind: "agent_team", name: "Bare Team" }))
       .toBe('There is no default runtime configured for the target agent team Bare Team on node "docker".');
-    expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent Reviewer", "Reviewer"))
+    expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent Reviewer", { kind: "agent", name: "Reviewer" }))
       .toBe('There is no default runtime configured for the target agent Reviewer on node "docker".');
-    expect(peerRefusalText("docker", "AGENT_CANNOT_RUN", "Codex App Server command 'codex' is not available.", "Coder"))
+    expect(peerRefusalText("docker", "AGENT_CANNOT_RUN", "Codex App Server command 'codex' is not available.", { kind: "agent", name: "Coder" }))
       .toBe(`The Agent Coder on node "docker" cannot run there: Codex App Server command 'codex' is not available.`);
+    expect(peerRefusalText("docker", "AGENT_CANNOT_RUN", "Codex App Server command 'codex' is not available.", { kind: "agent_team", name: "Studio Team" }))
+      .toBe(`The Agent Team Studio Team on node "docker" cannot run there: Codex App Server command 'codex' is not available.`);
+    expect(peerRefusalText("docker", "AGENT_CANNOT_RUN", "no model")).toBe(`The Agent at that address on node "docker" cannot run there: no model`);
   });
 });

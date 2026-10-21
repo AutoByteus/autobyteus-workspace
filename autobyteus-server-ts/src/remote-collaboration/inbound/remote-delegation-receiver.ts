@@ -5,14 +5,14 @@ import type { PrepareAgentRunInput, PrepareAgentRunResult } from "../../agent-ex
 import type { DelegatedRunHandler, PeerHandlerRefusal } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
-import type { StartDelegatedRunRequest } from "../domain/remote-requests.js";
+import type { RemoteRefusalTarget, StartDelegatedRunRequest } from "../domain/remote-requests.js";
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { RemoteTeamRunStarter } from "./remote-team-run-starter.js";
 
 type Admission = Pick<CollaboratorAdmission, "catalogDefinitionAt" | "catalogTaskSourceOf">;
 
-const refuse = (code: string, message: string, targetName?: string): PeerHandlerRefusal =>
-  Object.freeze({ accepted: false, code, message, ...(targetName ? { targetName } : {}) });
+const refuse = (code: string, message: string, target?: RemoteRefusalTarget): PeerHandlerRefusal =>
+  Object.freeze({ accepted: false, code, message, ...(target ? { target: Object.freeze({ kind: target.kind, name: target.name }) } : {}) });
 
 /**
  * B's side of `delegate_task` with `node` (DS-001). The target is resolved exactly as a local catalog copy is,
@@ -43,9 +43,10 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
     try {
       resolved = await admission.catalogTaskSourceOf(port, { ref, address: request.address });
     } catch (error) {
-      if (error instanceof CollaboratorNoDefaultLaunchError) return refuse(REMOTE_REFUSAL.NO_DEFAULT_RUNTIME, error.reason, error.collaboratorName);
-      if (error instanceof CollaboratorAddError) return refuse(REMOTE_REFUSAL.AGENT_CANNOT_RUN, error.reason, error.collaboratorName);
-      throw error;
+      if (!(error instanceof CollaboratorAddError)) throw error;
+      // The target's kind is the resolved definition's (autobyteus-261 DEC-407): the delegating node words it.
+      const code = error instanceof CollaboratorNoDefaultLaunchError ? REMOTE_REFUSAL.NO_DEFAULT_RUNTIME : REMOTE_REFUSAL.AGENT_CANNOT_RUN;
+      return refuse(code, error.reason, { kind: ref.kind, name: error.collaboratorName });
     }
     const source = resolved.source;
     const delegatedFrom = {
@@ -71,7 +72,7 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
       });
       return Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId: prepared.runId });
     } catch (error) {
-      return refuse(REMOTE_REFUSAL.AGENT_CANNOT_RUN, error instanceof Error ? error.message : String(error), resolved.name);
+      return refuse(REMOTE_REFUSAL.AGENT_CANNOT_RUN, error instanceof Error ? error.message : String(error), { kind: "agent", name: resolved.name });
     }
   }
 }

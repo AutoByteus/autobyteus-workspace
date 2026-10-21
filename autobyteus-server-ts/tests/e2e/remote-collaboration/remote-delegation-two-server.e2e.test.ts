@@ -14,7 +14,7 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
 
 /**
  * Remote collaboration (autobyteus-191 slice 1: remote delegation, text only; autobyteus-245: no publishing;
- * autobyteus-247: remote Agent Teams) between two real server processes.
+ * autobyteus-247: remote Agent Teams; autobyteus-261: discovery) between two real server processes.
  *
  * Node "alpha" (A, the delegating node) and node "beta" (B, the receiving node) are two built servers
  * (`dist/app.js`) with their own data roots, ports and HOMEs. Each node reaches the other through a capturing HTTP
@@ -45,6 +45,15 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   (`TASK_AGENT_RESOURCE_FENCED_REMOTE`, logged at info: alpha runs at INFO); RC-25 the work packet to a just-started
  *   Team fails (dropped by the proxy), leaving an unused Team run on beta that its idle schedule stops (RSK-301, DEC-304);
  *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
+ *   261 (discovery): RC-26 an agent that selects the discovery tools lists exactly beta's offer (only name, kind, address
+ *   and description; built-ins, Orgs, team-local and application-owned definitions left out), listing writes nothing,
+ *   every listed address is accepted by delegate_task, an agent without the tools does not have them (its MCP tool list,
+ *   `LIST_TOOLS` in the scripted CLI) and the tool texts are as approved (AC-402/404/406, QR-402); RC-27 the node list
+ *   with three more servers (gamma stopped, delta switched off, epsilon not knowing alpha) in registration order, each
+ *   reason the same as delegate_task's, and a black-holed beta unavailable within the 20 s bound (AC-401, QR-401);
+ *   RC-28 alpha's switch off, an unknown node, a blank node, and the local list without node (AC-404, AC-407);
+ *   RC-29 a Team added on beta between two listings appears in the second (AC-405); RC-04 and RC-19 read the new
+ *   texts and beta's refusal `target {kind, name}` (AC-406, DEC-407); RC-20 also audits the two discovery routes;
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
@@ -53,9 +62,12 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  * Beta's shared Teams (247): Studio Team (lead = Publisher with its own default; checker = Checker with none, so the Team
  * default `alt-model` covers it), Hollow Team (no default anywhere) and Codex Team (a Team default on unavailable Codex).
  * Beta's scripted CLI offers a second model (`AGY_FAKE_EXTRA_MODELS=alt-model`).
+ * 261: beta also has a file-authored shared Agent with no description (Plain Helper) and loads the Brief Studio sample
+ * application (an application-owned Agent Team); alpha's Scout selects list_available_nodes and list_available_agents.
  *
- * Prerequisite: a current build (`pnpm -C autobyteus-server-ts build`). About 5 minutes (RC-12 holds the Team with a 90 s
- * background task plus a 60 s idle grace, two 20 s partition bounds, and restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
+ * Prerequisites: a current build (`pnpm -C autobyteus-server-ts build`) and Brief Studio's importable package
+ * (`pnpm -C autobyteus-server-ts test:integration:prepare`). About 5 minutes (RC-12 holds the Team with a 90 s background
+ * task plus a 60 s idle grace, three 20 s bounds (two partitions and a black-holed node list), and restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
  * Run (from the repository root, with a clean environment as TESTING.md asks for E2E folders):
  *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *     ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
@@ -72,7 +84,22 @@ const suite = enabled ? describe : describe.skip;
 const GRACE_MS = 60_000;
 const MODEL = "gemini-3.8-flash-low";
 const LABEL = { alpha: "alpha-node", beta: "beta-node" } as const;
-const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/messages", status: "/rest/remote-access/status" } as const;
+const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/messages", status: "/rest/remote-access/status",
+  availability: "/rest/remote/availability", availableAgents: "/rest/remote/available-agents" } as const;
+/** The Brief Studio sample application's importable package (`pnpm -C autobyteus-server-ts test:integration:prepare`):
+ * beta loads it, so beta has an application-owned Agent Team that discovery must not list (261 AC-402). */
+const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
+/** The agent-facing texts of autobyteus-261 (DEC-406), as an agent receives them over Agent Tools MCP. */
+const TEXT_261 = {
+  listNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
+  listAgents: "List the agents and agent teams you can work with, each with its name, kind (agent or agent_team), address and description (when it has one). With node, list what that peer node offers for delegation instead; use an address from that list as recipient_address in delegate_task with the same node. This tool is read-only.",
+  listAgentsNode: "Optional: the name of a peer node registered on this node. Without it, this node's agents and agent teams are listed.",
+  delegateNode: "Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.",
+  delegateNodeLine: "With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there;",
+  unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.`,
+  notFound: (node: string, address: string) => `Node "${node}" has no Agent or Agent Team at ${address} that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.`,
+  blankNode: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
+} as const;
 const CANARY = { alpha: `sk-canary-alpha-${randomUUID()}`, beta: `sk-canary-beta-${randomUUID()}` };
 
 type Rec = Record<string, any>;
@@ -101,6 +128,11 @@ const toolResult = (called: string): Rec => {
   const text = raw.content?.find?.((part: Rec) => part.type === "text")?.text;
   try { return { ...JSON.parse(text), isError: raw.isError === true }; } catch { return { text: text ?? called, isError: raw.isError === true }; }
 };
+/** The scripted CLI's `LIST_TOOLS` replies (`TOOLS:[…]`), one per conversation entry. */
+const toolListsIn = (conversation: unknown): string[] => (Array.isArray(conversation) ? conversation : []).flatMap((entry) => {
+  const strings = stringsOf(entry).filter((value) => value.startsWith("TOOLS:"));
+  return strings.length ? [strings[0]!.slice("TOOLS:".length)] : [];
+});
 /** The text an agent reads in a tool result (a refusal's message, or the result's text). */
 const textOf = (result: Rec): string => String(result.message ?? result.text ?? JSON.stringify(result));
 /** The same-node refusal for a run ID the sender's root does not know (unchanged by this slice). */
@@ -137,7 +169,7 @@ class NodeServer {
   nodeId = "";
   readonly logs: string[] = [];
   readonly dataDir: string; readonly home: string; readonly workspace: string; readonly argvLog: string; readonly logFile: string;
-  constructor(readonly name: "alpha" | "beta", readonly root: string, readonly port: number, readonly extraEnv: NodeJS.ProcessEnv = {}) {
+  constructor(readonly name: string, readonly root: string, readonly port: number, readonly extraEnv: NodeJS.ProcessEnv = {}) {
     this.dataDir = path.join(root, name, "data");
     this.home = path.join(root, name, "home");
     this.workspace = path.join(root, name, "workspace");
@@ -342,6 +374,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
     return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
   };
+  /** The agent tools the actor's run has over Agent Tools MCP, with their descriptions and schemas (scripted `LIST_TOOLS`). */
+  const toolsOf = async (actor: Actor): Promise<Rec[]> => {
+    const before = toolListsIn(await actor.conversation()).length;
+    await actor.send("LIST_TOOLS");
+    let lists: string[] = [];
+    await until(async () => (lists = toolListsIn(await actor.conversation())).length > before, `${actor.label} tool list`, 60_000);
+    return JSON.parse(lists[before]!) as Rec[];
+  };
   /** The string of the actor's conversation that holds `marker` (a message it received). */
   const receives = async (actor: Actor, marker: string, ms = 60_000): Promise<string> => {
     let found: string | undefined;
@@ -430,7 +470,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // INFO on alpha: the Task closure logs a fenced remote run only at info (TASK_AGENT_RESOURCE_FENCED_REMOTE, RC-23).
     alpha = new NodeServer("alpha", root, alphaPort, { LOG_LEVEL: "INFO" });
     // Codex is unavailable on beta, deterministically (245 AC-203).
-    beta = new NodeServer("beta", root, betaPort, { CODEX_APP_SERVER_COMMAND: path.join(root, "beta", "missing", "codex"), AGY_FAKE_EXTRA_MODELS: "alt-model" });
+    if (!fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "brief-studio", "application.json"))) {
+      throw new Error(`Brief Studio's importable package is missing (${BRIEF_STUDIO_PACKAGE}); run pnpm -C autobyteus-server-ts test:integration:prepare`);
+    }
+    beta = new NodeServer("beta", root, betaPort, { CODEX_APP_SERVER_COMMAND: path.join(root, "beta", "missing", "codex"), AGY_FAKE_EXTRA_MODELS: "alt-model",
+      AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: BRIEF_STUDIO_PACKAGE });
+    // 261: a file-authored shared Agent with no description (its listed entry has no description field, REQ-405).
+    await fsp.mkdir(path.join(beta.dataDir, "agents", "plain-helper"), { recursive: true });
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent.md"), ["---", "name: Plain Helper", "role: assistant", "---", "", "Help."].join("\n"));
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent-config.json"), JSON.stringify({ toolNames: [], skillNames: [] }, null, 2));
     // Before beta starts: a file-authored Team with a team-local Agent (a complete default, so only eligibility can refuse
     // it), and a published-agents.json left from slice 1 whose entries would change the results if it were read (245 AC-207).
     const fieldTeam = path.join(beta.dataDir, "agent-teams", "field-team");
@@ -458,6 +506,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.delegator = await agentDefinition(alpha, "Delegator", ["create_task", "update_task"]);
     defs.manager = await agentDefinition(alpha, "Remote Manager", ["list_projects", "list_project_tasks", "create_task", "update_task"]);
     defs.worker = await agentDefinition(alpha, "Remote Worker");
+    // 261: the discovery tools are opt-in; Scout selects both, the Delegator neither.
+    defs.scout = await agentDefinition(alpha, "Scout", ["list_available_nodes", "list_available_agents"]);
     defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
@@ -638,7 +688,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const linksBefore = remoteLinksIn(await readJson(path.join(alpha.memory, "agents", ids.solo, "collaboration", "collaboration_tree.json")).catch(() => ({})));
     const delegateTo = (address: string) => calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: address, description: `Work for ${address}.` });
     const node = LABEL.beta;
-    const notFound = (address: string) => `Node "${node}" has no Agent at ${address} that can be delegated to.`;
+    const notFound = (address: string) => TEXT_261.notFound(node, address);
     const cases: Array<[string, string, string | RegExp]> = [
       // AC-202: no default, and only a runtime (incomplete). Blank Slate is also "published" in the leftover file (AC-207).
       ["/blank_slate", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Blank Slate on node "${node}".`],
@@ -651,10 +701,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       ["/remote_org_b", "AGENT_NOT_FOUND", notFound("/remote_org_b")],
       ["/local_scout", "AGENT_NOT_FOUND", notFound("/local_scout")],
       ["/nobody_here", "AGENT_NOT_FOUND", notFound("/nobody_here")],
-      // 247 AC-302: a Team with an agent covered by no default, and a Team default on an unavailable runtime (FU-002 wording).
+      // 247 AC-302: a Team with an agent covered by no default, and a Team default on an unavailable runtime (261 AC-406 wording).
       ["/hollow_team", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent team Hollow Team on node "${node}".`],
-      ["/codex_team", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Team on node "${node}" cannot run there: Codex App Server command '.+' is not available\\.$`)],
+      ["/codex_team", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Team Codex Team on node "${node}" cannot run there: Codex App Server command '.+' is not available\\.$`)],
     ];
+    // 261 DEC-407: beta's refusal names the target's kind and name (`target`, which replaced `targetName`).
+    const targets: Record<string, Rec> = { "/blank_slate": { kind: "agent", name: "Blank Slate" }, "/half_set": { kind: "agent", name: "Half Set" },
+      "/codex_writer": { kind: "agent", name: "Codex Writer" }, "/fragile": { kind: "agent", name: "Fragile" },
+      "/hollow_team": { kind: "agent_team", name: "Hollow Team" }, "/codex_team": { kind: "agent_team", name: "Codex Team" } };
     const results: Rec = {};
     for (const [address, code, text] of cases) {
       const sentBefore = captured.length;
@@ -663,6 +717,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(result.delegated, `${address}: ${JSON.stringify(result)}`).toBe(false);
       if (typeof text === "string") expect(textOf(result), address).toBe(text); else expect(textOf(result), address).toMatch(text);
       expect((results[address].answer as Rec)?.code, `${address}: beta's code`).toBe(code);
+      expect((results[address].answer as Rec)?.target, `${address}: beta's target`).toEqual(targets[address]);
+      expect(results[address].answer as Rec, `${address}: no targetName`).not.toHaveProperty("targetName");
       expect(remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.messages), `${address}: no work packet`).toEqual([]);
     }
     expect(await remoteRunDirs(), "nothing started (or prepared) on beta").toEqual(runsBefore);
@@ -1289,6 +1345,181 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-24", { stopped, listed, relaunch: relaunches[0] });
   }, 180_000);
 
+  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them", async () => {
+    const scout = await createStandalone(alpha, defs.scout, "alpha scout");
+    ids.scout = scout.runId;
+    const delegator = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    // Exposure over Agent Tools MCP (the scripted AGY runtime): the tools, and the texts, each agent actually has.
+    const scoutTools = await toolsOf(scout);
+    const delegatorTools = await toolsOf(delegator);
+    const tool = (tools: Rec[], name: string) => tools.find((entry) => entry.name === name);
+    expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_available_nodes"]));
+    expect(delegatorTools.map((entry) => entry.name)).not.toContain("list_available_agents");
+    expect(tool(scoutTools, "list_available_nodes")?.description).toBe(TEXT_261.listNodes);
+    expect(tool(scoutTools, "list_available_agents")?.description).toBe(TEXT_261.listAgents);
+    expect(tool(scoutTools, "list_available_agents")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.listAgentsNode);
+    expect(tool(scoutTools, "list_available_agents")?.inputSchema?.required ?? [], "node is optional").not.toContain("node");
+    expect(tool(scoutTools, "delegate_task")?.description).toContain(TEXT_261.delegateNodeLine);
+    expect(tool(scoutTools, "delegate_task")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.delegateNode);
+
+    // Beta's catalog has what must not be listed: a built-in, an Org, a team-local Agent and an application-owned Team.
+    const betaApps = (await beta.gql(`{ listApplications { localApplicationId } }`)).listApplications as Rec[];
+    expect(betaApps.map((app) => app.localApplicationId), "Brief Studio is loaded on beta").toContain("brief-studio");
+    const betaAgents = (await beta.gql(`{ agentDefinitions { id name } }`)).agentDefinitions as Rec[];
+    const betaTeams = (await beta.gql(`{ agentTeamDefinitions { id name } }`)).agentTeamDefinitions as Rec[];
+    const betaCatalog = { agents: betaAgents.map((entry) => entry.name), teams: betaTeams.map((entry) => entry.name) };
+
+    const betaWrites = async () => ({ runs: await remoteRunDirs(), teams: await betaTeamRunDirs(),
+      logs: await Promise.all((await walkFiles(beta.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).sort()
+        .map(async (file) => [file, (await fsp.stat(file)).size])) });
+    const writesBefore = await betaWrites();
+    const alphaRecordsBefore = await alphaTaskRecordFiles();
+    const sentBefore = captured.length;
+    const listing = await calls(scout, "list_available_agents", { node: LABEL.beta });
+    expect(listing.isError, JSON.stringify(listing)).toBe(false);
+    const offer = listing.agents as Rec[];
+    const agent = (name: string, description: string | null) => ({ name, kind: "agent", address: `/${name.toLowerCase().replace(/ /g, "_")}`, ...(description ? { description } : {}) });
+    const team = (name: string, description: string) => ({ name, kind: "agent_team", address: `/${name.toLowerCase().replace(/ /g, "_")}`, description });
+    const expected = [
+      ...["Publisher", "Blank Slate", "Half Set", "Codex Writer", "Fragile", "Bystander", "Checker"].map((name) => agent(name, `${name} (remote collaboration E2E)`)),
+      agent("Plain Helper", null),
+      ...["Studio Team", "Hollow Team", "Codex Team"].map((name) => team(name, `${name} (remote Teams E2E)`)),
+      team("Field Team", "Team with a team-local agent"),
+    ];
+    const byAddress = (entries: Rec[]) => [...entries].sort((a, b) => String(a.address).localeCompare(String(b.address)));
+    expect(byAddress(offer), "exactly beta's shared Agents and Agent Teams, with only their name, kind, address and description").toEqual(byAddress(expected));
+    expect(offer.find((entry) => entry.name === "Plain Helper"), "no description field without a description").not.toHaveProperty("description");
+    const offeredNames = offer.map((entry) => entry.name as string);
+    for (const absent of ["Remote Org B", "Local Scout"]) expect(offeredNames, absent).not.toContain(absent);
+    const builtIn = betaAgents.find((entry) => entry.id === "daily-assistant" || entry.name === "Daily Assistant");
+    expect(builtIn, "beta has the built-in Daily Assistant").toBeTruthy();
+    expect(offeredNames).not.toContain(builtIn!.name);
+    // Brief Studio's application-owned Team and its agents are in beta's catalog but not offered.
+    const appOwned = [...betaCatalog.agents, ...betaCatalog.teams].map(String).filter((name) => name.startsWith("Brief Studio"));
+    expect(appOwned, "beta has Brief Studio's application-owned definitions").toEqual(expect.arrayContaining(["Brief Studio Team"]));
+    expect(offeredNames.filter((name) => appOwned.includes(name)), "no application-owned definition offered").toEqual([]);
+    // On the wire: the envelope only, and an answer with only the contract's fields (REQ-403).
+    const wire = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.availableAgents);
+    expect(wire, "one request to beta").toHaveLength(1);
+    expect(sortedKeys(wire[0]!.body as Rec)).toEqual(["fromNodeId", "toNodeId"]);
+    expect(sortedKeys(wire[0]!.answer as Rec)).toEqual(["accepted", "agents", "nodeId"]);
+    expect(byAddress((wire[0]!.answer as Rec).agents as Rec[]), "the tool result is beta's answer").toEqual(byAddress(offer));
+    // QR-402: listing started nothing, wrote no message and no Task record on either node.
+    expect(await betaWrites(), "nothing written on beta").toEqual(writesBefore);
+    expect(await alphaTaskRecordFiles(), "nothing written on alpha").toEqual(alphaRecordsBefore);
+
+    // Every listed address is one delegate_task with the same node accepts: it starts, or is refused only for its runtime.
+    const delegations: Rec = {};
+    for (const entry of offer) {
+      const result = await calls(scout, "delegate_task", { node: LABEL.beta, recipient_address: entry.address, description: `Discovered work. Marker FOUND${entry.address}.` });
+      delegations[entry.address as string] = result.delegated ? { delegated: true, kind: result.target_kind } : { delegated: false, text: textOf(result) };
+      if (result.delegated) expect(result.target_kind, String(entry.address)).toBe(entry.kind === "agent_team" ? "team" : "agent");
+      else expect(textOf(result), String(entry.address)).toMatch(/^(There is no default runtime configured for the target agent|The Agent (Team )?.+ cannot run there: )/);
+    }
+    expect(delegations["/publisher"]).toEqual({ delegated: true, kind: "agent" });
+    expect(delegations["/studio_team"]).toEqual({ delegated: true, kind: "team" });
+    record("RC-26", { scoutTools: scoutTools.map((entry) => entry.name), delegatorTools: delegatorTools.map((entry) => entry.name), offer, wire: { body: wire[0]!.body, answer: wire[0]!.answer },
+      betaCatalog, delegations });
+  }, 300_000);
+
+  it("RC-27 261 AC-401/QR-401: list_available_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
+    const scout = standaloneActor(alpha, ids.scout, "alpha scout");
+    const extra = { gamma: new NodeServer("gamma", root, await getFreePort()), delta: new NodeServer("delta", root, await getFreePort()),
+      epsilon: new NodeServer("epsilon", root, await getFreePort()) };
+    const names = { gamma: "gamma-node", delta: "delta-node", epsilon: "epsilon-node" } as const;
+    const added: string[] = [];
+    try {
+      await Promise.all(Object.values(extra).map((node) => node.start()));
+      for (const node of Object.values(extra)) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+      for (const key of ["gamma", "delta", "epsilon"] as const) {
+        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: extra[key].baseUrl, name: names[key] } });
+        added.push(extra[key].nodeId);
+      }
+      // gamma and delta know alpha; then gamma stops and delta turns its switch off. epsilon never registers alpha.
+      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: alpha.baseUrl, name: LABEL.alpha } });
+      await extra.gamma.stop();
+      await extra.delta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
+      const listed = await calls(scout, "list_available_nodes", {});
+      expect(listed.nodes, JSON.stringify(listed)).toEqual([{ name: LABEL.beta, status: "available" }, { name: names.gamma, status: "unavailable" },
+        { name: names.delta, status: "unavailable" }, { name: names.epsilon, status: "unavailable" }]);
+      expect(listed.elapsedMs, "answered well within the 20 s bound").toBeLessThan(20_000);
+      const reasons: Rec = {};
+      for (const name of Object.values(names)) {
+        const listing = await calls(scout, "list_available_agents", { node: name });
+        const delegation = await calls(scout, "delegate_task", { node: name, recipient_address: "/publisher", description: "Probe." });
+        reasons[name] = { listing: textOf(listing), delegation: textOf(delegation), listingIsError: listing.isError };
+        expect(listing.agents, `${name}: no list`).toBeUndefined();
+        expect(delegation.delegated).toBe(false);
+        expect(textOf(listing), `${name}: the same reason as a delegation`).toBe(textOf(delegation));
+      }
+      expect((reasons[names.gamma] as Rec).listing).toMatch(new RegExp(`^Node "${names.gamma}" could not be reached \\(`));
+      expect((reasons[names.delta] as Rec).listing).toBe(`Remote collaboration is turned off on node "${names.delta}", so it refused the request.`);
+      expect((reasons[names.epsilon] as Rec).listing).toContain(names.epsilon);
+      // A peer that does not answer (beta black-holed): the call still ends within the bound, with beta unavailable.
+      let held: Rec & { elapsedMs: number };
+      toBeta.mode = "blackhole";
+      try { held = await calls(scout, "list_available_nodes", {}, 90_000); } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
+      expect((held.nodes as Rec[])[0], JSON.stringify(held)).toEqual({ name: LABEL.beta, status: "unavailable" });
+      expect(held.elapsedMs, "within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
+      const again = await calls(scout, "list_available_nodes", {});
+      expect((again.nodes as Rec[])[0], "beta is available again").toEqual({ name: LABEL.beta, status: "available" });
+      record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes });
+    } finally {
+      for (const nodeId of added) await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: nodeId }).catch(() => undefined);
+      await Promise.all(Object.values(extra).map((node) => node.stop()));
+      const dir = process.env["REMOTE_E2E_EVIDENCE_DIR"];
+      if (dir) for (const node of Object.values(extra)) await fsp.mkdir(dir, { recursive: true }).then(() => fsp.copyFile(node.logFile, path.join(dir, `remote-two-server-${node.name}-server.log`))).catch(() => undefined);
+    }
+    const remaining = ((await alpha.gql(`{ peerNodes { name } }`).catch(() => ({ peerNodes: null }))).peerNodes as Rec[] | null);
+    if (remaining) expect(remaining.map((peer) => peer.name), "only beta stays registered").toEqual([LABEL.beta]);
+  }, 300_000);
+
+  it("RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank node gets the recovery text; without node the list is alpha's own", async () => {
+    const scout = standaloneActor(alpha, ids.scout, "alpha scout");
+    const off = "Remote collaboration is turned off on this node, so nothing was sent to another node.";
+    const sentBefore = captured.length;
+    await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
+    let nodesOff: Rec, agentsOff: Rec;
+    try {
+      nodesOff = await calls(scout, "list_available_nodes", {});
+      agentsOff = await calls(scout, "list_available_agents", { node: LABEL.beta });
+    } finally { await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
+    expect(textOf(nodesOff)).toBe(off);
+    expect(textOf(agentsOff)).toBe(off);
+    expect([nodesOff.isError, agentsOff.isError], "refusals are tool errors").toEqual([true, true]);
+    expect(remoteRequests(sentBefore), "nothing left alpha").toEqual([]);
+    const unknownList = await calls(scout, "list_available_agents", { node: "nowhere-node" });
+    const unknownDelegation = await calls(scout, "delegate_task", { node: "nowhere-node", recipient_address: "/publisher", description: "Probe." });
+    expect(textOf(unknownList)).toBe(TEXT_261.unknownNode("nowhere-node"));
+    expect(textOf(unknownDelegation)).toBe(TEXT_261.unknownNode("nowhere-node"));
+    const blank = await calls(scout, "list_available_agents", { node: "" });
+    expect(textOf(blank)).toContain(TEXT_261.blankNode);
+    const nullNode = await calls(scout, "list_available_agents", { node: null });
+    // Without node: alpha's own Agents and Agent Teams, each entry only name, kind, address and a non-empty description.
+    const local = await calls(scout, "list_available_agents", {});
+    const entries = local.agents as Rec[];
+    expect(entries.map((entry) => entry.address)).toEqual(expect.arrayContaining(["/delegator", "/remote_worker", "/remote_squad"]));
+    for (const entry of entries) {
+      expect(Object.keys(entry).filter((key) => !["name", "kind", "address", "description"].includes(key)), String(entry.address)).toEqual([]);
+      expect(entry.description, `${entry.address}: no empty description (DEC-405)`).not.toBe("");
+    }
+    expect(remoteRequests(sentBefore), "the refusals and the local list sent nothing").toEqual([]);
+    record("RC-28", { nodesOff: textOf(nodesOff), agentsOff: textOf(agentsOff), unknown: textOf(unknownList), blank: textOf(blank),
+      nullNode: { isError: nullNode.isError, text: textOf(nullNode) }, local: entries });
+  }, 240_000);
+
+  it("RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached)", async () => {
+    const scout = standaloneActor(alpha, ids.scout, "alpha scout");
+    const first = await calls(scout, "list_available_agents", { node: LABEL.beta });
+    expect((first.agents as Rec[]).map((entry) => entry.address)).not.toContain("/late_team");
+    await beta.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`, { input: { name: "Late Team",
+      description: "Added between two listings", instructions: "Work as a team.", coordinatorMemberName: "lead", nodes: [{ memberName: "lead", ref: defs.publisher, refScope: "SHARED" }] } });
+    const second = await calls(scout, "list_available_agents", { node: LABEL.beta });
+    expect((second.agents as Rec[]).find((entry) => entry.address === "/late_team")).toEqual({ name: "Late Team", kind: "agent_team", address: "/late_team", description: "Added between two listings" });
+    expect((second.agents as Rec[]).length).toBe((first.agents as Rec[]).length + 1);
+    record("RC-29", { first: (first.agents as Rec[]).length, second: (second.agents as Rec[]).length });
+  }, 180_000);
+
   it("RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const delegated = await delegateRemote(solo, "Short-lived work. Marker DELETED-PACKET.");
@@ -1407,7 +1638,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(fromBetaAfterRemoval)).toBe(`The node of that run (${alpha.nodeId}) is no longer a registered peer of this node, so nothing was sent.`);
     expect((await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: beta.nodeId })).removePeerNode).toBe(true);
     const delegateAfterRemoval = await delegateRemote(solo, "After removal.");
-    expect(textOf(delegateAfterRemoval)).toBe(`No peer node named "${LABEL.beta}" is registered on this node, so nothing was sent. Use a node name the user gave you.`);
+    expect(textOf(delegateAfterRemoval)).toBe(TEXT_261.unknownNode(LABEL.beta));
     // History stays: the links on alpha and the remote runs on beta, still readable through their normal views.
     expect(await readJson(path.join(alpha.memory, "agents", ids.solo, "collaboration", "collaboration_tree.json")).then(remoteLinksIn)).toEqual(historyBefore.alphaLinks);
     expect(await remoteRunDirs()).toEqual(historyBefore.betaRuns);
@@ -1417,10 +1648,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   }, 240_000);
 
   it("RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields", () => {
-    const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status]);
+    const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
       [PATHS.runs]: ["address", "coordinatingRun", "delegator", "fromNodeId", "toNodeId"],
+      // 261: the discovery requests are the envelope only.
+      [PATHS.availability]: ["fromNodeId", "toNodeId"],
+      [PATHS.availableAgents]: ["fromNodeId", "toNodeId"],
       work_packet: ["content", "createdAt", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toBeta: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toAlpha: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
@@ -1438,7 +1672,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       if (entry.path === PATHS.status) { expect(entry.method).toBe("GET"); counts.status = (counts.status ?? 0) + 1; continue; }
       const body = entry.body as Rec;
       expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
-      const kind = entry.path === PATHS.runs ? PATHS.runs : body.kind === "work_packet" ? "work_packet" : entry.via;
+      const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents].includes(entry.path as never) ? entry.path
+        : body.kind === "work_packet" ? "work_packet" : entry.via;
+      // 261 REQ-403: an accepted discovery answer carries only the contract's fields.
+      const answer = entry.answer as Rec | undefined;
+      if (entry.path === PATHS.availability && answer?.accepted === true) expect(sortedKeys(answer), `answer ${entry.seq}`).toEqual(["accepted", "nodeId"]);
+      if (entry.path === PATHS.availableAgents && answer?.accepted === true) {
+        expect(sortedKeys(answer), `answer ${entry.seq}`).toEqual(["accepted", "agents", "nodeId"]);
+        for (const agent of answer.agents as Rec[]) expect(Object.keys(agent).filter((key) => !["name", "kind", "address", "description"].includes(key)), `entry fields in answer ${entry.seq}`).toEqual([]);
+      }
       expect(sortedKeys(body), `fields of request ${entry.seq} (${kind})`).toEqual(keysByKind[kind]);
       expect(entry.method).toBe("POST");
       counts[kind] = (counts[kind] ?? 0) + 1;

@@ -9,6 +9,11 @@ import {
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver } from "../remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
+import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
+import {
+  bindProcessRemoteDiscoveryChannel,
+  releaseProcessRemoteDiscoveryChannel,
+} from "../agent-collaboration/execution/remote/remote-discovery-channel.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
@@ -50,13 +55,18 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         team: (teamRunId) => input.teamRuns.resolveManagedTeamRun(teamRunId),
         org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),
       }),
+      availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
     }),
   });
   bindProcessRemoteCollaboration(services);
-  try { bindProcessRemoteRunChannel(services.client); }
-  catch (error) { releaseProcessRemoteCollaboration(services); throw error; }
-  return () => {
+  const release = () => {
+    releaseProcessRemoteDiscoveryChannel(services.discovery);
     releaseProcessRemoteRunChannel(services.client);
     releaseProcessRemoteCollaboration(services);
   };
+  try {
+    bindProcessRemoteRunChannel(services.client);
+    bindProcessRemoteDiscoveryChannel(services.discovery);
+  } catch (error) { release(); throw error; }
+  return release;
 };

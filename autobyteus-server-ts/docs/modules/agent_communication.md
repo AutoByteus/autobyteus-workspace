@@ -408,8 +408,9 @@ startup into ordinary, unowned delegated runs of the same root (migration
   [Projects](projects.md#tasks-with-no-project-ad-hoc)).
 - **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
   [Agent Tools](./agent_tools.md)) asks the sender's root
-  (`listAvailableAgents`), which returns `{name, kind, address, description}` for
-  every eligible definition once, with the `@` eligibility (Q-2): an in-run
+  (`listAvailableAgents`), which returns `{name, kind, address, description?}` for
+  every eligible definition once (`description` only when the definition has one;
+  autobyteus-261 DEC-405), with the `@` eligibility (Q-2): an in-run
   definition at its in-run address (the standalone host, then configured
   placement or Org mounted Team; ties go to the smallest address), any other at its
   catalog address. Definitions come from the live
@@ -420,7 +421,10 @@ startup into ordinary, unowned delegated runs of the same root (migration
   sender is the viewer: a copy member's list holds the host at its host address plus
   exactly the host's own list, and the host's list never holds itself. Listing
   never writes, so a standalone run that only lists gets no `collaboration/`
-  package.
+  package. With `node`, the tool lists a peer node's offer instead, and the opt-in
+  `list_available_nodes` lists the peers with their status (autobyteus-261; see
+  [Remote Collaboration](./remote_collaboration.md#discovery)); neither goes through
+  the sender's root.
 - **In the run.** Configured placements and a standalone run's host count as in the
   run: `@` addresses that instance, and `send_message_to` reaches it. Delegated
   copies are not "in the run" by address: they are reached by their run ID.

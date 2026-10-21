@@ -28,6 +28,8 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteTeamRunStarter } from "../../../src/remote-collaboration/inbound/remote-team-run-starter.js";
+import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
+import { RemoteNodeDiscovery } from "../../../src/remote-collaboration/discovery/remote-node-discovery.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -68,7 +70,9 @@ const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new 
     const gateway = target && network.get(target.nodeId);
     if (!gateway) throw new TypeError("fetch failed");
     const body = JSON.parse(String(init.body));
-    const response = url.endsWith("/rest/remote/delegated-runs") ? await gateway.startDelegatedRun(body) : await gateway.deliverMessage(body);
+    const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
+    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
+      : route === "availability" ? await gateway.checkAvailability(body) : await gateway.listAvailableAgents(body);
     return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
   }) as never,
 });
@@ -116,6 +120,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   network.set(A_ID, new PeerGateway({
     ownNodeId: async () => A_ID, capability: { isEnabled: () => true }, peers: peerDirectory(A_PEERS),
     delegatedRuns: { start: async () => ({ accepted: false as const, code: "AGENT_NOT_FOUND", message: "/" }) },
+    availableAgents: { list: async () => ({ accepted: true as const, agents: [] }) },
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null,
@@ -128,7 +133,9 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     { recipient_address: "/studio_team", description: "Draft the episode.", node: "docker", ...input } as never);
   const send = async (target: string, content: string) => (await root()).deliverExactAgentMessage({
     sender: { kind: "agent", identity, displayName: "assistant" } as never, targetAgentRunId: target, content, referenceFiles: [] });
-  return { dir, metadata, manager, resources, received, host, client, root, delegate, send, setHostActive: (value: boolean) => { hostActive = value; } };
+  // autobyteus-261: this node's discovery of its peers, over the same client.
+  const discovery = new RemoteNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
+  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, setHostActive: (value: boolean) => { hostActive = value; } };
 };
 
 /** Node B: a shared Agent Team behind the real Team stack; the agent runtimes are fakes whose status the test drives. */
@@ -212,10 +219,12 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   // A Team root on B sends through the process channel (it is composed per process, not per root).
   bindProcessRemoteRunChannel(client);
   channels.push(client);
+  const catalogPort = new NodeCatalogPort(path.join(dir, "temp_workspace"));
   network.set(B_ID, new PeerGateway({
     ownNodeId: async () => B_ID, capability: { isEnabled: () => true }, peers: peerDirectory(B_PEERS),
-    delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(path.join(dir, "temp_workspace")),
+    delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort,
       agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teams: new RemoteTeamRunStarter({ teamRuns }) }),
+    availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort }),
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: async () => null, team: (teamRunId) => teamRuns.resolveManagedTeamRun(teamRunId), org: async () => null,
@@ -359,6 +368,24 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     expect(b.teamRuns.getManagedTeamRun("studio_team_b")).toBeNull();
     await expect(a.manager.storedRemoteLinkCheck(DELEGATOR, { kind: "message", fromNodeId: B_ID, senderAgentRunId: WRITER.agentRunId, targetAgentRunId: DELEGATOR }))
       .resolves.toBe("proceed");
+  });
+});
+
+describe("discovery, then delegation, in process (autobyteus-261 AC-402, AC-408)", () => {
+  it("A lists its peers, lists B's offer and delegates to the listed Team without being told its address", async () => {
+    const { a, b } = await twoNodes();
+    await expect(a.discovery.listNodes()).resolves.toEqual([{ name: "docker", status: "available" }]);
+    const offer = await a.discovery.listAvailableAgents("docker");
+    expect(offer).toEqual([
+      { name: "lead", kind: "agent", address: "/lead", description: "lead" },
+      { name: "writer", kind: "agent", address: "/writer", description: "writer" },
+      { name: "Studio Team", kind: "agent_team", address: "/studio_team", description: "Studio" },
+    ]);
+    const team = (offer as readonly { kind: string; address: string }[]).find((entry) => entry.kind === "agent_team")!;
+    await expect(a.delegate({ recipient_address: team.address })).resolves.toMatchObject({ delegated: true,
+      copy: { kind: "team", teamRunId: "studio_team_b" }, node: "docker" });
+    // Listing created nothing on B: the only Team run is the one the delegation started (QR-402).
+    expect(b.started).toEqual([LEAD.agentRunId]);
   });
 });
 

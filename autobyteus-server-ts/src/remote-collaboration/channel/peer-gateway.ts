@@ -8,12 +8,16 @@ import {
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type {
+  AvailabilityAnswer,
+  AvailableAgentsAnswer,
   DeliverRemoteMessageAnswer,
   DeliverRemoteMessageRequest,
   RemoteEnvelope,
+  RemoteRefusalTarget,
   StartDelegatedRunAnswer,
   StartDelegatedRunRequest,
 } from "../domain/remote-requests.js";
+import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
 export type PeerGatewayResponse<TAnswer> =
@@ -25,14 +29,18 @@ export type StartedRunAnswer =
   | Readonly<{ accepted: true; kind: "agent"; agentRunId: string }>
   | Readonly<{ accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly Readonly<{ address: string; agentRunId: string }>[] }>;
 
-/** A refusal as a handler returns it (with the target's name when it has one); the gateway adds this node's ID. */
-export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string; targetName?: string }>;
+/** A refusal as a handler returns it (with its target when it has one); the gateway adds this node's ID. */
+export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string; target?: RemoteRefusalTarget }>;
 
 export type DelegatedRunHandler = Readonly<{
   start(request: StartDelegatedRunRequest, from: PeerNode): Promise<StartedRunAnswer | PeerHandlerRefusal>;
 }>;
 export type RemoteMessageHandler = Readonly<{
   accept(request: DeliverRemoteMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
+}>;
+/** autobyteus-261: what this node offers a peer for delegation. */
+export type AvailableAgentsHandler = Readonly<{
+  list(): Promise<Readonly<{ accepted: true; agents: readonly AvailableCollaboratorEntry[] }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -47,6 +55,8 @@ const parseEnvelope = (body: Record<string, unknown>): RemoteEnvelope => ({
   fromNodeId: field(() => requiredString(body.fromNodeId, "fromNodeId")),
   toNodeId: field(() => requiredString(body.toNodeId, "toNodeId")),
 });
+
+const parseEnvelopeRequest = (value: unknown): RemoteEnvelope => parseEnvelope(field(() => objectRecord(value, "request")));
 
 const parseStartRequest = (value: unknown): StartDelegatedRunRequest => {
   const body = field(() => objectRecord(value, "request"));
@@ -92,7 +102,21 @@ export class PeerGateway {
     peers: Readonly<{ findByNodeId(nodeId: string): Promise<PeerNode | null> }>;
     delegatedRuns: DelegatedRunHandler;
     messages: RemoteMessageHandler;
+    availableAgents: AvailableAgentsHandler;
   }>) {}
+
+  /**
+   * autobyteus-261: a peer asks whether this node takes its requests now. The admission is the whole answer: it is
+   * accepted exactly when a delegation from that peer would be admitted. No handler, nothing changes.
+   */
+  checkAvailability(body: unknown): Promise<PeerGatewayResponse<AvailabilityAnswer>> {
+    return this.admit(body, parseEnvelopeRequest, async () => Object.freeze({ accepted: true as const }));
+  }
+
+  /** autobyteus-261: a peer asks what this node offers for delegation (read-only; nothing is created or written). */
+  listAvailableAgents(body: unknown): Promise<PeerGatewayResponse<AvailableAgentsAnswer>> {
+    return this.admit(body, parseEnvelopeRequest, () => this.dependencies.availableAgents.list());
+  }
 
   startDelegatedRun(body: unknown): Promise<PeerGatewayResponse<StartDelegatedRunAnswer>> {
     return this.admit(body, parseStartRequest, (request, peer) => this.dependencies.delegatedRuns.start(request, peer));
