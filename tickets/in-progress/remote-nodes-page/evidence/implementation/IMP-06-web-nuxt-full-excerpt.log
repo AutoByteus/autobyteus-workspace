@@ -1,0 +1,10 @@
+# IMP-06 full web nuxt suite
+# command: pnpm -C autobyteus-web test:nuxt --run
+# commit: 3a21bcae44
+# env: macOS Darwin 25.5.0, node v22.23.1
+# date: 2026-10-21T15:58:01Z
+# full log (1.8 MB, not committed): /tmp/rnp-IMP-06-web-nuxt-full.log
+
+ Test Files  650 passed | 2 skipped (652)
+      Tests  4641 passed | 5 skipped (4646)
+   Duration  248.23s (transform 24.30s, setup 1661.80s, collect 137.81s, tests 71.65s, environment 146.24s, prepare 89.15s)
