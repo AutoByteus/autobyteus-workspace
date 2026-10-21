@@ -1,0 +1,10 @@
+# API-22 (AC-206, REQ-207) Nodes → Remote Collaboration rendered against a built node | code e5d0405aef (dist API-00) | macOS 26.5.2, node v22.23.1, agent browser tool (Chromium) | 2026-10-21T04:21:43Z
+Setup: one built node (dist/app.js, temp data root, port 52953, clean env), switch turned on via setRemoteCollaborationEnabled; autobyteus-web nuxt dev (port 52961) with BACKEND_NODE_BASE_URL=http://127.0.0.1:52953; warmed up before asserting.
+Steps: open /nodes → click "Remote Collaboration" → read the card.
+DOM results (run-script, copied):
+- switch [role=switch][aria-label="Remote Collaboration"] aria-checked: "true"
+- any text matching /publish/i on the page: false; buttons matching /publish/i: 0
+- visible inputs: ["Remote Collaboration" (the switch), "http://192.168.1.20:29695" (Node URL), "docker" (Name)]: no other setting
+- card text: "Agents available to peers / With Remote Collaboration on, registered peer nodes can start any shared agent of this node. It runs with its own default runtime and model, in this node's temp workspace, with tool calls auto-approved. An agent whose default runtime signs in with this node's local login (for example Codex or Claude) uses that login for every registered peer. An agent with no default runtime and model is refused."
+Screenshot: API-22-remote-collaboration-card.png (the peer form and the "Agents available to peers" note; no publish section).
+Cleanup: tab closed; nuxt dev and the node stopped; temp data root removed.
