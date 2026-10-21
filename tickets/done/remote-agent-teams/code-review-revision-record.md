@@ -10,6 +10,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` is authori
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001, F-001) | Pass | Fail (implementation defect) | F-001 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 2 (IR-002, targeted delta) | Fail | Pass | F-001 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-002 Pass) | N/A (first test review) | Pass | None |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 2 (API-REV-003 Pass; DR-001 scorecard gaps) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -135,3 +136,34 @@ None.
 - Material score or classification changes: none. Classification `Large` / `High`.
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: RSK-201, RSK-301; FU-001 … FU-003.
+
+### CRR-005 — Test-code review round 2: confidence-gap cases (RC-25, busy member, cold wake, fence record)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new Current Result section; Latest Authoritative Result)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). The delta `945c1f2b2c..340bfa99b7` of the two-server E2E file only.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003 Pass, final 95%); delivery DR-001; RSK-301, DEC-304, AC-304, AR-007
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-004)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - RC-25 proves the unused Team run on B after a failed work packet, and its later idle stop.
+  - RC-12 proves the all-or-nothing hold with a busy member, non-vacuously (75 s held; stopped at ≈150 s).
+  - RC-13 proves a cold wake on A by the Team link alone, which resolves CRR-004's note.
+  - RC-23 asserts the `fenced_remote` record.
+  - 25/25 twice, with clean cleanup.
+  - Notes: RC-12's lower bound could include the grace; RC-23 couples to the `console.info` format.
+- Supported product scenario / material-premise basis changes: none. The kept Team link after a failed packet matches slice 1 SR-014 (b).
+
+#### Prior Finding Resolution
+
+None (no findings in CRR-004; its RC-13 note is resolved).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Classification `Large` / `High`.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: RSK-201 (accepted); RSK-301's link-commit trigger (same end state as RC-25); the user's real-network check; FU-001 … FU-003.

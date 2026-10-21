@@ -2,6 +2,39 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-agent-teams/tickets/in-progress/remote-agent-teams`
 
+## Current Result — Round 2 (CRR-005)
+
+- Trigger: API/E2E round 3 Pass (API-REV-003, final confidence 95%), commit `340bfa99b7`. The code under test is unchanged (`351b4dd93f`, at HEAD `a74677df99`). Delivery's DR-001 asked for the confidence scorecard; API/E2E closed the gaps with targeted durable cases.
+- Changed durable test path: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (delta `945c1f2b2c..340bfa99b7`; only that file).
+- Prior notes rechecked (CRR-004):
+  - RC-13 now proves a cold wake by the Team link alone (second alpha restart, the Studio reply first, the lead's `--conversation` relaunch awaited before anything on alpha is opened). Resolved.
+  - The RC-04 FU-002 coupling is unchanged and still intended.
+
+### Review of the delta
+
+| Case | What it adds | Assessment |
+| --- | --- | --- |
+| RC-25 (RSK-301, DEC-304) | The proxy's `drop` hook breaks only the `work_packet` connection | A real trigger: a network failure on the user-operated link that the proxy stands in for. It asserts: A refuses with the transport text; A's Task record shows `start:"failed"` / `TASK_DISPATCH_FAILED`; B created exactly one Team run; no member launched. RC-12 later shows it in history, inactive with no messages, so DEC-304's "the idle schedule stops it" is proven end to end. That A keeps the committed Team link is recorded, not asserted. That is correct: slice 1 SR-014 (b) decided the same for Agents ("a refused work packet leaves the link"), and DEC-304 does not change it. |
+| RC-12 busy member | A 90 s background task on the checker | Non-vacuous all-or-nothing proof: at 75 s (one grace plus 15 s) the idle coordinator is still live. Receipts: `atMs` 75198 and 75218, `teamShutDownAfterMs` 150529 and 150433, which is the background end plus one re-armed grace. |
+| RC-13 cold wake | Second alpha restart, Team reply first | Proves AC-304's "a reply wakes the delegator on A" through a Team link, end to end. The relaunch is counted exactly once. |
+| RC-23 fence record | `TASK_AGENT_RESOURCE_FENCED_REMOTE` with the exact `fenced_remote` message, matched as a multi-line block | The fence result has no agent-facing surface (N-9), so the log is the only observable outcome of AR-007. Asserting it is proportionate. Running alpha at `INFO` affects only this suite's server output. |
+
+- Determinism: the drop hook resets in `finally`; the timing margins are explicit; cleanup is clean in runs 7 and 8.
+- Runs 7 and 8: 25/25 each (about 251 s). The header's duration is updated.
+
+### Non-blocking notes
+
+- RC-12 asserts `teamShutDownAfterMs >= 90 s`. The proof that the grace re-armed after the background task (≈ 150 s) is only in the receipt. A lower bound of `BUSY_SECONDS + GRACE_MS` minus a small tolerance would assert it.
+- Under heavy load, the 75 s held check could pass before the first fire has happened. It cannot pass falsely in the other direction. The receipts show `atMs` near 75 s; nothing to change.
+- RC-23's matcher depends on `console.info`'s object format (`key: 'value'` lines). If the logger's format changes, update the matcher.
+
+### Result
+
+- Result: `Pass`. No findings; the CRR-004 RC-13 note is resolved.
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+
+## Earlier Result — Round 1 (CRR-004)
+
 ## Review Meta
 
 - Review Round: 1
@@ -68,8 +101,8 @@ Non-blocking notes, at the API/E2E owner's discretion:
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`
+- Result: `Pass` (round 2, CRR-005; round 1 CRR-004 also `Pass`)
+- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (through `340bfa99b7`)
 - Unresolved finding IDs: none
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
 - Notes: Classification `Large` / `High`. Source review CRR-003 Pass (F-001 resolved). Residuals for delivery: RSK-201 (every member auto-approves, accepted), RSK-301, and FU-001 … FU-003. C-1 (the `startedTeams` `WeakMap`) is an optional implementation note.
