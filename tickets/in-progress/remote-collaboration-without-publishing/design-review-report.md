@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002 / SR-003)
 - Upstream Investigation Notes: `…/investigation-notes.md` (S-01 … S-07, A-01 … A-05)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `707e8b6d951591be81e104f43d71b89926a7eb93` (SR-004)
+- Reviewed Design Spec: `…/design-spec.md` at commit `8755a19305c6449517676ea0e0eb3581f7d0de0e` (SR-005)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001); the slice 1 package `origin/personal:tickets/done/cross-node-agent-communication/` as context
-- Relevant Solution Revision IDs: SR-001 … SR-004
+- Relevant Solution Revision IDs: SR-001 … SR-005
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` (SR-004)
-- Prior Review Round Reviewed: N/A (first review of this package)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: the Solution Designer's SR-005 (commit `8755a19305`), answering ARCH-REV-001 (AR-201 … AR-204)
+- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: code read in the worktree at `707e8b6d95` (base `786055f3d7`, `autobyteus-server-ts/src`):
   - `agent-collaboration/collaborators/collaborator-admission.ts:100-124` (`catalogDefinitionAt`, `catalogTaskSource`);
   - `collaborator-candidate-policy.ts:101-210` (eligibility: `ownershipScope === "shared"`, built-ins excluded, `isApplicationBound`);
@@ -35,7 +35,7 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed` (with AR-204: stale requirement text that contradicts the approved SR-003 decisions; the approved intent itself is clear)
+- Overall Basis Status: `Confirmed` (AR-204 resolved: the requirement text matches SR-003)
 - Approved requirements / intended behavior understood:
   - no publish step; every shared Agent is available at its catalog address;
   - runtime and model come from the Agent's default; otherwise the delegation is refused with the user's wording, or with the specific reason;
@@ -49,10 +49,10 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-201 | Operational | Pass | Pass | Pass | Confirmed | AR-204 (UC-204 / SCN-201 / AC-206 still mention node settings) |
-| BEH-202 | Contract | Pass | Pass | Fail | Confirmed (basis) | AR-201 (the Team refusal comes after launch resolution) |
-| BEH-203 | Contract | Pass | Pass | Pass | Confirmed | AR-202 (the port's shape) |
-| BEH-204 | Contract | Pass | Pass | Fail | Confirmed (basis) | AR-203 (how B conveys the Agent's name and the reason) |
+| BEH-201 | Operational | Pass | Pass | Pass | Confirmed | — (AR-204 resolved) |
+| BEH-202 | Contract | Pass | Pass | Pass | Confirmed | — (AR-201 resolved) |
+| BEH-203 | Contract | Pass | Pass | Pass | Confirmed | — (AR-202 resolved) |
+| BEH-204 | Contract | Pass | Pass | Pass | Confirmed | — (AR-203 resolved) |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -73,7 +73,7 @@ This is the right response, and a good one: remote targets now go through the sa
 
 | Spine ID | Scope | Readable? | Narrative Clear? | Facade Vs Governing Owner Clear? | Naming Clear? | Ownership Clear? | Off-Spine Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 remote delegation without publishing | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Fail (AR-201: refusal order) |
+| DS-001 remote delegation without publishing | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass (the kind is decided first: `catalogDefinitionAt` → Team refusal → `catalogTaskSourceOf`) |
 | DS-002 catalog resolution without a run | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-003 Remote Collaboration card | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
@@ -83,7 +83,7 @@ This is the right response, and a good one: remote targets now go through the sa
 | --- | --- | --- | --- | --- | --- |
 | `CollaboratorAdmission` | Pass | Pass | Pass | Pass | B calls the same public method as local delegation; no second catalog lookup |
 | `CollaboratorLaunchResolver` | Pass | Pass | Pass | Pass | One caller (admission); the base is passed in, not read elsewhere |
-| `CollaboratorRootPort` | Pass | Pass | Pass | Fail | AR-202: a "no run" port would have to implement `rootLaunchConfiguration()` and `rootKind`, neither of which it can answer truthfully |
+| `CollaboratorRootPort` | Pass | Pass | Pass | Pass | AR-202 resolved: `launchBase()` replaces `rootLaunchConfiguration()`; `rootKind` removed |
 | `RemoteDelegationReceiver` | Pass | Pass | Pass | Pass | No longer knows publishing |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -97,11 +97,12 @@ This is the right response, and a good one: remote targets now go through the sa
 
 | Interface | Subject Clear? | Singular? | Identity Explicit? | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `CollaboratorRootPort.launchBase()` | Pass | Fail | Pass | Medium | Fail (AR-202: overlaps `rootLaunchConfiguration()`) |
+| `CollaboratorRootPort.launchBase()` | Pass | Pass | Pass | Low | Pass |
+| `CollaboratorAdmission.catalogDefinitionAt` / `catalogTaskSourceOf` | Pass | Pass | Pass | Low | Pass (`catalogTaskSource` = both in order; one code path) |
 | `CollaboratorLaunchResolver.resolve(plans, base)` | Pass | Pass | Pass | Low | Pass |
 | `CollaboratorNoDefaultLaunchError(name, kind)` | Pass | Pass | Pass | Low | Pass (a subclass of `CollaboratorAddError`, so local handling is unchanged) |
 | `POST /rest/remote/delegated-runs` `address` | Pass | Pass | Pass | Low | Pass |
-| Refusal answer for `NO_DEFAULT_RUNTIME` / `AGENT_CANNOT_RUN` | Pass | Pass | Fail | Low | Fail (AR-203) |
+| Refusal answer `{accepted: false, nodeId, code, message, targetName?}` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -130,7 +131,7 @@ This is the right response, and a good one: remote targets now go through the sa
 
 | Structure | One Meaning Per Field? | Redundant Removed? | Overlap Controlled? | Core Vs Variant Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `CollaboratorRootPort` | Fail | Fail | Fail | N/A | Fail | AR-202: `launchBase()` and `rootLaunchConfiguration()` would carry the same fact for roots; `rootKind` has no reader |
+| `CollaboratorRootPort` | Pass | Pass | Pass | N/A | Pass | AR-202 resolved |
 | `CollaboratorLaunchBase` (`inherited` / `defaults_only`) | Pass | Pass | Pass | Pass | Pass | — |
 
 ## File Responsibility Mapping Verdict
@@ -138,7 +139,7 @@ This is the right response, and a good one: remote targets now go through the sa
 | File | Singular? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `node-catalog-port.ts` (new) | Pass | Pass | N/A | Pass | — |
-| `collaborator-root-port.ts` | Pass | Pass | Fail | Fail | AR-202 |
+| `collaborator-root-port.ts` | Pass | Pass | Pass | Pass | — |
 | `remote-delegation-receiver.ts` | Pass | Pass | N/A | Pass | See AR-201 for the order |
 | The rest | Pass | Pass | N/A | Pass | — |
 
@@ -154,8 +155,8 @@ This is the right response, and a good one: remote targets now go through the sa
 | --- | --- | --- | --- | --- | --- |
 | Publish subsystem, GraphQL, web, tests, docs | Pass | Pass | Pass | Pass | Thorough |
 | `settings-file-schema.ts` "its published-agents part, if any" | Pass | N/A | Pass | Pass | Implementation confirms by search |
-| Dead port member `CollaboratorRootPort.rootKind` (touched file) | Fail | N/A | Fail | Fail | AR-202: written by four implementations, read by none |
-| `rootLaunchConfiguration()` on the port | Fail | Fail | Fail | Fail | AR-202: its one reader moves to `launchBase()` |
+| Dead port member `CollaboratorRootPort.rootKind` (touched file) | Pass | N/A | Pass | Pass | Removed (AR-202) |
+| `rootLaunchConfiguration()` on the port | Pass | Pass | Pass | Pass | Replaced by `launchBase()` |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -182,7 +183,7 @@ This is the right response, and a good one: remote targets now go through the sa
 | Topic | Needed? | Present? | Bad Shape Explained? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | B's resolution, no-default refusal, workspace rule | Yes | Pass | Pass | Pass | — |
-| Refusal answer carrying the name and reason | Yes | Fail | N/A | Fail | AR-203 |
+| Refusal answer carrying the name and reason | Yes | Pass | N/A | Pass | B's answer and A's tool result |
 
 ## Material Premise Validation
 
@@ -199,15 +200,27 @@ This is the right response, and a good one: remote targets now go through the sa
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| A-04 "14 readers" of `rootLaunchConfiguration` | The design keeps the method "for its other readers"; the port method has one reader (`collaborator-admission.ts:122`), and the other hits are construction options and implementations | Correct A-04 (AR-202) | Open |
+| A-04 "14 readers" of `rootLaunchConfiguration` | — | Corrected in SR-005 (one reader) | Resolved |
 
 ## Review Decision
 
-`Fail` (`Design Impact`, AR-201 … AR-203; `Requirement Gap`, AR-204). The direction is very good. Removing the parallel publishing resolution and resolving remote targets through the single local owners is exactly what the principles ask for. The findings are four small, local corrections.
+`Pass`. AR-201 … AR-204 are resolved and verified in the current design and requirements. The design is ready for implementation.
 
 ## Findings
 
-### AR-201 — The "Teams not supported yet" refusal comes after the Team's launch resolution
+None blocking. Resolved in ARCH-REV-002:
+- AR-201: B calls `catalogDefinitionAt(nodeCatalogPort, address)` first: `null` → `AGENT_NOT_FOUND`; `agent_team` → `REMOTE_TEAMS_NOT_SUPPORTED`, with no launch resolved. For an Agent it then calls the new `catalogTaskSourceOf(port, {ref, address})`. Local `catalogTaskSource` is the two in order, so local callers are unchanged.
+- AR-202: `launchBase()` replaces `rootLaunchConfiguration()` on the port (its one reader); existing ports return `inherited`; the dead `rootKind` is removed; A-04 is corrected.
+- AR-203: the refusal answer is `{accepted: false, nodeId, code, message, targetName?}`, with `targetName` for the three codes; A's texts use it; the example shows both sides.
+- AR-204: UC-204, SCN-201, AC-206 and the DEC-203 row (Decided (c)) are aligned with SR-003; REQ-206's row is repaired.
+
+### Implementation note (non-blocking)
+
+- N-201: `REMOTE_TEAMS_NOT_SUPPORTED` carries `targetName`, but `catalogDefinitionAt` returns only a ref (`{kind, definitionId}`). Take the Team's name from the eligibility owner (`CollaboratorCandidatePolicy`, which returns the definition with its name), not from a second lookup in the receiver and not from launch resolution.
+
+The round-1 text of the findings follows, kept for traceability.
+
+### AR-201 (resolved) — The "Teams not supported yet" refusal comes after the Team's launch resolution
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -225,7 +238,7 @@ This is the right response, and a good one: remote targets now go through the sa
 - Why proportionate: a reorder at one decision point.
 - Recommended recipient: Solution Designer
 
-### AR-202 — `CollaboratorRootPort` would carry two members a "no run" port cannot answer: replace `rootLaunchConfiguration()` with `launchBase()`, and remove the dead `rootKind`
+### AR-202 (resolved) — `CollaboratorRootPort` would carry two members a "no run" port cannot answer: replace `rootLaunchConfiguration()` with `launchBase()`, and remove the dead `rootKind`
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -242,7 +255,7 @@ This is the right response, and a good one: remote targets now go through the sa
 - Why proportionate: the same files are already touched; it removes a member instead of adding a parallel one, and `NodeCatalogPort` then implements only truthful members.
 - Recommended recipient: Solution Designer
 
-### AR-203 — The refusal answer doesn't say how B conveys the Agent's name and the reason
+### AR-203 (resolved) — The refusal answer doesn't say how B conveys the Agent's name and the reason
 
 - Type: Design Impact
 - Severity: Low (blocking; it is the contract between nodes and the user's exact wording)
@@ -257,7 +270,7 @@ This is the right response, and a good one: remote targets now go through the sa
 - Why proportionate: one optional field or one stated convention.
 - Recommended recipient: Solution Designer
 
-### AR-204 — The approved requirements still describe node settings that SR-002 / SR-003 removed
+### AR-204 (resolved) — The approved requirements still describe node settings that SR-002 / SR-003 removed
 
 - Type: Requirement Gap (text only; the approved intent is clear, so no new user decision is needed)
 - Severity: Low (blocking: AC-206 is a verification criterion)
@@ -274,11 +287,11 @@ This is the right response, and a good one: remote targets now go through the sa
 
 ## Classification
 
-`Design Impact` (AR-201, AR-202, AR-203); `Requirement Gap` (AR-204, text only).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -288,6 +301,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-201 reachable with a complete witness)
-- Notes: classification `Medium` / `High` confirmed. Design at commit `707e8b6d95` (SR-004). Findings AR-201 … AR-204.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (MP-201 resolved by AR-201)
+- Notes: classification `Medium` / `High`. Design at commit `8755a19305` (SR-005). AR-201 … AR-204 are resolved; N-201 is an implementation note.

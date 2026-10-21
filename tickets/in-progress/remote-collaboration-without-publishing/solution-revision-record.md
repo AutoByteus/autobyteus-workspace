@@ -70,3 +70,7 @@
   - The reviewer's docs sentence about local CLI logins is added to the docs mapping.
 - Intended behavior changed: `No`.
 - Next action: round 2 to the architecture reviewer.
+
+#### Review note — ARCH-REV-002 Pass (2026-10-21)
+
+- The architecture reviewer passed SR-005 (commit `8755a19305`) as ARCH-REV-002. Medium / High; AR-201 … AR-204 are resolved. Non-blocking N-201: take the Team's `targetName` from the eligibility owner. The reviewer handed off to `/software_engineering_team/implementation_engineer`. Informational.
