@@ -1,0 +1,12 @@
+# IMP-05 full web suite: pnpm -C autobyteus-web test:nuxt (after nuxi prepare); commit 63f6635b6d; macOS, node v22.23.1; 2026-10-21
+# excerpt: the Remote Collaboration specs and the summary. The full log is not committed.
+ ✓ components/settings/__tests__/NodeManager.spec.ts (11 tests) 78ms
+ ✓ components/settings/__tests__/RemoteCollaborationCard.spec.ts (4 tests) 49ms
+ ✓ stores/__tests__/remoteCollaborationStore.spec.ts (3 tests) 8ms
+...
+ Test Files  648 passed | 2 skipped (650)
+      Tests  4624 passed | 5 skipped (4629)
+   Start at  05:51:29
+   Duration  260.80s (transform 28.54s, setup 1738.15s, collect 154.73s, tests 80.56s, environment 150.16s, prepare 92.50s)
+
+exit=0

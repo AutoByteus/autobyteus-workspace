@@ -1,0 +1,4 @@
+# IMP-02 focused tests (in autobyteus-server-ts): npx vitest run tests/unit/agent-collaboration/collaborators tests/unit/remote-collaboration tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts; commit 63f6635b6d; macOS, node v22.23.1; 2026-10-21T03:42:28Z
+ Test Files  22 passed (22)
+      Tests  153 passed (153)
+exit=0
