@@ -53,3 +53,7 @@ The Product Team's own package, reviewed with the user and with his explicit app
 
 - `requirements-doc.md`
 - `investigation-notes.md` (both in this folder)
+
+## Route
+
+Delegated with `delegate_task` to `/product_team` (2026-10-21), as the user directed. Team run `product_team_99a3e19ea090429c9da2bf87e37d7aee`; its coordinator `product_ui_ux_designer_fd8bc13f7b2346b3b7c969a1e6ca0cd6` is the one to talk with.
