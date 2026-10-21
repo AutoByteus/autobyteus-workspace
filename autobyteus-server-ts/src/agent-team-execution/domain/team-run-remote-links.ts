@@ -3,8 +3,8 @@ import type { RemoteTeamMember } from "../../run-history/domain/run-execution-tr
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
 
 /**
- * The members of a Team run a peer started (autobyteus-247): every configured agent of its layout, nested
- * sub-team members included. The delegating node gets this list in the start answer, and the Team root's
+ * The members of a Team run a peer started (autobyteus-247): every configured agent of its (flat) layout.
+ * The delegating node gets this list in the start answer, and the Team root's
  * back-link pairs the delegator with the same agents, so both sides use one member set.
  */
 export const peerStartedTeamMembers = (tree: TeamRunExecutionTreeSnapshot): readonly RemoteTeamMember[] =>

@@ -26,6 +26,7 @@ export const DelegateTaskResultSchema = z.union([
     target_kind: z.literal("team"),
     target_team_run_id: NonBlankTaskResultStringSchema,
     target_team_coordinator_agent_run_id: NonBlankTaskResultStringSchema,
+    node: NonBlankTaskResultStringSchema.optional(),
     task_id: NonBlankTaskResultStringSchema.optional(),
     launch_notes: LaunchNotesSchema.optional(),
   }),
