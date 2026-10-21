@@ -8,7 +8,7 @@ const SELF = "srv_self_node_000000000000000000000000";
 const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-20T09:00:00.000Z" };
 
 const startBody = (overrides: Record<string, unknown> = {}) => ({
-  fromNodeId: PEER.nodeId, toNodeId: SELF, publishedAddress: "/publisher",
+  fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
   delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, ...overrides,
 });
 const messageBody = (overrides: Record<string, unknown> = {}) => ({
@@ -34,7 +34,7 @@ describe("PeerGateway", () => {
   it("dispatches an admitted request to the one handler of its kind, with the calling peer; every answer names this node", async () => {
     const f = gateway();
     await expect(f.gate.startDelegatedRun(startBody())).resolves.toEqual({ status: 200, answer: { accepted: true, agentRunId: "publisher_7f3", nodeId: SELF } });
-    expect(f.delegatedRuns.start).toHaveBeenCalledWith(expect.objectContaining({ publishedAddress: "/publisher", delegator: { agentRunId: "agent_a1" } }), PEER);
+    expect(f.delegatedRuns.start).toHaveBeenCalledWith(expect.objectContaining({ address: "/publisher", delegator: { agentRunId: "agent_a1" } }), PEER);
     await expect(f.gate.deliverMessage(messageBody())).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
     expect(f.messages.accept).toHaveBeenCalledWith(expect.objectContaining({ kind: "message", messageId: "collabmsg_1" }), PEER);
   });

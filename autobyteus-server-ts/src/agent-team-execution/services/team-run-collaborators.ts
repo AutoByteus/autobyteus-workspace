@@ -12,9 +12,8 @@ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-
 
 /** Catalog facts of one Team tree: the root Team and its configured Agents are in the run. */
 export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot): CollaboratorRootPort => Object.freeze({
-  rootKind: "agent_team",
   isApplicationBound: tree.applicationBinding !== null,
-  rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
+  launchBase: () => Object.freeze({ kind: "inherited", launch: tree.rootTeam.defaultLaunchConfiguration }),
   ownDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({
     configured: tree.rootTeam.members.map((member) => ({

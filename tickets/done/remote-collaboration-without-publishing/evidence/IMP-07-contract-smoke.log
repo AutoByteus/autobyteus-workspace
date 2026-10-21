@@ -1,0 +1,13 @@
+# IMP-07 real-HTTP contract smoke, node B (autobyteus-245): built dist of the branch head, temp data roots and ports (throwaway launcher /tmp/cn-scratch/stack.mjs); macOS, node v22.23.1; 2026-10-21T03:41:55Z
+# commit: 63f6635b6d
+## B: switch on, register A
+{"data":{"setRemoteCollaborationEnabled":{"enabled":true,"source":"SERVER_SETTING"}}}
+{"data":{"addPeerNode":{"nodeId":"srv_OQeobcyFy_BJyhyofAcmzS0g-dBWKi0J","name":"desktop"}}}
+## the publish API is gone
+{"data":null,"errors":[{"message":"Cannot query field \"publishedAgents\" on type \"Query\".","locations":[{"line":1,"column":2}]}]}
+## delegated run to an unknown catalog address (address field)
+{"accepted":false,"code":"AGENT_NOT_FOUND","message":"/nobody_here","nodeId":"srv_5c5_eezJ-WiqK2j7AwHu2WwZS7NYTIaj"} HTTP 200
+## the old field name is a malformed body
+{"accepted":false,"nodeId":"srv_5c5_eezJ-WiqK2j7AwHu2WwZS7NYTIaj","code":"REMOTE_REQUEST_INVALID","message":"address must be a non-empty trimmed string."} HTTP 400
+## no published-agents.json is written
+peers.json

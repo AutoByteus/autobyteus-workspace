@@ -8,11 +8,6 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn(() => apolloClie
 import { useRemoteCollaborationStore } from '../remoteCollaborationStore'
 
 const peer = { nodeId: 'srv_b', name: 'docker', baseUrl: 'http://localhost:29700', addedAt: '2026-10-20T09:00:00.000Z' }
-const published = {
-  agentDefinitionId: 'publisher', definitionName: 'Publisher', address: '/publisher', runtimeKind: 'claude_agent_sdk',
-  llmModelIdentifier: 'sonnet', llmConfig: null, workspaceRootPath: '/work', autoExecuteTools: false, publishedAt: '2026-10-20T09:05:00.000Z',
-}
-const launch = { agentDefinitionId: 'publisher', runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', llmConfig: null, workspaceRootPath: '/work', autoExecuteTools: false }
 
 describe('remoteCollaborationStore', () => {
   beforeEach(() => {
@@ -20,19 +15,18 @@ describe('remoteCollaborationStore', () => {
     vi.clearAllMocks()
   })
 
-  it('loads the peers and published agents of the bound node', async () => {
-    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer], publishedAgents: [published] } })
+  it('loads the peers of the bound node', async () => {
+    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer] } })
     const store = useRemoteCollaborationStore()
     await store.load()
     expect(store.peers).toEqual([peer])
-    expect(store.publishedAgents).toEqual([published])
     expect(store.error).toBeNull()
   })
 
   it('adds a peer, then reloads; a refusal keeps the lists and shows the server reason', async () => {
     const store = useRemoteCollaborationStore()
     apolloClientMock.mutate.mockResolvedValueOnce({ data: { addPeerNode: peer } })
-    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer], publishedAgents: [] } })
+    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer] } })
     await expect(store.addPeer({ baseUrl: 'http://localhost:29700', name: 'docker' })).resolves.toBe(true)
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { input: { baseUrl: 'http://localhost:29700', name: 'docker' } } }))
     expect(store.peers).toEqual([peer])
@@ -54,18 +48,5 @@ describe('remoteCollaborationStore', () => {
     apolloClientMock.mutate.mockResolvedValueOnce({ data: { removePeerNode: true } })
     await store.removePeer('srv_b')
     expect(store.peers).toEqual([])
-  })
-
-  it('publishes, updates and unpublishes, taking the server list each time', async () => {
-    const store = useRemoteCollaborationStore()
-    apolloClientMock.mutate.mockResolvedValueOnce({ data: { publishAgent: [published] } })
-    await store.publishAgent(launch)
-    expect(store.publishedAgents).toEqual([published])
-    apolloClientMock.mutate.mockResolvedValueOnce({ data: { updatePublishedAgent: [{ ...published, autoExecuteTools: true }] } })
-    await store.updatePublishedAgent({ ...launch, autoExecuteTools: true })
-    expect(store.publishedAgents[0]!.autoExecuteTools).toBe(true)
-    apolloClientMock.mutate.mockResolvedValueOnce({ data: { unpublishAgent: [] } })
-    await store.unpublishAgent('publisher')
-    expect(store.publishedAgents).toEqual([])
   })
 })

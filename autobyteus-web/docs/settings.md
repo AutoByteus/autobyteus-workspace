@@ -207,9 +207,10 @@ Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`
 cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
 off by default, through `remoteCollaborationCapabilityStore`, a
 `createBoundNodeCapabilityStore` capability), the peer nodes (add by URL and name,
-rename, remove; adding needs the switch on) and the published Agents (publish a shared
-Agent with its runtime, model, workspace on this node and tool auto-approve, off by
-default; edit; unpublish). `stores/remoteCollaborationStore.ts` loads and changes them
+rename, remove; adding needs the switch on), and a note on which agents peers can start
+and how they run: any shared agent, with its own default runtime and model, in this
+node's temp workspace, with tool calls auto-approved (there is no publish step and no
+setting for it). `stores/remoteCollaborationStore.ts` loads and changes the peers
 through GraphQL; a refused change shows the server's reason next to the section that
 failed. The server side is described in the server's `docs/modules/remote_collaboration.md`.
 

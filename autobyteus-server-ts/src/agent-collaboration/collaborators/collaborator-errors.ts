@@ -22,6 +22,18 @@ export class CollaboratorAddError extends Error {
   }
 }
 
+/**
+ * A target with no configured default runtime and model where there is nothing to inherit (the
+ * `defaults_only` launch base): no configured layer, or only an incomplete one. It is an add failure, so
+ * every existing caller still sees `CollaboratorAddError`.
+ */
+export class CollaboratorNoDefaultLaunchError extends CollaboratorAddError {
+  constructor(collaboratorName: string, readonly targetKind: "agent" | "agent_team") {
+    super(collaboratorName, `There is no default runtime configured for the target ${targetKind === "agent" ? "agent" : "agent team"} ${collaboratorName}`);
+    this.name = "CollaboratorNoDefaultLaunchError";
+  }
+}
+
 /** `delegate_task` to an address that is not mounted and not an available agent of this run. */
 export const delegationTargetUnavailableMessage = (address: string): string =>
   `'${address}' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.`;

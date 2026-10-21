@@ -23,7 +23,7 @@ export const PEER_REQUEST_TIMEOUT_MS = 20_000;
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Pick<Response, "ok" | "status" | "json">>;
 
-type PeerAnswer = Readonly<{ accepted: boolean; nodeId?: unknown; code?: unknown; message?: unknown; agentRunId?: unknown }>;
+type PeerAnswer = Readonly<{ accepted: boolean; nodeId?: unknown; code?: unknown; message?: unknown; targetName?: unknown; agentRunId?: unknown }>;
 
 const messageOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
 const isTimeout = (error: unknown): boolean => (error as { name?: string } | null)?.name === "TimeoutError"
@@ -57,11 +57,11 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 
   async startDelegatedRun(input: Readonly<{
-    nodeId: string; publishedAddress: string; delegatorAgentRunId: string; coordinatingRun: TaskAgentCoordinatingRun;
+    nodeId: string; address: string; delegatorAgentRunId: string; coordinatingRun: TaskAgentCoordinatingRun;
   }>): Promise<RemoteStartedRun> {
     return this.call(input.nodeId, REMOTE_DELEGATED_RUNS_PATH, (envelope): StartDelegatedRunRequest => ({
       ...envelope,
-      publishedAddress: input.publishedAddress,
+      address: input.address,
       delegator: { agentRunId: input.delegatorAgentRunId },
       coordinatingRun: { kind: input.coordinatingRun.kind, runId: input.coordinatingRun.runId },
     }), "did not answer in time", (answer, peer) => typeof answer.agentRunId === "string" && answer.agentRunId.trim()
@@ -137,7 +137,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     }
     if (answer.accepted !== true) {
       const code = typeof answer.code === "string" ? answer.code : REMOTE_REFUSAL.BAD_REQUEST;
-      return refusal(code, peerRefusalText(peer.name, code, typeof answer.message === "string" ? answer.message : "no reason given"));
+      return refusal(code, peerRefusalText(peer.name, code, typeof answer.message === "string" ? answer.message : "no reason given",
+        typeof answer.targetName === "string" && answer.targetName.trim() ? answer.targetName : undefined));
     }
     return accepted(answer, peer);
   }

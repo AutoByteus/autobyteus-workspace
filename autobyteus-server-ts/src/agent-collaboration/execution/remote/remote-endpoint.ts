@@ -14,7 +14,7 @@ type RemoteEndpointCore = Readonly<{
   reference: RemoteRunReference;
   /** The one local agent of this root the run is paired with (CM-11). */
   pairedAgentRunId: string;
-  /** The name a local agent sees in results: the published address's name, or the run ID. */
+  /** The name a local agent sees in results: the target address's name, or the run ID. */
   displayName: string;
   /** The pair rule, outbound: may this local agent send to the endpoint? */
   allowsSender(agentRunId: string): boolean;

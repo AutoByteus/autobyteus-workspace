@@ -303,8 +303,7 @@ export const buildStudioServer = async (input: {
     generalProcessAuthority = null;
     releaseRemoteCollaboration = composeStudioRemoteCollaboration({
       appDataDir: input.appConfig.getAppDataDir(),
-      definitions: hostDefinitionServices.agentDefinitionService,
-      modelSelectionValidator,
+      tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
       agentRuns: generalProcessRunSupervisor.agentRunService,
       teamRuns: generalProcessRunSupervisor.teamRunService,
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,

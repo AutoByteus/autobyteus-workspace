@@ -475,6 +475,15 @@ Team copy:
   default run on …". `delegate_task` returns these lines as `launch_notes` (see
   [Agent Tools](./agent_tools.md)). Only the call that started the copy carries
   notes.
+- **A run started for a peer node.** A peer's `delegate_task` resolves its target through the same admission
+  and resolver, with a launch base of `defaults_only` instead of `inherited`
+  (`CollaboratorRootPort.launchBase()`; the run roots return `inherited`, `NodeCatalogPort` returns
+  `defaults_only`). There is no run root on the receiving node, so there is no inherited layer: workspace
+  and auto-approve come from the base (the temp workspace, auto-approve on), and the base's workspace is
+  the validation context. An agent that no configured layer covers fails: with nothing complete configured,
+  `CollaboratorNoDefaultLaunchError` ("There is no default runtime configured for the target agent <name>");
+  with a configured layer that can't be used, `CollaboratorAddError` with that layer's reason. See
+  [Remote Collaboration](./remote_collaboration.md).
 - **Recorded, not re-read.** The resolved values and their source
   (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
   written into the copy's `source` when it starts. Every member records its complete

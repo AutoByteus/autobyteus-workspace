@@ -17,20 +17,6 @@ export const PeerNodeFields = gql`
   }
 `
 
-export const PublishedAgentFields = gql`
-  fragment PublishedAgentFields on PublishedAgentGql {
-    agentDefinitionId
-    definitionName
-    address
-    runtimeKind
-    llmModelIdentifier
-    llmConfig
-    workspaceRootPath
-    autoExecuteTools
-    publishedAt
-  }
-`
-
 export const GetRemoteCollaborationCapability = gql`
   query GetRemoteCollaborationCapability {
     remoteCollaborationCapability {
@@ -45,10 +31,6 @@ export const GetRemoteCollaborationSettings = gql`
     peerNodes {
       ...PeerNodeFields
     }
-    publishedAgents {
-      ...PublishedAgentFields
-    }
   }
   ${PeerNodeFields}
-  ${PublishedAgentFields}
 `

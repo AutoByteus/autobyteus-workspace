@@ -46,7 +46,7 @@ export class RemoteDelegation {
     if ("accepted" in peer) return { delegated: false, message: peer.message };
     let address;
     try { address = assertAgentTeamAddress(input.recipient_address.trim()); }
-    catch { return { delegated: false, message: `"${input.recipient_address}" is not an address: a published Agent's address begins with '/'.` }; }
+    catch { return { delegated: false, message: `"${input.recipient_address}" is not an address: an Agent's address begins with '/'.` }; }
     return Object.freeze({ kind: "remote_agent", address, peer, description: input.description });
   }
 
@@ -74,7 +74,7 @@ export class RemoteDelegation {
     if (!channel) throw new RemoteDelegationRefusedError(REMOTE_REFUSAL.OFF, REMOTE_ROOT_REFUSAL_TEXT.off);
     const started = await channel.startDelegatedRun({
       nodeId: placement.peer.nodeId,
-      publishedAddress: placement.address,
+      address: placement.address,
       delegatorAgentRunId: input.identity.agentRunId,
       coordinatingRun: this.coordinatingRun(),
     });

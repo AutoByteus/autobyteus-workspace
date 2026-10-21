@@ -33,7 +33,7 @@ export type DelegationPlacement =
   | RemoteAgentPlacement;
 
 /**
- * A published Agent on a peer node (`delegate_task` with `node`, DEC-111): the peer, the published address
+ * An Agent on a peer node (`delegate_task` with `node`, DEC-111): the peer, the Agent's catalog address
  * there, and the described work, which the peer words into its run's first message (it names this node).
  */
 export type RemoteAgentPlacement = Readonly<{
