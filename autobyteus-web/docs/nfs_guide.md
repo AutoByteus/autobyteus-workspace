@@ -1,6 +1,6 @@
 # NFS Guide: copy-only standalone CLI instructions
 
-Settings → Nodes → NFS Guide documents the independent
+Nodes → NFS Guide documents the independent
 [AutoByteus NFS tool](https://github.com/AutoByteus/autobyteus-nfs/releases/tag/v0.1.0).
 The app only displays text, opens documentation links and writes selected text to
 the clipboard. It never installs software, runs a command, detects a mount or
