@@ -1,0 +1,3 @@
+# DEL-06 browser probe | integrated 534ae78028 | autobyteus-web: node tests/e2e/remote-nodes-page-probe.mjs --output-dir=<dir>
+remote-nodes-page probe: Pass
+probe exit=0
