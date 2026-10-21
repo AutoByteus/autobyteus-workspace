@@ -54,6 +54,9 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   RC-28 alpha's switch off, an unknown node, a blank node, and the local list without node (AC-404, AC-407);
  *   RC-29 a Team added on beta between two listings appears in the second (AC-405); RC-04 and RC-19 read the new
  *   texts and beta's refusal `target {kind, name}` (AC-406, DEC-407); RC-20 also audits the two discovery routes;
+ *   267 (the Nodes page): RC-26, RC-27 and RC-16 also ask alpha's GraphQL `peerNodeOffer(nodeId)` as the page does: the
+ *   same list as list_available_agents without addresses, and each peer's refusal code (stopped, off, not registered,
+ *   black-holed within the bound, identity mismatch);
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
@@ -373,6 +376,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       `${actor.label} result of ${name} ${JSON.stringify(args).slice(0, 160)}`, ms)
       .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
     return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
+  };
+  /** 267: the window's query for one peer's offer (GraphQL on this node's own server), as the Nodes page sends it. */
+  const peerNodeOffer = async (node: NodeServer, nodeId: string) => {
+    const started = Date.now();
+    const offer = (await node.gql(`query($id:String!){peerNodeOffer(nodeId:$id){entries{name kind description} refusalCode}}`, { id: nodeId })).peerNodeOffer as Rec;
+    return { offer, elapsedMs: Date.now() - started };
   };
   /** The agent tools the actor's run has over Agent Tools MCP, with their descriptions and schemas (scripted `LIST_TOOLS`). */
   const toolsOf = async (actor: Actor): Promise<Rec[]> => {
@@ -1404,6 +1413,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(sortedKeys(wire[0]!.body as Rec)).toEqual(["fromNodeId", "toNodeId"]);
     expect(sortedKeys(wire[0]!.answer as Rec)).toEqual(["accepted", "agents", "nodeId"]);
     expect(byAddress((wire[0]!.answer as Rec).agents as Rec[]), "the tool result is beta's answer").toEqual(byAddress(offer));
+    // 267 AC-502/REQ-510: the Nodes page's query answers the same list through the same discovery path, without addresses
+    // (an absent description is null, GraphQL's form); exactly one of entries / refusalCode is set.
+    const pageOffer = await peerNodeOffer(alpha, beta.nodeId);
+    expect(pageOffer.offer.refusalCode).toBeNull();
+    const asPageEntries = (entries: Rec[]) => byAddress(entries).map((entry) => ({ name: entry.name, kind: entry.kind, description: entry.description ?? null }));
+    expect([...(pageOffer.offer.entries as Rec[])].sort((a, b) => String(a.name).localeCompare(String(b.name))),
+      "the page's list equals list_available_agents {node}").toEqual(asPageEntries(offer).sort((a, b) => String(a.name).localeCompare(String(b.name))));
+    expect((pageOffer.offer.entries as Rec[]).find((entry) => entry.name === "Plain Helper")?.description).toBeNull();
     // QR-402: listing started nothing, wrote no message and no Task record on either node.
     expect(await betaWrites(), "nothing written on beta").toEqual(writesBefore);
     expect(await alphaTaskRecordFiles(), "nothing written on alpha").toEqual(alphaRecordsBefore);
@@ -1419,7 +1436,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(delegations["/publisher"]).toEqual({ delegated: true, kind: "agent" });
     expect(delegations["/studio_team"]).toEqual({ delegated: true, kind: "team" });
     record("RC-26", { scoutTools: scoutTools.map((entry) => entry.name), delegatorTools: delegatorTools.map((entry) => entry.name), offer, wire: { body: wire[0]!.body, answer: wire[0]!.answer },
-      betaCatalog, delegations });
+      betaCatalog, delegations, pageOffer });
   }, 300_000);
 
   it("RC-27 261 AC-401/QR-401: list_available_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
@@ -1455,15 +1472,28 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect((reasons[names.gamma] as Rec).listing).toMatch(new RegExp(`^Node "${names.gamma}" could not be reached \\(`));
       expect((reasons[names.delta] as Rec).listing).toBe(`Remote collaboration is turned off on node "${names.delta}", so it refused the request.`);
       expect((reasons[names.epsilon] as Rec).listing).toContain(names.epsilon);
+      // 267 AC-501: the Nodes page's query gives each peer's refusal code (the window words it), one query per peer.
+      const pageCodes: Rec = {};
+      for (const key of ["gamma", "delta", "epsilon"] as const) pageCodes[names[key]] = await peerNodeOffer(alpha, extra[key].nodeId);
+      expect(Object.fromEntries(Object.entries(pageCodes).map(([name, answer]) => [name, (answer as Rec).offer])), JSON.stringify(pageCodes)).toEqual({
+        [names.gamma]: { entries: null, refusalCode: "PEER_UNREACHABLE" },
+        [names.delta]: { entries: null, refusalCode: "REMOTE_COLLABORATION_OFF" },
+        [names.epsilon]: { entries: null, refusalCode: "PEER_NOT_REGISTERED" } });
       // A peer that does not answer (beta black-holed): the call still ends within the bound, with beta unavailable.
       let held: Rec & { elapsedMs: number };
       toBeta.mode = "blackhole";
-      try { held = await calls(scout, "list_available_nodes", {}, 90_000); } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
+      let heldPage: Rec & { elapsedMs: number };
+      try {
+        held = await calls(scout, "list_available_nodes", {}, 90_000);
+        heldPage = await peerNodeOffer(alpha, beta.nodeId);
+      } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
+      expect(heldPage.offer, "267: the page's query for a black-holed peer").toEqual({ entries: null, refusalCode: "PEER_UNREACHABLE" });
+      expect(heldPage.elapsedMs, "267: within the 20 s bound").toBeLessThan(25_000);
       expect((held.nodes as Rec[])[0], JSON.stringify(held)).toEqual({ name: LABEL.beta, status: "unavailable" });
       expect(held.elapsedMs, "within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
       const again = await calls(scout, "list_available_nodes", {});
       expect((again.nodes as Rec[])[0], "beta is available again").toEqual({ name: LABEL.beta, status: "available" });
-      record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes });
+      record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes, pageCodes, heldPage });
     } finally {
       for (const nodeId of added) await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: nodeId }).catch(() => undefined);
       await Promise.all(Object.values(extra).map((node) => node.stop()));
@@ -1568,12 +1598,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   it("RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const runsBefore = await remoteRunDirs();
-    let mismatch: Rec, mismatchMessage: Rec;
+    let mismatch: Rec, mismatchMessage: Rec, pageMismatch: Rec;
     toBeta.targetPort = alpha.port;
     try {
       mismatch = await delegateRemote(solo, "Wrong server.");
       mismatchMessage = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "TO-WRONG-SERVER" });
+      pageMismatch = (await peerNodeOffer(alpha, beta.nodeId)).offer;
     } finally { toBeta.targetPort = beta.port; }
+    expect(pageMismatch, "267: the page's query").toEqual({ entries: null, refusalCode: "PEER_IDENTITY_MISMATCH" });
     const text = `The server at node "${LABEL.beta}"'s address is not the node that was registered (identity mismatch), so nothing was sent.`;
     expect(textOf(mismatch)).toBe(text);
     expect(textOf(mismatchMessage)).toBe(text);
