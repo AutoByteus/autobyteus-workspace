@@ -1,0 +1,5785 @@
+{
+  "cases": {
+    "RC-01": {
+      "inbound": {
+        "start": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "REMOTE_COLLABORATION_OFF",
+            "message": "Remote collaboration is turned off on this node."
+          }
+        },
+        "message": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "REMOTE_COLLABORATION_OFF",
+            "message": "Remote collaboration is turned off on this node."
+          }
+        }
+      },
+      "addWhileOff": {
+        "message": "Turn on Remote Collaboration before adding a peer node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "REMOTE_COLLABORATION_OFF"
+        }
+      }
+    },
+    "RC-02": {
+      "delegateOff": "Remote collaboration is turned off on this node, so nothing was sent to another node."
+    },
+    "RC-03": {
+      "unregisteredCaller": {
+        "status": 200,
+        "answer": {
+          "accepted": false,
+          "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+          "code": "PEER_NOT_REGISTERED",
+          "message": "The calling node is not a registered peer of this node."
+        }
+      },
+      "alphaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "name": "beta-node",
+            "baseUrl": "http://127.0.0.1:52498",
+            "addedAt": "2026-10-21T10:39:35.919Z"
+          }
+        ]
+      },
+      "betaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+            "name": "alpha-node",
+            "baseUrl": "http://127.0.0.1:52499",
+            "addedAt": "2026-10-21T10:39:35.938Z"
+          }
+        ]
+      },
+      "notAutobyteus": {
+        "message": "http://127.0.0.1:52532 is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "notFound": {
+        "message": "http://127.0.0.1:52532/missing is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "dead": {
+        "message": "http://127.0.0.1:52534 could not be reached: fetch failed.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE"
+        }
+      },
+      "gateway": {
+        "mismatchStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "mismatchMessage": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "unregisteredStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "PEER_NOT_REGISTERED",
+            "message": "The calling node is not a registered peer of this node."
+          }
+        },
+        "malformedStart": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "toNodeId must be a non-empty trimmed string."
+          }
+        },
+        "malformedMessage": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "kind must be 'work_packet' or 'message'."
+          }
+        }
+      },
+      "noPublishing": {
+        "publishQuery": "Cannot query field \"publishedAgents\" on type \"Query\".",
+        "oldField": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "address must be a non-empty trimmed string."
+          }
+        }
+      }
+    },
+    "RC-04": {
+      "results": {
+        "/blank_slate": {
+          "text": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent Blank Slate",
+            "target": {
+              "kind": "agent",
+              "name": "Blank Slate"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/half_set": {
+          "text": "There is no default runtime configured for the target agent Half Set on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent Half Set",
+            "target": {
+              "kind": "agent",
+              "name": "Half Set"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/codex_writer": {
+          "text": "The Agent Codex Writer on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+            "target": {
+              "kind": "agent",
+              "name": "Codex Writer"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/fragile": {
+          "text": "The Agent Fragile on node \"beta-node\" cannot run there: The model 'no-such-model' is not available on antigravity_cli.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "The model 'no-such-model' is not available on antigravity_cli.",
+            "target": {
+              "kind": "agent",
+              "name": "Fragile"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/daily_assistant": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /daily_assistant that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/daily_assistant",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/remote_org_b": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /remote_org_b that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/remote_org_b",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/local_scout": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /local_scout that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/local_scout",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/nobody_here": {
+          "text": "Node \"beta-node\" has no Agent or Agent Team at /nobody_here that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_NOT_FOUND",
+            "message": "/nobody_here",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/hollow_team": {
+          "text": "There is no default runtime configured for the target agent team Hollow Team on node \"beta-node\".",
+          "answer": {
+            "accepted": false,
+            "code": "NO_DEFAULT_RUNTIME",
+            "message": "There is no default runtime configured for the target agent team Hollow Team",
+            "target": {
+              "kind": "agent_team",
+              "name": "Hollow Team"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "/codex_team": {
+          "text": "The Agent Team Codex Team on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+          "answer": {
+            "accepted": false,
+            "code": "AGENT_CANNOT_RUN",
+            "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+            "target": {
+              "kind": "agent_team",
+              "name": "Codex Team"
+            },
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        }
+      }
+    },
+    "RC-05": {
+      "delegated": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_3f73476af19a439b84aa72794590fdcf",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_c394eb9b-dc85-45a0-85a9-a5058ce62e51",
+        "isError": false,
+        "elapsedMs": 627
+      },
+      "metadata": {
+        "runId": "publisher_3f73476af19a439b84aa72794590fdcf",
+        "agentDefinitionId": "publisher",
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+        "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agents/publisher_3f73476af19a439b84aa72794590fdcf",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "runtimeKind": "antigravity_cli",
+        "platformAgentRunId": "97b9e107-95ab-447c-be09-1c30fd76602b",
+        "preparedAt": "2026-10-21T10:39:38.673Z",
+        "preparedExpiresAt": "2026-10-22T10:39:38.673Z",
+        "startedAt": "2026-10-21T10:39:38.924Z",
+        "applicationExecutionContext": null,
+        "delegatedFrom": {
+          "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+          "coordinatingRun": {
+            "kind": "agent",
+            "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+          },
+          "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "packet": "You have a new task from the agent with sender run id \"delegator_3a921fb1dac442d3ad5cea65e316eab2\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nPublish the draft. Marker STANDALONE-PACKET.",
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+        "startedAt": "2026-10-21T10:39:38.508Z"
+      },
+      "taskResource": {
+        "file": "ad-hoc-tasks/ad_hoc_task_c394eb9b-dc85-45a0-85a9-a5058ce62e51/agent_run_resources.json",
+        "entry": {
+          "role": "assigned",
+          "assignedBy": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+          "recipientAddress": "/publisher",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+          },
+          "agentRun": {
+            "kind": "agent",
+            "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+          },
+          "linkedAt": "2026-10-21T10:39:38.718Z",
+          "start": "started",
+          "closedAt": null
+        }
+      },
+      "reply": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to delegator_3a921fb1dac442d3ad5cea65e316eab2 on node \"alpha-node\".",
+        "target_agent_run_id": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+        "isError": false,
+        "elapsedMs": 319
+      },
+      "received": "You received a message from the agent with sender run id \"publisher_3f73476af19a439b84aa72794590fdcf\" on node \"beta-node\".\nmessage:\nREPLY-FROM-BETA-1",
+      "followUp": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to publisher_3f73476af19a439b84aa72794590fdcf on node \"beta-node\".",
+        "target_agent_run_id": "publisher_3f73476af19a439b84aa72794590fdcf",
+        "isError": false,
+        "elapsedMs": 214
+      },
+      "atBeta": "You received a message from the agent with sender run id \"delegator_3a921fb1dac442d3ad5cea65e316eab2\" on node \"alpha-node\".\nmessage:\nFOLLOWUP-FROM-ALPHA-1",
+      "replyLogs": {
+        "messageId": "collabmsg_F3C6SsCEsEhfzVvzqakJxjbgBzW4Zeuz",
+        "files": {
+          "beta": "memory/agents/publisher_3f73476af19a439b84aa72794590fdcf/collaboration/communication_messages_active.jsonl",
+          "alpha": "memory/agents/delegator_3a921fb1dac442d3ad5cea65e316eab2/collaboration/communication_messages_active.jsonl"
+        }
+      },
+      "followUpLogs": {
+        "messageId": "collabmsg_IANZ6DANcHIg5PyNW5soV4tUSOc3aASP",
+        "files": {
+          "alpha": "memory/agents/delegator_3a921fb1dac442d3ad5cea65e316eab2/collaboration/communication_messages_active.jsonl",
+          "beta": "memory/agents/publisher_3f73476af19a439b84aa72794590fdcf/collaboration/communication_messages_active.jsonl"
+        }
+      },
+      "sequences": {
+        "snapshots": [
+          0
+        ],
+        "sequenced": 0,
+        "lastSequence": 0,
+        "gaps": [],
+        "errorFrames": []
+      }
+    },
+    "RC-06": {
+      "teamRunId": "remote_squad_12035543aedd42069c58b91d5964d628",
+      "delegated": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_802dcdf592e14520be61bcfc35ea3e69",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_53793d1c-d117-4081-9ed2-2e071bc139a7",
+        "isError": false,
+        "elapsedMs": 732
+      },
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "delegatorAgentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e",
+        "startedAt": "2026-10-21T10:39:42.127Z"
+      },
+      "replyLogs": {
+        "messageId": "collabmsg_PGyuxjE2KwXkdgvjfwsJU6FH3B2bX0EN",
+        "files": {
+          "beta": "memory/agents/publisher_802dcdf592e14520be61bcfc35ea3e69/collaboration/communication_messages_active.jsonl",
+          "alpha": "memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/team_communication_messages_active.jsonl"
+        }
+      },
+      "notPermitted": "That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.",
+      "sequences": {
+        "snapshots": [
+          0
+        ],
+        "sequenced": 99,
+        "lastSequence": 105,
+        "gaps": [],
+        "errorFrames": []
+      },
+      "frameTypes": [
+        "CONNECTED",
+        "TEAM_EXECUTION_VIEW_SNAPSHOT",
+        "TEAM_RUN_LIFECYCLE",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "TEAM_COMMUNICATION_MESSAGE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "MEMBER_INPUT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_INPUT_STATE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "AGENT_STATUS",
+        "SEGMENT_CONTENT_BATCH",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE"
+      ]
+    },
+    "RC-07": {
+      "orgRunId": "remote_org_26377a9c46ac4ae3aac0839f169cb4a5",
+      "delegated": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_803533045917463cbfaa84a204378ff4",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_747bfb28-9876-4449-bada-74e3bc77364b",
+        "isError": false,
+        "elapsedMs": 836
+      },
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_803533045917463cbfaa84a204378ff4",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "delegatorAgentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5",
+        "startedAt": "2026-10-21T10:39:46.334Z"
+      },
+      "replyLogs": {
+        "messageId": "collabmsg_K1VvOqrDfBm33To1RV2Viypti3WoWuwA",
+        "files": {
+          "beta": "memory/agents/publisher_803533045917463cbfaa84a204378ff4/collaboration/communication_messages_active.jsonl",
+          "alpha": "memory/agent_orgs/remote_org_26377a9c46ac4ae3aac0839f169cb4a5/agent_org_communication_messages_active.jsonl"
+        }
+      },
+      "sequences": {
+        "snapshots": [
+          0
+        ],
+        "sequenced": 83,
+        "lastSequence": 88,
+        "gaps": [],
+        "errorFrames": []
+      },
+      "frameTypes": [
+        "CONNECTED",
+        "ROOT_EXECUTION_VIEW_SNAPSHOT",
+        "ROOT_LIFECYCLE",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT",
+        "ROOT_EXECUTION_EVENT"
+      ]
+    },
+    "RC-08": {
+      "otherRoot": "No running agent has the run id 'publisher_3f73476af19a439b84aa72794590fdcf', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
+      "fromBystander": "No running agent has the run id 'delegator_3a921fb1dac442d3ad5cea65e316eab2', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
+      "forged": {
+        "toBystander": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "code": "REMOTE_TARGET_NOT_PERMITTED",
+            "message": "That run is not linked with the sender.",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "toR1FromOther": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "code": "REMOTE_TARGET_NOT_PERMITTED",
+            "message": "That run is not linked with the sender.",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+          }
+        },
+        "toSoloFromBystander": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "code": "REMOTE_TARGET_NOT_PERMITTED",
+            "message": "That run is not linked with the sender.",
+            "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+          }
+        }
+      }
+    },
+    "RC-09": {
+      "withFiles": "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.",
+      "savedTask": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
+      "followUpFiles": "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent.",
+      "existingCopy": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
+    },
+    "RC-10": {
+      "projectId": "project_5a6d9c6a-b3f2-4bd7-9326-d7d6bf18de23",
+      "taskId": "project_task_0d024959-445f-4a3f-80c0-01ef389b78d8",
+      "workerRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a",
+      "r3": "publisher_2307c97232fe4138952d1e727ce17a2c",
+      "workerResult": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "publisher_2307c97232fe4138952d1e727ce17a2c",
+        "node": "beta-node",
+        "isError": false
+      },
+      "taskResource": {
+        "file": "projects/project_5a6d9c6a-b3f2-4bd7-9326-d7d6bf18de23/tasks/project_task_0d024959-445f-4a3f-80c0-01ef389b78d8/agent_run_resources.json",
+        "entry": {
+          "role": "delegated",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "remote_manager_89446903c3534a09b7ece64c97d215ea"
+          },
+          "agentRun": {
+            "kind": "agent",
+            "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c"
+          },
+          "linkedAt": "2026-10-21T10:39:52.761Z",
+          "start": "started",
+          "closedAt": null
+        }
+      },
+      "link": {
+        "address": "/publisher",
+        "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "delegatorAgentRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a",
+        "startedAt": "2026-10-21T10:39:52.545Z"
+      },
+      "afterDone": "Node \"alpha-node\" refused the request: Your Task is DONE or CANCELLED, so you can't start new work.",
+      "refusalAnswer": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "Your Task is DONE or CANCELLED, so you can't start new work.",
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    "RC-11": {
+      "r4": "publisher_7554d0bd263344dabe46267ead1769ac",
+      "taskId": "ad_hoc_task_f9855949-5d1c-4fde-9186-c832553bf2ad",
+      "toRemote": "Your Task is DONE or CANCELLED, so you can't start new work.",
+      "fromRemote": "Node \"alpha-node\" refused the request: Your Task is DONE or CANCELLED, so you can't start new work."
+    },
+    "RC-21": {
+      "delegated": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+        "target_team_coordinator_agent_run_id": "publisher_48b5256fa44e49e3a82bab700715a686",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_1883393d-e898-4a3b-be34-8c31b5ded46c",
+        "isError": false,
+        "elapsedMs": 627
+      },
+      "teamLink": {
+        "address": "/studio_team",
+        "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "coordinatorAddress": "/studio_team/lead",
+        "members": [
+          {
+            "address": "/studio_team/lead",
+            "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+          },
+          {
+            "address": "/studio_team/checker",
+            "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+          }
+        ],
+        "delegatorAgentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e",
+        "startedAt": "2026-10-21T10:40:01.249Z"
+      },
+      "taskResource": {
+        "file": "ad-hoc-tasks/ad_hoc_task_1883393d-e898-4a3b-be34-8c31b5ded46c/agent_run_resources.json",
+        "entry": {
+          "role": "assigned",
+          "assignedBy": "delegator_c51e0e351eda4e4da8a6aa3b616d330e",
+          "recipientAddress": "/studio_team",
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+            "coordinatorAgentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+          },
+          "linkedAt": "2026-10-21T10:40:01.491Z",
+          "start": "started",
+          "closedAt": null
+        }
+      },
+      "betaTree": {
+        "createdAt": "2026-10-21T10:40:01.424Z",
+        "archivedAt": null,
+        "applicationBinding": null,
+        "handoffs": [],
+        "rootTeam": {
+          "address": "/",
+          "teamDefinitionId": "studio-team",
+          "teamDefinitionName": "Studio Team",
+          "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+          "coordinatorAddress": "/lead",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+          },
+          "members": [
+            {
+              "address": "/lead",
+              "agentDefinitionId": "publisher",
+              "role": null,
+              "description": null,
+              "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686",
+              "platformAgentRunId": "151159ab-db32-4892-88ab-cbdfba18562b",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+              }
+            },
+            {
+              "address": "/checker",
+              "agentDefinitionId": "checker",
+              "role": null,
+              "description": null,
+              "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4",
+              "platformAgentRunId": null,
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        },
+        "delegatedFrom": {
+          "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+          "coordinatingRun": {
+            "kind": "agent_team",
+            "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+          },
+          "delegatorAgentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        }
+      },
+      "memberRecords": [
+        {
+          "address": "/lead",
+          "agentDefinitionId": "publisher",
+          "role": null,
+          "description": null,
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686",
+          "platformAgentRunId": "151159ab-db32-4892-88ab-cbdfba18562b",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+          }
+        },
+        {
+          "address": "/checker",
+          "agentDefinitionId": "checker",
+          "role": null,
+          "description": null,
+          "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+          }
+        }
+      ],
+      "launches": [
+        {
+          "argv": [
+            "--new-project",
+            "--agent",
+            "autobyteus-b6d4d1aec3d230c4",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/publisher_48b5256fa44e49e3a82bab700715a686/agy-project"
+        }
+      ],
+      "listed": [
+        {
+          "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+          "isActive": true,
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace"
+        }
+      ]
+    },
+    "RC-22": {
+      "logs": {
+        "STUDIO-REPLY-1": {
+          "messageId": "collabmsg_FCQpXtRnVq1ZYUm2rTEmBFeiBCaeWpuj",
+          "files": {
+            "beta": "memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/team_communication_messages_active.jsonl",
+            "alpha": "memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/team_communication_messages_active.jsonl"
+          }
+        },
+        "STUDIO-FOLLOWUP-1": {
+          "messageId": "collabmsg_-ojt7J-FvVZQ7S5rumZiD_DNzEH579wf",
+          "files": {
+            "alpha": "memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/team_communication_messages_active.jsonl",
+            "beta": "memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/team_communication_messages_active.jsonl"
+          }
+        },
+        "TO-CHECKER-1": {
+          "messageId": "collabmsg_LF8y5C4O9BamOJF8dqYfOZtkxau2glUu",
+          "files": {
+            "alpha": "memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/team_communication_messages_active.jsonl",
+            "beta": "memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/team_communication_messages_active.jsonl"
+          }
+        },
+        "FROM-CHECKER-1": {
+          "messageId": "collabmsg_FulQHSI9jDNgfKUGACSXiUyUesuPzWX_",
+          "files": {
+            "beta": "memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/team_communication_messages_active.jsonl",
+            "alpha": "memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/team_communication_messages_active.jsonl"
+          }
+        }
+      },
+      "toTeamRun": "studio_team_fa742ab3176246a7b4bb75a77b1933a7 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: publisher_48b5256fa44e49e3a82bab700715a686.",
+      "fromMate": "That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.",
+      "fromOther": "No running agent has the run id 'checker_4ce0c0616ee64c9fb02182951d6dbbe4', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
+      "checkerLaunches": [
+        {
+          "argv": [
+            "--new-project",
+            "--agent",
+            "autobyteus-834a45a11aaf0c28",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+            "--model",
+            "alt-model",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/checker_4ce0c0616ee64c9fb02182951d6dbbe4/agy-project"
+        }
+      ],
+      "sequences": {
+        "snapshots": [
+          105
+        ],
+        "sequenced": 110,
+        "lastSequence": 222,
+        "gaps": [],
+        "errorFrames": []
+      }
+    },
+    "RC-23": {
+      "delegated": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "studio_team_8e316f31942b43b9a4d2ef118ab22d19",
+        "target_team_coordinator_agent_run_id": "publisher_dcdadfd48d8243bda99d9ee479223e73",
+        "node": "beta-node",
+        "task_id": "ad_hoc_task_1030a4c8-12f5-4cef-accd-1e33638e1e85",
+        "isError": false,
+        "elapsedMs": 527
+      },
+      "saved": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
+      "savedNew": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.",
+      "toRemote": "Your Task is DONE or CANCELLED, so you can't start new work.",
+      "fromRemote": "Node \"alpha-node\" refused the request: Your Task is DONE or CANCELLED, so you can't start new work.",
+      "fenceLine": "\n  taskId: 'ad_hoc_task_1030a4c8-12f5-4cef-accd-1e33638e1e85',\n  hostRoot: {\n    rootSubjectKind: 'agent',\n    rootRunId: 'delegator_3a921fb1dac442d3ad5cea65e316eab2'\n  },\n  execution: { teamRunId: 'studio_team_8e316f31942b43b9a4d2ef118ab22d19' },\n  message: '/studio_team runs on node \"beta-node\". This Task sends it no more messages; it stops there when it goes idle.'\n"
+    },
+    "RC-25": {
+      "result": {
+        "delegated": false,
+        "message": "Node \"beta-node\" could not be reached (fetch failed).",
+        "isError": false,
+        "elapsedMs": 425
+      },
+      "text": "Node \"beta-node\" could not be reached (fetch failed).",
+      "unused": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+      "sent": [
+        {
+          "path": "/rest/remote/delegated-runs",
+          "kind": null,
+          "outcome": "forwarded"
+        },
+        {
+          "path": "/rest/remote/messages",
+          "kind": "work_packet",
+          "outcome": "dropped by the test"
+        }
+      ],
+      "alphaLinks": [
+        {
+          "address": "/studio_team",
+          "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+          "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+          "coordinatorAddress": "/studio_team/lead",
+          "members": [
+            {
+              "address": "/studio_team/lead",
+              "agentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+            },
+            {
+              "address": "/studio_team/checker",
+              "agentRunId": "checker_1077eb366c9e4e0389188273231e6b36"
+            }
+          ],
+          "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+          "startedAt": "2026-10-21T10:40:09.653Z"
+        }
+      ],
+      "alphaTaskRecords": [
+        {
+          "file": "ad-hoc-tasks/ad_hoc_task_e7d6c43c-0b76-4689-86ca-41617328bee5/agent_run_resources.json",
+          "entry": {
+            "role": "assigned",
+            "assignedBy": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "recipientAddress": "/studio_team",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+            },
+            "agentRun": {
+              "kind": "team",
+              "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+              "coordinatorAgentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+            },
+            "linkedAt": "2026-10-21T10:40:09.895Z",
+            "start": "failed",
+            "startError": {
+              "code": "TASK_DISPATCH_FAILED",
+              "message": "Node \"beta-node\" could not be reached (fetch failed)."
+            },
+            "closedAt": null
+          }
+        }
+      ]
+    },
+    "RC-12": {
+      "liveAtStart": true,
+      "shutDownAfterMs": 29369,
+      "relaunch": {
+        "argv": [
+          "--conversation",
+          "97b9e107-95ab-447c-be09-1c30fd76602b",
+          "--agent",
+          "autobyteus-80343503866e0117",
+          "--add-dir",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agents/publisher_3f73476af19a439b84aa72794590fdcf/agy-project"
+      },
+      "heldAfterGrace": {
+        "coordinator": true,
+        "checker": true,
+        "atMs": 75210
+      },
+      "teamShutDownAfterMs": 150468,
+      "studioListedWhenStopped": {
+        "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+        "isActive": false
+      },
+      "unusedListed": {
+        "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+        "isActive": false
+      },
+      "teamRelaunch": {
+        "argv": [
+          "--conversation",
+          "151159ab-db32-4892-88ab-cbdfba18562b",
+          "--agent",
+          "autobyteus-b6d4d1aec3d230c4",
+          "--add-dir",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/publisher_48b5256fa44e49e3a82bab700715a686/agy-project"
+      }
+    },
+    "RC-13": {
+      "betaRelaunches": [
+        {
+          "argv": [
+            "--conversation",
+            "97b9e107-95ab-447c-be09-1c30fd76602b",
+            "--agent",
+            "autobyteus-80343503866e0117",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agents/publisher_3f73476af19a439b84aa72794590fdcf/agy-project"
+        }
+      ],
+      "alphaRelaunches": [
+        {
+          "argv": [
+            "--conversation",
+            "a9656bb7-da73-4fec-8ce1-c571953010f9",
+            "--agent",
+            "autobyteus-4cee38975323ba01",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/data/memory/agents/delegator_3a921fb1dac442d3ad5cea65e316eab2/agy-project"
+        },
+        {
+          "argv": [
+            "--conversation",
+            "1baebd49-ff2a-47f9-9314-254e909d1563",
+            "--agent",
+            "autobyteus-7cf94224d8cc68ad",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/data/memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/delegator_c51e0e351eda4e4da8a6aa3b616d330e/agy-project"
+        },
+        {
+          "argv": [
+            "--conversation",
+            "6693c343-70fb-4ab3-9c55-c66875416c6f",
+            "--agent",
+            "autobyteus-831eabeab1a4ca7c",
+            "--add-dir",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/workspace",
+            "--model",
+            "gemini-3.8-flash-low",
+            "--input-format",
+            "stream-json",
+            "--output-format",
+            "stream-json",
+            "--dangerously-skip-permissions"
+          ],
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/data/memory/agent_orgs/remote_org_26377a9c46ac4ae3aac0839f169cb4a5/delegator_62ee024b28e64b56877f8cb43efc0da5/agy-project"
+        }
+      ],
+      "replies": {
+        "solo": "Delivered message to delegator_3a921fb1dac442d3ad5cea65e316eab2 on node \"alpha-node\".",
+        "team": "Delivered message to delegator_c51e0e351eda4e4da8a6aa3b616d330e on node \"alpha-node\".",
+        "org": "Delivered message to delegator_62ee024b28e64b56877f8cb43efc0da5 on node \"alpha-node\"."
+      },
+      "observed": {
+        "team": {
+          "reply": {
+            "accepted": true,
+            "text": "Delivered message to delegator_c51e0e351eda4e4da8a6aa3b616d330e on node \"alpha-node\"."
+          },
+          "inAlphaLog": true,
+          "delegatorRelaunched": true,
+          "conversation": "readable"
+        },
+        "org": {
+          "reply": {
+            "accepted": true,
+            "text": "Delivered message to delegator_62ee024b28e64b56877f8cb43efc0da5 on node \"alpha-node\"."
+          },
+          "inAlphaLog": true,
+          "delegatorRelaunched": true,
+          "conversation": "readable"
+        }
+      },
+      "linksAfter": {
+        "solo": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:39:38.508Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_7554d0bd263344dabe46267ead1769ac",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:39:56.841Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_8e316f31942b43b9a4d2ef118ab22d19",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "coordinatorAddress": "/studio_team/lead",
+            "members": [
+              {
+                "address": "/studio_team/lead",
+                "agentRunId": "publisher_dcdadfd48d8243bda99d9ee479223e73"
+              },
+              {
+                "address": "/studio_team/checker",
+                "agentRunId": "checker_af0c36fe0cf5461ea7d7eb1382570b93"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:40:04.773Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "coordinatorAddress": "/studio_team/lead",
+            "members": [
+              {
+                "address": "/studio_team/lead",
+                "agentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+              },
+              {
+                "address": "/studio_team/checker",
+                "agentRunId": "checker_1077eb366c9e4e0389188273231e6b36"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:40:09.653Z"
+          }
+        ],
+        "team": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e",
+            "startedAt": "2026-10-21T10:39:42.127Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "coordinatorAddress": "/studio_team/lead",
+            "members": [
+              {
+                "address": "/studio_team/lead",
+                "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+              },
+              {
+                "address": "/studio_team/checker",
+                "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e",
+            "startedAt": "2026-10-21T10:40:01.249Z"
+          }
+        ],
+        "org": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_803533045917463cbfaa84a204378ff4",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5",
+            "startedAt": "2026-10-21T10:39:46.334Z"
+          }
+        ]
+      },
+      "reopened": {
+        "teamRunId": "remote_squad_12035543aedd42069c58b91d5964d628",
+        "orgMembers": 2
+      },
+      "studioReply": "Delivered message to delegator_c51e0e351eda4e4da8a6aa3b616d330e on node \"alpha-node\".",
+      "coldWake": {
+        "reply": "Delivered message to delegator_c51e0e351eda4e4da8a6aa3b616d330e on node \"alpha-node\".",
+        "relaunches": [
+          {
+            "argv": [
+              "--conversation",
+              "1baebd49-ff2a-47f9-9314-254e909d1563",
+              "--agent",
+              "autobyteus-7cf94224d8cc68ad",
+              "--add-dir",
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/workspace",
+              "--model",
+              "gemini-3.8-flash-low",
+              "--input-format",
+              "stream-json",
+              "--output-format",
+              "stream-json",
+              "--dangerously-skip-permissions"
+            ],
+            "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/alpha/data/memory/agent_teams/remote_squad_12035543aedd42069c58b91d5964d628/delegator_c51e0e351eda4e4da8a6aa3b616d330e/agy-project"
+          }
+        ]
+      }
+    },
+    "RC-24": {
+      "stopped": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      },
+      "listed": {
+        "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+        "isActive": false
+      },
+      "relaunch": {
+        "argv": [
+          "--conversation",
+          "151159ab-db32-4892-88ab-cbdfba18562b",
+          "--agent",
+          "autobyteus-b6d4d1aec3d230c4",
+          "--add-dir",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/temp_workspace",
+          "--model",
+          "gemini-3.8-flash-low",
+          "--input-format",
+          "stream-json",
+          "--output-format",
+          "stream-json",
+          "--dangerously-skip-permissions"
+        ],
+        "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/data/memory/agent_teams/studio_team_fa742ab3176246a7b4bb75a77b1933a7/publisher_48b5256fa44e49e3a82bab700715a686/agy-project"
+      }
+    },
+    "RC-26": {
+      "scoutTools": [
+        "list_available_nodes",
+        "list_available_agents",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "delegatorTools": [
+        "create_task",
+        "update_task",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "offer": [
+        {
+          "name": "Blank Slate",
+          "kind": "agent",
+          "address": "/blank_slate",
+          "description": "Blank Slate (remote collaboration E2E)"
+        },
+        {
+          "name": "Bystander",
+          "kind": "agent",
+          "address": "/bystander",
+          "description": "Bystander (remote collaboration E2E)"
+        },
+        {
+          "name": "Checker",
+          "kind": "agent",
+          "address": "/checker",
+          "description": "Checker (remote collaboration E2E)"
+        },
+        {
+          "name": "Codex Writer",
+          "kind": "agent",
+          "address": "/codex_writer",
+          "description": "Codex Writer (remote collaboration E2E)"
+        },
+        {
+          "name": "Fragile",
+          "kind": "agent",
+          "address": "/fragile",
+          "description": "Fragile (remote collaboration E2E)"
+        },
+        {
+          "name": "Half Set",
+          "kind": "agent",
+          "address": "/half_set",
+          "description": "Half Set (remote collaboration E2E)"
+        },
+        {
+          "name": "Plain Helper",
+          "kind": "agent",
+          "address": "/plain_helper"
+        },
+        {
+          "name": "Publisher",
+          "kind": "agent",
+          "address": "/publisher",
+          "description": "Publisher (remote collaboration E2E)"
+        },
+        {
+          "name": "Codex Team",
+          "kind": "agent_team",
+          "address": "/codex_team",
+          "description": "Codex Team (remote Teams E2E)"
+        },
+        {
+          "name": "Field Team",
+          "kind": "agent_team",
+          "address": "/field_team",
+          "description": "Team with a team-local agent"
+        },
+        {
+          "name": "Hollow Team",
+          "kind": "agent_team",
+          "address": "/hollow_team",
+          "description": "Hollow Team (remote Teams E2E)"
+        },
+        {
+          "name": "Studio Team",
+          "kind": "agent_team",
+          "address": "/studio_team",
+          "description": "Studio Team (remote Teams E2E)"
+        }
+      ],
+      "wire": {
+        "body": {
+          "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+          "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+        },
+        "answer": {
+          "accepted": true,
+          "agents": [
+            {
+              "name": "Blank Slate",
+              "kind": "agent",
+              "address": "/blank_slate",
+              "description": "Blank Slate (remote collaboration E2E)"
+            },
+            {
+              "name": "Bystander",
+              "kind": "agent",
+              "address": "/bystander",
+              "description": "Bystander (remote collaboration E2E)"
+            },
+            {
+              "name": "Checker",
+              "kind": "agent",
+              "address": "/checker",
+              "description": "Checker (remote collaboration E2E)"
+            },
+            {
+              "name": "Codex Writer",
+              "kind": "agent",
+              "address": "/codex_writer",
+              "description": "Codex Writer (remote collaboration E2E)"
+            },
+            {
+              "name": "Fragile",
+              "kind": "agent",
+              "address": "/fragile",
+              "description": "Fragile (remote collaboration E2E)"
+            },
+            {
+              "name": "Half Set",
+              "kind": "agent",
+              "address": "/half_set",
+              "description": "Half Set (remote collaboration E2E)"
+            },
+            {
+              "name": "Plain Helper",
+              "kind": "agent",
+              "address": "/plain_helper"
+            },
+            {
+              "name": "Publisher",
+              "kind": "agent",
+              "address": "/publisher",
+              "description": "Publisher (remote collaboration E2E)"
+            },
+            {
+              "name": "Codex Team",
+              "kind": "agent_team",
+              "address": "/codex_team",
+              "description": "Codex Team (remote Teams E2E)"
+            },
+            {
+              "name": "Field Team",
+              "kind": "agent_team",
+              "address": "/field_team",
+              "description": "Team with a team-local agent"
+            },
+            {
+              "name": "Hollow Team",
+              "kind": "agent_team",
+              "address": "/hollow_team",
+              "description": "Hollow Team (remote Teams E2E)"
+            },
+            {
+              "name": "Studio Team",
+              "kind": "agent_team",
+              "address": "/studio_team",
+              "description": "Studio Team (remote Teams E2E)"
+            }
+          ],
+          "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+        }
+      },
+      "betaCatalog": {
+        "agents": [
+          "Daily Assistant",
+          "Blank Slate",
+          "Bystander",
+          "Checker",
+          "Codex Writer",
+          "Fragile",
+          "Half Set",
+          "Plain Helper",
+          "Publisher",
+          "Local Scout",
+          "Brief Studio Researcher",
+          "Brief Studio Writer"
+        ],
+        "teams": [
+          "Brief Studio Team",
+          "Codex Team",
+          "Field Team",
+          "Hollow Team",
+          "Studio Team"
+        ]
+      },
+      "delegations": {
+        "/blank_slate": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\"."
+        },
+        "/bystander": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent Bystander on node \"beta-node\"."
+        },
+        "/checker": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent Checker on node \"beta-node\"."
+        },
+        "/codex_writer": {
+          "delegated": false,
+          "text": "The Agent Codex Writer on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available."
+        },
+        "/fragile": {
+          "delegated": false,
+          "text": "The Agent Fragile on node \"beta-node\" cannot run there: The model 'no-such-model' is not available on antigravity_cli."
+        },
+        "/half_set": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent Half Set on node \"beta-node\"."
+        },
+        "/plain_helper": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent Plain Helper on node \"beta-node\"."
+        },
+        "/publisher": {
+          "delegated": true,
+          "kind": "agent"
+        },
+        "/codex_team": {
+          "delegated": false,
+          "text": "The Agent Team Codex Team on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available."
+        },
+        "/field_team": {
+          "delegated": true,
+          "kind": "team"
+        },
+        "/hollow_team": {
+          "delegated": false,
+          "text": "There is no default runtime configured for the target agent team Hollow Team on node \"beta-node\"."
+        },
+        "/studio_team": {
+          "delegated": true,
+          "kind": "team"
+        }
+      }
+    },
+    "RC-27": {
+      "listed": {
+        "nodes": [
+          {
+            "name": "beta-node",
+            "status": "available"
+          },
+          {
+            "name": "gamma-node",
+            "status": "unavailable"
+          },
+          {
+            "name": "delta-node",
+            "status": "unavailable"
+          },
+          {
+            "name": "epsilon-node",
+            "status": "unavailable"
+          }
+        ],
+        "elapsedMs": 214
+      },
+      "reasons": {
+        "gamma-node": {
+          "listing": "Node \"gamma-node\" could not be reached (fetch failed).",
+          "delegation": "Node \"gamma-node\" could not be reached (fetch failed).",
+          "listingIsError": true
+        },
+        "delta-node": {
+          "listing": "Remote collaboration is turned off on node \"delta-node\", so it refused the request.",
+          "delegation": "Remote collaboration is turned off on node \"delta-node\", so it refused the request.",
+          "listingIsError": true
+        },
+        "epsilon-node": {
+          "listing": "Node \"epsilon-node\" does not have this node registered as a peer, so it refused the request.",
+          "delegation": "Node \"epsilon-node\" does not have this node registered as a peer, so it refused the request.",
+          "listingIsError": true
+        }
+      },
+      "heldElapsedMs": 20214,
+      "held": [
+        {
+          "name": "beta-node",
+          "status": "unavailable"
+        },
+        {
+          "name": "gamma-node",
+          "status": "unavailable"
+        },
+        {
+          "name": "delta-node",
+          "status": "unavailable"
+        },
+        {
+          "name": "epsilon-node",
+          "status": "unavailable"
+        }
+      ]
+    },
+    "RC-28": {
+      "nodesOff": "Remote collaboration is turned off on this node, so nothing was sent to another node.",
+      "agentsOff": "Remote collaboration is turned off on this node, so nothing was sent to another node.",
+      "unknown": "No peer node named \"nowhere-node\" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.",
+      "blank": "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
+      "nullNode": {
+        "isError": true,
+        "text": "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams."
+      },
+      "local": [
+        {
+          "name": "Delegator",
+          "kind": "agent",
+          "address": "/delegator",
+          "description": "Delegator (remote collaboration E2E)"
+        },
+        {
+          "name": "Remote Manager",
+          "kind": "agent",
+          "address": "/remote_manager",
+          "description": "Remote Manager (remote collaboration E2E)"
+        },
+        {
+          "name": "Remote Worker",
+          "kind": "agent",
+          "address": "/remote_worker",
+          "description": "Remote Worker (remote collaboration E2E)"
+        },
+        {
+          "name": "Remote Squad",
+          "kind": "agent_team",
+          "address": "/remote_squad",
+          "description": "Team delegator"
+        }
+      ]
+    },
+    "RC-29": {
+      "first": 12,
+      "second": 13
+    },
+    "RC-14": {
+      "doomed": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396",
+      "deleted": {
+        "success": true,
+        "message": "Run 'publisher_f709ff7b0c934ff4bf7b6fa434ef1396' deleted permanently."
+      },
+      "notFound": "That run no longer exists on node \"beta-node\"."
+    },
+    "RC-15": {
+      "partitionedDelegation": {
+        "text": "Node \"beta-node\" could not be reached (it did not answer in time).",
+        "elapsedMs": 20203
+      },
+      "partitionedMessage": {
+        "text": "Node \"beta-node\" could not be reached (it did not answer in time; the message may have been delivered).",
+        "elapsedMs": 20233
+      },
+      "stoppedDelegation": {
+        "text": "Node \"beta-node\" could not be reached (fetch failed).",
+        "elapsedMs": 215
+      }
+    },
+    "RC-16": {
+      "mismatch": "The server at node \"beta-node\"'s address is not the node that was registered (identity mismatch), so nothing was sent.",
+      "mismatchMessage": "The server at node \"beta-node\"'s address is not the node that was registered (identity mismatch), so nothing was sent."
+    },
+    "RC-17": {
+      "refused": "The Agent Publisher on node \"beta-node\" cannot run there: The model 'retired-model' is not available on antigravity_cli."
+    },
+    "RC-18": {
+      "offOnBeta": "Remote collaboration is turned off on node \"beta-node\", so it refused the request.",
+      "offFromBeta": "Remote collaboration is turned off on this node, so nothing was sent to another node.",
+      "offOnAlpha": "Remote collaboration is turned off on this node, so nothing was sent to another node.",
+      "inboundWhileAlphaOff": "Remote collaboration is turned off on node \"alpha-node\", so it refused the request."
+    },
+    "RC-19": {
+      "toBetaAfterRemoval": "Node \"beta-node\" does not have this node registered as a peer, so it refused the request.",
+      "fromBetaAfterRemoval": "The node of that run (srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre) is no longer a registered peer of this node, so nothing was sent.",
+      "delegateAfterRemoval": "No peer node named \"beta-node\" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.",
+      "historyBefore": {
+        "alphaLinks": [
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:39:38.508Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_7554d0bd263344dabe46267ead1769ac",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:39:56.841Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_8e316f31942b43b9a4d2ef118ab22d19",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "coordinatorAddress": "/studio_team/lead",
+            "members": [
+              {
+                "address": "/studio_team/lead",
+                "agentRunId": "publisher_dcdadfd48d8243bda99d9ee479223e73"
+              },
+              {
+                "address": "/studio_team/checker",
+                "agentRunId": "checker_af0c36fe0cf5461ea7d7eb1382570b93"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:40:04.773Z"
+          },
+          {
+            "address": "/studio_team",
+            "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "coordinatorAddress": "/studio_team/lead",
+            "members": [
+              {
+                "address": "/studio_team/lead",
+                "agentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+              },
+              {
+                "address": "/studio_team/checker",
+                "agentRunId": "checker_1077eb366c9e4e0389188273231e6b36"
+              }
+            ],
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:40:09.653Z"
+          },
+          {
+            "address": "/publisher",
+            "agentRunId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396",
+            "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+            "delegatorAgentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2",
+            "startedAt": "2026-10-21T10:43:23.664Z"
+          }
+        ],
+        "betaRuns": [
+          "bystander_8cdb3f7447db454b827d6186b1eb3d52",
+          "publisher_2307c97232fe4138952d1e727ce17a2c",
+          "publisher_3076b6e0dca940ee94955cad4d38cda5",
+          "publisher_3f73476af19a439b84aa72794590fdcf",
+          "publisher_7554d0bd263344dabe46267ead1769ac",
+          "publisher_802dcdf592e14520be61bcfc35ea3e69",
+          "publisher_803533045917463cbfaa84a204378ff4"
+        ]
+      }
+    },
+    "RC-20": {
+      "total": 90,
+      "counts": {
+        "status": 2,
+        "/rest/remote/delegated-runs": 34,
+        "work_packet": 12,
+        "toAlpha": 16,
+        "toBeta": 20,
+        "/rest/remote/available-agents": 3,
+        "/rest/remote/availability": 3
+      },
+      "headerNames": [
+        "accept",
+        "accept-encoding",
+        "accept-language",
+        "connection",
+        "content-length",
+        "content-type",
+        "host",
+        "sec-fetch-mode",
+        "user-agent"
+      ]
+    }
+  },
+  "nodes": {
+    "alpha": {
+      "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+      "port": 52496,
+      "peerUrlOnBeta": "http://127.0.0.1:52499",
+      "canaryKeySaved": true
+    },
+    "beta": {
+      "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+      "port": 52497,
+      "peerUrlOnAlpha": "http://127.0.0.1:52498",
+      "canaryKeySaved": true
+    }
+  },
+  "betaDefinitions": {
+    "delegator": "delegator",
+    "manager": "remote-manager",
+    "worker": "remote-worker",
+    "scout": "scout",
+    "team": "remote-squad",
+    "org": "remote-org",
+    "publisher": "publisher",
+    "blank": "blank-slate",
+    "half": "half-set",
+    "codex": "codex-writer",
+    "fragile": "fragile",
+    "bystander": "bystander",
+    "checker": "checker",
+    "studioTeam": "studio-team",
+    "hollowTeam": "hollow-team",
+    "codexTeam": "codex-team",
+    "betaOrg": "remote-org-b"
+  },
+  "captured": [
+    {
+      "seq": 1,
+      "at": 1792579175913,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "seq": 2,
+      "at": 1792579175934,
+      "via": "toAlpha",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "seq": 3,
+      "at": 1792579176133,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/blank_slate",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Blank Slate",
+        "target": {
+          "kind": "agent",
+          "name": "Blank Slate"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 4,
+      "at": 1792579176356,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "285"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/half_set",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Half Set",
+        "target": {
+          "kind": "agent",
+          "name": "Half Set"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 5,
+      "at": 1792579176565,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "289"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/codex_writer",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent",
+          "name": "Codex Writer"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 6,
+      "at": 1792579176776,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "284"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/fragile",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "The model 'no-such-model' is not available on antigravity_cli.",
+        "target": {
+          "kind": "agent",
+          "name": "Fragile"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 7,
+      "at": 1792579177093,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "292"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/daily_assistant",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/daily_assistant",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 8,
+      "at": 1792579177311,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "289"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/remote_org_b",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/remote_org_b",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 9,
+      "at": 1792579177535,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/local_scout",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/local_scout",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 10,
+      "at": 1792579177752,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/nobody_here",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/nobody_here",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 11,
+      "at": 1792579177977,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/hollow_team",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent team Hollow Team",
+        "target": {
+          "kind": "agent_team",
+          "name": "Hollow Team"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 12,
+      "at": 1792579178194,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "287"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/codex_team",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent_team",
+          "name": "Codex Team"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 13,
+      "at": 1792579178510,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 14,
+      "at": 1792579178761,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "474"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "Publish the draft. Marker STANDALONE-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:39:38.508Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 15,
+      "at": 1792579179271,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "497"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_F3C6SsCEsEhfzVvzqakJxjbgBzW4Zeuz",
+        "sender": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "REPLY-FROM-BETA-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:39.268Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 16,
+      "at": 1792579179481,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "501"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_IANZ6DANcHIg5PyNW5soV4tUSOc3aASP",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "FOLLOWUP-FROM-ALPHA-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:39.479Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 17,
+      "at": 1792579182129,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "294"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "coordinatingRun": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 18,
+      "at": 1792579182343,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "460"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "target": {
+          "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "content": "Team work. Marker TEAM-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:39:42.127Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 19,
+      "at": 1792579182715,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "506"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_PGyuxjE2KwXkdgvjfwsJU6FH3B2bX0EN",
+        "sender": {
+          "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "REPLY-TO-TEAM-LEAD",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:42.712Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 20,
+      "at": 1792579182940,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "503"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_pJM8_i8RUxMwHK2QNq5atdy61jqI4AtH",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "target": {
+          "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "content": "FOLLOWUP-FROM-TEAM-LEAD",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:42.937Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 21,
+      "at": 1792579186336,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "291"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "coordinatingRun": {
+          "kind": "agent_org",
+          "runId": "remote_org_26377a9c46ac4ae3aac0839f169cb4a5"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_803533045917463cbfaa84a204378ff4",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 22,
+      "at": 1792579186549,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "458"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "target": {
+          "agentRunId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "content": "Org work. Marker ORG-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:39:46.334Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 23,
+      "at": 1792579187019,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "502"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_K1VvOqrDfBm33To1RV2Viypti3WoWuwA",
+        "sender": {
+          "agentRunId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "targetRoot": {
+          "kind": "agent_org",
+          "runId": "remote_org_26377a9c46ac4ae3aac0839f169cb4a5"
+        },
+        "target": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "content": "REPLY-TO-ORG-LEAD",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:47.017Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 24,
+      "at": 1792579187239,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "502"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_9076ZQo9MfBF065ZZaa92Drn3GOL_2jM",
+        "sender": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "target": {
+          "agentRunId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "content": "FOLLOWUP-FROM-ORG-LEAD",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:47.237Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 25,
+      "at": 1792579192547,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "295"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "remote_manager_89446903c3534a09b7ece64c97d215ea"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 26,
+      "at": 1792579192779,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "470"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_2307c97232fe4138952d1e727ce17a2c"
+        },
+        "target": {
+          "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c"
+        },
+        "content": "Project work. Marker PROJECT-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:39:52.545Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 27,
+      "at": 1792579193201,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "510"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_AgCsbX0eCdvtdtgCG6pqEk6e_x8BzPyu",
+        "sender": {
+          "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "remote_manager_89446903c3534a09b7ece64c97d215ea"
+        },
+        "target": {
+          "agentRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a"
+        },
+        "content": "BEFORE-DONE-TO-WORKER",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:53.199Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 28,
+      "at": 1792579193659,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "509"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_uEPgd3KVCw4tMnOMrcoB9HfzjleQveeQ",
+        "sender": {
+          "agentRunId": "publisher_2307c97232fe4138952d1e727ce17a2c"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "remote_manager_89446903c3534a09b7ece64c97d215ea"
+        },
+        "target": {
+          "agentRunId": "remote_worker_b314c3b29ea84e7f804ddce75913991a"
+        },
+        "content": "AFTER-DONE-TO-WORKER",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:53.657Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "Your Task is DONE or CANCELLED, so you can't start new work.",
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 29,
+      "at": 1792579196842,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_7554d0bd263344dabe46267ead1769ac",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 30,
+      "at": 1792579197099,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "463"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_7554d0bd263344dabe46267ead1769ac"
+        },
+        "target": {
+          "agentRunId": "publisher_7554d0bd263344dabe46267ead1769ac"
+        },
+        "content": "Ad hoc work. Marker ADHOC-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:39:56.841Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 31,
+      "at": 1792579197966,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "502"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_KqKWVNWjmAQwmZgSgaDJNDN-BCp3kSrs",
+        "sender": {
+          "agentRunId": "publisher_7554d0bd263344dabe46267ead1769ac"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "AFTER-DONE-FROM-REMOTE",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:39:57.964Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "Your Task is DONE or CANCELLED, so you can't start new work.",
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 32,
+      "at": 1792579201251,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "296"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/studio_team",
+        "delegator": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "coordinatingRun": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7",
+        "coordinatorAddress": "/studio_team/lead",
+        "members": [
+          {
+            "address": "/studio_team/lead",
+            "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+          },
+          {
+            "address": "/studio_team/checker",
+            "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 33,
+      "at": 1792579201505,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "471"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "content": "Studio work. Marker STUDIO-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:40:01.249Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 34,
+      "at": 1792579202031,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "502"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_FCQpXtRnVq1ZYUm2rTEmBFeiBCaeWpuj",
+        "sender": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "STUDIO-REPLY-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:02.028Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 35,
+      "at": 1792579202220,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "504"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_-ojt7J-FvVZQ7S5rumZiD_DNzEH579wf",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "content": "STUDIO-FOLLOWUP-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:02.218Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 36,
+      "at": 1792579202437,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "497"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_LF8y5C4O9BamOJF8dqYfOZtkxau2glUu",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+        },
+        "content": "TO-CHECKER-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:02.434Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 37,
+      "at": 1792579202870,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "500"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_FulQHSI9jDNgfKUGACSXiUyUesuPzWX_",
+        "sender": {
+          "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "FROM-CHECKER-1",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:02.868Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 38,
+      "at": 1792579204775,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/studio_team",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "studio_team_8e316f31942b43b9a4d2ef118ab22d19",
+        "coordinatorAddress": "/studio_team/lead",
+        "members": [
+          {
+            "address": "/studio_team/lead",
+            "agentRunId": "publisher_dcdadfd48d8243bda99d9ee479223e73"
+          },
+          {
+            "address": "/studio_team/checker",
+            "agentRunId": "checker_af0c36fe0cf5461ea7d7eb1382570b93"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 39,
+      "at": 1792579205027,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "473"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_8e316f31942b43b9a4d2ef118ab22d19"
+        },
+        "target": {
+          "agentRunId": "publisher_dcdadfd48d8243bda99d9ee479223e73"
+        },
+        "content": "Closure work. Marker CLOSURE-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:40:04.773Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 40,
+      "at": 1792579206335,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "502"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_htFz05IWoHDQIsO3BpanxQJvkV8LwDIn",
+        "sender": {
+          "agentRunId": "publisher_dcdadfd48d8243bda99d9ee479223e73"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "AFTER-DONE-FROM-STUDIO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:06.333Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "Your Task is DONE or CANCELLED, so you can't start new work.",
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 41,
+      "at": 1792579209655,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/studio_team",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d",
+        "coordinatorAddress": "/studio_team/lead",
+        "members": [
+          {
+            "address": "/studio_team/lead",
+            "agentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+          },
+          {
+            "address": "/studio_team/checker",
+            "agentRunId": "checker_1077eb366c9e4e0389188273231e6b36"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 42,
+      "at": 1792579209913,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "469"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_4cab5fc1ea9e40a2a4c4ce516b2c1d3d"
+        },
+        "target": {
+          "agentRunId": "publisher_42d96f67ee0c4af0aa6820f396182621"
+        },
+        "content": "Lost packet. Marker LOST-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:40:09.653Z"
+      },
+      "outcome": "dropped by the test"
+    },
+    {
+      "seq": 43,
+      "at": 1792579210191,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "545"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_a-D_vV2whc6r9D8fyzj3eRFwy0UJqYSm",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "checker_4ce0c0616ee64c9fb02182951d6dbbe4"
+        },
+        "content": "BUSY-CHECKER BACKGROUND_STEP:{\"seconds\":90,\"exitCode\":0}",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:10.190Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 44,
+      "at": 1792579239782,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "501"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_WTthT6PuTMfDsxZ9LHA4bVhgYL3z4oBp",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "AFTER-IDLE-FROM-ALPHA",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:40:39.781Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 45,
+      "at": 1792579360668,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "507"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_9zODne1cxZe-jqmKZqHqTLmrG_uyrLFw",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "content": "AFTER-IDLE-TO-STUDIO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:40.666Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 46,
+      "at": 1792579363580,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "503"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_4hjU_-nQ1RfnZntE5Ipiy4J2b67ZRwWo",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "AFTER-BETA-RESTART-SOLO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:43.578Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 47,
+      "at": 1792579364018,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "512"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_dEaTwLQB7FRx4nNcQBwGHKxpg1eJB_q8",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "content": "AFTER-BETA-RESTART-STUDIO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:44.015Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 48,
+      "at": 1792579366340,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "507"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_J_f6bm_zT7xe5s50L0XdUGNd9Sq24tTT",
+        "sender": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "AFTER-ALPHA-RESTART-TO-SOLO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:46.334Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 49,
+      "at": 1792579366870,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "515"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_cY2i6GIDhbfNt7SqDkibtnr85tsDFeD6",
+        "sender": {
+          "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "AFTER-ALPHA-RESTART-TO-TEAM",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:46.868Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 50,
+      "at": 1792579367405,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "511"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_d4jxxrR6GzyMmUuhXRnj33TH8Emu4Vt_",
+        "sender": {
+          "agentRunId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "targetRoot": {
+          "kind": "agent_org",
+          "runId": "remote_org_26377a9c46ac4ae3aac0839f169cb4a5"
+        },
+        "target": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "content": "AFTER-ALPHA-RESTART-TO-ORG",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:47.403Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 51,
+      "at": 1792579367818,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "509"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_DtASIGVALY04lTSVvIdge3NJw1ACddSy",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "AFTER-ALPHA-RESTART-FROM-SOLO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:47.813Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 52,
+      "at": 1792579368331,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "509"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_0DTBT0TdLCayZ0X7zpfGXAV1aNlN0GsH",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "target": {
+          "agentRunId": "publisher_802dcdf592e14520be61bcfc35ea3e69"
+        },
+        "content": "AFTER-ALPHA-RESTART-FROM-TEAM",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:48.328Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 53,
+      "at": 1792579368665,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "508"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_5nZ1nV_SlKxuhQWwI8oW6eItl-fr_44L",
+        "sender": {
+          "agentRunId": "delegator_62ee024b28e64b56877f8cb43efc0da5"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "target": {
+          "agentRunId": "publisher_803533045917463cbfaa84a204378ff4"
+        },
+        "content": "AFTER-ALPHA-RESTART-FROM-ORG",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:48.662Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 54,
+      "at": 1792579369002,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "519"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_XHrq_V4-WoYARl2DcQP1gHMmyW6Dciax",
+        "sender": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "AFTER-ALPHA-RESTART-FROM-STUDIO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:49.000Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 55,
+      "at": 1792579370967,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "509"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_1hsMbTWfTq1aAXxwq3uom8tX1_VQLKvX",
+        "sender": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "remote_squad_12035543aedd42069c58b91d5964d628"
+        },
+        "target": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "content": "COLD-WAKE-FROM-STUDIO",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:50.965Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 56,
+      "at": 1792579371769,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "503"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_4HBwXfVCr6DyAIL8NMW_rhpjV4mqJsbW",
+        "sender": {
+          "agentRunId": "delegator_c51e0e351eda4e4da8a6aa3b616d330e"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_fa742ab3176246a7b4bb75a77b1933a7"
+        },
+        "target": {
+          "agentRunId": "publisher_48b5256fa44e49e3a82bab700715a686"
+        },
+        "content": "AFTER-OWNER-STOP",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:42:51.764Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 57,
+      "at": 1792579373329,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/available-agents",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "agents": [
+          {
+            "name": "Blank Slate",
+            "kind": "agent",
+            "address": "/blank_slate",
+            "description": "Blank Slate (remote collaboration E2E)"
+          },
+          {
+            "name": "Bystander",
+            "kind": "agent",
+            "address": "/bystander",
+            "description": "Bystander (remote collaboration E2E)"
+          },
+          {
+            "name": "Checker",
+            "kind": "agent",
+            "address": "/checker",
+            "description": "Checker (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Writer",
+            "kind": "agent",
+            "address": "/codex_writer",
+            "description": "Codex Writer (remote collaboration E2E)"
+          },
+          {
+            "name": "Fragile",
+            "kind": "agent",
+            "address": "/fragile",
+            "description": "Fragile (remote collaboration E2E)"
+          },
+          {
+            "name": "Half Set",
+            "kind": "agent",
+            "address": "/half_set",
+            "description": "Half Set (remote collaboration E2E)"
+          },
+          {
+            "name": "Plain Helper",
+            "kind": "agent",
+            "address": "/plain_helper"
+          },
+          {
+            "name": "Publisher",
+            "kind": "agent",
+            "address": "/publisher",
+            "description": "Publisher (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Team",
+            "kind": "agent_team",
+            "address": "/codex_team",
+            "description": "Codex Team (remote Teams E2E)"
+          },
+          {
+            "name": "Field Team",
+            "kind": "agent_team",
+            "address": "/field_team",
+            "description": "Team with a team-local agent"
+          },
+          {
+            "name": "Hollow Team",
+            "kind": "agent_team",
+            "address": "/hollow_team",
+            "description": "Hollow Team (remote Teams E2E)"
+          },
+          {
+            "name": "Studio Team",
+            "kind": "agent_team",
+            "address": "/studio_team",
+            "description": "Studio Team (remote Teams E2E)"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 58,
+      "at": 1792579373561,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "280"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/blank_slate",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Blank Slate",
+        "target": {
+          "kind": "agent",
+          "name": "Blank Slate"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 59,
+      "at": 1792579373772,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "278"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/bystander",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Bystander",
+        "target": {
+          "kind": "agent",
+          "name": "Bystander"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 60,
+      "at": 1792579373987,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "276"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/checker",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Checker",
+        "target": {
+          "kind": "agent",
+          "name": "Checker"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 61,
+      "at": 1792579374202,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "281"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/codex_writer",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent",
+          "name": "Codex Writer"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 62,
+      "at": 1792579374425,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "276"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/fragile",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "The model 'no-such-model' is not available on antigravity_cli.",
+        "target": {
+          "kind": "agent",
+          "name": "Fragile"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 63,
+      "at": 1792579374743,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "277"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/half_set",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Half Set",
+        "target": {
+          "kind": "agent",
+          "name": "Half Set"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 64,
+      "at": 1792579374960,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "281"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/plain_helper",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Plain Helper",
+        "target": {
+          "kind": "agent",
+          "name": "Plain Helper"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 65,
+      "at": 1792579375182,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "278"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_3076b6e0dca940ee94955cad4d38cda5",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 66,
+      "at": 1792579375452,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "466"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3076b6e0dca940ee94955cad4d38cda5"
+        },
+        "target": {
+          "agentRunId": "publisher_3076b6e0dca940ee94955cad4d38cda5"
+        },
+        "content": "Discovered work. Marker FOUND/publisher.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:42:55.178Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 67,
+      "at": 1792579375809,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "279"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/codex_team",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-VBv4wo/beta/missing/codex' is not available.",
+        "target": {
+          "kind": "agent_team",
+          "name": "Codex Team"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 68,
+      "at": 1792579376031,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "279"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/field_team",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "field_team_be1136379e164e9ca94f7761fed66fcd",
+        "coordinatorAddress": "/field_team/scout",
+        "members": [
+          {
+            "address": "/field_team/scout",
+            "agentRunId": "local_scout_1e71f0d3579144c687d47f63d1353931"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 69,
+      "at": 1792579376274,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "475"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "field_team_be1136379e164e9ca94f7761fed66fcd"
+        },
+        "target": {
+          "agentRunId": "local_scout_1e71f0d3579144c687d47f63d1353931"
+        },
+        "content": "Discovered work. Marker FOUND/field_team.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:42:56.030Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 70,
+      "at": 1792579376560,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "280"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/hollow_team",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent team Hollow Team",
+        "target": {
+          "kind": "agent_team",
+          "name": "Hollow Team"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 71,
+      "at": 1792579376776,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "280"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/studio_team",
+        "delegator": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "studio_team_b57276f9003f4ac897621a04adc6fe99",
+        "coordinatorAddress": "/studio_team/lead",
+        "members": [
+          {
+            "address": "/studio_team/lead",
+            "agentRunId": "publisher_01a398f7fc3343819ca1f924cbe2667a"
+          },
+          {
+            "address": "/studio_team/checker",
+            "agentRunId": "checker_12d36298071841719d28e980bb592abc"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 72,
+      "at": 1792579377007,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "475"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "scout_711d59bd9e75400bb7122b7b415ad5ef"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_b57276f9003f4ac897621a04adc6fe99"
+        },
+        "target": {
+          "agentRunId": "publisher_01a398f7fc3343819ca1f924cbe2667a"
+        },
+        "content": "Discovered work. Marker FOUND/studio_team.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:42:56.774Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 73,
+      "at": 1792579379565,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/availability",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 74,
+      "at": 1792579381129,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/availability",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "outcome": "held"
+    },
+    {
+      "seq": 75,
+      "at": 1792579401340,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/availability",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 76,
+      "at": 1792579403200,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/available-agents",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "agents": [
+          {
+            "name": "Blank Slate",
+            "kind": "agent",
+            "address": "/blank_slate",
+            "description": "Blank Slate (remote collaboration E2E)"
+          },
+          {
+            "name": "Bystander",
+            "kind": "agent",
+            "address": "/bystander",
+            "description": "Bystander (remote collaboration E2E)"
+          },
+          {
+            "name": "Checker",
+            "kind": "agent",
+            "address": "/checker",
+            "description": "Checker (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Writer",
+            "kind": "agent",
+            "address": "/codex_writer",
+            "description": "Codex Writer (remote collaboration E2E)"
+          },
+          {
+            "name": "Fragile",
+            "kind": "agent",
+            "address": "/fragile",
+            "description": "Fragile (remote collaboration E2E)"
+          },
+          {
+            "name": "Half Set",
+            "kind": "agent",
+            "address": "/half_set",
+            "description": "Half Set (remote collaboration E2E)"
+          },
+          {
+            "name": "Plain Helper",
+            "kind": "agent",
+            "address": "/plain_helper"
+          },
+          {
+            "name": "Publisher",
+            "kind": "agent",
+            "address": "/publisher",
+            "description": "Publisher (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Team",
+            "kind": "agent_team",
+            "address": "/codex_team",
+            "description": "Codex Team (remote Teams E2E)"
+          },
+          {
+            "name": "Field Team",
+            "kind": "agent_team",
+            "address": "/field_team",
+            "description": "Team with a team-local agent"
+          },
+          {
+            "name": "Hollow Team",
+            "kind": "agent_team",
+            "address": "/hollow_team",
+            "description": "Hollow Team (remote Teams E2E)"
+          },
+          {
+            "name": "Studio Team",
+            "kind": "agent_team",
+            "address": "/studio_team",
+            "description": "Studio Team (remote Teams E2E)"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 77,
+      "at": 1792579403446,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/available-agents",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "103"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "agents": [
+          {
+            "name": "Blank Slate",
+            "kind": "agent",
+            "address": "/blank_slate",
+            "description": "Blank Slate (remote collaboration E2E)"
+          },
+          {
+            "name": "Bystander",
+            "kind": "agent",
+            "address": "/bystander",
+            "description": "Bystander (remote collaboration E2E)"
+          },
+          {
+            "name": "Checker",
+            "kind": "agent",
+            "address": "/checker",
+            "description": "Checker (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Writer",
+            "kind": "agent",
+            "address": "/codex_writer",
+            "description": "Codex Writer (remote collaboration E2E)"
+          },
+          {
+            "name": "Fragile",
+            "kind": "agent",
+            "address": "/fragile",
+            "description": "Fragile (remote collaboration E2E)"
+          },
+          {
+            "name": "Half Set",
+            "kind": "agent",
+            "address": "/half_set",
+            "description": "Half Set (remote collaboration E2E)"
+          },
+          {
+            "name": "Plain Helper",
+            "kind": "agent",
+            "address": "/plain_helper"
+          },
+          {
+            "name": "Publisher",
+            "kind": "agent",
+            "address": "/publisher",
+            "description": "Publisher (remote collaboration E2E)"
+          },
+          {
+            "name": "Codex Team",
+            "kind": "agent_team",
+            "address": "/codex_team",
+            "description": "Codex Team (remote Teams E2E)"
+          },
+          {
+            "name": "Field Team",
+            "kind": "agent_team",
+            "address": "/field_team",
+            "description": "Team with a team-local agent"
+          },
+          {
+            "name": "Hollow Team",
+            "kind": "agent_team",
+            "address": "/hollow_team",
+            "description": "Hollow Team (remote Teams E2E)"
+          },
+          {
+            "name": "Studio Team",
+            "kind": "agent_team",
+            "address": "/studio_team",
+            "description": "Studio Team (remote Teams E2E)"
+          },
+          {
+            "name": "Late Team",
+            "kind": "agent_team",
+            "address": "/late_team",
+            "description": "Added between two listings"
+          }
+        ],
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 78,
+      "at": 1792579403666,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 79,
+      "at": 1792579403905,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "470"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396"
+        },
+        "target": {
+          "agentRunId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396"
+        },
+        "content": "Short-lived work. Marker DELETED-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-10-21T10:43:23.664Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 80,
+      "at": 1792579404286,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "494"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_4UKVA_l8c-VgJErUdtv_NmU4kZw_pEJR",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396"
+        },
+        "target": {
+          "agentRunId": "publisher_f709ff7b0c934ff4bf7b6fa434ef1396"
+        },
+        "content": "TO-DELETED-RUN",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:43:24.284Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "REMOTE_TARGET_NOT_FOUND",
+        "message": "That run does not exist on this node.",
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 81,
+      "at": 1792579404501,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "outcome": "held"
+    },
+    {
+      "seq": 82,
+      "at": 1792579424712,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "499"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_HxfCsL4U4LGEX8vgb3Kexvm_u7CRzJ_B",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "PARTITIONED-MESSAGE",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:43:44.711Z"
+      },
+      "outcome": "held"
+    },
+    {
+      "seq": 83,
+      "at": 1792579446742,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "code": "PEER_IDENTITY_MISMATCH",
+        "message": "This request was meant for another node."
+      }
+    },
+    {
+      "seq": 84,
+      "at": 1792579446973,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "495"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_ot8OhCGbwKi21wpFjGgRzfZxcutX34uo",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "TO-WRONG-SERVER",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:06.970Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "code": "PEER_IDENTITY_MISMATCH",
+        "message": "This request was meant for another node."
+      }
+    },
+    {
+      "seq": 85,
+      "at": 1792579447249,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "286"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_CANNOT_RUN",
+        "message": "The model 'retired-model' is not available on antigravity_cli.",
+        "target": {
+          "kind": "agent",
+          "name": "Publisher"
+        },
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 86,
+      "at": 1792579447569,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "509"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_1wJBeTj8cyex25d8KTCRdrIpHyaaC5Nl",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "AFTER-DEFAULT-CHANGE-FOLLOWUP",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:07.567Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43"
+      }
+    },
+    {
+      "seq": 87,
+      "at": 1792579448113,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "506"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_I5IK21Ax5AypoG-HtD_H4LKCJWD_zscS",
+        "sender": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "AFTER-DEFAULT-CHANGE-REPLY",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:08.107Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre"
+      }
+    },
+    {
+      "seq": 88,
+      "at": 1792579448333,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "494"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_dfd-0R6Dc-iafwavJG30xQm40fGhxlrs",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "WHILE-BETA-OFF",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:08.331Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "code": "REMOTE_COLLABORATION_OFF",
+        "message": "Remote collaboration is turned off on this node."
+      }
+    },
+    {
+      "seq": 89,
+      "at": 1792579449039,
+      "via": "toAlpha",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52499",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "498"
+      },
+      "body": {
+        "fromNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "toNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "kind": "message",
+        "messageId": "collabmsg_F5O_lFdvGJgepTAAMKvHxQ9JC1-Q81i7",
+        "sender": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "target": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "content": "TO-ALPHA-WHILE-OFF",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:09.034Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "nodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "code": "REMOTE_COLLABORATION_OFF",
+        "message": "Remote collaboration is turned off on this node."
+      }
+    },
+    {
+      "seq": 90,
+      "at": 1792579449310,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:52498",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "501"
+      },
+      "body": {
+        "fromNodeId": "srv_7Lg0FhFstEQGEaVlXd1CL8dPZKugVOre",
+        "toNodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "kind": "message",
+        "messageId": "collabmsg_qLuv-RWxKJxVbdOLiTDFce3ZIeeFL3cL",
+        "sender": {
+          "agentRunId": "delegator_3a921fb1dac442d3ad5cea65e316eab2"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "target": {
+          "agentRunId": "publisher_3f73476af19a439b84aa72794590fdcf"
+        },
+        "content": "AFTER-REMOVAL-TO-BETA",
+        "messageType": "agent_message",
+        "createdAt": "2026-10-21T10:44:09.307Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": false,
+        "nodeId": "srv_ZXaHxB6AtezE4A5lWnCySQVPtIaipA43",
+        "code": "PEER_NOT_REGISTERED",
+        "message": "The calling node is not a registered peer of this node."
+      }
+    }
+  ],
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true,
+    "leftoverAgy": [],
+    "errors": []
+  }
+}
