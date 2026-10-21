@@ -1,0 +1,21 @@
+# API-08 real Docker node (branch server dist) + Nuxt dev + headless Chrome: remote-window sign-in to the vendor page, node VNC display, CLI callback, Cancel, privacy scan
+# Command: node tickets/in-progress/remote-node-runtime-sign-in/evidence/API-08-docker-node-remote-signin.mjs <worktree> /tmp/api08-run1   (files copied to evidence/API-08-docker-node-remote-signin/)
+# Commit: 20f31117f source (server dist rebuilt from it by API-07 run 1); image autobyteus/autobyteus-server:beta 191a2073ebee; test-owned container api08-signin-node on 127.0.0.1, fresh volumes; Linux 7.0, node v22.23.2, Chrome 151; 2026-10-21T08:26:35Z
+
+Pass D1 Remote window on the Docker node: VNC note, Sign in for Codex and Grok, hints on that node, no Update (AC-003, AC-004)
+Pass D2 Codex Sign in from the page: vendor page in the node's Chromium and on its VNC display, CLI callback listening on the node; Cancel (AC-001 up to the vendor page)
+Pass D3 Grok Sign in from the page: vendor page in the node's Chromium and on its VNC display, CLI callback listening on the node; Cancel (AC-002 up to the vendor page)
+Pass D4 No sign-in URL, parameter value or vendor sign-in host in the page, its storage, its GraphQL responses, the node server output or AutoByteus data; found in the node Chromium profile (control) (AC-009)
+Result: Pass
+
+distDiff (3 expected files):
+   Dateien <image>/dist/api/graphql/types/agent-runtimes.js und <worktree>/autobyteus-server-ts/dist/api/graphql/types/agent-runtimes.js sind verschieden.
+   Dateien <image>/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js und <worktree>/autobyteus-server-ts/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js sind verschieden.
+   Nur in <worktree>/autobyteus-server-ts/dist/runtime-management/agent-runtimes: sign-in-browser-availability.js.
+nodeFact {"agentRuntimeSignInBrowserAvailable": true}
+D2 tab https://auth.openai.com/oauth/authorize?<query redacted> | redirect_uri http://127.0.0.1:1455/auth/callback | cliListening ['LISTEN 0 128 127.0.0.1:1455 0.0.0.0:* users:(("codex",pid=1101,fd=11))'] | callbackAnswers {'1455': '404'} | duringScan hits []
+D3 tab https://accounts.x.ai/sign-in?<query redacted> | redirect_uri None | cliListening ['LISTEN 0 128 127.0.0.1:34707 0.0.0.0:* users:(("grok",pid=1263,fd=15))'] | callbackAnswers {'34707': '404'} | duringScan hits []
+D4 {"markers": 10, "graphqlResponses": 389, "nodeOutputBytes": 48231, "dataFiles": 39, "hits": [], "dataHits": [], "controlHits": 3}
+browserErrors []
+cleanup {"browser": "closed", "frontend": "terminated:119626", "container": "removed"}
+exit 0

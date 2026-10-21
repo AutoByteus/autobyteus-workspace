@@ -6,7 +6,10 @@
 // sources are answered inside the backend by `fixtures/agent-runtimes-vendor-sources.mjs`. No network, no account.
 // Cases: page open with one source failing and one slow, the table/stacked switch at the list's width (SR-012) at
 // 1440/1280/1024/739/390 px, Update blocked by a running agent, Update success and failure, Sign in with Cancel and
-// completion, zh-CN, a remote node window, a node that can't be read, and a secret scan. Every case records Pass/Fail
+// completion, zh-CN, a remote node window on a node without a desktop browser, a node that can't be read, and a
+// secret scan. Ticket remote-node-runtime-sign-in adds a second backend that reports a desktop browser (`BROWSER` set,
+// as on a Docker node) for a remote node window that signs in there (ARP-11, ARP-12). Every case records Pass/Fail
+// (ARP-08: Not applicable on macOS/Windows, where every node has a desktop browser)
 // in <output-dir>/result.json with screenshots; owned processes and the temp root are always removed.
 //
 // Prerequisite: a current server build (`pnpm -C autobyteus-server-ts build`, or drop --skip-server-build).
@@ -114,7 +117,9 @@ const createFakes = async ownedRoot => {
 };
 
 // ---------------------------------------------------------------- backend node
-const createNode = async (ownedRoot, fakes) => {
+// `desktop`: the node's server reports a desktop browser for its runtimes' logins (`BROWSER` set, as the Docker image
+// does; the scripted logins never run it). Otherwise BROWSER/DISPLAY/WAYLAND_DISPLAY are empty: a headless Linux node.
+const createNode = async (ownedRoot, fakes, { name = 'backend', desktop = false, grokInstalled = false } = {}) => {
   const dataRoot = path.join(ownedRoot, 'node');
   const databasePath = path.join(dataRoot, 'db', 'node.db');
   await fs.mkdir(path.dirname(databasePath), { recursive: true });
@@ -123,20 +128,20 @@ const createNode = async (ownedRoot, fakes) => {
   const url = `http://127.0.0.1:${port}`;
   const databaseUrl = pathToFileURL(databasePath).href;
   const env = {
-    ...scrubbedEnv(), HOME: path.join(dataRoot, 'home'), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '',
+    ...scrubbedEnv(), BROWSER: desktop ? path.join(fakes.binDir, 'node-desktop-browser') : '', DISPLAY: '', WAYLAND_DISPLAY: '', HOME: path.join(dataRoot, 'home'), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '',
     APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     CODEX_APP_SERVER_COMMAND: path.join(fakes.binDir, 'codex'), CLAUDE_CODE_EXECUTABLE_PATH: path.join(fakes.binDir, 'claude'),
-    ANTIGRAVITY_CLI_COMMAND: path.join(fakes.binDir, 'agy'), GROK_BUILD_COMMAND: path.join(ownedRoot, 'not-installed', 'grok'),
+    ANTIGRAVITY_CLI_COMMAND: path.join(fakes.binDir, 'agy'), GROK_BUILD_COMMAND: grokInstalled ? path.join(fakes.binDir, 'grok') : path.join(ownedRoot, 'not-installed', 'grok'),
     FAKE_RUNTIME_STATE_DIR: fakes.stateDir, CLAUDE_CONFIG_DIR: path.join(fakes.stateDir, 'claude-config'), FAKE_VENDOR_SOURCES_FILE: fakes.sourcesFile,
   };
   await fs.writeFile(path.join(dataRoot, '.env'), ['APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`].join('\n') + '\n');
-  await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], root, env, path.join(outputDir, 'migrate.log'));
-  return { dataRoot, port, url, env, process: null };
+  await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], root, env, path.join(outputDir, `${name}-migrate.log`));
+  return { name, dataRoot, port, url, env, process: null };
 };
 const startNode = async node => {
   node.process = start(process.execPath, ['--import', pathToFileURL(sourcesStub).href, path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
-    serverDir, node.env, path.join(outputDir, 'backend.log'));
+    serverDir, node.env, path.join(outputDir, `${node.name}.log`));
   await waitFor('backend health', async () => {
     if (exited(node.process)) throw new Error(`backend exited ${node.process.exitCode}/${node.process.signalCode}`);
     return fetch(`${node.url}/rest/health`).then(response => response.ok).catch(() => false);
@@ -168,11 +173,20 @@ const kase = async (id, title, body) => {
     await body();
     evidence.cases[id] = { title, result: 'Pass', ms: Date.now() - started };
   } catch (error) {
-    evidence.cases[id] = { title, result: 'Fail', ms: Date.now() - started, error: error.message };
-    await shot(`${id}-failure`).catch(() => undefined);
+    if (error.notApplicable) evidence.cases[id] = { title, result: 'Not applicable', ms: Date.now() - started, error: error.message };
+    else {
+      evidence.cases[id] = { title, result: 'Fail', ms: Date.now() - started, error: error.message };
+      await shot(`${id}-failure`).catch(() => undefined);
+    }
   }
   console.log(`${evidence.cases[id].result} ${id} ${title}${evidence.cases[id].error ? `: ${evidence.cases[id].error}` : ''}`);
 };
+const notApplicable = reason => { throw Object.assign(new Error(reason), { notApplicable: true }); };
+/** Binds this window to another node, as a remote node's window is bound (the node id is not the embedded one). */
+const bindWindow = (nodeId, url) => page.evaluate(([id, base]) => {
+  const pinia = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia;
+  pinia._s.get('windowNodeContext').bindNodeContext(id, base);
+}, [nodeId, url]);
 /** Layout facts of the list at the current window width. */
 const layout = () => page.evaluate(() => {
   const list = document.querySelector('[data-testid="agent-runtimes-list"]');
@@ -205,7 +219,7 @@ const layout = () => page.evaluate(() => {
   };
 });
 
-let ownedRoot, fakes, node, frontend, browser;
+let ownedRoot, fakes, node, desktopFakes, desktopNode, frontend, browser;
 try {
   await fs.rm(outputDir, { recursive: true, force: true });
   await fs.mkdir(outputDir, { recursive: true });
@@ -214,9 +228,16 @@ try {
   fakes = await createFakes(ownedRoot);
   node = await createNode(ownedRoot, fakes);
   await startNode(node);
+  // A second node with a desktop browser, its own scripted runtimes (Grok installed) and plain vendor sources.
+  desktopFakes = await createFakes(path.join(ownedRoot, 'desktop'));
+  desktopFakes.sources.claude = { status: 200, body: '2.1.304\n' };
+  desktopFakes.sources.antigravity = { status: 200, body: JSON.stringify({ version: '1.4.3' }) };
+  await desktopFakes.writeSources();
+  desktopNode = await createNode(path.join(ownedRoot, 'desktop'), desktopFakes, { name: 'desktop-backend', desktop: true, grokInstalled: true });
+  await startNode(desktopNode);
   const frontendPort = await choosePort();
   const frontendUrl = `http://127.0.0.1:${frontendPort}`;
-  evidence.isolation = { tempRoot: ownedRoot, backend: node.url, frontend: frontendUrl };
+  evidence.isolation = { tempRoot: ownedRoot, backend: node.url, desktopBackend: desktopNode.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: node.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
@@ -405,16 +426,15 @@ try {
     await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   });
 
-  await kase('ARP-08', 'A remote node window: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019)', async () => {
+  await kase('ARP-08', 'A remote node window on a node without a desktop browser: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019; remote-node-runtime-sign-in AC-005)', async () => {
+    if (process.platform === 'darwin' || process.platform === 'win32') notApplicable(`a ${process.platform} node always has a desktop browser`);
+    assert((await gql(node, '{agentRuntimeSignInBrowserAvailable}')).agentRuntimeSignInBrowserAvailable === false, 'the headless node reports no sign-in browser');
     await open();
     await waitFor('rows', async () => (await rowState(AGY)) === 'up_to_date', 20000);
     const ownStates = {};
     for (const runtime of [CODEX, CLAUDE, AGY, GROK]) ownStates[runtime] = await rowState(runtime);
     // Bind this window to a node other than the embedded one (same backend), as a remote node's window is bound.
-    await page.evaluate((url) => {
-      const pinia = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia;
-      pinia._s.get('windowNodeContext').bindNodeContext('remote-probe-node', url);
-    }, node.url);
+    await bindWindow('remote-probe-node', node.url);
     await waitFor('remote note', async () => present('agent-runtimes-remote-note'), 20000);
     await waitFor('rows re-read', async () => (await rowState(AGY)) === 'up_to_date', 20000);
     assert(await text('agent-runtimes-remote-note') === "Status only. Update these runtimes on that node's computer.", 'remote note copy');
@@ -445,23 +465,138 @@ try {
     }, node.url);
   });
 
+  const REMOTE_DESKTOP_NOTE = "Sign-in opens the browser on that node; finish it in the VNC Viewer. Update these runtimes on that node's computer.";
+  const remoteDesktopRowsRead = async () => {
+    await waitFor('remote desktop note', async () => (await present('agent-runtimes-remote-note')) && (await text('agent-runtimes-remote-note')) === REMOTE_DESKTOP_NOTE, 20000);
+    await waitFor('desktop node rows read', async () => (await rowState(AGY)) === 'up_to_date' && (await text(`runtime-${GROK}-signin`)) === 'Not signed in', 30000);
+  };
+
+  await kase('ARP-11', "A remote node window on a node with a desktop browser: the VNC note, Sign in for Codex and Grok, the command-line hint \"on that node\", no Update or blocked line even with a running agent; Sign in runs on that node with the remote waiting text and Cancel, then ends Signed in, announced; rebinding to a headless node is status only (remote-node-runtime-sign-in AC-001…AC-005, REQ-005)", async () => {
+    assert((await gql(desktopNode, '{agentRuntimeSignInBrowserAvailable}')).agentRuntimeSignInBrowserAvailable === true, 'the desktop node reports a sign-in browser');
+    await open();
+    await bindWindow('remote-desktop-probe-node', desktopNode.url);
+    await remoteDesktopRowsRead();
+    assert(/·\s*Remote node$/.test(await text('agent-runtimes-node')), `node line ${await text('agent-runtimes-node')}`);
+    for (const [runtime, name] of [[CODEX, 'Codex'], [GROK, 'Grok']]) {
+      assert(await text(`runtime-${runtime}-signin`) === 'Not signed in', `${runtime} account`);
+      assert(await text(`runtime-${runtime}-signin-button`) === 'Sign in', `${runtime} Sign in`);
+      assert(await locate(`runtime-${runtime}-signin-button`).getAttribute('aria-label') === `Sign in ${name}`, `${runtime} label`);
+      assert(!(await present(`runtime-${runtime}-signin-hint`)), `${runtime} has no command-line hint`);
+    }
+    for (const runtime of [CLAUDE, AGY]) {
+      assert(await text(`runtime-${runtime}-signin-hint`) === 'Sign in from its command line on that node.', `${runtime} hint ${await text(`runtime-${runtime}-signin-hint`)}`);
+      assert(!(await present(`runtime-${runtime}-signin-button`)), `${runtime} has no Sign in button`);
+    }
+    assert(await text(`runtime-${CODEX}-status`) === 'Update available (version 0.163.0)', 'status shown, update not offered');
+    const actionButtons = async () => page.locator('[data-testid$="-actions"] button').evaluateAll(buttons => buttons.map(button => button.getAttribute('data-testid')));
+    assert(JSON.stringify(await actionButtons()) === JSON.stringify([`runtime-${CODEX}-signin-button`, `runtime-${GROK}-signin-button`]), `actions ${JSON.stringify(await actionButtons())}`);
+    await shot('ARP-11a-remote-desktop-node');
+
+    // A running Codex agent on that node: the page reads the count, and still offers no Update and no blocked line (REQ-005).
+    const agentId = (await gql(desktopNode, 'mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
+      { i: { name: 'Probe agent', role: 'assistant', description: 'REQ-005 probe', instructions: 'Help.', toolNames: [] } })).createAgentDefinition.id;
+    const created = (await gql(desktopNode, 'mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}',
+      { i: { agentDefinitionId: agentId, workspaceRootPath: path.join(desktopNode.dataRoot, 'workspace'), llmModelIdentifier: 'gpt-5.6-luna', llmConfig: null, autoExecuteTools: true, runtimeKind: CODEX } })).createAgentRun;
+    assert(created.success, created.message);
+    const seen = graphqlResponses.length;
+    const readsRunningAgent = (body) => {
+      try {
+        const data = JSON.parse(body).data;
+        return data?.agentRuntimeSignInBrowserAvailable === true && data.agentRuntimes?.some(row => row.runtimeKind === CODEX && row.runningAgentCount === 1);
+      } catch { return false; }
+    };
+    await waitFor('the page reads the running agent', async () => graphqlResponses.slice(seen).some(readsRunningAgent), 25000);
+    await sleep(300);
+    for (const runtime of [CODEX, CLAUDE, AGY, GROK]) {
+      for (const suffix of ['update', 'blocked']) assert(!(await present(`runtime-${runtime}-${suffix}`)), `${runtime}-${suffix} shown on a remote node`);
+    }
+    const terminated = (await gql(desktopNode, 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: created.runId })).terminateAgentRun;
+    assert(terminated.success, terminated.message);
+
+    // Sign in runs on the bound node: its scripted login starts there.
+    await click(`runtime-${CODEX}-signin-button`);
+    await waitState(CODEX, 'sign_in_running');
+    assert(await text(`runtime-${CODEX}-signin-button`) === 'Signing in…', 'signing in label');
+    assert(await locate(`runtime-${CODEX}-signin-button`).isDisabled(), 'button disabled while signing in');
+    assert(await text(`runtime-${CODEX}-signin-waiting`) === 'Finish signing in to Codex in the browser on that node (VNC Viewer).', `waiting copy ${await text(`runtime-${CODEX}-signin-waiting`)}`);
+    assert((await locate(`runtime-${CODEX}-signin-waiting`).locator('xpath=..').getAttribute('role')) === 'status', 'waiting line is a status');
+    assert(existsSync(path.join(desktopFakes.stateDir, 'codex-login.pid')), "the login started on the desktop node");
+    assert((await apiRows(desktopNode))[CODEX].operation?.kind === 'SIGN_IN', 'the desktop node runs the sign-in');
+    assert((await apiRows(node))[CODEX].operation === null, 'the other node runs nothing');
+    await shot('ARP-11b-remote-desktop-signing-in');
+    await click(`runtime-${CODEX}-signin-cancel`);
+    await waitFor('back to Sign in', async () => (await present(`runtime-${CODEX}-signin-button`)) && (await text(`runtime-${CODEX}-signin-button`)) === 'Sign in', 15000);
+    assert(!(await present(`runtime-${CODEX}-signin-outcome`)), 'no outcome after cancel');
+
+    await click(`runtime-${CODEX}-signin-button`);
+    await waitState(CODEX, 'sign_in_running');
+    await desktopFakes.set('codex-login', 'complete');
+    await waitFor('signed in', async () => (await text(`runtime-${CODEX}-signin`)) === 'Signed in', 20000);
+    assert(!(await present(`runtime-${CODEX}-signin-button`)), 'no Sign in when signed in');
+    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex is signed in.'));
+    await shot('ARP-11c-remote-desktop-codex-signed-in');
+
+    await click(`runtime-${GROK}-signin-button`);
+    await waitState(GROK, 'sign_in_running');
+    assert(await text(`runtime-${GROK}-signin-waiting`) === 'Finish signing in to Grok in the browser on that node (VNC Viewer).', 'grok waiting copy');
+    await click(`runtime-${GROK}-signin-cancel`);
+    await waitFor('grok back to Sign in', async () => (await present(`runtime-${GROK}-signin-button`)) && (await text(`runtime-${GROK}-signin-button`)) === 'Sign in', 15000);
+
+    // The same window bound to a node without a desktop browser: status only, nothing of the previous node kept.
+    if (process.platform !== 'darwin' && process.platform !== 'win32') {
+      await bindWindow('remote-probe-node', node.url);
+      await waitFor('status-only note', async () => (await present('agent-runtimes-remote-note')) && (await text('agent-runtimes-remote-note')) === "Status only. Update these runtimes on that node's computer.", 20000);
+      await waitFor('rows re-read', async () => (await rowState(AGY)) === 'up_to_date', 20000);
+      assert(await page.locator('[data-testid$="-actions"] button').count() === 0, 'no action buttons after rebinding');
+      assert(await page.locator('[data-testid$="-signin-hint"]').count() === 0, 'no hints after rebinding');
+      await shot('ARP-11d-rebound-to-headless-node');
+    }
+  });
+
+  await kase('ARP-12', 'zh-CN on a remote node with a desktop browser: note, hint and waiting text in Chinese at 1440 px (table) and 739 px (stacked)', async () => {
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+    await open();
+    await bindWindow('remote-desktop-probe-node', desktopNode.url);
+    await waitFor('zh note', async () => (await present('agent-runtimes-remote-note')) && (await text('agent-runtimes-remote-note')) === '登录会在该节点的浏览器中打开，请在 VNC 查看器中完成。请在该节点所在的电脑上更新这些运行时。', 20000);
+    await waitFor('rows', async () => (await rowState(AGY)) === 'up_to_date', 30000);
+    for (const runtime of [CLAUDE, AGY]) assert(await text(`runtime-${runtime}-signin-hint`) === '请在该节点的命令行中登录。', `zh hint ${runtime}`);
+    assert(await text(`runtime-${GROK}-signin-button`) === '登录', 'zh Sign in');
+    await click(`runtime-${GROK}-signin-button`);
+    await waitState(GROK, 'sign_in_running');
+    assert(await text(`runtime-${GROK}-signin-waiting`) === '请在该节点的浏览器中完成 Grok 的登录（VNC 查看器）。', `zh waiting ${await text(`runtime-${GROK}-signin-waiting`)}`);
+    assert((await layout()).columnsDisplay === 'grid', 'zh table at 1440');
+    await shot('ARP-12a-zh-CN-remote-desktop-1440');
+    await page.setViewportSize({ width: 739, height: 1100 });
+    await sleep(400);
+    const facts = await layout();
+    assert(facts.columnsDisplay === 'none' && !facts.pageOverflowX && !facts.listOverflowX && facts.overlaps.length === 0, `zh 739: ${JSON.stringify(facts)}`);
+    await shot('ARP-12b-zh-CN-remote-desktop-739-stacked');
+    await click(`runtime-${GROK}-signin-cancel`);
+    await waitFor('grok back to Sign in', async () => (await present(`runtime-${GROK}-signin-button`)) && (await text(`runtime-${GROK}-signin-button`)) === '登录', 15000);
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  });
+
   await kase('ARP-10', 'No sign-in URL, code or account detail in the page, its GraphQL responses or the backend logs (AC-011)', async () => {
-    const secrets = await fakes.secrets();
-    assert(secrets.length >= 2, `the fakes printed ${secrets.length} secrets`);
+    const secrets = [...await fakes.secrets(), ...await desktopFakes.secrets()];
+    assert(secrets.length >= 4, `the fakes printed ${secrets.length} secrets`);
     const markers = [...secrets, 'FAKE-SECRET'];
     const logFiles = [];
     const walk = async dir => { for (const entry of await fs.readdir(dir, { withFileTypes: true })) { const full = path.join(dir, entry.name); if (entry.isDirectory()) await walk(full); else logFiles.push(full); } };
     await walk(node.dataRoot);
-    const corpora = { page: await page.content(), graphqlResponses: graphqlResponses.join('\n'), backendStdout: await fs.readFile(path.join(outputDir, 'backend.log'), 'utf8') };
-    for (const file of logFiles) corpora[path.relative(node.dataRoot, file)] = await fs.readFile(file, 'latin1');
+    await walk(desktopNode.dataRoot);
+    const corpora = { page: await page.content(), graphqlResponses: graphqlResponses.join('\n') };
+    for (const name of ['backend', 'desktop-backend']) corpora[`${name}Stdout`] = await fs.readFile(path.join(outputDir, `${name}.log`), 'utf8');
+    for (const file of logFiles) corpora[path.relative(ownedRoot, file)] = await fs.readFile(file, 'latin1');
     const hits = Object.entries(corpora).flatMap(([where, content]) => markers.filter(marker => content.includes(marker)).map(marker => `${where}: ${marker}`));
     evidence.cases['ARP-10-scan'] = { markers: markers.length, graphqlResponses: graphqlResponses.length, dataFiles: logFiles.length, hits };
     assert(graphqlResponses.length > 20, 'responses captured');
+    assert(graphqlResponses.some(body => body.includes('"agentRuntimeSignInBrowserAvailable":true')), 'responses from the desktop node captured');
     assert(hits.length === 0, `secrets found: ${hits.join('; ')}`);
   });
 
   evidence.apiAtEnd = await apiRows(node);
-  evidence.result = Object.values(evidence.cases).filter(entry => entry && entry.result).every(entry => entry.result === 'Pass') && !evidence.browserErrors.length ? 'Pass' : 'Fail';
+  evidence.result = Object.values(evidence.cases).filter(entry => entry && entry.result).every(entry => entry.result === 'Pass' || entry.result === 'Not applicable') && !evidence.browserErrors.length ? 'Pass' : 'Fail';
 } catch (error) {
   evidence.error = error.stack || error.message;
   console.error(error);
@@ -469,6 +604,7 @@ try {
   evidence.cleanup.browser = browser ? await browser.close().then(() => 'closed', e => e.message) : 'not-started';
   evidence.cleanup.frontend = await stop(frontend).catch(e => e.message);
   evidence.cleanup.backend = await stop(node?.process).catch(e => e.message);
+  evidence.cleanup.desktopBackend = await stop(desktopNode?.process).catch(e => e.message);
   if (ownedRoot) evidence.cleanup.tempRoot = await fs.rm(ownedRoot, { recursive: true, force: true }).then(() => 'removed', e => e.message);
   evidence.finishedAt = new Date().toISOString();
   await fs.mkdir(outputDir, { recursive: true });

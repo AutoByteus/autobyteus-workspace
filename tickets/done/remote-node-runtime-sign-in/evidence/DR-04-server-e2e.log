@@ -1,0 +1,556 @@
+# DR-04-server-e2e — delivery post-integration rerun on ec4dcb177 (ticket branch + origin/personal 9e7a45880), Linux 7.0, node v22.23.2
+
+ RUN  v4.1.12 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:142126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Initialized server settings service with 20 predefined settings
+stdout | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)
+Platform detection: Windows=false
+App root directory: /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts
+App data directory: /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts
+Custom app data directory set to: /tmp/agent-runtimes-e2e-21Giqo/data
+Updated config file path to /tmp/agent-runtimes-e2e-21Giqo/data/.env
+Loading environment from: /tmp/agent-runtimes-e2e-21Giqo/data/.env
+◇ injected env (2) from ../../../../../../../tmp/agent-runtimes-e2e-21Giqo/data/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/agent-runtimes-e2e-21Giqo/data
+DB DIRECTORY: /tmp/agent-runtimes-e2e-21Giqo/data/db
+LOGS DIRECTORY: /tmp/agent-runtimes-e2e-21Giqo/data/logs
+DOWNLOAD DIRECTORY: /tmp/agent-runtimes-e2e-21Giqo/data/download
+MEMORY DIRECTORY: /tmp/agent-runtimes-e2e-21Giqo/data/memory
+============================================================
+
+stdout | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/agent-runtimes-e2e-21Giqo/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/agent-runtimes-e2e-21Giqo/data/temp_workspace.
+Initialized TempWorkspace at /tmp/agent-runtimes-e2e-21Giqo/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Task Delegation Tools
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_available_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Browser Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792584107752,"pid":142126,"hostname":"ryan-ai-linux","msg":"Server listening at http://127.0.0.1:44205"}
+{"level":30,"time":1792584107792,"pid":142126,"hostname":"ryan-ai-linux","msg":"Server listening at http://127.0.0.1:40773"}
+{"level":30,"time":1792584107815,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.084502995014191,"msg":"http request completed"}
+{"level":30,"time":1792584107824,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0723309963941574,"msg":"http request completed"}
+{"level":30,"time":1792584107912,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":86.7749979943037,"msg":"http request completed"}
+{"level":30,"time":1792584107918,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.430255003273487,"msg":"http request completed"}
+{"level":30,"time":1792584107924,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.116627998650074,"msg":"http request completed"}
+{"level":30,"time":1792584107929,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9279720038175583,"msg":"http request completed"}
+{"level":30,"time":1792584107983,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3507099971175194,"msg":"http request completed"}
+{"level":30,"time":1792584107986,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7090330049395561,"msg":"http request completed"}
+{"level":30,"time":1792584107992,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5510689988732338,"msg":"http request completed"}
+{"level":30,"time":1792584107996,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7182480022311211,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002) 204ms
+{"level":30,"time":1792584108000,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.78507000207901,"msg":"http request completed"}
+{"level":30,"time":1792584108047,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":44.038773998618126,"msg":"http request completed"}
+{"level":30,"time":1792584108051,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.015833005309105,"msg":"http request completed"}
+{"level":30,"time":1792584108057,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.873041994869709,"msg":"http request completed"}
+{"level":30,"time":1792584108110,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4737600013613701,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1) 113ms
+{"level":30,"time":1792584108118,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.939653001725674,"msg":"http request completed"}
+{"level":30,"time":1792584108122,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7296220064163208,"msg":"http request completed"}
+{"level":30,"time":1792584108125,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5642959997057915,"msg":"http request completed"}
+{"level":30,"time":1792584108179,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8640170022845268,"msg":"http request completed"}
+{"level":30,"time":1792584108184,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1043360009789467,"msg":"http request completed"}
+{"level":30,"time":1792584108240,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6911079958081245,"msg":"http request completed"}
+{"level":30,"time":1792584108297,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3935659974813461,"msg":"http request completed"}
+{"level":30,"time":1792584108353,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.6081739962100983,"msg":"http request completed"}
+{"level":30,"time":1792584108412,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1020589992403984,"msg":"http request completed"}
+{"level":30,"time":1792584108471,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.853463999927044,"msg":"http request completed"}
+{"level":30,"time":1792584108529,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1863179951906204,"msg":"http request completed"}
+{"level":30,"time":1792584108586,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.6316369995474815,"msg":"http request completed"}
+{"level":30,"time":1792584108643,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0871149972081184,"msg":"http request completed"}
+{"level":30,"time":1792584108701,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.859496995806694,"msg":"http request completed"}
+{"level":30,"time":1792584108761,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.00042000412941,"msg":"http request completed"}
+{"level":30,"time":1792584108820,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.6241130009293556,"msg":"http request completed"}
+{"level":30,"time":1792584108879,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2003099992871284,"msg":"http request completed"}
+{"level":30,"time":1792584108940,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.597270004451275,"msg":"http request completed"}
+{"level":30,"time":1792584108999,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.262185998260975,"msg":"http request completed"}
+{"level":30,"time":1792584109059,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.905969001352787,"msg":"http request completed"}
+{"level":30,"time":1792584109117,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-10","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5099669992923737,"msg":"http request completed"}
+{"level":30,"time":1792584109172,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-11","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7800449952483177,"msg":"http request completed"}
+{"level":30,"time":1792584109228,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-12","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5096970051527023,"msg":"http request completed"}
+{"level":30,"time":1792584109283,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-13","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6506029963493347,"msg":"http request completed"}
+{"level":30,"time":1792584109341,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-14","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0440299957990646,"msg":"http request completed"}
+{"level":30,"time":1792584109399,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-15","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0313640013337135,"msg":"http request completed"}
+{"level":30,"time":1792584109457,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-16","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1014740020036697,"msg":"http request completed"}
+{"level":30,"time":1792584109515,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-17","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.280250996351242,"msg":"http request completed"}
+{"level":30,"time":1792584109573,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-18","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.06123099476099,"msg":"http request completed"}
+{"level":30,"time":1792584109631,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-19","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1923150047659874,"msg":"http request completed"}
+{"level":30,"time":1792584109690,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0388979986310005,"msg":"http request completed"}
+{"level":30,"time":1792584109748,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.031268000602722,"msg":"http request completed"}
+{"level":30,"time":1792584109805,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.284458003938198,"msg":"http request completed"}
+{"level":30,"time":1792584109863,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.067113995552063,"msg":"http request completed"}
+{"level":30,"time":1792584109922,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4622490033507347,"msg":"http request completed"}
+{"level":30,"time":1792584109979,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9850820004940033,"msg":"http request completed"}
+{"level":30,"time":1792584110038,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.9339450001716614,"msg":"http request completed"}
+{"level":30,"time":1792584110096,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.392696000635624,"msg":"http request completed"}
+{"level":30,"time":1792584110154,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.599964000284672,"msg":"http request completed"}
+{"level":30,"time":1792584110211,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.039181999862194,"msg":"http request completed"}
+{"level":30,"time":1792584110265,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7539249956607819,"msg":"http request completed"}
+{"level":30,"time":1792584110319,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5430070012807846,"msg":"http request completed"}
+{"level":30,"time":1792584110322,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4702030047774315,"msg":"http request completed"}
+{"level":30,"time":1792584110375,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.46980399638414383,"msg":"http request completed"}
+{"level":30,"time":1792584110422,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":44.89651599526405,"msg":"http request completed"}
+{"level":30,"time":1792584110426,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5286529958248138,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006) 2316ms
+{"level":30,"time":1792584110432,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.204415999352932,"msg":"http request completed"}
+{"level":30,"time":1792584110436,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8682669997215271,"msg":"http request completed"}
+{"level":30,"time":1792584110488,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5938280001282692,"msg":"http request completed"}
+{"level":30,"time":1792584110542,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1618449985980988,"msg":"http request completed"}
+{"level":30,"time":1792584110596,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4857260063290596,"msg":"http request completed"}
+{"level":30,"time":1792584110654,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8026299998164177,"msg":"http request completed"}
+{"level":30,"time":1792584110710,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9585959985852242,"msg":"http request completed"}
+{"level":30,"time":1792584110769,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8309200033545494,"msg":"http request completed"}
+{"level":30,"time":1792584110827,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.981114000082016,"msg":"http request completed"}
+{"level":30,"time":1792584110886,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-1z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.7237650007009506,"msg":"http request completed"}
+{"level":30,"time":1792584110945,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-20","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9401210024952888,"msg":"http request completed"}
+{"level":30,"time":1792584111004,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-21","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.805596999824047,"msg":"http request completed"}
+{"level":30,"time":1792584111062,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-22","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.3040300011634827,"msg":"http request completed"}
+{"level":30,"time":1792584111116,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-23","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6473580002784729,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) 691ms
+{"level":30,"time":1792584111123,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-24","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.3074619993567467,"msg":"http request completed"}
+{"level":30,"time":1792584111129,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-25","err":{"type":"GraphQLError","message":"This runtime is already updating or signing in.","stack":"GraphQLError: This runtime is already updating or signing in.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_BUSY"}},"msg":"This runtime is already updating or signing in."}
+{"level":30,"time":1792584111130,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-25","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.605085000395775,"msg":"http request completed"}
+{"level":30,"time":1792584111133,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-26","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.49660099297761917,"msg":"http request completed"}
+{"level":30,"time":1792584111187,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-27","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9385769963264465,"msg":"http request completed"}
+{"level":30,"time":1792584111243,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-28","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0276910066604614,"msg":"http request completed"}
+{"level":30,"time":1792584111302,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-29","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.400179997086525,"msg":"http request completed"}
+{"level":30,"time":1792584111360,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.008330002427101,"msg":"http request completed"}
+{"level":30,"time":1792584111418,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.307987004518509,"msg":"http request completed"}
+{"level":30,"time":1792584111475,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9946920052170753,"msg":"http request completed"}
+{"level":30,"time":1792584111533,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.098682001233101,"msg":"http request completed"}
+{"level":30,"time":1792584111589,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5939899981021881,"msg":"http request completed"}
+{"level":30,"time":1792584111647,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1365189999341965,"msg":"http request completed"}
+{"level":30,"time":1792584111706,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0127419978380203,"msg":"http request completed"}
+{"level":30,"time":1792584111764,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2188159972429276,"msg":"http request completed"}
+{"level":30,"time":1792584111823,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.945593997836113,"msg":"http request completed"}
+{"level":30,"time":1792584111883,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4833370000123978,"msg":"http request completed"}
+{"level":30,"time":1792584111943,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.210035003721714,"msg":"http request completed"}
+{"level":30,"time":1792584112001,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4601839929819107,"msg":"http request completed"}
+{"level":30,"time":1792584112060,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.999550998210907,"msg":"http request completed"}
+{"level":30,"time":1792584112118,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.254430003464222,"msg":"http request completed"}
+{"level":30,"time":1792584112176,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.942772999405861,"msg":"http request completed"}
+{"level":30,"time":1792584112234,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1001479998230934,"msg":"http request completed"}
+{"level":30,"time":1792584112293,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9609429985284805,"msg":"http request completed"}
+{"level":30,"time":1792584112351,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2247789949178696,"msg":"http request completed"}
+{"level":30,"time":1792584112409,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.957836002111435,"msg":"http request completed"}
+{"level":30,"time":1792584112466,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0759290009737015,"msg":"http request completed"}
+{"level":30,"time":1792584112524,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9432130008935928,"msg":"http request completed"}
+{"level":30,"time":1792584112582,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9341079965233803,"msg":"http request completed"}
+{"level":30,"time":1792584112641,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8976510018110275,"msg":"http request completed"}
+{"level":30,"time":1792584112695,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6180350035429001,"msg":"http request completed"}
+{"level":30,"time":1792584112752,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4343940019607544,"msg":"http request completed"}
+{"level":30,"time":1792584112767,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-2z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":9.652759999036789,"msg":"http request completed"}
+{"level":30,"time":1792584112771,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-30","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8077449947595596,"msg":"http request completed"}
+{"level":30,"time":1792584112774,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-31","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.49110399931669235,"msg":"http request completed"}
+{"level":30,"time":1792584112827,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-32","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5730160027742386,"msg":"http request completed"}
+{"level":30,"time":1792584112882,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-33","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2744809985160828,"msg":"http request completed"}
+{"level":30,"time":1792584112939,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-34","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.086015000939369,"msg":"http request completed"}
+{"level":30,"time":1792584112998,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-35","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0616349950432777,"msg":"http request completed"}
+{"level":30,"time":1792584113056,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-36","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.251123994588852,"msg":"http request completed"}
+{"level":30,"time":1792584113114,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-37","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1195840016007423,"msg":"http request completed"}
+{"level":30,"time":1792584113173,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-38","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2092249989509583,"msg":"http request completed"}
+{"level":30,"time":1792584113231,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-39","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9663959965109825,"msg":"http request completed"}
+{"level":30,"time":1792584113289,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1227359995245934,"msg":"http request completed"}
+{"level":30,"time":1792584113347,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9590819999575615,"msg":"http request completed"}
+{"level":30,"time":1792584113405,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9846859946846962,"msg":"http request completed"}
+{"level":30,"time":1792584113462,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9830550029873848,"msg":"http request completed"}
+{"level":30,"time":1792584113519,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.141712002456188,"msg":"http request completed"}
+{"level":30,"time":1792584113577,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0749129951000214,"msg":"http request completed"}
+{"level":30,"time":1792584113643,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.091297999024391,"msg":"http request completed"}
+{"level":30,"time":1792584113697,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5999609977006912,"msg":"http request completed"}
+{"level":30,"time":1792584113750,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.511015996336937,"msg":"http request completed"}
+{"level":30,"time":1792584113806,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9699579998850822,"msg":"http request completed"}
+{"level":30,"time":1792584113864,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.950585998594761,"msg":"http request completed"}
+{"level":30,"time":1792584113923,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.586200997233391,"msg":"http request completed"}
+{"level":30,"time":1792584113980,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8928340002894402,"msg":"http request completed"}
+{"level":30,"time":1792584114038,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8165180012583733,"msg":"http request completed"}
+{"level":30,"time":1792584114095,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8168250024318695,"msg":"http request completed"}
+{"level":30,"time":1792584114153,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8609229996800423,"msg":"http request completed"}
+{"level":30,"time":1792584114211,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9227460026741028,"msg":"http request completed"}
+{"level":30,"time":1792584114270,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.9966510012745857,"msg":"http request completed"}
+{"level":30,"time":1792584114325,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5769189968705177,"msg":"http request completed"}
+{"level":30,"time":1792584114378,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5075550004839897,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003) 3261ms
+{"level":30,"time":1792584114381,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3u","err":{"type":"GraphQLError","message":"This runtime is not installed.","stack":"GraphQLError: This runtime is not installed.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_NOT_INSTALLED"}},"msg":"This runtime is not installed."}
+{"level":30,"time":1792584114381,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8211809992790222,"msg":"http request completed"}
+{"level":30,"time":1792584114387,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3v","err":{"type":"GraphQLError","message":"This runtime is not installed.","stack":"GraphQLError: This runtime is not installed.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_NOT_INSTALLED"}},"msg":"This runtime is not installed."}
+{"level":30,"time":1792584114388,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.4808999970555305,"msg":"http request completed"}
+{"level":30,"time":1792584114395,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3w","err":{"type":"GraphQLError","message":"Sign in from this runtime's command line.","stack":"GraphQLError: Sign in from this runtime's command line.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_SIGN_IN_UNSUPPORTED"}},"msg":"Sign in from this runtime's command line."}
+{"level":30,"time":1792584114396,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.849169999361038,"msg":"http request completed"}
+{"level":30,"time":1792584114403,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3x","err":{"type":"GraphQLError","message":"Sign in from this runtime's command line.","stack":"GraphQLError: Sign in from this runtime's command line.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_SIGN_IN_UNSUPPORTED"}},"msg":"Sign in from this runtime's command line."}
+{"level":30,"time":1792584114404,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.61073799431324,"msg":"http request completed"}
+{"level":30,"time":1792584114409,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3y","err":{"type":"GraphQLError","message":"Unknown agent runtime 'autobyteus'.","stack":"GraphQLError: Unknown agent runtime 'autobyteus'.\n    at requireAgentRuntimeKind (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:113:11)\n    at /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:78\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:121:18)\n    at AgentRuntimesResolver.updateAgentRuntime (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_UNKNOWN"}},"msg":"Unknown agent runtime 'autobyteus'."}
+{"level":30,"time":1792584114410,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8232940062880516,"msg":"http request completed"}
+{"level":30,"time":1792584114415,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3z","err":{"type":"GraphQLError","message":"Unknown agent runtime 'no_such_runtime'.","stack":"GraphQLError: Unknown agent runtime 'no_such_runtime'.\n    at requireAgentRuntimeKind (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:113:11)\n    at /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:78\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:121:18)\n    at AgentRuntimesResolver.updateAgentRuntime (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_UNKNOWN"}},"msg":"Unknown agent runtime 'no_such_runtime'."}
+{"level":30,"time":1792584114415,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-3z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8985369950532913,"msg":"http request completed"}
+{"level":30,"time":1792584114428,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-40","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.1465310007333755,"msg":"http request completed"}
+{"level":30,"time":1792584114483,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-41","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8951569944620132,"msg":"http request completed"}
+{"level":30,"time":1792584114487,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-42","err":{"type":"GraphQLError","message":"This runtime is already updating or signing in.","stack":"GraphQLError: This runtime is already updating or signing in.\n    at withRuntimeErrors (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:123:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:151:11)\n    at file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_BUSY"}},"msg":"This runtime is already updating or signing in."}
+{"level":30,"time":1792584114488,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-42","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3356239944696426,"msg":"http request completed"}
+{"level":30,"time":1792584114491,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-43","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6616070047020912,"msg":"http request completed"}
+{"level":30,"time":1792584114547,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-44","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.839138999581337,"msg":"http request completed"}
+{"level":30,"time":1792584114606,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-45","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.064059004187584,"msg":"http request completed"}
+{"level":30,"time":1792584114661,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-46","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4909610003232956,"msg":"http request completed"}
+{"level":30,"time":1792584114715,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-47","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6798969954252243,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-06 refuses what the page never offers, with codes and safe messages 38ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011) 298ms
+{"level":30,"time":1792584114785,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-48","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":66.09451600164175,"msg":"http request completed"}
+{"level":30,"time":1792584114788,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-49","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6750809997320175,"msg":"http request completed"}
+{"level":30,"time":1792584114841,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4390750005841255,"msg":"http request completed"}
+{"level":30,"time":1792584114846,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.9607380032539368,"msg":"http request completed"}
+{"level":30,"time":1792584114902,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.154018998146057,"msg":"http request completed"}
+{"level":30,"time":1792584114906,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5120079964399338,"msg":"http request completed"}
+{"level":30,"time":1792584114909,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3608440011739731,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-08 Cancel stops the login process and returns the row to Sign in (AC-007 cancel, QR-003) 194ms
+{"level":30,"time":1792584114969,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":57.78083399683237,"msg":"http request completed"}
+{"level":30,"time":1792584114974,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.752643994987011,"msg":"http request completed"}
+{"level":30,"time":1792584115027,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.537762001156807,"msg":"http request completed"}
+{"level":30,"time":1792584115033,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.5066469982266426,"msg":"http request completed"}
+{"level":30,"time":1792584115087,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6522319987416267,"msg":"http request completed"}
+{"level":30,"time":1792584115142,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2368250042200089,"msg":"http request completed"}
+{"level":30,"time":1792584115199,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.884670004248619,"msg":"http request completed"}
+{"level":30,"time":1792584115258,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9879830032587051,"msg":"http request completed"}
+{"level":30,"time":1792584115316,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.992026001214981,"msg":"http request completed"}
+{"level":30,"time":1792584115375,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.806989997625351,"msg":"http request completed"}
+{"level":30,"time":1792584115433,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9465650022029877,"msg":"http request completed"}
+{"level":30,"time":1792584115490,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8818069994449615,"msg":"http request completed"}
+{"level":30,"time":1792584115547,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.946263998746872,"msg":"http request completed"}
+{"level":30,"time":1792584115606,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9924859926104546,"msg":"http request completed"}
+{"level":30,"time":1792584115663,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8271970003843307,"msg":"http request completed"}
+{"level":30,"time":1792584115721,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.2646889984607697,"msg":"http request completed"}
+{"level":30,"time":1792584115778,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.891968995332718,"msg":"http request completed"}
+{"level":30,"time":1792584115836,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.115855999290943,"msg":"http request completed"}
+{"level":30,"time":1792584115894,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9517529979348183,"msg":"http request completed"}
+{"level":30,"time":1792584115951,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.3589610010385513,"msg":"http request completed"}
+{"level":30,"time":1792584116009,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-4z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.847962997853756,"msg":"http request completed"}
+{"level":30,"time":1792584116074,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-50","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3260829970240593,"msg":"http request completed"}
+{"level":30,"time":1792584116131,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-51","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8491289988160133,"msg":"http request completed"}
+{"level":30,"time":1792584116189,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-52","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9271730035543442,"msg":"http request completed"}
+{"level":30,"time":1792584116246,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-53","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8135429993271828,"msg":"http request completed"}
+{"level":30,"time":1792584116303,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-54","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0028269961476326,"msg":"http request completed"}
+{"level":30,"time":1792584116360,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-55","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7069770023226738,"msg":"http request completed"}
+{"level":30,"time":1792584116417,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-56","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7245979979634285,"msg":"http request completed"}
+{"level":30,"time":1792584116473,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-57","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8497840017080307,"msg":"http request completed"}
+{"level":30,"time":1792584116530,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-58","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6938289999961853,"msg":"http request completed"}
+{"level":30,"time":1792584116588,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-59","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0624359995126724,"msg":"http request completed"}
+{"level":30,"time":1792584116645,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6646180003881454,"msg":"http request completed"}
+{"level":30,"time":1792584116705,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.954456999897957,"msg":"http request completed"}
+{"level":30,"time":1792584116760,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6380529999732971,"msg":"http request completed"}
+{"level":30,"time":1792584116816,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.852405995130539,"msg":"http request completed"}
+{"level":30,"time":1792584116874,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5846349969506264,"msg":"http request completed"}
+{"level":30,"time":1792584116932,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9358640015125275,"msg":"http request completed"}
+{"level":30,"time":1792584116991,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8294529989361763,"msg":"http request completed"}
+{"level":30,"time":1792584117048,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7459600046277046,"msg":"http request completed"}
+{"level":30,"time":1792584117107,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4817509949207306,"msg":"http request completed"}
+{"level":30,"time":1792584117164,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7632490023970604,"msg":"http request completed"}
+{"level":30,"time":1792584117221,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8863359987735748,"msg":"http request completed"}
+{"level":30,"time":1792584117278,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8507599979639053,"msg":"http request completed"}
+{"level":30,"time":1792584117336,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8669440001249313,"msg":"http request completed"}
+{"level":30,"time":1792584117393,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.621229000389576,"msg":"http request completed"}
+{"level":30,"time":1792584117449,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.635135993361473,"msg":"http request completed"}
+{"level":30,"time":1792584117509,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.455968998372555,"msg":"http request completed"}
+{"level":30,"time":1792584117566,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7850240021944046,"msg":"http request completed"}
+{"level":30,"time":1792584117626,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.135054998099804,"msg":"http request completed"}
+{"level":30,"time":1792584117681,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.304136000573635,"msg":"http request completed"}
+{"level":30,"time":1792584117739,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.32498200237751,"msg":"http request completed"}
+{"level":30,"time":1792584117796,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6659189984202385,"msg":"http request completed"}
+{"level":30,"time":1792584117853,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.597892999649048,"msg":"http request completed"}
+{"level":30,"time":1792584117912,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6794069930911064,"msg":"http request completed"}
+{"level":30,"time":1792584117971,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.7643780037760735,"msg":"http request completed"}
+{"level":30,"time":1792584118028,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7119249999523163,"msg":"http request completed"}
+{"level":30,"time":1792584118086,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-5z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.7486989945173264,"msg":"http request completed"}
+{"level":30,"time":1792584118144,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-60","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6865109950304031,"msg":"http request completed"}
+{"level":30,"time":1792584118202,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-61","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7578809931874275,"msg":"http request completed"}
+{"level":30,"time":1792584118259,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-62","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6939850002527237,"msg":"http request completed"}
+{"level":30,"time":1792584118316,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-63","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6897670030593872,"msg":"http request completed"}
+{"level":30,"time":1792584118374,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-64","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0177459940314293,"msg":"http request completed"}
+{"level":30,"time":1792584118430,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-65","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6748500019311905,"msg":"http request completed"}
+{"level":30,"time":1792584118488,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-66","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.744718998670578,"msg":"http request completed"}
+{"level":30,"time":1792584118546,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-67","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4528879970312119,"msg":"http request completed"}
+{"level":30,"time":1792584118604,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-68","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8129710033535957,"msg":"http request completed"}
+{"level":30,"time":1792584118663,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-69","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6961320042610168,"msg":"http request completed"}
+{"level":30,"time":1792584118722,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9809259995818138,"msg":"http request completed"}
+{"level":30,"time":1792584118781,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.493944004178047,"msg":"http request completed"}
+{"level":30,"time":1792584118837,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9030600041151047,"msg":"http request completed"}
+{"level":30,"time":1792584118894,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.080707997083664,"msg":"http request completed"}
+{"level":30,"time":1792584118949,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6166960000991821,"msg":"http request completed"}
+{"level":30,"time":1792584119004,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.232022002339363,"msg":"http request completed"}
+{"level":30,"time":1792584119062,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8746279999613762,"msg":"http request completed"}
+{"level":30,"time":1792584119117,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8440249934792519,"msg":"http request completed"}
+{"level":30,"time":1792584119170,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4865249991416931,"msg":"http request completed"}
+{"level":30,"time":1792584119225,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2532330006361008,"msg":"http request completed"}
+{"level":30,"time":1792584119280,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3344999998807907,"msg":"http request completed"}
+{"level":30,"time":1792584119337,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7794440016150475,"msg":"http request completed"}
+{"level":30,"time":1792584119392,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.346450999379158,"msg":"http request completed"}
+{"level":30,"time":1792584119449,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5080469995737076,"msg":"http request completed"}
+{"level":30,"time":1792584119507,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1393860056996346,"msg":"http request completed"}
+{"level":30,"time":1792584119564,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2098610028624535,"msg":"http request completed"}
+{"level":30,"time":1792584119625,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4926230013370514,"msg":"http request completed"}
+{"level":30,"time":1792584119684,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.000110000371933,"msg":"http request completed"}
+{"level":30,"time":1792584119751,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5614020004868507,"msg":"http request completed"}
+{"level":30,"time":1792584119809,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3768040016293526,"msg":"http request completed"}
+{"level":30,"time":1792584119866,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6575810015201569,"msg":"http request completed"}
+{"level":30,"time":1792584119923,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.1886930018663406,"msg":"http request completed"}
+{"level":30,"time":1792584119980,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3302580043673515,"msg":"http request completed"}
+{"level":30,"time":1792584120036,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3664000034332275,"msg":"http request completed"}
+{"level":30,"time":1792584120093,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.15744199603796,"msg":"http request completed"}
+{"level":30,"time":1792584120149,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-6z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3522860035300255,"msg":"http request completed"}
+{"level":30,"time":1792584120208,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-70","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.013353005051613,"msg":"http request completed"}
+{"level":30,"time":1792584120265,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-71","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.491627998650074,"msg":"http request completed"}
+{"level":30,"time":1792584120321,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-72","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0684040039777756,"msg":"http request completed"}
+{"level":30,"time":1792584120378,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-73","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2407609969377518,"msg":"http request completed"}
+{"level":30,"time":1792584120436,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-74","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.37848199903965,"msg":"http request completed"}
+{"level":30,"time":1792584120494,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-75","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.998879998922348,"msg":"http request completed"}
+{"level":30,"time":1792584120551,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-76","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.066779002547264,"msg":"http request completed"}
+{"level":30,"time":1792584120608,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-77","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2681290060281754,"msg":"http request completed"}
+{"level":30,"time":1792584120663,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-78","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0828009992837906,"msg":"http request completed"}
+{"level":30,"time":1792584120719,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-79","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6736899986863136,"msg":"http request completed"}
+{"level":30,"time":1792584120777,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.68036700040102,"msg":"http request completed"}
+{"level":30,"time":1792584120835,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.060639001429081,"msg":"http request completed"}
+{"level":30,"time":1792584120892,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.608593001961708,"msg":"http request completed"}
+{"level":30,"time":1792584120948,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2153669968247414,"msg":"http request completed"}
+{"level":30,"time":1792584121006,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.421252004802227,"msg":"http request completed"}
+{"level":30,"time":1792584121064,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8681749999523163,"msg":"http request completed"}
+{"level":30,"time":1792584121122,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.268528997898102,"msg":"http request completed"}
+{"level":30,"time":1792584121181,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.701283998787403,"msg":"http request completed"}
+{"level":30,"time":1792584121239,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.68112999945879,"msg":"http request completed"}
+{"level":30,"time":1792584121297,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7171730026602745,"msg":"http request completed"}
+{"level":30,"time":1792584121354,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.860205002129078,"msg":"http request completed"}
+{"level":30,"time":1792584121412,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6997340023517609,"msg":"http request completed"}
+{"level":30,"time":1792584121470,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.065608002245426,"msg":"http request completed"}
+{"level":30,"time":1792584121527,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6371169984340668,"msg":"http request completed"}
+{"level":30,"time":1792584121584,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8227040022611618,"msg":"http request completed"}
+{"level":30,"time":1792584121640,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7196150049567223,"msg":"http request completed"}
+{"level":30,"time":1792584121697,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7050509974360466,"msg":"http request completed"}
+{"level":30,"time":1792584121754,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.939740002155304,"msg":"http request completed"}
+{"level":30,"time":1792584121811,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7538440003991127,"msg":"http request completed"}
+{"level":30,"time":1792584121868,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6643629968166351,"msg":"http request completed"}
+{"level":30,"time":1792584121926,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.785021997988224,"msg":"http request completed"}
+{"level":30,"time":1792584121983,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.707167997956276,"msg":"http request completed"}
+{"level":30,"time":1792584122041,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7096480056643486,"msg":"http request completed"}
+{"level":30,"time":1792584122098,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8484089970588684,"msg":"http request completed"}
+{"level":30,"time":1792584122158,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.8042410016059875,"msg":"http request completed"}
+{"level":30,"time":1792584122214,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-7z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6166259944438934,"msg":"http request completed"}
+{"level":30,"time":1792584122270,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-80","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.951946996152401,"msg":"http request completed"}
+{"level":30,"time":1792584122328,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-81","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6083809956908226,"msg":"http request completed"}
+{"level":30,"time":1792584122385,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-82","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.687320999801159,"msg":"http request completed"}
+{"level":30,"time":1792584122442,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-83","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.785701997578144,"msg":"http request completed"}
+{"level":30,"time":1792584122500,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-84","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.043705001473427,"msg":"http request completed"}
+{"level":30,"time":1792584122558,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-85","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6940199956297874,"msg":"http request completed"}
+{"level":30,"time":1792584122616,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-86","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.207038000226021,"msg":"http request completed"}
+{"level":30,"time":1792584122673,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-87","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9340230002999306,"msg":"http request completed"}
+{"level":30,"time":1792584122730,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-88","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6995429992675781,"msg":"http request completed"}
+{"level":30,"time":1792584122788,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-89","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2971160039305687,"msg":"http request completed"}
+{"level":30,"time":1792584122846,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6698260009288788,"msg":"http request completed"}
+{"level":30,"time":1792584122904,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4712099954485893,"msg":"http request completed"}
+{"level":30,"time":1792584122962,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.144403003156185,"msg":"http request completed"}
+{"level":30,"time":1792584123019,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9068519994616508,"msg":"http request completed"}
+{"level":30,"time":1792584123078,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0671579986810684,"msg":"http request completed"}
+{"level":30,"time":1792584123136,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.838087998330593,"msg":"http request completed"}
+{"level":30,"time":1792584123194,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6250799968838692,"msg":"http request completed"}
+{"level":30,"time":1792584123251,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2848630025982857,"msg":"http request completed"}
+{"level":30,"time":1792584123309,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9444330036640167,"msg":"http request completed"}
+{"level":30,"time":1792584123367,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.6417229995131493,"msg":"http request completed"}
+{"level":30,"time":1792584123425,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6743139997124672,"msg":"http request completed"}
+{"level":30,"time":1792584123482,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6745639964938164,"msg":"http request completed"}
+{"level":30,"time":1792584123548,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6907839998602867,"msg":"http request completed"}
+{"level":30,"time":1792584123606,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.993707001209259,"msg":"http request completed"}
+{"level":30,"time":1792584123664,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6304479986429214,"msg":"http request completed"}
+{"level":30,"time":1792584123723,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2601389959454536,"msg":"http request completed"}
+{"level":30,"time":1792584123781,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7606280073523521,"msg":"http request completed"}
+{"level":30,"time":1792584123839,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.307566002011299,"msg":"http request completed"}
+{"level":30,"time":1792584123898,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8079400062561035,"msg":"http request completed"}
+{"level":30,"time":1792584123956,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8527099937200546,"msg":"http request completed"}
+{"level":30,"time":1792584124013,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6573439985513687,"msg":"http request completed"}
+{"level":30,"time":1792584124066,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4376180022954941,"msg":"http request completed"}
+{"level":30,"time":1792584124124,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.060191996395588,"msg":"http request completed"}
+{"level":30,"time":1792584124137,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.352018006145954,"msg":"http request completed"}
+{"level":30,"time":1792584124141,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7820589989423752,"msg":"http request completed"}
+{"level":30,"time":1792584124143,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-8z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39023400098085403,"msg":"http request completed"}
+{"level":30,"time":1792584124146,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-90","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3897999972105026,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003) 9237ms
+{"level":30,"time":1792584124208,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-91","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":60.37447400391102,"msg":"http request completed"}
+{"level":30,"time":1792584124211,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-92","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6477140039205551,"msg":"http request completed"}
+{"level":30,"time":1792584124264,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-93","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4196610003709793,"msg":"http request completed"}
+{"level":30,"time":1792584124266,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-94","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3912560045719147,"msg":"http request completed"}
+{"level":30,"time":1792584124320,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-95","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":50.81957799941301,"msg":"http request completed"}
+{"level":30,"time":1792584124323,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-96","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5547190010547638,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-10 Codex with no OpenAI sign-in required shows no account state (DEC-008); a signed-in Grok reads Signed in 120ms
+{"level":30,"time":1792584124376,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-97","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44193900376558304,"msg":"http request completed"}
+{"level":30,"time":1792584124378,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-98","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.28391599655151367,"msg":"http request completed"}
+[AR-11] scanned 332 API responses, 397 stdout/stderr writes, 5 data files; markers 6; hits 0
+{"level":30,"time":1792584124384,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-99","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8103620037436485,"msg":"http request completed"}
+{"level":30,"time":1792584124439,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":52.20108199864626,"msg":"http request completed"}
+{"level":30,"time":1792584124443,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8039820045232773,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-11 no sign-in URL, code or account detail appears in any API response, log or data file (AC-011, REQ-008) 113ms
+{"level":30,"time":1792584124495,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4743179976940155,"msg":"http request completed"}
+{"level":30,"time":1792584124499,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.7321629971265793,"msg":"http request completed"}
+{"level":30,"time":1792584124503,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6917980015277863,"msg":"http request completed"}
+{"level":30,"time":1792584124506,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42480000108480453,"msg":"http request completed"}
+{"level":30,"time":1792584124509,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.40656399726867676,"msg":"http request completed"}
+{"level":30,"time":1792584124511,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3222480043768883,"msg":"http request completed"}
+{"level":30,"time":1792584124567,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":54.938571996986866,"msg":"http request completed"}
+{"level":30,"time":1792584124571,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.77793899923563,"msg":"http request completed"}
+{"level":30,"time":1792584124577,"pid":142126,"hostname":"ryan-ai-linux","reqId":"req-9k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.071810998022556,"msg":"http request completed"}
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002) 131ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-12 closing the server stops a running vendor process (QR-003, SCN-A4) 125ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  14:00:42
+   Duration  82.55s (transform 18.03s, setup 52ms, import 23.69s, tests 17.21s, environment 0ms)
+
+exit 0

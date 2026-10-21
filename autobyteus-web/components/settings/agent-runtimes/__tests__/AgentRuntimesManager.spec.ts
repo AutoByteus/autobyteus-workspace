@@ -38,7 +38,9 @@ const baseline = (): AgentRuntime[] => [
 ]
 
 let current: AgentRuntime[]
-const respond = () => structuredClone({ data: { agentRuntimes: current } })
+/** The node's answer to "can its runtimes' logins open a browser on its own desktop". */
+let browserAvailable: boolean
+const respond = () => structuredClone({ data: { agentRuntimes: current, agentRuntimeSignInBrowserAvailable: browserAvailable } })
 const set = (runtimeKind: string, change: Partial<AgentRuntime>) => {
   current = current.map((entry) => (entry.runtimeKind === runtimeKind ? { ...entry, ...change } : entry))
 }
@@ -62,6 +64,7 @@ describe('AgentRuntimesManager', () => {
     vi.clearAllMocks()
     Object.assign(node, { isEmbeddedWindow: true, nodeId: 'embedded-local', bindingRevision: 0 })
     current = baseline()
+    browserAvailable = true
     io.query.mockImplementation(async () => respond())
     io.mutate.mockResolvedValue({ data: {} })
   })
@@ -218,8 +221,51 @@ describe('AgentRuntimesManager', () => {
     expect(get('runtime-claude_agent_sdk-update').attributes('aria-disabled')).toBeUndefined()
   })
 
-  it('shows a remote node as status only: no Update, no Sign in, no sign-in hint', async () => {
+  it("offers Sign in on a remote node that can open a browser on its own desktop, finished in that node's browser", async () => {
     Object.assign(node, { isEmbeddedWindow: false, nodeId: 'docker-1' })
+    set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' }, runningAgentCount: 1 })
+    await mountPage()
+    expect(textOf(get('agent-runtimes-node'))).toBe('Docker Node · Remote node')
+    expect(textOf(get('agent-runtimes-remote-note'))).toBe(
+      "Sign-in opens the browser on that node; finish it in the VNC Viewer. Update these runtimes on that node's computer.",
+    )
+    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex')
+    expect(textOf(get('runtime-claude_agent_sdk-signin-hint'))).toBe('Sign in from its command line on that node.')
+    expect(has('runtime-claude_agent_sdk-signin-button')).toBe(false)
+    // No Update and no blocked-update line on a remote node (REQ-005).
+    expect(has('runtime-claude_agent_sdk-update')).toBe(false)
+    expect(has('runtime-claude_agent_sdk-blocked')).toBe(false)
+    expect(textOf(get('runtime-claude_agent_sdk-status'))).toBe('Update available (version 2.1.304)')
+    expect(wrapper!.findAll('[data-testid$="-actions"] button').map((button) => button.attributes('data-testid')))
+      .toEqual(['runtime-codex_app_server-signin-button'])
+
+    io.mutate.mockClear()
+    await get('runtime-codex_app_server-signin-button').trigger('click')
+    await flushPromises()
+    expect(mutations()).toEqual([{ name: 'StartAgentRuntimeSignIn', variables: { runtimeKind: 'codex_app_server' } }])
+    set('codex_app_server', { operation: { kind: 'SIGN_IN', state: 'RUNNING', command: null, step: null, fromVersion: null, toVersion: null, error: null } })
+    await poll()
+    expect(get('runtime-codex_app_server-signin-button').text()).toBe('Signing in…')
+    expect(textOf(get('runtime-codex_app_server-signin-waiting'))).toBe('Finish signing in to Codex in the browser on that node (VNC Viewer).')
+    io.mutate.mockClear()
+    await get('runtime-codex_app_server-signin-cancel').trigger('click')
+    await flushPromises()
+    expect(mutations()).toEqual([{ name: 'CancelAgentRuntimeSignIn', variables: { runtimeKind: 'codex_app_server' } }])
+
+    set('codex_app_server', { operation: { kind: 'SIGN_IN', state: 'DID_NOT_FINISH', command: null, step: null, fromVersion: null, toVersion: null, error: null } })
+    await poll(BUSY_POLL_MS)
+    expect(textOf(get('runtime-codex_app_server-signin-failed'))).toBe("Sign-in didn't finish. Try again.")
+    set('codex_app_server', { operation: { kind: 'SIGN_IN', state: 'RUNNING', command: null, step: null, fromVersion: null, toVersion: null, error: null } })
+    await poll()
+    set('codex_app_server', { operation: null, account: { state: 'SIGNED_IN' } })
+    await poll(BUSY_POLL_MS)
+    expect(textOf(get('runtime-codex_app_server-signin'))).toBe('Signed in')
+    expect(get('agent-runtimes-announce').text()).toBe('Codex is signed in.')
+  })
+
+  it('keeps a remote node that cannot open a browser status only: no Update, no Sign in, no sign-in hint', async () => {
+    Object.assign(node, { isEmbeddedWindow: false, nodeId: 'docker-1' })
+    browserAvailable = false
     set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' }, runningAgentCount: 1 })
     await mountPage()
     expect(textOf(get('agent-runtimes-node'))).toBe('Docker Node · Remote node')
@@ -229,6 +275,16 @@ describe('AgentRuntimesManager', () => {
     expect(has('runtime-claude_agent_sdk-blocked')).toBe(false)
     expect(textOf(get('runtime-claude_agent_sdk-status'))).toBe('Update available (version 2.1.304)')
     expect(has('runtime-grok_build-install-link')).toBe(true)
+  })
+
+  it("offers Sign in and Update on the desktop's own node whatever its server reports about a browser", async () => {
+    browserAvailable = false
+    set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' } })
+    await mountPage()
+    expect(has('agent-runtimes-remote-note')).toBe(false)
+    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex')
+    expect(textOf(get('runtime-claude_agent_sdk-signin-hint'))).toBe('Sign in from its command line.')
+    expect(get('runtime-claude_agent_sdk-update').attributes('aria-label')).toBe('Update Claude')
   })
 
   it('checks again on request, polls fast while rows check, and announces when all are done', async () => {

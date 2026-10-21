@@ -1,0 +1,93 @@
+{
+  "startedAt": "2026-10-21T08:25:37.477Z",
+  "image": "sha256:191a2073ebeee0dc5e78b75ca7de2c8520463ff9fbd81b5a2ad58d33b95ab53d",
+  "cases": {
+    "D1": {
+      "title": "Remote window on the Docker node: VNC note, Sign in for Codex and Grok, hints on that node, no Update (AC-003, AC-004)",
+      "result": "Pass"
+    },
+    "D2": {
+      "title": "Codex Sign in from the page: vendor page in the node's Chromium and on its VNC display, CLI callback listening on the node; Cancel (AC-001 up to the vendor page)",
+      "result": "Pass",
+      "tab": "https://auth.openai.com/oauth/authorize?<query redacted>",
+      "host": "auth.openai.com",
+      "parameterNames": [
+        "response_type",
+        "client_id",
+        "redirect_uri",
+        "code_challenge",
+        "code_challenge_method",
+        "state",
+        "scope",
+        "id_token_add_organizations",
+        "codex_cli_simplified_flow",
+        "originator"
+      ],
+      "redirectUri": "http://127.0.0.1:1455/auth/callback",
+      "cliListening": [
+        "LISTEN 0 128 127.0.0.1:1455 0.0.0.0:* users:((\"codex\",pid=1101,fd=11))"
+      ],
+      "callbackAnswers": {
+        "1455": "404"
+      },
+      "duringScan": []
+    },
+    "D3": {
+      "title": "Grok Sign in from the page: vendor page in the node's Chromium and on its VNC display, CLI callback listening on the node; Cancel (AC-002 up to the vendor page)",
+      "result": "Pass",
+      "tab": "https://accounts.x.ai/sign-in?<query redacted>",
+      "host": "accounts.x.ai",
+      "parameterNames": [
+        "redirect",
+        "return_to",
+        "client_id"
+      ],
+      "redirectUri": null,
+      "cliListening": [
+        "LISTEN 0 128 127.0.0.1:34707 0.0.0.0:* users:((\"grok\",pid=1263,fd=15))"
+      ],
+      "callbackAnswers": {
+        "34707": "404"
+      },
+      "duringScan": []
+    },
+    "D4": {
+      "title": "No sign-in URL, parameter value or vendor sign-in host in the page, its storage, its GraphQL responses, the node server output or AutoByteus data; found in the node Chromium profile (control) (AC-009)",
+      "result": "Pass",
+      "markers": 10,
+      "vendorHosts": [
+        "auth.openai.com",
+        "accounts.x.ai",
+        "oauth/authorize"
+      ],
+      "graphqlResponses": 389,
+      "nodeOutputBytes": 48231,
+      "dataFiles": 39,
+      "hits": [],
+      "dataHits": [],
+      "controlHits": 3,
+      "duringSignIn": {
+        "D2": [],
+        "D3": []
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:119626",
+    "container": "removed"
+  },
+  "distDiff": [
+    "Dateien <image>/dist/api/graphql/types/agent-runtimes.js und <worktree>/autobyteus-server-ts/dist/api/graphql/types/agent-runtimes.js sind verschieden.",
+    "Dateien <image>/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js und <worktree>/autobyteus-server-ts/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js sind verschieden.",
+    "Nur in <worktree>/autobyteus-server-ts/dist/runtime-management/agent-runtimes: sign-in-browser-availability.js."
+  ],
+  "nodeFact": {
+    "agentRuntimeSignInBrowserAvailable": true
+  },
+  "browserVersion": "151.0.7922.173",
+  "browserErrorsCount": 0,
+  "result": "Pass",
+  "finishedAt": "2026-10-21T08:26:15.678Z"
+}

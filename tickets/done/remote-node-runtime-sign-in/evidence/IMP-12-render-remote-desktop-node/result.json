@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Remote desktop node: note, Sign in for Codex/Grok, command-line hint for Claude/Antigravity, no Update (AC-003, AC-004)",
+    "result": "Pass"
+  },
+  {
+    "name": "node Chromium tabs while signing in",
+    "tabs": [
+      "\"url\": \"https://auth.openai.com/oauth/authorize?<query redacted>"
+    ]
+  },
+  {
+    "name": "Codex Sign in: Signing in..., remote waiting copy with Cancel; the vendor page opens in the node Chromium; Cancel returns to Sign in (AC-001 up to the vendor page)",
+    "result": "Pass"
+  },
+  {
+    "name": "Stacked layout at 739 px stays readable with the remote note and Sign in",
+    "result": "Pass"
+  },
+  {
+    "name": "zh-CN: remote note and hint in Chinese",
+    "result": "Pass"
+  },
+  {
+    "name": "browser errors",
+    "errors": []
+  },
+  {
+    "cleanup": {
+      "container": "removed",
+      "frontend": "terminated:107560"
+    }
+  }
+]

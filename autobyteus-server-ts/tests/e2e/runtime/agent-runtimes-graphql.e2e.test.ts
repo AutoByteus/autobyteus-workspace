@@ -6,6 +6,9 @@
  * exit 0 without a newer version, failure with Try again), Sign in (success, Cancel, time-out with a CLI that
  * ignores SIGTERM), refusals with their codes, Codex with no OpenAI sign-in required (DEC-008), a runtime installed
  * later, no secret in any response, log or data file (AC-011), and every vendor process ending on server close.
+ * Ticket remote-node-runtime-sign-in: the node's `agentRuntimeSignInBrowserAvailable` in the web's `AgentRuntimes`
+ * document (AR-13). The test server gets `BROWSER` set, as a Docker node's server has it, so the answer is the same
+ * on every platform.
  *
  * Prerequisites: none. The four runtime CLIs are `tests/fixtures/agent-runtimes-fake-cli.mjs`, linked as
  * codex/claude/agy/grok in a temp folder and selected through the existing overrides (`CODEX_APP_SERVER_COMMAND`,
@@ -44,7 +47,17 @@ vi.mock("../../../src/runtime-management/agent-runtimes/runtime-process-operatio
 const fake = await vi.hoisted(async () => {
   const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
   // Grok starts "not installed": its command points at a file that does not exist yet.
-  return prepareFakeRuntimes({ label: "agent-runtimes-e2e", grokInstalled: false });
+  const prepared = prepareFakeRuntimes({ label: "agent-runtimes-e2e", grokInstalled: false });
+  // The server reads its sign-in browser fact once from its environment: give it a browser, as a Docker node has.
+  const previousBrowser = process.env.BROWSER;
+  process.env.BROWSER = "/usr/local/bin/open-vnc-browser-url.sh";
+  return {
+    ...prepared,
+    dispose: () => {
+      if (previousBrowser === undefined) delete process.env.BROWSER; else process.env.BROWSER = previousBrowser;
+      prepared.dispose();
+    },
+  };
 });
 
 const CODEX = "codex_app_server";
@@ -317,6 +330,43 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     const hits = Object.entries(corpora).flatMap(([where, text]) => markers.filter((marker) => text.includes(marker)).map((marker) => `${where}: ${marker}`));
     console.info(`[AR-11] scanned ${client.responses.length} API responses, ${captured.length} stdout/stderr writes, ${dataFiles.length} data files; markers ${markers.length}; hits ${hits.length}`);
     expect(hits).toEqual([]);
+  }, 60_000);
+
+  it("AR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002)", async () => {
+    // The web page's exact document (autobyteus-web/graphql/queries/agentRuntimesQueries.ts).
+    const document = `query AgentRuntimes {
+      agentRuntimes {
+        runtimeKind installed installedVersion
+        updates { state latestVersion }
+        account { state }
+        signInRoute installInstructionsUrl runningAgentCount
+        operation { kind state command step fromVersion toVersion error }
+        checkedAt
+      }
+      agentRuntimeSignInBrowserAvailable
+    }`;
+    const read = async () => {
+      const result = await client.post(document);
+      expect(result.errors, JSON.stringify(result.errors)).toBeUndefined();
+      return result.data as { agentRuntimes: AgentRuntimeRow[]; agentRuntimeSignInBrowserAvailable: unknown };
+    };
+    const first = await read();
+    expect(first.agentRuntimeSignInBrowserAvailable).toBe(true);
+    expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([CODEX, CLAUDE, AGY, GROK]);
+    // A node-level field: no row carries it.
+    expect(first.agentRuntimes.every((r) => !("agentRuntimeSignInBrowserAvailable" in r))).toBe(true);
+    // The fact is fixed for the server's lifetime: a running sign-in and later reads give the same answer.
+    states.set("codex-account", "signedOut");
+    states.clearPid("codex", "login");
+    await client.mutate("checkAgentRuntimes");
+    await waitRow(CODEX, "signed out", (r) => r.account.state === "SIGNED_OUT");
+    expect(await client.mutate("startAgentRuntimeSignIn", CODEX)).toEqual({ data: { startAgentRuntimeSignIn: true } });
+    const whileSigningIn = await read();
+    expect(whileSigningIn.agentRuntimeSignInBrowserAvailable).toBe(true);
+    expect(whileSigningIn.agentRuntimes.find((r) => r.runtimeKind === CODEX)!.operation).toMatchObject({ kind: "SIGN_IN", state: "RUNNING", command: null, step: null, error: null });
+    expect(await client.mutate("cancelAgentRuntimeSignIn", CODEX)).toEqual({ data: { cancelAgentRuntimeSignIn: true } });
+    await waitRow(CODEX, "cancelled", (r) => r.operation === null, 15_000);
+    expect((await read()).agentRuntimeSignInBrowserAvailable).toBe(true);
   }, 60_000);
 
   it("AR-12 closing the server stops a running vendor process (QR-003, SCN-A4)", async () => {
