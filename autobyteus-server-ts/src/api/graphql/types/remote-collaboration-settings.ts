@@ -19,6 +19,22 @@ export class PeerNodeGql {
   @Field(() => String) addedAt!: string;
 }
 
+/** One entry a peer offers, as the Nodes page shows it (autobyteus-267): no address; a description only when it has one. */
+@ObjectType()
+export class PeerNodeOfferEntryGql {
+  @Field(() => String) name!: string;
+  /** `agent` or `agent_team`. */
+  @Field(() => String) kind!: string;
+  @Field(() => String, { nullable: true }) description!: string | null;
+}
+
+/** A peer's offer now: its entries, or the refusal code the page words itself (DEC-504). Exactly one is set. */
+@ObjectType()
+export class PeerNodeOfferGql {
+  @Field(() => [PeerNodeOfferEntryGql], { nullable: true }) entries!: PeerNodeOfferEntryGql[] | null;
+  @Field(() => String, { nullable: true }) refusalCode!: string | null;
+}
+
 @InputType()
 export class AddPeerNodeInput {
   @Field(() => String) baseUrl!: string;
@@ -51,6 +67,20 @@ export class RemoteCollaborationSettingsResolver {
   @Query(() => [PeerNodeGql])
   peerNodes(): Promise<PeerNodeGql[]> {
     return guarded(async () => (await getProcessRemoteCollaboration().peers.list()).map(toPeer));
+  }
+
+  /**
+   * The Nodes page asks this node's server for one peer's offer (autobyteus-267 DS-001), through the discovery the agent
+   * tools use; the window never contacts the peer. It takes at most about 20 s (the peer request bound).
+   */
+  @Query(() => PeerNodeOfferGql)
+  async peerNodeOffer(@Arg("nodeId", () => String) nodeId: string): Promise<PeerNodeOfferGql> {
+    const offer = await getProcessRemoteCollaboration().discovery.listAvailableAgentsOf(nodeId);
+    if ("accepted" in offer) return { entries: null, refusalCode: offer.code };
+    return {
+      entries: offer.map((entry) => ({ name: entry.name, kind: entry.kind, description: entry.description ?? null })),
+      refusalCode: null,
+    };
   }
 
   @Mutation(() => PeerNodeGql)

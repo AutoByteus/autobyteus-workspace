@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-10-21T16:10:57.777Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "servers": {
+    "zeta": {
+      "port": 56531,
+      "nodeId": "srv_m37L75Ml3-O8V6gzVtwfm-awfgM8rTlV"
+    },
+    "theta": {
+      "port": 56533,
+      "nodeId": "srv_uacjDcEkp606mcmv9mIEhjibpjKYVJK_"
+    },
+    "iota": {
+      "port": 56534,
+      "nodeId": "srv_jl31FKqNt6dteYrxot_lG5zNeqahkbbc"
+    },
+    "alpha": {
+      "port": 56524,
+      "nodeId": "srv_17G4QOM6LEjjv1zC2UfcyPPODPUxuhaI"
+    },
+    "eta": {
+      "port": 56532,
+      "nodeId": "srv_1oE7njyz6PG714Xc4Yrfsuv-4pBv1tpM"
+    },
+    "epsilon": {
+      "port": 56530,
+      "nodeId": "srv_47Ub_eR_4QsDGrtLjuP9_5KloILuHDgo"
+    },
+    "gamma": {
+      "port": 56528,
+      "nodeId": "srv_Jq72bBb5xmomCMk3ZS-5OQsoZmc37QCS"
+    },
+    "beta": {
+      "port": 56525,
+      "nodeId": "srv_1aMar72oplDMdfJZE44SmzwMdZVqxt3A"
+    },
+    "delta": {
+      "port": 56529,
+      "nodeId": "srv_5JB6adXqpDISiAgEqiwq9ZlUuBy2TQZd"
+    }
+  },
+  "cases": {},
+  "offerRequests": [
+    {
+      "at": 1792599073353,
+      "nodeId": "srv_1aMar72oplDMdfJZE44SmzwMdZVqxt3A",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073353,
+      "nodeId": "srv_Jq72bBb5xmomCMk3ZS-5OQsoZmc37QCS",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073353,
+      "nodeId": "srv_5JB6adXqpDISiAgEqiwq9ZlUuBy2TQZd",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073353,
+      "nodeId": "srv_47Ub_eR_4QsDGrtLjuP9_5KloILuHDgo",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073353,
+      "nodeId": "srv_PBYg1k8gf3Ew4e3StQz4HfLjfdck9rDA",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073354,
+      "nodeId": "srv_1oE7njyz6PG714Xc4Yrfsuv-4pBv1tpM",
+      "host": "127.0.0.1:56524"
+    },
+    {
+      "at": 1792599073354,
+      "nodeId": "srv_uacjDcEkp606mcmv9mIEhjibpjKYVJK_",
+      "host": "127.0.0.1:56524"
+    }
+  ],
+  "windowHosts": [],
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: the window received the same list\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:44:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:254:3\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+  "finishedAt": "2026-10-21T16:11:14.783Z"
+}

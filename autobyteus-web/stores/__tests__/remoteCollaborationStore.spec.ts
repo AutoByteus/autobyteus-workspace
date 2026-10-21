@@ -23,16 +23,16 @@ describe('remoteCollaborationStore', () => {
     expect(store.error).toBeNull()
   })
 
-  it('adds a peer, then reloads; a refusal keeps the lists and shows the server reason', async () => {
+  it('adds a peer, then reloads, and returns it (the page asks it at once); a refusal keeps the lists and shows the server reason', async () => {
     const store = useRemoteCollaborationStore()
     apolloClientMock.mutate.mockResolvedValueOnce({ data: { addPeerNode: peer } })
     apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer] } })
-    await expect(store.addPeer({ baseUrl: 'http://localhost:29700', name: 'docker' })).resolves.toBe(true)
+    await expect(store.addPeer({ baseUrl: 'http://localhost:29700', name: 'docker' })).resolves.toEqual(peer)
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { input: { baseUrl: 'http://localhost:29700', name: 'docker' } } }))
     expect(store.peers).toEqual([peer])
 
     apolloClientMock.mutate.mockRejectedValueOnce(new Error('http://web is not an AutoByteus node.'))
-    await expect(store.addPeer({ baseUrl: 'http://web', name: 'web' })).resolves.toBe(false)
+    await expect(store.addPeer({ baseUrl: 'http://web', name: 'web' })).resolves.toBeNull()
     expect(store.error).toBe('http://web is not an AutoByteus node.')
     expect(store.errorScope).toBe('peers')
     expect(store.peers).toEqual([peer])

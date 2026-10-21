@@ -32,7 +32,15 @@ export class RemoteNodeDiscovery implements RemoteDiscoveryChannel {
   async listAvailableAgents(node: string): Promise<readonly AvailableCollaboratorEntry[] | RemoteChannelRefusal> {
     const peer = await this.dependencies.client.findPeer(node);
     if ("accepted" in peer) return peer;
-    const answer = await this.dependencies.client.listAvailableAgents(peer.nodeId);
+    return this.listAvailableAgentsOf(peer.nodeId);
+  }
+
+  /**
+   * A peer's offer by its node ID (autobyteus-267): the one path for the agent tools (after the name lookup above)
+   * and for the Nodes page. The client applies the switch, the registration, the 20 s bound and the refusal codes.
+   */
+  async listAvailableAgentsOf(nodeId: string): Promise<readonly AvailableCollaboratorEntry[] | RemoteChannelRefusal> {
+    const answer = await this.dependencies.client.listAvailableAgents(nodeId);
     return answer.accepted ? answer.agents : answer;
   }
 }

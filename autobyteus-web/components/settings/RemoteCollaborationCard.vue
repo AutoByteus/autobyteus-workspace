@@ -19,25 +19,22 @@
     </p>
 
     <RemoteCollaborationPeersSection :switch-on="capabilityStore.isEnabled" />
-
-    <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm" data-testid="remote-collaboration-availability">
-      <h3 class="text-xl font-semibold text-gray-900">{{ t('settings.components.settings.RemoteCollaboration.availability.title') }}</h3>
-      <p class="mt-1 text-sm text-gray-500">{{ t('settings.components.settings.RemoteCollaboration.availability.note') }}</p>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
 import FeatureCapabilityToggleCard from '~/components/settings/FeatureCapabilityToggleCard.vue'
 import RemoteCollaborationPeersSection from '~/components/settings/RemoteCollaborationPeersSection.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRemoteCollaborationCapabilityStore } from '~/stores/remoteCollaborationCapabilityStore'
+import { useRemoteCollaborationOffersStore } from '~/stores/remoteCollaborationOffersStore'
 import { useRemoteCollaborationStore } from '~/stores/remoteCollaborationStore'
 
 const { t } = useLocalization()
 const capabilityStore = useRemoteCollaborationCapabilityStore()
 const store = useRemoteCollaborationStore()
+const offers = useRemoteCollaborationOffersStore()
 
 const statusLabels = computed(() => ({
   loading: t('settings.components.settings.RemoteCollaboration.status.loading'),
@@ -51,8 +48,22 @@ const statusMessage = computed(() => capabilityStore.capability?.source === 'DEF
   ? t('settings.components.settings.RemoteCollaboration.source.defaultDisabled')
   : null)
 
-onMounted(() => {
-  void capabilityStore.ensureResolved()
-  void store.load()
+// The peers' offers (autobyteus-267 REQ-504, REQ-508): every peer is asked once when the tab opens with the switch on,
+// and again when the switch turns on; turning it off, or leaving the tab, drops every state. Nothing polls. The
+// switch is only watched once the tab has loaded, so opening it asks each peer once.
+let opened = false
+onMounted(async () => {
+  await Promise.all([capabilityStore.ensureResolved().catch(() => undefined), store.load()])
+  opened = true
+  if (capabilityStore.isEnabled) offers.askAll(store.peers)
+})
+watch(() => capabilityStore.isEnabled, (on) => {
+  if (!opened) return
+  if (on) offers.askAll(store.peers)
+  else offers.clear()
+})
+onBeforeUnmount(() => {
+  opened = false
+  offers.clear()
 })
 </script>
