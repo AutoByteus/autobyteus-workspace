@@ -29,15 +29,15 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page`, b
    - the spec's string table in English and Chinese; `availability.*` removed.
 4. **Docs:** web `docs/settings.md` (§ Nodes: Remote Collaboration); server `docs/modules/remote_collaboration.md`.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: Local Fix for API/E2E F-001, after the IR-001 baseline)
 - Implementation revision record: `tickets/in-progress/remote-nodes-page/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-001 … SR-003
 - Related architecture-review revision IDs: N/A
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (failure origin of F-001: implementation, Local Fix)
+- Related API/E2E revision IDs: API-REV-001 (F-001)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: F-001 (IR-002)
 
 ## Routing Classification (Mandatory)
 
@@ -62,7 +62,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page`, b
 | REQ-502 / REQ-510 | Available peer: Agents and Agent Teams with name, kind, description when it has one | Resolver maps entries without address, `description` null when absent; the store keeps a description only when non-empty and drops unknown kinds | Implemented; store spec and resolver test |
 | REQ-503 | One source; the window never contacts a peer | The store queries this node's GraphQL only; the server goes through `RemoteNodeDiscovery` (the tools' path; `listAvailableAgents` by name delegates to `listAvailableAgentsOf`) | Implemented; discovery test "one path" |
 | REQ-504 / AC-501 / AC-505 | Asked on open, add, switch on and Refresh; waiting state per peer; usable page; never on a timer; ≤ 20 s | Card: `onMounted` (after capability and peers load) → `askAll`; the switch watcher (only after the first load) → `askAll` or `clear`; `onBeforeUnmount` → `clear`. Section: add → `ask(added.nodeId)`; Refresh → `ask(nodeId)`; remove → `forget` (only when accepted) | Implemented. Live: a black-holed peer showed Checking… for about 20.5 s from page load, then Not reachable, while the others were settled at once (IMP-08) |
-| Stale answers | Token per peer; an answer for a peer removed, re-asked, switched off or with the tab left is ignored | `tokens` in the store; `forget` and `clear` drop them | Implemented; store spec "ignores a stale answer" |
+| Stale answers | Token per peer; an answer for a peer removed, re-asked, switched off or with the tab left is ignored | `tokens` in the store; `forget` and `clear` drop them. **IR-002 (F-001):** the `peerNodeOffer` query passes `context: { queryDeduplication: false }`, so a new ask of a peer whose earlier ask is still open sends its own request instead of sharing the earlier one | Implemented; store spec "ignores a stale answer", and a spec through a real ApolloClient (two asks of one peer in flight → two requests; the first answer ignored), which fails without the option |
 | REQ-507 / AC-504 / BEH-503 | One line by default; expand; sorted by name; search when either kind has more than 6 | `RemoteCollaborationOfferDisclosure` / `RemoteCollaborationOfferList` (reference components); entries sorted by kind, then `localeCompare` within each kind | Implemented; component spec (24 + 2 entries: "10 of 24", "No match.", the all-groups sentence, Clear search, close clears) and live (IMP-10) |
 | REQ-508 | Switch off: nobody asked, no states, one notice | Watcher → `clear()`; the section hides chips, sentences and Refresh when off and shows `peers.switchOff` | Implemented; card spec and live (IMP-09) |
 | BEH-502 | The availability card is removed; its rules move into a collapsed line | `RemoteCollaborationCard.vue` (section removed); "How peers' runs work" in the section; `rules.*` keys; `availability.*` removed | Implemented; card spec and live (IMP-11) |
@@ -90,6 +90,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page`, b
 - Docs as above.
 
 ## Important Assumptions
+
+0. **Correction to the design's premise (F-001).** The design's current-state read says Apollo has no batching, "so each query is its own HTTP request" (`design-spec.md` § Current-State Read). That holds for different peers. For the same peer, Apollo's in-flight deduplication (on by default, and not turned off by `fetchPolicy: 'network-only'`) made a second identical query share the first one's request. The `peerNodeOffer` query now sets `context: { queryDeduplication: false }` (that one query; the global Apollo setup is unchanged).
 
 1. **Where the triggers live.**
    - The tab-level triggers (open, switch on and off, leaving the tab) are in `RemoteCollaborationCard.vue`, which already owns loading the switch and the peers. Asking every peer needs the loaded list, as the UI reference also did.
@@ -193,6 +195,8 @@ Evidence: `tickets/in-progress/remote-nodes-page/evidence/implementation/`. Envi
 | IMP-11 | Live: rules line opened; eta removed and added back; theta Refresh | same | same | BEH-502, UXJ-003, UXJ-004, TR-005, TR-011 | Pass | `IMP-11-VIS-004-empty-offer-rules-1440.png` | the four rules bullets; "eta shares no Agents or Agent Teams."; eta re-added last and asked at once; theta Refresh → Checking…, icon disabled and spinning, beta untouched |
 | IMP-12 | Live: Chinese (`zh-CN` preference), beta open | same | same | the Chinese strings | Pass | `IMP-12-VIS-006-zh-CN-1440.png` | 可用, 无法连接, 对方已关闭, 未在对方登记, 服务器不一致, 检查中…, the counts, 按名称搜索, 检查于 |
 | IMP-13 | Live: 390 px, beta open; leaving the tab and returning | same | same | narrow wrap rule; stacked groups; re-ask on return | Pass | `IMP-13-VIS-007-narrow-390-header.png`, `IMP-13-VIS-007-narrow-390-open.png` | actions on a second line under the name block; groups stacked (same left edge); no horizontal overflow (document width 390); on return theta is Checking… again |
+
+| IMP-14 | After F-001: `NUXT_TEST=true vitest run` on the offers store, peers store, card, disclosure and localization specs; web guards; and the real-client spec with the option removed (temporarily, then restored) | `2a6053250a` | macOS | the offers store's query and stale-answer rule | REQ-504, AC-505, F-001 | Pass | `IMP-14-web-store-after-F-001.log` | `Test Files  18 passed (18)`, `Tests  62 passed (62)`; without the option the real-client spec fails with `expected [ [Function] ] to have a length of 2 but got 1` |
 
 - Not run, and why:
   - the API/E2E web run against two real servers with a request log (AC-502's "the window makes no request to the peer", AC-505's add-then-asked through the UI over HTTP) is API/E2E's; IMP-07 … IMP-13 are implementation self-validation;
