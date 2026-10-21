@@ -30,7 +30,8 @@ describe('remoteCollaborationOffersStore', () => {
     const store = useRemoteCollaborationOffersStore()
     const asked = store.ask('srv_b')
     expect(store.peers.srv_b).toEqual({ phase: 'checking' })
-    expect(apolloClientMock.query).toHaveBeenCalledWith(expect.objectContaining({ variables: { nodeId: 'srv_b' }, fetchPolicy: 'network-only' }))
+    expect(apolloClientMock.query).toHaveBeenCalledWith(expect.objectContaining({ variables: { nodeId: 'srv_b' }, fetchPolicy: 'network-only',
+      context: { queryDeduplication: false } }))
     answer.resolve(offer([]))
     await asked
     expect(store.peers.srv_b).toEqual({ phase: 'available', entries: [], checkedAt: expect.any(String) })
@@ -116,3 +117,31 @@ describe('remoteCollaborationOffersStore', () => {
     expect(store.peers).toEqual({})
   })
 })
+
+/**
+ * F-001 (autobyteus-267): through a real ApolloClient, a peer asked again while its earlier ask is still open (the tab
+ * re-opened, the switch turned off and on) sends a second request, and the earlier answer is ignored.
+ */
+describe('remoteCollaborationOffersStore with a real ApolloClient', () => {
+  it('sends a new request for each ask of the same peer, even while one is in flight; the stale answer is ignored', async () => {
+    const { ApolloClient, ApolloLink, InMemoryCache, Observable } = await import('@apollo/client/core')
+    const pending: Array<(answer: unknown) => void> = []
+    const link = new ApolloLink(() => new Observable((observer) => {
+      pending.push((answer) => { observer.next(answer as never); observer.complete() })
+    }))
+    apolloClientMock.query.mockImplementation((options: unknown) => realClient.query(options as never))
+    const realClient = new ApolloClient({ link, cache: new InMemoryCache() })
+    setActivePinia(createPinia())
+    const store = useRemoteCollaborationOffersStore()
+    const first = store.ask('srv_b')
+    const second = store.ask('srv_b')
+    await vi.waitFor(() => expect(pending).toHaveLength(2))
+    pending[1]!(refused('PEER_UNREACHABLE'))
+    await second
+    pending[0]!(offer([{ name: 'Stale', kind: 'agent', description: null, __typename: 'PeerNodeOfferEntryGql' }]))
+    await first
+    expect(store.peers.srv_b).toEqual({ phase: 'unavailable', code: 'PEER_UNREACHABLE' })
+    apolloClientMock.query.mockReset()
+  })
+})
+

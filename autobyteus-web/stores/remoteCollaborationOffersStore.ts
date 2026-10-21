@@ -71,6 +71,8 @@ export const useRemoteCollaborationOffersStore = defineStore('remoteCollaboratio
           query: GetPeerNodeOffer,
           variables: { nodeId },
           fetchPolicy: 'network-only',
+          // A new ask of a peer whose earlier ask is still open must send its own request (Apollo dedupes identical in-flight queries).
+          context: { queryDeduplication: false },
         })
         const answer = data?.peerNodeOffer
         offer = errors?.length || !answer ? { phase: 'unavailable', code: 'PEER_UNREACHABLE' }
