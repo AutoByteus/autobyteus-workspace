@@ -73,3 +73,5 @@ Post-repository605/7=**86.43%**; final675/7=**96.43%**. Final minimum95; clean t
 One normal scoped docs-sync correction: `autobyteus-web/docs/nfs_guide.md` intro says “Settings → Nodes → NFS Guide”; actual sidebar/page is **Nodes → NFS Guide**. Correct that wording during Delivery docs sync; Settings is used only for language. This does not invalidate the guide's user-visible ACs or require a new approval/implementation loop.
 
 Evidence/artifacts committed before handoff; commit/selected fresh route recorded with handoff. No merge/push/tag/release/TaskDone/Terminal/user-verification action by API.
+
+Fresh rule selects ONLY `/software_engineering_team/delivery_engineer`; evidence commit `cd9126c29de9bb1e597a0a49f382628360024357`. Receipt: evidence/C01-routing.json.
