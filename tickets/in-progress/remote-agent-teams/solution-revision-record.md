@@ -43,3 +43,19 @@
   - In memory, remote links are explicitly kinded (`agent` / `agent_team`).
 - Files: `collaboration_model.md` (CM-10, § 3), `validation-cases.md` (G-1, G-7, refinement note), `requirements-doc.md` (Data Continuity).
 - Intended behavior changed: `No`.
+
+### SR-005 — Design complete (2026-10-21)
+
+- Phase and classification: Design / `Architecture Design Complete`.
+- Trigger: the user, 2026-10-21: "do another round of validation; if no problem … start your work with design and do handoffs." Validation round 2 found no problem (premises P-1 … P-4 reproduced, 60 tests).
+- Design (`design-spec.md`) resolves G-1 … G-9:
+  - kinded remote links and the Team link (`coordinatorAddress`, `members`);
+  - `delegatedFrom` on B's Team tree;
+  - `targetRoot` on every message, both directions; the delegated-runs answer union;
+  - endpoint kind `delegated_team` and paired sets;
+  - `RemoteTeamRunStarter`, the `TeamRunService` input, B's Team root back-link and `acceptRemoteWorkPacket`, `RemoteTeamIdleShutdown`;
+  - `agentRunIdsOfTree` for Team links and Team back-links;
+  - the refusal, fence and guidance lookups by team run ID.
+- Health: `Shared Structure Looseness` (single-agent-shaped remote machinery); bounded refactor now.
+- Classification: `Large` / `High`.
+- Route: architecture review (see `handoff-architecture-review.md`).
