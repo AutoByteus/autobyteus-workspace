@@ -82,17 +82,50 @@ Finalize the ticket into `origin/personal`. A release only if the user asks (REL
 
 ## Repository Finalization
 
-- Ticket branch: `feature/remote-node-runtime-sign-in`, local only, not pushed
-- Finalization target: `origin` / `personal`
-- Repository finalization status: not started (waiting for the user check)
+- Bootstrap context source: `handoff.md` (finalization target `origin/personal`)
+- Ticket branch: `feature/remote-node-runtime-sign-in`, final commit `bdb960ec4`
+  - path hygiene exit 0; licensing consistent
+  - Secret Gate `origin/personal..feature/remote-node-runtime-sign-in`: 10 commits, PASS
+- Ticket branch push result: pushed to `origin` as a new branch
+- Finalization target remote / branch: `origin` / `personal`, still `9e7a45880` at every fetch
+- Target advanced after verification: `No`
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Merge into target result: `finalize/remote-node-runtime-sign-in` from `origin/personal`, `git merge --no-ff` → `6d0898586`, tree identical to the ticket branch; Secret Gate 11 commits PASS
+- Push target branch result: `git push origin HEAD:personal` → `9e7a45880..d2ef61aff` (the merge plus the release commit)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Pending the release decision
+- Applicable: `Yes`. Beta `v1.5.8-beta.7`, decided by the user
+- Method: `Project Release Guide` (`RELEASE.md`, Cutting The Release), run on `finalize/remote-node-runtime-sign-in`
+- Checks before tagging on the merged state: licensing "Licensing is consistent."; artifact hygiene passed; `check_secrets.sh v1.5.8-beta.6..HEAD`: 12 commits, PASS. Untracked `*/dist/` removed first.
+- Version / tag / release commit: `next-beta` gave `1.5.8-beta.7`. `bash scripts/desktop-release.sh beta --branch finalize/remote-node-runtime-sign-in --no-push` made release commit `d2ef61aff` (`autobyteus-web/package.json` = `1.5.8-beta.7`) and annotated tag `v1.5.8-beta.7`.
+- Push: `origin/personal` refetched and unchanged at `9e7a45880`; Secret Gate PASS; `git push origin HEAD:personal`, then `git push origin v1.5.8-beta.7` (12:10:45 UTC).
+- Pipelines triggered and their results, all `success` (`gh run watch --exit-status`):
+  - Desktop Release `39597539012`
+  - Android APK Release `39597539189`
+  - iOS App Store Connect Release `39597539106`
+  - Server Docker Release `39597539000`
+- Published artifacts checked:
+  - GitHub pre-release `v1.5.8-beta.7`, not a draft, 17 assets: the APK and `.sha256`, the Linux x64/ARM64 AppImages, the macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, the Windows `.exe`, and the four `latest*.yml`
+  - Docker `autobyteus/autobyteus-server:1.5.8-beta.7` and `:beta` are the same image `sha256:f5cc9c259674…` (amd64, arm64); `:latest` stays at `sha256:821e777d8e88…`
+- Release/publication/deployment result: `Completed` (four of four workflows, 17 of 17 assets)
+- Release notes handoff result: `Not required` (a pre-release uses GitHub generated notes)
+- Rollout: desktop installs with **Settings > Updates > Receive beta updates** on are offered `1.5.8-beta.7`; Docker nodes take it with `autobyteus-docker upgrade --all --tag beta`.
+
+## Release Notes Summary
+
+- Release notes status: `Not required` (beta; generated notes)
 
 ## Post-Finalization Cleanup
 
-- Pending: worktree `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in`, local branch, any test build or image made for the user check
+- Dedicated ticket worktree path: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in`
+- Worktree cleanup result: `Completed`. Removed with `git worktree remove --force` right after this record's push. Checked first: no process runs from it; everything tracked is pushed; only untracked build output goes with it.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `feature/remote-node-runtime-sign-in` (contained in `origin/personal`) and `finalize/remote-node-runtime-sign-in` deleted.
+- Remote branch cleanup result: `Not required`. The ticket branch stays on `origin`, as for earlier tickets.
+- Test containers and processes: none left. `docker ps -a` shows only the user's `autobyteus-server-0/1`, which were never touched. Temporary tools in `/tmp/dr001` (pnpm wrapper, gitleaks) are removed with the worktree cleanup.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -105,10 +138,10 @@ Finalize the ticket into `origin/personal`. A release only if the user asks (REL
 
 ## Final Status
 
-- Verification complete: `No` (user check pending)
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user check of AC-001/AC-002 end and AC-007
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to the Solution Designer: `No`
+- Verification complete: AC-003…AC-006, AC-008 and AC-009 `Yes`, from the evidence. AC-001/AC-002 up to the vendor page `Yes`. AC-001/AC-002 end (Signed in with real accounts) and AC-007 `No`: the user's check on `v1.5.8-beta.7` is open, because the user chose to release first and check on the beta.
+- Repository finalization complete: `Yes` (merge `6d0898586`, release commit `d2ef61aff` on `personal`)
+- Applicable release/deployment/rollout complete: `Yes` (beta `v1.5.8-beta.7`, complete)
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: none for delivery. The user check is open, and a failure there is fixed forward in a later beta.
+- Successful terminal package eligible for return: `Yes`, with the user check stated as open
+- Terminal package sent to the Solution Designer: `Yes` (after the records push)

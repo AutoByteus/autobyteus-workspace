@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | API/E2E Pass (API-REV-001, `591a72fbc`), direct Medium/Low route | N/A | Integrated, docs synced, verified from evidence except the user-only parts; waiting for the user check | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/DR-*` |
+| DR-001 | API/E2E Pass (API-REV-001, `591a72fbc`), direct Medium/Low route | N/A | Finalized into `personal` and released as beta `v1.5.8-beta.7` (complete); user check open on the beta by the user's choice | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/DR-*` |
 
 ## Revision Entries
 
@@ -18,9 +18,9 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merge, no conflicts; DR-01…DR-06 pass
-- Verification and finalization state: user check asked 2026-10-21; not finalized
-- Terminal return to the Solution Designer: `Not yet eligible`
-- Terminal return message/reference: —
+- Verification and finalization state: verified from evidence except the user-only parts. The user was asked how to sequence their check and answered "release a new beta please". Merged `6d0898586`, released `v1.5.8-beta.7` (`d2ef61aff`): four of four workflows succeeded, 17 assets, Docker `:beta` moved. The user check of AC-001/AC-002 end and AC-007 is open on the beta.
+- Terminal return to the Solution Designer: `Sent`
+- Terminal return message/reference: `Delivery Completed`, 2026-10-21, after the records push
 - Why this baseline was recorded: to keep the integrated, verified-from-evidence state across interruptions while the user check is outstanding
-- Next recipient/action: the user's check on their Docker node, then finalization into `origin/personal`
-- Remaining blockers, rollback concerns, or untested scope: the user check; R-02 sequencing (the app and the node must both run this change)
+- Next recipient/action: the Solution Designer (terminal). The user updates the app and nodes to `1.5.8-beta.7` and checks sign-in and a Codex chat.
+- Remaining blockers, rollback concerns, or untested scope: the open user check. R-02: update the app and the nodes together. Rollback: revert the merge and cut a new release; there is no data migration.

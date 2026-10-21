@@ -25,6 +25,7 @@ On a remote node whose server can open a browser on its own desktop, Settings â†
 - Implementation `c0b385524`; tests `5d2d1b53f`; API/E2E reports `591a72fbc`
 - Delivery integration: merged `origin/personal` at `9e7a45880` (36 commits, the remote-agent-teams and remote-discovery work plus release 1.5.8-beta.6) as `ec4dcb177`. No conflicts, and the base touched no agent-runtimes file.
 - Finalization target: `origin/personal`
+- Finalized: merge `6d0898586` on `personal`; released as beta `v1.5.8-beta.7` (release commit `d2ef61aff`), complete: four of four workflows, 17 assets, Docker `:1.5.8-beta.7` and `:beta`. Decided by the user: "release a new beta please".
 
 ## Validation
 
@@ -41,7 +42,12 @@ On a remote node whose server can open a browser on its own desktop, Settings â†
 
 - AC-001/AC-002 end: Codex and Grok reach Signed in with the user's real accounts on the user's Docker node.
 - AC-007: a Codex agent on that node answers without "Reconnectingâ€¦ n/5".
-- Both need the user's node to run a server with this change, and the user's app to run this web build (R-01, R-02).
+- The user chose to check on the published beta. How to check:
+  1. Update the desktop app to `1.5.8-beta.7` (Settings > Updates, with Receive beta updates on).
+  2. Run `autobyteus-docker upgrade --all --tag beta`. The nodes keep their `/root` volumes.
+  3. Open the :8002 node's window, go to Settings â†’ Agent Runtimes, choose Sign in on Codex, finish in the VNC Viewer, and see Signed in. Do the same for Grok.
+  4. Send a Codex agent on that node a message; it answers without "Reconnectingâ€¦ n/5".
+- Update the app and the nodes together (R-02). A failure is fixed forward in a later beta.
 
 ## Docs
 
