@@ -7,10 +7,23 @@
 - Investigation: `…/api-e2e-coverage-investigation.md` (round 1)
 - Progress log: `…/api-e2e-test-progress.md`
 - Revision record: `…/api-e2e-revision-record.md`
-- Revision: `API-REV-001`; round 1
+- Revision: `API-REV-002` (round 2: rerun after the F-001 fix); round 1 was `API-REV-001`
 - Trigger: IR-001 on the direct route (no code review). Code `3a21bcae44`, handoff `f684e1e368`. Classification: Medium / Low.
-- **Result: Fail.** There is one failure, F-001 (Low): a peer whose earlier query is still in flight is not asked again when the owner returns to the tab or turns the switch on again (AC-505, REQ-504; UI/UX spec "Re-asking on every open", TR-009). Everything else passes.
+- **Result (round 2): Pass, final confidence 95% (94.9).** F-001 is resolved by `2a6053250a` (IR-002): the browser probe passes 9/9 twice, and the store spec passes.
+- Round 1 result: Fail. There was one failure, F-001 (Low): a peer whose earlier query is still in flight is not asked again when the owner returns to the tab or turns the switch on again (AC-505, REQ-504; UI/UX spec "Re-asking on every open", TR-009). Everything else passes.
 - Durable coverage changed: Yes. A new browser probe (`autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs`, `pnpm -C autobyteus-web test:e2e:remote-nodes-page`) and `peerNodeOffer` checks in the server two-server E2E.
+
+## Round 2 (API-REV-002)
+
+The fix commit is `2a6053250a` (handoff `169da29cdc`). `git diff 3a21bcae44..2a6053250a` touches only `autobyteus-web/stores/remoteCollaborationOffersStore.ts` (`context: { queryDeduplication: false }` on the `peerNodeOffer` query) and its spec. The server build and API-01 (29/29) still hold.
+
+| Case | What runs | Result | Evidence and what to look for |
+| --- | --- | --- | --- |
+| API-R2 | `NUXT_TEST=true vitest run stores/__tests__/remoteCollaborationOffersStore.spec.ts` | Pass, 7/7 | `API-R2-store-spec-after-F-001.log`. IMP-14 also covers the card, disclosure and localization specs (62 tests) and the guards |
+| API-02 run 5 | the browser probe, `nuxt dev` with the fixed store | **Pass, 9/9** | `API-02-run5/remote-nodes-page-probe.json`: RNP-06 `thetaAsked {onReturn: 1, onSwitchOnAgain: 1}`; theta settles 20 174 ms after the new ask; theta on open 20 206 ms; RNP-09 has 0 requests to peers; cleanup clean; no browser errors |
+| API-02 run 6 | the same | **Pass, 9/9** | `API-02-run6/…`: `thetaAsked {1, 1}`, 20 147 ms; theta on open 20 219 ms |
+
+F-001 is resolved.
 
 ## Environment
 
@@ -62,7 +75,7 @@ The user's AutoByteus, its data and Docker nodes were not used.
 
 | ID | Severity | Criteria | Observed | Expected | Evidence | Classification |
 | --- | --- | --- | --- | --- | --- | --- |
-| F-001 | Low (an edge: only a peer still being checked, and only within 20 s of its earlier ask; the page still shows Checking… and then an answer) | AC-505 "Returning to the tab asks again", REQ-504; UI/UX spec "Leaving the tab and returning asks every peer again … A peer that takes 20 s therefore shows Checking… again" and TR-009 "All asked" | When theta's query from the switch-on was 1.6 s old, the owner returned to the tab (or switched off and on), and no new `peerNodeOffer` was sent for theta (`thetaAsked {onReturn: 0, onSwitchOnAgain: 0}`). Theta settled 16.7 s after the new ask with the earlier answer. The other peers were asked again. If the peer's state had changed in between (for example the owner started it), the page would show the earlier, stale result | A new query for every peer on each return and switch-on | `F-001-in-flight-peer-not-asked-again.log`; `API-02-run3`, `API-02-run4` (`RNP-06`). Diagnostic, temporary and reverted: the same probe with `context: { queryDeduplication: false }` on the store's query passes all 9 cases (`API-02-diagnostic-dedup-off/`: `thetaAsked {1, 1}`, theta settled 20 167 ms after the new ask) | Preliminary: **Local Fix (Implementation Engineer).** `remoteCollaborationOffersStore.ask` queries with identical variables, and Apollo deduplicates an identical query that is in flight (on by default; the web's Apollo setup does not change it). `fetchPolicy: 'network-only'` does not prevent it. Fix: disable deduplication for this query (`context: { queryDeduplication: false }`), plus a store spec in which two asks of one peer while the first is pending send two queries. The probe's RNP-06 verifies it in the browser |
+| F-001 (resolved in round 2 by `2a6053250a`) | Low (an edge: only a peer still being checked, and only within 20 s of its earlier ask; the page still shows Checking… and then an answer) | AC-505 "Returning to the tab asks again", REQ-504; UI/UX spec "Leaving the tab and returning asks every peer again … A peer that takes 20 s therefore shows Checking… again" and TR-009 "All asked" | When theta's query from the switch-on was 1.6 s old, the owner returned to the tab (or switched off and on), and no new `peerNodeOffer` was sent for theta (`thetaAsked {onReturn: 0, onSwitchOnAgain: 0}`). Theta settled 16.7 s after the new ask with the earlier answer. The other peers were asked again. If the peer's state had changed in between (for example the owner started it), the page would show the earlier, stale result | A new query for every peer on each return and switch-on | `F-001-in-flight-peer-not-asked-again.log`; `API-02-run3`, `API-02-run4` (`RNP-06`). Diagnostic, temporary and reverted: the same probe with `context: { queryDeduplication: false }` on the store's query passes all 9 cases (`API-02-diagnostic-dedup-off/`: `thetaAsked {1, 1}`, theta settled 20 167 ms after the new ask) | Preliminary: **Local Fix (Implementation Engineer).** `remoteCollaborationOffersStore.ask` queries with identical variables, and Apollo deduplicates an identical query that is in flight (on by default; the web's Apollo setup does not change it). `fetchPolicy: 'network-only'` does not prevent it. Fix: disable deduplication for this query (`context: { queryDeduplication: false }`), plus a store spec in which two asks of one peer while the first is pending send two queries. The probe's RNP-06 verifies it in the browser |
 
 ## Acceptance-Criteria Proof
 
@@ -71,13 +84,33 @@ The user's AutoByteus, its data and Docker nodes were not used.
 | AC-501 | API-02 RNP-01 (seven peer states in a real browser, each at its own pace; theta at the 20 s bound; page usable); API-01 (codes) | Proven |
 | AC-502 | API-02 RNP-02 and RNP-09 (DOM = window answer = alpha's answer; no address; no request to a peer), API-01 RC-26 (`peerNodeOffer` = `list_available_agents {node}`) | Proven |
 | AC-504 | API-02 RNP-02 (30 entries, one line, narrowed, cleared) | Proven |
-| AC-505 | API-02 RNP-05 (off: nobody asked, the notice; on: all asked), RNP-04 (add), RNP-06 (return) | **Failed (F-001)** for a peer whose query is in flight; proven for settled peers |
+| AC-505 | API-02 RNP-05 (off: nobody asked, the notice; on: all asked), RNP-04 (add), RNP-06 (return, and switch off/on, while a peer's query is in flight) | Proven in round 2 (runs 5 and 6); it failed in round 1 (F-001) |
 | AC-506 | — | Only the user can check (his desktop window and Docker node) |
 | AC-507 | API-02 RNP-07, API-01 (the 261 tool results) | Proven |
 
 ## Validation Confidence Scorecard (Mandatory)
 
-These are scored over what can be proven without the user; AC-506 is listed for delivery. A failing critical criterion blocks Pass regardless of the score.
+These are scored over what can be proven without the user; AC-506 is listed for delivery.
+
+**Round 2.** The final scores after the fix:
+
+| Category | Final (round 2) | Basis |
+| --- | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | every AC proven (AC-506 is the user's) |
+| Changed-boundary execution directness | 95% | real browser, real servers, request log |
+| Cross-boundary integration realism and mock gap | 95% | nine processes, a black-holed peer, a replaced server; loopback only (the user's AC-506) |
+| Environment, configuration, identity, and fixture fidelity | 95% | as round 1 |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | F-001's edge (an ask while one is in flight) now proven, twice |
+| User-surface, browser, and desktop-shell confidence | 94% | my Chrome runs at 1440 px in English; the 390 px and Chinese rendering reused from IMP-12/IMP-13 (rendering is unchanged by the fix); there was no live keyboard walk-through (specs cover the native buttons and `aria-expanded`) |
+| Durable regression coverage quality and relevance | 95% | the probe (9 cases) and the store spec that fails without the option |
+
+- Overall final confidence: 95% (simple average 94.9%).
+- No category is below 90%.
+- Every critical AC is directly proven: `Yes`.
+- Target met: `Yes`.
+- Broader validation: `Required`, executed (API-02).
+
+**Round 1** (kept as the record; a failing critical criterion blocked Pass):
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
@@ -111,4 +144,6 @@ These are scored over what can be proven without the user; AC-506 is listed for 
 
 ## Decision
 
-Fail. This goes to the code reviewer for failure-origin review of F-001 (preliminary: Local Fix, Implementation Engineer). After the fix, rerun the probe (all 9 cases) and the store's specs. API-01 stays valid if only the web store changes.
+Round 2: **Pass.** On the direct route, test-code review is `Not Required — direct low-risk route`. This goes to delivery.
+
+Round 1: Fail. This went to the code reviewer for failure-origin review of F-001 (preliminary: Local Fix, Implementation Engineer). After the fix, rerun the probe (all 9 cases) and the store's specs. API-01 stays valid if only the web store changes.

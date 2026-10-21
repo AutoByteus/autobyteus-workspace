@@ -1,0 +1,10 @@
+# API-R2 store spec after F-001 | commit 169da29cdc | 2026-10-21T16:23:41Z
+
+ ✓ stores/__tests__/remoteCollaborationOffersStore.spec.ts (7 tests) 133ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  18:23:43
+   Duration  5.77s (transform 3.00s, setup 5.11s, collect 26ms, tests 133ms, environment 161ms, prepare 118ms)
+
+exit=0

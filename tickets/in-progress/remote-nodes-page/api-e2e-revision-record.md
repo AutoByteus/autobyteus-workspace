@@ -3,6 +3,7 @@
 | Revision | Trigger | Code validated | Investigation round | Result | Durable coverage | Key evidence | Next |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | API-REV-001 | IR-001, direct route (Medium / Low) | `3a21bcae44` (handoff `f684e1e368`) | 1 | **Fail**: F-001 (Low; AC-505): a peer whose query is in flight is not asked again on tab return or switch on (Apollo query deduplication). Confidence 93% final. Server E2E 29/29; browser probe 8/9 cases | new browser probe `remote-nodes-page-probe.mjs` (+ script); `peerNodeOffer` checks in RC-16, RC-26, RC-27 | `F-001-in-flight-peer-not-asked-again.log`, `API-02-run4/`, `API-02-diagnostic-dedup-off/`, `API-01-run1/` | Code reviewer: failure-origin review (preliminary Local Fix, Implementation Engineer) |
+| API-REV-002 | IR-002, the F-001 Local Fix (CRR-001 traced it to the web store) | `2a6053250a` (handoff `169da29cdc`) | 1 (unchanged) | **Pass, final confidence 95% (94.9)**. F-001 resolved: the browser probe passes 9/9 in runs 5 and 6 (`thetaAsked {1, 1}`, about 20.2 s after the new ask); the store spec passes 7/7. API-01 still holds (server unchanged) | none new | `API-02-run5/`, `API-02-run6/`, `API-R2-store-spec-after-F-001.log` | Delivery (direct route; test-code review `Not Required — direct low-risk route`) |
 
 ## API-REV-001 notes
 

@@ -15,3 +15,7 @@ Evidence: `evidence/api-e2e/` (beside this file).
 | 9 | Probe: RNP-06 adds switch off/on while theta is in flight (TR-009) | run 4: 8/9; RNP-06 Fail (theta 0 on return, 0 on switch on again) | `API-02-run4*` |
 | 10 | Diagnostic: store query with `queryDeduplication: false` (temporary; reverted with `git checkout`) | 9/9, theta asked on both | `API-02-diagnostic-dedup-off*` |
 | 11 | F-001 evidence, report, revision record (API-REV-001 Fail) | → code reviewer | `F-001-in-flight-peer-not-asked-again.log` |
+| 12 | Round 2: IR-002 (`2a6053250a`): only the web store and its spec changed | — | `git diff 3a21bcae44..2a6053250a` |
+| 13 | API-R2 store spec | 7/7 | `API-R2-store-spec-after-F-001.log` |
+| 14 | API-02 probe runs 5 and 6 | 9/9 each; F-001 resolved | `API-02-run5*`, `API-02-run6*` |
+| 15 | Report, revision record (API-REV-002 Pass, 95%) | → delivery | `api-e2e-execution-coverage-report.md` |
