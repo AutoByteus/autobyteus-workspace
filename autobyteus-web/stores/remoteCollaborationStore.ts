@@ -53,8 +53,14 @@ export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore
       }
     },
 
-    async addPeer(input: { baseUrl: string; name: string }): Promise<boolean> {
-      return this.change('peers', AddPeerNode, { input }, async () => { await this.load() })
+    /** The added peer (so the page can ask it at once), or `null` when the server refused it. */
+    async addPeer(input: { baseUrl: string; name: string }): Promise<PeerNode | null> {
+      let added: PeerNode | null = null
+      const accepted = await this.change('peers', AddPeerNode, { input }, async (data) => {
+        added = (data?.addPeerNode as PeerNode | undefined) ?? null
+        await this.load()
+      })
+      return accepted ? added : null
     },
 
     async renamePeer(nodeId: string, name: string): Promise<boolean> {

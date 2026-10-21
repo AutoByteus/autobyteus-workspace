@@ -206,15 +206,45 @@ per-team, runtime, provider, or frontend-renderer preference.
 Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`) sets up
 cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
 off by default, through `remoteCollaborationCapabilityStore`, a
-`createBoundNodeCapabilityStore` capability), the peer nodes (add by URL and name,
-rename, remove; adding needs the switch on), and a note on which agents and Agent Teams
-peers can start and how they run: any shared agent or shared Agent Team, each agent with
-its own default runtime and model (a team member without one uses its team's default), in
-this node's temp workspace, with tool calls auto-approved for every agent of the run; an
-agent or team member with no default runtime and model is refused (there is no publish
-step and no setting for it). `stores/remoteCollaborationStore.ts` loads and changes the peers
-through GraphQL; a refused change shows the server's reason next to the section that
-failed. The server side is described in the server's `docs/modules/remote_collaboration.md`.
+`createBoundNodeCapabilityStore` capability) and the peer nodes (add by URL and name,
+rename, remove; adding needs the switch on). `stores/remoteCollaborationStore.ts` loads and
+changes the peers through GraphQL; a refused change shows the server's reason next to the
+section that failed. The server side is described in the server's
+`docs/modules/remote_collaboration.md`.
+
+Each peer shows its state now and, when it is available, its Agents and Agent Teams
+(autobyteus-267; the approved UI/UX spec is the design repository's
+`tickets/done/remote-nodes-page/ui-ux-spec.md`):
+
+- **Where the answers come from.** `stores/remoteCollaborationOffersStore.ts` asks this
+  node's server for one peer at a time (GraphQL `peerNodeOffer(nodeId)`, network-only); the
+  server asks the peer through the same discovery the agent tools use. The window never
+  contacts a peer. The answer is the entries (`name`, `kind`, a `description` only when it
+  has one; no address) or the refusal code, which the page words itself.
+- **States.** Per peer: Checking… (with "Waiting for {name}… up to 20 seconds."), Available
+  (the offer, or "{name} shares no Agents or Agent Teams."), or one of four unavailable
+  states with a sentence: Off there, Not registered there (amber: the owner can act there),
+  Not reachable (also an older build, or any other refusal or a failed query), Different
+  server (red).
+- **When peers are asked.** Every peer at once when the tab opens with the switch on and
+  when the switch turns on; one peer when it is added and on its Refresh icon. Turning the
+  switch off, or leaving the tab, drops every state and asks nobody; the card shows "Remote
+  Collaboration is off, so peers are not asked. …". Nothing polls and nothing is cached.
+  Each ask takes a token per peer, so an answer that arrives after the peer was removed or
+  asked again, the switch turned off or the tab was left is ignored. Each peer settles at
+  its own pace (the server's 20 s bound); the page stays usable meanwhile.
+- **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
+  names cut by the line's width) and opens into `RemoteCollaborationOfferList.vue`: Agents
+  and Agent Teams side by side from `md` up, each sorted by name, with a "Checked HH:MM"
+  footer. When either kind has more than 6 entries, a search box narrows both by name
+  ("n of m", "No match.", and a sentence with Clear search when nothing matches). Closing
+  it, or a Refresh, clears the search.
+- **How peers' runs work.** The rules for runs peers start on this node are one collapsed
+  line at the bottom of the Peer nodes card: any shared Agent or Agent Team; each agent's
+  own default runtime and model (a team member without one uses its team's default); this
+  node's temp workspace with tool calls auto-approved for every agent of the run; a local
+  login (Codex, Claude) used for every registered peer; no default runtime and model is
+  refused. There is no separate card for this node's own Agents and Agent Teams.
 
 ## Server Settings: Feature Capability Toggles
 

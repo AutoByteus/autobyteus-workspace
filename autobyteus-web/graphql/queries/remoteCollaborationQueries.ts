@@ -34,3 +34,17 @@ export const GetRemoteCollaborationSettings = gql`
   }
   ${PeerNodeFields}
 `
+
+/** One peer's offer now, answered by this node's server (autobyteus-267); the window never contacts the peer. */
+export const GetPeerNodeOffer = gql`
+  query GetPeerNodeOffer($nodeId: String!) {
+    peerNodeOffer(nodeId: $nodeId) {
+      entries {
+        name
+        kind
+        description
+      }
+      refusalCode
+    }
+  }
+`

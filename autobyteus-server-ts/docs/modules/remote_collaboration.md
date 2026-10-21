@@ -41,8 +41,13 @@ in later slices.
   with that login for any registered peer, as CM-12 says ("a remote run uses its own node's credentials").
   A leftover `published-agents.json` from a development build is neither read nor written.
 - GraphQL: `remoteCollaborationCapability` / `setRemoteCollaborationEnabled`, `peerNodes`, `addPeerNode`,
-  `renamePeerNode`, `removePeerNode`. The web's Nodes → Remote Collaboration tab uses them and says which
-  Agents and Agent Teams peers can start and how they run.
+  `renamePeerNode`, `removePeerNode`, and `peerNodeOffer(nodeId)` (autobyteus-267). The web's Nodes → Remote
+  Collaboration tab uses them: it manages the peers, shows each peer's state and offer, and states how runs peers
+  start here work.
+- `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
+  absent) or `{refusalCode}`, exactly one of them, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
+  the same path as `list_available_agents` with `node`. The window never contacts a peer; the page words the
+  refusal code itself. It takes at most about 20 s (the peer request bound).
 
 ## Between nodes
 
@@ -113,8 +118,9 @@ each offers, then delegates with `delegate_task` without being told an address.
   20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
   wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.
 - `listAvailableAgents(node)` (`list_available_agents` with `node`): the peer by name, with the same refusals as
-  `delegate_task` (switch off, no peer by that name), then its *available agents*; the peer's refusal gives the
-  reason for an unavailable node.
+  `delegate_task` (switch off, no peer by that name), then `listAvailableAgentsOf(nodeId)`, the peer's
+  *available agents* by node ID, which the Nodes page also uses; the peer's refusal gives the reason for an
+  unavailable node.
 - Nothing is stored or cached; every call asks the peers now. A listing creates no run, writes nothing on
   either node and is not a message.
 - A peer reveals only the name, kind, address and description of each entry: never definitions, prompts,

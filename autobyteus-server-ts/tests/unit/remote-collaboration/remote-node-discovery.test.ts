@@ -98,3 +98,22 @@ describe("RemoteNodeDiscovery.listAvailableAgents (DS-002)", () => {
     expect(off.fetch).not.toHaveBeenCalled();
   });
 });
+
+describe("RemoteNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page)", () => {
+  it("a peer's offer by node ID, with the same answers and refusals as by name", async () => {
+    const f = setup();
+    await expect(f.discovery.listAvailableAgentsOf(BETA.nodeId)).resolves.toEqual(agents);
+    await expect(f.discovery.listAvailableAgentsOf(DELTA.nodeId)).resolves.toMatchObject({ code: "REMOTE_COLLABORATION_OFF" });
+    await expect(f.discovery.listAvailableAgentsOf(OLD.nodeId)).resolves.toMatchObject({ code: "PEER_UNREACHABLE" });
+    await expect(f.discovery.listAvailableAgentsOf("srv_not_a_peer")).resolves.toMatchObject({ code: "PEER_NOT_REGISTERED" });
+    await expect(setup({ enabled: false }).discovery.listAvailableAgentsOf(BETA.nodeId)).resolves.toMatchObject({ code: "REMOTE_COLLABORATION_OFF" });
+  });
+
+  it("the name-based method (the agent tools) goes through it: one path", async () => {
+    const f = setup();
+    const byId = vi.spyOn(f.discovery, "listAvailableAgentsOf");
+    await f.discovery.listAvailableAgents("beta");
+    expect(byId).toHaveBeenCalledExactlyOnceWith(BETA.nodeId);
+  });
+});
+
