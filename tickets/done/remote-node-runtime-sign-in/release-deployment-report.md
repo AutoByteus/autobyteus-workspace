@@ -10,11 +10,12 @@ Finalize the ticket into `origin/personal`. A release only if the user asks (REL
 - Deviations from the guide and why:
   - The ticket branch is `feature/remote-node-runtime-sign-in`, not `codex/<ticket-name>`; the bootstrap chose it. Finalization uses the guide's `finalize/<ticket-name>` flow with this branch name.
   - pnpm is not on PATH on this machine after the reboot; checks ran through `corepack pnpm` (pnpm 10.28.2, the `packageManager` version). This changes nothing in the result.
-- Proposed guide fixes: `None`
+  - gitleaks was not installed (the guide names `brew`, which is macOS-only). Installed gitleaks 8.30.1 from its official GitHub release into a temporary bin, with the release checksum verified.
+- Proposed guide fixes (not applied; the user has not been asked): add a Linux install line for gitleaks to the Secret Gate section, e.g. the official release tarball checked against its `checksums.txt`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/remote-node-runtime-sign-in/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/remote-node-runtime-sign-in/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
@@ -60,13 +61,13 @@ Finalize the ticket into `origin/personal`. A release only if the user asks (REL
 
 - More evidence requested: `None`
 - User check needed: `Yes`. Finishing a sign-in needs the user's own OpenAI and xAI accounts, and AC-007 needs a real model call on the user's Docker node. API/E2E took the real node as far as the vendor login page (API-08); tests must not use the user's accounts or nodes (TESTING.md Rule 2).
-- User check reference: pending; asked 2026-10-21 (see `delivery-revision-record.md` DR-001)
-- Re-verification after later re-integration: pending
+- User check reference: asked 2026-10-21 with two options: check a test build before merging, or merge and check on a published beta. The user answered "release a new beta please", so the check runs on beta `v1.5.8-beta.7` after finalization. It stays open until the user reports it, and a failure is fixed forward (same as AC-408 for remote-discovery on beta.6).
+- Re-verification after later re-integration: `Not needed` (`origin/personal` unchanged at `9e7a45880` at the pre-finalization fetch)
 
 ## Release Decision
 
-- Decision: pending. No release has been requested; the guide's default is `No release`.
-- Decided by: —
+- Decision: `Beta` (`v1.5.8-beta.7`, from `python3 scripts/release_versions.py next-beta`)
+- Decided by: the user, 2026-10-21: "release a new beta please"
 
 ## Docs Sync Result
 
@@ -76,7 +77,8 @@ Finalize the ticket into `origin/personal`. A release only if the user asks (REL
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/remote-node-runtime-sign-in`: `No` (waiting for the user check)
+- Ticket moved to `tickets/done/remote-node-runtime-sign-in`: `Yes`
+- Archived ticket path: `tickets/done/remote-node-runtime-sign-in/`
 
 ## Repository Finalization
 
