@@ -39,7 +39,7 @@
             </p>
             <p class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-check-failed-note`">{{ t('settings.agentRuntimes.status.checkFailedNote', { name }) }}</p>
           </template>
-          <p v-if="isOwnNode && blocked" :id="`runtime-${id}-blocked`" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-blocked`">
+          <p v-if="canUpdateHere(nodeAccess) && blocked" :id="`runtime-${id}-blocked`" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-blocked`">
             {{ runtime.runningAgentCount === 1
               ? t('settings.agentRuntimes.update.blocked.one')
               : t('settings.agentRuntimes.update.blocked.other', { count: runtime.runningAgentCount }) }}
@@ -58,26 +58,26 @@
           <span v-else-if="runtime.account.state === 'SIGNED_IN'" class="agent-runtime-line gap-1.5 text-gray-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden="true"></span>{{ t('settings.agentRuntimes.signIn.signedIn') }}</span>
           <template v-else-if="runtime.account.state === 'SIGNED_OUT'">
             <span class="agent-runtime-line gap-1.5 text-amber-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>{{ t('settings.agentRuntimes.signIn.notSignedIn') }}</span>
-            <p v-if="isOwnNode && runtime.signInRoute === 'COMMAND_LINE'" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-signin-hint`">{{ t('settings.agentRuntimes.signIn.hint') }}</p>
+            <p v-if="canSignInHere(nodeAccess) && runtime.signInRoute === 'COMMAND_LINE'" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-signin-hint`">{{ ownNode ? t('settings.agentRuntimes.signIn.hint') : t('settings.agentRuntimes.signIn.hintOnNode') }}</p>
           </template>
           <span v-else class="agent-runtime-line text-gray-500" :data-testid="`runtime-${id}-signin`">{{ t('settings.agentRuntimes.signIn.unknown') }}</span>
         </div>
       </div>
 
-      <!-- actions: only on this computer's own node -->
+      <!-- actions: Sign in where its browser can open, Update only on this computer's own node -->
       <div class="agent-runtime-actions" :data-testid="`runtime-${id}-actions`">
-        <template v-if="isOwnNode">
-          <button
-            v-if="signingIn || offersSignIn(runtime)"
-            type="button"
-            :class="[secondaryButton, signingIn ? 'cursor-wait' : '']"
-            :disabled="signingIn || updating"
-            :aria-label="`${signInLabel} ${name}`"
-            :data-testid="`runtime-${id}-signin-button`"
-            @click="emit('sign-in')"
-          >
-            <span v-if="signingIn" class="mr-2 h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" aria-hidden="true"></span>{{ signInLabel }}
-          </button>
+        <button
+          v-if="canSignInHere(nodeAccess) && (signingIn || offersSignIn(runtime))"
+          type="button"
+          :class="[secondaryButton, signingIn ? 'cursor-wait' : '']"
+          :disabled="signingIn || updating"
+          :aria-label="`${signInLabel} ${name}`"
+          :data-testid="`runtime-${id}-signin-button`"
+          @click="emit('sign-in')"
+        >
+          <span v-if="signingIn" class="mr-2 h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" aria-hidden="true"></span>{{ signInLabel }}
+        </button>
+        <template v-if="canUpdateHere(nodeAccess)">
           <button
             v-if="updating"
             type="button"
@@ -101,9 +101,9 @@
       </div>
 
       <!-- the runtime's own sign-in, finished in the browser -->
-      <div v-if="isOwnNode && (signingIn || signInDidNotFinish)" class="agent-runtime-outcome" :data-testid="`runtime-${id}-signin-outcome`">
+      <div v-if="canSignInHere(nodeAccess) && (signingIn || signInDidNotFinish)" class="agent-runtime-outcome" :data-testid="`runtime-${id}-signin-outcome`">
         <div v-if="signingIn" class="flex flex-wrap items-center gap-x-3 text-sm text-gray-600" role="status">
-          <span :data-testid="`runtime-${id}-signin-waiting`">{{ t('settings.agentRuntimes.signIn.waiting', { name }) }}</span>
+          <span :data-testid="`runtime-${id}-signin-waiting`">{{ ownNode ? t('settings.agentRuntimes.signIn.waiting', { name }) : t('settings.agentRuntimes.signIn.waitingOnNode', { name }) }}</span>
           <button type="button" class="rounded-md px-2 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" :data-testid="`runtime-${id}-signin-cancel`" @click="emit('cancel-sign-in')">{{ t('settings.agentRuntimes.signIn.cancel') }}</button>
         </div>
         <p v-else class="text-sm text-red-700" role="alert" :data-testid="`runtime-${id}-signin-failed`">{{ t('settings.agentRuntimes.signIn.failed') }}</p>
@@ -134,10 +134,11 @@ import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { AgentRuntime } from '~/types/agentRuntimes'
 import {
-  isBlockedByAgents, isSigningIn, isUpdating, offersSignIn, offersUpdate, runtimeName, updateFailed,
+  canSignInHere, canUpdateHere, isBlockedByAgents, isSigningIn, isUpdating, offersSignIn, offersUpdate, runtimeName,
+  updateFailed, type AgentRuntimeNodeAccess,
 } from './agentRuntimesPresentation'
 
-const props = defineProps<{ runtime: AgentRuntime; isOwnNode: boolean }>()
+const props = defineProps<{ runtime: AgentRuntime; nodeAccess: AgentRuntimeNodeAccess }>()
 const emit = defineEmits<{ (event: 'update'): void; (event: 'sign-in'): void; (event: 'cancel-sign-in'): void }>()
 const { t } = useLocalization()
 
@@ -146,6 +147,8 @@ const primaryButton = 'inline-flex min-h-9 items-center justify-center whitespac
 
 const id = computed(() => props.runtime.runtimeKind)
 const name = computed(() => runtimeName(props.runtime.runtimeKind))
+/** On a remote node the copy says where sign-in happens: on that node. */
+const ownNode = computed(() => props.nodeAccess === 'own')
 const updating = computed(() => isUpdating(props.runtime))
 const signingIn = computed(() => isSigningIn(props.runtime))
 const blocked = computed(() => isBlockedByAgents(props.runtime))

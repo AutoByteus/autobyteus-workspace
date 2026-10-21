@@ -6,7 +6,8 @@
 // sources are answered inside the backend by `fixtures/agent-runtimes-vendor-sources.mjs`. No network, no account.
 // Cases: page open with one source failing and one slow, the table/stacked switch at the list's width (SR-012) at
 // 1440/1280/1024/739/390 px, Update blocked by a running agent, Update success and failure, Sign in with Cancel and
-// completion, zh-CN, a remote node window, a node that can't be read, and a secret scan. Every case records Pass/Fail
+// completion, zh-CN, a remote node window (the probe's node has no desktop browser), a node that can't be read, and a
+// secret scan. Every case records Pass/Fail
 // in <output-dir>/result.json with screenshots; owned processes and the temp root are always removed.
 //
 // Prerequisite: a current server build (`pnpm -C autobyteus-server-ts build`, or drop --skip-server-build).
@@ -123,7 +124,8 @@ const createNode = async (ownedRoot, fakes) => {
   const url = `http://127.0.0.1:${port}`;
   const databaseUrl = pathToFileURL(databasePath).href;
   const env = {
-    ...scrubbedEnv(), HOME: path.join(dataRoot, 'home'), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '',
+    // No BROWSER/DISPLAY/WAYLAND_DISPLAY: the node is headless, so it reports no sign-in browser (remote status only).
+    ...scrubbedEnv(), BROWSER: '', DISPLAY: '', WAYLAND_DISPLAY: '', HOME: path.join(dataRoot, 'home'), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '',
     APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     CODEX_APP_SERVER_COMMAND: path.join(fakes.binDir, 'codex'), CLAUDE_CODE_EXECUTABLE_PATH: path.join(fakes.binDir, 'claude'),
@@ -405,7 +407,7 @@ try {
     await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   });
 
-  await kase('ARP-08', 'A remote node window: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019)', async () => {
+  await kase('ARP-08', 'A remote node window on a node without a desktop browser: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019; remote-node-runtime-sign-in AC-005)', async () => {
     await open();
     await waitFor('rows', async () => (await rowState(AGY)) === 'up_to_date', 20000);
     const ownStates = {};
