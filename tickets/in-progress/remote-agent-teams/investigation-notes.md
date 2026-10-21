@@ -44,3 +44,21 @@
 | --- | --- | --- | --- |
 | RSK-301 | Risk | An unused Team run stays on B if A's link commit or packet fails after creation; the idle schedule stops it, and it remains in history with no messages | Accepted (DEC-304) |
 | RSK-201 | Risk | Every remote agent auto-approves, including all Team members | Accepted by the user |
+
+## Supplemental Artifact Inventory
+
+| Artifact | Owner | Purpose | Status |
+| --- | --- | --- | --- |
+| `validation-cases.md` | Solution Designer | Case-by-case validation of the approved approach against the code (C-01 … C-31) and the design points it found (G-1 … G-9) | Done 2026-10-21; input to the design |
+
+## Validation Evidence (2026-10-21, Read)
+
+- `flat-team-topology-planner.ts:182`: member run IDs are allocated at plan time.
+- `remote-message-receiver.ts`: the work-packet and A → B roots are resolved as standalone roots by target run ID.
+- `remote-endpoint.ts`: `pairedAgentRunId` is one agent.
+- `standalone-agent-run-root.ts:139`: only the standalone root has a back-link.
+- `root-task-execution-lifecycle.ts:185`: the existing-copy refusal checks Agent copies only.
+- `root-task-execution-resource-scope.ts:94-100`: the fence looks up by `agentRunId` only.
+- `root-task-execution-lifecycle.ts:231`: `teamCoordinatorOf` reads local task Teams.
+- `task-execution-tree-split.ts:303`: `agentRunIdsOfTree`.
+- `remote-delegation.ts:65`: the result `node`.

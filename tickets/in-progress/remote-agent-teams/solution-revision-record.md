@@ -21,3 +21,15 @@
   - "Global send across nodes" is recorded as FU-001.
 - Approval: the User. Baseline: `requirements-doc.md` at SR-002.
 - Next action: update the contract; validate the approach case by case; then the design.
+
+### SR-003 — Contract updated; approach validated (2026-10-21)
+
+- Trigger: the user asked to update the contract and validate the approach case by case.
+- Contract (`autobyteus-server-ts/docs/design/collaboration_model.md` in this branch):
+  - CM-10: the Team link holds the coordinator's and members' run IDs.
+  - CM-11: every member is reachable, with waking; every message names its receiving root.
+  - CM-12: Agent Teams are offered; members use their own defaults, else the Team's; auto-approve for every agent.
+  - § 3 storage now shows the Team on both nodes; § 4 and § 5 are updated.
+- Validation: `validation-cases.md`, C-01 … C-31 (Read). Verdict: the approach works. Design points G-1 … G-9, including G-2, a symmetric `targetRoot` on every message.
+- Intended behavior changed: `No`.
+- Next action: the design.
