@@ -133,6 +133,12 @@ export class AgentRuntimesResolver {
     return getAgentRuntimeStatusService().list().map(toAgentRuntime);
   }
 
+  /** Whether this node's runtimes' own logins can open a browser on this node's desktop. Read-only. */
+  @Query(() => Boolean)
+  agentRuntimeSignInBrowserAvailable(): boolean {
+    return getAgentRuntimeStatusService().signInBrowserAvailable();
+  }
+
   /** Checks every runtime that is not checking or busy; settles once installed versions are known. */
   @Mutation(() => Boolean)
   async checkAgentRuntimes(): Promise<boolean> {

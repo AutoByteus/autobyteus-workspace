@@ -7,6 +7,7 @@ import type { AgentRuntimeStrategy } from "../../../../src/runtime-management/ag
 import type { SignInReading } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
 import type { AgentRuntimeKind, AgentRuntimeStatus } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-types.js";
 import type { RuntimeProcessResult } from "../../../../src/runtime-management/agent-runtimes/runtime-process-operation.js";
+import { isSignInBrowserAvailable } from "../../../../src/runtime-management/agent-runtimes/sign-in-browser-availability.js";
 
 const CODEX = RuntimeKind.CODEX_APP_SERVER as AgentRuntimeKind;
 const CLAUDE = RuntimeKind.CLAUDE_AGENT_SDK as AgentRuntimeKind;
@@ -153,6 +154,22 @@ describe("AgentRuntimeStatusService checks", () => {
     expect(row(CLAUDE).runningAgentCount).toBe(2);
     agents[CLAUDE] = 0;
     expect(row(CLAUDE).runningAgentCount).toBe(0);
+  });
+});
+
+describe("AgentRuntimeStatusService sign-in browser", () => {
+  const dependencies = { strategies: [], signInReader: { read: vi.fn() }, countRunningAgents: () => 0 };
+
+  it("reports the node fact it was given, without starting work", () => {
+    const { strategies } = build();
+    expect(new AgentRuntimeStatusService({ ...dependencies, strategies, signInBrowserAvailable: true }).signInBrowserAvailable()).toBe(true);
+    expect(new AgentRuntimeStatusService({ ...dependencies, strategies, signInBrowserAvailable: false }).signInBrowserAvailable()).toBe(false);
+    for (const entry of strategies) expect(entry.readVersion).not.toHaveBeenCalled();
+  });
+
+  it("by default decides it once from this process's platform and environment", () => {
+    expect(new AgentRuntimeStatusService(dependencies).signInBrowserAvailable())
+      .toBe(isSignInBrowserAvailable(process.platform, process.env));
   });
 });
 

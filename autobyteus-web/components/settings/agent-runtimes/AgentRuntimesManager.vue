@@ -11,7 +11,7 @@
           <p class="mt-1 text-sm text-gray-500" data-testid="agent-runtimes-description">{{ t('settings.agentRuntimes.description') }}</p>
           <p v-if="loadStatus !== 'error'" class="mt-3 text-sm text-gray-500" data-testid="agent-runtimes-node">
             <span class="font-medium text-gray-700">{{ nodeName }}</span>
-            <span class="mx-1.5 text-gray-300" aria-hidden="true">·</span>{{ isOwnNode ? t('settings.agentRuntimes.node.own') : t('settings.agentRuntimes.node.remote') }}
+            <span class="mx-1.5 text-gray-300" aria-hidden="true">·</span>{{ nodeAccess === 'own' ? t('settings.agentRuntimes.node.own') : t('settings.agentRuntimes.node.remote') }}
           </p>
         </div>
         <div v-if="loadStatus === 'ready'" class="flex flex-shrink-0 items-center gap-3 sm:pt-1">
@@ -32,10 +32,10 @@
       </div>
 
       <p
-        v-if="loadStatus === 'ready' && !isOwnNode"
+        v-if="loadStatus === 'ready' && nodeAccess !== 'own'"
         class="mt-4 rounded-lg bg-gray-50 px-3 py-2.5 text-sm text-gray-700"
         data-testid="agent-runtimes-remote-note"
-      >{{ t('settings.agentRuntimes.node.remoteNote') }}</p>
+      >{{ nodeAccess === 'remoteDesktop' ? t('settings.agentRuntimes.node.remoteDesktopNote') : t('settings.agentRuntimes.node.remoteNote') }}</p>
 
       <div v-if="loadStatus === 'loading'" class="mt-5 space-y-3" data-testid="agent-runtimes-loading" aria-busy="true">
         <div v-for="n in 4" :key="n" class="h-[68px] animate-pulse rounded-lg border border-gray-100 bg-gray-50"></div>
@@ -64,7 +64,7 @@
             v-for="runtime in runtimes ?? []"
             :key="runtime.runtimeKind"
             :runtime="runtime"
-            :is-own-node="isOwnNode"
+            :node-access="nodeAccess"
             @update="state.update(runtime.runtimeKind)"
             @sign-in="state.signIn(runtime.runtimeKind)"
             @cancel-sign-in="state.cancelSignIn(runtime.runtimeKind)"
@@ -83,18 +83,22 @@ import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { isRowChecking, useAgentRuntimes, type AgentRuntimeAnnouncement } from '~/composables/settings/useAgentRuntimes'
 import AgentRuntimeRow from './AgentRuntimeRow.vue'
-import { runtimeName } from './agentRuntimesPresentation'
+import { runtimeName, type AgentRuntimeNodeAccess } from './agentRuntimesPresentation'
 
 const { t } = useLocalization()
 const nodeStore = useNodeStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const state = useAgentRuntimes()
-const { runtimes, loadStatus } = state
+const { runtimes, loadStatus, signInBrowserAvailable } = state
 
 const secondaryButton = 'inline-flex min-h-9 items-center whitespace-nowrap rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1'
 
-// Update and Sign in run only on the desktop's own node; a remote/Docker node window is status only (D-3).
-const isOwnNode = computed(() => windowNodeContextStore.isEmbeddedWindow)
+// The own node does everything. A remote node signs in when its server can open a browser on its own desktop (the user
+// finishes there, in the VNC Viewer); otherwise it is status only.
+const nodeAccess = computed<AgentRuntimeNodeAccess>(() => {
+  if (windowNodeContextStore.isEmbeddedWindow) return 'own'
+  return signInBrowserAvailable.value ? 'remoteDesktop' : 'remoteStatusOnly'
+})
 const nodeName = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId)?.name
   || t('settings.components.settings.NodeManager.currentNodeUnknown'))
 const isChecking = computed(() => state.requestingCheck.value || (runtimes.value ?? []).some(isRowChecking))

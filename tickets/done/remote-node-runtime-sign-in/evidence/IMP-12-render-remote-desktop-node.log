@@ -1,0 +1,39 @@
+# IMP-12 rendered check, window bound to a real Docker node reporting agentRuntimeSignInBrowserAvailable=true
+# Command: node tickets/in-progress/remote-node-runtime-sign-in/evidence/IMP-render-remote-desktop-node.mjs <worktree> evidence/IMP-12-render-remote-desktop-node
+# Commit: c0b385524 (server dist mounted into autobyteus/autobyteus-server:beta 191a2073ebee; Nuxt dev from this worktree; headless Chrome); 2026-10-21T08:03:34Z
+
+[
+  {
+    "name": "Remote desktop node: note, Sign in for Codex/Grok, command-line hint for Claude/Antigravity, no Update (AC-003, AC-004)",
+    "result": "Pass"
+  },
+  {
+    "name": "node Chromium tabs while signing in",
+    "tabs": [
+      "\"url\": \"https://auth.openai.com/oauth/authorize?<query redacted>"
+    ]
+  },
+  {
+    "name": "Codex Sign in: Signing in..., remote waiting copy with Cancel; the vendor page opens in the node Chromium; Cancel returns to Sign in (AC-001 up to the vendor page)",
+    "result": "Pass"
+  },
+  {
+    "name": "Stacked layout at 739 px stays readable with the remote note and Sign in",
+    "result": "Pass"
+  },
+  {
+    "name": "zh-CN: remote note and hint in Chinese",
+    "result": "Pass"
+  },
+  {
+    "name": "browser errors",
+    "errors": []
+  },
+  {
+    "cleanup": {
+      "container": "removed",
+      "frontend": "terminated:107560"
+    }
+  }
+]
+exit 0

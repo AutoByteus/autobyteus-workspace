@@ -24,7 +24,13 @@ Out of scope:
   `AgentRuntimeStatusService`, the only public boundary. It owns the four rows
   (last results, current operation, `checkedAt`), runs the checks for each
   runtime on their own, allows one operation per runtime, enforces the
-  agents-running rule, and stops its processes on `close()`.
+  agents-running rule, and stops its processes on `close()`. It also reports
+  the node fact `signInBrowserAvailable()`, decided once at construction.
+- `sign-in-browser-availability.ts` — `isSignInBrowserAvailable(platform, env)`:
+  whether a runtime's own login can open a browser on this node's desktop.
+  macOS and Windows: yes. Otherwise yes only when `BROWSER`, `DISPLAY` or
+  `WAYLAND_DISPLAY` is set (the AutoByteus server Docker image sets `BROWSER`,
+  its VNC Chromium, and `DISPLAY`).
 - `agent-runtime-sign-in-reader.ts` — `AgentRuntimeSignInReader`, the one
   owner of "is this runtime signed in". It returns a server-internal
   `SignInReading` (`signedIn`, `signedOut`, `notRequired`, or `unknown` with a
@@ -62,6 +68,9 @@ installed version. A failed sign-in read gives `UNKNOWN`.
 
 - `agentRuntimes: [AgentRuntime!]!` — the four rows. It only reads, and never
   starts work.
+- `agentRuntimeSignInBrowserAvailable: Boolean!` — whether this node's
+  runtimes' own logins can open a browser on this node's desktop. Read only;
+  fixed for the server's lifetime.
 - `checkAgentRuntimes` — a user-started check. It clears finished results and
   starts a check for every runtime that is not already checking and has no
   running operation.
@@ -80,9 +89,11 @@ installed version. A failed sign-in read gives `UNKNOWN`.
   `AGENT_RUNTIME_SIGN_IN_UNSUPPORTED`, `AGENT_RUNTIME_UNKNOWN` (only the four
   external runtime kinds are accepted).
 
-Remote and Docker node windows read the same query. The web client hides
-Update and Sign in there; the vendor commands run only on the desktop's own
-node.
+Remote and Docker node windows read the same query and run the same
+operations on the node: a login started there opens in the node's own browser
+(on a Docker node its VNC Chromium). The web client offers Sign in on a remote
+node only when `agentRuntimeSignInBrowserAvailable` is true, and never offers
+Update there.
 
 ## Running-Agent Rule
 

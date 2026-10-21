@@ -1,0 +1,7 @@
+6
+[CodexAppServerClient] stderr: 2026-10-21T06:55:26.874136Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses
+[CodexAppServerClient] stderr: 2026-10-21T06:55:26.956426Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses
+[CodexAppServerClient] stderr: 2026-10-21T06:55:27.256037Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses
+[CodexAppServerClient] stderr: 2026-10-21T06:55:27.725091Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses
+[CodexAppServerClient] stderr: 2026-10-21T06:55:30.405280Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses
+[CodexAppServerClient] stderr: 2026-10-21T06:55:32.131470Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses

@@ -1,0 +1,10 @@
+# DR-05-web-guards — delivery post-integration rerun on ec4dcb177 (ticket branch + origin/personal 9e7a45880), Linux 7.0, node v22.23.2
+guard:web-boundary exit 0
+
+[guard:web-boundary] Passed.
+guard:localization-boundary exit 0
+
+[guard:localization-boundary] Passed.
+audit:localization-literals exit 0
+To eliminate this warning, add "type": "module" to /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
