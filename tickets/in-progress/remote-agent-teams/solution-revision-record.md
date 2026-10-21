@@ -33,3 +33,13 @@
 - Validation: `validation-cases.md`, C-01 … C-31 (Read). Verdict: the approach works. Design points G-1 … G-9, including G-2, a symmetric `targetRoot` on every message.
 - Intended behavior changed: `No`.
 - Next action: the design.
+
+### SR-004 — Data model refinement (2026-10-21)
+
+- Trigger: the Solution Designer's own review of the data model, asked by the user ("Do you think the data model is clean?"); the user: "If you think this is cleaner, then do it like this."
+- Change:
+  - A's remote Team link: `coordinatorAgentRunId` → `coordinatorAddress` (the coordinator is a member; one fact, one place; names as in the Team tree).
+  - The delegated-runs Team answer uses the same names.
+  - In memory, remote links are explicitly kinded (`agent` / `agent_team`).
+- Files: `collaboration_model.md` (CM-10, § 3), `validation-cases.md` (G-1, G-7, refinement note), `requirements-doc.md` (Data Continuity).
+- Intended behavior changed: `No`.

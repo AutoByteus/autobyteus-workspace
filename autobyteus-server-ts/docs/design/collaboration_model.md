@@ -75,7 +75,7 @@ message the delegated run by its run ID.**
 | CM-7 | The coordinating run coordinates its delegated runs' lifecycle: idle shutdown, wake-on-message, stop on Task closure, reactivation by the assigner. Only senders in the same coordinating run can wake a delegated run. Today the topmost run of a delegation chain is the coordinating run for every delegated run in it, including runs delegated by members of a delegated run. | One owner decides when delegated work sleeps and wakes. |
 | CM-8 | A delegated run never becomes a part of its coordinating run. The coordinating run keeps **links** (which runs it delegated to, for which Task) and coordination data, not the delegated run's content. | A run owns its own content; the coordinator owns the relationship. |
 | CM-9 | A message is stored with the run(s) it belongs to: between parts of one run, once, in that run's message log; between two runs, in both runs' logs (sent and received), with one message ID. Each agent's own memory also records what it sent and received. | Every run is self-contained, and the same shape works when two runs are on different nodes (email model). |
-| CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the link (peer, run ID, delegator; for an Agent Team also the coordinator's and members' run IDs), recorded by the topmost coordinating run (CM-7, CM-8), and the run's Task (CM-6). No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
+| CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the link (peer, run ID, delegator; for an Agent Team also its coordinator's address and its members' addresses and run IDs), recorded by the topmost coordinating run (CM-7, CM-8), and the run's Task (CM-6). No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
 | CM-11 | Across nodes, a remote delegated run and the run that delegated it message each other by run ID only (CM-5), in both directions; the link routes the run ID, so follow-ups never name the node. For a remote Agent Team, every member is reachable this way, the coordinator included, and a member that is idle or never started is woken first, as with a local Team copy; the delegation result names the team run and its coordinator. Every message names the root that receives it on the other node. No other run is reachable across nodes. Each side stores the message in its own run's log with the shared message ID (CM-9). Results and message headers name the other run's node, so an agent always knows when a run is remote. | One way to name a run on every node; the agent copies the run ID it was given. |
 | CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from registered peers, and offers them every shared Agent and Agent Team of the node, at the same catalog addresses as a local catalog copy. A remote run starts with each agent's own default runtime and model (a Team member without one uses the Team's default), in the node's temp workspace, with tool calls auto-approved for every agent; a target with an agent no default covers is refused. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner turns it on and chooses the peers; each target's own defaults decide how it runs, with no per-agent setup; security is added in one place. |
 
@@ -117,7 +117,7 @@ memory/<kind>/<coordinatingRunId>/
             delegatorAgentRunId, startedAt}              run_metadata.json: delegatedFrom {nodeId,
                                                            coordinatingRun, delegatorAgentRunId}
     Team:  {address, teamRunId, nodeId,                memory/agent_teams/<teamRunId>/   # a top-level Team run
-            coordinatorAgentRunId,                       team_run_execution_tree.json: the Team tree
+            coordinatorAddress,                          team_run_execution_tree.json: the Team tree
             members [{address, agentRunId}],               + delegatedFrom {nodeId, coordinatingRun,
             delegatorAgentRunId, startedAt}                  delegatorAgentRunId}
   the delegator's message log                          its own message log and memory
@@ -129,8 +129,10 @@ memory/<kind>/<coordinatingRunId>/
   stored whole in the tree: there is no folder for that run on the delegating
   node, and that node never restores, idle-stops or stops it.
 - A remote Team's link also holds what a local Team link reads from the Team
-  copy's own tree on the same node: the coordinator's run ID and every member's
-  address and run ID. These are assigned when the Team run is created and never
+  copy's own tree on the same node, under the same names as that tree: the
+  coordinator's address (`coordinatorAddress`) and every member's address and
+  run ID (`members`). The coordinator's run ID is the member at that address, so
+  each fact is stored once. These are assigned when the Team run is created and never
   change. It holds no member content: no launch settings, status or conversation.
 - On the node that runs it, the run is a run of its own: a standalone run for
   an Agent, a top-level Team run for an Agent Team. It is the root of its own run

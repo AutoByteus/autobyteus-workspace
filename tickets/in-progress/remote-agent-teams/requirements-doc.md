@@ -118,7 +118,7 @@ None.
 
 ## Data Continuity And Acceptable Loss
 
-- New data only: a Team link with `nodeId` and the coordinator's run ID in A's tree; a `delegatedFrom` back-link on B's Team run tree. No migration; existing data unchanged.
+- New data only: a Team link with `nodeId`, `coordinatorAddress` and `members` (addresses and run IDs) in A's tree; a `delegatedFrom` back-link on B's Team run tree. No migration; existing data unchanged.
 
 ## Assumptions
 

@@ -52,16 +52,21 @@
 
 | ID | Point | Why (cases) | Direction for the design |
 | --- | --- | --- | --- |
-| G-1 | Endpoints pair with **one** local agent (`pairedAgentRunId`) | B's Team delegator endpoint pairs with every member; A's Team link yields one endpoint per member run ID (C-10 … C-12) | Pair with a set: `delegator` on B allows any member of its root; A gets a `delegated_team` kind whose endpoints are the coordinator and members, all with the delegator-only rule and the Team's Task chain `[{teamRunId}]` |
+| G-1 | Endpoints pair with **one** local agent (`pairedAgentRunId`) | B's Team delegator endpoint pairs with every member; A's Team link yields one endpoint per member run ID (C-10 … C-12) | Pair with a set: `delegator` on B allows any member of its root; A gets a `delegated_team` kind whose endpoints are the members (the coordinator included), all with the delegator-only rule and the Team's Task chain `[{teamRunId}]`. In memory the remote list holds explicitly kinded links (`kind: "agent"` / `"agent_team"`), never told apart by field presence (SR-004) |
 | G-2 | Messages name the receiving root only for B → A (`coordinatingRun`); A → B uses the target run ID as a standalone root ID | A Team member's run ID is not a root ID (C-09 … C-11, C-17) | **Symmetric contract:** every message and work packet carries `targetRoot: {kind, runId}`, the root that receives it on the other node (A → B: the remote run's root; B → A: the coordinating run). `RemoteMessageReceiver` resolves `targetRoot` by kind, one rule for both directions. `coordinatingRun` stays in `delegatedFrom` and in the delegated-runs request |
 | G-3 | The existing-copy refusal checks Agent copies only | A `{teamRunId}` copy slips through (C-22) | `RemoteEndpointLookup` also answers for a remote team run ID |
 | G-4 | The closure fence looks up endpoints by agent run ID | A Team execution is `{teamRunId}` (C-21) | `RemoteRunLinks` looks up a remote Team link by `teamRunId` for the fence |
 | G-5 | The message-endpoint set (`agentRunIdsOfTree`) | A: Team links add the coordinator and member IDs; B: a Team tree with `delegatedFrom` adds the delegator (C-19, C-20) | Both inside `agentRunIdsOfTree`, the one owner (SR-017); the standalone store's separate parameter can move into it too, for one shape |
 | G-6 | Team-run-ID guidance | `teamCoordinatorOf` doesn't know remote Team links (C-13) | Answer from the remote list too |
-| G-7 | The delegated-runs answer is Agent-shaped (`agentRunId`) | A Team returns more (C-01, C-02) | Answer union: `{accepted: true, nodeId, kind: "agent", agentRunId}` / `{accepted: true, nodeId, kind: "agent_team", teamRunId, coordinatorAgentRunId, members: [{address, agentRunId}]}`; `RemoteDelegation.planActivation` builds the Team target and link |
+| G-7 | The delegated-runs answer is Agent-shaped (`agentRunId`) | A Team returns more (C-01, C-02) | Answer union: `{accepted: true, nodeId, kind: "agent", agentRunId}` / `{accepted: true, nodeId, kind: "agent_team", teamRunId, coordinatorAddress, members: [{address, agentRunId}]}`, the same names as the Team tree and A's link; `RemoteDelegation.planActivation` builds the Team target and link |
 | G-8 | B's Team root as a remote host | Back-link, work packet, idle schedule (C-09, C-12, C-16, C-17, C-29) | The Team root reads `delegatedFrom` from its tree, builds the `delegator` endpoint, admits the work packet to the coordinator (`acceptRemoteWorkPacket`), and gets an idle schedule for a peer-started Team: all members quiet for the grace period → stop the root (package kept) |
 | G-9 | B's Team-run creation from a resolved Team source | The receiver refuses Teams today; `TeamRunService.createTeamRun` takes launch-form inputs (C-01, C-03) | One owner maps the resolved source to `createTeamRun` (Team-level and member launches as resolved; the temp workspace; auto-approve) and records `delegatedFrom` on the tree (tolerant read, exact write; Team tree schema `team-run-execution-tree-schema.ts:91-103`) |
 
 ## Conclusion
 
 The approach works. Every case traces to existing owners or to one of nine bounded design points. G-2 is a small contract cleanup that makes both directions use one rule. No prerequisite was found. The design (next) resolves G-1 … G-9.
+
+## Data Model Refinement (SR-004, 2026-10-21)
+
+- A's remote Team link names the coordinator by **`coordinatorAddress`**, as the Team tree does, instead of a separate `coordinatorAgentRunId`. The coordinator is a member, so its run ID is the member at that address; each fact is stored once. The cases above are unaffected: wherever they need the coordinator's run ID (the result, the Task record, the work packet), it is found in `members`.
+- In memory, remote links are explicitly kinded (`agent` / `agent_team`).
