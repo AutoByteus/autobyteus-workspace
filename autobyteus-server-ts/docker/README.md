@@ -312,6 +312,12 @@ provider configuration. ZCode and DSH are not included. The intended auth flow i
    - `agy` (follow the provider sign-in flow)
    - `grok` (follow the provider sign-in flow)
 
+For Codex and Grok, the app can start this login for you: in that node's window,
+open Settings -> Agent Runtimes and choose **Sign in**. The login runs on the node
+and opens in its Chromium; finish it in the workspace's **VNC Viewer**. The row
+shows Signed in when it is done. Claude and Antigravity are signed in from the
+terminal as listed above.
+
 Use the backend's root terminal, or `docker exec -it --user root <container> bash`
 with `HOME=/root`. A terminal opened directly in the noVNC desktop can instead
 run as `vncuser`; its login/configuration is separate from the root backend.
