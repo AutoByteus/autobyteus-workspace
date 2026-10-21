@@ -86,3 +86,39 @@ None.
 ## Rollback Criteria
 
 Revert the merge on `personal`. With the switch off (the default), no remote path runs. Older builds read the new optional fields tolerantly or drop them.
+
+## Finalization Record (DR-001)
+
+### Repository Finalization
+
+- Ticket branch `codex/remote-agent-teams`, final commit `4a962ffb47`:
+  - path hygiene `exit 0`; licensing consistent;
+  - Secret Gate `origin/personal..HEAD`: 20 commits, PASS;
+  - pushed to `origin` as a new branch.
+- Finalization target: `origin` / `personal`, still `a22394f0ce` after verification and at every fetch.
+- Merge: `finalize/remote-agent-teams` from `origin/personal`, `git merge --no-ff`, giving `829928ceb6` with a tree identical to the ticket branch. Secret Gate on the merged state: PASS.
+- `git push origin HEAD:personal`: `a22394f0ce..829928ceb6`. Repository finalization: `Completed`.
+- This record follows as a commit on the finalize branch, after its own Secret Gate and refetch.
+
+### Release / Publication / Deployment
+
+- `No release`; `Not required`.
+
+### Post-Finalization Cleanup
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-agent-teams`: `Completed`, removed with `git worktree remove --force` right after this record's push.
+  - Checked first: no process runs from it.
+  - Everything tracked is pushed. The untracked `*/dist/` build output goes with it.
+  - Prune: `Completed`.
+- Local branches `codex/remote-agent-teams` (`4a962ffb47`, contained in `origin/personal`) and `finalize/remote-agent-teams`: `Completed`, deleted with the worktree.
+- Remote ticket branch: kept on `origin` (`Not required`).
+
+### Final Status
+
+- Verification complete: `Yes` (from the evidence; no user check needed).
+- Repository finalization complete: `Yes` (`829928ceb6` on `personal`).
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`).
+- Applicable safe cleanup complete or not required: `Yes`.
+- Unresolved blocker: `None`.
+- Successful terminal package eligible for return: `Yes`.
+- Terminal package sent to the Solution Designer: `Yes`, after this record's push and the cleanup.
