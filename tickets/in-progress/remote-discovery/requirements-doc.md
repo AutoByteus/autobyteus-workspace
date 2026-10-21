@@ -6,6 +6,7 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task autobyteus-261, approved by the user 2026-10-21.
 - Parent: autobyteus-25 (slice S5). It builds on 191 (slice 1), 245 (no publishing) and 247 (remote Agent Teams).
 - Investigation: [investigation-notes.md](investigation-notes.md).
+- Full Task text: `/Users/normy/autobyteus_org/autobyteus-delivery-receipts/cross-node-follow-ups/autobyteus-261-full-task.md` (the PTM, 2026-10-21).
 
 ## Problem And Desired Outcome
 
@@ -41,6 +42,7 @@ Today an agent can delegate to a peer only when someone tells it both the node n
 - No caching, no background polling, no peer push.
 - No version negotiation (rule 9).
 - No definitions, prompts, settings, members, launch settings or node IDs revealed to peers or agents.
+- No proof of node identity: it is claimed, not proven, until S6. A listing is answered to any registered peer, the same rule as a delegation.
 
 ### Preserved Behavior Boundary
 
@@ -80,6 +82,7 @@ The user for scope, the tool choice and the tool texts; the Solution Designer wi
 | AC-404 | REQ-406 | With A's switch off, both calls with a node are refused "turned off" and no request leaves A. Without the tool in its definition, an agent has no peer list. An unregistered `node` is refused with the existing text. | Unit plus E2E |
 | AC-405 | REQ-407 | A Team added on beta between two calls appears in the second call. | E2E |
 | AC-406 | REQ-408 | A delegation to a Team on beta that cannot run reads "The Agent Team Studio Team on node "beta" cannot run there: …"; one to an Agent reads as today. An unknown address reads "…has no Agent or Agent Team at …". The `node` description has the new text. | Unit plus E2E |
+| AC-408 | REQ-401, REQ-402, REQ-408 | Between the user's desktop node and a Docker node, in both directions: list the nodes, list the other node's Agent Teams, and delegate to one without being told its address. | The user's two-node check (the Task's "Done when") |
 | AC-407 | Preserved | Local `list_available_agents` without arguments returns the same entries in the same order as before (except DEC-405). The existing 191/245/247 E2E passes. | Existing suites |
 
 ## Relevant Scenarios And Journeys

@@ -15,3 +15,4 @@
 - Affected: REQ-401 … REQ-409, AC-401 … AC-407, DEC-401 … DEC-408.
 - Approval: pending (DEC-401, DEC-402, DEC-406, the DEC-407 texts, DEC-408).
 - Next: the user's decisions in the conversation.
+- SR-001 addendum (same day): the PTM sent the full Task text. Added AC-408 (the user's desktop ↔ Docker check, both directions) and the S6 note on claimed identity. No other differences from the summary.
