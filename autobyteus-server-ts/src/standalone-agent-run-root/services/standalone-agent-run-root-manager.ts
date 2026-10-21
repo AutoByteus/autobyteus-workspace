@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
   interpretDelegatedLaunchValidation,
@@ -154,6 +155,20 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     } finally {
       if (this.pending.get(hostRunId) === attempt) this.pending.delete(hostRunId);
     }
+  }
+
+  /** N-303 / N-304: a peer's request checked against a run's stored links (back-link included); it loads nothing. */
+  async storedRemoteLinkCheck(hostRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const hostRunId = hostRunIdInput.trim();
+    if (this.hasRoot(hostRunId)) return "proceed";
+    const metadata = await this.options.host.readMetadata(hostRunId);
+    if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
+    const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
+    const delegatedFrom = metadata.delegatedFrom ?? null;
+    return storedRemoteLinkCheck({
+      remoteRuns: () => tree?.remoteTaskExecutions ?? [],
+      backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,
+    }, query);
   }
 
   /** `StandaloneRunCommandPort`: the root executes the host command in its gate. */

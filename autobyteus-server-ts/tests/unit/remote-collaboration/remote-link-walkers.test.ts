@@ -219,7 +219,8 @@ describe.each([
     expect(w.hasAgentExecution("unrelated-run")).toBe(false);
     expect(w.adapter(w.links()).ownershipChainFor(REMOTE)).toEqual([{ agentRunId: REMOTE }]);
     const endpoint = w.links().endpointFor(REMOTE);
-    expect(endpoint).toMatchObject({ kind: "delegated_run", pairedAgentRunId: w.delegator });
+    expect(endpoint?.kind).toBe("delegated_run");
+    expect([...endpoint!.pairedAgentRunIds]).toEqual([w.delegator]);
     expect(endpoint?.allowsSender(w.delegator)).toBe(true);
     expect(endpoint?.allowsSender(LOCAL)).toBe(false);
     expect(w.links().endpointFor(LOCAL)).toBeNull();

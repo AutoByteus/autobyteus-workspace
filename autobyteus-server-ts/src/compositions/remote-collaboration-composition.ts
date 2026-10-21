@@ -8,6 +8,7 @@ import {
 } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver } from "../remote-collaboration/inbound/remote-message-receiver.js";
+import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
@@ -26,8 +27,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
   tempWorkspaceDir: string;
   agentRuns: Pick<AgentRunService, "prepareAgentRun">;
-  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun">;
-  orgRuns: Pick<AgentOrgRunService, "getActive" | "restore">;
+  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun" | "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun">;
+  orgRuns: Pick<AgentOrgRunService, "getActive" | "restore" | "storedRemoteLinkCheck">;
 }>): (() => void) => {
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
@@ -35,8 +36,16 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     ownNodeId: () => getServerInstanceIdentityService().getServerInstanceId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     handlers: (services) => ({
-      delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns }),
+      delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,
+        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }) }),
       messages: new RemoteMessageReceiver({
+        storedLinkCheck: (root, query) => {
+          switch (root.kind) {
+            case "agent": return getStandaloneAgentRunRootManager().storedRemoteLinkCheck(root.runId, query);
+            case "agent_team": return input.teamRuns.storedRemoteLinkCheck(root.runId, query);
+            case "agent_org": return input.orgRuns.storedRemoteLinkCheck(root.runId, query);
+          }
+        },
         standalone: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
         team: (teamRunId) => input.teamRuns.resolveManagedTeamRun(teamRunId),
         org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),

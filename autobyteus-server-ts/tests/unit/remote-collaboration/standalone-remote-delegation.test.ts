@@ -151,6 +151,7 @@ const buildNode = async (input: Readonly<{
       return { runId, activationState: "PREPARED" as const, preparedExpiresAt: T0 };
     }) } }),
     messages: new RemoteMessageReceiver({
+      storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,

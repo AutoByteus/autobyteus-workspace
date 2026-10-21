@@ -25,20 +25,44 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
 
 const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" } };
 const message = {
-  nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1", targetAgentRunId: "publisher_7f3",
+  nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1",
+  targetRoot: { kind: "agent" as const, runId: "publisher_7f3" }, targetAgentRunId: "publisher_7f3",
   content: "hi", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z",
 };
 
 describe("PeerClient", () => {
   it("sends the envelope and the request to the peer's pinned URL, with no credential, and returns the peer's run ID", async () => {
-    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, agentRunId: "publisher_7f3" }));
-    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, agentRunId: "publisher_7f3" });
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent", agentRunId: "publisher_7f3" }));
+    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3" });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/delegated-runs");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, address: "/publisher",
       delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" } });
     expect(init.headers).toEqual({ "content-type": "application/json" });
     expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("autobyteus-247 G-7: reads a started Team (its coordinator and members); an answer without the run it started is unreachable", async () => {
+    const members = [{ address: "/studio/lead", agentRunId: "lead_1" }, { address: "/studio/writer", agentRunId: "writer_1" }];
+    const team = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members }));
+    await expect(team.client.startDelegatedRun({ ...start, address: "/studio" })).resolves.toEqual({
+      accepted: true, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members });
+    for (const body of [
+      { accepted: true, nodeId: PEER.nodeId, agentRunId: "publisher_7f3" },
+      { accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/other", members },
+      { accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members: [] },
+    ]) {
+      const f = client(async () => answer(body));
+      await expect(f.client.startDelegatedRun(start)).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
+    }
+  });
+
+  it("G-2: a message names the root that receives it on the peer", async () => {
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    await expect(f.client.deliverMessage({ ...message, targetRoot: { kind: "agent_team", runId: "team_1" }, targetAgentRunId: "lead_1" })).resolves.toEqual({ accepted: true });
+    const body = JSON.parse(String(f.fetch.mock.calls[0]![1].body));
+    expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" } });
+    expect("coordinatingRun" in body).toBe(false);
   });
 
   it("refuses an answer from a server that is not the pinned peer (identity mismatch)", async () => {

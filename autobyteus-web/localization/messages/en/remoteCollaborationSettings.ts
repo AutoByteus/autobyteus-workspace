@@ -23,8 +23,8 @@ const remoteCollaborationSettingsMessages = {
   'settings.components.settings.RemoteCollaboration.peers.remove': 'Remove',
   'settings.components.settings.RemoteCollaboration.peers.empty': 'No peer nodes yet.',
   'settings.components.settings.RemoteCollaboration.peers.switchHint': 'Turn Remote Collaboration on to add a peer: adding one contacts the node to check who it is.',
-  'settings.components.settings.RemoteCollaboration.availability.title': 'Agents available to peers',
-  'settings.components.settings.RemoteCollaboration.availability.note': 'With Remote Collaboration on, registered peer nodes can start any shared agent of this node. It runs with its own default runtime and model, in this node\'s temp workspace, with tool calls auto-approved. An agent whose default runtime signs in with this node\'s local login (for example Codex or Claude) uses that login for every registered peer. An agent with no default runtime and model is refused.',
+  'settings.components.settings.RemoteCollaboration.availability.title': 'Agents and Agent Teams available to peers',
+  'settings.components.settings.RemoteCollaboration.availability.note': 'With Remote Collaboration on, registered peer nodes can start any shared agent or Agent Team of this node. Each agent runs with its own default runtime and model (a team member without one uses its team\'s default), in this node\'s temp workspace, and every agent of the run has its tool calls auto-approved. An agent whose default runtime signs in with this node\'s local login (for example Codex or Claude) uses that login for every registered peer. An agent, or a team member, with no default runtime and model is refused.',
 } satisfies TranslationCatalog;
 
 export default remoteCollaborationSettingsMessages;

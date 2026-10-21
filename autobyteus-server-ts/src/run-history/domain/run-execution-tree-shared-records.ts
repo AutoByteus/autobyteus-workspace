@@ -170,6 +170,10 @@ export type RemoteTaskExecution = RemoteTaskAgentExecution | RemoteTaskTeamExecu
 export const remoteTaskExecutionRunId = (link: RemoteTaskExecution): string =>
   link.kind === "agent" ? link.agentRunId : link.teamRunId;
 
+/** The coordinator's run ID of a remote Team link (validation keeps the coordinator among the members). */
+export const remoteTeamCoordinatorRunId = (link: RemoteTaskTeamExecution): string =>
+  link.members.find((member) => member.address === link.coordinatorAddress)!.agentRunId;
+
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;
   bindingId: string;

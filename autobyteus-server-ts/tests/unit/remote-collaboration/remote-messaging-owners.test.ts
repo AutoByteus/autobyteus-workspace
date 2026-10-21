@@ -6,13 +6,13 @@ import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { delegatedRunEndpoint, delegatorEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
+import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint } from "../../../src/agent-collaboration/execution/remote/remote-endpoint.js";
 import { RemoteMessageSend } from "../../../src/agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { RootTaskExecutionResourceScope } from "../../../src/agent-collaboration/execution/task/root-task-execution-resource-scope.js";
-import type { RemoteTaskAgentExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskAgentExecution, RemoteTaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 /**
@@ -26,6 +26,9 @@ const REMOTE = "publisher_7f3";
 const HOST = "publisher_host";
 const PEER_NODE = "srv_peer_b";
 const link: RemoteTaskAgentExecution = Object.freeze({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: PEER_NODE, delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
+const teamLink: RemoteTaskTeamExecution = Object.freeze({ kind: "agent_team", address: "/studio", teamRunId: "team_b", nodeId: PEER_NODE,
+  coordinatorAddress: "/studio/lead" as never, members: [{ address: "/studio/lead" as never, agentRunId: "lead_b" }, { address: "/studio/writer" as never, agentRunId: "writer_b" }],
+  delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
 const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", coordinatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: DELEGATOR });
 const message = (sender: string, receiver: string): CollaborationCommunicationMessage => Object.freeze({
   messageId: "collabmsg_1", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "hello", messageType: "agent_message",
@@ -35,34 +38,69 @@ const message = (sender: string, receiver: string): CollaborationCommunicationMe
 describe("remote endpoint kinds (AR-006)", () => {
   it("a delegated run (on the delegating node): only its delegator, the link's Task, a plain message request", () => {
     const endpoint = delegatedRunEndpoint(link);
-    expect(endpoint).toMatchObject({ kind: "delegated_run", reference: { nodeId: PEER_NODE, agentRunId: REMOTE }, pairedAgentRunId: DELEGATOR, displayName: "publisher" });
+    expect(endpoint).toMatchObject({ kind: "delegated_run", reference: { nodeId: PEER_NODE, agentRunId: REMOTE }, displayName: "publisher" });
+    expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
     expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
     expect(endpoint.ownershipChain()).toEqual([{ agentRunId: REMOTE }]);
     expect(endpoint.transmission(message(DELEGATOR, REMOTE))).toEqual({ nodeId: PEER_NODE, kind: "message", messageId: "collabmsg_1",
-      senderAgentRunId: DELEGATOR, targetAgentRunId: REMOTE, content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:01:00.000Z" });
+      senderAgentRunId: DELEGATOR, targetRoot: { kind: "agent", runId: REMOTE }, targetAgentRunId: REMOTE, content: "hello", messageType: "agent_message",
+      createdAt: "2026-10-20T10:01:00.000Z" });
     expect(endpoint.refusals.notPermitted).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
   });
 
+  it("autobyteus-247 G-1: a delegated Team is one endpoint per member; only its delegator, the Team's Task, the Team as the root there", () => {
+    const endpoints = delegatedTeamEndpoints(teamLink);
+    expect(endpoints.map((endpoint) => [endpoint.kind, endpoint.reference.agentRunId, endpoint.displayName])).toEqual([
+      ["delegated_team", "lead_b", "lead"], ["delegated_team", "writer_b", "writer"]]);
+    for (const endpoint of endpoints) {
+      expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
+      expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
+      expect(endpoint.ownershipChain()).toEqual([{ teamRunId: "team_b" }]);
+      expect(endpoint.closureFence({ teamRunId: "team_b" }, "docker")).toMatchObject({ outcome: "fenced_remote", stopped: false });
+    }
+    expect(endpoints[1]!.transmission(message(DELEGATOR, "writer_b"))).toMatchObject({ nodeId: PEER_NODE,
+      targetRoot: { kind: "agent_team", runId: "team_b" }, targetAgentRunId: "writer_b" });
+  });
+
   it("a delegator (on the node that runs the delegated run): only the host, no Task here, the coordinating run echoed, the work packet", () => {
-    const endpoint = delegatorEndpoint(HOST, delegatedFrom);
-    expect(endpoint).toMatchObject({ kind: "delegator", reference: { nodeId: "srv_node_a", agentRunId: DELEGATOR }, pairedAgentRunId: HOST });
+    const endpoint = delegatorEndpoint([HOST], delegatedFrom);
+    expect(endpoint).toMatchObject({ kind: "delegator", reference: { nodeId: "srv_node_a", agentRunId: DELEGATOR } });
+    expect([...endpoint.pairedAgentRunIds]).toEqual([HOST]);
     expect([endpoint.allowsSender(HOST), endpoint.allowsSender("child"), endpoint.allowsTarget(HOST), endpoint.allowsTarget("child")]).toEqual([true, false, true, false]);
     expect(endpoint.ownershipChain()).toEqual([]);
-    expect(endpoint.transmission(message(HOST, DELEGATOR))).toMatchObject({ nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team", runId: "team_a" } });
+    expect(endpoint.transmission(message(HOST, DELEGATOR))).toMatchObject({ nodeId: "srv_node_a", targetRoot: { kind: "agent_team", runId: "team_a" } });
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, HOST)).toBe(true);
     expect(endpoint.admitsWorkPacket("srv_other", DELEGATOR, HOST)).toBe(false);
     expect(endpoint.admitsWorkPacket("srv_node_a", "someone", HOST)).toBe(false);
     expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, "child")).toBe(false);
   });
 
+  it("G-8: a Team root's delegator pairs with every member; the work packet is for a member, from the delegator on its node", () => {
+    const endpoint = delegatorEndpoint(["lead_b", "writer_b"], delegatedFrom);
+    expect([endpoint.allowsSender("lead_b"), endpoint.allowsSender("writer_b"), endpoint.allowsTarget("writer_b"), endpoint.allowsTarget("copy_b")]).toEqual([true, true, true, false]);
+    expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, "lead_b")).toBe(true);
+    expect(endpoint.admitsWorkPacket("srv_node_a", DELEGATOR, "copy_b")).toBe(false);
+  });
+
   it("RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target", () => {
-    const links = new RemoteRunLinks({ remoteRuns: () => [link], backLink: { hostRunId: HOST, delegatedFrom } });
+    const links = new RemoteRunLinks({ remoteRuns: () => [link, teamLink], backLink: { pairedAgentRunIds: () => [HOST], delegatedFrom } });
     expect(links.endpointFor(REMOTE)?.kind).toBe("delegated_run");
     expect(links.endpointFor(DELEGATOR)?.kind).toBe("delegator");
     expect(links.has(HOST)).toBe(false);
     expect(links.inboundEndpoint(PEER_NODE, REMOTE, DELEGATOR)?.kind).toBe("delegated_run");
     expect(links.inboundEndpoint("srv_elsewhere", REMOTE, DELEGATOR)).toBeNull();
     expect(links.inboundEndpoint(PEER_NODE, REMOTE, "another_local")).toBeNull();
+    // Team links (G-3, G-4, G-6): every member is an endpoint; the link is found by its team run ID.
+    expect(links.endpointFor("writer_b")?.kind).toBe("delegated_team");
+    expect(links.inboundEndpoint(PEER_NODE, "writer_b", DELEGATOR)?.kind).toBe("delegated_team");
+    expect(links.has("team_b")).toBe(false);
+    expect(links.teamLinkFor("team_b")).toBe(teamLink);
+    expect(links.teamLinkFor(REMOTE)).toBeNull();
+    // The one link check for both inbound kinds (the stored check before a restore, N-303, uses it).
+    expect(links.admitsInbound({ kind: "message", fromNodeId: PEER_NODE, senderAgentRunId: "lead_b", targetAgentRunId: DELEGATOR })).toBe(true);
+    expect(links.admitsInbound({ kind: "message", fromNodeId: PEER_NODE, senderAgentRunId: "lead_b", targetAgentRunId: HOST })).toBe(false);
+    expect(links.admitsInbound({ kind: "work_packet", fromNodeId: "srv_node_a", senderAgentRunId: DELEGATOR, targetAgentRunId: HOST })).toBe(true);
+    expect(links.admitsInbound({ kind: "work_packet", fromNodeId: PEER_NODE, senderAgentRunId: "lead_b", targetAgentRunId: DELEGATOR })).toBe(false);
   });
 });
 

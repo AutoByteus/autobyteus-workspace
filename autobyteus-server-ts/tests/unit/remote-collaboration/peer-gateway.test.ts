@@ -13,12 +13,12 @@ const startBody = (overrides: Record<string, unknown> = {}) => ({
 });
 const messageBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, kind: "message", messageId: "collabmsg_1",
-  sender: { agentRunId: "agent_a1" }, target: { agentRunId: "publisher_7f3" },
+  sender: { agentRunId: "agent_a1" }, targetRoot: { kind: "agent", runId: "publisher_7f3" }, target: { agentRunId: "publisher_7f3" },
   content: "hello", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z", ...overrides,
 });
 
 const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
-  const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, agentRunId: "publisher_7f3" })) };
+  const delegatedRuns = { start: vi.fn(async () => ({ accepted: true as const, kind: "agent" as const, agentRunId: "publisher_7f3" })) };
   const messages = { accept: vi.fn(async () => ({ accepted: true as const })) };
   const gate = new PeerGateway({
     ownNodeId: async () => SELF,
@@ -33,10 +33,11 @@ const gateway = (input: { enabled?: boolean; registered?: boolean } = {}) => {
 describe("PeerGateway", () => {
   it("dispatches an admitted request to the one handler of its kind, with the calling peer; every answer names this node", async () => {
     const f = gateway();
-    await expect(f.gate.startDelegatedRun(startBody())).resolves.toEqual({ status: 200, answer: { accepted: true, agentRunId: "publisher_7f3", nodeId: SELF } });
+    await expect(f.gate.startDelegatedRun(startBody())).resolves.toEqual({ status: 200, answer: { accepted: true, kind: "agent", agentRunId: "publisher_7f3", nodeId: SELF } });
     expect(f.delegatedRuns.start).toHaveBeenCalledWith(expect.objectContaining({ address: "/publisher", delegator: { agentRunId: "agent_a1" } }), PEER);
     await expect(f.gate.deliverMessage(messageBody())).resolves.toEqual({ status: 200, answer: { accepted: true, nodeId: SELF } });
-    expect(f.messages.accept).toHaveBeenCalledWith(expect.objectContaining({ kind: "message", messageId: "collabmsg_1" }), PEER);
+    expect(f.messages.accept).toHaveBeenCalledWith(expect.objectContaining({ kind: "message", messageId: "collabmsg_1",
+      targetRoot: { kind: "agent", runId: "publisher_7f3" } }), PEER);
   });
 
   it("checks the target node first, then the switch, then the peer registration, before any dispatch", async () => {
@@ -60,7 +61,10 @@ describe("PeerGateway", () => {
     await expect(f.gate.startDelegatedRun({ fromNodeId: PEER.nodeId })).resolves.toMatchObject({ status: 400, answer: { accepted: false, code: "REMOTE_REQUEST_INVALID" } });
     await expect(f.gate.deliverMessage(messageBody({ kind: "attachment" }))).resolves.toMatchObject({ status: 400 });
     await expect(f.gate.deliverMessage(messageBody({ messageId: undefined }))).resolves.toMatchObject({ status: 400 });
-    await expect(f.gate.deliverMessage(messageBody({ coordinatingRun: { kind: "nope", runId: "x" } }))).resolves.toMatchObject({ status: 400 });
+    // autobyteus-247 G-2: every message and work packet names its root on this node.
+    await expect(f.gate.deliverMessage(messageBody({ targetRoot: { kind: "nope", runId: "x" } }))).resolves.toMatchObject({ status: 400 });
+    await expect(f.gate.deliverMessage(messageBody({ targetRoot: undefined }))).resolves.toMatchObject({ status: 400 });
+    await expect(f.gate.deliverMessage(messageBody({ kind: "work_packet", messageId: undefined, targetRoot: undefined }))).resolves.toMatchObject({ status: 400 });
     expect(f.messages.accept).not.toHaveBeenCalled();
   });
 

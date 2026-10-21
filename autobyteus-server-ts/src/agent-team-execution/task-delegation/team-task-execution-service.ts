@@ -20,10 +20,12 @@ export class TeamTaskExecutionService {
 
   constructor(options: TeamTaskExecutionServiceOptions) {
     this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources,
-      remoteRunLinks: options.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => options.remoteLinks.has(agentRunId) } });
+      remoteRunLinks: options.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => options.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => options.remoteLinks.teamLinkFor(teamRunId) !== null },
+      onLiveLeaseReleased: options.onLiveLeaseReleased });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
+  hasLiveLeases(): boolean { return this.lifecycle.hasLiveLeases(); }
   assertMessageScope(sender: string, recipient: string): void { this.lifecycle.assertMessageScope(sender, recipient); }
   releaseTaskExecutions(refs: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.lifecycle.releaseTaskExecutions(refs);

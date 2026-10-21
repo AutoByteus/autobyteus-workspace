@@ -36,6 +36,7 @@ import type { TaskExecutionResourcePort } from "../../agent-collaboration/execut
 import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
   modelSelectionValidator?: RunModelSelectionValidator;
@@ -136,6 +137,13 @@ export class AgentOrgRunManager {
   getActive(orgRunIdInput: string): AgentOrgRun | null {
     const run = this.active.get(required(orgRunIdInput, "orgRunId")) ?? null;
     return run?.isActive() ? run : null;
+  }
+  /** N-303 / N-304: a peer's request checked against an inactive Org run's stored remote links; it loads nothing. */
+  async storedRemoteLinkCheck(orgRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const orgRunId = required(orgRunIdInput, "orgRunId");
+    if (this.active.has(orgRunId)) return "proceed";
+    const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    return storedRemoteLinkCheck(tree ? { remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] } : null, query);
   }
   async getCollaborationRecordsSnapshot(orgRunIdInput: string): Promise<AgentOrgCollaborationRecordsSnapshot> {
     const orgRunId = required(orgRunIdInput, "orgRunId");

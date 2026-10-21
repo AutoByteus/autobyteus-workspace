@@ -23,7 +23,25 @@ export const PEER_REQUEST_TIMEOUT_MS = 20_000;
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Pick<Response, "ok" | "status" | "json">>;
 
-type PeerAnswer = Readonly<{ accepted: boolean; nodeId?: unknown; code?: unknown; message?: unknown; targetName?: unknown; agentRunId?: unknown }>;
+type PeerAnswer = Readonly<{ accepted: boolean; nodeId?: unknown; code?: unknown; message?: unknown; targetName?: unknown; [field: string]: unknown }>;
+
+const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
+
+/**
+ * What the peer started, read strictly from its accepted answer (autobyteus-247 G-7): an Agent run, or a Team run
+ * whose coordinator is one of its members. Anything else is `null` (a malformed answer).
+ */
+const startedRunOf = (answer: PeerAnswer): Exclude<RemoteStartedRun, { accepted: false }> | null => {
+  if (answer.kind === "agent") return nonEmpty(answer.agentRunId) ? Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId: answer.agentRunId }) : null;
+  if (answer.kind !== "agent_team" || !nonEmpty(answer.teamRunId) || !nonEmpty(answer.coordinatorAddress) || !Array.isArray(answer.members)) return null;
+  const members = answer.members.map((member: unknown) => {
+    const entry = member as { address?: unknown; agentRunId?: unknown } | null;
+    return entry && nonEmpty(entry.address) && nonEmpty(entry.agentRunId) ? Object.freeze({ address: entry.address, agentRunId: entry.agentRunId }) : null;
+  });
+  if (!members.length || members.some((member) => member === null) || !members.some((member) => member!.address === answer.coordinatorAddress)) return null;
+  return Object.freeze({ accepted: true as const, kind: "agent_team" as const, teamRunId: answer.teamRunId, coordinatorAddress: answer.coordinatorAddress,
+    members: Object.freeze(members as Readonly<{ address: string; agentRunId: string }>[]) });
+};
 
 const messageOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
 const isTimeout = (error: unknown): boolean => (error as { name?: string } | null)?.name === "TimeoutError"
@@ -64,9 +82,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       address: input.address,
       delegator: { agentRunId: input.delegatorAgentRunId },
       coordinatingRun: { kind: input.coordinatingRun.kind, runId: input.coordinatingRun.runId },
-    }), "did not answer in time", (answer, peer) => typeof answer.agentRunId === "string" && answer.agentRunId.trim()
-      ? Object.freeze({ accepted: true as const, agentRunId: answer.agentRunId })
-      : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without a run id")));
+    }), "did not answer in time", (answer, peer) => startedRunOf(answer)
+      ?? refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the run it started")));
   }
 
   async deliverMessage(input: RemoteMessageTransmission): Promise<RemoteDeliveryReceipt> {
@@ -75,8 +92,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       kind: input.kind,
       ...(input.messageId ? { messageId: input.messageId } : {}),
       sender: { agentRunId: input.senderAgentRunId },
+      targetRoot: { kind: input.targetRoot.kind, runId: input.targetRoot.runId },
       target: { agentRunId: input.targetAgentRunId },
-      ...(input.coordinatingRun ? { coordinatingRun: { kind: input.coordinatingRun.kind, runId: input.coordinatingRun.runId } } : {}),
       content: input.content,
       messageType: input.messageType,
       createdAt: input.createdAt,

@@ -345,6 +345,46 @@ busy rejection. Codex may append to the exact active turn when AgentRun selects
 that capability; AutoByteus and Claude wait for a later turn. Team managers do
 not own another input queue or infer this policy from provider state.
 
+### Team Runs Started By A Peer Node
+
+A shared Agent Team that a peer node delegates to (see
+[Remote Collaboration](remote_collaboration.md)) runs here as an ordinary
+top-level Team run: it is in run history and can be opened, watched and
+stopped. `RemoteTeamRunStarter` creates it through `TeamRunService.createTeamRun`
+with each member's resolved launch (the temp workspace, auto-approve on) and an
+optional `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`, which
+the root manager keeps on the tree (`team_run_execution_tree.json`, tolerant
+read: absent means not peer-started; exact write). Only the coordinator starts,
+when the peer's work packet reaches it; the others start when work reaches them.
+
+The root builds its remote links from the tree (`team-run-remote-links.ts`): the
+delegator is a `delegator` endpoint paired with every configured member, and
+`peerStartedTeamMembers(tree)` is the one member set the start answer and the
+pair rule use. Its message log and package validation include the delegator
+through `agentRunIdsOfTree`.
+
+Such a root has an idle shutdown, which local Team runs do not have:
+`RemoteTeamIdleShutdown` (`services/remote-team-idle-shutdown.ts`). It is a
+**quiet** shutdown, never the user Stop:
+
+- it arms on the delegated-child schedule's signals and grace setting
+  (`AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS`): an agent of the root
+  reports `idle`, `offline` or `error`, a background task ends, or a live lease
+  is released; it also arms once when the root opens, so a Team that never gets
+  work stops; an agent `running` or `initializing` cancels it;
+- on fire, `RootTeamRun.shutDownIfQuiet()` decides inside the root's gate: it
+  skips while the root has open child work or a live lease, and otherwise calls
+  the Team's own all-or-nothing `TeamRunBackend.tryPrepareTerminationIfQuiescent()`
+  (the same rule a Team copy's idle shutdown uses). A member waiting for tool
+  approval or with a running background task is not quiet, so nothing happens and
+  a later quiet signal re-arms;
+- a prepared termination is committed and the root ends as a Stop ends: the
+  manager unregisters it, keeping the package, catalog row, tree and history. No
+  member is interrupted.
+
+The next message from the peer restores it (`TeamRunService.resolveManagedTeamRun`),
+after the stored-link check, and wakes the member it is for.
+
 ## Stop, Retained History, And Later Delete
 
 The root lifecycle and stored-history lifecycle are intentionally separate:
@@ -894,6 +934,9 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/local/registries/task-team-execution-registry.ts`
 - `src/agent-team-execution/services/flat-team-topology-planner.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
+- `src/agent-team-execution/services/remote-team-idle-shutdown.ts`
+- `src/agent-team-execution/domain/team-run-remote-links.ts`
+- `src/remote-collaboration/inbound/remote-team-run-starter.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`

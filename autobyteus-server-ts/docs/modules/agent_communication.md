@@ -481,7 +481,8 @@ Team copy:
   `defaults_only`). There is no run root on the receiving node, so there is no inherited layer: workspace
   and auto-approve come from the base (the temp workspace, auto-approve on), and the base's workspace is
   the validation context. An agent that no configured layer covers fails: with nothing complete configured,
-  `CollaboratorNoDefaultLaunchError` ("There is no default runtime configured for the target agent <name>");
+  `CollaboratorNoDefaultLaunchError` ("There is no default runtime configured for the target agent <name>",
+  or "… the target agent team <name>" for an agent of a Team);
   with a configured layer that can't be used, `CollaboratorAddError` with that layer's reason. See
   [Remote Collaboration](./remote_collaboration.md).
 - **Recorded, not re-read.** The resolved values and their source

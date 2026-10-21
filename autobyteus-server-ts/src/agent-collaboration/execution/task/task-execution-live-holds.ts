@@ -11,7 +11,12 @@ export class TaskExecutionLiveHolds {
   /** Re-checked whenever a lease is released (a Stop drains held leases outside the queue). */
   private leaseWaiters: Array<() => void> = [];
 
+  /** `onRelease`: told after every lease release (a peer-started Team's idle schedule re-arms on it, DS-004). */
+  constructor(private readonly onRelease?: () => void) {}
+
   isLeased(key: string): boolean { return this.leases.has(key); }
+  /** Any live lease is held in the root. */
+  hasLeases(): boolean { return this.leases.size > 0; }
   isStopping(key: string): boolean { return this.stopping.has(key); }
 
   /** Takes one lease on each key; the returned release is idempotent. */
@@ -29,6 +34,7 @@ export class TaskExecutionLiveHolds {
       const waiters = this.leaseWaiters;
       this.leaseWaiters = [];
       waiters.forEach((check) => check());
+      this.onRelease?.();
     };
   }
 

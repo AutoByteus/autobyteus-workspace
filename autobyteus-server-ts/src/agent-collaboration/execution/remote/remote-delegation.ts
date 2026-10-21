@@ -1,4 +1,5 @@
-import type { RemoteTaskAgentExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
@@ -11,7 +12,7 @@ import type {
 } from "../task/root-task-execution-adapter.js";
 import type { SpawnTaskInput, TaskDelegationOutcome } from "../task/task-delegation-command.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
-import { resolveRemoteRunChannel, type RemoteRunChannel } from "./remote-run-channel.js";
+import { resolveRemoteRunChannel, type RemoteRunChannel, type RemoteStartedRun, type RemoteTargetRoot } from "./remote-run-channel.js";
 import { beginRemoteTaskActivation } from "./remote-task-activation.js";
 
 /** A refusal before the Task link (by this node's channel or by the peer): nothing is left on this node. */
@@ -28,6 +29,9 @@ export class RemoteDelegationRefusedError extends Error {
  * the one caller of `startDelegatedRun` (N-13). The root's unchanged `RootTaskExecutionLifecycle` runs it.
  */
 export class RemoteDelegation {
+  /** A started Team's answer, from planning (its run ID is the plan's target) until its activation records the link. */
+  private readonly startedTeams = new Map<string, Extract<RemoteStartedRun, { kind: "agent_team" }>>();
+
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
     channel?(): RemoteRunChannel | null;
@@ -79,36 +83,56 @@ export class RemoteDelegation {
       coordinatingRun: this.coordinatingRun(),
     });
     if (!started.accepted) throw new RemoteDelegationRefusedError(started.code, started.message);
-    const execution = Object.freeze({ agentRunId: started.agentRunId });
-    return Object.freeze({ ...input, ownedAgentRunIds: Object.freeze([]), recipientAddress: placement.address,
-      target: Object.freeze({ root: this.options.root, execution, ingressAgentRunId: started.agentRunId }) });
+    const plan = (execution: TaskExecutionReference, ingressAgentRunId: string): TaskExecutionActivationPlan<TPlacement> => Object.freeze({
+      ...input, ownedAgentRunIds: Object.freeze([]), recipientAddress: placement.address,
+      target: Object.freeze({ root: this.options.root, execution, ingressAgentRunId }),
+    });
+    if (started.kind === "agent") return plan(Object.freeze({ agentRunId: started.agentRunId }), started.agentRunId);
+    // A Team (G-7): the Task's run is the Team, entered through its coordinator; the members are held until activation.
+    const coordinator = started.members.find((member) => member.address === started.coordinatorAddress)!;
+    this.startedTeams.set(started.teamRunId, started);
+    return plan(Object.freeze({ teamRunId: started.teamRunId }), coordinator.agentRunId);
   }
 
   /** The remote activation of a planned remote delegation; `commitLink` is the root's one atomic tree write. */
   beginActivation<TPlacement>(
     plan: TaskExecutionActivationPlan<TPlacement>,
     placement: RemoteAgentPlacement,
-    commitLink: (link: RemoteTaskAgentExecution) => Promise<TaskExecutionActivationCommitResult>,
+    commitLink: (link: RemoteTaskExecution) => Promise<TaskExecutionActivationCommitResult>,
   ): TaskExecutionActivationOperation {
-    const link: RemoteTaskAgentExecution = Object.freeze({
-      kind: "agent",
-      address: placement.address,
-      agentRunId: plan.target.ingressAgentRunId,
-      nodeId: placement.peer.nodeId,
-      delegatorAgentRunId: plan.identity.agentRunId,
-      startedAt: plan.startedAt,
-    });
+    const link = this.linkOf(plan, placement);
+    // The work packet goes to the Agent run, or to the Team run's coordinator, named with its root (G-2).
+    const targetRoot: RemoteTargetRoot = link.kind === "agent"
+      ? Object.freeze({ kind: "agent", runId: link.agentRunId })
+      : Object.freeze({ kind: "agent_team", runId: link.teamRunId });
     return beginRemoteTaskActivation({
       link,
+      ingressAgentRunId: plan.target.ingressAgentRunId,
       commitLink,
       sendWorkPacket: async () => {
         const channel = this.channel();
         if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
         return channel.deliverMessage({
-          nodeId: link.nodeId, kind: "work_packet", senderAgentRunId: link.delegatorAgentRunId, targetAgentRunId: link.agentRunId,
+          nodeId: link.nodeId, kind: "work_packet", senderAgentRunId: link.delegatorAgentRunId,
+          targetRoot, targetAgentRunId: plan.target.ingressAgentRunId,
           content: placement.description, messageType: "task_work_packet", createdAt: plan.startedAt,
         });
       },
+    });
+  }
+
+  /** The link the activation records: an Agent link, or a Team link with the coordinator and members planning got. */
+  private linkOf<TPlacement>(plan: TaskExecutionActivationPlan<TPlacement>, placement: RemoteAgentPlacement): RemoteTaskExecution {
+    const common = { address: placement.address, nodeId: placement.peer.nodeId, delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt };
+    const execution = plan.target.execution;
+    if ("agentRunId" in execution) return Object.freeze({ kind: "agent", ...common, agentRunId: execution.agentRunId });
+    const started = this.startedTeams.get(execution.teamRunId);
+    if (!started) throw new Error(`Remote Team run '${execution.teamRunId}' was not planned by this node.`);
+    this.startedTeams.delete(execution.teamRunId);
+    return Object.freeze({
+      kind: "agent_team", ...common, teamRunId: started.teamRunId,
+      coordinatorAddress: assertAgentTeamAddress(started.coordinatorAddress),
+      members: Object.freeze(started.members.map((member) => Object.freeze({ address: assertAgentTeamAddress(member.address), agentRunId: member.agentRunId }))),
     });
   }
 

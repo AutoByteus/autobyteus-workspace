@@ -20,11 +20,16 @@ export type PeerGatewayResponse<TAnswer> =
   | Readonly<{ status: 200; answer: TAnswer }>
   | Readonly<{ status: 400; answer: Readonly<{ accepted: false; nodeId: string; code: string; message: string }> }>;
 
+/** What a delegation handler started (the gateway adds this node's ID): an Agent run, or a Team run with its members. */
+export type StartedRunAnswer =
+  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string }>
+  | Readonly<{ accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly Readonly<{ address: string; agentRunId: string }>[] }>;
+
 /** A refusal as a handler returns it (with the target's name when it has one); the gateway adds this node's ID. */
 export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string; targetName?: string }>;
 
 export type DelegatedRunHandler = Readonly<{
-  start(request: StartDelegatedRunRequest, from: PeerNode): Promise<Readonly<{ accepted: true; agentRunId: string }> | PeerHandlerRefusal>;
+  start(request: StartDelegatedRunRequest, from: PeerNode): Promise<StartedRunAnswer | PeerHandlerRefusal>;
 }>;
 export type RemoteMessageHandler = Readonly<{
   accept(request: DeliverRemoteMessageRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
@@ -62,8 +67,8 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
     kind: body.kind,
     ...(body.kind === "message" ? { messageId: field(() => requiredString(body.messageId, "messageId")) } : {}),
     sender: runRef(body.sender, "sender"),
+    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
     target: runRef(body.target, "target"),
-    ...(body.coordinatingRun === undefined ? {} : { coordinatingRun: coordinatingRunOf(body.coordinatingRun, "coordinatingRun") }),
     content: body.content,
     messageType: field(() => requiredString(body.messageType, "messageType")),
     createdAt: field(() => isoTimestamp(body.createdAt, "createdAt")),

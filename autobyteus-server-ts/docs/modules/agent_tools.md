@@ -286,11 +286,14 @@ with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-an
 parser requires exactly one mode.
 
 With `node` (the name of a registered peer node), the described mode starts the
-task agent on that node from the Agent at the catalog address `recipient_address` there (any shared
-Agent of that node, which runs with its own default runtime and model); a
-`task_id` or `reference_files` with `node` is refused before anything is sent.
-The success result then also names `node`. Follow-ups use `send_message_to` by
-the returned run ID as usual. See [Remote Collaboration](remote_collaboration.md).
+task agent (or task agent team) on that node from the Agent or Agent Team at the catalog
+address `recipient_address` there (any shared Agent or shared Agent Team of that node; each
+agent runs with its own default runtime and model, a team member without one with its
+team's default); a `task_id` or `reference_files` with `node` is refused before anything is
+sent. The success result is the local copy's shape plus `node`: for a Team,
+`{delegated: true, target_kind: "team", target_team_run_id,
+target_team_coordinator_agent_run_id, node}`. Follow-ups use `send_message_to` by the
+returned run ID (for a Team, the coordinator's or any member's run ID) as usual. See [Remote Collaboration](remote_collaboration.md).
 
 The result is a strict union, also published as the MCP output schema
 (`anyOf`). It names every ID for what it is:
