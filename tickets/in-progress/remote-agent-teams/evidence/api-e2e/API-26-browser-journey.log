@@ -1,0 +1,31 @@
+# API-26 (REQ-307, BEH-305) browser journey on the receiving node: a peer-started Team run | code 13131733b9 + 9ec78440e2 at HEAD 824562b6a2 (dist API-00) | macOS, agent browser tool (Chromium) | 2026-10-21 ~07:47-07:49 UTC
+
+Setup (temporary, test-owned): `node evidence/api-e2e/API-26-setup-two-nodes.mjs <autobyteus-server-ts> <tests/fixtures/agy-failure-cli.mjs>`
+- alpha http://127.0.0.1:60473, beta http://127.0.0.1:60488, temp root /private/var/folders/.../T/api26-two-nodes-m9cdrJ (own data roots and HOMEs, clean env, scripted AGY `linked_skills`, beta's CLI also offers `alt-model`)
+- switch on both, registered both ways ("beta-node" on alpha, "alpha-node" on beta); nothing published
+- beta: shared Agents Publisher (AGY gemini-3.8-flash-low default) and Checker (no default); shared Agent Team "Studio Team" (coordinator lead = Publisher, checker = Checker, Team default AGY alt-model)
+- alpha standalone run delegator_0e35af55664e4707b0db289a4305300c called delegate_task({node:"beta-node", recipient_address:"/studio_team", description:"Cut the launch trailer and have it checked. Marker BROWSER-TEAM-PACKET."})
+  → {"delegated":true,"target_kind":"team","target_team_run_id":"studio_team_af0845efd938450380f815334d31e093","target_team_coordinator_agent_run_id":"publisher_14ccab4f18ea4906bc2c98bcd7322473","task_id":"ad_hoc_task_b12e3f01-…"}
+  (no "node" key: F-001, the same as RC-21)
+Web: `BACKEND_NODE_BASE_URL=http://127.0.0.1:60488 nuxt dev --host 127.0.0.1 --port 60508` in autobyteus-web
+
+Steps and DOM/state results (run-script results copied):
+1. Open http://127.0.0.1:60508/, expand "Temp Workspace" in the left panel:
+   history tree text: "Temp Workspace\nTEAMS\nStudio Team\n(1)" → the peer-started Team run is listed under beta's temp workspace as an ordinary Team run
+2. Expand Studio Team ([data-test="workspace-team-definition-row-studio-team"]):
+   run row [data-test="workspace-team-row-studio_team_af0845efd938450380f815334d31e093"]: "You have a new task from the agent with sender run id \"delegator_0e35af55664e4707b0db289a4305300c\" on node \"alpha-node\"."
+3. Open the run (row click): url http://127.0.0.1:60508/workspace
+   tree: "…\nL\nlead\nnow\nC\nchecker\nnow" (members [data-test="workspace-team-member-studio_team_af08…-/lead"] and "…-/checker")
+   main text: "L\nlead\nIdle\nYou\nYou have a new task from the agent with sender run id \"delegator_0e35af55664e4707b0db289a4305300c\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nCut the launch trailer and have it checked. Marker BROWSER-TEAM-PACKET.\nL\nlead\n\nOK"
+   screenshot: API-26-beta-team-run-history-and-packet.png (md5 a99e031e738850319ef1cfea767a503b): Studio Team (1) → run → lead (green) and checker (grey, never started); the coordinator's work packet naming node "alpha-node"; status Idle
+4. Composer message as beta's owner to the coordinator (textarea + "Send message"):
+   main text afterwards: "…\nYou\nOwner of beta here: how is the trailer going? Marker OWNER-TEAM-MSG.\nL\nlead\n\nOK"
+   server: beta getTeamMemberRunProjection(studio_team_af08…, publisher_14cc…) conversation contains "OWNER-TEAM-MSG" exactly 1 time
+   screenshot: API-26-beta-team-owner-message.png (md5 00b3631a2c2a079a7a965f1484a1c148)
+   (the first click on Send happened before the composer took the typed value and sent nothing; the second click sent it once)
+5. Stop ("Terminate team" on the run row): {"rowPresent":true,"stillTerminate":false,"dots":["Team status: Offline","Team status: Offline"],"header":"L\nlead\nOffline…"}
+   server: listWorkspaceRunHistory → Studio Team runs [{"teamRunId":"studio_team_af0845efd938450380f815334d31e093","isActive":false}]
+   live scripted-CLI processes: only alpha's delegator (cwd …/alpha/data/memory/agents/delegator_0e35…/agy-project); none of beta's Team
+
+Cleanup: tab closed; Nuxt dev (pid 36310) stopped, port 60508 free; setup stopped with SIGTERM: "stopped; removed /private/var/folders/.../api26-two-nodes-m9cdrJ exists: false"; ports 60473/60488 free; no scripted CLI left.
+Observation (not a finding): after the owner's message, the run row's title shows that latest message ("Owner of beta here: how is …") instead of the work packet. Not compared with a local Team run; this ticket does not change the history views.
