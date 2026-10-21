@@ -5,7 +5,7 @@ export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExec
 
 /**
  * `delegate_task` with an address: spawns a new copy for a saved Task (`task_id`) or for described work.
- * `node` names a registered peer node (DEC-111): the address is then a published Agent there.
+ * `node` names a registered peer node (DEC-111): the address is then an Agent's catalog address there.
  */
 export type SpawnTaskInput =
   | Readonly<{ recipient_address: string; task_id: string; node?: string; description?: never; reference_files?: never }>

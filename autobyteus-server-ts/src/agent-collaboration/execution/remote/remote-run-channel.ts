@@ -35,7 +35,8 @@ export interface RemoteRunChannel {
   peerName(nodeId: string): Promise<string>;
   startDelegatedRun(input: Readonly<{
     nodeId: string;
-    publishedAddress: string;
+    /** The target's catalog address on that node. */
+    address: string;
     delegatorAgentRunId: string;
     coordinatingRun: TaskAgentCoordinatingRun;
   }>): Promise<RemoteStartedRun>;

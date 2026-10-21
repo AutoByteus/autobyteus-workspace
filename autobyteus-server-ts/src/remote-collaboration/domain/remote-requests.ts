@@ -12,9 +12,12 @@ export const REMOTE_MESSAGES_PATH = "/rest/remote/messages";
 /** `toNodeId` is the pinned server ID of the peer being called; `fromNodeId` the caller's own. */
 export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;
 
-/** Start (prepare, without work) a run of a published Agent for a delegating run on the caller. */
+/**
+ * Start (prepare, without work) a run of the Agent at the catalog `address` on the called node, for a delegating
+ * run on the caller.
+ */
 export type StartDelegatedRunRequest = RemoteEnvelope & Readonly<{
-  publishedAddress: string;
+  address: string;
   delegator: Readonly<{ agentRunId: string }>;
   coordinatingRun: TaskAgentCoordinatingRun;
 }>;
@@ -35,6 +38,10 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   createdAt: string;
 }>;
 
-export type RemoteRefusalAnswer = Readonly<{ accepted: false; nodeId: string; code: string; message: string }>;
+/**
+ * A refusal: `message` is the responder's detail (the reason); `targetName` is the target definition's name on the
+ * responder, present for `REMOTE_TEAMS_NOT_SUPPORTED`, `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`.
+ */
+export type RemoteRefusalAnswer = Readonly<{ accepted: false; nodeId: string; code: string; message: string; targetName?: string }>;
 export type StartDelegatedRunAnswer = Readonly<{ accepted: true; nodeId: string; agentRunId: string }> | RemoteRefusalAnswer;
 export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;

@@ -23,7 +23,7 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
   };
 };
 
-const start = { nodeId: PEER.nodeId, publishedAddress: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" } };
+const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" } };
 const message = {
   nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1", targetAgentRunId: "publisher_7f3",
   content: "hi", messageType: "agent_message", createdAt: "2026-10-20T10:00:00.000Z",
@@ -35,7 +35,7 @@ describe("PeerClient", () => {
     await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, agentRunId: "publisher_7f3" });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/delegated-runs");
-    expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, publishedAddress: "/publisher",
+    expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, address: "/publisher",
       delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" } });
     expect(init.headers).toEqual({ "content-type": "application/json" });
     expect(init.signal).toBeInstanceOf(AbortSignal);
@@ -47,9 +47,9 @@ describe("PeerClient", () => {
   });
 
   it("words a peer's refusal for the agent, naming the peer by this owner's label", async () => {
-    const f = client(async () => answer({ accepted: false, nodeId: PEER.nodeId, code: "PUBLISHED_AGENT_CANNOT_RUN", message: "The model 'x' is not available on codex." }));
-    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: false, code: "PUBLISHED_AGENT_CANNOT_RUN",
-      message: `The published Agent on node "docker" cannot run there: The model 'x' is not available on codex.` });
+    const f = client(async () => answer({ accepted: false, nodeId: PEER.nodeId, code: "AGENT_CANNOT_RUN", message: "The model 'x' is not available on codex.", targetName: "Publisher" }));
+    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN",
+      message: `The Agent Publisher on node "docker" cannot run there: The model 'x' is not available on codex.` });
   });
 
   it("maps a transport failure, an HTTP error and a timeout to PEER_UNREACHABLE within the bound (QR-102)", async () => {

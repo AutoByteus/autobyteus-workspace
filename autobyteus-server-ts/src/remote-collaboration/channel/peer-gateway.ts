@@ -20,8 +20,8 @@ export type PeerGatewayResponse<TAnswer> =
   | Readonly<{ status: 200; answer: TAnswer }>
   | Readonly<{ status: 400; answer: Readonly<{ accepted: false; nodeId: string; code: string; message: string }> }>;
 
-/** A refusal as a handler returns it; the gateway adds this node's ID. */
-export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string }>;
+/** A refusal as a handler returns it (with the target's name when it has one); the gateway adds this node's ID. */
+export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string; targetName?: string }>;
 
 export type DelegatedRunHandler = Readonly<{
   start(request: StartDelegatedRunRequest, from: PeerNode): Promise<Readonly<{ accepted: true; agentRunId: string }> | PeerHandlerRefusal>;
@@ -47,7 +47,7 @@ const parseStartRequest = (value: unknown): StartDelegatedRunRequest => {
   const body = field(() => objectRecord(value, "request"));
   return {
     ...parseEnvelope(body),
-    publishedAddress: field(() => requiredString(body.publishedAddress, "publishedAddress")),
+    address: field(() => requiredString(body.address, "address")),
     delegator: runRef(body.delegator, "delegator"),
     coordinatingRun: coordinatingRunOf(body.coordinatingRun, "coordinatingRun"),
   };

@@ -1,4 +1,4 @@
-/** A refused settings change (peer registration or publishing), with a reason the owner reads in the Nodes tab. */
+/** A refused settings change (peer registration), with a reason the owner reads in the Nodes tab. */
 export type RemoteCollaborationSettingsErrorCode =
   | "REMOTE_COLLABORATION_OFF"
   | "PEER_URL_INVALID"
@@ -8,11 +8,7 @@ export type RemoteCollaborationSettingsErrorCode =
   | "PEER_ALREADY_REGISTERED"
   | "PEER_NAME_INVALID"
   | "PEER_NAME_TAKEN"
-  | "PEER_NOT_FOUND"
-  | "AGENT_NOT_FOUND"
-  | "AGENT_ALREADY_PUBLISHED"
-  | "AGENT_NOT_PUBLISHED"
-  | "LAUNCH_SETTINGS_INVALID";
+  | "PEER_NOT_FOUND";
 
 export class RemoteCollaborationSettingsError extends Error {
   constructor(readonly code: RemoteCollaborationSettingsErrorCode, message: string) {
