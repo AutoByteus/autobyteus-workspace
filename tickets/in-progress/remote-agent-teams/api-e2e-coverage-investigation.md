@@ -12,7 +12,7 @@
 - Implementation Handoff: `…/implementation-handoff.md` (IR-001)
 - Code Review Report: `…/code-review-report.md` (CRR-001, Pass, no findings)
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002` (round 2 is a rerun after the F-001 fix; the investigation is unchanged)
+- Current API/E2E Revision ID: `API-REV-003` (round 3 closes the confidence gaps below; round 2 was a rerun after the F-001 fix)
 - Current Investigation Round: 1
 - Trigger: CRR-001 pass of IR-001 (code `13131733b9`, documents `824562b6a2`), Large / High
 - Prior Investigation Reviewed: none for this ticket (the E2E file comes from autobyteus-191 and autobyteus-245)
@@ -84,6 +84,7 @@
 | API-13 (extended) | AC-304 (restarts) | lifecycle | Durable | After beta restarts, a follow-up restores beta's Team. After alpha restarts, the coordinator's reply restores alpha's Team root and wakes the lead. The Team link and the back-link are unchanged on disk |
 | API-24 | REQ-307, RU-2 | lifecycle | Durable (new) | Beta's owner stops the Team run during its idle grace (`terminateAgentTeamRun`): success, processes gone, history `isActive: false`. The delegator's next message restores it |
 | API-25 | AC-306 | same-node suites | Existing | `tests/e2e/projects`, `run-history`, `agent-team-runs`, `agent-org-runs`, switch on (local Team copies included) |
+| API-25b (RC-25) | RSK-301, DEC-304 (C-29) | packet failure | Durable (round 3) | The proxy drops the work packet to a just-started remote Team. Alpha refuses with the reason (Task start `failed`). Beta has an unused Team run, with no member started, that the idle schedule stops (checked in RC-12) |
 | API-26 | REQ-307 (BEH-305) | browser on beta | Journey | Two built nodes, a remote Team delegation (temporary setup script), Nuxt dev against beta: the Team run in history, open it (coordinator's work packet), a message to it, stop |
 
 - Test progress log: `Yes`
@@ -92,8 +93,9 @@
 
 | Behavior | Reason | User Only? |
 | --- | --- | --- |
-| `fenced_remote` as a value | logged at info only (my nodes log WARN); covered by unit tests; the E2E asserts its effects (API-23) | No |
-| A not-quiet member (a running background task) holding the idle shutdown | the scripted runtime can model it (`BACKGROUND_STEP`); it adds about 3 minutes. Decision: run it in API-12 only if the base cases pass in time | No |
+| `fenced_remote` as a value | Round 3: now tested. Alpha runs at INFO and RC-23 asserts the `TASK_AGENT_RESOURCE_FENCED_REMOTE` record | No |
+| A not-quiet member (a running background task) holding the idle shutdown | Round 3: now tested in RC-12 (a 90 s `BACKGROUND_STEP` on the checker) | No |
+| RSK-301, link-commit-failure trigger | not reachable from outside the process. The packet-failure trigger (RC-25) leaves beta in the same state | No |
 
 ## Ambiguities Or Reroute Triggers
 

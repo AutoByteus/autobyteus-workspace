@@ -40,8 +40,11 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   247: RC-21 a Team member on alpha delegates beta's shared Team "Studio Team" (AC-301); RC-22 messages with the
  *   coordinator and a never-started member, the team-run-ID guidance, not-permitted senders (AC-303); RC-23 Task closure
  *   fences a remote Team and a saved Task to it is refused (AC-305); RC-12/RC-13 also idle out and restore the Team and
- *   restart both nodes with it (AC-304); RC-24 beta's owner stops the Team during its idle grace and the next message
- *   restores it (REQ-307);
+ *   restart both nodes with it (AC-304), with a busy member (a background task) holding the whole Team past the grace and,
+ *   after a second alpha restart, a cold wake of alpha's Team root by the Team link alone; RC-23 also checks the fence
+ *   (`TASK_AGENT_RESOURCE_FENCED_REMOTE`, logged at info: alpha runs at INFO); RC-25 the work packet to a just-started
+ *   Team fails (dropped by the proxy), leaving an unused Team run on beta that its idle schedule stops (RSK-301, DEC-304);
+ *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
@@ -51,8 +54,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  * default `alt-model` covers it), Hollow Team (no default anywhere) and Codex Team (a Team default on unavailable Codex).
  * Beta's scripted CLI offers a second model (`AGY_FAKE_EXTRA_MODELS=alt-model`).
  *
- * Prerequisite: a current build (`pnpm -C autobyteus-server-ts build`). About 2–3 minutes (one idle grace of 60 s, two
- * 20 s partition bounds and two restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
+ * Prerequisite: a current build (`pnpm -C autobyteus-server-ts build`). About 5 minutes (RC-12 holds the Team with a 90 s
+ * background task plus a 60 s idle grace, two 20 s partition bounds, and restarts). `REMOTE_E2E_EVIDENCE_DIR` keeps a JSON receipt and both servers' logs.
  * Run (from the repository root, with a clean environment as TESTING.md asks for E2E folders):
  *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *     ANTIGRAVITY_CLI_COMMAND="$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs" \
@@ -210,6 +213,8 @@ type Captured = { seq: number; at: number; via: "toBeta" | "toAlpha"; method: st
 /** The link from one node to the other: forwards to the target node and records every request. */
 class CapturingProxy {
   mode: "forward" | "blackhole" = "forward";
+  /** A request this returns true for fails like a broken connection (its caller sees a network error). */
+  drop: ((entry: Captured) => boolean) | null = null;
   targetPort: number;
   private server: http.Server | null = null;
   private readonly held = new Set<http.ServerResponse>();
@@ -226,6 +231,7 @@ class CapturingProxy {
         const entry: Captured = { seq: this.captured.length + 1, at: Date.now(), via: this.via, method: req.method ?? "", path: req.url ?? "", headers: { ...req.headers }, body };
         this.captured.push(entry);
         if (this.mode === "blackhole") { entry.outcome = "held"; this.held.add(res); return; }
+        if (this.drop?.(entry)) { entry.outcome = "dropped by the test"; res.socket?.destroy(); return; }
         const upstream = http.request({ host: "127.0.0.1", port: this.targetPort, method: req.method, path: req.url,
           headers: { ...req.headers, host: `127.0.0.1:${this.targetPort}` } }, (answer) => {
           const parts: Buffer[] = [];
@@ -421,7 +427,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   beforeAll(async () => {
     root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "remote-collab-two-server-")));
     const [alphaPort, betaPort, toBetaPort, toAlphaPort] = [await getFreePort(), await getFreePort(), await getFreePort(), await getFreePort()];
-    alpha = new NodeServer("alpha", root, alphaPort);
+    // INFO on alpha: the Task closure logs a fenced remote run only at info (TASK_AGENT_RESOURCE_FENCED_REMOTE, RC-23).
+    alpha = new NodeServer("alpha", root, alphaPort, { LOG_LEVEL: "INFO" });
     // Codex is unavailable on beta, deterministically (245 AC-203).
     beta = new NodeServer("beta", root, betaPort, { CODEX_APP_SERVER_COMMAND: path.join(root, "beta", "missing", "codex"), AGY_FAKE_EXTRA_MODELS: "alt-model" });
     // Before beta starts: a file-authored Team with a team-local Agent (a complete default, so only eligibility can refuse
@@ -1089,13 +1096,55 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(fromRemote)).toMatch(/DONE or CANCELLED|closed/i);
     await neverReceives(solo, "AFTER-DONE-FROM-STUDIO", 3_000);
     expect(await processLive(coord), "the fenced Team keeps running on beta (it stops when idle)").toBe(true);
+    // The closure's result for the remote Team is a fence, not a stop (fenced_remote), with where it keeps running.
+    // console.info prints the record over several lines: `TASK_AGENT_RESOURCE_FENCED_REMOTE {` … `}`.
+    const fenceRecords = () => fs.readFileSync(alpha.logFile, "utf8").split(/^TASK_AGENT_RESOURCE_FENCED_REMOTE \{$/m).slice(1).map((block) => block.split(/^\}$/m)[0]!);
+    let fenceLine = "";
+    await until(() => (fenceLine = fenceRecords().find((block) => block.includes(`teamRunId: '${teamRunId}'`)) ?? "") !== "", "alpha logs the fenced remote Team", 20_000);
+    expect(fenceLine).toContain(`taskId: '${delegated.task_id}'`);
+    expect(fenceLine).toContain(`message: '/studio_team runs on node "${LABEL.beta}". This Task sends it no more messages; it stops there when it goes idle.'`);
     ids.closureTeam = { teamRunId, coord };
-    record("RC-23", { delegated, saved: textOf(saved), savedNew: textOf(savedNew), toRemote: textOf(toRemote), fromRemote: textOf(fromRemote) });
+    record("RC-23", { delegated, saved: textOf(saved), savedNew: textOf(savedNew), toRemote: textOf(toRemote), fromRemote: textOf(fromRemote), fenceLine });
   }, 240_000);
+
+  it("RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it", async () => {
+    const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    const teamRunsBefore = await betaTeamRunDirs();
+    const launchesBefore = (await beta.launches()).length;
+    const sentBefore = captured.length;
+    toBeta.drop = (entry) => entry.path === PATHS.messages && (entry.body as Rec | null)?.kind === "work_packet";
+    let result: Rec & { elapsedMs: number };
+    try { result = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", description: "Lost packet. Marker LOST-PACKET." }); }
+    finally { toBeta.drop = null; }
+    const created = (await betaTeamRunDirs()).filter((dir) => !teamRunsBefore.includes(dir));
+    expect(created, "beta created one Team run before the packet failed").toHaveLength(1);
+    const unused = created[0]!;
+    const sent = remoteRequests(sentBefore).map((entry) => ({ path: entry.path, kind: (entry.body as Rec | null)?.kind ?? null, outcome: entry.outcome }));
+    expect(sent.filter((entry) => entry.outcome === "dropped by the test"), JSON.stringify(sent)).toHaveLength(1);
+    expect((await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(unused)), "no member of the unused Team started").toEqual([]);
+    // Alpha: the delegation is refused with the reason, and its Task record says the start failed. The Team link
+    // committed before the packet stays (DEC-304 does not specify alpha's side; recorded as observed).
+    expect(result.delegated, JSON.stringify(result)).toBe(false);
+    expect(textOf(result)).toBe(`Node "${LABEL.beta}" could not be reached (fetch failed).`);
+    const taskRecords = await teamTaskResourcesWith(alpha, unused);
+    expect(taskRecords.map((record) => record.entry), JSON.stringify(taskRecords)).toEqual([expect.objectContaining({ start: "failed",
+      startError: { code: "TASK_DISPATCH_FAILED", message: `Node "${LABEL.beta}" could not be reached (fetch failed).` } })]);
+    const soloTree = await readJson(path.join(alpha.memory, "agents", ids.solo, "collaboration", "collaboration_tree.json"));
+    const linked = remoteLinksIn(soloTree).filter((link) => link.teamRunId === unused);
+    ids.unusedTeam = unused;
+    record("RC-25", { result, text: textOf(result), unused, sent, alphaLinks: linked, alphaTaskRecords: taskRecords });
+  }, 120_000);
 
   it("RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
     const liveAtStart = await processLive(ids.r1);
+    // 247: a member with a running background task is not quiet, so the whole remote Team stays (all or nothing).
+    const BUSY_SECONDS = 90;
+    const busyFrom = Date.now();
+    expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.checker,
+      content: `BUSY-CHECKER BACKGROUND_STEP:${JSON.stringify({ seconds: BUSY_SECONDS, exitCode: 0 })}` })).toMatchObject({ accepted: true });
+    await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.checker, "beta studio checker"), "BUSY-CHECKER");
     const startedWaiting = Date.now();
     await until(async () => !(await processLive(ids.r1)), "remote run shut down after the idle grace period", GRACE_MS + 120_000);
     const shutDownAfterMs = Date.now() - startedWaiting;
@@ -1105,17 +1154,30 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const relaunches = (await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(ids.r1));
     expect(relaunches, "restored once").toHaveLength(1);
     expect(relaunches[0]!.argv).toContain("--conversation");
-    // The remote Team: every member quiet for the grace period → the Team stops (its package kept); a follow-up restores it.
-    const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
-    await until(async () => !(await processLive(ids.studio.coord)) && !(await processLive(ids.studio.checker)), "remote Team shut down after the idle grace period", GRACE_MS + 120_000);
+    // The remote Team: past one grace period, the busy checker holds every member, the idle coordinator included.
+    await new Promise((resolve) => setTimeout(resolve, Math.max(0, busyFrom + GRACE_MS + 15_000 - Date.now())));
+    const heldAfterGrace = { coordinator: await processLive(ids.studio.coord), checker: await processLive(ids.studio.checker), atMs: Date.now() - busyFrom };
+    expect(heldAfterGrace, "a busy member holds the whole Team past the grace period").toMatchObject({ coordinator: true, checker: true });
+    // When the background task ends, every member is quiet: one grace period later the Team stops (its package kept).
+    await until(async () => !(await processLive(ids.studio.coord)) && !(await processLive(ids.studio.checker)), "remote Team shut down after the idle grace period", BUSY_SECONDS * 1000 + GRACE_MS + 120_000);
+    const teamShutDownAfterMs = Date.now() - busyFrom;
+    expect(teamShutDownAfterMs, "not before the background task ended").toBeGreaterThanOrEqual(BUSY_SECONDS * 1000);
+    // RC-25's unused Team run (no member ever started): its idle schedule stopped it; it stays in history.
+    const teamRuns = async () => ((await beta.gql(`query{listWorkspaceRunHistory(limitPerAgent:20){teamDefinitions{runs{teamRunId isActive}}}}`)).listWorkspaceRunHistory as Rec[])
+      .flatMap((group) => (group.teamDefinitions as Rec[]).flatMap((definition) => definition.runs as Rec[]));
+    const unusedListed = (await teamRuns()).find((run) => run.teamRunId === ids.unusedTeam);
+    expect(unusedListed, "the unused Team run is in history, stopped").toMatchObject({ isActive: false });
+    expect((await walkFiles(path.join(beta.memory, "agent_teams", ids.unusedTeam as string))).filter((file) => /communication_messages.*\.jsonl$/.test(file) && fs.statSync(file).size > 0),
+      "the unused Team run has no messages").toEqual([]);
+    const studioListed = (await teamRuns()).find((run) => run.teamRunId === ids.studio.teamRunId);
     const teamLaunchesBefore = (await beta.launches()).length;
     expect(await calls(lead, "send_message_to", { target_agent_run_id: ids.studio.coord, content: "AFTER-IDLE-TO-STUDIO" })).toMatchObject({ accepted: true });
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "AFTER-IDLE-TO-STUDIO");
     const teamRelaunches = (await beta.launches()).slice(teamLaunchesBefore).filter((launch) => launch.cwd.includes(ids.studio.coord));
     expect(teamRelaunches.filter((launch) => launch.argv.includes("--conversation")), "the coordinator restored with its conversation").toHaveLength(1);
     expect((await beta.launches()).slice(teamLaunchesBefore).filter((launch) => launch.cwd.includes(ids.studio.checker)), "only the addressed member restarts").toEqual([]);
-    record("RC-12", { liveAtStart, shutDownAfterMs, relaunch: relaunches[0], teamRelaunch: teamRelaunches[0] });
-  }, 300_000);
+    record("RC-12", { liveAtStart, shutDownAfterMs, relaunch: relaunches[0], heldAfterGrace, teamShutDownAfterMs, studioListedWhenStopped: studioListed, unusedListed, teamRelaunch: teamRelaunches[0] });
+  }, 480_000);
 
   it("RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1194,7 +1256,21 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(studioReply, JSON.stringify(studioReply)).toMatchObject({ accepted: true });
     expect(await receives(teamLead, "AFTER-ALPHA-RESTART-FROM-STUDIO")).toContain(`sender run id "${ids.studio.coord}" on node "${LABEL.beta}"`);
     expect((await betaTeamTree(ids.studio.teamRunId)).delegatedFrom, "beta's Team back-link unchanged").toEqual(studioBackLinkBefore);
-    record("RC-13", { reopened: { teamRunId: teamConfig.teamRunId, orgMembers: (orgConfig.executionTree.rootOrg.members as Rec[]).length }, studioReply: textOf(studioReply) });
+    // 247 AC-304, cold: alpha restarts again and the remote Team's reply is the first thing alpha receives, so the Team
+    // link alone restores alpha's Team root and wakes the lead (nothing on alpha is opened before the relaunch is seen).
+    await alpha.stop();
+    await alpha.start();
+    const coldLaunches = (await alpha.launches()).length;
+    const coldReply = await calls(studioCoordinator, "send_message_to", { target_agent_run_id: ids.team.lead, content: "COLD-WAKE-FROM-STUDIO" });
+    expect(coldReply, JSON.stringify(coldReply)).toMatchObject({ accepted: true });
+    const coldWoken = (launch: { argv: string[]; cwd: string }) => launch.cwd.includes(ids.team.lead) && launch.argv.includes("--conversation");
+    await until(async () => (await alpha.launches()).slice(coldLaunches).some(coldWoken), "the lead woken by the Team link alone", 30_000);
+    expect(await delivered(alpha, "COLD-WAKE-FROM-STUDIO"), "in alpha's Team log").toBe(true);
+    expect(await receives(teamLead, "COLD-WAKE-FROM-STUDIO")).toContain(`sender run id "${ids.studio.coord}" on node "${LABEL.beta}"`);
+    const coldRelaunches = (await alpha.launches()).slice(coldLaunches);
+    expect(coldRelaunches.filter(coldWoken), "the lead woken once").toHaveLength(1);
+    record("RC-13", { reopened: { teamRunId: teamConfig.teamRunId, orgMembers: (orgConfig.executionTree.rootOrg.members as Rec[]).length }, studioReply: textOf(studioReply),
+      coldWake: { reply: textOf(coldReply), relaunches: coldRelaunches } });
   }, 420_000);
 
   it("RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it", async () => {

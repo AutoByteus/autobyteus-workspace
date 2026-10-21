@@ -21,3 +21,8 @@ Evidence: `evidence/api-e2e/` (beside this file).
 | 15 | API-R2 unit tests of the fix | 13/13 | `API-R2-unit-f001.log` |
 | 16 | Full E2E runs 4 and 5 | 24/24 each; `node: "beta-node"` in the remote Team result | `API-run4*`, `API-run5*` |
 | 17 | Report and revision record (API-REV-002): Pass → code reviewer for the test-code review | — | `api-e2e-execution-coverage-report.md` |
+| 18 | Round 3 (DR-001: the scorecard was missing). An honest score is about 94%, below the 95% target, so I am closing the gaps instead of only recording them. Test changes: RC-25 (RSK-301: work packet dropped, unused Team run); RC-12 (a busy member holds the Team; the unused run stops); RC-13 (cold wake by the Team link after a second alpha restart); RC-23 (fence log line; alpha at INFO) | — | test file |
+| 19 | Full E2E run 6 (exploratory, with the new cases) | 24/25. The fence matcher read single lines; `console.info` prints over several lines. Fixed. The new RC-25, busy member and cold wake passed | `API-run6.log`, `API-run6/` |
+| 20 | RC-25 asserts alpha's result and Task record (observed in run 6); header updated | — | test file |
+| 21 | Full E2E runs 7 and 8 (final file) | 25/25 each (250.7 s, 251.3 s); nothing left | `API-run7*`, `API-run8*` |
+| 22 | Scorecard (post-repository 93%, final 95%), report § Round 3, revision record API-REV-003 | Pass → code reviewer (test-code delta) | `api-e2e-execution-coverage-report.md` |
