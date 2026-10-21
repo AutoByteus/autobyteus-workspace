@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/deployment report remai
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-004 Pass after API-REV-002 Pass; resumed on CRR-005 Pass after API-REV-003 | N/A | Integrated, docs synced (web `settings.md`). Scorecard requested and supplied (95%). Verified; no release; archived; finalized | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
+| DR-002 | The user's release request, 2026-10-21 ("now release a new beta thanks") | DR-001: finalized, no release | Released as beta `v1.5.8-beta.6`: four of four workflows, 17 assets, Docker `1.5.8-beta.6` = `:beta` | `release-deployment-report.md` § DR-002 Addendum, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -28,3 +29,11 @@ The latest docs sync report, handoff summary and release/deployment report remai
 - Why this baseline was recorded: the first delivery round, including its evidence request.
 - Next recipient/action: the Solution Designer (terminal receipt; it sends FU-001 … FU-003).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. RSK-201 is accepted. RSK-301's commit-failure trigger is untested, but it leaves the same state as the tested trigger.
+
+### DR-002 — Beta v1.5.8-beta.6
+
+- Delivery round and trigger: the user's release request, 2026-10-21.
+- Prior authoritative result: DR-001, finalized with no release.
+- Current authoritative result: beta `v1.5.8-beta.6` (release commit `d7bdf99139`), complete: four of four workflows, 17 assets, Docker `:beta`, `:latest` unchanged.
+- Release/publication/deployment report: `release-deployment-report.md` § DR-002 Addendum.
+- Terminal return to the Solution Designer: `Sent` (release result, with autobyteus-261's terminal message).

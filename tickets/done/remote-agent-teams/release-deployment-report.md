@@ -122,3 +122,26 @@ Revert the merge on `personal`. With the switch off (the default), no remote pat
 - Unresolved blocker: `None`.
 - Successful terminal package eligible for return: `Yes`.
 - Terminal package sent to the Solution Designer: `Yes`, after this record's push and the cleanup.
+
+## DR-002 Addendum — Beta v1.5.8-beta.6 (2026-10-21)
+
+- **Release decision:** `Beta`. Decided by the user on 2026-10-21 ("now release a new beta thanks"). The beta carries autobyteus-247 (merge `829928ceb6`) and autobyteus-261 (merge `9bf8ad61a7`); it is the first release of Remote Agent Teams.
+- **Method:** `RELEASE.md`, from a fresh worktree of `origin/personal` `9bf8ad61a7` on `finalize/release-1.5.8-beta.6`. Deviations: none.
+- **Checks before tagging,** all passed:
+  - licensing: "Licensing is consistent.";
+  - artifact hygiene: exit 0;
+  - `check_secrets.sh v1.5.8-beta.5..HEAD`: 35 commits, PASS.
+- **Version, tag and release commit:**
+  - `next-beta` gave `1.5.8-beta.6`.
+  - `desktop-release.sh beta --branch finalize/release-1.5.8-beta.6 --no-push` made the release commit `d7bdf99139` (`autobyteus-web/package.json` = `1.5.8-beta.6`) and the annotated tag `v1.5.8-beta.6`.
+- **Push:** Secret Gate PASS; `origin/personal` was refetched and unchanged. `git push origin HEAD:personal` gave `9bf8ad61a7..d7bdf99139`, then the tag (10:55:17 UTC).
+- **Pipelines,** all `success` (`gh run watch --exit-status`):
+  - Desktop Release `39588107376`;
+  - Android APK Release `39588107358`;
+  - iOS App Store Connect Release `39588107502`;
+  - Server Docker Release `39588107427`.
+- **Published artifacts:**
+  - GitHub pre-release `v1.5.8-beta.6`, not a draft, with 17 assets: the APK and `.sha256`, the Linux x64/ARM64 AppImages, the macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, the Windows `.exe`, and the four `latest*.yml`.
+  - Docker `autobyteus/autobyteus-server:1.5.8-beta.6` and `:beta` share `sha256:efbff5eae6ac…` (amd64, arm64). `:latest` stays on `1.5.7` (`sha256:821e777d8e88…`).
+- **Release result:** `Completed`. Release notes: `Not required` (generated notes for a pre-release).
+- **Rollout:** desktop installs with **Settings > Updates > Receive beta updates** on are offered `1.5.8-beta.6`. Docker: `autobyteus-docker upgrade --all --tag beta`. Rollback per `RELEASE.md` (no app-data migration).
