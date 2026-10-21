@@ -1,0 +1,6 @@
+# IMP-01 server typecheck
+# command: npx tsc -p tsconfig.build.json --noEmit (autobyteus-server-ts)
+# commit: 13131733b9
+# env: macOS Darwin 25.5.0, node v22.23.1
+# date: 2026-10-21T06:37:18Z
+TYPECHECK EXIT 0
