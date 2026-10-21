@@ -231,8 +231,11 @@ Each peer shows its state now and, when it is available, its Agents and Agent Te
   switch off, or leaving the tab, drops every state and asks nobody; the card shows "Remote
   Collaboration is off, so peers are not asked. …". Nothing polls and nothing is cached.
   Each ask takes a token per peer, so an answer that arrives after the peer was removed or
-  asked again, the switch turned off or the tab was left is ignored. Each peer settles at
-  its own pace (the server's 20 s bound); the page stays usable meanwhile.
+  asked again, the switch turned off or the tab was left is ignored. Every ask is a new
+  request, even while an earlier ask for that peer is still open: the query turns off
+  Apollo's in-flight deduplication (`context: { queryDeduplication: false }`), which would
+  otherwise join the identical open query and leave the new token unanswered. Each peer
+  settles at its own pace (the server's 20 s bound); the page stays usable meanwhile.
 - **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
   names cut by the line's width) and opens into `RemoteCollaborationOfferList.vue`: Agents
   and Agent Teams side by side from `md` up, each sorted by name, with a "Checked HH:MM"
