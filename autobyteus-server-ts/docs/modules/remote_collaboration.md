@@ -5,16 +5,18 @@
 The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-10 … CM-12, § 4);
 this document describes the mechanics.
 
-`src/remote-collaboration/` lets an agent on one node delegate a text task to an Agent another node
-publishes, and lets the two runs message each other by run ID. It owns the node-level concerns: the
-switch, the registered peer nodes, the published Agents, the outbound client and the inbound gateway.
+`src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent of another
+node, and lets the two runs message each other by run ID. It owns the node-level concerns: the switch, the
+registered peer nodes, the outbound client, the inbound gateway and the catalog port through which peers'
+targets are resolved.
 The collaboration roots own the runs and their messages; they reach other nodes through the shared owners in
 `src/agent-collaboration/execution/remote/`: `RemoteRunLinks` (membership and transmit), `RemoteMessageSend`
 (the outbound message order) and `RemoteDelegation` (remote delegation).
 
 Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
-authentication between nodes and no credential ever crosses them. Attachments, lifecycle control from the
-delegating node, remote Agent Teams, discovery and peer authentication come in later slices.
+authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
+switch on, every shared Agent is available to registered peers. Attachments, lifecycle control from the
+delegating node, remote Agent Teams (autobyteus-247), discovery and peer authentication come in later slices.
 
 ## Settings (per node)
 
@@ -22,24 +24,32 @@ delegating node, remote Agent Teams, discovery and peer authentication come in l
 | --- | --- | --- |
 | The switch, off by default | `ENABLE_REMOTE_COLLABORATION` in `<data>/.env` | `RemoteCollaborationCapability` |
 | Peer nodes `{nodeId, name, baseUrl, addedAt}` | `<data>/remote-collaboration/peers.json` | `PeerDirectory` |
-| Published Agents with their launch settings | `<data>/remote-collaboration/published-agents.json` | `PublishedAgentService` |
 
 - Adding a peer contacts `GET <baseUrl>/rest/remote-access/status` and pins the `serverInstanceId` as the
   peer's `nodeId`; it needs the switch on. `name` is this owner's label, the `node` agents pass.
-- A published Agent records runtime, model and settings, workspace and tool auto-approve (off unless the
-  owner turns it on). Its address is derived from the published set with the catalog's address rules,
-  never stored. `PublishedLaunchCheck` (runtime availability, model selection, workspace folder) checks
-  it when it is published and again when a peer starts it.
+- There is nothing to publish. Peers can start every Agent definition that a local `delegate_task` may target
+  as a catalog copy, at the same catalog address: shared Agents, never built-ins, Agent Orgs, team-local or
+  application-owned definitions. A shared Agent Team is refused with `REMOTE_TEAMS_NOT_SUPPORTED` until
+  autobyteus-247.
+- How a remote run runs is decided in one place, `NodeCatalogPort`
+  (`agent-collaboration/collaborators/node-catalog-port.ts`): the Agent's own default runtime, model and
+  model settings (no inherited layer; see [Agent Communication](agent_communication.md), launch layers),
+  this node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`) and tool
+  auto-approve on. An Agent whose default runtime signs in with this node's local login (Codex, Claude) runs
+  with that login for any registered peer, as CM-12 says ("a remote run uses its own node's credentials").
+  A leftover `published-agents.json` from a development build is neither read nor written.
 - GraphQL: `remoteCollaborationCapability` / `setRemoteCollaborationEnabled`, `peerNodes`, `addPeerNode`,
-  `renamePeerNode`, `removePeerNode`, `publishedAgents`, `publishAgent`, `updatePublishedAgent`,
-  `unpublishAgent`. The web's Nodes → Remote Collaboration tab uses them.
+  `renamePeerNode`, `removePeerNode`. The web's Nodes → Remote Collaboration tab uses them and says which
+  Agents peers can start and how they run.
 
 ## Between nodes
 
 Two requests, `POST /rest/remote/delegated-runs` and `POST /rest/remote/messages` (route class
 `REMOTE_PEER`; a mobile credential is refused). Every request carries `{fromNodeId, toNodeId}`; every
-answer carries the responder's `nodeId`. A domain refusal is `200 {accepted: false, code, message}`, a
-malformed body `400`. There is no version field and no request ID; nothing retries.
+answer carries the responder's `nodeId`. A domain refusal is `200 {accepted: false, code, message,
+targetName?}` (`message` is the responder's detail, `targetName` the target definition's name there), a
+malformed body `400`. A delegated-run request names its target by `address`, its catalog address on the
+called node. There is no version field and no request ID; nothing retries.
 
 - **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies this node's switch
   and the registration, sends with a 20 s bound (QR-102), refuses an answer from a server that is not the
@@ -47,9 +57,14 @@ malformed body `400`. There is no version field and no request ID; nothing retri
 - **`PeerGateway`** (`channel/peer-gateway.ts`): the one entry point (REQ-114; S6 adds authentication
   here). Order: `toNodeId` is this node, the switch is on, `fromNodeId` is a registered peer, then the
   handler of the request kind.
-- **`RemoteDelegationReceiver`**: an Agent published at the address that can run here → a **prepared**
-  standalone run with the published launch settings and `delegatedFrom`; its ID is returned. A prepared
-  run that never receives its work packet expires (prepared-run TTL).
+- **`RemoteDelegationReceiver`**: resolves the address exactly as a local catalog copy is resolved, through
+  `CollaboratorAdmission` with `NodeCatalogPort`. First the kind (`catalogDefinitionAt`): nothing there →
+  `AGENT_NOT_FOUND`; an Agent Team → `REMOTE_TEAMS_NOT_SUPPORTED`, with the Team's name. Then the Agent's
+  launch (`catalogTaskSourceOf`): no configured default runtime and model → `NO_DEFAULT_RUNTIME`; a default
+  that can't run here (runtime unavailable, model unavailable, settings invalid) → `AGENT_CANNOT_RUN` with
+  the reason. Otherwise a **prepared** standalone run with the resolved launch and `delegatedFrom`; its ID is
+  returned. Every refusal comes before a run is prepared. A prepared run that never receives its work packet
+  expires (prepared-run TTL).
 - **`RemoteMessageReceiver`**: a work packet, or a message without `coordinatingRun`, goes to the run's
   own standalone root on this node; a message with `coordinatingRun` goes to that coordinating root of the
   delegating node (restored if needed). The root applies the link check.

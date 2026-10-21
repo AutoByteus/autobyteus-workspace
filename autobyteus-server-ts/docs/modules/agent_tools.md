@@ -286,7 +286,8 @@ with no Project uses its ID (see [Task keys](projects.md#task-keys-depends-on-an
 parser requires exactly one mode.
 
 With `node` (the name of a registered peer node), the described mode starts the
-task agent on that node from the Agent it publishes at `recipient_address`; a
+task agent on that node from the Agent at the catalog address `recipient_address` there (any shared
+Agent of that node, which runs with its own default runtime and model); a
 `task_id` or `reference_files` with `node` is refused before anything is sent.
 The success result then also names `node`. Follow-ups use `send_message_to` by
 the returned run ID as usual. See [Remote Collaboration](remote_collaboration.md).

@@ -77,7 +77,7 @@ message the delegated run by its run ID.**
 | CM-9 | A message is stored with the run(s) it belongs to: between parts of one run, once, in that run's message log; between two runs, in both runs' logs (sent and received), with one message ID. Each agent's own memory also records what it sent and received. | Every run is self-contained, and the same shape works when two runs are on different nodes (email model). |
 | CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the link (peer, run ID, delegator), recorded by the topmost coordinating run (CM-7, CM-8), and the run's Task (CM-6). No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
 | CM-11 | Across nodes, a remote delegated run and the run that delegated it message each other by run ID only (CM-5), in both directions; the link routes the run ID, so follow-ups never name the node. No other run is reachable across nodes. Each side stores the message in its own run's log with the shared message ID (CM-9). Results and message headers name the other run's node, so an agent always knows when a run is remote. | One way to name a run on every node; the agent copies the run ID it was given. |
-| CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from registered peers, and starts only the Agents its owner published, with the launch settings the owner chose. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner decides what peers may start; security is added in one place. |
+| CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from registered peers, and offers them every shared Agent of the node, at the same catalog addresses as a local catalog copy. A remote run starts with the Agent's own default runtime and model, in the node's temp workspace, with tool calls auto-approved; an Agent with no usable default is refused. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner turns it on and chooses the peers; each Agent's own defaults decide how it runs, with no per-agent setup; security is added in one place. |
 
 Task tools are configured, not automatic: an agent gets `create_task`
 (creates a Project Task) and/or `update_task` (updates, closes or reopens a Task)
@@ -151,7 +151,7 @@ delegated runs through links. Collaboration with remote nodes adds:
 
 Later steps add attachment transfer (today `reference_files` are local paths),
 lifecycle control across the link (stop on Task closure, user stop,
-reactivation), remote Agent Teams, discovery of peers' published agents, and
+reactivation), remote Agent Teams, discovery of peers' agents, and
 peer authentication.
 
 ## 5. Current State Versus Target
