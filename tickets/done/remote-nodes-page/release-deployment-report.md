@@ -50,3 +50,56 @@ Nodes → Remote Collaboration page (`Medium` / `Low`, direct route). The scope 
 ## Rollback Criteria
 
 Revert the merge on `personal` and cut a new release. The page only reads; no data is involved.
+
+## Finalization Record (DR-001)
+
+### Repository Finalization
+
+- Ticket branch `codex/remote-nodes-page`, final commit `0873f8f17b`:
+  - path hygiene exit 0; licensing consistent;
+  - Secret Gate `origin/personal..HEAD`: 14 commits, PASS;
+  - pushed to `origin` as a new branch.
+- Finalization target: `origin` / `personal`, still `00d8a7ce62` at every fetch.
+- Merge: `finalize/remote-nodes-page`, `--no-ff`, giving `ab91ed5404` with a tree identical to the ticket branch. Secret Gate PASS.
+- `git push origin HEAD:personal`: `00d8a7ce62..ab91ed5404`. Repository finalization: `Completed`.
+
+### Release: beta v1.5.8-beta.8
+
+- **Decision:** the user's, 2026-10-21 ("could you please release a new beta"). The beta carries autobyteus-267 (merge `ab91ed5404`).
+- **Method:** `RELEASE.md`, from a fresh worktree of `origin/personal` `ab91ed5404` on `finalize/release-1.5.8-beta.8`. Deviations: none.
+- **Checks before tagging,** all passed:
+  - licensing consistent;
+  - artifact hygiene exit 0;
+  - `check_secrets.sh v1.5.8-beta.7..HEAD`: 16 commits, PASS.
+- **Version, tag and release commit:**
+  - `next-beta` gave `1.5.8-beta.8`.
+  - `desktop-release.sh beta --branch finalize/release-1.5.8-beta.8 --no-push` made the release commit `1ea9d9dd1a` (`autobyteus-web/package.json` = `1.5.8-beta.8`) and the annotated tag `v1.5.8-beta.8`.
+- **Push:** Secret Gate PASS; `origin/personal` was refetched and unchanged. `git push origin HEAD:personal` gave `ab91ed5404..1ea9d9dd1a`, then the tag (16:51:08 UTC).
+- **Pipelines,** all `completed success`:
+  - Desktop Release `39638485134`;
+  - Android APK Release `39638485016`;
+  - iOS App Store Connect Release `39638485363`;
+  - Server Docker Release `39638484838`.
+  - Delivery's own watcher was stopped by a session restart, so the conclusions were read afterwards with `gh run view`.
+- **Published artifacts:**
+  - GitHub pre-release `v1.5.8-beta.8`, not a draft, with 17 assets (APK and `.sha256`, Linux x64/ARM64 AppImages, macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, Windows `.exe`, four `latest*.yml`).
+  - Docker `autobyteus/autobyteus-server:1.5.8-beta.8` and `:beta` share `sha256:2702e31b0311…` (amd64, arm64). `:latest` stays on `1.5.7` (`sha256:821e777d8e88…`).
+- **Release result:** `Completed`. Release notes: `Not required` (pre-release).
+- **Rollout:** desktop installs with beta updates on are offered `1.5.8-beta.8`. Docker: `autobyteus-docker upgrade --all --tag beta`.
+
+### Post-Finalization Cleanup
+
+- Worktrees `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page` and `/Users/normy/autobyteus_org/autobyteus-worktrees/release-1.5.8-beta.8`: `Completed`, removed with `git worktree remove --force` right after this record's push.
+  - Checked first: no process runs from either.
+  - Everything tracked is pushed; untracked build output goes with them.
+  - Prune: `Completed`.
+- Local branches `codex/remote-nodes-page` (`0873f8f17b`, contained in `origin/personal`), `finalize/remote-nodes-page` and `finalize/release-1.5.8-beta.8`: `Completed`, deleted. Remote ticket branch kept.
+
+### Final Status
+
+- Verification complete: AC-501, 502, 504, 505, 507 `Yes`. AC-506 `No`: the user's check on `v1.5.8-beta.8` is open, by the user's request to release a beta.
+- Repository finalization complete: `Yes` (`ab91ed5404`).
+- Release complete: `Yes` (beta `v1.5.8-beta.8`, four of four workflows, 17 assets, Docker `:beta`).
+- Safe cleanup complete: `Yes`.
+- Unresolved blocker: none for delivery; AC-506 waits for the user.
+- Terminal package sent to the Solution Designer: `Yes`, stating AC-506 as open.

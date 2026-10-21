@@ -21,5 +21,5 @@ The latest docs sync report, handoff summary and release/deployment report remai
   - Verification from the evidence; AC-506 is the user's, on the beta.
   - Archived, finalized and released (`release-deployment-report.md`).
 - Verification and finalization state: AC-506 open (user check pending on `v1.5.8-beta.8`).
-- Terminal return to the Solution Designer: after the release and cleanup, stating AC-506 as open.
+- Terminal return to the Solution Designer: `Sent` after the release (four of four workflows, 17 assets, Docker `:beta` on `1.5.8-beta.8`) and cleanup, stating AC-506 as open.
 - Remaining blockers, rollback concerns, or untested scope: AC-506; RSK-501.
