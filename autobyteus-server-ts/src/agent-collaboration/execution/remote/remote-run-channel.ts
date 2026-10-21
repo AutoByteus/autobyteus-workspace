@@ -6,7 +6,17 @@ export type RemotePeer = Readonly<{ nodeId: string; name: string }>;
 /** A refusal by this node's channel or by the peer; `message` is the text the agent reads. */
 export type RemoteChannelRefusal = Readonly<{ accepted: false; code: string; message: string }>;
 
-export type RemoteStartedRun = Readonly<{ accepted: true; agentRunId: string }> | RemoteChannelRefusal;
+/** The root that receives a message on the other node: a standalone, Team or Org run, by its run ID. */
+export type RemoteTargetRoot = TaskAgentCoordinatingRun;
+
+/** A member of a Team run the peer started: its address and the run ID the peer allocated. */
+export type RemoteStartedTeamMember = Readonly<{ address: string; agentRunId: string }>;
+
+/** What the peer started: an Agent run, or a Team run with its coordinator and every member. */
+export type RemoteStartedRun =
+  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string }>
+  | Readonly<{ accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RemoteStartedTeamMember[] }>
+  | RemoteChannelRefusal;
 export type RemoteDeliveryReceipt = Readonly<{ accepted: true }> | RemoteChannelRefusal;
 
 export type RemoteMessageTransmission = Readonly<{
@@ -14,9 +24,9 @@ export type RemoteMessageTransmission = Readonly<{
   kind: "work_packet" | "message";
   messageId?: string;
   senderAgentRunId: string;
+  /** The root that receives it on that node (autobyteus-247 G-2): the remote run's, or the coordinating run. */
+  targetRoot: RemoteTargetRoot;
   targetAgentRunId: string;
-  /** Set when the remote run sends to its delegator's node: the run there that holds the link. */
-  coordinatingRun?: TaskAgentCoordinatingRun;
   content: string;
   messageType: string;
   createdAt: string;

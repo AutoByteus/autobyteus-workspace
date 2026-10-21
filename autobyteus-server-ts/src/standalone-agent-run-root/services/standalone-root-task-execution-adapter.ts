@@ -48,7 +48,7 @@ import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-per
 import { addStandaloneRootRemoteTaskExecution, addStandaloneRootTaskExecution, adoptStandaloneRootPlatformBinding } from "./standalone-root-tree-mutator.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
-import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** A delegation target in an Agent root: always a catalog definition copied into the run. */
 export type StandaloneRootPlacement = DelegationPlacement;
@@ -362,7 +362,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
   }
 
   /** A remote delegation's one tree write: the link with `nodeId` (it can be the run's first write, REQ-008). */
-  private commitRemoteLink(link: RemoteTaskAgentExecution): Promise<TaskExecutionActivationCommitResult> {
+  private commitRemoteLink(link: RemoteTaskExecution): Promise<TaskExecutionActivationCommitResult> {
     let nextTree: StandaloneRootTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {

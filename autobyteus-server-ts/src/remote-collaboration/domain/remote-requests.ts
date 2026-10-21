@@ -23,16 +23,17 @@ export type StartDelegatedRunRequest = RemoteEnvelope & Readonly<{
 }>;
 
 /**
- * One message between a delegating run and its remote run, or the work packet that starts the remote run.
- * `messageId` is present for `kind: "message"` (a work packet is not a message-log entry); `coordinatingRun`
- * is present when the remote run sends to its delegator's node.
+ * One message between a delegating run and its remote run (or Team), or the work packet that starts it.
+ * `messageId` is present for `kind: "message"` (a work packet is not a message-log entry). `targetRoot` names the
+ * root on the called node that receives it, in both directions (autobyteus-247 G-2): the remote run's root
+ * (`agent` or `agent_team`), or the coordinating run of the delegating node.
  */
 export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   kind: "work_packet" | "message";
   messageId?: string;
   sender: Readonly<{ agentRunId: string }>;
+  targetRoot: TaskAgentCoordinatingRun;
   target: Readonly<{ agentRunId: string }>;
-  coordinatingRun?: TaskAgentCoordinatingRun;
   content: string;
   messageType: string;
   createdAt: string;
@@ -40,8 +41,16 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
 
 /**
  * A refusal: `message` is the responder's detail (the reason); `targetName` is the target definition's name on the
- * responder, present for `REMOTE_TEAMS_NOT_SUPPORTED`, `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`.
+ * responder, present for `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`.
  */
 export type RemoteRefusalAnswer = Readonly<{ accepted: false; nodeId: string; code: string; message: string; targetName?: string }>;
-export type StartDelegatedRunAnswer = Readonly<{ accepted: true; nodeId: string; agentRunId: string }> | RemoteRefusalAnswer;
+/**
+ * What the called node started (autobyteus-247 G-7): an Agent run, or a Team run with its coordinator's address and
+ * every member (address and run ID, as the Team tree has them).
+ */
+export type StartDelegatedRunAnswer =
+  | Readonly<{ accepted: true; nodeId: string; kind: "agent"; agentRunId: string }>
+  | Readonly<{ accepted: true; nodeId: string; kind: "agent_team"; teamRunId: string; coordinatorAddress: string;
+      members: readonly Readonly<{ address: string; agentRunId: string }>[] }>
+  | RemoteRefusalAnswer;
 export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;

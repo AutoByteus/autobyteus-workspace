@@ -48,7 +48,7 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
     receiverIdentity: member(root, WRITER), receiverDisplayName: "writer", content,
   });
   await expect(deliverLocal("first local")).resolves.toMatchObject({ accepted: true });
-  const endpoint = delegatedRunEndpoint({ address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T09:00:00.000Z" });
+  const endpoint = delegatedRunEndpoint({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer", delegatorAgentRunId: LEAD, startedAt: "2026-10-20T09:00:00.000Z" });
   const prepared = engine.prepareRemoteSend({ senderIdentity: member(root, LEAD), endpoint, content: "to remote" });
   if (!prepared.ok) throw new Error(prepared.refusal.message);
   await expect(engine.commitSentToRemote(prepared)).resolves.toMatchObject({ accepted: true });

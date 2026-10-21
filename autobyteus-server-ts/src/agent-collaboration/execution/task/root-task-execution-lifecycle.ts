@@ -1,9 +1,13 @@
 import type { RemoteRunLinks } from "../remote/remote-run-links.js";
 import { REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
+import { remoteTeamCoordinatorRunId } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 
-/** The narrow port a lifecycle gets from its root: which run IDs are runs on a peer node (AR-003). */
-export type RemoteEndpointLookup = Readonly<{ isRemoteEndpoint(agentRunId: string): boolean }>;
-const NO_REMOTE_ENDPOINTS: RemoteEndpointLookup = Object.freeze({ isRemoteEndpoint: () => false });
+/**
+ * The narrow port a lifecycle gets from its root: which run IDs are runs on a peer node (AR-003), and which
+ * team run IDs are Team runs on a peer node (autobyteus-247 G-3).
+ */
+export type RemoteEndpointLookup = Readonly<{ isRemoteEndpoint(agentRunId: string): boolean; isRemoteTeam(teamRunId: string): boolean }>;
+const NO_REMOTE_ENDPOINTS: RemoteEndpointLookup = Object.freeze({ isRemoteEndpoint: () => false, isRemoteTeam: () => false });
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
@@ -75,8 +79,9 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
   /** Live leases and user Stops in progress (SR-006). */
-  private readonly holds = new TaskExecutionLiveHolds();
+  private readonly holds: TaskExecutionLiveHolds;
   private readonly remoteEndpoints: RemoteEndpointLookup;
+  private readonly remoteRunLinks: RemoteRunLinks | null;
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -88,9 +93,13 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       remoteRunLinks?: RemoteRunLinks;
       /** AR-003: which run IDs name runs on a peer node (backed by the root's `RemoteRunLinks.has`). */
       remoteEndpoints?: RemoteEndpointLookup;
+      /** Told after every live-lease release (DS-004: a peer-started Team root's idle schedule re-arms). */
+      onLiveLeaseReleased?: () => void;
     }> = {},
   ) {
+    this.holds = new TaskExecutionLiveHolds(options.onLiveLeaseReleased);
     this.remoteEndpoints = options.remoteEndpoints ?? NO_REMOTE_ENDPOINTS;
+    this.remoteRunLinks = options.remoteRunLinks ?? null;
     this.resourceScope = new RootTaskExecutionResourceScope(adapter, options.taskExecutionResources, options.remoteRunLinks);
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
@@ -182,7 +191,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       ({ taskId, taskReference, description } = saved);
       // AR-003: a saved Task is never given to a run on a peer node; refused after the named Task's own refusals
       // and before the copy is resolved or any Task change.
-      if ("agentRunId" in input.copy && this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId)) {
+      if ("agentRunId" in input.copy ? this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId) : this.remoteEndpoints.isRemoteTeam(input.copy.teamRunId)) {
         return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
       }
       const found = resolveExistingCopy(this.adapter, input.copy);
@@ -227,12 +236,18 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     }
     throw notACopyOfThisRun(copy);
   }
-  /** `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or `null`. */
+  /**
+   * `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or
+   * of the remote Team run this root delegated to (G-6); `null` otherwise.
+   */
   teamCoordinatorOf(teamRunId: string): string | null {
-    return this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;
+    const remote = this.remoteRunLinks?.teamLinkFor(teamRunId);
+    return remote ? remoteTeamCoordinatorRunId(remote) : this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;
   }
 
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
+  /** A live lease is held on a task execution of this root (DS-004's quiet shutdown waits for it). */
+  hasLiveLeases(): boolean { return this.holds.hasLeases(); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.resourceScope.releaseTaskExecutions(executions);

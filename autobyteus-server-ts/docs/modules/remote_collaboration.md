@@ -5,8 +5,9 @@
 The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-10 … CM-12, § 4);
 this document describes the mechanics.
 
-`src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent of another
-node, and lets the two runs message each other by run ID. It owns the node-level concerns: the switch, the
+`src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent or shared Agent
+Team of another node, and lets the delegator and the remote run (every member of a remote Team) message each
+other by run ID. It owns the node-level concerns: the switch, the
 registered peer nodes, the outbound client, the inbound gateway and the catalog port through which peers'
 targets are resolved.
 The collaboration roots own the runs and their messages; they reach other nodes through the shared owners in
@@ -15,8 +16,9 @@ The collaboration roots own the runs and their messages; they reach other nodes 
 
 Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
 authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
-switch on, every shared Agent is available to registered peers. Attachments, lifecycle control from the
-delegating node, remote Agent Teams (autobyteus-247), discovery and peer authentication come in later slices.
+switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams.
+Attachments, lifecycle control from the delegating node, discovery and peer authentication come in later
+slices.
 
 ## Settings (per node)
 
@@ -27,20 +29,20 @@ delegating node, remote Agent Teams (autobyteus-247), discovery and peer authent
 
 - Adding a peer contacts `GET <baseUrl>/rest/remote-access/status` and pins the `serverInstanceId` as the
   peer's `nodeId`; it needs the switch on. `name` is this owner's label, the `node` agents pass.
-- There is nothing to publish. Peers can start every Agent definition that a local `delegate_task` may target
-  as a catalog copy, at the same catalog address: shared Agents, never built-ins, Agent Orgs, team-local or
-  application-owned definitions. A shared Agent Team is refused with `REMOTE_TEAMS_NOT_SUPPORTED` until
-  autobyteus-247.
+- There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
+  as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
+  Agent Orgs, team-local or application-owned definitions.
 - How a remote run runs is decided in one place, `NodeCatalogPort`
-  (`agent-collaboration/collaborators/node-catalog-port.ts`): the Agent's own default runtime, model and
-  model settings (no inherited layer; see [Agent Communication](agent_communication.md), launch layers),
-  this node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`) and tool
-  auto-approve on. An Agent whose default runtime signs in with this node's local login (Codex, Claude) runs
+  (`agent-collaboration/collaborators/node-catalog-port.ts`): each agent's own default runtime, model and
+  model settings, and for a Team member without one the Team's default (no inherited layer; see
+  [Agent Communication](agent_communication.md), launch layers), this node's temp workspace
+  (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`) and tool auto-approve on for every agent
+  of the run (every member of a remote Team). An Agent whose default runtime signs in with this node's local login (Codex, Claude) runs
   with that login for any registered peer, as CM-12 says ("a remote run uses its own node's credentials").
   A leftover `published-agents.json` from a development build is neither read nor written.
 - GraphQL: `remoteCollaborationCapability` / `setRemoteCollaborationEnabled`, `peerNodes`, `addPeerNode`,
   `renamePeerNode`, `removePeerNode`. The web's Nodes → Remote Collaboration tab uses them and says which
-  Agents peers can start and how they run.
+  Agents and Agent Teams peers can start and how they run.
 
 ## Between nodes
 
@@ -49,7 +51,12 @@ Two requests, `POST /rest/remote/delegated-runs` and `POST /rest/remote/messages
 answer carries the responder's `nodeId`. A domain refusal is `200 {accepted: false, code, message,
 targetName?}` (`message` is the responder's detail, `targetName` the target definition's name there), a
 malformed body `400`. A delegated-run request names its target by `address`, its catalog address on the
-called node. There is no version field and no request ID; nothing retries.
+called node; its answer is `{accepted: true, nodeId, kind: "agent", agentRunId}` or `{accepted: true, nodeId,
+kind: "agent_team", teamRunId, coordinatorAddress, members: [{address, agentRunId}]}` (the member addresses
+as the delegating node addresses them, under the catalog address). Every message and work packet carries
+`targetRoot: {kind: "agent" | "agent_team" | "agent_org", runId}`, the root that receives it on the called
+node: towards a remote run, that run's root; back towards the delegator, the coordinating run its
+`delegatedFrom` names. There is no version field and no request ID; nothing retries.
 
 - **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies this node's switch
   and the registration, sends with a 20 s bound (QR-102), refuses an answer from a server that is not the
@@ -58,16 +65,26 @@ called node. There is no version field and no request ID; nothing retries.
   here). Order: `toNodeId` is this node, the switch is on, `fromNodeId` is a registered peer, then the
   handler of the request kind.
 - **`RemoteDelegationReceiver`**: resolves the address exactly as a local catalog copy is resolved, through
-  `CollaboratorAdmission` with `NodeCatalogPort`. First the kind (`catalogDefinitionAt`): nothing there →
-  `AGENT_NOT_FOUND`; an Agent Team → `REMOTE_TEAMS_NOT_SUPPORTED`, with the Team's name. Then the Agent's
-  launch (`catalogTaskSourceOf`): no configured default runtime and model → `NO_DEFAULT_RUNTIME`; a default
-  that can't run here (runtime unavailable, model unavailable, settings invalid) → `AGENT_CANNOT_RUN` with
-  the reason. Otherwise a **prepared** standalone run with the resolved launch and `delegatedFrom`; its ID is
-  returned. Every refusal comes before a run is prepared. A prepared run that never receives its work packet
-  expires (prepared-run TTL).
-- **`RemoteMessageReceiver`**: a work packet, or a message without `coordinatingRun`, goes to the run's
-  own standalone root on this node; a message with `coordinatingRun` goes to that coordinating root of the
-  delegating node (restored if needed). The root applies the link check.
+  `CollaboratorAdmission` with `NodeCatalogPort` (`catalogDefinitionAt`, then `catalogTaskSourceOf`):
+  nothing there → `AGENT_NOT_FOUND`; an agent covered by no default runtime and model →
+  `NO_DEFAULT_RUNTIME` ("… the target agent <name>" or "… the target agent team <name>"); a default that
+  can't run here (runtime unavailable, model unavailable, settings invalid) → `AGENT_CANNOT_RUN` with the
+  reason. Every refusal comes before a run is created.
+  - An Agent: a **prepared** standalone run with the resolved launch and `delegatedFrom`; its ID is
+    returned. A prepared run that never receives its work packet expires (prepared-run TTL).
+  - An Agent Team: **`RemoteTeamRunStarter`** (`inbound/remote-team-run-starter.ts`), the one owner of
+    mapping a resolved Team source to `TeamRunService.createTeamRun`: the Team default as the Team's launch,
+    each member's resolved launch, and `delegatedFrom` onto the Team tree. The Team run is created, not
+    started: its members start on input. `createTeamRun` plans the layout again from the definition; a
+    definition edited in between (a member added, removed or of another Agent, or another coordinator) is
+    `AGENT_CANNOT_RUN` "the Agent Team changed while it was being started", and a Team run already created
+    is terminated first.
+- **`RemoteMessageReceiver`**: resolves `targetRoot` by kind through `RemoteRootDirectory` (the root
+  managers' public resolve / restore APIs), one rule for both directions. A work packet is for a root a peer
+  started (`agent` or `agent_team`); a message for any root kind. Before an inactive root is restored, the
+  directory checks the request against the root's **stored** links (`storedLinkCheck`: the root managers read
+  their own stores, `remote-collaboration` parses no root files): a sender not linked from that node is
+  `REMOTE_TARGET_NOT_PERMITTED` and nothing is loaded. The restored root's own link check stays the authority.
 
 The refusal codes are one list next to the port (`agent-collaboration/execution/remote/remote-refusal-codes.ts`);
 the agent-facing texts are in `domain/remote-refusals.ts`.
@@ -78,19 +95,36 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   `remote_agent` placement (refusing `task_id` and `reference_files` first), and the unchanged
   `RootTaskExecutionLifecycle` runs it. Each root's task adapter hands the remote placement's planning and
   activation to `RemoteDelegation`, the one caller of `startDelegatedRun`: planning asks the peer to create
-  the run, so the peer's run ID is known before the Task link; `RemoteTaskActivation` then commits the link
-  (`taskExecutions` entry with `nodeId` in the topmost coordinating tree) and sends the work packet. A
-  refusal by the peer leaves nothing on this node.
-- **Receiving node.** The run is an ordinary standalone run; `run_metadata.json` carries `delegatedFrom`
-  `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root admits the work packet (link check, host
-  made ready, system task notification naming the node), knows the delegator as its back-link endpoint,
-  creates its `collaboration/` package with the first message, and shuts the host down after the idle
-  grace period (`StandaloneHostIdleShutdown`); the next message restores it.
-- **Endpoints.** `RemoteRunLinks` holds a root's remote endpoints, of two kinds (`remote-endpoint.ts`):
-  `delegated_run` on the delegating node (built from a link; only its delegator messages it; it belongs to
-  the Task the link was recorded under) and `delegator` on the node that runs the delegated run (built from
-  `delegatedFrom`; only the host messages it; no Task there; its messages carry `coordinatingRun`). Each kind
-  carries its own rules; `RemoteRunLinks` itself has membership (`endpointFor`, `inboundEndpoint`, `has`) and
+  the run, so the peer's run ID is known before the Task link (for a Team, the Task's run is the Team, entered
+  through its coordinator, as for a local Team copy); `RemoteTaskActivation` then commits the link (a
+  `taskExecutions` entry with `nodeId` in the topmost coordinating tree: `agentRunId`, or `teamRunId` with
+  `coordinatorAddress` and `members`) and sends the work packet to the Agent run or the Team's coordinator. A
+  refusal by the peer leaves nothing on this node. The result is the local copy's shape plus `node`.
+- **Receiving node, an Agent.** The run is an ordinary standalone run; `run_metadata.json` carries
+  `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root admits the work packet (link
+  check, host made ready, system task notification naming the node), knows the delegator as its back-link
+  endpoint, creates its `collaboration/` package with the first message, and shuts the host down after the
+  idle grace period (`StandaloneHostIdleShutdown`); the next message restores it.
+- **Receiving node, an Agent Team.** The run is an ordinary top-level Team run (history, open, watch, stop);
+  its `team_run_execution_tree.json` carries the same `delegatedFrom`. Its root pairs the delegator with every
+  member, admits the work packet for the coordinator (link check, then the coordinator's input with the
+  system task notification naming the node, which starts it), and has a quiet idle shutdown
+  (`RemoteTeamIdleShutdown`, see [Agent Team Execution](agent_team_execution.md)); the next message restores
+  it.
+- **Endpoints.** `RemoteRunLinks` holds a root's remote endpoints, of three kinds (`remote-endpoint.ts`).
+  Each endpoint has one representation of the pair rule, `pairedAgentRunIds` (the local agents it pairs
+  with), from which `allowsSender` / `allowsTarget` derive:
+  - `delegated_run` on the delegating node (an Agent link; only its delegator messages it; it belongs to the
+    Task the link was recorded under; its messages name the run's root);
+  - `delegated_team` on the delegating node (one per member of a Team link, the coordinator included; only
+    the delegator messages them; they belong to the Team's Task, `[{teamRunId}]`; their messages name the Team
+    run);
+  - `delegator` on the node that runs the delegated run (built from `delegatedFrom`; it pairs with the host
+    of a standalone root, or every member of a Team root; no Task there; its messages name the coordinating
+    run).
+
+  `RemoteRunLinks` itself has membership (`endpointFor`, `inboundEndpoint`, `has`, `teamLinkFor`), the link
+  checks (`admitsWorkPacket`, `admitsInbound`, also used against stored links before a restore) and
   `deliver` (the channel only).
 - **Messages.** A root's `hasAgentExecution` answers for its remote endpoints too, so `send_message_to`
   by run ID reaches the root. The root's delivery only routes: a remote endpoint goes to the root's
@@ -100,9 +134,10 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   runs the shared link check (`inboundEndpoint`), its own wake, then `engine.acceptFromRemote` (the
   receiver's log). The sender's node assigns the message ID; each node writes only its own run's log line
   (CM-9). Headers and results name the other run's node.
-- **Saved Task.** `delegate_task({target_agent_run_id, task_id})` naming a remote run is refused once, in
-  `RootTaskExecutionLifecycle.assignToExistingCopy` (through its `RemoteEndpointLookup`), before any Task
-  change.
+- **Saved Task.** `delegate_task` with `task_id` naming a remote run or a remote Team (its team run ID) is
+  refused once, in `RootTaskExecutionLifecycle.assignToExistingCopy` (through its `RemoteEndpointLookup`:
+  `isRemoteEndpoint` / `isRemoteTeam`), before any Task change. A message to a remote team run ID gets the
+  usual guidance to use the coordinator's run ID (`teamCoordinatorOf`, answered from `teamLinkFor`).
 - **Remote links in memory.** The stores load entries with `nodeId` into the tree's own
   `remoteTaskExecutions` (absent when none), never into `taskExecutions`, so every walker of local copies
   (index, Stop, launch selections, run tree, idle shutdown, Task closure release) excludes them. Run-ID
@@ -112,11 +147,11 @@ the agent-facing texts are in `domain/remote-refusals.ts`.
   them out. The local agent's own stream and the message logs show them.
 - **Package admission.** The Team and Org package validators (`validateTeamRunStatePackage`,
   `validateAgentOrgStatePackage`), which the history scan, restore and the migrations run, check each stored
-  message against the same endpoint set the store composes (`agentRunIdsOfTree`: the tree's agents and its
-  remote runs). A message is admitted when both endpoints are in that set, the two differ, and at least one
+  message against the same endpoint set the store composes (`agentRunIdsOfTree`: the tree's agents, its
+  remote runs with every member of a remote Team, and the delegator of the tree's own back-link). A message is admitted when both endpoints are in that set, the two differ, and at least one
   is an agent of the tree; the execution index stays local-only. A Team or Org whose delegator exchanged
   messages with a remote run therefore still loads, restores and reopens after a restart.
-- **Task closure** fences a remote run: the closed Task refuses its messages, no release is invoked, and the
-  result is `fenced_remote` with the text "… runs on node "X". This Task sends it no more messages; it stops
-  there when it goes idle." It keeps running on its node until idle (stopping it from the delegating node is
-  S3).
+- **Task closure** fences a remote run or a remote Team: the closed Task refuses its messages both ways, no
+  release is invoked, and the result is `fenced_remote` with the text "… runs on node "X". This Task sends it
+  no more messages; it stops there when it goes idle." It keeps running on its node until idle (stopping it
+  from the delegating node is S3).

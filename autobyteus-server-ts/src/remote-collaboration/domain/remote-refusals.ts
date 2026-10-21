@@ -27,10 +27,9 @@ export const peerRefusalText = (node: string, code: string, detail: string, targ
     case REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH:
       return `The server at node "${node}"'s address is not the node that was registered (identity mismatch), so nothing was sent.`;
     case REMOTE_REFUSAL.AGENT_NOT_FOUND: return `Node "${node}" has no Agent at ${detail} that can be delegated to.`;
-    case REMOTE_REFUSAL.REMOTE_TEAMS_NOT_SUPPORTED:
-      return `${targetName ?? "That target"} on node "${node}" is an Agent Team; Agent Teams on another node are not supported yet.`;
     case REMOTE_REFUSAL.NO_DEFAULT_RUNTIME:
-      return `There is no default runtime configured for the target agent ${targetName ?? detail} on node "${node}".`;
+      // B's reason names the target's kind ("target agent" / "target agent team", REQ-302); A adds the node.
+      return `${detail} on node "${node}".`;
     case REMOTE_REFUSAL.AGENT_CANNOT_RUN: return `The Agent ${targetName ?? "at that address"} on node "${node}" cannot run there: ${detail}`;
     case REMOTE_REFUSAL.TARGET_NOT_PERMITTED: return `Node "${node}" refused the message: that run is not linked with the sender.`;
     case REMOTE_REFUSAL.TARGET_NOT_FOUND: return `That run no longer exists on node "${node}".`;

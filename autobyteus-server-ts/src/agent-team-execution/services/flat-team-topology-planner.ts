@@ -41,6 +41,17 @@ export type FlatTeamTopologyPlan = Readonly<{
   agentLaunchSettings: readonly TeamAgentLaunchSettings[];
 }>;
 
+/**
+ * The member launch settings do not match the definition's current layout (a member is unknown, missing or of
+ * another Agent definition). A caller that resolved the layout earlier reads it as "the definition changed".
+ */
+export class TeamLayoutMismatchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TeamLayoutMismatchError";
+  }
+}
+
 type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
 type AgentIdAllocator = Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
 type TeamIdAllocator = Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
@@ -151,9 +162,9 @@ export class FlatTeamTopologyPlanner {
       if (address === "/") throw new Error("Agent launch settings cannot reference root Team '/'.");
       if (result.has(address)) throw new Error(`Duplicate Agent launch settings for '${address}'.`);
       const member = expected.get(address);
-      if (!member) throw new Error(`Agent launch settings reference unknown direct Team member '${address}'.`);
+      if (!member) throw new TeamLayoutMismatchError(`Agent launch settings reference unknown direct Team member '${address}'.`);
       if (value.agentDefinitionId && value.agentDefinitionId !== member.agentDefinitionId) {
-        throw new Error(`Launch settings for '${address}' reference the wrong Agent definition.`);
+        throw new TeamLayoutMismatchError(`Launch settings for '${address}' reference the wrong Agent definition.`);
       }
       result.set(address, Object.freeze({
         ...value,
@@ -161,7 +172,7 @@ export class FlatTeamTopologyPlanner {
       }));
     }
     const missing = [...expected.keys()].find((address) => !result.has(address));
-    if (missing) throw new Error(`Launch settings for Team member '${missing}' were not provided.`);
+    if (missing) throw new TeamLayoutMismatchError(`Launch settings for Team member '${missing}' were not provided.`);
     return result;
   }
 

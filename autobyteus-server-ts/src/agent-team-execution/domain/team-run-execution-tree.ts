@@ -4,10 +4,11 @@ import type { AgentLaunchConfiguration } from "./team-run-config.js";
 import type {
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
-  RemoteTaskAgentExecution,
+  RemoteTaskExecution,
   TaskExecution,
   TeamRunApplicationBinding,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 
 export type {
   ConfiguredAgentExecutionNode,
@@ -34,7 +35,7 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
    * In memory only: the remote runs this Team's agents delegated to (stored in `taskExecutions` with `nodeId`).
    * Absent when there are none, so a tree without remote links has exactly its stored shape.
    */
-  remoteTaskExecutions?: readonly RemoteTaskAgentExecution[];
+  remoteTaskExecutions?: readonly RemoteTaskExecution[];
 }>;
 
 /** Persisted TeamRun execution tree: read tolerantly, written exactly, no version field (REQ-018). */
@@ -44,6 +45,11 @@ export type TeamRunExecutionTreeFile = Readonly<{
   applicationBinding: TeamRunApplicationBinding | null;
   handoffs: readonly CollaborationHandoff[];
   rootTeam: RootConfiguredTeamExecutionNode;
+  /**
+   * Present only on a Team run a peer node started on this node (autobyteus-247): its back-link to the
+   * delegating run there. Absent means the Team run was not started by a peer.
+   */
+  delegatedFrom?: DelegatedFrom;
 }>;
 
 export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFile;

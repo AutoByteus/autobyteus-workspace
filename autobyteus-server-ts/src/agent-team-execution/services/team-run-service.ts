@@ -1,4 +1,6 @@
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -52,6 +54,8 @@ export interface CreateTeamRunInput {
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
   applicationBinding?: { applicationId: string; bindingId: string } | null;
+  /** A Team run a peer node starts (autobyteus-247): the back-link to its delegator there, kept on the tree. */
+  delegatedFrom?: DelegatedFrom;
 }
 
 export interface CreateTeamRunFromRootConfigInput {
@@ -138,7 +142,8 @@ export class TeamRunService {
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
     });
-    const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName });
+    const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;
@@ -202,6 +207,10 @@ export class TeamRunService {
   async resolveManagedTeamRun(teamRunId: string): Promise<RootTeamRun | null> {
     const normalized = required(teamRunId, "teamRunId");
     return this.getManagedTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
+  }
+  /** N-303 / N-304: the stored-link check before a peer's request restores a Team run. */
+  storedRemoteLinkCheck(teamRunId: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    return this.manager.storedRemoteLinkCheck(required(teamRunId, "teamRunId"), query);
   }
   recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
     return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });

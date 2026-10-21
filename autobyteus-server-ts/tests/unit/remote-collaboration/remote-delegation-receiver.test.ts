@@ -14,7 +14,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
  * autobyteus-245 DS-001 on node B: the target is resolved through the real `CollaboratorAdmission` with the node
  * catalog port. AC-201 (an Agent's default, accepted), AC-202 (no default), AC-203 (a default that can't run),
  * AC-204 (not found: unknown, built-in, team-local, application-owned), AC-205 (temp workspace, auto-approve on),
- * the Team refusal (N-201: the name from the eligibility owner), and the refusal texts on A.
+ * and the refusal texts on A. autobyteus-247: a shared Agent Team goes to the Team starter with its resolved source.
  */
 
 const TEMP = "/data/temp_workspace";
@@ -37,6 +37,9 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string } = {}) 
   const teams = [new AgentTeamDefinition({
     id: "studio", name: "Studio Team", description: "Studio", instructions: "x", coordinatorMemberName: "publisher",
     nodes: [new TeamMember({ memberName: "publisher", ref: "publisher", refScope: "shared" })],
+  }), new AgentTeamDefinition({
+    id: "bare", name: "Bare Team", description: "Bare", instructions: "x", coordinatorMemberName: "reviewer",
+    nodes: [new TeamMember({ memberName: "reviewer", ref: "reviewer", refScope: "shared" })],
   })];
   const catalog: CollaboratorDefinitionCatalog = {
     listAgentDefinitions: async () => agents,
@@ -60,18 +63,22 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string } = {}) 
     if (options.prepareFails) throw new Error(options.prepareFails);
     return { runId: "publisher_7f3a" } as never;
   });
-  const receiver = new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(TEMP), agentRuns: { prepareAgentRun } });
+  const teamAnswer = { accepted: true as const, kind: "agent_team" as const, teamRunId: "studio_team_1", coordinatorAddress: "/studio_team/publisher",
+    members: [{ address: "/studio_team/publisher", agentRunId: "publisher_t1" }] };
+  const startTeam = vi.fn(async () => teamAnswer);
+  const receiver = new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(TEMP), agentRuns: { prepareAgentRun },
+    teams: { start: startTeam } });
   const start = (address: string) => receiver.start({
     fromNodeId: "srv_node_a", toNodeId: "srv_node_b", address,
     delegator: { agentRunId: "lead_run" }, coordinatingRun: { kind: "agent_team", runId: "team_a" },
   }, { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z" });
-  return { start, prepareAgentRun };
+  return { start, prepareAgentRun, startTeam, teamAnswer };
 };
 
 describe("RemoteDelegationReceiver resolves through the shared catalog admission", () => {
   it("AC-201 / AC-205: prepares a run of the Agent at its catalog address with its default, the temp workspace and auto-approve on", async () => {
     const node = setup();
-    await expect(node.start("/publisher")).resolves.toEqual({ accepted: true, agentRunId: "publisher_7f3a" });
+    await expect(node.start("/publisher")).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3a" });
     expect(node.prepareAgentRun).toHaveBeenCalledExactlyOnceWith({
       agentDefinitionId: "publisher", workspaceRootPath: TEMP, autoExecuteTools: true,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: { thinking: "on" },
@@ -87,11 +94,25 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
     expect(node.prepareAgentRun).not.toHaveBeenCalled();
   });
 
-  it("refuses a shared Agent Team by its name, before any launch is resolved (until autobyteus-247)", async () => {
+  it("autobyteus-247 BEH-301: hands a shared Agent Team's resolved source to the Team starter, with the back-link; prepares no Agent run", async () => {
     const node = setup();
-    await expect(node.start("/studio_team")).resolves.toEqual({ accepted: false, code: "REMOTE_TEAMS_NOT_SUPPORTED",
-      message: "Studio Team is an Agent Team.", targetName: "Studio Team" });
+    await expect(node.start("/studio_team")).resolves.toEqual(node.teamAnswer);
+    expect(node.startTeam).toHaveBeenCalledExactlyOnceWith({
+      address: "/studio_team", name: "Studio Team",
+      delegatedFrom: { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run" },
+      source: expect.objectContaining({ kind: "agent_team", teamDefinitionId: "studio", coordinatorAddress: "/studio_team/publisher",
+        members: [expect.objectContaining({ address: "/studio_team/publisher", agentDefinitionId: "publisher",
+          launchConfiguration: expect.objectContaining({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus",
+            workspaceRootPath: TEMP, autoExecuteTools: true }) })] }),
+    });
     expect(node.prepareAgentRun).not.toHaveBeenCalled();
+  });
+
+  it("REQ-302 / AC-302: refuses a Team with an agent covered by no default, naming the Team, before anything starts", async () => {
+    const node = setup();
+    await expect(node.start("/bare_team")).resolves.toEqual({ accepted: false, code: "NO_DEFAULT_RUNTIME",
+      message: "There is no default runtime configured for the target agent team Bare Team", targetName: "Bare Team" });
+    expect(node.startTeam).not.toHaveBeenCalled();
   });
 
   it("AC-202: refuses an Agent with no default, or an incomplete one, as NO_DEFAULT_RUNTIME, and prepares nothing", async () => {
@@ -113,8 +134,8 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
 describe("peerRefusalText words B's refusals on A (design § Contract Between Nodes)", () => {
   it("names the node, the address or the target", () => {
     expect(peerRefusalText("docker", "AGENT_NOT_FOUND", "/publisher")).toBe('Node "docker" has no Agent at /publisher that can be delegated to.');
-    expect(peerRefusalText("docker", "REMOTE_TEAMS_NOT_SUPPORTED", "Studio Team is an Agent Team.", "Studio Team"))
-      .toBe('Studio Team on node "docker" is an Agent Team; Agent Teams on another node are not supported yet.');
+    expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent team Bare Team", "Bare Team"))
+      .toBe('There is no default runtime configured for the target agent team Bare Team on node "docker".');
     expect(peerRefusalText("docker", "NO_DEFAULT_RUNTIME", "There is no default runtime configured for the target agent Reviewer", "Reviewer"))
       .toBe('There is no default runtime configured for the target agent Reviewer on node "docker".');
     expect(peerRefusalText("docker", "AGENT_CANNOT_RUN", "Codex App Server command 'codex' is not available.", "Coder"))
