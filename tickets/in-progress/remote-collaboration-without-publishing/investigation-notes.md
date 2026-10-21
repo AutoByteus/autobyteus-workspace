@@ -11,7 +11,7 @@
 - Finalization target: `origin` / `personal`
 - Bootstrap result: worktree and branch created; ticket folder `tickets/in-progress/remote-collaboration-without-publishing/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-004`
 - Authorities read (2026-10-21): `references/requirements-engineering.md`, `references/ticket-scope.md`, `references/finding-the-cause.md` (read in this conversation; re-read where updated); the templates. The prior package `tickets/done/cross-node-agent-communication/` is context.
 - Investigation status: requirements-phase complete.
 
@@ -33,6 +33,16 @@
 | S-06 | 2026-10-21 | Command | `git tag --contains d51ef843f6` (after `git fetch --tags`) → none; latest tag `v1.5.8-beta.4` | Publishing has never shipped in a release | Reproduced |
 | S-07 | 2026-10-21 | Code | `src/config/app-config.ts:341` `getTempWorkspaceDir()` (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, leaf `temp_workspace`); `src/workspaces/temp-workspace.ts` (`temp_ws_default`) | Every node has a temp workspace | Read |
 
+## Architecture Investigation Findings (2026-10-21)
+
+| ID | Source | Observation | Established | Design use |
+| --- | --- | --- | --- | --- |
+| A-01 | `agent-collaboration/collaborators/collaborator-admission.ts:101-124` (`catalogDefinitionAt`, `catalogTaskSource`) | One call resolves a catalog address (`policy.catalogAddressMap(port).definitionFor`), checks admissibility, builds the plan (Agent or Team) and resolves launches with `port.rootLaunchConfiguration()` | Read | B uses the same call with a node catalog port |
+| A-02 | `collaborator-candidate-policy.ts` (`catalogView`, `requireAdmissible`, `isEligibleAgent/Team`) | Eligibility comes from the port: `ownDefinition`, in-run placements, `addressesInUse`, `isApplicationBound`. A port with none of them yields the node's whole eligible catalog | Read | `NodeCatalogPort` |
+| A-03 | `collaborator-launch-resolver.ts:86-200` | `resolve(plans, inheritedLaunch)`: configured layers take workspace/auto-approve from the inherited launch; an agent without a usable layer uses the inherited one; the inherited launch is also validated. Its only caller is `CollaboratorAdmission` | Read | Launch base `inherited` / `defaults_only` |
+| A-04 | `collaborator-root-port.ts:18-40` | `CollaboratorRootPort` has `rootLaunchConfiguration()` (14 readers in `src/`) | Read | Add `launchBase()`; keep `rootLaunchConfiguration` |
+| A-05 | `catalog-address-map.ts:81-89` | `addressFor` and `definitionFor` (reverse lookup) | Read | Address resolution on B |
+
 ## Requirement Implications
 
 - Removing publishing removes the source of launch settings. Runtime and model come from the agent default (the user's direction; it matches the first layer of `CollaboratorLaunchResolver`). Workspace and auto-approve need node-level rules (DEC-202, DEC-203).
@@ -48,4 +58,4 @@ None.
 | ID | Type | Description | Status |
 | --- | --- | --- | --- |
 | RSK-201 | Risk | Remote runs always auto-approve (DEC-203 (c)), so a peer's task runs tools, including computer use, without the owner's approval | Accepted by the user within the trusted-network scope (2026-10-21); the switch (off by default) and peer registration stay the consent; a permission rule is S6 |
-| RSK-202 | Unknown | Whether `CollaboratorLaunchResolver` can be called without an inherited layer as is | Architecture |
+| RSK-202 | Unknown → Resolved | The resolver needs a launch base without the inherited layer (A-03) | Design: `defaults_only` |

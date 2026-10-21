@@ -45,3 +45,16 @@
 - Change: DEC-203 (d) "inherited from the delegating run" → (c) "always on". REQ-206 updated; RSK-201 accepted by the user.
 - Approval: the User (quote above). Baseline: `requirements-doc.md` at SR-003.
 - Design impact: none yet (design not written); the contract carries no auto-approve.
+
+### SR-004 — Design complete (2026-10-21)
+
+- Phase and classification: Design / `Architecture Design Complete`.
+- Design: node B resolves a remote target as a local catalog copy, through `CollaboratorAdmission.catalogTaskSource` with a new `NodeCatalogPort` (no run; launch base `defaults_only`: the temp workspace, auto-approve on).
+  - The resolver gains a launch base (`inherited` is today's behavior; `defaults_only` has no inherited layer).
+  - `CollaboratorNoDefaultLaunchError` carries the user's wording.
+  - The contract field is `address`; refusal codes `AGENT_NOT_FOUND`, `REMOTE_TEAMS_NOT_SUPPORTED` (until 247), `NO_DEFAULT_RUNTIME`, `AGENT_CANNOT_RUN`.
+  - The publish subsystem, its GraphQL, web, tests and docs are removed.
+- Health: `Duplicated Policy Or Coordination`. Slice 1's parallel publishing resolution is replaced by the single local owners.
+- Classification: `Medium` / `High` (inter-node contract change; a shared resolver mode; security posture with auto-approve on).
+- Evidence: A-01 … A-05 (Read).
+- Applied handoff rule: see `handoff-architecture-review.md`.
