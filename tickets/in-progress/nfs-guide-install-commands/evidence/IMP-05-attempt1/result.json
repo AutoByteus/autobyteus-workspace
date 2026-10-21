@@ -1,0 +1,80 @@
+{
+  "id": "IMP-05",
+  "date": "2026-10-21T19:58:37.537Z",
+  "commit": "3dd60f90c710a3f5278fb828b632f7b50ab33736",
+  "sourceState": "current worktree changes",
+  "base": "http://127.0.0.1:50926",
+  "events": [
+    {
+      "type": "unexpected-graphql",
+      "operation": {
+        "operationName": "GetUpdateNotifications",
+        "variables": {},
+        "query": "query GetUpdateNotifications {\n  updateNotifications {\n    ...UpdateNotificationFields\n    __typename\n  }\n}\n\nfragment UpdateNotificationFields on UpdateNotification {\n  kind\n  sourceId\n  name\n  repositoryUrl\n  defaultBranch\n  installedRevision\n  latestRevision\n  foundAt\n  read\n  state\n  handledRevision\n  handledAt\n  __typename\n}"
+      }
+    },
+    {
+      "type": "console-error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22updateNotifications%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console-error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    }
+  ],
+  "scenarios": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "denial": "manual selection message",
+      "unavailable": "both install disabled",
+      "partial": "Linux disabled only"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": "closed",
+    "fixture": "removed"
+  },
+  "browser": "155.0.8059.85",
+  "result": "Fail",
+  "error": "Error: browser errors or unhandled fixture boundary"
+}

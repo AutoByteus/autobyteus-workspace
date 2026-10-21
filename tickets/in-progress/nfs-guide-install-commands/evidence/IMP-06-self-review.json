@@ -1,0 +1,33 @@
+{
+  "id": "IMP-06",
+  "date": "2026-10-21T20:00:35.169853+00:00",
+  "commit": "2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb",
+  "checks": {
+    "retainedPublicInstallerHashMatchesPublishedChecksums": "65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa",
+    "changedSourceEffectiveLines": {
+      "autobyteus-web/components/settings/NfsGuideCard.vue": 97,
+      "autobyteus-web/localization/messages/en/settings.ts": 495,
+      "autobyteus-web/localization/messages/zh-CN/settings.ts": 495,
+      "autobyteus-web/utils/nfsLauncherCommands.ts": 44
+    },
+    "DockerAndParentProductionUnchanged": true,
+    "approvedChangedPaths": [
+      "RELEASE.md",
+      "autobyteus-web/components/settings/NfsGuideCard.vue",
+      "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+      "autobyteus-web/components/settings/__tests__/NodeManager.spec.ts",
+      "autobyteus-web/docs/nfs_guide.md",
+      "autobyteus-web/localization/messages/en/settings.ts",
+      "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      "autobyteus-web/utils/__tests__/nfsLauncherCommands.spec.ts",
+      "autobyteus-web/utils/nfsLauncherCommands.ts"
+    ],
+    "noPersistenceOrExecutionBoundaryAdded": true
+  },
+  "classification": {
+    "task_size": "Small",
+    "architectural_risk": "Low",
+    "review": "Lightweight implementation self-review; no independent source review selected"
+  },
+  "limits": "Public bytes read from SD retained evidence; no new download/install/execution. Browser self-check is component-level, not packaged desktop/API signoff."
+}

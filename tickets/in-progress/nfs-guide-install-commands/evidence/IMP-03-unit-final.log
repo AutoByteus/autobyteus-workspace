@@ -1,0 +1,67 @@
+Check: IMP-03
+Input: 3dd60f90 + in-progress implementation (see attempts in implementation-handoff.md)
+Environment: macOS arm64; Node22.23.1; private HOME/TMPDIR
+Recorded: 2026-10-21T20:01:59.774189+00:00; execution timestamps where emitted below
+Command: Exact pnpm invocation below
+--- original output ---
+
+> autobyteus@1.5.8-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/nfsLauncherCommands.spec.ts components/settings/__tests__/NfsGuideCard.spec.ts components/settings/__tests__/NodeManager.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts utils/__tests__/dockerNodeLauncherCommands.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/__tests__/NfsGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nfsLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/nfsLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NfsGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/NfsGuideCard.spec.ts (11 tests) 61ms
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nfsLauncherCommands.spec.ts (24 tests) 1894ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > macos: success  445ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: success  422ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: checksum-failure  354ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (11 tests) 53ms
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (4 tests) 3ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 24ms
+
+ Test Files  5 passed (5)
+      Tests  53 passed (53)
+   Start at  21:58:01
+   Duration  8.84s (transform 3.03s, setup 13.46s, collect 329ms, tests 2.04s, environment 715ms, prepare 457ms)
