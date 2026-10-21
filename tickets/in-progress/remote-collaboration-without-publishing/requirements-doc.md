@@ -2,15 +2,19 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`. `Needs user`: DEC-202 (workspace), DEC-203 (tool auto-approve), DEC-205 (245 and 247 in sequence or merged); DEC-204 needs the user's acknowledgement.
-- Current solution revision ID: `SR-001`
+- Status: `Approved` (2026-10-21, SR-002)
+- Current solution revision ID: `SR-002`
 - Package identifier: `remote-collaboration-without-publishing`
 - Request / ticket: Project Task **autobyteus-245** "Remote collaboration without publishing", a part of **autobyteus-25** (cross-node parent). From FU-007 of autobyteus-191.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's direction of 2026-10-21
 - Requirements owner: Solution Designer
 - Date: 2026-10-21
-- Approved by and reference: Not approved yet
-- Exact approved requirements baseline / solution revision: N/A
+- Approved by and reference: `User`, in the Solution Designer conversation, 2026-10-21:
+  - "yesss. i think they are by default available … I would just want to be able to delegate to any agent on the other nodes. I don't want to just every time do configuration";
+  - on the workspace: "if you didn't set the default workspace, then it's temporal space, yes … we use the temporal space" (and the default-workspace follow-up FU-001);
+  - on auto-approve: "Yeah, of course like auto approve … we always used Auto approve";
+  - on the refusal: "if the target node … doesn't have … default runtime setting … just report error and this error is sent to the client".
+- Exact approved requirements baseline / solution revision: this document at SR-002
 - Behavior-defining supplements: None
 
 ## Problem And Desired Outcome
@@ -85,9 +89,9 @@ None.
 | REQ-202 | A remote run of an Agent starts with the Agent's default launch configuration on B: runtime, model, model settings | BEH-203 | Must | "the remote node might not have the runtime and model set up right" — use what is configured, or refuse | User 2026-10-21; DEC-201 |
 | REQ-203 | When the Agent has no default runtime and model on B, the delegation is refused before anything starts on B, with: "There is no default runtime configured for the target agent <name> on node <node>." | BEH-204 | Must | The user's wording | User 2026-10-21; DEC-201 |
 | REQ-204 | When the default exists but can't run on B (runtime not available, model not available, model settings invalid), the delegation is refused before anything starts on B, with the specific reason, naming the Agent and the node | BEH-204 | Must | Truthful reasons (slice 1 REQ-109) | DEC-201 |
-| REQ-205 | The remote run's workspace follows DEC-202 | BEH-203 | Must | A run needs a workspace; publishing chose it | DEC-202 |
-| REQ-206 | The remote run's tool auto-approve follows DEC-203 | BEH-203 | Must | Publishing chose it | DEC-203 |
-| REQ-207 | Nodes → Remote Collaboration no longer shows a publish list. It shows that all shared Agents are available to registered peers, and holds the node-level setting of DEC-203 (and DEC-202 if chosen) | BEH-201 | Must | — | — |
+| REQ-205 | The remote run's workspace is the receiving node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`). No setting. A definition default workspace is FU-001 | BEH-203 | Must | Zero configuration | DEC-202 |
+| REQ-206 | The remote run's tool auto-approve is that of the delegating run on the delegating node, as for a local delegated copy (which takes the run root's). No setting | BEH-203 | Must | Zero configuration; the user always uses auto-approve | DEC-203 | Tool auto-approve for remote runs | With it off, a remote run's tool calls wait for approval in B's window; with it on, a peer's tasks run tools without asking | (a) Always off. (b) A node-level setting, default off. (c) Always on. (d) **Inherited from the delegating run**, as a local delegated copy inherits the run root's auto-approve | (d) needs no setting, matches local delegation exactly, and leaves the decision with the person who started the delegating run. The user always runs with auto-approve, so remote runs auto-approve too. Antigravity still forces auto-approve, as locally | User | Decided (d), 2026-10-21 ("Yeah, of course like auto approve … we always used Auto approve") |
+| REQ-207 | Nodes → Remote Collaboration no longer shows a publish list. It shows that all shared Agents are available to registered peers, and that remote runs use each agent's default runtime and model. It has no new setting | BEH-201 | Must | — | — |
 | REQ-208 | The publishing code, its stored file handling, its GraphQL API and its refusal are removed (no dead code). A leftover `published-agents.json` on a development or test machine is neither read nor written (DEC-204) | BEH-201 | Must | Clean-cut removal | DEC-204 |
 | REQ-209 | The collaboration model (CM-12) and the module docs say that a node offers all its shared Agents to registered peers while the switch is on | BEH-201 | Must | The contract stays true | — |
 
@@ -139,10 +143,10 @@ None.
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-201 | Where do runtime and model come from? | Publishing chose them | (a) The Agent's default launch configuration; refuse when missing or unusable. (b) Fall back to some node default model | The user said: if there's no default, send the error back. Local catalog copies already take the agent default first (`CollaboratorLaunchResolver`); a remote run has no delegating run on B to inherit from, so the agent default is the only layer. **(a)**, with the user's wording for "missing" and the existing specific reasons for "unusable" | User (direction) | Decided by the user's direction |
-| DEC-202 | Which workspace does a remote run use? | Every run needs one; publishing chose it | (a) The node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`; it exists on every node, Docker included). (b) A node-level "workspace for remote runs" setting in Nodes → Remote Collaboration, defaulting to the temp workspace | (a) needs no setup and fits "automatically available". (b) adds one optional setting, useful when remote agents should work in a known folder. I recommend **(a) now**; add (b) only if you want remote runs to land in a specific folder | User | Needs user |
+| DEC-202 | Which workspace does a remote run use? | Every run needs one; publishing chose it | (a) The node's temp workspace (`AUTOBYTEUS_TEMP_WORKSPACE_DIR`, default `<data>/temp_workspace`; it exists on every node, Docker included). (b) A node-level "workspace for remote runs" setting in Nodes → Remote Collaboration, defaulting to the temp workspace | (a) needs no setup and fits "automatically available". (b) adds one optional setting, useful when remote agents should work in a known folder. I recommend **(a) now**; add (b) only if you want remote runs to land in a specific folder | User | Decided (a), the temp workspace; a definition default workspace is FU-001 (2026-10-21) |
 | DEC-203 | Tool auto-approve for remote runs | With it off, a remote run's tool calls wait for approval in B's window, possibly unattended; with it on, peers' tasks run tools (including computer use) without asking | (a) Always off. (b) One node-level setting "Auto-approve tools in remote runs" in Nodes → Remote Collaboration, **default off**. (c) Always on | (b): the owner decides once per node. Off by default keeps the safe default; on fits a dedicated worker node such as your Docker node. Recommend **(b), default off** | User | Needs user |
-| DEC-204 | Existing `published-agents.json` files | The user asked to decide its handling | Publishing never shipped in a release (S-06), so no released user data exists. (a) Stop reading it; no migration; delete leftover files by hand on test machines. (b) A registered migration that deletes it | DESIGN.md and the migration guideline protect released data; unreleased development data needs no migration machinery. Recommend **(a)** | User | Needs user (acknowledge) |
-| DEC-205 | Agent Teams (autobyteus-247): one design and delivery with 245, or in sequence? | The user wants both available | (a) In sequence: 245 (no publishing, Agents) delivered first; 247 (Teams) right after, reusing 245's rules (catalog address, default-config refusal "…target agent team…"). (b) Merged: one design, one review and one delivery | 245 is a small, mostly-removal change that can reach you within days. Teams across nodes is real new mechanics: a Team run on B with a coordinator, the result's team run ID and coordinator run ID, follow-ups to the coordinator, Team links. Slice 1 needed seven review rounds; keeping reviews small keeps them fast. The default-config rule is designed in 245 for both kinds, so 247 adds only the Team mechanics. Recommend **(a)** | User | Needs user |
+| DEC-204 | Existing `published-agents.json` files | The user asked to decide its handling | Publishing never shipped in a release (S-06), so no released user data exists. (a) Stop reading it; no migration; delete leftover files by hand on test machines. (b) A registered migration that deletes it | DESIGN.md and the migration guideline protect released data; unreleased development data needs no migration machinery. Recommend **(a)** | User | Decided (a), 2026-10-21 ("yesss") |
+| DEC-205 | Agent Teams (autobyteus-247): one design and delivery with 245, or in sequence? | The user wants both available | (a) In sequence: 245 (no publishing, Agents) delivered first; 247 (Teams) right after, reusing 245's rules (catalog address, default-config refusal "…target agent team…"). (b) Merged: one design, one review and one delivery | 245 is a small, mostly-removal change that can reach you within days. Teams across nodes is real new mechanics: a Team run on B with a coordinator, the result's team run ID and coordinator run ID, follow-ups to the coordinator, Team links. Slice 1 needed seven review rounds; keeping reviews small keeps them fast. The default-config rule is designed in 245 for both kinds, so 247 adds only the Team mechanics. Recommend **(a)** | User | Decided (a), in sequence (2026-10-21, "yesss") |
 | DEC-206 | The contract's `publishedAddress` field | The name would be wrong | Rename it to `address` (the catalog address) in a clean cut (DESIGN.md rule 9: both nodes run the same release) | **Decided**: rename | Solution Designer | Decided |
 
 ## Traceability
@@ -167,5 +171,5 @@ None.
 
 ## Readiness Check
 
-- Content ready for approval: `Yes`, pending DEC-202, DEC-203, DEC-204 and DEC-205.
-- Approved basis ready for design: `No`.
+- Content ready for approval: `Yes`.
+- Approved basis ready for design: `Yes` (User, 2026-10-21, SR-002).

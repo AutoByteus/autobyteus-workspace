@@ -20,3 +20,20 @@
 - Intended behavior changed: N/A (baseline).
 - Approval impact: not approved.
 - Next action: the user answers; then architecture.
+
+### SR-002 — Approval (2026-10-21)
+
+- Phase and classification: Requirements / `Refinement` (approval capture, plus DEC-203 resolved by a new option).
+- Trigger: the user, 2026-10-21:
+  - "I would just want to be able to delegate to any agent on the other nodes. I don't want to just every time do configuration";
+  - the workspace is the temp workspace, plus the default-workspace follow-up (FU-001, sent);
+  - "Yeah, of course like auto approve";
+  - the refusal "is sent to the client".
+- Decisions:
+  - DEC-202 (a): the temp workspace;
+  - DEC-203 (d): auto-approve inherited from the delegating run (proposed after the user's "no configuration"; confirmed);
+  - DEC-204 (a): no migration;
+  - DEC-205 (a): 245, then 247.
+- Changed: REQ-205, REQ-206, REQ-207 (no node setting), Document Status, Decisions, Readiness.
+- Intended behavior changed: `Yes` (decisions taken). Approved by the User (quotes above). Baseline: `requirements-doc.md` at SR-002.
+- Next action: architecture design.
