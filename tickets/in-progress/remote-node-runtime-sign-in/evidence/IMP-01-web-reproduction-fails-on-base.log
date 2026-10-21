@@ -1,0 +1,60 @@
+# IMP-01 reproduction: failing web unit test before the fix
+# Command: pnpm -C autobyteus-web exec vitest run components/settings/agent-runtimes
+# Commit: 79636ac73 + uncommitted test change only (spec file); Linux, node v22.23.2; 2026-10-21T07:29:33Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web
+
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts (13 tests | 1 failed) 205ms
+   ✓ AgentRuntimesManager > checks the node on open behind a skeleton, then shows one row per runtime 53ms
+   ✓ AgentRuntimesManager > points a missing runtime to its install page and says to restart AutoByteus, with no action 16ms
+   ✓ AgentRuntimesManager > offers Sign in for browser-route runtimes and the command-line hint for the others 9ms
+   ✓ AgentRuntimesManager > signs in through the runtime, offers Cancel while waiting, and says when it did not finish 17ms
+   ✓ AgentRuntimesManager > announces a finished sign-in 14ms
+   ✓ AgentRuntimesManager > updates with progress from the vendor, then shows the result and announces it 17ms
+   ✓ AgentRuntimesManager > shows a failed update with the vendor's own message and offers Try again 10ms
+   ✓ AgentRuntimesManager > keeps Update visible but inert while that runtime has running agents, and enables it when they finish 14ms
+   × AgentRuntimesManager > offers Sign in on a remote node that can open a browser on its own desktop, finished in that node's browser 17ms
+     → expected 'Status only. Update these runtimes on…' to be 'Sign-in opens the browser on that nod…' // Object.is equality
+   ✓ AgentRuntimesManager > keeps a remote node that cannot open a browser status only: no Update, no Sign in, no sign-in hint 7ms
+   ✓ AgentRuntimesManager > offers Sign in and Update on the desktop's own node whatever its server reports about a browser 9ms
+   ✓ AgentRuntimesManager > checks again on request, polls fast while rows check, and announces when all are done 14ms
+   ✓ AgentRuntimesManager > says when the node can't be read, and Retry checks again 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts > AgentRuntimesManager > offers Sign in on a remote node that can open a browser on its own desktop, finished in that node's browser
+AssertionError: expected 'Status only. Update these runtimes on…' to be 'Sign-in opens the browser on that nod…' // Object.is equality
+
+Expected: "Sign-in opens the browser on that node; finish it in the VNC Viewer. Update these runtimes on that node's computer."
+Received: "Status only. Update these runtimes on that node's computer."
+
+ ❯ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts:229:55
+    227|     await mountPage()
+    228|     expect(textOf(get('agent-runtimes-node'))).toBe('Docker Node · Rem…
+    229|     expect(textOf(get('agent-runtimes-remote-note'))).toBe(
+       |                                                       ^
+    230|       "Sign-in opens the browser on that node; finish it in the VNC Vi…
+    231|     )
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  09:29:35
+   Duration  9.88s (transform 6.08s, setup 8.71s, collect 258ms, tests 205ms, environment 207ms, prepare 172ms)
+
