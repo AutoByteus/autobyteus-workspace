@@ -49,6 +49,12 @@ const projectMessages = {
   'projects.parts.noMatch': '此项目中没有其他匹配的任务。',
   'projects.parts.deleteNoteOne': '它的子任务将保留为独立任务。',
   'projects.parts.deleteNote': '它的 {{count}} 个子任务将保留为独立任务。',
+  // task-comments: the comment thread on a Project Task
+  'projects.comments.title': '评论',
+  'projects.comments.none': '暂无评论。',
+  'projects.comments.placeholder': '添加评论',
+  'projects.comments.add': '添加评论',
+  'projects.comments.adding': '正在添加…',
   'projects.ui.namePlaceholder': '例如：客户门户',
   'projects.ui.description': '描述',
   'projects.ui.projectDescriptionPlaceholder': '这个项目是关于什么的？',

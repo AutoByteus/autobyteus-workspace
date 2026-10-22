@@ -21,6 +21,12 @@ export type Scalars = {
   SafeInt: { input: number; output: number; }
 };
 
+export type AddProjectTaskCommentInput = {
+  projectId: Scalars['String']['input'];
+  taskId: Scalars['String']['input'];
+  text: Scalars['String']['input'];
+};
+
 export type AddProjectWorkspaceInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
@@ -1494,6 +1500,7 @@ export type ModelSourceStatusObject = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProjectTaskComment: ProjectTask;
   addProjectWorkspace: Project;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
@@ -1595,6 +1602,11 @@ export type Mutation = {
   uploadSkillFile: Scalars['Boolean']['output'];
   useGeminiMode: GeminiConfigurationCommandResult;
   writeFileContent: Scalars['String']['output'];
+};
+
+
+export type MutationAddProjectTaskCommentArgs = {
+  input: AddProjectTaskCommentInput;
 };
 
 
@@ -2130,6 +2142,7 @@ export type Project = {
 
 export type ProjectTask = {
   __typename?: 'ProjectTask';
+  comments: Array<ProjectTaskComment>;
   contextFiles: Array<ProjectTaskContextFile>;
   createdAt: Scalars['String']['output'];
   dependsOnTaskIds: Array<Scalars['String']['output']>;
@@ -2141,6 +2154,13 @@ export type ProjectTask = {
   taskId: Scalars['String']['output'];
   taskKey: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
+};
+
+export type ProjectTaskComment = {
+  __typename?: 'ProjectTaskComment';
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
 };
 
 export type ProjectTaskContextChangesInput = {
@@ -4329,14 +4349,21 @@ export type CreateProjectTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+
+export type AddProjectTaskCommentMutationVariables = Exact<{
+  input: AddProjectTaskCommentInput;
+}>;
+
+
+export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -4773,14 +4800,14 @@ export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: '
 
 export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null };
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
 
 export type GetTaskWorkerTasksQueryVariables = Exact<{
   agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -5674,6 +5701,11 @@ export const ProjectTaskFieldsFragmentDoc = gql`
   taskKey
   dependsOnTaskIds
   partOfTaskId
+  comments {
+    id
+    createdAt
+    text
+  }
 }
     ${TaskRootFieldsFragmentDoc}`;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -8352,6 +8384,35 @@ export function useUpdateProjectTaskMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<UpdateProjectTaskMutation, UpdateProjectTaskMutationVariables>(UpdateProjectTaskDocument, options);
 }
 export type UpdateProjectTaskMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateProjectTaskMutation, UpdateProjectTaskMutationVariables>;
+export const AddProjectTaskCommentDocument = gql`
+    mutation AddProjectTaskComment($input: AddProjectTaskCommentInput!) {
+  addProjectTaskComment(input: $input) {
+    ...ProjectTaskFields
+  }
+}
+    ${ProjectTaskFieldsFragmentDoc}`;
+
+/**
+ * __useAddProjectTaskCommentMutation__
+ *
+ * To run a mutation, you first call `useAddProjectTaskCommentMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useAddProjectTaskCommentMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useAddProjectTaskCommentMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProjectTaskCommentMutation(options: VueApolloComposable.UseMutationOptions<AddProjectTaskCommentMutation, AddProjectTaskCommentMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddProjectTaskCommentMutation, AddProjectTaskCommentMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<AddProjectTaskCommentMutation, AddProjectTaskCommentMutationVariables>(AddProjectTaskCommentDocument, options);
+}
+export type AddProjectTaskCommentMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddProjectTaskCommentMutation, AddProjectTaskCommentMutationVariables>;
 export const DeleteProjectTaskDocument = gql`
     mutation DeleteProjectTask($input: DeleteProjectTaskInput!) {
   deleteProjectTask(input: $input)
