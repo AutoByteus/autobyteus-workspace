@@ -54,6 +54,9 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   RC-28 alpha's switch off, an unknown node, a blank node, and the local list without node (AC-404, AC-407);
  *   RC-29 a Team added on beta between two listings appears in the second (AC-405); RC-04 and RC-19 read the new
  *   texts and beta's refusal `target {kind, name}` (AC-406, DEC-407); RC-20 also audits the two discovery routes;
+ *   269 (a remote run's title): RC-05 and RC-21 read beta's history title of the peer-started Agent and Team run (the
+ *   delegated description, before any owner message), RC-05 and RC-22 that messages don't replace it, RC-30 a long
+ *   multi-line description (one line, at most 100 characters);
  *   267 (the Nodes page): RC-26, RC-27 and RC-16 also ask alpha's GraphQL `peerNodeOffer(nodeId)` as the page does: the
  *   same list as list_available_agents without addresses, and each peer's refusal code (stopped, off, not registered,
  *   black-holed within the bound, identity mismatch);
@@ -376,6 +379,27 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       `${actor.label} result of ${name} ${JSON.stringify(args).slice(0, 160)}`, ms)
       .catch(async (error) => { throw new Error(`${error}; conversation tail: ${JSON.stringify(stringsOf(await actor.conversation()).slice(-6)).slice(0, 1500)}`); });
     return { ...toolResult(results[before]!), elapsedMs: Date.now() - started };
+  };
+  /** 269: a run's title in beta's history (`summary`), as beta's run history lists it; `null` when the run is not listed. */
+  const betaTitle = async (kind: "agent" | "team", id: string): Promise<string | null> => {
+    const groups = (await beta.gql(`query{listWorkspaceRunHistory(limitPerAgent:100){agentDefinitions{runs{runId summary}} teamDefinitions{runs{teamRunId summary}}}}`))
+      .listWorkspaceRunHistory as Rec[];
+    const runs = groups.flatMap((group) => kind === "agent" ? (group.agentDefinitions as Rec[]).flatMap((definition) => definition.runs as Rec[])
+      : (group.teamDefinitions as Rec[]).flatMap((definition) => definition.runs as Rec[]));
+    const run = runs.find((entry) => (kind === "agent" ? entry.runId : entry.teamRunId) === id);
+    return run ? run.summary as string : null;
+  };
+  /** The history catalogs' title rule: whitespace collapsed to one line; over 100 characters, the first 97 and "...". */
+  const titleOf = (description: string) => {
+    const line = description.replace(/\s+/g, " ").trim();
+    return line.length <= 100 ? line : `${line.slice(0, 97)}...`;
+  };
+  /** 269: wait for the peer-started run's title (it is written after the packet is accepted, without delaying the answer). */
+  const titledOnBeta = async (kind: "agent" | "team", id: string, expected: string) => {
+    let title: string | null = null;
+    await until(async () => (title = await betaTitle(kind, id)) === expected, `beta's title of ${id}: ${JSON.stringify(expected)}`, 15_000)
+      .catch((error) => { throw new Error(`${error}; last title ${JSON.stringify(title)}`); });
+    return title!;
   };
   /** 267: the window's query for one peer's offer (GraphQL on this node's own server), as the Nodes page sends it. */
   const peerNodeOffer = async (node: NodeServer, nodeId: string) => {
@@ -769,6 +793,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(fs.existsSync(path.join(alpha.memory, "agents", r1)), "no folder for the remote run on alpha").toBe(false);
 
     // Reply from beta (its owner asks the remote run to answer), then a follow-up from alpha.
+    // 269 AC-601: before any owner message, beta's history titles the run with the delegated description (not the wrapper).
+    const titleBeforeOwner = await titledOnBeta("agent", r1, "Publish the draft. Marker STANDALONE-PACKET.");
     const reply = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "REPLY-FROM-BETA-1" });
     expect(reply, JSON.stringify(reply)).toMatchObject({ accepted: true });
     expect(textOf(reply)).toContain(`on node "${LABEL.alpha}"`);
@@ -780,6 +806,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const atBeta = await receives(remote, "FOLLOWUP-FROM-ALPHA-1");
     expect(atBeta).toContain(`You received a message from the agent with sender run id "${ids.solo}" on node "${LABEL.alpha}".`);
 
+    // 269: the owner's message and the peer's follow-up don't replace the title.
+    expect(await betaTitle("agent", r1), "the title after an owner message and a peer message").toBe(titleBeforeOwner);
     const replyLogs = await assertBothLogs("REPLY-FROM-BETA-1", remote, solo);
     const followUpLogs = await assertBothLogs("FOLLOWUP-FROM-ALPHA-1", solo, remote);
     expect(replyLogs.files).toEqual({ beta: `memory/agents/${r1}/collaboration/communication_messages_active.jsonl`, alpha: `memory/agents/${ids.solo}/collaboration/communication_messages_active.jsonl` });
@@ -793,7 +821,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const kinds = new Set(remoteRequests().filter((entry) => entry.status === 200).map((entry) => entry.path === PATHS.runs ? "start"
       : (entry.body as Rec).kind === "work_packet" ? "work_packet" : `message ${entry.via}`));
     expect([...kinds].sort()).toEqual(["message toAlpha", "message toBeta", "start", "work_packet"]);
-    record("RC-05", { delegated, metadata, packet, link: links[0], taskResource: resources[0], reply, received, followUp, atBeta, replyLogs, followUpLogs, sequences });
+    record("RC-05", { titleBeforeOwner, delegated, metadata, packet, link: links[0], taskResource: resources[0], reply, received, followUp, atBeta, replyLogs, followUpLogs, sequences });
   }, 240_000);
 
   it("RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted", async () => {
@@ -1057,6 +1085,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Beta: an ordinary Team run with the back-link on its tree; only the coordinator starts, with the work packet.
     const coordinator = teamActor(beta, studioRunId, coord, "beta studio coordinator");
     const packet = await receives(coordinator, "STUDIO-PACKET");
+    // 269 AC-601: beta's history titles the Team run with the delegated description, before any owner message.
+    ids.studioTitle = await titledOnBeta("team", studioRunId, "Studio work. Marker STUDIO-PACKET.");
     expect(packet).toContain(`You have a new task from the agent with sender run id "${lead.runId}" on node "${LABEL.alpha}".`);
     const betaTree = await betaTeamTree(studioRunId);
     expect(betaTree.delegatedFrom).toEqual({ nodeId: alpha.nodeId, coordinatingRun: { kind: "agent_team", runId: ids.team.teamRunId }, delegatorAgentRunId: lead.runId });
@@ -1123,7 +1153,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(sequences.errorFrames).toEqual([]);
     expect(sequences.sequenced).toBeGreaterThan(0);
     expect(view.closed(), "the Team view stays open").toBeNull();
-    record("RC-22", { logs, toTeamRun: textOf(toTeamRun), fromMate: textOf(fromMate), fromOther: textOf(fromOther), checkerLaunches, sequences });
+    // 269: owner messages to the coordinator and the checker, and the peer's messages, don't replace the Team run's title.
+    const studioTitleAfter = await betaTitle("team", ids.studio.teamRunId);
+    expect(studioTitleAfter, "the Team run's title after messages").toBe(ids.studioTitle);
+    record("RC-22", { studioTitleAfter, logs, toTeamRun: textOf(toTeamRun), fromMate: textOf(fromMate), fromOther: textOf(fromOther), checkerLaunches, sequences });
   }, 300_000);
 
   it("RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta", async () => {
@@ -1548,6 +1581,27 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect((second.agents as Rec[]).find((entry) => entry.address === "/late_team")).toEqual({ name: "Late Team", kind: "agent_team", address: "/late_team", description: "Added between two listings" });
     expect((second.agents as Rec[]).length).toBe((first.agents as Rec[]).length + 1);
     record("RC-29", { first: (first.agents as Rec[]).length, second: (second.agents as Rec[]).length });
+  }, 180_000);
+
+  it("RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule", async () => {
+    const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
+    const paragraph = "Cut the launch trailer for the Night Owl coffee shop and have it checked before Friday.";
+    const description = `${paragraph}\n\nKeep it under thirty seconds.\nUse the brand colours and the owl mark.\n${"Notes: ".repeat(20)}Marker LONG-TITLE.`;
+    expect(description.length, "a long description").toBeGreaterThan(250);
+    const expected = titleOf(description);
+    expect(expected).toHaveLength(100);
+    const toAgent = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description });
+    expect(toAgent, JSON.stringify(toAgent)).toMatchObject({ delegated: true, target_kind: "agent" });
+    const toTeam = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/studio_team", description });
+    expect(toTeam, JSON.stringify(toTeam)).toMatchObject({ delegated: true, target_kind: "team" });
+    const agentTitle = await titledOnBeta("agent", toAgent.target_agent_run_id as string, expected);
+    const teamTitle = await titledOnBeta("team", toTeam.target_team_run_id as string, expected);
+    for (const title of [agentTitle, teamTitle]) {
+      expect(title, "one line").not.toMatch(/\n/);
+      expect(title.startsWith(paragraph), "it starts with the description").toBe(true);
+      expect(title.endsWith("..."), "cut at 97 characters").toBe(true);
+    }
+    record("RC-30", { descriptionLength: description.length, agentTitle, teamTitle });
   }, 180_000);
 
   it("RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'", async () => {
