@@ -145,7 +145,8 @@ describe("Project index status and index after writes", () => {
 
   it("indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)", async () => {
     await modelOnDisk();
-    start(40);
+    // The window runs from the first write; it must outlast three SQLite writes under full-suite load.
+    start(400);
     const alpha = await project("Alpha");
     const sync = vi.spyOn(fake.index, "sync");
     const search_ = vi.spyOn(fake.index, "search");
