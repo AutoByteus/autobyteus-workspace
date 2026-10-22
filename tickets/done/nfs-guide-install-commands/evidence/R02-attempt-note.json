@@ -1,0 +1,12 @@
+{
+  "case": "R02",
+  "date": "2026-10-21T20:06:51.504445+00:00",
+  "commit": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "environment": "current Nuxt actual pages, Chrome155 private profile",
+  "step": "Diagnose incomplete first browser attempt",
+  "failure": "Chinese literal expected 未加密; actual accurate text NFS 流量不加密. Also actual whole-page mounted unrelated settings/sidebar queries missing fixtures.",
+  "evidence": "R02-attempt-1/result.json and failure-body.txt; requests retain actual query shape",
+  "classification": "API harness/fixture setup, no established product defect",
+  "correction": "Assert actual semantically correct localized literal 不加密; exact ten observed read-only empty fixture contracts. Retain actual guide/router/locale/clipboard and error assertion unchanged.",
+  "repeat": "R02 incomplete; rerun full actual page cases on new own environment, no repository suite repeat"
+}

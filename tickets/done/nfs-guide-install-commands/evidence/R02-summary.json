@@ -1,0 +1,329 @@
+{
+  "case": "R02/R03",
+  "date": "2026-10-21T20:08:00.371425+00:00",
+  "commit": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "command": "R02-browser.mjs R02-attempt-2",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "base": "http://127.0.0.1:51459",
+    "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api-CUvVkE",
+    "serverPid": 85878,
+    "chrome": "155.0.8059.85"
+  },
+  "result": "Pass",
+  "matrix": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "names": [
+        "Copy install command for macOS",
+        "Copy install command for Linux",
+        "Copy command: Create storage once",
+        "Copy command: Connect each other computer",
+        "Copy command: Interactive menu",
+        "Copy command: Check status",
+        "Copy command: Reconnect",
+        "Copy command: Detach safely",
+        "Copy command: Show version"
+      ],
+      "dimensions": {
+        "document": {
+          "scroll": 1280,
+          "client": 1280
+        },
+        "cardWidth": 893,
+        "codes": [
+          {
+            "client": 367,
+            "scroll": 1007,
+            "overflow": "auto"
+          },
+          {
+            "client": 367,
+            "scroll": 978,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "names": [
+        "Copy install command for macOS",
+        "Copy install command for Linux",
+        "Copy command: Create storage once",
+        "Copy command: Connect each other computer",
+        "Copy command: Interactive menu",
+        "Copy command: Check status",
+        "Copy command: Reconnect",
+        "Copy command: Detach safely",
+        "Copy command: Show version"
+      ],
+      "dimensions": {
+        "document": {
+          "scroll": 390,
+          "client": 390
+        },
+        "cardWidth": 292,
+        "codes": [
+          {
+            "client": 180,
+            "scroll": 1007,
+            "overflow": "auto"
+          },
+          {
+            "client": 180,
+            "scroll": 978,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 277,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 219,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 291,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 277,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "locale": "zh-CN",
+      "width": 1280,
+      "names": [
+        "复制 macOS 安装命令",
+        "复制 Linux 安装命令",
+        "复制命令：创建一次存储",
+        "复制命令：连接其他计算机",
+        "复制命令：交互菜单",
+        "复制命令：检查状态",
+        "复制命令：重新连接",
+        "复制命令：安全断开",
+        "复制命令：显示版本"
+      ],
+      "dimensions": {
+        "document": {
+          "scroll": 1280,
+          "client": 1280
+        },
+        "cardWidth": 893,
+        "codes": [
+          {
+            "client": 367,
+            "scroll": 1007,
+            "overflow": "auto"
+          },
+          {
+            "client": 367,
+            "scroll": 978,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          },
+          {
+            "client": 384,
+            "scroll": 384,
+            "overflow": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "locale": "zh-CN",
+      "width": 390,
+      "names": [
+        "复制 macOS 安装命令",
+        "复制 Linux 安装命令",
+        "复制命令：创建一次存储",
+        "复制命令：连接其他计算机",
+        "复制命令：交互菜单",
+        "复制命令：检查状态",
+        "复制命令：重新连接",
+        "复制命令：安全断开",
+        "复制命令：显示版本"
+      ],
+      "dimensions": {
+        "document": {
+          "scroll": 390,
+          "client": 390
+        },
+        "cardWidth": 292,
+        "codes": [
+          {
+            "client": 180,
+            "scroll": 1007,
+            "overflow": "auto"
+          },
+          {
+            "client": 180,
+            "scroll": 978,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 277,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 219,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 291,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 270,
+            "overflow": "auto"
+          },
+          {
+            "client": 214,
+            "scroll": 277,
+            "overflow": "auto"
+          }
+        ]
+      }
+    }
+  ],
+  "clipboardChecks": 36,
+  "independentLiteralExpectations": true,
+  "actualLanguageSettingsAndNodesTabs": true,
+  "dockerBeforeAfterAndActualCopy": true,
+  "clipboardEdgeCases": {
+    "case": "R03",
+    "keyboard": "Enter",
+    "timerReset": true,
+    "pendingAll9Disabled": true,
+    "secondRequestExcluded": true,
+    "unmountLateResolve": true,
+    "denialManualSelection": true,
+    "missingClipboard": true
+  },
+  "errors": [],
+  "unexpectedGraphql": [],
+  "mockedReadOnlyGraphql": [
+    "GetAgentDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAllWorkspaces",
+    "GetApplicationsCapability",
+    "GetProviderCredentialSettings",
+    "GetProviderModelCatalogSnapshots",
+    "GetUpdateNotifications",
+    "ListCollaborationRootHistory",
+    "ListWorkspaceRunHistory"
+  ],
+  "installerOrReleaseRequests": 0,
+  "limits": [
+    "Actual current browser renderer only, not Electron/backend/server acceptance",
+    "Unrelated health/notification/workspace/model/agent/app queries and two feeds doubled",
+    "No install or CLI command executed; no live NFS/storage/field/provider action",
+    "First attempt incomplete due harness literal/empty response fixtures; not a product failure or passing attempt"
+  ]
+}

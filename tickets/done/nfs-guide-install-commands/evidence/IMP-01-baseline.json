@@ -1,0 +1,11 @@
+{
+  "id": "IMP-01",
+  "date": "2026-10-21T19:55:41.566119+00:00",
+  "commit": "3dd60f90c710a3f5278fb828b632f7b50ab33736",
+  "command": "import {nfsPublishedRelease,nfsLauncherCommand} from './autobyteus-web/utils/nfsLauncherCommands.ts'; console.log(JSON.stringify({release:nfsPublishedRelease,mac:nfsLauncherCommand('macos'),linux:nfsLauncherCommand('linux')})); if(!nfsLauncherCommand('macos') || !nfsLauncherCommand('linux')) process.exitCode=1;",
+  "node": "v22.23.1",
+  "exit": 1,
+  "stdout": "{\"release\":null,\"mac\":null,\"linux\":null}\n",
+  "stderr": "(node:39049) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/utils/nfsLauncherCommands.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+  "interpretation": "Expected failure: actual helper provides no installer for either platform. No commands executed."
+}

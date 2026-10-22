@@ -1,0 +1,27 @@
+Check: IMP-05 / IMP-05-current; command: node evidence/IMP-05-preview.mjs IMP-05-current
+Input: 2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb / committed product source clean; 2026-10-21T20:00:25.986Z; macOS arm64, Node22.23.1
+--- original output ---
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:51012/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 84ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 570ms
+[nitro] ✔ Nuxt Nitro server built in 751ms
+ℹ Vite client warmed up in 1ms
