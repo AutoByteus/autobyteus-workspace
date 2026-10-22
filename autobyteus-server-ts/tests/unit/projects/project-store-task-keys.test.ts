@@ -11,7 +11,7 @@ const CREATED = "2026-10-17T00:00:00.000Z";
 const project = (projectId: string, prefix = "autobyteus", lastNumber = 0): Project => ({ projectId, name: "AutoByteus", description: "",
   createdAt: CREATED, updatedAt: CREATED, workspaces: [], taskKeys: { prefix, lastNumber } });
 const task = (taskId: string, dependsOnTaskIds: string[] = []): Omit<ProjectTask, "taskKey"> => ({ taskId, description: `Task ${taskId}`, status: "TODO",
-  dependsOnTaskIds, partOfTaskId: null, createdAt: CREATED, updatedAt: CREATED, contextFiles: [] });
+  dependsOnTaskIds, partOfTaskId: null, comments: [], createdAt: CREATED, updatedAt: CREATED, contextFiles: [] });
 
 describe("ProjectStore Task keys and dependencies", () => {
   let root: string, layout: ProjectsLayout, store: ProjectStore;
@@ -31,7 +31,7 @@ describe("ProjectStore Task keys and dependencies", () => {
     expect(Object.keys((await readJson(layout.projectFile("project_A"))).taskKeys).sort()).toEqual(["lastNumber", "prefix"]);
     const written = await readJson(layout.taskFile("project_A", "task_1"));
     expect(Object.keys(written).sort())
-      .toEqual(["contextFiles", "createdAt", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "status", "taskId", "taskKey", "updatedAt"]);
+      .toEqual(["comments", "contextFiles", "createdAt", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "status", "taskId", "taskKey", "updatedAt"]);
     expect(written).toMatchObject({ taskKey: "autobyteus-1", dependsOnTaskIds: ["task_0"], partOfTaskId: null });
     await store.updateTask("project_A", "task_1", (current) => ({ ...current, partOfTaskId: "task_0" }));
     expect(await readJson(layout.taskFile("project_A", "task_1"))).toMatchObject({ partOfTaskId: "task_0" });
@@ -104,6 +104,24 @@ describe("ProjectStore Task keys and dependencies", () => {
       await fs.writeFile(layout.projectFile("project_A"), JSON.stringify({ ...projectRaw, taskKeys }));
       expect(await store.listProjects()).toEqual([]);
     }
+  });
+
+  it("reads a task.json without comments (every file written before task-comments) as none and keeps only well-formed comments in ID order (AC-011)", async () => {
+    await store.createTask("project_A", "task_1", async () => task("task_1"));
+    const { comments: _absent, ...before } = await readJson(layout.taskFile("project_A", "task_1"));
+    const bytes = JSON.stringify(before, null, 2);
+    await fs.writeFile(layout.taskFile("project_A", "task_1"), bytes);
+    expect((await store.readTask("project_A", "task_1"))!.comments).toEqual([]);
+    expect(await fs.readFile(layout.taskFile("project_A", "task_1"), "utf8")).toBe(bytes);
+    await fs.writeFile(layout.taskFile("project_A", "task_1"), JSON.stringify({ ...before, comments: [
+      { id: 2, createdAt: "t2", text: "second" }, { id: 1, createdAt: "t1", text: "first", extra: true }, { id: 0, createdAt: "t", text: "zero" },
+      { id: 3, createdAt: "t3", text: "" }, { id: "4", createdAt: "t4", text: "string id" }, null, "text", { id: 5, text: "no time" },
+    ] }));
+    expect((await store.readTask("project_A", "task_1"))!.comments).toEqual([{ id: 1, createdAt: "t1", text: "first" }, { id: 2, createdAt: "t2", text: "second" }]);
+    await fs.writeFile(layout.taskFile("project_A", "task_1"), JSON.stringify({ ...before, comments: "not a list" }));
+    expect((await store.readTask("project_A", "task_1"))!.comments).toEqual([]);
+    await store.updateTask("project_A", "task_1", (current) => ({ ...current, description: "Saved" }));
+    expect(await readJson(layout.taskFile("project_A", "task_1"))).toMatchObject({ description: "Saved", comments: [] });
   });
 
   it("serializes relation-changing writes (dependencies and parent) of one Project", async () => {

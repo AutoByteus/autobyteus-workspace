@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { readJsonFile, updateJsonFile, withFilePathLock, writeJsonFile } from "../../persistence/file/store-utils.js";
-import type { Project, ProjectTask, ProjectTaskKeys, ProjectWorkspaceLink } from "../domain/models.js";
+import type { Project, ProjectTask, ProjectTaskComment, ProjectTaskKeys, ProjectWorkspaceLink } from "../domain/models.js";
 import { isProjectTaskStatus } from "../domain/task-status.js";
 import { isSafeContextFilename, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
@@ -31,6 +31,10 @@ export const readRetiredTaskKeyPrefixesFile = (raw: unknown): string[] => {
 };
 /** Absent means no dependencies; only Task ID strings are kept. */
 const normalizeDependsOn = (ids: unknown): string[] => Array.isArray(ids) ? ids.filter(isNonEmptyString) : [];
+/** Absent means no comments; only well-formed entries are kept, in ID order. */
+const normalizeComments = (comments: unknown): ProjectTaskComment[] => Array.isArray(comments)
+  ? comments.filter((c) => c && Number.isSafeInteger(c.id) && c.id > 0 && isNonEmptyString(c.createdAt) && isNonEmptyString(c.text))
+    .map((c) => ({ id: c.id, createdAt: c.createdAt, text: c.text })).sort((a, b) => a.id - b.id) : [];
 
 /** Current tolerant reader of `project.json`: known fields only; an invalid file is not a Project. */
 export const readProjectFile = (raw: unknown, projectId: string): Project | null => {
@@ -42,14 +46,14 @@ export const readProjectFile = (raw: unknown, projectId: string): Project | null
       workspaceRootPath: l.workspaceRootPath, description: l.description })),
     taskKeys: { prefix: c.taskKeys.prefix, lastNumber: c.taskKeys.lastNumber } };
 };
-/** Current tolerant reader of `task.json`; its ids must match its folders. An absent `partOfTaskId` means no parent. */
+/** Current tolerant reader of `task.json`; its ids must match its folders. An absent `partOfTaskId` means no parent, absent `comments` none. */
 export const readTaskFile = (raw: unknown, projectId: string, taskId: string): ProjectTask | null => {
   const c = raw as (Partial<ProjectTask> & { projectId?: unknown }) | null;
   if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.taskKey) || !isNonEmptyString(c.description)
     || !isProjectTaskStatus(c.status) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
   return { taskId, taskKey: c.taskKey, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
     contextFiles: normalizeContextFiles(c.contextFiles), dependsOnTaskIds: normalizeDependsOn(c.dependsOnTaskIds),
-    partOfTaskId: isNonEmptyString(c.partOfTaskId) ? c.partOfTaskId : null };
+    partOfTaskId: isNonEmptyString(c.partOfTaskId) ? c.partOfTaskId : null, comments: normalizeComments(c.comments) };
 };
 /** Exact writer shapes. */
 export const projectFileContent = (p: Project) => ({ projectId: p.projectId, name: p.name, description: p.description,
@@ -58,7 +62,7 @@ export const projectFileContent = (p: Project) => ({ projectId: p.projectId, nam
   taskKeys: { prefix: p.taskKeys.prefix, lastNumber: p.taskKeys.lastNumber } });
 export const taskFileContent = (projectId: string, t: ProjectTask) => ({ taskId: t.taskId, projectId, taskKey: t.taskKey, description: t.description,
   status: t.status, dependsOnTaskIds: [...t.dependsOnTaskIds], partOfTaskId: t.partOfTaskId, createdAt: t.createdAt, updatedAt: t.updatedAt,
-  contextFiles: normalizeContextFiles(t.contextFiles ?? []) });
+  contextFiles: normalizeContextFiles(t.contextFiles ?? []), comments: t.comments.map(({ id, createdAt, text }) => ({ id, createdAt, text })) });
 
 const notFound = (projectId: string) => new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
 const taskNotFound = (taskId: string) => new ProjectError("TASK_NOT_FOUND", `Task '${taskId}' was not found in this project.`);

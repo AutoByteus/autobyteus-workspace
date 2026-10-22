@@ -58,7 +58,7 @@ describe("Task status vocabulary (CANCELLED)", () => {
   it("the change feed accepts a CANCELLED Task upsert for both scopes", () => {
     const root = null;
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "project", projectId: "p" }, task: {
-      contextFiles: [], taskId: "t", projectId: "p", taskKey: "p-1", description: "d", status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null, createdAt: at, updatedAt: at, root } }).success).toBe(true);
+      contextFiles: [], taskId: "t", projectId: "p", taskKey: "p-1", description: "d", status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null, comments: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "no_project" }, task: {
       taskId: "a", description: "d", status: "CANCELLED", referenceFiles: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
   });
@@ -143,7 +143,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     expect(release).not.toHaveBeenCalled();
     expect(await resourcesFile(a.taskId)).toBe(bytes);
     expect(tasks.isOpen({ agentRunId: "before" })).toBe(false);
-    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, description: "A", referenceFiles: [] });
+    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, description: "A", comments: [], referenceFiles: [] });
   });
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {

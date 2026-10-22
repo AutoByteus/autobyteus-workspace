@@ -53,7 +53,7 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     const store = new ProjectStore(layout);
     expect(await store.listProjects()).toEqual([{ ...projectFields, taskKeys: { prefix: "website-relaunch", lastNumber: 2 } }]);
     expect((await store.listTasks(released.projectId)).sort((a, b) => a.taskId.localeCompare(b.taskId)))
-      .toEqual(tasks.map((task: { taskId: string }, index: number) => ({ ...task, taskKey: `website-relaunch-${index + 1}`, dependsOnTaskIds: [], partOfTaskId: null }))
+      .toEqual(tasks.map((task: { taskId: string }, index: number) => ({ ...task, taskKey: `website-relaunch-${index + 1}`, dependsOnTaskIds: [], partOfTaskId: null, comments: [] }))
         .sort((a: { taskId: string }, b: { taskId: string }) => a.taskId.localeCompare(b.taskId)));
     // Already migrated: a no-op that touches nothing.
     expect(await migration.execute()).toMatchObject({ status: "SUCCEEDED", summary: { scannedCount: 0, migratedCount: 0 } });

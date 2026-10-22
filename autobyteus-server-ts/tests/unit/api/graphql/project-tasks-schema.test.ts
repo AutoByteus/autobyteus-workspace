@@ -14,6 +14,7 @@ const mockProjectTaskService = vi.hoisted(() => ({
   listTasks: vi.fn(),
   createTask: vi.fn(),
   updateTask: vi.fn(),
+  addComment: vi.fn(),
   deleteTask: vi.fn(),
   currentTasksOfTaskWorkers: vi.fn(),
 }));
@@ -36,6 +37,7 @@ const taskView = {
   status: "TODO",
   dependsOnTaskIds: ["project_task_0"],
   partOfTaskId: "project_task_0",
+  comments: [{ id: 1, createdAt: "2026-09-26T00:00:01.000Z", text: "Dispatched with this direction." }],
   createdAt: "2026-09-26T00:00:00.000Z",
   updatedAt: "2026-09-26T00:00:00.000Z",
 };
@@ -61,7 +63,7 @@ describe("Project Tasks GraphQL schema", () => {
     const mutationFields = Object.keys(schema.getMutationType()?.getFields() ?? {});
 
     expect(queryFields).toContain("projectTasks");
-    expect(mutationFields).toEqual(expect.arrayContaining(["createProjectTask", "updateProjectTask", "deleteProjectTask"]));
+    expect(mutationFields).toEqual(expect.arrayContaining(["createProjectTask", "updateProjectTask", "addProjectTaskComment", "deleteProjectTask"]));
     expect(mutationFields.filter((name) => /projecttask/i.test(name) && /status/i.test(name))).toEqual([]);
     const updateInput = schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> };
     expect(Object.keys(updateInput.getFields()).sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "taskId"]);
@@ -87,7 +89,7 @@ describe("Project Tasks GraphQL schema", () => {
 
     const result = await graphql({
       schema,
-      source: `query { projectTasks(projectId: "project_1") { taskId projectId taskKey description status dependsOnTaskIds partOfTaskId createdAt updatedAt } }`,
+      source: `query { projectTasks(projectId: "project_1") { taskId projectId taskKey description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt } }`,
     });
 
     expect(result.errors).toBeUndefined();
@@ -158,6 +160,18 @@ describe("Project Tasks GraphQL schema", () => {
     const created = await graphql({ schema, source: `mutation { createProjectTask(input: { projectId: "p", description: "d", partOfTaskId: "project_task_0" }) { partOfTaskId } }` });
     expect(created.data).toEqual({ createProjectTask: { partOfTaskId: "project_task_0" } });
     expect(mockProjectTaskService.createTask).toHaveBeenCalledWith(expect.objectContaining({ partOfTaskId: "project_task_0" }));
+  });
+
+  it("addProjectTaskComment forwards {projectId, taskId, text} and returns the Task with its thread (task-comments DS-002)", async () => {
+    mockProjectTaskService.addComment.mockResolvedValue(taskView);
+    const result = await graphql({ schema, source: `mutation { addProjectTaskComment(input: { projectId: "project_1", taskId: "project_task_1", text: "Looks good" }) {
+      taskId comments { id createdAt text } } }` });
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toEqual({ addProjectTaskComment: { taskId: "project_task_1", comments: taskView.comments } });
+    expect(mockProjectTaskService.addComment).toHaveBeenCalledWith(expect.objectContaining({ projectId: "project_1", taskId: "project_task_1", text: "Looks good" }));
+    mockProjectTaskService.addComment.mockRejectedValue(new ProjectError("TASK_COMMENT_INVALID", "Comment text is required."));
+    const refused = await graphql({ schema, source: `mutation { addProjectTaskComment(input: { projectId: "p", taskId: "t", text: " " }) { taskId } }` });
+    expect(refused.errors?.[0]?.extensions).toMatchObject({ code: "TASK_COMMENT_INVALID" });
   });
 
   it.each([

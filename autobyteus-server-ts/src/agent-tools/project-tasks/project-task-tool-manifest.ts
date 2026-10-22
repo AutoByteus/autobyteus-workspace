@@ -38,23 +38,27 @@ const projectTaskList = async ({ projectId, dependsOnTaskIds, partOfTaskId }: Pi
  * Business read: open `assignments` and `closedAssignments` (explicit copy IDs: an Agent's `agentRunId`,
  * a Team's `teamRunId` and `teamCoordinatorAgentRunId`), or a marker when this Task's assignments can't be read.
  */
-type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles"> & { dependsOn: string[]; partOf: string | null; parts: string[] }
+type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles"> & { dependsOn: string[]; partOf: string | null; parts: string[];
+  /** The comments' texts, oldest first; absent when none (agents need no number or time). */ comments?: string[] }
   & ({ assignments: TaskAssignmentView[]; closedAssignments: TaskAssignmentView[] } | { assignmentsUnavailable: true });
 /**
  * `projectId` is null for a Task with no Project (whose `taskId` is its ID, without `dependsOn` and `partOf`);
- * `attachedContextFiles` only when this call attached files; `closedParts` only when it closed parts with their parent.
+ * `attachedContextFiles` only when this call attached files; `closedParts` only when it closed parts with their parent,
+ * `partsNotClosed` only when it could not close some. An added comment adds nothing: the call's success says it was added.
  */
-const taskAcknowledgement = (ack: Pick<TaskAcknowledgementView, "projectId" | "taskReference" | "status" | "dependsOnTaskIds" | "partOfTaskId" | "closedPartReferences">,
+const taskAcknowledgement = (ack: Pick<TaskAcknowledgementView, "projectId" | "taskReference" | "status" | "dependsOnTaskIds" | "partOfTaskId" | "closedPartReferences" | "partsNotClosedReferences">,
   tasks: readonly ProjectTaskView[], attached: readonly ProjectTaskContextFile[] = []) => {
   const keys = relationKeys(tasks);
   return { projectId: ack.projectId, taskId: ack.taskReference, status: ack.status,
     ...(ack.projectId !== null ? { dependsOn: keys.dependsOn(ack.dependsOnTaskIds ?? []), partOf: keys.partOf(ack.partOfTaskId) } : {}),
     ...(attached.length ? { attachedContextFiles: attached.map(({ storedFilename, displayName }) => ({ storedFilename, displayName })) } : {}),
-    ...(ack.closedPartReferences?.length ? { closedParts: [...ack.closedPartReferences] } : {}) };
+    ...(ack.closedPartReferences?.length ? { closedParts: [...ack.closedPartReferences] } : {}),
+    ...(ack.partsNotClosedReferences?.length ? { partsNotClosed: [...ack.partsNotClosedReferences] } : {}) };
 };
-const taskBusinessRead = ({ projectId, taskId, taskKey, description, status, dependsOnTaskIds, partOfTaskId, contextFiles }: ProjectTaskView,
+const taskBusinessRead = ({ projectId, taskId, taskKey, description, status, dependsOnTaskIds, partOfTaskId, contextFiles, comments }: ProjectTaskView,
   keys: ReturnType<typeof relationKeys>, assignments: TaskAssignmentViews | "unavailable" | undefined): TaskBusinessRead => ({
   projectId, taskId: taskKey, description, status, dependsOn: keys.dependsOn(dependsOnTaskIds), partOf: keys.partOf(partOfTaskId), parts: keys.parts(taskId), contextFiles,
+  ...(comments.length ? { comments: comments.map((comment) => comment.text) } : {}),
   ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const }
     : { assignments: assignments?.open ?? [], closedAssignments: assignments?.closed ?? [] }),
 });
@@ -130,7 +134,8 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
     // Parents and parts are named from the whole Project list.
     const keys = relationKeys(await getProjectTaskService().listTasks(projectId));
     return { projectId, tasks: result.matches.map(({ task, match }) => ({ taskId: task.taskKey, status: task.status,
-      partOf: keys.partOf(task.partOfTaskId), parts: keys.parts(task.taskId), summary: summaryOf(task.description), match })),
+      partOf: keys.partOf(task.partOfTaskId), parts: keys.parts(task.taskId), summary: summaryOf(task.description), match,
+      ...(task.comments.length ? { commentCount: task.comments.length } : {}) })),
       meaningSearch: meaningSearchNote(result.meaningSearch) };
   }
   // The service may fail while producing its view AFTER the write. Neither a
@@ -138,12 +143,14 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   const localContextFiles = (input.context_files as string[] | undefined) ?? [];
   const dependsOn = input.depends_on as string[] | undefined;
   const partOf = input.part_of as string | undefined;
+  const addComment = input.add_comment as string | undefined;
   try {
     if (name === "update_task") {
       const ack = await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
         ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
         ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}),
-        ...(localContextFiles.length ? { localContextFiles } : {}), ...(dependsOn ? { dependsOn } : {}), ...(partOf !== undefined ? { partOf } : {}) });
+        ...(localContextFiles.length ? { localContextFiles } : {}), ...(dependsOn ? { dependsOn } : {}), ...(partOf !== undefined ? { partOf } : {}),
+        ...(addComment !== undefined ? { addComment } : {}) });
       return { task: taskAcknowledgement(ack, await projectTaskList(ack), ack.attachedContextFiles) };
     }
     const created = await getProjectTaskService().createTaskWithLocalContextFiles({

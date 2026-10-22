@@ -202,6 +202,22 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
   });
 });
 
+describe("RootTaskExecutionLifecycle saved-Task work text (task-comments REQ-012, AC-010)", () => {
+  it("a new copy of a saved Task gets its comment texts after the description, oldest first; no block without comments", async () => {
+    const { lifecycle, adapter, resources } = setup();
+    resources.addTask("project_task_7", "Ship the relay", "autobyteus-7");
+    resources.tasks.get("project_task_7")!.comments = ["Dispatched with this direction.", "User decided: beta only."];
+    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", task_id: "autobyteus-7" }, "placement");
+    const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
+    expect(packet.content.split("\n").slice(3)).toEqual(["Description:", "Ship the relay", "", "Comments:",
+      "- Dispatched with this direction.", "- User decided: beta only."]);
+    const plain = setup();
+    plain.resources.addTask("project_task_8", "Write the notes", "autobyteus-8");
+    await plain.lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", task_id: "autobyteus-8" }, "placement");
+    expect((vi.mocked(plain.adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage).content).not.toContain("Comments:");
+  });
+});
+
 describe("RootTaskExecutionLifecycle idle shutdown", () => {
   it("shuts a quiet child down after the grace period, not before (AC-004)", async () => {
     const { lifecycle, state, timers } = setup();

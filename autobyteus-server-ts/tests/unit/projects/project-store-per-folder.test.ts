@@ -8,7 +8,7 @@ import type { Project, ProjectTask } from "../../../src/projects/domain/models.j
 
 const project = (projectId: string, lastNumber = 0): Project => ({ projectId, name: projectId, description: "", createdAt: "2026-10-05T00:00:00.000Z",
   updatedAt: "2026-10-05T00:00:00.000Z", workspaces: [], taskKeys: { prefix: "project-a", lastNumber } });
-const task = (taskId: string): Omit<ProjectTask, "taskKey"> => ({ taskId, description: `Task ${taskId}`, status: "TODO", dependsOnTaskIds: [],
+const task = (taskId: string): Omit<ProjectTask, "taskKey"> => ({ taskId, description: `Task ${taskId}`, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null, comments: [],
   createdAt: "2026-10-05T00:00:00.000Z", updatedAt: "2026-10-05T00:00:00.000Z", contextFiles: [] });
 
 describe("per-Project folder ProjectStore (SR-024)", () => {

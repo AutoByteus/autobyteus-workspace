@@ -136,13 +136,13 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     const allowed = linked ? ["recipient_address", "task_id"] : ["recipient_address", "description", "reference_files"];
     if (Object.keys(input).some(key => !allowed.includes(key))) throw new TaskDelegationError("VALIDATION_ERROR", "Delegation accepts exactly one work source.");
     const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
-    let description: string, referenceFiles: readonly string[];
+    let description: string, referenceFiles: readonly string[], comments: readonly string[] = [];
     let join: TaskExecutionJoin;
     if (linked) {
       if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
       // The agent's task_id (key or ID) is resolved once; only the stored ID goes on.
       const saved = await this.resourceScope.port().resolveAssignment(requireTaskString(input.task_id, "task_id")).catch(error => { throw asTaskDelegationError(error); });
-      description = saved.description;
+      ({ description, comments } = saved);
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       join = { role: "assigned", taskId: saved.taskId, assignedBy: context.identity.agentRunId };
     } else {
@@ -157,7 +157,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
         : { role: "assigned", assignedBy: context.identity.agentRunId, adHocTask: { description, referenceFiles } };
     }
     return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity), description, referenceFiles }),
+      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity), description, comments, referenceFiles }),
       join, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
@@ -171,7 +171,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    */
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
-    let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, referenceFiles: readonly string[];
+    let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, comments: readonly string[], referenceFiles: readonly string[];
     try {
       this.assertAdmitting(context.identity);
       this.adapter.assertCurrentSchemaReady();
@@ -179,7 +179,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       const port = this.resourceScope.port();
       // The agent's task_id (key or ID) is resolved once; only the stored ID goes on, the key only into texts.
       const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
-      ({ taskId, taskReference, description } = saved);
+      ({ taskId, taskReference, description, comments } = saved);
       // AR-003: a saved Task is never given to a run on a peer node; refused after the named Task's own refusals
       // and before the copy is resolved or any Task change.
       if ("agentRunId" in input.copy && this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId)) {
@@ -198,7 +198,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskReference, description });
+    const content = buildExistingCopyTaskMessage({ taskReference, description, comments });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
