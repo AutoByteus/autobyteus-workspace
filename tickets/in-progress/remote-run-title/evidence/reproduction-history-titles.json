@@ -1,0 +1,662 @@
+{
+  "ids": {
+    "solo": "delegator_996550fb4f9a4d2ba1e0cc8a154a3e16",
+    "r1": "publisher_a5d8da1e1c7249a88abc58d0108ebdce",
+    "r1Task": "ad_hoc_task_171f1c9b-b509-41cd-be63-448852900780",
+    "team": {
+      "teamRunId": "remote_squad_89e511a5e65d42d9afd10d948431e8a3",
+      "lead": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+      "mate": "delegator_7be68a9037084ee5ab24bc1233864bdf",
+      "r2": "publisher_3169cfbebb3c46f794d1a98fddee1c1b"
+    },
+    "org": {
+      "orgRunId": "remote_org_b81e667994c14f4eb824a820afab6be2",
+      "lead": "delegator_43c5c1ab97ae44ea9711c9a28aacee4e",
+      "mate": "delegator_1a9152f2457c441181bf71062649f979",
+      "r5": "publisher_5dd7d1425123441d82aa58c1926e1c4a"
+    },
+    "other": "delegator_87489296ff77477a9c8ec55a1e5f12c4",
+    "bystander": "bystander_e5db04c53e694329a7473a60732a7ace",
+    "r3": "publisher_7b2098f5e5e54d619931f6c68ffbdeb6",
+    "teamView": {
+      "socket": {
+        "_events": {},
+        "_eventsCount": 3,
+        "_binaryType": "nodebuffer",
+        "_closeCode": 1006,
+        "_closeFrameReceived": false,
+        "_closeFrameSent": false,
+        "_closeMessage": {
+          "type": "Buffer",
+          "data": []
+        },
+        "_closeTimer": null,
+        "_errorEmitted": false,
+        "_extensions": {},
+        "_paused": false,
+        "_protocol": "",
+        "_readyState": 1,
+        "_receiver": {
+          "_events": {},
+          "_writableState": {
+            "highWaterMark": 65536,
+            "length": 0,
+            "corked": 0,
+            "writelen": 0,
+            "bufferedIndex": 0,
+            "pendingcb": 0
+          },
+          "_allowSynchronousEvents": true,
+          "_binaryType": "nodebuffer",
+          "_extensions": {},
+          "_isServer": false,
+          "_maxBufferedChunks": 262144,
+          "_maxFragments": 16384,
+          "_maxPayload": 104857600,
+          "_skipUTF8Validation": false,
+          "_bufferedBytes": 0,
+          "_buffers": [],
+          "_compressed": false,
+          "_payloadLength": 230,
+          "_fragmented": 0,
+          "_masked": false,
+          "_fin": true,
+          "_opcode": 1,
+          "_totalPayloadLength": 0,
+          "_messageLength": 0,
+          "_numFragments": 0,
+          "_fragments": [],
+          "_errored": false,
+          "_loop": false,
+          "_state": 0,
+          "_eventsCount": 6
+        },
+        "_sender": {
+          "_extensions": {},
+          "_socket": {
+            "connecting": false,
+            "_hadError": false,
+            "_parent": null,
+            "_host": null,
+            "_closeAfterHandlingError": false,
+            "_events": {
+              "end": [
+                null,
+                null
+              ]
+            },
+            "_readableState": {
+              "highWaterMark": 65536,
+              "buffer": [],
+              "bufferIndex": 0,
+              "length": 0,
+              "pipes": [],
+              "awaitDrainWriters": null
+            },
+            "_writableState": {
+              "highWaterMark": 65536,
+              "length": 0,
+              "corked": 0,
+              "writelen": 0,
+              "bufferedIndex": 0,
+              "pendingcb": 0
+            },
+            "allowHalfOpen": false,
+            "_eventsCount": 4,
+            "_sockname": null,
+            "_pendingData": null,
+            "_pendingEncoding": "",
+            "server": null,
+            "_server": null,
+            "parser": null,
+            "_httpMessage": null,
+            "timeout": 0
+          },
+          "_firstFragment": true,
+          "_compress": false,
+          "_bufferedBytes": 0,
+          "_queue": [],
+          "_state": 0
+        },
+        "_socket": {
+          "connecting": false,
+          "_hadError": false,
+          "_parent": null,
+          "_host": null,
+          "_closeAfterHandlingError": false,
+          "_events": {
+            "end": [
+              null,
+              null
+            ]
+          },
+          "_readableState": {
+            "highWaterMark": 65536,
+            "buffer": [],
+            "bufferIndex": 0,
+            "length": 0,
+            "pipes": [],
+            "awaitDrainWriters": null
+          },
+          "_writableState": {
+            "highWaterMark": 65536,
+            "length": 0,
+            "corked": 0,
+            "writelen": 0,
+            "bufferedIndex": 0,
+            "pendingcb": 0
+          },
+          "allowHalfOpen": false,
+          "_eventsCount": 4,
+          "_sockname": null,
+          "_pendingData": null,
+          "_pendingEncoding": "",
+          "server": null,
+          "_server": null,
+          "parser": null,
+          "_httpMessage": null,
+          "timeout": 0
+        },
+        "_bufferedAmount": 0,
+        "_isServer": false,
+        "_redirects": 0,
+        "_autoPong": true,
+        "_closeTimeout": 30000,
+        "_url": "ws://127.0.0.1:51175/ws/agent-team/remote_squad_89e511a5e65d42d9afd10d948431e8a3",
+        "_req": null
+      },
+      "frames": [
+        {
+          "type": "CONNECTED",
+          "payload": {
+            "session_id": "cdc9bc9f-1a12-4703-a6c1-a022e3efe937",
+            "root_team_run_id": "remote_squad_89e511a5e65d42d9afd10d948431e8a3"
+          },
+          "at": 1792613083311
+        },
+        {
+          "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+          "payload": {
+            "root_team_run_id": "remote_squad_89e511a5e65d42d9afd10d948431e8a3",
+            "base_change_sequence": 105,
+            "execution_tree": {
+              "created_at": "2026-10-21T20:04:24.128Z",
+              "archived_at": null,
+              "application_binding": null,
+              "handoffs": [],
+              "root_team": {
+                "address": "/",
+                "team_definition_id": "remote-squad",
+                "team_definition_name": "Remote Squad",
+                "team_run_id": "remote_squad_89e511a5e65d42d9afd10d948431e8a3",
+                "coordinator_address": "/lead",
+                "default_launch_configuration": {
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "gemini-3.8-flash-low",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/alpha/workspace"
+                },
+                "members": [
+                  {
+                    "kind": "configured_agent",
+                    "address": "/lead",
+                    "agent_definition_id": "delegator",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+                    "platform_agent_run_id": "a0a742f8-c470-42fd-b619-746fcc0824ba",
+                    "launch_configuration": {
+                      "runtime_kind": "antigravity_cli",
+                      "llm_model_identifier": "gemini-3.8-flash-low",
+                      "llm_config": null,
+                      "auto_execute_tools": true,
+                      "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/alpha/workspace"
+                    }
+                  },
+                  {
+                    "kind": "configured_agent",
+                    "address": "/mate",
+                    "agent_definition_id": "delegator",
+                    "role": null,
+                    "description": null,
+                    "agent_run_id": "delegator_7be68a9037084ee5ab24bc1233864bdf",
+                    "platform_agent_run_id": "97951661-966c-45cd-8ff2-b43e0f7f8ec6",
+                    "launch_configuration": {
+                      "runtime_kind": "antigravity_cli",
+                      "llm_model_identifier": "gemini-3.8-flash-low",
+                      "llm_config": null,
+                      "auto_execute_tools": true,
+                      "workspace_root_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/alpha/workspace"
+                    }
+                  }
+                ],
+                "task_executions": []
+              }
+            },
+            "closed_task_executions": [],
+            "messages": [
+              {
+                "message_id": "collabmsg_O_tD9Qdid9YHXRLvHyi57665EtHUGdM2",
+                "sender_agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+                "receiver_agent_run_id": "delegator_7be68a9037084ee5ab24bc1233864bdf",
+                "content": "LOCAL-AFTER-REMOTE-TEAM",
+                "message_type": "agent_message",
+                "reference_files": [],
+                "created_at": "2026-10-21T20:04:25.728Z"
+              }
+            ],
+            "agent_statuses": [
+              {
+                "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+                "member_address": "/lead",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null,
+                "recoverableBlock": null
+              },
+              {
+                "agent_run_id": "delegator_7be68a9037084ee5ab24bc1233864bdf",
+                "member_address": "/mate",
+                "status": "idle",
+                "trigger": null,
+                "tool_name": null,
+                "error_message": null,
+                "error_details": null,
+                "recoverableBlock": null
+              }
+            ],
+            "agent_input_states": [
+              {
+                "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+                "state": {
+                  "run_instance_id": "6144ccb5-a224-43d4-aef8-3691e5393aa9",
+                  "revision": 16,
+                  "entries": [],
+                  "recoverableBlock": null
+                }
+              },
+              {
+                "agent_run_id": "delegator_7be68a9037084ee5ab24bc1233864bdf",
+                "state": {
+                  "run_instance_id": "da27c307-574c-41b0-994c-f591051f21de",
+                  "revision": 8,
+                  "entries": [],
+                  "recoverableBlock": null
+                }
+              }
+            ]
+          },
+          "at": 1792613083312
+        },
+        {
+          "type": "TEAM_RUN_LIFECYCLE",
+          "payload": {
+            "is_active": true
+          },
+          "at": 1792613083312
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "initializing",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 106,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083519
+        },
+        {
+          "type": "AGENT_INPUT_STATE",
+          "payload": {
+            "run_instance_id": "6144ccb5-a224-43d4-aef8-3691e5393aa9",
+            "revision": 17,
+            "entries": [
+              {
+                "sequence": 5,
+                "message_id": "e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "dedupe_key": "agent_run_input:e2e:e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "turn_id": null,
+                "state": "queued",
+                "content": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_team\",\"description\":\"Studio work. Marker STUDIO-PACKET.\"}}",
+                "sender_type": "user",
+                "file_attachments": []
+              }
+            ],
+            "recoverableBlock": null,
+            "change_sequence": 107,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083519
+        },
+        {
+          "type": "MEMBER_INPUT_MESSAGE",
+          "payload": {
+            "change_sequence": 108,
+            "recipient_agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da",
+            "message_id": "e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+            "dedupe_key": "agent_run_input:e2e:e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+            "content": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_team\",\"description\":\"Studio work. Marker STUDIO-PACKET.\"}}",
+            "input_origin": "user_message",
+            "received_at": "2026-10-21T20:04:43.519Z",
+            "context_file_paths": [],
+            "sender_agent_run_id": null,
+            "parent_communication_message_id": null
+          },
+          "at": 1792613083519
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 109,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083520
+        },
+        {
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+            "change_sequence": 110,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083520
+        },
+        {
+          "type": "AGENT_INPUT_STATE",
+          "payload": {
+            "run_instance_id": "6144ccb5-a224-43d4-aef8-3691e5393aa9",
+            "revision": 18,
+            "entries": [
+              {
+                "sequence": 5,
+                "message_id": "e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "dedupe_key": "agent_run_input:e2e:e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+                "state": "queued",
+                "content": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_team\",\"description\":\"Studio work. Marker STUDIO-PACKET.\"}}",
+                "sender_type": "user",
+                "file_attachments": []
+              }
+            ],
+            "recoverableBlock": null,
+            "change_sequence": 111,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083520
+        },
+        {
+          "type": "AGENT_INPUT_STATE",
+          "payload": {
+            "run_instance_id": "6144ccb5-a224-43d4-aef8-3691e5393aa9",
+            "revision": 19,
+            "entries": [
+              {
+                "sequence": 5,
+                "message_id": "e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "dedupe_key": "agent_run_input:e2e:e2e-71067a73-82b1-4e25-b5a0-895a1bf370a8",
+                "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+                "state": "forwarded",
+                "content": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_team\",\"description\":\"Studio work. Marker STUDIO-PACKET.\"}}",
+                "sender_type": "user",
+                "file_attachments": []
+              }
+            ],
+            "recoverableBlock": null,
+            "change_sequence": 112,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083521
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 113,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083521
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 114,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083916
+        },
+        {
+          "type": "SEGMENT_START",
+          "payload": {
+            "segment_id": "agy-text-83679cf7-33b1-4a02-afe7-b1713dd73284-50",
+            "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+            "segment_type": "text",
+            "metadata": null,
+            "change_sequence": 115,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083916
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 116,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083916
+        },
+        {
+          "type": "SEGMENT_CONTENT_BATCH",
+          "payload": {
+            "change_sequence": 117,
+            "change_sequence_through": 118,
+            "items": [
+              {
+                "segment_id": "agy-text-83679cf7-33b1-4a02-afe7-b1713dd73284-50",
+                "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+                "segment_type": "text",
+                "delta": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"delegated\\\": true,\\n  \\\"target_kind\\\": \\\"team\\\",\\n  \\\"target_team_run_id\\\": \\\"studio_team_105530ffff9746d4bb441633f3f94293\\\",\\n  \\\"target_team_coordinator_agent_run_id\\\": \\\"publisher_31aab34033d04ab581d4ee8c31202107\\\",\\n  \\\"node\\\": \\\"beta-node\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_796c160d-3105-497f-90c8-f790e0851ee6\\\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"studio_team_105530ffff9746d4bb441633f3f94293\",\"target_team_coordinator_agent_run_id\":\"publisher_31aab34033d04ab581d4ee8c31202107\",\"node\":\"beta-node\",\"task_id\":\"ad_hoc_task_796c160d-3105-497f-90c8-f790e0851ee6\"}}",
+                "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+              }
+            ]
+          },
+          "at": 1792613083917
+        },
+        {
+          "type": "SEGMENT_END",
+          "payload": {
+            "segment_id": "agy-text-83679cf7-33b1-4a02-afe7-b1713dd73284-50",
+            "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+            "metadata": null,
+            "interrupted": false,
+            "reason": null,
+            "failed": false,
+            "error": null,
+            "change_sequence": 119,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083917
+        },
+        {
+          "type": "TURN_COMPLETED",
+          "payload": {
+            "turn_id": "83679cf7-33b1-4a02-afe7-b1713dd73284",
+            "reason": null,
+            "change_sequence": 120,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083918
+        },
+        {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "recoverableBlock": null,
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "change_sequence": 121,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083918
+        },
+        {
+          "type": "AGENT_INPUT_STATE",
+          "payload": {
+            "run_instance_id": "6144ccb5-a224-43d4-aef8-3691e5393aa9",
+            "revision": 20,
+            "entries": [],
+            "recoverableBlock": null,
+            "change_sequence": 122,
+            "agent_run_id": "delegator_33324d330c1e4b0dbc5f45392a5ef4da"
+          },
+          "at": 1792613083918
+        }
+      ]
+    },
+    "studio": {
+      "teamRunId": "studio_team_105530ffff9746d4bb441633f3f94293",
+      "coord": "publisher_31aab34033d04ab581d4ee8c31202107",
+      "checker": "checker_a23276aa789a4f0eada5146af05e1c59"
+    }
+  },
+  "beta": [
+    {
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/beta/data/temp_workspace",
+      "agentDefinitions": [
+        {
+          "agentName": "Publisher",
+          "runs": [
+            {
+              "runId": "publisher_dc4304487af440a7af297ca18a331b7b",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"delegator_996550fb4f9a4d2...",
+              "isActive": true
+            },
+            {
+              "runId": "publisher_7b2098f5e5e54d619931f6c68ffbdeb6",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"remote_worker_7261e3ab530...",
+              "isActive": true
+            },
+            {
+              "runId": "publisher_5dd7d1425123441d82aa58c1926e1c4a",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"delegator_43c5c1ab97ae44e...",
+              "isActive": true
+            },
+            {
+              "runId": "publisher_3169cfbebb3c46f794d1a98fddee1c1b",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"delegator_33324d330c1e4b0...",
+              "isActive": true
+            },
+            {
+              "runId": "publisher_a5d8da1e1c7249a88abc58d0108ebdce",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"delegator_996550fb4f9a4d2...",
+              "isActive": true
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionName": "Studio Team",
+          "runs": [
+            {
+              "teamRunId": "studio_team_105530ffff9746d4bb441633f3f94293",
+              "summary": "",
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/beta/workspace",
+      "agentDefinitions": [
+        {
+          "agentName": "Bystander",
+          "runs": [
+            {
+              "runId": "bystander_e5db04c53e694329a7473a60732a7ace",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"delegator_996550fb4f9a4d2...",
+              "isActive": true
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": []
+    }
+  ],
+  "alpha": [
+    {
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1b8NVE/alpha/workspace",
+      "agentDefinitions": [
+        {
+          "agentName": "Delegator",
+          "runs": [
+            {
+              "runId": "delegator_87489296ff77477a9c8ec55a1e5f12c4",
+              "summary": "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"target_agent_run_id\":\"publisher_a5d8da1e1c7249a...",
+              "isActive": true
+            },
+            {
+              "runId": "delegator_996550fb4f9a4d2ba1e0cc8a154a3e16",
+              "summary": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/publisher...",
+              "isActive": true
+            }
+          ]
+        },
+        {
+          "agentName": "Remote Manager",
+          "runs": [
+            {
+              "runId": "remote_manager_68af085663a8417f88d5e798b207652b",
+              "summary": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/remote_worker\",\"task_id\":\"pr...",
+              "isActive": true
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionName": "Remote Squad",
+          "runs": [
+            {
+              "teamRunId": "remote_squad_89e511a5e65d42d9afd10d948431e8a3",
+              "summary": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/publisher...",
+              "isActive": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
