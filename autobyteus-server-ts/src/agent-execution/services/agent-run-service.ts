@@ -280,10 +280,15 @@ export class AgentRunService {
       summary?: string | null;
     } = {},
   ): Promise<void> {
-    await this.historyCatalogService.recordRunSummary({
-      runId: run.runId,
-      summary: input.summary ?? "",
-    });
+    await this.recordRunTitle(run.runId, input.summary ?? "");
+  }
+
+  /**
+   * The run's title from a message it accepted (autobyteus-269): the catalog keeps the first non-empty one, so only
+   * the run's first message sets it, whoever sends it (the owner in the window, or a peer's work packet).
+   */
+  async recordRunTitle(runId: string, content: string): Promise<void> {
+    await this.historyCatalogService.recordRunSummary({ runId, summary: content });
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {

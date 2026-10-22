@@ -923,7 +923,11 @@ the retained recent window.
 
 Workspace history rows render `RunTreeRow.summary` as the visible one-line task
 title. For standalone agent runs that title should represent the initial
-non-empty user message, not the latest follow-up. When the history tree is
+non-empty user message, not the latest follow-up. For an Agent or Team run that
+a peer node started by delegation, the server records the delegated task
+description as the title when the run accepts the work packet (autobyteus-269);
+the window shows the stored title and derives nothing for it (the packet is a
+system task notification, not a user message). When the history tree is
 merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
 overlays active status and the live context's activity timestamp while using the
 live conversation's first non-empty user message as the row summary when

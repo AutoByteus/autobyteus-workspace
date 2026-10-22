@@ -611,7 +611,10 @@ archived root.
   newest slice.
 - Later messages, task-scoped recipients, inter-Agent/task/system traffic,
   approval or interrupt commands, and rejected or failed sends do not set or
-  replace the summary. A failed refresh retains the last authoritative rows and
+  replace the summary. (The same first-message rule titles Agent and Team runs:
+  for a run a peer node started by delegation, its first message is the
+  delegated task description, which the server records as its title when the
+  work packet is accepted; autobyteus-269. A peer never starts an Org.) A failed refresh retains the last authoritative rows and
   family-scoped error.
 
 - Stopped history retains the AgentOrg execution tree (including delegated

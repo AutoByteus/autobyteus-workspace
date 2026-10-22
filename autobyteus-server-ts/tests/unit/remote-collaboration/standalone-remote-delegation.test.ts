@@ -132,6 +132,8 @@ const buildNode = async (input: Readonly<{
     },
   });
   let prepared = 0;
+  /** autobyteus-269: the titles this node's receiver recorded, first one per run. */
+  const titles = new Map<string, string>();
   // This node's catalog: Publisher is a shared Agent with a default runtime and model; nothing is published.
   const definitions = [new AgentDefinition({ id: "publisher", name: "Publisher", description: "Publishes", instructions: "x", ownershipScope: "shared",
     defaultLaunchConfig: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null } })];
@@ -158,11 +160,11 @@ const buildNode = async (input: Readonly<{
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
-    }),
+    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
   });
   input.network.set(input.nodeId, gateway);
-  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models };
+  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles };
 };
 
 const hostIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
@@ -200,6 +202,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(b.metadata.get("publisher_r1")).toMatchObject({ agentDefinitionId: "publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet",
       workspaceRootPath: path.join(b.memoryDir, "temp_workspace"), autoExecuteTools: true, startedAt: T0,
       delegatedFrom: { nodeId: A_ID, coordinatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
+    // autobyteus-269: the run's title is the packet's description, recorded once the packet was accepted.
+    expect(b.titles.get("publisher_r1")).toBe("Publish the video draft.")
     expect(b.runOf("publisher_r1").posted).toEqual([[
       `You have a new task from the agent with sender run id "${DELEGATOR}" on node "desktop".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.",

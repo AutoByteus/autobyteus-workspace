@@ -213,7 +213,14 @@ export class TeamRunService {
     return this.manager.storedRemoteLinkCheck(required(teamRunId, "teamRunId"), query);
   }
   recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
-    return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });
+    return this.recordRunTitle(run.teamRunId, input.summary ?? "");
+  }
+  /**
+   * The Team run's title from a message it accepted (autobyteus-269): the catalog keeps the first non-empty one, so
+   * only the run's first message sets it, whoever sends it (the owner in the window, or a peer's work packet).
+   */
+  recordRunTitle(teamRunId: string, content: string): Promise<void> {
+    return this.catalog.recordTeamRunSummary({ teamRunId, summary: content });
   }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     const success = await this.manager.terminateTeamRun(teamRunId);

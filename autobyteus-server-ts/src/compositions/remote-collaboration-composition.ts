@@ -31,8 +31,8 @@ import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/s
 export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
   tempWorkspaceDir: string;
-  agentRuns: Pick<AgentRunService, "prepareAgentRun">;
-  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun" | "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun">;
+  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle">;
+  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun" | "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle">;
   orgRuns: Pick<AgentOrgRunService, "getActive" | "restore" | "storedRemoteLinkCheck">;
 }>): (() => void) => {
   const services = composeRemoteCollaboration({
@@ -54,6 +54,11 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         standalone: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
         team: (teamRunId) => input.teamRuns.resolveManagedTeamRun(teamRunId),
         org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),
+      }, {
+        // autobyteus-269: an accepted work packet's content is the run's title (a peer never starts an Org).
+        recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
+          : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
+            : Promise.resolve(),
       }),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
     }),

@@ -124,7 +124,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null,
-    }),
+    }, { recordFirstMessage: async () => undefined }),
   }));
   hostActive = true;
   const identity = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR });
@@ -142,6 +142,8 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
 let threads = 0;
 type RuntimeState = { conversations: Set<string> };
 const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeState = { conversations: new Set() }) => {
+  /** autobyteus-269: the history titles the Team run catalog kept (first non-empty per run). */
+  const titles = new Map<string, string>();
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const dir = memoryDir ?? await tempDir("remote-team-b-");
   const agents = ["lead", "writer"].map((id) => new AgentDefinition({ id, name: id, description: id, instructions: "x", ownershipScope: "shared",
@@ -207,6 +209,9 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     agentTeamRunManager: teamManager,
     teamDefinitionService: { getDefinitionById: async (id: string) => id === "studio" ? team : null } as never,
     teamRunHistoryCatalogService: { recordTeamRunCreated: vi.fn(async () => undefined), recordTeamRunRestored: vi.fn(async () => undefined),
+      recordTeamRunSummary: vi.fn(async (input: { teamRunId: string; summary?: string | null }) => {
+        if (!titles.has(input.teamRunId) && input.summary?.trim()) titles.set(input.teamRunId, input.summary);
+      }),
       recordTeamRunTerminated: vi.fn(async () => undefined) } as never,
     workspaceManager: { ensureWorkspaceByRootPath: vi.fn(async (rootPath: string) => ({ getBasePath: () => rootPath })) } as never,
     memoryDir: dir,
@@ -228,7 +233,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: async () => null, team: (teamRunId) => teamRuns.resolveManagedTeamRun(teamRunId), org: async () => null,
-    }),
+    }, { recordFirstMessage: (root, content) => root.kind === "agent_team" ? teamRuns.recordRunTitle(root.runId, content) : Promise.resolve() }),
   }));
   const member = (address: string, agentRunId: string) => createCollaborationMemberExecutionIdentity({
     root: createTeamRootExecutionIdentity("studio_team_b"), memberAddress: address as never, agentRunId });
@@ -236,7 +241,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     (await teamRuns.resolveManagedTeamRun("studio_team_b"))!.deliverExactAgentMessage({
       sender: { kind: "agent", identity: member(from.address, from.agentRunId), displayName: from.address.slice(1) } as never,
       targetAgentRunId: target, content, referenceFiles: [] });
-  return { dir, team, teamRuns, teamManager, started, inbox, busy, live, emit, send, client, state };
+  return { dir, team, teamRuns, teamManager, started, inbox, busy, live, emit, send, client, state, titles };
 };
 
 const LEAD = { address: "/lead", agentRunId: "lead_b1" };
@@ -269,6 +274,8 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
       .toEqual([["/lead", path.join(b.dir, "temp_workspace"), true], ["/writer", path.join(b.dir, "temp_workspace"), true]]);
     expect(b.started).toEqual([LEAD.agentRunId]);
     expect(b.inbox.get(LEAD.agentRunId)).toEqual([workPacket]);
+    // autobyteus-269: the Team run's title is the packet's description (its first message), not the notification.
+    await vi.waitFor(() => expect(b.titles.get("studio_team_b")).toBe("Draft the episode."));
 
     // A: the Team link with `nodeId`, its coordinator and members, in the host's tree; the Team recorded as the Task's run.
     const aTree = JSON.parse(await fs.readFile(path.join(new AgentMemoryLayout(a.dir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"), "utf8"));
