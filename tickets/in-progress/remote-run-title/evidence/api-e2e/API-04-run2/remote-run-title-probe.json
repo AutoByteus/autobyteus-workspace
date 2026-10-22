@@ -1,0 +1,112 @@
+{
+  "startedAt": "2026-10-22T05:15:11.243Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 65526,
+      "nodeId": "srv_xPKDOMG2QCCiC2DXMsmkkpAkxsfcZPKs"
+    },
+    "beta": {
+      "port": 65527,
+      "nodeId": "srv_PLqDDy5Q_98W9hU69qB_ar4k0j4IWNt-"
+    }
+  },
+  "runs": {
+    "delegatorRun": "delegator_23db9c0222674c939f8e026ca80b43ef",
+    "peerAgentRun": "publisher_10ec942a4c874a39ab10207f50691ae3",
+    "peerTeamRun": "studio_team_08b2e10f89ae42729404ba4f7d649f10",
+    "peerCoordinator": "publisher_41782979d5c1458999b29aa73254ff09",
+    "plainRun": "writer_b31cf31c21624e31af414273d27e215d",
+    "skillRun": "writer_5d7cb2b58f1a4fd9a0009485873a12d2"
+  },
+  "storedTitles": {
+    "publisher_10ec942a4c874a39ab10207f50691ae3": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+    "studio_team_08b2e10f89ae42729404ba4f7d649f10": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+    "writer_5d7cb2b58f1a4fd9a0009485873a12d2": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE.",
+    "writer_b31cf31c21624e31af414273d27e215d": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE."
+  },
+  "cases": {
+    "RRT-01": {
+      "result": "Pass",
+      "stored": {
+        "publisher_10ec942a4c874a39ab10207f50691ae3": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "studio_team_08b2e10f89ae42729404ba4f7d649f10": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "writer_b31cf31c21624e31af414273d27e215d": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "writer_5d7cb2b58f1a4fd9a0009485873a12d2": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE."
+      }
+    },
+    "RRT-02": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_10ec942a4c874a39ab10207f50691ae3",
+        "writer_5d7cb2b58f1a4fd9a0009485873a12d2",
+        "writer_b31cf31c21624e31af414273d27e215d"
+      ]
+    },
+    "RRT-03": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_10ec942a4c874a39ab10207f50691ae3",
+        "writer_5d7cb2b58f1a4fd9a0009485873a12d2",
+        "writer_b31cf31c21624e31af414273d27e215d"
+      ]
+    },
+    "RRT-04": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "centerPaneTop": [
+        "P",
+        "Cut the launch trailer and have it checke…",
+        "Idle"
+      ],
+      "storedAfter": "Cut the launch trailer and have it checked. Marker AGENT-TITLE."
+    },
+    "RRT-05": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "storedAfter": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+    },
+    "RRT-06": {
+      "result": "Pass",
+      "stoppedRow": "Draft a note about owls. Marker SKILL-TITLE.",
+      "stoppedAfterReload": "Draft a note about owls. Marker SKILL-TITLE.",
+      "liveContexts": [
+        "publisher_10ec942a4c874a39ab10207f50691ae3",
+        "writer_b31cf31c21624e31af414273d27e215d"
+      ]
+    }
+  },
+  "browserErrors": [
+    "console: Error terminating run 'writer_5d7cb2b58f1a4fd9a0009485873a12d2': ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/errors/index.js?v=289b1ce0:59:28)\n    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/core/QueryManager.js?v=289b1ce0:186:84)\n    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)\n    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)\n    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=289b1ce0:40:34)\n    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)\n    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)\n    at http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/iteration.js?v=289b1ce0:11:68"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: browser errors: console: Error terminating run 'writer_5d7cb2b58f1a4fd9a0009485873a12d2': ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/errors/index.js?v=289b1ce0:59:28)\n    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/core/QueryManager.js?v=289b1ce0:186:84)\n    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)\n    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)\n    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=289b1ce0:40:34)\n    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)\n    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)\n    at http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/iteration.js?v=289b1ce0:11:68\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:45:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:287:3",
+  "finishedAt": "2026-10-22T05:15:38.678Z"
+}
