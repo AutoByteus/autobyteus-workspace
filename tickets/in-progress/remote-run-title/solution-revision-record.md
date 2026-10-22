@@ -5,6 +5,8 @@
 | SR | Date | Phase | Summary |
 | --- | --- | --- | --- |
 | SR-001 | 2026-10-22 | Requirements | Reproduced; baseline for approval |
+| SR-002 | 2026-10-22 | Requirements | Approved |
+| SR-003 | 2026-10-22 | Design | Design complete; Small / Low; direct |
 
 ## Revision Entries
 
@@ -14,3 +16,14 @@
 - Prior status: N/A. Current status: `Ready for Approval`.
 - The cause was reproduced on two isolated servers (F-03).
 - Open: DEC-601, DEC-602 (the user).
+
+### SR-002 — Approved (2026-10-22)
+
+- The user's decisions: DEC-601 is one rule for every run, the title is the content of its first message (for a delegated task, its description without the packet header); DEC-602 (a), existing runs are left as they are.
+- Status: `Ready for Approval` → `Approved` (the user, quoted in the requirements doc).
+- Next: design.
+
+### SR-003 — Design complete (2026-10-22)
+
+- Design: [design-spec.md](design-spec.md). `RemoteMessageReceiver` records an accepted work packet's content as the run's title through the new by-ID `recordRunTitle` on `AgentRunService` and `TeamRunService`, which apply the catalogs' first-non-empty rule. No migration.
+- Classification: `Small` / `Low`. Route: direct implementation.
