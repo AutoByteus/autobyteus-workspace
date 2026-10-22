@@ -6,6 +6,7 @@
       <ApplicationsFeatureToggleCard />
       <MediaDefaultModelsCard />
       <CodexFullAccessCard />
+      <ClaudeRuntimeCard />
       <LiveResponseStreamingCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
@@ -27,6 +28,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
+import ClaudeRuntimeCard from '~/components/settings/ClaudeRuntimeCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItemsCard.vue'

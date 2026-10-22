@@ -17,7 +17,7 @@ import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-r
 import {
   buildClaudeSdkSpawnEnvironment,
   resolveClaudeSdkAuthMode,
-} from "./claude-sdk-auth-environment.js";
+} from "./claude-sdk-spawn-environment.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import {
   normalizeModelDescriptors,
