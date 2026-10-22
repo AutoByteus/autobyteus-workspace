@@ -158,4 +158,44 @@ describe('buildRunTreeProjection', () => {
       ['run-permanent', 'history', 'history row'],
     ]);
   });
+
+  it('shows a stored history title through the same cleaning as the live summary', () => {
+    const run = (runId: string, summary: string) => ({
+      runId,
+      summary,
+      lastActivityAt: '2026-01-01T00:00:00.000Z',
+      currentStatus: AgentStatus.Offline,
+      lastKnownStatus: 'IDLE' as const,
+      isActive: false,
+    });
+    const nodes = buildRunTreeProjection({
+      workspaceDescriptors: [{
+        workspaceId: 'workspace-a',
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        workspaceKind: 'filesystem',
+        canRemoveFromWorkspaces: true,
+      }],
+      persistedWorkspaces: [{
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        agents: [{
+          agentDefinitionId: 'agent-a',
+          agentName: 'Agent A',
+          runs: [
+            run('run-skill', 'Use the writer skill for this request. Draft a note'),
+            run('run-plain', 'Write the report'),
+            run('run-empty', ''),
+          ],
+        }],
+      }],
+      localRuns: [],
+    });
+
+    const summaries = Object.fromEntries(
+      nodes[0]!.agents[0]!.runs.map((row) => [row.runId, row.summary]),
+    );
+    expect(summaries).toEqual({ 'run-skill': 'Draft a note', 'run-plain': 'Write the report', 'run-empty': '' });
+  });
 });
+

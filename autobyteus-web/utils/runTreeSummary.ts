@@ -23,3 +23,17 @@ export const resolveFirstUserMessageSummary = (
   const userText = skillRequestInstruction.parse(content)?.text.trim();
   return userText || content;
 };
+
+/**
+ * A stored run title, cleaned the same way as the live summary: the server keeps the content the
+ * window sent, compacted to one line, so a skill-tagged title starts with the single-line skill
+ * instruction. The mention note never reaches a stored title (the server adds it later). A
+ * tags-only title reads as the instruction itself. Empty means there is no stored title.
+ */
+export const resolveStoredTitleSummary = (summary: string | null | undefined): string | null => {
+  const title = summary?.trim();
+  if (!title) {
+    return null;
+  }
+  return skillRequestInstruction.parseSingleLine(title)?.text.trim() || title;
+};
