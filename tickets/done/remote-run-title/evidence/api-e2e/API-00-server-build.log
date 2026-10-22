@@ -1,0 +1,8 @@
+# API-00 server build | commit d08cd902a9 | 2026-10-22T04:44:09Z | 26.5.2, node v22.23.1
+AgentFactory (Singleton) initialized.
+(node:93265) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+# Brief Studio package: applications/brief-studio/dist/importable-package/applications/brief-studio/application.json

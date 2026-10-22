@@ -53,6 +53,7 @@
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
     "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",
     "test:e2e:provider-api-key-save": "node tests/e2e/provider-api-key-save-probe.mjs",
+    "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",
     "test:e2e:remote-nodes-page": "node tests/e2e/remote-nodes-page-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",

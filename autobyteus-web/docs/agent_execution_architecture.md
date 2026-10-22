@@ -923,25 +923,45 @@ the retained recent window.
 
 Workspace history rows render `RunTreeRow.summary` as the visible one-line task
 title. For standalone agent runs that title should represent the initial
-non-empty user message, not the latest follow-up. When the history tree is
-merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
-overlays active status and the live context's activity timestamp while using the
-live conversation's first non-empty user message as the row summary when
-available. Persisted standalone rows arrive from GraphQL with `createdAt` plus
+non-empty user message, not the latest follow-up. For an Agent or Team run that
+a peer node started by delegation, the server records the delegated task
+description as the title when the run accepts the work packet (autobyteus-269).
+The packet itself reaches the run's conversation as a `user` message on the
+observed runtimes, so the window never derives a peer-started run's title from
+its conversation.
+
+The stored title is the one source whenever it has a value (autobyteus-269,
+SR-004). The live first-user-message summary only fills a row while its stored
+title is still empty, as for a run that has just started:
+
+- `mergeRunTreeWithLiveContexts(...)` overlays active status and the live
+  context's activity timestamp on history rows, and uses the live conversation's
+  first non-empty user message as the row summary only when the row's stored
+  summary is empty;
+- a local submission's navigation patch (`runHistoryNavigationPatches`) applies
+  the live summary to a standalone row only when the row is not a history row
+  with a stored title;
+- the standalone conversation header (`useStandaloneRunTitle`) shows the stored
+  history title first and the live first user message only while there is none.
+
+A stored title reads through the same cleaning as the live summary. The server
+keeps the content the window sent, compacted to one line, so a skill-tagged
+title starts with the skill instruction; `resolveStoredTitleSummary` (in
+`utils/runTreeSummary.ts`) drops it with `skillRequestInstruction.parseSingleLine`,
+the single-line form of the instruction. A stopped skill-tagged run therefore
+reads the same as when it was active. The collaborator mention note never
+reaches a stored title, because the server adds it later. Team rows show the
+stored Team title as before.
+
+Persisted standalone rows arrive from GraphQL with `createdAt` plus
 derived live status fields. Team rows arrive with `createdAt`, binary
 `isActive`, and exact leaf-member statuses. Neither catalog persists
 `lastActivityAt`, `lastKnownStatus`, or delete-lifecycle fields. The frontend
 read model maps
 `createdAt` into the shared tree sort field for stored rows and derives local
 team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
-catalog facts plus live status. This prevents an active persisted row with a
-stale latest-message summary from overriding the known initial-message title in
-the sidebar while keeping backend history catalogs out of live-status storage.
-
-If no live first-user-message summary is available, the frontend keeps the
-backend-provided history summary. Team row title behavior remains owned by the
-team-history path and is not reinterpreted by the standalone live-context
-overlay.
+catalog facts plus live status. This keeps backend history catalogs out of
+live-status storage.
 
 AgentOrg rows use the same stable first-accepted-message presentation while
 retaining separate family ownership. A new row keeps an empty backend summary

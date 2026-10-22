@@ -369,6 +369,16 @@ direct mounted Teams with their direct Agents. Family-specific loaders remain
 authoritative; the unified list does not convert either persisted root into a
 generic on-disk schema.
 
+A run's title is the content of its first message, whoever sends it. For a run the owner starts, that is the
+first accepted message from the window (`AgentRunService.recordRunActivity`, `TeamRunService.recordRunActivity`).
+For an Agent or Team run a peer node starts by delegation (see [Remote Collaboration](remote_collaboration.md)),
+it is the delegated task description: once the run's root accepts the peer's work packet,
+`RemoteMessageReceiver` records the packet's content (the description, not the task notification built on this
+node) through `AgentRunService.recordRunTitle` / `TeamRunService.recordRunTitle`, which the window paths also go
+through (autobyteus-269). The catalogs apply the same rule to both: compacted to one line of at most 100
+characters, and the first non-empty value wins, so a later owner message does not replace it. Runs stored before
+this rule keep their empty title (no migration).
+
 AgentOrg summaries follow the established Team first-message rule. Only a
 successfully accepted external `SEND_MESSAGE` with non-empty compacted content
 to an exact configured direct or mounted-Team Agent qualifies. The shared

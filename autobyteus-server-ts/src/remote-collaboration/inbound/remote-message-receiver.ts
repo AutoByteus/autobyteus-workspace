@@ -31,6 +31,12 @@ export type RemoteRootDirectory = Readonly<{
   org(orgRunId: string): Promise<RemoteMessageRoot | null>;
 }>;
 
+/**
+ * Where an accepted work packet's content becomes the run's title (autobyteus-269): the run service of the root's kind,
+ * which keeps the first non-empty title (a run's title is its first message, whoever sends it).
+ */
+export type RemoteRunTitles = Readonly<{ recordFirstMessage(root: RemoteTargetRoot, content: string): Promise<void> }>;
+
 const refusal = (code: string, message: string): PeerHandlerRefusal => Object.freeze({ accepted: false, code, message });
 const notFound = () => refusal(REMOTE_REFUSAL.TARGET_NOT_FOUND, "That run does not exist on this node.");
 const notLinked = () => refusal(REMOTE_REFUSAL.TARGET_NOT_PERMITTED, "That run is not linked with the sender.");
@@ -45,7 +51,7 @@ const answerOf = (result: AgentOperationResult) => result.accepted
  * root's own link check stays the authority.
  */
 export class RemoteMessageReceiver implements RemoteMessageHandler {
-  constructor(private readonly roots: RemoteRootDirectory) {}
+  constructor(private readonly roots: RemoteRootDirectory, private readonly titles: RemoteRunTitles) {}
 
   async accept(request: DeliverRemoteMessageRequest, from: PeerNode) {
     const query: RemoteInboundQuery = Object.freeze({
@@ -57,10 +63,18 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
     if (request.kind === "work_packet") {
       const root = await this.resolve(() => this.hostRoot(request.targetRoot));
       if (!root) return notFound();
-      return answerOf(await root.acceptRemoteWorkPacket({
+      const accepted = await root.acceptRemoteWorkPacket({
         fromNodeId: from.nodeId, fromNodeName: from.name, senderAgentRunId: request.sender.agentRunId,
         targetAgentRunId: request.target.agentRunId, description: request.content,
-      }));
+      });
+      // The packet is the run's first message: its description (not the task notification built here) is the title.
+      // Not awaited on the answer path; a failure is logged, as on the window's path.
+      if (accepted.accepted) {
+        void this.titles.recordFirstMessage(request.targetRoot, request.content).catch((error: unknown) => {
+          console.warn(`Failed to record the title of run '${request.targetRoot.runId}': ${String(error)}`);
+        });
+      }
+      return answerOf(accepted);
     }
     const root = await this.resolve(() => this.messageRoot(request.targetRoot));
     if (!root) return notFound();

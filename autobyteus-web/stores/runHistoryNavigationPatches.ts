@@ -70,13 +70,15 @@ const patchStandalone = (
     occurredAt && !sameActivityBucket(run.lastActivityAt, occurredAt),
   );
   if (effect.kind === 'ACTIVITY' && !activityChanged) return state;
+  // A history row's stored title wins over the live first user message (SR-004).
+  const hasStoredTitle = run.source === 'history' && run.summary.trim().length > 0;
   const candidate = effect.kind === 'ACTIVITY'
     ? { ...run, lastActivityAt: occurredAt! }
     : {
         ...run,
         currentStatus: target.currentStatus,
         isActive: statusIsActive(target.currentStatus),
-        ...(target.summary === undefined ? {} : { summary: target.summary }),
+        ...(target.summary === undefined || hasStoredTitle ? {} : { summary: target.summary }),
         ...(activityChanged ? { lastActivityAt: occurredAt } : {}),
       };
   if (JSON.stringify(candidate) === JSON.stringify(run)) return state;
