@@ -13,3 +13,10 @@
 - Classification rationale: one trigger in `RemoteMessageReceiver`, one by-ID method on each run service, composition, tests and docs. No contract, persistence or security change.
 - Environment note: the worktree already has `pnpm install` and `test:integration:prepare` done (the server `dist` is built). The two-server E2E runs as its header says.
 - Expected output: the implementation, its checks and `implementation-handoff.md`.
+
+## Round 2 — 2026-10-22 (SR-004), answering CRR-001 (Design Impact)
+
+- The server change `05be574608` stands; no rework.
+- New window work: design § Window Title Rule. The stored title wins in the sidebar merge and the conversation header, and the live first message fills only an empty stored title. Stored titles are cleaned of the skill instruction through `skillRequestInstruction`'s single-line form, so user-started rows read as today.
+- Please correct your own handoff's Assumption 3 ("a work packet is a system_task_notification") and the Known Risk.
+- Validation: the window unit tests, plus a durable browser probe of the sidebar rows (peer-started Agent and Team, active and after a reload; user-started with and without a skill tag).

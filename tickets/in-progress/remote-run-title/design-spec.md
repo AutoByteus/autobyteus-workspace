@@ -4,7 +4,7 @@
 
 - Package: `remote-run-title`; Task autobyteus-269.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-002 by the user. The rule: a run's title is the content of its first message, whoever sends it.
-- Current solution revision ID: `SR-003`. Design status: `Ready`.
+- Current solution revision ID: `SR-004` (Design Impact from CRR-001 / API-REV-001 F-001). Design status: `Ready`.
 - Authorities read: `solution-designer/SKILL.md`, `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`, the repository's `DESIGN.md` (rules 1, 5, 7, 9; Data Migration Guideline: no migration, DEC-602) and `collaboration_model.md`. All were read in this conversation.
 - Conflicts: none.
 
@@ -19,13 +19,15 @@
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- `task_size`: `Small`. One trigger in the inbound receiver, one by-ID method on each run service, the composition wiring, tests and docs.
+- `task_size`: `Small`. One trigger in the inbound receiver, one by-ID method on each run service, the composition wiring, the window's title order in two places plus one cleaning function, tests and docs.
 - `architectural_risk`: `Low`. There is no contract change between nodes or with the window, no persistence change and no migration (DEC-602). It reuses the existing title owner and rule.
 - Escalation trigger: none.
 
 ## Intended Change
 
-After a root accepts a peer's work packet, `RemoteMessageReceiver` records the run's title from the packet's content: the description, not the packet wrapper. It records it through the run service of the root's kind, which applies the same first-non-empty rule as a user's first message. The window path is unchanged.
+After a root accepts a peer's work packet, `RemoteMessageReceiver` records the run's title from the packet's content: the description, not the packet wrapper. It records it through the run service of the root's kind, which applies the same first-non-empty rule as a user's first message.
+
+**Window (SR-004).** The stored title is the one source whenever it has a value. The window's live first-message summary only fills in while the stored title is still empty. Before SR-004, the window replaced the stored title with the live first user message for every active run, which shows the packet wrapper for a peer-started Agent (F-04 corrected). See § Window Title Rule.
 
 ## Change Scope (Mandatory)
 
@@ -43,6 +45,19 @@ After a root accepts a peer's work packet, `RemoteMessageReceiver` records the r
   - Org titles;
   - stored runs (no migration).
 - Follow-ups found during design: none.
+
+## Window Title Rule (SR-004)
+
+- **Sidebar** (`utils/runTreeLiveStatusMerge.ts` `mergeHistoryRowWithContext`): the live first-user-message summary applies only when the row's stored `summary` is empty. A non-empty stored title wins. Status and activity overlays are unchanged.
+- **Conversation header** (`composables/chat/useStandaloneRunTitle.ts`): the same order. The stored history title comes first, and the live first user message is used only while there is no stored title.
+- **Display cleaning, one owner each.** Today a user-started run's stored title is the content the window sent, so with skill tags it starts with the skill instruction (F-08). The live summary strips that prefix, the stored one doesn't. So that an active user-started row reads as it does today, the window shows a stored title through the same cleaning as the live one:
+  - the skill instruction stays owned by `skillRequestInstruction`, which gains the single-line form a compacted title has: "Use the X skill for this request. …" (the whitespace is collapsed, so there is no blank line);
+  - `runTreeSummary` gets one function that cleans a stored title with it. The mention note never reaches the stored title, because the server adds it later.
+  - Effect: active rows of user-started runs are unchanged. A stopped skill-tagged run now reads the same as when it was active, without the instruction prefix. That is a small consistency gain, stated to the user.
+- **Rejected:**
+  - a text filter on "You have a new task" in the window: a second owner of the packet wording;
+  - projecting the packet as `system_task_notification` on every runtime: wider, changes the conversation, and isn't needed for the title.
+- **Team rows** already show the stored title (CRR-001), and the change keeps that.
 
 ## Data-Flow Spine Inventory
 
@@ -85,7 +100,7 @@ Nothing becomes obsolete. `recordRunActivity` keeps its callers and delegates to
 
 - Allowed: `compositions → agent-execution / agent-team-execution` services (as today).
 - `remote-collaboration` sees only the `RemoteRunTitles` function type; it never imports run-history.
-- Forbidden: the receiver writing catalogs directly; the window deriving titles for this case.
+- Forbidden: the receiver writing catalogs directly; the window replacing a non-empty stored title (SR-004).
 
 ## Interface Boundary Mapping
 
@@ -106,7 +121,7 @@ titles: { recordFirstMessage: (root, content) => root.kind === "agent"
 | Candidate | Rejected because |
 | --- | --- |
 | A startup migration for old rows | DEC-602: the user chose to leave them |
-| The window deriving the title from the loaded conversation | The server's title is the one source (Task); it would also show the packet header |
+| The window's live first message overriding the stored title | The server's title is the one source; the override showed the packet header (F-04, SR-004 removes it) |
 
 ## Change / Refactor Sequence
 
@@ -117,7 +132,15 @@ titles: { recordFirstMessage: (root, content) => root.kind === "agent"
    - receiver unit: an accepted packet records `content` for `agent` and `agent_team`; a refused packet records nothing; a recording failure still answers accepted;
    - services unit: the by-ID methods;
    - two-server E2E: RC-05 and RC-21 assert beta's history title equals the description before any owner message, and RC-12 or a later case asserts that an owner message doesn't replace it.
-5. Docs.
+5. Window (SR-004):
+   - the sidebar merge and the header with the stored title first;
+   - the single-line skill-instruction form, and the stored-title cleaning.
+6. Window tests (SR-004):
+   - merge unit: a stored title wins over a live first message that differs; an empty stored title takes the live one; status overlays are unchanged;
+   - header composable: the same rule;
+   - cleaning: a compacted skill-tagged title reads as the user's text;
+   - a durable browser probe (extending API-03): on beta, the active peer-started Agent and Team rows show the description, also after a reload; an active user-started run, with and without a skill tag, reads as today.
+7. Docs, including `autobyteus-web/docs` on the title rule (stored first).
 
 ## Risks
 
