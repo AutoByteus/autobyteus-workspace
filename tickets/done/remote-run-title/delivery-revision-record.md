@@ -19,5 +19,6 @@ The latest docs sync report, handoff summary and release/deployment report remai
   - Docs verified, with no edit; FU-001 recorded.
   - AC-605 is the user's check, after release.
   - Stable `v1.5.8` (`release-deployment-report.md`).
-- Terminal return to the Solution Designer: after the release and cleanup, stating AC-605 as open.
+- Terminal return to the Solution Designer: `Sent` after the stable release and cleanup, stating AC-605 as open.
+- Release note: Desktop Release attempt 1 failed in Build macOS ARM64 on a runner DNS failure (`files.pythonhosted.org`); the user re-ran the failed job, and attempt 2 succeeded. `v1.5.8` is Latest with 17 assets; Docker `1.5.8` = `:latest` = `:beta`.
 - Remaining blockers, rollback concerns, or untested scope: AC-605. The release notes state that going back to an earlier version is not supported, because of the Skill Improvement data deletion and the new remote-collaboration fields.
