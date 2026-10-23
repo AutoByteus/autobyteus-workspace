@@ -8,6 +8,7 @@
 | SR-002 | 2026-10-23 | Requirements | The user's decisions from the discussion; Product Design requested |
 | SR-003 | 2026-10-23 | Requirements | Product package approved; requirements approved |
 | SR-004 | 2026-10-23 | Design | Design complete; Large / High |
+| SR-005 | 2026-10-23 | Design | ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404) |
 
 ## Revision Entries
 
@@ -48,3 +49,15 @@
 - Requirements clarification (no intended behavior change for the user): REQ-803 and AC-803. A user's message is recorded in the remote run's conversation on its node and shown on this node from there, not as a message-log line.
 - PA-805 confirmed (the presentation messages carry tools, statuses, usage, file changes). PA-808 is covered: all three root kinds use the same owner.
 - Classification: `Large` / `High`. Route: architecture review.
+
+### SR-005 — ARCH-REV-001 resolved (2026-10-23)
+
+- Trigger: ARCH-REV-001, Fail, Design Impact. Verified by reading `standalone_agent_run_root.md:16-17`, `standalone-agent-run-root.ts:375-385`, `standalone-root-message-delivery.ts:93,257,312`, `remote-team-run-starter.ts:87-94`, `remote-endpoint.ts:81`.
+- AR-401: on B, a root-owned API per kind behind `RemoteRootDirectory` (`observePairedAgents`, `executeOwnerCommand` on the managers).
+  - Standalone: the host's events through the root's presentation adapter, re-attached on `onHostReady`; `postToHost`, host interrupt, `stopRoot`.
+  - Team: the publisher filtered to members, plus the directory listener; member commands; `terminateTeamRun`.
+  - The Current-State Read and CM-11 are corrected.
+- AR-402: frames and statuses only for the paired agents. Frames are `{agentRunId, message}`; A maps them by `agentRunId` to the stored link (mounted addresses) and drops unknown ones.
+- AR-403: an end A didn't initiate runs one summary fetch, which sets the row. No reconnect.
+- N-401: a first frame `{nodeId}`, which A checks. N-402: a unit test that only the DTO projector maps `remote_agent_presentation`. N-403: one shared `remoteChildOf` helper. N-404: the REQ-803 wording, told to the user.
+- Classification unchanged: `Large` / `High`. Next: round 2 of the architecture review.

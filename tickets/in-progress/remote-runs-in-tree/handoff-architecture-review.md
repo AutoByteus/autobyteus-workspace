@@ -23,3 +23,12 @@
   - the phase-1 boundary (no reconnect or catch-up, DEC-807);
   - the REQ-803 clarification.
 - Expected output: the architecture review report; on Pass, the reviewer's handoff to implementation.
+
+## Round 2 — 2026-10-23 (SR-005), answering ARCH-REV-001
+
+| Finding | Resolution |
+| --- | --- |
+| AR-401 | DS-006 rewritten: `observePairedAgents` / `executeOwnerCommand` on each kind's manager behind `RemoteRootDirectory`. Standalone: the host's events through the presentation adapter, re-attached on `onHostReady`; `postToHost`, host interrupt, `stopRoot`. Team: the publisher filtered to members, plus the directory listener; member commands; `terminateTeamRun`. Current-State Read, CM-11 and the B file list corrected |
+| AR-402 | Frames `{agentRunId, message}` for the paired agents only; A maps by `agentRunId` to the stored link (mounted addresses) and drops unknown ones |
+| AR-403 | An end A didn't initiate runs one summary fetch, which sets the row (reachable false / offline); no reconnect |
+| N-401 … N-404 | First frame `{nodeId}` checked; a unit test pins that only the projector maps `remote_agent_presentation`; one `remoteChildOf` helper; REQ-803 wording told to the user |
