@@ -1,0 +1,315 @@
+# Case: API-12 (every non-gated server e2e, incl. API-09..API-11)
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/e2e --no-watch
+# Commit: 6170227e3b (code 9b013fcc09) + the uncommitted e2e changes recorded with this report; dist from API-04
+# Environment: macOS 26.5.2, Node v22.23.1; HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.BCxtB6c4QK (temp); test-owned servers and databases; synthesized fixtures only
+# Date: 2026-10-23T20:07:16Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+# Excerpt of API-12-server-e2e.log (file results and summary). Full log (876596 bytes): /tmp/ab280e2e/API-12-server-e2e.log
+
+ ↓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (30 tests | 30 skipped)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (16 tests) 6742ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  414ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  412ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  556ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1232ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  1577ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  700ms
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (21 tests | 21 skipped)
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 36 skipped)
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 9 skipped)
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 7 skipped)
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1844ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  524ms
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 skipped) 15354ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  707ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  3309ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  5206ms
+     ✓ DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list  1074ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  1691ms
+     ✓ DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED  2073ms
+     ✓ DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org  1085ms
+ ↓ tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests | 5 skipped)
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 262ms
+ ↓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 16298ms
+     ✓ AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing  6058ms
+     ✓ AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message  10239ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 13105ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  3749ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  3540ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  3913ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  1902ms
+ ↓ tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts (15 tests | 15 skipped)
+ ↓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts (7 tests | 7 skipped)
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 157ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 207ms
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 227ms
+ ↓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests | 7 skipped)
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 731ms
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (9 tests | 1 skipped) 740ms
+ ↓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests | 11 skipped)
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2314ms
+ ↓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 24859ms
+     ✓ Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart  3280ms
+     ✓ Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication  4680ms
+     ✓ Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close  4855ms
+     ✓ Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it  4592ms
+     ✓ Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  3076ms
+     ✓ Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  4374ms
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests) 15814ms
+     ✓ takes V1 through secretless staging and exact selector transition to empty V3 across restart  3143ms
+     ✓ orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation  4060ms
+     ✓ keeps collision selectors unchanged while removing both trusted old secrets after empty V3  3013ms
+     ✓ serves while a fresh recent RUNNING record holds custom providers back, then converges through the ordinary stale retry  3380ms
+     ✓ serves while the custom-provider migrations cannot finish: custom providers refuse with the capability code while built-in runs start; Settings retries after the fix make them available without a restart (needs POSIX mode bits that bind: not root, not Windows)  2217ms
+ ✓ tests/e2e/media/server-owned-media-tools.e2e.test.ts (7 tests) 92ms
+ ↓ tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (8 tests) 8096ms
+     ✓ API-02 (AC-001, AC-004, AC-014, AC-017, AC-021): the background pass finds both updates through the real chain, downloads nothing and tells open windows  1033ms
+     ✓ API-03 (AC-009, AC-010, AC-014): read state survives a restart, and a restart inside 6 hours makes no automatic request  948ms
+     ✓ API-04 (AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  1040ms
+     ✓ API-06 (AC-015): with Update checks off there is no automatic request, also after a restart; manual checks still notify; on again resumes  1803ms
+     ✓ API-07 (AC-013): a rate-limited answer stops the pass; nothing is requested before the reset, also after a restart; checks resume after it  2723ms
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (8 tests | 8 skipped)
+ ↓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 8 skipped)
+ ↓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (11 tests) 83ms
+ ↓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/runtime/token-meter-tps-live.e2e.test.ts (9 tests | 9 skipped)
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 229ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests) 88ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 6591ms
+     ✓ updates only a stopped standalone run config and restores the same current package after restart  3315ms
+     ✓ updates exact stopped Team scopes and preserves the current V2 package across restart  3275ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 534ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 16120ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  5340ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)  5528ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed  5250ms
+ ✓ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests) 231ms
+ ↓ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts (16 tests | 16 skipped)
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (13 tests) 17345ms
+     ✓ AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)  615ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2304ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  745ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3314ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  333ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9199ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 14430ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  3202ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  3973ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  3009ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  4245ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 127ms
+ ↓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 113ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 3643ms
+     ✓ converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing  3642ms
+ ↓ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/runtime/skill-update-notice-live.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 269ms
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 5140ms
+     ✓ commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model  5139ms
+ ↓ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 132ms
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 1899ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  463ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  522ms
+ ↓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (0 test)
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 156ms
+ ↓ tests/e2e/runtime/agy-background-task-live.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 133ms
+ ↓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 151ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (2 tests) 453ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  356ms
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 6 skipped)
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests) 1787ms
+ ↓ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts (12 tests | 12 skipped)
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 14187ms
+ ↓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 13873ms
+     ✓ persists the team and exact-Agent configurations and restores them after process restart  3368ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1721ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  1722ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1776ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1734ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1726ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1825ms
+ ↓ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts (5 tests | 5 skipped)
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 104ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 59ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3505ms
+     ✓ indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015)  3138ms
+ ↓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 3627ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  1789ms
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 4526ms
+     ✓ starts normally, keeps other providers working, lists the host key as deletable custom data, and leaves the vault row inert  4525ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (2 tests) 353ms
+     ✓ keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy  324ms
+ ↓ tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (3 tests) 65ms
+ ↓ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-context-files-live.e2e.test.ts (3 tests | 3 skipped)
+ ❯ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests | 1 failed) 924485ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  864ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1646ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2436ms
+     × RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008) 918570ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 724ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 3897ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  1891ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  1993ms
+ ↓ tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-live.e2e.test.ts (11 tests | 11 skipped)
+ ✓ tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts (3 tests) 140ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 3570ms
+     ✓ prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false  447ms
+     ✓ prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=true  335ms
+     ✓ prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=false  403ms
+     ✓ prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=true  487ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 689ms
+     ✓ keeps exact matches and Task writes working while the model cannot be downloaded, explains why, and tries again only after Retry (AC-011)  326ms
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 132ms
+ ↓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests | 5 skipped)
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests) 247ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 3250ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1161ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  993ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  659ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 13976ms
+     ✓ SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped  2802ms
+     ✓ SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open  5501ms
+     ✓ SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)  5671ms
+ ↓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 3242ms
+ ✓ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test) 254ms
+ ↓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 25 skipped)
+ ↓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 78ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 1690ms
+     ✓ keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers  646ms
+     ✓ survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy  751ms
+ ✓ tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (13 tests) 32ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 3049ms
+     ✓ removes recognized exports at every released location once, keeps everything else, and is idempotent  3048ms
+ ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 114ms
+ ↓ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 6341ms
+     ✓ refuses a native runtime launch with a remote identifier and still launches with a current model  1771ms
+     ✓ keeps a stopped run that saved a remote model visible with its value and blocks its restore  4569ms
+ ✓ tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts (1 test) 3240ms
+     ✓ reopens unchanged standalone and exact team-member records through built-server GraphQL  3240ms
+ ↓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 2257ms
+     ✓ ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database  2256ms
+ ✓ tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts (2 tests) 106ms
+ ↓ tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts (2 tests) 45ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 1750ms
+     ✓ opens stored agent, team and agent-org history through a GraphQL contract that no longer has the field  1750ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 5411ms
+ ↓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (0 test)
+ ↓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 3287ms
+     ✓ atomically saves every configured child, preserves other scopes, and reads the same current (version-less Org tree) package after restart  3286ms
+ ↓ tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 510ms
+ ↓ tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts (0 test)
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 79ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts (4 tests) 1811ms
+ ✓ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests) 10949ms
+     ✓ a built test server started with the live opt-in reads the test vault read-only  1616ms
+     ✓ a selected vault that is missing stops the server with TEST_VAULT_NOT_FOUND; no fallback  1270ms
+     ✓ a built test server without the live opt-in keeps its own vault even with the selector exported  1591ms
+     ✓ the secret-lifecycle suites give the same results with the selector exported (AC-017)  6070ms
+ ↓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (6 tests) 199ms
+ ↓ tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 1062ms
+     ✓ opens a real PTY in the requested cwd and releases it on websocket close  340ms
+     ✓ does not retain PTYs across close-before-connect and repeated open/close churn  585ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 64ms
+ ↓ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts (2 tests) 59ms
+ ✓ tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts (1 test) 562ms
+     ✓ serializes two package compositions on one SQLite target and publishes one key/domain  561ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 3491ms
+     ✓ reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart  3491ms
+ ↓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 140ms
+ ✓ tests/e2e/secret-management/environment-key-source.e2e.test.ts (3 tests) 1930ms
+     ✓ the server turns the default off: a client without a resolver fails, the server resolvers follow its source (AC-018)  1634ms
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 72ms
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (3 tests) 1660ms
+ ↓ tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3057ms
+     ✓ materializes the immutable template, migrates, and reopens value-free  3057ms
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 1750ms
+     ✓ reports a signed-out CLI as not signed in, with the recovery step and no CLI output (AC-001, QR-001)  354ms
+ ↓ tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts (2 tests) 94ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts (2 tests) 276ms
+ ✓ tests/e2e/file-explorer/search-content-http.e2e.test.ts (6 tests) 153ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 86ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 159ms
+ ✓ tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts (1 test) 71ms
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (4 tests) 2408ms
+     ✓ returns backend-owned runtime capability metadata for all five runtime kinds  610ms
+     ✓ enables grok_build with no reason when a supported Grok CLI answers the bounded probe (AC-001)  587ms
+     ✓ disables grok_build with a safe classified reason when the Grok command is missing (AC-001, QR-001)  580ms
+     ✓ disables grok_build as unsupported below the minimum Grok CLI version (AC-001)  581ms
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 6ms
+ ✓ tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts (1 test) 1769ms
+ ✓ tests/e2e/prompts/prompts-graphql.e2e.test.ts (1 test) 50ms
+ ✓ tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts (1 test) 47ms
+Error: Timed out waiting for Codex has an update again
+     20|   throw new Error(`Timed out waiting for ${label}`);
+ ❯ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts:190:5
+ Test Files  1 failed | 97 passed | 93 skipped (191)
+      Tests  1 failed | 422 passed | 448 skipped (871)
+   Duration  3334.65s (transform 931.57s, setup 1.85s, import 2085.09s, tests 1231.31s, environment 10ms)
+# Exit code: 1
