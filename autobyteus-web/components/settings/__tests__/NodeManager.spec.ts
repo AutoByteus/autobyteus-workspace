@@ -6,8 +6,6 @@ const {
   nodeStoreMock,
   routeMock,
   windowNodeContextStoreMock,
-  validateServerHostConfigurationMock,
-  probeNodeCapabilitiesMock,
 } = vi.hoisted(() => {
   const initialNodes: any[] = [
     {
@@ -18,11 +16,6 @@ const {
       isSystem: true,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
-      capabilityProbeState: 'ready',
-      capabilities: {
-        terminal: true,
-        fileExplorerStreaming: true,
-      },
     },
     {
       id: 'remote-1',
@@ -32,11 +25,6 @@ const {
       isSystem: false,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
-      capabilityProbeState: 'ready',
-      capabilities: {
-        terminal: true,
-        fileExplorerStreaming: true,
-      },
     },
   ];
 
@@ -63,8 +51,6 @@ const {
       nodeId: 'embedded-local',
       isEmbeddedWindow: true,
     },
-    validateServerHostConfigurationMock: vi.fn(),
-    probeNodeCapabilitiesMock: vi.fn(),
   };
 });
 
@@ -80,12 +66,19 @@ vi.mock('vue-router', () => ({
   useRoute: () => routeMock,
 }));
 
-vi.mock('~/utils/nodeHostValidation', () => ({
-  validateServerHostConfiguration: validateServerHostConfigurationMock,
+// one-nodes-tab: Manage Nodes is "This node" and the one list; their behavior has its own tests.
+vi.mock('~/components/settings/nodes/ThisNodeCard.vue', () => ({
+  default: {
+    props: ['nodeName', 'nodeTypeLabel', 'baseUrl'],
+    template: '<div data-testid="this-node-card">{{ nodeName }} {{ nodeTypeLabel }} {{ baseUrl }}</div>',
+  },
 }));
 
-vi.mock('~/utils/nodeCapabilityProbe', () => ({
-  probeNodeCapabilities: probeNodeCapabilitiesMock,
+vi.mock('~/components/settings/nodes/NodeList.vue', () => ({
+  default: {
+    emits: ['guide'],
+    template: '<div data-testid="node-list-card"><button data-testid="node-list-guide" @click="$emit(\'guide\')" /></div>',
+  },
 }));
 
 vi.mock('~/components/settings/DockerNodeStartGuideCard.vue', () => ({
@@ -119,22 +112,6 @@ describe('NodeManager', () => {
     routeMock.query = {};
     windowNodeContextStoreMock.nodeId = 'embedded-local';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
-    validateServerHostConfigurationMock.mockReturnValue({
-      normalizedBaseUrl: 'http://node-b:8000',
-      severity: 'ok',
-      warnings: [],
-      errors: [],
-    });
-    probeNodeCapabilitiesMock.mockResolvedValue({
-      capabilities: {
-        terminal: true,
-        fileExplorerStreaming: true,
-      },
-      state: 'ready',
-      error: null,
-    });
-    nodeStoreMock.removeRemoteNode.mockResolvedValue(undefined);
-
     Object.defineProperty(window, 'electronAPI', {
       configurable: true,
       writable: true,
@@ -142,46 +119,29 @@ describe('NodeManager', () => {
         openNodeWindow: vi.fn().mockResolvedValue({ windowId: 1, created: false }),
       },
     });
-    Object.defineProperty(window, 'confirm', {
-      configurable: true,
-      writable: true,
-      value: vi.fn().mockReturnValue(true),
-    });
   });
 
-  it('adds a remote node using host validation and capability probe', async () => {
+  it('one-nodes-tab REQ-701: Manage Nodes shows This node and the one list; there is no Remote Collaboration tab', async () => {
     const wrapper = mount(NodeManager);
-
-    const setupState = (wrapper.vm as any).$?.setupState;
-    setupState.addForm.name = 'Docker Node';
-    setupState.addForm.baseUrl = 'http://node-b:8000';
     await wrapper.vm.$nextTick();
-    await wrapper.get('[data-testid="add-node-button"]').trigger('click');
-    await Promise.resolve();
 
-    expect(validateServerHostConfigurationMock).toHaveBeenCalledWith('http://node-b:8000');
-    expect(probeNodeCapabilitiesMock).toHaveBeenCalledWith('http://node-b:8000', {
-      timeoutMs: 1500,
-    });
-    expect(nodeStoreMock.addRemoteNode).toHaveBeenCalledWith({
-      name: 'Docker Node',
-      baseUrl: 'http://node-b:8000',
-      capabilities: {
-        terminal: true,
-        fileExplorerStreaming: true,
-      },
-      capabilityProbeState: 'ready',
-    });
-    expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
+    expect(wrapper.findAll('[role="tab"]').map((tab) => tab.attributes('data-testid'))).toEqual([
+      'node-manager-tab-manage', 'node-manager-tab-memorySync', 'node-manager-tab-phoneSetup', 'node-manager-tab-dockerGuide', 'node-manager-tab-nfsGuide']);
+    expect(wrapper.get('[data-testid="this-node-card"]').text()).toContain('Embedded Node');
+    expect(wrapper.get('[data-testid="this-node-card"]').text()).toContain('http://127.0.0.1:29695');
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(true);
   });
 
-  it('opens or focuses each selected node in its own Electron window', async () => {
+  it('one-nodes-tab: ?nodeTab=remoteCollaboration opens Manage Nodes; the Docker Guide link from the list switches tabs', async () => {
+    routeMock.query = { nodeTab: 'remoteCollaboration' };
     const wrapper = mount(NodeManager);
-    await wrapper.get('[data-testid="focus-node-embedded-local"]').trigger('click');
-    await wrapper.get('[data-testid="focus-node-remote-1"]').trigger('click');
+    await wrapper.vm.$nextTick();
 
-    expect(window.electronAPI.openNodeWindow).toHaveBeenNthCalledWith(1, 'embedded-local');
-    expect(window.electronAPI.openNodeWindow).toHaveBeenNthCalledWith(2, 'remote-1');
+    expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.find('[data-testid="node-manager-panel-remoteCollaboration"]').exists()).toBe(false);
+    await wrapper.get('[data-testid="node-list-guide"]').trigger('click');
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(true);
   });
 
   it('does not render removed remote browser pairing surfaces', async () => {
@@ -204,7 +164,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('h2').exists()).toBe(false);
     expect(wrapper.find('[data-testid="node-manager-panel-manage"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="node-manager-panel-memorySync"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="full-sync-run-button"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(false);
@@ -224,7 +184,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="node-manager-panel-memorySync"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="memory-sync-card"]').text()).toContain('Embedded Node');
     expect(wrapper.get('[data-testid="memory-sync-card"]').text()).toContain('http://127.0.0.1:29695');
-    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
   it('renders the Phone Setup guide and Phone Access controls in the Phone Setup tab for embedded windows', async () => {
@@ -240,7 +200,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
   it('opens the Phone Setup tab from the nodeTab route query', async () => {
@@ -255,7 +215,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
   it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
@@ -282,17 +242,9 @@ describe('NodeManager', () => {
     expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('true');
     expect(wrapper.find('[data-testid="node-manager-panel-dockerGuide"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
-  it('removes a remote node without remote browser cleanup', async () => {
-    const wrapper = mount(NodeManager);
-    await wrapper.vm.$nextTick();
-
-    await wrapper.get('[data-testid="remove-node-remote-1"]').trigger('click');
-
-    expect(nodeStoreMock.removeRemoteNode).toHaveBeenCalledWith('remote-1');
-  });
   it('opens NFS Guide from the route and retains accessible keyboard navigation', async () => {
     routeMock.query = { nodeTab: 'nfsGuide' };
     const wrapper = mount(NodeManager);

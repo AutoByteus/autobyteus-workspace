@@ -115,5 +115,13 @@ describe("RemoteNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes p
     await f.discovery.listAvailableAgents("beta");
     expect(byId).toHaveBeenCalledExactlyOnceWith(BETA.nodeId);
   });
-});
 
+  it("one-nodes-tab DS-004: checkAvailabilityOf asks one peer whether it admits this node now; an unreachable one says why", async () => {
+    const f = setup();
+    await expect(f.discovery.checkAvailabilityOf(BETA.nodeId)).resolves.toEqual({ accepted: true });
+    await expect(f.discovery.checkAvailabilityOf(DELTA.nodeId)).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
+    await expect(f.discovery.checkAvailabilityOf(GAMMA.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE", reason: "unreachable" });
+    await expect(f.discovery.checkAvailabilityOf(BLACK.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE", reason: "timeout" });
+    expect(f.fetch.mock.calls.map(([url]) => url)).toEqual([BETA, DELTA, GAMMA, BLACK].map((p) => `${p.baseUrl}/rest/remote/availability`));
+  });
+});

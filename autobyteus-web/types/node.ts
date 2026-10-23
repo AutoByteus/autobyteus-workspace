@@ -3,20 +3,24 @@ export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry.v1';
 
 export type NodeType = 'embedded' | 'remote';
 
-export interface NodeCapabilities {
-  terminal: boolean;
-  fileExplorerStreaming: boolean;
+/** A node's server instance ID (`srv_…`), as `/rest/remote-access/status` answers it. */
+export const SERVER_INSTANCE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
+
+export function isServerInstanceId(value: unknown): value is string {
+  return typeof value === 'string' && SERVER_INSTANCE_ID_PATTERN.test(value);
 }
 
-export type CapabilityProbeState = 'unknown' | 'ready' | 'degraded';
-
+/**
+ * A node this desktop can open. `id` is the desktop's own ID for the entry; `serverInstanceId` is the node's ID
+ * (`srv_…`), learned when this desktop reaches the node at `baseUrl` (absent: not learned yet). The Nodes page joins
+ * the desktop entries with this node's peers by it (one-nodes-tab DEC-701).
+ */
 export interface NodeProfile {
   id: string;
   name: string;
   baseUrl: string;
   nodeType: NodeType;
-  capabilities?: NodeCapabilities;
-  capabilityProbeState?: CapabilityProbeState;
+  serverInstanceId?: string;
   isSystem: boolean;
   createdAt: string;
   updatedAt: string;
@@ -67,10 +71,21 @@ export interface RenameNodeRegistryChange {
   name: string;
 }
 
+/**
+ * Sets or replaces an entry's `serverInstanceId` with the ID its own address answered (one-nodes-tab AR-003); a no-op
+ * when it is equal. `nodeId` is the desktop entry's ID.
+ */
+export interface IdentifyNodeRegistryChange {
+  type: 'identify';
+  nodeId: string;
+  serverInstanceId: string;
+}
+
 export type NodeRegistryChange =
   | AddNodeRegistryChange
   | RemoveNodeRegistryChange
-  | RenameNodeRegistryChange;
+  | RenameNodeRegistryChange
+  | IdentifyNodeRegistryChange;
 
 export function isEmbeddedNode(nodeId: string): boolean {
   return nodeId === EMBEDDED_NODE_ID;

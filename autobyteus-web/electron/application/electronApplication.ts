@@ -13,7 +13,7 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from '../nodeRegistryTypes'
-import { EMBEDDED_NODE_ID } from '../nodeRegistryTypes'
+import { EMBEDDED_NODE_ID, isServerInstanceId } from '../nodeRegistryTypes'
 import { logger } from '../logger'
 import { attachRendererConsoleDiagnostics } from '../rendererConsoleDiagnostics'
 import {
@@ -21,6 +21,7 @@ import {
   getNodeProfileById,
   loadNodeRegistrySnapshot,
   nowIsoString,
+  identifyNodeEntry,
   sanitizeBaseUrl,
   saveNodeRegistrySnapshot,
 } from '../nodeRegistryStore'
@@ -181,7 +182,7 @@ export class ElectronApplication {
 
   private applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapshot {
     const now = nowIsoString()
-    const existingNodes = [...this.nodeRegistrySnapshot.nodes]
+    let existingNodes = [...this.nodeRegistrySnapshot.nodes]
     if (change.type === 'add') {
       const candidate = change.node
       if (!candidate.id.trim() || !candidate.name.trim() || !candidate.baseUrl.trim()) {
@@ -192,6 +193,9 @@ export class ElectronApplication {
       }
       if (existingNodes.some((node) => node.id === candidate.id)) {
         throw new Error(`Node id already exists: ${candidate.id}`)
+      }
+      if (candidate.serverInstanceId !== undefined && !isServerInstanceId(candidate.serverInstanceId)) {
+        throw new Error(`Invalid server instance ID: ${candidate.serverInstanceId}`)
       }
       const normalizedBaseUrl = sanitizeBaseUrl(candidate.baseUrl)
       if (existingNodes.some(
@@ -223,6 +227,10 @@ export class ElectronApplication {
       }
       target.name = change.name.trim()
       target.updatedAt = now
+    } else if (change.type === 'identify') {
+      const identified = identifyNodeEntry(existingNodes, change, now)
+      if (identified === existingNodes) return this.nodeRegistrySnapshot
+      existingNodes = identified
     } else {
       const neverChange: never = change
       throw new Error(`Unsupported registry change: ${JSON.stringify(neverChange)}`)
@@ -258,7 +266,9 @@ export class ElectronApplication {
     ipcMain.handle('get-window-context', async (event) =>
       this.getWindowContextByWebContentsId(event.sender.id))
     ipcMain.handle('upsert-node-registry', async (_event, change: NodeRegistryChange) => {
-      this.commitNodeRegistrySnapshot(this.applyNodeRegistryChange(change))
+      const next = this.applyNodeRegistryChange(change)
+      // An `identify` with the ID already stored changes nothing, so nothing is written.
+      if (next !== this.nodeRegistrySnapshot) this.commitNodeRegistrySnapshot(next)
       return this.nodeRegistrySnapshot
     })
     ipcMain.handle('get-node-registry-snapshot', async () => this.nodeRegistrySnapshot)

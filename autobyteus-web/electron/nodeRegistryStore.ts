@@ -1,10 +1,11 @@
 import * as fsSync from 'fs'
 import * as path from 'path'
 import type {
+  IdentifyNodeRegistryChange,
   NodeProfile,
   NodeRegistrySnapshot,
 } from './nodeRegistryTypes'
-import { EMBEDDED_NODE_ID } from './nodeRegistryTypes'
+import { EMBEDDED_NODE_ID, isServerInstanceId } from './nodeRegistryTypes'
 import { logger } from './logger'
 
 const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json'
@@ -28,11 +29,6 @@ function getEmbeddedNodeProfile(activeEmbeddedBaseUrl: string): NodeProfile {
     name: 'Embedded Node',
     baseUrl: sanitizeBaseUrl(activeEmbeddedBaseUrl),
     nodeType: 'embedded',
-    capabilities: {
-      terminal: true,
-      fileExplorerStreaming: true,
-    },
-    capabilityProbeState: 'ready',
     isSystem: true,
     createdAt: now,
     updatedAt: now,
@@ -97,23 +93,6 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
     return null
   }
 
-  const capabilityProbeState = node.capabilityProbeState === 'unknown'
-    || node.capabilityProbeState === 'ready'
-    || node.capabilityProbeState === 'degraded'
-    ? node.capabilityProbeState
-    : undefined
-
-  let capabilities: NodeProfile['capabilities'] | undefined
-  if (node.capabilities && typeof node.capabilities === 'object') {
-    const rawCapabilities = node.capabilities as Record<string, unknown>
-    if (typeof rawCapabilities.terminal === 'boolean' && typeof rawCapabilities.fileExplorerStreaming === 'boolean') {
-      capabilities = {
-        terminal: rawCapabilities.terminal,
-        fileExplorerStreaming: rawCapabilities.fileExplorerStreaming,
-      }
-    }
-  }
-
   const now = nowIsoString()
   const createdAt = typeof node.createdAt === 'string' && node.createdAt.trim()
     ? node.createdAt
@@ -126,8 +105,8 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
     name,
     baseUrl: sanitizeBaseUrl(baseUrlRaw),
     nodeType,
-    capabilities,
-    capabilityProbeState,
+    // Absent or not a valid ID: not learned yet (one-nodes-tab, design § Persisted Data).
+    ...(isServerInstanceId(node.serverInstanceId) ? { serverInstanceId: node.serverInstanceId } : {}),
     isSystem: nodeType === 'embedded',
     createdAt,
     updatedAt,
@@ -193,4 +172,20 @@ export function getNodeProfileById(
   nodeId: string,
 ): NodeProfile | undefined {
   return snapshot.nodes.find((node) => node.id === nodeId)
+}
+
+/**
+ * The `identify` change (one-nodes-tab AR-003): the entry's `serverInstanceId` set to, or replaced by, the ID its own
+ * address answered; the same array when it is already that ID. Never merges entries or changes a name or address.
+ */
+export function identifyNodeEntry(
+  nodes: NodeProfile[],
+  change: IdentifyNodeRegistryChange,
+  now: string,
+): NodeProfile[] {
+  const index = nodes.findIndex((node) => node.id === change.nodeId)
+  if (index === -1) throw new Error(`Node does not exist: ${change.nodeId}`)
+  if (!isServerInstanceId(change.serverInstanceId)) throw new Error(`Invalid server instance ID: ${change.serverInstanceId}`)
+  if (nodes[index]!.serverInstanceId === change.serverInstanceId) return nodes
+  return nodes.map((node, at) => at === index ? { ...node, serverInstanceId: change.serverInstanceId, updatedAt: now } : node)
 }

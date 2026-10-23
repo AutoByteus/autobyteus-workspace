@@ -45,6 +45,32 @@ export const GetPeerNodeOffer = gql`
         description
       }
       refusalCode
+      unreachableReason
     }
+  }
+`
+
+/** one-nodes-tab DS-004: does the peer `nodeId` admit this node now? (Asked on the other node for "it → this node".) */
+export const GetPeerNodeAvailability = gql`
+  query GetPeerNodeAvailability($nodeId: String!) {
+    peerNodeAvailability(nodeId: $nodeId) {
+      available
+      refusalCode
+      unreachableReason
+    }
+  }
+`
+
+/** one-nodes-tab DS-003: how other nodes may reach this node, as the node lists its own addresses. */
+export const GetPeerAddressCandidates = gql`
+  query GetPeerAddressCandidates {
+    peerAddressCandidates
+  }
+`
+
+/** one-nodes-tab DS-005: the first of `baseUrls` at which the asked node reaches the node `nodeId` (switch on). */
+export const ResolvePeerAddress = gql`
+  query ResolvePeerAddress($nodeId: String!, $baseUrls: [String!]!) {
+    resolvePeerAddress(nodeId: $nodeId, baseUrls: $baseUrls)
   }
 `

@@ -16,7 +16,7 @@ vi.mock('~/composables/useLocalization', async () => {
 const agent = (name: string, description?: string) => ({ name, kind: 'agent' as const, ...(description ? { description } : {}) })
 const team = (name: string, description?: string) => ({ name, kind: 'agent_team' as const, ...(description ? { description } : {}) })
 const mountOffer = (entries: ReturnType<typeof agent>[]) =>
-  mount(RemoteCollaborationOfferDisclosure, { props: { entries, testId: 'offer', footer: 'Checked 09:41' } })
+  mount(RemoteCollaborationOfferDisclosure, { props: { entries, testId: 'offer' } })
 const many = (count: number, kind: typeof agent) => Array.from({ length: count }, (_value, index) => kind(`${kind === agent ? 'Agent' : 'Team'} ${String(index + 1).padStart(2, '0')}`))
 
 /** autobyteus-267 REQ-507, AC-504, ST-01, ST-08, ST-09, ST-11: one line by default; open groups; search over 6. */
@@ -32,7 +32,20 @@ describe('RemoteCollaborationOfferDisclosure', () => {
     await toggle.trigger('click')
     expect(toggle.attributes('aria-expanded')).toBe('true')
     expect(wrapper.find('[data-testid="offer-preview"]').exists()).toBe(false)
-    expect(wrapper.text()).toContain('Checked 09:41')
+  })
+
+  it('one-nodes-tab: a label replaces the counts, the slot shows below the list, and the page can open it', async () => {
+    const wrapper = mount(RemoteCollaborationOfferDisclosure, {
+      props: { entries: [], testId: 'offer', label: 'Connection details', modelValue: false },
+      slots: { default: '<p data-testid="details">This node → 8003 ✓ Working</p>' },
+    })
+    expect(wrapper.get('[data-testid="offer-summary"]').text()).toBe('Connection details')
+    expect(wrapper.find('[data-testid="details"]').exists()).toBe(false)
+    await wrapper.setProps({ modelValue: true })
+    expect(wrapper.find('[data-testid="offer-list"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="details"]').text()).toContain('Working')
+    await wrapper.get('[data-testid="offer-toggle"]').trigger('click')
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
   })
 
   it('ST-08: open, two groups with headings and counts, sorted by name, descriptions only where present; no search at 6 or fewer', async () => {

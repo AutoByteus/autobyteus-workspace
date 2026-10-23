@@ -143,5 +143,14 @@ describe('remoteCollaborationOffersStore with a real ApolloClient', () => {
     expect(store.peers.srv_b).toEqual({ phase: 'unavailable', code: 'PEER_UNREACHABLE' })
     apolloClientMock.query.mockReset()
   })
-})
 
+  it('one-nodes-tab REQ-707: an unreachable peer keeps the reason this node\'s server classified; an unknown reason is dropped', async () => {
+    const store = useRemoteCollaborationOffersStore()
+    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodeOffer: { entries: null, refusalCode: 'PEER_UNREACHABLE', unreachableReason: 'refused' } } })
+    await store.ask('srv_b')
+    expect(store.peers.srv_b).toEqual({ phase: 'unavailable', code: 'PEER_UNREACHABLE', reason: 'refused' })
+    apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodeOffer: { entries: null, refusalCode: 'PEER_UNREACHABLE', unreachableReason: 'fetch failed' } } })
+    await store.ask('srv_b')
+    expect(store.peers.srv_b).toEqual({ phase: 'unavailable', code: 'PEER_UNREACHABLE' })
+  })
+})

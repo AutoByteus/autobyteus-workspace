@@ -14,8 +14,8 @@
       <span v-if="!open" class="min-w-0 truncate text-slate-500" :data-testid="`${testId}-preview`">{{ preview }}</span>
     </button>
     <div v-if="open" class="mt-3 pl-6">
-      <RemoteCollaborationOfferList :entries="entries" :test-id="`${testId}-list`" />
-      <p v-if="footer" class="mt-3 text-xs text-slate-400">{{ footer }}</p>
+      <RemoteCollaborationOfferList v-if="entries.length" :entries="entries" :test-id="`${testId}-list`" />
+      <div v-if="$slots.default" :class="entries.length ? 'mt-4 border-t border-slate-200 pt-4' : ''"><slot /></div>
     </div>
   </div>
 </template>
@@ -26,20 +26,29 @@ import RemoteCollaborationOfferList from '~/components/settings/RemoteCollaborat
 import { useLocalization } from '~/composables/useLocalization'
 import type { PeerOfferEntry } from '~/stores/remoteCollaborationOffersStore'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   entries: PeerOfferEntry[]
+  /** Replaces the "7 Agents · 2 Agent Teams" counts (one-nodes-tab: "Connection details", or an empty offer). */
+  label?: string
   testId: string
-  footer?: string
-}>()
+  /** Optional: lets the page open the details itself (one-nodes-tab: Change address from the row's line). */
+  modelValue?: boolean
+}>(), { label: undefined, modelValue: undefined })
+const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
 const { t } = useLocalization()
-const open = ref(false)
+const local = ref(false)
+const open = computed({
+  get: () => props.modelValue ?? local.value,
+  set: (value: boolean) => { local.value = value; emit('update:modelValue', value) },
+})
 
 const base = 'settings.components.settings.RemoteCollaboration.offer.'
 const agents = computed(() => props.entries.filter((entry) => entry.kind === 'agent').length)
 const teams = computed(() => props.entries.filter((entry) => entry.kind === 'agent_team').length)
 
 const summary = computed(() => {
+  if (props.label) return props.label
   const parts: string[] = []
   if (agents.value) parts.push(agents.value === 1 ? t(`${base}agentOne`) : t(`${base}agentsCount`, { count: agents.value }))
   if (teams.value) parts.push(teams.value === 1 ? t(`${base}teamOne`) : t(`${base}teamsCount`, { count: teams.value }))

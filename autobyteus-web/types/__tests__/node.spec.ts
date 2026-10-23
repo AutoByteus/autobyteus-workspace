@@ -3,6 +3,7 @@ import {
   EMBEDDED_NODE_ID,
   NODE_REGISTRY_STORAGE_KEY,
   isEmbeddedNode,
+  isServerInstanceId,
   type NodeProfile,
   type NodeRegistrySnapshot,
 } from '../node';
@@ -29,11 +30,7 @@ describe('node types contract', () => {
       isSystem: true,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
-      capabilities: {
-        terminal: true,
-        fileExplorerStreaming: true,
-      },
-      capabilityProbeState: 'ready',
+      serverInstanceId: 'srv_m9VFq2LwAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     };
 
     const snapshot: NodeRegistrySnapshot = {
@@ -43,6 +40,13 @@ describe('node types contract', () => {
 
     expect(snapshot.version).toBe(1);
     expect(snapshot.nodes[0].nodeType).toBe('embedded');
-    expect(snapshot.nodes[0].capabilityProbeState).toBe('ready');
+    expect(snapshot.nodes[0].serverInstanceId).toBe('srv_m9VFq2LwAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+  });
+
+  it('recognizes a server instance ID as the server writes it (srv_ + 32 or more base64url characters)', () => {
+    expect(isServerInstanceId('srv_m9VFq2LwAAAAAAAAAAAAAAAAAAAAAAAAAAAA')).toBe(true);
+    expect(isServerInstanceId('srv_short')).toBe(false);
+    expect(isServerInstanceId('remote-1')).toBe(false);
+    expect(isServerInstanceId(undefined)).toBe(false);
   });
 });

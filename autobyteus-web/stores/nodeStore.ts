@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import {
   EMBEDDED_NODE_ID,
   NODE_REGISTRY_STORAGE_KEY,
+  isServerInstanceId,
   type NodeProfile,
   type NodeRegistryChange,
   type NodeRegistrySnapshot,
@@ -21,11 +22,6 @@ function createEmbeddedNode(baseUrl: string): NodeProfile {
     name: 'Embedded Node',
     baseUrl,
     nodeType: 'embedded',
-    capabilities: {
-      terminal: true,
-      fileExplorerStreaming: true,
-    },
-    capabilityProbeState: 'ready',
     isSystem: true,
     createdAt: now,
     updatedAt: now,
@@ -207,11 +203,14 @@ export const useNodeStore = defineStore('nodeStore', () => {
     return snapshot;
   }
 
+  /**
+   * Adds a node to this desktop's list, with its node ID when this window has reached it. Adding does not open the
+   * node's window (one-nodes-tab SR-006); Open does.
+   */
   async function addRemoteNode(input: {
     name: string;
     baseUrl: string;
-    capabilities?: NodeProfile['capabilities'];
-    capabilityProbeState?: NodeProfile['capabilityProbeState'];
+    serverInstanceId?: string;
   }): Promise<NodeProfile> {
     const trimmedName = input.name.trim();
     if (!trimmedName) {
@@ -236,13 +235,11 @@ export const useNodeStore = defineStore('nodeStore', () => {
       isSystem: false,
       createdAt: now,
       updatedAt: now,
-      capabilityProbeState: input.capabilityProbeState ?? 'unknown',
-      capabilities: input.capabilities,
+      ...(isServerInstanceId(input.serverInstanceId) ? { serverInstanceId: input.serverInstanceId } : {}),
     };
 
     if (window.electronAPI) {
       await upsertRegistry({ type: 'add', node });
-      await window.electronAPI.openNodeWindow?.(node.id);
       return getNodeById(node.id) || node;
     }
 
@@ -299,6 +296,28 @@ export const useNodeStore = defineStore('nodeStore', () => {
     persistCurrentSnapshotToLocalStorage();
   }
 
+  /**
+   * Stores the node ID that the entry's own address answered (one-nodes-tab AR-003): set, or replaced when it
+   * differs; nothing is written when it is the same.
+   */
+  async function identifyNode(nodeId: string, serverInstanceId: string): Promise<void> {
+    const node = getNodeById(nodeId);
+    if (!node || node.serverInstanceId === serverInstanceId || !isServerInstanceId(serverInstanceId)) {
+      return;
+    }
+
+    if (window.electronAPI) {
+      await upsertRegistry({ type: 'identify', nodeId, serverInstanceId });
+      return;
+    }
+
+    nodes.value = nodes.value.map((entry) => (
+      entry.id === nodeId ? { ...entry, serverInstanceId, updatedAt: nowIsoString() } : entry
+    ));
+    registryVersion.value += 1;
+    persistCurrentSnapshotToLocalStorage();
+  }
+
   function teardownRegistryListener(): void {
     listenerCleanup.value?.();
     listenerCleanup.value = null;
@@ -317,6 +336,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
     addRemoteNode,
     removeRemoteNode,
     renameNode,
+    identifyNode,
     teardownRegistryListener,
   };
 });
