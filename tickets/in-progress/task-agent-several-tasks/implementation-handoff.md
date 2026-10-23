@@ -2,40 +2,48 @@
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks/tickets/in-progress/task-agent-several-tasks/`
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`, branch `codex/task-agent-several-tasks`, base `origin/personal@3b09fbe308`.
-Code commits: `a18fe714cd` (IR-001) and `cd8c289b67` (IR-002, CR-001 Local Fix). Evidence and these documents: the ticket-artifact commits that follow them (named in each handoff message). The untracked `autobyteus-application-*/dist/` folders are not committed (AF-009).
+Code commits: `a18fe714cd` (IR-001), `cd8c289b67` (IR-002, CR-001 Local Fix) and `1fa3a1d87e` (IR-003, SR-006 web delta for CR-002 / API-F-001). Evidence and these documents: the ticket-artifact commits that follow them (named in each handoff message). The untracked `autobyteus-application-*/dist/` folders are not committed (AF-009).
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Small / High → independent architecture review selected; `Pass` (ARCH-REV-002, no open findings, four implementation notes).
-- Requirements doc: `requirements-doc.md` (Approved, SR-003)
+- Upstream review applicability and handoff-rule result: Small / High → independent architecture review selected; `Pass` (ARCH-REV-002, no open findings, four implementation notes). SR-006 delta: `Pass` (ARCH-REV-003, no open findings).
+- Requirements doc: `requirements-doc.md` (Approved, SR-006: SR-003 plus DEC-013, AC-011)
 - Investigation notes: `investigation-notes.md` (AF-001–AF-009)
 - Solution revision record: `solution-revision-record.md`
-- Design spec: `design-spec.md` (SR-005, Ready)
+- Design spec: `design-spec.md` (SR-006, Ready)
 - Supplemental task artifacts: `evidence/SD-probe-several-tasks.test.ts.txt` and its output (the reproduction implementation started from)
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
 - Follow-ups: `follow-ups.md` FU-001 (the code reviewer recorded the deleted-Task risk from this handoff)
-- Triggering rework report: `code-review-report.md` CRR-001 (Fail, Local Fix CR-001)
+- Triggering rework report: `code-review-report.md` CRR-003 (API-F-001 from `api-e2e-execution-coverage-report.md` → Design Impact CR-002), resolved by SR-006 / ARCH-REV-003. Earlier: CRR-001 (CR-001, resolved in IR-002, CRR-002 Pass).
 
 ## Current Implementation Summary
 
-A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate_task` with `task_id` and the copy's run id gives it another Task while earlier ones are open, still only from its most recent assigner. A Task's DONE / CANCELLED stops the copy only when it has no open Task left. Before this change, the last close of a copy with two open entries fenced it but asked no one to stop it (AF-001). The given-Task message names the copy's other open Tasks and asks for the Task key in each report; with none open, the text is unchanged. Sub-work joins the newest open Task.
+A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate_task` with `task_id` and the copy's run id gives it another Task while earlier ones are open, still only from its most recent assigner. A Task's DONE / CANCELLED stops the copy only when it has no open Task left. Before this change, the last close of a copy with two open entries fenced it but asked no one to stop it (AF-001). The given-Task message names the copy's other open Tasks and asks for the Task key in each report; with none open, the text is unchanged. Sub-work joins the newest open Task. The app's "Assigned to" help line on a Task page now states the rule that holds for every Task: "This agent or team stops when its last open Task is Done or Cancelled." (zh-CN: "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。")
 
-- Implementation cycle: `Code Review Local Fix` (round 2)
+- Implementation cycle: `Design Impact rework` (round 3, SR-006 delta)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-005` (requirements `SR-003`)
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-006` (requirements `SR-006`)
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001` (API-F-001)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Triggering finding IDs: `CR-002` (API-F-001); earlier `CR-001`
 
 ### CR-001 resolution (IR-002)
 
 | Finding | Fix | Commit | Check |
 | --- | --- | --- | --- |
 | CR-001: the `update_task` parenthetical "(stopping their task agents)" for a parent's parts was false under the new release rule (REQ-008) | `project-task-tool-contract.ts` `update_task`: now "…also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them." Also the optional C-06 widening: "To give a task agent another Task, also while its other Tasks are open, use delegate_task with its target_agent_run_id or target_team_run_id." Text pins: `project-task-parts-tools.test.ts:95` (exact sentence) and the `project-task-tools.test.ts` regex (now also covers the widened sentence) | `cd8c289b67` | IMP-06, IMP-07 |
+
+### CR-002 / API-F-001 resolution (IR-003, SR-006)
+
+| Finding | Fix | Commit | Check |
+| --- | --- | --- | --- |
+| CR-002 / API-F-001: the Task page's "Assigned to" help line said "When the Task is Done, this agent or team stops.", which is false for the first of two open Tasks to close (REQ-004, REQ-008) | `projects.root.help` in `autobyteus-web/localization/messages/en/projects.ts:212`: "This agent or team stops when its last open Task is Done or Cancelled."; `zh-CN/projects.ts:212`: "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。" (DEC-013, verbatim). No component change (`TaskRootSection.vue` unchanged). New catalog assertion in `localization/messages/__tests__/projectsCatalog.spec.ts` pins both strings (AC-011), as the architecture review asked; `ProjectTaskWorkers.spec.ts` asserts only presence and needs no change. No other copy of the old text exists in source or docs. | `1fa3a1d87e` | IMP-08 (rendered, real stack), IMP-09 (guards and web suite) |
+
+- ARCH-REV-003 non-blocking note: settle (`markStarted` / `markFailed`) is a current-entry consumer the design's table does not name. It is unchanged, as the review asked.
 
 ## Routing Classification (Mandatory)
 
@@ -50,7 +58,7 @@ A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate
 - Selected route: `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable` (High)
 - New design impact or escalation trigger: `None`. No escalation trigger fired:
-  - no `send_message_to`, queue or UI change;
+  - no `send_message_to` or queue change, and no UI change beyond the help-line text (DEC-013);
   - no data conversion;
   - no change to reopen or idle-shutdown rules.
 
@@ -85,6 +93,7 @@ A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate
 - `src/agent-collaboration/execution/task/task-execution-resource-port.ts`, `root-task-execution-lifecycle.ts`, `task-execution-input.ts`.
 - `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` (`delegate_task`), `src/agent-tools/project-tasks/project-task-tool-contract.ts` (`update_task`).
 - Docs: `docs/design/collaboration_model.md`, `docs/modules/projects.md`, `docs/modules/agent_team_execution.md`.
+- Web (IR-003): `autobyteus-web/localization/messages/en/projects.ts`, `zh-CN/projects.ts` (`projects.root.help`); `localization/messages/__tests__/projectsCatalog.spec.ts` (AC-011).
 - Tests:
   - new `tests/unit/projects/task-execution-several-open-tasks.test.ts` (AF-001, AC-001–AC-007, QR-001, QR-002);
   - rewritten cases in `task-execution-existing-copy-assignment.test.ts`, `task-execution-current-entry.test.ts`, `root-task-existing-copy-assignment.test.ts`;
@@ -100,9 +109,8 @@ A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate
 
 ## Known Risks
 
-- Existing server E2E assertions pin the removed refusal or the old `update_task` text and need updating. E2E is API/E2E-owned, so I did not edit them:
-  - `tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts` lines ~404, 409, 731, 866, 876 ("This task agent still works on …");
-  - `tests/e2e/projects/project-task-boundaries.e2e.test.ts` line ~663 ("Both stop the task agents whose current Task this is") and line ~846 ("(stopping their task agents)", now "(ending their work for their task agents, as above)" after CR-001).
+- The server E2E pins on the removed refusal and the old `update_task` text were updated by API/E2E in `386ce18b5f`; none remain.
+- A closed Task's "Assigned to" root reads Offline (muted, with no help line) while the same agent keeps working on another open Task (seen in IMP-08). This is the approved design ("Keep: a closed Task shows its team offline for that Task"), recorded as a residual risk in `design-review-report.md` round 3.
 - (Recorded by the code reviewer as FU-001; outside this ticket.) A Task deleted while a copy holds it open keeps its open entry, as today: delete keeps `agent_run_resources.json` and does not close entries. Such a copy is not stopped when its other Tasks close. Its given-Task message also leaves the deleted Task out, so with no other open Task it says "previous Task is closed". This follows REQ-004's wording ("stopped only when no assignment of it is still open"), and deleting a Task with a running task agent already left that agent running before this change. If wanted, a follow-up could close a deleted Task's entries.
 - The `delegate_task` and `update_task` wording changes agent behavior. Both are kept to the design's sentences.
 
@@ -156,16 +164,31 @@ Evidence folder: `evidence/`. Each file name starts with its check ID; large log
 | IMP-05 | `pnpm -C autobyteus-server-ts test:integration:prepare` then `test:integration` | `a18fe714cd` | same | server integration suites (green-suite guard) | — | Pass | `IMP-05-server-integration-prepare.log`, `IMP-05-server-test-integration.log`, `IMP-05-server-test-integration.full.log.gz` | prepare `Integration test prerequisites are present.` `exit=0`; run `Test Files  78 passed | 20 skipped (98)`, `Tests  421 passed | 69 skipped (490)`, `exit=0` |
 | IMP-06 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/project-tasks --no-watch --reporter=verbose` | `cd8c289b67` | same | `update_task` text and its pins (CR-001) | REQ-008, CR-001 | Pass | `IMP-06-project-task-tool-texts.log` | `Test Files  6 passed (6)`, `Tests  137 passed (137)` |
 | IMP-07 | `pnpm -C autobyteus-server-ts typecheck`, then `test:unit` | `cd8c289b67` | same | all server `src`; all server unit suites after the CR-001 text change | REQ-008 | Pass | `IMP-07-server-typecheck-and-unit.log`, `IMP-07-server-typecheck-and-unit.full.log.gz` | typecheck `exit=0`; `Test Files  794 passed | 4 skipped (798)`, `Tests  6518 passed | 7 skipped (6525)`, `exit=0` |
+| IMP-08 | Real-stack browser probe, temporary case IMP-08 (see `IMP-08-help-line-rendered/IMP-08-README.md`): `node autobyteus-web/tests/e2e/<temp copy> --output-dir <fresh> --cases IMP-08`, after `pnpm -C autobyteus-server-ts prebuild && build` | `1fa3a1d87e` | same + headless Chrome, Nuxt dev, scripted AGY runtime, private data root | `TaskRootSection.vue` with the new catalogs, server several-open-Tasks path | AC-011, REQ-008, DEC-013; REQ-003, REQ-004 seen in the app | Pass | `IMP-08-help-line-rendered/` (`IMP-08-README.md`, `IMP-08-evidence.json`, `IMP-08-*.png`, `IMP-08-case-source.mjs.txt`) | `result: "Pass"`, `failures: []`, `pages.*.text` = the approved sentence (en / zh-CN) on both Tasks, `clipped: false`, `bClosedHelpShown: 0`, `cleanup.dataRootRemoved: true` |
+| IMP-09 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, `test:nuxt --run` | `1fa3a1d87e` | same | all web unit and component suites, incl. the new AC-011 catalog assertion | AC-011 | Pass | `IMP-09-web-guards-and-test-nuxt.log`, `IMP-09-web-guards-and-test-nuxt.full.log.gz` | guards `Passed`, `exit=0`; `Test Files  661 passed | 2 skipped (663)`, `Tests  4759 passed | 3 skipped (4762)`, `exit=0` |
 
 - Environment note: the first full run, on the same commit, failed before any check of this change ran. The worktree had no `autobyteus-application-backend-sdk/node_modules`, so `prepare:shared` could not resolve `@autobyteus/application-sdk-contracts`; 5 application-backend unit suites could not import `@autobyteus/application-backend-sdk`; and 2 unrelated tests timed out under load (skill-folder watcher CR-005 at 302 s, ACP harness `waitFor`). I ran `pnpm install --frozen-lockfile` (no tracked change), then a clean rerun of the whole chain produced IMP-03 to IMP-05. The untracked build outputs (`autobyteus-application-*/dist/`, `applications/brief-studio/dist/`) are not committed.
+- IR-003 is a web catalog text change: the server was not rechecked (unchanged since IR-002). The web guards, the web suite and a rendered real-stack check ran on `1fa3a1d87e`.
 - IR-002 (CR-001) is a text-only change. Integration was not rerun for it; IMP-05 on `a18fe714cd` still stands.
 - Not run, and why:
-  - server E2E with a scripted runtime (design step 3: AC-001, AC-003–AC-007 end to end, waking a sleeping copy given a second Task) and the isolated desktop instance (AC-010) belong to API/E2E; existing E2E pins need updating first (Known Risks);
-  - web checks were not run because no web file changed.
+  - the isolated desktop instance (AC-010, AC-011, API-07) belongs to API/E2E; IMP-08 used a Nuxt dev frontend and the built backend instead;
+  - `test:electron` was not run, because no Electron file changed.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-`Not Applicable`: no web code changed (DEC-003). Each Task's existing "Assigned to" shows its root, the latest `assigned` entry, which this change writes as before. The server unit tests read it through `readTaskChangeView` for both Tasks. The real app check is AC-010 (API/E2E).
+`Applicable` (IR-003: the "Assigned to" help line text). Evidence: `evidence/IMP-08-help-line-rendered/` (README, evidence.json, screenshots).
+
+- Surface: the project's real-stack browser probe harness (`autobyteus-web/tests/e2e/project-manager-ux-probe.mjs`, TESTING.md "Browser probes"). It runs a Nuxt dev frontend, the backend built on `1fa3a1d87e`, the scripted AGY runtime, a private data root and headless Chrome. I added one temporary case (not committed; its source is in the evidence).
+- State exercised: one worker copy holding two open Tasks, A then B given with `delegate_task` `target_agent_run_id` while A is open. I opened both Task pages in en-US and zh-CN, at 1440×1000 and 390×844. Then B was set to DONE and both pages were opened again.
+- Inspected:
+  - The text is the approved sentence on both Task pages in both locales.
+  - Typography and color are unchanged (12 px / 20 px, slate-400), placed under the root line in the "Assigned to" card.
+  - It is one line at 1440 and wraps cleanly to two lines at 390 (266×40). It is not clipped and does not overflow.
+  - After B is DONE, B's root is muted Offline with no help line, and A keeps the help line.
+  - No browser errors.
+- Limitations:
+  - The 390 px screenshots are viewport-only and the line sits below the fold, so the narrow layout check rests on the DOM metrics, not the picture.
+  - The packaged desktop app (AC-010 / AC-011 on the isolated instance) is API/E2E's.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -178,8 +201,8 @@ Evidence folder: `evidence/`. Each file name starts with its check ID; large log
 - Sub-work started after B is given joins B; closing B stops the helper only.
 - A closed Task given back while another is open (AC-007).
 - A sleeping (idle-shut-down) copy with an open Task, given a second Task: woken by the delivery.
-- Isolated desktop instance (AC-010): the user's journey with "Assigned to" on both Tasks.
+- Isolated desktop instance (AC-010, AC-011): rerun the user's journey. Wherever the root is open, J2 and J3 should show the new help line ("This agent or team stops when its last open Task is Done or Cancelled." / zh-CN), whatever the copy's live status. A closed root shows no help line.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes: the scenarios above, AC-010, and the E2E assertion updates listed in Known Risks.
+Yes: rerun AC-010 and AC-011 on the isolated instance (API-07), per ARCH-REV-003. The server scenarios already passed (API-00 to API-06).

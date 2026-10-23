@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (SR-004 design; SR-005 resolves ARCH-REV-001 ARF-001 / ARF-002)
-- Approved requirements baseline: `requirements-doc.md` at `SR-003`, approved by the `User` (2026-10-23). The user confirmed afterwards that the given-Task message stays as today, except for the one sentence that would become false.
+- Current solution revision ID: `SR-006` (SR-004 design; SR-005 resolves ARCH-REV-001; SR-006 resolves CRR-003 CR-002, the app's help line)
+- Approved requirements baseline: `requirements-doc.md` at `SR-006` (SR-003 plus DEC-013), approved by the `User` (2026-10-23). The user confirmed afterwards that the given-Task message stays as today, except for the one sentence that would become false.
 - Behavior-defining supplements: none.
 - Design status: `Ready`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks/tickets/in-progress/task-agent-several-tasks/investigation-notes.md` (AF-001–AF-009)
@@ -50,6 +50,21 @@ A copy may hold several open assignment entries. `delegate_task` gives an existi
 ## Change Scope (Mandatory)
 
 - In scope: UC-001 to UC-003. Server `projects` domain and services (assignment eligibility, resource view, release, port answer), the collaboration lifecycle's existing-copy text, the `delegate_task` and `update_task` texts; docs `docs/design/collaboration_model.md` (CM-6), `docs/modules/projects.md`, `docs/modules/agent_team_execution.md` where it states the one-Task rule.
+- Derived consumers of "a copy has at most one open entry" (Principle 11), each with its decision:
+  | Consumer | Where | Decision |
+  | --- | --- | --- |
+  | Current entry rule | `task-execution-resource-service.ts` `deriveCurrent` (about lines 255–280) | Keep newest-open; drop the conflict log |
+  | Closed-copies index per host root | same, `deriveCurrent` / `closedTaskExecutionsIn` | Keep: a copy is listed only when its current entry is closed, i.e. no open entry left |
+  | Release after DONE / CANCELLED | same, `releasableByHostRoot` (line 178) | **Change** (D-RELEASE) |
+  | Openness / input fence | same, `isOpen` (line 243) | Keep: open while any entry is open |
+  | Sub-work owner | same, `ownerOf` (line 232), `linkInherited` (line 91) | Keep: the newest open Task (DEC-007) |
+  | Assignment eligibility | `task-execution-resources.ts` `assertTaskExecutionAssignable` (line 163); `task-assignment-eligibility.ts` `assertCopyAssignable` (lines 63–69) | **Change**: refusal and its dead inputs removed |
+  | Assignment address | `task-execution-resource-service.ts` `assignExisting` (line 102) | Keep (the current entry's address) |
+  | Workspaces tree worker row | same, `rootTaskLocationOf` (line 212) → `TaskWorkerTaskSummary.vue` | Keep: the newest open Task (DEC-003) |
+  | Task root view ("Assigned to", status) | `task-root-view-builder.ts` lines 27, 45 | Keep: per Task; a closed Task shows its team offline for that Task, which is true |
+  | "Assigned to" help line | `autobyteus-web/components/projects/TaskRootSection.vue:9`; `localization/messages/en/projects.ts:212`, `zh-CN/projects.ts:212` | **Change** (DEC-013): "This agent or team stops when its last open Task is Done or Cancelled." / "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。" |
+  | Tool texts and CM-6 | `agent-team-collaboration-llm-contract.ts:26`; `project-task-tool-contract.ts` (`update_task`); `docs/design/collaboration_model.md` CM-6 | **Change** |
+  | Given-Task message | `task-execution-input.ts:82` | **Change** (DS-001) |
 - Deliberately left alone:
   - `send_message_to`;
   - description-only delegation and Temp tasks;
@@ -57,7 +72,7 @@ A copy may hold several open assignment entries. `delegate_task` gives an existi
   - idle shutdown and wake;
   - peer-node refusals;
   - the parent → parts cascade (unchanged; it now composes correctly);
-  - the web app and the Workspaces tree;
+  - the web app and the Workspaces tree, except the two catalog strings above (no component change);
   - `part_of`.
 - Follow-ups: none found.
 
@@ -236,6 +251,7 @@ Unchanged.
 | `server/src/agent-collaboration/execution/task/task-execution-input.ts` | The sentence |
 | `server/src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | `delegate_task` text |
 | `server/src/agent-tools/project-tasks/project-task-tool-contract.ts` | `update_task` text |
+| `web/localization/messages/en/projects.ts`, `web/localization/messages/zh-CN/projects.ts` | `projects.root.help` (DEC-013); the catalog test, if it pins the old text |
 | test port fakes / fixtures | New port method |
 | docs: `docs/design/collaboration_model.md` (CM-6 and its status row), `docs/modules/projects.md`, `docs/modules/agent_team_execution.md` | The rule |
 
@@ -284,7 +300,7 @@ N/A.
    - AC-005: parent and parts on one copy;
    - AC-006: sub-work joins the newest;
    - AC-007: a closed Task given back.
-4. Tool texts and docs.
+4. Tool texts, the two catalog strings (DEC-013), and docs.
 5. Isolated Electron instance with test data (AC-010).
 
 ## Key Tradeoffs

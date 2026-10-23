@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-003)
-- Current solution revision ID: `SR-003`
+- Status: `Approved` (SR-006: REQ-008 extended to the app's "Assigned to" help line, DEC-013, decided by the Solution Designer within the direction, user informed 2026-10-23)
+- Current solution revision ID: `SR-006`
 - Package identifier: `task-agent-several-tasks`
 - Request / ticket: Project Task `autobyteus-275`, 2026-10-23, with the user's decision in its comment (option B, general).
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user.
 - Requirements owner: Solution Designer
 - Date: 2026-10-23
 - Approved by and reference: `User`, 2026-10-23, in the Solution Designer's conversation. Direction: option B (Task comment). DEC-001 and DEC-002 come from the user's answer: "we don't add the task ID to send message. They are two different things … the dedicator want to delegate a new task to the same agent team … just supply this agent team ID … we want to let the agent do their work … the reference is decreased … when there are no more tasks on the active team … then the team resources are just cleaned". DEC-003 and DEC-004 (no new UI; this smallest version first) are decided by the Solution Designer within that direction, the user informed in the same conversation.
-- Exact approved requirements baseline: this document at `SR-003`.
+- Exact approved requirements baseline: this document at `SR-006`. SR-006 adds one text correction (DEC-013, REQ-008, AC-011) that keeps the approved behavior truthful; it adds no behavior.
 - Behavior-defining supplements: none.
 - Done when (the Task, verbatim): "A part can be delegated to its parent's copy (or the chosen model works) with the full description as the first message and a visible link in the app; closing a part does not stop a copy that has other open work; tests; docs; the user's check; finalized on personal. No release unless he asks."
 
@@ -90,7 +90,7 @@ None.
 | REQ-005 | Closing a parent still closes its open parts (one call); a task agent holding the parent and parts stops when the last of its open Tasks closes. | BEH-005 | Must | — |
 | REQ-006 | When a task agent holding several open Tasks starts sub-work (a description-only `delegate_task`), the sub-work belongs to its most recently given open Task. | — | Must | DEC-007 |
 | REQ-007 | A closed Task can be given back to a task agent that is still running with `delegate_task task_id` (same rules as REQ-001). | — | Should | DEC-008 |
-| REQ-008 | Tool texts (`update_task`, `delegate_task`) and the collaboration model (CM-6) describe the new rule. | — | Must | DEC-009 |
+| REQ-008 | Every text that states the one-Task rule describes the new rule. Server: the `update_task` and `delegate_task` tool texts and the collaboration model (CM-6). App: the "Assigned to" help line on a Task page (`projects.root.help`, en and zh-CN), which today says the agent or team stops when the Task is Done (DEC-013). | — | Must | DEC-009, DEC-013 |
 | REQ-009 | No data change or conversion; no version-compatibility code. | — | Must | DEC-011 |
 
 ## Acceptance Criteria
@@ -105,6 +105,7 @@ None.
 | AC-006 | REQ-006 | Copy with 204 then 280 open starts sub-work | The sub-work belongs to 280; closing 280 stops it while the copy runs on | — | Server unit |
 | AC-007 | REQ-007 | 204 DONE while 280 open; `delegate_task task_id="autobyteus-204"` to the copy | Accepted; 204 open again on the copy | — | Server unit |
 | AC-008 | REQ-002 | A copy with no other open Task is given a Task | The message text is as today | — | Server unit |
+| AC-011 | REQ-008 | Task page of a Task whose team holds two open Tasks; the app in en and zh-CN | The "Assigned to" help line reads "This agent or team stops when its last open Task is Done or Cancelled." / "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。" on both Task pages | — | Web unit (catalogs); isolated instance (API-07) |
 | AC-009 | REQ-009 | Existing data | Unchanged behavior for copies with one Task | — | Server unit; isolated instance |
 | AC-010 | All | Isolated Electron instance with test data | The journeys work in the real app, with evidence | — | Isolated desktop instance |
 
@@ -120,7 +121,7 @@ None.
 
 ## UI, Interaction, And Experience Requirements
 
-- Applicable: `Yes`, no new UI (DEC-003). Each Task's existing "Assigned to" shows the team.
+- Applicable: `Yes`, no new UI (DEC-003). Each Task's existing "Assigned to" shows the team; its help line's text is corrected (DEC-013).
 - Product decisions that need the user: DEC-003.
 
 ## Quality And Non-Functional Requirements
@@ -157,6 +158,7 @@ None.
 | DEC-002 | One current Task with the others queued? | Mixed work in one conversation | No system queue; a queue | The user: "we want to let the agent do their work"; the delegator decides when a Task is done. Decided: no queue. | User | Decided |
 | DEC-003 | What the app shows | "The team looked stopped" | No new UI; later displays | Each Task given by `delegate_task` shows its team in the existing "Assigned to"; nothing else now. Follow-up possible (several Tasks on one tree row; working / waiting). | Solution Designer (user informed 2026-10-23) | Decided |
 | DEC-004 | Staging | Smallest safe version first | Stage 1 now | Stage 1 = this document (a part to its parent's team is included). Nothing else is planned unless the user asks. | Solution Designer (user informed 2026-10-23) | Decided |
+| DEC-013 | The app's "Assigned to" help line | Shown on every Task with a live team; false for the first of two Tasks to close (CRR-003, CR-002) | A sentence true in every case; a conditional text when other Tasks are open | One sentence that is always true needs no new client data and no condition: "This agent or team stops when its last open Task is Done or Cancelled." (zh-CN: "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。"). It also names Cancelled, which stops a team too. It is a text correction that keeps the user's approved behavior truthful (DEC-003 "no new UI" stands). | Solution Designer (user informed 2026-10-23) | Decided |
 | DEC-005 | Who may give an extra Task | Control | The copy's most recent assigner (today's rule) | Keep. | Solution Designer | Decided |
 | DEC-006 | Limit on the number of open Tasks | — | — | None. | Solution Designer | Decided |
 | DEC-007 | Which Task sub-work joins | Helpers need one owning Task | The newest open Task (today's "current" rule) | Keep; documented. | Solution Designer | Decided |
@@ -177,7 +179,7 @@ None.
 | REQ-005 | UC-002 | AC-005 | SCN-004 |
 | REQ-006 | UC-001 | AC-006 | — |
 | REQ-007 | UC-001 | AC-007 | — |
-| REQ-008 | — | — | — |
+| REQ-008 | — | AC-011 | — |
 | REQ-009 | — | AC-009 | — |
 
 ## Architecture Phase Input

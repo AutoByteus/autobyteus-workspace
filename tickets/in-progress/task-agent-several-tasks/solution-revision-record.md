@@ -9,6 +9,7 @@
 | SR-003 | Requirements | The user's answer on reports, order and freeing (2026-10-23) | N/A | Ready for Approval | Approved | DEC-001–DEC-004 | Approved; design starts |
 | SR-004 | Design | Architecture design over SR-003 | AF-001 (probe) | No design | Design Ready (Small / High) | All REQ / AC; DS-001, DS-002 | `design-spec.md`; to architecture review |
 | SR-005 | Design | ARCH-REV-001 Fail (Design Impact) | ARF-001, ARF-002 | Design Ready | Design Ready | REQ-002 (unchanged); design DS-001 text, Removal Plan, file mapping | Report clause added; dead code listed; back to review |
+| SR-006 | Mixed | CRR-003 Design Impact (API-F-001) | CR-002 | Approved; Design Ready | Approved; Design Ready | REQ-008, DEC-013, AC-011; design Change Scope (derived consumers), file mapping, sequence | The app's help line corrected; derived consumers listed |
 
 ## Revision Entries
 
@@ -51,3 +52,15 @@
 - 2026-10-23, ARCH-REV-001: Fail (ARF-001, ARF-002). Resolved in SR-005.
 - 2026-10-23, ARCH-REV-002: **Pass** on SR-005. Report: `design-review-report.md`; record: `architecture-review-revision-record.md`. The reviewer routed the package to `/software_engineering_team/implementation_engineer`; no repeat handoff.
 - The user was told about the added report clause in the Solution Designer's conversation on 2026-10-23, after the SR-005 fix, with the exact text and the offer to drop it. No objection so far.
+
+### SR-006 — The app's "Assigned to" help line (CRR-003, CR-002)
+
+- Trigger: failure-origin review CRR-003 of API-F-001 (API-07, AC-010). With a team holding two open Tasks, both Task pages say "When the Task is Done, this agent or team stops." (`projects.root.help`, en / zh-CN). That is false for the first Task closed.
+- Classification: `Design Impact`. The design missed a derived consumer: Change Scope listed only server texts, and the requirements' Architecture Phase Input had asked to check every place that assumes one open entry per copy.
+- Requirements: REQ-008 extended; DEC-013 and AC-011 new. A text correction that keeps the user's approved behavior truthful: Solution Designer decision within the direction, user informed. DEC-003 (no new UI) stands.
+- Design: a derived-consumers table (Principle 11, new template field) with a decision for each; the Task root view (`task-root-view-builder.ts` lines 27, 45) is kept and named; the catalogs are added to the file mapping and sequence.
+- Lesson: added to `design-examples.md` Case 3 ("A Reader Of Derived Data Left Out") in the team package (the skill's new rule).
+- Classification unchanged: Small / High. Handoff: `Architecture Design Complete` (revised) to `/software_engineering_team/architecture_reviewer`, then implementation, source review of the web delta, and API/E2E with AC-010 / AC-011 rerun.
+- 2026-10-23, ARCH-REV-003: **Pass** on SR-006 (after CRR-003 / CR-002). Report: `design-review-report.md`. The reviewer routed the package to `/software_engineering_team/implementation_engineer`; no repeat handoff.
+  - Non-blocking note 5: `settle` (markStarted / markFailed) is an unnamed consumer, correct as is.
+  - Residual risk: a closed Task's "Assigned to" shows offline while its team works on another open Task (consistent with DEC-003). If the user objects, it belongs with a per-Task working / waiting follow-up.

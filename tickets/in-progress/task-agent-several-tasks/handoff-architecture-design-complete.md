@@ -37,3 +37,10 @@ Option B, general:
 - ARF-001: DS-001 and the example now carry "`; name the Task key in each report.`" when other Tasks are open (REQ-002 unchanged).
 - ARF-002: the Removal Plan lists the dead code with grep evidence; `locationOfTask` is kept for D-OPEN; `task-assignment-eligibility.ts` is in the mapping.
 - Prior review artifacts: `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001).
+
+## Round 3 (SR-006), after CRR-003 (Design Impact, CR-002)
+
+- The app's "Assigned to" help line (`projects.root.help`, en / zh-CN) said the team stops when the Task is Done, which is false with several open Tasks. DEC-013 corrects it to one always-true sentence, with no component change.
+- The design spec's Change Scope now has a derived-consumers table (Principle 11), with a decision and citation for each consumer of "one open entry per copy".
+- Branch state: product `cd8c289b67`, API/E2E `a522089382`, CRR-003 `41ecca90fe`. Only the web catalog delta is new work; the server delta passed API-00 to API-06.
+- Prior review artifacts: `design-review-report.md` (ARCH-REV-001/002), `code-review-report.md` (CRR-001 to CRR-003), `api-e2e-execution-coverage-report.md` (API-REV-001).
