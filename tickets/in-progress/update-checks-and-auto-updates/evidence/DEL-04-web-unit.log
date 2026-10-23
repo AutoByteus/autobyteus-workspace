@@ -1,0 +1,7 @@
+# DEL-04-web-unit — whole web unit/component suite on the integrated state
+### pnpm test:nuxt --run
+# State: merge 4c2b43a3d7 (ticket code 985246c53b + tests 5faba271f5 + origin/personal 1c9edce551); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+ Test Files  681 passed | 2 skipped (683)
+      Tests  4858 passed | 3 skipped (4861)
+exit 0
