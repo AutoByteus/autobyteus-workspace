@@ -24,7 +24,7 @@ export interface NodeChangeStep {
   address?: string
   /** Resolve steps: the side's switch is off, so it finds the address once it is on (design § Switch-Off Rule). */
   findsLater?: boolean
-  /** Resolve steps: the address to try first ("Use this"; Change address: the typed one). */
+  /** Resolve steps: the address to try first ("Use this"). */
   firstAddress?: string
   error?: NodeSettingsFailure
 }

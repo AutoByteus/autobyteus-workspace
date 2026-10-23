@@ -204,16 +204,17 @@ describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
     expect(f.calls).toEqual([`here.rename(${B},nas)`, 'list.rename(remote-8003,nas)'])
   })
 
-  it('change address: this node checks the typed address alone (AC-707), and saves it when the node answers there', async () => {
+  it('change address: one step; this node\'s server checks the typed address alone (AC-707) and saves it; a refusal keeps its details', async () => {
     const f = world({ herePeers: [peer(B, '8003')] })
-    vi.mocked(f.deps.here.resolveAddress).mockResolvedValueOnce('http://192.168.2.31:8003')
     const plan = await f.connector.plan('changeAddress', target, here, { address: 'http://192.168.2.31:8003' })
+    expect(ids(plan)).toEqual(['changeAddressHere'])
     await f.connector.run(plan)
     expect(f.calls).toEqual([`here.changeAddress(${B},http://192.168.2.31:8003)`])
-    expect(f.deps.here.resolveAddress).toHaveBeenCalledWith(B, ['http://192.168.2.31:8003'])
-    vi.mocked(f.deps.here.resolveAddress).mockRejectedValueOnce(refusal('PEER_UNREACHABLE', { loopbackInContainer: true }))
+    expect(f.deps.here.resolveAddress).not.toHaveBeenCalled()
+    vi.mocked(f.deps.here.changePeerAddress).mockRejectedValueOnce(
+      refusal('PEER_UNREACHABLE', { reason: 'refused', address: 'http://127.0.0.1:29695', loopbackInContainer: true }))
     const failed = await f.connector.plan('changeAddress', target, here, { address: 'http://127.0.0.1:29695' })
     await f.connector.run(failed)
-    expect(statuses(failed)).toEqual(['resolveHere:failed', 'changeAddressHere:notRun'])
+    expect(failed.steps[0]).toMatchObject({ status: 'failed', error: { code: 'PEER_UNREACHABLE', address: 'http://127.0.0.1:29695', loopbackInContainer: true } })
   })
 })

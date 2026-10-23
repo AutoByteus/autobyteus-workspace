@@ -22,6 +22,7 @@ import AddNodePanel from '~/components/settings/nodes/AddNodePanel.vue'
 import NodeChangeDialog from '~/components/settings/nodes/NodeChangeDialog.vue'
 import NodeRow from '~/components/settings/nodes/NodeRow.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { useNodeChangeDialogStore } from '~/stores/nodeChangeDialogStore'
 import { useNodeListStore } from '~/stores/nodeListStore'
 import { NODES_PAGE_KEY } from '~/utils/nodeConnectionErrorText'
 
@@ -30,7 +31,9 @@ const emit = defineEmits<{ guide: [] }>()
 const { t } = useLocalization()
 const k = (key: string): string => `${NODES_PAGE_KEY}${key}`
 const store = useNodeListStore()
+const dialog = useNodeChangeDialogStore()
 
 onMounted(() => { void store.open() })
-onBeforeUnmount(() => store.close())
+// Leaving the tab: answers on their way are ignored and a confirmation not running closes.
+onBeforeUnmount(() => { store.close(); dialog.cancel() })
 </script>

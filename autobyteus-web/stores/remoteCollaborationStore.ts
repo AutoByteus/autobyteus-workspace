@@ -25,20 +25,12 @@ export interface PeerNode {
 export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore', {
   state: () => ({
     peers: [] as PeerNode[],
-    loaded: false,
-    loadError: null as string | null,
   }),
 
   actions: {
+    /** Reads the peers again; a failure throws and leaves the last list as it was. */
     async load(): Promise<void> {
-      try {
-        this.peers = await this.query<{ peerNodes?: PeerNode[] }>(GetRemoteCollaborationSettings, {}).then((data) => data?.peerNodes ?? [])
-        this.loadError = null
-      } catch (error) {
-        this.loadError = error instanceof Error ? error.message : String(error)
-      } finally {
-        this.loaded = true
-      }
+      this.peers = await this.query<{ peerNodes?: PeerNode[] }>(GetRemoteCollaborationSettings, {}).then((data) => data?.peerNodes ?? [])
     },
 
     /** How other nodes may reach this node (its own address candidates). */

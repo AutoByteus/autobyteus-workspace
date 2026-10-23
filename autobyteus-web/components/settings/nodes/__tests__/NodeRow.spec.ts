@@ -32,9 +32,9 @@ describe('NodeRow', () => {
   beforeEach(() => {
     h.list = reactive({
       views: {} as Record<string, RowView>, facts: {}, expanded: {}, flashKey: null, switchOn: true, thisName: 'Embedded Node', thisNodeId: 'srv_a',
-      canOpen: vi.fn(() => true), openNode: vi.fn(), askAgain: vi.fn(), renameNode: vi.fn(), changeAddress: vi.fn(),
+      canOpen: vi.fn(() => true), openNode: vi.fn(), askAgain: vi.fn(), renameNode: vi.fn(), changeAddress: vi.fn(), unfinishedStepOf: vi.fn(() => null),
     })
-    h.dialog = reactive({ preparing: null, request: vi.fn(), unfinishedStepOf: vi.fn(() => null) })
+    h.dialog = reactive({ preparing: null, request: vi.fn() })
   })
 
   it('working: green dot, green icon, switch on, Open and Remove icons, the address without scheme, the offer summary', () => {

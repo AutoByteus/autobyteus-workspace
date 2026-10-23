@@ -133,21 +133,22 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
   }
 
   /**
-   * Change address (TR-711): this node checks the typed address alone, so the owner's choice is what is saved, and a
-   * wrong or loopback address says so (AC-707: the Docker hint, VIS-026) instead of quietly keeping another address.
+   * Change address (TR-711): one step. This node's server checks that the pinned node answers at the typed address
+   * alone and saves it, so the owner's choice is what is saved; a wrong node or an unreachable (loopback) address
+   * comes back with its details (AC-707: the Docker hint, VIS-026) instead of another address being kept quietly.
    */
   const planChangeAddress = async (target: NodeChangeTarget, here: NodeChangeHere, address: string): Promise<NodeChangePlan> => {
     requireId(target.nodeId, target.name)
     return {
       kind: 'changeAddress', target, here, phase: 'confirm', candidates: { here: [], there: [] },
-      steps: [step('resolveHere', { firstAddress: address }), step('changeAddressHere')],
+      steps: [step('changeAddressHere', { address })],
     }
   }
 
   const resolve = async (plan: NodeChangePlan, current: NodeChangeStep): Promise<void> => {
     if (current.id === 'resolveHere') {
-      const first = plan.kind === 'changeAddress' ? [current.firstAddress] : [current.firstAddress, plan.target.windowAddress]
-      current.address = await deps.here.resolveAddress(requireId(plan.target.nodeId, plan.target.name), unique([...first, ...plan.candidates.there]))
+      current.address = await deps.here.resolveAddress(requireId(plan.target.nodeId, plan.target.name),
+        unique([current.firstAddress, plan.target.windowAddress, ...plan.candidates.there]))
     } else {
       current.address = await api(plan).resolvePeerAddress(requireId(plan.here.nodeId, plan.here.name),
         unique([current.firstAddress, plan.here.windowAddress, ...plan.candidates.here]))
@@ -184,7 +185,7 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
         for (const desktopId of plan.target.desktopIds) await deps.list.rename(desktopId, current.name!)
         return
       case 'changeAddressHere':
-        await deps.here.changePeerAddress(requireId(nodeId, plan.target.name), addressOf(plan, 'resolveHere'))
+        await deps.here.changePeerAddress(requireId(nodeId, plan.target.name), current.address!)
     }
   }
 

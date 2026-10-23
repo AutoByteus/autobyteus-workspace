@@ -90,7 +90,6 @@
 import { computed, nextTick, ref } from 'vue'
 import NodeAddressHint from '~/components/settings/nodes/NodeAddressHint.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import { useNodeChangeDialogStore } from '~/stores/nodeChangeDialogStore'
 import { useNodeListStore } from '~/stores/nodeListStore'
 import type { NodeRow } from '~/stores/nodeRowStatus'
 import type { DirState } from '~/stores/nodeRowStatus'
@@ -105,7 +104,6 @@ const emit = defineEmits<{ guide: [] }>()
 const { t, resolvedLocale } = useLocalization()
 const k = (key: string): string => `${NODES_PAGE_KEY}${key}`
 const store = useNodeListStore()
-const dialog = useNodeChangeDialogStore()
 const view = computed(() => store.views[props.row.key]!)
 
 const primaryButton = 'rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300'
@@ -149,7 +147,7 @@ const checkedAt = computed(() => {
 
 // What did not happen in the last connect or finish run, while it is still not finished.
 const unfinishedSteps = computed<NodeChangeStep[]>(() => {
-  const step = dialog.unfinishedStepOf(props.row.key)
+  const step = store.unfinishedStepOf(props.row.key)
   return step && view.value.line?.kind === 'partial' ? [step] : []
 })
 const stepText = (step: NodeChangeStep): string => {

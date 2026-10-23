@@ -14,7 +14,7 @@ const h = vi.hoisted(() => ({
   peers: null as any,
   offers: null as any,
   capability: null as any,
-  dialog: { request: vi.fn(), unfinishedStepOf: vi.fn(() => null), runSilently: vi.fn() },
+  connector: { plan: vi.fn(), run: vi.fn() },
 }))
 
 vi.mock('~/utils/nodeIdentityProbe', async (original) => ({
@@ -36,7 +36,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: (
 vi.mock('~/stores/remoteCollaborationStore', () => ({ useRemoteCollaborationStore: () => h.peers }))
 vi.mock('~/stores/remoteCollaborationOffersStore', () => ({ useRemoteCollaborationOffersStore: () => h.offers }))
 vi.mock('~/stores/remoteCollaborationCapabilityStore', () => ({ useRemoteCollaborationCapabilityStore: () => h.capability }))
-vi.mock('~/stores/nodeChangeDialogStore', () => ({ useNodeChangeDialogStore: () => h.dialog }))
+vi.mock('~/services/nodeCollaboration/windowNodeCollaborationConnector', () => ({ useNodeCollaborationConnector: () => h.connector }))
 
 import { useNodeListStore } from '../nodeListStore'
 
@@ -144,22 +144,57 @@ describe('nodeListStore', () => {
     await expect(store.addNode({ address: 'http://a b', name: '/bad', collaborate: true })).resolves.toEqual({ ok: false, error: 'invalid', address: true, name: true })
   })
 
-  it('TR-702: adding stores the node with its node ID, opens no window, and opens the confirmation only when reachable and the switch is on', async () => {
+  it('TR-702: adding stores the node with its node ID, opens no window, and asks for the confirmation only when reachable and the switch is on', async () => {
     const E = 'srv_newNodeEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'
     h.probes.set('http://localhost:8004', { ok: true, serverInstanceId: E })
     const store = useNodeListStore()
     await store.open()
     await flush()
-    await expect(store.addNode({ address: 'localhost:8004', name: '8004', collaborate: true })).resolves.toEqual({ ok: true, key: E })
+    await expect(store.addNode({ address: 'localhost:8004', name: '8004', collaborate: true })).resolves.toEqual({ ok: true, key: E, confirm: true })
     expect(h.nodeStore.addRemoteNode).toHaveBeenCalledWith({ name: '8004', baseUrl: 'http://localhost:8004', serverInstanceId: E })
-    expect(h.dialog.request).toHaveBeenCalledWith('connect', E)
     expect(window.electronAPI.openNodeWindow).not.toHaveBeenCalled()
-    h.dialog.request.mockClear()
-    await store.addNode({ address: 'localhost:8005', name: '8005', collaborate: true })
+    await expect(store.addNode({ address: 'localhost:8005', name: '8005', collaborate: true })).resolves.toMatchObject({ ok: true, confirm: false })
     expect(h.nodeStore.addRemoteNode).toHaveBeenLastCalledWith({ name: '8005', baseUrl: 'http://localhost:8005', serverInstanceId: undefined })
-    expect(h.dialog.request).not.toHaveBeenCalled()
-    await store.addNode({ address: 'localhost:8006', name: '8006', collaborate: false })
-    expect(h.dialog.request).not.toHaveBeenCalled()
+    await expect(store.addNode({ address: 'localhost:8006', name: '8006', collaborate: false })).resolves.toMatchObject({ ok: true, confirm: false })
+  })
+
+  it('TR-704/705/712: keeps each row\'s unfinished step until a later run clears it, and shows it as the row\'s line', async () => {
+    h.peers.peers.push(peer(D3, '8003', 'http://localhost:8003'))
+    h.remote.set('http://localhost:8003', { switchOn: false, peers: [] })
+    const store = useNodeListStore()
+    await store.open()
+    await flush()
+    const step = { id: 'turnOnThere' as const, status: 'failed' as const, error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused' as const } }
+    store.setUnfinishedStep(D3, step)
+    expect(store.unfinishedStepOf(D3)).toEqual(step)
+    expect(store.views[D3]!.line).toMatchObject({ kind: 'partial', fix: 'tryAgain' })
+    store.setUnfinishedStep(D3, null)
+    expect(store.unfinishedStepOf(D3)).toBeNull()
+  })
+
+  it('DS-003: the change subject names the row\'s node, where this window reaches it, and this node', async () => {
+    const store = useNodeListStore()
+    await store.open()
+    await flush()
+    expect(store.changeSubjectOf(D1)).toEqual({
+      target: { rowKey: D1, name: 'docker', nodeId: D1, desktopIds: ['remote-ba22'], windowAddress: 'http://localhost:8001' },
+      here: { name: 'Embedded Node', nodeId: A, windowAddress: 'http://127.0.0.1:29695' },
+    })
+    expect(store.changeSubjectOf('missing')).toBeNull()
+  })
+
+  it('UXJ-706 / TR-711: rename and change address run through the connector without a confirmation; a refused name reads as taken', async () => {
+    const store = useNodeListStore()
+    await store.open()
+    await flush()
+    h.connector.plan.mockImplementation(async (kind: string) => ({ kind, steps: [{ id: 'renameHere', status: 'todo' }] }))
+    h.connector.run.mockImplementationOnce(async (plan: any) => { plan.steps[0].status = 'failed'; plan.steps[0].error = { code: 'PEER_NAME_TAKEN', message: 'x' } })
+    await expect(store.renameNode(D1, 'studio')).resolves.toMatchObject({ ok: false, error: 'taken' })
+    expect(h.connector.plan).toHaveBeenLastCalledWith('rename', expect.objectContaining({ rowKey: D1 }), expect.objectContaining({ nodeId: A }), { name: 'studio' })
+    h.connector.run.mockImplementationOnce(async (plan: any) => { plan.steps[0].status = 'done' })
+    await expect(store.changeAddress(D1, 'host.docker.internal:8001')).resolves.toEqual({ ok: true })
+    expect(h.connector.plan).toHaveBeenLastCalledWith('changeAddress', expect.anything(), expect.anything(), { address: 'http://host.docker.internal:8001' })
+    await expect(store.renameNode(D1, 'nas')).resolves.toEqual({ ok: false, error: 'taken' })
   })
 
   it('DEC-706: a node only this node knows has Open once this window reaches it; its first Open adds a desktop entry', async () => {

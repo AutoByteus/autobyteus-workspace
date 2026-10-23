@@ -18,15 +18,13 @@ describe('remoteCollaborationStore', () => {
     vi.clearAllMocks()
   })
 
-  it('loads the peers of the bound node, and keeps a load failure', async () => {
+  it('loads the peers of the bound node; a failed load throws and keeps the last list', async () => {
     apolloClientMock.query.mockResolvedValueOnce({ data: { peerNodes: [peer] } })
     const store = useRemoteCollaborationStore()
     await store.load()
     expect(store.peers).toEqual([peer])
-    expect(store.loadError).toBeNull()
     apolloClientMock.query.mockRejectedValueOnce(new Error('offline'))
-    await store.load()
-    expect(store.loadError).toBe('offline')
+    await expect(store.load()).rejects.toThrow('offline')
     expect(store.peers).toEqual([peer])
   })
 

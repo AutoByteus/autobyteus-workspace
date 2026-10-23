@@ -60,6 +60,7 @@
 import { reactive, ref } from 'vue'
 import RemoteCollaborationIcon from '~/components/settings/nodes/RemoteCollaborationIcon.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { useNodeChangeDialogStore } from '~/stores/nodeChangeDialogStore'
 import { useNodeListStore } from '~/stores/nodeListStore'
 import { NODES_PAGE_KEY } from '~/utils/nodeConnectionErrorText'
 
@@ -67,6 +68,7 @@ import { NODES_PAGE_KEY } from '~/utils/nodeConnectionErrorText'
 const { t } = useLocalization()
 const k = (key: string): string => `${NODES_PAGE_KEY}${key}`
 const store = useNodeListStore()
+const dialog = useNodeChangeDialogStore()
 
 const draft = reactive({ address: '', name: '', collaborate: true })
 const errors = reactive({ address: '', name: '' })
@@ -86,6 +88,8 @@ const submit = async (): Promise<void> => {
       draft.address = ''
       draft.name = ''
       draft.collaborate = true
+      // Reachable with the switch on: the one confirmation opens; nothing changes on any node before it (REQ-704).
+      if (result.confirm) void dialog.request('connect', result.key)
     } else if (result.error === 'invalid') {
       if (result.address) errors.address = t(k('add.errorAddress'))
       if (result.name) errors.name = t(k('add.errorName'))

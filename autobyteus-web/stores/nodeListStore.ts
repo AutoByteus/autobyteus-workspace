@@ -6,12 +6,13 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useRemoteCollaborationStore, type PeerNode } from '~/stores/remoteCollaborationStore'
 import { useRemoteCollaborationOffersStore } from '~/stores/remoteCollaborationOffersStore'
 import { useRemoteCollaborationCapabilityStore } from '~/stores/remoteCollaborationCapabilityStore'
-import { useNodeChangeDialogStore } from '~/stores/nodeChangeDialogStore'
 import { rowViewOf, type NodeRow, type RowFacts, type RowView } from '~/stores/nodeRowStatus'
 import { createNodeCollaborationApi } from '~/services/nodeCollaboration/nodeCollaborationApi'
+import { useNodeCollaborationConnector } from '~/services/nodeCollaboration/windowNodeCollaborationConnector'
+import type { NodeChangePlan, NodeChangeStep, NodeChangeTarget } from '~/services/nodeCollaboration/nodeChangePlan'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
 import { hostOf, probeNodeIdentity, type NodeIdentityProbeResult } from '~/utils/nodeIdentityProbe'
-import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
+import { asSettingsFailure, type NodeSettingsFailure } from '~/utils/nodeSettingsError'
 
 
 /** The add button waits at most this long for the node to say who it is (UI/UX spec TR-702). */
@@ -31,8 +32,9 @@ export const normalizeTypedAddress = (address: string): string | null => {
 
 const sameAddress = (a: string | null | undefined, b: string): boolean => Boolean(a) && hostOf(a!).toLowerCase() === hostOf(b).toLowerCase()
 
+/** `confirm`: the node answered and the form's switch was on, so the one confirmation opens next (REQ-704). */
 export type AddNodeResult =
-  | { ok: true; key: string }
+  | { ok: true; key: string; confirm: boolean }
   | { ok: false; error: 'invalid'; address: boolean; name: boolean }
   | { ok: false; error: 'duplicate'; existing: string }
 
@@ -43,7 +45,8 @@ let nextToken = 1
  * entries (`nodeStore`) with this node's peers (`remoteCollaborationStore`) by node ID; neither list is changed by
  * joining them. A row's node is asked when the tab opens, when it is added, when this node's switch turns on and on
  * Check again (DEC-708); nothing polls. Each ask takes a token per row, and an answer whose token is no longer current
- * is ignored. Changes on both nodes go through the change dialog and the connector.
+ * is ignored. It keeps each row's unfinished step (a connect or finish run that stopped; TR-704/705/712) and runs the
+ * changes that have no confirmation (rename, change address) through the connector; the change dialog uses it.
  */
 export const useNodeListStore = defineStore('nodeList', () => {
   const nodeStore = useNodeStore()
@@ -57,6 +60,8 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const thisNodeId = ref<string | null>(null)
   const flashKey = ref<string | null>(null)
   const expanded = ref<Record<string, boolean>>({})
+  /** The step a connect or finish run could not do, per row, until a later run finishes it (the "not finished" line). */
+  const unfinished = ref<Record<string, NodeChangeStep>>({})
   let flashTimer: ReturnType<typeof setTimeout> | null = null
 
   const currentNode = computed<NodeProfile | null>(() => nodeStore.getNodeById(windowNode.nodeId))
@@ -93,13 +98,16 @@ export const useNodeListStore = defineStore('nodeList', () => {
 
   const rowByKey = (key: string): NodeRow | undefined => rows.value.find((row) => row.key === key)
 
-  const views = computed<Record<string, RowView>>(() => {
-    const dialog = useNodeChangeDialogStore()
-    return Object.fromEntries(rows.value.map((row) => [row.key, rowViewOf({
-      row, switchOn: switchOn.value, thisNodeId: thisNodeId.value, facts: facts.value[row.key],
-      offer: row.serverInstanceId ? offers.peers[row.serverInstanceId] : undefined, unfinishedStep: dialog.unfinishedStepOf(row.key),
-    })]))
-  })
+  const views = computed<Record<string, RowView>>(() => Object.fromEntries(rows.value.map((row) => [row.key, rowViewOf({
+    row, switchOn: switchOn.value, thisNodeId: thisNodeId.value, facts: facts.value[row.key],
+    offer: row.serverInstanceId ? offers.peers[row.serverInstanceId] : undefined, unfinishedStep: unfinished.value[row.key] ?? null,
+  })])))
+
+  const unfinishedStepOf = (key: string): NodeChangeStep | null => unfinished.value[key] ?? null
+  const setUnfinishedStep = (key: string, step: NodeChangeStep | null): void => {
+    if (step) unfinished.value[key] = step
+    else delete unfinished.value[key]
+  }
 
   /** The address at which this window asks the row's node: its desktop entry's, or this node's for a node only this node knows. */
   const probeAddressOf = (row: NodeRow): string | null => row.windowAddress ?? row.peer?.baseUrl ?? null
@@ -165,17 +173,17 @@ export const useNodeListStore = defineStore('nodeList', () => {
   /** The tab opened: every row is asked once (TR-701), whatever this node's switch says. */
   const open = async (): Promise<void> => {
     await nodeStore.initializeRegistry()
-    await Promise.all([capability.ensureResolved().catch(() => undefined), peerStore.load(), identifyThisNode()])
+    // Peers that cannot be read now stay as last read; their rows say what is reachable.
+    await Promise.all([capability.ensureResolved().catch(() => undefined), peerStore.load().catch(() => undefined), identifyThisNode()])
     offers.clear()
     askAll()
   }
 
-  /** The tab was left: answers on their way are ignored, and a confirmation not running is closed. */
+  /** The tab was left: answers on their way are ignored. */
   const close = (): void => {
     for (const key of Object.keys(tokens)) delete tokens[key]
     facts.value = {}
     offers.clear()
-    useNodeChangeDialogStore().cancel()
   }
 
   // ---------------------------------------------------------------- this node's switch (REQ-709, TR-713)
@@ -216,8 +224,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
     const row = rowByKey(key)
     if (row) void ask(row)
     // With the switch on and the node reachable, the one confirmation opens (REQ-704); nothing changes before it.
-    if (row && probe?.ok && input.collaborate) void useNodeChangeDialogStore().request('connect', key)
-    return { ok: true, key }
+    return { ok: true, key, confirm: Boolean(row && probe?.ok && input.collaborate) }
   }
 
   // ---------------------------------------------------------------- open (TR-714, DEC-706)
@@ -240,7 +247,36 @@ export const useNodeListStore = defineStore('nodeList', () => {
     await window.electronAPI.openNodeWindow(desktopId)
   }
 
-  // ---------------------------------------------------------------- rename and change address (silent changes)
+  // ---------------------------------------------------------------- the changes of a row (DS-003)
+  /** The row's node and this node, as a plan needs them; `null` for a row no longer listed. */
+  const changeSubjectOf = (key: string): { target: NodeChangeTarget; here: NodeChangePlan['here'] } | null => {
+    const row = rowByKey(key)
+    if (!row) return null
+    return {
+      // Where this window reaches the node: its desktop entry's address, or for a node only this node knows, the
+      // address this window reached it at.
+      target: { rowKey: row.key, name: row.name, nodeId: row.serverInstanceId, desktopIds: row.desktopIds,
+        windowAddress: row.windowAddress ?? reachedAddressOf(row) },
+      here: { name: thisName.value, nodeId: thisNodeId.value, windowAddress: currentNode.value?.baseUrl ?? '' },
+    }
+  }
+
+  /** Rename and change address have no confirmation (UXJ-706, TR-711): the connector runs them, and the row shows the result. */
+  const runWithoutConfirmation = async (kind: 'rename' | 'changeAddress', key: string, input: { name?: string; address?: string }):
+    Promise<{ ok: true } | { ok: false; failure: NodeSettingsFailure }> => {
+    const subject = changeSubjectOf(key)
+    if (!subject) return { ok: false, failure: { code: 'PEER_NOT_FOUND', message: key } }
+    try {
+      const connector = useNodeCollaborationConnector()
+      const plan = await connector.plan(kind, subject.target, subject.here, input)
+      await connector.run(plan)
+      const failed = plan.steps.find((entry) => entry.status === 'failed')
+      return failed?.error ? { ok: false, failure: failed.error } : { ok: true }
+    } catch (error) {
+      return { ok: false, failure: asSettingsFailure(error) }
+    }
+  }
+
   const renameNode = async (key: string, next: string): Promise<{ ok: true } | { ok: false; error: 'name' | 'taken'; failure?: NodeSettingsFailure }> => {
     const row = rowByKey(key)
     const name = next.trim()
@@ -248,7 +284,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
     const taken = rows.value.some((other) => other.key !== key && other.name.toLowerCase() === name.toLowerCase())
       || thisName.value.toLowerCase() === name.toLowerCase()
     if (taken) return { ok: false, error: 'taken' }
-    const result = await useNodeChangeDialogStore().runSilently('rename', key, { name })
+    const result = await runWithoutConfirmation('rename', key, { name })
     if (result.ok) return { ok: true }
     return { ok: false, error: result.failure.code === 'PEER_NAME_TAKEN' ? 'taken' : 'name', failure: result.failure }
   }
@@ -256,7 +292,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const changeAddress = async (key: string, typed: string): Promise<{ ok: true } | { ok: false; failure: NodeSettingsFailure }> => {
     const address = normalizeTypedAddress(typed)
     if (!address) return { ok: false, failure: { code: 'PEER_URL_INVALID', message: typed } }
-    const result = await useNodeChangeDialogStore().runSilently('changeAddress', key, { address })
+    const result = await runWithoutConfirmation('changeAddress', key, { address })
     if (result.ok) askAgain(key)
     return result
   }
@@ -264,5 +300,6 @@ export const useNodeListStore = defineStore('nodeList', () => {
   return {
     rows, views, facts, thisNodeId, thisName, currentNode, switchOn, switchBusy, hasOpen, flashKey, expanded,
     rowByKey, reachedAddressOf, open, close, askAgain, askAll, setSwitch, addNode, canOpen, openNode, renameNode, changeAddress,
+    changeSubjectOf, unfinishedStepOf, setUnfinishedStep,
   }
 })
