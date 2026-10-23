@@ -11,7 +11,8 @@ import { afterEach, describe, expect, it } from "vitest";
  * - Production code (`src/` outside `app-data-migrations/`) imports only the runner contract: the runner, the
  *   registry, `domain/**` and `repositories/**`.
  * - Migration code (`migrations/**`, `frozen/**`) imports only `domain/**`, `frozen/**`, its own folder,
- *   `config/prisma-client-factory.ts`, node APIs and third-party libraries; never production code or `autobyteus-ts`.
+ *   `config/prisma-client-factory.ts`, node APIs and third-party libraries; never production code, `autobyteus-ts` or an
+ *   `@autobyteus/*` workspace package.
  *   A migration folder never imports another migration folder, and `frozen/**` imports no migration folder, so
  *   retiring one migration deletes its folder without touching another (SR-003).
  * - `domain/**` is shared by both sides, so it imports only itself, node APIs and third-party libraries.
@@ -23,7 +24,8 @@ const AREA = "app-data-migrations";
 const CONTRACT_FILES = new Set([`${AREA}/app-data-migration-runner.ts`, `${AREA}/app-data-migration-registry.ts`]);
 const CONTRACT_FOLDERS = [`${AREA}/domain/`, `${AREA}/repositories/`];
 const MIGRATION_DATABASE_CLIENT = "config/prisma-client-factory.ts";
-const WORKSPACE_PACKAGE = /^autobyteus(?:-[a-z-]+)?(?:\/|$)/;
+// The repository's own packages: `autobyteus-ts` and the `@autobyteus/*` workspace packages.
+const WORKSPACE_PACKAGE = /^(?:autobyteus(?:-[a-z-]+)?|@autobyteus\/[a-z0-9-]+)(?:\/|$)/;
 
 type Violation = { importer: string; target: string; rule: string };
 type BoundaryReport = { violations: Violation[]; unusedFrozenFiles: string[] };
@@ -144,6 +146,7 @@ describe("sealed app-data migration area", () => {
       'import { M0_MIGRATION_ID } from "../m0/m0.js";',
       'import "../../frozen/shared.js";',
       'export { LLMProvider } from "autobyteus-ts";',
+      'import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";',
       "",
     ].join("\n"));
     write("server-runtime.ts", [
@@ -156,6 +159,7 @@ describe("sealed app-data migration area", () => {
 
     expect(asKeys(report.violations)).toEqual([
       `${AREA}/frozen/shared.ts -> ${AREA}/migrations/m0/m0.ts`,
+      `${AREA}/migrations/m1/m1.ts -> @autobyteus/application-sdk-contracts`,
       `${AREA}/migrations/m1/m1.ts -> ${AREA}/app-data-migration-runner.ts`,
       `${AREA}/migrations/m1/m1.ts -> ${AREA}/migrations/m0/m0.ts`,
       `${AREA}/migrations/m1/m1.ts -> autobyteus-ts`,

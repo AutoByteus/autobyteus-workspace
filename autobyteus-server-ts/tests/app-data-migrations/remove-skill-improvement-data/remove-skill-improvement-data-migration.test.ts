@@ -222,6 +222,27 @@ describe("20261020_remove_skill_improvement_data", () => {
       expect(await exists(path.join(memory, "agents", SERVER_HELPER_RUN))).toBe(false);
     });
 
+    it("keeps a run only an evolver session names, with its history row, and still deletes that session folder", async () => {
+      const { root, memory, agents } = await dataRoot();
+      await writeFeatureDataRoot(root);
+      const evolverOnly = "skill_evolver_6666";
+      await writeRun(memory, evolverOnly, "autobyteus-skill-evolver");
+      const rows = JSON.parse(await fs.readFile(path.join(memory, "run_history_index.json"), "utf8")) as unknown[];
+      await put(path.join(memory, "run_history_index.json"), [...rows, historyRow(evolverOnly, "autobyteus-skill-evolver", "Skill Self-Evolver")]);
+      const sessionDir = path.join(memory, "agents", USER_RUNS[4]!, "self_evolution");
+      await session(path.join(memory, "agents", USER_RUNS[4]!), "self_evolution", "evolver_session.json", { current: evolverOnly });
+      const runBefore = await snapshot(path.join(memory, "agents", evolverOnly));
+
+      const result = await migrate(memory, agents);
+
+      expect(result.status, JSON.stringify(result.summary.details)).toBe("SUCCEEDED");
+      expect(await snapshot(path.join(memory, "agents", evolverOnly))).toEqual(runBefore);
+      const remaining = JSON.parse(await fs.readFile(path.join(memory, "run_history_index.json"), "utf8")) as Array<{ runId: string }>;
+      expect(remaining.map((row) => row.runId)).toContain(evolverOnly);
+      expect(result.summary.details.some((detail) => detail.itemId === `helper-run:${evolverOnly}`)).toBe(false);
+      expect(await exists(sessionDir)).toBe(false);
+    });
+
     it("keeps a session folder while a run only it names cannot be deleted, and the next start deletes both", async () => {
       const { root, memory, agents } = await dataRoot();
       const paths = await writeFeatureDataRoot(root);

@@ -20,10 +20,14 @@ const RECORD_ROOTS = [
 ] as const;
 const RECORD_INDEX_FILE_NAME = "index.json";
 const RECORD_FILE_NAME = "record.json";
-/** A per-run session folder's state file names the helper runs it launched: the current one and the earlier ones. */
+/**
+ * Per-run session folders. An improver session's state file names the helper runs it launched (the current one and
+ * the earlier ones), and those runs are the feature's. An evolver session's runs are not taken from it: self-evolution
+ * runs carry no helper marker, so a run only an evolver session names is kept (REQ-008: delete less, never more).
+ */
 const SESSION_FOLDERS = [
-  { dirName: "skill_improvement", stateFileName: "improver_session.json", currentRunIdField: "currentImproverRunId", priorRunIdsField: "priorImproverRunIds" },
-  { dirName: "self_evolution", stateFileName: "evolver_session.json", currentRunIdField: "currentEvolverRunId", priorRunIdsField: "priorEvolverRunIds" },
+  { dirName: "skill_improvement", stateFileName: "improver_session.json", helperRunIdFields: { current: "currentImproverRunId", prior: "priorImproverRunIds" } },
+  { dirName: "self_evolution", stateFileName: "evolver_session.json", helperRunIdFields: null },
 ] as const;
 const IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
 const RUN_METADATA_FILE_NAME = "run_metadata.json";
@@ -105,7 +109,7 @@ const buildSummary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSu
 
 /**
  * Deletes the removed Skill Improvement feature's data once (design DS-003, DEC-001 C), in this order:
- * M1 collect the helper run ids: the runs the records name, the runs the per-run session files name, and the
+ * M1 collect the helper run ids: the runs the records name, the runs the per-run improver session files name, and the
  * built-in improver's runs (never a run only because it was launched as a server helper: other features
  * launched those too, autobyteus-280 REQ-008); M2 remove their run-history rows; M3 delete their run folders,
  * only once their rows are gone (so a failed M2 leaves every source for the next start); M4 delete each per-run
@@ -205,7 +209,7 @@ export class RemoveSkillImprovementDataMigration implements AppDataMigrationDefi
 
   /**
    * M1 (sessions): per-run session folders, recognized by their state file, anywhere under memory except Memory
-   * Sync mirrors, with the helper runs each names.
+   * Sync mirrors, with the helper runs an improver session names (none for an evolver session).
    */
   private async collectSessions(dirPath: string, isMemoryRoot: boolean): Promise<SessionSources[]> {
     let entries: Dirent[];
@@ -229,7 +233,9 @@ export class RemoveSkillImprovementDataMigration implements AppDataMigrationDefi
           sessions.push({ dirPath: entryPath, runIds: null });
           continue;
         }
-        const named = [state.value[folder.currentRunIdField], ...(Array.isArray(state.value[folder.priorRunIdsField]) ? state.value[folder.priorRunIdsField] as unknown[] : [])];
+        const fields = folder.helperRunIdFields;
+        const prior = fields ? state.value[fields.prior] : undefined;
+        const named = fields ? [state.value[fields.current], ...(Array.isArray(prior) ? prior as unknown[] : [])] : [];
         sessions.push({ dirPath: entryPath, runIds: new Set(named.map(canonicalRunId).filter((runId): runId is string => runId !== null)) });
         continue;
       }

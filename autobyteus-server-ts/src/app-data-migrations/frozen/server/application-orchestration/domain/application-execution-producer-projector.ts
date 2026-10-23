@@ -1,7 +1,7 @@
 import type {
   ApplicationExecutionContext,
   ApplicationExecutionProducer,
-} from "@autobyteus/application-sdk-contracts";
+} from "../../../application-sdk-contracts/application-agent-bindings.js";
 
 const requireRecord = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
