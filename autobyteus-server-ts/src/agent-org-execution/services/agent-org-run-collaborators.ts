@@ -27,9 +27,8 @@ export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapsh
       configured.push({ ref: { kind: "agent", definitionId: agent.agentDefinitionId }, address: agent.address }));
   }
   return Object.freeze({
-    rootKind: "agent_org",
     isApplicationBound: tree.applicationBinding !== null,
-    rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
+    launchBase: () => Object.freeze({ kind: "inherited" as const, launch: tree.rootOrg.defaultLaunchConfiguration }),
     // An Org is never a catalog candidate, so it has no own definition to exclude.
     ownDefinition: () => null,
     inRunPlacementsByDefinition: () => buildInRunPlacements({ configured }),

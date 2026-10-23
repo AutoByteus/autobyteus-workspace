@@ -7,6 +7,7 @@ import type {
 } from "./agent-runtime-types.js";
 import { OPERATION_TIMEOUT_MS, RuntimeProcessOperation } from "./runtime-process-operation.js";
 import { compareRuntimeVersions } from "./runtime-version.js";
+import { isSignInBrowserAvailable } from "./sign-in-browser-availability.js";
 
 export type AgentRuntimeErrorCode =
   | "AGENT_RUNTIME_UNKNOWN"
@@ -32,6 +33,8 @@ export type AgentRuntimeStatusServiceDependencies = Readonly<{
   /** The folder sign-in reads use as cwd (Codex reads its global config there); the home folder by default. */
   homeDirectory?: string;
   createProcess?: (argv: readonly string[], options: Readonly<{ timeoutMs: number }>) => RuntimeProcessOperation;
+  /** Whether the runtimes' own logins can open a browser on this node's desktop; by default read once from this process. */
+  signInBrowserAvailable?: boolean;
 }>;
 
 type Row = {
@@ -70,6 +73,7 @@ export class AgentRuntimeStatusService {
   private readonly rows: ReadonlyMap<AgentRuntimeKind, Row>;
   private readonly homeDirectory: string;
   private readonly createProcess: NonNullable<AgentRuntimeStatusServiceDependencies["createProcess"]>;
+  private readonly browserAvailable: boolean;
   private closed = false;
 
   constructor(private readonly dependencies: AgentRuntimeStatusServiceDependencies) {
@@ -89,6 +93,17 @@ export class AgentRuntimeStatusService {
     this.homeDirectory = dependencies.homeDirectory ?? os.homedir();
     this.createProcess = dependencies.createProcess
       ?? ((argv, options) => new RuntimeProcessOperation(argv, options));
+    this.browserAvailable = dependencies.signInBrowserAvailable
+      ?? isSignInBrowserAvailable(process.platform, process.env);
+  }
+
+  /**
+   * Whether this node's runtimes' own logins can open a browser on its own desktop (a Docker
+   * node's VNC Chromium, a desktop session); the page offers Sign in on a remote node only then.
+   * Fixed for the server's lifetime; reading it starts no work.
+   */
+  signInBrowserAvailable(): boolean {
+    return this.browserAvailable;
   }
 
   /** The rows in page order. Reads only. */

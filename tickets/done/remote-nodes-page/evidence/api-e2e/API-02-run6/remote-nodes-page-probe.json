@@ -1,0 +1,417 @@
+{
+  "startedAt": "2026-10-21T16:25:28.673Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "servers": {
+    "beta": {
+      "port": 59695,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8"
+    },
+    "alpha": {
+      "port": 59694,
+      "nodeId": "srv_chKcDdIYO3V27LTrefSl40ml9hK0QMOL"
+    },
+    "gamma": {
+      "port": 59696,
+      "nodeId": "srv_18lK-fKmsMXB5YW2pg-rs1icdG_B6SVb"
+    },
+    "iota": {
+      "port": 59702,
+      "nodeId": "srv_YYd6wr4R8mKh6eQyh7qUpnXV1w33Bwfq"
+    },
+    "delta": {
+      "port": 59697,
+      "nodeId": "srv_YB9X9Q2IIkryM4dBClMXd58eeBNYjMjc"
+    },
+    "eta": {
+      "port": 59700,
+      "nodeId": "srv_BNkPXDa0o9iHjy_oGX36sZxZCThHoKE0"
+    },
+    "zeta": {
+      "port": 59699,
+      "nodeId": "srv_dfsrADR2IXkbjNqkiEJn13qOHrfOy6OE"
+    },
+    "theta": {
+      "port": 59701,
+      "nodeId": "srv_lpIy_sutCqGFdNBKZP0WY1TvwcJB2EYK"
+    },
+    "epsilon": {
+      "port": 59698,
+      "nodeId": "srv_QBX3UoV2ppX7A0-Zya3r_unS3PjeGX8q"
+    }
+  },
+  "cases": {
+    "RNP-01": {
+      "result": "Pass",
+      "settledAt": {
+        "beta": {
+          "ms": 240,
+          "chip": "Available"
+        },
+        "gamma": {
+          "ms": 243,
+          "chip": "Not reachable"
+        },
+        "delta": {
+          "ms": 245,
+          "chip": "Off there"
+        },
+        "epsilon": {
+          "ms": 247,
+          "chip": "Not registered there"
+        },
+        "zeta": {
+          "ms": 254,
+          "chip": "Different server"
+        },
+        "eta": {
+          "ms": 256,
+          "chip": "Available"
+        },
+        "theta": {
+          "ms": 20219,
+          "chip": "Not reachable"
+        }
+      },
+      "thetaWhileOthersSettled": {
+        "chip": "Checking…",
+        "detail": "Waiting for theta… up to 20 seconds.",
+        "refreshDisabled": true
+      },
+      "details": {
+        "beta": null,
+        "gamma": "gamma didn't answer. It may be offline, or on an older version.",
+        "delta": "Remote Collaboration is off on delta. Turn it on there.",
+        "epsilon": "epsilon doesn't know this node yet. Register this node there.",
+        "zeta": "A different server answers at this address. Check the URL.",
+        "eta": null,
+        "theta": "theta didn't answer. It may be offline, or on an older version."
+      },
+      "etaEmpty": "eta shares no Agents or Agent Teams.",
+      "openCounts": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "eta": 1,
+        "theta": 1,
+        "iota": 0
+      }
+    },
+    "RNP-02": {
+      "result": "Pass",
+      "summary": "24 Agents · 6 Agent Teams",
+      "preview": "Analyst, Archivist, Builder, Copy Checker, Copy Editor, Copy Team, Copy Writer, Deployer, Design Team, Designer, Illustrator, Monitor, Night Owl, Photographer, Plain Helper, Planner, Proofreader, Publisher, Release Team, Research Team, Researcher, Reviewer, Scheduler, Sound Mixer, Support Agent, Support Team, Tester, Translator, Video Editor, Video Team",
+      "usableWhileTheta": "Checking…",
+      "entries": 30,
+      "filtered": {
+        "agents": "3 of 24",
+        "teams": "1 of 6",
+        "names": [
+          "Copy Checker",
+          "Copy Editor",
+          "Copy Writer",
+          "Copy Team"
+        ]
+      },
+      "noMatch": "No Agents or Agent Teams match “zzz”. Clear search",
+      "afterClear": 30,
+      "windowAnswerKeys": [
+        "description",
+        "kind",
+        "name"
+      ]
+    },
+    "RNP-03": {
+      "result": "Pass",
+      "refreshCounts": {
+        "beta": 1,
+        "gamma": 0,
+        "delta": 0,
+        "epsilon": 0,
+        "zeta": 0,
+        "eta": 0,
+        "theta": 0,
+        "iota": 0
+      }
+    },
+    "RNP-04": {
+      "result": "Pass",
+      "addCounts": {
+        "beta": 0,
+        "gamma": 0,
+        "delta": 0,
+        "epsilon": 0,
+        "zeta": 0,
+        "eta": 0,
+        "theta": 0,
+        "iota": 1
+      },
+      "iotaEmpty": "iota shares no Agents or Agent Teams."
+    },
+    "RNP-05": {
+      "result": "Pass",
+      "offState": {
+        "notice": "Remote Collaboration is off, so peers are not asked. Turn it on to see their Agents and Agent Teams.",
+        "chips": 0,
+        "refreshButtons": 0,
+        "asked": 0,
+        "alphaSwitch": false
+      },
+      "onCounts": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "eta": 1,
+        "theta": 1,
+        "iota": 1
+      }
+    },
+    "RNP-06": {
+      "result": "Pass",
+      "returnCounts": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "eta": 1,
+        "theta": 1,
+        "iota": 1
+      },
+      "onAgainCounts": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "eta": 1,
+        "theta": 1,
+        "iota": 1
+      },
+      "thetaAfterReturn": "Checking…",
+      "thetaAsked": {
+        "onReturn": 1,
+        "onSwitchOnAgain": 1
+      },
+      "returnMsAfterSwitchOn": 1667,
+      "thetaEarlierQueryMsBeforeReturn": 1621,
+      "switchOffOnMsAfterReturn": 1645,
+      "thetaSettledAfterSwitchOnMs": 20147,
+      "note": null
+    },
+    "RNP-07": {
+      "result": "Pass",
+      "peersAfter": [
+        "beta",
+        "gamma",
+        "delta",
+        "epsilon",
+        "zeta",
+        "eta-renamed",
+        "theta"
+      ],
+      "askedOnRemove": 0
+    },
+    "RNP-08": {
+      "result": "Pass",
+      "quietMs": 30000,
+      "askedDuringQuiet": 0
+    },
+    "RNP-09": {
+      "result": "Pass",
+      "windowHosts": [
+        "127.0.0.1:59694",
+        "127.0.0.1:60137"
+      ],
+      "requestsToPeers": 0,
+      "totalRequests": 106,
+      "offerHosts": [
+        "127.0.0.1:59694"
+      ]
+    }
+  },
+  "offerRequests": [
+    {
+      "at": 1792599944106,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944106,
+      "nodeId": "srv_18lK-fKmsMXB5YW2pg-rs1icdG_B6SVb",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944106,
+      "nodeId": "srv_YB9X9Q2IIkryM4dBClMXd58eeBNYjMjc",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944107,
+      "nodeId": "srv_QBX3UoV2ppX7A0-Zya3r_unS3PjeGX8q",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944107,
+      "nodeId": "srv_qc0doiHAqOn0R9j4wX_jfep7QcN7O2NS",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944107,
+      "nodeId": "srv_BNkPXDa0o9iHjy_oGX36sZxZCThHoKE0",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599944107,
+      "nodeId": "srv_lpIy_sutCqGFdNBKZP0WY1TvwcJB2EYK",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599964430,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599966129,
+      "nodeId": "srv_YYd6wr4R8mKh6eQyh7qUpnXV1w33Bwfq",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970882,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_18lK-fKmsMXB5YW2pg-rs1icdG_B6SVb",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_YB9X9Q2IIkryM4dBClMXd58eeBNYjMjc",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_QBX3UoV2ppX7A0-Zya3r_unS3PjeGX8q",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_qc0doiHAqOn0R9j4wX_jfep7QcN7O2NS",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_BNkPXDa0o9iHjy_oGX36sZxZCThHoKE0",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_lpIy_sutCqGFdNBKZP0WY1TvwcJB2EYK",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599970883,
+      "nodeId": "srv_YYd6wr4R8mKh6eQyh7qUpnXV1w33Bwfq",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_18lK-fKmsMXB5YW2pg-rs1icdG_B6SVb",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_YB9X9Q2IIkryM4dBClMXd58eeBNYjMjc",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_QBX3UoV2ppX7A0-Zya3r_unS3PjeGX8q",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_qc0doiHAqOn0R9j4wX_jfep7QcN7O2NS",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_BNkPXDa0o9iHjy_oGX36sZxZCThHoKE0",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972548,
+      "nodeId": "srv_lpIy_sutCqGFdNBKZP0WY1TvwcJB2EYK",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599972549,
+      "nodeId": "srv_YYd6wr4R8mKh6eQyh7qUpnXV1w33Bwfq",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974265,
+      "nodeId": "srv_huKUxbHS9IqdBj6pD4PwoObIyOS5y7m8",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_18lK-fKmsMXB5YW2pg-rs1icdG_B6SVb",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_YB9X9Q2IIkryM4dBClMXd58eeBNYjMjc",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_QBX3UoV2ppX7A0-Zya3r_unS3PjeGX8q",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_qc0doiHAqOn0R9j4wX_jfep7QcN7O2NS",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_BNkPXDa0o9iHjy_oGX36sZxZCThHoKE0",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_lpIy_sutCqGFdNBKZP0WY1TvwcJB2EYK",
+      "host": "127.0.0.1:59694"
+    },
+    {
+      "at": 1792599974266,
+      "nodeId": "srv_YYd6wr4R8mKh6eQyh7qUpnXV1w33Bwfq",
+      "host": "127.0.0.1:59694"
+    }
+  ],
+  "windowHosts": [
+    "127.0.0.1:59694",
+    "127.0.0.1:60137"
+  ],
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-10-21T16:27:05.526Z"
+}

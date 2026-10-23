@@ -42,16 +42,21 @@ describe("approved collaboration tool descriptions", () => {
       sendTool: "6ff131924d8cef4ed04f0702af3544484356ec6f1947197da2192455db6dc18f",
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
       sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
-      // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node.
-      delegateTool: "04e1c7b5f4f36e0480aed27608b5dc433581f80a27dcde52f82b88b77292ddd5",
+      // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).
+      delegateTool: "9c31105bb11c6a9aa3a82282a8f548a8eeba949c90d5480f41cd730dbb1ef677",
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
       delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
       delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
       delegateTaskId: "758d12d753234f54a47324aee40fbd746044ed150ece92d0d2c69abbd9f83017",
       delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
       delegateReferences: "dc26162eff418e5fe6ee52377cc0e89521ac1206cc1a13a1ad3c0ac23a5e4610",
-      delegateNode: "fc747edf223af351f5930dd9a42137d7738d6fb46ac7b43560919e7bf355384c",
+      delegateNode: "273dcd2db56feb22cc02888dd961101ab5752f462765b028c5458fb406dacf0b",
     });
+  });
+
+  it("autobyteus-261 DEC-406: a peer node's agent or agent team (the approved new wording)", () => {
+    expect(DELEGATE_TASK_NODE_DESCRIPTION).toBe("Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node, and you message it by its run id as usual. A saved Task or reference_files can't go to another node.");
   });
 
   it("states how each tool works, each fact once: messaging never creates an agent, delegation always does", () => {

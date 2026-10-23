@@ -1,0 +1,8 @@
+# IMP-05 rerun of the one IMP-04 failure, in isolation (3 runs)
+# command: pnpm exec vitest run tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (x3)
+# commit: 93dc932920
+# env: macOS Darwin 25.5.0, node v22.23.1
+# date: 2026-10-21T09:59:41Z
+      Tests  1 passed (1)
+      Tests  1 passed (1)
+      Tests  1 passed (1)

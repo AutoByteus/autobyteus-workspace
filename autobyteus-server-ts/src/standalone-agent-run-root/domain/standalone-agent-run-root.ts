@@ -136,7 +136,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
     this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
-      backLink: options.delegatedFrom ? { hostRunId: this.hostRunId, delegatedFrom: options.delegatedFrom } : null,
+      backLink: options.delegatedFrom ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: options.delegatedFrom } : null,
       channel: options.remoteRunChannel });
     const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
     this.hostIdle = options.delegatedFrom && options.agentRunManager ? new StandaloneHostIdleShutdown({
@@ -178,7 +178,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
-      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId) } });
+      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => this.remoteLinks.teamLinkFor(teamRunId) !== null } });
     this.delegatedLaunches = createStandaloneDelegatedLaunchCommand({
       taskExecutions: this.taskExecutions,
       persistence: options.persistence,

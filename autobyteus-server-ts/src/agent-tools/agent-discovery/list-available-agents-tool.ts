@@ -11,6 +11,7 @@ import {
   buildListAvailableAgentsParameterSchema,
   listAvailableAgentsFor,
 } from "./list-available-agents-contract.js";
+import { agentDiscoveryToolText } from "./agent-discovery-refusal.js";
 
 const OWNER = "server-owned-agent-discovery";
 
@@ -31,8 +32,8 @@ export class AutoByteusListAvailableAgentsTool extends BaseTool<unknown, Record<
   static getDescription() { return LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION; }
   static getArgumentSchema() { return buildListAvailableAgentsParameterSchema(); }
 
-  protected async _execute(): Promise<string> {
-    return JSON.stringify(await listAvailableAgentsFor(this.memberExecutionContext?.collaboration));
+  protected async _execute(_context: unknown, args: Record<string, unknown> = {}): Promise<string> {
+    return agentDiscoveryToolText(await listAvailableAgentsFor(this.memberExecutionContext?.collaboration, args));
   }
 }
 
@@ -60,7 +61,3 @@ export const createBoundListAvailableAgentsTool = (
   tool.definition = definition;
   return tool;
 };
-
-export function registerAgentDiscoveryTools(): void {
-  ensureListAvailableAgentsToolRegistered();
-}

@@ -1,0 +1,36 @@
+# IMP-06b rerun of the 2 files that failed in IMP-06 (run alone, no parallel web suite)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts --no-watch
+# Commit: c0b385524; Linux, node v22.23.2; 2026-10-21T07:47:44Z
+
+== run 1
+     × delivers and records the second turn's text and reports running while it works (AC-001, AC-003) 228ms
+     × keeps the first provider turn's queued text when the runtime has already moved on (AC-002) 134ms
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > keeps the first provider turn's queued text when the runtime has already moved on (AC-002)
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 8 passed (10)
+== run 2
+     × delivers and records the second turn's text and reports running while it works (AC-001, AC-003) 222ms
+     × keeps the first provider turn's queued text when the runtime has already moved on (AC-002) 123ms
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 5029ms
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > keeps the first provider turn's queued text when the runtime has already moved on (AC-002)
+ Test Files  2 failed (2)
+      Tests  3 failed | 7 passed (10)
+== run 3
+     × delivers and records the second turn's text and reports running while it works (AC-001, AC-003) 203ms
+     × keeps the first provider turn's queued text when the runtime has already moved on (AC-002) 137ms
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > delivers and records the second turn's text and reports running while it works (AC-001, AC-003)
+ FAIL  tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts > Claude provider-initiated turns back to back > keeps the first provider turn's queued text when the runtime has already moved on (AC-002)
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 8 passed (10)
+
+== Cause investigation (TESTING.md Rule 9), 2026-10-21T07:57:49Z
+Temporary detached worktree /tmp/rnrs-base-check (tmpfs), fresh pnpm install, prebuild, typecheck build:
+- at base a22394f0c: both files -> "Tests  10 passed (10)"
+- at branch c0b385524 (same commit as this worktree): claude-provider-turn-race.test.ts -> "Tests  2 passed (2)"
+This worktree (/home/ryan-ai/hdd_drive, ext4 on /dev/sdb1), commit c0b385524: claude-provider-turn-race.test.ts -> "Tests  2 failed (2)" (also after clearing node_modules/.vite).
+autobyteus-ts/dist identical in both worktrees (md5 of every file).
+The branch changes no file in either test's import graph (git diff --name-only a22394f0c HEAD: only agent-runtimes, GraphQL agent-runtimes type, web settings, docs).
+Conclusion: not caused by this change; the failures depend on the checkout's location (timing-sensitive settle loops / fs.watch timeouts on the slower disk). Recorded as follow-up FU-003; temp worktree removed.

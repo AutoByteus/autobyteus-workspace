@@ -1,0 +1,15 @@
+# IMP-04 full server unit suite
+# command: npx vitest run tests/unit (autobyteus-server-ts)
+# commit: 13131733b9
+# env: macOS Darwin 25.5.0, node v22.23.1
+# date: 2026-10-21T06:37:12Z
+# full log: IMP-04-server-unit-full.log (same folder)
+# the APP_DATA_STARTUP_GATE_FAILED lines in the full log are expected output of the startup-gate tests
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  783 passed | 4 skipped (787)
+      Tests  6435 passed | 7 skipped (6442)
+   Duration  584.08s (transform 16.05s, setup 9.80s, import 274.74s, tests 220.40s, environment 794ms)

@@ -1,0 +1,6 @@
+# DEL-04 server build + Brief Studio package | integrated 534ae78028 | pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-server-ts test:integration:prepare
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+Integration test prerequisites are present.
+prepare exit=0

@@ -35,6 +35,9 @@ import { TeamExecutionIndex } from "./team-execution-index.js";
 import type { DelegatedLaunchModelOptions } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { planStoppedTeamLaunchSave, teamDelegatedLaunchModelOptions } from "./team-run-delegated-launch-plan.js";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { teamRunRemoteLinks } from "../domain/team-run-remote-links.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -123,15 +126,18 @@ export class AgentTeamRunManager {
   async createTeamRun(input: {
     config: TeamRunConfig;
     teamDefinitionName: string;
+    /** A Team run a peer node starts (autobyteus-247): its back-link, kept on the tree. */
+    delegatedFrom?: DelegatedFrom;
   }): Promise<RootTeamRun> {
     this.assertRootAdmissionOpen();
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
-      const tree = buildInitialTeamRunExecutionTree({
+      const initial = buildInitialTeamRunExecutionTree({
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
+      const tree = input.delegatedFrom ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom }) : initial;
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,
@@ -211,6 +217,14 @@ export class AgentTeamRunManager {
 
   hasManagedTeamRun(rootTeamRunIdInput: string): boolean {
     return this.getManagedTeamRun(rootTeamRunIdInput) !== null;
+  }
+
+  /** N-303 / N-304: a peer's request checked against an unmanaged Team run's stored links; it loads nothing. */
+  async storedRemoteLinkCheck(rootTeamRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    if (this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
+    const tree = await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
+    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree) : null, query);
   }
 
   /** Closed (Task DONE or CANCELLED) task executions of the given (stored) tree of this root Team. */

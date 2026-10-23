@@ -21,4 +21,16 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
     if (!remote) return reply.code(404).send({ message: "Remote collaboration is not available on this server." });
     return send(reply, await remote.gateway.deliverMessage(request.body));
   });
+
+  app.post("/remote/availability", async (request, reply) => {
+    const remote = findProcessRemoteCollaboration();
+    if (!remote) return reply.code(404).send({ message: "Remote collaboration is not available on this server." });
+    return send(reply, await remote.gateway.checkAvailability(request.body));
+  });
+
+  app.post("/remote/available-agents", async (request, reply) => {
+    const remote = findProcessRemoteCollaboration();
+    if (!remote) return reply.code(404).send({ message: "Remote collaboration is not available on this server." });
+    return send(reply, await remote.gateway.listAvailableAgents(request.body));
+  });
 }

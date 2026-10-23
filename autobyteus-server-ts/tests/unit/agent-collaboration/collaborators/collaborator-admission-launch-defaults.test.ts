@@ -33,8 +33,8 @@ const root = {
   autoExecuteTools: false, workspaceRootPath: "/work",
 };
 const port = (): CollaboratorRootPort => ({
-  rootKind: "agent_team", isApplicationBound: false,
-  rootLaunchConfiguration: () => root,
+  isApplicationBound: false,
+  launchBase: () => ({ kind: "inherited", launch: root }),
   ownDefinition: () => ({ kind: "agent_team", definitionId: "pm-team" }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({ configured: [] }),
   addressesInUse: () => new Set(["/project_task_manager"]),

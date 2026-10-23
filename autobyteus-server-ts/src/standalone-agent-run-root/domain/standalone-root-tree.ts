@@ -2,7 +2,7 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   IsoTimestamp,
-  RemoteTaskAgentExecution,
+  RemoteTaskExecution,
   TaskExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
@@ -27,7 +27,7 @@ export type StandaloneRootTreeFile = Readonly<{
    * In memory only: the remote runs the host delegated to (stored in `taskExecutions` with `nodeId`).
    * Absent when there are none, so a tree without remote links has exactly its stored shape.
    */
-  remoteTaskExecutions?: readonly RemoteTaskAgentExecution[];
+  remoteTaskExecutions?: readonly RemoteTaskExecution[];
 }>;
 
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;

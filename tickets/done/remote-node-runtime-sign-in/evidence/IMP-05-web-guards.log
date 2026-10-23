@@ -1,0 +1,13 @@
+# IMP-05 web guards
+# Commands: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: c0b385524; 2026-10-21T08:06:15Z
+
+
+[guard:web-boundary] Passed.
+guard:web-boundary exit 0
+
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit 0
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:110218) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+audit:localization-literals exit 0

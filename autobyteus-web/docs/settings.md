@@ -206,12 +206,48 @@ per-team, runtime, provider, or frontend-renderer preference.
 Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`) sets up
 cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
 off by default, through `remoteCollaborationCapabilityStore`, a
-`createBoundNodeCapabilityStore` capability), the peer nodes (add by URL and name,
-rename, remove; adding needs the switch on) and the published Agents (publish a shared
-Agent with its runtime, model, workspace on this node and tool auto-approve, off by
-default; edit; unpublish). `stores/remoteCollaborationStore.ts` loads and changes them
-through GraphQL; a refused change shows the server's reason next to the section that
-failed. The server side is described in the server's `docs/modules/remote_collaboration.md`.
+`createBoundNodeCapabilityStore` capability) and the peer nodes (add by URL and name,
+rename, remove; adding needs the switch on). `stores/remoteCollaborationStore.ts` loads and
+changes the peers through GraphQL; a refused change shows the server's reason next to the
+section that failed. The server side is described in the server's
+`docs/modules/remote_collaboration.md`.
+
+Each peer shows its state now and, when it is available, its Agents and Agent Teams
+(autobyteus-267; the approved UI/UX spec is the design repository's
+`tickets/done/remote-nodes-page/ui-ux-spec.md`):
+
+- **Where the answers come from.** `stores/remoteCollaborationOffersStore.ts` asks this
+  node's server for one peer at a time (GraphQL `peerNodeOffer(nodeId)`, network-only); the
+  server asks the peer through the same discovery the agent tools use. The window never
+  contacts a peer. The answer is the entries (`name`, `kind`, a `description` only when it
+  has one; no address) or the refusal code, which the page words itself.
+- **States.** Per peer: Checking… (with "Waiting for {name}… up to 20 seconds."), Available
+  (the offer, or "{name} shares no Agents or Agent Teams."), or one of four unavailable
+  states with a sentence: Off there, Not registered there (amber: the owner can act there),
+  Not reachable (also an older build, or any other refusal or a failed query), Different
+  server (red).
+- **When peers are asked.** Every peer at once when the tab opens with the switch on and
+  when the switch turns on; one peer when it is added and on its Refresh icon. Turning the
+  switch off, or leaving the tab, drops every state and asks nobody; the card shows "Remote
+  Collaboration is off, so peers are not asked. …". Nothing polls and nothing is cached.
+  Each ask takes a token per peer, so an answer that arrives after the peer was removed or
+  asked again, the switch turned off or the tab was left is ignored. Every ask is a new
+  request, even while an earlier ask for that peer is still open: the query turns off
+  Apollo's in-flight deduplication (`context: { queryDeduplication: false }`), which would
+  otherwise join the identical open query and leave the new token unanswered. Each peer
+  settles at its own pace (the server's 20 s bound); the page stays usable meanwhile.
+- **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
+  names cut by the line's width) and opens into `RemoteCollaborationOfferList.vue`: Agents
+  and Agent Teams side by side from `md` up, each sorted by name, with a "Checked HH:MM"
+  footer. When either kind has more than 6 entries, a search box narrows both by name
+  ("n of m", "No match.", and a sentence with Clear search when nothing matches). Closing
+  it, or a Refresh, clears the search.
+- **How peers' runs work.** The rules for runs peers start on this node are one collapsed
+  line at the bottom of the Peer nodes card: any shared Agent or Agent Team; each agent's
+  own default runtime and model (a team member without one uses its team's default); this
+  node's temp workspace with tool calls auto-approved for every agent of the run; a local
+  login (Codex, Claude) used for every registered peer; no default runtime and model is
+  refused. There is no separate card for this node's own Agents and Agent Teams.
 
 ## Server Settings: Feature Capability Toggles
 
@@ -382,22 +418,35 @@ versions, and starts the vendor's own update and login commands.
   Update stays visible but cannot be pressed while that runtime has running
   agents, with the reason "Update unavailable while N agents are running.".
   Application agents count too.
-- **Sign in** (the desktop's own node only) exists for Codex (`codex login`)
-  and Grok (`grok login --oauth`). The vendor's command opens the browser. The
-  row shows "Finish signing in to <Runtime> in your browser." with **Cancel**.
+- **Sign in** exists for Codex (`codex login`) and Grok (`grok login
+  --oauth`), on the desktop's own node and on remote nodes that can open a
+  browser on their own desktop (below). The vendor's command opens the
+  browser. The row shows "Finish signing in to <Runtime> in your browser." with
+  **Cancel**.
   After 10 minutes it shows "Sign-in didn't finish. Try again.". Claude and
   Antigravity show "Sign in from its command line." with no button, by vendor
   policy and the user's decision.
-- **Remote and Docker node windows** show the same rows and statuses with the
-  note "Status only. Update these runtimes on that node's computer." They have
-  no Update, no Sign in and no command-line hint.
+- **Remote and Docker node windows** show the same rows and statuses, with no
+  Update. Each node's server reports whether its runtimes' logins can open a
+  browser on its own desktop (`agentRuntimeSignInBrowserAvailable`). A Docker
+  node from the AutoByteus server image says yes: its logins open in the
+  node's Chromium, which the user sees in the workspace's **VNC Viewer**. Such
+  a node shows the note "Sign-in opens the browser on that node; finish it in
+  the VNC Viewer. Update these runtimes on that node's computer.", offers Sign
+  in for Codex and Grok with "Finish signing in to <Runtime> in the browser on
+  that node (VNC Viewer).", and shows "Sign in from its command line on that
+  node." for Claude and Antigravity. A node without a desktop browser stays
+  status only: the note "Status only. Update these runtimes on that node's
+  computer.", no Sign in and no command-line hint. The manager derives the
+  window's node access (`own`, `remoteDesktop`, `remoteStatusOnly`) once, and
+  each row renders from it.
 - **Layout.** The five-column table appears when the runtime list itself is at
   least about 58 rem wide (a CSS container query). Below that, rows stack with
   visible labels. The rule follows the list's width, not the window's, so the
   table never overflows beside the Settings menu. Windows narrower than about
   1250 px show stacked rows.
 - **Data flow.** `composables/settings/useAgentRuntimes.ts` reads the
-  `agentRuntimes` query every 2 s while a row is checking or an operation is
+  `agentRuntimes` query (with the node's `agentRuntimeSignInBrowserAvailable`) every 2 s while a row is checking or an operation is
   running, and every 10 s otherwise. The 10 s read also refreshes running-agent
   counts, so a blocked Update becomes available by itself. Reading never starts
   work, and rebinding the window starts over with the new node. Completed

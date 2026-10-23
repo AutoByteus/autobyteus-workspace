@@ -25,9 +25,8 @@ export const standaloneRootCollaboratorPortFor = (
   const hostDefinition = Object.freeze({ kind: "agent" as const, definitionId: tree.host.agentDefinitionId });
   const ownDefinition = viewerAgentRunId === tree.host.agentRunId ? hostDefinition : null;
   return Object.freeze({
-    rootKind: "agent",
     isApplicationBound: false,
-    rootLaunchConfiguration: () => rootLaunchConfiguration,
+    launchBase: () => Object.freeze({ kind: "inherited" as const, launch: rootLaunchConfiguration }),
     ownDefinition: () => ownDefinition,
     inRunPlacementsByDefinition: () => buildInRunPlacements({
       runAgent: { ref: hostDefinition, address: tree.host.address },

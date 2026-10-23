@@ -1,4 +1,4 @@
-import type { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
+import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
@@ -6,16 +6,20 @@ import {
   bindProcessRemoteRunChannel,
   releaseProcessRemoteRunChannel,
 } from "../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { RunModelSelectionValidator } from "../llm-management/services/run-model-selection-service.js";
 import { RemoteDelegationReceiver } from "../remote-collaboration/inbound/remote-delegation-receiver.js";
 import { RemoteMessageReceiver } from "../remote-collaboration/inbound/remote-message-receiver.js";
+import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
+import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
+import {
+  bindProcessRemoteDiscoveryChannel,
+  releaseProcessRemoteDiscoveryChannel,
+} from "../agent-collaboration/execution/remote/remote-discovery-channel.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
   releaseProcessRemoteCollaboration,
 } from "../remote-collaboration/remote-collaboration-services.js";
 import { getServerInstanceIdentityService } from "../remote-access/services/server-instance-identity-service.js";
-import { getRuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
 import { getServerSettingsService } from "../services/server-settings-service.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
@@ -26,33 +30,48 @@ import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/s
  */
 export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
-  definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
-  modelSelectionValidator: Pick<RunModelSelectionValidator, "validate">;
-  agentRuns: Pick<AgentRunService, "prepareAgentRun">;
-  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun">;
-  orgRuns: Pick<AgentOrgRunService, "getActive" | "restore">;
+  tempWorkspaceDir: string;
+  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle">;
+  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun" | "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle">;
+  orgRuns: Pick<AgentOrgRunService, "getActive" | "restore" | "storedRemoteLinkCheck">;
 }>): (() => void) => {
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
     settings: getServerSettingsService(),
     ownNodeId: () => getServerInstanceIdentityService().getServerInstanceId(),
-    definitions: input.definitions,
-    availability: getRuntimeAvailabilityService(),
-    validator: input.modelSelectionValidator,
-    handlers: (settings) => ({
-      delegatedRuns: new RemoteDelegationReceiver({ published: settings.published, launchCheck: settings.launchCheck, agentRuns: input.agentRuns }),
+    tempWorkspaceDir: input.tempWorkspaceDir,
+    handlers: (services) => ({
+      delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,
+        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }) }),
       messages: new RemoteMessageReceiver({
+        storedLinkCheck: (root, query) => {
+          switch (root.kind) {
+            case "agent": return getStandaloneAgentRunRootManager().storedRemoteLinkCheck(root.runId, query);
+            case "agent_team": return input.teamRuns.storedRemoteLinkCheck(root.runId, query);
+            case "agent_org": return input.orgRuns.storedRemoteLinkCheck(root.runId, query);
+          }
+        },
         standalone: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
         team: (teamRunId) => input.teamRuns.resolveManagedTeamRun(teamRunId),
         org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),
+      }, {
+        // autobyteus-269: an accepted work packet's content is the run's title (a peer never starts an Org).
+        recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
+          : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
+            : Promise.resolve(),
       }),
+      availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
     }),
   });
   bindProcessRemoteCollaboration(services);
-  try { bindProcessRemoteRunChannel(services.client); }
-  catch (error) { releaseProcessRemoteCollaboration(services); throw error; }
-  return () => {
+  const release = () => {
+    releaseProcessRemoteDiscoveryChannel(services.discovery);
     releaseProcessRemoteRunChannel(services.client);
     releaseProcessRemoteCollaboration(services);
   };
+  try {
+    bindProcessRemoteRunChannel(services.client);
+    bindProcessRemoteDiscoveryChannel(services.discovery);
+  } catch (error) { release(); throw error; }
+  return release;
 };

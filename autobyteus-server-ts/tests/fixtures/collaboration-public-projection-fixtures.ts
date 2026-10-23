@@ -60,7 +60,7 @@ const delegatedRuns = (linked: boolean) => [
 ];
 /** A remote run the manager delegated to on a peer node (CM-10): in memory only, never in a public tree (S3). */
 export const REMOTE_RUN_ID = "remote-publisher-run";
-const remoteRuns = [{ address: "/publisher", agentRunId: REMOTE_RUN_ID, nodeId: "srv_test_peer", delegatorAgentRunId: "manager", startedAt }];
+const remoteRuns = [{ kind: "agent" as const, address: "/publisher", agentRunId: REMOTE_RUN_ID, nodeId: "srv_test_peer", delegatorAgentRunId: "manager", startedAt }];
 /** A composed tree without its in-memory remote links: exactly the strict public shape. */
 export const withoutRemoteLinks = <T extends Record<string, any>>(tree: T): T => {
   const strip = ({ remoteTaskExecutions: _remote, ...rest }: Record<string, unknown>) => rest;

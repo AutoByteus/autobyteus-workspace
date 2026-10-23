@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-21T20:34:12.631376+00:00",
+  "originalCommit": "96941cbfacbfe6423dbb979340b611b742238c83",
+  "from": "tickets/in-progress/nfs-guide-install-commands/",
+  "to": "tickets/done/nfs-guide-install-commands/",
+  "originalTrackedFiles": 98,
+  "originalBlobIdsUnchanged": true,
+  "note": "Historical absolute in-progress paths inside upstream reports/raw execution commands remain attributed; current handoff uses archived paths. No upstream rewrite."
+}

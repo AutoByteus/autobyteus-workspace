@@ -10,7 +10,7 @@ import type {
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
-import type { RemoteTaskAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
@@ -40,7 +40,7 @@ export const addTaskExecutionToTree = (input: {
 /** Records a remote run an agent of this Team delegated to (CM-10), once, at its delegation's commit. */
 export const addRemoteTaskExecutionToTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
-  link: RemoteTaskAgentExecution;
+  link: RemoteTaskExecution;
 }): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
   ...input.tree,
   rootTeam: { ...input.tree.rootTeam, remoteTaskExecutions: [...(input.tree.rootTeam.remoteTaskExecutions ?? []), input.link] },

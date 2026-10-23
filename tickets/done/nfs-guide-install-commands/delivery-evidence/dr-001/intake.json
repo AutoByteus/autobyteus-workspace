@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-21T20:32:39.293734+00:00",
+  "head": "96941cbfacbfe6423dbb979340b611b742238c83",
+  "freshTarget": "33171e13855b4bcbcb8a9d650f2403cacb03d965",
+  "integrated": true,
+  "baseAdvanced": false,
+  "method": "Already current; fresh target is ancestor",
+  "postIntegrationRerun": "Not required: product and shared foundations identical to actual API tested intake. Only docs-only navigation correction follows; no duplicate runtime cycle",
+  "validated": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "source": "2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb",
+  "productDiff": "",
+  "untrackedBefore": [],
+  "ignoredPreexisting": [
+    "autobyteus-web/node_modules",
+    "autobyteus-web/.nuxt"
+  ],
+  "classification": "Small/Low/Direct; reviews N/A-not selected; test review Not Required"
+}

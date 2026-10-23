@@ -1,0 +1,25 @@
+{
+  "id": "IMP-07",
+  "date": "2026-10-21T20:01:59.774189+00:00",
+  "commit": "2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb",
+  "ownedScratch": "/Users/normy/nfs-guide-imp-qnev7ikl",
+  "removed": true,
+  "previewPorts": [
+    {
+      "port": 50926,
+      "closed": true
+    },
+    {
+      "port": 50967,
+      "closed": true
+    },
+    {
+      "port": 51012,
+      "closed": true
+    }
+  ],
+  "temporaryFixtureRemoved": true,
+  "browser": "each owned context closed; no user session attached",
+  "retained": "Ignored worktree node_modules and generated Nuxt outputs for downstream checks; committed evidence",
+  "scope": "Only owned scratch removed; no installer, CLI, NFS, user data, PM or canonical checkout action"
+}

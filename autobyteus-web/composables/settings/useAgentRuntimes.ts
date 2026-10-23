@@ -59,6 +59,8 @@ export const useAgentRuntimes = () => {
   const node = useWindowNodeContextStore()
   const runtimes = shallowRef<AgentRuntime[] | null>(null)
   const loadStatus = ref<'loading' | 'error' | 'ready'>('loading')
+  /** The node's own answer: its runtimes' logins can open a browser on its desktop (false until read). */
+  const signInBrowserAvailable = ref(false)
   /** True while the page's own check request is in flight (the rows then report their own checks). */
   const requestingCheck = ref(false)
   const announcements = shallowRef<AgentRuntimeAnnouncement[]>([])
@@ -88,6 +90,7 @@ export const useAgentRuntimes = () => {
       const done = runtimes.value ? announcementsBetween(runtimes.value, next) : []
       if (done.length) announcements.value = done
       runtimes.value = next
+      signInBrowserAvailable.value = data.agentRuntimeSignInBrowserAvailable as boolean
       loadStatus.value = 'ready'
     } catch {
       if (!current()) return
@@ -136,6 +139,7 @@ export const useAgentRuntimes = () => {
   // Another node bound to this window: start over with its runtimes.
   watch(() => node.bindingRevision, () => {
     runtimes.value = null
+    signInBrowserAvailable.value = false
     announcements.value = []
     void check()
   })
@@ -143,6 +147,7 @@ export const useAgentRuntimes = () => {
 
   return {
     runtimes,
+    signInBrowserAvailable,
     loadStatus,
     requestingCheck,
     /** What the latest reading finished (for the polite live region). */

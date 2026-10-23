@@ -75,7 +75,8 @@ export class AgentOrgRunMessageDelivery {
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
-    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
+    // The endpoint admitted the message's target as one of its paired agents (N-301): it is the receiver.
+    const receiver = endpoint ? this.options.getIndex().getAgent(input.message.receiverAgentRunId) : null;
     if (!endpoint || !receiver) {
       return Promise.resolve({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
     }

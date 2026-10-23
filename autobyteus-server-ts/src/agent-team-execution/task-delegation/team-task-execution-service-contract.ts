@@ -40,4 +40,6 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   activityInspector?: AgentConversationActivityInspector;
   tokenUsageMigrationReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
   idleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
+  /** Told after every live-lease release (DS-004). */
+  onLiveLeaseReleased?: () => void;
 }>;

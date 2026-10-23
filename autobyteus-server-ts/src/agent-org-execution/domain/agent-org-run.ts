@@ -126,7 +126,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
-      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId) } });
+      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => this.remoteLinks.teamLinkFor(teamRunId) !== null } });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,

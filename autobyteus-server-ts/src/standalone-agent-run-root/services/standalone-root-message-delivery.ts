@@ -146,7 +146,8 @@ export class StandaloneRootMessageDelivery {
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     const endpoint = this.options.remoteLinks.inboundEndpoint(input.fromNodeId, input.message.senderAgentRunId, input.message.receiverAgentRunId);
-    const receiver = endpoint ? this.options.getIndex().getAgent(endpoint.pairedAgentRunId) : null;
+    // The endpoint admitted the message's target as one of its paired agents (N-301): it is the receiver.
+    const receiver = endpoint ? this.options.getIndex().getAgent(input.message.receiverAgentRunId) : null;
     if (!endpoint || !receiver) return Promise.resolve(notLinked);
     return this.wakeAndRun(receiver.agentRunId, () => this.options.getCommunication().acceptFromRemote({
       message: input.message,
@@ -162,10 +163,7 @@ export class StandaloneRootMessageDelivery {
    * the prepared host is activated, then the system task notification is posted. No log line.
    */
   async acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
-    const endpoint = this.options.remoteLinks.endpointFor(input.senderAgentRunId);
-    if (endpoint?.kind !== "delegator" || !endpoint.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) {
-      return notLinked;
-    }
+    if (!this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return notLinked;
     let run;
     try { run = await this.readyHost(); }
     catch (error) { return { accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: error instanceof Error ? error.message : String(error) }; }

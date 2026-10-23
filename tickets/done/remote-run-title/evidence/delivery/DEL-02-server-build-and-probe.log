@@ -1,0 +1,6 @@
+# DEL-02 server build + browser probe | integrated a06213c4e5 | pnpm -C autobyteus-server-ts build; autobyteus-web: node tests/e2e/remote-run-title-probe.mjs --output-dir=<dir>
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+remote-run-title probe: Pass
+probe exit=0

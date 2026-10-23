@@ -17,20 +17,6 @@ export const PeerNodeFields = gql`
   }
 `
 
-export const PublishedAgentFields = gql`
-  fragment PublishedAgentFields on PublishedAgentGql {
-    agentDefinitionId
-    definitionName
-    address
-    runtimeKind
-    llmModelIdentifier
-    llmConfig
-    workspaceRootPath
-    autoExecuteTools
-    publishedAt
-  }
-`
-
 export const GetRemoteCollaborationCapability = gql`
   query GetRemoteCollaborationCapability {
     remoteCollaborationCapability {
@@ -45,10 +31,20 @@ export const GetRemoteCollaborationSettings = gql`
     peerNodes {
       ...PeerNodeFields
     }
-    publishedAgents {
-      ...PublishedAgentFields
-    }
   }
   ${PeerNodeFields}
-  ${PublishedAgentFields}
+`
+
+/** One peer's offer now, answered by this node's server (autobyteus-267); the window never contacts the peer. */
+export const GetPeerNodeOffer = gql`
+  query GetPeerNodeOffer($nodeId: String!) {
+    peerNodeOffer(nodeId: $nodeId) {
+      entries {
+        name
+        kind
+        description
+      }
+      refusalCode
+    }
+  }
 `

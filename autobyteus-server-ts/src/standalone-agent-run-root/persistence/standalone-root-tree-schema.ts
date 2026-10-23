@@ -6,12 +6,12 @@ import {
   isoTimestamp,
   collectTaskExecutionRunIds,
   objectRecord,
-  parseRemoteTaskAgentExecutions,
+  parseRemoteTaskExecutions,
   parseTaskExecutions,
   requiredString,
   requireKeys,
   validateCopyLayouts,
-  validateRemoteTaskAgentExecutions,
+  validateRemoteTaskExecutions,
   validateTaskExecutionDelegators,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
 
@@ -24,7 +24,7 @@ const validateInvariants = (tree: StandaloneRootTreeFile): void => {
     [tree.host.agentRunId],
     [{ members: [], taskExecutions: tree.taskExecutions }],
   );
-  validateRemoteTaskAgentExecutions(
+  validateRemoteTaskExecutions(
     new Set([tree.host.agentRunId, ...collectTaskExecutionRunIds(tree.taskExecutions)]), tree.remoteTaskExecutions);
 };
 
@@ -47,7 +47,7 @@ export const validateStandaloneRootTreePayload = (
       agentDefinitionId: requiredString(host.agentDefinitionId, "host.agentDefinitionId"),
     },
     taskExecutions: parseTaskExecutions(payload.taskExecutions, "taskExecutions"),
-    ...parseRemoteTaskAgentExecutions(payload.remoteTaskExecutions, "remoteTaskExecutions"),
+    ...parseRemoteTaskExecutions(payload.remoteTaskExecutions, "remoteTaskExecutions"),
   };
   if (expectedHostRunId && tree.host.agentRunId !== expectedHostRunId) {
     throw new Error(`Collaboration tree host '${tree.host.agentRunId}' does not match '${expectedHostRunId}'.`);

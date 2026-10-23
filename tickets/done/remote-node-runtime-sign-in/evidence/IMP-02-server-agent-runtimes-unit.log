@@ -1,0 +1,6 @@
+# IMP-02 server focused Agent Runtimes unit tests
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/agent-runtimes tests/unit/api/graphql/agent-runtimes-resolver.test.ts --no-watch
+# Commit: c0b385524; Linux, node v22.23.2; 2026-10-21T08:04:36Z
+
+ Test Files  5 passed (5)
+      Tests  55 passed (55)

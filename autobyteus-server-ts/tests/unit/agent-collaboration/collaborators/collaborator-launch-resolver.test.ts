@@ -21,6 +21,8 @@ const codexLaunch = (llmConfig: Record<string, unknown> | null = { effort: "high
   runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1", llmConfig, autoExecuteTools: true, workspaceRootPath: "/work",
 });
 const identity = { addedAt: "2026-10-12T00:00:00.000Z", addedViaAgentRunId: "pm" };
+/** Today's base: the run root's launch (design SR-005; expectations below are unchanged). */
+const inheritedBase = { kind: "inherited" as const, launch: root };
 
 const agentPlan = (agentDefault: DefaultLaunchConfig | null, name = "Implementation Engineer"): CollaboratorDefinitionPlan => ({
   kind: "agent", name, address: "/implementation_engineer" as never, agentDefinitionId: "ie", agentDefault, ...identity,
@@ -64,7 +66,7 @@ describe("CollaboratorLaunchResolver", () => {
     const { resolver } = setup();
     const [plan] = await resolver.resolve([teamPlan({
       solution_designer: null, implementation_engineer: sol(), code_reviewer: sol({ effort: "low" }),
-    })], root);
+    })], inheritedBase);
     expect(plan).toMatchObject({
       kind: "agent_team", defaultLaunchConfiguration: root, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
     });
@@ -82,7 +84,7 @@ describe("CollaboratorLaunchResolver", () => {
   it("AC-002: a usable Team default beats the root; an agent default beats the Team default (DEC-001)", async () => {
     const { resolver } = setup();
     const teamDefault: DefaultLaunchConfig = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-b", llmConfig: null };
-    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null }, teamDefault)], root);
+    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null }, teamDefault)], inheritedBase);
     if (plan!.kind !== "agent_team") throw new Error("team plan expected");
     expect(plan!.defaultLaunchConfiguration).toEqual({
       runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-b", llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/work",
@@ -96,7 +98,7 @@ describe("CollaboratorLaunchResolver", () => {
 
   it("AC-003: an Agent copy runs on its own usable default, else on the root's, with root workspace and auto-approve", async () => {
     const { resolver } = setup();
-    const [own, inherited] = await resolver.resolve([agentPlan(sol(null)), agentPlan(null, "Writer")], root);
+    const [own, inherited] = await resolver.resolve([agentPlan(sol(null)), agentPlan(null, "Writer")], inheritedBase);
     expect(own).toMatchObject({ launchConfiguration: codexLaunch(null), launchSource: { origin: "agent_default", fallbacks: [] } });
     expect(inherited).toMatchObject({ launchConfiguration: root, launchSource: { origin: "inherited", fallbacks: [] } });
   });
@@ -112,7 +114,7 @@ describe("CollaboratorLaunchResolver", () => {
       settings_invalid: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "bad-settings", llmConfig: { effort: "max" } },
       runtime_only: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: null, llmConfig: null },
       model_only: { runtimeKind: null, llmModelIdentifier: "sol-6.1", llmConfig: null },
-    })], root);
+    })], inheritedBase);
     if (plan!.kind !== "agent_team") throw new Error("team plan expected");
     const fallbacks = plan!.members.map((member) => {
       expect(member).toMatchObject({ launchConfiguration: root, followsTeam: true });
@@ -130,7 +132,7 @@ describe("CollaboratorLaunchResolver", () => {
 
   it("AC-005: an unusable Team default falls back to the root for the Team and its members, recorded on the Team", async () => {
     const { resolver } = setup({ unavailable: { [RuntimeKind.CODEX_APP_SERVER]: "Codex App Server command 'codex' is not available." } });
-    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null }, sol())], root);
+    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null }, sol())], inheritedBase);
     if (plan!.kind !== "agent_team") throw new Error("team plan expected");
     const skipped = { runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1", reason: "runtime_unavailable", detail: "Codex App Server command 'codex' is not available." };
     expect(plan!.defaultLaunchConfiguration).toEqual(root);
@@ -148,19 +150,19 @@ describe("CollaboratorLaunchResolver", () => {
 
   it("AC-006: when an agent has no usable layer, the plan fails with today's message and names the definition", async () => {
     const { resolver } = setup({ verdict: (runtimeKind) => runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "model_unavailable" : "valid" });
-    await expect(resolver.resolve([agentPlan(null, "Code Reviewer")], root))
+    await expect(resolver.resolve([agentPlan(null, "Code Reviewer")], inheritedBase))
       .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", reason: "The model 'opus' is not available on claude_agent_sdk." });
-    await expect(resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null })], root))
+    await expect(resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null })], inheritedBase))
       .rejects.toMatchObject({ collaboratorName: "Software Engineering Team", reason: "The model 'opus' is not available on claude_agent_sdk." });
     const schema = setup({ verdict: () => "schema_unavailable" });
-    await expect(schema.resolver.resolve([agentPlan(null)], root)).rejects.toMatchObject({ reason: "The settings of model 'opus' could not be checked." });
+    await expect(schema.resolver.resolve([agentPlan(null)], inheritedBase)).rejects.toMatchObject({ reason: "The settings of model 'opus' could not be checked." });
     const invalid = setup({ verdict: () => "invalid" });
-    await expect(invalid.resolver.resolve([agentPlan(null)], root)).rejects.toMatchObject({ reason: "Its model settings are invalid: effort must be one of low, high" });
+    await expect(invalid.resolver.resolve([agentPlan(null)], inheritedBase)).rejects.toMatchObject({ reason: "Its model settings are invalid: effort must be one of low, high" });
   });
 
   it("REQ-004 scope: an unusable root launch fails only an agent that needs it", async () => {
     const { resolver } = setup({ verdict: (runtimeKind) => runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "model_unavailable" : "valid" });
-    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), code_reviewer: sol() })], root);
+    const [plan] = await resolver.resolve([teamPlan({ implementation_engineer: sol(), code_reviewer: sol() })], inheritedBase);
     expect(plan!.kind === "agent_team" && plan!.members.every((member) => member.launchSource?.origin === "agent_default")).toBe(true);
   });
 
@@ -171,7 +173,7 @@ describe("CollaboratorLaunchResolver", () => {
       teamPlan({ a: sol(), b: sol(), c: grok, d: grok, e: null }, sol()),
       agentPlan(sol()),
       agentPlan({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: null, llmConfig: null }, "Incomplete"),
-    ], root);
+    ], inheritedBase);
     expect(availability.getRuntimeAvailability.mock.calls.map(([kind]) => kind).sort()).toEqual([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.GROK_BUILD]);
     expect(validateMany).toHaveBeenCalledTimes(1);
     // The root launch plus each candidate on an available runtime (Team default, a, b, the Agent's); never Grok's or the incomplete one.
@@ -184,17 +186,17 @@ describe("CollaboratorLaunchResolver", () => {
 
   it("no configured defaults: no availability check, only today's root check", async () => {
     const { resolver, availability, validateMany } = setup();
-    await resolver.resolve([agentPlan(null), teamPlan({ a: null })], root);
+    await resolver.resolve([agentPlan(null), teamPlan({ a: null })], inheritedBase);
     expect(availability.getRuntimeAvailability).not.toHaveBeenCalled();
     expect(validateMany.mock.calls[0]![0]).toHaveLength(1);
-    expect(await resolver.resolve([], root)).toEqual([]);
+    expect(await resolver.resolve([], inheritedBase)).toEqual([]);
     expect(validateMany).toHaveBeenCalledTimes(1);
   });
 
   it("an availability check that throws counts as an unavailable runtime", async () => {
     const { resolver, availability } = setup();
     availability.getRuntimeAvailability.mockRejectedValueOnce(new Error("probe crashed"));
-    const [plan] = await resolver.resolve([agentPlan(sol())], root);
+    const [plan] = await resolver.resolve([agentPlan(sol())], inheritedBase);
     expect(plan).toMatchObject({ launchConfiguration: root, launchSource: { origin: "inherited", fallbacks: [
       { reason: "runtime_unavailable", detail: "Runtime 'codex_app_server' could not be checked: probe crashed" },
     ] } });

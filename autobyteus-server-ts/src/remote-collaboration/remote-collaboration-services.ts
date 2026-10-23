@@ -1,39 +1,41 @@
-import type { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
-import type { RunModelSelectionValidator } from "../llm-management/services/run-model-selection-service.js";
-import type { RuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
+import { NodeCatalogPort } from "../agent-collaboration/collaborators/node-catalog-port.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
-import { PeerGateway, type DelegatedRunHandler, type RemoteMessageHandler } from "./channel/peer-gateway.js";
+import { PeerGateway, type AvailableAgentsHandler, type DelegatedRunHandler, type RemoteMessageHandler } from "./channel/peer-gateway.js";
+import { RemoteNodeDiscovery } from "./discovery/remote-node-discovery.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
 import { PeerStore } from "./settings/peer-store.js";
-import { PublishedAgentService } from "./settings/published-agent-service.js";
-import { PublishedAgentStore } from "./settings/published-agent-store.js";
-import { PublishedLaunchCheck } from "./settings/published-launch-check.js";
 import { RemoteCollaborationCapability } from "./settings/remote-collaboration-capability.js";
 import type { AppDataDirSource } from "./settings/settings-file-schema.js";
 
-/** One node's remote collaboration: settings, the outbound client and the inbound gateway (DS-004, DS-005). */
+/**
+ * One node's remote collaboration (DS-004, DS-005): the switch, the peers, the outbound client, the inbound
+ * gateway, and the catalog port through which peers' targets are resolved (a run started for a peer: the temp
+ * workspace, auto-approve on).
+ */
 export type RemoteCollaborationServices = Readonly<{
   capability: RemoteCollaborationCapability;
   peers: PeerDirectory;
-  published: PublishedAgentService;
-  launchCheck: PublishedLaunchCheck;
+  catalogPort: NodeCatalogPort;
   client: PeerClient;
   gateway: PeerGateway;
+  /** autobyteus-261: the peers with their status, and a peer's offer (the `RemoteDiscoveryChannel`). */
+  discovery: RemoteNodeDiscovery;
 }>;
 
 /**
  * Builds the subsystem around the process's run services. The inbound handlers are given as factories over the
- * settings, because receiving a delegation needs the published Agents and receiving a message needs the peers.
+ * services, because receiving a delegation needs the catalog port and receiving a message needs the peers.
  */
 export const composeRemoteCollaboration = (input: Readonly<{
   config: AppDataDirSource;
   settings: Pick<ServerSettingsService, "getBooleanSetting" | "setBooleanSetting">;
   ownNodeId(): Promise<string>;
-  definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
-  availability: Pick<RuntimeAvailabilityService, "getRuntimeAvailability">;
-  validator: Pick<RunModelSelectionValidator, "validate">;
-  handlers(services: Omit<RemoteCollaborationServices, "gateway">): Readonly<{ delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler }>;
+  /** This node's temp workspace: where every run a peer starts works (REQ-205). */
+  tempWorkspaceDir: string;
+  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery">): Readonly<{
+    delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
+  }>;
 }>): RemoteCollaborationServices => {
   const capability = new RemoteCollaborationCapability(input.settings);
   const store = new PeerStore(input.config);
@@ -44,12 +46,11 @@ export const composeRemoteCollaboration = (input: Readonly<{
     ownNodeId: input.ownNodeId,
   });
   peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: input.ownNodeId });
-  const launchCheck = new PublishedLaunchCheck({ availability: input.availability, validator: input.validator });
-  const published = new PublishedAgentService({ store: new PublishedAgentStore(input.config), definitions: input.definitions, launchCheck });
-  const services = { capability, peers, published, launchCheck, client };
+  const services = { capability, peers, catalogPort: new NodeCatalogPort(input.tempWorkspaceDir), client };
   const handlers = input.handlers(services);
-  const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, delegatedRuns: handlers.delegatedRuns, messages: handlers.messages });
-  return Object.freeze({ ...services, gateway });
+  const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers });
+  const discovery = new RemoteNodeDiscovery({ capability, peers, client });
+  return Object.freeze({ ...services, gateway, discovery });
 };
 
 let processServices: RemoteCollaborationServices | null = null;

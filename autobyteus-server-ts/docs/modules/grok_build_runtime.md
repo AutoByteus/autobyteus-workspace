@@ -65,7 +65,8 @@ modules.
   or `XAI_API_KEY` inherited from the server environment. AutoByteus adds no
   vault binding or credential relay. Settings -> Agent Runtimes shows the
   sign-in state (from `grok models`) and can start Grok's own
-  `grok login --oauth` on the desktop's own node
+  `grok login --oauth` on the desktop's own node, or on a remote node that
+  can open a browser on its own desktop, such as a Docker node
   ([Agent Runtimes](./agent_runtimes.md)); it never sees the credential. The vault's
   `provider.grok.api-key` belongs to the native `autobyteus` runtime and is
   never passed to the child process. Provider errors are surfaced as-is. For

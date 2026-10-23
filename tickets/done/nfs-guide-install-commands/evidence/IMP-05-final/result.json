@@ -1,0 +1,66 @@
+{
+  "id": "IMP-05",
+  "date": "2026-10-21T19:59:21.833Z",
+  "commit": "3dd60f90c710a3f5278fb828b632f7b50ab33736",
+  "sourceState": "current worktree changes",
+  "base": "http://127.0.0.1:50967",
+  "events": [],
+  "scenarios": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 1280,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    },
+    {
+      "locale": "zh",
+      "width": 390,
+      "commands": 9,
+      "clipboard": "actual Chrome clipboard exact bytes",
+      "overflow": {
+        "scroll": 390,
+        "client": 390
+      }
+    },
+    {
+      "keyboard": "Enter activates Copy",
+      "timer": "success clears after two seconds"
+    },
+    {
+      "denial": "manual selection message",
+      "unavailable": "both install disabled",
+      "partial": "Linux disabled only"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": "closed",
+    "fixture": "removed"
+  },
+  "browser": "155.0.8059.85",
+  "result": "Pass"
+}

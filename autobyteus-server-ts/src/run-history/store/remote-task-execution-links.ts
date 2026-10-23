@@ -1,8 +1,9 @@
-import type { RemoteTaskAgentExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
+import { remoteTaskExecutionRunId, type RemoteTaskExecution, type TaskExecution } from "../domain/run-execution-tree-shared-records.js";
 import {
   isRemoteTaskExecutionEntry,
   objectRecord,
-  parseRemoteTaskAgentExecution,
+  parseStoredRemoteTaskExecution,
+  storedRemoteTaskExecution,
 } from "./run-execution-tree-shared-record-schemas.js";
 import { ROOT_TASK_LIST_KEY } from "./coordinating-tree-shapes.js";
 import type { CoordinatingTreeShape } from "./task-execution-tree-split.js";
@@ -46,41 +47,36 @@ export const attachRemoteLinks = <TTree>(
       else entry.members.forEach((member) => known.add(member.agentRunId));
     }
   }
-  const links: RemoteTaskAgentExecution[] = [];
+  const links: RemoteTaskExecution[] = [];
   for (const [key, entries] of shape.rawTaskLists(raw)) {
     entries.forEach((entry, index) => {
       if (!isRemote(entry)) return;
       const record = objectRecord(entry, `${key}[${index}]`);
-      if (key !== ROOT_TASK_LIST_KEY) { report(record.agentRunId, "it is not recorded by the topmost coordinating run."); return; }
-      let link: RemoteTaskAgentExecution;
-      try { link = parseRemoteTaskAgentExecution(record, `${key}[${index}]`); }
-      catch (error) { report(record.agentRunId, error instanceof Error ? error.message : String(error)); return; }
-      if (!known.has(link.delegatorAgentRunId)) { report(link.agentRunId, `its delegator '${link.delegatorAgentRunId}' is not available.`); return; }
+      const storedRunId = record.teamRunId ?? record.agentRunId;
+      if (key !== ROOT_TASK_LIST_KEY) { report(storedRunId, "it is not recorded by the topmost coordinating run."); return; }
+      let link: RemoteTaskExecution;
+      try { link = parseStoredRemoteTaskExecution(record, `${key}[${index}]`); }
+      catch (error) { report(storedRunId, error instanceof Error ? error.message : String(error)); return; }
+      if (!known.has(link.delegatorAgentRunId)) {
+        report(remoteTaskExecutionRunId(link), `its delegator '${link.delegatorAgentRunId}' is not available.`);
+        return;
+      }
       links.push(link);
     });
   }
   return shape.withRemoteLinks(composed, links);
 };
 
-/** The stored form of a remote link: the same exact keys as in memory. */
-const remoteLinkEntryOf = (link: RemoteTaskAgentExecution): Record<string, unknown> => ({
-  address: link.address,
-  agentRunId: link.agentRunId,
-  nodeId: link.nodeId,
-  delegatorAgentRunId: link.delegatorAgentRunId,
-  startedAt: link.startedAt,
-});
-
-const remoteKey = (nodeId: unknown, agentRunId: unknown): string => `${String(nodeId)}\0${String(agentRunId)}`;
+const remoteKey = (nodeId: unknown, runId: unknown): string => `${String(nodeId)}\0${String(runId)}`;
 
 /**
  * The root list for saving: the entries already computed (on-disk entries kept in place, remote ones
  * included unchanged) plus each in-memory remote link not yet on disk, appended.
  */
-export const appendRemoteLinks = (output: readonly unknown[], links: readonly RemoteTaskAgentExecution[]): unknown[] => {
+export const appendRemoteLinks = (output: readonly unknown[], links: readonly RemoteTaskExecution[]): unknown[] => {
   const stored = new Set(output.filter(isRemote).map((entry) => {
     const record = entry as Record<string, unknown>;
-    return remoteKey(record.nodeId, record.agentRunId);
+    return remoteKey(record.nodeId, record.teamRunId ?? record.agentRunId);
   }));
-  return [...output, ...links.filter((link) => !stored.has(remoteKey(link.nodeId, link.agentRunId))).map(remoteLinkEntryOf)];
+  return [...output, ...links.filter((link) => !stored.has(remoteKey(link.nodeId, remoteTaskExecutionRunId(link)))).map(storedRemoteTaskExecution)];
 };

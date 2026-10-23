@@ -1,4 +1,5 @@
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
+import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
@@ -188,6 +189,11 @@ export class AgentOrgRunService {
     if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
       .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
     return result;
+  }
+
+  /** N-303 / N-304: the stored-link check before a peer's message restores an Org run. */
+  storedRemoteLinkCheck(agentOrgRunId: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    return this.dependencies.manager.storedRemoteLinkCheck(required(agentOrgRunId, "agentOrgRunId"), query);
   }
 
   getActive(agentOrgRunId: string): AgentOrgRun | null {

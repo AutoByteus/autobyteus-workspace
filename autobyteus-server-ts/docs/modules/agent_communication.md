@@ -408,8 +408,9 @@ startup into ordinary, unowned delegated runs of the same root (migration
   [Projects](projects.md#tasks-with-no-project-ad-hoc)).
 - **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
   [Agent Tools](./agent_tools.md)) asks the sender's root
-  (`listAvailableAgents`), which returns `{name, kind, address, description}` for
-  every eligible definition once, with the `@` eligibility (Q-2): an in-run
+  (`listAvailableAgents`), which returns `{name, kind, address, description?}` for
+  every eligible definition once (`description` only when the definition has one;
+  autobyteus-261 DEC-405), with the `@` eligibility (Q-2): an in-run
   definition at its in-run address (the standalone host, then configured
   placement or Org mounted Team; ties go to the smallest address), any other at its
   catalog address. Definitions come from the live
@@ -420,7 +421,10 @@ startup into ordinary, unowned delegated runs of the same root (migration
   sender is the viewer: a copy member's list holds the host at its host address plus
   exactly the host's own list, and the host's list never holds itself. Listing
   never writes, so a standalone run that only lists gets no `collaboration/`
-  package.
+  package. With `node`, the tool lists a peer node's offer instead, and the opt-in
+  `list_available_nodes` lists the peers with their status (autobyteus-261; see
+  [Remote Collaboration](./remote_collaboration.md#discovery)); neither goes through
+  the sender's root.
 - **In the run.** Configured placements and a standalone run's host count as in the
   run: `@` addresses that instance, and `send_message_to` reaches it. Delegated
   copies are not "in the run" by address: they are reached by their run ID.
@@ -475,6 +479,16 @@ Team copy:
   default run on …". `delegate_task` returns these lines as `launch_notes` (see
   [Agent Tools](./agent_tools.md)). Only the call that started the copy carries
   notes.
+- **A run started for a peer node.** A peer's `delegate_task` resolves its target through the same admission
+  and resolver, with a launch base of `defaults_only` instead of `inherited`
+  (`CollaboratorRootPort.launchBase()`; the run roots return `inherited`, `NodeCatalogPort` returns
+  `defaults_only`). There is no run root on the receiving node, so there is no inherited layer: workspace
+  and auto-approve come from the base (the temp workspace, auto-approve on), and the base's workspace is
+  the validation context. An agent that no configured layer covers fails: with nothing complete configured,
+  `CollaboratorNoDefaultLaunchError` ("There is no default runtime configured for the target agent <name>",
+  or "… the target agent team <name>" for an agent of a Team);
+  with a configured layer that can't be used, `CollaboratorAddError` with that layer's reason. See
+  [Remote Collaboration](./remote_collaboration.md).
 - **Recorded, not re-read.** The resolved values and their source
   (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
   written into the copy's `source` when it starts. Every member records its complete

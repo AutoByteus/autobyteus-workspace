@@ -1,0 +1,1138 @@
+--- start 2026-10-22T04:44:37.356Z pid 93651
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64024
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64024
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:93651) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-22T04:44:39.615Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 20 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_available_nodes'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792644279966,"pid":93651,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64049"}
+{"level":30,"time":1792644279996,"pid":93651,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64024"}
+[2026-10-22T04:44:39.996Z] [INFO] [server.runtime] Server listening on 127.0.0.1:64024
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: delegator
+Agent Definition created successfully with ID: remote-manager
+Agent Definition created successfully with ID: remote-worker
+Agent Definition created successfully with ID: scout
+Agent Team Definition created successfully with ID: remote-squad
+{"level":30,"time":1792644280435,"pid":93651,"hostname":"MacBookPro","reqId":"req-b","err":{"type":"GraphQLError","message":"Turn on Remote Collaboration before adding a peer node.","stack":"GraphQLError: Turn on Remote Collaboration before adding a peer node.\n    at settingsError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:123:7)\n    at guarded (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:130:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addPeerNode"],"locations":[{"line":1,"column":36}],"extensions":{"code":"REMOTE_COLLABORATION_OFF"}},"msg":"Turn on Remote Collaboration before adding a peer node."}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Created and registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_9de2f61ab0a94e45900883abd9d1a8be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agents/delegator_9de2f61ab0a94e45900883abd9d1a8be/raw_traces_active.jsonl
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 642a8bd3-1556-423b-9b18-b4be7134bfd3 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=642a8bd3-1556-423b-9b18-b4be7134bfd3, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644280899,"pid":93651,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.18799999356269836,"msg":"http request completed"}
+{"level":30,"time":1792644281045,"pid":93651,"hostname":"MacBookPro","reqId":"req-l","err":{"type":"GraphQLError","message":"http://127.0.0.1:64064 is not an AutoByteus node.","stack":"GraphQLError: http://127.0.0.1:64064 is not an AutoByteus node.\n    at settingsError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:123:7)\n    at guarded (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:130:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addPeerNode"],"locations":[{"line":1,"column":36}],"extensions":{"code":"PEER_NOT_AUTOBYTEUS"}},"msg":"http://127.0.0.1:64064 is not an AutoByteus node."}
+{"level":30,"time":1792644281050,"pid":93651,"hostname":"MacBookPro","reqId":"req-m","err":{"type":"GraphQLError","message":"http://127.0.0.1:64064/missing is not an AutoByteus node.","stack":"GraphQLError: http://127.0.0.1:64064/missing is not an AutoByteus node.\n    at settingsError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:123:7)\n    at guarded (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:130:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addPeerNode"],"locations":[{"line":1,"column":36}],"extensions":{"code":"PEER_NOT_AUTOBYTEUS"}},"msg":"http://127.0.0.1:64064/missing is not an AutoByteus node."}
+{"level":30,"time":1792644281055,"pid":93651,"hostname":"MacBookPro","reqId":"req-n","err":{"type":"GraphQLError","message":"http://127.0.0.1:64066 could not be reached: fetch failed.","stack":"GraphQLError: http://127.0.0.1:64066 could not be reached: fetch failed.\n    at settingsError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:123:7)\n    at guarded (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/dist/api/graphql/types/remote-collaboration-settings.js:130:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addPeerNode"],"locations":[{"line":1,"column":36}],"extensions":{"code":"PEER_UNREACHABLE"}},"msg":"http://127.0.0.1:64066 could not be reached: fetch failed."}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 803f0728-487a-48e6-88ed-a6b341633818 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=803f0728-487a-48e6-88ed-a6b341633818, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644281234,"pid":93651,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.2292499840259552,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session ecdb9dc0-f7cb-4799-ae73-8f8c8019a5f2 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=ecdb9dc0-f7cb-4799-ae73-8f8c8019a5f2, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644281451,"pid":93651,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.27754199504852295,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 02fd7b6a-7447-4a4e-9fad-2d2fdb072761 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=02fd7b6a-7447-4a4e-9fad-2d2fdb072761, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644281670,"pid":93651,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.1731249988079071,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session b5f2c56b-8163-459f-bc46-0984c8d026ca for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=b5f2c56b-8163-459f-bc46-0984c8d026ca, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644281892,"pid":93651,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.21491700410842896,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 3fd52bf5-59c4-493e-ab40-07c6a998f034 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=3fd52bf5-59c4-493e-ab40-07c6a998f034, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644282212,"pid":93651,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.3232499957084656,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session c6a740b3-43d0-4893-80fb-9b25ba0ef1c4 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=c6a740b3-43d0-4893-80fb-9b25ba0ef1c4, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644282430,"pid":93651,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.3002919852733612,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session d1c336e5-daf3-400f-bbd5-c6cc92ca7ffa for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=d1c336e5-daf3-400f-bbd5-c6cc92ca7ffa, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644282659,"pid":93651,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.1930829882621765,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 6eea188f-e31a-4a79-ba8f-bf62e46a9977 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=6eea188f-e31a-4a79-ba8f-bf62e46a9977, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644282894,"pid":93651,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.15716701745986938,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 51da4177-4826-4144-a63d-fef845ff1c3e for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=51da4177-4826-4144-a63d-fef845ff1c3e, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644283115,"pid":93651,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.2190830111503601,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e5372bc3-1ba8-45b3-9ebb-c9c4aa923206 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e5372bc3-1ba8-45b3-9ebb-c9c4aa923206, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644283336,"pid":93651,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11579102277755737,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 770c1b85-bcf3-48e9-8bd0-46b16d24e722 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=770c1b85-bcf3-48e9-8bd0-46b16d24e722, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644283670,"pid":93651,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.14824998378753662,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e83edf3e-6c51-41a9-87c0-b8e1dd2b0677 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e83edf3e-6c51-41a9-87c0-b8e1dd2b0677, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644284643,"pid":93651,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.22987499833106995,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 0ed7d131-1907-4317-8c49-c7b9fb38e90f for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=0ed7d131-1907-4317-8c49-c7b9fb38e90f, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_teams/remote_squad_057126fea6de46c391161eb5226dfcc5/delegator_8bd66dd75555425eb3d983b827049c59/raw_traces_active.jsonl
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 1793d99f-7f91-42a9-80e1-20666f558965 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=1793d99f-7f91-42a9-80e1-20666f558965, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_teams/remote_squad_057126fea6de46c391161eb5226dfcc5/delegator_8bd66dd75555425eb3d983b827049c59/raw_traces_active.jsonl
+AGY compaction detection off for run delegator_8bd66dd75555425eb3d983b827049c59: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_teams/remote_squad_057126fea6de46c391161eb5226dfcc5/delegator_8bd66dd75555425eb3d983b827049c59/raw_traces_active.jsonl
+{"level":40,"time":1792644287325,"pid":93651,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.1905829906463623,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 3cf56787-d1cb-4dbe-a4be-ff9451110fe0 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=3cf56787-d1cb-4dbe-a4be-ff9451110fe0, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644288223,"pid":93651,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.179749995470047,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session ec9e7e9d-eced-4226-8525-d02d017f9994 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=ec9e7e9d-eced-4226-8525-d02d017f9994, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644288452,"pid":93651,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.1495000123977661,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_e57dd6034b074452a33076327a34c9ee: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 9c92625c-5695-40e7-bd5a-e5dda19ff61e for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=9c92625c-5695-40e7-bd5a-e5dda19ff61e, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644288886,"pid":93651,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/mcp/agent-tools/agtrun_fsSItwhTz-7VEhcHOVjV841XA7nrVW8ecEkMlvzMFzg","statusCode":405,"elapsedMs":0.1899999976158142,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_orgs/remote_org_c4fa106e15fb4282bc7ec753b1dcf44b/delegator_7309bbb21c9d4eb9b80af5d5793ba803/raw_traces_active.jsonl
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_orgs/remote_org_c4fa106e15fb4282bc7ec753b1dcf44b/delegator_7309bbb21c9d4eb9b80af5d5793ba803/raw_traces_active.jsonl
+AGY compaction detection off for run delegator_7309bbb21c9d4eb9b80af5d5793ba803: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agent_orgs/remote_org_c4fa106e15fb4282bc7ec753b1dcf44b/delegator_7309bbb21c9d4eb9b80af5d5793ba803/raw_traces_active.jsonl
+{"level":40,"time":1792644291607,"pid":93651,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/mcp/agent-tools/agtrun_BSR4y9Fpr5fGzIgqtNEIBOXJGVlTci-X_fy-wnbUg6c","statusCode":405,"elapsedMs":0.16133299469947815,"msg":"http request completed"}
+{"level":40,"time":1792644292521,"pid":93651,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/mcp/agent-tools/agtrun_BSR4y9Fpr5fGzIgqtNEIBOXJGVlTci-X_fy-wnbUg6c","statusCode":405,"elapsedMs":0.20387500524520874,"msg":"http request completed"}
+{"level":40,"time":1792644292764,"pid":93651,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/mcp/agent-tools/agtrun_BSR4y9Fpr5fGzIgqtNEIBOXJGVlTci-X_fy-wnbUg6c","statusCode":405,"elapsedMs":0.19083300232887268,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_c26c9347f0db458abc4ecf818853f021: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_508b5d0f37044e769fe10a0e1576e126: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agents/delegator_508b5d0f37044e769fe10a0e1576e126/raw_traces_active.jsonl
+Agent websocket attached for run delegator_508b5d0f37044e769fe10a0e1576e126
+Created agent session 5e8198dc-038f-41df-9602-0861e61215d4 for run delegator_508b5d0f37044e769fe10a0e1576e126
+Agent WebSocket connected: session=5e8198dc-038f-41df-9602-0861e61215d4, run=delegator_508b5d0f37044e769fe10a0e1576e126
+{"level":40,"time":1792644293350,"pid":93651,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/mcp/agent-tools/agtrun_LAE3pTOBWvagZmei8HOCMHu79NuHF5-ROto23hxm1V4","statusCode":405,"elapsedMs":0.17470800876617432,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 033a95b3-15cc-43b9-9aeb-edb70cd30408 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=033a95b3-15cc-43b9-9aeb-edb70cd30408, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644295141,"pid":93651,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.28770899772644043,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 944b5b21-ab30-4167-bd82-8c1359faf88c for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=944b5b21-ab30-4167-bd82-8c1359faf88c, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644295355,"pid":93651,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.12391600012779236,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 5587ad64-3228-4779-b66b-07c31a551647 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=5587ad64-3228-4779-b66b-07c31a551647, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644295577,"pid":93651,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.12204200029373169,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 357bde06-05d7-4977-8171-e7e10510234c for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=357bde06-05d7-4977-8171-e7e10510234c, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644295796,"pid":93651,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.15000000596046448,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run remote_manager_2fe158023bd34981bf57fee3bd0361d0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agents/remote_manager_2fe158023bd34981bf57fee3bd0361d0/raw_traces_active.jsonl
+Agent websocket attached for run remote_manager_2fe158023bd34981bf57fee3bd0361d0
+Created agent session b26067ca-aef1-48e8-84c0-ade41d0a0bae for run remote_manager_2fe158023bd34981bf57fee3bd0361d0
+Agent WebSocket connected: session=b26067ca-aef1-48e8-84c0-ade41d0a0bae, run=remote_manager_2fe158023bd34981bf57fee3bd0361d0
+{"level":40,"time":1792644297364,"pid":93651,"hostname":"MacBookPro","reqId":"req-2v","method":"GET","url":"/mcp/agent-tools/agtrun_ShASwiyrtjiNAu9_JYA5viC_bp3ay09rDSPlgQl354E","statusCode":405,"elapsedMs":0.14804202318191528,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run remote_worker_6e5c4565bf4d4b48b8386cbf3463d415: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792644297733,"pid":93651,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/mcp/agent-tools/agtrun_aU2iUeOyCRkj1tY7BCugU8mAA27yqJ-ohbB8UarVf2A","statusCode":405,"elapsedMs":0.1737920045852661,"msg":"http request completed"}
+Agent websocket attached for run remote_manager_2fe158023bd34981bf57fee3bd0361d0
+Created agent session eed302de-6b79-44e8-8462-9bb4cf27cd4a for run remote_manager_2fe158023bd34981bf57fee3bd0361d0
+Agent WebSocket connected: session=eed302de-6b79-44e8-8462-9bb4cf27cd4a, run=remote_manager_2fe158023bd34981bf57fee3bd0361d0
+{"level":40,"time":1792644298631,"pid":93651,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/mcp/agent-tools/agtrun_ShASwiyrtjiNAu9_JYA5viC_bp3ay09rDSPlgQl354E","statusCode":405,"elapsedMs":0.28345799446105957,"msg":"http request completed"}
+TASK_AGENT_RESOURCE_FENCED_REMOTE {
+  taskId: 'project_task_05765705-6232-4197-9574-6142a5a9f896',
+  hostRoot: {
+    rootSubjectKind: 'agent',
+    rootRunId: 'remote_manager_2fe158023bd34981bf57fee3bd0361d0'
+  },
+  execution: { agentRunId: 'publisher_45aa46be58e64692adc1c0cd7a0aef6b' },
+  message: '/publisher runs on node "beta-node". This Task sends it no more messages; it stops there when it goes idle.'
+}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 0029dfd2-fe20-4b64-bb39-9930580f1bd9 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=0029dfd2-fe20-4b64-bb39-9930580f1bd9, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644302067,"pid":93651,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.14891600608825684,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session b73727dd-5566-4baa-8dca-256bbf168cee for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=b73727dd-5566-4baa-8dca-256bbf168cee, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644302603,"pid":93651,"hostname":"MacBookPro","reqId":"req-3b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.16795900464057922,"msg":"http request completed"}
+TASK_AGENT_RESOURCE_FENCED_REMOTE {
+  taskId: 'ad_hoc_task_7663074f-c107-48f3-a1f1-33479fa0443b',
+  hostRoot: {
+    rootSubjectKind: 'agent',
+    rootRunId: 'delegator_9de2f61ab0a94e45900883abd9d1a8be'
+  },
+  execution: { agentRunId: 'publisher_bb14ba8fc32e474ca5d0a16c177e1d71' },
+  message: '/publisher runs on node "beta-node". This Task sends it no more messages; it stops there when it goes idle.'
+}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 83c47383-0f4f-4d24-b3f2-ece2b394aed8 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=83c47383-0f4f-4d24-b3f2-ece2b394aed8, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644302829,"pid":93651,"hostname":"MacBookPro","reqId":"req-3f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.17308300733566284,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 64ff88ee-c4c3-4b1c-9b4a-54727a760b66 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=64ff88ee-c4c3-4b1c-9b4a-54727a760b66, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session b3dc55a9-fc95-451c-a011-44ea80298b5a for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=b3dc55a9-fc95-451c-a011-44ea80298b5a, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644306496,"pid":93651,"hostname":"MacBookPro","reqId":"req-3j","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.2063330113887787,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 57887362-b073-4a78-b5fa-d05f0a67dc58 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=57887362-b073-4a78-b5fa-d05f0a67dc58, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644307471,"pid":93651,"hostname":"MacBookPro","reqId":"req-3n","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.12229201197624207,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 290e42b0-f46f-4862-996a-5327d9af5852 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=290e42b0-f46f-4862-996a-5327d9af5852, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644307695,"pid":93651,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.10933300852775574,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 1b5f0bb9-bd22-4e20-8549-68ccbac208e2 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=1b5f0bb9-bd22-4e20-8549-68ccbac208e2, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644308388,"pid":93651,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.13883301615715027,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 7c30af98-d412-40bf-9156-6c40e4b5a4eb for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=7c30af98-d412-40bf-9156-6c40e4b5a4eb, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644308612,"pid":93651,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/mcp/agent-tools/agtrun_fsSItwhTz-7VEhcHOVjV841XA7nrVW8ecEkMlvzMFzg","statusCode":405,"elapsedMs":0.13995802402496338,"msg":"http request completed"}
+Agent websocket attached for run delegator_508b5d0f37044e769fe10a0e1576e126
+Created agent session 379c5c7e-5067-46b4-bdb4-91e0d2e9f71a for run delegator_508b5d0f37044e769fe10a0e1576e126
+Agent WebSocket connected: session=379c5c7e-5067-46b4-bdb4-91e0d2e9f71a, run=delegator_508b5d0f37044e769fe10a0e1576e126
+{"level":40,"time":1792644308837,"pid":93651,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/mcp/agent-tools/agtrun_LAE3pTOBWvagZmei8HOCMHu79NuHF5-ROto23hxm1V4","statusCode":405,"elapsedMs":0.204041987657547,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 4132a7ae-9397-456e-88df-3f39fae99df7 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=4132a7ae-9397-456e-88df-3f39fae99df7, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644310069,"pid":93651,"hostname":"MacBookPro","reqId":"req-47","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.22049999237060547,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session b3e8b1da-4fe2-47a6-9b7f-019e8e74a1c0 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=b3e8b1da-4fe2-47a6-9b7f-019e8e74a1c0, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644310645,"pid":93651,"hostname":"MacBookPro","reqId":"req-4b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11983299255371094,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 14efd687-a75d-4267-afff-adb4cc17e083 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=14efd687-a75d-4267-afff-adb4cc17e083, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644310866,"pid":93651,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.19587501883506775,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 5c236644-a236-438c-b70a-a488bd2d1258 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=5c236644-a236-438c-b70a-a488bd2d1258, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644311097,"pid":93651,"hostname":"MacBookPro","reqId":"req-4j","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.09375,"msg":"http request completed"}
+TASK_AGENT_RESOURCE_FENCED_REMOTE {
+  taskId: 'ad_hoc_task_3879cf05-3847-46c0-a0ad-4ce5588de7da',
+  hostRoot: {
+    rootSubjectKind: 'agent',
+    rootRunId: 'delegator_9de2f61ab0a94e45900883abd9d1a8be'
+  },
+  execution: { teamRunId: 'studio_team_c8f9413cbe574e61be87c9bfaf19ebec' },
+  message: '/studio_team runs on node "beta-node". This Task sends it no more messages; it stops there when it goes idle.'
+}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 884811ab-fdac-46a5-bff5-49bc2461f4c2 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=884811ab-fdac-46a5-bff5-49bc2461f4c2, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644311318,"pid":93651,"hostname":"MacBookPro","reqId":"req-4n","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.17720800638198853,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session fc17e57b-ad37-41e8-9f3d-0eecaa88627d for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=fc17e57b-ad37-41e8-9f3d-0eecaa88627d, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644314978,"pid":93651,"hostname":"MacBookPro","reqId":"req-4r","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.13933300971984863,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session fbcd8f90-b73b-49ab-b4be-94e81e915327 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=fbcd8f90-b73b-49ab-b4be-94e81e915327, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644315524,"pid":93651,"hostname":"MacBookPro","reqId":"req-4v","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.17045900225639343,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session a7bb2e95-0149-4188-832b-5ffc7b54de7c for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=a7bb2e95-0149-4188-832b-5ffc7b54de7c, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644344926,"pid":93651,"hostname":"MacBookPro","reqId":"req-4z","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11024999618530273,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 1f43a3ca-3311-4219-941b-3518b7030453 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=1f43a3ca-3311-4219-941b-3518b7030453, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644466111,"pid":93651,"hostname":"MacBookPro","reqId":"req-53","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.1537500023841858,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 67acb290-03ea-415a-9005-8a5122d7a9aa for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=67acb290-03ea-415a-9005-8a5122d7a9aa, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644468410,"pid":93651,"hostname":"MacBookPro","reqId":"req-57","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11787500977516174,"msg":"http request completed"}
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session adbb40bc-7d90-458e-8a19-7567bc53fa47 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=adbb40bc-7d90-458e-8a19-7567bc53fa47, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644468850,"pid":93651,"hostname":"MacBookPro","reqId":"req-5b","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.07466700673103333,"msg":"http request completed"}
+[2026-10-22T04:47:49.057Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 5587ad64-3228-4779-b66b-07c31a551647
+Agent WebSocket disconnected: 5587ad64-3228-4779-b66b-07c31a551647
+Closed agent session 944b5b21-ab30-4167-bd82-8c1359faf88c
+Agent WebSocket disconnected: 944b5b21-ab30-4167-bd82-8c1359faf88c
+Closed agent session 033a95b3-15cc-43b9-9aeb-edb70cd30408
+Agent WebSocket disconnected: 033a95b3-15cc-43b9-9aeb-edb70cd30408
+Closed agent session 5e8198dc-038f-41df-9602-0861e61215d4
+Agent WebSocket disconnected: 5e8198dc-038f-41df-9602-0861e61215d4
+Closed agent session 9c92625c-5695-40e7-bd5a-e5dda19ff61e
+Closed agent session ec9e7e9d-eced-4226-8525-d02d017f9994
+Closed agent session 3cf56787-d1cb-4dbe-a4be-ff9451110fe0
+Closed agent session 1793d99f-7f91-42a9-80e1-20666f558965
+Closed agent session 0ed7d131-1907-4317-8c49-c7b9fb38e90f
+Closed agent session e83edf3e-6c51-41a9-87c0-b8e1dd2b0677
+Agent WebSocket disconnected: e83edf3e-6c51-41a9-87c0-b8e1dd2b0677
+Closed agent session 770c1b85-bcf3-48e9-8bd0-46b16d24e722
+Agent WebSocket disconnected: 770c1b85-bcf3-48e9-8bd0-46b16d24e722
+Closed agent session e5372bc3-1ba8-45b3-9ebb-c9c4aa923206
+Agent WebSocket disconnected: e5372bc3-1ba8-45b3-9ebb-c9c4aa923206
+Closed agent session 51da4177-4826-4144-a63d-fef845ff1c3e
+Agent WebSocket disconnected: 51da4177-4826-4144-a63d-fef845ff1c3e
+Closed agent session 6eea188f-e31a-4a79-ba8f-bf62e46a9977
+Agent WebSocket disconnected: 6eea188f-e31a-4a79-ba8f-bf62e46a9977
+Closed agent session d1c336e5-daf3-400f-bbd5-c6cc92ca7ffa
+Agent WebSocket disconnected: d1c336e5-daf3-400f-bbd5-c6cc92ca7ffa
+Closed agent session c6a740b3-43d0-4893-80fb-9b25ba0ef1c4
+Agent WebSocket disconnected: c6a740b3-43d0-4893-80fb-9b25ba0ef1c4
+Closed agent session 3fd52bf5-59c4-493e-ab40-07c6a998f034
+Agent WebSocket disconnected: 3fd52bf5-59c4-493e-ab40-07c6a998f034
+Closed agent session b5f2c56b-8163-459f-bc46-0984c8d026ca
+Agent WebSocket disconnected: b5f2c56b-8163-459f-bc46-0984c8d026ca
+Closed agent session 02fd7b6a-7447-4a4e-9fad-2d2fdb072761
+Agent WebSocket disconnected: 02fd7b6a-7447-4a4e-9fad-2d2fdb072761
+Closed agent session ecdb9dc0-f7cb-4799-ae73-8f8c8019a5f2
+Agent WebSocket disconnected: ecdb9dc0-f7cb-4799-ae73-8f8c8019a5f2
+Closed agent session 803f0728-487a-48e6-88ed-a6b341633818
+Agent WebSocket disconnected: 803f0728-487a-48e6-88ed-a6b341633818
+Closed agent session 642a8bd3-1556-423b-9b18-b4be7134bfd3
+Agent WebSocket disconnected: 642a8bd3-1556-423b-9b18-b4be7134bfd3
+Closed agent session adbb40bc-7d90-458e-8a19-7567bc53fa47
+Closed agent session 67acb290-03ea-415a-9005-8a5122d7a9aa
+Agent WebSocket disconnected: 67acb290-03ea-415a-9005-8a5122d7a9aa
+Closed agent session 1f43a3ca-3311-4219-941b-3518b7030453
+Closed agent session a7bb2e95-0149-4188-832b-5ffc7b54de7c
+Agent WebSocket disconnected: a7bb2e95-0149-4188-832b-5ffc7b54de7c
+Closed agent session fbcd8f90-b73b-49ab-b4be-94e81e915327
+Closed agent session fc17e57b-ad37-41e8-9f3d-0eecaa88627d
+Agent WebSocket disconnected: fc17e57b-ad37-41e8-9f3d-0eecaa88627d
+Closed agent session 884811ab-fdac-46a5-bff5-49bc2461f4c2
+Agent WebSocket disconnected: 884811ab-fdac-46a5-bff5-49bc2461f4c2
+Closed agent session 5c236644-a236-438c-b70a-a488bd2d1258
+Agent WebSocket disconnected: 5c236644-a236-438c-b70a-a488bd2d1258
+Closed agent session 14efd687-a75d-4267-afff-adb4cc17e083
+Agent WebSocket disconnected: 14efd687-a75d-4267-afff-adb4cc17e083
+Closed agent session b3e8b1da-4fe2-47a6-9b7f-019e8e74a1c0
+Agent WebSocket disconnected: b3e8b1da-4fe2-47a6-9b7f-019e8e74a1c0
+Closed agent session 4132a7ae-9397-456e-88df-3f39fae99df7
+Agent WebSocket disconnected: 4132a7ae-9397-456e-88df-3f39fae99df7
+Closed agent session 379c5c7e-5067-46b4-bdb4-91e0d2e9f71a
+Agent WebSocket disconnected: 379c5c7e-5067-46b4-bdb4-91e0d2e9f71a
+Closed agent session 7c30af98-d412-40bf-9156-6c40e4b5a4eb
+Closed agent session 1b5f0bb9-bd22-4e20-8549-68ccbac208e2
+Closed agent session 290e42b0-f46f-4862-996a-5327d9af5852
+Closed agent session 57887362-b073-4a78-b5fa-d05f0a67dc58
+Closed agent session b3dc55a9-fc95-451c-a011-44ea80298b5a
+Closed agent session 64ff88ee-c4c3-4b1c-9b4a-54727a760b66
+Closed agent session 83c47383-0f4f-4d24-b3f2-ece2b394aed8
+Agent WebSocket disconnected: 83c47383-0f4f-4d24-b3f2-ece2b394aed8
+Closed agent session b73727dd-5566-4baa-8dca-256bbf168cee
+Agent WebSocket disconnected: b73727dd-5566-4baa-8dca-256bbf168cee
+Closed agent session 0029dfd2-fe20-4b64-bb39-9930580f1bd9
+Agent WebSocket disconnected: 0029dfd2-fe20-4b64-bb39-9930580f1bd9
+Closed agent session eed302de-6b79-44e8-8462-9bb4cf27cd4a
+Agent WebSocket disconnected: eed302de-6b79-44e8-8462-9bb4cf27cd4a
+Closed agent session b26067ca-aef1-48e8-84c0-ade41d0a0bae
+Agent WebSocket disconnected: b26067ca-aef1-48e8-84c0-ade41d0a0bae
+Closed agent session 357bde06-05d7-4977-8171-e7e10510234c
+Agent WebSocket disconnected: 357bde06-05d7-4977-8171-e7e10510234c
+[2026-10-22T04:47:49.443Z] [INFO] [server.runtime] Server closed cleanly.
+--- start 2026-10-22T04:47:49.455Z pid 23818
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64024
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64024
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.24                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:23818) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-22T04:47:50.817Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 20 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_available_nodes'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792644470970,"pid":23818,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64259"}
+{"level":30,"time":1792644470994,"pid":23818,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64024"}
+[2026-10-22T04:47:50.995Z] [INFO] [server.runtime] Server listening on 127.0.0.1:64024
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Created and registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_9de2f61ab0a94e45900883abd9d1a8be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_8bd66dd75555425eb3d983b827049c59: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_7309bbb21c9d4eb9b80af5d5793ba803: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e72729dc-b2ae-48bf-ae5c-592c91aabdcc for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e72729dc-b2ae-48bf-ae5c-592c91aabdcc, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644473101,"pid":23818,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.19620898365974426,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_7f585786e2a14a8dbe69e0eeea674e87: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session a4dbef43-481b-4967-a7ba-1892cc1c5509 for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=a4dbef43-481b-4967-a7ba-1892cc1c5509, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644473626,"pid":23818,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.12720900774002075,"msg":"http request completed"}
+{"level":40,"time":1792644473977,"pid":23818,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_BSR4y9Fpr5fGzIgqtNEIBOXJGVlTci-X_fy-wnbUg6c","statusCode":405,"elapsedMs":0.20720800757408142,"msg":"http request completed"}
+[2026-10-22T04:47:54.415Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session a4dbef43-481b-4967-a7ba-1892cc1c5509
+Closed agent session e72729dc-b2ae-48bf-ae5c-592c91aabdcc
+Agent WebSocket disconnected: e72729dc-b2ae-48bf-ae5c-592c91aabdcc
+[2026-10-22T04:47:54.641Z] [INFO] [server.runtime] Server closed cleanly.
+--- start 2026-10-22T04:47:54.652Z pid 24007
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64024
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64024
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:24007) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-22T04:47:56.050Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 20 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_available_nodes'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792644476230,"pid":24007,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64300"}
+{"level":30,"time":1792644476256,"pid":24007,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64024"}
+[2026-10-22T04:47:56.256Z] [INFO] [server.runtime] Server listening on 127.0.0.1:64024
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Created and registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_8bd66dd75555425eb3d983b827049c59: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run remote_squad_057126fea6de46c391161eb5226dfcc5
+Created agent session 630a8593-861c-4028-896e-e4c8f380e44a for run remote_squad_057126fea6de46c391161eb5226dfcc5
+Agent Team WebSocket connected: session=630a8593-861c-4028-896e-e4c8f380e44a, run=remote_squad_057126fea6de46c391161eb5226dfcc5
+{"level":40,"time":1792644477452,"pid":24007,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_JXgK647ysDY5ZCXB3m2Wov8RGTJMNQ47dKWZ9HXHriw","statusCode":405,"elapsedMs":0.33420899510383606,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run scout_4b262d48319d4507a1492b237e9f2fc9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/data/memory/agents/scout_4b262d48319d4507a1492b237e9f2fc9/raw_traces_active.jsonl
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session a771556c-df6a-47bf-918c-091ab965ed02 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=a771556c-df6a-47bf-918c-091ab965ed02, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644478030,"pid":24007,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.16200000047683716,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 0e250149-4dba-4456-8d3d-8507cf9f963f for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=0e250149-4dba-4456-8d3d-8507cf9f963f, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-7Ph5EQ/alpha/workspace.
+Reusing registered workspace ID: agent_ws_9b735330aa851d1ad12d0888da3ec7432573ae76b6f7bef3f1c4ee826f11502c
+AGY compaction detection off for run delegator_9de2f61ab0a94e45900883abd9d1a8be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1792644478489,"pid":24007,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.09816700220108032,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 367b6f94-6895-4e5b-a903-f08f07736713 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=367b6f94-6895-4e5b-a903-f08f07736713, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644478698,"pid":24007,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.15404099225997925,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 5ed7b8d6-5c2c-42d6-b204-313d84bda32c for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=5ed7b8d6-5c2c-42d6-b204-313d84bda32c, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644478943,"pid":24007,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.17120802402496338,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 92a5c46b-ae7b-4fa8-a169-1f31a41f2485 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=92a5c46b-ae7b-4fa8-a169-1f31a41f2485, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644479154,"pid":24007,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.22566601634025574,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session e5a52f0f-8cdb-4505-8637-f4a90c85223c for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=e5a52f0f-8cdb-4505-8637-f4a90c85223c, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644479382,"pid":24007,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.23979201912879944,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 8fc1e9be-f419-41b1-86f2-c6a833aa3ece for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=8fc1e9be-f419-41b1-86f2-c6a833aa3ece, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644479609,"pid":24007,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.22987499833106995,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 058c69bb-f85c-4f85-ade6-f3b0e1f2afd8 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=058c69bb-f85c-4f85-ade6-f3b0e1f2afd8, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644479826,"pid":24007,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.16141700744628906,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session c0bc5181-a798-4bd2-a065-43562b0b0c54 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=c0bc5181-a798-4bd2-a065-43562b0b0c54, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644480144,"pid":24007,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.11049997806549072,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 38550677-95aa-4c1c-8815-8518b8b278ea for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=38550677-95aa-4c1c-8815-8518b8b278ea, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644480362,"pid":24007,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1254580020904541,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session ce067962-6c62-4e12-91f3-34ecc550a53d for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=ce067962-6c62-4e12-91f3-34ecc550a53d, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644480598,"pid":24007,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.37108299136161804,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session b9e97f98-8bb8-46d4-8486-d5c3883c3148 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=b9e97f98-8bb8-46d4-8486-d5c3883c3148, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644481121,"pid":24007,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.225832998752594,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 1697f7b1-1349-4d7e-aa05-378a0c76dad7 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=1697f7b1-1349-4d7e-aa05-378a0c76dad7, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644481352,"pid":24007,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.141666978597641,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 887b06eb-b86b-4c92-887a-d7d802517c19 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=887b06eb-b86b-4c92-887a-d7d802517c19, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644481880,"pid":24007,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1837500035762787,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 9e2ac169-8749-49f7-993a-f4c9d379ab09 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=9e2ac169-8749-49f7-993a-f4c9d379ab09, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644482102,"pid":24007,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.13245800137519836,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 74d7bda4-a21d-49b1-a253-2bfc5f9da52a for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=74d7bda4-a21d-49b1-a253-2bfc5f9da52a, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644485188,"pid":24007,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1325410008430481,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session e829c504-7ff4-4423-a476-4d7a872938cf for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=e829c504-7ff4-4423-a476-4d7a872938cf, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644485404,"pid":24007,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.19154199957847595,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 5cbc0b5b-01d7-45f1-a5c8-5553f4e7acd9 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=5cbc0b5b-01d7-45f1-a5c8-5553f4e7acd9, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644485633,"pid":24007,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.11366599798202515,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 86ca05a5-54d5-4c17-bc4d-05ac5598e294 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=86ca05a5-54d5-4c17-bc4d-05ac5598e294, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644485855,"pid":24007,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1250840127468109,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 6db6569c-c48e-48ed-8868-0f00f851b938 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=6db6569c-c48e-48ed-8868-0f00f851b938, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644486098,"pid":24007,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.23749998211860657,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 3566d969-4f2b-4574-ae5e-3b90db64cfc4 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=3566d969-4f2b-4574-ae5e-3b90db64cfc4, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644486324,"pid":24007,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1740419864654541,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 3313028d-470a-4458-817e-c2777f392098 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=3313028d-470a-4458-817e-c2777f392098, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644486546,"pid":24007,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1437079906463623,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session af471206-055f-4a0c-a8c4-a3fbee29dde3 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=af471206-055f-4a0c-a8c4-a3fbee29dde3, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644486792,"pid":24007,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.1496250033378601,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 555cf62e-25d4-4372-bc4e-fcadd24418e1 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=555cf62e-25d4-4372-bc4e-fcadd24418e1, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644526935,"pid":24007,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.08612501621246338,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 56e6eb29-f01d-4d1e-bc6c-6943caa9dd79 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=56e6eb29-f01d-4d1e-bc6c-6943caa9dd79, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644527237,"pid":24007,"hostname":"MacBookPro","reqId":"req-2v","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.16216698288917542,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 656d4137-d58e-450c-8c43-7f69e238ed21 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=656d4137-d58e-450c-8c43-7f69e238ed21, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644527459,"pid":24007,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.17041698098182678,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 80316c58-e4f9-4fba-899f-9d24dbadcced for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=80316c58-e4f9-4fba-899f-9d24dbadcced, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644527682,"pid":24007,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.0801670253276825,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 9315acb2-2ba0-4c0d-93dc-b5952075cbe7 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=9315acb2-2ba0-4c0d-93dc-b5952075cbe7, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644527905,"pid":24007,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.08537501096725464,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 642b91d3-c8f0-40b4-8c79-464f9a8a54b2 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=642b91d3-c8f0-40b4-8c79-464f9a8a54b2, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644528128,"pid":24007,"hostname":"MacBookPro","reqId":"req-3b","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.09812501072883606,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session ea7dea65-dcf6-463f-876a-ab1471b8dfb0 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=ea7dea65-dcf6-463f-876a-ab1471b8dfb0, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644528348,"pid":24007,"hostname":"MacBookPro","reqId":"req-3f","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.10612499713897705,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 17939ad2-a9f4-4160-934e-d60f68442a22 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=17939ad2-a9f4-4160-934e-d60f68442a22, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644528573,"pid":24007,"hostname":"MacBookPro","reqId":"req-3j","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.09362497925758362,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session 5b78e59d-e7cc-4f9d-a790-b362bff56752 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=5b78e59d-e7cc-4f9d-a790-b362bff56752, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644528796,"pid":24007,"hostname":"MacBookPro","reqId":"req-3n","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.07645800709724426,"msg":"http request completed"}
+Agent websocket attached for run scout_4b262d48319d4507a1492b237e9f2fc9
+Created agent session b5d926cd-bd59-4ef7-8a59-989949364339 for run scout_4b262d48319d4507a1492b237e9f2fc9
+Agent WebSocket connected: session=b5d926cd-bd59-4ef7-8a59-989949364339, run=scout_4b262d48319d4507a1492b237e9f2fc9
+{"level":40,"time":1792644529041,"pid":24007,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/mcp/agent-tools/agtrun_iH2FXe7Z3o2FbVSG7o3K4rnne-tUtnqHmiUVq9Fca1k","statusCode":405,"elapsedMs":0.12645798921585083,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e30bf42b-f37b-4d47-b344-9cc2c6e2c352 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e30bf42b-f37b-4d47-b344-9cc2c6e2c352, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644529275,"pid":24007,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.1620829999446869,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 0e54d38e-2d64-41dd-a299-7413e6a08809 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=0e54d38e-2d64-41dd-a299-7413e6a08809, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644529797,"pid":24007,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.07962501049041748,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e75c3265-8d67-4412-81f9-66cd1b2eff8b for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e75c3265-8d67-4412-81f9-66cd1b2eff8b, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644530335,"pid":24007,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.08545902371406555,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 7c6de5d3-6740-4966-bf95-bb89af18a30f for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=7c6de5d3-6740-4966-bf95-bb89af18a30f, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644530956,"pid":24007,"hostname":"MacBookPro","reqId":"req-47","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.15458300709724426,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 3eae2b3e-24e7-47cd-83c7-d7a9d0d27d16 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=3eae2b3e-24e7-47cd-83c7-d7a9d0d27d16, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644531179,"pid":24007,"hostname":"MacBookPro","reqId":"req-4b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.17058399319648743,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session ae3623f7-cc57-4653-94cc-34162827dffa for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=ae3623f7-cc57-4653-94cc-34162827dffa, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644551421,"pid":24007,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.2380409836769104,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 10f0a049-aa99-4e7c-90ee-59cd6c78d241 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=10f0a049-aa99-4e7c-90ee-59cd6c78d241, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644571742,"pid":24007,"hostname":"MacBookPro","reqId":"req-4j","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.09637501835823059,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session e31d8dd4-4f63-4284-88fc-8f3dbe69bb09 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=e31d8dd4-4f63-4284-88fc-8f3dbe69bb09, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644573480,"pid":24007,"hostname":"MacBookPro","reqId":"req-4n","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.13220900297164917,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session d8d87726-8af8-4f19-9920-758094ccf093 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=d8d87726-8af8-4f19-9920-758094ccf093, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644573704,"pid":24007,"hostname":"MacBookPro","reqId":"req-4r","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.17808401584625244,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 4b0a5f85-0e93-4226-b3a0-a63571ea6135 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=4b0a5f85-0e93-4226-b3a0-a63571ea6135, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644573969,"pid":24007,"hostname":"MacBookPro","reqId":"req-4v","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.2100830078125,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 7977a39f-bcf5-4083-a48c-41d14d88c5c8 for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=7977a39f-bcf5-4083-a48c-41d14d88c5c8, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644574293,"pid":24007,"hostname":"MacBookPro","reqId":"req-4z","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.12929201126098633,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 79b13398-2d78-4cb8-b7da-7d8fc45ee03c for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=79b13398-2d78-4cb8-b7da-7d8fc45ee03c, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644574956,"pid":24007,"hostname":"MacBookPro","reqId":"req-53","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11949998140335083,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 06f50e7f-5558-44b8-a87c-b820cf0d671b for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=06f50e7f-5558-44b8-a87c-b820cf0d671b, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644575419,"pid":24007,"hostname":"MacBookPro","reqId":"req-57","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.11149999499320984,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 1b888512-095f-4fec-bc57-7e68895996ac for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=1b888512-095f-4fec-bc57-7e68895996ac, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644575932,"pid":24007,"hostname":"MacBookPro","reqId":"req-5b","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.1765419840812683,"msg":"http request completed"}
+Agent websocket attached for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Created agent session 62982357-fa68-4f3d-b930-2a56e8ba8d6f for run delegator_9de2f61ab0a94e45900883abd9d1a8be
+Agent WebSocket connected: session=62982357-fa68-4f3d-b930-2a56e8ba8d6f, run=delegator_9de2f61ab0a94e45900883abd9d1a8be
+{"level":40,"time":1792644576420,"pid":24007,"hostname":"MacBookPro","reqId":"req-5f","method":"GET","url":"/mcp/agent-tools/agtrun_wkAyp3Y_93Rno0Nl7SJw1OoRw7XInkpaTHmstpxYzs8","statusCode":405,"elapsedMs":0.15308299660682678,"msg":"http request completed"}
+Closed agent session 630a8593-861c-4028-896e-e4c8f380e44a
+[2026-10-22T04:49:36.553Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 62982357-fa68-4f3d-b930-2a56e8ba8d6f
+Agent WebSocket disconnected: 62982357-fa68-4f3d-b930-2a56e8ba8d6f
+Closed agent session 1b888512-095f-4fec-bc57-7e68895996ac
+Agent WebSocket disconnected: 1b888512-095f-4fec-bc57-7e68895996ac
+Closed agent session 06f50e7f-5558-44b8-a87c-b820cf0d671b
+Agent WebSocket disconnected: 06f50e7f-5558-44b8-a87c-b820cf0d671b
+Closed agent session 79b13398-2d78-4cb8-b7da-7d8fc45ee03c
+Agent WebSocket disconnected: 79b13398-2d78-4cb8-b7da-7d8fc45ee03c
+Closed agent session 7977a39f-bcf5-4083-a48c-41d14d88c5c8
+Agent WebSocket disconnected: 7977a39f-bcf5-4083-a48c-41d14d88c5c8
+Closed agent session 4b0a5f85-0e93-4226-b3a0-a63571ea6135
+Agent WebSocket disconnected: 4b0a5f85-0e93-4226-b3a0-a63571ea6135
+Closed agent session d8d87726-8af8-4f19-9920-758094ccf093
+Agent WebSocket disconnected: d8d87726-8af8-4f19-9920-758094ccf093
+Closed agent session e31d8dd4-4f63-4284-88fc-8f3dbe69bb09
+Agent WebSocket disconnected: e31d8dd4-4f63-4284-88fc-8f3dbe69bb09
+Closed agent session 10f0a049-aa99-4e7c-90ee-59cd6c78d241
+Agent WebSocket disconnected: 10f0a049-aa99-4e7c-90ee-59cd6c78d241
+Closed agent session ae3623f7-cc57-4653-94cc-34162827dffa
+Agent WebSocket disconnected: ae3623f7-cc57-4653-94cc-34162827dffa
+Closed agent session 3eae2b3e-24e7-47cd-83c7-d7a9d0d27d16
+Agent WebSocket disconnected: 3eae2b3e-24e7-47cd-83c7-d7a9d0d27d16
+Closed agent session 7c6de5d3-6740-4966-bf95-bb89af18a30f
+Agent WebSocket disconnected: 7c6de5d3-6740-4966-bf95-bb89af18a30f
+Closed agent session e75c3265-8d67-4412-81f9-66cd1b2eff8b
+Agent WebSocket disconnected: e75c3265-8d67-4412-81f9-66cd1b2eff8b
+Closed agent session 0e54d38e-2d64-41dd-a299-7413e6a08809
+Agent WebSocket disconnected: 0e54d38e-2d64-41dd-a299-7413e6a08809
+Closed agent session e30bf42b-f37b-4d47-b344-9cc2c6e2c352
+Agent WebSocket disconnected: e30bf42b-f37b-4d47-b344-9cc2c6e2c352
+Closed agent session b5d926cd-bd59-4ef7-8a59-989949364339
+Agent WebSocket disconnected: b5d926cd-bd59-4ef7-8a59-989949364339
+Closed agent session 5b78e59d-e7cc-4f9d-a790-b362bff56752
+Agent WebSocket disconnected: 5b78e59d-e7cc-4f9d-a790-b362bff56752
+Closed agent session 17939ad2-a9f4-4160-934e-d60f68442a22
+Agent WebSocket disconnected: 17939ad2-a9f4-4160-934e-d60f68442a22
+Closed agent session ea7dea65-dcf6-463f-876a-ab1471b8dfb0
+Agent WebSocket disconnected: ea7dea65-dcf6-463f-876a-ab1471b8dfb0
+Closed agent session 642b91d3-c8f0-40b4-8c79-464f9a8a54b2
+Agent WebSocket disconnected: 642b91d3-c8f0-40b4-8c79-464f9a8a54b2
+Closed agent session 9315acb2-2ba0-4c0d-93dc-b5952075cbe7
+Agent WebSocket disconnected: 9315acb2-2ba0-4c0d-93dc-b5952075cbe7
+Closed agent session 80316c58-e4f9-4fba-899f-9d24dbadcced
+Agent WebSocket disconnected: 80316c58-e4f9-4fba-899f-9d24dbadcced
+Closed agent session 656d4137-d58e-450c-8c43-7f69e238ed21
+Agent WebSocket disconnected: 656d4137-d58e-450c-8c43-7f69e238ed21
+Closed agent session 56e6eb29-f01d-4d1e-bc6c-6943caa9dd79
+Agent WebSocket disconnected: 56e6eb29-f01d-4d1e-bc6c-6943caa9dd79
+Closed agent session 555cf62e-25d4-4372-bc4e-fcadd24418e1
+Agent WebSocket disconnected: 555cf62e-25d4-4372-bc4e-fcadd24418e1
+Closed agent session af471206-055f-4a0c-a8c4-a3fbee29dde3
+Agent WebSocket disconnected: af471206-055f-4a0c-a8c4-a3fbee29dde3
+Closed agent session 3313028d-470a-4458-817e-c2777f392098
+Agent WebSocket disconnected: 3313028d-470a-4458-817e-c2777f392098
+Closed agent session 3566d969-4f2b-4574-ae5e-3b90db64cfc4
+Agent WebSocket disconnected: 3566d969-4f2b-4574-ae5e-3b90db64cfc4
+Closed agent session 6db6569c-c48e-48ed-8868-0f00f851b938
+Agent WebSocket disconnected: 6db6569c-c48e-48ed-8868-0f00f851b938
+Closed agent session 86ca05a5-54d5-4c17-bc4d-05ac5598e294
+Agent WebSocket disconnected: 86ca05a5-54d5-4c17-bc4d-05ac5598e294
+Closed agent session 5cbc0b5b-01d7-45f1-a5c8-5553f4e7acd9
+Agent WebSocket disconnected: 5cbc0b5b-01d7-45f1-a5c8-5553f4e7acd9
+Closed agent session e829c504-7ff4-4423-a476-4d7a872938cf
+Agent WebSocket disconnected: e829c504-7ff4-4423-a476-4d7a872938cf
+Closed agent session 74d7bda4-a21d-49b1-a253-2bfc5f9da52a
+Agent WebSocket disconnected: 74d7bda4-a21d-49b1-a253-2bfc5f9da52a
+Closed agent session 9e2ac169-8749-49f7-993a-f4c9d379ab09
+Agent WebSocket disconnected: 9e2ac169-8749-49f7-993a-f4c9d379ab09
+Closed agent session 887b06eb-b86b-4c92-887a-d7d802517c19
+Agent WebSocket disconnected: 887b06eb-b86b-4c92-887a-d7d802517c19
+Closed agent session 1697f7b1-1349-4d7e-aa05-378a0c76dad7
+Agent WebSocket disconnected: 1697f7b1-1349-4d7e-aa05-378a0c76dad7
+Closed agent session b9e97f98-8bb8-46d4-8486-d5c3883c3148
+Agent WebSocket disconnected: b9e97f98-8bb8-46d4-8486-d5c3883c3148
+Closed agent session ce067962-6c62-4e12-91f3-34ecc550a53d
+Agent WebSocket disconnected: ce067962-6c62-4e12-91f3-34ecc550a53d
+Closed agent session 38550677-95aa-4c1c-8815-8518b8b278ea
+Agent WebSocket disconnected: 38550677-95aa-4c1c-8815-8518b8b278ea
+Closed agent session c0bc5181-a798-4bd2-a065-43562b0b0c54
+Agent WebSocket disconnected: c0bc5181-a798-4bd2-a065-43562b0b0c54
+Closed agent session 058c69bb-f85c-4f85-ade6-f3b0e1f2afd8
+Agent WebSocket disconnected: 058c69bb-f85c-4f85-ade6-f3b0e1f2afd8
+Closed agent session 8fc1e9be-f419-41b1-86f2-c6a833aa3ece
+Agent WebSocket disconnected: 8fc1e9be-f419-41b1-86f2-c6a833aa3ece
+Closed agent session e5a52f0f-8cdb-4505-8637-f4a90c85223c
+Agent WebSocket disconnected: e5a52f0f-8cdb-4505-8637-f4a90c85223c
+Closed agent session 92a5c46b-ae7b-4fa8-a169-1f31a41f2485
+Agent WebSocket disconnected: 92a5c46b-ae7b-4fa8-a169-1f31a41f2485
+Closed agent session 5ed7b8d6-5c2c-42d6-b204-313d84bda32c
+Agent WebSocket disconnected: 5ed7b8d6-5c2c-42d6-b204-313d84bda32c
+Closed agent session 367b6f94-6895-4e5b-a903-f08f07736713
+Agent WebSocket disconnected: 367b6f94-6895-4e5b-a903-f08f07736713
+Closed agent session 0e250149-4dba-4456-8d3d-8507cf9f963f
+Agent WebSocket disconnected: 0e250149-4dba-4456-8d3d-8507cf9f963f
+Closed agent session a771556c-df6a-47bf-918c-091ab965ed02
+Agent WebSocket disconnected: a771556c-df6a-47bf-918c-091ab965ed02
+[2026-10-22T04:49:36.734Z] [INFO] [server.runtime] Server closed cleanly.

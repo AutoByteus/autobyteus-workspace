@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-10-22T05:13:33.430Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 65368,
+      "nodeId": "srv_tQOVati5pPtO-bESNHhJGZrPzoc24WPz"
+    },
+    "alpha": {
+      "port": 65367,
+      "nodeId": "srv_jzw_NgmFvD8tz-G-ymC7fiMhys1Aq0jP"
+    }
+  },
+  "runs": {
+    "delegatorRun": "delegator_1af1e81b521b482ca39add047e8a2561",
+    "peerAgentRun": "publisher_fa60fadbe21249d9a061af8900a3ee8f",
+    "peerTeamRun": "studio_team_5e5297a6c6794eadbd412a84daaa9a90",
+    "peerCoordinator": "publisher_e624722d0e6643138496737595d184b8",
+    "plainRun": "writer_284f67e2bb0f4fd889fa9ad574a7ce39",
+    "skillRun": "writer_039ac9c1035d4b5dab1e5716f9a7a964"
+  },
+  "storedTitles": {
+    "publisher_fa60fadbe21249d9a061af8900a3ee8f": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+    "studio_team_5e5297a6c6794eadbd412a84daaa9a90": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+    "writer_039ac9c1035d4b5dab1e5716f9a7a964": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE.",
+    "writer_284f67e2bb0f4fd889fa9ad574a7ce39": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE."
+  },
+  "cases": {
+    "RRT-01": {
+      "result": "Pass",
+      "stored": {
+        "publisher_fa60fadbe21249d9a061af8900a3ee8f": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "studio_team_5e5297a6c6794eadbd412a84daaa9a90": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "writer_284f67e2bb0f4fd889fa9ad574a7ce39": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "writer_039ac9c1035d4b5dab1e5716f9a7a964": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE."
+      }
+    },
+    "RRT-02": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_fa60fadbe21249d9a061af8900a3ee8f",
+        "writer_039ac9c1035d4b5dab1e5716f9a7a964",
+        "writer_284f67e2bb0f4fd889fa9ad574a7ce39"
+      ]
+    },
+    "RRT-03": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_fa60fadbe21249d9a061af8900a3ee8f",
+        "writer_039ac9c1035d4b5dab1e5716f9a7a964",
+        "writer_284f67e2bb0f4fd889fa9ad574a7ce39"
+      ]
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-center-pane\"] button[aria-label=\"Send message\"]').first()\n    - locator resolved to <button type=\"button\" title=\"Send message\" aria-label=\"Send message\" data-test=\"chat-primary-action\" class=\"flex items-center justify-center text-white rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700 focus:ring-blue-500/50 h-8 w-8 flex-shrink-0\">…</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n    - locator resolved to <button disabled type=\"button\" data-v-27c1256a=\"\" title=\"Send message\" aria-label=\"Send message\" class=\"flex items-center justify-center text-white rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 hover:bg-blue-700 focus:ring-blue-500/50 p-2 absolute bottom-2 right-2\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:246:20",
+  "finishedAt": "2026-10-22T05:14:41.164Z"
+}

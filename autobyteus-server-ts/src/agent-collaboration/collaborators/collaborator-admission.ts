@@ -116,10 +116,22 @@ export class CollaboratorAdmission {
     senderRunId: string;
   }>): Promise<CatalogTaskSource | null> {
     const ref = await this.catalogDefinitionAt(port, input.address);
-    if (!ref) return null;
-    const definition = await this.admissible(port, ref);
+    return ref ? this.catalogTaskSourceOf(port, { ref, address: input.address }) : null;
+  }
+
+  /**
+   * The source snapshot of a task copy of the catalog definition `ref` at `address`, with launches resolved
+   * from `port.launchBase()`. A caller that must decide by kind first (a run started for a peer node) calls
+   * `catalogDefinitionAt` and then this. Throws `CollaboratorAddError` (or its `CollaboratorNoDefaultLaunchError`)
+   * when the copy cannot run.
+   */
+  async catalogTaskSourceOf(port: CollaboratorRootPort, input: Readonly<{
+    ref: CatalogDefinitionRef;
+    address: string;
+  }>): Promise<CatalogTaskSource> {
+    const definition = await this.admissible(port, input.ref);
     const plan = await this.buildPlan(definition, { address: input.address });
-    const [resolved] = await this.dependencies.launches.resolve([plan], port.rootLaunchConfiguration());
+    const [resolved] = await this.dependencies.launches.resolve([plan], port.launchBase());
     return Object.freeze({ name: resolved!.name, source: toTaskExecutionSource(resolved!), launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)) });
   }
 

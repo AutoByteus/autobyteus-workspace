@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-21T20:32:39.294161+00:00",
+  "judgement": "Sufficient; all five critical ACs proven within copy-only renderer scope",
+  "apiConfidence": 96.43,
+  "acceptanceCriteria": {
+    "AC001": "Proven: retained public installer SHA plus IMP03 independent literal/six inert-shell controls and actual displayed/copied platform strings",
+    "AC002": "Proven: seven independently expected public installed commands in all four raw browser scenarios; role/drain/approval/wait prose inspected",
+    "AC003": "Proven:36 native clipboard matches + Enter/reset; controlled pending/second exclusion/leave-late resolve/denial/missing/manual selection in raw R03; no script execution",
+    "AC004": "Proven: attributed current IMP03 null/invalid/partial tests; adjacent Docker7 tests and real page Docker before/after/copy unchanged",
+    "AC005": "Proven: en/zh-CN×1280/390, unique9 aria labels/polite feedback/links/tab-panel/layout; personally viewed desktop,narrowChinese,denial screenshots; no browsererrors/guide-triggered NFS requests"
+  },
+  "rawEvidenceHashes": {
+    "IMP-03-unit-current.log": "ffd7aef1cf006f6d0abc2688b377f06a71abdc26c041fc50fd143be3a271a5a8",
+    "IMP-04-typecheck.log": "1245ac3ce9fb021b1464d662cc55176501525d6c672631d5dbfe87bb6186b5b0",
+    "IMP-04-boundaries-current.log": "a7395d38ababa337174d049810e7a493e234b78afde6e26628e6c02229c5bdc0",
+    "R02-attempt-2/result.json": "687bd30cd07a988543d11744eb06e550a48248abe060577433bf66be15e72fa0",
+    "R02-browser.mjs": "079bad5223e03ba48800ad2861ee57dca101440ba4323e9f4f920224486a66ac",
+    "C01-cleanup.json": "24158c126696dc2bda58dfe4876064922035329a6c3983d454cc4db5672d8a29",
+    "autobyteus-nfs-install.sh.txt": "65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa"
+  },
+  "reuse": "IMP03 5files/53tests and IMP04 typecheck/3guards read directly; same exact product, no repeat suite",
+  "browserRawAudit": {
+    "scenarios": 4,
+    "clipboardComparisons": 36,
+    "errors": 0,
+    "edgeCases": {
+      "case": "R03",
+      "keyboard": "Enter",
+      "timerReset": true,
+      "pendingAll9Disabled": true,
+      "secondRequestExcluded": true,
+      "unmountLateResolve": true,
+      "denialManualSelection": true,
+      "missingClipboard": true
+    },
+    "publicInstallerHashVerified": true
+  },
+  "limits": [
+    "Unrelated read-only app/provider/workspace/agent APIs/health/2feeds emulated, not backend validation",
+    "Clipboard failures/pending deliberately controlled; native successes real",
+    "No Electron, installer/CLI/storage/field/provider qualification or user verification",
+    "Initial API and implementation harness/setup failures preserved, not passing initial runs"
+  ],
+  "userCheckNeeded": false,
+  "existingFieldTask": "autobyteus-nfs-4 unchanged; no duplicate Task",
+  "docsCorrection": "Only navigation wording Settings → Nodes → NFS Guide to Nodes → NFS Guide",
+  "release": "No release",
+  "newFindings": []
+}

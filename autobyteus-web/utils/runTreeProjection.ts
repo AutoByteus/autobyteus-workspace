@@ -4,6 +4,7 @@ import {
   INVALID_DRAFT_WORKSPACE_WARNING,
 } from '~/utils/runTreeProjectionConstants';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
+import { resolveStoredTitleSummary } from '~/utils/runTreeSummary';
 import type {
   AgentOrgHistoryDefinitionGroup,
   AgentOrgRunHistoryItem,
@@ -265,7 +266,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       for (const run of agent.runs) {
         agentNode.runs.push({
           runId: run.runId,
-          summary: run.summary,
+          summary: resolveStoredTitleSummary(run.summary) ?? '',
           lastActivityAt: run.lastActivityAt,
           currentStatus: run.currentStatus,
           lastKnownStatus: run.lastKnownStatus,

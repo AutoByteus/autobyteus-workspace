@@ -239,6 +239,17 @@ describe("AgentRunHistoryCatalogService", () => {
     expect(getPersistedIndex()).toMatchObject([{ summary: "first" }]);
   });
 
+  it("AC-602 (autobyteus-269): a 300-character, multi-line delegated description becomes a one-line title of at most 100 characters", async () => {
+    const { service } = await buildServiceWithIndexStore([buildIndexRow({ summary: "" })]);
+    const description = `Cut the launch trailer\n\nand have it checked. ${"x".repeat(300)}`;
+    await service.recordRunSummary({ runId: "run-1", summary: description });
+    const { summary } = (await service.getCatalogRow("run-1"))!;
+    expect(summary.length).toBeLessThanOrEqual(100);
+    expect(summary).not.toContain("\n");
+    expect(summary.startsWith("Cut the launch trailer and have it checked. x")).toBe(true);
+    expect(summary.endsWith("...")).toBe(true);
+  });
+
   it("serializes concurrent prepared-run catalog mutations", async () => {
     const service = await buildService();
     await Promise.all([

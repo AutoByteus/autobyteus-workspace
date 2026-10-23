@@ -6,6 +6,7 @@ import {
   toSendMessageToResult,
 } from "../../../../src/agent-communication/services/send-message-to-tool-result-contract.js";
 import { DelegateTaskResultSchema } from "../../../../src/agent-team-execution/task-delegation/task-delegation-result-contract.js";
+import { toDelegateTaskResult } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
@@ -79,6 +80,21 @@ describe("collaboration public result contracts", () => {
     expect(() => DelegateTaskResultSchema.parse({ delegated: false })).toThrow();
   });
 
+  it("autobyteus-247 REQ-304 / F-001: a remote result names its node, for a task agent team as for a task agent; a local one has none", () => {
+    const remoteTeam = toDelegateTaskResult({ delegated: true, copy: { kind: "team", teamRunId: "studio_team_b", teamCoordinatorAgentRunId: "lead_b1" },
+      node: "docker", taskId: "ad_hoc_task_1" });
+    expect(remoteTeam).toEqual({ delegated: true, target_kind: "team", target_team_run_id: "studio_team_b", target_team_coordinator_agent_run_id: "lead_b1",
+      node: "docker", task_id: "ad_hoc_task_1" });
+    expect(DelegateTaskResultSchema.parse(remoteTeam)).toEqual(remoteTeam);
+    const localTeam = toDelegateTaskResult({ delegated: true, copy: { kind: "team", teamRunId: "team-copy", teamCoordinatorAgentRunId: "team-copy-lead" } });
+    expect(localTeam).toEqual({ delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead" });
+    expect("node" in localTeam).toBe(false);
+    expect(DelegateTaskResultSchema.parse(localTeam)).toEqual(localTeam);
+    const remoteAgent = toDelegateTaskResult({ delegated: true, copy: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker" });
+    expect(remoteAgent).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: "publisher_r1", node: "docker" });
+    expect(() => DelegateTaskResultSchema.parse({ ...remoteTeam, node: " " })).toThrow();
+  });
+
   it.each(["2025-06-18", "2025-11-25"])(
     "advertises legal operation-owned output schemas for MCP %s",
     (protocolVersion) => {
@@ -123,6 +139,9 @@ describe("collaboration public result contracts", () => {
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
         delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead",
+      })).toBe(true);
+      expect(ajv.validate(delegateSchema, {
+        delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead", node: "docker",
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
         delegated: true, target_kind: "team", target_agent_run_id: "team-copy-lead",

@@ -1,0 +1,29 @@
+# API-03 (autobyteus-269 AC-601, what beta's owner sees) browser journey | code 05be574608 (dist API-00) | macOS, agent browser tool (Chromium) | 2026-10-22 ~04:45-04:53 UTC
+
+Setup (temporary, test-owned): `node evidence/api-e2e/API-03-setup-two-nodes.mjs <autobyteus-server-ts> <tests/fixtures/agy-failure-cli.mjs>` (log: API-03-setup.log)
+- alpha and beta dist servers on loopback, own temp data roots and HOMEs, scripted AGY CLI; switch on, registered both ways
+- alpha's standalone delegator called delegate_task twice:
+  /publisher   "Cut the launch trailer and have it checked. Marker AGENT-TITLE."  → publisher_c331d6fd73c34ffba0a3ba6542e494f8
+  /studio_team "Cut the launch trailer and have it checked. Marker TEAM-TITLE."   → studio_team_5ccfa673c9f246fb9f5b0af73eb5eb53
+Web: `BACKEND_NODE_BASE_URL=<beta> nuxt dev` in autobyteus-web
+
+1. Beta's server (GraphQL listWorkspaceRunHistory), before any owner message:
+   publisher run summary:  "Cut the launch trailer and have it checked. Marker AGENT-TITLE."   ← the fix works on the server
+   Studio Team run summary: "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+2. The window, Workspaces → Temp Workspace, Publisher and Studio Team expanded (no run opened):
+   Agent row  [data-test="workspace-agent-run-row"]: "You have a new task from the agent with sender run id \"delegator_ae562eef…\" on node \"alpha-node\". …"   ← the wrapper, not the title
+   Team row   [data-test="workspace-team-row-studio_team_5ccf…"]: "Cut the launch trailer and have it checked. Marker TEAM-TITLE."   ← the title
+   pinia agentContexts.runs: ["publisher_c331d6fd73c34ffba0a3ba6542e494f8"] (a live context exists without the run being opened)
+3. Page reloaded, nothing opened: the same (Agent row: the wrapper; live context: the publisher run). Screenshot API-03-beta-sidebar-active-runs.png (md5 7b865a2f674f38dbdfc31f438476f2b1): "Publisher (1) › You have a new task from the …", "Studio Team (1) › Cut the launch trailer and h…"
+4. The run's projection on beta (getRunProjection): first entry {kind: "message", role: "user", content: "You have a new task from the agent with sender run id …"}, then {role: "assistant", content: "OK"} — the work packet is a `user` message for this runtime, not a `system_task_notification`
+5. The Publisher run stopped (Stop on its row): the row still shows the wrapper; the live context stays
+6. Page reloaded with the run stopped: live contexts [] → the Agent row shows "Cut the launch trailer and have it checked. Marker AGENT-TITLE."
+
+Mechanism (source):
+- `autobyteus-web/utils/runTreeLiveStatusMerge.ts` `mergeHistoryRowWithContext`: when the window holds a live context for a row's run, `summary` is replaced by `resolveFirstUserMessageSummary(context.state.conversation)` (`utils/runTreeSummary.ts`: the first message with `type === 'user'`).
+- The window creates a live context for an active run on load (step 3), not only for an opened run.
+- The packet arrives as `role: user` (step 4). In the autobyteus-247 post-release live check (AutoByteus runtime, deepseek-v4-flash), the coordinator's conversation also began with `role: user, kind: message, content: You have a new task from the agent …` (observed then; those temp files were removed).
+- The handoff's premise ("a hydrated or streamed work packet is a `system_task_notification` … the web's first-user-message fallbacks never pick up the packet wrapper"; "Known Risks: only while such a run is open after the owner messaged it") does not hold here.
+- Team rows are not affected: the Team row's summary keeps the stored summary first.
+
+Cleanup: tab closed; Nuxt dev stopped (port free); setup stopped: "stopped; removed …/api03-run-title-7LRRl3 exists: false"; no server or CLI process left.

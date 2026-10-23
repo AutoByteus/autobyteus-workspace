@@ -70,6 +70,18 @@ describe("AgentRuntimesResolver", () => {
     await expect(resolver.updateAgentRuntime("autobyteus")).rejects.toMatchObject({ extensions: { code: "AGENT_RUNTIME_UNKNOWN" } });
     await expect(resolver.cancelAgentRuntimeSignIn("not-a-runtime")).rejects.toMatchObject({ extensions: { code: "AGENT_RUNTIME_UNKNOWN" } });
   });
+
+  it("answers whether the node's runtimes can open a browser on its own desktop, from the status service", async () => {
+    const resolver = new AgentRuntimesResolver();
+    for (const signInBrowserAvailable of [true, false]) {
+      handle = configureAgentRuntimeStatusService(new AgentRuntimeStatusService({
+        strategies: [], signInReader: { read: async () => ({ state: "signedIn" }) }, countRunningAgents: () => 0, signInBrowserAvailable,
+      }));
+      expect(resolver.agentRuntimeSignInBrowserAvailable()).toBe(signInBrowserAvailable);
+      await handle.close();
+      handle = null;
+    }
+  });
 });
 
 describe("composeAgentRuntimeStatus", () => {

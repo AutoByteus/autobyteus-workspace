@@ -17,13 +17,16 @@ import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-re
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { PeerGateway } from "../../../src/remote-collaboration/channel/peer-gateway.js";
 import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbound/remote-delegation-receiver.js";
+import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/node-catalog-port.js";
 import { RemoteMessageReceiver } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
+import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
- * delegates to a published Agent on node B, and the two runs message each other both ways, through the real
+ * delegates to a shared Agent on node B, and the two runs message each other both ways, through the real
  * peer client, gateway, receivers, roots and stores (only HTTP and the runtimes are replaced). DS-001 … DS-003,
  * AC-104 … AC-106 at the implementation level; the two-server E2E is API/E2E's.
  */
@@ -94,7 +97,9 @@ const buildNode = async (input: Readonly<{
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("fetch failed");
       const body = JSON.parse(String(init.body));
-      const response = url.endsWith("/rest/remote/delegated-runs") ? await gateway.startDelegatedRun(body) : await gateway.deliverMessage(body);
+      const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
+    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
+      : route === "availability" ? await gateway.checkAvailability(body) : await gateway.listAvailableAgents(body);
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
   });
@@ -127,15 +132,22 @@ const buildNode = async (input: Readonly<{
     },
   });
   let prepared = 0;
-  const published = { findByAddress: vi.fn(async (address: string) => address === "/publisher" ? {
-    agent: { agentDefinitionId: "publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null,
-      workspaceRootPath: "/work/publishing", autoExecuteTools: false, publishedAt: T0 },
-    definitionName: "Publisher", address: "/publisher" as never,
-  } : null) };
-  const launchCheck = { reasonItCannotRun: vi.fn(async () => null as string | null) };
+  /** autobyteus-269: the titles this node's receiver recorded, first one per run. */
+  const titles = new Map<string, string>();
+  // This node's catalog: Publisher is a shared Agent with a default runtime and model; nothing is published.
+  const definitions = [new AgentDefinition({ id: "publisher", name: "Publisher", description: "Publishes", instructions: "x", ownershipScope: "shared",
+    defaultLaunchConfig: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null } })];
+  const models = { available: true };
+  const admission = createCollaboratorAdmission({
+    listAgentDefinitions: async () => definitions, listTeamDefinitions: async () => [],
+    getAgentDefinition: async (id) => definitions.find((item) => item.id === id) ?? null, getTeamDefinition: async () => null,
+  }, { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) => inputs.map(({ selection }) =>
+    models.available ? { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } } : { kind: "model_unavailable" as const })) } as never,
+  { getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null })) });
   const gateway = new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: enabled }, peers: peerDirectory,
-    delegatedRuns: new RemoteDelegationReceiver({ published, launchCheck, agentRuns: { prepareAgentRun: vi.fn(async (request) => {
+    delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")),
+      agentRuns: { prepareAgentRun: vi.fn(async (request) => {
       const runId = `publisher_r${++prepared}`;
       metadata.set(runId, { runId, agentDefinitionId: request.agentDefinitionId, workspaceRootPath: request.workspaceRootPath,
         memoryDir: path.join(memoryDir, "agents", runId), llmModelIdentifier: request.llmModelIdentifier, llmConfig: request.llmConfig ?? null,
@@ -144,13 +156,15 @@ const buildNode = async (input: Readonly<{
       return { runId, activationState: "PREPARED" as const, preparedExpiresAt: T0 };
     }) } }),
     messages: new RemoteMessageReceiver({
+      storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
-    }),
+    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }),
+    availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
   });
   input.network.set(input.nodeId, gateway);
-  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, published, launchCheck };
+  return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles };
 };
 
 const hostIdentity = (runId: string, address: string) => createCollaborationMemberExecutionIdentity({
@@ -178,15 +192,18 @@ const delegate = async (a: Node, input: Record<string, unknown> = {}) => (await 
   .delegateToNewCopy({ identity: hostIdentity(DELEGATOR, "/assistant") }, { recipient_address: "/publisher", description: "Publish the video draft.", node: "docker", ...input } as never);
 
 describe("remote delegation between two standalone runs, in process (slice 1 step 5)", () => {
-  it("A delegates to B's published Agent; B prepares a standalone run with the back-link, A links it, then sends the work packet", async () => {
+  it("A delegates to B's shared Agent by its catalog address; B prepares a standalone run with the back-link, A links it, then sends the work packet", async () => {
     const { a, b } = await twoNodes();
     const outcome = await delegate(a);
     expect(outcome).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "publisher_r1" }, node: "docker", taskId: "ad_hoc_task_1" });
 
-    // B: an ordinary standalone run with the published launch settings and `delegatedFrom`, activated by the packet.
-    expect(b.metadata.get("publisher_r1")).toMatchObject({ agentDefinitionId: "publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      workspaceRootPath: "/work/publishing", autoExecuteTools: false, startedAt: T0,
+    // B: an ordinary standalone run with the Agent's default, the temp workspace, auto-approve on (autobyteus-245) and
+    // `delegatedFrom`, activated by the packet.
+    expect(b.metadata.get("publisher_r1")).toMatchObject({ agentDefinitionId: "publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet",
+      workspaceRootPath: path.join(b.memoryDir, "temp_workspace"), autoExecuteTools: true, startedAt: T0,
       delegatedFrom: { nodeId: A_ID, coordinatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
+    // autobyteus-269: the run's title is the packet's description, recorded once the packet was accepted.
+    expect(b.titles.get("publisher_r1")).toBe("Publish the video draft.")
     expect(b.runOf("publisher_r1").posted).toEqual([[
       `You have a new task from the agent with sender run id "${DELEGATOR}" on node "desktop".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.",
@@ -255,10 +272,11 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a, { reference_files: ["/tmp/x.mp4"] })).resolves.toEqual({ delegated: false,
       message: "Files (reference_files) can't be sent to an agent on another node yet, so nothing was sent." });
     await expect(delegate(a, { node: "nas" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining('No peer node named "nas"') });
-    await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no published Agent at that address.' });
-    b.launchCheck.reasonItCannotRun.mockResolvedValueOnce("The model 'sonnet' is not available on claude_agent_sdk.");
+    await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent or Agent Team at /unknown that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.' });
+    b.models.available = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
-      message: `The published Agent on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk.` });
+      message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk.` });
+    b.models.available = true;
     bOn = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });
     expect(b.metadata.size).toBe(0);

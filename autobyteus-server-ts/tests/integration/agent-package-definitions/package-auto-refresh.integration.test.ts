@@ -65,9 +65,8 @@ const waitFor = async <T>(read: () => Promise<T>, accept: (value: T) => boolean,
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const port: CollaboratorRootPort = {
-  rootKind: "agent",
   isApplicationBound: false,
-  rootLaunchConfiguration: () => ({}) as never,
+  launchBase: () => ({ kind: "inherited", launch: {} as never }),
   ownDefinition: () => null,
   inRunPlacementsByDefinition: () => new Map(),
   collaborators: () => [],
