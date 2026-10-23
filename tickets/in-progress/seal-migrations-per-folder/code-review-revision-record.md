@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 handoff | N/A | Fail (Local Fix) | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (Targeted Delta) / IR-002 | Fail (Local Fix) | Pass | CR-001, CR-002 (resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None (FU-002 recorded) |
 
 ## Revision Entries
 
@@ -75,3 +76,37 @@ None.
   - frozen-layer size;
   - separate in-process locks for the two ANYTIME migrations;
   - real-startup gate scenarios (API/E2E).
+
+### CRR-003 — Proportional review of the API/E2E test code: Pass
+
+- Canonical review report updated: `tickets/in-progress/seal-migrations-per-folder/api-e2e-test-review-report.md`
+- Review entry point and round: proportional API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). `f1342aacfe`:
+  - `custom-provider-readable-id-startup-migration.e2e.test.ts`: one case rewritten, one added, an obsolete helper removed;
+  - `remove-skill-improvement-data-startup.e2e.test.ts`: SID-2 extended.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-001, Pass)
+- Relevant solution revision IDs: SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-002: Pass)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The obsolete G-1 case was replaced with the approved narrowed behavior (DEC-003).
+  - The new real-startup case covers AC-004 and DS-003 end to end, including the retries in order and recovery without a restart.
+  - SID-2 proves REQ-008 at startup.
+- **Review gap, on my own CRR-001:** the stale e2e asserting the removed `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED` was in the branch since IR-001. My source review checked moved and changed tests (IMP-04) but did not grep unchanged tests for the removed behavior; that grep would have found it. API/E2E found and replaced it correctly.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none. FU-002 was added to `follow-ups.md` (a vacuous assertion in an untouched e2e).
+- Material score or classification changes: N/A. Classification Large / High preserved.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - FU-001, FU-002;
+  - AC-007 is a document (the guideline);
+  - the guideline wording for `frozen/<package>/` (CRR-002 residual).
