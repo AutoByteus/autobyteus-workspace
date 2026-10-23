@@ -1330,7 +1330,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(composeOnBeta(r9), "LIVE-FROM-BETA-OWNER");
     await until(() => liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-OWNER"), "live output in alpha's view", 15_000).catch(() => undefined);
     const liveSeen = liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-OWNER");
-    expect.soft(liveSeen, "AC-802: the remote run's live output reaches alpha's view").toBe(true);
+    expect(liveSeen, "AC-802: the remote run's live output reaches alpha's view").toBe(true);
 
     // DS-003: the stored conversation of the remote agent, read through alpha.
     const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -1346,16 +1346,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(composeOnBeta(r9), "OWNER-FROM-ALPHA");
     await until(async () => { const text = await betaConversation(r9); return text.indexOf("OWNER-FROM-ALPHA") >= 0 && text.lastIndexOf("\"OK\"") > text.indexOf("OWNER-FROM-ALPHA"); },
       "the answer after the owner's message on beta", 20_000);
-    const ownerEntry = (JSON.parse(await betaConversation(r9)) as Rec[]).find((entry) => String(entry.content ?? "").includes("OWNER-FROM-ALPHA"));
-    expect(ownerEntry, "a user message of the run on beta").toMatchObject({ kind: "message", role: "user", content: "status? Marker OWNER-FROM-ALPHA" });
+    // DS-004a (SR-006): the run's input names the owner's node, as beta knows it; one user message (N-405).
+    const ownerEntries = (JSON.parse(await betaConversation(r9)) as Rec[]).filter((entry) => String(entry.content ?? "").includes("OWNER-FROM-ALPHA"));
+    expect(ownerEntries, "one user message of the run on beta").toEqual([expect.objectContaining({ kind: "message", role: "user",
+      content: `From the owner of node "${LABEL.alpha}":\n\nstatus? Marker OWNER-FROM-ALPHA` })]);
+    const ownerEntry = ownerEntries[0];
     await until(() => liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), "the owner's message live in alpha's view", 10_000).catch(() => undefined);
-    expect.soft(liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), "AC-803: the message and its answer show live in alpha's view").toBe(true);
+    expect(liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), "AC-803: the message and its answer show live in alpha's view").toBe(true);
     const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
     expect(reread, "alpha's view of the run's conversation has the message").toContain("OWNER-FROM-ALPHA");
+    expect(reread.split("OWNER-FROM-ALPHA").length - 1, "N-405: one user message in alpha's view of it").toBe(1);
     const logsAfter = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
     expect(logsAfter.map((text, index) => text.split("OWNER-FROM-ALPHA").length - logsBefore[index]!.split("OWNER-FROM-ALPHA").length), "not a message-log line on either node (REQ-803)").toEqual([0, 0]);
-    const ownerMarks = (await walkFiles(beta.memory)).filter((file) => fs.readFileSync(file, "utf8").includes("remote_owner")).map((file) => path.relative(beta.memory, file));
 
     // Interrupt: a held turn, then INTERRUPT_GENERATION; Retry (REFRESH) reads the status from beta each time.
     const refreshAndRead = async () => {
@@ -1382,9 +1385,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await until(async () => !(await processLive(r9)), "r9's CLI gone", 20_000);
     await until(() => remoteSummariesIn(view.frames.slice(beforeStop), r9).some((summary) => (summary.statuses as Rec[]).length === 0), "a final summary (offline)", 15_000).catch(() => undefined);
     const finalSummary = remoteSummariesIn(view.frames.slice(beforeStop), r9).at(-1) ?? null;
-    expect.soft(finalSummary?.statuses, "after Stop the view's summary reads offline (the observation ended)").toEqual([]);
+    expect(finalSummary?.statuses, "after Stop the view's summary reads offline (the observation ended)").toEqual([]);
     ids.treeRun = r9;
-    record("RC-31", { r9, row: rows.find((row) => row.agent_run_id === r9), firstSummary, liveSeen, sent, ownerEntry, ownerMarks, whileHeld, afterInterrupt, stopped, finalSummary,
+    record("RC-31", { r9, row: rows.find((row) => row.agent_run_id === r9), firstSummary, liveSeen, sent, ownerEntry, whileHeld, afterInterrupt, stopped, finalSummary,
       framesTypes: [...new Set(view.frames.map((frame) => frame.type === "ROOT_EXECUTION_EVENT" ? `event:${((frame.payload as Rec).event as Rec).kind}` : frame.type))] });
   }, 300_000);
 
@@ -1408,7 +1411,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       return remoteSummariesIn(view.frames, r10).at(-1)!;
     })();
     expect(refreshed.statuses, "beta reports it offline").toEqual([]);
-    expect.soft(after.some((summary) => (summary.statuses as Rec[]).length === 0), "without a refresh, alpha's view ends offline when beta's owner stops the run (DS-006)").toBe(true);
+    expect(after.some((summary) => (summary.statuses as Rec[]).length === 0), "without a refresh, alpha's view ends offline when beta's owner stops the run (DS-006)").toBe(true);
     record("RC-32", { r10, terminated, summariesAfterOwnerStop: after, refreshed });
   }, 180_000);
 
@@ -1430,7 +1433,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "LIVE-TEAM-COORDINATOR");
     await until(() => liveIn(view.frames, beforeLive, "LIVE-TEAM-COORDINATOR"), "live output in alpha's Team view", 15_000).catch(() => undefined);
     const liveSeen = liveIn(view.frames, beforeLive, "LIVE-TEAM-COORDINATOR");
-    expect.soft(liveSeen, "AC-802: a remote Team member's live output reaches the Team delegator's view").toBe(true);
+    expect(liveSeen, "AC-802: a remote Team member's live output reaches the Team delegator's view").toBe(true);
     // A member's stored conversation through alpha.
     const checkerProjection = JSON.stringify((await alpha.gql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
       { id: ids.team.teamRunId, a: ids.studio.checker })).getTeamMemberRunProjection?.conversation ?? null);
@@ -1464,7 +1467,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(composeOnBeta(ids.org.r5), "OWNER-TO-ORG-REMOTE");
     await until(() => liveIn(view.frames, beforeOwner, "OWNER-TO-ORG-REMOTE"), "live in alpha's Org view", 10_000).catch(() => undefined);
     const liveSeen = liveIn(view.frames, beforeOwner, "OWNER-TO-ORG-REMOTE");
-    expect.soft(liveSeen, "AC-802: the remote run's live output reaches the Org view").toBe(true);
+    expect(liveSeen, "AC-802: the remote run's live output reaches the Org view").toBe(true);
     record("RC-34", { row, summary, ack, liveSeen });
   }, 180_000);
 

@@ -302,6 +302,19 @@ try {
 
   // RTP-04: the opened remote run in each family: header chip, no ⚙ or ＋, the composer's placeholder, the Files note.
   const centerPane = page.locator('[data-test="workspace-center-pane"]');
+  /** Types `@` as a user does (keystrokes) and reports whether the mention menu opened. */
+  const mentionProbe = [];
+  const mentionMenuShown = async () => {
+    const box = centerPane.locator('textarea:visible').last();
+    await box.click(); await box.fill(''); await page.keyboard.type('@'); await sleep(800);
+    // The run composer's box is a combobox only when it offers menus; `aria-expanded` is "true" while the `@` menu is open.
+    const role = await box.getAttribute('role');
+    const expanded = await box.getAttribute('aria-expanded');
+    mentionProbe.push({ role, expanded, value: await box.inputValue(), placeholder: await box.getAttribute('placeholder'),
+      header: (await centerPane.innerText()).split('\n').slice(0, 3).join(' | ') });
+    await page.keyboard.press('Escape').catch(() => undefined); await box.fill('');
+    return role === 'combobox' && expanded === 'true' ? 1 : 0;
+  };
   const openedView = async (runId, marker, agentName) => {
     await rowOf(runId).first().click();
     await waitFor(`the remote run view (${marker})`, async () => (await centerPane.innerText()).includes(marker)
@@ -316,6 +329,10 @@ try {
       editConfig: await page.locator('[data-test="workspace-header-edit-config"]:visible').count(),
       newRun: await page.locator('[data-test="workspace-header-new-run"]:visible').count(),
       placeholders: await centerPane.locator('textarea:visible').evaluateAll(areas => areas.map(area => area.getAttribute('placeholder'))),
+      // Text-only (REQ-808): no Context Files area or upload, and `@` opens no mention menu.
+      contextFiles: await centerPane.getByText('Context Files', { exact: false }).count(),
+      uploadButtons: await centerPane.locator('button[aria-label="Upload files"]:visible, button[title="Upload files"]:visible').count(),
+      mentionMenu: await mentionMenuShown(),
       filesNote: (await page.locator('[data-test="remote-panel-note-files"]').count()) ? (await page.locator('[data-test="remote-panel-note-files"]').first().innerText()).trim() : null,
     };
   };
@@ -325,8 +342,13 @@ try {
     teamAgent: await openedView(remoteAgentRun, 'REMOTE-AGENT', 'publisher'),
   };
   await page.screenshot({ path: path.join(outputDir, 'RTP-04-opened-remote-run.png'), fullPage: true });
+  // Control: on this node's own run (the Team's lead), typing `@` opens the menu, so the remote check above means something.
+  await page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${leadRun}"], [data-agent-run-id="${leadRun}"]`).first().click().catch(() => undefined);
+  await waitFor('the lead\'s own view', async () => (await centerPane.innerText()).includes('LOCAL-A'), 30_000).catch(() => undefined);
+  const mentionMenuLocalControl = await mentionMenuShown();
   const affordances = Object.fromEntries(Object.entries(views).map(([family, view]) => [family, Boolean(view.headerChip?.includes(NODE)) && view.editConfig === 0 && view.newRun === 0
-    && view.placeholders.some(text => text?.startsWith('Message ') && text.endsWith(`on ${NODE}…`)) && Boolean(view.filesNote?.includes(NODE))]));
+    && view.placeholders.some(text => text?.startsWith('Message ') && text.endsWith(`on ${NODE}…`)) && Boolean(view.filesNote?.includes(NODE))
+    && view.contextFiles === 0 && view.uploadButtons === 0 && view.mentionMenu === 0]));
   const textarea = centerPane.locator('textarea:visible').last();
   const betaRunConversation = async runId => JSON.stringify((await beta.gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
   await textarea.fill('status? Marker OWNER-FROM-WINDOW');
@@ -340,8 +362,14 @@ try {
     const text = await centerPane.innerText();
     return (liveAnswer = text.includes('OWNER-FROM-WINDOW') && text.lastIndexOf('OK') > text.indexOf('OWNER-FROM-WINDOW'));
   }, 15_000).catch(() => undefined);
+  await sleep(1_500);
+  // N-405: the window's echo is replaced by the run's own message: one user message, with the owner heading.
+  const centerText = await centerPane.innerText();
+  const ownerMessageCount = centerText.split('OWNER-FROM-WINDOW').length - 1;
+  const ownerHeadingShown = centerText.includes('From the owner of node "alpha-node":');
   await page.screenshot({ path: path.join(outputDir, 'RTP-04-after-owner-message.png'), fullPage: true });
-  evidence.cases['RTP-04'] = { result: Object.values(affordances).every(Boolean) && liveAnswer ? 'Pass' : 'Fail', affordances, views, liveAnswer,
+  evidence.cases['RTP-04'] = { result: Object.values(affordances).every(Boolean) && liveAnswer && ownerMessageCount === 1 && mentionMenuLocalControl > 0 ? 'Pass' : 'Fail', affordances, views, liveAnswer,
+    ownerMessageCount, ownerHeadingShown, mentionMenuLocalControl, mentionProbe,
     liveNote: liveAnswer ? null : 'the answer is on beta but did not appear in the window without a reload (AC-802)' };
 
   // RTP-05: Stop on the remote row stops the run on beta.
