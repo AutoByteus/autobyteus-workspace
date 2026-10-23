@@ -67,7 +67,8 @@ web-equivalent behavior, not the Electron shell. A scripted runtime proves the t
 not paid inference. Agent-run testing is not the user's verification.
 
 **Rerun by impact.** A run that passed stays valid for the code it ran on. Plan each later
-round (review fixes, a merge, a rebase) before running anything:
+round (review fixes, a merge or rebase of the base, including delivery's integration
+refresh) before running anything:
 
 1. Record every case with the commit it last passed on, in the ticket's validation ledger.
 2. List what changed since then: `git diff --name-only <validated> HEAD`.
@@ -77,10 +78,18 @@ round (review fixes, a merge, a rebase) before running anything:
    `vitest --changed` does not narrow anything, because every test starts the whole server.
 4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
-   the test harness or fixtures, or build configuration.
-5. Run only the cases marked Rerun or new, and record their new commit.
+   the test harness or fixtures, or build configuration. A large diff without such a
+   change is not a reason to rerun everything: plan by what the cases exercise.
+5. After a merge or rebase, also rerun the typechecks and rebuild every built output the
+   planned cases use (`dist/`, `electron-dist/`): they are cheap and catch a broken merge,
+   and a build made before the merge is stale.
+6. Run only the cases marked Rerun or new, and record their new commit.
 
-The plan, with the validated commit and the diff, goes in the validation report.
+The plan, with the validated commit and the diff, goes in the validation report (for
+delivery, its delivery report).
+
+**One run per case per round.** When a case fails, find its cause (Rule 9) and rerun that
+test, not its whole suite. A second full run of a suite proves nothing the first did not.
 
 ## Environments, credentials and data
 
@@ -91,6 +100,9 @@ The plan, with the validated commit and the diff, goes in the validation report.
   proof of current source.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
+- **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
+  probe alongside another of them, in any worktree: they compete for CPU, and timing
+  assertions then fail for reasons that are not in the code under test.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
@@ -299,7 +311,8 @@ ticket-owned automation does not require a new global package command.
    - A product defect not caused by your change and too large for the current work: report
      it to the accountable owner as its own item, with the cause you found.
 
-   Never close a failure as "pre-existing" or "flaky" without its cause.
+   Never close a failure as "pre-existing" or "flaky" without its cause. A pass when
+   rerun alone, under less load or on the base narrows the search; it is not the cause.
 
 ## Evidence and cleanup
 
