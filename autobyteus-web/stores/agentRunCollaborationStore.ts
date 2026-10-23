@@ -124,12 +124,12 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   /**
-   * Retry of a remote run (autobyteus-278): the live root asks its nodes again (the answers arrive on its stream);
-   * without a stream, the selected remote child's conversation is read again from its node.
+   * Retry of a remote run (autobyteus-278): the live root asks its nodes again (the answers arrive on its stream),
+   * and a selected remote child whose conversation could not be read is read again from its node.
    */
   const retryRemote = (hostRunId: string) => {
     const service = services.get(hostRunId)
-    if (service?.isReady()) { service.refreshRemote(); return }
+    if (service?.isReady()) service.refreshRemote()
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
 

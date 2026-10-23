@@ -136,11 +136,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     void hydrateRemoteOrgMember({ orgRunId: id, context: org, agentRunId: selection.agentRunId, isCurrent: () => contexts.value[id] === org })
       .catch((cause) => console.warn(`[agentOrg] Could not load '${selection.agentRunId}' of '${id}'.`, cause))
   }
+  /** Retry: the live root asks its nodes again, and a selected remote child's conversation is read again from its node. */
   const retryRemote = (id: string): void => {
     const service = services.get(id)
-    if (service?.isReady()) { service.refreshRemote(); return }
-    const selection = contexts.value[id]?.selection ?? null
-    ensureRemoteHydrated(id, selection)
+    if (service?.isReady()) service.refreshRemote()
+    ensureRemoteHydrated(id, contexts.value[id]?.selection ?? null)
   }
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
