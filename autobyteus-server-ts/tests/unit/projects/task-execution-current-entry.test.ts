@@ -53,19 +53,24 @@ describe("TaskExecutionResourceService current entry", () => {
     await write("task_D", [entry({ kind: "agent", agentRunId: "twin" }, "2026-10-09T09:00:00.000Z", "2026-10-09T09:30:00.000Z")]);
     await boot();
     expect(service.locationOf({ teamRunId: "review-team" })).toEqual({ projectId: "project_P", taskId: "task_B" });
-    expect(service.releasableByHostRoot("task_A")).toEqual([]);
+    // With no open entry left, a (repeated) close of any of its Tasks asks to stop it.
+    expect(service.releasableByHostRoot("task_A")).toEqual([expect.objectContaining({ executions: [{ teamRunId: "review-team" }] })]);
     expect(service.releasableByHostRoot("task_B")).toEqual([expect.objectContaining({ executions: [{ teamRunId: "review-team" }] })]);
     expect(service.locationOf({ agentRunId: "twin" })).toEqual({ projectId: "project_P", taskId: "task_D" });
     expect(service.earlierTaskLocationsOf({ teamRunId: "review-team" })).toEqual([{ projectId: "project_P", taskId: "task_A" }]);
   });
 
-  it("two open entries can only come from damaged data: the latest is current and the conflict is logged", async () => {
+  it("a copy may hold several open entries: the newest is current, none is logged, it is open and never releasable (task-agent-several-tasks)", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
     await write("task_A", [entry(team, "2026-10-09T10:00:00.000Z", null)]);
     await write("task_B", [entry(team, "2026-10-09T12:00:00.000Z", null)]);
+    await write("task_C", [entry(team, "2026-10-09T08:00:00.000Z", "2026-10-09T09:00:00.000Z")]);
     await boot();
     expect(service.locationOf({ teamRunId: "review-team" })).toEqual({ projectId: "project_P", taskId: "task_B" });
-    expect(error).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_CONFLICT", { execution: "team:review-team", openTasks: expect.arrayContaining(["task_A", "task_B"]) });
+    expect(service.isOpen({ teamRunId: "review-team" })).toBe(true);
+    expect(service.openTaskIdsOf({ teamRunId: "review-team" })).toEqual(["task_A", "task_B"]);
+    for (const taskId of ["task_A", "task_B", "task_C"]) expect(service.releasableByHostRoot(taskId)).toEqual([]);
+    expect(error).not.toHaveBeenCalled();
   });
 
   it("a copy's history spans every Task file: it ever started when any period started", async () => {

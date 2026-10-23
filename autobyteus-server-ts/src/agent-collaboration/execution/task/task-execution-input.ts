@@ -67,6 +67,11 @@ export const buildTaskWorkText = (input: {
 export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWorkText>[0]): AgentInputUserMessage =>
   new AgentInputUserMessage(buildTaskWorkText(input), SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({}));
 
+/** A task agent may hold several Tasks: its other open ones are named, and its reports should name the Task they are about. */
+const otherOpenTasksSentence = (others: readonly string[]): string => others.length === 0
+  ? "Your previous Task is closed; this is the work to do now."
+  : `Your ${others.length === 1 ? "Task" : "Tasks"} ${others.join(", ")} ${others.length === 1 ? "is" : "are"} still open; name the Task key in each report.`;
+
 /**
  * A saved Task given to an existing task agent, delivered as a message from the delegator (so its
  * header already names the sender and gives the ID). The reference files travel as the message's
@@ -78,8 +83,10 @@ export const buildExistingCopyTaskMessage = (input: {
   description: string;
   /** The Task's comment texts, oldest first. */
   comments: readonly string[];
+  /** The task agent's other open Tasks (references, oldest first); empty when its previous Task is closed. */
+  otherOpenTaskReferences: readonly string[];
 }): string => [
-  `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`,
+  `New Task assigned to you: ${input.taskReference}. ${otherOpenTasksSentence(input.otherOpenTaskReferences)}`,
   "",
   ...taskBodyLines(input.description, input.comments, []),
 ].join("\n");

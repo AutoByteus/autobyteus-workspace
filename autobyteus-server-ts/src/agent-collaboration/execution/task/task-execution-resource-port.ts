@@ -78,10 +78,13 @@ export interface TaskExecutionResourcePort {
   /**
    * Read-only, advisory eligibility of assigning Task `taskId` to an existing copy (run before any
    * runtime step): all Task resource data readable; the Task exists, is unique and is not DONE or
-   * CANCELLED; the copy's current entry is a closed `assigned` entry made by `requestedBy`; some entry
-   * of the copy ever started; and `taskId` is not already its current Task. Rejects with a coded error.
+   * CANCELLED; the copy's current entry is an `assigned` entry made by `requestedBy` (it may hold other open
+   * Tasks); some entry of the copy ever started; and `taskId` is not its closed current Task. Rejects with a
+   * coded error.
    */
   assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void>;
+  /** The agent-facing references of the copy's open Tasks other than `exceptTaskId`, oldest first (for the given-Task message). */
+  openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]>;
   /**
    * The commit: re-checks every eligibility condition under the copy's and then the Task's ordering
    * and appends the copy's new `starting` assignment entry to the Task (earlier entries are kept).

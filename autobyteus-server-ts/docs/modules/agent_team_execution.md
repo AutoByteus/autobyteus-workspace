@@ -603,8 +603,9 @@ carries no Task information.** Which copies, Team members and helpers belong to
 a Project Task is recorded only on the Task side, in that Task's
 `agent_run_resources.json`. The in-memory view loaded from it is reached
 through `TaskExecutionResourcePort`. That Task record, not the physical subtree or
-the definition/address, decides what DONE stops: a copy has one current Task,
-and DONE stops only copies whose current Task it is. The Manager, borrowed unowned
+the definition/address, decides what DONE stops: a copy may hold several open
+Tasks (its current one is the newest open), and DONE stops only copies that have
+an entry in that Task and no open Task left. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
 The idle/wake rules below apply to unowned children and to Task-owned children
