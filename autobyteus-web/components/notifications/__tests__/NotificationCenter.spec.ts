@@ -32,7 +32,8 @@ const B = 'b'.repeat(40)
 const node = (sourceId: string, overrides: Partial<NodeUpdateNotification> = {}): NodeUpdateNotification => ({
   kind: 'AGENT_PACKAGE', sourceId, name: `acme/${sourceId}`, repositoryUrl: `https://github.com/acme/${sourceId}`,
   defaultBranch: 'main', installedRevision: A, latestRevision: B, foundAt: new Date(Date.now() - 3_600_000).toISOString(),
-  read: false, state: 'WAITING', handledRevision: null, handledAt: null, ...overrides,
+  read: false, state: 'WAITING', handledRevision: null, handledAt: null, outcome: null, outcomeReason: null, outcomeAt: null,
+  ...overrides,
 })
 
 const Host = defineComponent({
@@ -112,6 +113,16 @@ describe('Notification Center', () => {
     expect(panel()).toBeNull()
   })
 
+  it('opens on the right side of the whole window, from the top, with a fixed title row (VIS-003)', async () => {
+    await mountWith([node('p1')])
+    await openPanel()
+    expect(panel()!.className).toContain('right-2')
+    expect(panel()!.className).toContain('top-2')
+    expect(panel()!.className).toContain('bg-slate-200')
+    expect(panel()!.querySelector('h2')!.textContent).toBe('Notifications')
+    expect(panel()!.querySelector('[data-testid="notification-section-agent_package"]')!.className).toContain('bg-white')
+  })
+
   it('the first Tab stop is ✕, which closes the panel', async () => {
     await mountWith([node('p1')])
     await openPanel()
@@ -156,7 +167,7 @@ describe('Notification Center', () => {
   it('a handled row shows "Updated to" and Clear, and does not count', async () => {
     await mountWith([node('p1', { state: 'HANDLED', handledRevision: B, read: true })])
     expect(pill()).toBeNull()
-    useNotificationCenterStore().open({ left: 8, bottom: 40 })
+    useNotificationCenterStore().open()
     await nextTick(); await nextTick()
     const row = document.querySelector('[data-testid="notification-row-agent_package:p1"]')!
     expect(row.textContent).toContain(`Updated to ${B.slice(0, 7)}`)
@@ -176,7 +187,7 @@ describe('Notification Center', () => {
   it('the empty panel says checks are off when the setting is off', async () => {
     capabilityState.isEnabled = false
     await mountWith([])
-    useNotificationCenterStore().open({ left: 8, bottom: 40 })
+    useNotificationCenterStore().open()
     await nextTick(); await nextTick()
     expect(document.querySelector('[data-testid="notification-center-empty"]')!.textContent).toContain('Background checks are off.')
   })

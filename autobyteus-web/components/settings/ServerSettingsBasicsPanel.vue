@@ -10,7 +10,7 @@
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
       <CompactionConfigCard />
-      <UpdateChecksCard />
+      <UpdateChecksCard class="xl:col-span-2" />
     </div>
 
     <div
