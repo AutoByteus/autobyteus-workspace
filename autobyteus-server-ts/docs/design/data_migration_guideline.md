@@ -209,7 +209,8 @@ retiring it means untangling it first.
 - **Retiring a migration** (once a release declares the minimum upgrade-from
   version, see "Supported upgrade range"):
   1. Retire oldest first: each migration expects its predecessor's output.
-  2. Delete its folder, its test folder and its registry line.
+  2. Delete its folder, its test folder and its registry line, and remove its
+     id from the remaining migrations' `prerequisiteMigrationIds`.
   3. Delete the `frozen/` files the boundary test reports as used by no
      remaining migration.
   4. Users whose data has not run it take the start-fresh-with-backup path of
