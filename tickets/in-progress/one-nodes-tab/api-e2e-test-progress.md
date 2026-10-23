@@ -26,3 +26,8 @@ Working log. Read it first when resuming. Rows are only added.
 | 2026-10-23T05:38Z | API-09 | Checkpoint | — | run2: EL-01…EL-06 Pass; EL-07 text changed across restart (startup save normalizes key order; content same) → EL-07 compares content and needs byte-identical over a second restart; run3 started |
 | 2026-10-23T05:40Z | API-09 | Completed | Pass | run3: EL-01…EL-07 Pass; instance stopped, container removed; evidence API-09-electron-journey-run3 |
 | 2026-10-23T05:41Z | — | Completed | Fail | round 1 result recorded: Fail (NP-07), 92% |
+| 2026-10-23T05:52Z | API-03 | Started | — | round 2 on 02fd7bcd9a: web unit suite (rerun: NodeRow/nodeRowStatus changed) |
+| 2026-10-23T05:59Z | API-03 | Completed | Pass | Test Files 658 passed / 2 skipped; Tests 4736 passed / 3 skipped; exit=0 |
+| 2026-10-23T05:59Z | API-07 | Started | — | round 2 run5 on 02fd7bcd9a, output API-07-remote-nodes-page-run5 (server dist unchanged since API-05) |
+| 2026-10-23T06:01Z | API-07 | Completed | Pass | run5: NP-01…NP-12 Pass; NP-07 row line names Embedded Node |
+| 2026-10-23T06:02Z | — | Completed | Pass | round 2 result recorded: Pass, 95% (API-REV-002) |

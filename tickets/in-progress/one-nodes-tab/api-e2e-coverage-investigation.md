@@ -18,11 +18,11 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record: `N/A` (no delivery re-entry)
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created with the first result)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer, CRR-002 Pass (run `code_reviewer_0207bf9e57664241955db13fff5f4c91`)
-- Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this document, round 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1, code reviewer CRR-002 Pass. Round 2, code reviewer CRR-004 Pass after the CR-005 fix (`02fd7bcd9a`) of NP-07.
+- Prior Investigation Reviewed: round 1 (this document)
+- Latest Authoritative Investigation: this document, round 2. Round 2 plan: the delta `71fd1a5235..02fd7bcd9a` is `NodeRow.vue`, `nodeRowStatus.ts` and their specs. API-03 (the web suite, now run by API/E2E) and API-07 are rerun; API-05, API-06, API-08 and API-09 are still valid (no server, Electron or probe file changed, and none asserts that line).
 
 All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/` unless absolute. Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab`, branch `codex/one-nodes-tab`, source under test `23f3feb193` (HEAD `0a1e02ba09` adds ticket documents only).
 
@@ -205,7 +205,7 @@ API-09 sub-cases: EL-01 release-shaped registry loads, "docker" row once with bo
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| After a name race (`PEER_NAME_TAKEN` at run time), the row line reads "… mu already has a node named ." without the name. The design § Naming Rule 4 and VIS-015 require "mu already has a node named Embedded Node." | `Local Fix` (found in execution, NP-07) | `evidence/api-e2e/API-07-remote-nodes-page-run4/remote-nodes-page-probe.json` `cases.NP-07.rowLine`; `NodeRow.vue:172` | Implementation engineer (failure-origin review by the code reviewer) |
+| After a name race (`PEER_NAME_TAKEN` at run time), the row line reads "… mu already has a node named ." without the name. The design § Naming Rule 4 and VIS-015 require "mu already has a node named Embedded Node." | `Local Fix` (found in execution, NP-07); resolved in round 2: CR-005, `02fd7bcd9a` | `evidence/api-e2e/API-07-remote-nodes-page-run4/remote-nodes-page-probe.json` `cases.NP-07.rowLine`; `NodeRow.vue:172` | Implementation engineer (failure-origin review by the code reviewer) |
 
 ## Investigation Decision
 

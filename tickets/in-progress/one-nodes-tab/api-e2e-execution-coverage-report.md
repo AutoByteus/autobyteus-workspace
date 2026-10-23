@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation: [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md)
-- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-001`
+- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-002`
 - Test progress log: [api-e2e-test-progress.md](api-e2e-test-progress.md)
-- Round and trigger: round 1; code review CRR-002 Pass (Large / High)
-- Prior round reviewed: none
+- Round and trigger: round 2. Code review CRR-004 Pass after the CR-005 fix (`02fd7bcd9a`) of round 1's NP-07 failure. Round 1 was code review CRR-002 Pass (Large / High).
+- Prior round reviewed: round 1 (API-REV-001, Fail: NP-07). Round 2 rerun plan: `git diff --name-only 71fd1a5235 02fd7bcd9a` lists only `NodeRow.vue`, `nodeRowStatus.ts` and their specs. So API-03 (web suite) and API-07 are rerun. API-05, API-06, API-08 and API-09 stay valid: none of their paths assert or render that line's text, and no server, Electron or probe file changed.
 - Deviations from the investigation's plan, and why:
   - API-07 needed four runs. Run 1 and run 2 failed on the probe's own text handling and request scoping. Run 3 stopped on an OS-level `ENFILE` (the system file table was full). Run 4 is the result. Every run's evidence is kept (`API-07-remote-nodes-page-run1…run4`); details are in Cases.
   - API-08/API-09 mount this worktree's `dist` into the image `autobyteus/autobyteus-server:beta`. That image's own `dist` differs in 4 files outside this change: `agent-run-service.js`, `team-run-service.js`, `remote-collaboration-composition.js` and `remote-message-receiver.js`. These come from autobyteus-269 (run titles), which is in the image but not on this branch. TESTING.md asks for no difference outside the changed files. The mount replaces the whole `dist`, the image's `prisma/` matches the worktree's, and run titles are not part of what is checked here, so the run went ahead. The deviation is recorded in `API-08…/nodes-docker-address-probe.json` `imageDistDiff`.
@@ -18,13 +18,13 @@
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` (on a Pass; this round is a Fail, so failure-origin review is requested first)
+- Proportional test-code review decision: `Required` (round 2 Pass; round 1's Fail went to failure-origin review first)
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `23f3feb193` source (HEAD `0a1e02ba09` + this round's probe files) | macOS 26.5.2 arm64 | Node v22.23.1; server `dist` built in this worktree (API-00, rebuilt by `test:integration:prepare`) | server suites' own environment isolation |
+| ENV-1 | Round 1: `23f3feb193` source (HEAD `0a1e02ba09` + the probe files). Round 2: `02fd7bcd9a` (API-03, API-07 run 5) | macOS 26.5.2 arm64 | Node v22.23.1; server `dist` built in this worktree (API-00, rebuilt by `test:integration:prepare`) | server suites' own environment isolation |
 | ENV-2 | same | macOS | ENV-1 servers, each with its own temp data root and HOME, env `PATH/HOME/TMPDIR` only, `127.0.0.1` free ports; `nuxt dev` (browser mode) with `BACKEND_NODE_BASE_URL` = the window's node; headless Chrome via playwright-core; 1440×1000; `en` | browser `localStorage` desktop list seeded in the current release's shape |
 | ENV-3 | same | macOS, Docker Desktop (server 29.x) | ENV-2 + a test-owned container from `autobyteus/autobyteus-server:beta` with this worktree's `dist` mounted read-only. It publishes only `127.0.0.1:<free port>`, has no volumes, and runs with `AUTOBYTEUS_SERVER_HOST=http://localhost:<port>` | user containers `autobyteus-server-0/1/2` untouched |
 | ENV-4 | same | macOS | Isolated desktop instance of this worktree's packaged build (`build:electron:mac`, `isolated-app start --from-worktree --data-root <own temp dir>`), driven over its CDP control port; ENV-3 container; two ENV-2 host servers | `node-registry.v1.json` synthesized in the current release's shape before start |
@@ -36,16 +36,16 @@
 | API-00 | setup | server build | `pnpm -C autobyteus-server-ts build` | ENV-1 | Pass | `API-00-server-build.log` | `exit=0` | setup for API-05…API-09 |
 | API-01 | all server | server typecheck | Reused IMP-02 | — | Pass (reused) | — | — | `git diff --name-only e16d848e0f HEAD -- autobyteus-server-ts` is empty |
 | API-02 | REQ-707/708, DS-005, AC-713 | server unit | Reused IMP-03 | — | Pass (reused) | — | — | same diff empty |
-| API-03 | BEH-701…707 | web unit/component | Reused IMP-09 | — | Pass (reused) | — | — | ran on `23f3feb193`; nothing outside `tickets/` changed after it before this round |
+| API-03 | BEH-701…707, CR-005 | web unit/component | Round 1: reused IMP-09. Round 2: `(autobyteus-web) NUXT_TEST=true pnpm exec vitest run` on `02fd7bcd9a` | ENV-1 | Pass | `API-03-r2-web-unit.log` | `Test Files  658 passed \| 2 skipped (660)`, `Tests  4736 passed \| 3 skipped (4739)`, `exit=0` | rerun because `NodeRow.vue`/`nodeRowStatus.ts` changed; includes the new VIS-015 `PEER_NAME_TAKEN` and `stepName` specs |
 | API-04 | REQ-711 | Electron main-process specs | Reused IMP-06 | — | Pass (reused) | — | — | `git diff --name-only e16d848e0f HEAD -- autobyteus-web/electron autobyteus-web/types` empty |
 | API-04b | REQ-713 | web guards | Reused IMP-10 | — | Pass (reused) | — | — | also run by `build:electron:mac` in API-09 (guards passed before packaging) |
 | API-05 | regression | server integration | `pnpm -C autobyteus-server-ts test:integration:prepare`; `pnpm -C autobyteus-server-ts test:integration` | ENV-1 | Pass | `API-05-server-integration.log` (excerpt), `API-05-server-integration.full.log` | `Test Files  78 passed \| 20 skipped (98)`, `Tests  421 passed \| 69 skipped (490)`, `exit=0` | skips are the suites' own gates |
 | API-06 | AC-713; `addPeerNode {nodeId, name, baseUrl}` contract | server E2E, two real server processes + 3 more nodes | `env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<repo>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs REMOTE_E2E_EVIDENCE_DIR=<evidence>/API-06-e2e-receipt pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch` | ENV-1 | Pass | `API-06-server-e2e-two-server.log` (excerpt), `.full.log`, `API-06-e2e-receipt/remote-two-server-receipt.json` | `Tests  29 passed (29)`, `exit=0`; RC-16 identity mismatch, RC-27 `peerNodeOffer` refusal codes, RC-20 request audit | ~307 s |
-| API-07 | AC-701…AC-710, AC-713, REQ-711 (browser), SCN-A01/A02 | Browser + 11 real host servers | `pnpm -C autobyteus-web exec node tests/e2e/remote-nodes-page-probe.mjs --output-dir=<evidence>/API-07-remote-nodes-page-run4` (script `test:e2e:remote-nodes-page`) | ENV-2 | **Fail** (NP-07); NP-01…06, NP-08…12 Pass | `API-07-remote-nodes-page-run4/remote-nodes-page-probe.json`, `NP-*.png`, `server-*.log`, `frontend.log` | per sub-case below | runs 1–3 kept as `-run1…-run3` (see Notes column of the sub-cases) |
+| API-07 | AC-701…AC-710, AC-713, REQ-711 (browser), SCN-A01/A02 | Browser + 11 real host servers | `pnpm -C autobyteus-web exec node tests/e2e/remote-nodes-page-probe.mjs --output-dir=<evidence>/API-07-remote-nodes-page-run5` (script `test:e2e:remote-nodes-page`) | ENV-2 | Pass (round 2, run 5, on `02fd7bcd9a`); round 1 run 4: Fail (NP-07) | `API-07-remote-nodes-page-run5/remote-nodes-page-probe.json`, `NP-*.png`, `server-*.log`, `frontend.log`; round 1: `-run4` | per sub-case below | runs 1–4 kept (`-run1…-run4`) |
 | API-08 | AC-704 (Docker address), AC-707, REQ-708, REQ-713 | Browser + host servers + test-owned Docker node | `pnpm -C autobyteus-web test:e2e:nodes-docker-address --output-dir=<evidence>/API-08-nodes-docker-address-run1` | ENV-3 | Pass | `API-08-nodes-docker-address-run1/nodes-docker-address-probe.json`, `ND-*.png`, `docker-node.log`, `server-*.log` | per sub-case below | `cleanup.containerLeft: null` |
 | API-09 | REQ-711, AC-702, AC-703, DEC-706, AC-704, REQ-713, AC-707 | Isolated desktop instance of the worktree build + Docker node | `pnpm -C autobyteus-web build:electron:mac`; then `node <evidence>/API-09-electron-journey.mjs --repo=<worktree> --out=<evidence>/API-09-electron-journey-run3` (it runs `pnpm --silent isolated-app start --from-worktree --data-root <own temp dir>`, drives the CDP control port, `isolated-app restart` ×2, `stop`) | ENV-4 | Pass | `API-09-electron-build.log`; `API-09-electron-journey-run3/API-09-electron-journey.json`, `EL-*.png`, `EL-07-registry-*.json`, `instance.log`, `docker-node.log`; the script `API-09-electron-journey.mjs` | per sub-case below | runs 1–2 kept (`-run1`, `-run2`); see the sub-case notes |
 
-### API-07 sub-cases (run 4)
+### API-07 sub-cases (run 5, round 2; run 4 for round 1)
 
 | Sub-case | Criteria | Result | Look For (in `remote-nodes-page-probe.json` `cases.<id>` unless named) |
 | --- | --- | --- | --- |
@@ -56,7 +56,7 @@
 | NP-04 | AC-703 | Pass | iota added with the switch off: `dialog: 0`, line `ⓘ Agents here can't work with iota yet.` [Turn on]; kappa with it on: steps `Register kappa as “kappa”`, `Turn on remote collaboration (it is off)`, `Register this node as “Embedded Node” kappa finds this node's address once it is on.`; after Cancel `afterCancel` peers.json alpha unchanged, iota and kappa `null`, `kappaSwitch: false`; `byNodeId: "ⓘ This is beta, already in your list."`; `byAddress: "ⓘ This is gamma box, already in your list."` (gamma down); ghost `ⓘ Not reachable. Nothing answers at that address and port.`, `dialog: 0`, switch disabled |
 | NP-05 | AC-704 | Pass | `onAlpha` `kappa @ http://127.0.0.1:<kappa>`; `onKappa` `[{nodeId: alpha, name: "Embedded Node", baseUrl: alpha}]`; kappa's switch turned on; `kappaDirections` both `✓ Working`; `offers.alphaAsksKappa.entries` has `Kappa Helper`, `offers.kappaAsksAlpha.entries` has `Alpha Helper` (each side's agents can list the other's) |
 | NP-06 | SCN-A01 (naming rule) | Pass | step `Register this node as “Embedded Node 2”` + `“Embedded Node” is already used there, so it gets a number.` + `lambda reaches this node at http://127.0.0.1:<alpha>.`; `onLambda.name: "Embedded Node 2"` |
-| NP-07 | SCN-A02 (naming race), REQ-706, design § Naming Rule 4 | **Fail** | Dialog correct: `failed.error: "mu already has a node named Embedded Node."`; the row's "What happened" detail correct. **Row line wrong**: `rowLine.line: "⚠ Turned on here, but not finished on mu. mu already has a node named ."` (the name is missing). Try again re-planned `Embedded Node 2` and finished (`onMu.name: "Embedded Node 2"`). Screenshot `NP-07-mu-row-try-again.png` |
+| NP-07 | SCN-A02 (naming race), REQ-706, design § Naming Rule 4 | Pass (run 5); Fail in run 4 | Run 5: `rowLine: {"line": "⚠ Turned on here, but not finished on mu. mu already has a node named Embedded Node.", "fix": "Try again"}`; `failed.error: "mu already has a node named Embedded Node."`; Try again re-plans and finishes with `onMu.name: "Embedded Node 2"`. Run 4 (before CR-005) showed `"… mu already has a node named ."`; screenshots `NP-07-mu-row-try-again.png` in both runs |
 | NP-08 | AC-708 | Pass | `invalid` rule message; `taken: "Another node is already named Beta."`; `onAlpha.name` and `entry.name` both `kappa lab`; kappa's own registration of alpha untouched (`kappaKnowsAlphaAs: "Embedded Node"`) |
 | NP-09 | AC-705 | Pass | kappa: steps `Remove kappa lab from this node`, `Remove this node from kappa lab`; after: `alphaHasKappa: false`, `kappaPeers: []`, `kappaSwitch: true`, `listed: 1`. lambda stopped: `✓ Remove lambda from this node`, `✗ Remove this node from lambda` with `Nothing answers at that address and port.`, `Not everything could be done. What was done stays done.`; lambda's own peers.json still has alpha (`lambdaAfter.lambdaFile`) |
 | NP-10 | AC-709 | Pass | mu: the three lines, then gone on alpha, on mu and from the list; beta stopped: marks `✓✗✓`, `Removed here. beta could not be reached, so this node is still registered there.`, no Try again; beta's peers.json still has alpha; `NP-10-beta-stopped-removed.png` |
@@ -117,27 +117,29 @@ Notes:
 | AC-711 | No (user check) | — | Only The User Can Check | Everything that can be proven without the user's own nodes was proven: Docker node (ND-*), desktop (EL-*), both languages (IMP-08 step 16, API-03). AC-711 asks about the user's own desktop and Docker nodes, which TESTING.md rule 2 forbids testing against |
 | AC-712 | No | review (docs) | Not in this stage | Docs are reviewed at delivery |
 | AC-713 | Yes | API-02, API-06, NP-11, NP-12 | Proven | — |
-| SCN-A02 / design § Naming Rule 4 (REQ-706 line text) | Yes (in REQ-706) | NP-07 | **Not Proven (Fail)** | — |
+| SCN-A02 / design § Naming Rule 4 (REQ-706 line text) | Yes (in REQ-706) | NP-07 (run 5), API-03 (VIS-015 `PEER_NAME_TAKEN` spec) | Proven (round 2; failed in round 1) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
+Round 2 values. Round 1's final score was 92%; its weak category was requirement proof at 85%, because NP-07 failed.
+
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 85% | Every critical AC proven: NP-*, ND-*, EL-*, API-06 | NP-07: the row line after a name race reads "mu already has a node named ." (REQ-706 line text, design § Naming Rule 4). A known failure, not an uncertainty | The fix, plus NP-07 rerun |
-| Changed-boundary execution directness | 80% | 95% | Real servers' GraphQL, the real page, a real container (`/.dockerenv`, `host.docker.internal`), the real desktop's IPC registry and windows | The Docker window in the desktop and in the browser both bind the renderer to the Docker node; the same code path | — |
-| Cross-boundary integration realism and mock gap | 75% | 95% | Two-node plans run from the window against live nodes (NP-05…10, ND-01, EL-04); partial failures from really stopped nodes; a real name race made through the other node's own API | Agents' tool calls after connect not driven (API-06 covers the tool ↔ `peerNodeOffer` equivalence) | A scripted-runtime delegation after connect |
-| Environment, configuration, identity, and fixture fidelity | 80% | 90% | Clean env per server; release-shaped registry and `localStorage` from a real file's keys; test-owned container from the user's image | The image `dist` differs in 4 autobyteus-269 files outside this change (recorded); the user's own nodes are never used (AC-711) | An image built from this branch |
-| Failure, edge-case, lifecycle, and recovery evidence | 75% | 95% | Stopped, switched off, unregistered, different node and black-holed peers (NP-03); unreachable add; disconnect/remove with the other node stopped; refused / not_found / timeout / different_node in a container; restart ×2 | NP-07's row text | — |
-| User-surface, browser, and desktop-shell confidence | 70% | 95% | Browser (NP-*, ND-*), desktop (EL-*), screenshots for each state; en (zh-CN from IMP-08 and API-03) | zh-CN not rerun in this round's probes | — |
-| Durable regression coverage quality and relevance | 80% | 90% | Stale 267 probe replaced by `remote-nodes-page-probe.mjs` (NP-01…12); new `nodes-docker-address-probe.mjs` (ND-01…05) | No unit test covers the partial line with `PEER_NAME_TAKEN` (`NodeRow.spec.ts` checks only `PEER_UNREACHABLE`); the desktop journey is ticket-owned, not a repository probe | A `NodeRow`/`nodeRowStatus` unit case with the fix |
+| Requirement and acceptance-criteria proof | 80% | 95% | Every critical AC proven: NP-01…12 (run 5), ND-01…05, EL-01…07, API-06 | AC-711 is the user's check, not a gap | — |
+| Changed-boundary execution directness | 80% | 95% | Real servers' GraphQL, the real page, a real container (`/.dockerenv`, `host.docker.internal`), the real desktop's IPC registry and windows | — | — |
+| Cross-boundary integration realism and mock gap | 75% | 95% | Two-node plans run from the window against live nodes (NP-05…10, ND-01, EL-04); partial failures from really stopped nodes; a real name race made through the other node's own API | Agents' own tool calls after connect were not driven; API-06 RC-26 shows the tool's list equals `peerNodeOffer`, which was checked on both sides | A scripted-runtime delegation after connect |
+| Environment, configuration, identity, and fixture fidelity | 80% | 95% | Clean env per server; release-shaped registry and `localStorage` built from a real file's keys; a test-owned container from the user's image running this worktree's whole `dist` | The image's own `dist` has 4 autobyteus-269 files that the mount replaces. The mounted server ran on the image's dependencies, which are newer, with an identical `prisma/`. Every container case passed on it, so this is negligible | An image built from this branch |
+| Failure, edge-case, lifecycle, and recovery evidence | 75% | 95% | Stopped, switched-off, unregistered, different-node and black-holed peers; unreachable add; disconnect/remove with the other node stopped; the name race (NP-07); refused / not_found / timeout / different_node from inside a container; restart ×2 | — | — |
+| User-surface, browser, and desktop-shell confidence | 70% | 95% | Browser (NP-*, ND-*), desktop (EL-*), screenshots for each state; en, with zh-CN from IMP-08 and API-03 | zh-CN not driven by this round's probes | — |
+| Durable regression coverage quality and relevance | 85% | 95% | The stale 267 probe is replaced by NP-01…12; the new Docker probe ND-01…05; CR-005's unit specs (VIS-015 with `PEER_NAME_TAKEN`, `stepName`) | The desktop journey is ticket-owned, not a repository probe; its shell logic has durable Electron specs | — |
 
-- Overall post-repository confidence: 76% (repository suites only: API-01…API-06)
-- Overall final confidence: 92% (simple average of the seven final scores)
+- Overall post-repository confidence: 78% (repository suites only)
+- Overall final confidence: 95% (simple average of the seven final scores)
 - Calculation method: simple average
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No`. REQ-706's line text fails in NP-07.
-- Any final applicable category below `90%`: `Yes`. Requirement and acceptance-criteria proof is at 85% (NP-07).
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: NP-07 (product defect); the image `dist` deviation (bounded, recorded).
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: AC-711 (user check); the image `dist` deviation (negligible, recorded).
 
 ## Broader Validation Decision (Mandatory)
 
@@ -181,7 +183,7 @@ Notes:
 | `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs` | Added | API-08 (ND-01…ND-05) | — |
 | `autobyteus-web/package.json` script `test:e2e:nodes-docker-address` | Added | API-08 | — |
 
-- Added or updated paths attached for proportional test-code review: `Yes` (for the review after the fix; this round is a Fail)
+- Added or updated paths attached for proportional test-code review: `Yes` (round 2)
 - Diff or repository evidence supplied for removed paths: the replaced file's diff, `git diff 0a1e02ba09 -- autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs`
 
 ## Dependencies Mocked Or Emulated
@@ -206,17 +208,13 @@ Notes:
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix`, owned by the implementation engineer.
-- What fails: after a connect or finish run stops on `PEER_NAME_TAKEN`, the row's warning line drops the name. It reads "Turned on here, but not finished on mu. mu already has a node named ." The dialog ("mu already has a node named Embedded Node.") and the connection details' "What happened" list show the name correctly.
-- Where: `autobyteus-web/components/settings/nodes/NodeRow.vue:172` calls `failureText(t, line.error, { node: name })` without `name`. `failureText` words `PEER_NAME_TAKEN` with `context.name ?? ''` (`utils/nodeConnectionErrorText.ts`). The row line comes from `stores/nodeRowStatus.ts:144` (`{ kind: 'partial', …, error: unfinished.error }`), which does not carry the failed step's `name`. `NodeConnectionDetails.vue:62` passes `name: step.name` and is correct.
-- Expected (design § Naming Rule 4, UI/UX spec VIS-015): "Turned on here, but not finished on mu. mu already has a node named Embedded Node." with Try again. Try again itself works: it re-plans "Embedded Node 2" and finishes (NP-07 `replanned`, `onMu`).
-- Coverage gap: `NodeRow.spec.ts` "VIS-015" checks the partial line only with `PEER_UNREACHABLE`.
-- After the fix, rerun: API-07 (whole probe; NP-07 asserts the full text) and the web unit suite.
+- Round 2: not applicable (Pass).
+- Round 1, kept for history: NP-07 was a `Local Fix` for the implementation engineer. After a `PEER_NAME_TAKEN` run, the row line dropped the name (`NodeRow.vue:172` called `failureText` without `name`). The code reviewer confirmed it as CR-005, and the implementation engineer fixed it in `02fd7bcd9a` (`RowLine.stepName`). Run 5 proves it fixed.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check: REQ-706 row line text for a name race (NP-07): `Not Proven (Fail)`. AC-711: `Only The User Can Check`.
-- Preliminary classification and recommended owner: `Local Fix`, implementation engineer (failure-origin review requested from the code reviewer).
-- Next recipient from `get_handoff_rules`: see the handoff message.
-- Notes: every other case passed: API-05, API-06, API-07 NP-01…06/08…12, API-08 ND-01…05, API-09 EL-01…07. Final confidence is 92%, limited by NP-07.
+- Result: `Pass` (round 2, `02fd7bcd9a`)
+- Criteria not proven, or parts only the user can check: AC-711 `Only The User Can Check` (the user's own desktop and Docker nodes; delivery takes it to the user). AC-712 (docs) is reviewed at delivery.
+- Preliminary classification and recommended owner: —
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer`, for proportional test-code review of `autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs`, `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs` and the `test:e2e:nodes-docker-address` script.
+- Notes: round 1's only failure (NP-07) is resolved. API-05, API-06, API-08 and API-09 from round 1 stay valid for the CR-005 delta. Final confidence is 95%.
