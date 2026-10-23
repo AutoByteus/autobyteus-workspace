@@ -31,3 +31,6 @@ Working log. Read it first when resuming. Rows are only added.
 | 2026-10-23T05:59Z | API-07 | Started | — | round 2 run5 on 02fd7bcd9a, output API-07-remote-nodes-page-run5 (server dist unchanged since API-05) |
 | 2026-10-23T06:01Z | API-07 | Completed | Pass | run5: NP-01…NP-12 Pass; NP-07 row line names Embedded Node |
 | 2026-10-23T06:02Z | — | Completed | Pass | round 2 result recorded: Pass, 95% (API-REV-002) |
+| 2026-10-23T06:04Z | API-08 | Started | — | round 3 (CRR-005 TR-001/TR-002 fixed in the probe): run2, output API-08-nodes-docker-address-run2 |
+| 2026-10-23T06:06Z | API-08 | Completed | Pass | run2: ND-01…ND-05 Pass; container removed |
+| 2026-10-23T06:07Z | — | Completed | Pass | round 3 recorded (API-REV-003) |

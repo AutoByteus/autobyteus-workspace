@@ -14,15 +14,22 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Trigger: implementation engineer, IR-001 ready for source review (Large / High)
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Failure-origin fields: `N/A`
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: `4` (Implementation Review, Targeted Delta Review of CR-005; round 3 was the API/E2E failure-origin review)
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the delta `780e846d4a..23f3feb193` touches only the CRR-001 finding files: `nodeListStore`, `nodeChangeDialogStore`, the connector, a new connector-wiring file, `remoteCollaborationStore`, `AddNodePanel`, `NodeList`, `NodeConnectionDetails`, `nodeChangePlan`, and their specs. No server, Electron, shared interface or data-shape change. History rebuilt for CR-004: `e16d848e0f` has the same tree as `5fc0ad389a`.
+- Trigger: implementation engineer, IR-002 (CRR-001 local fixes)
+- Prior Review Round Reviewed: `1` (CRR-001, Fail)
+- Latest Authoritative Round: `4`
+- Failure-origin fields (round 3):
+  - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+  - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
+  - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md` (`API-REV-001`)
+  - Failing Scenario IDs: API-07 / NP-07 (SCN-702 naming race; REQ-706; design § Naming Rule 4; VIS-015)
+  - Exact Failing Command: `pnpm -C autobyteus-web exec node tests/e2e/remote-nodes-page-probe.mjs --output-dir=<evidence>/API-07-remote-nodes-page-run4` (source `23f3feb193`)
+  - Failure Evidence: `evidence/api-e2e/API-07-remote-nodes-page-run4/remote-nodes-page-probe.json` (`cases.NP-07.rowLine`), `NP-07-mu-row-try-again.png`
 
 ## Routing Classification Review
 
@@ -34,7 +41,7 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: branch `codex/one-nodes-tab` against `origin/personal` `ca1f09e52a` (commits `d62efda0ff`, `5fc0ad389a`, `086c84ded3`).
+- Changed implementation and behavior reviewed: round 1 covered branch `codex/one-nodes-tab` against `origin/personal` `ca1f09e52a`. Round 2 covers the rebuilt history `9457972953` (baseline fix), `e16d848e0f` (implementation), `780e846d4a`, `23f3feb193` (CRR-001 fixes), `93bbf71965` (IR-002 docs).
 - Files / areas reviewed:
   - server `remote-collaboration` (`transport-failure-reason`, `peer-client`, `peer-address-resolver`, `peer-directory`, `remote-node-discovery`, `peer-refusal`, `remote-collaboration-settings-error`, `remote-collaboration-services`), `server-addressing/runs-in-container.ts`, the GraphQL resolver;
   - Electron `nodeRegistryStore.ts`, `nodeRegistryTypes.ts`, `electronApplication.ts`, `types/node.ts`;
@@ -101,27 +108,27 @@ None of these needs the Solution Designer before API/E2E.
 | Task design health assessment preserved | Pass | `NodeManager.vue` 343 → 112 effective lines; one projection owner, one coordination owner | — |
 | Matches approved supplemental artifacts | Pass | TR-701/702/703/711/713 traced; IMP-08 | — |
 | Data-flow spine inventory clarity | Pass | DS-001…DS-005 map onto `nodeListStore.open/ask/addNode`, `connector.plan/run`, `PeerAddressResolver.firstMatch` | — |
-| Ownership boundary preservation | Fail | C-01: the per-row partial result sits in `nodeChangeDialogStore`, not `nodeListStore` (design § Product Package Mapping); rename and change address run through the dialog store | CR-003 |
+| Ownership boundary preservation | Pass (round 2) | `nodeListStore` holds the unfinished step per row (`setUnfinishedStep`/`unfinishedStepOf`) and runs rename and change address through the connector; the dialog store holds only the confirmation's plan | — (CR-003 resolved) |
 | Off-spine concern clarity | Pass | probe, error text, classifier, container check each serve one owner | — |
 | Existing capability reuse | Pass | `/rest/remote-access/status`, `ServerAddressCandidateService`, offers store, 267 disclosure reused | — |
 | Reusable owned structures | Pass | `NodeSettingsFailure` shared by the store and the API; plan types in `nodeChangePlan.ts` | — |
 | Shared-structure tightness | Pass | `NodeRow` keeps `windowAddress` and `peer.baseUrl` apart; `PeerRefusal` extends the port type on the remote-collaboration side | — |
 | Repeated coordination ownership | Pass | one connector for all plan kinds; one run rule table | — |
-| Empty indirection | Pass with note | `nodeCollaborationApi` is a typed edge, not empty. The `changeAddress` `resolveHere` step duplicates the next step (CR-002) | CR-002 |
+| Empty indirection | Pass | `nodeCollaborationApi` is a typed edge; `changeAddress` is one step (`[changeAddressHere(address)]`) | — (CR-002 resolved) |
 | Separation of concerns / file responsibility | Pass | `nodeRowStatus.ts` pure derivation; components small | — |
-| Ownership-driven dependency (no unjustified cycles) | Fail | C-01: `nodeListStore` ↔ `nodeChangeDialogStore` cycle | CR-003 |
+| Ownership-driven dependency (no unjustified cycles) | Pass (round 2) | No store imports `nodeChangeDialogStore`; it depends on `nodeListStore` one way. The connector's wiring sits in `services/nodeCollaboration/windowNodeCollaborationConnector.ts` and resolves stores lazily | — (CR-003 resolved) |
 | Authoritative Boundary Rule | Pass | components never call GraphQL; resolver never calls `PeerClient`; this node never written through `nodeCollaborationApi` | — |
 | File placement | Pass | `components/settings/nodes/`, `services/nodeCollaboration/` as designed | — |
 | Flat-vs-over-split layout | Pass | — | — |
 | Interface boundary clarity | Pass | `addPeerNode({nodeId,name,baseUrl})`, `resolvePeerAddress(nodeId, baseUrls)`, `identify {nodeId, serverInstanceId}` explicit | — |
 | Naming quality | Pass | `serverInstanceId` vs desktop `nodeId` kept distinct | — |
-| No unjustified duplication | Pass with note | CR-002 | CR-002 |
+| No unjustified duplication | Pass | — | — |
 | Patch-on-patch complexity | Pass | — | — |
-| Dead code removed in touched files | Fail | C-02: `loaded`, `loadError` | CR-001 |
+| Dead code removed in touched files | Pass (round 2) | `loaded`/`loadError` removed; `load()` throws and keeps the last list; `open` tolerates a failure; the connector's `loadPeers` failure goes to the existing catch paths | — (CR-001 resolved) |
 | Test scenarios clear and requirement-aligned | Pass | connector, list store, row status and resolver specs are named by REQ/AC/TR | — |
 | Test fixtures/structure coherent | Pass | — | — |
-| No stale or compatibility-only tests | Pass | removed specs go with their components; `loadError` assertion goes with CR-001 | — |
-| API/E2E readiness | Pass with note | ready once the local fixes land; commit packaging (CR-004) | CR-004 |
+| No stale or compatibility-only tests | Pass | removed specs go with their components; the `loadError` assertions are gone; new `nodeChangeDialogStore.spec.ts`, `AddNodePanel.spec.ts` | — |
+| API/E2E readiness | Pass | History split: `9457972953` touches only `project-task-index-status.test.ts`; `e16d848e0f` carries the removals (same tree as `5fc0ad389a`); IMP-09 web 4733 passed, IMP-10 guards pass, IMP-11 rendered recheck | — (CR-004 resolved) |
 
 ## Source File Size And Structure Audit
 
@@ -129,14 +136,15 @@ All changed implementation-source files are under 500 effective lines. Files ove
 
 | Source File | Before | After | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `stores/nodeListStore.ts` | 0 | 239 | Pass | Over; one owner (rows, asks, add, open) | Fail (C-01) | Pass | Local Fix | CR-003 |
-| `services/nodeCollaboration/nodeCollaborationConnector.ts` | 0 | 223 | Pass | Over; one owner (plan + run) | Pass | Pass | — | CR-002 touches `planChangeAddress` |
-| `stores/nodeChangeDialogStore.ts` | 0 | 123 | Pass | Pass | Fail (C-01) | Pass | Local Fix | CR-003 |
+| `stores/nodeListStore.ts` | 0 | 273 (round 2) | Pass | Over; one owner (rows, asks, add, open, the row's changes without confirmation, the unfinished step) | Pass | Pass | — | — |
+| `services/nodeCollaboration/nodeCollaborationConnector.ts` | 0 | 224 | Pass | Over; one owner (plan + run) | Pass | Pass | — | — |
+| `services/nodeCollaboration/windowNodeCollaborationConnector.ts` (new, round 2) | 0 | 36 | Pass | Pass | Pass (the window's wiring of the connector) | Pass | — | — |
+| `stores/nodeChangeDialogStore.ts` | 0 | 73 (round 2) | Pass | Pass | Pass | Pass | — | — |
 | `components/settings/nodes/NodeRow.vue` | 0 | 209 | Pass | Pass | Pass | Pass | — | — |
 | `electron/application/electronApplication.ts` | 395 | 405 | Pass | Pass | Pass | Pass | — | — |
 | `localization/messages/{en,zh-CN}/settings.ts` | 495 | 482 | Pass (shrank) | Pass | Pass | Pass | — | — |
 | `stores/nodeStore.ts` | 282 | 299 | Pass | Pass | Pass | Pass | — | — |
-| `stores/remoteCollaborationStore.ts` | 90 | 84 | Pass | Pass | Pass | Pass | Local Fix | CR-001 |
+| `stores/remoteCollaborationStore.ts` | 90 | 76 | Pass | Pass | Pass | Pass | — | — |
 | server `peer-directory.ts` | 101 | 140 | Pass | Pass | Pass | Pass | — | — |
 | server `peer-address-resolver.ts` | 0 | 97 | Pass | Pass | Pass | Pass | — | — |
 | other changed sources | — | ≤ 180 | Pass | Pass | Pass | Pass | — | — |
@@ -147,7 +155,7 @@ All changed implementation-source files are under 500 effective lines. Files ove
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | no tab alias, no old `addPeerNode` input |
 | No legacy old-behavior retention | Pass | old form, chip, probe and peer section removed |
-| Dead code removed in touched files | Fail | CR-001 |
+| Dead code removed in touched files | Pass | CR-001 resolved in round 2 |
 | Persisted-data decision followed | Pass | `Directly Usable — No Migration`: `normalizeLoadedNode` projects a valid `serverInstanceId`, drops the probe fields; `identify` no-op writes nothing |
 | No dual reads/writes or old-shape fallback | Pass | — |
 | Transition mechanics match design | Pass | no migration |
@@ -156,7 +164,7 @@ All changed implementation-source files are under 500 effective lines. Files ove
 
 | Item / Path | Type | Evidence | Why | Required Action |
 | --- | --- | --- | --- | --- |
-| `remoteCollaborationStore` state `loaded`, `loadError` | DeadCode | Written in `load()`; no reader outside `stores/__tests__/remoteCollaborationStore.spec.ts` | Introduced by this change, read only by its own test (Principle 7) | Remove both and the spec assertions, or show a load failure where the approved package asks for one (it has none) |
+| None remaining (round 2). `loaded`/`loadError` were removed (CR-001). | — | — | — | — |
 
 ## Docs-Impact Verdict
 
@@ -169,24 +177,26 @@ None new or reclassified.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `8.9/10` (`89/100`); a simple average, not the decision rule.
+- Overall score: `9.3/10` (`93/100`) in round 2 (8.9 in round 1); a simple average, not the decision rule.
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.2 | DS-001…005 readable in code; tokens per row; run rules in one table | The DS-003 flow hops between two stores | CR-003 |
-| 2 | Ownership Clarity and Boundary Encapsulation | 8.3 | Server boundaries and AR-005 write paths are clean | Partial result owned by the dialog store against the design; rename/change address via the "dialog" store; store cycle | CR-003 |
-| 3 | API / Interface / Query / Command Clarity | 9.3 | Explicit identities, typed error extensions, `identify` | — | — |
-| 4 | Separation of Concerns and File Placement | 8.8 | Small, single-purpose files; pure row derivation | Dialog store mixes dialog state with connector wiring for non-dialog operations | CR-003 |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.3 | DS-001…005 readable in code; tokens per row; run rules in one table; DS-003 now flows dialog → list one way | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.2 | The list store owns the rows, their changes without confirmation and the unfinished step (as the design says); the dialog store owns only the confirmation; the server and AR-005 write paths are clean | The connector's wiring is a module singleton that resolves stores lazily, which is acceptable for a stateless connector | — |
+| 3 | API / Interface / Query / Command Clarity | 9.3 | Explicit identities, typed error extensions, `identify`; `addNode` returns `confirm` | — | — |
+| 4 | Separation of Concerns and File Placement | 9.2 | Small, single-purpose files; wiring in `services/nodeCollaboration/` | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.2 | `NodeRow`, `NodeSettingsFailure`, `PeerRefusal` tight | — | — |
-| 6 | Naming Quality and Local Readability | 9.0 | Domain names throughout | Dense one-liners in the connector and row status | — |
-| 7 | API/E2E Readiness | 8.8 | Handoff's coverage hints precise; E2E input updated | Commit packaging (CR-004) | CR-004 |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.1 | Traced paths match REQ/AC; A1 fixes a real AC-707 gap | Redundant probe in Change address | CR-002 |
+| 6 | Naming Quality and Local Readability | 9.0 | Domain names throughout | Dense one-liners in the connector and row status | Optional |
+| 7 | API/E2E Readiness | 9.3 | Clean commit split; coverage hints precise; E2E input updated; IMP-09/10/11 green | Electron/Docker/E2E not yet exercised (the next stage's job) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.2 | Traced paths match REQ/AC; Change address is one server-checked step with the hint's details | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut | — | — |
-| 10 | Cleanup Completeness | 8.6 | Removal plan done | Dead `loaded`/`loadError` | CR-001 |
+| 10 | Cleanup Completeness | 9.3 | Removal plan done; dead state removed | — | — |
 
 ## Findings
 
-### CR-003 — `nodeListStore` ↔ `nodeChangeDialogStore` cycle; partial result not where the design puts it (Medium, Local Fix)
+Round 2: all four findings are **Resolved** (verification in `code-review-revision-record.md`, CRR-002). Their round-1 text stays below for history.
+
+### CR-003 — `nodeListStore` ↔ `nodeChangeDialogStore` cycle; partial result not where the design puts it (Medium, Local Fix) — Resolved
 
 - Basis: design § Product Package Mapping (TR-704/705/712: "partial result kept per row in `nodeListStore` until the next ask"); § Ownership Map (connector stateless; `nodeListStore` owns rows and derived warnings); § Dependency Rules (list store does not depend on a dialog); Principles 3 and 9.
 - Evidence: `nodeListStore` → dialog store: `views` reads `unfinishedStepOf` (l.97), `close` → `cancel` (l.178), `addNode` → `request` (l.219), `renameNode` / `changeAddress` → `runSilently` (l.251, 259). Dialog store → list store: `targetOf` (l.50), `request` → `askAgain` (l.69, 74), `finishRun` → `askAll`/`askAgain` (l.86-87). The connector instance lives in the dialog store, so rename and change address, which have no dialog, run through it.
@@ -198,19 +208,19 @@ None new or reclassified.
   - Let `NodeList` cancel the dialog on unmount.
 - Tests: update the list-store and dialog specs; no behavior change.
 
-### CR-001 — Dead store state `loaded` and `loadError` (Low, Local Fix)
+### CR-001 — Dead store state `loaded` and `loadError` (Low, Local Fix) — Resolved
 
 - Basis: Principle 7 (code only its own tests read).
 - Evidence: `stores/remoteCollaborationStore.ts:28-40`; only `remoteCollaborationStore.spec.ts:26,29` reads `loadError`; nothing reads `loaded`.
 - Response: remove both and the spec assertions. The approved package has no "peers could not be loaded" state, so there is no use to add.
 
-### CR-002 — Change address probes the same address twice (Low, Local Fix)
+### CR-002 — Change address probes the same address twice (Low, Local Fix) — Resolved
 
 - Basis: SCN-704 (TR-711, AC-707); DESIGN.md rule 5; Principle 13. A1 is accepted. Once only the typed address is resolved, `resolveHere` does exactly what `PeerDirectory.changeAddress` does next.
 - Evidence: `planChangeAddress` → `[resolveHere(firstAddress), changeAddressHere]` (`nodeCollaborationConnector.ts:139-150`). `PeerDirectory.changeAddress` probes the same address, refuses a different node with `PEER_IDENTITY_MISMATCH` + `address`, and an unreachable one with `reason`, `address`, `loopbackInContainer` (`peer-directory.ts:74-87,120-130`). `failureText` words `PEER_IDENTITY_MISMATCH` as `address.different`, and `addressHintOf` needs only `loopbackInContainer` + `address`.
 - Response: the `changeAddress` plan is `[changeAddressHere]` with the typed address. Update the connector spec. The design § Run Rules row is reconciled at docs sync (with A1).
 
-### CR-004 — Baseline-fix commit carries this ticket's removals (Low, packaging, Local Fix)
+### CR-004 — Baseline-fix commit carries this ticket's removals (Low, packaging, Local Fix) — Resolved
 
 - Basis: the handoff and revision record present `d62efda0ff` as a separate, test-only baseline fix (TESTING.md rule 9).
 - Evidence: `git show d62efda0ff --stat`: the test change plus 9 deleted ticket files (`RemoteCollaborationCard.vue` + spec, `RemoteCollaborationPeersSection.vue`, `CurrentWindowNodeCard.vue`, `nodeCapabilityProbe.ts` + spec, `nodeHostValidation.ts` + spec). `5fc0ad389a` contains none of them. The branch is not pushed.
@@ -222,11 +232,11 @@ None new or reclassified.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001, CR-002, CR-003, CR-004. No upstream requirement or design revision is needed. CR-003 brings the code back to the design's placement; CR-002 follows from the accepted A1.
+- Round 2: none (Pass). Round 1 was a `Local Fix` (implementation-owned) for CR-001…CR-004, now resolved.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer` (source review identifies an implementation-owned Local Fix / packaging defect). After the fixes: source review again (Targeted Delta Review), then API/E2E.
+- `/software_engineering_team/api_e2e_engineer` (implementation review passes). An informational notice goes to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -234,12 +244,42 @@ None new or reclassified.
 - RSK-701/702/703 as accepted in the design.
 - Design text: § Run Rules `changeAddress` row (A1/CR-002) to reconcile at docs sync.
 
+## Round 3 — API/E2E Failure-Origin Review (NP-07)
+
+- **Approved behavior still holds.** REQ-706 asks for one line with one fixing button for "a step not finished". Design § Naming Rule 4 words a run-time `PEER_NAME_TAKEN` as "<node> already has a node named X". The failing expectation ("mu already has a node named Embedded Node.") is that approved text.
+- **Scenario basis.** Supported Explicit Edge Scenario. The design names the name race explicitly (§ Naming Rule 4).
+  - Trigger: the owner presses Turn on in the confirmation after the other node gained a peer with the planned name.
+  - The probe adds that peer through mu's own settings API, which is a supported owner action on mu.
+  - The path is the normal production path: `nodeChangeDialogStore.confirm` → `connector.run` (`registerThere` fails with `PEER_NAME_TAKEN`) → `finishRun` → `nodeListStore.setUnfinishedStep` → `rowViewOf` → `NodeRow` partial line.
+- **Origin: implementation defect.** The source is unchanged since review (`git diff 23f3feb193 HEAD` touches no web source).
+  - `nodeRowStatus.ts:144` builds the `partial` line with the step's `error` but not its `name`.
+  - `NodeRow.vue:172` calls `failureText(t, line.error, { node: name })` without `name`.
+  - `failureText` words `PEER_NAME_TAKEN` with `context.name ?? ''` (`nodeConnectionErrorText.ts:67`).
+  - The dialog (`errorOf`, `name: line.step.name`) and the details (`NodeConnectionDetails.vue:62`, `name: step.name`) pass the name and are right. That matches the evidence: the dialog and "What happened" text are correct, and only the row line is empty.
+- **Not the test.** The probe's expectation is the approved copy, and the setup is a supported action.
+- **Review gap: yes.** This was detectable in source review. I read `NodeRow.lineText` and § Naming Rule 4 in round 1, and `failureText`'s dependence on `context.name` was visible there. `NodeRow.spec.ts` covers the partial line only with `PEER_UNREACHABLE`. Affected score: Runtime Correctness 9.2 → 8.8 until fixed.
+- **New finding CR-005 (Low, Local Fix, implementation):** the row's "not finished" line for a refused name omits the name.
+  - Fix: carry the failed step's `name` with the partial line (for example `name: unfinished.name` on `RowLine`, or the step itself), and pass it to `failureText` in `NodeRow.vue`.
+  - Add a `NodeRow.spec.ts` case for VIS-015 with `PEER_NAME_TAKEN`.
+- **Rerun after the fix:** source review as a targeted delta, then the web unit suite and API-07. The other API/E2E cases stay valid for this text-only change.
+- **Out of scope:** the API/E2E engineer's observation that a container connect to a black hole times out at about 10 s (Node's connect timeout) while the copy says "No answer within 20 seconds". The bound is "at most 20 s" (REQ-712), so this is not a failure. It is not a finding here.
+
+## Round 4 — Targeted Delta Review (CR-005)
+
+- Scope: `git diff 71fd1a5235 02fd7bcd9a`. It touches 4 files and only CR-005's lines: `nodeRowStatus.ts`, `NodeRow.vue` and their two specs. No other source changed.
+- CR-005: **Resolved.**
+  - `lineOf` puts `stepName: unfinished.name` on the `partial` line (`RowLine.stepName`, documented).
+  - `NodeRow.lineText` passes it to `failureText` as `name`. In the race, the step's `name` is the planned, now-taken name, which the approved text needs.
+  - New specs: `NodeRow.spec.ts` VIS-015 with `PEER_NAME_TAKEN` (full line and Try again), and `nodeRowStatus.spec.ts` (the line carries `stepName`).
+  - IMP-12 web suite: 4736 passed. IMP-13 guards pass.
+- Scores: Runtime Correctness back to 9.2. The round-2 scorecard stands (9.3/10, every category ≥ 9.0).
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 4, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 8.9/10. Below 9.0: Ownership 8.3, Separation of Concerns 8.8, API/E2E Readiness 8.8, Cleanup 8.6.
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: the server side, the registry and the behavior paths are sound. A1–A4 are accepted, and none needs the Solution Designer. The four findings are bounded local fixes.
+- Score Summary: 9.3/10; every category is at 9.0 or above.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001…CR-005 resolved. API/E2E reruns the web suite and API-07 (NP-07). The proportional test-code review of `remote-nodes-page-probe.mjs` and `nodes-docker-address-probe.mjs` follows a passing run. Docs sync should still update the design's § Run Rules `changeAddress` row.

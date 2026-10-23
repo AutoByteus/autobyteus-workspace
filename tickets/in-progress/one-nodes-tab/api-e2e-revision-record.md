@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report are authoritativ
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-002 Pass, round 1 | SR-006/SR-007, ARCH-REV-003, IR-002, CRR-002 | N/A | Fail / 92% |
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-004 Pass (CR-005 fix), round 2 | IR-003, CRR-003/CRR-004 | Fail / 92% | Pass / 95% |
+| API-REV-003 | Code reviewer, `api-e2e-test-review-report.md` CRR-005 Fail (TR-001, TR-002), round 3 | CRR-005 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -65,3 +66,29 @@ None.
 - New or remaining failure IDs: none.
 - Recommended owner: code reviewer, for proportional test-code review of the two durable probes.
 - Remaining risks, blocked evidence, or untested scope: AC-711 (user check); the image `dist` deviation (negligible, recorded); zh-CN not driven by this round's probes (IMP-08, API-03 cover it).
+
+### API-REV-003 — Test-review fixes in the Docker probe (TR-001, TR-002)
+
+- Triggering role, report path, and round: code reviewer, `api-e2e-test-review-report.md` (CRR-005, Fail), round 3.
+- Triggering finding or case IDs: TR-001 (ND-05 assertion precedence), TR-002 (ND-02's gateway precondition failed silently).
+- Related revision IDs: CRR-005.
+- Why recorded: durable test-code fixes and their rerun.
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs`.
+  - ND-05 now asserts the row's name and its exact `host.docker.internal:<desk port>` URL together. The gateway branch is gone.
+  - The `gateway.docker.internal` setup and its comment are removed. ND-02 rests on its assertion of one `ChangePeerAddress` save with the suggested address, after the loopback address was refused and not saved; a comment there says so.
+- Cases rechecked: API-08 run 2 (`API-08-nodes-docker-address-run2`): ND-01…ND-05 Pass; the receipt has no `gatewayChange`.
+- Commands, environment, fixture, or broader-validation delta: none beyond the probe change. Same image, the same deviation recorded.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| TR-001 ND-05 `(name && host) \|\| gateway` | Local Fix (API/E2E test code) | Name and exact URL asserted together | ND-05 (API-08 run 2) |
+| TR-002 silent gateway precondition | Local Fix (API/E2E test code) | Precondition removed; the save-request assertion carries ND-02 | ND-02 (API-08 run 2) |
+
+- Canonical artifacts and sections updated: execution report (Round, the API-08 row, the ND-05/ND-02 rows, the API-08 notes, result notes).
+- Prior result and confidence: Pass, 95%.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer, for the second round of the test-code review.
+- Remaining risks, blocked evidence, or untested scope: as API-REV-002.
