@@ -1,0 +1,40 @@
+# IMP-02 architecture tests (IR-002 rerun)
+# Command: env -i PATH="$PATH" HOME=/tmp/ab280/home TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/architecture --no-watch
+# Commit: 9b013fcc09
+# Environment: macOS darwin arm64, Node 22.23.1, vitest 4.1.12, clean env
+# Date: 2026-10-23T19:14Z
+
+ ❯ tests/architecture/application-framework-boundaries.test.ts (20 tests | 1 failed) 2627ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  577ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1284ms
+     ✓ extracts every governed import form without reading comments or arbitrary strings 8ms
+     ✓ enforces every named AFB-001 private runtime category while retaining exact inputs 18ms
+     ✓ enforces each GraphQL and Studio presentation direction in AFB-002 13ms
+     ✓ enforces every AFB-003 outward owner direction with only the named catalog-transition seam 15ms
+     ✓ fails closed for malformed Vue and unresolved governed source 6ms
+     ✓ resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 7ms
+     ✓ governs Vue external-script targets under AFB-002 and AFB-005 8ms
+     ✓ resolves package imports only from the owning manifest 7ms
+     ✓ uses each AFB-005 importer's own manifest and project root 8ms
+     ✓ resolves named aliases and namespace members for every direct AFB-004 callee 14ms
+     ✓ accepts only the two named assembly roots as general-process selection exemptions 8ms
+     ✓ accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 203ms
+     ✓ enforces the exact scope, orchestration, and platform assembly call shapes 29ms
+     ✓ guards the exact ApplicationExecutionScope containment and consumer shapes 31ms
+     ✓ rejects synthetic live-aggregate escape and direct consumer access 1ms
+     × guards the exact SR-011 host definition and public/general run authority 131ms
+     ✓ guards SR-003 completion-only correlation and the two lifecycle control callsites 54ms
+     ✓ guards the revised root-neutral Agent and flat-Team execution boundary 203ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests) 5665ms
+     ✓ closes retired symbols and provider-specific construction below supported roots  416ms
+     ✓ closes complete Agent manager and AgentRun construction to production roots  1755ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  1473ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1532ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts (3 tests) 710ms
+     ✓ allows no import between production code and migration code, nor between migration folders  421ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 41ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 13ms
++   "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2997:41
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 46 passed (47)

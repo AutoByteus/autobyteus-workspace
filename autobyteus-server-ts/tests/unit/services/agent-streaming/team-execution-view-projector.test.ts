@@ -41,7 +41,7 @@ describe("Team execution view strict projection", () => {
     const closed = [{ teamRunId: "task-team-run-qa-001" }, { agentRunId: "nested-task-agent-run-001" }];
     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
       tree, closedTaskExecutions: closed, messages, statuses: [], inputStates: [],
-    }, 3);
+    }, 3, []);
     expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.closed_task_executions)
       .toEqual([{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }]);
     expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.execution_tree.root_team.task_executions)
@@ -80,7 +80,7 @@ describe("Team execution view strict projection", () => {
     });
     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
       tree, closedTaskExecutions: [], messages, statuses: [status], inputStates: [],
-    }, 17);
+    }, 17, []);
 
     expect(projected).toMatchObject({
       type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
@@ -122,8 +122,8 @@ describe("Team execution view strict projection", () => {
     const delegated = parent.taskExecutions.find((task: { teamRunId?: string }) => task.teamRunId === "task-team-run-automation-001");
     delegated.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
     const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
-    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17))
-      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17));
+    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17, []))
+      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17, []));
     const event = { changeSequence: 19, event: {
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
       taskExecution: { agentRunId: "nested-task-agent-run-001" },

@@ -32,6 +32,8 @@ import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 import { isPublicMessage } from "./public-message-scope.js";
+import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
+import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const agentsOf = (tree: TeamRunExecutionTreeSnapshot) => {
   const index = new TeamExecutionIndex(tree);
@@ -53,6 +55,8 @@ export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
   snapshot: RootTeamRunPackageSnapshot,
   baseChangeSequence: number,
+  /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
@@ -63,6 +67,7 @@ export const projectTeamExecutionViewSnapshot = (
     messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))).map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
+    remote_task_executions: remoteTaskExecutions,
   },
 });
 
@@ -104,6 +109,8 @@ export const projectSequencedTeamRunEvent = (
         change_sequence: changeSequence,
         task_executions: event.taskExecutions.map(projectTaskExecutionReference),
       } });
+    case TeamRunEventSourceType.REMOTE:
+      return projectTeamRemoteEvent(event.event, changeSequence);
     case TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS:
       return parseTeamStreamServerMessage({ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: {
         change_sequence: changeSequence,

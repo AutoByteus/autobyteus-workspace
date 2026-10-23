@@ -33,7 +33,7 @@
 - Post-integration executable checks rerun: `No`
 - No-rerun rationale: nothing was merged, and no product code changed after the validated runs. Server cases ran on `cd8c289b67`; after it came only the API/E2E test commit `386ce18b5f` (run by API/E2E) and the web strings fix `1fa3a1d87e`, which API-07 round 2 and IMP-09 validated. `git diff --name-only 1fa3a1d87e HEAD` outside `tickets/` is empty.
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: re-checked before the merge (see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes`. `origin/personal` was still `3b09fbe308` when fetched before the merge, before the merge push and before the release push.
 
 ## Verification
 
@@ -54,7 +54,7 @@
 - More evidence requested: `None`
 - User check needed: `Yes`. The Task's "Done when" names "the user's check". I offered an isolated instance with test data, a live check with the user's Codex login, or the screenshots. The user answered "finished? lets release a new beta" (2026-10-23). Recorded: the user chose to check on the beta in their own app, after the release.
 - User check reference: the user's message above; the check itself follows the beta.
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `Not needed` (the target never moved)
 
 ## Release Decision
 
@@ -72,23 +72,44 @@
 
 ## Version / Tag / Release Commit
 
-- Recorded after the release.
+- Release commit `d2820672c3` "chore(release): bump workspace release version to 1.5.9-beta.2" (`autobyteus-web/package.json` `1.5.9-beta.1` → `1.5.9-beta.2`); annotated tag `v1.5.9-beta.2` → `d2820672c3`.
+- Command: removed the untracked SDK `*/dist/` folders (worktree clean), then `bash scripts/desktop-release.sh beta --branch finalize/task-agent-several-tasks --no-push` on `0aa51d622c`.
+- Checks before tagging, on `0aa51d622c`: `check_licensing.py` consistent; `check_repository_artifact_hygiene.py` passed; `scripts/check_secrets.sh v1.5.9-beta.1..HEAD` (17 commits) PASS.
+- Push: fetched `origin/personal` (still `0aa51d622c` = `d2820672c3^`), then `git push origin HEAD:personal` (`0aa51d622c..d2820672c3`), then `git push origin v1.5.9-beta.2`.
+- Commit and tag identity: the same as the `v1.5.9-beta.1` release.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (`origin/personal`) and RELEASE.md
 - Ticket branch: `codex/task-agent-several-tasks` (never pushed before this delivery)
 - Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD`: 14 commits, PASS (rerun on the final ticket branch before the push; see the Finalization Record)
-- Results: recorded after finalization
+- Ticket branch commit result: `b90233b404` (docs sync + archive)
+- Ticket branch push result: `Completed`. First push after the Secret Gate (`origin/personal..HEAD`, 15 commits, PASS) → `origin/codex/task-agent-several-tasks` @ `b90233b404`
+- Target advanced after verification: `No`
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/task-agent-several-tasks` from `origin/personal` @ `3b09fbe308`, in the ticket worktree
+- Merge into target result: `Completed`. `--no-ff` → `0aa51d622c`; the tree is identical to the verified ticket branch. On the merged state: Secret Gate (16 commits) PASS, licensing consistent, hygiene passed.
+- Push target branch result: `Completed`. Fetched first: `origin/personal` = `0aa51d622c^1`. `3b09fbe308..0aa51d622c`.
+- Repository finalization status: `Completed`
+- Delivery record commit: this record, on top of `d2820672c3`, after a Secret Gate run and a fresh fetch
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes`. Recorded after the release.
+- Applicable: `Yes` (the user's request)
+- Method: `Project Release Guide` (RELEASE.md, Cutting The Release / Watching The Rollout)
+- Pipelines triggered and their results (each watched with `gh run watch --exit-status`): Desktop Release `39968352122` success; Android APK Release `39968352183` success; iOS App Store Connect Release `39968352289` success; Server Docker Release `39968352778` success
+- Published artifacts checked: GitHub pre-release `v1.5.9-beta.2` (`isPrerelease: true`) with 17/17 assets (macOS ARM64 and x64 `.dmg`/`.zip` + blockmaps, Linux x64 and ARM64 AppImages, Windows `.exe`, Android APK + `.sha256`, `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`). Docker Hub `autobyteus/autobyteus-server:1.5.9-beta.2` = `:beta` (`sha256:25eee245668d…`, amd64 and arm64); `:latest` unchanged (2026-10-22).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (pre-releases use generated notes; `release-notes.md` is kept for the next stable)
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`
-- Results: recorded after the release
+- Durable export: after the record push, to `/Users/normy/autobyteus_org/autobyteus-delivery-records/task-agent-several-tasks-20261023/`
+- Worktree cleanup result: `git worktree remove --force` after the export, then `git worktree prune`, from the main repository's git dir
+- Local ticket branch cleanup result: `codex/task-agent-several-tasks` and `finalize/task-agent-several-tasks` deleted once `origin/personal` contains them
+- Remote branch cleanup result: `Not required` (repository practice)
 
 ## Release Notes Summary
 
@@ -111,4 +132,10 @@
 
 ## Final Status
 
-- Recorded after the release.
+- Verification complete: `Yes`, from the evidence. The user's check takes place on the beta, by the user's choice.
+- Repository finalization complete: `Yes` (`origin/personal` @ `0aa51d622c`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.9-beta.2`: 4/4 workflows, 17/17 assets, Docker tags checked)
+- Applicable safe cleanup complete or not required: `Yes` (export, worktree and local-branch removal after the record push; confirmed in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record commit, the export and the cleanup

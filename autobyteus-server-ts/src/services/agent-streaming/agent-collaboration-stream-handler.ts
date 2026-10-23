@@ -16,11 +16,15 @@ import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/dom
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
+import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
+
+/** A command for one agent of the root (every client command but Retry). */
+type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
 
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
 const commandAck = (
-  message: CollaborationStreamClientMessage,
+  message: AgentCommand,
   state: "accepted" | "rejected" | "failed",
   code: string | null,
   detail: string | null,
@@ -74,6 +78,7 @@ export class AgentCollaborationStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
+    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.getExecutionTreeSnapshot().remoteTaskExecutions);
     const barrier = await root.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
@@ -81,7 +86,8 @@ export class AgentCollaborationStreamHandler {
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot, baseChangeSequence: barrier.baseChangeSequence }),
+        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot,
+          baseChangeSequence: barrier.baseChangeSequence, remoteTaskExecutions }),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
@@ -102,7 +108,9 @@ export class AgentCollaborationStreamHandler {
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: true },
       }));
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); egress.dispose(); } });
+      // autobyteus-278: a viewer of the root observes its remote children while connected.
+      root.remoteChildren.viewerAttached();
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); root.remoteChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
@@ -116,13 +124,21 @@ export class AgentCollaborationStreamHandler {
   async handleMessage(sessionId: string, raw: string): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) return;
-    let message: CollaborationStreamClientMessage;
+    let parsed: CollaborationStreamClientMessage;
     try {
-      message = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
+      parsed = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
     } catch (cause) {
       session.egress.send(error("AGENT_ROOT_COMMAND_INVALID", cause instanceof Error ? cause.message : String(cause)));
       return;
     }
+    if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
+      // Retry: the answers arrive as root events.
+      if (parsed.payload.root_subject_kind === "agent" && parsed.payload.root_run_id === session.hostRunId) {
+        void this.roots.getActive(session.hostRunId)?.remoteChildren.refresh();
+      }
+      return;
+    }
+    const message: AgentCommand = parsed;
     try {
       if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
         throw new Error("Agent-root command root correlation mismatch.");

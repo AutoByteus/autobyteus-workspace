@@ -1,14 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
-} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { parseTaskAgentRunMetadata } from "../../../run-history/store/task-agent-own-file-schema.js";
-import { validateTaskAgentTeamTreePayload } from "../../../run-history/store/task-agent-team-tree-schema.js";
-import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
+} from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { parseTaskAgentRunMetadata } from "../../frozen/server/run-history/store/task-agent-own-file-schema.js";
+import { validateTaskAgentTeamTreePayload } from "../../frozen/server/run-history/store/task-agent-team-tree-schema.js";
+import { getTeamRunExecutionTreePath } from "../../frozen/server/run-history/store/team-run-execution-tree-path.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -19,9 +19,7 @@ import {
   RELEASED_TASK_AGENT_RUN_METADATA_FILE,
   RELEASED_TASK_AGENT_TEAM_TREE_FILE,
   type ReleasedTaskAgentCoordinatingRun,
-} from "../../legacy/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
-import { getAppDataMigrationRecordRepository } from "../../repositories/app-data-migration-record-repository.js";
-import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
+} from "../../frozen/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
 import {
   completeOwnFile,
   coordinatingRunOfRaw,
@@ -29,6 +27,7 @@ import {
   type OwnFileKind,
   type RawCoordinatingTree,
 } from "./own-file-completion.js";
+const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
 
 export const DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID = "20261019_delegated_copy_own_file_complete_v1";
 
@@ -77,9 +76,10 @@ export class DelegatedCopyOwnFileCompleteV1AppDataMigration implements AppDataMi
   constructor(
     memoryDir: string,
     private readonly dependencies: Readonly<{
-      ledger?: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+      /** The migration ledger, read for predecessor statuses. */
+      ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
       writer?: AtomicRunPackageFileCommitWriter;
-    }> = {},
+    }>,
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
@@ -194,7 +194,7 @@ export class DelegatedCopyOwnFileCompleteV1AppDataMigration implements AppDataMi
   }
 
   private async predecessorPending(): Promise<boolean> {
-    const ledger = this.dependencies.ledger ?? getAppDataMigrationRecordRepository();
+    const ledger = this.dependencies.ledger;
     const status = (await ledger.getRecord(TASK_AGENT_OWN_RUN_V1_MIGRATION_ID))?.status;
     return status !== "SUCCEEDED" && status !== "SUCCEEDED_WITH_WARNINGS";
   }

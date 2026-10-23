@@ -1,5 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -16,6 +16,7 @@ import type { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { TaskExecutionIdentityCapabilities } from "./task-execution-identity-capabilities.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** Host capabilities required by the Team task-execution adapter and lifecycle. */
 export type TeamTaskExecutionServiceOptions = Readonly<{
@@ -27,6 +28,8 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   remoteLinks: RemoteRunLinks;
   /** Remote placements: planning and activation (DS-001). */
   remoteDelegation: RemoteDelegation;
+  /** autobyteus-278: a remote link was recorded (the root's remote children observe it). */
+  onRemoteLinkCommitted(link: RemoteTaskExecution): void;
   isRootOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;
@@ -38,7 +41,7 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
-  tokenUsageMigrationReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  tokenUsageReadiness?: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
   idleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
   /** Told after every live-lease release (DS-004). */
   onLiveLeaseReleased?: () => void;

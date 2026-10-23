@@ -5,14 +5,18 @@ import { once } from "node:events";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  COMPACTOR_RUN,
   IMPROVER_ID,
   IMPROVER_RUNS,
   SERVER_HELPER_RUN,
   USER_RUNS,
   historyIndexWithout,
+  historyRow,
+  put,
   snapshot,
   without,
   writeFeatureDataRoot,
+  writeRun,
 } from "../../fixtures/app-data-migrations/skill-improvement-data-fixtures.js";
 
 // The removed Skill Improvement feature's data through the actual built Studio startup (`dist/app.js`): the
@@ -22,7 +26,8 @@ import {
 // (`skill-improvement-data-fixtures.ts`, F-1..F-8b), never the user's data or a copy of it (TESTING.md).
 // - SID-1: a fresh data folder starts cleanly; the improver is not bootstrapped.
 // - SID-2: the old data starts cleanly; exactly the feature's data, settings and history rows are gone, everything
-//   else is byte-identical, other runs list and open; a second start changes nothing.
+//   else is byte-identical, other runs list and open; a second start changes nothing. A v1.4.92-beta.5-era compactor
+//   run, which also carries `launchPurpose: "server_helper"`, survives with its history row (REQ-008).
 // - SID-3 (POSIX non-root only, because the failure is a mode-bit block): a helper run folder that cannot be deleted
 //   leaves startup working; the next start finishes.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist; a stale dist is not proof).
@@ -125,8 +130,11 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
   it("SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open", async () => {
     await setupRoot([ENV_KEPT[0]!, RETIRED_KEYS[0] + "=true", ENV_KEPT[1]!, `${RETIRED_KEYS[1]}=${IMPROVER_ID}`, ENV_KEPT[2]!, `${RETIRED_KEYS[2]}=false`]);
     const paths = await writeFeatureDataRoot(root);
-    const before = await snapshot(root);
+    // REQ-008: a beta.5-era compactor run carries `server_helper` too, but is not the feature's; it and its row stay.
     const indexPath = path.join(root, "memory", "run_history_index.json");
+    await writeRun(path.join(root, "memory"), COMPACTOR_RUN, "autobyteus-memory-compactor", { launchPurpose: "server_helper" });
+    await put(indexPath, [...JSON.parse(await fs.readFile(indexPath, "utf8")), historyRow(COMPACTOR_RUN, "autobyteus-memory-compactor", "Memory Compactor")]);
+    const before = await snapshot(root);
     const keptRows = JSON.parse(await historyIndexWithout(path.join(root, "memory"), paths.removedRows)) as Array<{ runId: string }>;
     /** The original non-helper rows are unchanged and no helper row is left (the runtime may add rows for runs it finds). */
     const expectHistoryIndex = async () => {
@@ -153,6 +161,10 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(history).toEqual(expect.arrayContaining([USER_RUNS[0], USER_RUNS[1], USER_RUNS[3], USER_RUNS[4], USER_RUNS[5]]));
     expect(history.filter((runId) => [...IMPROVER_RUNS, SERVER_HELPER_RUN].includes(runId))).toEqual([]);
     expect(await first.openRun(USER_RUNS[0]!)).toMatchObject({ runId: USER_RUNS[0] });
+    // The compactor run: its folder is byte-identical (in `expected`), its history row is kept, and it is listed.
+    expect(keptRows.map((row) => row.runId)).toContain(COMPACTOR_RUN);
+    expect(Object.keys(expected).filter((rel) => rel.startsWith(`memory/agents/${COMPACTOR_RUN}/`)).length).toBeGreaterThan(0);
+    expect(history).toContain(COMPACTOR_RUN);
     const agents = await first.agentIds();
     expect(agents).toEqual(expect.arrayContaining(["autobyteus-skill-evolver", "my-agent", "autobyteus-daily-assistant"]));
     expect(agents).not.toContain(IMPROVER_ID);
@@ -167,6 +179,7 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(await fs.readFile(indexPath, "utf8")).toBe(indexAfterFirst);
     await expectHistoryIndex();
     for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
+    expect(await second.historyRunIds()).toContain(COMPACTOR_RUN);
     expect(Object.keys(afterFirst).filter((rel) => rel.startsWith("memory/")).sort())
       .toEqual(Object.keys(await snapshot(root)).filter((rel) => rel.startsWith("memory/")).sort());
   }, 180_000);

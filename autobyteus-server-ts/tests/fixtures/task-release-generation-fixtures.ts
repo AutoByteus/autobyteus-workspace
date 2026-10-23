@@ -143,7 +143,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     resolver.registerManaged(oldTeam); resolver.registerManaged(oldNested);
     adapter = new TeamTaskExecutionAdapter({ rootTeamRunId: 'root', config: testTeamRunConfig({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' }),
       getIndex: () => index, teamRunResolver: resolver, requireTeamRun: async (id: string) => { const run = resolver!.getActive(id); if (!run) throw Error('Missing active host'); return run; },
-      tokenUsageMigrationReadiness: {}, publish: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) } as never);
+      tokenUsageReadiness: {}, publish: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) } as never);
   } else {
     if (kind === 'agent_org') {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });

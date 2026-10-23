@@ -1,4 +1,4 @@
-import { compactSummary } from "../../../run-history/services/run-history-service-helpers.js";
+import { compactSummary } from "../../frozen/server/run-history/services/run-history-service-helpers.js";
 
 export type AgentOrgConfiguredTraceCorpus = Readonly<{
   agentRunId: string;

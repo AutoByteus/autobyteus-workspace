@@ -35,7 +35,7 @@ import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
 } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -71,6 +71,8 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   remoteLinks: RemoteRunLinks;
   /** Remote placements: planning and activation (DS-001). */
   remoteDelegation: RemoteDelegation;
+  /** autobyteus-278: a remote link was recorded (the root's remote children observe it). */
+  onRemoteLinkCommitted(link: RemoteTaskExecution): void;
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
@@ -81,7 +83,7 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   enterLifecycleFailStop(): void;
   memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
-  tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  tokenUsageReadiness?: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
 }>;
 
 /**
@@ -93,11 +95,11 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
   private readonly plans = new WeakMap<TaskExecutionActivationPlan<StandaloneRootPlacement>, { host: TaskExecutionHostIdentity; beginLocal(): TaskExecutionPreparationOperation }>();
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root(): RootExecutionIdentity { return this.options.root; }
-  private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  private readonly readiness: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
   private readonly memoryLocator: AgentRunMemoryLocator;
 
   constructor(private readonly options: StandaloneRootTaskExecutionAdapterOptions) {
-    this.readiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.readiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
   }
 
@@ -373,6 +375,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
       commitAfterDurability: () => {
         if (!nextTree) throw new Error("Agent-root remote link tree was not prepared.");
         this.options.replaceTree(nextTree);
+        this.options.onRemoteLinkCommitted(link);
       },
     });
   }

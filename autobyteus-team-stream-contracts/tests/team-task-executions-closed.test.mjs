@@ -17,7 +17,7 @@ const snapshot = (closed) => ({
       },
     },
     closed_task_executions: closed,
-    messages: [], agent_statuses: [], agent_input_states: [],
+    messages: [], agent_statuses: [], agent_input_states: [], remote_task_executions: [],
   },
 });
 

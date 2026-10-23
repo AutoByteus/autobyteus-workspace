@@ -8,8 +8,6 @@ import {
 import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "./app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
-import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import type { ServerOptions } from "./app.js";
 import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
@@ -24,10 +22,8 @@ import { RootRunPackageReadinessIndex } from "./run-history/services/root-run-pa
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
 import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/token-usage-analytics-projection-writer.js";
-import {
-  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-  configureTokenUsageMigrationReadiness,
-} from "./token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "./token-usage/providers/token-usage-capability.js";
+import { applyCapabilityReadiness, markCapabilitiesPending } from "./startup/app-data-capability-readiness.js";
 import { buildStudioServer } from "./compositions/build-studio-server.js";
 
 const logger = createServerLogger("server.runtime");
@@ -161,14 +157,10 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   try {
     await assertTokenUsageCurrentSchema();
     await new TokenUsageAnalyticsProjectionWriter().initializeCoverage();
-    configureTokenUsageMigrationReadiness({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "NOT_RUN",
-      logPath: null,
-    });
+    markCapabilitiesPending();
   } catch (error) {
     const summary = `Required current token-usage schema is unavailable: ${String(error)}`;
-    configureTokenUsageMigrationReadiness({
+    configureTokenUsageCapability({
       kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
       reason: summary,
     });
@@ -189,7 +181,8 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    const statuses = await getAppDataMigrationRunner().runPending();
+    const runner = getAppDataMigrationRunner();
+    const statuses = await runner.runPending();
     for (const migration of statuses) {
       if (migration.status === "FAILED" || migration.status === "RUNNING") {
         logger.warn(
@@ -198,48 +191,8 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
         );
       }
     }
-    const tokenUsageStatus = statuses.find(
-      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-    );
-    configureTokenUsageMigrationReadiness(
-      tokenUsageStatus?.status === "SUCCEEDED"
-        || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
-        ? { kind: "READY" }
-        : {
-            kind: "CURRENT_SCHEMA_DEGRADED",
-            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
-            logPath: tokenUsageStatus?.logPath ?? null,
-          },
-    );
+    applyCapabilityReadiness(await runner.capabilityReadiness());
     await new RootRunPackageReadinessIndex(config.getMemoryDir()).rebuild();
-    const teamRunV2Status = statuses.find(
-      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-    );
-    if (teamRunV2Status?.status !== "SUCCEEDED") {
-      logger.warn(
-        `TeamRun execution-tree V2 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
-          migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-          displayName: teamRunV2Status?.displayName ?? null,
-          status: teamRunV2Status?.status ?? "MISSING",
-          attempts: teamRunV2Status?.attempts ?? null,
-          errorMessage: teamRunV2Status?.errorMessage ?? null,
-          logPath: teamRunV2Status?.logPath ?? null,
-        })}`,
-      );
-    }
-    const readableProviderStatus = statuses.find(
-      (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
-    );
-    if (
-      readableProviderStatus?.status !== "SUCCEEDED"
-      && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
-    ) {
-      throw new Error([
-        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
-        readableProviderStatus?.status ?? "NOT_RUN",
-        readableProviderStatus?.logPath ?? "NO_LOG",
-      ].join(":"));
-    }
   } catch (error) {
     await fatalAfterPrerequisiteUnwind({
       code: "APP_DATA_STARTUP_GATE_FAILED",

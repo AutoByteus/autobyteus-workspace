@@ -80,7 +80,7 @@ const view = (): AgentOrgExecutionViewDto => ({
     },
   },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-  agent_input_states: [],
+  agent_input_states: [], remote_task_executions: [],
   agent_statuses: [
     { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
     { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },

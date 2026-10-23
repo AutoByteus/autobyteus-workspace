@@ -71,7 +71,7 @@ const largeOrgView = (): AgentOrgExecutionViewDto => ({
       message(HISTORY_MESSAGES + 1, 'agent-tester', 'agent-reviewer', []),
     ],
   },
-  agent_input_states: [],
+  agent_input_states: [], remote_task_executions: [],
   agent_statuses: [idle('/designer', 'agent-designer'), idle('/reviewer', 'agent-reviewer'), idle('/tester', 'agent-tester')],
 })
 const agentContext = (runId: string) => new AgentContext({

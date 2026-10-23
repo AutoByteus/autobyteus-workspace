@@ -386,6 +386,19 @@ mode fallback.
   `deleteCustomProvider(providerId)`; built-ins remain non-deletable.
 - The public API does **not** expose a separate top-level
   `openaiCompatibleEndpoints` subject anymore.
+- **Held back while their migration is pending.** Until
+  `20260803_custom_provider_readable_identity` has succeeded, the provider file
+  may still be in a released shape. The migration declares the
+  `custom_llm_providers` capability, and `src/startup/app-data-capability-readiness.ts`
+  sets it from the migration runner's answer at startup and after a successful
+  Settings retry (state in `stores/custom-llm-provider-availability.ts`).
+  While it is pending, `CustomLlmProviderStore` is the single gate: every read
+  and write throws `CUSTOM_PROVIDERS_MIGRATION_PENDING`. The server still
+  starts. Model catalog listing shows built-in providers only; a run or model
+  resolution with a custom model is refused with the code; Settings create and
+  delete are refused with it; token-usage display lookups fall back to the raw
+  model id. Custom-provider source preparation is reached only through the
+  store, so it never runs while pending.
 
 ## Persistence
 

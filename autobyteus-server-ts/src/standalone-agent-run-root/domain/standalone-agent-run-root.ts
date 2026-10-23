@@ -65,6 +65,8 @@ import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindin
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
+import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
@@ -99,7 +101,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly delivery: StandaloneRootMessageDelivery;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private readonly remoteLinks: RemoteRunLinks;
+  /** autobyteus-278: the live facts of the runs this root delegated to other nodes (its stream viewers drive it). */
+  readonly remoteChildren: RemoteRunObservation;
   private readonly hostIdle: StandaloneHostIdleShutdown | null;
+  private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
   private termination: Promise<AgentOperationResult> | null = null;
   private failStopped = false;
   private frozenTerminationScope: FrozenRootTerminationScope | null = null;
@@ -139,6 +144,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       backLink: options.delegatedFrom ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: options.delegatedFrom } : null,
       channel: options.remoteRunChannel });
     const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
+    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.remoteTaskExecutions ?? [],
+      publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
     this.hostIdle = options.delegatedFrom && options.agentRunManager ? new StandaloneHostIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), hasOpenChildWork: () => this.hasOpenExecutionWork(),
@@ -164,6 +171,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
+      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       replaceTree: (tree) => this.replaceTree(tree),
@@ -204,7 +212,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       remoteLinks: this.remoteLinks,
       remoteDelegation,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
-      onHostReady: (run) => this.hostIdle?.watch(run),
+      onHostReady: (run) => { this.hostIdle?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(new StandaloneRootCommunicationAdapter({
@@ -233,9 +241,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.taskExecutions.releaseTaskExecutions(executions);
   }
-  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
-  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    return this.operationGate.run(() => this.delegatedLaunches.stop(target));
+  /** DS-002: the user's Stop of one delegated copy and the copies it started (a remote copy: by its node, DEC-804). */
+  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return await stopRemoteChild(this.remoteLinks, target) ?? this.operationGate.run(() => this.delegatedLaunches.stop(target));
   }
   /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
@@ -283,6 +291,13 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
 
   /** The host's real live state (the collaboration view's `isActive`). */
   isHostLive(): boolean { return this.options.host.readiness === "live"; }
+  /** The live host, without making it ready. */
+  activeHostRun(): AgentRun | null { return this.options.host.getActiveRun(); }
+  /** autobyteus-278: each host made ready from now on (a host restored after idle shutdown is a new AgentRun). */
+  onHostReady(listener: (run: AgentRun) => void): () => void {
+    this.hostReadyListeners.add(listener);
+    return () => { this.hostReadyListeners.delete(listener); };
+  }
 
   /** Makes the host ready (activated, restored, or the live run) with its root-built member context. */
   ensureHostReady(): Promise<AgentRun> {
@@ -349,8 +364,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteWorkPacket(input); });
   }
 
-  /** Commands for children only; the host's commands come through its own Agent stream. */
+  /** Commands for children only; the host's commands come through its own Agent stream. A remote child's go to its node. */
   executeAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) return executeRemoteChildCommand(this.remoteLinks, agentRunId, command);
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.delivery.executeChildCommand(agentRunId, command);
@@ -425,6 +441,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
     this.hostIdle?.dispose();
+    this.remoteChildren.dispose();
     this.communication.closeAdmission();
     this.taskExecutions.closeExternalAdmission();
     void this.operationGate.closeAndDrain();

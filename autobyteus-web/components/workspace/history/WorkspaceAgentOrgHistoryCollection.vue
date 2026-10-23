@@ -160,6 +160,20 @@
                 </button>
                 <DelegatedStopButton class="absolute right-1 top-1/2 -translate-y-1/2" :root="orgRoot(run)" :reference="{ agentRunId: display.row.agentRunId }" :name="label(display.row.address)" />
               </div>
+              <!-- autobyteus-278: a run this Org delegated to another node: the shared delegated row (node, title, Retry). -->
+              <WorkspaceTransientExecutionRow
+                v-else-if="display.row.kind === 'remote'"
+                :row="display.row.transient"
+                :team-status="display.row.teamStatus ?? undefined"
+                :is-selected="display.row.transient.agentRunId !== null && isMemberSelected(run.rootRunId, display.row.openAddress, display.row.openAgentRunId)"
+                :has-children="display.row.transient.hasChildren"
+                :expanded="display.row.transient.teamRunIdForNode ? (props.state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, display.row.transient.teamRunIdForNode) ?? true) : false"
+                :continuing-ancestor-depths="[...display.continuingAncestorDepths]"
+                :has-following-sibling="display.hasFollowingSibling"
+                :stop-root="orgRoot(run)"
+                @select="actions.onInspectAgentOrgExecution?.(run, display.row.openAgentRunId, display.row.openAddress)"
+                @toggle="(row) => row.teamRunIdForNode && props.state.toggleAgentOrgTaskTeam?.(run.rootRunId, row.teamRunIdForNode)"
+              />
               <div v-else class="relative">
                 <button type="button" @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
                   <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
@@ -187,6 +201,7 @@ import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
 import DelegatedStopButton from './DelegatedStopButton.vue'
+import WorkspaceTransientExecutionRow from './WorkspaceTransientExecutionRow.vue'
 import type { DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
 import { useLocalization } from '~/composables/useLocalization'

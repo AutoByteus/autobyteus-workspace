@@ -22,6 +22,7 @@ beforeEach(() => {
   mocks.contexts.stopAndInspect.mockResolvedValue(undefined)
   mocks.contexts.contextFor.mockImplementation(() => ({ isActive: mocks.active, phase: mocks.phase,
     index: { agents: new Map([['task-exact', { agentRunId: 'task-exact', address: '/team/coordinator' }]]),
+      addressOf: (agentRunId: string) => agentRunId === 'task-exact' ? '/team/coordinator' : null,
       configured: new Map([['/team', {}], ['/team/coordinator', {}]]) },
   }))
   mocks.history.agentOrgHistory = [{ rootRunId: 'org-run', isActive: true,

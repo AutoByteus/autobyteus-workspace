@@ -1,0 +1,274 @@
+{
+  "startedAt": "2026-10-23T16:18:43.776Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 64933,
+      "nodeId": "srv_tuOvIfXY1KEIf5TQ7548nIn2yDze4Un8"
+    },
+    "beta": {
+      "port": 64934,
+      "nodeId": "srv_9fMOCKRIN6dTcZd37s8A5vNgABuVLR5X"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_98115b7955c94a1fa6ab88bc2df7f8ed",
+    "remoteTeamRun": "studio_team_fefd404ed4b14b71900e65718af0184e",
+    "studioMembers": [
+      "publisher_77ec34f164754189a95a7ea6c26050ec",
+      "checker_5453495e64434641bb37ec16d818531a"
+    ],
+    "team": "remote_squad_57e0528c548542158f97dd9788b25176",
+    "leadRun": "delegator_aa77ce6dba9845c19b06c7d5730e2f72",
+    "localA": "helper_69e300da7a7643f1bfaaed79d0137b4f",
+    "remoteAgentRun": "publisher_31cf906b12b24fe88184993fc9cc13f2",
+    "localB": "helper_3b6bea97275c40f591c4436f1b0c9950",
+    "org": "remote_org_468e42b4e92648a88730ea959774d12f",
+    "orgLead": "delegator_65345fcd3027425eae036c924ef1c83e",
+    "orgRemoteRun": "publisher_0d4e66f2c81b4e42852424c516c5b4ff",
+    "orgRemoteTeamRun": "studio_team_ef858ddd1c36403897a1284152df70ed",
+    "orgTeamMembers": [
+      "publisher_8b64ccb1bcfc4b5f8dc78ca4b0698b6f",
+      "checker_242e0952f5674665b0e03b33a2c7fb64"
+    ]
+  },
+  "cases": {
+    "RTP-01": {
+      "result": "Pass",
+      "remoteTeamRow": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.",
+      "memberRows": [
+        {
+          "member": "publisher_77ec34f164754189a95a7ea6c26050ec",
+          "present": true,
+          "chip": false
+        },
+        {
+          "member": "checker_5453495e64434641bb37ec16d818531a",
+          "present": true,
+          "chip": false
+        }
+      ]
+    },
+    "RTP-02": {
+      "result": "Pass",
+      "indexes": [
+        3,
+        4,
+        5
+      ],
+      "remoteAgent": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      },
+      "localA": {
+        "chip": null,
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "H",
+        "ariaLabel": "Temporary task agent, helper, level 1, idle, Started by lead, /helper, Task: Local first. Marker LOCAL-A."
+      }
+    },
+    "RTP-03": {
+      "result": "Pass",
+      "orgRemote": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node"
+      }
+    },
+    "RTP-04": {
+      "result": "Pass",
+      "affordances": {
+        "standaloneTeamMember": true,
+        "orgAgent": true,
+        "orgTeamMember": true,
+        "teamAgent": true
+      },
+      "views": {
+        "standaloneTeamMember": {
+          "headerTitle": "lead",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message lead on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "orgAgent": {
+          "headerTitle": "publisher - B4FF",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "orgTeamMember": {
+          "headerTitle": "lead - 8B6F",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message lead on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "teamAgent": {
+          "headerTitle": null,
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        }
+      },
+      "liveAnswer": true,
+      "ownerMessageCount": 1,
+      "ownerHeadingShown": true,
+      "mentionMenuLocalControl": 1,
+      "mentionProbe": [
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message lead on beta-node…",
+          "header": "L | lead | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message publisher on beta-node…",
+          "header": "P | publisher - B4FF | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message lead on beta-node…",
+          "header": "L | lead - 8B6F | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message publisher on beta-node…",
+          "header": "P | publisher | beta-node"
+        },
+        {
+          "role": "combobox",
+          "expanded": "true",
+          "value": "@",
+          "placeholder": "Ask anything · @ for an agent or team",
+          "header": "D | CALL_TOOL:{\"name\":\"delegate_task\",\"argume… | Idle"
+        }
+      ],
+      "liveNote": null
+    },
+    "RTP-05": {
+      "result": "Pass",
+      "stopVisible": true,
+      "stoppedOnBeta": true,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: the tree rows did not appear\n    at openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:284:11)\n    at async betaDownAndReload (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:428:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:431:3",
+  "treeDump": {
+    "present": [
+      {
+        "agent": null,
+        "team": "delegator_98115b7955c94a1fa6ab88bc2df7f8ed",
+        "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nCouldn't reach"
+      },
+      {
+        "agent": "publisher_77ec34f164754189a95a7ea6c26050ec",
+        "team": "delegator_98115b7955c94a1fa6ab88bc2df7f8ed",
+        "text": "L\nlead"
+      },
+      {
+        "agent": "checker_5453495e64434641bb37ec16d818531a",
+        "team": "delegator_98115b7955c94a1fa6ab88bc2df7f8ed",
+        "text": "C\nchecker"
+      },
+      {
+        "agent": "helper_69e300da7a7643f1bfaaed79d0137b4f",
+        "team": "remote_squad_57e0528c548542158f97dd9788b25176",
+        "text": "H\nhelper\nLocal first. Marker LOCAL-A."
+      },
+      {
+        "agent": "publisher_31cf906b12b24fe88184993fc9cc13f2",
+        "team": "remote_squad_57e0528c548542158f97dd9788b25176",
+        "text": "beta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nCouldn't reach bet"
+      },
+      {
+        "agent": "helper_3b6bea97275c40f591c4436f1b0c9950",
+        "team": "remote_squad_57e0528c548542158f97dd9788b25176",
+        "text": "H\nhelper\nLocal second. Marker LOCAL-B."
+      },
+      {
+        "agent": "publisher_0d4e66f2c81b4e42852424c516c5b4ff",
+        "team": "remote_org_468e42b4e92648a88730ea959774d12f",
+        "text": "beta-node\nP\npublisher\nCouldn't reach beta-node.\nRetry"
+      },
+      {
+        "agent": null,
+        "team": "remote_org_468e42b4e92648a88730ea959774d12f",
+        "text": "beta-node\nstudio team\nCouldn't reach beta-node.\nRetry"
+      },
+      {
+        "agent": "publisher_8b64ccb1bcfc4b5f8dc78ca4b0698b6f",
+        "team": "remote_org_468e42b4e92648a88730ea959774d12f",
+        "text": "L\nlead"
+      },
+      {
+        "agent": "checker_242e0952f5674665b0e03b33a2c7fb64",
+        "team": "remote_org_468e42b4e92648a88730ea959774d12f",
+        "text": "C\nchecker"
+      }
+    ],
+    "tree": "Temp Workspace\nNo task history in this workspace.\nworkspace\nD\nDelegator\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_te...\n1m\nbeta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nCouldn't reach beta-node.\nRetry\nL\nlead\nC\nchecker\nTEAMS\nRemote Squad\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/helper\",\"description\":\"Local...\n4m\nL\nlead\n4m\nM\nmate\n4m\nH\nhelper\nLocal first. Marker LOCAL-A.\nbeta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nCouldn't reach beta-node.\nRetry\nH\nhelper\nLocal second. Marker LOCAL-B.\nORGS\nRemote Org\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/publisher...\n4m\nL\nlead\nM\nmate\nbeta-node\nP\npublisher\nCouldn't reach beta-node.\nRetry\nbeta-node\nstudio team\nCouldn't reach beta-node.\nRetry\nL\nlead\nC\nchecker"
+  },
+  "finishedAt": "2026-10-23T16:23:05.804Z"
+}

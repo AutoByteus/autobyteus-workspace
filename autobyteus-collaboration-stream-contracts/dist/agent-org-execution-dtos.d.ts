@@ -570,6 +570,28 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
             }, z.core.$strict>>;
         }, z.core.$strict>;
     }, z.core.$strict>>;
+    remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+        kind: z.ZodLiteral<"agent">;
+        address: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"agent_team">;
+        address: z.ZodString;
+        team_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        coordinator_address: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>], "kind">>;
 }, z.core.$strict>;
 export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     kind: z.ZodLiteral<"agent_presentation">;
@@ -649,6 +671,46 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
             selectedAt: z.ZodString;
         }, z.core.$strict>;
     }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"remote_task_execution_started">;
+    execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+        kind: z.ZodLiteral<"agent">;
+        address: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"agent_team">;
+        address: z.ZodString;
+        team_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        coordinator_address: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>], "kind">;
+}, z.core.$strict>, z.ZodObject<{
+    node_id: z.ZodString;
+    run_id: z.ZodString;
+    reachable: z.ZodBoolean;
+    title: z.ZodNullable<z.ZodString>;
+    statuses: z.ZodArray<z.ZodObject<{
+        agent_run_id: z.ZodString;
+        status: z.ZodEnum<{
+            error: "error";
+            offline: "offline";
+            initializing: "initializing";
+            idle: "idle";
+            running: "running";
+        }>;
+    }, z.core.$strict>>;
+    kind: z.ZodLiteral<"remote_task_execution_summary">;
 }, z.core.$strict>], "kind">;
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;
 export type AgentOrgExecutionViewDto = Readonly<z.infer<typeof agentOrgExecutionViewDtoSchema>>;

@@ -1,4 +1,4 @@
-import { parseTeamExecutionAddress, type TeamExecutionAddress } from "../../legacy/team-execution-address.js";
+import { parseTeamExecutionAddress, type TeamExecutionAddress } from "../../frozen/team-execution-address.js";
 import type { TeamRunV1TokenRowDisposition } from "./token-usage-team-run-v1-row-planner.js";
 
 export type JsonRecord = Record<string, unknown>;

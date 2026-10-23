@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-10-23T14:08:18.150Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57604,
+      "nodeId": "srv_L5NN1p2D3VocoxJWv8XUGP_gNN8NUx3c"
+    },
+    "beta": {
+      "port": 57605,
+      "nodeId": "srv_amVxliXDfVD2qgY9Uy3-thjCVbq0_lcQ"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_c318b2e4313c43b1898e294aae3f93fd",
+    "remoteTeamRun": "studio_team_ec456f2ac2ef4944be1e745e4fc5ca0a",
+    "studioMembers": [
+      "publisher_fd2f3603ff28433280280dcb7b6b9fb9",
+      "checker_58abeb4b72634e9084821450be0c6f2d"
+    ],
+    "team": "remote_squad_f3b4646be058450cb2ff1b908ee3fbfa",
+    "leadRun": "delegator_fb6cc7a2d36f4effb0b7ad12d206f48b",
+    "localA": "helper_2143fc65901f415699fbb77efb247887",
+    "remoteAgentRun": "publisher_1085d270c37740f3b03e91c079e1458d",
+    "localB": "helper_3dc0dd1f0d134716945ebc2933c1f81c",
+    "org": "remote_org_4ba8eeec1cfb4d1fae31026fa9c12738",
+    "orgLead": "delegator_923b009df95e4141a0122b2716123260",
+    "orgRemoteRun": "publisher_b22ff5ebb2274df28c9c9fb8e336e82b"
+  },
+  "cases": {},
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: the tree rows did not appear\n    at openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:271:11)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:276:3",
+  "treeDump": {
+    "present": [],
+    "tree": "Temp Workspace\nNo task history in this workspace.\nworkspace\nD\nDelegator\n(1)\nTEAMS\nRemote Squad\n(1)\nORGS\nRemote Org\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/publisher...\n1m"
+  },
+  "finishedAt": "2026-10-23T14:09:40.409Z"
+}

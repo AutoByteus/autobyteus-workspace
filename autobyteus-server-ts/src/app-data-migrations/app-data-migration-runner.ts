@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type {
+  AppDataCapabilityReadiness,
   AppDataMigrationDefinition,
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
@@ -9,6 +10,7 @@ import type {
   AppDataMigrationSummary,
 } from "./domain/app-data-migration-types.js";
 import {
+  APP_DATA_CAPABILITIES,
   AppDataMigrationDuplicateRunError,
   AppDataMigrationPrerequisiteError,
   AppDataMigrationRecoveryAction,
@@ -51,6 +53,28 @@ export class AppDataMigrationRunner {
       const record = records.get(definition.id);
       return this.toStatusSnapshot(definition, record ?? null);
     });
+  }
+
+  /**
+   * Whether each capability is ready: a capability is ready if and only if every registered migration that holds it
+   * back has a terminal success status (`SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS`). A capability no registered migration
+   * holds back is ready.
+   */
+  async capabilityReadiness(): Promise<AppDataCapabilityReadiness> {
+    const records = new Map(
+      (await this.repository.listRecords()).map((record) => [record.migrationId, record]),
+    );
+    const succeeded = (migrationId: string): boolean => {
+      const status = records.get(migrationId)?.status;
+      return status === "SUCCEEDED" || status === "SUCCEEDED_WITH_WARNINGS";
+    };
+    const definitions = this.registry.listDefinitions();
+    return Object.freeze(Object.fromEntries(APP_DATA_CAPABILITIES.map((capability) => [
+      capability,
+      definitions
+        .filter((definition) => definition.holdsBackCapabilities?.includes(capability))
+        .every((definition) => succeeded(definition.id)),
+    ])) as Record<(typeof APP_DATA_CAPABILITIES)[number], boolean>);
   }
 
   async runPending(): Promise<AppDataMigrationStatusSnapshot[]> {

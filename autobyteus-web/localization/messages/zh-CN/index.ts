@@ -21,6 +21,7 @@ import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
 import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import nodesPageMessages from './nodesPage';
+import remoteRunsMessages from './remoteRuns';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import projectMessages from './projects';
@@ -60,6 +61,7 @@ const zhCnMessages: TranslationCatalog = {
   ...memorySyncSettingsMessages,
   ...remoteCollaborationSettingsMessages,
   ...nodesPageMessages,
+  ...remoteRunsMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
   ...projectMessages,

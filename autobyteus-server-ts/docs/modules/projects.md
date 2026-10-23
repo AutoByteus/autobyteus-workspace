@@ -1203,7 +1203,7 @@ Coverage:
   schema, including `taskWorkerTasks`.
 - `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
   status of task executions in actual Agent, Team and Org roots.
-- `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
+- `tests/app-data-migrations/projects-per-folder-v1/` and `tests/app-data-migrations/project-task-keys-v1/`
 - `tests/unit/agent-tools/project-tasks` (including `search_project_tasks`)
 - `tests/unit/projects/project-task-search.test.ts` and `tests/e2e/projects/project-task-search.e2e.test.ts`: Task search,
   its delete cleanup and its GraphQL/MCP transports, with a deterministic stand-in model.

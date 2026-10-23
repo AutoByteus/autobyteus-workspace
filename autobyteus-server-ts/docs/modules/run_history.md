@@ -721,7 +721,7 @@ Important identity/storage rules:
   since been removed: current readers ignore a stored value, current writers do
   not emit it, and an old record loses the key on its next ordinary save. Only
   released migrations still read or write it, through frozen shapes under
-  `app-data-migrations/legacy/`.
+  `app-data-migrations/frozen/`.
 - required startup app-data migration
   `20260731_remove_external_runtime_working_context_snapshots` discards only
   exact current-metadata-classified Codex/Claude standalone and recursive

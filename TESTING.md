@@ -107,7 +107,8 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
   SDK source; `test:integration` names any missing build output and exits.
-- **Server test isolation.** For `tests/unit/` and `tests/integration/`,
+- **Server test isolation.** For `tests/unit/`, `tests/integration/` and the per-migration test
+  folders in `tests/app-data-migrations/`,
   `tests/setup/test-environment-isolation.ts` removes every inherited variable except system
   essentials and test-owned knobs (`RUN_*`, `TEST_*`, `FAKE_*`, `AGY_*`,
   `ANTIGRAVITY_CLI_COMMAND`), so results never depend on the shell or `~/.autobyteus`. A new

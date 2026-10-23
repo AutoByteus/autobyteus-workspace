@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
 import { TokenUsageTeamRunV1MigrationRepository } from "./token-usage-team-run-v1-migration-repository.js";
 import type {
   TokenUsageRuntimeSchemaSnapshot,
@@ -15,11 +15,11 @@ import type {
 import {
   TeamRunMigrationStateClassifier,
   type TeamRunMigrationState,
-} from "../team-run-migration-state-classifier.js";
+} from "../../frozen/team-run-migration-state-classifier.js";
 import {
   buildTokenUsageTaskTeamRunIndexFromStates,
   type TokenUsageTaskTeamRunIndex,
-} from "../token-usage-task-team-run-index.js";
+} from "./token-usage-task-team-run-index.js";
 import {
   planPredecessorTeamRunV1Package,
   type PlannedTeamRunV1Package,

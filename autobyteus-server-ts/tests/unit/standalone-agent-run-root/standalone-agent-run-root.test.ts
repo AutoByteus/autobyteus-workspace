@@ -18,7 +18,7 @@ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team
 import { automaticCollaborationToolNames } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
@@ -103,7 +103,7 @@ const hostRun = () => {
 
 /** Production always binds the Task side; every delegated copy belongs to a Task. */
 const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources()) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
   const host = hostRun();
@@ -195,7 +195,7 @@ describe("Agent root of a standalone run", () => {
     f.host.crash();
     const inspection = (await f.manager.getInspection(HOST))!;
     expect(f.restores).not.toHaveBeenCalled();
-    const projected = projectAgentCollaborationView(inspection);
+    const projected = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: [] });
     if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
     expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
     expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
@@ -267,7 +267,7 @@ describe("Agent root of a standalone run", () => {
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const snapshotConnection = await root.openPackageSnapshotConnection();
     const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
-      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence });
+      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence, remoteTaskExecutions: [] });
     expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
     if (projected.root_subject_kind === 'agent') {
       expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
@@ -658,6 +658,23 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(f.manager.getActive(HOST)).not.toBe(root);
   });
 
+  it("autobyteus-278 F-004: a run's end is reported after its host stopped, for Stop and history delete; a released listener hears nothing", async () => {
+    const f = await buildManager();
+    await f.manager.resolveRoot(HOST);
+    const terminateHost = (f.manager as unknown as { options: { host: { terminateHost: ReturnType<typeof vi.fn> } } }).options.host.terminateHost;
+    const ended = vi.fn();
+    const released = vi.fn();
+    f.manager.onRunEnded(HOST, ended);
+    f.manager.onRunEnded(HOST, released)();
+    await f.manager.stopRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(1);
+    expect(terminateHost.mock.invocationCallOrder[0]!).toBeLessThan(ended.mock.invocationCallOrder[0]!);
+    await f.manager.resolveRoot(HOST);
+    await f.manager.endRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(2);
+    expect(released).not.toHaveBeenCalled();
+  });
+
   it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A"); resources.addTask("B");
@@ -683,7 +700,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
 
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
-    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence });
+    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.

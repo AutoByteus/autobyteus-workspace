@@ -2,17 +2,17 @@ import { assertMigrationRootId, migrationPathExists, type HistoryCandidatePlan }
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { validateAgentOrgStatePackage } from "../../legacy/released-run-package-shapes/agent-org-state-package-v1-validator.js";
-import { AgentOrgExecutionIndex } from "../../legacy/released-run-package-shapes/agent-org-execution-index-v1.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { assertStoredFilename, buildFinalContextFileLocator } from "../../../context-files/domain/context-file-owner-types.js";
-import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../../context-files/services/context-file-record-locators.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateAgentOrgCommunicationMessages, validateTeamCommunicationMessagesPayload } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { validateAgentOrgStatePackage } from "./released-run-package-shapes/agent-org-state-package-v1-validator.js";
+import { AgentOrgExecutionIndex } from "./released-run-package-shapes/agent-org-execution-index-v1.js";
+import { validateAgentOrgRunExecutionTreePayload } from "./released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
+import type { AtomicRunPackageFileCommitWriter } from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { assertStoredFilename, buildFinalContextFileLocator } from "../../frozen/server/context-files/domain/context-file-owner-types.js";
+import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../frozen/server/context-files/services/context-file-record-locators.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../frozen/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
+import { validateAgentOrgCommunicationMessages, validateTeamCommunicationMessagesPayload } from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import { validateAgentOrgTaskDelegationRecordsV1 } from "../../frozen/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
 
 type RootPlan = { id: string; source: string; index: AgentOrgExecutionIndex };
 type FilePlan = { source: ContextFileRecordSource; hash: string; targetHash: string; dependencies: Set<string> };

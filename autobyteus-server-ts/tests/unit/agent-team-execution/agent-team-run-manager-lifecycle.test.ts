@@ -47,7 +47,7 @@ const register = (manager: AgentTeamRunManager, root: RootTeamRun): void => {
   (manager as unknown as { register(root: RootTeamRun): void }).register(root);
 };
 const unregister = (manager: AgentTeamRunManager, id: string, root: RootTeamRun): boolean =>
-  (manager as unknown as { unregister(id: string, root: RootTeamRun): boolean }).unregister(id, root);
+  (manager as unknown as { unregister(id: string, root: RootTeamRun, ending: string): boolean }).unregister(id, root, "stopped");
 
 describe("AgentTeamRunManager root lifecycle", () => {
   it("requires the rootless flat-Team factory and keeps process lookup non-constructing", () => {
@@ -88,7 +88,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
 
   it("publishes active after root registration and inactive only after accepted termination", async () => {
     const manager = createManager();
-    const lifecycle: Array<{ teamRunId: string; isActive: boolean }> = [];
+    const lifecycle: Array<{ teamRunId: string; isActive: boolean; ending: string | null }> = [];
     manager.subscribeToLifecycle("team-run-1", (snapshot) => lifecycle.push(snapshot));
     const root = createRoot();
 
@@ -97,8 +97,8 @@ describe("AgentTeamRunManager root lifecycle", () => {
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(true);
     expect(root.terminate).toHaveBeenCalledTimes(1);
     expect(lifecycle).toEqual([
-      { teamRunId: "team-run-1", isActive: true },
-      { teamRunId: "team-run-1", isActive: false },
+      { teamRunId: "team-run-1", isActive: true, ending: null },
+      { teamRunId: "team-run-1", isActive: false, ending: "stopped" },
     ]);
   });
 
@@ -109,7 +109,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
 
     await expect(manager.terminateTeamRun("team-run-1")).resolves.toBe(false);
     expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
-    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true });
+    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true, ending: null });
   });
 
   it("rejects duplicate root registration and makes exact unregister idempotent", () => {
@@ -136,7 +136,7 @@ describe("AgentTeamRunManager root lifecycle", () => {
     active = false;
     expect(manager.getActiveTeamRun("team-run-1")).toBeNull();
     expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
-    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true });
+    expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true, ending: null });
     expect(healthy).not.toHaveBeenCalled();
   });
 });

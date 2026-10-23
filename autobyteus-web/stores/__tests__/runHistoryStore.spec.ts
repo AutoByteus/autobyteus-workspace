@@ -517,6 +517,7 @@ describe('runHistoryStore', () => {
         hydratedContext,
         projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
         memberRunStates: [],
+        remoteTaskExecutions: [],
       };
     });
     mutateMock.mockReset();

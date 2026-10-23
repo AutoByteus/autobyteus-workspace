@@ -2975,16 +2975,13 @@ describe("application framework architecture boundaries", () => {
       "applicationRunOwnership: currentApplicationRuntime.hostManagement.runOwnership",
     );
 
-    for (const migration of [
-      "app-data-migrations/migrations/run-history-index-v2-migration.ts",
-      "app-data-migrations/migrations/team-run-history-index-v2-migration.ts",
-    ]) {
-      const source = readServerSource(migration);
-      // Migrations read definitions straight from their files (the file providers that replaced the persistence
-      // providers in 9777af682c), never through the cached definition services.
-      expect(source, migration).toMatch(/\bFile(?:Agent|AgentTeam)DefinitionProvider\b/);
-      expect(source, migration).not.toMatch(/DefinitionService\.getInstance\s*\(/);
-    }
+    // Migrations read definition names through the registry's definition-name port, which reads definitions
+    // straight from their files (the file providers that replaced the persistence providers in 9777af682c), never
+    // through the cached definition services (autobyteus-280 SR-003).
+    const migrationRegistry = readServerSource("app-data-migrations/app-data-migration-registry.ts");
+    expect(migrationRegistry).toMatch(/\bFileAgentDefinitionProvider\b/);
+    expect(migrationRegistry).toMatch(/\bFileAgentTeamDefinitionProvider\b/);
+    expect(migrationRegistry).not.toMatch(/DefinitionService\.getInstance\s*\(/);
     const cachePreloader = readServerSource("startup/cache-preloader.ts");
     expect(cachePreloader).not.toContain("AgentDefinitionService");
     expect(cachePreloader).not.toContain("AgentTeamDefinitionService");

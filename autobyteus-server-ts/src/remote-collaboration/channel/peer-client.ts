@@ -1,22 +1,38 @@
 import type {
+  RemoteAgentProjectionAnswer,
   RemoteDeliveryReceipt,
   RemoteMessageTransmission,
+  RemoteOwnerCommand,
   RemotePeer,
   RemoteRunChannel,
+  RemoteRunObservationStream,
+  RemoteRunObserver,
+  RemoteRunSummaries,
   RemoteStartedRun,
+  RemoteStartedRunRef,
+  RemoteTargetRoot,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { remoteAgentProjectionOf, remoteRunSummariesOf } from "./peer-run-view-answers.js";
+import { openPeerRunObservation, type OpenWebSocket } from "./peer-run-observation-client.js";
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
 import { localRefusalText, peerRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import {
+  REMOTE_AGENT_PROJECTION_PATH,
   REMOTE_AVAILABILITY_PATH,
   REMOTE_AVAILABLE_AGENTS_PATH,
   REMOTE_DELEGATED_RUNS_PATH,
   REMOTE_MESSAGES_PATH,
+  REMOTE_OWNER_COMMANDS_PATH,
+  REMOTE_RUN_OBSERVATIONS_PATH,
+  REMOTE_RUN_SUMMARIES_PATH,
+  type AgentProjectionRequest,
   type DeliverRemoteMessageRequest,
+  type OwnerCommandRequest,
   type RemoteRefusalTarget,
+  type RunSummariesRequest,
   type StartDelegatedRunRequest,
 } from "../domain/remote-requests.js";
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
@@ -99,6 +115,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     ownNodeId(): Promise<string>;
     timeoutMs?: number;
     fetch?: FetchLike;
+    /** The WebSocket client of observation streams (the runtime's `WebSocket` by default). */
+    openWebSocket?: OpenWebSocket;
   }>) {}
 
   async findPeer(name: string): Promise<RemotePeer | PeerRefusal> {
@@ -152,6 +170,51 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       messageType: input.messageType,
       createdAt: input.createdAt,
     }), "did not answer in time; the message may have been delivered", () => Object.freeze({ accepted: true as const }));
+  }
+
+  /** autobyteus-278: titles and statuses of runs this node's delegation started on that peer; a malformed answer is unreachable. */
+  runSummaries(nodeId: string, runs: readonly RemoteStartedRunRef[]): Promise<RemoteRunSummaries> {
+    return this.call(nodeId, REMOTE_RUN_SUMMARIES_PATH, (envelope): RunSummariesRequest => ({
+      ...envelope, runs: runs.map((run) => ({ kind: run.kind, runId: run.runId })),
+    }), "did not answer in time", (answer, peer) => {
+      const summaries = remoteRunSummariesOf(answer);
+      return summaries ? Object.freeze({ accepted: true as const, runs: summaries })
+        : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the runs"));
+    });
+  }
+
+  /** autobyteus-278: one agent's stored conversation in a run this node's delegation started. */
+  agentProjection(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentProjectionAnswer> {
+    return this.call(nodeId, REMOTE_AGENT_PROJECTION_PATH, (envelope): AgentProjectionRequest => ({
+      ...envelope, targetRoot: { kind: targetRoot.kind, runId: targetRoot.runId }, agentRunId,
+    }), "did not answer in time", (answer, peer) => {
+      const projection = remoteAgentProjectionOf(answer.projection);
+      return projection ? Object.freeze({ accepted: true as const, projection })
+        : refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the conversation"));
+    });
+  }
+
+  /** autobyteus-278: a command of this node's owner for one agent of such a run. */
+  ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt> {
+    return this.call(nodeId, REMOTE_OWNER_COMMANDS_PATH, (envelope): OwnerCommandRequest => ({
+      ...envelope, targetRoot: { kind: targetRoot.kind, runId: targetRoot.runId }, agentRunId, command,
+    }), "did not answer in time; the command may have been applied", () => Object.freeze({ accepted: true as const }));
+  }
+
+  /**
+   * autobyteus-278: the run's live output. The peer's first frame must name the pinned node (N-401); a refusal, a
+   * different node or any failure ends the stream (`onEnd`), which never reconnects (DEC-807).
+   */
+  observeRun(nodeId: string, targetRoot: RemoteTargetRoot, observer: RemoteRunObserver): RemoteRunObservationStream {
+    return openPeerRunObservation({
+      resolvePeer: async () => this.dependencies.capability.isEnabled() ? this.dependencies.peers.findByNodeId(nodeId) : null,
+      ownNodeId: this.dependencies.ownNodeId,
+      path: REMOTE_RUN_OBSERVATIONS_PATH,
+      targetRoot,
+      observer,
+      openWebSocket: this.dependencies.openWebSocket,
+      openingTimeoutMs: this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS,
+    });
   }
 
   /**

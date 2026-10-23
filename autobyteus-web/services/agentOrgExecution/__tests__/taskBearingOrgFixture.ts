@@ -98,7 +98,7 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
     orgRunId: 'org-run',
     messages: [],
   },
-  agent_input_states: [], agent_statuses: [
+  agent_input_states: [], remote_task_executions: [], agent_statuses: [
     status('/director', 'agent-director'),
     status('/worker', 'agent-worker-configured'),
     status('/team/lead', 'agent-lead-configured'),

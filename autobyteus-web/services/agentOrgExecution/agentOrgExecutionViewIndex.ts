@@ -1,3 +1,4 @@
+import { remoteTaskExecutionAgentsOf, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
@@ -47,6 +48,15 @@ export type OrgTeamViewIdentity = Readonly<{
   live: boolean
 }>
 
+/** autobyteus-278: an agent of a run this Org delegated to another node (its node keeps its source). */
+export type OrgRemoteAgent = Readonly<{
+  agentRunId: string
+  address: AgentTeamAddress
+  execution: RemoteTaskExecutionDto
+  /** The remote Team run of a member; null for a remote Agent. */
+  teamRunId: string | null
+}>
+
 /** One derived retained index per strict context candidate; addresses identify sources only. */
 export class AgentOrgExecutionViewIndex {
   private readonly agentsById = new Map<string, OrgAgentViewIdentity>()
@@ -56,6 +66,8 @@ export class AgentOrgExecutionViewIndex {
   private readonly configuredById = new Map<string, OrgConfiguredMember>()
   get configured(): ReadonlyMap<string, OrgConfiguredMember> { return this.configuredById }
   private readonly allRunIds = new Set<string>()
+  /** autobyteus-278: the agents of the runs this Org delegated to other nodes. */
+  readonly remoteAgents = new Map<string, OrgRemoteAgent>()
 
   constructor(readonly view: AgentOrgExecutionViewDto) {
     const root = view.execution_tree.rootOrg
@@ -76,6 +88,13 @@ export class AgentOrgExecutionViewIndex {
       else this.addTeam(member, null, true)
     }
     root.taskExecutions.forEach((task) => this.addTask(task, rootHost, true))
+    for (const execution of view.remote_task_executions) {
+      for (const agent of remoteTaskExecutionAgentsOf(execution)) {
+        this.register(agent.agent_run_id)
+        this.remoteAgents.set(agent.agent_run_id, Object.freeze({ agentRunId: agent.agent_run_id, address: parseAgentTeamAddress(agent.address),
+          execution, teamRunId: execution.kind === 'agent_team' ? execution.team_run_id : null }))
+      }
+    }
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegation?.delegatorAgentRunId
       if (delegator && !this.agents.has(delegator)) {
@@ -84,6 +103,10 @@ export class AgentOrgExecutionViewIndex {
     }
   }
 
+  /** The address of an agent of this Org, local or remote. */
+  addressOf(agentRunId: string): AgentTeamAddress | null {
+    return this.agents.get(agentRunId)?.address ?? this.remoteAgents.get(agentRunId)?.address ?? null
+  }
   requireAgent(runId: string): OrgAgentViewIdentity {
     const agent = this.agents.get(runId)
     if (!agent) throw new Error(`AgentRun '${runId}' is not a retained Org execution.`)

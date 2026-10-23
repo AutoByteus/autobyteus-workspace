@@ -96,7 +96,7 @@ const toggle = (row: RunHistoryTransientExecutionRow): void => {
 const select = (row: RunHistoryTransientExecutionRow): void => {
   const context = collaboration.contextFor(props.runId)
   if (!context) return
-  const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorOf(row.teamRunIdForNode).agentRunId : null)
+  const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
   collaboration.selectChild(props.runId, agentRunId)
   emit('select-run')
 }

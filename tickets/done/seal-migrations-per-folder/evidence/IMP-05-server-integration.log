@@ -1,0 +1,24 @@
+# IMP-05 server integration suite (excerpt)
+# Command: env -i PATH="$PATH" HOME=/tmp/ab280/home TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts test:integration:prepare && ... pnpm -C autobyteus-server-ts test:integration
+#   (= vitest run tests/integration .integration.test.ts)
+# Commit: 8b091176bf
+# Environment: macOS darwin arm64, Node 22.23.1, vitest 4.1.12, clean env, synthesized fixtures only
+# Date: 2026-10-23T19:00Z
+# Full log: /tmp/ab280/IMP-05-server-integration.full.log (934263 bytes, not committed)
+
+prepare exit=0
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts (9 tests) 18ms
+ ✓ tests/integration/app-data-migrations/app-data-migration-summary-schema-migration.integration.test.ts (7 tests) 7839ms
+ ✓ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts (4 tests) 510ms
+ ✓ tests/integration/token-usage/providers/token-usage-store.integration.test.ts (4 tests) 86ms
+ ✓ tests/integration/token-usage/repositories/token-usage-analytics-atomicity.integration.test.ts (3 tests) 5497ms
+ ✓ tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts (3 tests) 19ms
+ ✓ tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts (1 test) 37ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-batch-boundaries.integration.test.ts (2 tests) 833ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-exact-reference.integration.test.ts (1 test) 147ms
+ ✓ tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts (3 tests) 92ms
+ ✓ tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-golden-files.integration.test.ts (3 tests) 68ms
+
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+exit=0

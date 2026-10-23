@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-10-23T14:06:06.456Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57312,
+      "nodeId": "srv_8un00UI2W6mXdA28GJVky9RTfeqTZz9a"
+    },
+    "beta": {
+      "port": 57313,
+      "nodeId": "srv_hDq8Gvr--Crgeqzik_vJswhqWnd3Z5M1"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_0f648be307914532abf594d74143bd3e",
+    "remoteTeamRun": "studio_team_cd35494c13094ef38535e4c6f831a4dd",
+    "studioMembers": [
+      "publisher_436e6ce5e4944ca69af9ba5dc6d3b994",
+      "checker_501f874a80544f4488578913c5761285"
+    ],
+    "team": "remote_squad_df7625b9aef84fc49678f6287a1710b6",
+    "leadRun": "delegator_067b6457ee85458f9928b9094f84e9a9",
+    "localA": "helper_b7e31caf176843879544ef2b9dbd8d99",
+    "remoteAgentRun": "publisher_0273788ea6de4c6f944b58c02dcc030a",
+    "localB": "helper_41e123b8accf40caa75b4e64a5dac171",
+    "org": "remote_org_2c55daabef8f4e62b478e79521494035",
+    "orgLead": "delegator_39db394b64c94447bfab25992dae1f90",
+    "orgRemoteRun": "publisher_aa84ed574b37423faa58383017cb3504"
+  },
+  "cases": {},
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: the tree rows did not appear\n    at openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:270:11)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:275:3",
+  "treeDump": {
+    "present": [
+      {
+        "agent": null,
+        "team": "delegator_0f648be307914532abf594d74143bd3e",
+        "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM."
+      },
+      {
+        "agent": "publisher_436e6ce5e4944ca69af9ba5dc6d3b994",
+        "team": "delegator_0f648be307914532abf594d74143bd3e",
+        "text": "L\nlead"
+      },
+      {
+        "agent": "checker_501f874a80544f4488578913c5761285",
+        "team": "delegator_0f648be307914532abf594d74143bd3e",
+        "text": "C\nchecker"
+      },
+      {
+        "agent": "publisher_aa84ed574b37423faa58383017cb3504",
+        "team": "remote_org_2c55daabef8f4e62b478e79521494035",
+        "text": "beta-node\nP\npublisher\nOrg work. Marker REMOTE-ORG."
+      }
+    ],
+    "tree": "Temp Workspace\nNo task history in this workspace.\nworkspace\nD\nDelegator\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/studio_te...\n1m\nbeta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nL\nlead\nC\nchecker\nTEAMS\nRemote Squad\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/helper\",\"description\":\"Local...\n1m\nORGS\nRemote Org\n(1)\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"node\":\"beta-node\",\"recipient_address\":\"/publisher...\n1m\nL\nlead\nM\nmate\nbeta-node\nP\npublisher\nOrg work. Marker REMOTE-ORG."
+  },
+  "finishedAt": "2026-10-23T14:07:59.369Z"
+}

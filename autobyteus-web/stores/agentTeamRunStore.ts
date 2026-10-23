@@ -121,6 +121,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       return service;
     },
     isTeamStreamReady(rootTeamRunId: string): boolean { return teamStreamingServices.get(rootTeamRunId)?.isReady ?? false; },
+    /** autobyteus-278 Retry: the Team's stream asks its remote runs' nodes again; `false` without a ready stream. */
+    refreshTeamRemote(rootTeamRunId: string): boolean { return teamStreamingServices.get(rootTeamRunId)?.refreshRemote() ?? false; },
     isTeamStreamReopenRequired(rootTeamRunId: string): boolean {
       return teamStreamingServices.get(rootTeamRunId)?.isReopenRequired ?? false;
     },

@@ -166,7 +166,8 @@ export class StandaloneRootLocationService {
     return getStandaloneRootTreePath(this.layout.getAgentRunCollaborationDirPath(hostRunId));
   }
 
-  private readTree(hostRunId: string): Promise<StandaloneRootTreeSnapshot | null> {
+  /** The root's tree: the active root's, else the stored one; `null` without a package. */
+  readTree(hostRunId: string): Promise<StandaloneRootTreeSnapshot | null> {
     const active = this.roots.getActiveTree(hostRunId);
     if (active) return Promise.resolve(active);
     return this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);

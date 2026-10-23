@@ -1,0 +1,176 @@
+# Check: DLV-02 architecture tests on merge 8904a45087 (env -i, verbose)
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005 562ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner 1194ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > extracts every governed import form without reading comments or arbitrary strings 9ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces every named AFB-001 private runtime category while retaining exact inputs 19ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces each GraphQL and Studio presentation direction in AFB-002 15ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces every AFB-003 outward owner direction with only the named catalog-transition seam 18ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > fails closed for malformed Vue and unresolved governed source 8ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 8ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > governs Vue external-script targets under AFB-002 and AFB-005 9ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves package imports only from the owning manifest 11ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > uses each AFB-005 importer's own manifest and project root 13ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > resolves named aliases and namespace members for every direct AFB-004 callee 18ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > accepts only the two named assembly roots as general-process selection exemptions 9ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 216ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > enforces the exact scope, orchestration, and platform assembly call shapes 29ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact ApplicationExecutionScope containment and consumer shapes 30ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > rejects synthetic live-aggregate escape and direct consumer access 1ms
+ × tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority 138ms
+   → expected [ …(23) ] to deeply equal [ …(22) ]
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards SR-003 completion-only correlation and the two lifecycle control callsites 60ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the revised root-neutral Agent and flat-Team execution boundary 205ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps each supported root on one exact workspace, builder, Host, and authority family 2ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps application capability injection tight on the tokenless run-session foundation 1ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes retired symbols and provider-specific construction below supported roots 298ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps activation provider-local and deactivation at the AgentRun resource owner 0ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps the application kernel private to its builder and owning scope 75ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps configured Agent and flat-Team construction inside their owned factories 117ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps AgentTeamRunManager creation explicit and process access lookup-only 63ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > binds exactly two production flat-Team factories to complete lifecycle roots 56ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes complete Agent manager and AgentRun construction to production roots 1626ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > selects one host validator and propagates it to the two exact lifecycle roots 1333ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > carries one explicit task-identity capability through both subject roots 1ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps context translation provider-neutral and all path authority explicit 1353ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > creates one frozen context path value per host and shares it across both roots 71ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > rejects retired root-bound execution construction symbols 118ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > allows no import between production code and migration code, nor between migration folders 373ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > reaches every frozen file from a migration folder 274ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > fails on each kind of crossing and reports an unused frozen file 6ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps the workspace subsystem unaware of projects 2ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > reads workspace registration only through WorkspaceManager 2ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps GraphQL transport off the project store 5ms
+ ✓ tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023) 32ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps the public contract exact and rooted-member canonical 1ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps authorization as the sole public-to-runtime translator 1ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > removes old target, URL, and application-role shapes from supported production copies 6ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps only logical root/member backend builders 0ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > requires owned current-schema projectors and the one private physical role constant 0ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts > logical application-agent addressing boundaries > keeps old wire literals only as explicit rejection fixtures 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+AssertionError: expected [ …(23) ] to deeply equal [ …(22) ]
+- Expected
++ Received
+@@ -1,10 +1,11 @@
+  [
+    "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
++   "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+    "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
+    "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
+    "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
+    "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
+    "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2997:41
+    2995|       );
+    2996|     }).sort();
+    2997|     expect(definitionGetterOccurrences).toEqual([
+       |                                         ^
+    2998|       "autobyteus-server-ts/src/agent-execution/backends/autobyteus/au…
+    2999|       "autobyteus-server-ts/src/agent-execution/backends/claude/backen…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 46 passed (47)
+   Start at  23:09:55
+   Duration  10.38s (transform 258ms, setup 125ms, import 911ms, tests 8.39s, environment 0ms)
+# Exit code: 1
