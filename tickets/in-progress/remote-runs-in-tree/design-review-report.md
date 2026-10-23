@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-003; REQ-803 / AC-803 clarified at SR-004)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-01 … E-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `e6948a1657` (SR-007)
+- Reviewed Design Spec: `…/design-spec.md` at commit `bd70ada7bb` (SR-008)
 - Supplemental Task Artifacts Reviewed: the approved UI/UX package `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` (scoped to what the server design must supply); the contract `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-11); `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: SR-001 … SR-007
+- Relevant Solution Revision IDs: SR-001 … SR-008
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4 (a delta review)
-- Trigger: the Solution Designer's SR-007 (commit `e6948a1657`): the code reviewer's FU-004, pulled into this ticket by the user. § Window Retry Rule gives Retry one window owner (`remoteRunsStore.retry`) with per-family adapters, and removes the three per-family copies. Web only.
-- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, `Pass`)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5 (a delta review)
+- Trigger: the Solution Designer's SR-008 (commit `bd70ada7bb`), answering ARCH-REV-004 AR-404; N-405 and N-406 rechecked at HEAD
+- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, `Fail`)
+- Latest Authoritative Round: 5
 - Review method: the reviewer skill and the shared principles as updated 2026-10-23 (`autobyteus-agents` `4c8fb00`, `e84471d`): affected spines redrawn in call order, cited claims opened, derived consumers checked.
 - Current-State Evidence Basis: code and docs read in the worktree at `fee1d70cda` (base `3b09fbe308`):
   - `standalone-agent-run-root/domain/standalone-host-agent-handle.ts` (the host is its own `AgentRun`; `ensureReady` activates or restores it);
@@ -252,9 +252,13 @@
 
 ## Review Decision
 
-`Fail` (round 4, delta; `Design Impact`, AR-404). The ownership move is right. One owner (`remoteRunsStore.retry`) calls each family's own mechanisms in order. No mechanism finishes another's steps, and the three copies go, as Principle 13 and design-examples Case 6 ask.
+`Pass` (round 5, delta). AR-404 is resolved:
+- one target rule inside `remoteRunsStore.retry`: the selected agent if it is in the run, else the first of the run's agents that is not loaded;
+- a new adapter query `isLoaded`, the family's own mechanism;
+- `rereadAgent` returns `false` for a loaded agent, so a Retry that asks nothing settles;
+- the "unchanged" claim is withdrawn, and each family's change against today is stated with the cited lines.
 
-The design's "Behavior is unchanged" is not true for the Team family (cited-claims rule, Principle 1). The unification changes Team Retry in two ways, and the design must decide and state them. Everything from rounds 1 to 3 stays resolved.
+The spine has one owner that calls each mechanism in order. N-405 and N-406 are in the DS-004a consumer table with their citations (rechecked at HEAD). One wording note: N-407.
 
 ## Findings
 
@@ -326,7 +330,11 @@ The round-1 text follows, kept for traceability.
 - N-403: the three member-projection resolvers on A each "check their root's remote links first". If the check and the channel call are more than one line, put them in one shared helper beside `RemoteRunObservation` (principle 13).
 - N-404 (REQ-803): tell the user about the clarification ("recorded on the remote run's node and shown here", not "recorded on both nodes") in the next summary, since he approved the earlier wording.
 
-### AR-404 — "Behavior is unchanged" is false for Team Retry; decide and state the unified rule's effect
+### Round-5 note (non-blocking)
+
+- N-407: § Window Retry Rule's prose ("It re-reads the selected agent when it isn't loaded, else the first agent that isn't loaded") can be read as falling back to the first unloaded agent when the selected one is loaded. The pseudocode does not fall back: a selected, loaded agent is the target, `rereadAgent` returns `false`, and the Retry relies on the refresh or settles. The pseudocode governs. Align the sentence, or state the fallback in the pseudocode if that is the intent; the shared spec's "selected loaded" case pins whichever is written.
+
+### AR-404 (resolved in ARCH-REV-005) — "Behavior is unchanged" is false for Team Retry; decide and state the unified rule's effect
 
 - Type: Design Impact
 - Severity: Low (blocking: the claim drives the specs, "one per family for its adapter")
@@ -365,11 +373,11 @@ The round-1 text follows, kept for traceability.
 
 ## Classification
 
-`Design Impact` (AR-404).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -379,6 +387,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 4, delta; AR-404)
+- Review Decision: `Pass` (round 5, delta)
 - Material-Premise Gate: `Pass`
-- Notes: classification `Large` / `High`. Design at commit `e6948a1657` (SR-007). The ownership move is correct; the "unchanged" claim is false for Teams.
+- Notes: classification `Large` / `High`. Design at commit `bd70ada7bb` (SR-008). AR-401 … AR-404 are resolved; N-405 and N-406 are in the design; N-407 is a wording note.

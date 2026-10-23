@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Pass | AR-401 … AR-403 resolved |
 | ARCH-REV-003 | Round 3 (delta) / SR-006 answers CRR-003 F-005 | SR-006 | Pass | Pass | None new; N-405, N-406 |
 | ARCH-REV-004 | Round 4 (delta) / SR-007, FU-004 (one Retry owner) | SR-007 | Pass | Fail | AR-404 (new) |
+| ARCH-REV-005 | Round 5 (delta) / SR-008 answers AR-404 | SR-008 | Fail | Pass | AR-404 resolved; N-407 |
 
 ## Revision Entries
 
@@ -108,4 +109,28 @@ None.
 - New or remaining finding IDs: AR-404 (Low): state the two Team changes as intended, or make the target choice one rule with an `isLoaded` adapter query; define `rereadAgent` → `false` for a loaded agent; the specs follow the decision.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.
+
+### ARCH-REV-005 — Round 5 (delta): one Retry target rule; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree/design-review-report.md`
+- Review round and trigger: round 5; the Solution Designer's SR-008 (commit `bd70ada7bb`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 5; AR-404; N-405, N-406.
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: `Fail` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed in the review result: design examples re-read after their update (Case 5, autobyteus-280). § Window Retry Rule and the DS-004a consumer table were verified at HEAD.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-404 | Open (Low) | Resolved | SR-008; § Window Retry Rule | One target rule (selected if in the run, else the first not loaded) with the `isLoaded` adapter query; `rereadAgent` → `false` for a loaded agent; each family's change against today stated with the cited lines; the Team adapter spec covers it |
+| N-405 | Note | Done | DS-004a consumer table | The local-echo row, with `userMessageProjection.ts:50-80` and both IDs end to end |
+| N-406 | Note | Done | DS-004a consumer table | The title row cites `runTreeSummary.ts:10-22` and `runHistoryNavigationPatches.ts:73` |
+| AR-401 … AR-403 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: none blocking. N-407 (the pseudocode governs; align the prose sentence about the fallback).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.

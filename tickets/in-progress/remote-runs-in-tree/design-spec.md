@@ -246,7 +246,7 @@ Nothing is replaced. There are no compatibility paths: both nodes run the same r
   - standalone (`agentRunCollaborationStore.ts:133-138`) and Org (`agentOrgContextsStore.ts:150-155`) fell back to `agents[0]` and only when the refresh failed;
   - Team (`teamRemoteRunRegistry.ts:24-31`) returned right after a successful refresh, and otherwise read the first member that wasn't loaded.
 
-  The unified rule is intended ("no difference" between families). It re-reads the selected agent when it isn't loaded, else the first agent that isn't loaded, whether or not the refresh succeeded. What changes:
+  The unified rule is intended ("no difference" between families). When an agent of the run is selected, it re-reads that agent if it isn't loaded, and nothing else (a loaded selected agent means no re-read). When none is selected, it re-reads the first agent that isn't loaded. This holds whether or not the refresh succeeded; the pseudocode governs (N-407). What changes:
   - **Standalone and Org:** after a successful refresh with no selected agent, the first unloaded agent is read too (before: none). The fallback is the first *unloaded* agent instead of `agents[0]`, which was a no-op when `agents[0]` was already loaded.
   - **Team:** the selected member is preferred, and after a successful refresh an unloaded selected or first member is read too (before: no read).
 

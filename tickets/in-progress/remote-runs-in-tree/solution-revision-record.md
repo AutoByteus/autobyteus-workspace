@@ -91,3 +91,4 @@
 - Design: the rule picks the selected agent if it is in the run, else the first agent the family reports as not loaded (new adapter query `isLoaded`). `rereadAgent` returns `false` for a loaded agent. The changes against today are stated per family as intended ("no difference").
 - N-405 and N-406 (round 3) are in the consumer table since the ARCH-REV-003 addendum.
 - Classification unchanged. Route: round 5 of the architecture review.
+- SR-008 addendum: ARCH-REV-005 Pass (2026-10-23). N-407: the prose aligned with the pseudocode (no fallback when the selected agent is loaded). The reviewer's files committed.
