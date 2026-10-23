@@ -12,6 +12,7 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 | SR-003 | Requirements | Product designer's Requirement Impact (the user's design-review direction), 2026-10-23 | Impact on REQ-007/008/010 | Approved (SR-002) | Approved (SR-003) | REQ-007, REQ-008, REQ-010, AC-008, SCN-006, BEH-004, DEC-002 → DEC-019, Data Continuity | Design continues |
 | SR-004 | Mixed (Requirements + Design) | The user-approved Product package (2026-10-23); architecture investigation and design | Designer findings (PQ-1, PQ-2, new behaviors, own-node rule) | Approved (SR-003); design not started | Requirements Approved (SR-004); design Ready | REQ-008, REQ-024, REQ-025, AC-022, DEC-020; design DS-001..DS-008 | Architecture Design Complete — Large / High |
 | SR-005 | Design (+ DEC-020/AC-022 restated) | Architecture review ARCH-REV-001 (Fail, Design Impact) | AR-001..AR-007, R-1..R-3 | Requirements Approved (SR-004); design Ready | Requirements Approved (SR-005); design Ready (revised) | REQ-020..022, REQ-005/017, REQ-008/009, REQ-012..014, DEC-020, AC-022 | Architecture Design Complete — Large / High; back to review |
+| SR-006 | Evidence | ARCH-REV-002 Pass (informational); delivery DR-001 Blocked by a base breakage | PRQ-001; R-5 | Approved (SR-005) | Approved (SR-006); waiting for prerequisite | — (no requirement change) | Prerequisite raised to `/project_task_manager` |
 
 ## Revision Entries
 
@@ -102,3 +103,18 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 - Intended behavior changed: no approved requirement changed. DEC-020's browser-window case for non-embedded nodes is restated to match REQ-020; the user is informed. The UI spec left this rule to engineering (Open Decisions).
 - Approval: requirements at SR-005; DEC-020 by the Solution Designer within REQ-020, user informed.
 - Next action: architecture re-review.
+
+### SR-006 — Review passed; delivery waits for a prerequisite on `personal`
+
+- Phase and classification: Evidence (a prerequisite, outside this ticket).
+- Triggers:
+  - ARCH-REV-002 Pass against SR-005 (informational; the reviewer routed to implementation; its R-5, a stale SR in design-spec line 6, is corrected);
+  - delivery DR-001 `Blocked` (`/software_engineering_team/delivery_engineer`, 2026-10-24): a Requirement Gap naming a prerequisite.
+- Finding: PRQ-001 (requirements, Prerequisites). `origin/personal` misses the frozen memory modules of autobyteus-280 because of `.gitignore:43` `memory`. Verified by the Solution Designer (Read: `git ls-tree`, `git grep`, `git check-ignore`).
+- Ticket-scope test:
+  - this ticket cannot be finalized safely, because the integrated server cannot be built or checked;
+  - the functionality belongs to app-data migrations (autobyteus-280), not to this ticket.
+  - So it is a prerequisite.
+- Also recorded: FU-001 (the VIS-037 contact line on a remote node's card), in `follow-ups.md`.
+- Intended behavior changed: `No`.
+- Next action: the Project Task Manager creates the prerequisite Task. When it is delivered on `personal`, this ticket resumes with delivery's re-integration (DEL-01..07).

@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-005`
-- Current solution revision ID: `SR-005`
+- Status: `Approved` at `SR-006` (delivery waits for prerequisite PRQ-001)
+- Current solution revision ID: `SR-006`
 - Package identifier: `update-checks-and-auto-updates`
 - Request / ticket: Project Task autobyteus-210, "Update behaviour and settings"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-20, 2026-10-21 and 2026-10-23
@@ -93,7 +93,9 @@
 
 ### Prerequisites
 
-None.
+| Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status |
+| --- | --- | --- | --- | --- |
+| PRQ-001 (urgent) | `origin/personal` `1c9edce551` cannot build or load the server on a clean checkout. Files under `autobyteus-server-ts/src/app-data-migrations/` import modules under `src/app-data-migrations/frozen/autobyteus-ts/memory/` (`store/memory-file-names.js`, `store/run-memory-file-store.js`, `store/raw-trace-archive-manifest.js`, `store/working-context-snapshot-store.js`, `models/*`, `working-context*.js`) that are not in git: `git ls-tree origin/personal` lists only `memory/migration/*`. Cause: the bare pattern `memory` at `autobyteus-server-ts/.gitignore:43` (`git check-ignore -v` confirms it). The files came with autobyteus-280 (`d60d4a60e5`, `9b013fcc09`, merge `48b29c4342`) and existed only in its removed worktree. Effects (delivery DR-001 of this ticket): server `tsc` 28 errors, the GraphQL schema does not load, server E2E and 36 unit files fail to load; the next release tag's Desktop and Docker builds would fail. Verified by the Solution Designer on 2026-10-24 (`git ls-tree`, `git grep`, `git check-ignore`). Outside this ticket: `git diff origin/personal HEAD -- autobyteus-server-ts/src/app-data-migrations autobyteus-server-ts/.gitignore` is empty | Finalization of the whole ticket (all REQ/AC: the integrated server cannot be checked) | `/project_task_manager`, 2026-10-24 | Sent |
 
 ### Review Authority
 

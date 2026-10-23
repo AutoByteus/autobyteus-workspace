@@ -1,0 +1,7 @@
+# Follow-ups — update-checks-and-auto-updates
+
+Problems found during this ticket that it does not fix (kind Follow-up). The Solution Designer sends unsent rows to the "Requested by" agent when the ticket leaves the team.
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | API/E2E engineer (`api-e2e-execution-coverage-report.md` API-37 and line 206); relayed by delivery | A remote or Docker node's Update checks card says "Automatic updates: GitHub downloads and each runtime's own update command", although such a node never runs runtime updates (DEC-020, AR-005). The line is as approved in VIS-037. | `evidence/API-37-remote-node-window-card.png`; VIS-037 | The approved UI shows it; changing visible text needs the user's approval through the Product Team. Behavior is correct. | No | "Product: on a node that is not the desktop's embedded node, drop 'each runtime's own update command' from the Update checks card's contact line (REQ-016 honesty); update VIS-037 with the user's approval." | Not sent |

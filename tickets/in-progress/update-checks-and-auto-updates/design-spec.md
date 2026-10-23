@@ -3,7 +3,7 @@
 ## Solution And Approval Basis
 
 - Current solution revision ID: `SR-005` (resolves architecture review ARCH-REV-001: AR-001..AR-007, R-1..R-3)
-- Approved requirements baseline: `requirements-doc.md` at SR-004.
+- Approved requirements baseline: `requirements-doc.md` at SR-005 (SR-004 plus the DEC-020/AC-022 restatement; R-5 of ARCH-REV-002 corrected here).
   - The user approved DEC-003 (no undo), the agent-runtime category, "no automatic app update" (SR-002), the replacement of local changes after a one-time confirmation (SR-003), and the UI (SR-004).
   - The rest was decided by the Solution Designer within the direction, user informed.
 - Behavior-defining supplement: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` + `visual-references/VIS-001..037`, design repository `personal` at `5f5fb4c`, user-approved 2026-10-23.
