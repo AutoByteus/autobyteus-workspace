@@ -2,7 +2,7 @@
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks/tickets/in-progress/task-agent-several-tasks/`
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`, branch `codex/task-agent-several-tasks`, base `origin/personal@3b09fbe308`.
-Code commit: `a18fe714cd`. Evidence and these documents: the ticket-artifact commit that follows it (named in the handoff message). The untracked `autobyteus-application-*/dist/` folders are not committed (AF-009).
+Code commits: `a18fe714cd` (IR-001) and `cd8c289b67` (IR-002, CR-001 Local Fix). Evidence and these documents: the ticket-artifact commits that follow them (named in each handoff message). The untracked `autobyteus-application-*/dist/` folders are not committed (AF-009).
 
 ## Upstream Artifact Package
 
@@ -14,22 +14,28 @@ Code commit: `a18fe714cd`. Evidence and these documents: the ticket-artifact com
 - Supplemental task artifacts: `evidence/SD-probe-several-tasks.test.ts.txt` and its output (the reproduction implementation started from)
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Follow-ups: none found by implementation (no `follow-ups.md`)
-- Triggering rework report: N/A (initial implementation)
+- Follow-ups: `follow-ups.md` FU-001 (the code reviewer recorded the deleted-Task risk from this handoff)
+- Triggering rework report: `code-review-report.md` CRR-001 (Fail, Local Fix CR-001)
 
 ## Current Implementation Summary
 
 A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate_task` with `task_id` and the copy's run id gives it another Task while earlier ones are open, still only from its most recent assigner. A Task's DONE / CANCELLED stops the copy only when it has no open Task left. Before this change, the last close of a copy with two open entries fenced it but asked no one to stop it (AF-001). The given-Task message names the copy's other open Tasks and asks for the Task key in each report; with none open, the text is unchanged. Sub-work joins the newest open Task.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Code Review Local Fix` (round 2)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005` (requirements `SR-003`)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
+
+### CR-001 resolution (IR-002)
+
+| Finding | Fix | Commit | Check |
+| --- | --- | --- | --- |
+| CR-001: the `update_task` parenthetical "(stopping their task agents)" for a parent's parts was false under the new release rule (REQ-008) | `project-task-tool-contract.ts` `update_task`: now "…also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them." Also the optional C-06 widening: "To give a task agent another Task, also while its other Tasks are open, use delegate_task with its target_agent_run_id or target_team_run_id." Text pins: `project-task-parts-tools.test.ts:95` (exact sentence) and the `project-task-tools.test.ts` regex (now also covers the widened sentence) | `cd8c289b67` | IMP-06, IMP-07 |
 
 ## Routing Classification (Mandatory)
 
@@ -96,8 +102,8 @@ A task agent (Agent or Team copy) may hold several open Project Tasks. `delegate
 
 - Existing server E2E assertions pin the removed refusal or the old `update_task` text and need updating. E2E is API/E2E-owned, so I did not edit them:
   - `tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts` lines ~404, 409, 731, 866, 876 ("This task agent still works on …");
-  - `tests/e2e/projects/project-task-boundaries.e2e.test.ts` line ~663 ("Both stop the task agents whose current Task this is").
-- A Task deleted while a copy holds it open keeps its open entry, as today: delete keeps `agent_run_resources.json` and does not close entries. Such a copy is not stopped when its other Tasks close. Its given-Task message also leaves the deleted Task out, so with no other open Task it says "previous Task is closed". This follows REQ-004's wording ("stopped only when no assignment of it is still open"), and deleting a Task with a running task agent already left that agent running before this change. If wanted, a follow-up could close a deleted Task's entries.
+  - `tests/e2e/projects/project-task-boundaries.e2e.test.ts` line ~663 ("Both stop the task agents whose current Task this is") and line ~846 ("(stopping their task agents)", now "(ending their work for their task agents, as above)" after CR-001).
+- (Recorded by the code reviewer as FU-001; outside this ticket.) A Task deleted while a copy holds it open keeps its open entry, as today: delete keeps `agent_run_resources.json` and does not close entries. Such a copy is not stopped when its other Tasks close. Its given-Task message also leaves the deleted Task out, so with no other open Task it says "previous Task is closed". This follows REQ-004's wording ("stopped only when no assignment of it is still open"), and deleting a Task with a running task agent already left that agent running before this change. If wanted, a follow-up could close a deleted Task's entries.
 - The `delegate_task` and `update_task` wording changes agent behavior. Both are kept to the design's sentences.
 
 ## Task Design Health Assessment Implementation Check
@@ -148,8 +154,11 @@ Evidence folder: `evidence/`. Each file name starts with its check ID; large log
 | IMP-03 | `pnpm -C autobyteus-server-ts typecheck` | `a18fe714cd` | same | all server `src` | — | Pass | `IMP-03-server-typecheck.log` | `autobyteus-application-backend-sdk build: Done`, `tsc -p tsconfig.build.json --noEmit`, `exit=0` |
 | IMP-04 | `pnpm -C autobyteus-server-ts test:unit` | `a18fe714cd` | same | all server unit suites, incl. the rewritten lifecycle / Task-side / current-entry / catalogue / text-pin tests | BEH-001–BEH-005; AC-001–AC-009; REQ-008 | Pass | `IMP-04-server-test-unit.log`, `IMP-04-server-test-unit.full.log.gz` | `Test Files  794 passed | 4 skipped (798)`, `Tests  6518 passed | 7 skipped (6525)`, `exit=0`; the FAIL-matching lines are the expected platform-fatal JSON printed by the startup-gate tests |
 | IMP-05 | `pnpm -C autobyteus-server-ts test:integration:prepare` then `test:integration` | `a18fe714cd` | same | server integration suites (green-suite guard) | — | Pass | `IMP-05-server-integration-prepare.log`, `IMP-05-server-test-integration.log`, `IMP-05-server-test-integration.full.log.gz` | prepare `Integration test prerequisites are present.` `exit=0`; run `Test Files  78 passed | 20 skipped (98)`, `Tests  421 passed | 69 skipped (490)`, `exit=0` |
+| IMP-06 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/project-tasks --no-watch --reporter=verbose` | `cd8c289b67` | same | `update_task` text and its pins (CR-001) | REQ-008, CR-001 | Pass | `IMP-06-project-task-tool-texts.log` | `Test Files  6 passed (6)`, `Tests  137 passed (137)` |
+| IMP-07 | `pnpm -C autobyteus-server-ts typecheck`, then `test:unit` | `cd8c289b67` | same | all server `src`; all server unit suites after the CR-001 text change | REQ-008 | Pass | `IMP-07-server-typecheck-and-unit.log`, `IMP-07-server-typecheck-and-unit.full.log.gz` | typecheck `exit=0`; `Test Files  794 passed | 4 skipped (798)`, `Tests  6518 passed | 7 skipped (6525)`, `exit=0` |
 
 - Environment note: the first full run, on the same commit, failed before any check of this change ran. The worktree had no `autobyteus-application-backend-sdk/node_modules`, so `prepare:shared` could not resolve `@autobyteus/application-sdk-contracts`; 5 application-backend unit suites could not import `@autobyteus/application-backend-sdk`; and 2 unrelated tests timed out under load (skill-folder watcher CR-005 at 302 s, ACP harness `waitFor`). I ran `pnpm install --frozen-lockfile` (no tracked change), then a clean rerun of the whole chain produced IMP-03 to IMP-05. The untracked build outputs (`autobyteus-application-*/dist/`, `applications/brief-studio/dist/`) are not committed.
+- IR-002 (CR-001) is a text-only change. Integration was not rerun for it; IMP-05 on `a18fe714cd` still stands.
 - Not run, and why:
   - server E2E with a scripted runtime (design step 3: AC-001, AC-003–AC-007 end to end, waking a sleeping copy given a second Task) and the isolated desktop instance (AC-010) belong to API/E2E; existing E2E pins need updating first (Known Risks);
   - web checks were not run because no web file changed.

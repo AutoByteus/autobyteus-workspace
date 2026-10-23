@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-005, ARCH-REV-002 | Implemented; to Code Review |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (Fail, Local Fix) | CR-001 | `Local Fix` | IR-001, CRR-001 | Fixed; to Code Review (targeted delta) |
 
 ## Revision Entries
 
@@ -35,3 +36,22 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: see the handoff's Checks Run (IMP-01–IMP-05)
 - Next recipient or routing: Code Review (per `get_handoff_rules`)
 - Remaining limitations or risks: existing E2E assertions on the removed refusal and the old `update_task` text need updating (listed in the handoff); a Task deleted while open keeps its open entry (see Known Risks).
+
+### IR-002 — CR-001: the update_task text follows the new release rule
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`, CRR-001 (implementation review round 1)
+- Triggering finding IDs: CR-001 (and the optional C-06 widening)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001 at `a18fe714cd`. The `update_task` text said a parent's close sets its open parts the same way "(stopping their task agents)". This is false for a part's task agent that holds another open Task.
+- Current authoritative result: `cd8c289b67`. The parenthetical now reads "(ending their work for their task agents, as above)". The delegate_task pointer now reads "To give a task agent another Task, also while its other Tasks are open, use delegate_task …".
+- Related solution revision IDs: SR-005
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Approved behavior or requirement IDs affected: REQ-008
+- Implementation delta: one tool-text string (two sentences). Two unit text pins: `project-task-parts-tools.test.ts:95` and the `project-task-tools.test.ts` regex. No logic change.
+- Changed files or areas: `autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts`; `autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-parts-tools.test.ts`; `autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`
+- Local validation and result: IMP-06 (the project-task tool unit tests, 137 passed) and IMP-07 (typecheck plus the full server unit suite), on `cd8c289b67`. Integration was not rerun, because a text change cannot affect it; IMP-05 still stands.
+- Next recipient or routing: Code Review, targeted delta (per `get_handoff_rules`: a Local Fix on a High-risk package)
+- Remaining limitations or risks: `project-task-boundaries.e2e.test.ts:846` pins the old parenthetical (API/E2E-owned, listed in the handoff). FU-001 is recorded by the code reviewer.
