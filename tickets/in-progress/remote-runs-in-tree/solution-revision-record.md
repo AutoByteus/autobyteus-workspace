@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | SR-001 | 2026-10-23 | Requirements | Baseline for the user's decisions |
 | SR-002 | 2026-10-23 | Requirements | The user's decisions from the discussion; Product Design requested |
+| SR-003 | 2026-10-23 | Requirements | Product package approved; requirements approved |
 
 ## Revision Entries
 
@@ -25,3 +26,14 @@
 - REQ-804 and AC-804 are reduced to match.
 - Open: DEC-804 (stop/terminate), for the UI review.
 - Product Design requested from `/product_team` at the user's direction.
+
+### SR-003 — Product package approved; requirements approved (2026-10-23)
+
+- Trigger: Design Completed from the Product UI/UX Designer (`product_ui_ux_designer_47b42f1694e346c58988165bf7257699`). The UI/UX spec is `Approved` by the user, the Product ticket is closed, and the design repository is at `1cc5563`.
+- Integrated:
+  - REQ-801 gains "did the node answer" and Retry;
+  - REQ-808 covers the opened view's offer (text-only composer, no ⚙/＋, panels on the other node, Activity/Team/Usage/Browser from the stream, local-only Delegated copies list);
+  - DEC-804 (a), by the user's approval of the UI with Stop shown.
+- Open for architecture: PA-805 (feasibility of the panels built from the streamed events), PA-808 (Team and Org delegators).
+- Status: `Approved` (the user).
+- No Product Task to close: the Solution Designer works on a delegated Task, so its delegation returned no Task ID.
