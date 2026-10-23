@@ -402,7 +402,9 @@ turned on (packages, skill sources, runtimes; never the app).
   sources; for runtimes GitHub (Codex), downloads.claude.ai, Antigravity's
   updater, xAI (Grok); GitHub downloads and each runtime's own update command
   for automatic updates; no account or token; nothing sent to AutoByteus), an
-  amber banner while GitHub asks the node to wait or while checks are off, "How
+  amber banner while GitHub asks the node to wait (a wait changes no setting and
+  is announced by nothing, so the card re-reads the settings when it opens and
+  drops the banner when the time passes) or while checks are off, "How
   often to check" (`UpdateIntervalField.vue`: a whole number and minutes or
   hours, 15 minutes to 24 hours, saved on blur, Enter or a unit change, "Saved"
   for about 2 s; 30 / 30 / 60 minutes by default) and "Automatic updates" (the

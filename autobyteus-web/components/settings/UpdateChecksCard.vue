@@ -125,7 +125,8 @@ const toggle = async () => {
 
 onMounted(() => {
   void capability.ensureResolved().catch(() => undefined)
-  void automation.ensureResolved()
+  // GitHub's wait changes no record and no setting, so nothing announces it: read the node's current settings on open.
+  void (automation.status === 'resolved' ? automation.refresh() : automation.ensureResolved())
   clock = setInterval(() => { now.value = Date.now() }, 30_000)
 })
 onBeforeUnmount(() => { if (clock) clearInterval(clock) })

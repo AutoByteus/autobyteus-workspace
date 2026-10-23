@@ -227,6 +227,17 @@ describe('agent runtimes in the Notification Center (REQ-020..022)', () => {
     expect(mutate.mock.calls.some(([options]) => operationName(options.mutation) === 'UpdateAgentRuntime')).toBe(false)
   })
 
+  it('with the runtime switch off, a waiting row no longer promises an automatic update (CR-002, REQ-022)', async () => {
+    notifications = [runtimeRecord({ outcome: 'AUTO_WAITING', outcomeReason: 'Update unavailable while 2 agent(s) are running.' })]
+    automation = settings({ automaticUpdates: { agentPackages: false, skillSources: false, agentRuntimes: false } })
+    runtimes = [runtime({ runningAgentCount: 2 })]
+    await mountHost()
+    await openPanel()
+    const blocked = $('[data-testid="notification-row-blocked"]')!.textContent!.trim()
+    expect(blocked).toBe('Update unavailable while 2 agents are running.')
+    expect(blocked).not.toContain('updated automatically')
+  })
+
   it('Update runs the vendor update and shows Updating…, then the vendor\'s failure with Try again (UXJ-007, TR-108..110)', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     notifications = [runtimeRecord()]

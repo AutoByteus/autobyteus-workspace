@@ -40,6 +40,7 @@ beforeEach(() => {
   automation = reactive({
     status: 'resolved', resolved: settings(),
     ensureResolved: vi.fn().mockResolvedValue(undefined),
+    refresh: vi.fn().mockResolvedValue(undefined),
     setInterval: vi.fn().mockResolvedValue(undefined),
     setAutomatic: vi.fn().mockResolvedValue(undefined),
   })
