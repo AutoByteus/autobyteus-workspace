@@ -1,0 +1,331 @@
+{
+  "startedAt": "2026-10-23T05:35:14.409Z",
+  "result": "Fail",
+  "containerName": "one-nodes-api-el-776975",
+  "servers": {
+    "labbox": {
+      "baseUrl": "http://127.0.0.1:51623",
+      "nodeId": "srv_35GJOu-_qOU9UHDdSUsc_adLzcgdrvQf"
+    },
+    "peeronly": {
+      "baseUrl": "http://127.0.0.1:51624",
+      "nodeId": "srv_Z48itgk1QWimtxuIPGzLdukPbqtJvq7Q"
+    },
+    "docker": {
+      "baseUrl": "http://127.0.0.1:51621",
+      "nodeId": "srv_RcauEMt3M39jEwZ7Y4dEcAmi5hfJf5X7"
+    }
+  },
+  "instance": {
+    "instanceId": "iso-51773-5ee3",
+    "pid": 39512,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:51774",
+    "graphqlUrl": "http://127.0.0.1:51774/graphql",
+    "controlEndpoint": "http://127.0.0.1:51773",
+    "controlPort": 51773,
+    "serverPort": 51774,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/one-nodes-el-ZBiXjP/instance",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/one-nodes-el-ZBiXjP/instance/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-51773-5ee3.log"
+  },
+  "registry": {
+    "seeded": {
+      "version": 12,
+      "nodes": [
+        {
+          "id": "embedded-local",
+          "name": "Embedded Node",
+          "baseUrl": "http://127.0.0.1:29695",
+          "nodeType": "embedded",
+          "capabilities": {
+            "terminal": true,
+            "fileExplorerStreaming": true
+          },
+          "capabilityProbeState": "ready",
+          "isSystem": true,
+          "createdAt": "2026-09-01T10:00:00.000Z",
+          "updatedAt": "2026-09-01T10:00:00.000Z"
+        },
+        {
+          "id": "remote-docker-entry",
+          "name": "http://localhost:51621",
+          "baseUrl": "http://localhost:51621",
+          "nodeType": "remote",
+          "capabilities": {
+            "terminal": true,
+            "fileExplorerStreaming": true
+          },
+          "capabilityProbeState": "ready",
+          "isSystem": false,
+          "createdAt": "2026-09-02T10:00:00.000Z",
+          "updatedAt": "2026-09-02T10:00:00.000Z"
+        },
+        {
+          "id": "remote-oldbox-entry",
+          "name": "old box",
+          "baseUrl": "http://127.0.0.1:51622",
+          "nodeType": "remote",
+          "capabilities": {
+            "terminal": true,
+            "fileExplorerStreaming": true
+          },
+          "capabilityProbeState": "ready",
+          "isSystem": false,
+          "createdAt": "2026-09-03T10:00:00.000Z",
+          "updatedAt": "2026-09-03T10:00:00.000Z"
+        }
+      ]
+    },
+    "afterStart": {
+      "version": 13,
+      "nodes": [
+        {
+          "id": "embedded-local",
+          "name": "Embedded Node",
+          "baseUrl": "http://127.0.0.1:51774",
+          "nodeType": "embedded",
+          "isSystem": true,
+          "createdAt": "2026-09-01T10:00:00.000Z",
+          "updatedAt": "2026-10-23T05:35:39.813Z"
+        },
+        {
+          "id": "remote-docker-entry",
+          "name": "http://localhost:51621",
+          "baseUrl": "http://localhost:51621",
+          "nodeType": "remote",
+          "isSystem": false,
+          "createdAt": "2026-09-02T10:00:00.000Z",
+          "updatedAt": "2026-09-02T10:00:00.000Z"
+        },
+        {
+          "id": "remote-oldbox-entry",
+          "name": "old box",
+          "baseUrl": "http://127.0.0.1:51622",
+          "nodeType": "remote",
+          "isSystem": false,
+          "createdAt": "2026-09-03T10:00:00.000Z",
+          "updatedAt": "2026-09-03T10:00:00.000Z"
+        }
+      ]
+    },
+    "afterOpen": {
+      "version": 15,
+      "nodes": [
+        {
+          "id": "embedded-local",
+          "name": "Embedded Node",
+          "baseUrl": "http://127.0.0.1:51774",
+          "nodeType": "embedded",
+          "isSystem": true,
+          "createdAt": "2026-09-01T10:00:00.000Z",
+          "updatedAt": "2026-10-23T05:35:46.591Z",
+          "serverInstanceId": "srv_7W_eTJ_yT7fXhXuu5qyIPKsDnM5RMkEm"
+        },
+        {
+          "id": "remote-docker-entry",
+          "name": "http://localhost:51621",
+          "baseUrl": "http://localhost:51621",
+          "nodeType": "remote",
+          "isSystem": false,
+          "createdAt": "2026-09-02T10:00:00.000Z",
+          "updatedAt": "2026-10-23T05:35:46.609Z",
+          "serverInstanceId": "srv_RcauEMt3M39jEwZ7Y4dEcAmi5hfJf5X7"
+        },
+        {
+          "id": "remote-oldbox-entry",
+          "name": "old box",
+          "baseUrl": "http://127.0.0.1:51622",
+          "nodeType": "remote",
+          "isSystem": false,
+          "createdAt": "2026-09-03T10:00:00.000Z",
+          "updatedAt": "2026-09-03T10:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "cases": {
+    "EL-01": {
+      "result": "Pass",
+      "ms": 1280,
+      "failedExpectations": [],
+      "rows": [
+        "srv_RcauEMt3M39jEwZ7Y4dEcAmi5hfJf5X7",
+        "d:remote-oldbox-entry",
+        "srv_Z48itgk1QWimtxuIPGzLdukPbqtJvq7Q"
+      ],
+      "dockerRow": {
+        "name": "docker",
+        "url": "localhost:51621",
+        "switch": "true",
+        "open": 1,
+        "line": "⚠ docker doesn't know this node yet.",
+        "fix": "Register this node there"
+      },
+      "oldBox": {
+        "line": "ⓘ Not reachable. Nothing answers at that address and port."
+      },
+      "afterStartKeys": [
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt"
+        ],
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt"
+        ],
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt"
+        ]
+      ],
+      "savedKeys": [
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt",
+          "serverInstanceId"
+        ],
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt",
+          "serverInstanceId"
+        ],
+        [
+          "id",
+          "name",
+          "baseUrl",
+          "nodeType",
+          "isSystem",
+          "createdAt",
+          "updatedAt"
+        ]
+      ]
+    },
+    "EL-04": {
+      "result": "Pass",
+      "ms": 1504,
+      "failedExpectations": [],
+      "confirmText": "Finish connecting docker? Some changes are still missing. These will be made: On docker • Register this node as “Embedded Node” docker reaches this node at http://host.docker.internal:51774. Trusted private network only: nodes are not authenticated. Cancel Make these changes",
+      "onDocker": [
+        {
+          "nodeId": "srv_7W_eTJ_yT7fXhXuu5qyIPKsDnM5RMkEm",
+          "name": "Embedded Node",
+          "baseUrl": "http://host.docker.internal:51774"
+        }
+      ],
+      "directions": {
+        "out": "This node → docker ✓ Working via http://localhost:51621Change address",
+        "in": "docker → this node ✓ Working via http://host.docker.internal:51774"
+      }
+    },
+    "EL-02": {
+      "result": "Pass",
+      "ms": 4705,
+      "failedExpectations": [],
+      "before": 1,
+      "afterAdd": {
+        "windows": 1,
+        "dialog": 0,
+        "entry": {
+          "id": "remote-29cb2a3b-6a39-4dcf-9dfb-9b70a210d372",
+          "name": "labbox",
+          "baseUrl": "http://127.0.0.1:51623",
+          "nodeType": "remote",
+          "isSystem": false,
+          "createdAt": "2026-10-23T05:35:48.848Z",
+          "updatedAt": "2026-10-23T05:35:48.848Z",
+          "serverInstanceId": "srv_35GJOu-_qOU9UHDdSUsc_adLzcgdrvQf"
+        }
+      },
+      "afterOpen": 2,
+      "openedUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+    },
+    "EL-03": {
+      "result": "Pass",
+      "ms": 362,
+      "failedExpectations": [],
+      "entry": {
+        "id": "remote-68a16823-8e0c-42b0-b889-defebc9aa685",
+        "name": "peeronly",
+        "baseUrl": "http://127.0.0.1:51624",
+        "nodeType": "remote",
+        "isSystem": false,
+        "createdAt": "2026-10-23T05:35:53.529Z",
+        "updatedAt": "2026-10-23T05:35:53.529Z",
+        "serverInstanceId": "srv_Z48itgk1QWimtxuIPGzLdukPbqtJvq7Q"
+      },
+      "openedUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/",
+      "windows": 3
+    },
+    "EL-05": {
+      "result": "Fail",
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"node-manager-panel-memorySync\"]') to be visible\n\n    at Object.openTab (/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:164:77)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:273:5\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:61:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:267:3",
+      "failedExpectations": []
+    }
+  },
+  "pages": [
+    {
+      "case": "EL-02",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/"
+    },
+    {
+      "case": "EL-03",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/"
+    },
+    {
+      "case": "EL-05",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/"
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-51773-5ee3",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/one-nodes-el-ZBiXjP/instance",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-51773-5ee3.log"
+      }
+    },
+    "rootRemoved": true,
+    "containerLeft": null,
+    "mineStillListed": []
+  },
+  "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"node-manager-panel-memorySync\"]') to be visible\n\n    at Object.openTab (/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:164:77)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:273:5\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:61:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/evidence/api-e2e/API-09-electron-journey.mjs:267:3",
+  "finishedAt": "2026-10-23T05:37:00.039Z"
+}
