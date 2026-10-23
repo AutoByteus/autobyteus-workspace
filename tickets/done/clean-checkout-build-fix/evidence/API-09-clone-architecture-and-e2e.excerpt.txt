@@ -1,0 +1,33 @@
+# Case: API-09
+# Command: cd autobyteus-server-ts && pnpm exec vitest run tests/architecture tests/e2e/app-data-migrations --no-watch; a=$?; pnpm exec vitest list tests/e2e > /tmp/ab282e2e/e2e-list.txt 2>&1; b=$?; echo "vitest run exit=$a"; echo "vitest list tests/e2e exit=$b entries=$(grep -c '' /tmp/ab282e2e/e2e-list.txt)"; exit $a
+# Commit: 828c88b2a (clone of branch codex/clean-checkout-build-fix through git transport: git clone --no-local file://<common git dir>)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2, Python 3.9.6; clone /tmp/ab282e2e/clone; clean env (env -i PATH HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.9VbVovySjz TMPDIR) for tests
+# Date: 2026-10-23T23:45:16Z
+
+
+# Excerpt of API-09-clone-architecture-and-e2e.log. Full log (39524 bytes): /tmp/ab282e2e/API-09-clone-architecture-and-e2e.log
+
+# Command: cd autobyteus-server-ts && pnpm exec vitest run tests/architecture tests/e2e/app-data-migrations --no-watch; a=$?; pnpm exec vitest list tests/e2e > /tmp/ab282e2e/e2e-list.txt 2>&1; b=$?; echo "vitest run exit=$a"; echo "vitest list tests/e2e exit=$b entries=$(grep -c '' /tmp/ab282e2e/e2e-list.txt)"; exit $a
+ ❯ tests/architecture/application-framework-boundaries.test.ts (20 tests | 1 failed) 2182ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 12374ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 16626ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests) 4871ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 15736ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 13807ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 3548ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 7648ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 2941ms
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 539ms
+ ✓ tests/architecture/app-data-migration-boundaries.test.ts (3 tests) 575ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 10ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 36ms
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 1634ms
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
++   "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2997:41
+ Test Files  1 failed | 13 passed (14)
+      Tests  1 failed | 68 passed (69)
+   Duration  89.64s (transform 3.21s, setup 138ms, import 5.53s, tests 82.53s, environment 1ms)
+vitest run exit=1
+vitest list tests/e2e exit=0 entries=838
+# Exit code: 1

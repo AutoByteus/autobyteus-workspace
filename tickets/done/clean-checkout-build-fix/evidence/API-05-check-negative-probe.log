@@ -1,0 +1,23 @@
+# Case: API-05 (AC-003 fail side, temporary probe in the throwaway clone)
+# Steps: in the clone, git rm --cached the restored frozen memory modules (kept on disk), put the old bare `memory` rule back, and add a tracked import of a new untracked file; run the check; then discard the clone
+# Date: 2026-10-23T23:50:11Z
+
+files still on disk: 4 in models; ignored now: autobyteus-server-ts/.gitignore:44:memory	autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/models/memory-types.ts
+Tracked-import check failed.
+
+Tracked code importing files that are not tracked: 23
+Action: Add the imported file to git (check `git check-ignore -v <file>`: an ignore rule may hide it), or fix the import. A clean checkout cannot build while these are missing.
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../models/raw-trace-item.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context-finalizer.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts -> ../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/models/raw-trace-attachments.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js
+ - ... 11 more
+tracked-imports exit=1

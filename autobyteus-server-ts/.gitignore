@@ -40,8 +40,7 @@ Thumbs.db
 
 # Local MCP configs
 /docs/examples/alexa_mcp_import.local.json
-memory
-!/tests/e2e/memory/
-!/tests/e2e/memory/*.test.ts
+# Runtime data folder at the server root only; folders named `memory` in source are code.
+/memory/
 # File-profile build output
 /dist-file/
