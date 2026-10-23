@@ -68,6 +68,14 @@ export class TaskRoot {
   @Field(() => String) status!: string;
 }
 
+/** One comment of a Project Task: its number within the Task, the server time it was added, its text. */
+@ObjectType()
+export class ProjectTaskComment {
+  @Field(() => Int) id!: number;
+  @Field(() => String) createdAt!: string;
+  @Field(() => String) text!: string;
+}
+
 @ObjectType()
 export class ProjectTask {
   @Field(() => TaskRoot, { nullable: true }) root!: TaskRoot | null;
@@ -95,6 +103,10 @@ export class ProjectTask {
   /** The Task of the same Project this Task is part of (its parent); null when none. */
   @Field(() => String, { nullable: true })
   partOfTaskId!: string | null;
+
+  /** The comment thread, oldest first; add only. */
+  @Field(() => [ProjectTaskComment])
+  comments!: ProjectTaskComment[];
 
   @Field(() => String)
   createdAt!: string;
@@ -140,6 +152,13 @@ export class UpdateProjectTaskInput {
   /** A same-Project Task ID replaces the parent, null clears it, omitted keeps it. */
   @Field(() => String, { nullable: true })
   partOfTaskId?: string | null;
+}
+
+@InputType()
+export class AddProjectTaskCommentInput {
+  @Field(() => String) projectId!: string;
+  @Field(() => String) taskId!: string;
+  @Field(() => String) text!: string;
 }
 
 @InputType()
@@ -194,6 +213,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   status: task.status as ProjectTaskStatus,
   dependsOnTaskIds: [...task.dependsOnTaskIds],
   partOfTaskId: task.partOfTaskId,
+  comments: task.comments.map(({ id, createdAt, text }) => ({ id, createdAt, text })),
   createdAt: task.createdAt,
   updatedAt: task.updatedAt,
 });
@@ -243,6 +263,14 @@ export class ProjectTaskResolver {
     @Arg("input", () => UpdateProjectTaskInput) input: UpdateProjectTaskInput,
   ): Promise<ProjectTask> {
     return withProjectErrors(async () => toGraphqlTask(await this.service.updateTask(input)));
+  }
+
+  /** Adds one comment (the text); the server sets its number and time. Returns the Task. */
+  @Mutation(() => ProjectTask)
+  async addProjectTaskComment(
+    @Arg("input", () => AddProjectTaskCommentInput) input: AddProjectTaskCommentInput,
+  ): Promise<ProjectTask> {
+    return withProjectErrors(async () => toGraphqlTask(await this.service.addComment(input)));
   }
 
   @Mutation(() => Boolean)

@@ -1,0 +1,225 @@
+{
+ "header": {
+  "case": "API-07 project-manager-ux probe",
+  "command": "node autobyteus-web/tests/e2e/project-manager-ux-probe.mjs --output-dir <fresh> [--cases PMU-021]",
+  "commit": "code e014c349b8",
+  "env": "macOS, headless Chrome, probe-owned dist/app.js backend with scripted AGY + nuxi dev",
+  "date": "2026-10-23"
+ },
+ "runs": {
+  "full run": {
+   "cases": {
+    "PMU-001": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-002": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-003": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-004": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-005": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-006": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-007": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-008": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-009": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-010": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-011": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-012": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-013": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-014": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-015": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-016": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-017": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-018": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-019": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-020": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-021": {
+     "result": "Fail",
+     "message": "browser errors",
+     "details": [
+      "[FileExplorerStreaming] WebSocket error: Event"
+     ]
+    },
+    "PMU-022": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-023": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-024": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    },
+    "PMU-025": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    }
+   },
+   "cleanup": {
+    "browser": "closed",
+    "frontend": {
+     "pid": 84123,
+     "status": "terminated",
+     "exit": "SIGTERM"
+    },
+    "backend": {
+     "pid": 85081,
+     "status": "terminated",
+     "exit": 0
+    },
+    "dataRootRemoved": true
+   }
+  },
+  "rerun 1 PMU-021": {
+   "cases": {
+    "PMU-021": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    }
+   },
+   "cleanup": {
+    "browser": "closed",
+    "frontend": {
+     "pid": 89030,
+     "status": "terminated",
+     "exit": "SIGTERM"
+    },
+    "backend": {
+     "pid": 89006,
+     "status": "terminated",
+     "exit": 0
+    },
+    "dataRootRemoved": true
+   }
+  },
+  "rerun 2 PMU-021": {
+   "cases": {
+    "PMU-021": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    }
+   },
+   "cleanup": {
+    "browser": "closed",
+    "frontend": {
+     "pid": 89528,
+     "status": "terminated",
+     "exit": "SIGTERM"
+    },
+    "backend": {
+     "pid": 89499,
+     "status": "terminated",
+     "exit": 0
+    },
+    "dataRootRemoved": true
+   }
+  },
+  "rerun 3 PMU-021": {
+   "cases": {
+    "PMU-021": {
+     "result": "Pass",
+     "message": null,
+     "details": null
+    }
+   },
+   "cleanup": {
+    "browser": "closed",
+    "frontend": {
+     "pid": 90031,
+     "status": "terminated",
+     "exit": "SIGTERM"
+    },
+    "backend": {
+     "pid": 90007,
+     "status": "terminated",
+     "exit": 0
+    },
+    "dataRootRemoved": true
+   }
+  }
+ }
+}

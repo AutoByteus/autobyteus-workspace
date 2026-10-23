@@ -31,7 +31,8 @@ const taskStatusSchema = z.enum(PROJECT_TASK_STATUSES);
 const projectTaskSchema = z.strictObject({
   contextFiles: z.array(z.strictObject({ storedFilename: text, displayName: z.string(), mimeType: z.string(), sizeBytes: z.number().int(), locator: text })),
   taskId: text, projectId: text, taskKey: text, description: z.string(), status: taskStatusSchema, dependsOnTaskIds: z.array(text),
-  partOfTaskId: text.nullable(), createdAt: text, updatedAt: text, root: rootSchema.nullable(),
+  partOfTaskId: text.nullable(), comments: z.array(z.strictObject({ id: z.number().int().positive(), createdAt: text, text })),
+  createdAt: text, updatedAt: text, root: rootSchema.nullable(),
 });
 const taskWithoutProjectSchema = z.strictObject({
   taskId: text, description: z.string(), status: taskStatusSchema, referenceFiles: z.array(z.string()),
@@ -75,7 +76,8 @@ export const projectTaskWire = (task: ProjectTaskView) => ({
   contextFiles: task.contextFiles.map(({ storedFilename, displayName, mimeType, sizeBytes, locator }) =>
     ({ storedFilename, displayName, mimeType, sizeBytes, locator })),
   taskId: task.taskId, projectId: task.projectId, taskKey: task.taskKey, description: task.description, status: task.status,
-  dependsOnTaskIds: [...task.dependsOnTaskIds], partOfTaskId: task.partOfTaskId, createdAt: task.createdAt, updatedAt: task.updatedAt, root: rootWire(task.root),
+  dependsOnTaskIds: [...task.dependsOnTaskIds], partOfTaskId: task.partOfTaskId,
+  comments: task.comments.map(({ id, createdAt, text }) => ({ id, createdAt, text })), createdAt: task.createdAt, updatedAt: task.updatedAt, root: rootWire(task.root),
 });
 export const taskWithoutProjectWire = (task: TaskWithoutProjectView) => ({
   taskId: task.taskId, description: task.description, status: task.status, referenceFiles: [...task.referenceFiles],

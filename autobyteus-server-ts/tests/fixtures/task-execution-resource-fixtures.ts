@@ -15,7 +15,7 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskE
  */
 export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
   readonly entries = new Map<string, Entry>();
-  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string }>();
+  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string; comments?: string[] }>();
   readonly damaged = new Set<string>();
   readonly links: NewTaskExecutionLinkInput[] = [];
   /** Every committed existing-copy assignment, in order. */
@@ -57,7 +57,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);

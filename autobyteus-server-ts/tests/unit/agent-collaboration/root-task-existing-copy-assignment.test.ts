@@ -274,3 +274,27 @@ describe("send_message_to guidance for a team run ID", () => {
     expect(f.lifecycle.teamCoordinatorOf("unknown")).toBeNull();
   });
 });
+
+describe("a saved Task's comments in the delegated work (task-comments REQ-012, AC-010)", () => {
+  it("an existing copy receives the comment texts after the description, oldest first, as bullets", async () => {
+    const f = await afterTaskADone(["worker"]);
+    f.resources.tasks.get("task-B")!.comments = ["Dispatched with this direction.", "User decided: keep it small."];
+    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "worker" } });
+    expect(f.delivered[0]!.content).toBe([
+      "New Task assigned to you: task-B. Your previous Task is closed; this is the work to do now.",
+      "",
+      "Description:",
+      "Follow-up cleanup proposed by the reviewer",
+      "",
+      "Comments:",
+      "- Dispatched with this direction.",
+      "- User decided: keep it small.",
+    ].join("\n"));
+  });
+
+  it("a Task without comments gets no Comments block", async () => {
+    const f = await afterTaskADone(["worker"]);
+    await f.assignTo(worker, "task-B");
+    expect(f.delivered[0]!.content).not.toContain("Comments:");
+  });
+});

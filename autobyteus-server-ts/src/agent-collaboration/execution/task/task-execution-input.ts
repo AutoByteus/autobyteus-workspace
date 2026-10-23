@@ -28,9 +28,10 @@ export const validateTaskReferenceFiles = async (values: readonly string[]): Pro
   return Object.freeze(result);
 };
 
-/** The task itself: its description and any reference files. */
-const taskBodyLines = (description: string, referenceFiles: readonly string[]): string[] => [
+/** The task itself: its description, a saved Task's comments (texts, oldest first; no block when none) and any reference files. */
+const taskBodyLines = (description: string, comments: readonly string[], referenceFiles: readonly string[]): string[] => [
   "Description:", description,
+  ...(comments.length ? ["", "Comments:", ...comments.map((comment) => `- ${comment}`)] : []),
   ...(referenceFiles.length ? ["", "Reference files:", ...referenceFiles.map((file) => `- ${file}`)] : []),
 ];
 
@@ -46,6 +47,8 @@ export const buildTaskWorkText = (input: {
   /** The delegator's node, this owner's label for it, when the delegator runs on a peer node (CM-11). */
   delegatorNode?: string | null;
   description: string;
+  /** A saved Task's comment texts, oldest first; none for described work. */
+  comments?: readonly string[];
   referenceFiles: readonly string[];
 }): string => {
   const runId = input.delegator.agentRunId;
@@ -57,7 +60,7 @@ export const buildTaskWorkText = (input: {
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]
     : [`You have a new task from the agent with sender run id "${runId}".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."];
-  return [from, reply, "", ...taskBodyLines(input.description, input.referenceFiles)].join("\n");
+  return [from, reply, "", ...taskBodyLines(input.description, input.comments ?? [], input.referenceFiles)].join("\n");
 };
 
 /** The child's first message: the delegated work as a system Task notification. */
@@ -73,10 +76,12 @@ export const buildExistingCopyTaskMessage = (input: {
   /** The Task's agent-facing ID (a Project Task's key). */
   taskReference: string;
   description: string;
+  /** The Task's comment texts, oldest first. */
+  comments: readonly string[];
 }): string => [
   `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`,
   "",
-  ...taskBodyLines(input.description, []),
+  ...taskBodyLines(input.description, input.comments, []),
 ].join("\n");
 
 export const TASK_ASSIGNMENT_MESSAGE_TYPE = "task_assignment";

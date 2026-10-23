@@ -1,0 +1,7 @@
+# Check: DEL-02b server test:unit on integrated state 96625b9ba5, run alone (no parallel suite)
+# Date: 2026-10-23T03:13:16Z
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Excerpt; full log: DEL-02b-server-test-unit.full.log.gz
+ Test Files  791 passed | 4 skipped (795)
+      Tests  6494 passed | 7 skipped (6501)
+exit=0

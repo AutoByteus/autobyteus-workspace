@@ -128,6 +128,23 @@ describe('projectTaskStore', () => {
     ])
   })
 
+  it('adds a comment: sends only the text, and the returned Task (with its thread and new updatedAt) replaces the listed one (task-comments DS-002)', async () => {
+    apolloClientMock.query.mockResolvedValue({
+      data: { projectTasks: [task('t1', '2026-09-26T01:00:00.000Z'), task('t2', '2026-09-26T02:00:00.000Z')] },
+    })
+    const thread = [{ id: 1, createdAt: '2026-09-26T04:00:00.000Z', text: 'Looks good' }]
+    apolloClientMock.mutate.mockResolvedValue({ data: { addProjectTaskComment: { ...task('t1', '2026-09-26T04:00:00.000Z'), comments: thread } } })
+
+    const store = useProjectTaskStore()
+    await store.fetchTasks('p1')
+    await store.addComment('p1', 't1', 'Looks good')
+
+    expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { input: { projectId: 'p1', taskId: 't1', text: 'Looks good' } },
+    }))
+    expect(store.getList('p1')?.tasks.map((entry) => [entry.taskId, entry.comments ?? null])).toEqual([['t1', thread], ['t2', null]])
+  })
+
   it('deletes a Task and updates the open count', async () => {
     apolloClientMock.query.mockResolvedValue({
       data: { projectTasks: [task('t1', '2026-09-26T01:00:00.000Z'), task('t2', '2026-09-26T02:00:00.000Z')] },

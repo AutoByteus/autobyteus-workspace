@@ -4,7 +4,7 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useProjectStore } from '~/stores/projectStore'
 import { GetProjectTasks, GetTasksWithoutProject } from '~/graphql/queries/projectTaskQueries'
-import { CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
+import { AddProjectTaskComment, CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
 import type { ProjectChangeMessage, ProjectTask, ProjectTaskContextDraft, ProjectTaskContextChanges, TaskScope, TaskWithoutProject } from '~/types/project'
 import { ProjectRequestError, throwProjectGraphqlErrors, toProjectRequestError } from '~/utils/projects/projectRequestError'
 import { isOpenTaskStatus, tempTaskLaneOf } from '~/utils/projects/taskStatusPresentation'
@@ -188,8 +188,11 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
     {projectId, description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId ? {partOfTaskId} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
   const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, UpdateProjectTask,
     {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId !== undefined ? {partOfTaskId} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  // A comment is only added: the server sets its number and time and returns the Task, which replaces the listed one.
+  const addComment = (projectId: string, taskId: string, text: string, eligible?: () => boolean) => mutate<ProjectTask>(projectId, AddProjectTaskComment,
+    {projectId, taskId, text}, 'addProjectTaskComment', (tasks, result) => tasks.map((t) => t.taskId === taskId ? result : t), eligible)
   const deleteTask = (projectId: string, taskId: string, eligible?: () => boolean) => mutate<boolean>(projectId, DeleteProjectTask, {projectId, taskId}, 'deleteProjectTask', (tasks) => tasks.filter((t) => t.taskId !== taskId), eligible)
   watch(() => node.bindingRevision, invalidate, {flush: 'sync'})
   return {listsByProjectId, searchByProjectId, liveChanges, getList, getTempList, setSearch, invalidate, forget, releaseRead, fetchTasks, refreshTasks,
-    applyChange, createTask, updateTask, deleteTask}
+    applyChange, createTask, updateTask, addComment, deleteTask}
 })

@@ -129,6 +129,33 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     expect(JSON.stringify(result)).not.toContain("project_task_");
   });
 
+  // task-comments AC-005 / AC-016 (server rule, DEC-025): the exact tier, shared by the board's search (GraphQL) and
+  // search_project_tasks, also matches comment text; the tool shows commentCount only when a Task has comments.
+  it("CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and the tool; commentCount only when > 0", async () => {
+    const projectId = (await ok<{ createProject: { projectId: string } }>("mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name: "Search Comments" } })).createProject.projectId;
+    const commented = await createTask(projectId, "Release notes for 1.5.6");
+    const described = await createTask(projectId, "Draw the Quokka mascot for the welcome screen");
+    await createTask(projectId, "Fix the sidebar collapse state");
+    const comment = async (taskId: string, text: string) => ok("mutation($i:AddProjectTaskCommentInput!){addProjectTaskComment(input:$i){taskId}}", { i: { projectId, taskId, text } });
+    await comment(commented.taskId, "User decided: mention the quokka mascot.");
+    await comment(commented.taskId, "Keep it under 200 words.");
+    // The board's query answers at once from the exact tier, case-insensitively, before meaning search is ready.
+    for (const query of ["quokka", "QUOKKA mascot"]) {
+      const board = await search(projectId, query);
+      expect(board.matches.filter((m) => m.match === "EXACT").map((m) => m.taskId).sort(), query).toEqual([commented.taskId, described.taskId].sort());
+    }
+    expect((await search(projectId, "under 200 words")).matches.filter((m) => m.match === "EXACT").map((m) => m.taskId)).toEqual([commented.taskId]);
+    await untilReady(projectId);
+    const response = await fetch(mcpUrl, { method: "POST", headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "quokka" } } }) });
+    const tool = (await response.json() as { result: { structuredContent: { tasks: Array<Record<string, unknown> & { taskId: string; match: string }> } } }).result.structuredContent;
+    const exact = Object.fromEntries(tool.tasks.filter((t) => t.match === "exact").map((t) => [t.taskId, t]));
+    expect(exact[commented.taskKey]).toMatchObject({ status: "TODO", summary: "Release notes for 1.5.6", match: "exact", commentCount: 2 });
+    expect(exact[described.taskKey]).toMatchObject({ match: "exact" });
+    expect(Object.hasOwn(exact[described.taskKey]!, "commentCount")).toBe(false);
+    expect(JSON.stringify(tool)).not.toContain("User decided");
+  });
+
   it("validates the active-model setting and offers Retry only for an unavailable model", async () => {
     const update = async (value: string) => (await ok<{ updateServerSetting: string }>(
       "mutation($k:String!,$v:String!){updateServerSetting(key:$k,value:$v)}", { k: "AUTOBYTEUS_EMBEDDING_MODEL", v: value })).updateServerSetting;

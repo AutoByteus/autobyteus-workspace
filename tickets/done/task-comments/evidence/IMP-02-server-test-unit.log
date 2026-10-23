@@ -1,0 +1,6 @@
+# IMP-02-server-test-unit (excerpt; full log: IMP-02-server-test-unit.full.log.gz)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: e014c349b8 (server source 52035832a6); macOS darwin, corepack pnpm 10.28.2; worktree install; 2026-10-22
+ Test Files  780 passed | 4 skipped (784)
+      Tests  6414 passed | 7 skipped (6421)
+exit=0

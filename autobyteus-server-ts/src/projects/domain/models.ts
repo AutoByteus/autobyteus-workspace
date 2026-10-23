@@ -23,8 +23,17 @@ export interface ProjectTask {
   dependsOnTaskIds: string[];
   /** The Task of the same Project this Task is part of (its parent, one level only); null (or absent in a file) means none. */
   partOfTaskId: string | null;
+  /** The Task's comment thread, oldest first (ID order); add only. Absent in a file means none. */
+  comments: ProjectTaskComment[];
   createdAt: string;
   updatedAt: string;
+}
+
+/** One comment of a Project Task: its number within the Task (1, 2, 3, …; never reused), the server time it was added, its text. */
+export interface ProjectTaskComment {
+  id: number;
+  createdAt: string;
+  text: string;
 }
 
 /** Where a Task lives: under its Project, or (`projectId: null`) as an ad-hoc Task with no Project. */
@@ -45,6 +54,8 @@ export interface TaskAcknowledgementView {
   attachedContextFiles?: ProjectTaskContextFile[];
   /** The keys of the open parts this update closed with their parent (DONE or CANCELLED); present only when it closed any. */
   closedPartReferences?: string[];
+  /** The keys of the open parts this update tried to close with their parent but could not; present only when any. */
+  partsNotClosedReferences?: string[];
 }
 
 /** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
@@ -224,6 +235,15 @@ export interface UpdateTaskByIdCommand {
   dependsOn?: string[];
   /** Replaces a Project Task's parent, by key or long ID; "" or null clears it; omitted keeps it. */
   partOf?: string | null;
+  /** Text appended to a Project Task as one new comment; the description is not changed. */
+  addComment?: string;
+}
+
+/** The app's add of one comment to a Project Task (GraphQL). */
+export interface AddProjectTaskCommentCommand {
+  projectId: string;
+  taskId: string;
+  text: string;
 }
 
 export interface DeleteProjectTaskCommand {
