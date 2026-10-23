@@ -169,10 +169,11 @@ retiring it means untangling it first.
   - one folder per migration under `migrations/<name>/`, holding the code only
     that migration uses;
   - one shared **frozen layer**, `frozen/`, holding what several migrations use:
-    frozen copies of application or `autobyteus-ts` code, limited to the members
-    the migrations use (`frozen/server/<original path>`,
-    `frozen/autobyteus-ts/<original path>`), and the released data shapes
-    (`frozen/released-*`). Only migrations import it.
+    frozen copies of application, `autobyteus-ts` or other workspace-package
+    code, limited to the members the migrations use
+    (`frozen/<package>/<original path>`: `frozen/server/`,
+    `frozen/autobyteus-ts/`, `frozen/application-sdk-contracts/`), and the
+    released data shapes (`frozen/released-*`). Only migrations import it.
 
   Each migration's tests live in one folder named after it.
 - **Imports, in both directions.**
@@ -180,7 +181,8 @@ retiring it means untangling it first.
     ports), `config/prisma-client-factory.ts` (the database client: the Prisma
     schema is deployed before app-data migrations, so the current schema is the
     contract), node APIs and third-party libraries. Never application code,
-    never `autobyteus-ts`.
+    never `autobyteus-ts`, never another workspace package (`autobyteus-*`,
+    `@autobyteus/*`).
   - Application code imports only the runner contract, never a migration
     folder or `frozen/`.
   - The registry is the one wiring point: it reads configuration and passes
