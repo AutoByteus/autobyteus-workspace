@@ -17,3 +17,11 @@
 - **Release decision:** `No release`.
 - **Ticket moved to** `tickets/done/remote-runs-in-tree`: Yes.
 - **Rollback:** revert the merge on `personal` and release forward.
+
+## Finalization Record (DR-001)
+
+- Ticket branch `codex/remote-runs-in-tree` at `8f98aa1d0b`: hygiene and licensing pass; Secret Gate PASS; pushed.
+- `finalize/remote-runs-in-tree` from `origin/personal` `27f2d2f72d`, `--no-ff`, gives `b819c81119` with a tree identical to the ticket branch. Secret Gate PASS; `origin/personal` was unchanged. Pushed `27f2d2f72d..b819c81119`. Repository finalization: `Completed`.
+- Release: `Not required` (no release).
+- Cleanup: the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree` (no process running from it) and the local branches `codex/remote-runs-in-tree` and `finalize/remote-runs-in-tree` are removed right after this record's push. The remote ticket branch is kept.
+- Final status: AC-801 … AC-806 verified; AC-807 open (the user's check); finalized; no release; cleanup done. Terminal package sent to the Solution Designer.
