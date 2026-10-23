@@ -1,6 +1,6 @@
 # Implementation Handoff — remote-runs-in-tree (autobyteus-278)
 
-Paths below are relative to the worktree, `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree`. The base is `origin/personal` `3b09fbe308`, the ticket's design is at `8dc717e39c`, and the implementation head is `1046c6beb4`. No release.
+Paths below are relative to the worktree, `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree`. The base is `origin/personal` `3b09fbe308`, the ticket's design is at `8dc717e39c`, and the implementation head is `1bdcff8ae2` (IR-002). No release.
 
 ## Upstream Artifact Package
 
@@ -12,15 +12,15 @@ Paths below are relative to the worktree, `/Users/normy/autobyteus_org/autobyteu
 - **Supplemental:** the UI/UX spec (normative; VIS-001…021, PA-801…809), `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md`; `follow-ups.md`.
 - **Design review report:** `tickets/in-progress/remote-runs-in-tree/design-review-report.md`
 - **Architecture review revision record:** `tickets/in-progress/remote-runs-in-tree/architecture-review-revision-record.md`
-- **Triggering rework:** N/A (initial).
+- **Triggering rework:** Code Reviewer `code-review-report.md` CRR-001, Local Fix F-001 (`code-review-revision-record.md`).
 
 ## Current Implementation Summary
 
-- **Implementation cycle:** Initial.
+- **Implementation cycle:** Rework.
 - **Implementation revision record:** `tickets/in-progress/remote-runs-in-tree/implementation-revision-record.md`
-- **Current implementation revision:** IR-001.
-- **Related revisions:** SR-005; ARCH-REV-002; CRR, API-REV and DR: N/A.
-- **Triggering finding IDs:** N/A.
+- **Current implementation revision:** IR-002 (Local Fix for CRR-001 F-001; IR-001 is the baseline).
+- **Related revisions:** SR-005; ARCH-REV-002; CRR-001; API-REV and DR: N/A.
+- **Triggering finding IDs:** F-001.
 
 A remote delegated run is a child of its delegator's root, like a local copy, and its facts come from its node.
 
@@ -59,7 +59,7 @@ A remote delegated run is a child of its delegator's root, like a local copy, an
 | REQ-802, DS-003 | The stored conversation of a remote agent | `remoteChildOf` / `remoteMemberProjection` in `standalone-root-member-view-projection-service.ts:66`, `team-member-run-view-projection-service.ts:57`, `agent-org-member-run-view-projection-service.ts:70` → `agentProjection` → B projection services | Implemented (N-403). Web marks the run unreachable on failure |
 | REQ-803, REQ-805, DEC-804, DS-004 | Owner message, interrupt and terminate | Root command routing: standalone `:369`, Team `:366`, Org `:403` → `executeRemoteChildCommand` (`remote-child-commands.ts:41`) → `RemoteRunLinks.ownerCommand` (`remote-run-links.ts:162`) → B `command` (`remote-run-view-provider.ts:85`) → `PairedAgentAccess.executeOwnerCommand`. A message is a user message with `remote_owner {node_id, node_name}` (`paired-agent-access.ts:30`); it restores an idle run. Stop: `stopRemoteChild` (`remote-child-commands.ts:55`; Team through its coordinator), called at standalone `:246`, Team `:226`, Org `:197` | Implemented. The in-process two-node case in `standalone-remote-delegation.test.ts` covers the message, live frame and Stop. IMP-09 steps 4 and 7 |
 | REQ-804 | Errors are plain; the rest of the tree works | Failed summaries → `reachable:false` summary events; failed reads → `markReachable(false)`. Retry: `retryRemote` (`agentRunCollaborationStore.ts:133`, `agentOrgContextsStore.ts:150`), `registerTeamRemoteRuns` (`teamRemoteRunRegistry.ts:16`) → `REFRESH_REMOTE_TASK_EXECUTIONS` and/or a re-read; "Checking" always settles | Implemented. IMP-09 steps 8–10. `agentRunCollaborationRemoteRetry.spec.ts`, `teamRunContextHydrationService.spec.ts` |
-| REQ-806 | Agent and Team runs; standalone, Team and Org delegators | All three roots share `RemoteRunObservation` and `remote-child-commands.ts`; the web shares `remoteChildren.ts` and `remoteAgentContext.ts` | Implemented. Only the standalone root was rendered (IMP-09); the Team and Org roots are covered by unit specs |
+| REQ-806 | Agent and Team runs; standalone, Team and Org delegators | All three roots share `RemoteRunObservation` and `remote-child-commands.ts`; the web shares `remoteChildren.ts` (`mergeByStartTime`) and `remoteAgentContext.ts`. Every family lists remote runs among the delegator's copies in delegation order: standalone `agentRunCollaborationContext.listTaskRows`, Org `agentOrgHistoryRows.ts`, Team `teamNavigationRowsWithRemote` (`teamRemoteExecutions.ts`; the members keep their place first) | Implemented. Only the standalone root was rendered (IMP-09); the Team and Org roots are covered by unit specs, including the Team order (`teamExecutionRemoteRuns.spec.ts`, IR-002) |
 | REQ-807 | Docs | `collaboration_model.md` § 3/4/5, `remote_collaboration.md` § Remote runs in the run tree, web `agent_execution_architecture.md` § Remote Delegated Runs In The Tree | Done (`678e81a501`) |
 | REQ-808 | Run-view affordances | Header chip, no ⚙/＋, notice: `AgentWorkspaceSurface.vue:27`. Text-only composer and placeholder: `AgentWorkspaceView.vue:70`, `AgentUserInputForm`, `useComposerTarget` (no mention scope). Panel notes: `RightSideTabs.vue:33`. "Delegated copies" lists local copies only by construction (`ExistingRunConfigEditor.vue` reads `taskExecutions` only) | Implemented. IMP-09 steps 3, 5, 6 |
 | DS-005 | Viewer 0→1 / 1→0 | `viewerAttached` / `viewerDetached` from the three stream handlers (`agent-collaboration-stream-handler.ts:112`, `agent-team-stream-handler.ts:152`, `agent-org-stream-handler.ts:106`) | Implemented. `remote-run-observation.test.ts` |
@@ -152,7 +152,7 @@ A remote delegated run is a child of its delegator's root, like a local copy, an
 - Shared structures remain tight: `Yes`. Remote links are a separate list and DTO, not optional fields on local task executions.
 - Canonical shared design guidance was reapplied during implementation: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`
-  - No changed source file is over 500 effective lines. The largest are `root-team-run.ts` 498 (was 497), `teamExecutionViewState.ts` 498 (was 479), `standalone-agent-run-root.ts` 489 (was 472) and `agentOrgStreamingService.ts` 481.
+  - No changed source file is over 500 effective lines. The largest are `root-team-run.ts` 498 (was 497), `teamExecutionViewState.ts` 497 (was 479), `standalone-agent-run-root.ts` 489 (was 472) and `agentOrgStreamingService.ts` 481.
   - No per-file delta is over 220; the largest is the new `remote-run-observation.ts` at 184.
 - Notes: none.
 
@@ -173,7 +173,7 @@ A remote delegated run is a child of its delegator's root, like a local copy, an
 
 ## Checks Run
 
-All the checks below ran on the final commit `1046c6beb4` (the source is unchanged since `53c6624aea`) unless the row says otherwise. Evidence is in `tickets/in-progress/remote-runs-in-tree/evidence/implementation/`.
+The server and contract checks ran on `1046c6beb4`; IR-002 changed only web files, so they still apply. The web checks ran on `1bdcff8ae2`. Evidence is in `tickets/in-progress/remote-runs-in-tree/evidence/implementation/`.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -182,15 +182,15 @@ All the checks below ran on the final commit `1046c6beb4` (the source is unchang
 | IMP-03 | `pnpm -C autobyteus-server-ts test:unit` (full) | `1046c6beb4` | macOS, Node 22, test isolation | server | all | Pass | `IMP-03-server-unit-full.log` | `Tests  6538 passed \| 7 skipped (6545)`, `exit: 0` |
 | IMP-04 | `test:integration:prepare` then `test:integration` | `1046c6beb4` | macOS, Node 22, test isolation | server in-process integration | all | Pass | `IMP-04-server-integration.log` | `Tests  421 passed \| 69 skipped (490)`, `exit: 0` |
 | IMP-05 | `vitest run tests/unit/remote-collaboration` + Team projection + Team history resolver tests | `1046c6beb4` | macOS, Node 22 | B provider, A client and observation, owner commands, N-402, the two-node in-process case | DS-001…006, AR-401…403, N-401…403 | Pass | `IMP-05-server-focused-remote.log` | `Tests  163 passed (163)` |
-| IMP-06 | `pnpm -C autobyteus-web test:nuxt --run` (full) | `1046c6beb4` | macOS, Node 22 | web | all | Pass | `IMP-06-web-full.log` | `Tests  4777 passed \| 5 skipped (4782)`, `exit: 0`. An earlier run had one 5 s timeout in `CollaborationMessageReferenceViewer.spec.ts` under load; that test is unrelated and passed alone (13/13) and in this rerun |
-| IMP-07 | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `1046c6beb4` | macOS, Node 22 | web boundaries, strings | REQ-808 | Pass | `IMP-07-web-guards.log` | three `exit: 0` |
-| IMP-08 | the 9 remote web specs (store, Retry, three families, Team hydration, row, surface, right tabs) | `1046c6beb4` | macOS, Node 22 | the window side | REQ-801…808 | Pass | `IMP-08-web-focused-remote.log` | `Tests  58 passed (58)` |
+| IMP-06 | `pnpm -C autobyteus-web test:nuxt --run` (full) | `1bdcff8ae2` | macOS, Node 22 | web | all | Pass | `IMP-06-web-full.log` | `Tests  4778 passed \| 5 skipped (4783)`, `exit: 0`. An earlier run had one 5 s timeout in `CollaborationMessageReferenceViewer.spec.ts` under load; that test is unrelated and passed alone (13/13) and in this rerun |
+| IMP-07 | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `1bdcff8ae2` | macOS, Node 22 | web boundaries, strings | REQ-808 | Pass | `IMP-07-web-guards.log` | three `exit: 0` |
+| IMP-08 | the 9 remote web specs (store, Retry, three families, Team hydration, row, surface, right tabs) | `1bdcff8ae2` | macOS, Node 22 | the window side, including the Team order (F-001) | REQ-801…808 | Pass | `IMP-08-web-focused-remote.log` | `Tests  59 passed (59)` |
 | IMP-09 | Rendered check on a test-owned two-node stack (alpha + beta built servers, scripted AGY CLI, Nuxt dev against alpha), standalone delegator | server `188dc4b3ae`, web `188dc4b3ae` + `6695820605` | macOS, temp data/HOME/ports, ~810–850 px | rows, run view, owner message, Stop, notes, unreachable, Retry | REQ-801…805, 808; VIS | Pass after one fix | `IMP-09-rendered-check.md`, `IMP-09-a…e-*.png`, `IMP-09-stack.mjs.txt` | the table's 10 steps; step 9 is the defect fixed in `6695820605` |
 
-- **Web type check:** `npx vue-tsc --noEmit` shows no errors in the touched source files. The 4 errors it reports are in spec files that predate this ticket (FU-003).
+- **Web type check:** `npx vue-tsc --noEmit` shows no errors in the touched source files. The errors it reports are in spec files whose lines predate this ticket (FU-003).
 - **Not run, and why:**
   - The two-server E2E extension and the browser probe (design change sequence step 5) are API/E2E's, as are the Team and Org delegator scenarios against real servers (PA-808).
-  - IMP-09 was not repeated after `53c6624aea`, which changed the Retry plumbing and the Team stored view. Unit specs cover those changes (IMP-08).
+  - IMP-09 was not repeated after `53c6624aea` (Retry plumbing, the Team stored view) or `1bdcff8ae2` (the Team order). Unit specs cover those changes (IMP-08).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -230,6 +230,7 @@ All the checks below ran on the final commit `1046c6beb4` (the source is unchang
   - Repeat for a Team and an Org delegator (PA-808), and with a Team target.
 - **Browser probe:**
   - against the VIS references;
+  - a Team delegator's remote run between two local copies keeps delegation order (F-001);
   - a stopped Team root listing its remote runs (the new resume-config field);
   - Retry from a row with nothing selected, without a stream.
 - **Security:** a peer that did not start the run gets `REMOTE_TARGET_NOT_PERMITTED` on all four routes, and naming an unpaired agent is refused.
