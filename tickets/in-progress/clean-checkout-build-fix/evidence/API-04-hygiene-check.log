@@ -1,0 +1,11 @@
+# Case: API-04 (AC-003 pass side)
+# Command: python3 scripts/check_repository_artifact_hygiene.py; python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports (in the clone)
+# Date: 2026-10-23T23:32:02Z
+
+Repository artifact hygiene check passed.
+Tracked files scanned: 77239
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+default exit=0
+Tracked-import check passed. Tracked files scanned: 77239
+tracked-imports exit=0
