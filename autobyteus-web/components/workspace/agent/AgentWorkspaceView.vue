@@ -26,7 +26,6 @@ import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTa
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID, isTemporaryRunId } from '~/utils/chat/chatDefaults'
 import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { useLocalization } from '~/composables/useLocalization'
-import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun'
 
 /**
  * The standalone agent run view (the chat run view, D-17): the product run header with ⚙ and ＋,
@@ -61,14 +60,10 @@ const skillTagging = computed<SkillTaggingCapability | null>(() => {
 })
 
 /** F-04: a delegated copy view names its agent in the box, like the Org's delegated-Agent view. */
-const remote = useRemoteRun(() => target.value?.context.state.runId)
 const childPlaceholder = computed(() => {
   const config = target.value?.context.config
   if (!config || isHost.value) return null
-  // autobyteus-278: the box of a run another node runs also names the node.
-  return remote.value
-    ? t('remote.composer.placeholder', { agent: config.agentDefinitionName || '', node: remote.value.nodeName })
-    : t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' })
+  return t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' })
 })
 
 /**

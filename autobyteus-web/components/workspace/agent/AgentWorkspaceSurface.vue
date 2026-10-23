@@ -18,13 +18,13 @@
         <AgentStatusDisplay :status="target.context.state.currentStatus" />
       </div>
       <WorkspaceHeaderActions
-        v-if="showHeaderActions && !remote"
+        v-if="showHeaderActions && remoteView.headerActionsAllowed.value"
         :show-edit-config="showEditConfig"
         @new-agent="$emit('new-agent')"
         @edit-config="$emit('edit-config')"
       />
     </div>
-    <RemoteRunNotice v-if="remote && remote.reachable === false" :node-name="remote.nodeName" @retry="remoteRuns.retry(remote.runId)" />
+    <RemoteRunNotice v-if="remote && remoteView.unreachable.value" :node-name="remote.nodeName" @retry="remoteView.retry()" />
     <WorkspaceRecoveryNotice
       v-if="recoveryNotice"
       :message="recoveryNotice"
@@ -41,7 +41,7 @@
         :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
         :browse-subject="target.browse"
         :skill-tagging="skillTagging"
-        :composer-placeholder="composerPlaceholder"
+        :composer-placeholder="remoteView.composerPlaceholder(composerPlaceholder)"
         class="h-full"
       />
     </div>
@@ -58,8 +58,7 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
-import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { useRemoteRunView } from '~/composables/remoteRuns/useRemoteRunView'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 
@@ -77,11 +76,11 @@ const props = withDefaults(defineProps<{
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
-// autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, and a notice when its node did not answer.
-const remote = useRemoteRun(() => props.target.context.state.runId)
-const remoteRuns = useRemoteRunsStore()
 const avatarFailed = ref(false)
 const agentName = computed(() => props.target.context.config.agentDefinitionName || 'Agent')
+// autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, a notice when its node did not answer, and a box naming it.
+const remoteView = useRemoteRunView({ agentRunId: () => props.target.context.state.runId, agentName })
+const remote = remoteView.remote
 const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.trim()
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
   || '')
