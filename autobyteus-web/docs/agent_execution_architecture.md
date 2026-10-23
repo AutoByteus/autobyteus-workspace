@@ -801,15 +801,24 @@ with the local copies by start time. A remote Team is listed with its members.
     files and no @-mentions;
   - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's files,
     terminal and other node-local panels are on that node.
-- **Retry.** Each root registers one Retry per remote run, which answers whether
-  the node is being asked. A live root asks its stream to fetch the summaries
-  again (`REFRESH_REMOTE_TASK_EXECUTIONS`). A standalone or Org root also reads the
-  selected agent of that run again when its conversation is not loaded. Without
-  a stream, a root reads the run's agent (the selected one, or else the first)
-  from its node. A Team root registers through `teamRemoteRunRegistry`, from its
-  stream snapshot or its stored view (`getTeamRunResumeConfig`). A Team member
-  whose read failed is not focused, so selecting it again reads it. `Checking`
-  ends on every answer or read, and at once when nothing could be asked.
+- **Retry.** One rule, `remoteRunsStore.retry(runId)`, for every family
+  (SR-008):
+  1. it shows `Checking <node>…` and asks the root's stream to fetch the summaries
+     again (`REFRESH_REMOTE_TASK_EXECUTIONS`);
+  2. it reads again the run's selected agent, or, when none of the run's agents is
+     selected, the run's first agent that is not loaded;
+  3. when neither asks anything (no ready stream, nothing started, including a
+     loaded selected agent), `Checking` ends at once; otherwise the node's answer
+     or the read ends it.
+
+  Each root registers a `RemoteRunRetryAdapter` with only its own mechanisms
+  (`refreshOnStream`, `selectedAgent`, `isLoaded`, `rereadAgent`):
+  - standalone: the collaboration stream, the selected child, the child hydration;
+  - Org: the Org stream, the selected agent execution, the remote agents the Org
+    context has read (`isRemoteAgentLoaded`);
+  - Team: through `teamRemoteRunRegistry`, from its stream snapshot or its stored
+    view (`getTeamRunResumeConfig`): the Team stream, the focused member, the
+    member's authoritative projection.
 
 ### Compaction Lifecycle Activity And Center Feed
 
