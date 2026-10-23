@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 3 (Pass) | N/A | `Initial Baseline` | `SR-006`, `SR-007`, `ARCH-REV-003`; `CRR-*` N/A; `API-REV-*` N/A; `DR-*` N/A | Implementation complete; code review CRR-001 Fail (4 local fixes) |
-| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002, CR-003, CR-004 | `Local Fix` | `SR-007`, `ARCH-REV-003`, `CRR-001`; `API-REV-*` N/A; `DR-*` N/A | All four fixed; ready for the targeted delta review |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002, CR-003, CR-004 | `Local Fix` | `SR-007`, `ARCH-REV-003`, `CRR-001`; `API-REV-*` N/A; `DR-*` N/A | All four fixed; code review CRR-002 Pass (`code-review-report.md`); next: API/E2E (routed by the code reviewer) |
 
 ## Revision Entries
 
