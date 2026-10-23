@@ -1,0 +1,8 @@
+# DEL-06 base's task-agent-several-tasks E2E | integrated 444dfc7ec2
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 74981ms
+     ✓ SEV-E2E-001: a parent and two of its parts given to one Team copy (each message names the other open Tasks); the parent's CANCELLED closes all three and stops the copy once, after the last (AC-002, AC-005)  4159ms
+     ✓ SEV-E2E-002: sub-work started under the newest open Task belongs to it; closing that Task stops the sub-work while the copy runs on (AC-006, AC-003)  3458ms
+     ✓ SEV-E2E-003: a closed Task given back while another is open; the copy is stopped once, after its last open Task closes (AC-007, AC-004)  5860ms
+     ✓ SEV-E2E-004: a copy shut down while idle, holding an open Task, is given a second Task: the delivery wakes it with its conversation  60830ms
+      Tests  4 passed (4)
+several-tasks exit=0
