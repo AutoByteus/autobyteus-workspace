@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-003; REQ-803 / AC-803 clarified at SR-004)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-01 … E-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `fee1d70cda` (SR-004)
+- Reviewed Design Spec: `…/design-spec.md` at commit `8dc717e39c` (SR-005)
 - Supplemental Task Artifacts Reviewed: the approved UI/UX package `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` (scoped to what the server design must supply); the contract `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-11); `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: SR-001 … SR-004
+- Relevant Solution Revision IDs: SR-001 … SR-005
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` (SR-004)
-- Prior Review Round Reviewed: N/A (first review of this package)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: the Solution Designer's SR-005 (commit `8dc717e39c`), answering ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404)
+- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: code and docs read in the worktree at `fee1d70cda` (base `3b09fbe308`):
   - `standalone-agent-run-root/domain/standalone-host-agent-handle.ts` (the host is its own `AgentRun`; `ensureReady` activates or restores it);
   - `standalone-agent-run-root/domain/standalone-agent-run-root.ts:142, 207, 375-395` (`StandaloneHostIdleShutdown` watches the host through `onHostReady`; `onAgentExecutionEvent` publishes child events to the root publisher);
@@ -24,6 +24,7 @@
   - `remote-collaboration/inbound/remote-team-run-starter.ts:79-94` and `agent-collaboration/execution/remote/remote-delegation.ts:91-135` (A's stored Team-link members are already mounted at the link's address);
   - `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` (transient rows come from the opened root's view, so remote rows from the root view match how local copies appear);
   - `api/security/remote-access-route-policy.ts:71`.
+- Round-2 checks: `agent-team-execution/services/agent-team-run-manager.ts:341-352` (`terminateTeamRun` = `root.terminate()` + unregister, the same stop path `stopAllTeamRuns` uses; the package is kept); `team-run-service.ts:225`; the revised spec's Current-State Read (lines 20-33), DS-006, § Remote Run Sources On B and the frame contract.
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree`
 
@@ -50,11 +51,11 @@
 
 | Behavior ID | Kind | Design Alignment | Trigger / Evidence | Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-801 rows | User | Pass | Pass | Pass | Confirmed | AR-402 (member identity) |
-| BEH-802 live view | User | Pass | Fail | Fail | Needs Correction | AR-401 (remote Agent source), AR-402, AR-403 |
-| BEH-803 talk to it | User | Pass | Fail | Fail | Needs Correction | AR-401 (host command path) |
-| BEH-804 unreachable | User | Pass | Pass | Fail | Needs Correction | AR-403 (a dropped stream shows nothing) |
-| BEH-805 real state after idle | System | Pass | Fail | Fail | Needs Correction | AR-401 (the host is replaced while the root stays) |
+| BEH-801 rows | User | Pass | Pass | Pass | Confirmed | — |
+| BEH-802 live view | User | Pass | Pass | Pass | Confirmed | — (AR-401, AR-402 resolved) |
+| BEH-803 talk to it | User | Pass | Pass | Pass | Confirmed | — (AR-401 resolved) |
+| BEH-804 unreachable | User | Pass | Pass | Pass | Confirmed | — (AR-403 resolved) |
+| BEH-805 real state after idle | System | Pass | Pass | Pass | Confirmed | — (AR-401 resolved) |
 
 ## The Five Points The Handoff Asks About
 
@@ -89,18 +90,18 @@
 | Assessment present | Pass | § Task Design Health Assessment | — |
 | Root cause explicit and evidence-backed | Pass | `Boundary Or Ownership Issue`: no owner represented a linked-not-hosted run (CM-7) | — |
 | Refactor decision explicit | Pass | No broad refactor; a directory listener and a shared observation owner | — |
-| Supported by concrete sections | Fail | The B side assumes every remote run is a root whose agents publish into its root events | AR-401 |
+| Supported by concrete sections | Pass | Per-kind sources on B | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Readable? | Narrative? | Facade Vs Owner? | Naming? | Ownership? | Off-Spine? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 rows and summaries | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 live output | Primary | Pass | Pass | Pass | Pass | Fail | Pass | Fail (AR-401: the source on B for a remote Agent; AR-402) |
+| DS-002 live output | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-003 stored conversation | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass (for a remote Agent, B's own window reads the run projection of the host; say so when revising) |
-| DS-004 owner commands | Primary | Pass | Pass | Pass | Pass | Fail | Pass | Fail (AR-401: the host's command path) |
+| DS-004 owner commands | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 A's observation lifecycle | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (AR-403 adds the unexpected-end case) |
-| DS-006 B's attach lifecycle | Bounded local | Pass | Fail | N/A | Pass | Fail | Pass | Fail (AR-401) |
+| DS-006 B's attach lifecycle | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass (per kind: host via `onHostReady`; Team root via the directory listener) |
 
 ## Boundary Encapsulation Verdict
 
@@ -108,7 +109,7 @@
 | --- | --- | --- | --- | --- | --- |
 | A: root → `RemoteRunObservation` → `RemoteRunChannel` | Pass | Pass | Pass | Pass | A root projector never calls `PeerClient` (forbidden, explicit) |
 | A: commands → `RemoteRunLinks.ownerCommand` | Pass | Pass | Pass | Pass | — |
-| B: `PeerGateway` → `RemoteRunViewProvider` → roots via `RemoteRootDirectory` | Pass | Fail | Fail | Fail | AR-401: "B root executes" and "attaches to the run's root" stop at the root. A standalone host is reached through the root's host handle and its own command port, which the provider must not reach around; give the root one owned API for its paired agents |
+| B: `PeerGateway` → `RemoteRunViewProvider` → `RemoteRootDirectory` → manager `observePairedAgents` / `executeOwnerCommand` | Pass | Pass | Pass | Pass | AR-401: "B root executes" and "attaches to the run's root" stop at the root. A standalone host is reached through the root's host handle and its own command port, which the provider must not reach around; give the root one owned API for its paired agents |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -121,7 +122,7 @@
 | Interface | Subject Clear? | Singular? | Identity Explicit? | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
 | `POST /rest/remote/run-summaries`, `/agent-projection`, `/owner-commands` | Pass | Pass | Pass | Low | Pass |
-| `GET /rest/remote/run-observations` (WebSocket) | Pass | Pass | Fail | Medium | Fail (AR-402: the frame's agent identity; N-401: the responder's identity) |
+| `GET /rest/remote/run-observations` (WebSocket) | Pass | Pass | Pass | Low | Pass (`{nodeId}` first, then `{agentRunId, message}`) |
 | `RemoteRunChannel` extension | Pass | Pass | Pass | Low | Pass |
 | Window: `remote_task_executions[]`, `remote_task_execution_summary`, `REFRESH_REMOTE_TASK_EXECUTIONS` | Pass | Pass | Pass | Low | Pass |
 
@@ -130,8 +131,8 @@
 | Need | Checked? | Sound? | New Piece Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Rendering and stores on the window | Pass | Pass | N/A | Pass | Remote rows enter the same root view, as transient local copies do (`runHistoryTeamExecutionRows.ts`) |
-| B: the source of a remote Agent's output and its readiness | Fail | Fail | N/A | Fail | AR-401: the existing `onHostReady` hook and the host's own event stream are the owners |
-| B: commands to a remote Agent | Fail | Fail | N/A | Fail | AR-401: the root's host command path (`postToHost`, host interrupt, `stopRoot`) |
+| B: the source of a remote Agent's output and its readiness | Pass | Pass | N/A | Pass | AR-401: the existing `onHostReady` hook and the host's own event stream are the owners |
+| B: commands to a remote Agent | Pass | Pass | N/A | Pass | AR-401: the root's host command path (`postToHost`, host interrupt, `stopRoot`) |
 | Admission, bounds, link authority | Pass | Pass | N/A | Pass | — |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -139,7 +140,7 @@
 | Area | Clear? | Sound? | Supports Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `agent-collaboration/execution/remote/remote-run-observation.ts` | Pass | Pass | Pass | Pass | — |
-| `remote-collaboration/inbound/remote-run-view-provider.ts` | Pass | Pass | Fail | Fail | AR-401 |
+| `remote-collaboration/inbound/remote-run-view-provider.ts` | Pass | Pass | Pass | Pass | — |
 | `ActiveCollaborationRootDirectory` listener | Pass | Pass | Pass | Pass | Correct for root replacement; see AR-401 for host replacement |
 
 ## Reusable Owned Structures Verdict
@@ -147,13 +148,13 @@
 | Structure | Evaluated? | Shared File Sound? | Ownership Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `RemoteRunObservation` for the three A roots | Pass | Pass | Pass | Pass | — |
-| The member address of a remote agent | Fail | N/A | Fail | Fail | AR-402: one source, the stored link |
+| The member address of a remote agent | Pass | N/A | Pass | Pass | The stored link only |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Structure | One Meaning? | Redundant Removed? | Overlap Controlled? | Variant Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Observation frame `{agentRunId, memberAddress, message}` | Pass | Fail | Fail | N/A | Fail | AR-402: `memberAddress` duplicates what A's link stores |
+| Observation frame `{agentRunId, message}` | Pass | Pass | Pass | N/A | Pass | — |
 | `remote_task_execution_summary {node, run, title?, statuses[], reachable}` | Pass | Pass | Pass | N/A | Pass | — |
 
 ## File Responsibility Mapping Verdict
@@ -161,7 +162,7 @@
 | File | Singular? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | A-side files | Pass | Pass | N/A | Pass | — |
-| B-side files | Pass | Fail | N/A | Fail | AR-401: the standalone root (host source, host commands) is missing from the B file list |
+| B-side files | Pass | Pass | N/A | Pass | The standalone manager and the Team manager added |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -198,7 +199,7 @@
 | Topic | Needed? | Present? | Bad Shape? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Sidebar rows | Yes | Pass | N/A | Pass | — |
-| B's per-kind source and command path | Yes | Fail | N/A | Fail | AR-401 |
+| B's per-kind source and command path | Yes | Pass | N/A | Pass | — |
 
 ## Material Premise Validation
 
@@ -236,15 +237,26 @@
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Current-State Read: "B: a root's sequenced events are available while the root is active" | True for Team roots; a standalone root's host output is not on its root events | Correct it in the revision (AR-401) | Open |
+| Current-State Read on B | — | Corrected in SR-005 | Resolved |
 
 ## Review Decision
 
-`Fail` (`Design Impact`, AR-401 … AR-403). A-side ownership is right and well argued. The B side needs to account for how a remote **Agent** actually runs on its node.
+`Pass`. AR-401 … AR-403 are resolved and verified; N-401 … N-404 are done. The design is ready for implementation.
 
 ## Findings
 
-### AR-401 — On node B, a remote Agent's output, commands and readiness live on its host, not on its root
+None blocking. Resolved in ARCH-REV-002:
+- AR-401: each root kind's manager owns `observePairedAgents` / `executeOwnerCommand` behind `RemoteRootDirectory`.
+  - Standalone: the host's events through the root's presentation adapter, re-attached on `onHostReady`; `postToHost`, the host's interrupt, `stopRoot`.
+  - Team: the root publisher filtered to the paired members, plus the directory listener; member commands; `terminateTeamRun`, which is the stop path and keeps the package (verified).
+  - The Current-State Read, CM-11 and the B file list are corrected.
+- AR-402: frames `{agentRunId, message}` and statuses for the paired agents only; A maps by `agentRunId` to the stored link's mounted addresses and drops unknown IDs.
+- AR-403: an end A did not initiate runs one summary fetch, and its result sets the row; still no reconnect.
+- N-401 … N-404: the `{nodeId}` first frame checked by A; a unit test pinning that only the DTO projector maps `remote_agent_presentation`; one `remoteChildOf` helper for the three resolvers; the user told about REQ-803.
+
+The round-1 text follows, kept for traceability.
+
+### AR-401 (resolved) — On node B, a remote Agent's output, commands and readiness live on its host, not on its root
 
 - Type: Design Impact
 - Severity: High (blocking)
@@ -265,7 +277,7 @@
 - Why proportionate: it reuses the existing hooks (`onHostReady`, the presentation adapter, `postToHost`, `stopRoot`). It adds one root-owned API instead of a provider-side branch per kind.
 - Recommended recipient: Solution Designer
 
-### AR-402 — Remote frames must be identified by agent run ID against the stored link, and B sends only the linked run's own agents
+### AR-402 (resolved) — Remote frames must be identified by agent run ID against the stored link, and B sends only the linked run's own agents
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -282,7 +294,7 @@
 - Why proportionate: one source of truth (the link) and one filter on each side.
 - Recommended recipient: Solution Designer
 
-### AR-403 — A stream that ends unexpectedly must show as a failure, not as a quiet view
+### AR-403 (resolved) — A stream that ends unexpectedly must show as a failure, not as a quiet view
 
 - Type: Design Impact
 - Severity: Low (blocking: it is phase 1's one failure behavior)
@@ -303,11 +315,11 @@
 
 ## Classification
 
-`Design Impact` (AR-401, AR-402, AR-403).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -317,6 +329,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-401 … MP-404 reachable, with complete witnesses)
-- Notes: classification `Large` / `High` confirmed. Design at commit `fee1d70cda` (SR-004).
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (MP-401 … MP-404 resolved by AR-401 … AR-403)
+- Notes: classification `Large` / `High`. Design at commit `8dc717e39c` (SR-005).

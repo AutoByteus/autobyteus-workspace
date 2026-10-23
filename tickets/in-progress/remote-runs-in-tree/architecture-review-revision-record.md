@@ -7,6 +7,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` | SR-004 | N/A | Fail | AR-401, AR-402, AR-403 |
+| ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Pass | AR-401 … AR-403 resolved |
 
 ## Revision Entries
 
@@ -34,4 +35,28 @@ None.
   - Non-blocking: N-401 … N-404.
 - Material classification changes: none.
 - Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.
+
+### ARCH-REV-002 — Round 2: per-kind sources on B, frame identity, unexpected end; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree/design-review-report.md`
+- Review round and trigger: round 2; the Solution Designer's SR-005 (commit `8dc717e39c`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 2; AR-401 … AR-403, N-401 … N-404.
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: `Fail` (ARCH-REV-001)
+- Current authoritative decision: `Pass`
+- What changed in the review result: each finding was verified in the revised spec. `terminateTeamRun` was checked against `agent-team-run-manager.ts:341` (it is the stop path and keeps the package).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-401 | Open (High) | Resolved | SR-005; Current-State Read; DS-006; § sources on B; file list; CM-11 | Manager-owned `observePairedAgents` / `executeOwnerCommand` behind `RemoteRootDirectory`; standalone through the host (`onHostReady`, `postToHost`, interrupt, `stopRoot`); Team through the filtered publisher and the directory listener (member commands, `terminateTeamRun`) |
+| AR-402 | Open (Medium) | Resolved | SR-005; frame contract; A's mapping | `{agentRunId, message}` for paired agents only; A maps to the stored link and drops unknown IDs |
+| AR-403 | Open (Low) | Resolved | SR-005; DS-005 | An unexpected end runs one summary fetch that sets the row; no reconnect |
+| N-401 … N-404 | Notes | Done | SR-005 | `{nodeId}` first frame; pinned projector test; `remoteChildOf`; the user informed |
+
+- New or remaining finding IDs: none.
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.

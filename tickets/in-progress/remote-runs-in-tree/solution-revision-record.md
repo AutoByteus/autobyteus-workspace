@@ -61,3 +61,4 @@
 - AR-403: an end A didn't initiate runs one summary fetch, which sets the row. No reconnect.
 - N-401: a first frame `{nodeId}`, which A checks. N-402: a unit test that only the DTO projector maps `remote_agent_presentation`. N-403: one shared `remoteChildOf` helper. N-404: the REQ-803 wording, told to the user.
 - Classification unchanged: `Large` / `High`. Next: round 2 of the architecture review.
+- SR-005 addendum: ARCH-REV-002 Pass (2026-10-23); the reviewer's round-2 report and revision record committed; implementation handoff delivered by the reviewer.
