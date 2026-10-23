@@ -1,12 +1,12 @@
-import { createAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
-import { TeamExecutionIndex } from "./team-execution-v1-index.js";
+import { createAgentTeamAddress, type AgentTeamAddress } from "../../frozen/server/agent-collaboration/domain/agent-team-address.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
+import { TeamExecutionIndex } from "../../frozen/team-run-execution-tree-v1/team-execution-v1-index.js";
 import {
   validateTeamCommunicationMessagesPayload,
   type CollaborationCommunicationMessage,
   type TeamCommunicationMessagesSnapshot,
-} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import { normalizePredecessorTeamExecutionAddress } from "./predecessor-team-execution-address-normalizer.js";
+} from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import { normalizePredecessorTeamExecutionAddress } from "../../frozen/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.js";
 import {
   addressKey,
   array,

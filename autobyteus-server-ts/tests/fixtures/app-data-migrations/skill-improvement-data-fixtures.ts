@@ -11,8 +11,13 @@ import path from "node:path";
 export const IMPROVER_ID = "autobyteus-retrospective-skill-improver";
 /** F-5: helper runs of the built-in improver (no `launchPurpose`), each with a history row. */
 export const IMPROVER_RUNS = ["retrospective_skill_improver_1111", "retrospective_skill_improver_2222", "retrospective_skill_improver_3333"];
-/** F-5b: a helper run marked `launchPurpose: "server_helper"`, with a history row. */
+/**
+ * F-5b: an improver run launched from a user-chosen improver definition (`launchPurpose: "server_helper"`), with a
+ * history row. Only its session file names it (autobyteus-280 REQ-008).
+ */
 export const SERVER_HELPER_RUN = "helper_run_5555";
+/** A v1.4.92-beta.5-era compaction run: also `launchPurpose: "server_helper"`, but not the feature's; it is kept. */
+export const COMPACTOR_RUN = "memory_compactor_4444";
 /** F-2: runs the self-evolution records name; their folders are absent, one still has a stale history row. */
 export const EVOLVER_RUNS = ["skill_evolver_7777", "skill_evolver_8888", "skill_evolver_9999"];
 /** Unrelated standalone runs (F-8), some with the per-run session folders of F-3 and F-4. */
@@ -49,8 +54,19 @@ const record = (idField: string, recordId: string, runIdField: string, runId: st
   target: { kind: "agent_run", runId: USER_RUNS[0] }, [runIdField]: runId, errors: [],
 });
 
+/**
+ * A released per-run session state file (`improver_session.json` / `evolver_session.json`): it names the helper
+ * runs the session launched, the current one and the earlier ones.
+ */
+export const session = (runDir: string, dirName: "skill_improvement" | "self_evolution", file: string, runs: { current?: string | null; prior?: string[] } = {}) =>
+  put(path.join(runDir, dirName, file), dirName === "skill_improvement"
+    ? { target: { kind: "agent_run", runId: path.basename(runDir) }, status: "active", currentImproverRunId: runs.current ?? null,
+      priorImproverRunIds: runs.prior ?? [], improverAgentDefinitionId: null, runtimeKind: "codex_app_server", updatedAt: T0 }
+    : { schemaVersion: 1, target: { kind: "agent_run", runId: path.basename(runDir) }, status: "replaced", currentEvolverRunId: runs.current ?? null,
+      priorEvolverRunIds: runs.prior ?? [], evolverAgentDefinitionId: null, updatedAt: T0 });
+
 /** Writes a standalone run folder: its metadata and a raw trace. */
-const writeRun = async (memory: string, runId: string, agentDefinitionId: string, extra: Record<string, unknown> = {}) => {
+export const writeRun = async (memory: string, runId: string, agentDefinitionId: string, extra: Record<string, unknown> = {}) => {
   await put(path.join(memory, "agents", runId, "run_metadata.json"), runMetadata(memory, runId, agentDefinitionId, extra));
   await put(path.join(memory, "agents", runId, "raw_traces_active.jsonl"), rawTrace(`rt_${runId}`, `hello from ${runId}`));
 };
@@ -82,10 +98,10 @@ export const writeFeatureDataRoot = async (root: string): Promise<FeatureDataPat
 
   // Unrelated runs (F-8); F-3 / F-4: their per-run session folders.
   for (const runId of USER_RUNS) await writeRun(memory, runId, "autobyteus-daily-assistant");
-  const session = (runDir: string, dirName: string, file: string) => put(path.join(runDir, dirName, file), { target: { runId: path.basename(runDir) }, state: { updatedAt: T0 } });
-  await session(path.join(memory, "agents", USER_RUNS[0]!), "skill_improvement", "improver_session.json");   // F-3
+  await session(path.join(memory, "agents", USER_RUNS[0]!), "skill_improvement", "improver_session.json", { current: SERVER_HELPER_RUN, prior: [IMPROVER_RUNS[0]!] });   // F-3
   await session(path.join(memory, "agents", USER_RUNS[1]!), "skill_improvement", "improver_session.json");   // F-3
-  for (const runId of USER_RUNS.slice(2)) await session(path.join(memory, "agents", runId), "self_evolution", "evolver_session.json");   // F-4 (4 runs)
+  await session(path.join(memory, "agents", USER_RUNS[2]!), "self_evolution", "evolver_session.json", { current: EVOLVER_RUNS[1]! });   // F-4
+  for (const runId of USER_RUNS.slice(3)) await session(path.join(memory, "agents", runId), "self_evolution", "evolver_session.json");   // F-4 (3 more runs)
   // F-3b: a team member's session folder, next to its raw traces.
   const member = path.join(memory, "agent_teams", "article_team_tttt", "article_writer_mmmm");
   await put(path.join(member, "raw_traces_active.jsonl"), rawTrace("rt_m", "member"));

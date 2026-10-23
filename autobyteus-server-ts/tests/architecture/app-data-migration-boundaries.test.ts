@@ -11,8 +11,10 @@ import KNOWN_EXCEPTIONS from "./app-data-migration-boundary-exceptions.json";
  *
  * - Production code (`src/` outside `app-data-migrations/`) imports only the runner contract: the runner, the
  *   registry, `domain/**` and `repositories/**`.
- * - Migration code (`migrations/**`, `frozen/**`) imports only `domain/**`, other migration code,
+ * - Migration code (`migrations/**`, `frozen/**`) imports only `domain/**`, `frozen/**`, its own folder,
  *   `config/prisma-client-factory.ts`, node APIs and third-party libraries; never production code or `autobyteus-ts`.
+ *   A migration folder never imports another migration folder, and `frozen/**` imports no migration folder, so
+ *   retiring one migration deletes its folder without touching another (SR-003).
  * - `domain/**` is shared by both sides, so it imports only itself, node APIs and third-party libraries.
  * - Every `frozen/` file is reached from some migration folder; otherwise it is reported unused.
  */
@@ -48,6 +50,10 @@ const isUnder = (key: string, folders: readonly string[]): boolean => folders.so
 const isContract = (key: string): boolean => CONTRACT_FILES.has(key) || isUnder(key, CONTRACT_FOLDERS);
 const isDomain = (key: string): boolean => key.startsWith(`${AREA}/domain/`);
 const inArea = (key: string): boolean => key.startsWith(`${AREA}/`);
+const isFrozen = (key: string): boolean => key.startsWith(`${AREA}/frozen/`);
+/** The migration folder a file belongs to, or null outside `migrations/<name>/`. */
+const migrationFolder = (key: string): string | null =>
+  key.startsWith(`${AREA}/migrations/`) ? key.split("/").slice(0, 3).join("/") : null;
 // Everything in the area that is not the contract is migration code.
 const isSealed = (key: string): boolean => inArea(key) && !isContract(key);
 
@@ -74,6 +80,11 @@ const checkAppDataMigrationBoundaries = (srcRoot: string): BoundaryReport => {
       } else if (isSealed(importer)) {
         const allowed = isDomain(target) || isSealed(target) || target === MIGRATION_DATABASE_CLIENT;
         if (!allowed) violations.push({ importer, target, rule: "migration code imports production code or the runner" });
+        else if (migrationFolder(target) && migrationFolder(target) !== migrationFolder(importer)) {
+          violations.push({ importer, target, rule: isFrozen(importer)
+            ? "the frozen layer imports a migration folder"
+            : "a migration folder imports another migration folder" });
+        }
       }
     }
   }
@@ -124,12 +135,16 @@ describe("sealed app-data migration area", () => {
     write(`${AREA}/domain/app-data-migration-types.ts`, "export type AppDataCapability = string;\n");
     write(`${AREA}/frozen/server/runs/run-store.ts`, "export const readRun = () => null;\n");
     write(`${AREA}/frozen/server/runs/orphan.ts`, "export const orphan = 1;\n");
+    write(`${AREA}/migrations/m0/m0.ts`, 'export const M0_MIGRATION_ID = "m0";\n');
+    write(`${AREA}/frozen/shared.ts`, 'export { M0_MIGRATION_ID } from "../migrations/m0/m0.js";\n');
     write(`${AREA}/migrations/m1/m1.ts`, [
       'import type { AppDataCapability } from "../../domain/app-data-migration-types.js";',
       'import { createConfiguredPrismaClient } from "../../../config/prisma-client-factory.js";',
       'import { readRun as frozenReadRun } from "../../frozen/server/runs/run-store.js";',
       'import { readRun } from "../../../runs/run-store.js";',
       'import { AppDataMigrationRunner } from "../../app-data-migration-runner.js";',
+      'import { M0_MIGRATION_ID } from "../m0/m0.js";',
+      'import "../../frozen/shared.js";',
       'export { LLMProvider } from "autobyteus-ts";',
       "",
     ].join("\n"));
@@ -142,7 +157,9 @@ describe("sealed app-data migration area", () => {
     const report = checkAppDataMigrationBoundaries(root);
 
     expect(asKeys(report.violations)).toEqual([
+      `${AREA}/frozen/shared.ts -> ${AREA}/migrations/m0/m0.ts`,
       `${AREA}/migrations/m1/m1.ts -> ${AREA}/app-data-migration-runner.ts`,
+      `${AREA}/migrations/m1/m1.ts -> ${AREA}/migrations/m0/m0.ts`,
       `${AREA}/migrations/m1/m1.ts -> autobyteus-ts`,
       `${AREA}/migrations/m1/m1.ts -> runs/run-store.ts`,
       `server-runtime.ts -> ${AREA}/migrations/m1/m1.ts`,

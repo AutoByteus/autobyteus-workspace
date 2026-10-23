@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { TaskAgentMessageLogs } from "../../../run-history/store/task-agent-message-logs.js";
-import { taskExecutionLinkOf } from "../../../run-history/store/task-agent-own-records.js";
+import type { AgentTeamAddress } from "../../frozen/server/agent-collaboration/domain/agent-team-address.js";
+import type { AtomicRunPackageFileCommitWriter } from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { TaskAgentMessageLogs } from "../../frozen/server/run-history/store/task-agent-message-logs.js";
+import { taskExecutionLinkOf } from "../../frozen/server/run-history/store/task-agent-own-records.js";
 import {
   ReleasedTaskAgentOwnFiles,
   parseReleasedTaskAgentRunMetadata,
@@ -11,18 +11,18 @@ import {
   releasedTaskAgentTeamOwnTree,
   validateReleasedTaskAgentTeamTreePayload,
   type ReleasedTaskAgentCoordinatingRun,
-} from "../../legacy/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
+} from "../../frozen/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedStandaloneRootMessagesReader,
   ReleasedTeamCommunicationMessagesReader,
   type TaskExecution,
-} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+} from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 import {
   ReleasedTaskAgentMessageLogs,
   type CollaborationCommunicationMessage,
-} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import type { ReleasedCoordinatingTree, ReleasedTaskEntry } from "./released-coordinating-trees.js";
+} from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import type { ReleasedCoordinatingTree, ReleasedTaskEntry } from "../../frozen/task-agent-own-run-v1/released-coordinating-trees.js";
 
 /**
  * One coordinating run's migration (contract §8): per task agent, nested ones first: already done? →

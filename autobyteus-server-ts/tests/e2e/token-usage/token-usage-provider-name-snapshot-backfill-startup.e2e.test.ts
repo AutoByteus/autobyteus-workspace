@@ -13,7 +13,7 @@ import {
   TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   TokenUsageProviderNameSnapshotBackfillMigration,
   type TokenUsageProviderNameSnapshotBackfillDatabase,
-} from '../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.js';
+} from '../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill/token-usage-provider-name-snapshot-backfill-migration.js';
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,

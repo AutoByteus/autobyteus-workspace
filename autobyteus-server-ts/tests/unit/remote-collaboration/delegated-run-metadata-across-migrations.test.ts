@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { RemoveSkillImprovementDataMigration } from "../../../src/app-data-migrations/migrations/remove-skill-improvement-data-migration.js";
+import { RemoveSkillImprovementDataMigration } from "../../../src/app-data-migrations/migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";

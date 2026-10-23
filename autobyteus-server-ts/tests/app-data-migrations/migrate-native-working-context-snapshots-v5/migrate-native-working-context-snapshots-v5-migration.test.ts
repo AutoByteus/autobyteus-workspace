@@ -1,0 +1,560 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
+import { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
+import { ReleasedNativeSnapshotV5Codec } from "../../../src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.js";
+import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
+import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
+import { WorkingContextSnapshotBootstrapper } from "autobyteus-ts/memory/restore/working-context-snapshot-bootstrapper.js";
+import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
+import {
+  COMPACTION_LINEAGE_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from "autobyteus-ts/memory/store/memory-file-names.js";
+import { createNaturalUserMessageProvenance, createCompactedMemoryUserMessage, WorkingContextFinalizer } from "autobyteus-ts/memory/working-context-finalizer.js";
+import { WorkingContextSnapshotSerializer } from "autobyteus-ts/memory/working-context-snapshot-serializer.js";
+import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
+import { WorkingContextSnapshotStore as FrozenWorkingContextSnapshotStore } from "../../../src/app-data-migrations/frozen/autobyteus-ts/memory/store/working-context-snapshot-store.js";
+import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
+import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
+import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
+import type {
+  AppDataMigrationRecordRepositoryLike,
+  AppDataMigrationRecordSnapshot,
+} from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
+import {
+  MigrateNativeWorkingContextSnapshotsV5Migration,
+} from "../../../src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.js";
+import { RawTraceActiveFileNameMigration } from "../../../src/app-data-migrations/migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.js";
+import { OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../../src/app-data-migrations/migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration-files.js";
+import { RawTraceRotationLayoutMigration } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration.js";
+import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.js";
+import { TeamAgentMemoryLayoutAppDataMigration } from "../../../src/app-data-migrations/migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.js";
+import { TeamRunExecutionTreeV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+
+const obsoleteFiles = ["episodic.jsonl", "semantic.jsonl", "compacted_memory_manifest.json"];
+let memoryDir: string;
+
+const writeText = async (filePath: string, content: string | Uint8Array): Promise<void> => {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, content);
+};
+const writeJson = (filePath: string, value: unknown): Promise<void> =>
+  writeText(filePath, `${JSON.stringify(value, null, 2)}\n`);
+const exists = async (filePath: string): Promise<boolean> => {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+};
+const standaloneDir = (runId: string): string => path.join(memoryDir, "agents", runId);
+const snapshotPath = (runDir: string): string => path.join(runDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
+const lineagePath = (runDir: string): string => path.join(runDir, COMPACTION_LINEAGE_FILE_NAME);
+
+const writeStandaloneMetadata = async (runId: string, runtimeKind = RuntimeKind.AUTOBYTEUS): Promise<void> => {
+  const runDir = standaloneDir(runId);
+  await writeJson(path.join(runDir, "run_metadata.json"), {
+    runId,
+    agentDefinitionId: `agent-${runId}`,
+    workspaceRootPath: `/workspace/${runId}`,
+    memoryDir: runDir,
+    llmModelIdentifier: "model-test",
+    llmConfig: null,
+    autoExecuteTools: false,
+    skillAccessMode: "NONE",
+    runtimeKind,
+    platformAgentRunId: null,
+    startedAt: "2026-07-31T00:00:00.000Z",
+  });
+};
+
+const writeTeamMetadata = async (teamRunId: string, memberRunId: string): Promise<string> => {
+  const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
+  await writeJson(path.join(teamDir, "team_run_execution_tree.json"), testExecutionTree({
+    rootTeamRunId: teamRunId,
+    rootTeamDefinitionId: `team-def-${teamRunId}`,
+    teamDefinitionName: "Native Migration Team",
+    coordinatorAddress: "/lead",
+    createdAt: "2026-07-31T00:00:00.000Z",
+    children: [testAgentNode("/lead", {
+      agentRunId: memberRunId,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      skillAccessMode: "NONE",
+      autoExecuteTools: false,
+      workspaceRootPath: "/workspace/team",
+    })],
+  }));
+  await writeJson(path.join(teamDir, "task_delegation_records.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    records: [],
+  });
+  await writeJson(path.join(teamDir, "team_communication_messages.json"), {
+    schemaVersion: 1,
+    rootTeamRunId: teamRunId,
+    messages: [],
+  });
+  return path.join(teamDir, memberRunId);
+};
+
+const rawTrace = (id: string, content: string, turnId = "turn-1"): RawTraceItem =>
+  new RawTraceItem({
+    id,
+    ts: 1,
+    turnId,
+    seq: 1,
+    traceType: "user",
+    content,
+    sourceEvent: "UserMessageReceivedEvent",
+  });
+
+const writeActiveRaw = async (
+  runDir: string,
+  trace: RawTraceItem,
+  fileName = RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
+): Promise<Buffer> => {
+  const bytes = Buffer.from(`${JSON.stringify(trace.toDict())}\n`);
+  await writeText(path.join(runDir, fileName), bytes);
+  return bytes;
+};
+
+const userSnapshot = (agentId: string, schemaVersion: number, rawId: string, content: string) => ({
+  schema_version: schemaVersion,
+  agent_id: agentId,
+  messages: [{
+    role: MessageRole.USER,
+    content,
+    metadata: {
+      autobyteus_memory_provenance: {
+        kind: "single",
+        rawTraceIds: [rawId],
+        turnId: "turn-1",
+      },
+    },
+  }],
+});
+
+const strictV5 = (agentId: string, rawId: string, content: string) => {
+  const workingContext = new WorkingContextFinalizer().finalize({
+    messages: [createNaturalUserMessageProvenance(
+      new Message(MessageRole.USER, { content }),
+      { kind: "retained_user", rawTraceIds: [rawId], turnId: "turn-1" },
+    )],
+  });
+  return ReleasedNativeSnapshotV5Codec.serialize(workingContext, { agent_id: agentId });
+};
+
+const seedObsolete = async (runDir: string): Promise<Record<string, Buffer>> => {
+  const result: Record<string, Buffer> = {};
+  for (const fileName of obsoleteFiles) {
+    const bytes = Buffer.from(`obsolete:${fileName}\n`);
+    result[fileName] = bytes;
+    await writeText(path.join(runDir, fileName), bytes);
+  }
+  return result;
+};
+
+class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
+  readonly records = new Map<string, AppDataMigrationRecordSnapshot>();
+  async getRecord(migrationId: string) { return this.records.get(migrationId) ?? null; }
+  async listRecords() { return [...this.records.values()]; }
+  async markRunning(input: { migrationId: string; displayName: string; startedAt: Date }) {
+    const previous = this.records.get(input.migrationId);
+    const record: AppDataMigrationRecordSnapshot = {
+      migrationId: input.migrationId,
+      displayName: input.displayName,
+      status: "RUNNING",
+      attempts: (previous?.attempts ?? 0) + 1,
+      startedAt: input.startedAt,
+      completedAt: null,
+      summary: null,
+      errorMessage: null,
+      logPath: null,
+    };
+    this.records.set(input.migrationId, record);
+    return record;
+  }
+  async complete(input: {
+    migrationId: string;
+    displayName: string;
+    status: "SUCCEEDED" | "FAILED" | "SUCCEEDED_WITH_WARNINGS";
+    completedAt: Date;
+    summary: string;
+    errorMessage: string | null;
+    logPath: string | null;
+  }) {
+    const previous = this.records.get(input.migrationId);
+    const record: AppDataMigrationRecordSnapshot = {
+      migrationId: input.migrationId,
+      displayName: input.displayName,
+      status: input.status,
+      attempts: previous?.attempts ?? 1,
+      startedAt: previous?.startedAt ?? null,
+      completedAt: input.completedAt,
+      summary: input.summary,
+      errorMessage: input.errorMessage,
+      logPath: input.logPath,
+    };
+    this.records.set(input.migrationId, record);
+    return record;
+  }
+  async markFailed(input: {
+    migrationId: string;
+    displayName: string;
+    completedAt: Date;
+    summary: string;
+    errorMessage: string;
+    logPath: string | null;
+  }) {
+    return this.complete({ ...input, status: "FAILED" });
+  }
+}
+
+beforeEach(async () => {
+  memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "native-snapshot-v5-migration-"));
+});
+
+afterEach(async () => {
+  await fs.rm(memoryDir, { recursive: true, force: true });
+});
+
+describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
+  it.each(["absent", "zero-byte"] as const)(
+    "converts standalone v4 with %s lineage, exact active provenance, exact cleanup, and idempotence",
+    async (lineageState) => {
+      const runId = `standalone-v4-${lineageState}`;
+      const runDir = standaloneDir(runId);
+      await writeStandaloneMetadata(runId);
+      const rawBefore = await writeActiveRaw(runDir, rawTrace("raw-1", "Retain standalone context"));
+      await writeJson(snapshotPath(runDir), userSnapshot(runId, 4, "raw-1", "Retain standalone context"));
+      if (lineageState === "zero-byte") await writeText(lineagePath(runDir), Buffer.alloc(0));
+      await seedObsolete(runDir);
+      const rawManifest = Buffer.from("raw manifest remains\n");
+      await writeText(path.join(runDir, "raw_traces_manifest.json"), rawManifest);
+
+      const first = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
+
+      expect(first.status).toBe("SUCCEEDED");
+      expect(first.summary).toMatchObject({ migratedCount: 1, failedCount: 0 });
+      const migrated = JSON.parse(await fs.readFile(snapshotPath(runDir), "utf-8"));
+      expect(WorkingContextSnapshotSerializer.validate(migrated)).toBe(true);
+      expect(migrated).toMatchObject({ schema_version: 5, agent_id: runId });
+      expect(migrated.messages).toMatchObject([{ role: "user", content: "Retain standalone context" }]);
+      expect(await fs.readFile(path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).toEqual(rawBefore);
+      expect(await fs.readFile(path.join(runDir, "raw_traces_manifest.json"))).toEqual(rawManifest);
+      if (lineageState === "zero-byte") {
+        expect(await fs.readFile(lineagePath(runDir))).toEqual(Buffer.alloc(0));
+      } else {
+        expect(await exists(lineagePath(runDir))).toBe(false);
+      }
+      for (const fileName of obsoleteFiles) expect(await exists(path.join(runDir, fileName))).toBe(false);
+
+      const snapshotAfterFirst = await fs.readFile(snapshotPath(runDir));
+      const second = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
+      expect(second).toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0, failedCount: 0 } });
+      expect(await fs.readFile(snapshotPath(runDir))).toEqual(snapshotAfterFirst);
+    },
+  );
+
+  it("uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives", async () => {
+    const memberRunId = "member-native-v1";
+    const runDir = await writeTeamMetadata("team-native", memberRunId);
+    await writeJson(snapshotPath(runDir), {
+      schema_version: 1,
+      agent_id: memberRunId,
+      messages: [{ role: "user", content: "Unsourced historical text" }],
+      epoch_id: 9,
+    });
+    await seedObsolete(runDir);
+
+    const result = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
+    expect(result.status).toBe("SUCCEEDED_WITH_WARNINGS");
+    expect(result.summary.details).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        itemId: `agent_teams/team-native/${memberRunId}`,
+        status: "MIGRATED",
+        message: expect.stringContaining("unsourced_message"),
+      }),
+    ]));
+    const migrated = JSON.parse(await fs.readFile(snapshotPath(runDir), "utf-8"));
+    expect(migrated).toEqual({ schema_version: 5, agent_id: memberRunId, messages: [] });
+    expect(WorkingContextSnapshotSerializer.validate(migrated)).toBe(true);
+  });
+
+  it("skips any nonempty-lineage location before snapshot inspection or cleanup", async () => {
+    const runId = "lineage-outside-transition";
+    const runDir = standaloneDir(runId);
+    await writeStandaloneMetadata(runId);
+    const invalidSnapshot = Buffer.from("{not-json\n");
+    await writeText(snapshotPath(runDir), invalidSnapshot);
+    const obsoleteBefore = await seedObsolete(runDir);
+    const lineageBefore = Buffer.from("not-even-parsed-lineage\n");
+    await writeText(lineagePath(runDir), lineageBefore);
+
+    const result = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
+
+    expect(result).toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0, skippedCount: 1 } });
+    expect(result.summary.details).toEqual(expect.arrayContaining([
+      expect.objectContaining({ itemId: `agents/${runId}`, status: "SKIPPED", message: expect.stringContaining("Nonempty") }),
+    ]));
+    expect(await fs.readFile(snapshotPath(runDir))).toEqual(invalidSnapshot);
+    expect(await fs.readFile(lineagePath(runDir))).toEqual(lineageBefore);
+    for (const [fileName, bytes] of Object.entries(obsoleteBefore)) {
+      expect(await fs.readFile(path.join(runDir, fileName))).toEqual(bytes);
+    }
+  });
+
+  it("retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation", async () => {
+    const currentId = "already-v5";
+    const currentDir = standaloneDir(currentId);
+    await writeStandaloneMetadata(currentId);
+    await writeActiveRaw(currentDir, rawTrace("raw-v5", "Current exact context"));
+    const currentBytes = Buffer.from(`${JSON.stringify(strictV5(currentId, "raw-v5", "Current exact context"), null, 2)}\n`);
+    await writeText(snapshotPath(currentDir), currentBytes);
+    await seedObsolete(currentDir);
+
+    const rejectedId = "identity-rejected";
+    const rejectedDir = standaloneDir(rejectedId);
+    await writeStandaloneMetadata(rejectedId);
+    const rejectedSnapshot = Buffer.from(`${JSON.stringify(userSnapshot("different-id", 4, "raw-reject", "Must not move"))}\n`);
+    await writeText(snapshotPath(rejectedDir), rejectedSnapshot);
+    const rejectedObsolete = await seedObsolete(rejectedDir);
+
+    const result = await new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir).execute();
+
+    expect(result.status).toBe("FAILED");
+    expect(result.summary).toMatchObject({ migratedCount: 1, failedCount: 1 });
+    expect(await fs.readFile(snapshotPath(currentDir))).toEqual(currentBytes);
+    for (const fileName of obsoleteFiles) expect(await exists(path.join(currentDir, fileName))).toBe(false);
+    expect(await fs.readFile(snapshotPath(rejectedDir))).toEqual(rejectedSnapshot);
+    for (const [fileName, bytes] of Object.entries(rejectedObsolete)) {
+      expect(await fs.readFile(path.join(rejectedDir, fileName))).toEqual(bytes);
+    }
+  });
+
+  it("runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade", async () => {
+    const defaultDefinitions = new AppDataMigrationRegistry().listDefinitions();
+    const v1Index = defaultDefinitions.findIndex((item) => item.id === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID);
+    const layoutIndex = defaultDefinitions.findIndex((item) => item instanceof TeamAgentMemoryLayoutAppDataMigration);
+    const v2Index = defaultDefinitions.findIndex((item) => item instanceof TeamRunExecutionTreeV2AppDataMigration);
+    const externalIndex = defaultDefinitions.findIndex((item) => item instanceof RemoveExternalRuntimeWorkingContextSnapshotsMigration);
+    const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
+    const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
+    const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
+    expect(layoutIndex).toBe(v1Index + 1);
+    expect(v2Index).toBe(layoutIndex + 1);
+    expect(externalIndex).toBeGreaterThan(v2Index);
+    const locatorIndex = defaultDefinitions.findIndex((item) => item instanceof TeamContextFileExecutionLocatorsV1AppDataMigration);
+    expect([rotationIndex, activeNameIndex, locatorIndex, nativeIndex]).toEqual([
+      externalIndex + 1, externalIndex + 2, externalIndex + 3, externalIndex + 4,
+    ]);
+
+    const runId = "ordinary-runner-direct-upgrade";
+    const runDir = standaloneDir(runId);
+    await writeStandaloneMetadata(runId);
+    const rawBefore = await writeActiveRaw(
+      runDir,
+      rawTrace("raw-1", "Legacy filename retains this exact user message"),
+      OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
+    );
+    await writeJson(snapshotPath(runDir), userSnapshot(
+      runId,
+      4,
+      "raw-1",
+      "Legacy filename retains this exact user message",
+    ));
+
+    const repository = new InMemoryMigrationRepository();
+    const pipeline = [
+      {
+        id: TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID,
+        displayName: "Satisfied V1 fixture prerequisite",
+        description: "Keeps this standalone upgrade fixture isolated from TeamRun persistence.",
+        requiredOnStartup: true,
+        execute: async () => ({
+          status: "SUCCEEDED" as const,
+          summary: {
+            scannedCount: 0,
+            migratedCount: 0,
+            skippedCount: 0,
+            failedCount: 0,
+            details: [],
+          },
+          errorMessage: null,
+        }),
+      },
+      new TeamAgentMemoryLayoutAppDataMigration(memoryDir),
+      new TeamRunExecutionTreeV2AppDataMigration(memoryDir),
+      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(memoryDir),
+      new RawTraceRotationLayoutMigration(memoryDir),
+      new RawTraceActiveFileNameMigration(memoryDir),
+      new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir),
+    ];
+    const statuses = await new AppDataMigrationRunner(
+      new AppDataMigrationRegistry(pipeline),
+      repository,
+      { logsDir: path.join(memoryDir, "migration-logs") },
+    ).runPending();
+
+    expect(statuses.map(({ migrationId, status }) => ({ migrationId, status }))).toEqual(
+      pipeline.map(({ id }) => ({ migrationId: id, status: "SUCCEEDED" })),
+    );
+    expect(await exists(path.join(runDir, OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).toBe(false);
+    expect(await fs.readFile(path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).toEqual(rawBefore);
+    const migrated = JSON.parse(await fs.readFile(snapshotPath(runDir), "utf-8"));
+    expect(WorkingContextSnapshotSerializer.validate(migrated)).toBe(true);
+    expect(migrated.messages).toMatchObject([
+      { role: "user", content: "Legacy filename retains this exact user message" },
+    ]);
+    expect([...repository.records.values()].map(({ migrationId, status }) => ({ migrationId, status })))
+      .toEqual(pipeline.map(({ id }) => ({ migrationId: id, status: "SUCCEEDED" })));
+
+    const migratedSnapshotStore = new WorkingContextSnapshotStore(memoryDir, runId);
+    const restoredMemoryStore = new FileMemoryStore(memoryDir, runId);
+    const restoredManager = new MemoryManager({
+      store: restoredMemoryStore,
+      workingContextSnapshotStore: migratedSnapshotStore,
+      agentId: runId,
+    });
+    new WorkingContextSnapshotBootstrapper(migratedSnapshotStore).bootstrap(
+      restoredManager,
+      "Ignored current system prompt",
+      { maxItemChars: null },
+    );
+    expect(restoredManager.getWorkingContextMessages()).toMatchObject([
+      { role: "user", content: "Legacy filename retains this exact user message" },
+    ]);
+
+    restoredManager.appendWorkingContextUserMessage(
+      new Message(MessageRole.USER, { content: "Continue after direct upgrade" }),
+      { turnId: "turn-2" },
+    );
+    const continued = migratedSnapshotStore.read(runId)!;
+    expect(WorkingContextSnapshotSerializer.validate(continued)).toBe(true);
+    expect(continued.messages).toMatchObject([{
+      role: "user",
+      content: expect.stringContaining("Continue after direct upgrade"),
+    }]);
+    expect(JSON.stringify(continued)).toContain("Legacy filename retains this exact user message");
+  });
+  const locationBytes = async (dir: string): Promise<Record<string, string>> => {
+    const files: Record<string, string> = {};
+    const walk = async (current: string) => {
+      for (const entry of await fs.readdir(current, { withFileTypes: true })) {
+        const file = path.join(current, entry.name);
+        if (entry.isDirectory()) await walk(file);
+        else files[path.relative(dir, file)] = (await fs.readFile(file)).toString('base64');
+      }
+    };
+    await walk(dir);
+    return files;
+  };
+
+  const writerCut = (runId: string, results: number, rawAhead = false) => {
+    const snapshots = new WorkingContextSnapshotStore(memoryDir, runId);
+    const manager = new MemoryManager({ store: new FileMemoryStore(memoryDir, runId), workingContextSnapshotStore: snapshots, agentId: runId });
+    manager.replaceWorkingContext(new WorkingContextFinalizer().finalize({ messages: [
+      new Message(MessageRole.SYSTEM, { content: 'System' }), createCompactedMemoryUserMessage('Keep checkpoint 🧠; approval pending.'),
+    ] }));
+    const turn = manager.startTurn();
+    const native = { provider: 'openai_responses' as const, functionCallItem: { opaque: { retained: true } } };
+    manager.ingestToolIntents(['a', 'b'].map((id) => new ToolInvocation('inspect', { id }, id, turn, native)), turn);
+    for (let i = 0; i < results; i++) manager.ingestToolResults([
+      new ToolResultEvent('inspect', { committed: i }, ['a', 'b'][i]!, undefined, {}, turn),
+    ], turn, { appendToWorkingContext: !rawAhead });
+    return snapshots.read(runId)!;
+  };
+
+  const forbiddenMigrationCalls = (migration: MigrateNativeWorkingContextSnapshotsV5Migration) => [
+    vi.spyOn((migration as any).converter, 'convert'),
+    vi.spyOn(migration as any, 'loadActiveReferenceFacts'),
+    vi.spyOn(migration as any, 'hasObsoleteFiles'),
+    vi.spyOn(migration as any, 'removeObsoleteFiles'),
+    vi.spyOn(FrozenWorkingContextSnapshotStore.prototype, 'write'),
+    vi.spyOn(MemoryManager.prototype, 'ensureWorkingContextToolProtocolSafeForNextLlm'),
+    vi.spyOn(WorkingContextFinalizer.prototype, 'finalize'),
+  ];
+
+  it.each([{ results: 0 }, { results: 1 }, { results: 2 }, { results: 2, rawAhead: true }])(
+    'preserves the complete location for an actual versionless writer cut: %j', async ({ results, rawAhead = false }) => {
+      const runId = 'current-writer-cut';
+      await writeStandaloneMetadata(runId);
+      const snapshot = writerCut(runId, results, rawAhead);
+      expect(Object.keys(snapshot)).toEqual(['agent_id', 'messages']);
+      expect(WorkingContextSnapshotSerializer.validate(snapshot)).toBe(results === 2 && !rawAhead);
+      await seedObsolete(standaloneDir(runId));
+      await writeText(path.join(standaloneDir(runId), 'raw_archive', 'keep.jsonl'), 'archived fixture bytes\n');
+      const before = await locationBytes(standaloneDir(runId));
+      const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+      const forbidden = forbiddenMigrationCalls(migration);
+      try {
+        const result = await migration.execute();
+        expect(result.status).toBe('SUCCEEDED');
+        expect(result.summary).toMatchObject({ migratedCount: 0, skippedCount: 1, failedCount: 0 });
+        expect(result.summary.details[0]?.message).toContain('Versionless current snapshot recognized');
+        expect(await locationBytes(standaloneDir(runId))).toEqual(before);
+        forbidden.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+      } finally { vi.restoreAllMocks(); }
+    },
+  );
+
+  it.each([
+    ['wrong agent', (p: any) => { p.agent_id = 'wrong'; }],
+    ['missing messages', (p: any) => { delete p.messages; }],
+    ['invalid entry', (p: any) => { p.messages[0] = null; }],
+    ['missing provenance', (p: any) => { p.messages[0].metadata = {}; }],
+    ['bad range', (p: any) => { p.messages[1].metadata.autobyteus_memory_provenance.constituents[0].textRange.end = 999; }],
+    ['invalid call', (p: any) => { p.messages[2].tool_payload.tool_calls[0].id = 4; }],
+    ['missing arguments', (p: any) => { delete p.messages[2].tool_payload.tool_calls[0].arguments; }],
+    ['duplicate ids', (p: any) => { p.messages[2].tool_payload.tool_calls[1].id = 'a'; }],
+    ['invalid native', (p: any) => { p.messages[2].tool_payload.tool_calls[0].nativeToolCallContext = { provider: 'unknown' }; }],
+    ['arbitrary root', (p: any) => { delete p.agent_id; delete p.messages; p.arbitrary = true; }],
+  ])('preserves and fails %s without destructive legacy fallthrough', async (_name, mutate) => {
+    const runId = 'invalid-current';
+    await writeStandaloneMetadata(runId);
+    const snapshot = writerCut(runId, 0);
+    mutate(snapshot);
+    await writeJson(snapshotPath(standaloneDir(runId)), snapshot);
+    await seedObsolete(standaloneDir(runId));
+    const before = await locationBytes(standaloneDir(runId));
+    const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+    const forbidden = forbiddenMigrationCalls(migration);
+    try {
+      const result = await migration.execute();
+      expect(result.status).toBe('FAILED');
+      expect(result.summary).toMatchObject({ migratedCount: 0, skippedCount: 0, failedCount: 1 });
+      expect(await locationBytes(standaloneDir(runId))).toEqual(before);
+      forbidden.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+    } finally { vi.restoreAllMocks(); }
+  });
+
+  it.each(['SUCCEEDED', 'SUCCEEDED_WITH_WARNINGS'] as const)('does not replay a terminal %s migration', async (status) => {
+    const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+    const repository = new InMemoryMigrationRepository();
+    await repository.complete({ migrationId: migration.id, displayName: migration.displayName,
+      status, completedAt: new Date(), summary: JSON.stringify({ scannedCount: 0, migratedCount: 0, skippedCount: 0, failedCount: 0, details: [] }), errorMessage: null, logPath: null });
+    const prerequisite = { id: migration.prerequisiteMigrationIds[0], displayName: 'Satisfied layout fixture',
+      description: 'Terminal prerequisite; must not execute.', requiredOnStartup: true,
+      execute: async (): Promise<never> => { throw new Error('Terminal prerequisite replayed'); } };
+    await repository.complete({ migrationId: prerequisite.id, displayName: prerequisite.displayName, status: 'SUCCEEDED',
+      completedAt: new Date(), summary: JSON.stringify({ scannedCount: 0, migratedCount: 0, skippedCount: 0, failedCount: 0, details: [] }), errorMessage: null, logPath: null });
+    const before = structuredClone([...repository.records]);
+    const execute = vi.spyOn(migration, 'execute');
+    try {
+      await new AppDataMigrationRunner(new AppDataMigrationRegistry([prerequisite, migration]), repository,
+        { logsDir: path.join(memoryDir, 'migration-logs') }).runPending();
+      expect(execute).not.toHaveBeenCalled();
+      expect([...repository.records]).toEqual(before);
+    } finally { vi.restoreAllMocks(); }
+  });
+
+});

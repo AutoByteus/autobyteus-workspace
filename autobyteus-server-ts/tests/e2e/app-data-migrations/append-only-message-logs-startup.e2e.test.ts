@@ -13,7 +13,7 @@ import {
   validateAgentOrgCommunicationMessages,
   validateStandaloneRootMessages,
   validateTeamCommunicationMessagesPayload,
-} from "../../../src/app-data-migrations/legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
+} from "../../../src/app-data-migrations/frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { MESSAGE_LOG_ROTATION_LIMIT_BYTES } from "../../../src/run-history/store/message-log.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";

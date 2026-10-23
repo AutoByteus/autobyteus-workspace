@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
-} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
+} from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -15,15 +15,14 @@ import {
   AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
   STANDALONE_ROOT_MESSAGES_FILE_NAME,
   TEAM_COMMUNICATION_MESSAGES_FILE_NAME,
-} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import { getAppDataMigrationRecordRepository } from "../../repositories/app-data-migration-record-repository.js";
-import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
-import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
-import { readReleasedCoordinatingTree, TREE_FILE_NAMES, type CoordinatingFamily } from "../task-agent-own-run-v1/released-coordinating-trees.js";
-import { TEAM_COMMUNICATION_PROJECTION_ADDRESS_MIGRATION_ID } from "../team-communication-projection-address-migration.js";
-import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID } from "../team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
-import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
+} from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import { readReleasedCoordinatingTree, TREE_FILE_NAMES, type CoordinatingFamily } from "../../frozen/task-agent-own-run-v1/released-coordinating-trees.js";
 import { convertJsonMessageLog, UnreadableJsonMessageLogError, type JsonMessageLog } from "./message-log-conversion.js";
+const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
+const TEAM_COMMUNICATION_PROJECTION_ADDRESS_MIGRATION_ID = "20260701_team_communication_projection_addresses";
+const TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
+const TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
 
 export const APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID = "20261018_append_only_message_logs_v1";
 
@@ -78,9 +77,10 @@ export class AppendOnlyMessageLogsV1AppDataMigration implements AppDataMigration
   constructor(
     private readonly memoryDir: string,
     private readonly dependencies: Readonly<{
-      ledger?: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+      /** The migration ledger, read for predecessor statuses. */
+      ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
       writer?: AtomicRunPackageFileCommitWriter;
-    }> = {},
+    }>,
   ) {}
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
@@ -112,7 +112,7 @@ export class AppendOnlyMessageLogsV1AppDataMigration implements AppDataMigration
 
   /** One ledger read per start. */
   private async pendingPredecessors(): Promise<string[]> {
-    const ledger = this.dependencies.ledger ?? getAppDataMigrationRecordRepository();
+    const ledger = this.dependencies.ledger;
     const pending: string[] = [];
     for (const id of LOG_WRITING_PREDECESSOR_IDS) {
       const status = (await ledger.getRecord(id))?.status;
