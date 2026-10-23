@@ -13,6 +13,7 @@ import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIden
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
+import type { TeamRunEnding } from "./team-run-lifecycle.js";
 import type { TeamRun } from "./team-run.js";
 import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
@@ -113,7 +114,7 @@ export class RootTeamRun {
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     disposeRootSubjects?(): void;
-    onTerminated?(): void;
+    onTerminated?(ending: TeamRunEnding): void;
   }) {
     if (!options.taskExecutionIdentity ||
         typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
@@ -471,7 +472,7 @@ export class RootTeamRun {
     this.options.disposeRootSubjects?.();
     this.options.publisher.clear();
     this.lifecycle = "terminated";
-    this.options.onTerminated?.();
+    this.options.onTerminated?.(committed ? "idle_shutdown" : "stopped");
     return { accepted: true };
   }
 

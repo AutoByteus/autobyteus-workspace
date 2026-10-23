@@ -9,6 +9,7 @@ import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run
 import type { ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
 import type { FlatTeamExecutionFactory } from "../local/flat-team-execution-factory.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
+import type { TeamRunEnding } from "../domain/team-run-lifecycle.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
@@ -35,7 +36,7 @@ export type TeamRootMaterializationInput = Readonly<{
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
   collaboratorAdmission?: CollaboratorAdmission;
-  onTerminated: (root: RootTeamRun) => void;
+  onTerminated: (root: RootTeamRun, ending: TeamRunEnding) => void;
 }>;
 
 const requireCommitted = async (
@@ -122,7 +123,7 @@ export const materializeTeamRoot = async (
       taskExecutionIdentity: input.taskExecutionIdentity,
       taskExecutionResources: input.taskExecutionResources,
       collaboratorAdmission: input.collaboratorAdmission,
-      onTerminated: () => { if (root) input.onTerminated(root); },
+      onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });
     prepared.commitAfterDurability();
     return root;

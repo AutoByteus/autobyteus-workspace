@@ -399,13 +399,14 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(events.at(-1)).toMatchObject({ kind: "remote_agent_presentation", nodeId: B_ID, agentRunId: "publisher_r1", memberAddress: "/publisher",
       message: { type: "AGENT_STATUS", payload: { status: "running" } } });
 
-    // The owner's message reaches B's run as user input naming the owner's node (DS-004).
+    // The owner's message reaches B's run as user input under the heading naming the owner's node (DS-004, DS-004a).
     const sent = await root.executeAgentCommand("publisher_r1", { kind: "post_message", message: AgentInputUserMessage.fromDict({
       content: "status?", context_files: null, metadata: { input_origin: "user_message", message_id: "m1", dedupe_key: "d1" } }) });
     expect(sent).toEqual({ accepted: true });
-    expect(b.runOf("publisher_r1").posted.at(-1)).toBe("status?");
+    // DS-004a: the owner heading names A's node by B's name for it; the IDs pass through unchanged (N-405).
+    expect(b.runOf("publisher_r1").posted.at(-1)).toBe('From the owner of node "desktop":\n\nstatus?');
     const posted = b.runOf("publisher_r1").postUserMessage.mock.calls.at(-1)![0] as { metadata: Record<string, unknown> };
-    expect(posted.metadata).toMatchObject({ remote_owner: { node_id: A_ID, node_name: "desktop" } });
+    expect(posted.metadata).toEqual({ input_origin: "user_message", message_id: "m1", dedupe_key: "d1" });
 
     // Stop: B stops the run and ends the observation; A reads its final state once (AR-403).
     events.length = 0;

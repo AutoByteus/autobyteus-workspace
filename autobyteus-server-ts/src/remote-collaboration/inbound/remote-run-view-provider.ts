@@ -38,7 +38,6 @@ const notLinked = () => refusal(REMOTE_REFUSAL.TARGET_NOT_PERMITTED, "That run w
 const answerOf = (result: AgentOperationResult) => result.accepted
   ? Object.freeze({ accepted: true as const })
   : refusal(result.code ?? "REMOTE_OWNER_COMMAND_NOT_ACCEPTED", result.message ?? "The command was not accepted.");
-const runKey = (run: RemoteStartedRunRef) => `${run.kind}:${run.runId}`;
 
 /** Only Agents and Agent Teams are started for a peer; an Org target is never one. */
 const startedRunOf = (root: RemoteTargetRoot): RemoteStartedRunRef | null =>
@@ -51,9 +50,6 @@ const startedRunOf = (root: RemoteTargetRoot): RemoteStartedRunRef | null =>
  * calling node started it), and then served by the root kind's own API behind `RemoteRootDirectory` (N-304).
  */
 export class RemoteRunViewProvider {
-  /** Open observations by run, so a terminate ends them (the run ended). */
-  private readonly observations = new Map<string, Set<RunObservationSink>>();
-
   constructor(private readonly roots: RemoteRootDirectory, private readonly views: RemotePeerStartedRunViews) {}
 
   async summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }>> {
@@ -88,47 +84,32 @@ export class RemoteRunViewProvider {
     const refused = await this.check(run, from, request.agentRunId);
     if (refused) return refused;
     const result = await this.roots.pairedAgents(run.kind)
-      .executeOwnerCommand(run.runId, request.agentRunId, request.command, { nodeId: from.nodeId, nodeName: from.name })
+      .executeOwnerCommand(run.runId, request.agentRunId, request.command, { nodeName: from.name })
       .catch((error: unknown): AgentOperationResult => ({ accepted: false, code: "REMOTE_OWNER_COMMAND_FAILED",
         message: error instanceof Error ? error.message : String(error) }));
-    // The run ended: its observations end too (the peer then reads its final summary).
-    if (result.accepted && request.command.kind === "terminate") this.endObservations(run);
     return answerOf(result);
   }
 
-  /** Opens the run's live output to `sink`; the answer is the refusal, or the observation to close with the socket. */
+  /**
+   * Opens the run's live output to `sink`; the answer is the refusal, or the observation to close with the socket. A run
+   * that ends by stop, terminate or delete through any path closes the sink (DS-006); the peer then reads its final
+   * summary (AR-403). Idle shutdown does not end it.
+   */
   async observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<PeerHandlerRefusal | Readonly<{ accepted: true; observation: PairedAgentObservation }>> {
     const run = startedRunOf(opening.targetRoot);
     if (!run) return notFound();
     const refused = await this.check(run, from, null);
     if (refused) return refused;
     const observation = await this.roots.pairedAgents(run.kind)
-      .observePairedAgents(run.runId, (agentRunId, message) => sink.send({ agentRunId, message }))
+      .observePairedAgents(run.runId, (agentRunId, message) => sink.send({ agentRunId, message }), () => sink.close())
       .catch(() => null);
     if (!observation) return notFound();
-    const key = runKey(run);
-    const sinks = this.observations.get(key) ?? new Set<RunObservationSink>();
-    sinks.add(sink);
-    this.observations.set(key, sinks);
-    return Object.freeze({
-      accepted: true as const,
-      observation: Object.freeze({
-        close: () => {
-          observation.close();
-          sinks.delete(sink);
-          if (!sinks.size && this.observations.get(key) === sinks) this.observations.delete(key);
-        },
-      }),
-    });
+    return Object.freeze({ accepted: true as const, observation });
   }
 
   /** The link check against the stored back-link (N-303/N-304): `null` when the calling node started the run. */
   private async check(run: RemoteStartedRunRef, from: PeerNode, targetAgentRunId: string | null): Promise<PeerHandlerRefusal | null> {
     const stored = await this.roots.storedLinkCheck(run, { kind: "owner", fromNodeId: from.nodeId, targetAgentRunId }).catch(() => "not_found" as const);
     return stored === "proceed" ? null : stored === "not_linked" ? notLinked() : notFound();
-  }
-
-  private endObservations(run: RemoteStartedRunRef): void {
-    for (const sink of [...this.observations.get(runKey(run)) ?? []]) sink.close();
   }
 }

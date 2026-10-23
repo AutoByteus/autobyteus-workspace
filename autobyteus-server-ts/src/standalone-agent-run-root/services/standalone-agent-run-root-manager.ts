@@ -98,6 +98,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private admissionOpen = true;
   /** autobyteus-278: a run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
   readonly pairedAgents: PairedAgentAccess = new StandalonePairedAgentAccess(this);
+  /** autobyteus-278 (DS-006): who learns that a run ended by Stop, terminate or history delete/archive (not idle shutdown). */
+  private readonly endListeners = new Map<string, Set<() => void>>();
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
@@ -204,10 +206,13 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (!root) {
       const metadata = await this.options.host.readMetadata(hostRunId);
       if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
-      return Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
+      const stopped = Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
+      this.notifyEnded(hostRunId);
+      return stopped;
     }
     const host = await root.stop();
     this.unregister(root);
+    this.notifyEnded(hostRunId);
     return Object.freeze({ rootEnded: true, host });
   }
 
@@ -219,6 +224,28 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (!root) return;
     await root.stop();
     this.unregister(root);
+    this.notifyEnded(hostRunId);
+  }
+
+  /**
+   * autobyteus-278: `listener` runs once the run has ended by Stop, terminate or history delete/archive, after its host
+   * stopped (so a final read finds it offline). Idle shutdown does not end a run: its root stays and the host returns.
+   */
+  onRunEnded(hostRunIdInput: string, listener: () => void): () => void {
+    const hostRunId = hostRunIdInput.trim();
+    const listeners = this.endListeners.get(hostRunId) ?? new Set<() => void>();
+    listeners.add(listener);
+    this.endListeners.set(hostRunId, listeners);
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && this.endListeners.get(hostRunId) === listeners) this.endListeners.delete(hostRunId);
+    };
+  }
+
+  private notifyEnded(hostRunId: string): void {
+    for (const listener of [...this.endListeners.get(hostRunId) ?? []]) {
+      try { listener(); } catch (error) { console.error(`Agent run '${hostRunId}': an end listener failed:`, error); }
+    }
   }
 
   /** Server shutdown: every root's children stop before the standalone runs (the hosts) stop. */

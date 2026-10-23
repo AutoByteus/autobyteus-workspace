@@ -15,9 +15,11 @@ const status = { type: "AGENT_STATUS", payload: { status: "running", trigger: nu
 
 const harness = () => {
   let listener: PairedAgentPresentationListener | null = null;
+  let ended: (() => void) | null = null;
   const observation = { close: vi.fn() };
   const access: PairedAgentAccess = {
-    observePairedAgents: vi.fn(async (_runId: string, onPresentation: PairedAgentPresentationListener) => { listener = onPresentation; return observation; }),
+    observePairedAgents: vi.fn(async (_runId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void) => {
+      listener = onPresentation; ended = onEnded; return observation; }),
     executeOwnerCommand: vi.fn(async () => ({ accepted: true })),
     pairedAgentStatuses: vi.fn(() => [{ agentRunId: "lead-run", status: "running" as const }]),
   };
@@ -37,7 +39,9 @@ const harness = () => {
     peers: { findByNodeId: async (nodeId) => [ALPHA, OTHER].find((peer) => peer.nodeId === nodeId) ?? null },
     delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runViews: provider,
   });
-  return { access, storedLinkCheck, views, provider, gateway, observation, emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args) };
+  return { access, storedLinkCheck, views, provider, gateway, observation, emit: (...args: Parameters<PairedAgentPresentationListener>) => listener?.(...args),
+    /** The root kind reports the run ended (stop, terminate or delete by any path). */
+    end: () => ended?.() };
 };
 const envelope = (from: PeerNode = ALPHA) => ({ fromNodeId: from.nodeId, toNodeId: SELF });
 
@@ -53,7 +57,7 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     expect((await f.gateway.runSummaries({ ...envelope(), runs: [{ kind: "agent_org", runId: "org" }] })).status).toBe(400);
   });
 
-  it("a projection and a command are checked for the paired agent; terminate ends the run's observations", async () => {
+  it("a projection and a command are checked for the paired agent; the run's end, by any path, closes its observation", async () => {
     const f = harness();
     const projection = await f.gateway.agentProjection({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run" });
     expect(projection.answer).toMatchObject({ accepted: true, projection: { agentRunId: "lead-run" } });
@@ -70,9 +74,12 @@ describe("RemoteRunViewProvider behind the gateway", () => {
 
     const post = { kind: "post_message", content: "status?", messageId: "m1", dedupeKey: "d1" };
     expect((await f.gateway.ownerCommand({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run", command: post })).answer).toEqual({ accepted: true, nodeId: SELF });
-    expect(f.access.executeOwnerCommand).toHaveBeenCalledWith("team-run", "lead-run", post, { nodeId: ALPHA.nodeId, nodeName: "alpha" });
+    expect(f.access.executeOwnerCommand).toHaveBeenCalledWith("team-run", "lead-run", post, { nodeName: "alpha" });
     expect(sink.close).not.toHaveBeenCalled();
+    // The terminate's acknowledgement does not end it by itself: the root kind reports the end (F-004, one owner).
     await f.gateway.ownerCommand({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run", command: { kind: "terminate" } });
+    expect(sink.close).not.toHaveBeenCalled();
+    f.end();
     expect(sink.close).toHaveBeenCalledTimes(1);
     expect((await f.gateway.ownerCommand({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run", command: { kind: "approve" } })).status).toBe(400);
   });

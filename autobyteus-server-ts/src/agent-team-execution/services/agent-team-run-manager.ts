@@ -9,7 +9,7 @@ import { MemberExecutionContextBuilder } from "./member-team-context-builder.js"
 import { RootTeamRun } from "../domain/root-team-run.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
-import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
+import type { TeamRunEnding, TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
 import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
@@ -152,7 +152,7 @@ export class AgentTeamRunManager {
         mode: "fresh",
         persistInitialPackage: true,
         ...this.materializationDependencies(),
-        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
+        onTerminated: (terminated, ending) => { this.unregister(rootTeamRunId, terminated, ending); },
       });
       try {
         await this.packageCatalog.admit(rootTeamRunId);
@@ -190,7 +190,7 @@ export class AgentTeamRunManager {
         mode: "restore",
         persistInitialPackage: false,
         ...this.materializationDependencies(),
-        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
+        onTerminated: (terminated, ending) => { this.unregister(rootTeamRunId, terminated, ending); },
       });
       this.register(root);
       return root;
@@ -321,7 +321,7 @@ export class AgentTeamRunManager {
 
   getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
     const teamRunId = required(rootTeamRunId, "rootTeamRunId");
-    return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId) };
+    return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId), ending: null };
   }
 
   subscribeToLifecycle(rootTeamRunId: string, listener: TeamRunLifecycleListener): TeamRunLifecycleUnsubscribe {
@@ -346,7 +346,7 @@ export class AgentTeamRunManager {
       if (!root) return false;
       const result = await root.terminate();
       if (!result.accepted) return false;
-      return this.unregister(rootTeamRunId, root) || !this.managedRoots.has(rootTeamRunId);
+      return this.unregister(rootTeamRunId, root, "stopped") || !this.managedRoots.has(rootTeamRunId);
     } catch (error) {
       throw new AgentTeamTerminationError(String(error));
     }
@@ -430,7 +430,7 @@ export class AgentTeamRunManager {
       reservation.release();
       throw error;
     }
-    this.notify({ teamRunId: root.teamRunId, isActive: true });
+    this.notify({ teamRunId: root.teamRunId, isActive: true, ending: null });
   }
 
   /**
@@ -446,14 +446,14 @@ export class AgentTeamRunManager {
     if (!result.accepted) {
       throw new Error(`TEAM_RUN_STOP_INCOMPLETE: ${result.message ?? result.code ?? `TeamRun '${rootTeamRunId}' did not finish stopping.`}`);
     }
-    this.unregister(rootTeamRunId, root);
+    this.unregister(rootTeamRunId, root, "stopped");
   }
 
-  private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {
+  private unregister(rootTeamRunId: string, expected: RootTeamRun, ending: TeamRunEnding): boolean {
     if (this.managedRoots.get(rootTeamRunId) !== expected) return false;
     this.managedRoots.delete(rootTeamRunId);
     this.activeRootDirectory.unregister(createTeamRootExecutionIdentity(rootTeamRunId), expected);
-    this.notify({ teamRunId: rootTeamRunId, isActive: false });
+    this.notify({ teamRunId: rootTeamRunId, isActive: false, ending });
     return true;
   }
 

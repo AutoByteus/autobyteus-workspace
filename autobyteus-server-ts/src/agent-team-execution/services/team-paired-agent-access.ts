@@ -49,12 +49,13 @@ export const teamMemberPresentationOf = (event: TeamRunEvent): Readonly<{ agentR
  * autobyteus-278 (AR-401): a remote Team, as its node serves the peer's owner. Its own agents are the root's members:
  * their output is on the root publisher, filtered to the members (a copy a member delegated on this node is not
  * sent). A quiet idle shutdown unregisters the root and a restore creates a new one, so the observation follows
- * the root through the manager's lifecycle notifications (published at the directory's commit and unregister).
+ * the root through the manager's lifecycle notifications (published at the directory's commit and unregister). A
+ * stop of any kind (the lifecycle's `ending: "stopped"`) ends the observation.
  */
 export class TeamPairedAgentAccess implements PairedAgentAccess {
   constructor(private readonly teamRuns: TeamRuns) {}
 
-  async observePairedAgents(teamRunId: string, onPresentation: PairedAgentPresentationListener): Promise<PairedAgentObservation> {
+  async observePairedAgents(teamRunId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void): Promise<PairedAgentObservation> {
     let unsubscribe: (() => void) | null = null;
     let closed = false;
     const attach = (root: RootTeamRun | null): void => {
@@ -71,17 +72,20 @@ export class TeamPairedAgentAccess implements PairedAgentAccess {
         }
       });
     };
+    const close = (): void => {
+      if (closed) return;
+      closed = true;
+      offLifecycle();
+      unsubscribe?.();
+      unsubscribe = null;
+    };
     attach(this.teamRuns.getManagedTeamRun(teamRunId));
-    const offLifecycle = this.teamRuns.subscribeToLifecycle(teamRunId, (snapshot) =>
-      attach(snapshot.isActive ? this.teamRuns.getManagedTeamRun(teamRunId) : null));
-    return Object.freeze({
-      close: () => {
-        closed = true;
-        offLifecycle();
-        unsubscribe?.();
-        unsubscribe = null;
-      },
+    // A restore after idle shutdown is a new root: follow it. A stop ends the observation (DS-006).
+    const offLifecycle = this.teamRuns.subscribeToLifecycle(teamRunId, (snapshot) => {
+      if (snapshot.ending === "stopped") { close(); onEnded(); return; }
+      attach(snapshot.isActive ? this.teamRuns.getManagedTeamRun(teamRunId) : null);
     });
+    return Object.freeze({ close });
   }
 
   async executeOwnerCommand(teamRunId: string, agentRunId: string, command: RemoteOwnerCommand, owner: RemoteOwner): Promise<AgentOperationResult> {

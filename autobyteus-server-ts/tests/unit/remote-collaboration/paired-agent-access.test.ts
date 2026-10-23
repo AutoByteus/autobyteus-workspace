@@ -8,7 +8,7 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-te
 
 /** autobyteus-278 AR-401: each root kind's own source of a peer-started run's output, commands and readiness. */
 
-const OWNER = { nodeId: "srv_alpha", nodeName: "alpha" };
+const OWNER = { nodeName: "alpha" };
 const post = { kind: "post_message" as const, content: "status?", messageId: "m1", dedupeKey: "d1" };
 const statusEvent = (runId: string, status: string): AgentRunEvent =>
   ({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status }, statusHint: status === "running" ? "ACTIVE" : "IDLE" }) as AgentRunEvent;
@@ -35,9 +35,13 @@ const standalone = () => {
     onHostReady: (listener: (run: unknown) => void) => { hostReady.add(listener); return () => hostReady.delete(listener); },
     postHostUserMessage: vi.fn(async () => ({ kind: "posted" as const, run: live, post: { accepted: true } })),
   };
-  const roots = { resolveRoot: vi.fn(async () => root), getActive: vi.fn(() => root), stopRoot: vi.fn(async () => ({ rootEnded: true, host: { outcome: "terminated" as const, runtimeKind: null } })) };
+  const ended = new Set<() => void>();
+  const roots = { resolveRoot: vi.fn(async () => root), getActive: vi.fn(() => root), stopRoot: vi.fn(async () => ({ rootEnded: true, host: { outcome: "terminated" as const, runtimeKind: null } })),
+    onRunEnded: (_hostRunId: string, listener: () => void) => { ended.add(listener); return () => ended.delete(listener); } };
   return {
-    root, roots, access: new StandalonePairedAgentAccess(roots as never), hostReady,
+    root, roots, access: new StandalonePairedAgentAccess(roots as never), hostReady, ended,
+    /** The manager reports the run ended (Stop, terminate or delete by any path), after its host stopped. */
+    end: () => [...ended].forEach((listener) => listener()),
     host: () => live!,
     restore: () => { live = fakeHost("host-run"); hostReady.forEach((listener) => listener(live)); return live; },
     idle: () => { live = null; },
@@ -48,7 +52,8 @@ describe("StandalonePairedAgentAccess (a remote Agent)", () => {
   it("presents the host's events and follows a restored host through the root's host-ready hook", async () => {
     const f = standalone();
     const frames: [string, string][] = [];
-    const observation = (await f.access.observePairedAgents("host-run", (agentRunId, message) => frames.push([agentRunId, message.type])))!;
+    const onEnded = vi.fn();
+    const observation = (await f.access.observePairedAgents("host-run", (agentRunId, message) => frames.push([agentRunId, message.type]), onEnded))!;
     f.host().emit(statusEvent("host-run", "running"));
     const first = f.host();
     f.idle();
@@ -60,14 +65,37 @@ describe("StandalonePairedAgentAccess (a remote Agent)", () => {
     observation.close();
     expect(restored.listeners.size).toBe(0);
     expect(f.hostReady.size).toBe(0);
+    expect(f.ended.size).toBe(0);
+    // Idle shutdown and the restore did not end it; only A closed it.
+    expect(onEnded).not.toHaveBeenCalled();
   });
 
-  it("posts the owner's message as user input naming the peer owner, interrupts the host and stops the root", async () => {
+  it("ends when the run ends by any path (not on idle shutdown): onEnded once, and every subscription released (F-004)", async () => {
+    const f = standalone();
+    const onEnded = vi.fn();
+    const frames: string[] = [];
+    const observation = (await f.access.observePairedAgents("host-run", (agentRunId) => frames.push(agentRunId), onEnded))!;
+    f.idle();
+    const restored = f.restore();
+    expect(onEnded).not.toHaveBeenCalled();
+    f.end();
+    expect(onEnded).toHaveBeenCalledTimes(1);
+    expect(restored.listeners.size).toBe(0);
+    expect(f.hostReady.size).toBe(0);
+    expect(f.ended.size).toBe(0);
+    restored.emit(statusEvent("host-run", "idle"));
+    expect(frames).toEqual([]);
+    observation.close();
+    expect(onEnded).toHaveBeenCalledTimes(1);
+  });
+
+  it("posts the owner's message as user input under the owner heading, interrupts the host and stops the root", async () => {
     const f = standalone();
     await expect(f.access.executeOwnerCommand("host-run", "host-run", post, OWNER)).resolves.toEqual({ accepted: true });
     const [{ message }] = f.root.postHostUserMessage.mock.calls[0] as unknown as [{ message: { content: string; metadata: Record<string, unknown> } }];
-    expect(message.content).toBe("status?");
-    expect(message.metadata).toEqual({ input_origin: "user_message", message_id: "m1", dedupe_key: "d1", remote_owner: { node_id: "srv_alpha", node_name: "alpha" } });
+    // DS-004a: the mark is a content heading; the IDs pass through unchanged (N-405) and no other metadata is added.
+    expect(message.content).toBe('From the owner of node "alpha":\n\nstatus?');
+    expect(message.metadata).toEqual({ input_origin: "user_message", message_id: "m1", dedupe_key: "d1" });
     await f.access.executeOwnerCommand("host-run", "host-run", { kind: "interrupt" }, OWNER);
     expect(f.host().interrupt).toHaveBeenCalledTimes(1);
     await expect(f.access.executeOwnerCommand("host-run", "host-run", { kind: "terminate" }, OWNER)).resolves.toEqual({ accepted: true });
@@ -101,7 +129,7 @@ const agentEvent = (agentRunId: string): TeamRunEvent => ({
 describe("TeamPairedAgentAccess (a remote Team)", () => {
   it("sends its members' output only, and follows the root across a quiet shutdown and a restore", async () => {
     let managed: ReturnType<typeof teamRoot> | null = teamRoot(["lead-run", "writer-run"]);
-    const lifecycle = new Set<(snapshot: { isActive: boolean }) => void>();
+    const lifecycle = new Set<(snapshot: { isActive: boolean; ending: string | null }) => void>();
     const access = new TeamPairedAgentAccess({
       getManagedTeamRun: () => managed as never,
       resolveManagedTeamRun: async () => managed as never,
@@ -109,19 +137,35 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
       terminateTeamRun: vi.fn(async () => true),
     });
     const frames: string[] = [];
-    const observation = await access.observePairedAgents("team-run", (agentRunId) => frames.push(agentRunId));
+    const onEnded = vi.fn();
+    const observation = await access.observePairedAgents("team-run", (agentRunId) => frames.push(agentRunId), onEnded);
     managed!.emit(agentEvent("lead-run"));
     managed!.emit(agentEvent("copy-run"));
     const first = managed!;
     managed = null;
-    lifecycle.forEach((listener) => listener({ isActive: false }));
+    lifecycle.forEach((listener) => listener({ isActive: false, ending: "idle_shutdown" }));
     expect(first.listeners.size).toBe(0);
     managed = teamRoot(["lead-run", "writer-run"]);
-    lifecycle.forEach((listener) => listener({ isActive: true }));
+    lifecycle.forEach((listener) => listener({ isActive: true, ending: null }));
     managed.emit(agentEvent("writer-run"));
     expect(frames).toEqual(["lead-run", "writer-run"]);
     expect(access.pairedAgentStatuses("team-run")).toEqual([{ agentRunId: "lead-run", status: "running" }]);
+    expect(onEnded).not.toHaveBeenCalled();
     observation.close();
+    expect(lifecycle.size).toBe(0);
+    expect(managed.listeners.size).toBe(0);
+  });
+
+  it("ends when the Team run is stopped by any path (lifecycle ending 'stopped'), but not on idle shutdown (F-004)", async () => {
+    const managed = teamRoot(["lead-run"]);
+    const lifecycle = new Set<(snapshot: { isActive: boolean; ending: string | null }) => void>();
+    const access = new TeamPairedAgentAccess({ getManagedTeamRun: () => managed as never, resolveManagedTeamRun: async () => managed as never,
+      subscribeToLifecycle: (_id, listener) => { lifecycle.add(listener as never); return () => lifecycle.delete(listener as never); },
+      terminateTeamRun: vi.fn(async () => true) });
+    const onEnded = vi.fn();
+    await access.observePairedAgents("team-run", () => undefined, onEnded);
+    lifecycle.forEach((listener) => listener({ isActive: false, ending: "stopped" }));
+    expect(onEnded).toHaveBeenCalledTimes(1);
     expect(lifecycle.size).toBe(0);
     expect(managed.listeners.size).toBe(0);
   });

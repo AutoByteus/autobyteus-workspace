@@ -59,8 +59,15 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
       }
       let body: unknown;
       try { body = JSON.parse(data.toString()); } catch { body = null; }
+      // The opening `{nodeId}` is always the first frame (N-401): a run that is live when observed can produce a frame
+      // while it is being subscribed, before the gateway answers; such frames wait here and follow the opening in order.
+      let held: unknown[] | null = [];
       const sink = Object.freeze({
-        send: (frame: unknown) => { if (!closed) socket.send(JSON.stringify(frame)); },
+        send: (frame: unknown) => {
+          if (closed) return;
+          if (held) held.push(frame);
+          else socket.send(JSON.stringify(frame));
+        },
         close: () => { if (!closed) socket.close(1000); },
       });
       void remote.gateway.openRunObservation(body, sink).then((response) => {
@@ -73,6 +80,9 @@ export async function registerRemoteCollaborationRoutes(app: FastifyInstance): P
         if (closed) { answer.observation.close(); return; }
         observation = answer.observation;
         socket.send(JSON.stringify({ nodeId: answer.nodeId }));
+        const waiting = held ?? [];
+        held = null;
+        waiting.forEach((frame) => socket.send(JSON.stringify(frame)));
       }, () => socket.close(1011));
     });
   });

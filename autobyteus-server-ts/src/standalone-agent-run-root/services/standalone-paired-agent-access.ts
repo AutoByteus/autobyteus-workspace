@@ -21,6 +21,7 @@ type Roots = Readonly<{
   resolveRoot(hostRunId: string): Promise<StandaloneAgentRunRoot | null>;
   getActive(hostRunId: string): StandaloneAgentRunRoot | null;
   stopRoot(hostRunId: string): Promise<StandaloneRootStopResult | null>;
+  onRunEnded(hostRunId: string, listener: () => void): () => void;
 }>;
 
 /**
@@ -32,7 +33,7 @@ type Roots = Readonly<{
 export class StandalonePairedAgentAccess implements PairedAgentAccess {
   constructor(private readonly roots: Roots) {}
 
-  async observePairedAgents(hostRunId: string, onPresentation: PairedAgentPresentationListener): Promise<PairedAgentObservation | null> {
+  async observePairedAgents(hostRunId: string, onPresentation: PairedAgentPresentationListener, onEnded: () => void): Promise<PairedAgentObservation | null> {
     const root = await this.roots.resolveRoot(hostRunId);
     if (!root) return null;
     const identity = createCollaborationMemberExecutionIdentity({ root: root.rootIdentity, memberAddress: root.hostAddress, agentRunId: root.hostRunId });
@@ -56,14 +57,17 @@ export class StandalonePairedAgentAccess implements PairedAgentAccess {
     const live = root.activeHostRun();
     if (live) attach(live);
     const offHostReady = root.onHostReady(attach);
-    return Object.freeze({
-      close: () => {
-        closed = true;
-        offHostReady();
-        unsubscribe?.();
-        unsubscribe = null;
-      },
-    });
+    const close = (): void => {
+      if (closed) return;
+      closed = true;
+      offHostReady();
+      offEnded();
+      unsubscribe?.();
+      unsubscribe = null;
+    };
+    // Stop, terminate or delete by any path ends it (after the host stopped); idle shutdown only replaces the host.
+    const offEnded = this.roots.onRunEnded(hostRunId, () => { close(); onEnded(); });
+    return Object.freeze({ close });
   }
 
   async executeOwnerCommand(hostRunId: string, agentRunId: string, command: RemoteOwnerCommand, owner: RemoteOwner): Promise<AgentOperationResult> {

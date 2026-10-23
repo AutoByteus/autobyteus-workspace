@@ -658,6 +658,23 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(f.manager.getActive(HOST)).not.toBe(root);
   });
 
+  it("autobyteus-278 F-004: a run's end is reported after its host stopped, for Stop and history delete; a released listener hears nothing", async () => {
+    const f = await buildManager();
+    await f.manager.resolveRoot(HOST);
+    const terminateHost = (f.manager as unknown as { options: { host: { terminateHost: ReturnType<typeof vi.fn> } } }).options.host.terminateHost;
+    const ended = vi.fn();
+    const released = vi.fn();
+    f.manager.onRunEnded(HOST, ended);
+    f.manager.onRunEnded(HOST, released)();
+    await f.manager.stopRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(1);
+    expect(terminateHost.mock.invocationCallOrder[0]!).toBeLessThan(ended.mock.invocationCallOrder[0]!);
+    await f.manager.resolveRoot(HOST);
+    await f.manager.endRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(2);
+    expect(released).not.toHaveBeenCalled();
+  });
+
   it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A"); resources.addTask("B");
