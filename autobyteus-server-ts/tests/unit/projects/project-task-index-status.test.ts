@@ -145,7 +145,9 @@ describe("Project index status and index after writes", () => {
 
   it("indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)", async () => {
     await modelOnDisk();
-    start(40);
+    // The window restarts on every write; it must outlast the gaps between the three writes below even on a loaded
+    // machine (with 40 ms a slow write split the burst into two runs).
+    start(250);
     const alpha = await project("Alpha");
     const sync = vi.spyOn(fake.index, "sync");
     const search_ = vi.spyOn(fake.index, "search");
