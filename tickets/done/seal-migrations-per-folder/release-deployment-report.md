@@ -70,6 +70,27 @@ Finalize into `origin/personal` per `RELEASE.md`. Release only on the user's req
 
 - Ticket moved to `tickets/done/`: `Yes`, at `tickets/done/seal-migrations-per-folder/`
 
+## Repository Finalization
+
+- Ticket branch `codex/seal-migrations-per-folder`, archived and pushed. The Secret Gate passed before its first push (`origin/personal..codex/seal-migrations-per-folder`, 21 commits).
+- Target `origin` / `personal`: `b54c755aa5` at the merge and again before the push. It did not advance after verification.
+- Merge: `--no-ff` merge `48b29c4342`, tree identical to the ticket branch. Checks on the merged state: Secret Gate (22 commits), `check_licensing.py` and `check_repository_artifact_hygiene.py`, all exit 0.
+- Push: `origin/personal` = `48b29c4342`. Repository finalization status: `Completed`.
+
+## Release / Publication / Deployment
+
+- Applicable: `No`. Result: `Not required` (no release requested). Rollback: `git revert -m 1 48b29c4342` on `personal`; no data needs rolling back.
+
+## Post-Finalization Cleanup
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder`: removed and pruned after this record was pushed.
+- Local `codex/seal-migrations-per-folder` and `finalize/seal-migrations-per-folder`: deleted after a containment check. Remote ticket branch: kept.
+
 ## Final Status
 
-- See `delivery-revision-record.md` DR-001 for finalization, push and cleanup.
+- Verification complete: `Yes` (from the evidence; no user check needed)
+- Repository finalization complete: `Yes`
+- Release: `Not required` (available on request)
+- Safe cleanup: `Completed`
+- Unresolved blocker: `None`
+- Terminal package sent to the Solution Designer: `Yes`
