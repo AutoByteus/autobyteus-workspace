@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-56211-d507",
+        "pid": 33132,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:56212",
+        "graphqlUrl": "http://127.0.0.1:56212/graphql",
+        "controlEndpoint": "http://127.0.0.1:56211",
+        "controlPort": 56211,
+        "serverPort": 56212,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-805WnD",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "testUpdateFeedUrl": null,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-805WnD/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-56211-d507.log",
+        "startedAt": "2026-10-20T18:02:03.700Z",
+        "running": false
+      },
+      {
+        "instanceId": "iso-56346-3c73",
+        "pid": 39310,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:56347",
+        "graphqlUrl": "http://127.0.0.1:56347/graphql",
+        "controlEndpoint": "http://127.0.0.1:56346",
+        "controlPort": 56346,
+        "serverPort": 56347,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-k3qq5p",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "testUpdateFeedUrl": null,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-k3qq5p/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-56346-3c73.log",
+        "startedAt": "2026-10-20T18:02:23.428Z",
+        "running": false
+      }
+    ]
+  }
+}
