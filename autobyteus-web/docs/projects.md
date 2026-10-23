@@ -331,6 +331,12 @@ own status, the left panel's dot and word: Running, Initializing, Idle, Error,
 Offline. A root that could not start shows **Couldn't start** with its error. A
 closed root (Task DONE or CANCELLED) is Offline with a muted name. There is no "Stopped".
 
+One agent or team can hold several open Tasks (each given to it with `delegate_task`), so
+the same root can appear on several Task pages. Under a live root, the Task page's help
+line says it stops when its last open Task is Done or Cancelled
+(`projects.root.help`). A closed Task's root reads Offline even while the same agent or
+team still works on another open Task; that Task's page shows it live.
+
 The one rule (`presentTaskRoot`, AR-002): a root is **openable** only when it
 started, is not closed, and its hosting run is listed in the left panel's run
 history. Otherwise it has no chevron and is not focusable (starting, failed,
