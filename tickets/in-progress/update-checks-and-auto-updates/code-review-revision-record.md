@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Local Fix (implementation) | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2, Targeted Delta Review (IR-002) | Fail — Local Fix | Pass | CR-001, CR-002 (resolved) |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-001) | Pass (CRR-002, source review) | Pass | None |
 
 ## Revision Entries
 
@@ -61,3 +62,28 @@ None.
 - Material score or classification changes: Runtime Correctness 8.6 → 9.2; classification none (Pass)
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: the 209 server E2E suite needs API/E2E's revision; packaged-build, own-node and real-throttling checks are API/E2E's.
+
+### CRR-003 — Proportional test-code review after API-REV-001
+
+- Canonical review report updated: `tickets/in-progress/update-checks-and-auto-updates/api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review) — durable tests changed in `821563587d`, `baff097813`, `5faba271f5`: the rewritten update-notifications live suite, the new agent-runtime update-notifications suite, the new head-read stub helper, the runtime harness, four existing suites' stubs and the RA-04 baseline fix
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001, Pass); cases API-02..12, 17, 18, 20..22
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002, implementation source review)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why: first test-code review; the changed tests enter through the real triggers, assert approved behavior (request budget, outcomes, gate, replacement of local changes, runtime waiting), and match the coverage investigation and execution evidence. CRR-001's residual C-07 (the stale 209 suite) is resolved by the rewrite.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no prior test-review finding).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: real git-endpoint throttling not inducible (API-38); the app schedule's busy/offline skips proven by Electron tests only; the skill-update notice after an automatic skill update not re-run live (same pipeline as manual).
