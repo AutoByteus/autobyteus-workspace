@@ -14,7 +14,7 @@ import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution, recordDelegatedLaunchSelections } from './teamExecutionTreeMutations';
 import { refreshTeamAgentLaunches } from './teamExecutionContextFactory';
-import { createRemoteTeamAgentContext, isKnownRemoteExecution, isRemoteAgentRun, remoteAgentLocations, remoteNavigationRows } from './teamRemoteExecutions';
+import { createRemoteTeamAgentContext, isKnownRemoteExecution, isRemoteAgentRun, remoteAgentLocations, teamNavigationRowsWithRemote } from './teamRemoteExecutions';
 import { applyRemoteSummaryStatuses } from '~/services/remoteRuns/remoteChildren';
 import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
 import {
@@ -232,11 +232,10 @@ export const createTeamExecutionViewState = (
 
   // Every placement in the tree (including shut-down delegated children) is
   // navigable; a message to a shut-down child restores it.
-  const navigationRows = (): readonly TeamExecutionNavigationRow[] => [...projectNavigationRows({
-    tree: publication.value.tree,
-    contexts: publication.value.contexts,
-  }), ...remoteNavigationRows({ rootTeamRunId, executions: publication.value.remote, contexts: publication.value.contexts,
-    addressOf: (agentRunId) => publication.value.locations.get(agentRunId)?.memberAddress ?? null })];
+  const navigationRows = (): readonly TeamExecutionNavigationRow[] => teamNavigationRowsWithRemote({ tree: publication.value.tree,
+    treeRows: projectNavigationRows({ tree: publication.value.tree, contexts: publication.value.contexts }),
+    executions: publication.value.remote, contexts: publication.value.contexts,
+    addressOf: (agentRunId) => publication.value.locations.get(agentRunId)?.memberAddress ?? null });
   // Rows under a closed task execution leave the Workspaces listing; navigation rows stay complete.
   const closedSubtrees = computed(() => collectClosedSubtrees(
     [publication.value.tree.root_team as TeamTreeNode], publication.value.closed, teamTreeWalk));

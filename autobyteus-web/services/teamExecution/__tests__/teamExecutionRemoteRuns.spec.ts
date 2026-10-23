@@ -28,6 +28,11 @@ const withRemoteSnapshot = () => {
   return view
 }
 
+const copyLaunch = { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'gpt-test', llm_config: null, auto_execute_tools: false, workspace_root_path: null }
+const localCopy = (agentRunId: string, address: string, startedAt: string) => ({ kind: 'task_agent' as const, address, agent_run_id: agentRunId,
+  platform_agent_run_id: null, delegator_agent_run_id: 'coordinator-run', started_at: startedAt,
+  source: { kind: 'agent' as const, agent_definition_id: address.slice(1), launch_configuration: copyLaunch } })
+
 describe('Team execution view with remote runs', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
@@ -43,6 +48,24 @@ describe('Team execution view with remote runs', () => {
     ])
     expect(rows[0]!.delegatedBy).toBe('coordinator')
     expect(view.focusAgent('writer-run').disposition).toBe('applied')
+  })
+
+  it('lists a remote run among the root-level copies in delegation order; the members keep their place first (UI spec: one list)', () => {
+    const coordinator = testAgentNode('/coordinator', { displayName: 'Coordinator', agentRunId: 'coordinator-run' })
+    const team = buildTestTeamContext({ teamRunId: 'team-root', teamDefinitionId: 'team-def', teamDefinitionName: 'Studio',
+      coordinatorAddress: coordinator.address, rootChildren: [coordinator],
+      taskExecutions: [localCopy('first-copy', '/researcher', '2026-10-23T07:00:00.000Z'), localCopy('last-copy', '/editor', '2026-10-23T09:00:00.000Z')] })
+    const view = team.view
+    expect(view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+      root_team_run_id: 'team-root', base_change_sequence: 3, execution_tree: view.getExecutionTree(), closed_task_executions: [], messages: [],
+      agent_statuses: view.listLiveAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
+        status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
+      agent_input_states: [], remote_task_executions: [remoteTeam],
+    } } as never).disposition).toBe('applied')
+    expect(view.listNavigationRows().map((row) => row.key)).toEqual([
+      'team:team-root', 'agent:coordinator-run',
+      'agent:first-copy', 'team:marketing-run', 'agent:lead-run', 'agent:writer-run', 'agent:last-copy',
+    ])
   })
 
   it("applies a node's summary, dispatches a remote member's output, and reloads for a remote run it does not know", () => {
