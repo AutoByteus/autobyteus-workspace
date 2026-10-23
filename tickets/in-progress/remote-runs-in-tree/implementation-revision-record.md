@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, pass (ARCH-REV-002) | N/A | `Initial Baseline` | SR-005, ARCH-REV-002; CRR/API-REV/DR N/A | Implemented at `1046c6beb4`; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 | F-001 | `Local Fix` | SR-005, ARCH-REV-002, CRR-001; API-REV/DR N/A | Fixed at `1bdcff8ae2`; back to code review (Targeted Delta Review) |
 | IR-003 | Code Reviewer, `code-review-report.md`, CRR-003 (failure origin of API-REV-001); Architecture Reviewer ARCH-REV-003 (SR-006) | F-002, F-003, F-004 (Local Fix); F-005 (Design Impact → SR-006 DS-004a); N-405 | `Local Fix` | SR-006, ARCH-REV-003, CRR-003, API-REV-001; DR N/A | Fixed at `e37ad88b98`; back to code review (Targeted Delta Review) |
+| IR-004 | Architecture Reviewer ARCH-REV-005 on SR-008 (`design-spec.md` § Window Retry Rule; FU-004 pulled in by the user) | FU-004; N-405, N-407 | `Local Fix` (implementing the SR-008 design) | SR-008, ARCH-REV-005, CRR-004, API-REV-001; DR N/A | Implemented at `2aeccdd850`; to code review (Targeted Delta Review) |
 
 ## Revision Entries
 
@@ -123,3 +124,49 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - API/E2E's RC-31 still expects the pre-heading content and scans for `remote_owner`; it needs updating for DS-004a. N-405's single-user-message assertion is theirs to add.
   - A Team terminate through the in-process fake runtime is not supported, so the Team `stopped` path is covered by the manager unit test and the real-root integration test rather than the two-node in-process case.
   - IMP-09 was not repeated for IR-003.
+
+### IR-004 — One owner of the remote Retry rule (SR-008, FU-004)
+
+- **Triggering role, report path, and round:** Architecture Reviewer, ARCH-REV-005 (`design-review-report.md`) on SR-008, `design-spec.md` § Window Retry Rule. FU-004 was pulled into this ticket by the user.
+- **Triggering finding IDs:** FU-004; N-405 (still open from round 3); N-407 (non-blocking: the pseudocode governs).
+- **Classification:** Local Fix (implementing the SR-008 design).
+- **Prior authoritative result:** IR-003. Three per-family copies of the Retry rule that differed:
+  - Standalone and Org fell back to `agents[0]`, and only when the refresh failed.
+  - Team returned right after a successful refresh.
+- **Current authoritative result:** one rule, `remoteRunsStore.retry(runId)`, following the design's pseudocode:
+  1. `checking`;
+  2. `refreshed ← refreshOnStream()`;
+  3. `target ← selectedAgent()` when it is one of the run's agents, else the run's first agent not `isLoaded`;
+  4. `started ← target ? rereadAgent(target) : false`;
+  5. settle at once unless `refreshed` or `started`.
+
+  A loaded selected agent is not replaced by another (N-407). Each family registers a `RemoteRunRetryAdapter` with only its own mechanisms.
+- **Related revision IDs:** SR-008, ARCH-REV-005, CRR-004, API-REV-001; DR: N/A.
+- **Why this revision is recorded:** the design change SR-008 (FU-004).
+- **Approved behavior or requirement IDs affected:** REQ-804 (Retry), REQ-806 (the same in every family). The behavior changes per family are the ones the design lists.
+- **Implementation delta (`f60f962d9d`, docs `2aeccdd850`):**
+  - `remoteRunsStore.ts`: `RemoteRunRetryAdapter`; `register(execution, adapter)`; `retry` holds the rule.
+  - Standalone `remoteRetryAdapter`: the collaboration stream, `selection`, `isChildHydrated`, and `ensureChildHydrated`, which returns `false` for a loaded child.
+  - Org `remoteRetryAdapter`: the Org stream, the selected agent execution, `AgentOrgExecutionContext.isRemoteAgentLoaded` (new; `hydrateRemoteOrgMember` marks it after the commit), and `readRemoteMember`, skipped for a loaded agent.
+  - Team `teamRemoteRetryAdapter` (`teamRemoteRunRegistry.ts`): `refreshTeamRemote`, the focused member, `isTeamMemberProjectionAuthoritative`, and `ensureAuthoritativeTeamMemberProjection`, skipped for a loaded member.
+  - The copies `retryRemote` (standalone, Org) and `retryTeamRemoteRun` are removed.
+  - `test-support/remoteRunRetryAdapter.ts`: a stream-only adapter for specs about other things.
+- **Changed files or areas:**
+  - `autobyteus-web/stores/{remoteRunsStore,agentRunCollaborationStore,agentOrgContextsStore}.ts`;
+  - `services/agentOrgExecution/{agentOrgExecutionContext,agentOrgContextHydration}.ts`;
+  - `services/teamExecution/teamRemoteRunRegistry.ts`;
+  - specs;
+  - web `agent_execution_architecture.md`.
+- **Local validation and result:**
+  - The rule spec (`remoteRunsStore.spec.ts`, 5 rule cases).
+  - Per family:
+    - standalone `agentRunCollaborationRemoteRetry.spec.ts` (new case: a live stream with nothing selected also reads the first unloaded agent);
+    - Org `agentOrgRemoteRetry.spec.ts` (new);
+    - Team `teamRemoteRunRegistry.spec.ts` (new).
+  - N-405: `memberInputMessageHandler.spec.ts`, where the streamed owner message replaces its echo (one message, with the heading).
+  - Full web suite: 4798 passed (IMP-06). Guards pass (IMP-07). Focused web: 84 passed (IMP-08). vue-tsc: no errors in the touched files.
+  - The server is unchanged, so IMP-01 to IMP-05 still apply.
+- **Next recipient or routing:** Code Reviewer (Large/High; Targeted Delta Review), then API/E2E.
+- **Remaining limitations or risks:**
+  - The end-to-end N-405 assertion (exactly one user message in alpha's view, carrying the heading) is API/E2E's.
+  - IMP-09 was not repeated for IR-004.
