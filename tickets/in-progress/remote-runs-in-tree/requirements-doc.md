@@ -79,7 +79,7 @@ The user, for scope and the UI; the Solution Designer, within the direction.
 | --- | --- | --- | --- |
 | AC-801 | REQ-801 | Given alpha's Project Task Manager delegated a Team to beta, alpha's tree shows the Team under the manager, tagged "beta", with its members, its title and its status. A delegated Agent shows the same. | Two-server E2E plus browser |
 | AC-802 | REQ-802 | Opening the remote coordinator shows its conversation. A message it receives or a tool call it makes appears without a reload. | Two-server E2E plus browser |
-| AC-803 | REQ-803 | The user sends "status?" to the remote coordinator from alpha's window. It receives the message, marked as from alpha's owner, and its answer appears in alpha's window. The message is in the run's conversation on beta and shows in alpha's view of it. | Two-server E2E |
+| AC-803 | REQ-803 | The user sends "status?" to the remote coordinator from alpha's window. It receives the message, marked as from alpha's owner (the heading `From the owner of node "alpha":`, SR-006), and its answer appears in alpha's window. The message is in the run's conversation on beta and shows in alpha's view of it. | Two-server E2E |
 | AC-804 | REQ-804 | Beta stopped: opening its run shows the error within 20 s, and the rest of the tree works. | E2E |
 | AC-805 | REQ-805 | After the remote run's idle shutdown, the row shows idle or offline. A message from the window restores it. | E2E |
 | AC-806 | REQ-806 | The same for an Agent and a Team; for a standalone, Team and Org delegator. | E2E |

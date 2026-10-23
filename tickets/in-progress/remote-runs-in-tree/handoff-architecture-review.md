@@ -32,3 +32,10 @@
 | AR-402 | Frames `{agentRunId, message}` for the paired agents only; A maps by `agentRunId` to the stored link (mounted addresses) and drops unknown ones |
 | AR-403 | An end A didn't initiate runs one summary fetch, which sets the row (reachable false / offline); no reconnect |
 | N-401 … N-404 | First frame `{nodeId}` checked; a unit test pins that only the projector maps `remote_agent_presentation`; one `remoteChildOf` helper; REQ-803 wording told to the user |
+
+## Round 3 — 2026-10-23 (SR-006), after CRR-003
+
+| Finding | Resolution |
+| --- | --- |
+| F-005 (Design Impact) | DS-004a: the owner mark is a content heading `From the owner of node "<name>":` composed by `remoteOwnerUserMessage`; the unread `remote_owner` metadata is removed; a consumer table (agent, B stored conversation and window, A window, title, logs) |
+| F-002, F-003, F-004 (Local Fixes, CRR-003) | Owned by implementation, with no design change; listed for the implementation handoff |

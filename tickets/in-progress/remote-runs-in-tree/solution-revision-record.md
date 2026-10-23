@@ -9,6 +9,7 @@
 | SR-003 | 2026-10-23 | Requirements | Product package approved; requirements approved |
 | SR-004 | 2026-10-23 | Design | Design complete; Large / High |
 | SR-005 | 2026-10-23 | Design | ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404) |
+| SR-006 | 2026-10-23 | Design | CRR-003 F-005: the owner mark |
 
 ## Revision Entries
 
@@ -62,3 +63,14 @@
 - N-401: a first frame `{nodeId}`, which A checks. N-402: a unit test that only the DTO projector maps `remote_agent_presentation`. N-403: one shared `remoteChildOf` helper. N-404: the REQ-803 wording, told to the user.
 - Classification unchanged: `Large` / `High`. Next: round 2 of the architecture review.
 - SR-005 addendum: ARCH-REV-002 Pass (2026-10-23); the reviewer's round-2 report and revision record committed; implementation handoff delivered by the reviewer.
+
+### SR-006 — The owner mark (CRR-003 F-005, 2026-10-23)
+
+- Trigger: the code reviewer's failure-origin review CRR-003 of API-REV-001. F-005 is a Design Impact: the `remote_owner` metadata had no reader (RC-31 `ownerMarks: []`). The design had not traced the mark to its stored record and readers (design-examples Case 3).
+- Design (DS-004a): the mark is a heading in the content, `From the owner of node "<name>":`, composed by `remoteOwnerUserMessage` (its one owner). The unread metadata is removed. A consumer table covers the agent, B's stored conversation and window, A's window, the title and the message logs.
+- AC-803 names the heading. The intended behavior is unchanged: "marked as from alpha's owner".
+- Local Fixes confirmed by CRR-003, owned by implementation and with no design change:
+  - F-002: B sends `{nodeId}` before any frame;
+  - F-003: one shared owner of the remote view affordances for the standalone, Team and Org views;
+  - F-004: end observations on stop, terminate or delete by any path, but not on idle shutdown (DS-006 already says so).
+- Classification unchanged: `Large` / `High`. Route: architecture review of the delta, then implementation with F-002 … F-005.

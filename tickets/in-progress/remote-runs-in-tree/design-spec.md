@@ -5,7 +5,7 @@
 - Package: `remote-runs-in-tree`; Task autobyteus-278.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-003 by the user. DEC-801 (a) stream through this node's server; DEC-802 (a) conversation only; DEC-803 messages; DEC-804 (a) Stop and Terminate; DEC-807 first version is the normal path.
 - Approved UI/UX package (Product-owned, normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` with VIS-001 … VIS-021, PA-801 … PA-809, DC-801 … DC-811 (design repository `personal` @ `1cc5563`).
-- Current solution revision ID: `SR-005` (ARCH-REV-001: AR-401 … AR-403, N-401 … N-404). Design status: `Ready`.
+- Current solution revision ID: `SR-006` (CRR-003 F-005 Design Impact; Local Fixes F-002 … F-004 to implementation). Design status: `Ready`.
 - Authorities read: `solution-designer/SKILL.md` (re-read 2026-10-23), `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`, the repository's `DESIGN.md` (phase 1 first; rules 7 and 9), `autobyteus-server-ts/docs/design/collaboration_model.md`. All were read in this conversation.
 - Conflicts or discrepancies: none.
 
@@ -65,6 +65,7 @@ The window then needs only what the UI spec adds: the node chip, the hidden acti
   - `ActiveCollaborationRootDirectory` (activation listener, for Team roots);
   - `standalone-agent-run-root/` (the manager's `observePairedAgents` / `executeOwnerCommand`, through the root's presentation adapter, `onHostReady`, `postToHost`, `stopRoot`) and the Team run manager (the same API).
 - **Shared:** `autobyteus-collaboration-stream-contracts` (the tree DTOs' remote executions, a summary event).
+- **Server, F-005:** `remoteOwnerUserMessage` composes the heading and drops the `remote_owner` metadata.
 - **Web:**
   - the three tree families' contexts and rows (`WorkspaceTransientExecutionRow` gains the chip and the unreachable state);
   - the run view (header chip, hidden ⚙/＋, text-only composer, panel notes);
@@ -166,6 +167,30 @@ Nothing is replaced. There are no compatibility paths: both nodes run the same r
 - The ack returns through A to the window as `AGENT_COMMAND_ACK`.
 - A message wakes an idle remote run, as any input does on B.
 - The message is recorded in the remote run's own conversation on B, and A shows it from there. It is not a run-to-run message, so neither node's message log records it (a clarification of REQ-803's "recorded on both nodes": the run that receives it records it).
+
+**DS-004a: the owner mark (SR-006, CRR-003 F-005).**
+- **Where the mark lives: in the message content**, composed once by its one owner `remoteOwnerUserMessage` (`agent-collaboration/execution/remote/paired-agent-access.ts:30`). The message the remote run receives is:
+
+  ```text
+  From the owner of node "alpha":
+
+  status?
+  ```
+
+  `alpha` is B's own name for the calling peer. The heading's wording is owned there, as `buildTaskWorkText` owns the task header (`task-execution-input.ts:43-60`).
+- **Why the content, not metadata.** Every runtime stores and replays a user message's content. Metadata on the input is not kept by the stored conversation or its projection (RC-31 `ownerMarks: []`), and no window or agent reads it. A content header is the pattern this product already uses to say who sent an input: the task header, and the inter-agent message headers.
+- The unread `remote_owner` metadata is removed (no dead code). `input_origin: "user_message"`, `message_id` and `dedupe_key` stay.
+
+**Consumer table (Principle 11): everything that reads the owner's message**
+
+| Consumer | What it reads | Result |
+| --- | --- | --- |
+| The remote agent's model input (every runtime) | The content | The agent sees who wrote it and can answer accordingly |
+| B's stored conversation (each runtime's memory) and its projection | The content | Kept as written; the mark survives restore |
+| B's own window (the run's conversation) | The projection and live stream content | B's owner sees "From the owner of node "alpha": …" |
+| A's window (the remote child view) | The `agent-projection` and the observation frames (`MEMBER_INPUT_MESSAGE` / user message content) | The user sees his message with the heading, the same as B shows it |
+| The run's title (269: the first message) | The first message | Unaffected: a peer-started run's first message is the work packet |
+| Message logs on A and B | — | Not a run-to-run message, so not logged (SR-004 clarification) |
 
 **DS-005: observation lifecycle, A.** `RemoteRunObservation` is created per root. Each root's stream handler calls `viewerAttached` and `viewerDetached`. On 0→1 it opens a stream per remote link and fetches summaries; on 1→0 it closes them. A link added while there are viewers (a new delegation) is observed when its delegation commits.
 
