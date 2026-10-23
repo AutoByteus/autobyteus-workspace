@@ -47,6 +47,7 @@ const agentView = (overrides = {}) => ({
       }],
     },
     agent_input_states: [],
+    remote_task_executions: [],
     agent_statuses: [
       { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
       { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },

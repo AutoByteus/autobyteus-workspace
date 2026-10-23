@@ -221,5 +221,7 @@ export const CollaborationStreamClientMessageSchema = z.discriminatedUnion("type
     z.object({ type: z.literal("INTERRUPT_GENERATION"), payload: z.object(commandRoot).strict() }).strict(),
     z.object({ type: z.literal("APPROVE_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
     z.object({ type: z.literal("DENY_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
+    /** Retry (autobyteus-278): ask the nodes of this root's remote runs for their summaries again. */
+    z.object({ type: z.literal("REFRESH_REMOTE_TASK_EXECUTIONS"), payload: z.object({ root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema }).strict() }).strict(),
 ]);
 //# sourceMappingURL=root-execution-view-dtos.js.map

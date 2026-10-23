@@ -1,6 +1,6 @@
 import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
-import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentAddressSchema, agentPresentationMessageSchema, agentPresentationPayloadSchemas, jsonValueSchema, nonEmptyStringSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
 const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
 export const agentOrgLaunchConfigurationDtoSchema = z.object({
@@ -171,6 +171,8 @@ export const agentOrgExecutionViewDtoSchema = z.object({
     closed_task_executions: closedTaskExecutionsDtoSchema,
     communication_messages: agentOrgCommunicationMessagesDtoSchema, agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
+    /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
+    remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
 }).strict();
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
@@ -183,5 +185,7 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     taskExecutionsClosedEventDtoSchema,
     taskExecutionsReopenedEventDtoSchema,
     delegatedLaunchSelectionsChangedEventDtoSchema,
+    z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
+    remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map
