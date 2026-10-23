@@ -321,11 +321,6 @@ try {
   await stopFrontend();
 
   // ---- the window on the Docker node
-  // Before it opens, the Docker node's owner had changed desk's address to another name of the same host
-  // (`gateway.docker.internal`), so "Use this" visibly changes it back.
-  const gatewayChange = await gqlErrors(docker.gql, 'mutation($id:String!,$u:String!){changePeerAddress(nodeId:$id,baseUrl:$u){baseUrl}}',
-    { id: desk.nodeId, u: `http://gateway.docker.internal:${desk.port}` });
-  evidence.gatewayChange = { errors: gatewayChange, peersAfter: await peersOf(docker) };
   front = await startFrontend(docker, 'docker');
   w = await openWindow(front, 'docker', nodeHosts);
 
@@ -336,7 +331,7 @@ try {
       line: await w.line(desk.nodeId), dot: await w.page.locator(`[data-testid="node-dot-${desk.nodeId}"]`).getAttribute('aria-label') };
     await w.shot('ND-05-window-on-docker');
     expect(thisNode.url === docker.baseUrl && thisNode.switch === 'On', `this node is the Docker node: ${JSON.stringify(thisNode)}`);
-    expect(deskRow.name === 'Embedded Node' && deskRow.url?.startsWith('host.docker.internal:') || deskRow.url?.startsWith('gateway.docker.internal:'), `desk's row: ${JSON.stringify(deskRow)}`);
+    expect(deskRow.name === 'Embedded Node' && deskRow.url === `host.docker.internal:${desk.port}`, `desk's row: ${JSON.stringify(deskRow)}`);
     expect(deskRow.line === null && deskRow.dot === 'Reachable now', `desk reachable from the Docker node: ${JSON.stringify(deskRow)}`);
     return { thisNode, deskRow };
   });
@@ -351,6 +346,8 @@ try {
     await hint.waitFor({ state: 'visible', timeout: 30_000 });
     const hintText = await w.text(hint);
     await w.shot('ND-02-change-address-loopback-hint');
+    // desk's address is already `host.docker.internal` (ND-01), so the saved value does not change: Use this is proven
+    // by its one save with the suggested address, after the loopback address was refused and not saved.
     const peerBeforeUse = (await peersOf(docker)).find(peer => peer.nodeId === desk.nodeId);
     const useAt = Date.now();
     await w.page.locator(`[data-testid="node-address-hint-${desk.nodeId}-use"]`).click();
