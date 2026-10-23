@@ -472,7 +472,7 @@ describe("Project Task production HTTP boundaries", () => {
     // AC-011: one optional additive string array on each task tool.
     const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
     expect(tools.map(t => t.name)).toEqual(names);
-    for (const [name, keys] of [["create_task", ["context_files", "depends_on", "description", "part_of", "project_id"]], ["update_task", ["context_files", "depends_on", "description", "part_of", "status", "task_id"]]] as const) {
+    for (const [name, keys] of [["create_task", ["context_files", "depends_on", "description", "part_of", "project_id"]], ["update_task", ["add_comment", "context_files", "depends_on", "description", "part_of", "status", "task_id"]]] as const) {
       const taskTool = tools.find(t => t.name === name)!;
       expect(taskTool.inputSchema.properties.context_files).toMatchObject({ type: "array", items: { type: "string" } });
       expect(taskTool.inputSchema.properties.context_files.description).toMatch(/Absolute local file paths/);
@@ -963,6 +963,125 @@ describe("Project Task production HTTP boundaries", () => {
     byKey = await listed();
     expect(Object.entries(byKey).filter(([, t]) => t.partOf !== null).map(([key]) => key)).toEqual(["parts-tools-2"]); // only Q's part remains a part
     expect(byKey["parts-tools-11"]!.parts).toEqual(["parts-tools-2"]);
+  }, 120000);
+
+  // task-comments over the selected MCP session and the native tools: add_comment appends one comment per call without touching
+  // the description, combines with other fields in one write, and refusals write nothing. Live delegation, the feed and Temp
+  // tasks are in the gated project-task-comments-live suite.
+  const openRunFixture = async (projectId: string, reference: string, agentRunId: string) => {
+    const taskId = await idOf(projectId, reference);
+    const file = path.join(root, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
+    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId },
+      linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
+    return file;
+  };
+
+  it("CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)", async () => {
+    // REQ-005 / REQ-010: one optional string on update_task only; no new tool in the selected session.
+    const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
+    expect(tools.map(t => t.name)).toEqual(names);
+    const update = tools.find(t => t.name === "update_task")!;
+    expect(update.inputSchema.properties.add_comment).toMatchObject({ type: "string" });
+    expect(update.inputSchema.required ?? []).not.toContain("add_comment");
+    expect(update.description).toContain("Optional add_comment (Project Tasks only): text added as a new comment at the end of the Task's comments; the description is not changed. Each call adds one comment.");
+    expect(tools.find(t => t.name === "create_task")!.inputSchema.properties.add_comment).toBeUndefined();
+
+    const projectId = await createProject("Comments Tools");
+    const projectsDir = path.join(root, "projects");
+    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => ({ projectId, taskId, status, dependsOn: [], partOf: null, ...extra });
+    const toolError = async (name: "create_task" | "update_task", args: Record<string, unknown>, code: string) => {
+      const before = await snapshot(projectsDir);
+      const native = await (name === "create_task" ? new CreateTaskTool() : new UpdateTaskTool()).execute(null, args)
+        .then(() => null, (e: Error) => JSON.parse(e.message));
+      expect(native?.error.code, JSON.stringify(args)).toBe(code);
+      const result = await call(name, args);
+      expect(result.isError, JSON.stringify(args)).toBe(true); expect(result.structuredContent).toEqual(native);
+      expect(await snapshot(projectsDir), JSON.stringify(args)).toEqual(before);
+      return native.error.message as string;
+    };
+    const a = await taskCall({ project_id: projectId, description: "A: release notes" });
+    const b = await taskCall({ project_id: projectId, description: "B: no comments yet" });
+    expect([a.taskId, b.taskId]).toEqual(["comments-tools-1", "comments-tools-2"]);
+    const longA = await idOf(projectId, a.taskId);
+    const first = await taskJson(projectId, a.taskId);
+    expect(first.comments).toEqual([]);
+
+    // AC-001: three calls (key in upper case over MCP, long ID over MCP, mixed case natively) → comments 1, 2, 3, in order;
+    // the result never gains a comment field; the description stays as it was.
+    await new Promise(resolve => setTimeout(resolve, 5));
+    expect(await taskCall({ task_id: "COMMENTS-TOOLS-1", add_comment: "  Decision: use X  " })).toEqual(ack("comments-tools-1", "TODO"));
+    expect(await taskCall({ task_id: longA, add_comment: "Second comment\nwith a second line" })).toEqual(ack("comments-tools-1", "TODO"));
+    expect(await nativeTaskCall({ task_id: "Comments-Tools-1", add_comment: "Third, by the native tool" })).toEqual(ack("comments-tools-1", "TODO"));
+    let stored = await taskJson(projectId, a.taskId);
+    expect(stored.comments.map((c: { id: number; text: string }) => [c.id, c.text])).toEqual([[1, "Decision: use X"], [2, "Second comment\nwith a second line"], [3, "Third, by the native tool"]]);
+    expect(stored.comments.every((c: { createdAt: string }) => !Number.isNaN(Date.parse(c.createdAt)))).toBe(true);
+    expect(stored.comments.map((c: { createdAt: string }) => Date.parse(c.createdAt))).toEqual([...stored.comments.map((c: { createdAt: string }) => Date.parse(c.createdAt))].sort((x, y) => x - y));
+    expect(stored).toMatchObject({ description: "A: release notes", status: "TODO", createdAt: first.createdAt });
+    expect(Date.parse(stored.updatedAt)).toBeGreaterThan(Date.parse(first.updatedAt));
+    expect(stored.updatedAt).toBe(stored.comments[2].createdAt);
+
+    // AC-001: DONE + a comment in one call: status and comment saved together, and the open run is closed as for any DONE.
+    const resources = await openRunFixture(projectId, a.taskId, "fixture-comment-worker");
+    expect(await taskCall({ task_id: a.taskId, status: "DONE", add_comment: "Merged and released." })).toEqual(ack("comments-tools-1", "DONE"));
+    stored = await taskJson(projectId, a.taskId);
+    expect(stored.status).toBe("DONE");
+    expect(stored.comments.at(-1)).toMatchObject({ id: 4, text: "Merged and released." });
+    expect(JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0].closedAt).toEqual(expect.any(String));
+
+    // Refusals: nothing written, not even the status of a combined call, and B's open run stays open (MCP equals native).
+    const bResources = await openRunFixture(projectId, b.taskId, "fixture-open-worker");
+    expect(await toolError("update_task", { task_id: b.taskId, add_comment: "" }, "TASK_COMMENT_INVALID")).toBe("Comment text is required.");
+    expect(await toolError("update_task", { task_id: b.taskId, status: "DONE", add_comment: "   \n " }, "TASK_COMMENT_INVALID")).toBe("Comment text is required.");
+    for (const add_comment of [7, null, ["text"], { text: "x" }]) await toolError("update_task", { task_id: b.taskId, status: "DONE", add_comment }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    expect(await toolError("update_task", { task_id: "comments-tools-99", status: "DONE", add_comment: "Lost?" }, "TASK_NOT_FOUND")).toContain("comments-tools-99");
+    await toolError("create_task", { project_id: projectId, description: "never created", add_comment: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    expect(JSON.parse(await fs.readFile(bResources, "utf8")).agentRunResources[0].closedAt).toBeNull();
+    expect(await taskJson(projectId, b.taskId)).toMatchObject({ status: "TODO", comments: [] });
+    // add_comment alone is a change (no TASK_PATCH_REQUIRED); description-only updates leave the thread alone.
+    expect(await taskCall({ task_id: b.taskId, add_comment: "Only a comment" })).toEqual(ack("comments-tools-2", "TODO"));
+    expect(await taskCall({ task_id: a.taskId, description: "A: release notes (edited)" })).toEqual(ack("comments-tools-1", "DONE"));
+    expect((await taskJson(projectId, a.taskId)).comments).toHaveLength(4);
+
+    // AC-005 (list): comment texts oldest first, no IDs or times; no field when a Task has none; MCP equals native; after
+    // reader reconstruction the same.
+    const c = await taskCall({ project_id: projectId, description: "C: none" });
+    for (const attempt of ["first read", "after reader reconstruction"]) {
+      const listed = (await call("list_project_tasks", { project_id: projectId })).structuredContent;
+      expect(listed, attempt).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId })));
+      const byKey = Object.fromEntries((listed.tasks as Array<Record<string, unknown> & { taskId: string }>).map(t => [t.taskId, t]));
+      expect(byKey["comments-tools-1"]!.comments, attempt).toEqual(["Decision: use X", "Second comment\nwith a second line", "Third, by the native tool", "Merged and released."]);
+      expect(byKey["comments-tools-2"]!.comments, attempt).toEqual(["Only a comment"]);
+      expect(Object.hasOwn(byKey[c.taskId]!, "comments"), attempt).toBe(false);
+      reset();
+    }
+  }, 120000);
+
+  it("CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)", async () => {
+    const projectId = await createProject("Parts Not Closed");
+    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => ({ projectId, taskId, status, dependsOn: [], partOf: null, ...extra });
+    const parent = await taskCall({ project_id: projectId, description: "P: bigger Task" });
+    const ok = await taskCall({ project_id: projectId, description: "Closes", part_of: parent.taskId });
+    const damaged = await taskCall({ project_id: projectId, description: "Its run data is damaged", part_of: parent.taskId });
+    const last = await taskCall({ project_id: projectId, description: "Also closes", part_of: parent.taskId });
+    // DESIGN.md rule 7: a Task whose run data cannot be read; written as unparsable bytes in this test-owned root.
+    const damagedId = await idOf(projectId, damaged.taskId);
+    const damagedFile = path.join(root, "projects", projectId, "tasks", damagedId, "agent_run_resources.json");
+    await fs.writeFile(damagedFile, "{ this is not JSON");
+    reset();
+    const closed = await taskCall({ task_id: parent.taskId, status: "CANCELLED" });
+    expect(closed).toEqual(ack(parent.taskId, "CANCELLED", { closedParts: [ok.taskId, last.taskId], partsNotClosed: [damaged.taskId] }));
+    const statuses = Object.fromEntries(((await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks as Array<{ taskId: string; status: string }>).map(t => [t.taskId, t.status]));
+    expect(statuses).toEqual({ [parent.taskId]: "CANCELLED", [ok.taskId]: "CANCELLED", [damaged.taskId]: "TODO", [last.taskId]: "CANCELLED" });
+    expect(await fs.readFile(damagedFile, "utf8")).toBe("{ this is not JSON");
+
+    // Every part closes: closedParts only (the exact result has no partsNotClosed).
+    const other = await taskCall({ project_id: projectId, description: "Q: another bigger Task" });
+    const p1 = await taskCall({ project_id: projectId, description: "Q1", part_of: other.taskId });
+    const p2 = await taskCall({ project_id: projectId, description: "Q2", part_of: other.taskId });
+    expect(await taskCall({ task_id: other.taskId, status: "DONE" })).toEqual(ack(other.taskId, "DONE", { closedParts: [p1.taskId, p2.taskId] }));
+    // The damaged file is this Project's own; removing the Project leaves no damaged data for later cases.
+    await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
   }, 120000);
 
 });
