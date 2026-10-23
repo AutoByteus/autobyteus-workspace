@@ -39,3 +39,9 @@
 | --- | --- |
 | F-005 (Design Impact) | DS-004a: the owner mark is a content heading `From the owner of node "<name>":` composed by `remoteOwnerUserMessage`; the unread `remote_owner` metadata is removed; a consumer table (agent, B stored conversation and window, A window, title, logs) |
 | F-002, F-003, F-004 (Local Fixes, CRR-003) | Owned by implementation, with no design change; listed for the implementation handoff |
+
+## Round 4 — 2026-10-23 (SR-007), FU-004 pulled in by the user
+
+| Item | Resolution |
+| --- | --- |
+| FU-004 | § Window Retry Rule: `remoteRunsStore.retry` is the one owner of the Retry rule; families register an adapter (`refreshOnStream`, `selectedAgent`, `rereadAgent`); the three per-family copies are removed; behavior unchanged; specs for the rule and per family |

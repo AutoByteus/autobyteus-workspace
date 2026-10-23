@@ -10,6 +10,7 @@
 | SR-004 | 2026-10-23 | Design | Design complete; Large / High |
 | SR-005 | 2026-10-23 | Design | ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404) |
 | SR-006 | 2026-10-23 | Design | CRR-003 F-005: the owner mark |
+| SR-007 | 2026-10-23 | Design | FU-004 pulled in: one window owner for Retry |
 
 ## Revision Entries
 
@@ -75,3 +76,10 @@
   - F-004: end observations on stop, terminate or delete by any path, but not on idle shutdown (DS-006 already says so).
 - Classification unchanged: `Large` / `High`. Route: architecture review of the delta, then implementation with F-002 … F-005.
 - SR-006 addendum: ARCH-REV-003 Pass (2026-10-23). N-405 (the window's local echo as a consumer, replaced by message_id / dedupe_key) and N-406 (the title row cited) added to the consumer table. The reviewer's files committed.
+
+### SR-007 — One window owner for Retry (FU-004, 2026-10-23)
+
+- Trigger: the code reviewer (after CRR-004) reports that the user pulled FU-004 into this ticket: "Okay, I agree with you. Go ahead." The rule "refresh on the stream if ready; re-read the selected agent, else the first" was written three times, once per family (design-examples Case 6; the same drift as CRR-003 F-003).
+- Design: § Window Retry Rule. `remoteRunsStore.retry` owns the rule; each family registers an adapter with only its stream refresh, its selected agent and its member read; the three copies are removed.
+- Intended behavior changed: No (REQ-804 as is). Web only.
+- Classification unchanged: `Large` / `High`. Route: architecture review of the delta, then implementation. API/E2E holds its full rerun until the code reviewer's Targeted Delta Review passes.

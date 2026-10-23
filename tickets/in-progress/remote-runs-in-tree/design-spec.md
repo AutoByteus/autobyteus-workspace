@@ -5,7 +5,7 @@
 - Package: `remote-runs-in-tree`; Task autobyteus-278.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-003 by the user. DEC-801 (a) stream through this node's server; DEC-802 (a) conversation only; DEC-803 messages; DEC-804 (a) Stop and Terminate; DEC-807 first version is the normal path.
 - Approved UI/UX package (Product-owned, normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` with VIS-001 … VIS-021, PA-801 … PA-809, DC-801 … DC-811 (design repository `personal` @ `1cc5563`).
-- Current solution revision ID: `SR-006` (CRR-003 F-005 Design Impact; Local Fixes F-002 … F-004 to implementation). Design status: `Ready`.
+- Current solution revision ID: `SR-007` (FU-004 pulled into this ticket by the user: one window owner for a remote run's Retry and re-read). Design status: `Ready`.
 - Authorities read: `solution-designer/SKILL.md` (re-read 2026-10-23), `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`, the repository's `DESIGN.md` (phase 1 first; rules 7 and 9), `autobyteus-server-ts/docs/design/collaboration_model.md`. All were read in this conversation.
 - Conflicts or discrepancies: none.
 
@@ -221,6 +221,28 @@ Nothing is replaced. There are no compatibility paths: both nodes run the same r
 | `ActiveCollaborationRootDirectory` (modified) | Activation and deactivation notifications (used by the Team kind's observation) |
 | Window contexts (three tree families, modified) | Remote children from the view, with node, summary and reachability; statuses; selection and hydration through the existing queries |
 | `WorkspaceTransientExecutionRow` and the run view (modified) | The UI spec's chip, unreachable row and Retry, hidden ⚙/＋, text-only composer, panel notes, local-only Delegated copies list |
+
+## Window Retry Rule (SR-007, FU-004; Principle 13, design-examples Case 6)
+
+- **One owner:** `remoteRunsStore.retry(runId)` (`autobyteus-web/stores/remoteRunsStore.ts`) decides what Retry does. The three per-family copies are removed: `retryRemote` in `agentRunCollaborationStore.ts:133`, `retryRemote` in `agentOrgContextsStore.ts`, `retryTeamRemoteRun` in `teamRemoteRunRegistry.ts`.
+- **What each family supplies instead of a callback with the rule inside:** at `register`, a small adapter with only its own mechanisms:
+  - `refreshOnStream(): boolean`: asks the root's stream for `REFRESH_REMOTE_TASK_EXECUTIONS`; `false` when the stream isn't ready;
+  - `selectedAgent(): string | null`: the agent run the family's view has selected;
+  - `rereadAgent(agentRunId): boolean`: starts the member read (the existing hydration); `false` when nothing starts.
+- **The rule, written once:**
+
+  ```text
+  checking ← true
+  refreshed ← adapter.refreshOnStream()
+  target ← selectedAgent() if it is one of the run's agents
+           else (refreshed ? none : the run's first agent)
+  started ← target ? adapter.rereadAgent(target) : false
+  if not (refreshed or started): checking ← false   // Retry always settles
+  ```
+
+  The answers (`applySummary`, `markReachable`) settle it as today.
+- Behavior is unchanged: the same requests, the same settling, REQ-804 as is. Web only; no server or contract change.
+- **Tests:** a spec for the shared rule in `remoteRunsStore` (refreshed or not, selected or not, nothing started), and one per family for its adapter.
 
 ## Removal / Decommission Plan (Mandatory)
 
