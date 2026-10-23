@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 | F-001 | `Local Fix` | SR-005, ARCH-REV-002, CRR-001; API-REV/DR N/A | Fixed at `1bdcff8ae2`; back to code review (Targeted Delta Review) |
 | IR-003 | Code Reviewer, `code-review-report.md`, CRR-003 (failure origin of API-REV-001); Architecture Reviewer ARCH-REV-003 (SR-006) | F-002, F-003, F-004 (Local Fix); F-005 (Design Impact → SR-006 DS-004a); N-405 | `Local Fix` | SR-006, ARCH-REV-003, CRR-003, API-REV-001; DR N/A | Fixed at `e37ad88b98`; back to code review (Targeted Delta Review) |
 | IR-004 | Architecture Reviewer ARCH-REV-005 on SR-008 (`design-spec.md` § Window Retry Rule; FU-004 pulled in by the user) | FU-004; N-405, N-407 | `Local Fix` (implementing the SR-008 design) | SR-008, ARCH-REV-005, CRR-004, API-REV-001; DR N/A | Implemented at `2aeccdd850`; to code review (Targeted Delta Review) |
+| IR-005 | Code Reviewer, `code-review-report.md`, CRR-006 (failure origin of API-REV-002 F-005) | F-006 | `Local Fix` | SR-008, ARCH-REV-005, CRR-006, API-REV-002; DR N/A | Fixed at `580e1cac5b`; to code review (Targeted Delta Review) |
 
 ## Revision Entries
 
@@ -170,3 +171,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - **Remaining limitations or risks:**
   - The end-to-end N-405 assertion (exactly one user message in alpha's view, carrying the heading) is API/E2E's.
   - IMP-09 was not repeated for IR-004.
+
+### IR-005 — A Team opens a remote member first and reads it after (CRR-006 F-006)
+
+- **Triggering role, report path, and round:** Code Reviewer, `tickets/in-progress/remote-runs-in-tree/code-review-report.md` CRR-006, the failure origin of API/E2E API-REV-002 F-005. The probe is RTP-07, Team family, beta stopped.
+- **Triggering finding IDs:** F-006 (Medium).
+- **Classification:** Local Fix.
+- **Prior authoritative result:** IR-004. A Team view read a remote member's projection before it focused the member:
+  - the mounted path (`inspectMountedTeamMember`) failed the selection;
+  - the open path (`openTeamRun`) refused a remote focus ("not part of this Team execution", or "did not load its exact focused AgentRun");
+  - the focused reconcile set a Team inspection error, a second error owner beside `remoteRunsStore`.
+- **Current authoritative result:**
+  - A remote member is focused and committed first, then read lazily through `readRemoteTeamMember` (`teamRemoteRunRegistry.ts`), the one lazy read, which the Team Retry adapter's `rereadAgent` uses too.
+  - A failed read sets only `markReachable(false)`. The notice shows, and no Team inspection error is set.
+  - Local members keep today's rule.
+- **Related revision IDs:** SR-008, ARCH-REV-005, CRR-006, API-REV-002; DR: N/A.
+- **Why this revision is recorded:** the code review's Local Fix.
+- **Approved behavior or requirement IDs affected:** REQ-802, REQ-804, REQ-806 (the same in every family).
+- **Implementation delta (`580e1cac5b`):**
+  - `teamRemoteRunRegistry.ts`: `readRemoteTeamMember(team, agentRunId)`.
+  - `teamMemberInspectionCoordinator.ts`: a remote member skips the pre-read, is focused and committed, then read.
+  - `teamRunContextHydrationService.ts`: `selectInitialAgentRunId` accepts a remote member of the Team's remote runs.
+  - `teamRunOpenCoordinator.ts`: a remote focus needs no projection to commit, and is read after the commit; the same holds in the stream-recovery reopen.
+  - `runHistoryTeamMemberInspectionActions.ts`: the focused reconcile of a remote member reads it lazily and clears its attempt, never an error.
+  - Web docs: a line in § Remote Delegated Runs In The Tree.
+- **Changed files or areas:** the five web files above, `services/runOpen/__tests__/teamRemoteMemberOpen.spec.ts` (new), `services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts` (fake gains `remoteTaskExecutions`), and `autobyteus-web/docs/agent_execution_architecture.md`.
+- **Local validation and result:**
+  - `teamRemoteMemberOpen.spec.ts`, through the real hydration, coordinators and store actions with only GraphQL mocked. Both cases fail on the old paths with the probe's symptoms (`Requested AgentRun 'lead-run' is not part of this Team execution`, and a `rejected` inspection):
+    - opening the Team on a remote member with its node down commits the focus and shows the notice, and Retry then loads it;
+    - selecting the member in a mounted Team commits, focuses and sets no inspection error, and the focused reconcile neither.
+  - Full web suite: 4800 passed (IMP-06). Guards pass (IMP-07). Focused web: 99 passed (IMP-08). vue-tsc: no errors in the touched files.
+  - The server is unchanged, so IMP-01 to IMP-05 still apply.
+- **Next recipient or routing:** Code Reviewer (Large/High; Targeted Delta Review), then API/E2E reruns the probe (RTP-06/07, all four families). The E2E needs no rerun: the server is unchanged.
+- **Remaining limitations or risks:** IMP-09 was not repeated for IR-005.
