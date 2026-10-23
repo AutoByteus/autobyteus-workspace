@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | API/E2E test-code review Pass (CRR-005) from `/software_engineering_team/code_reviewer`; the user's "lets release a new beta" | N/A | Delivery Completed with beta `v1.5.9-beta.2` (results in the release/deployment report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-001 | API/E2E test-code review Pass (CRR-005) from `/software_engineering_team/code_reviewer`; the user's "lets release a new beta" | N/A | Delivery Completed; finalized `0aa51d622c`; beta `v1.5.9-beta.2` published (4/4 workflows, 17/17 assets) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -18,8 +18,8 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: already current; see the handoff summary.
-- Verification and finalization state: see the release/deployment report.
-- Terminal return to the Solution Designer: sent after the release, its rollout check and cleanup.
+- Verification and finalization state: evidence sufficient; finalized `0aa51d622c`; beta `v1.5.9-beta.2` from `d2820672c3`, rollout complete; Secret Gate PASS at every step.
+- Terminal return to the Solution Designer: `Sent` (after this record commit, the export and the cleanup)
 - Why this baseline was recorded: the first delivery result for the ticket.
 - Next recipient/action: the Solution Designer verifies the receipt and sends FU-001 and FU-002; the user checks on the beta.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. The approved residual risk is "Offline on a closed Task's page". The task-comments delivery missed the Secret Gate; its range was scanned afterwards and passed.
