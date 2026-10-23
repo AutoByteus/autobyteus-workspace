@@ -16,6 +16,7 @@ import type {
   AppDataMigrationExecutionResult,
   AppDataMigrationItemDetail,
 } from '../domain/app-data-migration-types.js';
+import type { SecretRemovalOwner } from '../domain/secret-removal-owner.js';
 import {
   customProviderV2MigrationFileSchema,
   type CustomProviderV2MigrationFile,
@@ -54,14 +55,6 @@ type ProviderSnapshot =
   | { kind: 'V2'; bytes: Buffer; identity: FileIdentity; parsed: CustomProviderV2MigrationFile }
   | { kind: 'V3'; parsed: CustomLlmProviderConfigFile }
   | { kind: 'INVALID'; bytes: Buffer | null; identity: FileIdentity };
-
-type SecretRemovalOwner = {
-  removeForConsumer(consumer: {
-    kind: 'llm';
-    providerId: string;
-    credentialSlot: 'apiKey';
-  }): Promise<void>;
-};
 
 const emptyV3Bytes = Buffer.from(`${JSON.stringify({ version: 3, providers: [] }, null, 2)}\n`);
 
@@ -131,6 +124,8 @@ export class CustomProviderReadableIdAppDataMigration implements AppDataMigratio
   readonly description = 'Maps active UUID selectors, resets legacy providers, and removes old keys.';
   readonly requiredOnStartup = true;
   readonly prerequisiteMigrationIds = CUSTOM_PROVIDER_READABLE_ID_PREREQUISITE_IDS;
+  // Until the provider file is converted, the current store cannot read it and old model selectors do not resolve.
+  readonly holdsBackCapabilities = ["custom_llm_providers"] as const;
 
   private readonly providerFilePath: string;
   private readonly jsonSelectors: CustomProviderReadableIdJsonSelectorMigrator;

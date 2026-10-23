@@ -30,6 +30,8 @@ export class TokenUsageRunRecordsV1AppDataMigration implements AppDataMigrationD
     TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID,
     TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   ] as const;
+  // Until the released ledger is consolidated, history reads and existing-run restore would conflict with it.
+  readonly holdsBackCapabilities = ["token_usage_history"] as const;
 
   constructor(
     private readonly repository = new LegacyTokenUsageConsolidationRepository(),
