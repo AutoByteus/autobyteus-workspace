@@ -1,4 +1,4 @@
-# IMP-05 server focused: remote collaboration + run-view resolvers | cmd: pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-collaboration tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/api/graphql/types/team-run-history.test.ts --no-watch | commit: 1046c6beb4 | env: macOS, Node v22.23.1 | date: 2026-10-23
+# IMP-05 server focused: remote collaboration, the observation route, Team lifecycle and standalone root | cmd: pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-collaboration tests/unit/api/rest/remote-run-observations-route.test.ts tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/api/graphql/types/team-run-history.test.ts --no-watch | commit: e37ad88b98 | env: macOS, Node v22.23.1 | date: 2026-10-23
 
  RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
 
@@ -94,9 +94,9 @@ migrations/
     └─ migration.sql
 
 
- Test Files  26 passed (26)
-      Tests  163 passed (163)
-   Start at  15:09:56
-   Duration  13.59s (transform 3.37s, setup 268ms, import 8.78s, tests 1.93s, environment 1ms)
+ Test Files  29 passed (29)
+      Tests  194 passed (194)
+   Start at  17:25:31
+   Duration  21.08s (transform 4.42s, setup 377ms, import 13.92s, tests 3.38s, environment 2ms)
 
 exit: 0

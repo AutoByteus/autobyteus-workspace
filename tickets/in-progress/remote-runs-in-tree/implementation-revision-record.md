@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, pass (ARCH-REV-002) | N/A | `Initial Baseline` | SR-005, ARCH-REV-002; CRR/API-REV/DR N/A | Implemented at `1046c6beb4`; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 | F-001 | `Local Fix` | SR-005, ARCH-REV-002, CRR-001; API-REV/DR N/A | Fixed at `1bdcff8ae2`; back to code review (Targeted Delta Review) |
+| IR-003 | Code Reviewer, `code-review-report.md`, CRR-003 (failure origin of API-REV-001); Architecture Reviewer ARCH-REV-003 (SR-006) | F-002, F-003, F-004 (Local Fix); F-005 (Design Impact → SR-006 DS-004a); N-405 | `Local Fix` | SR-006, ARCH-REV-003, CRR-003, API-REV-001; DR N/A | Fixed at `e37ad88b98`; back to code review (Targeted Delta Review) |
 
 ## Revision Entries
 
@@ -75,3 +76,50 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - The server is unchanged, so IMP-01…05 still apply.
 - **Next recipient or routing:** Code Reviewer (Large/High; Targeted Delta Review).
 - **Remaining limitations or risks:** unchanged from IR-001. C-2 (B's own owner stopping the run does not end A's stream) is held by the reviewer for API/E2E.
+
+### IR-003 — Owner heading, opening frame first, run end by any path, one view owner (CRR-003, SR-006)
+
+- **Triggering role, report path, and round:**
+  - Code Reviewer, `tickets/in-progress/remote-runs-in-tree/code-review-report.md` CRR-003, the failure-origin review of API/E2E API-REV-001.
+  - Architecture Reviewer, ARCH-REV-003 (`design-review-report.md`) on SR-006 (`design-spec.md` DS-004a).
+- **Triggering finding IDs:** F-002, F-003 and F-004 (Local Fixes); F-005 (Design Impact, resolved by SR-006 DS-004a); N-405 (non-blocking).
+- **Classification:** Local Fix (implementing the SR-006 design for F-005).
+- **Prior authoritative result:** IR-002. Four defects:
+  1. B could send a live run's first frame before `{nodeId}`, so A ended the stream.
+  2. The Team and Org families' remote run views lacked the affordances.
+  3. B ended observations only after an owner-command terminate.
+  4. The owner mark was unread metadata.
+- **Current authoritative result:**
+  - The owner's message carries the heading.
+  - `{nodeId}` is always first.
+  - B ends the stream on stop, terminate or delete by any path, but not on idle shutdown.
+  - Every family's remote run view comes from one owner.
+- **Related revision IDs:** SR-006, ARCH-REV-003, CRR-003, API-REV-001; DR: N/A.
+- **Why this revision is recorded:** the code review's Local Fixes and the SR-006 design change.
+- **Approved behavior or requirement IDs affected:** REQ-802, REQ-803 (AC-803 heading), REQ-806, REQ-808; DS-004a, DS-006; N-401, N-405.
+- **Implementation delta:**
+  - `c7abe89186` server:
+    - **F-005:** `remoteOwnerUserMessage` composes `From the owner of node "<name>":`, a blank line and the text, and drops `remote_owner`. `RemoteOwner` is `{nodeName}` only; IDs pass through.
+    - **F-002:** the run-observations route holds sink frames until it has sent `{nodeId}`, then flushes them in order.
+    - **F-004:** `observePairedAgents(runId, onPresentation, onEnded)`.
+      - Standalone: `StandaloneAgentRunRootManager.onRunEnded`, reported by `stopRoot` and `endRoot` after the host stopped.
+      - Team: `TeamRunLifecycleSnapshot.ending` (`idle_shutdown` | `stopped` | `null`), from `RootTeamRun`'s `onTerminated(ending)` through the materializer to the manager's `unregister`.
+      - The provider closes the sink on `onEnded`, and its terminate-only `endObservations` is removed.
+  - `57a022d0bb` and `0048cd8ae1` web (F-003): `useRemoteRunView`, the one owner of the chip, ⚙/＋, the notice and Retry, and the placeholder. `AgentWorkspaceSurface` and `TeamWorkspaceSurface` use it; `AgentWorkspaceView` drops its own remote placeholder.
+  - `a0fa3f2fb0` docs: `remote_collaboration.md` (the heading, the opening frame, the end) and web `agent_execution_architecture.md` (the one view owner).
+  - `e37ad88b98`: the integration lifecycle test expects `ending`.
+- **Changed files or areas:**
+  - `paired-agent-access.ts`, `remote-run-view-provider.ts`, `api/rest/remote.ts`;
+  - `standalone-agent-run-root-manager.ts`, `standalone-paired-agent-access.ts`;
+  - `team-run-lifecycle.ts`, `root-team-run.ts` (499 lines), `team-root-materializer.ts`, `agent-team-run-manager.ts`, `team-paired-agent-access.ts`;
+  - `useRemoteRunView.ts`, `AgentWorkspaceSurface.vue`, `TeamWorkspaceSurface.vue`, `AgentWorkspaceView.vue`;
+  - tests.
+- **Local validation and result:**
+  - New tests fail without their fix: `remote-run-observations-route.test.ts` (2 cases through the real WebSocket route) and `RemoteRunViewAffordances.spec.ts` (6 of 8).
+  - New run-end coverage: `paired-agent-access.test.ts` (both kinds) and `standalone-agent-run-root.test.ts` (end after the host stopped). `team-remote-delegation.test.ts` shows a real idle shutdown keeps the observation. The integration test shows a real terminate reports `stopped`.
+  - Full suites: server typecheck clean (IMP-01); server unit 6543 passed (IMP-03); integration 421 passed (IMP-04); focused server 194 passed (IMP-05); web 4786 passed (IMP-06); guards pass (IMP-07); focused web 67 passed (IMP-08).
+- **Next recipient or routing:** Code Reviewer (Large/High; Targeted Delta Review), then API/E2E reruns the two-server E2E and the browser probe.
+- **Remaining limitations or risks:**
+  - API/E2E's RC-31 still expects the pre-heading content and scans for `remote_owner`; it needs updating for DS-004a. N-405's single-user-message assertion is theirs to add.
+  - A Team terminate through the in-process fake runtime is not supported, so the Team `stopped` path is covered by the manager unit test and the real-root integration test rather than the two-node in-process case.
+  - IMP-09 was not repeated for IR-003.
