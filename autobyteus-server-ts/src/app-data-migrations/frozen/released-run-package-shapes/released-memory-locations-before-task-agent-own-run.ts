@@ -27,7 +27,6 @@ import {
   ReleasedAgentOrgRunExecutionTreeReader,
   ReleasedStandaloneRootTreeReader,
   ReleasedTeamRunExecutionTreeReader,
-  asSourceIndependentIndexInput,
   effectiveMemberLaunchConfiguration,
   type StandaloneRootTreeFile,
   type TaskExecution,
@@ -158,7 +157,7 @@ const listTeamAgents = async (layout: AgentMemoryLayout, rootIds: readonly strin
   for (const rootTeamRunId of rootIds) {
     const tree = await new ReleasedTeamRunExecutionTreeReader().read(layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }), rootTeamRunId);
     if (!tree) continue;
-    const index = new TeamExecutionIndex(asSourceIndependentIndexInput(tree));
+    const index = new TeamExecutionIndex(tree);
     for (const agent of index.listAgentExecutions()) {
       const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
       const configured = index.getConfiguredPlacement(agent.address);
@@ -177,7 +176,7 @@ const listOrgAgents = async (layout: AgentMemoryLayout, rootIds: readonly string
   for (const orgRunId of rootIds) {
     const tree = await new ReleasedAgentOrgRunExecutionTreeReader().read(layout.getOrgDirPath(orgRunId), orgRunId);
     if (!tree) continue;
-    const index = new AgentOrgExecutionIndex(asSourceIndependentIndexInput(tree));
+    const index = new AgentOrgExecutionIndex(tree);
     for (const listed of index.listAgents()) {
       const agent = index.requireAgent(listed.agentRunId);
       const configured = index.getConfiguredPlacement(agent.address);
@@ -211,7 +210,7 @@ const listStandaloneChildAgents = async (layout: AgentMemoryLayout): Promise<Rel
       continue;
     }
     if (!tree) continue;
-    const index = new StandaloneRootExecutionIndex(asSourceIndependentIndexInput(tree));
+    const index = new StandaloneRootExecutionIndex(tree);
     for (const listed of index.listChildAgents()) {
       const agent = index.requireAgent(listed.agentRunId);
       if (agent.executionKind === "host") throw new Error("The Agent-root host is located as a standalone run.");

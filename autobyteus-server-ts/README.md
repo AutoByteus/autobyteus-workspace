@@ -181,7 +181,7 @@ cache; and the gateway logs. A missing root is skipped. A root that cannot be
 removed records `FAILED` without blocking startup, and the migration retries on
 the next start. Nothing outside those four roots is touched. The exact roots are
 defined in
-`src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts`
+`src/app-data-migrations/migrations/remove-external-messaging-data/remove-external-messaging-data-migration.ts`
 and its registry entry. Prisma migration
 `20260924120000_remove_external_channel_tables` drops the two orphan receipt
 and delivery-event tables. Run history started from chat bindings stays

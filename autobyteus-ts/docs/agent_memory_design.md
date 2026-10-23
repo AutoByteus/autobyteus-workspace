@@ -568,9 +568,9 @@ and [frontend recovery/activity](../../autobyteus-web/docs/agent_execution_archi
 - `src/agent/compaction/compaction-recovery-controller.ts`
 - `src/memory/working-context-snapshot-serializer.ts`
 - `src/memory/restore/working-context-snapshot-bootstrapper.ts`
-- `src/memory/migration/native-working-context-snapshot-shapes.ts`
 - `src/memory/presentation/unicode-safe-text.ts`
 
 The server enables compaction with the policy only
 (`createEnabledMemoryCompactionConfiguration(new CompactionPolicy())`); startup
-conversion and its ledger remain in `src/app-data-migrations/` there.
+conversion and its ledger remain in `src/app-data-migrations/` there, including the released native
+snapshot v5 shapes and converter (`frozen/autobyteus-ts/memory/migration/`), which moved out of this library.

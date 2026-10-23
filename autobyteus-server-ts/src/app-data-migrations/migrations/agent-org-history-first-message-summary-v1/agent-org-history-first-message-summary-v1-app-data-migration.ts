@@ -11,7 +11,6 @@ import type { AgentOrgRunIndexRowRecord } from "../../frozen/server/run-history/
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedAgentOrgRunExecutionTreeReader,
-  asSourceIndependentIndexInput,
 } from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 import { ReleasedAgentOrgRunPackageCatalog } from "../../frozen/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
 import { projectAgentOrgRunHistoryRow } from "../../frozen/server/run-history/services/agent-org-run-history-row-projector.js";
@@ -98,7 +97,7 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       for (const orgRunId of [...this.dependencies.packages.listAdmitted()].sort()) {
         const current = await this.readPackage(orgRunId);
         packages.push(current);
-        projected.push(projectAgentOrgRunHistoryRow(asSourceIndependentIndexInput(current.tree), persisted.get(orgRunId)));
+        projected.push(projectAgentOrgRunHistoryRow(current.tree, persisted.get(orgRunId)));
       }
       rows = Object.freeze(projected);
     } catch (cause) {
@@ -161,7 +160,7 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       throw new Error(`AgentOrg '${orgRunId}' is missing a required current authority.`);
     }
     // The current package is tree V2 + messages; a records file exists only for pre-change runs.
-    const validated = validateAgentOrgStatePackage({ executionTree: asSourceIndependentIndexInput(tree), communicationMessages });
+    const validated = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages });
     const evidenceRecords = taskRecords ?? Object.freeze({ schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId, records: Object.freeze([]) });
     return Object.freeze({ orgRunId, tree, taskRecords: evidenceRecords, communicationMessages, index: validated.index });
   }

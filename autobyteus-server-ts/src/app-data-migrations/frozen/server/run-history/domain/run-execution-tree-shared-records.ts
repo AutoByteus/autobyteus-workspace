@@ -95,6 +95,8 @@ export type TaskTeamExecutionSource = Readonly<{
  * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
  * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
  * `source` is what the copy runs with (its snapshot); the configured placement at its address never is.
+ * Frozen for migrations, which also read released trees: a copy recorded before
+ * `20261019_delegated_copy_own_file_complete_v1` may have no `source`, so it is optional here.
  */
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -102,7 +104,7 @@ export type TaskAgentExecution = Readonly<{
   platformAgentRunId: string | null;
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  source: TaskAgentExecutionSource;
+  source?: TaskAgentExecutionSource;
 }> & RecordedUserLaunchSelection;
 
 export type TaskTeamAgentExecution = Readonly<{
@@ -122,7 +124,7 @@ export type TaskTeamExecution = Readonly<{
   taskExecutions: readonly TaskExecution[];
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  source: TaskTeamExecutionSource;
+  source?: TaskTeamExecutionSource;
 }> & RecordedUserTeamLaunchSelection;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;

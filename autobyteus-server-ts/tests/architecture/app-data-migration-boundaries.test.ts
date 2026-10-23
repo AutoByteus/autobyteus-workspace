@@ -4,7 +4,6 @@ import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { afterEach, describe, expect, it } from "vitest";
-import KNOWN_EXCEPTIONS from "./app-data-migration-boundary-exceptions.json";
 
 /**
  * The sealed app-data migration area (autobyteus-280, REQ-003..005, DS-004).
@@ -113,9 +112,8 @@ describe("sealed app-data migration area", () => {
     for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
   });
 
-  it("allows no import between production code and migration code beyond the known exceptions, which only shrink", () => {
-    // Every remaining exception must still be a real crossing, so a fixed one has to leave the list.
-    expect(asKeys(checkAppDataMigrationBoundaries(SRC).violations)).toEqual([...KNOWN_EXCEPTIONS].sort());
+  it("allows no import between production code and migration code, nor between migration folders", () => {
+    expect(asKeys(checkAppDataMigrationBoundaries(SRC).violations)).toEqual([]);
   });
 
   it("reaches every frozen file from a migration folder", () => {

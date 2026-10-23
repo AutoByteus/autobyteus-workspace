@@ -68,27 +68,3 @@ export {
   ReleasedTeamRunExecutionTreeReader,
 } from "./released-trees-before-task-agent-own-run/released-run-package-file-readers.js";
 
-/**
- * The bridge from a released tree to the current execution indexes and state-package validators (design
- * D-8): the released migrations that keep their documented dependency on those current modules (both
- * `20260731` working-context snapshot migrations, `20260926_team_context_file_execution_locators_v1` and
- * `20260905_agent_org_history_first_message_summary_v1`) pass their tree through here, and only here.
- *
- * 1. The released tree may hold delegated copies without `source` (a copy of a configured place), which the
- *    current record type requires; the value is passed unchanged, only its type is the current one.
- * 2. Only these may be called with the result, none of which reads a copy's `source`: the constructors of
- *    `TeamExecutionIndex`, `AgentOrgExecutionIndex` and `StandaloneRootExecutionIndex`; their
- *    `listAgentExecutions`, `listTeamExecutions`, `getTeamRunPhysicalScope`, `getConfiguredPlacement`,
- *    `listAgents`, `listChildAgents`, `listTeams`, `requireAgent`, `getPhysicalScopeForAgent` and
- *    `getPhysicalScopeForTeam`; `validateTeamRunStatePackage` and `validateAgentOrgStatePackage` (which call
- *    only `requireAgent`); and `projectAgentOrgRunHistoryRow`.
- * 3. Whoever makes one of those read a copy's `source` must first freeze it for these migrations.
- */
-export function asSourceIndependentIndexInput(tree: ReleasedTeamTree): TeamRunExecutionTreeSnapshot;
-export function asSourceIndependentIndexInput(tree: ReleasedAgentOrgTree): AgentOrgRunExecutionTreeSnapshot;
-export function asSourceIndependentIndexInput(tree: ReleasedStandaloneTree): StandaloneRootTreeSnapshot;
-export function asSourceIndependentIndexInput(
-  tree: ReleasedTeamTree | ReleasedAgentOrgTree | ReleasedStandaloneTree,
-): TeamRunExecutionTreeSnapshot | AgentOrgRunExecutionTreeSnapshot | StandaloneRootTreeSnapshot {
-  return tree as unknown as TeamRunExecutionTreeSnapshot | AgentOrgRunExecutionTreeSnapshot | StandaloneRootTreeSnapshot;
-}

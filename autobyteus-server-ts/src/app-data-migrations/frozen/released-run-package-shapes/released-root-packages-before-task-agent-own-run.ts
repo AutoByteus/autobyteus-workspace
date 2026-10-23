@@ -23,7 +23,6 @@ import {
   ReleasedAgentOrgRunExecutionTreeReader,
   ReleasedTeamCommunicationMessagesReader,
   ReleasedTeamRunExecutionTreeReader,
-  asSourceIndependentIndexInput,
 } from "./released-trees-before-task-agent-own-run.js";
 
 import { AgentRunMetadataStore } from "../server/run-history/store/agent-run-metadata-store.js";
@@ -184,7 +183,7 @@ export class ReleasedRootRunPackageValidator {
       if (!executionTree || !communicationMessages) {
         throw new Error("Team Run V3 tree and strict Team communication messages are required.");
       }
-      const currentInput = asSourceIndependentIndexInput(executionTree);
+      const currentInput = executionTree;
       validateTeamRunStatePackage({ executionTree: currentInput, communicationMessages });
       const index = new TeamExecutionIndex(currentInput);
       const key = packageKey("agent_team", rootRunId);
@@ -227,7 +226,7 @@ export class ReleasedRootRunPackageValidator {
       if (!executionTree || !communicationMessages) {
         throw new Error("AgentOrg Run V2 tree and strict Org communication messages are required.");
       }
-      const currentInput = asSourceIndependentIndexInput(executionTree);
+      const currentInput = executionTree;
       validateAgentOrgStatePackage({ executionTree: currentInput, communicationMessages });
       const index = new AgentOrgExecutionIndex(currentInput);
       const key = packageKey("agent_org", rootRunId);

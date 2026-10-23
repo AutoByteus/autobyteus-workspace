@@ -1,9 +1,14 @@
 # Released run-package shapes (frozen)
 
+Part of the sealed migration area's frozen layer (see the Data Migration Guideline, "Sealed migration area"):
+only migrations import these files, and only the migrations named below use each one.
+
 Verbatim copies, as of `origin/personal@f2924a2b0`, of the Team tree v2 / Org tree v1 contracts,
 the v2-era shared execution records and **strict** schemas, Team and Org task-records v1 (types,
 schemas, stores), the Org state-package v1 validator and the Org execution index v1. Only import
-paths were remapped.
+paths were remapped. The Org tree v1, its schema, the Org execution index v1 and the Org state-package
+v1 validator are used by `20260901` alone, so they live in its folder
+(`migrations/agent-org-flat-team-families-v1/released-run-package-shapes/`).
 
 Why they exist: current execution trees are read tolerantly (unknown fields ignored, no version
 field), and the task-records runtime code is deleted. Released app-data migrations
@@ -29,14 +34,10 @@ layout read through these copies (contract §5.4):
 - `released-memory-locations-before-task-agent-own-run.ts`: today's runtime memory location
   classifier and stored location derivation. Used by both `20260731` working-context snapshot migrations.
 
-These modules (and `20260905` directly) keep using the current execution indexes, state-package
-validators and Org history-row projector on these released trees: their results are unchanged by
-task-agent-own-run and by delegated-copy-own-file-complete (which makes a copy's `source` required). The
-released tree reaches them only through `asSourceIndependentIndexInput` in
-`released-trees-before-task-agent-own-run.ts`, whose comment lists the calls that may be made with it; none
-reads a copy's `source`. Whoever makes one of them read `source` must first freeze it for these migrations.
-
-Current runtime code must never import this module.
+These modules (and `20260905` directly) use the execution indexes, state-package validators and Org
+history-row projector on these released trees, through their frozen copies in `frozen/server/`
+(autobyteus-280). A released tree may hold delegated copies without `source`; the frozen record types keep
+it optional, and none of those calls reads it. A later change to the application's indexes cannot reach them.
 
 ## Message logs before and after append-only message logs (as of `origin/personal@65cf41c6b4`)
 
@@ -50,9 +51,7 @@ Current runtime code must never import this module.
   the released migrations that may run after the conversion on a pending install: the message readers in
   `released-trees-before-task-agent-own-run/released-run-package-file-readers.ts` (R-A), the package
   validator in `released-root-packages-before-task-agent-own-run.ts` (R-B) and the locators-v1 message
-  sources in `src/context-files/services/context-file-record-locators.ts` (R-C).
-
-Current runtime code must never import these modules.
+  sources in `frozen/server/context-files/services/context-file-record-locators.ts` (R-C).
 
 ## Task agents' own files with `origin` (as of `origin/personal@f171032e88`)
 
@@ -68,5 +67,3 @@ Current runtime code must never import these modules.
   20261019 writes. 20261017's retry uses it to recognize its own earlier output (`isOwnedHere`,
   `partsAtL1`) after 20261019 has completed that file in the same start. A damaged file is never owned.
   Every other 20261017 read and write stays strict and released.
-
-Current runtime code must never import this module.

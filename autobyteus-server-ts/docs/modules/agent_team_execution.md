@@ -905,9 +905,10 @@ fails and remains retry-visible.
 These released migrations keep their released behavior on skip-version
 installs. Where they classify shapes ("already current" versus "old") or read
 released task-records files, they import frozen strict copies from
-`src/app-data-migrations/legacy/released-run-package-shapes/` (Team tree V2,
+`src/app-data-migrations/frozen/released-run-package-shapes/` (Team tree V2,
 Org tree V1, task-records V1, Org state-package V1), never the current tolerant
-readers. Current runtime code never imports that module. The delegated-child
+readers. Current runtime code never imports the migration area
+(`tests/architecture/app-data-migration-boundaries.test.ts`). The delegated-child
 resource lifecycle added no migration of its own.
 
 The V1-to-V2 coordinator-derived Team default is a historical migration rule
@@ -954,7 +955,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/config/task-execution-idle-shutdown-setting.ts`
 - `src/run-history/store/run-execution-tree-shared-record-schemas.ts`
 - `src/run-history/store/team-run-execution-tree-schema.ts`
-- `src/app-data-migrations/legacy/released-run-package-shapes`
+- `src/app-data-migrations/frozen/released-run-package-shapes`
 - `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`

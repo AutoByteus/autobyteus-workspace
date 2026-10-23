@@ -403,7 +403,8 @@ export const validateCopyLayouts = (
 ): void => {
   const visit = (task: TaskExecution): void => {
     if ("teamRunId" in task) {
-      const layout = new Set<string>(task.source.members.map((member) => member.address));
+      // Only trees this file's parsers accepted reach here, and they require a copy's `source`.
+      const layout = new Set<string>(task.source!.members.map((member) => member.address));
       if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
         throw new Error(`Task TeamRun '${task.teamRunId}' does not match its source.`);
       }
