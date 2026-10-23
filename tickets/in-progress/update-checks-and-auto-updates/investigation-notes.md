@@ -159,6 +159,12 @@
 
 Not started (after requirements approval and the Product result).
 
+## SR-003 Evidence (2026-10-23)
+
+- The user, in the design review, relayed with quotes by the Product UI/UX Designer (run `product_ui_ux_designer_d3a466b2a14542698fcb2a9b4ab76b32`): with automatic updates enabled "we should directly overwrite those" local changes. Instead of skipping, "give them a confirmation overlay" when the switch is turned on.
+- The designer's source finding, checked by the Solution Designer (`Read`): `autobyteus-server-ts/src/agent-packages/installers/github-agent-package-installer.ts` `stagePackageReplacement` moves the old install folder aside and deletes it on success. Any file added inside a managed package is therefore lost on every update, manual ones included. Under the earlier skip rule, such a package would never be updated automatically, and every existing package would be skipped once, because no record of installed content exists.
+- Consequence: no installed-content fingerprint is needed; DEC-002 is superseded by DEC-019.
+
 ## Requirement Implications
 
 - The Task's assumed rate-limit fix (conditional requests) does not work unauthenticated (Measured). A 30-minute default for N sources on four nodes needs a quota-free check or authentication. The git ref advertisement is quota-free (Measured).

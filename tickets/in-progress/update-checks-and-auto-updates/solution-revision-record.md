@@ -9,6 +9,7 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-210, 2026-10-23) | N/A | N/A | Ready for Approval | BEH-001..007, REQ-001..019, AC-001..017, SCN-001..009, DEC-001..016 | Waiting for the user on DEC-003 |
 | SR-002 | Requirements | The user's answers, 2026-10-23 | DEC-003; new category | Ready for Approval | Approved | BEH-008, UC-006, REQ-001/002/005/010/011, REQ-020..023, AC-018..022, SCN-010/011, DEC-003/004/017/018 | Product Design Requested |
+| SR-003 | Requirements | Product designer's Requirement Impact (the user's design-review direction), 2026-10-23 | Impact on REQ-007/008/010 | Approved (SR-002) | Approved (SR-003) | REQ-007, REQ-008, REQ-010, AC-008, SCN-006, BEH-004, DEC-002 → DEC-019, Data Continuity | Design continues |
 
 ## Revision Entries
 
@@ -39,3 +40,17 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 - Intended behavior changed: `Yes` (approved by the user's own answers; the rest within the direction, user informed).
 - Approval: `requirements-doc.md` at SR-002.
 - Next action: Product Design request, delegated by the Solution Designer to the Product Team; the user approves the UI.
+
+### SR-003 — Local changes are replaced, after a one-time confirmation
+
+- Phase and classification: Requirements, `Refinement` (the user changed intended behavior).
+- Trigger: a Requirement Impact from the Product UI/UX Designer (run `product_ui_ux_designer_d3a466b2a14542698fcb2a9b4ab76b32`), 2026-10-23. It quotes the user: with automatic updates enabled "we should directly overwrite those" local changes, and "give them a confirmation overlay" when the switch is turned on.
+- Changes:
+  - REQ-007: replace, with confirmation on turning the switch on, no record and no backup;
+  - REQ-008: the "local changes" outcome is removed;
+  - REQ-010: the explanation text says local changes are replaced;
+  - AC-008 and SCN-006 rewritten; BEH-004 desired text; Data Continuity; Architecture Phase Input (no fingerprint);
+  - DEC-002 superseded by DEC-019: skill sources follow the same rule, decided by the Solution Designer for consistency.
+- Intended behavior changed: `Yes`. Approved by the user's own words; skill-source consistency is within the direction, user informed.
+- Approval: `requirements-doc.md` at SR-003.
+- Next action: the reply to the Product designer; the design continues to the user's approval.

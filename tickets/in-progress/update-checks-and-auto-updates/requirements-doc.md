@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-002`
-- Current solution revision ID: `SR-002`
+- Status: `Approved` at `SR-003`
+- Current solution revision ID: `SR-003`
 - Package identifier: `update-checks-and-auto-updates`
 - Request / ticket: Project Task autobyteus-210, "Update behaviour and settings"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-20, 2026-10-21 and 2026-10-23
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-10-23
 - Approved by and reference: `User` for DEC-003, the agent-runtime category and "no automatic update of the app" (the user's answers in the Solution Designer conversation, 2026-10-23). The rest by the Solution Designer within the direction, user informed (same conversation).
-- Exact approved requirements baseline / solution revision: this document at `SR-002`
+- Exact approved requirements baseline / solution revision: this document at `SR-003`
 - Behavior-defining supplements and their approved versions: none yet. The Product UI/UX package becomes behavior-defining once the user approves it.
 
 ## Problem And Desired Outcome
@@ -27,7 +27,7 @@
   - Agent runtimes become a fourth notification category.
   - An opt-in automatic update for agent packages, for skill sources and for agent runtimes (each off by default), switchable in the Update checks card and right in the Notification Center, with its meaning explained at the switch. The app itself is never updated automatically.
   - Automatic results are visible as notifications.
-  - Local edits are never replaced silently.
+  - With automatic updates on, a source simply follows GitHub: local changes are replaced, which the user confirms once when turning the switch on (SR-003, the user).
   - All of this stays within GitHub's limits.
 - Observable definition of success:
   - In an isolated app with test data, a published package or skill update appears within the configured interval without a restart or click.
@@ -42,7 +42,7 @@
 | BEH-001 | System | SCN-001 | Node checks each source every 6 h (first pass 60 s after start) | Interval per node, default 30 min, configurable within a safe range; passes spread with a random delay | Setting "Update checks" turns node checks off; one source at a time; failures quiet | scheduler |
 | BEH-002 | System | SCN-004, SCN-005 | App checks once, 8 s after launch | App re-checks periodically while running (default 60 min, configurable); a switch turns the app's checks off | Manual "Check for Updates"; channels; Download/Install only on the user's action | appUpdater |
 | BEH-003 | User | SCN-003 | Updates only when the user presses Update | Unchanged when automatic updates are off (default) | Existing pipelines, skill confirmation | 209 |
-| BEH-004 | System | SCN-002, SCN-006, SCN-007 | No current supported behavior. Proposed trigger: a check finds an update while automatic updates are on for that kind | The update is applied by itself through the same pipeline, then announced; a failure or a skip (local changes) is announced and nothing changes | Validation, skill-name checks, safe replacement, skill-update notices to running agents | pipelines |
+| BEH-004 | System | SCN-002, SCN-006, SCN-007 | No current supported behavior. Proposed trigger: a check finds an update while automatic updates are on for that kind | The update is applied by itself through the same pipeline, then announced; local changes are replaced (confirmed when the switch was turned on); a failure is announced and nothing changes | Validation, skill-name checks, safe replacement, skill-update notices to running agents | pipelines |
 | BEH-005 | User | SCN-008 | No current supported behavior | Switches for automatic updates of agent packages and of skill sources in the Update checks card and in the Notification Center (same settings) | — | — |
 | BEH-006 | System | SCN-009 | Checks use 2 REST API requests each; unauthenticated 304s also count (Measured) | Automatic checks do not use up the REST API quota; when GitHub refuses, checks back off until GitHub allows and the Update checks card says so | Gate persists across restarts | probe |
 | BEH-008 | System/User | SCN-010, SCN-011 | Settings → Agent Runtimes checks runtime versions only when opened or on Check again; Update runs the vendor command on the desktop's own node only, refused while that runtime has running agents; no notification outside the page; the Codex version source is `api.github.com` (REST quota, outside the 209 gate) | A runtime with a newer version gets a notification in an "Agent runtimes" category, found by a periodic check; opt-in automatic runtime update | The page, its checks, the vendor commands, the running-agent rule, desktop-own-node-only Update (runtime-lifecycle-review D-3) | `docs/modules/agent_runtimes.md`; web `docs/settings.md` |
@@ -53,7 +53,7 @@
 | Actor | Goal | Required Outcome | Constraint |
 | --- | --- | --- | --- |
 | User who wants control | Decide every update | Nothing changes without pressing Update (default) | Opt-in only |
-| User who doesn't want to care | Always current packages | Automatic updates for a kind, visible afterwards | Local edits never replaced silently |
+| User who doesn't want to care | Always current packages | Automatic updates for a kind, visible afterwards | Confirms once that local changes are replaced |
 | User with several nodes on one IP | Stay within GitHub limits | Intervals with a safe minimum; spreading; back-off | 60 req/h per IP for the REST API |
 | Running agents | Consistent skills | Existing safe replacement and notices | — |
 
@@ -112,10 +112,10 @@ None.
 | REQ-004 | When GitHub refuses or limits requests, automatic checks and automatic updates wait until GitHub allows them again (also across restarts), and the Update checks card says until when. When offline, checks stay quiet and resume when the network returns. | BEH-006 | Must | Back off and say so | User Part 3; DEC-006 |
 | REQ-005 | Each node has the settings "automatic updates for agent packages" and "automatic updates for skill sources" (and, on the desktop's own node, "automatic updates for agent runtimes", REQ-022), all off by default. Nothing is updated automatically unless the setting of that kind is on. With both off, behavior is exactly 209's (notify, update only on the user's press). | BEH-003, BEH-004 | Must | Opt-in; trust | User 2026-10-20/21; DEC-001 |
 | REQ-006 | With a kind's setting on, when a check finds a newer revision of a source of that kind, the node applies it by itself through the same update pipeline as a manual update. That covers download, validation, skill-name checks, safe replacement and notices to running agents. Turning a setting on applies updates that are already waiting soon after (within about a minute). | BEH-004 | Must | "they don't have to care" | User; DEC-012 |
-| REQ-007 | An automatic update never silently replaces local changes. If the installed files of a source differ from what AutoByteus installed, or this cannot be determined, the automatic update is skipped, the source keeps its files, and a notification says so. The manual Update (with its existing confirmation for skill sources) stays available. | BEH-004 | Must | Task direction | DEC-002 |
-| REQ-008 | Every automatic outcome is visible as a notification of that source, unread until seen: "updated automatically to <revision>" (with what changed); "automatic update failed, nothing was changed" (with the reason and a manual Update); "not updated automatically: local changes" (with a manual Update). The Settings-row indicator shows while any such notification is unread, even when nothing waits. | BEH-004 | Must | Visible | Task direction; DEC-007 |
+| REQ-007 | With automatic updates on for a kind, a found update replaces the installed source with GitHub's revision, including any local changes or added files, without asking again. This is the same replacement as a manual update. Turning the switch on for agent packages or for skill sources (in the card or in the Notification Center) first opens a confirmation that says what is downloaded and from where, that updates can change what agents do, that local changes and added files are replaced without asking and cannot be restored, and how to turn it off. Cancel leaves the switch off. The node keeps no record of installed content and no backup of replaced files. | BEH-004 | Must | The user: staying on stale packages costs more than losing local edits | The user, 2026-10-23 (design review, relayed with quotes by the Product designer); DEC-019 |
+| REQ-008 | Every automatic outcome is visible as a notification of that source, unread until seen: "updated automatically to <revision/version>" (with what changed); "automatic update failed, nothing was changed" (with the reason and a manual Update). The Settings-row indicator shows while any such notification is unread, even when nothing waits. | BEH-004 | Must | Visible | Task direction; DEC-007 |
 | REQ-009 | A failed or skipped automatic update keeps the source unchanged and is not retried by itself more than once per interval. It is notified once per revision, not again at every pass. | BEH-004 | Must | No noise | DEC-016 |
-| REQ-010 | The automatic-update switches (packages, skill sources, and on the desktop's own node runtimes) appear in the node's Update checks card (the full home) and in the Notification Center, at the category they belong to (a shortcut to the same settings). At both places the switch shows what turning it on means: what is downloaded and from where, that the content can change what agents do, that local changes are not replaced, and how to turn it off. | BEH-005 | Must | "some users don't even know the setting exists" | User 2026-10-23 |
+| REQ-010 | The automatic-update switches (packages, skill sources, and on the desktop's own node runtimes) appear in the node's Update checks card (the full home) and in the Notification Center, at the category they belong to (a shortcut to the same settings). At both places the switch shows what turning it on means: what is downloaded and from where, that the content can change what agents do, that local changes are replaced (packages and skill sources), and how to turn it off. Turning a package or skill-source switch on asks for confirmation (REQ-007). | BEH-005 | Must | "some users don't even know the setting exists" | User 2026-10-23 |
 | REQ-011 | The check intervals for agent packages, skill sources and agent runtimes are set in the node's Update checks card, with their minimum enforced and a short note about GitHub's limits beside the controls. | BEH-001, BEH-008 | Must | User Part 3 | User |
 | REQ-012 | The desktop app checks for its own update periodically while it runs: default every 60 minutes, minimum 15 minutes, maximum 24 hours, configurable in Settings → Updates. A newer release found by such a check appears in the Notification Center as in 209. | BEH-002 | Must | Missed releases | User 2026-10-21/23; DEC-004 |
 | REQ-013 | The app's own update check can be turned off in Settings → Updates (on by default). When off, the app makes no automatic update request (neither at launch nor periodically); "Check for Updates" still works when pressed. | BEH-002 | Must | FU-002 | User Part 2; DEC-009 |
@@ -141,7 +141,7 @@ None.
 | AC-005 | REQ-005 | SCN-003 | Fresh install / existing install | Both automatic-update settings are off; a found update is only notified; nothing changes until Update is pressed | — | Server + isolated instance |
 | AC-006 | REQ-006, REQ-008 | SCN-002 | Packages setting on; a test package gets a new revision | Within the interval the package is updated through the normal pipeline; a notification "updated automatically to <rev>" with the compare link appears unread; the indicator shows | — | Isolated instance + real GitHub |
 | AC-007 | REQ-006, REQ-008 | SCN-002 | Skill sources setting on; a test skill source gets a new revision | Same, without a confirmation dialog; running agents using that skill get the existing skill-update notice | — | Isolated instance |
-| AC-008 | REQ-007 | SCN-006 | Setting on; a file of the installed source was edited locally | No automatic update; files unchanged; a notification "not updated automatically: local changes" with a manual Update | Manual Update of a skill source still asks for confirmation | Server tests + isolated instance |
+| AC-008 | REQ-007 | SCN-006 | (a) The user turns the packages or skill-sources switch on. (b) The switch is on and a file of the installed source was edited or added locally; a newer revision appears | (a) A confirmation states the replacement of local changes; Cancel leaves the switch off; Confirm turns it on. (b) The source is updated to GitHub's revision; the local edit and added file are gone; the notification says "updated automatically" | Manual Update of a skill source still asks its existing confirmation | Web tests; server tests; isolated instance |
 | AC-009 | REQ-008, REQ-009 | SCN-007 | Setting on; the update fails (e.g., invalid package) | Source unchanged; one notification "automatic update failed, nothing was changed" with the reason; not repeated at the next passes for the same revision | — | Server tests |
 | AC-010 | REQ-006 | SCN-008 | Updates waiting; the user turns the packages switch on in the Notification Center | The explanation is visible at the switch; within about a minute the waiting packages are updated and announced | Turning it off again stops further automatic updates | Isolated instance |
 | AC-011 | REQ-010 | SCN-008 | The switch in the panel and in the card | Both show the same state; changing one changes the other (also in another window of the same node) | — | Web tests |
@@ -166,7 +166,7 @@ None.
 | SCN-003 | System | Node | Default: notify only | Check finds update, setting off | Notification waiting | User decides | — | Supported Normal | 209 |
 | SCN-004 | System | Desktop app | Find app releases while running | App interval elapsed | Check feed → notification | Found without restart | Busy/offline: skipped | Supported Normal | User 2026-10-21 |
 | SCN-005 | User | User | Control and understand the app check | Settings → Updates | Switch off/on; read status | Truthful state | — | Supported Normal | User Part 2 |
-| SCN-006 | System | Node | Protect local edits | Setting on, files changed locally | Skip → notification | Files kept | — | Supported Explicit Edge (Task direction) | Task |
+| SCN-006 | User/System | User, then node | Follow GitHub without being asked again | Turning the switch on; later a newer revision | Confirm once → later updates replace local changes | Always current | Cancel: switch stays off | Supported Normal | The user, 2026-10-23 |
 | SCN-007 | System | Node | Safe failure | Automatic update fails | Rollback → notification | Unchanged, visible | — | Supported Explicit Edge (Task direction) | Task |
 | SCN-008 | User | User | Opt in where the notice is | Notification Center switch or card | Read explanation → turn on | Waiting updates applied | — | Supported Normal | User 2026-10-23 |
 | SCN-010 | System/User | Desktop's own node | Learn of runtime updates and update them | Runtime interval elapsed / page check | Check → notification → Update (not while agents run) | Runtime current | Agents running: Update unavailable | Supported Normal | User 2026-10-23 |
@@ -179,7 +179,7 @@ None.
 - Linked UI/UX supplement: pending (Product Team).
 - Design must cover:
   - the Update checks card: the existing switch, the packages/skills interval with minimum and rate-limit note, the two automatic-update switches with their explanation, the back-off state, the honest network description;
-  - the Notification Center: the automatic-update switches (packages, skill sources, runtimes) at their categories with the explanation at the switch; the new "Agent runtimes" category; the rows for automatic outcomes (updated, failed, skipped because of local changes, waiting for running agents);
+  - the Notification Center: the automatic-update switches (packages, skill sources, runtimes) at their categories with the explanation at the switch and the confirmation when turning a package or skill-source switch on; the new "Agent runtimes" category; the rows for automatic outcomes (updated, failed, waiting for running agents);
   - the indicator for unread automatic outcomes;
   - Settings → Updates: the app check switch, the interval, truthful status and last check;
   - en and zh-CN strings.
@@ -196,9 +196,9 @@ None.
 
 ## Data Continuity And Acceptable Loss
 
-- Persisted data affected: `Yes`. New settings, notification outcomes, a record of installed content per managed source, the app check settings.
+- Persisted data affected: `Yes`. New settings, notification outcomes, the app check settings.
 - Preserve: all 209 data.
-- Acceptable loss: a missing record of installed content means automatic update is skipped and notified for that source until a manual update records it.
+- Acceptable loss: with automatic updates on, local changes inside a managed package or skill source are replaced by updates, as the user confirmed (REQ-007). Nothing else.
 - Unknowns: none.
 
 ## External Contracts And Dependencies
@@ -226,7 +226,8 @@ None.
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Scope of automatic updates | Safety vs simplicity | Global; per kind; per source | The user's 2026-10-23 direction names "an automatic updates switch for agent packages and one for skill sources". Per node, like the Update checks switch, because packages live on nodes. Per-source exceptions add UI and state without a stated need; a follow-up if wanted. | Solution Designer (from the user's direction) | Decided |
-| DEC-002 | Automatic update when local files changed | Silent loss of edits | Replace; skip + notify | Today a manual skill update warns that local edits are lost. Automatically losing them breaks trust. Skip and notify, with the manual Update still offered. If unknown, treat as changed. | Solution Designer | Decided |
+| DEC-002 | Automatic update when local files changed | Silent loss of edits | Replace; skip + notify | Today a manual skill update warns that local edits are lost. Automatically losing them breaks trust. Skip and notify, with the manual Update still offered. If unknown, treat as changed. | Solution Designer | Superseded by DEC-019 (SR-003) |
+| DEC-019 | Local changes under automatic updates | The user rejected skip-and-notify | Skip + notify (DEC-002); replace after a one-time confirmation | The user, 2026-10-23: with automatic updates enabled "we should directly overwrite those"; staying on stale packages costs more than losing local edits; instead "give them a confirmation overlay" when they enable the switch. It applies to skill sources as well (the same reasoning; Solution Designer). No record of installed content, no list of what was replaced, no backup (not asked for; consistent with DEC-003). The confirmation is started by the user, so it is not one of the excluded pop-ups. | User (skill sources: Solution Designer for consistency) | Decided |
 | DEC-003 | Undo, pin to a revision, or skip a version for automatic package/skill updates | Recovery from a bad upstream revision vs complexity | (a) none: the notification links to what changed; a user who does not want automatic updates turns the switch off and keeps using manual Update; (b) "Undo" (reinstall the previous revision, which then needs pinning or the next pass re-updates it); (c) pin per source / skip version | In 209 you said "I personally have never clicked a skip … I update to the latest". Undo only works with pinning (otherwise the next pass re-applies the update), which needs per-source state and UI. **Recommendation: (a)** in this ticket. **The user, 2026-10-23: none** ("nobody is going to just the updates … the user, mostly, user will update by themselves"). | User | Decided: (a) |
 | DEC-004 | Interval defaults and limits | Timeliness vs limits | — | One interval per category (the user). Agent packages and skill sources: each default 30 min (the user), minimum 15 min, maximum 24 h. Agent runtimes: default 60 min (vendor releases are less frequent than package commits; each check runs four short version reads), minimum 15 min, maximum 24 h. App: default 60 min (the user mentioned one hour), minimum 15 min, maximum 24 h; its feed is not on the API quota (Read) but each check fetches the releases feed. 15 min keeps any single source at ≤ 4 requests per hour. | Solution Designer | Decided |
 | DEC-005 | How 30 minutes stays safe | The Task's assumed fix fails | Conditional requests (Measured: still counted); authentication (out of scope); git ref advertisement (Measured: quota-free) | Checks must not consume the REST quota (REQ-002); random delay per pass; one source at a time. The mechanism is the architecture's choice; the git ref advertisement is the measured candidate. | Solution Designer | Decided |
@@ -273,7 +274,7 @@ None.
 
 - Scenarios to map: SCN-001..SCN-009.
 - Constraints: 209 owners and contracts; REQ-002 (no REST quota for automatic checks); QR-002.
-- Deferred to architecture: the quota-free check mechanism (candidate measured); the jitter shape; the record of installed content (fingerprint) and where it lives; how automatic updates run from the pass; the notification outcome model; the app schedule owner (`appUpdater.ts` is at 499 lines).
+- Deferred to architecture: the quota-free check mechanism (candidate measured); the jitter shape; how automatic updates run from the pass; the notification outcome model; the app schedule owner (`appUpdater.ts` is at 499 lines).
 - Facts to verify: the git ref advertisement for renamed repositories and large ref lists (UNK-001); GitHub's behavior on git endpoint throttling.
 
 ## Readiness Check
