@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Revision: SR-001. Requirements approved within the Task's direction (urgent fix; goal fully stated).
+- Revision: SR-002 (D-1 method corrected after the implementation's Design Impact). Requirements approved within the Task's direction (urgent fix; goal fully stated).
 - Design status: `Ready`
 - Investigation: `investigation-notes.md` (C-01..C-07)
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `TESTING.md`, `RELEASE.md`, the data migration guideline ("Sealed migration area")
@@ -59,3 +59,18 @@ None in scope. FU-001 records the dead prompt-engineering tests.
 - **Prove AC-001 in a fresh clone** (`git clone` of the pushed branch into a temporary folder, then `pnpm install`): server `tsc`, `pnpm -C autobyteus-server-ts test:integration:prepare`, the migration suites, the architecture tests, and that server unit and e2e files load.
 - **AC-003:** add a negative case to the test, a temporary untracked file imported by a temporary tracked fixture in a temporary git repo, or a unit test of the resolver function.
 - Do not change migration code or tests. If `tsc` needs anything beyond library copies, escalate.
+
+
+## SR-002: D-1 method corrected (implementation Design Impact, 2026-10-24)
+
+- **Two premises of D-1 were wrong** (Principle 1; neither was checked):
+  1. Whole files: following their imports pulls in 68 library files (most of `llm/*`, `memory/compaction/*`, all of `secrets/vault/*`). `tsc` still fails, because 280 had pruned members from **tracked** frozen siblings (`Message.toDict` and `leadingSystemMessages` in `frozen/autobyteus-ts/llm/utils/messages.ts`; `ToolCallDelta` in `llm/utils/tool-call-delta.ts`).
+  2. "Trimmed versions are unrecoverable": 280's pruner is deterministic and still exists (`/tmp/ab280/prune2.mjs`). It removes only unreferenced top-level declarations, class members and imports, repeated to a fixpoint, so its output is a line subset of its source; 280's code review checked that property.
+- **D-1 (revised):**
+  1. Restore the needed files whole from `autobyteus-ts/src` at `9b013fcc09`.
+  2. Run the same pruner over `frozen/server` and `frozen/autobyteus-ts`. The tracked files are already at their fixpoint and stay byte-identical.
+  3. The restored files shrink to the members used, which reproduces 280's reviewed frozen layer, with no vault or LLM base code in the migration area.
+  4. Evidence per restored file: it is a line subset of its `9b013fcc09` source.
+  5. The 280 boundary test, its unused-frozen-files report and the migration suites decide.
+- **Commit the pruner** as a migration-area tool so the frozen layer can be rebuilt reproducibly, for example `autobyteus-server-ts/scripts/prune-frozen-layer.mjs`, with a one-line note in the guideline's "Copy what you use" bullet. A pruner only in `/tmp` is the same kind of untracked dependency this ticket fixes.
+- Classification unchanged: Medium / Low (no migration code or tests change; no runtime behavior change).
