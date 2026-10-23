@@ -1,6 +1,8 @@
 # Frozen Layer Record: seal-migrations-per-folder (autobyteus-280)
 
-Every file under `autobyteus-server-ts/src/app-data-migrations/frozen/server/` and `frozen/autobyteus-ts/` is a copy
+Every file under `autobyteus-server-ts/src/app-data-migrations/frozen/server/`, `frozen/autobyteus-ts/` and
+`frozen/application-sdk-contracts/` (added in IR-002 for CR-001; it holds the two `@autobyteus/application-sdk-contracts` types
+two frozen server files used) is a copy
 (or, where marked, the moved original) of the source file named, taken from commit `27f2d2f72d` (`origin/personal`, the
 ticket base; no copied file differs between the base and the commit the copies were made at). Each copy was then
 pruned to the members migrations and their tests use (`/tmp/ab280/prune2.mjs` logic: unreferenced top-level
@@ -144,6 +146,7 @@ themselves.
 | `frozen/autobyteus-ts/memory/working-context-provenance.ts` | `autobyteus-ts/src/memory/working-context-provenance.ts` | copied | `MEMORY_MESSAGE_PROVENANCE_METADATA_KEY`, `TextRange`, `MediaRange`, `CompactedMemoryUserConstituent`, `NaturalUserConstituent`, `UserConstituent`, `WorkingContextMessageProvenance`, `normalizeWorkingContextMessageProvenance`, `getWorkingContextMessageProvenance`, `setWorkingContextMessageProvenance`, `buildSingleMessageProvenance` | 5 |
 | `frozen/autobyteus-ts/memory/working-context.ts` | `autobyteus-ts/src/memory/working-context.ts` | copied | `WorkingContext` | 1; WorkingContext: 8 of 10 members pruned |
 | `frozen/autobyteus-ts/utils/media-file-kind.ts` | `autobyteus-ts/src/utils/media-file-kind.ts` | copied | `MediaFileKind`, `getMediaFileExtension`, `getMediaFileKindFromPath` | 2 |
+| `frozen/application-sdk-contracts/application-agent-bindings.ts` | `autobyteus-application-sdk-contracts/src/application-agent-bindings.ts` (package `@autobyteus/application-sdk-contracts`) | copied (CR-001, IR-002) | `ApplicationExecutionProducer`, `ApplicationExecutionContext` | every other export of the file (only these two types are used; they import nothing) |
 
 ## Changes Beyond Pruning And Import Repointing
 

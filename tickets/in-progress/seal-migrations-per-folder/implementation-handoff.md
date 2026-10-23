@@ -10,17 +10,17 @@
 - Supplemental task artifacts: `release-notes.md` (REQ-008 sentence and the R-6 wording, by the Solution Designer); `frozen-layer-record.md` (this implementation: every freeze's source path, members kept and commit); `follow-ups.md`
 - Design review report: `tickets/in-progress/seal-migrations-per-folder/design-review-report.md`
 - Architecture review revision record: `tickets/in-progress/seal-migrations-per-folder/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial)
+- Triggering rework report: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, Fail: CR-001, CR-002, both Local Fix)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
 - Implementation revision record: `tickets/in-progress/seal-migrations-per-folder/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-001, SR-002, SR-003
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
-- Related code-review / API-E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001; API-E2E / delivery: N/A
+- Triggering finding IDs: CR-001, CR-002
 
 What the code does now:
 
@@ -30,7 +30,7 @@ What the code does now:
   - `frozen/`, shared by migrations only. It holds:
     - the former `legacy/` released shapes (`frozen/released-*`, `frozen/team-run-*`);
     - code several migrations share (for example `frozen/team-run-execution-tree-v1/`, `frozen/token-usage-source-shaping-constants.ts`);
-    - frozen copies of the application and library members migrations use (`frozen/server/<path>`, `frozen/autobyteus-ts/<path>`), copied from `27f2d2f72d` and pruned to the members used;
+    - frozen copies of the application and library members migrations use (`frozen/server/<path>`, `frozen/autobyteus-ts/<path>`, and, since IR-002, `frozen/application-sdk-contracts/<path>` for the two `@autobyteus/application-sdk-contracts` types frozen server files use), copied from `27f2d2f72d` and pruned to the members used;
     - the moved `memory/migration/` (from `autobyteus-ts`).
 - **Imports.** Migration folders and `frozen/` import only `domain/`, `frozen/`, their own folder, `config/prisma-client-factory.ts`, node APIs and third-party libraries. No folder imports another (prerequisite ids are local literals). Production imports only the contract.
   - `tests/architecture/app-data-migration-boundaries.test.ts` enforces this, including folder-to-folder imports and a negative case.
@@ -50,7 +50,7 @@ What the code does now:
   - **G-2** is `TokenUsageCapability`, with unchanged codes.
   - **G-1** is narrowed: the server starts, and `CustomLlmProviderStore` refuses every read and write with `CUSTOM_PROVIDERS_MIGRATION_PENDING` while the capability is pending.
   - The TeamRun V2 warning and the GraphQL id special case are gone. Any successful retry rebuilds run-package admission and refreshes capabilities.
-- **205 same-ID repair (REQ-008).** Helper runs come from three sources only: the records' `improverRunId`/`evolverRunId`, the session files' `current…RunId`/`prior…RunIds` (the released session shape), and the built-in improver's runs. `server_helper` alone no longer marks a helper run.
+- **205 same-ID repair (REQ-008).** Helper runs come from three sources only: the records' `improverRunId`/`evolverRunId`, the improver session files' `currentImproverRunId`/`priorImproverRunIds` (the released session shape), and the built-in improver's runs. `server_helper` alone no longer marks a helper run, and an evolver session file names none (IR-002, CR-002): a run only an evolver session names is kept with its history row.
   - M4 is guarded like M5: a session folder goes only when every run it names is fully removed.
   - An unreadable session file is preserved and reported `PRESERVED_UNREADABLE`.
 - **Tests.**
@@ -80,7 +80,7 @@ What the code does now:
 | BEH-001 (REQ-001..005, 007, 011; AC-001, AC-002) | Sealed code; same results | `src/app-data-migrations/{migrations/<name>/,frozen/,app-data-migration-registry.ts}`; `tests/architecture/app-data-migration-boundaries.test.ts`; `tests/app-data-migrations/<name>/` | Boundary test passes with no crossing and no unused frozen file (IMP-02). Every migration suite passes; no existing migration-test assertion changed (IMP-04 compares every `expect(` of the 94 test files changed or moved since `27f2d2f72d`: migration tests only gained assertions, in the 205 suite) |
 | BEH-002 (REQ-006; AC-003) | G-2 by capability, unchanged codes | `token-usage/providers/token-usage-capability.ts`, `startup/app-data-capability-readiness.ts`, both hosts | `tests/unit/startup/app-data-capability-readiness.test.ts` (runner → owner → `TokenUsageRunStore`: refuses with `TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` / `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED` while pending, serves once succeeded); host tests |
 | BEH-003 (REQ-006; AC-004) | G-1 narrowed | `llm-management/llm-providers/stores/custom-llm-provider-{store,availability}.ts`, owner, both hosts | Host tests: the server and the standalone host start with the migration missing, running or failed, and the store refuses with `CUSTOM_PROVIDERS_MIGRATION_PENDING`. The capability test covers listing (built-ins only, in both the model catalog and Settings), a custom-model run refused while a built-in one passes, and create/delete refused before any probe or secret change |
-| BEH-004 (REQ-008; AC-005) | 205 repair | `migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.ts`; fixture `tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts` | Three new tests: the beta.5 compactor run survives; an M3 failure keeps the session file and the next start deletes both; an unreadable session file is preserved. Every earlier 205 assertion is unchanged. `release-notes.md` carries the sentence |
+| BEH-004 (REQ-008; AC-005) | 205 repair | `migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.ts`; fixture `tests/fixtures/app-data-migrations/skill-improvement-data-fixtures.ts` | Four new tests: the beta.5 compactor run survives; a run only an evolver session names survives with its history row while its readable session folder goes (CR-002; it fails on the IR-001 code); an M3 failure keeps the session file and the next start deletes both; an unreadable session file is preserved. Every earlier 205 assertion is unchanged. `release-notes.md` carries the sentence |
 | BEH-005 (REQ-010; AC-007) | Guideline | written by the Solution Designer (`db787cb6f9`, `da34ab3a7a`) | Code matches its layout and test name |
 | DS-003 | Generic retry | `api/graphql/types/app-data-migrations.ts` | `tests/unit/api/graphql/types/app-data-migrations.test.ts`: a non-failed retry of any migration rebuilds admission and refreshes capabilities; a failed one does neither |
 | REQ-009 (AC-006) | Library folder moved | `autobyteus-ts/src/memory/migration/` → `frozen/autobyteus-ts/memory/migration/`; tests and fixture moved | Library builds and its unit tests pass (IMP-07) |
@@ -170,7 +170,7 @@ What the code does now:
 
 ## Checks Run
 
-All on `8b091176bf` (later commits change only ticket documents). Evidence is in `tickets/in-progress/seal-migrations-per-folder/evidence/`. The fixtures are all synthesized: no run touched the user's data or `~/.autobyteus`.
+IMP-01..07 ran on `8b091176bf` (IR-001). IR-002 (`9b013fcc09`) changed only the 205 migration, two frozen type imports and the boundary test, so IMP-01 and IMP-02 were rerun on it and IMP-08 reruns every migration suite plus the 205 startup e2e; the other rows still hold for code IR-002 does not touch. Evidence is in `tickets/in-progress/seal-migrations-per-folder/evidence/`. The fixtures are all synthesized: no run touched the user's data or `~/.autobyteus`.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -181,6 +181,9 @@ All on `8b091176bf` (later commits change only ticket documents). Evidence is in
 | IMP-05 | `test:integration:prepare` then `test:integration` | `8b091176bf` | macOS arm64, Node 22.23.1, clean env (`env -i PATH HOME=/tmp/ab280/home TMPDIR`) | the server integration suite, including the 4 per-migration integration files | AC-002 | Pass | `IMP-05-server-integration.log` (excerpt) | `Test Files  78 passed \| 20 skipped (98)`, `exit=0`; the four `✓ tests/app-data-migrations/...integration.test.ts` lines |
 | IMP-06 | `vitest run tests/e2e/app-data-migrations` plus the token-usage and projects startup e2e files (command in the file) | `8b091176bf` | macOS arm64, Node 22.23.1, clean env (`env -i PATH HOME=/tmp/ab280/home TMPDIR`), test-owned server and database | migration startup through the real runner and registry | AC-002, AC-005 (205 startup suite) | Pass | `IMP-06-migration-startup-e2e.log` | `Test Files  14 passed (14)`, `Tests  49 passed (49)` |
 | IMP-07 | `pnpm -C autobyteus-ts build`; `vitest run tests/unit` in `autobyteus-ts` | `8b091176bf` | macOS arm64, Node 22.23.1, clean env (`env -i PATH HOME=/tmp/ab280/home TMPDIR`) | the library without `memory/migration` | REQ-009; AC-006 | Pass | `IMP-07-library.log` | `build exit=0`, `ls: autobyteus-ts/src/memory/migration: No such file or directory`, `Test Files  305 passed (305)` |
+| IMP-01 (r2) | `pnpm -C autobyteus-server-ts typecheck`; `grep -rn '@autobyteus/' src/app-data-migrations` | `9b013fcc09` | macOS arm64, Node 22.23.1 | all server `src` | REQ-003; CR-001 | Pass | `IMP-01-r2-server-typecheck.log` | `exit=0`, `error TS count: 0`, grep `(no match)` |
+| IMP-02 (r2) | `vitest run tests/architecture` | `9b013fcc09` | macOS arm64, Node 22.23.1, clean env (`env -i PATH HOME=/tmp/ab280/home TMPDIR`) | the boundary test with the `@autobyteus/*` rule and its negative case | REQ-003, REQ-005; AC-001; CR-001 | Pass for this ticket (only FU-001 fails, as before) | `IMP-02-r2-architecture-boundaries.log` | `✓ allows no import between production code and migration code, nor between migration folders`, `✓ fails on each kind of crossing and reports an unused frozen file`; `Tests  1 failed \| 46 passed (47)`, the failure being FU-001's |
+| IMP-08 | `vitest run tests/app-data-migrations tests/unit/app-data-migrations tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts`; plus the CR-002 test run once against the IR-001 migration | `9b013fcc09` | macOS arm64, Node 22.23.1, clean env (`env -i PATH HOME=/tmp/ab280/home TMPDIR`) | every migration suite, the contract tests, the 205 startup e2e | REQ-007, REQ-008; AC-002, AC-005; CR-002 | Pass (and the new test fails on the IR-001 code, as it must) | `IMP-08-r2-migration-suites.log` | `Test Files  67 passed (67)`, `Tests  554 passed (554)`; header: `Tests  1 failed \| 11 passed (12)` on the IR-001 code |
 
 - Not run, and why:
   - the web suites (no web change);
