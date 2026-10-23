@@ -7,6 +7,7 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Task size `Large`, archite
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer's delivery handoff (CRR-003 Pass; API-REV-001 Pass) | N/A | `Delivery Completed`: integrated, verified from evidence, docs synced, finalized into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record; `data_migration_guideline.md`; `follow-ups.md` (FU-003) |
+| DR-002 | autobyteus-282 found a defect after finalization | DR-001 `Delivery Completed` | Note only: the finalized tree did not build in a clean checkout; fixed by autobyteus-282 | this record |
 
 ## Revision Entries
 
@@ -32,3 +33,10 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Task size `Large`, archite
 - Why this baseline was recorded: initial delivery
 - Next recipient/action: the Solution Designer verifies the receipt and sends FU-001..FU-003
 - Remaining blockers, rollback concerns, or untested scope: none blocking. Rollback: the code change needs no data rollback. The 205 repair cannot restore runs an earlier cleanup already deleted; the notes say so.
+
+### DR-002: defect found after finalization (note)
+
+- What: the frozen memory modules this ticket moved to `src/app-data-migrations/frozen/autobyteus-ts/memory/` were never tracked. The server `.gitignore`'s bare `memory` rule ignored them. The finalized `personal` (`48b29c4342`) therefore did not build in a clean checkout: 22 unresolved imports.
+- Why DR-001 missed it: its checks (DLV-01..06) ran in the ticket worktree, which held the ignored files on disk.
+- Fixed by autobyteus-282 (`clean-checkout-build-fix`): the files are tracked, the rule is anchored to `/memory/`, and a tracked-imports check now runs in every server test run and before tagging. No release contained the defect; the newest tag, `v1.5.9-beta.2`, predates `48b29c4342`.
+- DR-001's other records stand.

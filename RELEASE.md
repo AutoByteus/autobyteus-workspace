@@ -97,7 +97,11 @@ The hygiene check rejects these tracked paths:
 - paths longer than 200 characters;
 - names Windows cannot check out: `< > : " | ? * \`, a trailing dot or space,
   or device names such as `CON` or `NUL`;
-- raw `.xcresult` bundles and downloaded CI artifact zips.
+- raw `.xcresult` bundles and downloaded CI artifact zips;
+- tracked code that imports a file git does not track. An ignore rule can
+  keep a source file out of git while it stays on your disk, so the build
+  passes in your worktree and fails in a clean checkout
+  (`--only tracked-imports` runs this check alone).
 
 Ticket evidence is the usual source. For example, a log named after a script
 such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
