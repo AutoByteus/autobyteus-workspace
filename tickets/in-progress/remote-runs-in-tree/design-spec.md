@@ -1,0 +1,260 @@
+# Design Spec — remote-runs-in-tree (autobyteus-278)
+
+## Solution And Approval Basis
+
+- Package: `remote-runs-in-tree`; Task autobyteus-278.
+- Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-003 by the user. DEC-801 (a) stream through this node's server; DEC-802 (a) conversation only; DEC-803 messages; DEC-804 (a) Stop and Terminate; DEC-807 first version is the normal path.
+- Approved UI/UX package (Product-owned, normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` with VIS-001 … VIS-021, PA-801 … PA-809, DC-801 … DC-811 (design repository `personal` @ `1cc5563`).
+- Current solution revision ID: `SR-004`. Design status: `Ready`.
+- Authorities read: `solution-designer/SKILL.md` (re-read 2026-10-23), `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`, the repository's `DESIGN.md` (phase 1 first; rules 7 and 9), `autobyteus-server-ts/docs/design/collaboration_model.md`. All were read in this conversation.
+- Conflicts or discrepancies: none.
+
+## Current-State Read
+
+- **Delegating node (A):** a remote link lives in the root's in-memory `remoteTaskExecutions`, never among the composed `taskExecutions` (E-01). The window's tree and the root stream views (`projectAgentCollaborationView`, the Team and Org view projectors) are built from the composed tree, so remote runs never reach the window (E-02).
+- **The window's model for a local delegated copy** (standalone shown here; Team and Org follow the same pattern with their own stores):
+  - One root stream (`/ws/agent-collaboration/:hostRunId`) sends `ROOT_EXECUTION_VIEW_SNAPSHOT` (tree, statuses, messages) and then `ROOT_EXECUTION_EVENT`s.
+  - A copy's live output is the root event `agent_presentation {execution, message}`, projected to the DTO `{kind: "agent_presentation", member_address, agent_run_id, message}`.
+  - Selecting a child loads its stored conversation with `agentRunCollaborationMemberProjection(hostRunId, memberAddress, agentRunId)` (Team: `getTeamMemberRunProjection`; Org: `getAgentOrgMemberRunProjection`).
+  - Commands (`SEND_MESSAGE`, `INTERRUPT_GENERATION`) go up the same stream with `target_agent_run_id`, and the root executes them with `root.executeAgentCommand(target, …)`.
+  - Sources: `agentRunCollaborationStore.ts`, `agent-collaboration-stream-handler.ts`, `agent-collaboration-view-projector.ts`.
+- **The presentation messages already carry everything the opened view shows:** segments, tools, statuses, token usage, file changes, artifacts, member input messages (`agent-presentation-message-dtos.ts`). So PA-805 holds: Activity, Team messages and Usage are built from these, and the Browser panel is this window's own.
+- **Between nodes:** request/response only, through `PeerGateway.admit` (switch, registration, identity) and `PeerClient.call` (20 s bound). Inbound handlers check links (`RemoteRunLinks`, stored-link check N-303).
+- **The running node (B):** a root's sequenced events are available while the root is active (`openPackageSnapshotConnection`). `ActiveCollaborationRootDirectory` is the one place where roots become active (`reserve` → `commit`) and inactive (`unregister`).
+
+## Task Size And Architectural Risk (Mandatory)
+
+- `task_size`: `Large`. It spans the contract between nodes (three request kinds and one stream), A's three root kinds (views, events, commands, member projections), B's inbound side, the shared stream contracts, and the window's three tree families and run view.
+- `architectural_risk`: `High`:
+  - a new kind of channel between nodes, a server-to-server stream;
+  - a new capability: a peer's user reads and drives a run on this node, limited to runs that peer started;
+  - changes to the shared stream contracts;
+  - concurrency (the observation lifecycle against the roots' lifecycles).
+- Escalation trigger: already at the top classification.
+
+## Intended Change
+
+**One rule: a remote delegated run is a child of its delegator's root, like a local copy, except that its facts come from its node.**
+- A's root lists it in its view.
+- A's root feeds its live output into the root's own event stream.
+- A's root routes commands for it through the link.
+- A's member-projection queries fetch its stored conversation from its node.
+
+The window then needs only what the UI spec adds: the node chip, the hidden actions, the panel notes and Retry. B answers through one inbound owner, and only for runs the caller's delegation started.
+
+## Change Scope (Mandatory)
+
+- **Server, A side:**
+  - `agent-collaboration/execution/remote/` (`RemoteRunChannel` port extension, the new `RemoteRunObservation`);
+  - the three roots' view and event projectors and command routing (standalone, Team, Org);
+  - the three member-projection resolvers.
+- **Server, B side:**
+  - `remote-collaboration/inbound/` (new `RemoteRunViewProvider`);
+  - `channel/peer-gateway.ts`, `channel/peer-client.ts`, `domain/remote-requests.ts`;
+  - `api/rest/remote.ts` (three routes and one stream route);
+  - `ActiveCollaborationRootDirectory` (activation listener).
+- **Shared:** `autobyteus-collaboration-stream-contracts` (the tree DTOs' remote executions, a summary event).
+- **Web:**
+  - the three tree families' contexts and rows (`WorkspaceTransientExecutionRow` gains the chip and the unreachable state);
+  - the run view (header chip, hidden ⚙/＋, text-only composer, panel notes);
+  - the run-settings "Delegated copies" list (local only);
+  - strings in English and Chinese.
+- **Docs:** `collaboration_model.md` (CM-11/CM-12, § 4), `remote_collaboration.md`, the web docs.
+- **Left alone:**
+  - the remote run on B and its own window;
+  - messaging through the link (CM-11);
+  - idle shutdown and restore;
+  - persistence (no stored shape changes);
+  - files and terminal (FU-001);
+  - the mobile shell's rendering (the mobile Task).
+- Follow-ups found during design: FU-001 (files and terminal, the user's decision).
+
+## Relevant Behavior And Production-Path Map (Mandatory)
+
+| Behavior | Target path | Spine |
+| --- | --- | --- |
+| REQ-801 rows | A's root view includes remote executions; summaries (title, statuses, reachable) arrive as root events after a fetch from B | DS-001 |
+| REQ-802 live view | A's `RemoteRunObservation` holds a stream to B while the root has viewers; B's frames become A's root events | DS-002 |
+| REQ-802 stored conversation | A's member-projection resolvers → `RemoteRunChannel.agentProjection` → B | DS-003 |
+| REQ-803, DEC-804 commands | The window's stream command → A's root → `RemoteRunLinks` → `RemoteRunChannel.ownerCommand` → B executes on the linked run | DS-004 |
+| REQ-804 errors | Any failed peer call becomes a row state (`reachable: false`) or a command ack; Retry repeats the summary fetch | DS-001 |
+
+## Task Design Health Assessment (Mandatory)
+
+- Change posture: a feature crossing existing owners.
+- Root cause of the gap: `Boundary Or Ownership Issue` by design until now. A remote link is "linked, not hosted" (CM-7), so no owner represented it in the view. The design gives A's root that ownership (a child it does not host), so nothing new competes with the root.
+- Refactor needed now: no broad refactor.
+  - `ActiveCollaborationRootDirectory` gains an activation listener (a small, owned addition).
+  - The three roots each gain the same thin delegation to one shared owner, `RemoteRunObservation`. The policy (when to observe, how to map frames) lives once, not three times (Principle 13).
+- Phase 1 (DEC-807): no reconnect, catch-up or backoff. The observation is opened when the root gets its first viewer, and on Retry. When it ends, the row shows its last state and "Couldn't reach {node}." when a call fails. Each later refinement has one home (`RemoteRunObservation` for reconnecting, the row component for richer offline states).
+
+## Legacy Removal Policy (Mandatory)
+
+Nothing is replaced. There are no compatibility paths: both nodes run the same release (rule 9).
+
+## Persisted Data / State Transition Decision
+
+`Not Affected`. Remote links are already stored (CM-10). Titles, statuses and conversations are read from B when needed, and nothing new is stored on A.
+
+## Data-Flow Spine Inventory
+
+| ID | Scope | Start | End | Owner |
+| --- | --- | --- | --- | --- |
+| DS-001 | Primary | The window opens a delegator's root stream | Remote rows with node, title, status and reachability | A's root view projector + `RemoteRunObservation` |
+| DS-002 | Primary | The remote run produces output on B | The window renders it in the remote child's view, live | B `RemoteRunViewProvider` → A `RemoteRunObservation` → A root events |
+| DS-003 | Primary | The user opens a remote child | Its stored conversation is shown | A member-projection resolver → B |
+| DS-004 | Primary | The user sends, stops or terminates | B executes it on the linked run | A root command routing → B |
+| DS-005 | Bounded local | A root's stream viewers 0→1 / 1→0 | Observation opened / closed per remote link | `RemoteRunObservation` |
+| DS-006 | Bounded local | B's root becomes active or inactive | B's observation stream attaches or detaches | B `RemoteRunViewProvider` via the directory listener |
+
+## Primary Execution Spine(s)
+
+- DS-001: `Window → root stream connect → A root view (local tree + remote links with node name) → snapshot sent → RemoteRunObservation.refreshSummaries → PeerClient.runSummaries → B gateway → RemoteRunViewProvider (stored title, statuses) → A root event "remote_task_execution_summary" → window row`
+- DS-002: `B root event (agent presentation of a linked run's agent) → RemoteRunViewProvider stream frame → A RemoteRunObservation → A root event "remote_agent_presentation" → projected as the DTO agent_presentation {member_address, agent_run_id, message} → window child view`
+- DS-003: `Window selects remote child → member-projection query on A → resolver sees a remote child → RemoteRunChannel.agentProjection → B RemoteRunViewProvider → the run's projection (as B's own window gets it) → window`
+- DS-004: `Window SEND_MESSAGE / INTERRUPT_GENERATION / TERMINATE on a remote target → A root executeAgentCommand → target is remote → RemoteRunLinks.ownerCommand → PeerClient.ownerCommand → B gateway → RemoteRunViewProvider → B root (link checked) executes → ack → window`
+
+## Spine Narratives (Mandatory)
+
+**DS-001: rows.**
+- The root view DTOs gain `remote_task_executions` from the root's remote links. Each entry has kind, the node's name, the address, the run IDs, the members, the delegator and `started_at`.
+- The snapshot is sent immediately and never waits for B. Its summary fields are absent ("checking"), and the window shows the row with its last summary or none.
+- `RemoteRunObservation` then asks each linked node once for `run-summaries`, one request per node for all of that node's runs in this root. Each answer becomes a root event `remote_task_execution_summary {node, run, title?, statuses[{agent_run_id, status}], reachable}`.
+- A failed call gives `reachable: false` for that node's runs. The UI shows "Couldn't reach {node}." with Retry.
+- Retry is a stream command `REFRESH_REMOTE_TASK_EXECUTIONS`, which repeats the fetch.
+- Statuses map as PA-802 says.
+
+**DS-002: live output.**
+- While A's root has at least one stream viewer, `RemoteRunObservation` holds one observation stream per remote link to its node. A root's local stream viewer count is the trigger.
+- B sends one frame per agent presentation message of the linked run's agents: `{agent_run_id, member_address, message}`, the `member_address` being the agent's address inside the remote run.
+- A turns each frame into its root event `remote_agent_presentation {nodeId, link, agentRunId, memberAddress, message}`.
+- The root's projector emits it as the existing DTO `agent_presentation`, with `member_address` as A sees the remote member: the link's address, plus the member's address for a Team. This is the same address shape A uses for a local copy's members.
+- `AGENT_STATUS` messages update the row's status, as for local copies.
+- The observation closes when the last viewer leaves.
+- When the stream ends or fails, the observation stops. The next viewer or Retry reopens it; there is no automatic reconnect (DEC-807).
+
+**DS-003: stored conversation.**
+- The three member-projection resolvers on A check their root's remote links first.
+- For a remote child, they ask B for `agent-projection {targetRoot, agentRunId}`. B answers with the same projection its own window's projection query returns for that agent. The window renders it as it does for a local child.
+- A failure returns a GraphQL error, which the UI shows as its "Couldn't reach {node}." notice with Retry.
+
+**DS-004: commands.**
+- The root stream commands keep their shape, including the `target_agent_run_id`.
+- When the target is a remote agent run, the root's `executeAgentCommand` hands it to `RemoteRunLinks.ownerCommand` instead of a local agent:
+  - `post_message {content, message_id, dedupe_key}`: text only (the UI offers no attachments or `@`);
+  - `interrupt`;
+  - `terminate`, which ends the whole remote run (Agent run, or Team run).
+- B checks that this node's delegation started the run (`delegatedFrom.nodeId`). Then:
+  - a message is posted to the agent as user input, with metadata naming the peer owner, so its conversation shows the user's message;
+  - an interrupt is applied to the agent;
+  - terminate stops the root through its manager (keeping history).
+- The ack returns through A to the window as `AGENT_COMMAND_ACK`.
+- A message wakes an idle remote run, as any input does on B.
+- The message is recorded in the remote run's own conversation on B, and A shows it from there. It is not a run-to-run message, so neither node's message log records it (a clarification of REQ-803's "recorded on both nodes": the run that receives it records it).
+
+**DS-005: observation lifecycle, A.** `RemoteRunObservation` is created per root. Each root's stream handler calls `viewerAttached` and `viewerDetached`. On 0→1 it opens a stream per remote link and fetches summaries; on 1→0 it closes them. A link added while there are viewers (a new delegation) is observed when its delegation commits.
+
+**DS-006: observation lifecycle, B.**
+- `ActiveCollaborationRootDirectory` gains `onActivated(listener)` and `onDeactivated(listener)`, called on `commit` and `unregister`.
+- B's observation stream, once admitted, attaches to the run's root whenever that root is active: immediately if it is active, else when the directory reports it activated. It detaches when the root deactivates, keeping the socket open.
+- So A sees output again after a message wakes the run, with no reconnect.
+- B ends the stream only when A closes it, or when the run is terminated or deleted.
+
+## Ownership Map
+
+| Node | Owns |
+| --- | --- |
+| `RemoteRunChannel` (A, port, extended) | `runSummaries(nodeId, runs)`, `agentProjection(nodeId, targetRoot, agentRunId)`, `observeRun(nodeId, targetRoot, onFrame)` → a closable subscription, `ownerCommand(nodeId, targetRoot, agentRunId, command)` |
+| `RemoteRunObservation` (A, new, `agent-collaboration/execution/remote/remote-run-observation.ts`) | Viewer counting; opening and closing observation streams per link; summary fetches and Retry; mapping frames and summaries to the root's events. It is shared by the three roots |
+| `RemoteRunLinks` (A, extended) | `ownerCommand`: routes a command for a remote child through the channel (the membership check it already owns) |
+| Root view and event projectors (A, three, modified) | Include `remote_task_executions`; project `remote_agent_presentation` and `remote_task_execution_summary` to DTOs |
+| Member-projection resolvers (A, three, modified) | Remote child → `RemoteRunChannel.agentProjection` |
+| `PeerClient` / `PeerGateway` (modified) | Three request kinds and one stream kind, with the same admission order and identity checks |
+| `RemoteRunViewProvider` (B, new, `remote-collaboration/inbound/remote-run-view-provider.ts`) | The link check (the caller's delegation started this run); summaries from the root managers' stored reads; projections through the projection services; owner commands through the roots; the observation stream bound to the directory listener |
+| `ActiveCollaborationRootDirectory` (modified) | Activation and deactivation notifications |
+| Window contexts (three tree families, modified) | Remote children from the view, with node, summary and reachability; statuses; selection and hydration through the existing queries |
+| `WorkspaceTransientExecutionRow` and the run view (modified) | The UI spec's chip, unreachable row and Retry, hidden ⚙/＋, text-only composer, panel notes, local-only Delegated copies list |
+
+## Removal / Decommission Plan (Mandatory)
+
+None. Dead code in touched files is removed as found.
+
+## Dependency Rules
+
+- `agent-collaboration` keeps owning the port; `remote-collaboration` implements it and imports no root internals; it reaches roots through `RemoteRootDirectory` (N-304).
+- The window never contacts a peer.
+- Forbidden:
+  - a root projector calling `PeerClient`;
+  - the window choosing a different stream for a remote child;
+  - B answering for a run that the caller's delegation did not start.
+
+## Interface Boundary Mapping
+
+Between nodes (all through `PeerGateway`, admission order unchanged, then the link check):
+
+| Route | Body (after the envelope) | Answer |
+| --- | --- | --- |
+| `POST /rest/remote/run-summaries` | `runs: [{kind, runId}]` | `runs: [{kind, runId, title?, statuses: [{agentRunId, status}]}]` for runs this caller started; others omitted |
+| `POST /rest/remote/agent-projection` | `targetRoot {kind, runId}, agentRunId` | `projection` (the run-view projection payload) |
+| `POST /rest/remote/owner-commands` | `targetRoot, agentRunId, command: {kind: "post_message", content, messageId, dedupeKey} \| {kind: "interrupt"} \| {kind: "terminate"}` | `{accepted}` or a refusal |
+| `GET /rest/remote/run-observations` (WebSocket) | first frame: envelope + `targetRoot` | frames `{agentRunId, memberAddress, message}`; close on end |
+
+The window ↔ server (shared contracts, same release): each root view's tree DTO gains `remote_task_executions[]`. Two root events: `remote_task_execution_summary` and the reused `agent_presentation`. One client command: `REFRESH_REMOTE_TASK_EXECUTIONS`.
+
+## Main Domain Subject Naming Check
+
+"remote" names A's side (`RemoteRunObservation`, `remote_task_executions`); "peer" names the transport (`PeerClient`, `PeerGateway`), as since slice 1. "Owner command" is a command from the delegating node's human owner.
+
+## Existing Capability / Subsystem Reuse Check
+
+| Need | Reused |
+| --- | --- |
+| Live output format and rendering | `agent_presentation` messages and the window's existing child view |
+| Stored conversation | B's projection services, A's member-projection queries |
+| Commands | The root stream's commands and `executeAgentCommand` |
+| Admission and bounds | `PeerGateway`, `PeerClient` (20 s for requests) |
+| Link authority | `RemoteRunLinks` (A), `delegatedFrom` with the stored-link check (B) |
+
+## Concrete Examples / Shape Guidance
+
+```text
+alpha's sidebar
+└ Project Task Manager
+  ├ ▣ docker  Marketing Team        ● working     ← remote_task_executions[0] + summary
+  │   "Plan the October campaign…"
+  │   ├ marketing_content_creator   ● working     ← statuses from summary / AGENT_STATUS frames
+  │   └ deep_researcher             ○ idle
+  └ code_reviewer                    ○ idle        ← a local copy, unchanged
+```
+
+## Backward-Compatibility Rejection Log (Mandatory)
+
+| Candidate | Rejected because |
+| --- | --- |
+| Detecting a peer without the new routes | Rule 9: it fails like any call and shows "Couldn't reach {node}." |
+| A separate window stream per remote run | Would make remote children a different thing in the window ("no difference"), with duplicated stores |
+
+## Change / Refactor Sequence
+
+1. Contract: `remote-requests.ts` kinds; the shared stream contracts (remote executions, summary event, refresh command).
+2. B: the directory listener; `RemoteRunViewProvider` (summaries, projection, owner commands, observation stream); the gateway and routes.
+3. A: the port and `PeerClient` calls; `RemoteRunObservation`; `RemoteRunLinks.ownerCommand`; the three roots' projectors, viewer hooks, command routing and member-projection resolvers.
+4. Web: the contexts for the three families; the row and run view per the UI spec; strings.
+5. Tests:
+   - unit tests per owner;
+   - extend the two-server E2E: rows with summaries, a live frame arriving, a projection, a message and its answer, interrupt, terminate, a stopped peer;
+   - a browser probe against the VIS references;
+   - the standalone, Team and Org delegators (PA-808).
+6. Docs.
+
+## Risks
+
+- RSK-801: B's observation stream ties a socket to each observed run while A has viewers. That is fine for a few nodes and runs; it is measured in phase 2 if it matters.
+- RSK-802: if A's viewer leaves while B is mid-message, the remote output is not lost (B stores it) and appears in the stored projection next time.
+- RSK-201, RSK-401: unchanged. The new capability is limited to runs the caller's delegation started.
+
+## Guidance For Implementation
+
+- The UI spec's fidelity boundary is normative. Port its row and run-view details from the UI reference.
+- `RemoteRunObservation` is the only place that knows the viewer count and the streams. The roots call it; they do not open streams themselves.
+- B's link check uses the stored `delegatedFrom` (via `RemoteRootDirectory.storedLinkCheck`) before touching a root, and the root's own check after.

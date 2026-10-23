@@ -7,6 +7,7 @@
 | SR-001 | 2026-10-23 | Requirements | Baseline for the user's decisions |
 | SR-002 | 2026-10-23 | Requirements | The user's decisions from the discussion; Product Design requested |
 | SR-003 | 2026-10-23 | Requirements | Product package approved; requirements approved |
+| SR-004 | 2026-10-23 | Design | Design complete; Large / High |
 
 ## Revision Entries
 
@@ -37,3 +38,13 @@
 - Open for architecture: PA-805 (feasibility of the panels built from the streamed events), PA-808 (Team and Org delegators).
 - Status: `Approved` (the user).
 - No Product Task to close: the Solution Designer works on a delegated Task, so its delegation returned no Task ID.
+
+### SR-004 — Design complete (2026-10-23)
+
+- Design: [design-spec.md](design-spec.md). A remote delegated run is a child of its delegator's root.
+  - A: the root view lists it; `RemoteRunObservation` holds a stream to B while the root has viewers and turns B's frames into the root's `agent_presentation` events; summaries come by request; commands are routed through `RemoteRunLinks`; member projections are fetched from B.
+  - B: `RemoteRunViewProvider` answers only for runs the caller started, and attaches its stream across the root's lifecycle through a new directory listener.
+  - Three request kinds and one stream kind between nodes; shared stream contract additions.
+- Requirements clarification (no intended behavior change for the user): REQ-803 and AC-803. A user's message is recorded in the remote run's conversation on its node and shown on this node from there, not as a message-log line.
+- PA-805 confirmed (the presentation messages carry tools, statuses, usage, file changes). PA-808 is covered: all three root kinds use the same owner.
+- Classification: `Large` / `High`. Route: architecture review.
