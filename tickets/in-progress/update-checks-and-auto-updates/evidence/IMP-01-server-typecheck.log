@@ -1,0 +1,5 @@
+IMP-01 | pnpm -C autobyteus-server-ts typecheck (tsc -p tsconfig.build.json --noEmit) | commit 25609abdf7 | macOS 26.5.2, Node v22.23.1 | 2026-10-23T19:55Z
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+tsc exit 0

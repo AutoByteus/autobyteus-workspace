@@ -2,20 +2,20 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/tickets/in-progress/update-checks-and-auto-updates/requirements-doc.md` (SR-004, Approved)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/tickets/in-progress/update-checks-and-auto-updates/requirements-doc.md` (SR-005, Approved)
 - Upstream Investigation Notes: `.../investigation-notes.md` (AF-01..AF-16, probes)
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001..SR-004)
-- Reviewed Design Spec: `.../design-spec.md` (SR-004, Ready), worktree commit `1b338eabe9`
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001..SR-005)
+- Reviewed Design Spec: `.../design-spec.md` (SR-005, Ready, revised), worktree commit `3a0ea2238e`; round 1 reviewed SR-004 at `1b338eabe9`
 - Supplemental Task Artifacts Reviewed:
   - Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` (Approved, `5f5fb4c`; journeys UXJ-001..012, TR-101..120, Data/Mock Boundaries, Open Decisions);
   - `handoff-architecture-review.md`.
-- Relevant Solution Revision IDs: SR-004 (design), SR-001..SR-003 (requirements basis)
+- Relevant Solution Revision IDs: SR-005 (revision for AR-001..AR-007, DEC-020 restated, AC-022), SR-004 (design and UI), SR-001..SR-003
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: Architecture Design Complete (Large / High), 2026-10-23
-- Prior Review Round Reviewed: N/A (first review)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: SR-005 revision for the recheck of ARCH-REV-001 (handoff section "Round 2 (SR-005)"; design spec "SR-005 Revision Notes"), 2026-10-23
+- Prior Review Round Reviewed: round 1 (ARCH-REV-001, Fail, Design Impact; AR-001..AR-007)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: code read at `origin/personal` `d2820672c3` in the worktree, plus three read-only probes run by the reviewer on 2026-10-23:
   - server:
     - `update-check-scheduler.ts`;
@@ -42,7 +42,7 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed` for the approved intent. The design's target paths need correction (rows below).
+- Overall Basis Status: `Confirmed`.
 - Approved requirements / intended behavior understood: Yes.
   - Per-category intervals with jitter, through quota-free checks.
   - Back-off persisted per family.
@@ -56,29 +56,29 @@
 - Scope guardrail confirmed: Yes (UC-001..UC-006; Out of Scope; Preserved Behavior Boundary; Review Authority).
 - Approved change, preserved behavior and outside scope understood: Yes.
 - Every prospective blocking `Design Impact` finding traceable to an approved ID: `Yes` (see Findings).
-- Remaining material ambiguity: AR-005, the node kinds for the runtime category.
+- Remaining material ambiguity: None. DEC-020 and AC-022 were restated at SR-005 (Solution Designer within REQ-020, user informed). The restatement matches the UI spec's Open Decisions note that a browser window of a server node gets no runtime category.
 - Statements about existing code the design relies on, opened at their cited lines:
   - Correct: AF-01 (`update-check-scheduler.ts:3-6, 51-80`), AF-03 (`update-notification-service.ts:63-74, 142-185`), AF-04 (`update-notification-store.ts:13-32`), AF-10 (`agent-runtime-status-service.ts:133-176, 221-265`), AF-12 (`appUpdater.ts` 499 lines; IPC registration `:423-435`), AF-13 (`appUpdateErrorDisplay.ts:38-42`), AF-14 (`AgentRuntimesManager.vue:99-100`).
-  - Not accurate as written: "build-studio-server: pass the runtime service handle to the composition" (AR-006). The handle exposes only `close()`, and update notifications are composed before the runtime service exists (`build-studio-server.ts:288` vs `:350`).
-  - Missing from the design: today's runtime update refusals live in `startUpdate` (`agent-runtime-status-service.ts:145-150, 286-295`), so the automatic path that calls `runUpdate` directly would skip them (AR-001).
+  - Round 1 corrections, now in the design: the composition order (`build-studio-server.ts:288` vs `:350`, AR-006) and the refusals in `startUpdate` (`agent-runtime-status-service.ts:145-150, 286-295`, AR-001).
+  - SR-005's new citations, checked: `serverRuntimeEnv.ts:109-133` (`buildServerProcessEnv`, called from `baseServerManager.ts:342`), where no embedded-node variable exists today (AF-17); and `appUpdater.ts:37-71`, which holds the four module helpers named for the move.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | Pass | Pass | Pass | Confirmed | — |
-| BEH-002, BEH-007 | System/User | Pass | Pass | Fail: launch and set-auto-check entry forms not drawn; `startAutoCheck` disposition missing | Needs Correction | AR-004 |
+| BEH-002, BEH-007 | System/User | Pass | Pass | Pass (DS-005: launch, timer and settings; one owner) | Confirmed | — |
 | BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-004 | System | Pass | Pass | Fail: no per-candidate re-check of switch/checks/gate; outcome transitions incomplete | Needs Correction | AR-002, AR-003 |
+| BEH-004 | System | Pass | Pass | Pass (per-candidate re-reads; DS-008 rows) | Confirmed | — |
 | BEH-005 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-006 | System | Pass | Pass (probes) | Pass | Confirmed | — |
-| BEH-008 | System/User | Pass | Pass | Fail: automatic `runUpdate` skips the service's refusals; node kinds not traced | Needs Correction | AR-001, AR-005 |
+| BEH-008 | System/User | Pass | Pass | Pass (`runUpdate` owns its refusals; runtime kind only on the desktop's embedded node, traced for three node kinds) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| UI/UX spec + VIS-001..037 (`5f5fb4c`) | Pass | Pass | Pass | Fail on two points. TR-107 / UXJ-003: turning off "cancels the pending application", but the design does not re-check per candidate (AR-002). VIS-037 / AC-022: a remote window hides the runtime contact line while the design checks runtimes on every node (AR-005). | Pass | AR-002, AR-005 |
+| UI/UX spec + VIS-001..037 (`5f5fb4c`) | Pass | Pass | Pass | Pass (TR-107 honoured by per-candidate re-reads; VIS-035..037 and the Open Decisions note match the restated DEC-020) | Pass | — |
 
-Note: the investigation notes' Supplemental Artifact Inventory lists only the 209 artifacts. It should also list the approved 210 UI/UX spec, which the requirements and design link as Approved. The requirements doc's Supplemental Artifacts table still says the Product request is "To be written after approval". Update both with the revision.
+Both supplement tables now list the approved 210 UI/UX spec (SR-005).
 
 ## Task Design Health Assessment Verdict
 
@@ -87,43 +87,50 @@ Note: the investigation notes' Supplemental Artifact Inventory lists only the 20
 | Assessment is present for the current task posture | Pass | Feature plus a cadence/transport behavior change | — |
 | Root-cause classification is explicit and evidence-backed | Pass | Scheduler responsibility drift (AF-01) | — |
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Pass split, IPC move, Codex source through the transport | — |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Ownership Map, Removal Plan, File Mapping. The `appUpdater.ts` budget also depends on AR-004: moving the 12-line IPC block alone does not leave room for the additions. | AR-004 |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Ownership Map, Removal Plan, File Mapping. `appUpdater.ts` sheds the IPC block (`:423-435`) and the helpers (`:37-71`), about 47 lines, with a ≤ 470 target. | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 checks | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 automatic update | Primary | Pass | Pass | Pass | Pass | Fail: the running-agents rule is applied by the pass and by the service; the service's BUSY/NOT_INSTALLED refusals are skipped. The switch, checks and gate are read once per kind, not before each candidate. | Pass | Fail (AR-001, AR-002) |
+| DS-002 automatic update | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-003 runtime Update from the panel | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 settings | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 app periodic check | Primary | Pass | Partial | Fail | Pass | Fail: the launch entry (`electronApplication.ts:396, 401` → `startAutoCheck`) and the set-auto-check IPC entry are not drawn. `AppUpdater` ↔ `AppUpdateCheckSchedule` calls go both ways, and the writer of `app-update-checks.json` is not named. | Pass | Fail (AR-004) |
+| DS-005 app periodic check | Primary | Pass | Pass | Pass | Pass | Pass (one owner, `AppUpdateCheckSchedule`; R-6 on wording) | Pass | Pass |
 | DS-006 back-off | Return/Event | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-007 timer | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-008 records and outcomes | Bounded local | Pass | Pass | N/A | Pass | Fail: transitions incomplete | Pass | Fail (AR-003) |
+| DS-008 records and outcomes | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
-DS-002 redrawn in call order, as the design states it. The ✗ marks the gaps:
+DS-002 and DS-005 redrawn in call order from the SR-005 text:
 
 ```text
-UpdatePass (per kind)
-  → settings.isAutomatic(kind), gate.isBlocked(web)        once per kind  ✗ not per candidate (AR-002)
+UpdatePass (per kind; the runtime kind only when isDesktopEmbeddedNode())
   → notifications.listAutomationCandidates(kind)
   → for each candidate:
-      [runtime] runtimes.runningAgents(kind) > 0 → recordOutcome(AUTO_WAITING)  ✗ rule copy (AR-001)
-      owner.update(id)   [runtime: runUpdate, which skips the BUSY/NOT_INSTALLED refusals]  ✗ (AR-001)
-      → owner announces → reconcile
-      → notifications.recordOutcome(AUTO_UPDATED | AUTO_FAILED)  ✗ undefined cases (AR-003)
+      closed? · isChecksEnabled() · isAutomatic(kind) · gate.isBlocked(web) [GitHub kinds]   re-read each time
+      → owner update method (runtimes: runUpdate → beginUpdate refusals → vendor process)
+      → owner announces → reconcile (handled; stale outcome cleared)
+      → map result: updated → AUTO_UPDATED{candidateFrom} | AGENTS_RUNNING → AUTO_WAITING
+                    | BUSY / NOT_INSTALLED → nothing | failed / thrown → AUTO_FAILED{candidateLatest}
+      → recordOutcome → applied | not_applied
+
+electronApplication → AppUpdater.startAutoCheck() → AppUpdateCheckSchedule.start()   (launch; 8 s if enabled)
+AppUpdateCheckSchedule timer → enabled · !AppUpdater.isBusy() · net.isOnline()
+  → AppUpdater.checkForUpdates('startup' | 'periodic') → re-arm
+renderer → IPC set-auto-check → AppUpdateCheckSchedule.setSettings (validate, write, re-arm)
+  → change notification → AppUpdater.applyState({ autoCheck })
 ```
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRuntimeStatusService` | Fail | Fail | Fail | Fail | `runUpdate` is public but carries no refusals; the pass re-implements one (AR-001) |
+| `AgentRuntimeStatusService` | Pass | Pass | Pass | Pass | Refusals in the shared private `beginUpdate` (AR-001 resolved) |
 | `AgentPackageService` / `SkillSourceService` | Pass | Pass | Pass | Pass | Pass calls the public update methods |
 | `UpdateNotificationService` | Pass | Pass | Pass | Pass | Outcomes only through `recordOutcome` |
 | `publicGitHubRequest` / gate | Pass | Pass | Pass | Pass | See R-3 on the tag read's redirect |
-| `AppUpdater` / `AppUpdateCheckSchedule` | Fail | Pass | Fail | Fail | AR-004 |
+| `AppUpdater` / `AppUpdateCheckSchedule` | Pass | Pass | Pass | Pass | The schedule is the only writer of its settings file (AR-004 resolved) |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -131,7 +138,7 @@ UpdatePass (per kind)
 | --- | --- | --- | --- | --- | --- |
 | `update-notifications` → owners, transport, settings | Pass | Pass | Pass | Pass | Owners know a `() => void` listener only |
 | Codex strategy → `integrations/github` | Pass | Pass | Pass | Pass | — |
-| Shell schedule ↔ `AppUpdater` | Fail | Fail | Fail | Fail | Two-way calls (AR-004) |
+| Shell schedule ↔ `AppUpdater` | Pass | Pass | Pass | Pass | Schedule → `checkForUpdates`, `isBusy`; `AppUpdater` → `schedule.start()`, `settings()`; changes come back as a notification (R-6) |
 | Web components → stores | Pass | Pass | Pass | Pass | — |
 
 ## Interface Boundary Verdict
@@ -140,11 +147,13 @@ UpdatePass (per kind)
 | --- | --- | --- | --- | --- | --- |
 | `fetchDefaultBranchHead(owner, repo)` | Pass | Pass | Pass | Low | Pass (probe-confirmed) |
 | `fetchLatestReleaseTag(owner, repo)` | Pass | Pass | Pass | Low | Pass (R-3) |
-| `AgentRuntimeStatusService.runUpdate(kind)` | Pass | Fail | Pass | Medium | Fail (AR-001) |
-| `checkInBackground(kind)` | Pass | Pass | Pass | Low | Pass (AR-007 non-blocking) |
-| `listAutomationCandidates(kind)`, `recordOutcome(kind, id, outcome)` | Pass | Pass | Pass | Low | Fail on the outcome rules (AR-003) |
+| `AgentRuntimeStatusService.runUpdate(kind)` → `RuntimeUpdateResult` | Pass | Pass | Pass | Low | Pass |
+| `checkInBackground(kind)` | Pass | Pass | Pass | Low | Pass (versions only) |
+| `listAutomationCandidates(kind)`, `recordOutcome(kind, id, outcome)` → applied / `not_applied` | Pass | Pass | Pass | Low | Pass |
 | GraphQL settings query / `setUpdateCheckInterval` / `setAutomaticUpdates` | Pass | Pass | Pass | Low | Pass |
-| IPC `app-update:set-auto-check` | Pass | Pass | Pass | Low | Fail on the receiver (AR-004) |
+| IPC `app-update:set-auto-check` → `AppUpdateCheckSchedule.setSettings` | Pass | Pass | Pass | Low | Pass |
+| `isDesktopEmbeddedNode()`; GraphQL `desktopEmbeddedNode` | Pass | Pass | N/A | Low | Pass |
+| `publicGitHubRequest(url, { method, body, followRedirects })` | Pass | Pass | Pass | Low | Pass (R-3 resolved; `location` validated) |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -161,8 +170,9 @@ UpdatePass (per kind)
 | --- | --- | --- | --- | --- | --- |
 | `update-notifications` (pass, settings, records) | Pass | Pass | Pass | Pass | — |
 | `integrations/github` | Pass | Pass | Pass | Pass | — |
-| `runtime-management/agent-runtimes` | Fail | Pass | Fail | Fail | Refusal rule held by two owners (AR-001); node kinds not traced (AR-005) |
-| `electron/updater` | Fail | Pass | Fail | Fail | AR-004 |
+| `runtime-management/agent-runtimes` | Pass | Pass | Pass | Pass | — |
+| `config/desktop-embedded-node.ts` + shell `serverRuntimeEnv.ts` | Pass | Pass | Pass | Pass | One node fact, set by its one writer |
+| `electron/updater` | Pass | Pass | Pass | Pass | — |
 | Web | Pass | Pass | Pass | Pass | — |
 
 ## Reusable Owned Structures Verdict
@@ -172,14 +182,14 @@ UpdatePass (per kind)
 | `UpdateSourceState` | Pass | Pass | Pass | Pass | — |
 | `RuntimeUpdateState` | Pass | Pass | Pass | Pass | Explicit `checked` flag (no behavior by absence) |
 | Own-node rule (`utils/ownNodeWindow.ts`) | Pass | Pass | Pass | Pass | One rule for page, panel and card |
-| Runtime update refusals | Fail | N/A | Fail | Fail | AR-001 |
+| Runtime update refusals | Pass | N/A | Pass | Pass | One private `beginUpdate` |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | Record + outcome fields | Pass | Pass | Pass | N/A | Pass | Transition rules: AR-003 |
-| `*Revision` fields carrying runtime versions | Pass, with a recorded reading | Pass | Pass | N/A | Pass | R-1 (guideline line 105) |
+| `*Revision` fields carrying runtime versions | Pass, with a recorded reading | Pass | Pass | N/A | Pass | R-1 recorded in the design's Conflicts line |
 | `githubWaitUntil` | Pass | Pass | Pass | N/A | Pass | One field, the later family time |
 
 Derived consumers of a changed structure listed with a decision for each (Principle 11): `Pass`. Records, gate, transport, runtime `startUpdate`, `AppUpdateState`, the quiet rule, `ConfirmationModal` and the own-node rule are each listed with a decision.
@@ -189,7 +199,7 @@ Derived consumers of a changed structure listed with a decision for each (Princi
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Server files | Pass | Pass | Pass | Pass | — |
-| `appUpdater.ts`, `appUpdateCheckSchedule.ts`, `appUpdateCheckSettingsStore.ts`, `appUpdateIpc.ts` | Fail | Fail | N/A | Fail | AR-004. Also, `electronApplication.ts` is missing from the mapping although its two `startAutoCheck` calls change. |
+| `appUpdater.ts`, `appUpdateCheckSchedule.ts`, `appUpdateCheckSettingsStore.ts`, `appUpdateIpc.ts`, `appUpdateStateFormat.ts`; `electronApplication.ts` (unchanged); `serverRuntimeEnv.ts` | Pass | Pass | N/A | Pass | — |
 | Web files | Pass | Pass | Pass | Pass | — |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -203,8 +213,8 @@ Derived consumers of a changed structure listed with a decision for each (Princi
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | REST metadata in check/update; interval constants; Codex API URL; left anchor; startup-only quiet rule; IPC block; single-time gate | Pass | Pass | Pass | Pass | — |
-| `startAutoCheck` (`appUpdater.ts:149-160`, `AppUpdateController`, `DisabledAppUpdater`, `electronApplication.ts:396, 401`) | Fail | Fail | Fail | Fail | AR-004 |
-| Running-agents check copied into the pass | Fail | Fail | Fail | Fail | AR-001 |
+| `startAutoCheck`'s own 8 s timer (`appUpdater.ts:149-160`) | Pass | Pass | Pass | Pass | Replaced by the schedule; callers keep calling `startAutoCheck()` |
+| Running-agents check copied into the pass | Pass | Pass | Pass | Pass | Not introduced (AR-001) |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -221,14 +231,14 @@ Derived consumers of a changed structure listed with a decision for each (Princi
 | `notifications.json` (+ outcome fields, + `AGENT_RUNTIME`) | Directly Usable | Pass (`update-notification-store.ts:13-32`) | Pass | N/A | Pass | Absent outcome = `null` is truthful |
 | `github/rate-limit.json` → `{ api, web }` | Discard or Rebuild | Pass | Pass | N/A | Pass | Costs at most one refused request after the upgrade restart. Recommendation: keep `blockedUntil` as the `api` field name and add `webBlockedUntil`; that needs no old-shape code and loses nothing. |
 | App config keys (six) | New, absent = default | Pass | Pass | N/A | Pass | — |
-| `app-update-checks.json` | New | Pass | Pass | N/A | Pass | Writer owner: AR-004 |
+| `app-update-checks.json` | New | Pass | Pass | N/A | Pass | Only writer: `AppUpdateCheckSchedule` |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Server | Pass | Pass | Pass | Pass (AR-006: composition order) |
-| Shell | Fail | Fail | Fail | Fail (AR-004) |
+| Server | Pass | Pass | Pass | Pass |
+| Shell | Pass | Pass | Pass | Pass |
 | Web | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
@@ -236,8 +246,8 @@ Derived consumers of a changed structure listed with a decision for each (Princi
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Package automatic update, head-read body, switching on | Yes | Pass | Pass | Pass | — |
-| "Runtime update awaited" | Yes | Fail | Pass | Fail | The shown `startUpdate { refusals(); void runUpdate }` puts the refusals outside the one path (AR-001) |
-| Shell launch and settings change | Yes | Fail | N/A | Fail | AR-004 |
+| "Runtime update awaited" | Yes | Pass | Pass | Pass | `beginUpdate` shared by both paths |
+| Serialized/automation outcome and node kinds | Yes | Pass | N/A | Pass | DS-008 rows; SR-005 Revision Notes node-kind trace |
 
 ## Material Premise Validation
 
@@ -257,7 +267,7 @@ Derived consumers of a changed structure listed with a decision for each (Princi
   4. A second vendor process starts and replaces `row.process`.
 - Consequence: two vendor processes on one runtime (for example `codex update` during `codex login`). The first one's result is dropped (`row.process !== process`, `:160`). This breaks the service's own invariant.
 - Reachability: `Reachable`.
-- Review consequence: AR-001.
+- Review consequence: AR-001. Resolved in SR-005: `runUpdate` applies the BUSY, NOT_INSTALLED and AGENTS_RUNNING refusals through the shared `beginUpdate`, so a second vendor process cannot start.
 
 ### `MP-002` — The user turns an automatic switch off while the pass is applying updates of that kind
 
@@ -271,7 +281,7 @@ Derived consumers of a changed structure listed with a decision for each (Princi
   3. The user's switch-off is stored, but the pass does not read it again.
 - Consequence: the remaining packages are replaced, with local changes lost irreversibly (REQ-007), after the user turned automatic updates off.
 - Reachability: `Reachable`.
-- Review consequence: AR-002.
+- Review consequence: AR-002. Resolved in SR-005: the switch, the checks setting, the gate and `closed` are re-read before every candidate.
 
 ### `MP-003` — A manual Update after an automatic failure
 
@@ -284,7 +294,7 @@ Derived consumers of a changed structure listed with a decision for each (Princi
   2. `reconcileRecords` marks the record handled with `{ ...record, handledRevision, handledAt }` (`update-notification-service.ts:176`), so `outcome = AUTO_FAILED` and its reason stay.
 - Consequence: a handled row carries a failure outcome. DS-008 does not say what the row, the counts (unread outcomes) or `markAllRead` do with it. The same applies to a runtime's `AUTO_WAITING` that ends through a manual update.
 - Reachability: `Reachable`.
-- Review consequence: AR-003.
+- Review consequence: AR-003. Resolved in SR-005: the handled transition clears outcomes, and `recordOutcome` returns an explicit `not_applied`.
 
 ### `MP-004` — A Docker or remote node with installed runtimes, viewed from a desktop window
 
@@ -303,147 +313,42 @@ Derived consumers of a changed structure listed with a decision for each (Princi
   3. A desktop window bound to that node shows the card without the runtime interval, switch or contact line.
 - Consequence: the node makes runtime network calls that its card, as seen from that window, does not describe (REQ-016). REQ-020 and Out of Scope say only the desktop's own node checks runtimes; the design does not say what other nodes do. Through a browser window of that node (DEC-020: "own"), its runtime switch can be turned on, and the node then updates runtimes automatically, which Out of Scope excludes.
 - Reachability: `Reachable`.
-- Review consequence: AR-005.
+- Review consequence: AR-005. Resolved in SR-005 with option (a): `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` is set by the shell; the runtime kind runs only there; the web shows runtime parts only for that node in its own window. DEC-020 and AC-022 are restated so that REQ-020, the Out of Scope line and AC-022 hold on all three node kinds.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Investigation notes' supplement inventory lacks the 210 UI/UX spec; the requirements doc's Supplemental Artifacts row is stale | Cross-artifact consistency | Update with the revision | Open (non-blocking) |
-| Runtime category per node kind (MP-004) | Requirements and design disagree on which nodes check and update runtimes | AR-005 | Open |
+| Supplement tables (round 1) | Cross-artifact consistency | Updated in SR-005 | Resolved |
+| Runtime category per node kind (MP-004) | — | AR-005 resolved | Resolved |
+| `design-spec.md` line 6 still names "`requirements-doc.md` at SR-004"; the requirements are at SR-005 | Stale reference only; SR-005 changed DEC-020 and AC-022 | Correct it at the next edit | Open (non-blocking) |
 
 ## Review Decision
 
-`Fail`. The core choices are sound and checked against the code and real GitHub:
-- the quota-free head read;
-- the Codex redirect;
-- two gate families;
-- `UpdatePass` as the one sequence owner calling each owner's own update method;
-- additive persistence;
-- the derived-consumer table.
-
-Five gaps need design work before implementation. Four are in the automatic-update and app-check sequences (AR-001..AR-004), and one is the node kinds for runtimes (AR-005). Each is bounded.
+`Pass`. The behavior basis is confirmed. AR-001..AR-007 and the round 1 residual notes R-1..R-3 are resolved in the SR-005 design spec, requirements doc and investigation notes. I verified this against the canonical text at `3a0ea2238e` and the newly cited code (`serverRuntimeEnv.ts:109-133`, `appUpdater.ts:37-71`), not only the revision notes. Every structural verdict passes, and no in-scope machinery depends on an unsupported premise.
 
 ## Findings
 
-### AR-001 — The automatic runtime update skips the service's refusals; the running-agents rule has two owners (Design Impact, Major, blocking)
-
-- Protects: REQ-021, REQ-022, BEH-008 preserved behavior (vendor commands; one vendor process per runtime; the running-agent rule).
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Evidence:
-  - Today `startUpdate` holds every refusal: `requireIdleInstalledRow` gives NOT_INSTALLED and BUSY ("already updating or signing in"), and the running-agents check gives AGENTS_RUNNING (`agent-runtime-status-service.ts:145-150, 286-295`).
-  - The design makes `startUpdate = refusals + void runUpdate`, and the pass calls `runUpdate` directly after its own `runningAgents(kind) > 0` check (DS-002; Ownership Map; example "Runtime update awaited").
-  - The Manual Vs Automatic Gates table omits BUSY and NOT_INSTALLED.
-- Material premise: MP-001 (Reachable).
-- Required update: put the refusals inside the one update path, and let the pass drive the order, reacting to an explicit result.
-  - `AgentRuntimeStatusService.runUpdate(kind)` applies the refusals first, synchronously, then runs the vendor update. It returns an explicit outcome, for example `updated{toVersion} | failed{message} | refused{AGENTS_RUNNING, count} | refused{BUSY} | refused{NOT_INSTALLED}`, or it throws the existing `AgentRuntimeError` codes.
-  - `startUpdate` keeps throwing refusals to the resolver as today and does not await the vendor process.
-  - The pass calls `runtimes.runUpdate(kind)`, then `notifications.recordOutcome(...)`, mapping each result to one outcome:
-    - AGENTS_RUNNING → `AUTO_WAITING`;
-    - BUSY → no outcome this tick;
-    - failed → `AUTO_FAILED`;
-    - updated → `AUTO_UPDATED`.
-  - The pass no longer calls `runningAgents` itself.
-  - Add BUSY (update or sign-in running) and NOT_INSTALLED to the gates table.
-- Why proportionate: the rule moves into the method both paths already share; no new mechanism.
-- Recipient: Solution Designer.
-
-### AR-002 — Turning a switch off does not stop a running automation step (Design Impact, Major, blocking)
-
-- Protects: REQ-005, REQ-017, TR-107 / UXJ-003 (approved UI spec), REQ-007's consent basis.
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Evidence: DS-002 reads `settings.isAutomatic(kind)` and the `web` gate once per kind, then updates every candidate. The DS-001 narrative stops checks when the setting turns off, but says nothing for the automation step. Today's scheduler re-reads its gates before every source (`update-check-scheduler.ts:66-69`).
-- Material premise: MP-002 (Reachable; irreversible consequence).
-- Required update: before each automatic update, the pass re-reads `isChecksEnabled()`, `isAutomatic(kind)`, `gate.isBlocked(web)` (GitHub kinds) and its own `closed`, and stops the kind's step when any of them fails. Draw this in DS-002.
-- Why proportionate: four cheap reads per candidate, the same pattern as the existing per-source check gate.
-- Recipient: Solution Designer.
-
-### AR-003 — DS-008 outcome transitions are incomplete (Design Impact, Moderate, blocking)
-
-- Protects: REQ-008, REQ-009, AC-009, UXJ-005/006.
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Evidence:
-  - (a) The waiting → handled transition keeps every field (`update-notification-service.ts:176`). DS-008 clears outcomes only on replacement by a newer revision, so a manual update after `AUTO_FAILED` or `AUTO_WAITING` leaves a handled record carrying the stale outcome (MP-003). Its effect on rows, unread-outcome counts and `markAllRead` is undefined.
-  - (b) `recordOutcome(AUTO_UPDATED, toRevision)` is defined only "on a record that the preceding reconcile marked handled with that revision". Two reachable cases are undefined:
-    - The update installed a newer head than the record's `latestRevision`. This happens when automatic updates are turned on for an update found earlier and upstream moved since: the package update installs GitHub's current head.
-    - The record was removed (DEC-015) or is not handled.
-  - DS-002 also passes no revision to `recordOutcome`.
-- Material premise: MP-003 (Reachable).
-- Required update: state the rules in the DS-008 table.
-  - On waiting → handled (any path), clear `AUTO_FAILED` and `AUTO_WAITING`.
-  - `AUTO_UPDATED` attaches to the record if it is handled, whatever its `handledRevision`; the row shows "Updated automatically to <handledRevision>".
-  - Otherwise `recordOutcome` returns an explicit "not applied" result: not a thrown error, and not a state reached because a lookup found nothing.
-- Why proportionate: table rows in the existing state machine.
-- Recipient: Solution Designer.
-
-### AR-004 — The app check's launch and settings entry forms have no single owner, and `startAutoCheck` is not addressed (Design Impact, Major, blocking)
-
-- Protects: REQ-013 / AC-013 (no automatic request at launch when off), REQ-012, REQ-014 / AC-014.
-- Scope status: `Within Approved Scope`. Changes approved behavior: No.
-- Evidence:
-  - The launch check is started by `electronApplication.ts:396` (e2e, test feed) and `:401` through `AppUpdateController.startAutoCheck()` (`appUpdater.ts:149-160`; also `DisabledAppUpdater`). Neither the Removal Plan nor the File Mapping lists `startAutoCheck` or `electronApplication.ts`. Yet DS-005 says the schedule itself fires 8 s after launch: either two launch checks run, or a launch check ignores the switch.
-  - Calls go both ways: the schedule calls `AppUpdater.checkForUpdates('periodic')`, and the IPC `set-auto-check` goes `AppUpdater` → schedule. Who writes `app-update-checks.json` is not named.
-  - `appUpdater.ts` is 499 lines. Moving the IPC block (`:423-435`, 12 lines) alone does not leave room for `autoCheck`, `setAutoCheck` and the periodic source.
-- Required update: draw DS-005 for its three entry forms (launch, timer, set-auto-check) in call order, with one owner for the schedule and its settings, and list `startAutoCheck`'s disposition. One acceptable shape:
-  - At launch, `electronApplication` → `appUpdateController.startAutoCheck()`, which only starts `AppUpdateCheckSchedule` (the disabled updater starts nothing).
-  - The schedule owns its settings file, the timer, and the skip rules (off, busy, offline). When due, it calls `AppUpdater.checkForUpdates('startup' | 'periodic')`.
-  - The IPC `set-auto-check` goes to the schedule's `setSettings` (validate, save, re-arm). `AppUpdater` reads `schedule.settings()` for `AppUpdateState.autoCheck` and receives a change notification to broadcast.
-  - Whichever shape is chosen, name the file that leaves `appUpdater.ts` under 500 lines.
-- Why proportionate: a wiring decision and a removal entry; no new mechanism.
-- Recipient: Solution Designer.
-
-### AR-005 — The runtime category is not traced per node kind (Design Impact, Major, blocking; may need a requirements revision)
-
-- Protects: REQ-020, REQ-022, REQ-016 / AC-016, AC-022, the Out of Scope line (no runtime notifications or automatic updates on remote or Docker nodes), DEC-017.
-- Scope status: `Within Approved Scope` for the trace. If the chosen behavior differs from REQ-020 or the Out of Scope line, the Solution Designer revises the requirements with the user's approval (`Requirement Gap — User Approval Required`).
-- Changes approved behavior: possibly; see above.
-- Evidence:
-  - The server has no notion of "the desktop's own node". The rule is web-only: `isEmbeddedWindow`, `windowNodeContextStore.ts:55`, used at `AgentRuntimesManager.vue:99-100`.
-  - The design's `UpdatePass` runs the runtime kind on every node. Its gates table only says the switch is shown in own windows.
-- Material premise: MP-004 (Reachable).
-- Required update: trace the runtime check, notification and automatic update for each node kind: the desktop's embedded node; a Docker or remote node seen from a desktop window; the same node seen from its own browser window (DEC-020). Then decide one of:
-  - (a) Establish a server-side fact for "this node is a desktop's embedded node", for example set by the shell when it starts the embedded server, and run the runtime kind only there. In that case also restate DEC-020's browser-window case.
-  - (b) Every node checks its runtimes. Then REQ-020, the Out of Scope line, AC-022 / VIS-037's hidden contact line and REQ-016's honest description must agree, through a requirements revision with the user.
-- Why proportionate: it is a trace and a decision. (a) adds one launch fact; (b) adds only text changes.
-- Recipient: Solution Designer.
-
-### AR-006 — Composition order and the runtime service handle (Design Impact, Minor, non-blocking alone)
-
-- Protects: the build-studio-server wiring the design relies on (DS-001 runtime source).
-- Evidence:
-  - `updateNotifications = composeUpdateNotifications()` runs at `build-studio-server.ts:288`. `composeAgentRuntimeStatus` runs at `:350`, after the application runtime it needs.
-  - `AgentRuntimeStatusHandle` exposes only `close()`.
-  - The resolver uses `UpdateNotificationService.getInstance()` (209 wiring), so the runtime source must be on that same instance.
-- Required update:
-  - say that update notifications are composed after the runtime status service and receive the service itself (or `getAgentRuntimeStatusService()`);
-  - say how the singleton notification service gets its runtime source.
-  - The closing order already fits: update notifications close before runtimes (`:100`, `:106`).
-- Recipient: Solution Designer.
-
-### AR-007 — The background runtime check should read versions only (Design Impact, Minor, non-blocking alone)
-
-- Protects: REQ-020 (a version check); DESIGN.md "required data and dependencies are distinguished from unrelated state".
-- Evidence: `check()` always reads sign-in (`agent-runtime-status-service.ts:255-257`). For Codex that acquires the app-server client (`codex-agent-runtime-strategy.ts:29-31`). The design does not say whether `checkInBackground` does the same every interval on every node.
-- Required update: state that `checkInBackground` reads the installed and newest versions only. The sign-in state stays a page concern.
-- Recipient: Solution Designer.
+None open. See the prior-finding table in `architecture-review-revision-record.md`, ARCH-REV-002.
 
 ## Classification
 
-`Design Impact` (AR-001..AR-007). AR-005 may lead to a requirements revision that the Solution Designer owns.
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation engineer (`/software_engineering_team/implementation_engineer`), per the pass rule.
 
 ## Residual Risks
 
-- R-1: runtime versions are stored in `latestRevision`, `fromRevision` and `handledRevision`. The Data Migration Guideline says "Never reuse a field name with a different meaning" (`data_migration_guideline.md:105`). No old row is misread, because runtime rows are a new kind, and the design documents the meaning. Record this as a reading in the design's "conflicts or discrepancies" line, which currently says "none".
-- R-2: the pass gates the runtime kind on GitHub's `web` gate as a whole. Only the Codex check uses GitHub; say whether Claude, Antigravity and Grok checks should skip while GitHub limits the node.
-- R-3: `fetchLatestReleaseTag` needs the 302 itself. `publicGitHubRequest` follows redirects, and the target path `/releases/tag/…` is not in the allowed path list. The transport needs a "do not follow" option for this read.
+- R-1..R-3 (round 1): resolved in SR-005. R-1 is recorded as a reading in the design's Conflicts line; R-2: the runtime kind is not gated by GitHub's `web` gate; R-3: `followRedirects: false` with `location` validation.
 - R-4: the design records these risks: GitHub's undocumented throttling of anonymous git traffic; automatic replacement as a supply-chain path (opt-in, confirmed); `net.isOnline()` accuracy.
+- R-5: `design-spec.md` line 6 still says the requirements baseline is SR-004. Correct it at the next edit; it does not change the design.
+- R-6 (implementation note): DS-005 says "`AppUpdater` never calls the schedule", but `AppUpdater.startAutoCheck()` starts it and `AppUpdater` reads `schedule.settings()`. The intended rule is clear: the schedule alone decides when to check and writes its settings, and `AppUpdater` only starts it, reads it, and receives its change notification. Keep it that way; `AppUpdater` must not re-arm or write settings.
+- R-7 (implementation note): `buildServerProcessEnv` spreads the caller's environment under the `inherit-caller` policy. Set `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE` after `inherited` (and after `runtimeOverrides`, or keep it out of them), so the shell's value always wins.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (Design Impact; AR-001..AR-005 blocking; AR-006, AR-007 non-blocking)
-- Material-Premise Gate: `Pass` (MP-001..MP-004 Reachable; each drives a finding)
-- Notes: task_size `Large`, architectural_risk `High` confirmed. The structural verdicts not listed as failing keep their evidence for the next round.
+- Review Decision: `Pass` (ARCH-REV-002, SR-005)
+- Material-Premise Gate: `Pass` (MP-001..MP-004 Reachable; the SR-005 design addresses each)
+- Notes: task_size `Large`, architectural_risk `High` confirmed. Next: implementation.

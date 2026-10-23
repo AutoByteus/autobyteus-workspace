@@ -1,0 +1,14 @@
+IMP-09 | type checks outside the build gates | commit 62082fc36e | macOS, Node v22.23.1 | 2026-10-23T20:02Z
+
+Server test project: pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.json --rootDir .
+  (tsconfig.json has no gate; ~12,900 errors repo-wide, mostly TS4111 index-signature access and e2e files.)
+  Files changed by this ticket (src and tests), errors other than TS4111: 0 after 62082fc36e.
+  Remaining in changed files: TS4111 (the existing pattern of these files, e.g. update-notification-store.ts's 209 lines,
+  and process.env.X in the package tests); agent-runtime-strategies.test.ts lines 180/185 TS2493 (pre-existing stubFetch
+  typing, moved by line shifts only).
+
+Web: pnpm -C autobyteus-web exec tsc --noEmit -p .nuxt/tsconfig.json (no vue-tsc in the package; .vue files are not checked)
+  ~730 errors repo-wide (no web type-check gate exists). Changed .ts files, errors: none new except
+  - composables/settings/useAgentRuntimes.ts(2,35) TS2307 'graphql' (pre-existing import line, unchanged);
+  - .vue module resolution in specs (TS2307 for every spec that imports a .vue file; pre-existing pattern).
+  The .vue components are covered by the component specs (IMP-07) and the rendered check (IMP-12).

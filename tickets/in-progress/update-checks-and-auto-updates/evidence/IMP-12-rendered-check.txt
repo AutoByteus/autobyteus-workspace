@@ -1,0 +1,43 @@
+IMP-12 | rendered check: pnpm dev (built server + Nuxt dev) in the worktree, browser tabs through the agent browser tools | working tree = 25609abdf7 (web) on 95a608c456 (server) | macOS, Node v22.23.1, browser window (not Electron) | 2026-10-23T19:4x–19:54Z
+
+Data: the worktree's git-ignored development data root (.autobyteus/development/server-data), seeded by a temporary
+script outside the repository (/tmp/imp210-diag/seed-dev-data.mjs, not committed) with three fake GitHub packages
+(acme/research-pack waiting unread; acme/docs-pack waiting, AUTO_FAILED 30 min earlier, read; acme/review-pack
+AUTO_UPDATED, unread), all checked "now" so no background check was due. No user data or running app was used.
+The server ran without AUTOBYTEUS_DESKTOP_EMBEDDED_NODE (a browser window of a non-desktop node), so no runtime
+category, switch or interval appears (AC-022), and no runtime check or vendor update can run on this machine.
+Network: the automatic update attempt in step 4 made two real requests to github.com (ls-refs for
+acme/research-pack and acme/docs-pack, both answered "not found or not public"). No other GitHub request was made.
+The stack was stopped afterwards (server "closed cleanly").
+
+1. Entry: the strip icon with badge "2" (narrow window, VIS-031); its name "2 updates available: 2 agent package updates,
+   1 updated automatically" (UXJ-001).
+2. Panel (IMP-12-panel-outcomes-narrow.png; compare VIS-008): right side, from the top, grey surface, fixed title row
+   with ✕, one white card; "Update automatically" switch off with the 3-line text; waiting row with the New dot;
+   the automatic failure box with the reason and Update; "✓ Updated automatically to bbbbbbb", "1 hr. ago · See changes
+   on GitHub ↗", Clear, New dot.
+3. Switch: pressing it opened "Turn on automatic updates for agent packages?" above the dimmed panel with the four
+   lines, the "replaced" line in medium weight, Cancel / Turn on (IMP-12-confirm-turn-on-packages.png; VIS-006).
+   Turn on: switch green, text "Installs new revisions on its own, replacing local changes. Switch off to update by
+   hand.", the sky note "1 waiting update will be installed within about a minute." (the failed one is not counted)
+   (IMP-12-switch-on-applying-note.png, taken while the dialog faded out).
+4. Live automatic pass: within about a minute the server's pass tried acme/research-pack (and acme/docs-pack, whose
+   failure was one interval old) through updateAgentPackage; notifications.json then held AUTO_FAILED for both with
+   "GitHub repository not found or not public: …"; research-pack unread (first failure of that revision), docs-pack
+   still read (same revision). The open panel showed the new red boxes without a reload
+   (IMP-12-live-automatic-failure.png). Turning the switch off: no confirmation; .env AUTO_UPDATE_AGENT_PACKAGES=false.
+5. Update checks card (IMP-12-update-checks-card-non-desktop-node.png; compare VIS-037): the switch and its text,
+   Contacts (packages and skill sources: github.com; automatic updates line), no runtime contact line, intervals
+   30 / 30 minutes, no runtime interval. Interval "5" + blur: "Enter a whole number from 15 minutes to 24 hours.", red
+   border, nothing stored; "45": "Saved", .env UPDATE_CHECK_INTERVAL_AGENT_PACKAGES_MINUTES=45. GraphQL with 5 minutes:
+   error UPDATE_CHECK_INTERVAL_OUT_OF_RANGE. updateAutomationSettings: desktopEmbeddedNode false, githubWaitUntil null.
+6. Two windows: with a second tab open on the card, setUpdateCheckInterval(AGENT_PACKAGE, 90) from another client
+   changed that tab's field from "2 hours" to "90 minutes" without a reload (update_settings_changed, DS-004). The
+   interval was set back to 30.
+
+Not rendered here (no Electron shell in a browser window; runtimes need the desktop's own node):
+- the Software update row and Settings → Updates' automatic-check section (component specs
+  AboutSettingsManager.autoCheck.spec.ts, NotificationCenter.spec.ts; Electron tests IMP-05);
+- the agent runtime category, blocked / updating / failed runtime rows and the runtime switch (component spec
+  NotificationCenter.automation.spec.ts). An isolated desktop instance (API/E2E) is the layer for these.
+- zh-CN was checked against the spec table (IMP-11), not rendered.
