@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002
 - Package: `seal-migrations-per-folder`; Project Task autobyteus-280 (autobyteus-204 waits for it)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's decision of 2026-10-23
 - Requirements owner: Solution Designer; date 2026-10-23
@@ -85,8 +85,8 @@ None.
 | AC-001 | REQ-001..005 | The architecture test passes, and fails when a cross-boundary import is added (a negative test). The unused-frozen-files report is empty |
 | AC-002 | REQ-007, REQ-011 | All migration suites (unit, integration, startup e2e) pass with unchanged assertions, in their new folders |
 | AC-003 | REQ-006 | With the token-usage migration pending (a fixture), history reads and existing-run restore refuse as today; once it has succeeded, they work |
-| AC-004 | REQ-006 | With the custom-provider migration pending (a fixture), the server starts, custom providers report unavailable, and other providers work |
-| AC-005 | REQ-008 | A fixture with a beta.5-era compactor run carrying `server_helper`: the run survives; Skill Improvement data is deleted as before |
+| AC-004 | REQ-006 | With the custom-provider migration pending (a fixture): the server starts; listing shows only built-in models; a run start with a custom model is refused with `CUSTOM_PROVIDERS_MIGRATION_PENDING` while a built-in run starts; a Settings custom-provider create/update/delete is refused with the code |
+| AC-005 | REQ-008 | Fixtures: a beta.5-era compactor run carrying `server_helper` survives; Skill Improvement data is deleted as before; an M3 failure for a session-only helper run leaves its session file and the next start deletes both; an unreadable session file is preserved. `release-notes.md` carries the REQ-008 sentence |
 | AC-006 | REQ-009 | The library no longer contains `memory/migration/`; its tests moved; the library builds |
 | AC-007 | REQ-010 | The guideline contains the rule and the retirement steps |
 

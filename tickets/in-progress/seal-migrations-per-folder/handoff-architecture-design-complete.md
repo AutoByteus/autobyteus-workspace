@@ -36,3 +36,13 @@ None yet.
 ## Route
 
 `get_handoff_rules` → the Large/High rule → `/software_engineering_team/architecture_reviewer`.
+
+## SR-002: response to ARCH-REV-001 (re-review requested)
+
+- **AR-001:** split import rule (migrations and `frozen/` versus the contract); registry wiring in call order, with the `SecretRemovalOwner` port in `domain/` implemented by the live vault and the built-in provider names passed live; the constructor defaults to remove are listed.
+- **AR-002:** `CustomLlmProviderStore` is the single gate; a table gives the pending outcome of each entry form (listing, run start and model resolution, runtime sync, CRUD, token-usage display); AC-004 extended.
+- **AR-003:** the token-usage error codes are kept; the two web views are listed as derived consumers.
+- **AR-004:** one owner, `startup/app-data-capability-readiness.ts` (`markCapabilitiesPending`, `applyCapabilityReadiness`), called by both hosts and the retry resolver; the initial pending state is explicit.
+- **AR-005:** the 205 same-ID repair is stated; M4 is guarded like M5; an unreadable session file is preserved; fixtures added; `release-notes.md` added.
+- The G-1 retry-safety reasoning is recorded in the Guidance.
+- Re-review scope: the boundary rule and DS-004, the registry wiring, the spines, the entry-form table, the derived-consumer list, the 205 repair and `release-notes.md`.

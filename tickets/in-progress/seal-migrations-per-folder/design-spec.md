@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-002 (ARCH-REV-001 AR-001..AR-005)
 - Approved requirements: SR-001 (the user's direction and his sharing decision DEC-001; the rest within the direction, with the user informed)
 - Supplements: none
 - Design status: `Ready`
@@ -81,7 +81,7 @@ Put all migration code into a sealed migration area: one folder per migration, p
   - the Settings migration page (it keeps listing statuses and retrying);
   - Prisma SQL migrations;
   - any retirement (autobyteus-204).
-- **Derived consumers** (Principle 11): the runner's status snapshots feed GraphQL `getAppDataMigrations`, the web `appDataMigrationsStore` and `ServerMigrationsManager.vue`. Their shape is unchanged; capability readiness is a new runner query, consumed only by the startup hosts and token-usage readiness (D-4). `RootRunPackageReadinessIndex` is rebuilt after `runPending()` (`server-runtime.ts:214`) and, newly, after any manual retry (D-8).
+- **Derived consumers** (Principle 11): the runner's status snapshots feed GraphQL `getAppDataMigrations`, the web `appDataMigrationsStore` and `ServerMigrationsManager.vue`. Their shape is unchanged. Capability readiness is a new runner query, consumed only by the readiness owner (AR-004). The token-usage error codes `TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` and `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED` are **kept** because the web matches them (`autobyteus-web/components/token-usage/TokenUsageAnalyticsView.vue:60`, `TokenUsageRunDetailsView.vue:105`, and their specs; AR-003). The new code `CUSTOM_PROVIDERS_MIGRATION_PENDING` reaches the Settings provider page and model availability. `RootRunPackageReadinessIndex` is rebuilt after `runPending()` (`server-runtime.ts:214`) and, newly, after any manual retry (D-8).
 - **Follow-ups:** none yet.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -151,10 +151,10 @@ None.
 
 ## Primary Execution Spine(s)
 
-- DS-001 (call order): `server-runtime: initializePrisma -> assertTokenUsageCurrentSchema -> vault -> runner.runPending() -> runner.capabilityReadiness() -> configureTokenUsageCapability(readiness.tokenUsageHistory) -> configureCustomProviderCapability(readiness.customLlmProviders) -> RootRunPackageReadinessIndex.rebuild() -> serve`
-- DS-001b: the same calls in `start-standalone-application-host.ts`. Both hosts call the same two configure functions; no host-specific rule.
-- DS-002: `history read / restore -> TokenUsageCapability.assertHistoricalReadReady()` (the state set in DS-001) `-> proceed or TOKEN_USAGE_HISTORY_MIGRATION_PENDING`, and `custom provider listing -> CustomProviderCapability.assertReady() -> proceed or CUSTOM_PROVIDERS_MIGRATION_PENDING`.
-- DS-003: `GraphQL runAppDataMigration -> runner.runMigration(id) -> if not FAILED: RootRunPackageReadinessIndex.rebuild() -> runner.capabilityReadiness() -> configure both capabilities -> return status`.
+- DS-001 (call order): `server-runtime: initializePrisma -> assertTokenUsageCurrentSchema -> markCapabilitiesPending() -> vault -> runner.runPending() -> applyCapabilityReadiness(runner.capabilityReadiness()) -> RootRunPackageReadinessIndex.rebuild() -> serve`
+- DS-001b: the same calls in `start-standalone-application-host.ts`. Both hosts call the same two functions of the one owner; no host-specific rule.
+- DS-002: `history read / restore -> TokenUsageCapability.assertHistoricalReadReady() / assertExistingRunRestoreReady()` (the state set by the readiness owner) `-> proceed or the unchanged codes TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED / TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED` (AR-003), and `any custom-provider entry form -> CustomLlmProviderStore (gate) -> proceed or CUSTOM_PROVIDERS_MIGRATION_PENDING`, with each form's outcome as in the Ownership Map.
+- DS-003: `GraphQL runAppDataMigration -> runner.runMigration(id) -> if not FAILED: RootRunPackageReadinessIndex.rebuild() -> applyCapabilityReadiness(runner.capabilityReadiness()) -> return status`.
 
 ## Spine Narratives (Mandatory)
 
@@ -179,7 +179,17 @@ Startup hosts (2); `AppDataMigrationRunner`; registry; migration definitions; ca
   - `20260819_token_usage_run_records_v1` → `token_usage_history`;
   - `20260803_custom_provider_readable_identity` → `custom_llm_providers`.
 - **`TokenUsageCapability`** (renamed from `token-usage-migration-readiness.ts`) owns token-usage readiness: `READY` / `HISTORY_MIGRATION_PENDING` / `CRITICAL_CURRENT_SCHEMA_FAILURE`.
-- **`CustomProviderCapability`** (new, in `llm-management/llm-providers/`) owns custom-provider readiness, which `CustomLlmProviderStore` and its callers consult.
+- **`CustomLlmProviderStore`** is the single gate for custom providers (AR-002). While `custom_llm_providers` is pending, every read (`listProviders`, `getProviderById`) and every write throws `CustomLlmProviderStoreError('CUSTOM_PROVIDERS_MIGRATION_PENDING')`. No caller checks the capability itself.
+- **Pending outcome for each entry form** (AR-002):
+
+  | Entry form (file:line) | Outcome while pending |
+  | --- | --- |
+  | Model catalog listing (`model-catalog-service.ts:88`, already `.catch(() => [])`) | No custom models are listed; built-in providers list normally |
+  | Run start or model resolution with a custom model (`model-catalog-service.ts:201,334`; `model-availability-service.ts:73`) | The model is reported unavailable with reason `CUSTOM_PROVIDERS_MIGRATION_PENDING`; that run is not started; other runs are unaffected |
+  | Runtime sync (`custom-llm-provider-runtime-sync-service.ts:27`) | Skipped, with one log line naming the code |
+  | Settings CRUD (`llm-provider-service.ts:149-192, 297, 344, 378`) | Refused with the code; Settings shows it |
+  | Token-usage display lookups (catching callers) | Fall back to the raw model id, as on any lookup failure |
+- **One owner applies capability readiness** (AR-004): `startup/app-data-capability-readiness.ts` exports `markCapabilitiesPending()` and `applyCapabilityReadiness(readiness)`, which set `TokenUsageCapability` and `CustomLlmProviderStore`'s gate together. Both hosts call `markCapabilitiesPending()` right after the token-usage schema check (today's pending state, `server-runtime.ts:161-168`) and `applyCapabilityReadiness(runner.capabilityReadiness())` after `runPending()`. The retry resolver calls `applyCapabilityReadiness` after a retry. Before the runner answers, both capabilities are pending; no default is left implicit.
 - **The registry** is the only place that wires migrations: it passes paths from `appConfigProvider` into constructors (production → migration-area wiring through the runner).
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
@@ -218,8 +228,16 @@ DS-004 (the test).
 ## Ownership Boundaries
 
 - Migration area ↔ production: the only crossing is the runner contract, used by production (runner, registry, domain types) and by migrations (domain types, the database client).
-- Allowed production imports from inside the migration area: `app-data-migration-runner.ts`, `app-data-migration-registry.ts`, `domain/**`, `repositories/**`.
-- Allowed migration-area imports from production `src/`: `config/prisma-client-factory.ts` only (DEC-005).
+- Production may import, from the migration area, only the **contract**: `app-data-migration-runner.ts`, `app-data-migration-registry.ts`, `domain/**`, `repositories/**`.
+- **Split rule (AR-001):**
+  - `migrations/**` and `frozen/**` may import only `domain/**` (contract types and ports), `config/prisma-client-factory.ts` (DEC-005), node APIs and third-party libraries;
+  - the **contract** (runner, registry, repositories) may also import production config and services, because it is the wiring point.
+- **Registry wiring, in call order** (one owner, the registry):
+  1. the registry reads paths from `appConfigProvider`;
+  2. it builds each migration with explicit constructor arguments: paths; for `20260803_custom_provider_readable_identity`, a `SecretRemovalOwner` port (the type moves into `domain/`, implemented by `getSecretVaultRuntime().requireService()` passed in by the registry, so the live vault stays the only writer) and the built-in provider names (passed **live** from `getBuiltInLlmProviderCatalog()`, exactly the input the migration reads today, so the output is unchanged);
+  3. the runner calls `execute()`;
+  4. the migration calls the port.
+- **Constructor defaults to remove** (they read production config or services): `migrations/custom-provider-readable-id-app-data-migration.ts:140-146` (`appConfigProvider`, `getSecretVaultRuntime`, `getBuiltInLlmProviderCatalog`), `migrations/custom-provider-v1-app-data-migration.ts`, `migrations/custom-provider-migration-name-snapshot.ts`, `migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts` (all `appConfigProvider`), and any further one the architecture test reports.
 
 ## Boundary Encapsulation Map
 
@@ -279,7 +297,7 @@ See the final mapping.
 
 | Structure | Action |
 | --- | --- |
-| Token-usage readiness state | `CURRENT_SCHEMA_DEGRADED{migrationStatus, logPath}` becomes `HISTORY_MIGRATION_PENDING` (no migration id or log path in production; the Settings page shows the migration's log) |
+| Token-usage readiness state | `CURRENT_SCHEMA_DEGRADED{migrationStatus, logPath}` becomes the internal state `HISTORY_MIGRATION_PENDING` (no migration id or log path in production; the Settings page shows the migration's log). The error codes users see are unchanged (AR-003) |
 
 ## Final File Responsibility Mapping
 
@@ -294,11 +312,12 @@ See the final mapping.
 | `src/app-data-migrations/app-data-migration-registry.ts` | Modify | Imports from the folders; passes paths |
 | `src/server-runtime.ts`, `src/standalone-application-host/start-standalone-application-host.ts` | Modify | DS-001 / DS-001b |
 | `src/token-usage/providers/token-usage-capability.ts` (rename) and its 10 users | Modify | DS-002 |
-| `src/llm-management/llm-providers/custom-provider-capability.ts` | Add | DS-002 |
-| `src/llm-management/llm-providers/stores/custom-llm-provider-store.ts` and its GraphQL / model-catalog callers | Modify | Consult the capability; unavailable, not a throw at startup |
+| `src/startup/app-data-capability-readiness.ts` | Add | The one owner (AR-004) |
+| `src/llm-management/llm-providers/stores/custom-llm-provider-store.ts` | Modify | The single custom-provider gate (AR-002) |
+| `model-catalog-service.ts`, `model-availability-service.ts`, `custom-llm-provider-runtime-sync-service.ts`, `llm-provider-service.ts` | Modify only where needed | Map the gate's code to each form's outcome (table above) |
 | `src/api/graphql/types/app-data-migrations.ts` | Modify | DS-003 |
 | `src/context-files/services/context-file-record-locators.ts` and the current message-log owner (`run-history/store/task-agent-message-logs.ts` or the append-only log store) | Modify | The current pattern is owned by the message-log owner |
-| `migrations/remove-skill-improvement-data/` | Modify | REQ-008 |
+| `migrations/remove-skill-improvement-data/` | Modify | REQ-008, **a same-ID repair** of `20261020_remove_skill_improvement_data` (guideline §7: it fixes pending or failed installs; terminal installs skip it). M1 identifies helper runs only by the improver agent id, the records' `improverRunId`/`evolverRunId` and the improver session files, no longer by `server_helper`. **M4 is guarded like M5** (AR-005): a session folder is deleted only when every run it names is fully removed (its M2 and M3 succeeded) or absent; an unreadable session file is preserved and reported `PRESERVED_UNREADABLE`. So a session-only helper run whose M3 failed is found again on the next start |
 | `tests/app-data-migrations/<name>/` | Move | Each migration's tests (REQ-011); the e2e startup suites stay in `tests/e2e/app-data-migrations/`, named after the migration |
 | `tests/architecture/app-data-migration-boundaries.test.ts` | Add | DS-004, with a negative case |
 | `autobyteus-ts/src/memory/migration/**` and its tests | Remove (moved) | REQ-009 |
@@ -390,4 +409,10 @@ N/A.
 
 - Never run anything on the user's data (TESTING.md). The fixtures are the existing migration fixtures, plus REQ-008's compactor fixture and the pending-migration fixtures for AC-003 and AC-004.
 - Keep each migration's test assertions byte-identical. If a frozen copy forces an assertion change, stop and escalate.
+- **205 fixtures** (AR-005):
+  1. a v1.4.92-beta.5-era compactor run carrying `server_helper` survives;
+  2. an M3 failure for a session-only helper run: the session file stays, and the next start deletes both;
+  3. an unreadable session file is preserved.
+- **AC-004 fixtures** (AR-002): with `custom_llm_providers` pending, the server starts; listing shows only built-in models; a run start with a custom model is refused with `CUSTOM_PROVIDERS_MIGRATION_PENDING` while a built-in run starts; a Settings CRUD attempt is refused with the code.
+- **G-1 retry safety** (confirmed by the reviewer): while pending, the store's current parser refuses writes to an unconverted file (`custom-llm-provider-store.ts:80-116`, and now the gate). After the migration has published the V3 file, a retry skips (`custom-provider-readable-id-app-data-migration.ts:179-186`). So narrowing G-1 cannot let production write a half-converted file.
 - Record each file freeze in the implementation handoff: source path, members kept, and the commit it was frozen from.
