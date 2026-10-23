@@ -5,15 +5,16 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-003; REQ-803 / AC-803 clarified at SR-004)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-01 … E-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `8dc717e39c` (SR-005)
+- Reviewed Design Spec: `…/design-spec.md` at commit `dfbfb28615` (SR-006; the handoff names `f4bb9e72f1`, and the branch head carries the same SR-006 design text)
 - Supplemental Task Artifacts Reviewed: the approved UI/UX package `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` (scoped to what the server design must supply); the contract `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-11); `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: SR-001 … SR-005
+- Relevant Solution Revision IDs: SR-001 … SR-006
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: the Solution Designer's SR-005 (commit `8dc717e39c`), answering ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404)
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3 (a delta review)
+- Trigger: the Solution Designer's SR-006, answering the code reviewer's CRR-003 F-005 (Design Impact: the owner mark lived in input metadata that nothing read). Local Fixes F-002 … F-004 (CRR-003) are implementation-owned.
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, `Pass`)
+- Latest Authoritative Round: 3
+- Review method: the reviewer skill and the shared principles as updated 2026-10-23 (`autobyteus-agents` `4c8fb00`, `e84471d`): affected spines redrawn in call order, cited claims opened, derived consumers checked.
 - Current-State Evidence Basis: code and docs read in the worktree at `fee1d70cda` (base `3b09fbe308`):
   - `standalone-agent-run-root/domain/standalone-host-agent-handle.ts` (the host is its own `AgentRun`; `ensureReady` activates or restores it);
   - `standalone-agent-run-root/domain/standalone-agent-run-root.ts:142, 207, 375-395` (`StandaloneHostIdleShutdown` watches the host through `onHostReady`; `onAgentExecutionEvent` publishes child events to the root publisher);
@@ -24,6 +25,11 @@
   - `remote-collaboration/inbound/remote-team-run-starter.ts:79-94` and `agent-collaboration/execution/remote/remote-delegation.ts:91-135` (A's stored Team-link members are already mounted at the link's address);
   - `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` (transient rows come from the opened root's view, so remote rows from the root view match how local copies appear);
   - `api/security/remote-access-route-policy.ts:71`.
+- Round-3 checks (the delta only):
+  - `agent-collaboration/execution/remote/paired-agent-access.ts:26-43` (`remoteOwnerUserMessage` today: content plus `remote_owner` metadata; SR-006 moves the mark into the content);
+  - `agent-collaboration/execution/task/task-execution-input.ts:43-62` (`buildTaskWorkText`, the cited precedent for a content header);
+  - `autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts:50-80` (the window's local echo is replaced by the streamed user message when `message_id` / `dedupe_key` match);
+  - `autobyteus-web/utils/runTreeSummary.ts:10-22` and `stores/runHistoryNavigationPatches.ts:73` (the title fallback is the first user message; a stored title wins).
 - Round-2 checks: `agent-team-execution/services/agent-team-run-manager.ts:341-352` (`terminateTeamRun` = `root.terminate()` + unregister, the same stop path `stopAllTeamRuns` uses; the package is kept); `team-run-service.ts:225`; the revised spec's Current-State Read (lines 20-33), DS-006, § Remote Run Sources On B and the frame contract.
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree`
@@ -241,7 +247,12 @@
 
 ## Review Decision
 
-`Pass`. AR-401 … AR-403 are resolved and verified; N-401 … N-404 are done. The design is ready for implementation.
+`Pass` (round 3, delta). SR-006's DS-004a resolves F-005:
+- the owner mark is a content heading composed by one owner, `remoteOwnerUserMessage`, as `buildTaskWorkText` owns the task header;
+- the unread metadata is removed;
+- the consumer table names every reader.
+
+The redrawn DS-004 has one owner per node in call order: window → A root `executeAgentCommand` → `RemoteRunLinks.ownerCommand` → channel ══► `PeerGateway` → `RemoteRunViewProvider` → `RemoteRootDirectory` → the manager's `executeOwnerCommand` → `remoteOwnerUserMessage` → `postToHost` / member command. Both cited lines hold. Two notes (N-405, N-406). AR-401 … AR-403 stay resolved.
 
 ## Findings
 
@@ -312,6 +323,17 @@ The round-1 text follows, kept for traceability.
 - N-402, invariant: no server-side consumer on A (title derivation, usage, history summaries) may treat `remote_agent_presentation` as a local `agent_presentation`. The DTO projector is the only place it becomes `agent_presentation`. State it in the design and pin it with a unit test.
 - N-403: the three member-projection resolvers on A each "check their root's remote links first". If the check and the channel call are more than one line, put them in one shared helper beside `RemoteRunObservation` (principle 13).
 - N-404 (REQ-803): tell the user about the clarification ("recorded on the remote run's node and shown here", not "recorded on both nodes") in the next summary, since he approved the earlier wording.
+
+### Round-3 notes (non-blocking)
+
+- N-405, one more consumer: the window's own local echo. The composer shows the sent "status?" at once. When the streamed user message arrives with the same `message_id` / `dedupe_key`, it replaces the echo (`userMessageProjection.ts:50-80`). So the heading version wins only if both IDs survive A → B → the presentation frame and the projection unchanged. Add this row to the consumer table. Add an E2E assertion that A's view of the remote run shows exactly one user message, carrying the heading.
+- N-406, cite the title row: "Unaffected: a peer-started run's first message is the work packet" rests on the window's title fallback being the first user message (`runTreeSummary.ts:10-22`, the work packet) and on a stored title winning (`runHistoryNavigationPatches.ts:73`, 269). Cite both lines (Principle 1, cited claims).
+
+### Local Fixes passed to implementation (CRR-003; no design change)
+
+- F-002: B sends `{nodeId}` before any frame (N-401).
+- F-003: one shared owner of the remote-view affordances, used by the standalone, Team and Org views.
+- F-004: end observations on stop, terminate or delete by any path, but not on idle shutdown (consistent with DS-006: idle keeps the socket and re-attaches).
 
 ## Classification
 

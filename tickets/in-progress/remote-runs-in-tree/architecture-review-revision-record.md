@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` | SR-004 | N/A | Fail | AR-401, AR-402, AR-403 |
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Pass | AR-401 … AR-403 resolved |
+| ARCH-REV-003 | Round 3 (delta) / SR-006 answers CRR-003 F-005 | SR-006 | Pass | Pass | None new; N-405, N-406 |
 
 ## Revision Entries
 
@@ -57,6 +58,31 @@ None.
 | N-401 … N-404 | Notes | Done | SR-005 | `{nodeId}` first frame; pinned projector test; `remoteChildOf`; the user informed |
 
 - New or remaining finding IDs: none.
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.
+
+### ARCH-REV-003 — Round 3 (delta): the owner mark as a content heading; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree/design-review-report.md`
+- Review round and trigger: round 3; the Solution Designer's SR-006 (head `dfbfb28615`; the handoff names `f4bb9e72f1`), answering the code reviewer's CRR-003 F-005.
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 3; `code-review-report.md` CRR-003 F-005 (Design Impact), with F-002 … F-004 (Local Fixes).
+- Relevant solution revision IDs: SR-006
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Reviewed with the updated method (`autobyteus-agents` `4c8fb00`, `e84471d`): DS-004 redrawn in call order, with one owner per node; the cited lines opened (`paired-agent-access.ts:30`, `task-execution-input.ts:43`); the consumer table checked against the window code.
+  - One consumer added as a note: the window's local echo, replaced by identity match (N-405).
+  - The title row's claim is confirmed but uncited (N-406).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-401 … AR-403 | Resolved | Resolved (unchanged) | — | — |
+| CRR-003 F-005 (code reviewer's) | Design Impact | Resolved in design | SR-006 DS-004a; AC-803 | The heading is composed by `remoteOwnerUserMessage`; the metadata is removed; consumer table |
+
+- New or remaining finding IDs: none blocking. N-405 (the echo consumer row plus an E2E assertion), N-406 (cite the title claim). Local Fixes F-002 … F-004 are passed to implementation.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.

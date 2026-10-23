@@ -74,3 +74,4 @@
   - F-003: one shared owner of the remote view affordances for the standalone, Team and Org views;
   - F-004: end observations on stop, terminate or delete by any path, but not on idle shutdown (DS-006 already says so).
 - Classification unchanged: `Large` / `High`. Route: architecture review of the delta, then implementation with F-002 … F-005.
+- SR-006 addendum: ARCH-REV-003 Pass (2026-10-23). N-405 (the window's local echo as a consumer, replaced by message_id / dedupe_key) and N-406 (the title row cited) added to the consumer table. The reviewer's files committed.

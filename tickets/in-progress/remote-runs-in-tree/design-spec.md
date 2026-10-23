@@ -189,7 +189,8 @@ Nothing is replaced. There are no compatibility paths: both nodes run the same r
 | B's stored conversation (each runtime's memory) and its projection | The content | Kept as written; the mark survives restore |
 | B's own window (the run's conversation) | The projection and live stream content | B's owner sees "From the owner of node "alpha": …" |
 | A's window (the remote child view) | The `agent-projection` and the observation frames (`MEMBER_INPUT_MESSAGE` / user message content) | The user sees his message with the heading, the same as B shows it |
-| The run's title (269: the first message) | The first message | Unaffected: a peer-started run's first message is the work packet |
+| A's window: the local echo of the sent message (N-405) | `upsertUserMessageByIdentity` (`autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts:50-80`) replaces the optimistic echo by `message_id` / `dedupe_key` | The heading version replaces the plain echo only if both IDs travel end to end: window → A → `owner-commands` → B's input metadata → B's `MEMBER_INPUT_MESSAGE` frame → A. They are kept (`remoteOwnerUserMessage` keeps `message_id`, `dedupe_key`). An E2E assertion pins it |
+| The run's title (269: the first message) | The first message (`autobyteus-web/utils/runTreeSummary.ts:10-22`; a stored title wins, `stores/runHistoryNavigationPatches.ts:73`) | Unaffected: a peer-started run's first message is the work packet, and its stored title wins (N-406) |
 | Message logs on A and B | — | Not a run-to-run message, so not logged (SR-004 clarification) |
 
 **DS-005: observation lifecycle, A.** `RemoteRunObservation` is created per root. Each root's stream handler calls `viewerAttached` and `viewerDetached`. On 0→1 it opens a stream per remote link and fetches summaries; on 1→0 it closes them. A link added while there are viewers (a new delegation) is observed when its delegation commits.
