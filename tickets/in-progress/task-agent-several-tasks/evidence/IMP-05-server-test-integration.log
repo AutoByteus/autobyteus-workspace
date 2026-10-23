@@ -1,0 +1,19 @@
+# Check: IMP-05
+# Command: pnpm -C autobyteus-server-ts test:integration
+# Commit tested: a18fe714cd (branch codex/task-agent-several-tasks)
+# Environment: macOS 26.5.2 (darwin), Node v22.23.1, pnpm 10.28.2; worktree install repaired with `pnpm install --frozen-lockfile` (no tracked change) after a first run failed on missing autobyteus-application-backend-sdk/node_modules
+# Date: 2026-10-23 13:31 CEST
+
+# Excerpt: failure scan and summary. Full log: IMP-05-server-test-integration.full.log.gz
+# Lines matching FAIL/×:
+# (none)
+
+# Summary:
+
+
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+   Start at  13:27:15
+   Duration  241.99s (transform 9.43s, setup 1.39s, import 95.90s, tests 133.08s, environment 8ms)
+
+exit=0
