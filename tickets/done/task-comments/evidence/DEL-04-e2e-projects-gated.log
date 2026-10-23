@@ -1,0 +1,20 @@
+# Check: DEL-04 (rerun of API-01..API-07 server cases) gated tests/e2e/projects + tests/e2e/app-data-migrations on integrated state bf81ce2a0f (merge of origin/personal d8df12435c; later commit bf81ce2a0f is TESTING.md only); dist rebuilt from it (DEL-05)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs TASK_COMMENTS_LIVE_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/app-data-migrations --no-watch --reporter=verbose
+# Date: 2026-10-23T03:26:02Z
+# Excerpt; full log: DEL-04-e2e-projects-gated.full.log.gz. The 2 failures are FU-003 (identical to API-00/API-07); every task-comments case passes.
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a delet
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing;
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is 
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's to
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-002: DONE + a comment is one write; the
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-003: a Temp task has no comments: add_c
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-004: every /ws/projects frame satisfies
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-012: addProjectTaskComment appends numbered comments with the server time and never touches the description; blank or unknown refused with nothing
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts > Project Task search over the production HTTP and MCP boundaries > CMT-SEARCH-001: a word only in a comment finds its Task as an exact match, on the board's query and the tool; commen
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Tea
+ Test Files  1 failed | 34 passed (35)
+      Tests  2 failed | 141 passed | 4 skipped (147)
+exit=1

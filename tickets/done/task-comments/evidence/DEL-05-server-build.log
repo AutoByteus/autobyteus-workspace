@@ -1,0 +1,8 @@
+# Check: DEL-05 server build on integrated state 96625b9ba5 (merge of origin/personal d8df12435c)
+# Date: 2026-10-23T03:01:36Z
+# Command: pnpm -C autobyteus-server-ts build
+# (tail of output)
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0
