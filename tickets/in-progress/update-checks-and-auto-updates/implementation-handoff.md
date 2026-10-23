@@ -1,7 +1,7 @@
 # Implementation Handoff — update-checks-and-auto-updates
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates`, branch `codex/update-checks-and-auto-updates` (base `origin/personal` `d2820672c3`).
-Code commits: `95a608c456` (server), `802ffd917a` (desktop shell), `25609abdf7` (web, web docs), `62082fc36e` (two test type fixes). These documents, `evidence/` and the architecture reviewer's round-2 documents are in the ticket commit that follows.
+Code commits: `95a608c456` (server), `802ffd917a` (desktop shell), `25609abdf7` (web, web docs), `62082fc36e` (two test type fixes), `985246c53b` (CR-001, CR-002 fix, IR-002). IR-001's documents and evidence are in `9f4dea898e`; IR-002's, with the code reviewer's CRR-001 report and record, in the ticket commit that follows `985246c53b`.
 
 ## Upstream Artifact Package
 
@@ -13,19 +13,25 @@ Code commits: `95a608c456` (server), `802ffd917a` (desktop shell), `25609abdf7` 
 - Supplemental task artifacts: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` and `visual-references/VIS-001..037` (design repository `5f5fb4c`), normative for the web part.
 - Design review report: `.../design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md` (ARCH-REV-001, ARCH-REV-002)
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, findings CR-001, CR-002) for IR-002
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on the IR-001 baseline)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-002` (AR-001..AR-007 and R-1..R-3 as resolved in SR-005; reviewer notes R-6, R-7 applied)
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Fail, CR-001, CR-002)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`
+
+IR-002 (Local Fix, web only):
+
+- CR-001: a GitHub wait changes no record and no setting, so nothing announces it. `UpdateChecksCard.vue` now re-reads the node's settings when it opens (`automation.refresh()` once resolved, else `ensureResolved()`); the 30 s expiry clock stays. A wait that appears while the card stays open is not shown live (not required).
+- CR-002: `NotificationRow.vue` appends "It will be updated automatically once no agent is running." only while the agent-runtime automatic switch is on (`updateAutomationStore`).
+- Tests: `UpdateChecksCard.githubWait.spec.ts` (real store resolved earlier without a wait; the node reports one when the card opens) and a waiting runtime row with the switch off in `NotificationCenter.automation.spec.ts`; both fail without the fix (IMP-13). `docs/settings.md` names the read on open.
 
 What exists now:
 
@@ -138,9 +144,11 @@ Evidence is in `tickets/in-progress/update-checks-and-auto-updates/evidence/`.
 | IMP-09 | server test-project and web `tsc` filtered to changed files | `62082fc36e` | same | changed `.ts` files incl. tests | — | No new non-style errors | `IMP-09-test-and-web-typecheck.txt` | file text |
 | IMP-10 | `vitest run tests/unit/update-notifications/update-check-request-budget.test.ts --reporter verbose` | `62082fc36e` | same | real package owner, client, transport, gate; counting fetch; 100 sources, 15 min, 4 h | REQ-002, AC-003, QR-001, REQ-004 | Pass | `IMP-10-request-budget.log` | both cases `✓` |
 | IMP-11 | the spec's exact-strings table compared with both catalogs | `62082fc36e` | same | en and zh-CN strings | REQ-018, AC-016 | Pass | `IMP-11-ui-spec-strings.txt` | `mismatches: 0` |
+| IMP-13 | IR-002: the two new tests with the fix stashed, then the affected web suites (`components/notifications`, `components/settings`, `stores`, `services/updateNotifications`, font audit) and the web guards | `985246c53b` | macOS, Node 22.23.1 | `UpdateChecksCard.vue`, `NotificationRow.vue` | CR-001 (REQ-004, AC-004, VIS-019), CR-002 (REQ-022, AC-020, REQ-010) | Fail without the fix → Pass with it | `IMP-13-cr-001-cr-002-fix.log` | `2 failed` without; `Tests  1373 passed (1373)` with |
 | IMP-12 | Rendered check: `pnpm dev`, seeded dev data, browser tabs: entry, panel, confirmation, switch on, live automatic pass, card, interval refusal/save, two-window sync | `25609abdf7` (web) on `95a608c456` | macOS, Nuxt dev + built server, browser window | web UI + server pass, feed, GraphQL | UXJ-001..005, 008 (card), 009, 012; VIS-006..008, 014 (count), 018, 021, 022, 031, 037; REQ-005..010, 016 | Pass | `IMP-12-rendered-check.txt`, `IMP-12-*.png` | steps 1–6 |
 
 - IMP-07 run 1 found one real problem (the settings font-size audit, `text-[13px]`), fixed before the web commit; run 2's two failures were the `autobyteus-ts` rebuild from IMP-01 (both suites passed alone; neither touches this change).
+- Rerun by impact for IR-002: only `UpdateChecksCard.vue`, `NotificationRow.vue`, their specs and `docs/settings.md` changed after `62082fc36e`. IMP-13 reruns every web suite touching them; the server, shell (IMP-01..IMP-06, IMP-10) and string checks (IMP-08 rerun in IMP-13, IMP-11) exercise no changed code and stay valid. IMP-12 is not repeated: the changed lines are a banner read on open and one conditional sentence, both covered by IMP-13's tests.
 - Not run, and why: server `test:integration` and server E2E (the existing update-notifications E2E needs API/E2E's revision, see Known Risks); packaged Electron harness and isolated desktop instances (AC-001, 006, 007, 010, 012, 013, 018, 020 in a real instance; API/E2E).
 
 ## Frontend Rendered-Result Check (When Applicable)
