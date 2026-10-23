@@ -35,7 +35,7 @@ Nodes → **Manage Nodes** is now the one place for every node. The Remote Colla
 ## Verification
 
 - Every critical acceptance criterion is proven by the evidence (see `release-deployment-report.md` § Verification).
-- **AC-711 is the user's check**: the user manages all his nodes in one tab on his own desktop and Docker nodes, adds a node once, and collaboration works both ways. Status: **awaiting the user**.
+- **AC-711 is the user's check**: the user manages all his nodes in one tab on his own desktop and Docker nodes, adds a node once, and collaboration works both ways. Status: **awaiting the user, on the beta**.
 
 ## Known Residuals
 
@@ -45,4 +45,4 @@ Nodes → **Manage Nodes** is now the one place for every node. The Remote Colla
 
 ## Release
 
-- Not decided yet: RELEASE.md says the user decides at verification.
+- Beta, the user's decision (2026-10-23). The user checks AC-711 on that beta (desktop beta updates on; `autobyteus-docker upgrade --all --tag beta`).

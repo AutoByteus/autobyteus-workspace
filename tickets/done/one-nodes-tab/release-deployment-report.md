@@ -2,17 +2,17 @@
 
 ## Release / Publication / Deployment Scope
 
-Finalize `codex/one-nodes-tab` into `origin/personal`. A release (none / beta / stable) is the user's decision at verification (RELEASE.md § Release Decision). No hosted deployment exists.
+Finalize `codex/one-nodes-tab` into `origin/personal` and publish a beta (the user's decision, 2026-10-23). No hosted deployment exists.
 
 ## Project Release Guide
 
 - Release guide path and revision: `RELEASE.md` at `be315bcf1c` (as merged into `e84a0d6253`).
-- Deviations from the guide and why: `None` so far.
+- Deviations from the guide and why: none from RELEASE.md. One from the generic delivery order: the merge and the beta come **before** the user's AC-711 check. Delivered as option B: the check needs this server code on the user's own Docker nodes, and the user chose to get it through a beta (`autobyteus-docker upgrade --all --tag beta`). Every other acceptance criterion was verified from the evidence before the merge. A problem the check finds is fixed forward in the next beta.
 - Proposed guide fixes, and whether the user agreed: `None`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/one-nodes-tab/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/one-nodes-tab/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: written when this delivery round completes (`DR-001`).
 - Current delivery revision ID: `DR-001` (in progress)
@@ -77,22 +77,24 @@ Finalize `codex/one-nodes-tab` into `origin/personal`. A release (none / beta / 
 
 - More evidence requested: `None`.
 - User check needed: `Yes`. AC-711 is defined as a user check in the approved requirements. Every other part was proven on test-owned nodes; only the user's own desktop and Docker nodes remain.
-- User check reference: pending (asked 2026-10-23).
+- User check reference: asked 2026-10-23. The user chose to check on a beta ("release a new beta please"). The check is pending on that beta; it is reported back before the terminal return.
 - Re-verification after later re-integration: `Not needed` yet.
 
 ## Release Decision
 
-- Decision: pending. Per RELEASE.md, the user decides at verification. Asked together with the AC-711 check.
+- Decision: `Beta`
+- Decided by: the user, 2026-10-23: "release a new beta please" (RELEASE.md § Release Decision). Release notes: GitHub generated notes (pre-release tags always use them), so no ticket `release-notes.md` is required.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/in-progress/one-nodes-tab/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/one-nodes-tab/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: web `docs/settings.md`, server `docs/modules/remote_collaboration.md` (one delivery correction), design-spec § Run Rules reconciliation.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/one-nodes-tab`: `No` (after verification)
+- Ticket moved to `tickets/done/one-nodes-tab`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/done/one-nodes-tab` (on `personal` after the merge)
 
 ## Repository Finalization
 
