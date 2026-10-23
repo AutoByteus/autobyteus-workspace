@@ -184,7 +184,7 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
 
   it("RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)", async () => {
     // A newer Codex is out again, so Update is offered.
-    sources.answers.codex = { status: 200, body: JSON.stringify({ tag_name: "rust-v0.170.0" }) };
+    sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
     states.set("codex-update-to", "0.170.0");
     await client.mutate("checkAgentRuntimes");
     await until(async () => (await row(CODEX)).updates.state === "UPDATE_AVAILABLE", "Codex has an update again");
