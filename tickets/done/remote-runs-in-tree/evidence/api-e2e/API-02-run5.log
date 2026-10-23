@@ -1,0 +1,7 @@
+remote-runs-in-tree probe: Fail
+page.evaluate: TypeError: node?.querySelector(...)?.click is not a function
+    at eval (eval at evaluate (:290:30), <anonymous>:4:79)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at openTree (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:261:20)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:279:3

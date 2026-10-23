@@ -1,4 +1,9 @@
-import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
+import {
+  agentInputStateSchema,
+  compactionRecoveryBlockSchema,
+  remoteTaskExecutionDtoSchema,
+  remoteTaskExecutionSummaryDtoSchema,
+} from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import {
   teamAgentErrorPayloadSchema,
@@ -37,7 +42,15 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
   messages: z.array(teamCommunicationMessageDtoSchema),
   agent_statuses: z.array(teamAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
+  /** The runs this Team delegated to other nodes (autobyteus-278); their summaries arrive as messages. */
+  remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
 }).strict();
+
+const changeSequence = { change_sequence: z.number().int().positive() };
+/** A run this Team delegated to another node was recorded (autobyteus-278). */
+export const teamRemoteTaskExecutionStartedPayloadSchema = z.object({ ...changeSequence, execution: remoteTaskExecutionDtoSchema }).strict();
+/** What a remote run's node answered about it (autobyteus-278). */
+export const teamRemoteTaskExecutionSummaryPayloadSchema = remoteTaskExecutionSummaryDtoSchema.extend(changeSequence).strict();
 
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("SYSTEM_INSTRUCTIONS_SUPPLIED", teamAgentPayloadSchemas.SYSTEM_INSTRUCTIONS_SUPPLIED),
@@ -77,6 +90,8 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("DELEGATED_LAUNCH_SELECTIONS_CHANGED"), payload: teamDelegatedLaunchSelectionsChangedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
+  z.object({ type: z.literal("REMOTE_TASK_EXECUTION_STARTED"), payload: teamRemoteTaskExecutionStartedPayloadSchema }).strict(),
+  z.object({ type: z.literal("REMOTE_TASK_EXECUTION_SUMMARY"), payload: teamRemoteTaskExecutionSummaryPayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
 
@@ -100,6 +115,8 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED"; payload: z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
+  | Readonly<{ type: "REMOTE_TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamRemoteTaskExecutionStartedPayloadSchema> }>
+  | Readonly<{ type: "REMOTE_TASK_EXECUTION_SUMMARY"; payload: z.infer<typeof teamRemoteTaskExecutionSummaryPayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;
 
 export const parseTeamStreamServerMessage = (value: string | unknown): TeamStreamServerMessage => {

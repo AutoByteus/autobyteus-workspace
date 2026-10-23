@@ -67,6 +67,8 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   remoteLinks: RemoteRunLinks;
   /** Remote placements: planning and activation (DS-001). */
   remoteDelegation: RemoteDelegation;
+  /** autobyteus-278: a remote link was recorded (the root's remote children observe it). */
+  onRemoteLinkCommitted(link: RemoteTaskExecution): void;
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   /** Suppresses teardown status events of the retiring agents until the returned release. */
@@ -382,6 +384,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       commitAfterDurability: () => {
         if (!nextTree) throw new Error("AgentOrg remote link tree was not prepared.");
         this.options.replaceTree(nextTree);
+        this.options.onRemoteLinkCommitted(link);
       },
     });
   }

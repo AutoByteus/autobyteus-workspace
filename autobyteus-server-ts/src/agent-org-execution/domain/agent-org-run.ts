@@ -2,6 +2,8 @@ import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-
 import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
+import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import type {
   DelegatedLaunchSelectionCommand,
   DelegatedLaunchUpdateResult,
@@ -73,6 +75,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly operationGate: RootOperationGate;
   private readonly delivery: AgentOrgRunMessageDelivery;
   private readonly remoteLinks: RemoteRunLinks;
+  /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
+  readonly remoteChildren: RemoteRunObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
@@ -100,6 +104,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     });
     this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.rootOrg.remoteTaskExecutions ?? [] });
     const remoteDelegation = new RemoteDelegation({ root: options.root });
+    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootOrg.remoteTaskExecutions ?? [],
+      publish: (event) => options.publisher.publish(event) });
     this.taskExecutions = new RootTaskExecutionLifecycle(new AgentOrgTaskExecutionAdapter({
       root: options.root,
       taskExecutionIdentity: options.taskExecutionIdentity,
@@ -111,6 +117,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
+      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
@@ -185,9 +192,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.taskExecutions.taskExecutionStatus(execution);
   }
 
-  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
-  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    return this.operationGate.run(() => this.delegatedLaunches.stop(target));
+  /** DS-002: the user's Stop of one delegated copy and the copies it started (a remote copy: by its node, DEC-804). */
+  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return await stopRemoteChild(this.remoteLinks, target) ?? this.operationGate.run(() => this.delegatedLaunches.stop(target));
   }
   /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
@@ -346,6 +353,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
+    this.remoteChildren.dispose();
     this.communication.closeAdmission();
     this.taskExecutions.closeExternalAdmission();
     void this.operationGate.closeAndDrain();
@@ -390,6 +398,10 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     result: AgentOperationResult;
     executionKind: AgentOrgIndexedAgentExecution["executionKind"] | null;
   }>> {
+    // A remote child's command goes to its node, outside the gate (a peer call takes up to 20 s).
+    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) {
+      return executeRemoteChildCommand(this.remoteLinks, agentRunId, command).then((result) => ({ result, executionKind: null }));
+    }
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.delivery.executeAgentCommand(agentRunId, command);

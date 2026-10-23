@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { handleMemberInputMessage } from '../memberInputMessageHandler';
+import type { MemberInputMessagePayload } from '../../protocol/messageTypes';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 const buildContext = (contextFilePaths: any[], identity = 'msg-1') => ({
@@ -24,6 +25,27 @@ const unsupportedImage = () => hydrateContextAttachment({
 });
 
 describe('handleMemberInputMessage', () => {
+  it("autobyteus-278 N-405: the owner's message streamed back from a remote run replaces its echo: one user message, with the heading", () => {
+    const context = buildContext([], 'msg-owner');
+    context.conversation.messages[0].text = 'status?';
+
+    const streamed: MemberInputMessagePayload = {
+      content: 'From the owner of node "laptop":\n\nstatus?',
+      input_origin: 'user_message',
+      received_at: '2026-06-11T12:00:01.000Z',
+      message_id: 'msg-owner',
+      dedupe_key: 'dedupe-msg-owner',
+      context_file_paths: [],
+      sender_agent_run_id: null,
+      parent_communication_message_id: null,
+      recipient_agent_run_id: 'publisher-run',
+    };
+    handleMemberInputMessage(streamed, context);
+
+    expect(context.conversation.messages).toHaveLength(1);
+    expect(context.conversation.messages[0].text).toBe('From the owner of node "laptop":\n\nstatus?');
+  });
+
   it('retains existing non-executable metadata when an identity-matched echo has no attachments', () => {
     const unsupported = unsupportedImage();
     const executable = hydrateContextAttachment({ locator: '/tmp/current.md', type: 'Markdown' });

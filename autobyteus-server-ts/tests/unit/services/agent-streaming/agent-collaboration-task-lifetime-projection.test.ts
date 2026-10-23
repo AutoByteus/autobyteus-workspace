@@ -43,7 +43,7 @@ describe("Agent root task-lifetime projection", () => {
     // must not make the existing child view/stream unavailable. Whether the
     // private stamp is exposed on the wire is intentionally not prescribed.
     const view = projectAgentCollaborationView({
-      hostRunId: HOST, isActive: true, snapshot: snapshot(linked), baseChangeSequence: 1,
+      hostRunId: HOST, isActive: true, snapshot: snapshot(linked), baseChangeSequence: 1, remoteTaskExecutions: [],
     });
     expect(view.root_subject_kind).toBe("agent");
     expect(view.root_run_id).toBe(HOST);

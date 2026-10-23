@@ -11,6 +11,8 @@ import type { SequencedRootEvent } from "../../agent-collaboration/execution/ser
 import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { isPublicMessage } from "./public-message-scope.js";
+import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
+import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const agentsOf = (tree: AgentOrgRunExecutionTreeSnapshot) => {
   const index = new AgentOrgExecutionIndex(tree);
@@ -28,8 +30,9 @@ export const projectAgentOrgExecutionView = (
   run: AgentOrgRun,
   snapshot: AgentOrgRunPackageSnapshot,
   baseChangeSequence: number,
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
-  orgRunId: run.orgRunId, isActive: run.isActive(), snapshot, baseChangeSequence,
+  orgRunId: run.orgRunId, isActive: run.isActive(), snapshot, baseChangeSequence, remoteTaskExecutions,
 });
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
@@ -37,6 +40,8 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   isActive: boolean;
   snapshot: AgentOrgRunPackageSnapshot;
   baseChangeSequence: number;
+  /** autobyteus-278: the runs this Org delegated to other nodes, with their nodes' names. */
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => {
   const { orgRunId, isActive, snapshot, baseChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
@@ -59,6 +64,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
       error_message: status.details.errorMessage,
       error_details: null, recoverableBlock: status.details.recoverableBlock,
     })),
+    remote_task_executions: input.remoteTaskExecutions,
   },
   });
 };
@@ -79,6 +85,16 @@ export const projectAgentOrgExecutionEvent = (
         agent_run_id: source.execution.agentRunId,
         message: source.message,
       };
+      break;
+    // N-402: the one place a remote child's output becomes the stream's `agent_presentation`.
+    case "remote_agent_presentation":
+      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
+      break;
+    case "remote_task_execution_summary":
+      event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };
+      break;
+    case "remote_task_execution_started":
+      event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
       break;
     case "task_execution_started":
       event = {

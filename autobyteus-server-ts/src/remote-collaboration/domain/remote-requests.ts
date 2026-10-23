@@ -1,4 +1,10 @@
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
+import type {
+  RemoteAgentProjection,
+  RemoteOwnerCommand,
+  RemoteRunSummary,
+  RemoteStartedRunRef,
+} from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
@@ -13,6 +19,18 @@ export const REMOTE_MESSAGES_PATH = "/rest/remote/messages";
 export const REMOTE_AVAILABILITY_PATH = "/rest/remote/availability";
 /** autobyteus-261: what the called node offers for delegation (the envelope only). */
 export const REMOTE_AVAILABLE_AGENTS_PATH = "/rest/remote/available-agents";
+
+/** autobyteus-278: the titles and statuses of runs the caller's delegation started (one request per node). */
+export const REMOTE_RUN_SUMMARIES_PATH = "/rest/remote/run-summaries";
+/** autobyteus-278: one agent's stored conversation in such a run. */
+export const REMOTE_AGENT_PROJECTION_PATH = "/rest/remote/agent-projection";
+/** autobyteus-278: a command of the caller's owner for one agent of such a run. */
+export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
+/**
+ * autobyteus-278: a WebSocket. The caller's first frame is the envelope with `targetRoot`; the answer is a first
+ * frame `{nodeId}` (or a refusal, then close), then `{agentRunId, message}` frames for the run's own agents only.
+ */
+export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
 
 /** `toNodeId` is the pinned server ID of the peer being called; `fromNodeId` the caller's own. */
 export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;
@@ -69,3 +87,21 @@ export type AvailabilityAnswer = Readonly<{ accepted: true; nodeId: string }> | 
  * name, kind, address and description (when it has one; REQ-403, REQ-405).
  */
 export type AvailableAgentsAnswer = Readonly<{ accepted: true; nodeId: string; agents: readonly AvailableCollaboratorEntry[] }> | RemoteRefusalAnswer;
+
+/** autobyteus-278: runs the caller's delegation started; the answer omits every other run. */
+export type RunSummariesRequest = RemoteEnvelope & Readonly<{ runs: readonly RemoteStartedRunRef[] }>;
+export type RunSummariesAnswer = Readonly<{ accepted: true; nodeId: string; runs: readonly RemoteRunSummary[] }> | RemoteRefusalAnswer;
+
+/** autobyteus-278: `targetRoot` is the run the caller's delegation started; `agentRunId` one of its own agents. */
+export type AgentProjectionRequest = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun; agentRunId: string }>;
+export type AgentProjectionAnswer = Readonly<{ accepted: true; nodeId: string; projection: RemoteAgentProjection }> | RemoteRefusalAnswer;
+
+export type OwnerCommandRequest = RemoteEnvelope & Readonly<{
+  targetRoot: TaskAgentCoordinatingRun;
+  agentRunId: string;
+  command: RemoteOwnerCommand;
+}>;
+export type OwnerCommandAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
+
+/** The first frame of an observation stream from the caller. */
+export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun }>;

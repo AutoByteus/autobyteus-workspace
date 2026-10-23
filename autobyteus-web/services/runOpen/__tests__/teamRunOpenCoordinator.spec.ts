@@ -104,6 +104,7 @@ const hydration = (team: ReturnType<typeof makeTeam>) => ({
   projectionByAgentRunId: new Map([[team.view.getFocusedAgentRunId(), {}]]),
   memberRunStates: [],
   hydratedContext: team,
+  remoteTaskExecutions: [],
 })
 
 describe('openTeamRun current exact execution identity', () => {

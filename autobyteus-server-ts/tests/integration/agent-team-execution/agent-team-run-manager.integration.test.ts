@@ -304,15 +304,16 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const factory = createFactory();
     const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });
-    const snapshots: Array<{ teamRunId: string; isActive: boolean }> = [];
+    const snapshots: Array<{ teamRunId: string; isActive: boolean; ending: string | null }> = [];
     manager.subscribeToLifecycle(config.rootTeam.teamRunId, (snapshot) => snapshots.push(snapshot));
 
     await manager.createTeamRun({ config, teamDefinitionName: "Lifecycle Team" });
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(true);
 
     expect(snapshots).toEqual([
-      { teamRunId: config.rootTeam.teamRunId, isActive: true },
-      { teamRunId: config.rootTeam.teamRunId, isActive: false },
+      { teamRunId: config.rootTeam.teamRunId, isActive: true, ending: null },
+      // autobyteus-278 F-004: the real root reports a terminate as a stop (not an idle shutdown).
+      { teamRunId: config.rootTeam.teamRunId, isActive: false, ending: "stopped" },
     ]);
     expect(manager.getManagedTeamRun(config.rootTeam.teamRunId)).toBeNull();
     await expect(manager.terminateTeamRun(config.rootTeam.teamRunId)).resolves.toBe(false);

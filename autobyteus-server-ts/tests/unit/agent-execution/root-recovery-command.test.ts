@@ -38,13 +38,13 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  if(kind==='agent_team') {
   const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
   tree.rootTeam.collaborators=[];
-  const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,executeAgentCommand,
+  const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,closedTaskExecutions:[],messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
   handler=new AgentTeamStreamHandler(new AgentSessionManager(),{resolveActiveTeamRun:async()=>run,getActiveTeamRun:()=>run,recordRunActivity:async()=>{}} as any,
    {getLifecycleSnapshot:()=>({teamRunId:root.rootRunId,isActive:true}),subscribeToLifecycle:()=>()=>{}} as any);
  } else {
   const tree=testAgentOrgExecutionTree({orgRunId:root.rootRunId,members:[testOrgAgentNode(identity.memberAddress,f.run.runId)]});
-  const run={orgRunId:root.rootRunId,isActive:()=>true,executeAgentCommand,
+  const run={orgRunId:root.rootRunId,isActive:()=>true,getExecutionTreeSnapshot:()=>tree,remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
    executeAgentCommandWithExecutionKind:async(id:string,command:any)=>({result:await executeAgentCommand(id,command),executionKind:'configured'}),
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,closedTaskExecutions:[],messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:root.rootRunId,messages:[]},statuses:[handle.getStatusSnapshot()],inputStates:handle.getInputStateSnapshots()}))};
   handler=new AgentOrgStreamHandler({getActive:()=>run,recordRunActivity:async()=>{}} as any);

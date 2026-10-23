@@ -5,6 +5,7 @@ import { getCollaboratorAdmission } from "../../../agent-collaboration/collabora
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
+import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunFileChangeEntryObject } from "./run-file-changes.js";
@@ -46,7 +47,8 @@ export class AgentRunCollaborationResolver {
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
-    return inspection ? projectAgentCollaborationView(inspection) : null;
+    return inspection ? projectAgentCollaborationView({ ...inspection,
+      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) }) : null;
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

@@ -304,6 +304,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
         commitAfterDurability: () => {
           if (!nextTree) throw new Error("Remote link tree was not prepared at the lock head.");
           this.options.replaceTree(nextTree);
+          this.options.onRemoteLinkCommitted(link);
         },
       },
     });

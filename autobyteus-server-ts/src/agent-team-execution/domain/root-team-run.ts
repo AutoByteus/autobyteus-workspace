@@ -8,19 +8,12 @@ import { CollaborationContractError } from "../../agent-collaboration/domain/col
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
-import {
-  createTeamAgentStatusDetails,
-  createTeamAgentStatusSnapshot,
-  type TeamAgentStatusSnapshot,
-} from "./team-agent-status.js";
-import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import {
-  createCollaborationMemberExecutionIdentity,
-  createTeamRootExecutionIdentity,
-} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "./team-agent-status.js";
+import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
-import type { TeamRunEvent } from "./team-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
+import type { TeamRunEnding } from "./team-run-lifecycle.js";
 import type { TeamRun } from "./team-run.js";
 import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
@@ -48,6 +41,8 @@ import { RemoteTeamIdleShutdown } from "../services/remote-team-idle-shutdown.js
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
+import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
@@ -97,6 +92,8 @@ export class RootTeamRun {
   private readonly delivery: TeamRunMessageDelivery;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
   private readonly remoteLinks: RemoteRunLinks;
+  /** autobyteus-278: the live facts of the runs this Team delegated to other nodes (its stream viewers drive it). */
+  readonly remoteChildren: RemoteRunObservation;
   private readonly remoteDelegation: RemoteDelegation;
   private readonly remoteIdle: RemoteTeamIdleShutdown | null; // DS-004: only on a Team run a peer started
   private readonly unsubscribeTaskExecutionEvents: () => void;
@@ -117,7 +114,7 @@ export class RootTeamRun {
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     disposeRootSubjects?(): void;
-    onTerminated?(): void;
+    onTerminated?(ending: TeamRunEnding): void;
   }) {
     if (!options.taskExecutionIdentity ||
         typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
@@ -132,6 +129,8 @@ export class RootTeamRun {
       canEnter: () => this.isAdmitting(),
     });
     this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree));
+    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootTeam.remoteTaskExecutions ?? [],
+      publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
     const remoteDelegation = new RemoteDelegation({ root: createTeamRootExecutionIdentity(this.teamRunId) });
     this.remoteDelegation = remoteDelegation;
     this.teamRunResolver = new TeamRunResolver({
@@ -144,6 +143,7 @@ export class RootTeamRun {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
+      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isRootOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
@@ -223,8 +223,8 @@ export class RootTeamRun {
   }
 
   /** DS-002: the user's Stop of one delegated copy and the copies it started. */
-  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    return this.materializationGate.run(() => this.delegatedLaunches.stop(target));
+  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return await stopRemoteChild(this.remoteLinks, target) ?? this.materializationGate.run(() => this.delegatedLaunches.stop(target));
   }
   /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
@@ -364,6 +364,7 @@ export class RootTeamRun {
     agentRunId: string,
     command: TeamMemberExecutionCommand,
   ): Promise<AgentOperationResult> {
+    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) return executeRemoteChildCommand(this.remoteLinks, agentRunId, command);
     return this.materializationGate.run(async () => {
       const execution = this.index.getAgent(agentRunId);
       if (!execution) {
@@ -438,6 +439,7 @@ export class RootTeamRun {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) { quiet?.cancel(); return this.termination; }
     this.remoteIdle?.dispose();
+    this.remoteChildren.dispose();
     this.lifecycle = "terminating";
     this.taskExecutions.closeExternalAdmission();
     this.communication.closeAdmission();
@@ -470,7 +472,7 @@ export class RootTeamRun {
     this.options.disposeRootSubjects?.();
     this.options.publisher.clear();
     this.lifecycle = "terminated";
-    this.options.onTerminated?.();
+    this.options.onTerminated?.(committed ? "idle_shutdown" : "stopped");
     return { accepted: true };
   }
 

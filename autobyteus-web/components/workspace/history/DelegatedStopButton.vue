@@ -33,5 +33,10 @@ const stopping = computed(() => store.isStopping(props.root, props.reference))
 const visible = computed(() => stopping.value || isDelegatedCopyLive(props.root, props.reference))
 const STOP_LABEL_KEY = { idle: 'runSettings.delegated.stop', stopping: 'runSettings.delegated.stopping' } as const
 const label = computed(() => t(STOP_LABEL_KEY[stopping.value ? 'stopping' : 'idle'], { name: props.name }))
-const stop = (): void => { void store.stop(props.root, props.reference) }
+// autobyteus-278: the row shows when a stop failed (a remote copy's node did not answer).
+const emit = defineEmits<{ (event: 'started'): void; (event: 'failed'): void }>()
+const stop = async (): Promise<void> => {
+  emit('started')
+  if (!(await store.stop(props.root, props.reference))) emit('failed')
+}
 </script>

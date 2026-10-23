@@ -1,0 +1,253 @@
+--- start 2026-10-23T13:48:42.522Z pid 21789
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55293
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55293
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:21789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+{"level":40,"time":1792763326207,"pid":21789,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/rest/remote/delegated-runs","statusCode":400,"elapsedMs":0.1812499761581421,"msg":"http request completed"}
+{"level":40,"time":1792763326209,"pid":21789,"hostname":"MacBookPro","reqId":"req-r","method":"POST","url":"/rest/remote/messages","statusCode":400,"elapsedMs":0.1712920069694519,"msg":"http request completed"}
+{"level":40,"time":1792763326213,"pid":21789,"hostname":"MacBookPro","reqId":"req-s","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":2.243000030517578,"msg":"http request completed"}
+{"level":40,"time":1792763326215,"pid":21789,"hostname":"MacBookPro","reqId":"req-t","method":"POST","url":"/rest/remote/delegated-runs","statusCode":400,"elapsedMs":0.20845896005630493,"msg":"http request completed"}
+{"level":40,"time":1792763329525,"pid":21789,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":0.28279203176498413,"msg":"http request completed"}
+{"level":40,"time":1792763332997,"pid":21789,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_2AgrJYHhtBwynoQAYZREVu_I95V6VH-GEBaS-KagcoY","statusCode":405,"elapsedMs":0.1748329997062683,"msg":"http request completed"}
+{"level":40,"time":1792763337186,"pid":21789,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_0menJPmnNInxSDLyE5UVWi2oVZ05y3jVel-uAsb46bk","statusCode":405,"elapsedMs":0.20787495374679565,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/memory/agents/bystander_ad5eb2438b2143eead53bc0a5421b28c/raw_traces_active.jsonl
+{"level":40,"time":1792763338707,"pid":21789,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_qot4OCEXFLbH23GqnJlzQT9U5yHuiBYGPHIVYpiFf2I","statusCode":405,"elapsedMs":0.14608299732208252,"msg":"http request completed"}
+{"level":40,"time":1792763343325,"pid":21789,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_WsoBkWwl2bYn6ASFa3XyLO-rhX9p95j6ne5fqz2hjAg","statusCode":405,"elapsedMs":0.10491698980331421,"msg":"http request completed"}
+{"level":40,"time":1792763343753,"pid":21789,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_WsoBkWwl2bYn6ASFa3XyLO-rhX9p95j6ne5fqz2hjAg","statusCode":405,"elapsedMs":0.19391697645187378,"msg":"http request completed"}
+{"level":40,"time":1792763348101,"pid":21789,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_H3ZOKo5hiZ7EZDHSV0k-Y996_0JYWua6Ib9uSY98NKA","statusCode":405,"elapsedMs":0.11570894718170166,"msg":"http request completed"}
+{"level":40,"time":1792763352077,"pid":21789,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_ZGKJ7vftL2KtBjM6MwkYS-3gHnsKDKBGp1tJ7p2VXng","statusCode":405,"elapsedMs":0.11679196357727051,"msg":"http request completed"}
+{"level":40,"time":1792763352948,"pid":21789,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_ti3Ccf7RJctg4n5xrZQB4PH_jjmEnRfaUztPKz963ns","statusCode":405,"elapsedMs":0.1335829496383667,"msg":"http request completed"}
+{"level":40,"time":1792763356465,"pid":21789,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_eB2AfIIpSaMY9jZyTRS6s9FIzS52owJ8i7iaNaQC-Gc","statusCode":405,"elapsedMs":0.11079198122024536,"msg":"http request completed"}
+--- start 2026-10-23T13:52:15.046Z pid 51335
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55293
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55293
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:51335) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+{"level":40,"time":1792763544375,"pid":51335,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":0.20137500762939453,"msg":"http request completed"}
+{"level":40,"time":1792763545209,"pid":51335,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_2AgrJYHhtBwynoQAYZREVu_I95V6VH-GEBaS-KagcoY","statusCode":405,"elapsedMs":0.21095901727676392,"msg":"http request completed"}
+{"level":40,"time":1792763546012,"pid":51335,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_0menJPmnNInxSDLyE5UVWi2oVZ05y3jVel-uAsb46bk","statusCode":405,"elapsedMs":0.45166701078414917,"msg":"http request completed"}
+{"level":40,"time":1792763548236,"pid":51335,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_ZGKJ7vftL2KtBjM6MwkYS-3gHnsKDKBGp1tJ7p2VXng","statusCode":405,"elapsedMs":0.173458993434906,"msg":"http request completed"}
+{"level":40,"time":1792763551348,"pid":51335,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_ZGKJ7vftL2KtBjM6MwkYS-3gHnsKDKBGp1tJ7p2VXng","statusCode":405,"elapsedMs":0.5481669902801514,"msg":"http request completed"}
+--- start 2026-10-23T13:53:30.545Z pid 54675
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55293
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55293
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:54675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+--- start 2026-10-23T13:54:16.571Z pid 55072
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55293
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55293
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-XI2n7i/beta/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:55072) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+{"level":40,"time":1792763662027,"pid":55072,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":0.8011249899864197,"msg":"http request completed"}
+{"level":40,"time":1792763662353,"pid":55072,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":3.951332986354828,"msg":"http request completed"}
+{"level":40,"time":1792763662688,"pid":55072,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":0.5124580264091492,"msg":"http request completed"}
+{"level":40,"time":1792763663200,"pid":55072,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_YNR6dLJBqQWEVp3re-asE49fvc0HC4oKyEIK4YXOffw","statusCode":405,"elapsedMs":0.14362496137619019,"msg":"http request completed"}

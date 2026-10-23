@@ -5,7 +5,8 @@ import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import type { AgentRootChildAgent } from './agentRunCollaborationIndex'
+import type { AgentRootChildAgent, AgentRootRemoteAgent } from './agentRunCollaborationIndex'
+import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
 
 /** One Offline context for a child of an Agent root (a collaborator or an extra copy). */
 export const createChildContext = (child: AgentRootChildAgent, createdAt: string, workspace: WorkspaceMetadata | null): AgentContext => {
@@ -29,3 +30,7 @@ export const createChildContext = (child: AgentRootChildAgent, createdAt: string
   initializeRuntimeStatusState(state, AgentStatus.Offline)
   return new AgentContext(config, state)
 }
+
+/** autobyteus-278: an agent of a run another node runs (the shared remote context). */
+export const createRemoteChildContext = (child: AgentRootRemoteAgent, createdAt: string): AgentContext =>
+  createRemoteAgentContext(child.agentRunId, child.address, createdAt)

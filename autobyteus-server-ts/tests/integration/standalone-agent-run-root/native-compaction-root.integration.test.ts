@@ -19,7 +19,7 @@ describe('native recovery through stopped delegated copies of an Agent root', ()
       let mainError: unknown;
       try {
         const first = await f.connect();
-        const dormant = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!));
+        const dormant = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView({ ...(await f.manager.getInspection(HOST))!, remoteTaskExecutions: [] }));
         expect(dormant.root_agent.agent_input_states).toEqual([]);
         expect(dormant.root_agent.agent_statuses).toHaveLength(kind === 'agent' ? 1 : 2);
         expect(dormant.root_agent.agent_statuses.every(s => s.status === 'offline' && s.recoverableBlock === null)).toBe(true);
@@ -55,7 +55,7 @@ describe('native recovery through stopped delegated copies of an Agent root', ()
         expect(f.forwarded.mock.calls.filter(([event]) => event.message.content === 'B')).toHaveLength(1);
         expect(f.compress).toHaveBeenCalledTimes(2); // substitute strategy calls, not generation attempts
         expect(second.frames.filter(frame => frame.type === 'ERROR')).toEqual([]);
-        const final = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!)).root_agent;
+        const final = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView({ ...(await f.manager.getInspection(HOST))!, remoteTaskExecutions: [] })).root_agent;
         expect(final.agent_input_states[0]?.state.entries).toEqual([]);
         expect(f.prepare).toHaveBeenCalledOnce();
       } catch (error) { mainError = error; }

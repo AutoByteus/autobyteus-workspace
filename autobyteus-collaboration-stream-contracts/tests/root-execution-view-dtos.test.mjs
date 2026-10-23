@@ -39,6 +39,7 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],
     agent_input_states: [],
+    remote_task_executions: [],
   },
 });
 

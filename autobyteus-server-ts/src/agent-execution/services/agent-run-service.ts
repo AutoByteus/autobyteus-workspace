@@ -291,6 +291,11 @@ export class AgentRunService {
     await this.historyCatalogService.recordRunSummary({ runId, summary: content });
   }
 
+  /** The run's title as its history row shows it (autobyteus-278: a peer reads it for a run it started). */
+  async readRunTitle(runId: string): Promise<string | null> {
+    return (await this.historyCatalogService.getCatalogRow(runId))?.summary || null;
+  }
+
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
     return this.activate(normalizeRequiredRunId(runId));
   }

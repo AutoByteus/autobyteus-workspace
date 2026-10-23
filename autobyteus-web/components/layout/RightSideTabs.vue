@@ -29,8 +29,15 @@
       <div v-if="effectiveActiveTab === 'projects'" class="h-full min-h-0" data-test="right-side-projects-panel">
         <ProjectsPanel />
       </div>
+      <!-- autobyteus-278: tools that read the other node's disk, processes or screen say where the run is. -->
+      <RemoteRunPanelNote
+        v-if="remoteNode && remotePanel"
+        :node-name="remoteNode.nodeName"
+        :panel="remotePanel"
+        class="bg-white"
+      />
       <div
-        v-if="shouldMountFilesPanel"
+        v-if="shouldMountFilesPanel && !remotePanel"
         v-show="isFilesTabActive"
         class="h-full min-h-0"
         data-test="right-side-files-panel"
@@ -48,7 +55,7 @@
         />
       </div>
       <div
-        v-if="shouldMountTerminalPanel"
+        v-if="shouldMountTerminalPanel && !remotePanel"
         v-show="isTerminalTabActive"
         class="h-full min-h-0"
         data-test="right-side-terminal-panel"
@@ -58,10 +65,10 @@
           :workspace-metadata="activeWorkspaceMetadata"
         />
       </div>
-      <div v-if="effectiveActiveTab === 'vnc'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'vnc' && !remotePanel" class="h-full min-h-0">
         <VncViewer />
       </div>
-      <div v-if="effectiveActiveTab === 'artifacts'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'artifacts' && !remotePanel" class="h-full min-h-0">
         <ArtifactsTab />
       </div>
       <div v-if="effectiveActiveTab === 'browser'" class="h-full min-h-0">
@@ -94,6 +101,8 @@ import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
 import TokenUsageMeterPanel from '~/components/workspace/usage/TokenUsageMeterPanel.vue';
 import ProjectsPanel from '~/components/projects/panel/ProjectsPanel.vue';
+import RemoteRunPanelNote from '~/components/workspace/remote/RemoteRunPanelNote.vue';
+import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
 
 const props = withDefaults(defineProps<{
   mode?: 'desktop' | 'drawer' | 'mobile-tools'
@@ -123,6 +132,12 @@ const activeWorkspaceMetadata = computed(() => (startSurfaceWorkspace?.value
 const activeMessagesView = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;
   return target && 'collaborationMessages' in target ? target.collaborationMessages : null;
+});
+// autobyteus-278: for a run another node runs, Files, Terminal, Artifacts and the screen are on that node.
+const remoteNode = useRemoteRun(() => activeContextStore.activeWorkspaceTarget?.context?.state?.runId);
+const remotePanel = computed<'files' | 'terminal' | 'artifacts' | 'vnc' | null>(() => {
+  const tab = effectiveActiveTab.value;
+  return remoteNode.value && (tab === 'files' || tab === 'terminal' || tab === 'artifacts' || tab === 'vnc') ? tab : null;
 });
 const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
 const fileExplorerLayout = computed(() => props.mode === 'desktop' ? 'split' : 'stacked');

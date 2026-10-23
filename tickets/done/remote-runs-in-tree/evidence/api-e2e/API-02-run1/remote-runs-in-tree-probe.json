@@ -1,0 +1,40 @@
+{
+  "startedAt": "2026-10-23T14:01:49.096Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57000,
+      "nodeId": "srv_sNxhX0POXCYXD7AUnrhDgdVusv6KQaXx"
+    },
+    "beta": {
+      "port": 57001,
+      "nodeId": "srv_pq1yBPluytJ9XgxCyV2KUs9534hkZ7vn"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_d2e8460a56954448af9d309880f46dac",
+    "remoteTeamRun": "studio_team_466af11e2bd8489e820e5a9274212abd",
+    "studioMembers": [
+      "publisher_55b3f87640c245a29c0fb6dcfac2b7c9",
+      "checker_88ed3c753da04e598200c3a46763d163"
+    ],
+    "team": "remote_squad_2f1f30f73aad4ef8bc8920b1251d8eff",
+    "leadRun": "delegator_5206fd490515455193ca20c4c7a73303",
+    "localA": "helper_65db0012667946fe9a9cf181afc74621",
+    "remoteAgentRun": "publisher_3bc92ef75d3543a691ac8cbd441fd463",
+    "localB": "helper_43b015a744fc47aba9804506f73c2e11",
+    "org": "remote_org_8c1615c67b574782a54e47946e4d292e",
+    "orgLead": "delegator_79fd04fb646b4c3d9d2ee8c43c8813eb",
+    "orgRemoteRun": "publisher_36be9d160aa943bf80a75d325eeb125a"
+  },
+  "cases": {},
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: the tree rows did not appear\n    at openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:259:11)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:264:3",
+  "finishedAt": "2026-10-23T14:03:49.258Z"
+}

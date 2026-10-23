@@ -10,6 +10,8 @@ import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrat
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { getApolloClient } from '~/utils/apolloClient'
 import type { AgentRootChildAgent } from './agentRunCollaborationIndex'
+import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 
 type Projection = Readonly<{
@@ -28,7 +30,7 @@ const queryErrors = (errors: readonly { message: string }[] | undefined): void =
   if (errors?.length) throw new Error(errors.map((error) => error.message).join(', '))
 }
 
-const fetchProjection = async (hostRunId: string, child: AgentRootChildAgent): Promise<Projection> => {
+const fetchProjection = async (hostRunId: string, child: Pick<AgentRootChildAgent, 'agentRunId' | 'address'>): Promise<Projection> => {
   const result = await getApolloClient().query<{ agentRunCollaborationMemberProjection: Projection | null }>({
     query: GetAgentRunCollaborationMemberProjection,
     variables: { hostRunId, memberAddress: child.address, agentRunId: child.agentRunId },
@@ -62,9 +64,14 @@ export const hydrateAgentRunCollaborationChild = async (input: Readonly<{
   /** Whether the hub's live stream is ready, so live tool decisions win over the stored projection. */
   liveToolAuthority(): boolean
 }>): Promise<AgentRunCollaborationChildHydrationOutcome> => {
-  const child = input.collaboration.getChild(input.agentRunId)
+  const local = input.collaboration.getChild(input.agentRunId)
+  // autobyteus-278: a remote child's conversation is read from its node by this node's server; its files stay there.
+  const remote = local ? null : input.collaboration.getRemoteChild(input.agentRunId)
+  const child = local ?? remote
   const agent = input.collaboration.getAgentContext(input.agentRunId)
   if (!child || !agent) throw new Error(`AgentRun '${input.agentRunId}' is not a child of Agent run '${input.hostRunId}'.`)
+  const remoteRuns = remote ? useRemoteRunsStore() : null
+  const remoteRunId = remote ? remoteTaskExecutionRunIdOf(remote.execution) : null
   const activityStore = useAgentActivityStore()
   for (let attempt = 0; attempt < MAX_CONFLICT_ATTEMPTS; attempt += 1) {
     if (!input.isPublished()) return 'superseded'
@@ -75,23 +82,25 @@ export const hydrateAgentRunCollaborationChild = async (input: Readonly<{
       fetched = await fetchMemberRunState({
         fetchProjection: () => fetchProjection(input.hostRunId, child),
         // The child's artifacts, read inside its hub only.
-        fetchFileChanges: () => fetchRunFileChanges({
+        fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
           kind: 'standaloneMember', hostRunId: input.hostRunId, memberAddress: child.address, agentRunId: child.agentRunId,
         }),
       })
     } catch (cause) {
       if (!input.isPublished()) return 'superseded'
+      if (remoteRunId) remoteRuns!.markReachable(remoteRunId, false)
       throw cause
     }
+    if (remoteRunId) remoteRuns!.markReachable(remoteRunId, true)
     if (!input.isPublished()) return 'superseded'
     if (agent.state.eventMonitorPresentationRevision !== expectedPresentationRevision
       || activityStore.getActivityContentRevision(child.agentRunId) !== expectedActivityRevision) continue
 
     // Synchronous from here to the end of the attempt: nothing can republish in between.
     let conversation = buildConversationFromProjection(child.agentRunId, fetched.projection.conversation, {
-      agentDefinitionId: child.source.agentDefinitionId,
+      agentDefinitionId: local?.source.agentDefinitionId ?? '',
       agentName: memberDisplayName(child.address),
-      llmModelIdentifier: child.source.launchConfiguration.llmModelIdentifier,
+      llmModelIdentifier: local?.source.launchConfiguration.llmModelIdentifier ?? '',
     })
     let activities = buildActivitiesFromProjection(fetched.projection.activities)
     if (input.liveToolAuthority()) {

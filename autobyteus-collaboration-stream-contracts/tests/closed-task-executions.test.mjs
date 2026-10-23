@@ -27,7 +27,7 @@ const agentView = (closed) => ({
       messageId: "m1", senderAgentRunId: "writer-run", receiverAgentRunId: "host-run", content: "done",
       messageType: "agent_message", referenceFiles: [], createdAt: at,
     }] },
-    agent_statuses: [], agent_input_states: [],
+    agent_statuses: [], agent_input_states: [], remote_task_executions: [],
   },
 });
 
@@ -48,7 +48,7 @@ const orgView = (closed) => ({
     } },
     closed_task_executions: closed,
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run", messages: [] },
-    agent_statuses: [], agent_input_states: [],
+    agent_statuses: [], agent_input_states: [], remote_task_executions: [],
   },
 });
 

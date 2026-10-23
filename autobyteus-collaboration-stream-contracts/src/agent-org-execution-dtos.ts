@@ -6,6 +6,8 @@ import {
   agentPresentationPayloadSchemas,
   jsonValueSchema,
   nonEmptyStringSchema,
+  remoteTaskExecutionDtoSchema,
+  remoteTaskExecutionSummaryDtoSchema,
 } from "@autobyteus/agent-presentation-contracts";
 
 const timestamp = nonEmptyStringSchema;
@@ -264,6 +266,8 @@ export const agentOrgExecutionViewDtoSchema = z.object({
   closed_task_executions: closedTaskExecutionsDtoSchema,
   communication_messages: agentOrgCommunicationMessagesDtoSchema, agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
+  /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
+  remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
 }).strict();
 
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
@@ -277,6 +281,8 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
   delegatedLaunchSelectionsChangedEventDtoSchema,
+  z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
+  remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
 ]);
 
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

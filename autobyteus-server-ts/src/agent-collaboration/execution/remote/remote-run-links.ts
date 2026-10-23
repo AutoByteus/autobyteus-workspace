@@ -1,9 +1,19 @@
-import type { RemoteTaskExecution, RemoteTaskTeamExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type {
+  RemoteTaskAgentExecution,
+  RemoteTaskExecution,
+  RemoteTaskTeamExecution,
+} from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
-import { resolveRemoteRunChannel, type RemoteChannelRefusal, type RemoteRunChannel } from "./remote-run-channel.js";
+import {
+  resolveRemoteRunChannel,
+  type RemoteChannelRefusal,
+  type RemoteDeliveryReceipt,
+  type RemoteOwnerCommand,
+  type RemoteRunChannel,
+} from "./remote-run-channel.js";
 
 /** A message a peer node sends to this root's linked agent, as its peer gateway admitted it. */
 export type RemoteInboundMessage = Readonly<{
@@ -31,11 +41,20 @@ export type RemoteInboundQuery = Readonly<{
   fromNodeId: string;
   senderAgentRunId: string;
   targetAgentRunId: string;
+}> | Readonly<{
+  /**
+   * autobyteus-278: the owner of the node whose delegation started this run reads or drives it: about one of the
+   * agents the back-link pairs with, or about the whole run (`null`: its summary, its observation).
+   */
+  kind: "owner";
+  fromNodeId: string;
+  targetAgentRunId: string | null;
 }>;
 
 /**
  * N-303: a peer's request checked against a root's stored links before the root is restored. `proceed` when the
  * stored links admit it, or when the root is already active (it checks in memory); `not_found` without a root.
+ * An `owner` query (autobyteus-278) is always checked against the back-link, which never changes for a run.
  */
 export type StoredRemoteLinkCheck = "proceed" | "not_linked" | "not_found";
 
@@ -83,6 +102,11 @@ export class RemoteRunLinks {
     return this.options.remoteRuns().find((link): link is RemoteTaskTeamExecution => link.kind === "agent_team" && link.teamRunId === teamRunId) ?? null;
   }
 
+  /** The remote Agent link with this agent run ID (autobyteus-278: the user's Stop of a remote Agent copy). */
+  agentLinkFor(agentRunId: string): RemoteTaskAgentExecution | null {
+    return this.options.remoteRuns().find((link): link is RemoteTaskAgentExecution => link.kind === "agent" && link.agentRunId === agentRunId) ?? null;
+  }
+
   /** The remote endpoint with this run ID; `null` when the run ID is not one (today's local path). */
   endpointFor(agentRunId: string): RemoteEndpoint | null {
     return this.endpoints().find((endpoint) => endpoint.reference.agentRunId === agentRunId) ?? null;
@@ -105,8 +129,19 @@ export class RemoteRunLinks {
     return endpoint?.kind === "delegator" && endpoint.admitsWorkPacket(fromNodeId, senderAgentRunId, targetAgentRunId);
   }
 
-  /** The link check for either kind of inbound request: the same rules the root applies once it is active. */
+  /**
+   * autobyteus-278: the caller is the node whose delegation started this root (its back-link), about one of the
+   * agents the back-link pairs with, or about the whole run (`null`).
+   */
+  admitsOwner(fromNodeId: string, targetAgentRunId: string | null): boolean {
+    const back = this.options.backLink;
+    if (!back || back.delegatedFrom.nodeId !== fromNodeId) return false;
+    return targetAgentRunId === null || back.pairedAgentRunIds().includes(targetAgentRunId);
+  }
+
+  /** The link check for every kind of inbound request: the same rules the root applies once it is active. */
   admitsInbound(query: RemoteInboundQuery): boolean {
+    if (query.kind === "owner") return this.admitsOwner(query.fromNodeId, query.targetAgentRunId);
     return query.kind === "work_packet"
       ? this.admitsWorkPacket(query.fromNodeId, query.senderAgentRunId, query.targetAgentRunId)
       : this.inboundEndpoint(query.fromNodeId, query.senderAgentRunId, query.targetAgentRunId) !== null;
@@ -118,6 +153,23 @@ export class RemoteRunLinks {
     if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
     const receipt = await channel.deliverMessage(endpoint.transmission(message));
     return receipt.accepted ? { accepted: true, peerName: await channel.peerName(endpoint.reference.nodeId) } : receipt;
+  }
+
+  /**
+   * autobyteus-278 (DS-004): a command of this node's owner for an agent of a run this root delegated to a peer (the
+   * Agent run, or a Team member), passed to its node, which applies it to the linked run. Never for the delegator.
+   */
+  async ownerCommand(agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt> {
+    const endpoint = this.endpointFor(agentRunId);
+    if (!endpoint || endpoint.kind === "delegator") {
+      return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not a run this root delegated to another node.` };
+    }
+    const channel = this.channel();
+    if (!channel) return { accepted: false, code: REMOTE_REFUSAL.OFF, message: REMOTE_ROOT_REFUSAL_TEXT.off };
+    const targetRoot = endpoint.kind === "delegated_run"
+      ? { kind: "agent" as const, runId: endpoint.link.agentRunId }
+      : { kind: "agent_team" as const, runId: endpoint.link.teamRunId };
+    return channel.ownerCommand(endpoint.reference.nodeId, targetRoot, agentRunId, command);
   }
 
   /** The node name a local agent sees for a remote endpoint (this owner's label for the peer). */

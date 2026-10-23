@@ -35,7 +35,7 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
-    const dto = projectAgentOrgExecutionSnapshot(result);
+    const dto = projectAgentOrgExecutionSnapshot({ ...result, remoteTaskExecutions: [] });
     expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, snapshot: { messages: f.messages } });
     expect(result.snapshot).not.toHaveProperty('tasks');
     expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({
@@ -61,7 +61,7 @@ describe('strict read-only Org inspection', () => {
     resources.close('A');
     const result = await f.manager.getInspection('org');
     expect(result.snapshot.closedTaskExecutions).toEqual([{ agentRunId: 'task-run' }]);
-    const dto = projectAgentOrgExecutionSnapshot(result);
+    const dto = projectAgentOrgExecutionSnapshot({ ...result, remoteTaskExecutions: [] });
     expect(dto.root_subject_kind === 'agent_org' && dto.root_org.closed_task_executions).toEqual([{ agentRunId: 'task-run' }]);
     expect(dto.root_subject_kind === 'agent_org' && dto.root_org.execution_tree.rootOrg.taskExecutions).toHaveLength(1);
     expect(f.manager.closedTaskExecutionsFor('org', f.tree)).toEqual([{ agentRunId: 'task-run' }]);

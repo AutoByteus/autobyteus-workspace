@@ -6,6 +6,7 @@ import type {
   StoredRemoteLinkCheck,
 } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteTargetRoot } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import type { PeerHandlerRefusal, RemoteMessageHandler } from "../channel/peer-gateway.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
@@ -29,6 +30,11 @@ export type RemoteRootDirectory = Readonly<{
   standalone(hostRunId: string): Promise<RemoteHostRoot | null>;
   team(teamRunId: string): Promise<RemoteHostRoot | null>;
   org(orgRunId: string): Promise<RemoteMessageRoot | null>;
+  /**
+   * autobyteus-278 (AR-401): a run a peer started, by its kind, as this node serves that peer's owner: each kind's
+   * own source of output, commands and readiness, offered by its manager. Callers check the link first.
+   */
+  pairedAgents(kind: "agent" | "agent_team"): PairedAgentAccess;
 }>;
 
 /**
