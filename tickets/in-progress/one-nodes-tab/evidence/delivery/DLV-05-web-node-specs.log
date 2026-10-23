@@ -1,0 +1,160 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/remoteCollaborationOffersStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nodeListStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeIdentityProbe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/NodeRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/nodeIdentityProbe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/remoteCollaborationOffersStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/nodeListStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/NodeRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nodeIdentityProbe.spec.ts (4 tests) 16ms
+ ✓ services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts (16 tests) 13ms
+ ✓ stores/__tests__/nodeListStore.spec.ts (12 tests) 35ms
+stderr | stores/__tests__/remoteCollaborationOffersStore.spec.ts > remoteCollaborationOffersStore with a real ApolloClient > sends a new request for each ask of the same peer, even while one is in flight; the stale answer is ignored
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22unreachableReason%22%2C%22%7B%5Cn%20%20%5C%22entries%5C%22%3A%20null%2C%5Cn%20%20%5C%22refusalCode%5C%22%3A%20%5C%22PEER_UNREACHABLE%5C%22%5Cn%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/remoteCollaborationOffersStore.spec.ts > remoteCollaborationOffersStore with a real ApolloClient > sends a new request for each ask of the same peer, even while one is in flight; the stale answer is ignored
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22unreachableReason%22%2C%22%7B%5Cn%20%20%5C%22entries%5C%22%3A%20%5B%5Cn%20%20%20%20%7B%5Cn%20%20%20%20%20%20%5C%22name%5C%22%3A%20%5C%22Stale%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22kind%5C%22%3A%20%5C%22agent%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22description%5C%22%3A%20null%2C%5Cn%20%20%20%20%20%20%5C%22__typename%5C%22%3A%20%5C%22PeerNodeOfferEntryGql%5C%22%5Cn%20%20%20%20%7D%5Cn%20%20%5D%2C%5Cn%20%20%5C%22refusalCode%5C%22%3A%20null%5Cn%7D%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ stores/__tests__/remoteCollaborationOffersStore.spec.ts (8 tests) 142ms
+ ✓ components/settings/nodes/__tests__/AddNodePanel.spec.ts (3 tests) 44ms
+ ✓ components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts (6 tests) 132ms
+ ✓ components/settings/nodes/__tests__/NodeChangeDialog.spec.ts (7 tests) 62ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 160ms
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (12 tests) 254ms
+stderr | stores/__tests__/nodeRowStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nodeStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nodeChangeDialogStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/remoteCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeConnectionErrorText.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/nodeCollaboration/__tests__/nodeCollaborationApi.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | types/__tests__/node.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/nodeRowStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/nodeStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | types/__tests__/node.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/remoteCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nodeRowStatus.spec.ts (10 tests) 7ms
+stdout | stores/__tests__/nodeChangeDialogStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ types/__tests__/node.spec.ts (4 tests) 5ms
+stdout | services/nodeCollaboration/__tests__/nodeCollaborationApi.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nodeStore.spec.ts (12 tests) 16ms
+ ✓ stores/__tests__/remoteCollaborationStore.spec.ts (4 tests) 7ms
+stdout | utils/__tests__/nodeConnectionErrorText.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nodeChangeDialogStore.spec.ts (3 tests) 15ms
+ ✓ services/nodeCollaboration/__tests__/nodeCollaborationApi.spec.ts (3 tests) 19ms
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nodeConnectionErrorText.spec.ts (3 tests) 4ms
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 5ms
+
+ Test Files  17 passed (17)
+      Tests  118 passed (118)
+   Start at  08:16:07
+   Duration  19.30s (transform 7.80s, setup 138.02s, collect 4.16s, tests 937ms, environment 8.92s, prepare 6.55s)
+
+exit=0

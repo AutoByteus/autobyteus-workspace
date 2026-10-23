@@ -63,7 +63,8 @@ in later slices.
   confirmation (the other node decides through its own settings API; no node writes another node's peers).
 - `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
   absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
-  the same path as `list_available_agents` with `node`. The window never contacts a peer; the page words the
+  the same path as `list_available_agents` with `node`. The window never asks a peer for its offer (only this
+  node's server does); the page words the
   refusal code itself. It takes at most about 20 s (the peer request bound). `peerNodeAvailability(nodeId)` answers
   `{available, refusalCode, unreachableReason}` through `RemoteNodeDiscovery.checkAvailabilityOf(nodeId)`, the
   availability question `list_available_nodes` asks, for one peer.

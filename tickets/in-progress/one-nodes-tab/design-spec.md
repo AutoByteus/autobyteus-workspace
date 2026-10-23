@@ -252,7 +252,7 @@ One rule per plan kind, owned by `nodeCollaborationConnector.run`. Each failed s
 | `disconnect` | `removeHere`, `removeThere` | **Continue.** `removeThere` runs even when `removeHere` failed, and the other way round. Each failure is reported ("could not be removed"), and the row shows what is left. |
 | `remove` | `removeHere`, `removeThere` (when collaborating and reachable at plan time), `removeFromList` | **Continue to `removeFromList`.** A failed `removeThere` is reported, and the list entry is still removed: "Removed here. <name> could not be reached, so this node is still registered there." (UXJ-706, P-004). A failed `removeHere` is reported, and the entry is still removed. Only a failed `removeFromList` leaves the row. |
 | `rename` | `renameHere` (peer), `renameInList` (desktop entry) | **Stop** at the first failure, so a refused peer name (`PEER_NAME_TAKEN` or invalid) leaves both names unchanged; the field stays with its message (VIS-010). |
-| `changeAddress` | `resolveHere` (with the typed address first), `changeAddressHere` | **Stop.** The Docker hint applies (§ Loopback Hint Surface). |
+| `changeAddress` | `changeAddressHere` (one step: `changePeerAddress` checks the pinned node ID at the typed address only; no window address or candidates after it) | **Stop.** The Docker hint applies (§ Loopback Hint Surface). *Reconciled at docs sync: implementation assumption A1 was accepted in code review and the separate `resolveHere` step was dropped (CR-002), so AC-707's Docker hint and "A different node answers there…" can happen.* |
 
 ## Window Probes While The Switch Is Off
 
