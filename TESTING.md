@@ -107,6 +107,11 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
   SDK source; `test:integration` names any missing build output and exits.
+- **Tracked imports.** Tracked code must import only tracked files: an ignore rule can keep a
+  source file out of git while it stays on your disk, so the build passes for you and fails in a
+  clean checkout. `tests/architecture/tracked-imports.test.ts` runs
+  `python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports` in every server
+  test run, and the pre-tag hygiene check runs it too.
 - **Server test isolation.** For `tests/unit/`, `tests/integration/` and the per-migration test
   folders in `tests/app-data-migrations/`,
   `tests/setup/test-environment-isolation.ts` removes every inherited variable except system

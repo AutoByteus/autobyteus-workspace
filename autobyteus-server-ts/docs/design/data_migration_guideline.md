@@ -200,7 +200,11 @@ retiring it means untangling it first.
   in most of the application. Freeze the members a migration uses. Where it used
   a deep service, write a small frozen reader or writer for exactly the files or
   rows it touches. The migration's tests, with unchanged assertions, prove the
-  result is the same.
+  result is the same. Copy the source files whole into
+  `frozen/<package>/<original path>`, then prune them with
+  `node scripts/prune-frozen-layer.mjs` (in `autobyteus-server-ts/`): it keeps
+  exactly the members migrations and their tests use, leaves already-pruned
+  files unchanged, and drops copies no migration reaches.
 - **Application code never asks about a migration.** It never checks whether
   migration X succeeded. A migration that must hold back a feature until it has
   succeeded declares a **capability** (`holdsBackCapabilities`, for example

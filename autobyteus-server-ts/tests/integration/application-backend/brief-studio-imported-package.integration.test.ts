@@ -50,7 +50,6 @@ import { registerApplicationBackendNotificationWebsocket } from "../../../src/ap
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { PublishedArtifactProjectionService } from "../../../src/run-history/services/published-artifact-projection-service.js";
-import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
