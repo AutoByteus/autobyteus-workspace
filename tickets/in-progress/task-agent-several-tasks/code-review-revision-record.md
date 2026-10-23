@@ -8,6 +8,7 @@
 | CRR-002 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 2 / CR-001 fixed (IR-002) | Fail (Local Fix) | Pass | CR-001 |
 | CRR-003 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-F-001 (API-REV-001) | Pass (CRR-002) | Fail (Design Impact) | CR-002 |
 | CRR-004 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 4 / SR-006 web delta (IR-003) | Fail (Design Impact) | Pass | CR-002 |
+| CRR-005 | `tickets/in-progress/task-agent-several-tasks/api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API/E2E passed (API-REV-002) | Pass (CRR-004, source review) | Pass | None |
 
 ## Revision Entries
 
@@ -117,3 +118,28 @@ None.
 - Material score or classification changes: back to `Pass`; scores as in round 2
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: FU-001, FU-002 (follow-ups.md). API/E2E reruns API-07 (AC-010, AC-011).
+
+### CRR-005 — Proportional review of the API/E2E test code (API-REV-002)
+
+- Canonical review report updated: `tickets/in-progress/task-agent-several-tasks/api-e2e-test-review-report.md` (new; `code-review-report.md` unchanged)
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md`; SEV-E2E-001..004, the rootScenario updates, EXC-E2E-004, TKD-AGY-001, CLS-API-001, POF-API-001
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-004, source review)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why: the 3 durable test paths of `386ce18b5f` were reviewed; round 2 changed none. The removed refusal's assertions are replaced by the accepted journey in every root, the race test now fails on any refusal, the new gated suite covers AC-002 and AC-005 to AC-007 plus waking a sleeping copy, and the text pins are exact.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings; CR-001 and CR-002 were resolved in CRR-002 and CRR-004).
+
+- New or remaining finding IDs: none. No follow-ups added.
+- Material score or classification changes: N/A (test review has no scorecard)
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: FU-001, FU-002 (follow-ups.md). A closed Task's root reads Offline while the team works on another Task (approved, ARCH-REV-003).
