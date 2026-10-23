@@ -1,6 +1,8 @@
 import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { readRemoteTeamMember } from '~/services/teamExecution/teamRemoteRunRegistry';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 
 export type TeamMemberInspectionResult =
   | SupersededSelection
@@ -39,7 +41,10 @@ export const inspectMountedTeamMember = async (input: {
     if (!team.view.hasAgentRun(agentRunId)) {
       throw new Error(`AgentRun '${agentRunId}' is not retained in the mounted Team.`);
     }
-    await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
+    // autobyteus-278 (F-006): a member of a run another node runs is focused first and read after, so its node being
+    // down shows as its run's notice, not as a failed selection. A member of this node is loaded before it is focused.
+    const remote = useRemoteRunsStore().runOfAgentRun(agentRunId) !== null;
+    if (!remote) await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
     if (!intent.isCurrent()) return { disposition: 'superseded' };
     if (contexts.getTeamContextById(teamRunId) !== team) {
       throw new Error(`Team context '${teamRunId}' changed before selection commit.`);
@@ -54,6 +59,7 @@ export const inspectMountedTeamMember = async (input: {
     }
     const committed = Object.freeze({ teamRunId, agentRunId, memberAddress });
     input.commit(committed);
+    if (remote) readRemoteTeamMember(team, agentRunId);
     return Object.freeze({ disposition: 'committed' as const, ...committed });
   } catch (error) {
     if (!intent.isCurrent()) return { disposition: 'superseded' };

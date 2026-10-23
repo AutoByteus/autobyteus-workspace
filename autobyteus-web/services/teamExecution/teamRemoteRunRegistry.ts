@@ -1,4 +1,5 @@
 import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
@@ -18,6 +19,18 @@ export const registerTeamRemoteRuns = (teamRunId: string, executions: readonly R
   executions.forEach((execution) => remoteRuns.register(execution, adapter))
 }
 
+/**
+ * autobyteus-278 (CRR-006 F-006): the one lazy read of a remote Team member's conversation from its node. A Team view
+ * focuses a remote member first and reads it after; a failed read shows only as its run's reachability (the read
+ * marks it), never as a Team open or inspection error. `false` when nothing starts (the member is loaded).
+ */
+export const readRemoteTeamMember = (team: AgentTeamContext, agentRunId: string): boolean => {
+  if (isTeamMemberProjectionAuthoritative(team, agentRunId)) return false
+  void ensureAuthoritativeTeamMemberProjection({ team, agentRunId })
+    .catch((cause) => console.warn(`[agentTeam] Could not load '${agentRunId}' of '${team.view.getRootTeamRunId()}'.`, cause))
+  return true
+}
+
 const teamRemoteRetryAdapter = (teamRunId: string): RemoteRunRetryAdapter => {
   const team = () => useAgentTeamContextsStore().getTeamContextById(teamRunId)
   const isLoaded = (agentRunId: string): boolean => {
@@ -30,10 +43,7 @@ const teamRemoteRetryAdapter = (teamRunId: string): RemoteRunRetryAdapter => {
     isLoaded,
     rereadAgent: (agentRunId: string) => {
       const current = team()
-      if (!current || isLoaded(agentRunId)) return false
-      void ensureAuthoritativeTeamMemberProjection({ team: current, agentRunId })
-        .catch((cause) => console.warn(`[agentTeam] Could not load '${agentRunId}' of '${teamRunId}'.`, cause))
-      return true
+      return current ? readRemoteTeamMember(current, agentRunId) : false
     },
   })
 }

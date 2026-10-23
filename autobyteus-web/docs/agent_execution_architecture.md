@@ -782,7 +782,11 @@ with the local copies by start time. A remote Team is listed with its members.
   events of the root and is dispatched to its own context.
 - **Stored conversation.** It is read through the root's member-projection query,
   which this node's server answers from the run's node. A failed read marks the
-  run unreachable.
+  run unreachable, and that is its only error. Every family opens a remote agent
+  first and reads it after. In a Team, opening the Team on a remote member, selecting
+  one in a mounted Team, and the focused reconcile all focus and commit it, then read
+  it through `readRemoteTeamMember` (`teamRemoteRunRegistry.ts`). Its node being
+  down therefore never fails the selection or sets a Team inspection error.
 - **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
   The `RemoteNodeChip` sits between the status dot and the identity. Members of a
   remote Team carry no chip of their own. Under the row:

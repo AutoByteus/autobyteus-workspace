@@ -4,6 +4,7 @@ import {
 } from '@autobyteus/team-stream-contracts';
 import { closedTaskExecutionsDtoSchema } from '@autobyteus/collaboration-stream-contracts';
 import { remoteTaskExecutionDtoSchema, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
+import { isRemoteAgentRun } from '~/services/teamExecution/teamRemoteExecutions';
 import { getApolloClient } from '~/utils/apolloClient';
 import {
   GetTeamMemberRunProjection,
@@ -219,13 +220,15 @@ const stageProjection = (input: {
 
 const selectInitialAgentRunId = (input: {
   tree: TeamRunExecutionTreeDto;
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
   requestedAgentRunId?: string | null;
   requestedMemberAddress?: AgentTeamAddress | null;
 }): string => {
   const agents = collectAgentExecutionLocations(input.tree);
   const requestedId = input.requestedAgentRunId?.trim() ?? '';
   if (requestedId) {
-    if (agents.some((agent) => agent.agentRunId === requestedId)) return requestedId;
+    // autobyteus-278: an agent of a run another node runs is focused too; it is read from its node after the commit.
+    if (agents.some((agent) => agent.agentRunId === requestedId) || isRemoteAgentRun(input.remoteTaskExecutions, requestedId)) return requestedId;
     throw new Error(`Requested AgentRun '${requestedId}' is not part of this Team execution.`);
   }
   if (input.requestedMemberAddress) {
@@ -272,6 +275,7 @@ const hydrateCurrentTeamRunContext = async (
   const locations = collectAgentExecutionLocations(tree);
   const initialFocusedAgentRunId = selectInitialAgentRunId({
     tree,
+    remoteTaskExecutions,
     requestedAgentRunId: input.agentRunId,
     requestedMemberAddress: input.memberAddress,
   });
