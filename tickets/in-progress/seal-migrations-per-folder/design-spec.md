@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-002 (ARCH-REV-001 AR-001..AR-005)
+- Current solution revision ID: SR-003 (DI-001 from implementation; earlier ARCH-REV-001 AR-001..AR-005)
 - Approved requirements: SR-001 (the user's direction and his sharing decision DEC-001; the rest within the direction, with the user informed)
 - Supplements: none
 - Design status: `Ready`
@@ -416,3 +416,21 @@ N/A.
 - **AC-004 fixtures** (AR-002): with `custom_llm_providers` pending, the server starts; listing shows only built-in models; a run start with a custom model is refused with `CUSTOM_PROVIDERS_MIGRATION_PENDING` while a built-in run starts; a Settings CRUD attempt is refused with the code.
 - **G-1 retry safety** (confirmed by the reviewer): while pending, the store's current parser refuses writes to an unconverted file (`custom-llm-provider-store.ts:80-116`, and now the gate). After the migration has published the V3 file, a retry skips (`custom-provider-readable-id-app-data-migration.ts:179-186`). So narrowing G-1 cannot let production write a half-converted file.
 - Record each file freeze in the implementation handoff: source path, members kept, and the commit it was frozen from.
+
+
+## SR-003: implementation Design Impact DI-001 (2026-10-23)
+
+Raised by the implementation engineer under the escalation trigger "a migration needs production behavior that cannot be frozen without copying a deep service graph". Each claim below was checked at its line (Principle 1).
+
+- **Definition-name lookup port.** `run-history-index-v2-migration.ts:374` and `team-run-history-index-v2-migration.ts:515` dynamically import `FileAgentDefinitionProvider` / `FileAgentTeamDefinitionProvider` for rows without a stored name; the dependency tree is 116 files. They already ask the *current* providers today.
+  - Decision: a port `domain/definition-name-lookup.ts` (`agentDefinitionName(id)`, `teamDefinitionName(id)`), built lazily by the registry from the live providers, like the `SecretRemovalOwner` port (AR-001).
+  - Same code, same output.
+- **Run-history catalog invalidation port.** `run-history-index-v2-migration.ts:13,337`, `team-run-history-index-v2-migration.ts:26,470` and `agent-org-flat-team-families-v1/agent-org-history-index-transition.ts:3,41-42` reset live in-memory catalogs right after an index write. A frozen copy would reset nothing.
+  - Decision: a port `domain/run-history-catalog-invalidation.ts`, wired by the registry to the three live reset functions and called at the same moment.
+- **D-7 replaced.** The design said the current message-log pattern belongs to its current owner. Wrong premise: `context-files/services/context-file-record-locators.ts` has no importer outside the migration area (grep), and its header says "Migration-only module".
+  - Decision: the whole module moves to `frozen/server/context-files/services/`. Nothing moves into production. Its containment test keeps its assertions; only the spied module path changes.
+- **No migration imports another migration's folder.** About 20 imports exist only to read a prerequisite-ID constant.
+  - Decision: they become string literals. The registry already rejects an unregistered or misordered prerequisite at construction.
+  - Code genuinely shared by several migrations (12 files, for example the team-run tree v1 schema, store and types, and the token-usage source-shaping constants) goes to `frozen/`.
+  - The boundary test adds "a migration folder imports no other migration folder", so deleting one folder cannot break another's compile.
+- **Rule refinement (also in the guideline):** ports in `domain/`, wired by the registry, are the only way a migration reaches live process state or current data that only production can answer (vault, definition names, catalog caches). A port carries data or an action, never a current class.

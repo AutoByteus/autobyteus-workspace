@@ -184,8 +184,14 @@ retiring it means untangling it first.
   - Application code imports only the runner contract, never a migration
     folder or `frozen/`.
   - The registry is the one wiring point: it reads configuration and passes
-    paths, ports (for example the secret store's removal port) and live inputs
-    into each migration's constructor.
+    paths, ports and live inputs into each migration's constructor. A port is
+    an interface in `domain/` that carries data or an action, never a current
+    class. Ports are the only way a migration reaches live process state or
+    current data that only production can answer: the secret store's removal
+    port, definition names, run-history cache invalidation.
+  - A migration folder imports no other migration folder. A prerequisite is
+    named by its id as a string literal; code several migrations share goes to
+    `frozen/`. Deleting one migration's folder must not break another.
   - `tests/architecture/app-data-migration-boundaries.test.ts` fails on any
     import that breaks these rules.
 - **Copy what you use, not whole services.** Copying a current service drags
