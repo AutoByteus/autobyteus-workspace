@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-003; REQ-803 / AC-803 clarified at SR-004)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-01 … E-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `dfbfb28615` (SR-006; the handoff names `f4bb9e72f1`, and the branch head carries the same SR-006 design text)
+- Reviewed Design Spec: `…/design-spec.md` at commit `e6948a1657` (SR-007)
 - Supplemental Task Artifacts Reviewed: the approved UI/UX package `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` (scoped to what the server design must supply); the contract `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-11); `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: SR-001 … SR-006
+- Relevant Solution Revision IDs: SR-001 … SR-007
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3 (a delta review)
-- Trigger: the Solution Designer's SR-006, answering the code reviewer's CRR-003 F-005 (Design Impact: the owner mark lived in input metadata that nothing read). Local Fixes F-002 … F-004 (CRR-003) are implementation-owned.
-- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, `Pass`)
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4 (a delta review)
+- Trigger: the Solution Designer's SR-007 (commit `e6948a1657`): the code reviewer's FU-004, pulled into this ticket by the user. § Window Retry Rule gives Retry one window owner (`remoteRunsStore.retry`) with per-family adapters, and removes the three per-family copies. Web only.
+- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, `Pass`)
+- Latest Authoritative Round: 4
 - Review method: the reviewer skill and the shared principles as updated 2026-10-23 (`autobyteus-agents` `4c8fb00`, `e84471d`): affected spines redrawn in call order, cited claims opened, derived consumers checked.
 - Current-State Evidence Basis: code and docs read in the worktree at `fee1d70cda` (base `3b09fbe308`):
   - `standalone-agent-run-root/domain/standalone-host-agent-handle.ts` (the host is its own `AgentRun`; `ensureReady` activates or restores it);
@@ -25,6 +25,11 @@
   - `remote-collaboration/inbound/remote-team-run-starter.ts:79-94` and `agent-collaboration/execution/remote/remote-delegation.ts:91-135` (A's stored Team-link members are already mounted at the link's address);
   - `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` (transient rows come from the opened root's view, so remote rows from the root view match how local copies appear);
   - `api/security/remote-access-route-policy.ts:71`.
+- Round-4 checks (the delta only; design examples re-read after their update, Case 6):
+  - `autobyteus-web/stores/remoteRunsStore.ts:42-69` (`register(execution, retry)`; `retry` sets `checking`, calls the family callback, and settles when it returns false);
+  - `stores/agentRunCollaborationStore.ts:133-138` (standalone copy);
+  - `stores/agentOrgContextsStore.ts:150-155` (Org copy);
+  - `services/teamExecution/teamRemoteRunRegistry.ts:24-31` (Team copy).
 - Round-3 checks (the delta only):
   - `agent-collaboration/execution/remote/paired-agent-access.ts:26-43` (`remoteOwnerUserMessage` today: content plus `remote_owner` metadata; SR-006 moves the mark into the content);
   - `agent-collaboration/execution/task/task-execution-input.ts:43-62` (`buildTaskWorkText`, the cited precedent for a content header);
@@ -247,12 +252,9 @@
 
 ## Review Decision
 
-`Pass` (round 3, delta). SR-006's DS-004a resolves F-005:
-- the owner mark is a content heading composed by one owner, `remoteOwnerUserMessage`, as `buildTaskWorkText` owns the task header;
-- the unread metadata is removed;
-- the consumer table names every reader.
+`Fail` (round 4, delta; `Design Impact`, AR-404). The ownership move is right. One owner (`remoteRunsStore.retry`) calls each family's own mechanisms in order. No mechanism finishes another's steps, and the three copies go, as Principle 13 and design-examples Case 6 ask.
 
-The redrawn DS-004 has one owner per node in call order: window → A root `executeAgentCommand` → `RemoteRunLinks.ownerCommand` → channel ══► `PeerGateway` → `RemoteRunViewProvider` → `RemoteRootDirectory` → the manager's `executeOwnerCommand` → `remoteOwnerUserMessage` → `postToHost` / member command. Both cited lines hold. Two notes (N-405, N-406). AR-401 … AR-403 stay resolved.
+The design's "Behavior is unchanged" is not true for the Team family (cited-claims rule, Principle 1). The unification changes Team Retry in two ways, and the design must decide and state them. Everything from rounds 1 to 3 stays resolved.
 
 ## Findings
 
@@ -324,6 +326,32 @@ The round-1 text follows, kept for traceability.
 - N-403: the three member-projection resolvers on A each "check their root's remote links first". If the check and the channel call are more than one line, put them in one shared helper beside `RemoteRunObservation` (principle 13).
 - N-404 (REQ-803): tell the user about the clarification ("recorded on the remote run's node and shown here", not "recorded on both nodes") in the next summary, since he approved the earlier wording.
 
+### AR-404 — "Behavior is unchanged" is false for Team Retry; decide and state the unified rule's effect
+
+- Type: Design Impact
+- Severity: Low (blocking: the claim drives the specs, "one per family for its adapter")
+- Protects: REQ-804 (Retry "asks the node again"), REQ-806 (the same for every family); Principle 1 (claims about code compared rule by rule)
+- Scope status: Within Approved Scope (FU-004, pulled in by the user)
+- Changes approved behavior: No (both rules satisfy REQ-804). It changes the Team window's request pattern on Retry.
+- Evidence: the three copies are not one rule.
+  - Standalone (`agentRunCollaborationStore.ts:133-138`) and Org (`agentOrgContextsStore.ts:150-155`):
+    - refresh on the stream;
+    - **and** re-read the selected agent if it is one of the run's agents;
+    - else, only when the refresh failed, re-read `agents[0]`;
+    - settle unless either started.
+  - Team (`teamRemoteRunRegistry.ts:24-31`):
+    - if the refresh succeeded, **return at once** (no re-read, even of a selected member);
+    - else re-read the **first member that is not yet authoritative** (`isTeamMemberProjectionAuthoritative`), not the selected one and not `agents[0]`;
+    - settle when there is none.
+  - The unified rule in § Window Retry Rule is the standalone and Org rule. So for Teams it (1) adds a member re-read after a successful refresh when a member of the remote run is selected, and (2) picks the selected member, else the first member, instead of the first not-yet-loaded one.
+- Required update: keep the one owner and the adapters. In § Window Retry Rule:
+  - state the two Team changes and that they are intended ("no difference" between families);
+  - or, if the not-yet-loaded choice matters for Teams, make "which agent to re-read" one rule for all families inside `remoteRunsStore.retry`: the selected agent if it is in the run, else the first agent the family reports as **not loaded**. That would need an adapter query `isLoaded(agentRunId)`, still the family's own mechanism.
+
+  Either way, define `rereadAgent` → `false` for an already-loaded agent, so a Retry that asks nothing settles at once. The Team adapter spec should cover the chosen behavior, not "unchanged".
+- Why proportionate: a decision and a sentence in one section, plus the matching spec; no structural change.
+- Recommended recipient: Solution Designer
+
 ### Round-3 notes (non-blocking)
 
 - N-405, one more consumer: the window's own local echo. The composer shows the sent "status?" at once. When the streamed user message arrives with the same `message_id` / `dedupe_key`, it replaces the echo (`userMessageProjection.ts:50-80`). So the heading version wins only if both IDs survive A → B → the presentation frame and the projection unchanged. Add this row to the consumer table. Add an E2E assertion that A's view of the remote run shows exactly one user message, carrying the heading.
@@ -337,11 +365,11 @@ The round-1 text follows, kept for traceability.
 
 ## Classification
 
-N/A (Pass).
+`Design Impact` (AR-404).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
+Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Residual Risks
 
@@ -351,6 +379,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-401 … MP-404 resolved by AR-401 … AR-403)
-- Notes: classification `Large` / `High`. Design at commit `8dc717e39c` (SR-005).
+- Review Decision: `Fail` (round 4, delta; AR-404)
+- Material-Premise Gate: `Pass`
+- Notes: classification `Large` / `High`. Design at commit `e6948a1657` (SR-007). The ownership move is correct; the "unchanged" claim is false for Teams.

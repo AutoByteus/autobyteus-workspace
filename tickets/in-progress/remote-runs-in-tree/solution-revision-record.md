@@ -11,6 +11,7 @@
 | SR-005 | 2026-10-23 | Design | ARCH-REV-001 (AR-401 … AR-403, N-401 … N-404) |
 | SR-006 | 2026-10-23 | Design | CRR-003 F-005: the owner mark |
 | SR-007 | 2026-10-23 | Design | FU-004 pulled in: one window owner for Retry |
+| SR-008 | 2026-10-23 | Design | ARCH-REV-004 AR-404: per-family differences stated |
 
 ## Revision Entries
 
@@ -83,3 +84,10 @@
 - Design: § Window Retry Rule. `remoteRunsStore.retry` owns the rule; each family registers an adapter with only its stream refresh, its selected agent and its member read; the three copies are removed.
 - Intended behavior changed: No (REQ-804 as is). Web only.
 - Classification unchanged: `Large` / `High`. Route: architecture review of the delta, then implementation. API/E2E holds its full rerun until the code reviewer's Targeted Delta Review passes.
+
+### SR-008 — The unified Retry rule, stated per family (ARCH-REV-004, 2026-10-23)
+
+- Trigger: ARCH-REV-004, AR-404 (Low). SR-007 said "behavior is unchanged", but the three copies differed (Team: no re-read after a successful refresh; first not-loaded member). That was a claim taken on trust (design-examples Case 5), verified at `teamRemoteRunRegistry.ts:24-31`.
+- Design: the rule picks the selected agent if it is in the run, else the first agent the family reports as not loaded (new adapter query `isLoaded`). `rereadAgent` returns `false` for a loaded agent. The changes against today are stated per family as intended ("no difference").
+- N-405 and N-406 (round 3) are in the consumer table since the ARCH-REV-003 addendum.
+- Classification unchanged. Route: round 5 of the architecture review.

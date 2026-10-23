@@ -45,3 +45,10 @@
 | Item | Resolution |
 | --- | --- |
 | FU-004 | § Window Retry Rule: `remoteRunsStore.retry` is the one owner of the Retry rule; families register an adapter (`refreshOnStream`, `selectedAgent`, `rereadAgent`); the three per-family copies are removed; behavior unchanged; specs for the rule and per family |
+
+## Round 5 — 2026-10-23 (SR-008), answering ARCH-REV-004
+
+| Finding | Resolution |
+| --- | --- |
+| AR-404 | § Window Retry Rule: target = selected agent if in the run, else the first not-loaded agent (`isLoaded` adapter query); `rereadAgent` → `false` for a loaded agent; the changes against today are stated per family as intended (standalone/Org and Team), with the Team adapter spec covering them |
+| N-405, N-406 | In the DS-004a consumer table (local echo by `message_id`/`dedupe_key`; the title row cited) |

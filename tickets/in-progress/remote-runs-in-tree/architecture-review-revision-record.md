@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` | SR-004 | N/A | Fail | AR-401, AR-402, AR-403 |
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Pass | AR-401 … AR-403 resolved |
 | ARCH-REV-003 | Round 3 (delta) / SR-006 answers CRR-003 F-005 | SR-006 | Pass | Pass | None new; N-405, N-406 |
+| ARCH-REV-004 | Round 4 (delta) / SR-007, FU-004 (one Retry owner) | SR-007 | Pass | Fail | AR-404 (new) |
 
 ## Revision Entries
 
@@ -85,4 +86,26 @@ None.
 - New or remaining finding IDs: none blocking. N-405 (the echo consumer row plus an E2E assertion), N-406 (cite the title claim). Local Fixes F-002 … F-004 are passed to implementation.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.
+
+### ARCH-REV-004 — Round 4 (delta): one Retry owner is right; "unchanged" is false for Teams
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree/design-review-report.md`
+- Review round and trigger: round 4; the Solution Designer's SR-007 (commit `e6948a1657`); FU-004 pulled in by the user.
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 4; FU-004.
+- Relevant solution revision IDs: SR-007
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Fail` (`Design Impact`)
+- What changed in the review result: the three per-family copies were opened (`agentRunCollaborationStore.ts:133-138`, `agentOrgContextsStore.ts:150-155`, `teamRemoteRunRegistry.ts:24-31`). Standalone and Org share one rule. Team stops after a successful refresh, and otherwise re-reads the first not-yet-authoritative member. The unified rule therefore changes Team Retry, against the design's "Behavior is unchanged".
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-401 … AR-403 | Resolved | Resolved (unchanged) | — | — |
+| N-405, N-406 | Notes | Open (non-blocking; carried) | SR-006 | — |
+
+- New or remaining finding IDs: AR-404 (Low): state the two Team changes as intended, or make the target choice one rule with an `isLoaded` adapter query; define `rereadAgent` → `false` for a loaded agent; the specs follow the decision.
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: RSK-801, RSK-802, RSK-201, RSK-401.

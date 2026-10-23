@@ -5,7 +5,7 @@
 - Package: `remote-runs-in-tree`; Task autobyteus-278.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-003 by the user. DEC-801 (a) stream through this node's server; DEC-802 (a) conversation only; DEC-803 messages; DEC-804 (a) Stop and Terminate; DEC-807 first version is the normal path.
 - Approved UI/UX package (Product-owned, normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/remote-runs-in-tree/ui-ux-spec.md` with VIS-001 … VIS-021, PA-801 … PA-809, DC-801 … DC-811 (design repository `personal` @ `1cc5563`).
-- Current solution revision ID: `SR-007` (FU-004 pulled into this ticket by the user: one window owner for a remote run's Retry and re-read). Design status: `Ready`.
+- Current solution revision ID: `SR-008` (ARCH-REV-004 AR-404: the unified Retry rule's per-family differences stated). Design status: `Ready`.
 - Authorities read: `solution-designer/SKILL.md` (re-read 2026-10-23), `references/architecture-design.md`, `references/design-principles.md`, `references/ticket-scope.md`, the repository's `DESIGN.md` (phase 1 first; rules 7 and 9), `autobyteus-server-ts/docs/design/collaboration_model.md`. All were read in this conversation.
 - Conflicts or discrepancies: none.
 
@@ -228,21 +228,32 @@ Nothing is replaced. There are no compatibility paths: both nodes run the same r
 - **What each family supplies instead of a callback with the rule inside:** at `register`, a small adapter with only its own mechanisms:
   - `refreshOnStream(): boolean`: asks the root's stream for `REFRESH_REMOTE_TASK_EXECUTIONS`; `false` when the stream isn't ready;
   - `selectedAgent(): string | null`: the agent run the family's view has selected;
-  - `rereadAgent(agentRunId): boolean`: starts the member read (the existing hydration); `false` when nothing starts.
-- **The rule, written once:**
+  - `isLoaded(agentRunId): boolean`: the family's own "this agent's conversation is loaded" (standalone and Org: the child is hydrated; Team: `isTeamMemberProjectionAuthoritative`);
+  - `rereadAgent(agentRunId): boolean`: starts the member read (the existing hydration). It returns `false` when nothing starts, including for an already-loaded agent, so a Retry that asks nothing settles at once.
+- **The rule, written once (SR-008, AR-404):**
 
   ```text
   checking ← true
   refreshed ← adapter.refreshOnStream()
   target ← selectedAgent() if it is one of the run's agents
-           else (refreshed ? none : the run's first agent)
+           else the first of the run's agents that is not loaded (isLoaded)
   started ← target ? adapter.rereadAgent(target) : false
   if not (refreshed or started): checking ← false   // Retry always settles
   ```
 
   The answers (`applySummary`, `markReachable`) settle it as today.
-- Behavior is unchanged: the same requests, the same settling, REQ-804 as is. Web only; no server or contract change.
-- **Tests:** a spec for the shared rule in `remoteRunsStore` (refreshed or not, selected or not, nothing started), and one per family for its adapter.
+- **Behavior per family, against today (corrected; my SR-007 "unchanged" was a claim taken on trust, design-examples Case 5).** The three copies were not one rule:
+  - standalone (`agentRunCollaborationStore.ts:133-138`) and Org (`agentOrgContextsStore.ts:150-155`) fell back to `agents[0]` and only when the refresh failed;
+  - Team (`teamRemoteRunRegistry.ts:24-31`) returned right after a successful refresh, and otherwise read the first member that wasn't loaded.
+
+  The unified rule is intended ("no difference" between families). It re-reads the selected agent when it isn't loaded, else the first agent that isn't loaded, whether or not the refresh succeeded. What changes:
+  - **Standalone and Org:** after a successful refresh with no selected agent, the first unloaded agent is read too (before: none). The fallback is the first *unloaded* agent instead of `agents[0]`, which was a no-op when `agents[0]` was already loaded.
+  - **Team:** the selected member is preferred, and after a successful refresh an unloaded selected or first member is read too (before: no read).
+
+  The requests are the same kinds as before. REQ-804 is unchanged. Web only; no server or contract change.
+- **Tests:**
+  - a spec for the shared rule in `remoteRunsStore`: refreshed or not, selected loaded or not, no unloaded agent, nothing started (settles);
+  - one per family for its adapter, covering the behavior above, Team included.
 
 ## Removal / Decommission Plan (Mandatory)
 
