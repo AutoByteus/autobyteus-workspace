@@ -9,11 +9,11 @@ import { buildCurrentTokenUsagePayload } from "../../helpers/token-usage-run-rec
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { convertMessageLogsAsOnStartup } from "../../helpers/append-only-message-log-startup.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 
 const fixtures: Awaited<ReturnType<typeof createOrgMigrationFixture>>[] = [];
 const fixture = async () => { const e = await createOrgMigrationFixture(); fixtures.push(e); return e; };
-afterEach(async () => { vi.restoreAllMocks(); configureTokenUsageMigrationReadiness({ kind: "READY" }); for (const e of fixtures.splice(0)) await e.close(); });
+afterEach(async () => { vi.restoreAllMocks(); configureTokenUsageCapability({ kind: "READY" }); for (const e of fixtures.splice(0)) await e.close(); });
 const observation = (runId: string, rootTeamRunId: string | null = "org", ordinal = 1) => buildCurrentTokenUsagePayload({
   runId, rootTeamRunId, eventId: `${runId}-${ordinal}`, idempotencyKey: `${runId}-${ordinal}`,
   observedAt: `2026-09-01T00:00:0${ordinal}.000Z`, usageScope: "cumulative_snapshot", snapshotSeriesKey: `${runId}-thread`,
@@ -140,7 +140,7 @@ describe("Org attribution: isolated actual SQL and current token store", () => {
     expect((await manager.getInspection("org")).isActive).toBe(false);
     expect((await e.migrate()).status).toBe("SUCCEEDED");
     await expect(manager.restore("org")).rejects.toThrow("REACHED_SCOPE_BUILD"); expect(build).toHaveBeenCalledTimes(1);
-    configureTokenUsageMigrationReadiness({ kind: "CURRENT_SCHEMA_DEGRADED", migrationStatus: "FAILED", logPath: null });
+    configureTokenUsageCapability({ kind: "HISTORY_MIGRATION_PENDING" });
     await expect(manager.restore("org")).rejects.toThrow("AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY"); expect(build).toHaveBeenCalledTimes(1);
   });
 

@@ -18,7 +18,7 @@ import { RootEventPublisher } from "../../../../src/agent-collaboration/executio
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import type { TaskExecutionIdleTimers } from "../../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./task-publication-handles.js";
 
@@ -47,7 +47,7 @@ export const manualTimers = () => {
 };
 
 export const buildOrg = async (kind: "agent" | "team") => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity(`org-idle-shutdown-${kind}`);
   // A real memory root: task agents' own files live beside the org's folder (contract L1).

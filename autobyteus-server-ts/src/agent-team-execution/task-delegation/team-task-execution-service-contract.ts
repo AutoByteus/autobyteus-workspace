@@ -1,5 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -38,7 +38,7 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
-  tokenUsageMigrationReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  tokenUsageReadiness?: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
   idleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
   /** Told after every live-lease release (DS-004). */
   onLiveLeaseReleased?: () => void;

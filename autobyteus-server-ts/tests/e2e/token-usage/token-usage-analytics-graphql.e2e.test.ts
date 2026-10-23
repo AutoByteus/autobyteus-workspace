@@ -6,7 +6,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { SqlTokenUsageAnalyticsRepository } from "../../../src/token-usage/repositories/sql/token-usage-analytics-repository.js";
 import {
   buildCurrentTokenUsagePayload,
@@ -40,7 +40,7 @@ describe("token usage analytics GraphQL E2E", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));

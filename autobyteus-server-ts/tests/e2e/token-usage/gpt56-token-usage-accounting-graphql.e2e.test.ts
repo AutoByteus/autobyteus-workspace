@@ -20,7 +20,7 @@ import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost
 import { TokenUsageComponentBasisResolver } from "../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 import { TokenUsageSnapshotDeltaNormalizer } from "../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
 import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 
 type UnitPrice = {
   status: string;
@@ -61,7 +61,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     for (const modelId of ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"]) {

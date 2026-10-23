@@ -15,7 +15,7 @@ import {
 import { AgentTurnLifecycleState } from "../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import { AgentSegmentLifecycleState } from "../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { configureTokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 
 describe("default token event pipeline real SQLite lifecycle", () => {
   const runId = `token-pipeline-lifecycle-${randomUUID()}`;
@@ -34,7 +34,7 @@ describe("default token event pipeline real SQLite lifecycle", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     await resetDefaultAgentRunEventPipelineForTests();
   });
 

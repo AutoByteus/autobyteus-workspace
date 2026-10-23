@@ -33,7 +33,7 @@ import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
 } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -79,7 +79,7 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   enterLifecycleFailStop(): void;
   memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
-  tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  tokenUsageReadiness?: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
 }>;
 
 /** Org-private host / tree / registry / persistence adapter for RootTaskExecutionLifecycle. */
@@ -87,11 +87,11 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   private readonly plans = new WeakMap<TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>, { host: TaskExecutionHostIdentity; beginLocal(): TaskExecutionPreparationOperation }>();
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root(): RootExecutionIdentity { return this.options.root; }
-  private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  private readonly readiness: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
   private readonly memoryLocator: AgentRunMemoryLocator;
 
   constructor(private readonly options: AgentOrgTaskExecutionAdapterOptions) {
-    this.readiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.readiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
   }
 

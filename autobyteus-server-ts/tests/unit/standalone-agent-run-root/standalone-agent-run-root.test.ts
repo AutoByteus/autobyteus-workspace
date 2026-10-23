@@ -18,7 +18,7 @@ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team
 import { automaticCollaborationToolNames } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
@@ -103,7 +103,7 @@ const hostRun = () => {
 
 /** Production always binds the Task side; every delegated copy belongs to a Task. */
 const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources()) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
   const host = hostRun();

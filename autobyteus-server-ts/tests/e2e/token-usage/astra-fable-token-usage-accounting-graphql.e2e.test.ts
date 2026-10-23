@@ -19,7 +19,7 @@ import { ServerMessageType } from "../../../src/services/agent-streaming/models.
 import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost-calculator.js";
 import { TokenUsageComponentBasisResolver } from "../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 import { TokenUsageSnapshotDeltaNormalizer } from "../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
 
 type UnitPrice = {
@@ -69,7 +69,7 @@ describe("Astra and Fable 5.1 token usage accounting and GraphQL convergence", (
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     for (const modelId of ["gpt-6-astra", "claude-fable-5-1"]) {

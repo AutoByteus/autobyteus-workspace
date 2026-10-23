@@ -33,7 +33,7 @@ import { RemoteNodeDiscovery } from "../../../src/remote-collaboration/discovery
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../src/config/task-execution-idle-shutdown-setting.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
@@ -84,7 +84,7 @@ const tempDir = async (prefix: string) => { const dir = await fs.mkdtemp(path.jo
 
 /** Node A: the delegator is the host of an ordinary standalone run (as in slice 1's in-process test). */
 const buildNodeA = async (network: Network, memoryDir?: string, metadata = new Map<string, AgentRunMetadata>()) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const dir = memoryDir ?? await tempDir("remote-team-a-");
   const received: string[] = [];
   let hostActive = false;
@@ -144,7 +144,7 @@ type RuntimeState = { conversations: Set<string> };
 const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeState = { conversations: new Set() }) => {
   /** autobyteus-269: the history titles the Team run catalog kept (first non-empty per run). */
   const titles = new Map<string, string>();
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const dir = memoryDir ?? await tempDir("remote-team-b-");
   const agents = ["lead", "writer"].map((id) => new AgentDefinition({ id, name: id, description: id, instructions: "x", ownershipScope: "shared",
     defaultLaunchConfig: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } }));

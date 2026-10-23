@@ -1,21 +1,18 @@
-import type { AppDataMigrationStatus } from "../../app-data-migrations/domain/app-data-migration-types.js";
-
-export const TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID =
-  "20260819_token_usage_run_records_v1";
-
-export type TokenUsageMigrationCapabilityState =
+/**
+ * The token-usage capability (`token_usage_history`). History reads and existing-run restore wait until the released
+ * token-usage ledger has been consolidated: a restored run would otherwise write a fresh record that the consolidation
+ * then conflicts with. The startup owner (`startup/app-data-capability-readiness.ts`) sets the state from the migration
+ * runner's capability answer; a current-schema failure at startup is critical.
+ */
+export type TokenUsageCapabilityState =
   | Readonly<{ kind: "READY" }>
-  | Readonly<{
-      kind: "CURRENT_SCHEMA_DEGRADED";
-      migrationStatus: AppDataMigrationStatus | "MISSING";
-      logPath: string | null;
-    }>
+  | Readonly<{ kind: "HISTORY_MIGRATION_PENDING" }>
   | Readonly<{
       kind: "CRITICAL_CURRENT_SCHEMA_FAILURE";
       reason: string;
     }>;
 
-let capabilityState: TokenUsageMigrationCapabilityState = {
+let capabilityState: TokenUsageCapabilityState = {
   kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
   reason: "Token usage current-schema readiness has not been initialized.",
 };
@@ -28,10 +25,10 @@ export class TokenUsageCapabilityUnavailableError extends Error {
 
   constructor(
     code: TokenUsageCapabilityUnavailableError["code"],
-    readonly state: TokenUsageMigrationCapabilityState,
+    readonly state: TokenUsageCapabilityState,
   ) {
-    const guidance = state.kind === "CURRENT_SCHEMA_DEGRADED"
-      ? `Migration status is ${state.migrationStatus}. Restart after installing a corrected version to retry migration${state.logPath ? `; see ${state.logPath}` : ""}.`
+    const guidance = state.kind === "HISTORY_MIGRATION_PENDING"
+      ? "The token-usage history migration has not succeeded yet. Settings → Migrations shows its status and log."
       : state.kind === "CRITICAL_CURRENT_SCHEMA_FAILURE"
         ? state.reason
         : "Token usage is ready.";
@@ -41,16 +38,13 @@ export class TokenUsageCapabilityUnavailableError extends Error {
   }
 }
 
-export const configureTokenUsageMigrationReadiness = (
-  state: TokenUsageMigrationCapabilityState,
-): void => {
+export const configureTokenUsageCapability = (state: TokenUsageCapabilityState): void => {
   capabilityState = Object.freeze({ ...state });
 };
 
-export const getTokenUsageMigrationCapabilityState = (): TokenUsageMigrationCapabilityState =>
-  capabilityState;
+export const getTokenUsageCapabilityState = (): TokenUsageCapabilityState => capabilityState;
 
-export class TokenUsageMigrationReadiness {
+export class TokenUsageCapability {
   assertHistoricalReadReady(): void {
     if (capabilityState.kind !== "READY") {
       throw new TokenUsageCapabilityUnavailableError(

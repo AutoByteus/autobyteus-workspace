@@ -5,9 +5,9 @@ import {
   type AppDataMigrationStatus,
 } from "../../../app-data-migrations/domain/app-data-migration-types.js";
 import { getAppDataMigrationRunner } from "../../../app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { RootRunPackageReadinessIndex } from "../../../run-history/services/root-run-package-readiness-index.js";
+import { applyCapabilityReadiness } from "../../../startup/app-data-capability-readiness.js";
 
 export enum AppDataMigrationStatusEnum {
   NOT_RUN = "NOT_RUN",
@@ -113,10 +113,11 @@ export class AppDataMigrationResolver {
   ): Promise<AppDataMigrationMutationResult> {
     try {
       const snapshot = await this.runner.runMigration(migrationId);
-      if (migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID) {
-        // Manual Settings Retry is not complete until the current-package
-        // admission catalog reflects every V2 file produced by this attempt.
+      if (snapshot.status !== "FAILED") {
+        // A retry is complete only once current-package admission reflects every file it produced and the
+        // capabilities it held back are refreshed, so its effect needs no restart.
         await new RootRunPackageReadinessIndex(appConfigProvider.config.getMemoryDir()).rebuild();
+        applyCapabilityReadiness(await this.runner.capabilityReadiness());
       }
       return {
         success: snapshot.status !== "FAILED",

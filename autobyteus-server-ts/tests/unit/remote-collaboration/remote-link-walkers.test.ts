@@ -150,7 +150,7 @@ const team = (): Walkers => {
     forest: () => teamDelegatedLaunchForest(tree),
     projection: () => projectExecutionTree(tree),
     adapter: (remoteLinks) => new TeamTaskExecutionAdapter({ rootTeamRunId: "team-root", getIndex: () => index, remoteLinks,
-      tokenUsageMigrationReadiness: { assertCurrentSchemaReady: () => undefined } } as never),
+      tokenUsageReadiness: { assertCurrentSchemaReady: () => undefined } } as never),
     links,
     hasAgentExecution: (agentRunId) => root.hasAgentExecution(agentRunId),
     storedView: async () => {

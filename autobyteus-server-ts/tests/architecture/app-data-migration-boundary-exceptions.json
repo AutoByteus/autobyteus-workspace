@@ -1,5 +1,4 @@
 [
-  "api/graphql/types/app-data-migrations.ts -> app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts",
   "app-data-migrations/legacy/released-run-package-shapes/agent-org-execution-index-v1.ts -> agent-collaboration/domain/agent-team-address.ts",
   "app-data-migrations/legacy/released-run-package-shapes/agent-org-execution-index-v1.ts -> agent-collaboration/execution/domain/root-execution-identity.ts",
   "app-data-migrations/legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.ts -> agent-collaboration/domain/agent-team-address.ts",
@@ -267,9 +266,5 @@
   "app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-run-fold.ts -> token-usage/projections/token-usage-run-record-state.ts",
   "app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-run-fold.ts -> token-usage/repositories/sql/token-usage-run-record-codec.ts",
   "app-data-migrations/migrations/token-usage-task-team-run-index.ts -> agent-collaboration/domain/agent-team-address.ts",
-  "context-files/services/context-file-record-locators.ts -> app-data-migrations/legacy/released-run-package-shapes/released-message-log-files-from-append-only.ts",
-  "server-runtime.ts -> app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts",
-  "server-runtime.ts -> app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts",
-  "standalone-application-host/start-standalone-application-host.ts -> app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts",
-  "standalone-application-host/start-standalone-application-host.ts -> app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts"
+  "context-files/services/context-file-record-locators.ts -> app-data-migrations/legacy/released-run-package-shapes/released-message-log-files-from-append-only.ts"
 ]

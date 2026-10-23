@@ -10,7 +10,7 @@ import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
@@ -78,7 +78,7 @@ const buildNode = async (input: Readonly<{
   network: Map<string, PeerGateway>;
   metadata?: Map<string, AgentRunMetadata>;
 }>) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const memoryDir = input.memoryDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "remote-node-"));
   if (!input.memoryDir) directories.push(memoryDir);
   const metadata = input.metadata ?? new Map<string, AgentRunMetadata>();

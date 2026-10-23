@@ -98,7 +98,7 @@ function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManag
     config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers,
     remoteLinks: new RemoteRunLinks({ remoteRuns: () => [] }) };
   return kind === 'agent_team' ? new TeamTaskExecutionAdapter({ ...common, rootTeamRunId: 'root',
-    teamRunResolver: teams, config: {}, tokenUsageMigrationReadiness: {} } as never)
+    teamRunResolver: teams, config: {}, tokenUsageReadiness: {} } as never)
     : kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(common as never)
     : new StandaloneRootTaskExecutionAdapter(common as never);
 }

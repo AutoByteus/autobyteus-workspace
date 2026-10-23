@@ -25,7 +25,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { getAgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { TaskExecution, TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import {
@@ -53,11 +53,11 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   }>();
   private readonly registrations = new Map<string, RegisteredTaskActivation>();
   get root() { return createTeamRootExecutionIdentity(this.options.rootTeamRunId); }
-  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  private readonly tokenUsageReadiness: Pick<TokenUsageCapability, "assertCurrentSchemaReady">;
   private readonly memoryLocator: AgentRunMemoryLocator;
 
   constructor(private readonly options: TeamTaskExecutionServiceOptions) {
-    this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
+    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.memoryLocator = options.memoryLocator ?? new AgentRunMemoryLocator();
   }
 
