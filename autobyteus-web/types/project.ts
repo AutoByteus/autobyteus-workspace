@@ -69,6 +69,15 @@ export interface ProjectTask {
   dependsOnTaskIds: string[]
   /** The Task of the same Project this Task is a part of (its parent), or null. One level only; an ID that names no current Task is ignored. */
   partOfTaskId: string | null
+  /** The comment thread, oldest first; add only (task-comments). */
+  comments: ProjectTaskComment[]
+}
+
+/** One comment of a Project Task: its number within the Task, the server time it was added (ISO), its text. */
+export interface ProjectTaskComment {
+  id: number
+  createdAt: string
+  text: string
 }
 
 /** A Task with no Project ("Temp task"): created by an agent's described delegation; read only. */

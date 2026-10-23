@@ -25,7 +25,8 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     team: vi.fn(async () => roots.team),
     org: vi.fn(async () => roots.org),
   } satisfies RemoteRootDirectory;
-  return { receiver: new RemoteMessageReceiver(directory), directory, roots };
+  const titles = { recordFirstMessage: vi.fn(async () => undefined) }
+  return { receiver: new RemoteMessageReceiver(directory, titles), directory, roots, titles };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {
@@ -90,3 +91,36 @@ describe("the stored-link check before a restore (N-303, N-304)", () => {
     }
   });
 });
+
+describe("an accepted work packet's content is the run's title (autobyteus-269)", () => {
+  const packet = { kind: "work_packet" as const, messageId: undefined, content: "Draft the episode." };
+
+  it("records the packet's description for its root, Agent or Team, once the root accepted it", async () => {
+    const f = setup();
+    await f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER);
+    await f.receiver.accept(request({ ...packet, targetRoot: { kind: "agent", runId: "host_b" }, target: { agentRunId: "host_b" } }), PEER);
+    expect(f.titles.recordFirstMessage.mock.calls).toEqual([
+      [{ kind: "agent_team", runId: "team_b" }, "Draft the episode."],
+      [{ kind: "agent", runId: "host_b" }, "Draft the episode."],
+    ]);
+  });
+
+  it("records nothing for a refused packet, for a refused link, or for a message", async () => {
+    const f = setup();
+    f.roots.team.acceptRemoteWorkPacket.mockResolvedValueOnce({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED", message: "x" } as never);
+    await f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER);
+    await setup("not_linked").receiver.accept(request(packet), PEER);
+    await f.receiver.accept(request(), PEER);
+    expect(f.titles.recordFirstMessage).not.toHaveBeenCalled();
+  });
+
+  it("a failure to record the title still answers accepted, and is logged", async () => {
+    const f = setup();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    f.titles.recordFirstMessage.mockRejectedValueOnce(new Error("catalog unavailable"));
+    await expect(f.receiver.accept(request({ ...packet, target: { agentRunId: "lead_b" } }), PEER)).resolves.toEqual({ accepted: true });
+    await vi.waitFor(() => expect(warn).toHaveBeenCalledWith(expect.stringContaining("Failed to record the title of run 'team_b'")));
+    warn.mockRestore();
+  });
+});
+

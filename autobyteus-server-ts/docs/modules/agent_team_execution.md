@@ -530,7 +530,9 @@ the work packet through that Team's exact configured coordinator ingress; only
 the coordinator starts, and the other members start when work reaches them (see
 [Root And Agent Lifecycle](#root-and-agent-lifecycle)). The
 work packet is the child's first message: the delegator's address and AgentRun
-ID, the description, and any reference files. The result is a strict union:
+ID, the description (for a saved Project Task, followed by its comments; see
+[Saved-ID Delegation](projects.md#saved-id-delegation-and-agent-run-resources)),
+and any reference files. The result is a strict union:
 
 ```text
 { delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>" }            // an Agent copy

@@ -49,6 +49,12 @@ const projectMessages = {
   'projects.parts.noMatch': 'No other Tasks in this Project match.',
   'projects.parts.deleteNoteOne': 'Its part stays as a separate Task.',
   'projects.parts.deleteNote': 'Its {{count}} parts stay as separate Tasks.',
+  // task-comments: the comment thread on a Project Task
+  'projects.comments.title': 'Comments',
+  'projects.comments.none': 'No comments yet.',
+  'projects.comments.placeholder': 'Add a comment',
+  'projects.comments.add': 'Add comment',
+  'projects.comments.adding': 'Adding…',
   'projects.ui.namePlaceholder': 'e.g. Customer portal',
   'projects.ui.description': 'Description',
   'projects.ui.projectDescriptionPlaceholder': 'What is this project about?',

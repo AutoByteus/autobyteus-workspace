@@ -390,4 +390,15 @@ describe("TeamRunService current root lifecycle", () => {
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).not.toHaveBeenCalled();
   });
+
+  it("records a Team run's title by its ID (autobyteus-269: a peer's work packet); recordRunActivity uses the same path", async () => {
+    const { service, mocks } = createSubject();
+    await service.recordRunTitle("studio_team_b", "Draft the episode.");
+    await service.recordRunActivity({ teamRunId: "team-mixed-1" } as never, { summary: "First owner message" });
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunSummary.mock.calls).toEqual([
+      [{ teamRunId: "studio_team_b", summary: "Draft the episode." }],
+      [{ teamRunId: "team-mixed-1", summary: "First owner message" }],
+    ]);
+  });
 });
+

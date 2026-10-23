@@ -5,7 +5,7 @@ import { computed, ref } from 'vue'
 import type { ProjectTask } from '~/types/project'
 
 const task: ProjectTask = { taskId: 'project_task_0e31', projectId: 'p1', taskKey: 'autobyteus-42', description: 'Ship it', status: 'TODO',
-  dependsOnTaskIds: [], contextFiles: [], createdAt: '', updatedAt: '', root: null }
+  dependsOnTaskIds: [], partOfTaskId: null, comments: [], contextFiles: [], createdAt: '', updatedAt: '', root: null }
 const { push, page, createClient } = vi.hoisted(() => ({ push: vi.fn(), page: { reference: '' }, createClient: vi.fn(() => ({})) }))
 vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRouter: () => ({ push, replace: vi.fn() }), useRoute: () => ({ path: '/projects/p1/tasks/autobyteus-42', query: {} }) }))
 vi.mock('~/composables/projects/useProjectChangeFeed', () => ({ useProjectChangeFeed: () => undefined }))

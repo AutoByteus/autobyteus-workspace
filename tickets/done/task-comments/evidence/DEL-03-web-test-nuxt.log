@@ -1,0 +1,7 @@
+# Check: DEL-03 web test:nuxt on integrated state 96625b9ba5 (merge of origin/personal d8df12435c)
+# Date: 2026-10-23T03:01:08Z
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Excerpt; full log: DEL-03-web-test-nuxt.full.log.gz
+ Test Files  654 passed | 2 skipped (656)
+      Tests  4695 passed | 3 skipped (4698)
+exit=0

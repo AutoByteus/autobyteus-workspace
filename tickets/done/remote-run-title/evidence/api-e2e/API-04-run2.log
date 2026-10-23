@@ -1,0 +1,15 @@
+remote-run-title probe: Fail
+Error: browser errors: console: Error terminating run 'writer_5d7cb2b58f1a4fd9a0009485873a12d2': ApolloError: Failed to fetch
+    at new ApolloError (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/errors/index.js?v=289b1ce0:59:28)
+    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/core/QueryManager.js?v=289b1ce0:186:84)
+    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)
+    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)
+    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)
+    at Object.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=289b1ce0:40:34)
+    at notifySubscription (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:137:18)
+    at onNotify (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:176:3)
+    at SubscriptionObserver.error (http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=289b1ce0:229:5)
+    at http://127.0.0.1:49187/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_d9bc7315b96ec67d73ec691d6595e06a/node_modules/@apollo/client/utilities/observables/iteration.js?v=289b1ce0:11:68
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:45:64)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-run-title/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:287:3
+exit=1

@@ -1,0 +1,27 @@
+# Case: API-01..API-05
+# Command: pnpm exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/projects/projects-graphql.e2e.test.ts tests/e2e/projects/project-task-search.e2e.test.ts --no-watch (cwd autobyteus-server-ts)
+# Commit: code e014c349b8 (HEAD 1b83434652) + this round's test edits (committed with this evidence)
+# Environment: macOS darwin arm64; corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-22
+
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (16 tests) 8151ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  455ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  468ms
+     ✓ CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)  300ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  672ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1692ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  1934ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  968ms
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-012: addProjectTaskComment appends numbered comments with the server time and never touches the description; blank or unknown refused with nothing written; a task.json without comments reads as none and is not rewritten until its own save (task-comments AC-001 app side, AC-003, AC-011)
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1738ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  440ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 698ms
+ Test Files  3 passed (3)
+      Tests  33 passed (33)
+exit=0

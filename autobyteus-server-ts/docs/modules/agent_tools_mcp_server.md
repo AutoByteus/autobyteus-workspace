@@ -317,10 +317,12 @@ category-wide native task exposure are not restored.
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match}],
+  A Task with comments also has `comments`: their texts, oldest first.
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match, commentCount?}],
   meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
   `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's key or `null`, `parts` the
-  parts' keys in key number order. See [Project Task Search](./projects.md#project-task-search).
+  parts' keys in key number order; `commentCount` only when the Task has comments (a comment's exact words also
+  find it). See [Project Task Search](./projects.md#project-task-search).
 - `create_project({name, description?, workspaces?})` → `{project}`: creates with a
   required nonblank name; `project_id` is rejected as an unsupported argument.
 - `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
@@ -335,7 +337,7 @@ category-wide native task exposure are not restored.
   required nonempty description, **omit status** and `task_id` (new TODO with
   the Project's next key).
 - `update_task` → `{task}`. `{task_id, description?, status?,
-  context_files?, depends_on?, part_of?}` with **no project_id**: the Task ID (a Project
+  context_files?, depends_on?, part_of?, add_comment?}` with **no project_id**: the Task ID (a Project
   Task's key in any letter case or its long ID, or a Task with no Project's ID)
   patches text, status, dependencies and/or parent of a Project Task, or text
   and status of a Task with no Project (`projectId: null` in the result).
@@ -347,7 +349,11 @@ category-wide native task exposure are not restored.
   an invalid parent, or `part_of` on a Task with no Project, fails with
   `TASK_PARENT_INVALID` and writes nothing. An `update_task` that sets a parent
   to DONE or CANCELLED sets its TODO and IN_PROGRESS parts the same way, closing
-  their task agents too, and lists them in the result's `closedParts`. See
+  their task agents too, and lists them in the result's `closedParts`; parts it
+  could not close are listed in `partsNotClosed`. `add_comment` appends one
+  comment to a Project Task (the description is not changed; blank text or a Task
+  with no Project fails with `TASK_COMMENT_INVALID` and writes nothing); the
+  result adds no field for it. See [Task comments](projects.md#task-comments). See
   [Task keys, "depends on" and "part of"](projects.md#task-keys-depends-on-and-part-of).
   Null/blank IDs are invalid, not omitted; hidden input keys (including
   `project_id` with `task_id`) fail. Omitted fields/context are preserved

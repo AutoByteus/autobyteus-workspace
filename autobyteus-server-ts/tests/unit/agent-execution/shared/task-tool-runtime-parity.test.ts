@@ -123,6 +123,10 @@ describe("task tool exposure and schemas across runtimes", () => {
     expect(buildProjectTaskToolSchema("update_task").toJsonSchema()).toMatchInlineSnapshot(`
       {
         "properties": {
+          "add_comment": {
+            "description": "Project Tasks only: text added as one new comment at the end of the Task's comments; the description is not changed.",
+            "type": "string",
+          },
           "context_files": {
             "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app.",
             "items": {

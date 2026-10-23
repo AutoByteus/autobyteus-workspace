@@ -20,6 +20,15 @@ export const UpdateProjectTask = gql`
   ${ProjectTaskFields}
 `
 
+export const AddProjectTaskComment = gql`
+  mutation AddProjectTaskComment($input: AddProjectTaskCommentInput!) {
+    addProjectTaskComment(input: $input) {
+      ...ProjectTaskFields
+    }
+  }
+  ${ProjectTaskFields}
+`
+
 export const DeleteProjectTask = gql`
   mutation DeleteProjectTask($input: DeleteProjectTaskInput!) {
     deleteProjectTask(input: $input)

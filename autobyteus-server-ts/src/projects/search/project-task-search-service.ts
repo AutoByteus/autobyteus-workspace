@@ -54,8 +54,8 @@ const indexingOrder = (a: ProjectTaskView, b: ProjectTaskView): number =>
 const itemsOf = (tasks: readonly ProjectTaskView[]) => [...tasks].sort(indexingOrder).map((task) => ({ id: task.taskId, text: task.description }));
 
 /**
- * Project Task search policy: the collection of each Project (its Tasks' descriptions), the exact tier (today's
- * case-insensitive description containment, REQ-002), the meaning tier from the embedding index, their merge and
+ * Project Task search policy: the collection of each Project (its Tasks' descriptions), the exact tier
+ * (case-insensitive containment in the description or a comment), the meaning tier from the embedding index, their merge and
  * order, the bounded readiness wait for agents, and index cleanup after deletes. Every Task is read fresh from the
  * Task service, so deleted Tasks never appear and statuses are current.
  *
@@ -77,7 +77,8 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup, Proje
     if (!text) throw new ProjectError("TASK_SEARCH_QUERY_REQUIRED", "Search text is required.");
     const tasks = await this.deps.listTasks(projectId);
     const needle = text.toLocaleLowerCase();
-    const exact = tasks.filter((task) => task.description.toLocaleLowerCase().includes(needle));
+    // Exact: the description or one of the comments contains the query (meaning items stay descriptions).
+    const exact = tasks.filter((task) => [task.description, ...task.comments.map((comment) => comment.text)].some((text) => text.toLocaleLowerCase().includes(needle)));
     const meaning = await this.meaningSearch(projectId, tasks, text, exact, options.waitForReadyMs ?? 0);
     const byId = new Map(tasks.map((task) => [task.taskId, task]));
     const exactIds = new Set(exact.map((task) => task.taskId));

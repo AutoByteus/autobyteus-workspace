@@ -534,7 +534,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const mutationFields = Object.keys(schema.getMutationType()?.getFields() ?? {});
     const indexMutations = ["indexAllProjectTasks", "indexProjectTasks", "rebuildProjectTaskIndex"];
     expect(mutationFields.filter((name) => /projecttask/i.test(name) && !indexMutations.includes(name)).sort()).toEqual(
-      ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
+      ["addProjectTaskComment", "createProjectTask", "deleteProjectTask", "updateProjectTask"],
     );
     expect(indexMutations.every((name) => mutationFields.includes(name))).toBe(true);
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
@@ -735,7 +735,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(await one(p, part.taskId)).toEqual({ ...partBefore, partOfTaskId: null, dependsOnTaskIds: [] });
     const taskFile = (taskId: string) => path.join(appDataDir, "projects", p, "tasks", taskId, "task.json");
     expect(Object.keys(JSON.parse(fs.readFileSync(taskFile(part.taskId), "utf8")))).toEqual(
-      ["taskId", "projectId", "taskKey", "description", "status", "dependsOnTaskIds", "partOfTaskId", "createdAt", "updatedAt", "contextFiles"]);
+      ["taskId", "projectId", "taskKey", "description", "status", "dependsOnTaskIds", "partOfTaskId", "createdAt", "updatedAt", "contextFiles", "comments"]);
 
     // AC-016: a Task file in the step-1 shape (no partOfTaskId) reads with no parent and is not rewritten until its next save.
     const oldTask = await create(p, "Step-1 Task");
@@ -749,6 +749,77 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const saved = await update(p, oldTask.taskId, { description: "ordinary save" });
     expect(saved.partOfTaskId).toBeNull();
     expect(JSON.parse(fs.readFileSync(taskFile(oldTask.taskId), "utf8"))).toEqual({ ...released, description: "ordinary save", updatedAt: saved.updatedAt, partOfTaskId: null });
+  });
+
+  // task-comments: the app's add (Task page and tab) through the GraphQL boundary; existing data without comments.
+  it("API-012: addProjectTaskComment appends numbered comments with the server time and never touches the description; blank or unknown refused with nothing written; a task.json without comments reads as none and is not rewritten until its own save (task-comments AC-001 app side, AC-003, AC-011)", async () => {
+    const FIELDS = "taskId taskKey description status updatedAt comments { id createdAt text }";
+    type Comment = { id: number; createdAt: string; text: string };
+    type CommentedTask = { taskId: string; taskKey: string; description: string; status: string; updatedAt: string; comments: Comment[] };
+    const ADD = `mutation($input: AddProjectTaskCommentInput!) { addProjectTaskComment(input: $input) { ${FIELDS} } }`;
+    // The schema: the field on the Task, the mutation and its input.
+    const commentType = schema.getType("ProjectTaskComment") as { getFields(): Record<string, { type: { toString(): string } }> };
+    expect(Object.fromEntries(Object.entries(commentType.getFields()).map(([name, field]) => [name, field.type.toString()]))).toEqual({ id: "Int!", createdAt: "String!", text: "String!" });
+    expect((schema.getType("ProjectTask") as { getFields(): Record<string, { type: { toString(): string } }> }).getFields().comments?.type.toString()).toBe("[ProjectTaskComment!]!");
+    expect(Object.keys((schema.getType("AddProjectTaskCommentInput") as { getFields(): Record<string, unknown> }).getFields()).sort()).toEqual(["projectId", "taskId", "text"]);
+    // The update input is unchanged: comments are only added through their own mutation.
+    expect(Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields())).not.toContain("comments");
+
+    const project = await createProject("Comments");
+    const other = await createProject("Comments Other");
+    const p = project.projectId;
+    const create = async (projectId: string, description: string) => (await execOk<{ createProjectTask: CommentedTask }>(
+      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`, { input: { projectId, description } })).createProjectTask;
+    const add = async (taskId: string, text: string, projectId = p) => (await execOk<{ addProjectTaskComment: CommentedTask }>(ADD, { input: { projectId, taskId, text } })).addProjectTaskComment;
+    const listed = async () => (await execOk<{ projectTasks: CommentedTask[] }>(`query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId: p })).projectTasks;
+    const task = await create(p, "Release notes for 1.5.6\nCollect the changes.");
+    const quiet = await create(p, "No comments here");
+    const foreign = await create(other.projectId, "Elsewhere");
+    expect(task.comments).toEqual([]);
+
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    const one = await add(task.taskId, "  Dispatched with this direction.  ");
+    const two = await add(task.taskId, "User decided: ship on Friday.\nSecond line.");
+    expect(two.comments.map((c) => [c.id, c.text])).toEqual([[1, "Dispatched with this direction."], [2, "User decided: ship on Friday.\nSecond line."]]);
+    expect(two).toMatchObject({ description: task.description, status: "TODO" });
+    expect(Date.parse(one.updatedAt)).toBeGreaterThan(Date.parse(task.updatedAt));
+    expect(two.comments.every((c) => !Number.isNaN(Date.parse(c.createdAt)))).toBe(true);
+    // The list carries the same thread; the other Task has none.
+    const byId = Object.fromEntries((await listed()).map((t) => [t.taskId, t]));
+    expect(byId[task.taskId]!.comments).toEqual(two.comments);
+    expect(byId[quiet.taskId]!.comments).toEqual([]);
+
+    // Refusals write nothing.
+    const before = snapshotProjectsDir();
+    for (const text of ["", "   ", "\n\t "]) {
+      const result = await exec(ADD, { input: { projectId: p, taskId: task.taskId, text } });
+      expect(result.errors?.[0]?.extensions?.code, JSON.stringify(text)).toBe("TASK_COMMENT_INVALID");
+      expect(result.errors?.[0]?.message).toBe("Comment text is required.");
+    }
+    await expectErrorCode(ADD, { input: { projectId: p, taskId: "project_task_missing", text: "x" } }, "TASK_NOT_FOUND");
+    await expectErrorCode(ADD, { input: { projectId: p, taskId: foreign.taskId, text: "x" } }, "TASK_NOT_FOUND");
+    await expectErrorCode(ADD, { input: { projectId: "project_missing", taskId: task.taskId, text: "x" } }, "PROJECT_NOT_FOUND");
+    expect(snapshotProjectsDir()).toEqual(before);
+
+    // An ordinary edit of the description keeps the thread.
+    const edited = (await execOk<{ updateProjectTask: CommentedTask }>(`mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`,
+      { input: { projectId: p, taskId: task.taskId, description: "Release notes for 1.5.6 (edited)" } })).updateProjectTask;
+    expect(edited.comments).toEqual(two.comments);
+
+    // AC-011: a task.json as a release before this one wrote it (no `comments`) reads as none, is not rewritten by other Tasks'
+    // writes, and its own next save writes `"comments"`.
+    const taskFile = (taskId: string) => path.join(appDataDir, "projects", p, "tasks", taskId, "task.json");
+    const { comments: _dropped, ...released } = JSON.parse(fs.readFileSync(taskFile(quiet.taskId), "utf8"));
+    const releasedBytes = `${JSON.stringify(released, null, 2)}\n`;
+    fs.writeFileSync(taskFile(quiet.taskId), releasedBytes, "utf8");
+    resetProjectsSingletons();
+    expect((await listed()).find((t) => t.taskId === quiet.taskId)!.comments).toEqual([]);
+    await add(task.taskId, "Another Task's write");
+    expect(fs.readFileSync(taskFile(quiet.taskId), "utf8")).toBe(releasedBytes);
+    const saved = await add(quiet.taskId, "First comment on an older Task");
+    expect(saved.comments.map((c) => [c.id, c.text])).toEqual([[1, "First comment on an older Task"]]);
+    expect(JSON.parse(fs.readFileSync(taskFile(quiet.taskId), "utf8"))).toEqual({ ...released, updatedAt: saved.updatedAt, comments: saved.comments });
+    expect(Object.keys(JSON.parse(fs.readFileSync(taskFile(quiet.taskId), "utf8")))).toContain("comments");
   });
 
   it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value", async () => {

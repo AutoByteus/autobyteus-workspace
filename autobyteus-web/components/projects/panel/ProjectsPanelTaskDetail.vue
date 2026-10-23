@@ -45,6 +45,7 @@
           </section>
         </div>
       </section>
+      <TaskCommentsSection v-if="projectTask" class="mt-3" compact :task="projectTask" />
       <TaskPartsSection v-if="projectTask" class="mt-3" compact :task="projectTask" :tasks="projectTasks" @open-task="emit('open-task', $event)" />
       <TaskDependenciesSection v-if="projectTask" class="mt-3" compact :task="projectTask" :tasks="projectTasks" @open-task="emit('open-task', $event)" />
       <TaskRootSection :root="task.root ?? null" />
@@ -59,6 +60,7 @@ import TaskContextFiles from '~/components/projects/TaskContextFiles.vue'
 import TaskRootSection from '~/components/projects/TaskRootSection.vue'
 import TaskDependenciesSection from '~/components/projects/TaskDependenciesSection.vue'
 import TaskPartsSection from '~/components/projects/TaskPartsSection.vue'
+import TaskCommentsSection from '~/components/projects/TaskCommentsSection.vue'
 import TaskKeyChip from '~/components/projects/TaskKeyChip.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'

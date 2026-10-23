@@ -27,6 +27,7 @@ export const ProjectTaskFields = gql`
     taskKey
     dependsOnTaskIds
     partOfTaskId
+    comments { id createdAt text }
   }
   ${TaskRootFields}
 `

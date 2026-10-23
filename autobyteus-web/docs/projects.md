@@ -232,13 +232,30 @@ current Task is never shown or counted. Temp tasks show none of this.
   ("Its part stays as a separate Task." for one); after deleting, its parts stay
   without a parent.
 
+### Comments
+
+A Project Task has a comment thread (task-comments). `TaskCommentsSection`, a card
+labelled "Comments" right after the description (before Part of / Parts), lists
+every comment oldest first: "#<number> · <relative time>" (the full local time on
+hover) and the full text, wrapped as typed. With none it reads "No comments yet."
+Under the thread, a text box ("Add a comment"; Enter adds a line break) and an
+"Add comment" button, disabled while the box is blank or a comment is being added
+("Adding…"), post one comment (`projectTaskStore.addComment` →
+`addProjectTaskComment`). On success the box clears and keeps focus; a refusal
+keeps the text and shows the error under the box. Comments are only added (no
+edit, no delete). The Task page and the right-panel tab's Task view (compact)
+both show the card with its add box; open views update live from the change
+feed. A comment bumps the Task's last change, so its card moves up in its lane.
+Temp tasks have no comments. Board search also finds a Task by its comments'
+exact words.
+
 Search finds a Project's Tasks by meaning as well as by the words the user
 remembers (project-task-semantic-search). The placeholder invites a sentence
 ("Describe the task you're looking for"). `useProjectTaskSearch` sends the query
 to the server (`searchProjectTasks`) about 250 ms after typing stops; the server
 decides the matches, and the board no longer filters on its own. Matches are
-every Task whose description contains the text (case-insensitive, the earlier
-rule), ranked first, then the Tasks closest in meaning (none when nothing is
+every Task whose description or one of whose comments contains the text
+(case-insensitive), ranked first, then the Tasks closest in meaning (none when nothing is
 clearly relevant). Each lane lists its matches best-first; clearing the search
 restores the normal order. The latest request wins: an answer for an earlier
 query or Project is dropped, and the previous answer stays shown until the new
@@ -538,7 +555,10 @@ For a Project Task the agent-facing Task ID is its key: results show it as `task
 optional `depends_on` (Tasks of the same Project, by key or ID); results show `dependsOn` as keys.
 They also take optional `part_of` (the parent, by key or ID; `""` clears it on update); results
 show `partOf`, list and search results also `parts`, and an `update_task` that closed a parent's
-open parts lists them in `closedParts`.
+open parts lists them in `closedParts` (and any it could not close in `partsNotClosed`).
+`update_task` also takes `add_comment` (one new comment on a Project Task; the description is
+not changed); `list_project_tasks` shows each Task's comment texts and `search_project_tasks`
+its `commentCount`. Delegating a saved Task sends its comments after the description.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
 Task page (allowed types by extension, 25 MiB), so agent-attached files appear in

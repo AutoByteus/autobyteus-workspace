@@ -160,47 +160,45 @@ describe('runTreeLiveStatusMerge', () => {
     expect(runB?.lastKnownStatus).toBe('ACTIVE');
   });
 
-  it('overlays matching persisted history row summary with the live first user message', () => {
-    const contexts = new Map<string, any>([
-      [
-        'run-history-b',
-        {
-          state: {
-            currentStatus: AgentStatus.Running,
-            conversation: {
-              updatedAt: '2026-01-05T00:00:00.000Z',
-              messages: [
-                {
-                  type: 'user',
-                  text: '  First task  ',
-                  timestamp: new Date('2026-01-01T00:00:00.000Z'),
-                },
-                {
-                  type: 'ai',
-                  text: 'ok',
-                  segments: [],
-                  isComplete: true,
-                  timestamp: new Date('2026-01-01T00:01:00.000Z'),
-                },
-                {
-                  type: 'user',
-                  text: 'do it',
-                  timestamp: new Date('2026-01-01T00:02:00.000Z'),
-                },
-              ],
-            },
-          },
-        },
-      ],
-    ]);
-    const tree = baseTree();
-    tree[0]!.agents[0]!.runs[1]!.summary = 'do it';
+  const liveContext = (firstUserText: string) => ({
+    state: {
+      currentStatus: AgentStatus.Running,
+      conversation: {
+        updatedAt: '2026-01-05T00:00:00.000Z',
+        messages: [
+          { type: 'user', text: firstUserText, timestamp: new Date('2026-01-01T00:00:00.000Z') },
+          { type: 'ai', text: 'ok', segments: [], isComplete: true, timestamp: new Date('2026-01-01T00:01:00.000Z') },
+          { type: 'user', text: 'do it', timestamp: new Date('2026-01-01T00:02:00.000Z') },
+        ],
+      },
+    },
+  });
 
-    const merged = mergeRunTreeWithLiveContexts(tree, contexts as Map<string, any>);
+  it('keeps a non-empty stored title over the live first user message', () => {
+    const packet = 'You have a new task from Planner on node alpha.\n\nTask: Write the report';
+    const tree = baseTree();
+    tree[0]!.agents[0]!.runs[1]!.summary = 'Write the report';
+
+    const merged = mergeRunTreeWithLiveContexts(tree, new Map<string, any>([['run-history-b', liveContext(packet)]]));
+    const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
+
+    expect(runB?.summary).toBe('Write the report');
+    expect(runB?.lastActivityAt).toBe('2026-01-05T00:00:00.000Z');
+    expect(runB?.isActive).toBe(true);
+    expect(runB?.currentStatus).toBe(AgentStatus.Running);
+  });
+
+  it('fills an empty stored title with the live first user message', () => {
+    const tree = baseTree();
+    tree[0]!.agents[0]!.runs[1]!.summary = '  ';
+
+    const merged = mergeRunTreeWithLiveContexts(
+      tree,
+      new Map<string, any>([['run-history-b', liveContext('Use the writer skill for this request.\n\n  First task  ')]]),
+    );
     const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
 
     expect(runB?.summary).toBe('First task');
-    expect(runB?.lastActivityAt).toBe('2026-01-05T00:00:00.000Z');
     expect(runB?.isActive).toBe(true);
   });
 });

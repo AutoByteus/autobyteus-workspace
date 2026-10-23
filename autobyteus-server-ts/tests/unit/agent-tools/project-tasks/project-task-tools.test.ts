@@ -115,7 +115,7 @@ describe("Project data tools — actual native preparation/execute and selected 
   it("documents one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)", async () => {
     for (const [Tool, name, keys, required] of [
       [CreateTaskTool, "create_task", ["project_id", "description", "context_files", "depends_on", "part_of"], ["project_id", "description"]],
-      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of"], ["task_id"]],
+      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of", "add_comment"], ["task_id"]],
     ] as const) {
       const native = Tool.getArgumentSchema().toJsonSchema() as {properties: Record<string, any>, required?: string[]};
       expect(native).toEqual(buildProjectTaskToolSchema(name).toJsonSchema());

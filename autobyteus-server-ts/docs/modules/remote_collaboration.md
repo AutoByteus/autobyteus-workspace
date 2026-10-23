@@ -114,7 +114,10 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
     `AGENT_CANNOT_RUN` "the Agent Team changed while it was being started", and a Team run already created
     is terminated first.
 - **`RemoteMessageReceiver`**: resolves `targetRoot` by kind through `RemoteRootDirectory` (the root
-  managers' public resolve / restore APIs), one rule for both directions. A work packet is for a root a peer
+  managers' public resolve / restore APIs), one rule for both directions. Once a root accepts a work packet, the
+  packet's content (the task description) becomes the run's history title through `RemoteRunTitles` (the run
+  service of the root's kind; the first non-empty title wins; a failure is logged and the packet stays accepted;
+  autobyteus-269). A work packet is for a root a peer
   started (`agent` or `agent_team`); a message for any root kind. Before an inactive root is restored, the
   directory checks the request against the root's **stored** links (`storedLinkCheck`: the root managers read
   their own stores, `remote-collaboration` parses no root files): a sender not linked from that node is

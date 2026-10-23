@@ -1,0 +1,52 @@
+{
+  "newAgent": {
+    "keyA": "comments-live-35fa5f-1",
+    "workerA": "cmt_worker_35fa5f_e393e56fddaf4503a2fe0704c460cc56",
+    "workA": "You have a new task from the agent with sender address \"/cmt_manager_35fa5f\" and sender run id \"cmt_manager_35fa5f_c1d5c3069f2041879218ead9094a53bd\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nWrite the release notes\n\nComments:\n- Dispatched with this direction.\n- User decided: ship on Friday.",
+    "keyB": "comments-live-35fa5f-2",
+    "workerB": "cmt_worker_35fa5f_777f48087556427c9926a65a18fbe51e",
+    "workB": "You have a new task from the agent with sender address \"/cmt_manager_35fa5f\" and sender run id \"cmt_manager_35fa5f_c1d5c3069f2041879218ead9094a53bd\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nCheck the changelog links"
+  },
+  "existingAgent": {
+    "keyA": "comments-live-35fa5f-1",
+    "doneViews": [
+      {
+        "status": "TODO",
+        "comments": 2
+      },
+      {
+        "status": "DONE",
+        "comments": 3
+      }
+    ],
+    "keyC": "comments-live-35fa5f-3",
+    "workC": "You received a message from the agent with sender address \"/cmt_manager_35fa5f\" and sender run id \"cmt_manager_35fa5f_c1d5c3069f2041879218ead9094a53bd\".\nmessage:\nNew Task assigned to you: comments-live-35fa5f-3. Your previous Task is closed; this is the work to do now.\n\nDescription:\nPost the release announcement\n\nComments:\n- Use the beta channel.\n- Keep it under 200 words."
+  },
+  "temp": {
+    "adHocTaskId": "ad_hoc_task_e634096e-a2a8-46b9-8f4b-5caf5831b1bc",
+    "refused": {
+      "error": {
+        "code": "TASK_COMMENT_INVALID",
+        "message": "Only Project Tasks have comments; this Task has no Project."
+      },
+      "isError": true
+    },
+    "combined": {
+      "error": {
+        "code": "TASK_COMMENT_INVALID",
+        "message": "Only Project Tasks have comments; this Task has no Project."
+      },
+      "isError": true
+    }
+  },
+  "feed": {
+    "frames": 44,
+    "projectTaskUpserts": 15
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

@@ -295,7 +295,9 @@ constraints, done conditions, expected output, and reference guidance) and
 optional `reference_files`. Member targets start one task-agent instance; team
 targets start one task-scoped child team run whose coordinator receives the
 work packet. The work packet (delegator address and AgentRun ID, description,
-reference files) is the child's first message. Multiple independent pieces of
+reference files) is the child's first message. For a saved Project Task, the
+description is followed by the Task's comments as a "Comments:" block (see
+[Saved-ID Delegation](projects.md#saved-id-delegation-and-agent-run-resources)). Multiple independent pieces of
 work are delegated through additional `delegate_task` calls.
 
 `delegate_task` has three strict input modes: `{recipient_address, task_id}` and

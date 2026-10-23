@@ -5,7 +5,7 @@ import { computed, ref } from 'vue'
 import type { ProjectTask, ProjectTaskStatus } from '~/types/project'
 
 const task = (n: number, status: ProjectTaskStatus = 'TODO', partOfTaskId: string | null = null): ProjectTask => ({
-  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, description: `Task ${n}`, status, dependsOnTaskIds: [], partOfTaskId,
+  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, description: `Task ${n}`, status, dependsOnTaskIds: [], partOfTaskId, comments: [],
   contextFiles: [], createdAt: '', updatedAt: '', root: null,
 })
 const { page } = vi.hoisted(() => ({ page: { task: null as ProjectTask | null } }))
@@ -38,11 +38,12 @@ describe('ProjectTaskDetail with parts', () => {
     return wrapper.get('[data-testid="task-page-delete-confirmation"]')
   }
 
-  it('places the card between Description and Dependencies', async () => {
+  it('places the card after Comments, before Dependencies (task-comments puts Comments right after Description)', async () => {
     const tasks = [task(1), task(2, 'TODO', 't1')]
     const wrapper = await open(tasks[0]!, tasks)
     const order = [...wrapper.get('[data-testid="task-page-reading-surface"]').element.parentElement!.children].map((el) => el.getAttribute('data-testid')).filter(Boolean)
-    expect(order.indexOf('task-parts')).toBe(order.indexOf('task-page-reading-surface') + 1)
+    expect(order.indexOf('task-comments')).toBe(order.indexOf('task-page-reading-surface') + 1)
+    expect(order.indexOf('task-parts')).toBe(order.indexOf('task-comments') + 1)
     expect(order.indexOf('task-dependencies')).toBe(order.indexOf('task-parts') + 1)
   })
 
