@@ -16,15 +16,20 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/task-agent-several-tasks/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: implementation complete, from `/software_engineering_team/implementation_engineer` (Small / High)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the delta `fe8e52b31d..cd8c289b67` touches 3 files, ±3 lines. It changes only the `update_task` text in `project-task-tool-contract.ts`, which is CR-001's file and behavior, plus its two unit pins. No other source, interface or data shape changed, so the round-1 evidence for every other check carries forward.
+- Trigger: CR-001 Local Fix done (IR-002), from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: 1 (CRR-001, Fail — CR-001)
+- Latest Authoritative Round: 2
 - Coverage / execution / API/E2E / delivery records: N/A (implementation review)
 
-Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`, branch `codex/task-agent-several-tasks`, range `3b09fbe308..a18fe714cd`. Ticket artifacts are in `8a197ea59c`.
+Reviewed code:
+- Round 1: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`, branch `codex/task-agent-several-tasks`, range `3b09fbe308..a18fe714cd`.
+- Round 2: the fix `cd8c289b67`.
+
+Ticket artifacts are in `8a197ea59c` and `b890062e63` (IR-002).
 
 Authorities: `design-principles.md` as updated on 2026-10-23. The new Principle 1 kinds-and-forms check and the Principle 13 behavior-by-absence check were applied (below), and `DESIGN.md` was applied as recorded in the design spec.
 
@@ -109,7 +114,7 @@ Authorities: `design-principles.md` as updated on 2026-10-23. The new Principle 
 | Authoritative Boundary Rule check | Pass | — | — |
 | File placement check | Pass | Existing files | — |
 | Flat-vs-over-split layout judgment | Pass | — | — |
-| Interface/API/query/command/service-method boundary clarity | **Fail** | `openTaskReferencesOf(execution, exceptTaskId)` is clear. The `update_task` contract text keeps a parenthetical that is now false (CR-001). | CR-001 |
+| Interface/API/query/command/service-method boundary clarity | Pass | `openTaskReferencesOf(execution, exceptTaskId)` is clear. Round 2: the `update_task` text now reads "(ending their work for their task agents, as above)" (CR-001 resolved), and the widened delegate sentence (C-06) is accurate. | — |
 | Naming quality and naming-to-responsibility alignment check | Pass | `openTaskIdsOf`, `openTaskReferencesOf`, `otherOpenTasksSentence` | — |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | — | — |
 | Patch-on-patch complexity control | Pass | — | — |
@@ -161,15 +166,15 @@ New premises: None (C-07 is pre-existing delete behavior, recorded as FU-001).
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
-- Score calculation note: simple average; not the decision rule. One category is below 9.0, which fails the review.
+- Overall score (`/10`): 9.5
+- Overall score (`/100`): 95
+- Score calculation note: simple average; not the decision rule. Round 2: every category is at 9.0 or above.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | DS-001 and DS-002 as designed, in call order | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | One owner for openness and releasability | — | — |
-| 3 | API / Interface / Query / Command Clarity | 8.5 | The port method is clear and the message rule is explicit | The `update_task` contract text keeps "(stopping their task agents)" for a parent's parts, which this change made false (CR-001, REQ-008) | Reword the parenthetical to follow the new rule |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | The port method is clear; the message rule is explicit; the tool texts follow the new rule (CR-001 resolved in round 2) | — | — |
 | 4 | Separation of Concerns and File Placement | 9.5 | Small changes in the right owners; size kept | — | — |
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Inputs tightened; one derivation of "open" | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Clear names and doc comments | — | — |
@@ -180,7 +185,12 @@ New premises: None (C-07 is pre-existing delete behavior, recorded as FU-001).
 
 ## Findings
 
-### CR-001 — The `update_task` text still says closing a parent's parts stops their task agents
+### CR-001 — The `update_task` text still says closing a parent's parts stops their task agents (Resolved, round 2)
+
+- Round 2 verification (`cd8c289b67`): the text now reads "…also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them.", which is true under the release rule. The optional C-06 widening is applied ("To give a task agent another Task, also while its other Tasks are open, use delegate_task …"); it is consistent with `delegate_task`'s mode (3) text, which keeps the most-recent-assigner condition. The pins are updated: `project-task-parts-tools.test.ts:95` (exact sentence) and the `project-task-tools.test.ts` regex. Evidence: IMP-06 (137 tool tests passed) and IMP-07 (typecheck plus 794 unit files, 6518 tests passed, `exit=0`). The E2E pin at `project-task-boundaries.e2e.test.ts:846` is listed for API/E2E.
+
+Round-1 record:
+
 
 - Type: `Local Fix` (implementation-owned)
 - Severity: Blocking at review (an agent-facing contract text); a one-line fix.
@@ -198,11 +208,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`.
 
 ## Classification
 
-`Local Fix` (CR-001).
+N/A (Pass, round 2). Round 1 was `Local Fix` (CR-001), now resolved.
 
 ## Recommended Recipient
 
-- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: implementation (`/software_engineering_team/implementation_engineer`), under the rule "source review identifies an implementation-owned Local Fix … before executable coverage". After the fix, the change returns to source review (a targeted delta), then API/E2E.
+- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: `/software_engineering_team/api_e2e_engineer` (primary pass rule); informational notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -212,11 +222,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 2)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass` (AP-001 and AP-002 confirmed; no new premises)
-- Score Summary: 9.3 / 10; API / Interface / Query / Command Clarity at 8.5 (CR-001)
+- Score Summary: 9.5 / 10; every category ≥ 9.0
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: the core change is correct as built: the release rule, the removed refusal and the same-Task guidance, the other-open-Tasks message, sub-work and the cascade. The handoff's three focus points are recorded in C-02, C-03 and C-07. Only CR-001 needs a change.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001 is resolved. The core change was correct as built in round 1 (release rule, refusal removal, message, sub-work, cascade). FU-001 stays in `follow-ups.md`.

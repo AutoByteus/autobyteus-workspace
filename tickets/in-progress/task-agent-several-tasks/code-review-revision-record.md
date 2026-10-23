@@ -5,6 +5,7 @@
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 1 / implementation complete (IR-001) | N/A | Fail (Local Fix) | CR-001 |
+| CRR-002 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 2 / CR-001 fixed (IR-002) | Fail (Local Fix) | Pass | CR-001 |
 
 ## Revision Entries
 
@@ -32,3 +33,30 @@ None.
 - Material score or classification changes: N/A (initial)
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: FU-001 (a deleted Task keeps its task agents' open entries).
+
+### CRR-002 — Targeted delta review of the CR-001 fix (IR-002)
+
+- Canonical review report updated: `tickets/in-progress/task-agent-several-tasks/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review`. The delta `fe8e52b31d..cd8c289b67` is 3 files, ±3 lines, and touches only the `update_task` text and its pins (CR-001's file and behavior).
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-002); CR-001
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, `Local Fix` (CRR-001)
+- Current authoritative result: `Pass`, 9.5 / 10, every category ≥ 9.0
+- What changed in the review result and why: the `update_task` parenthetical now reads "(ending their work for their task agents, as above)", which is true under the release rule. The optional C-06 widening is applied and accurate. The pins are updated, and IMP-06 / IMP-07 pass on `cd8c289b67`.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, `cd8c289b67` | `project-task-tool-contract.ts:17` new text; pins `project-task-parts-tools.test.ts:95` and the `project-task-tools.test.ts` regex; IMP-06 (137 passed), IMP-07 (6518 passed, `exit=0`) |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: API / Interface / Query / Command Clarity 8.5 → 9.4; overall 9.3 → 9.5
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: FU-001 (a deleted Task keeps its task agents' open entries). The E2E pins listed in the handoff need updating.
