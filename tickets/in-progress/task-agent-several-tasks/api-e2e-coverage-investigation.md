@@ -19,7 +19,7 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `tickets/in-progress/task-agent-several-tasks/api-e2e-revision-record.md` (on completion)
 - Current API/E2E Revision ID: `API-REV-001` (on completion)
-- Current Investigation Round: 1
+- Current Investigation Round: 2
 - Trigger: implementation review Pass (CRR-002) from `/software_engineering_team/code_reviewer` (Small / High)
 - Prior Investigation Reviewed: N/A
 - Latest Authoritative Investigation: this file, round 1
@@ -166,3 +166,4 @@ None.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: existing test files are edited only after API-00 finishes.
+- Round 2 (CRR-004, SR-006): only `autobyteus-web/localization/messages/{en,zh-CN}/projects.ts` and their catalog test changed since the round-1 validated commit; no server code. Plan: API-00..API-06 stay valid (server-only); reuse IMP-09 (web guards and suites on `1fa3a1d87e`); rerun API-07 on a rebuilt app with the help line asserted exactly in en and zh-CN on both Task pages (AC-010, AC-011).

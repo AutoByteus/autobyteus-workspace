@@ -19,3 +19,6 @@ Your own progress log while tests run. Only add rows; never change earlier ones.
 | 2026-10-23 15:40 | API-06 | Completed | Pass | 35/36 files; only delegated-launch-config-defaults (FU-002) |
 | 2026-10-23 15:40 | API-07 | Completed | Fail | J1-J5 Pass but the Assigned-to help text states the old stop rule (API-F-001); instance stopped, root removed |
 | 2026-10-23 15:40 | — | Completed | Fail | Test code 386ce18b5f; artifacts commit next; handoff to code reviewer (failure-origin) |
+| 2026-10-23 16:01 | API-07 | Started | | Round 2 (CRR-004, web fix 1fa3a1d87e): Electron rebuild /tmp/ast-e2e/r2/electron-build.log; journey now asserts the help line in en and zh-CN |
+| 2026-10-23 16:07 | API-07 | Completed | Pass | Round 2: J1-J6 Pass incl. help line en + zh-CN on both Task pages; instance stopped, root removed |
+| 2026-10-23 16:09 | — | Completed | Pass | Round 2 documents updated; commit and handoff to code reviewer (test-code review) |

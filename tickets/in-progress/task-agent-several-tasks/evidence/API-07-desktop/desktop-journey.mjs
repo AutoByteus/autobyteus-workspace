@@ -3,9 +3,9 @@
 // build, on the data package `seed-desktop.mjs` made (one Team copy holding Tasks A and B, C unassigned). Attach-only over the
 // instance's own CDP control port. Ticket-owned; not a package script.
 // Usage (worktree root): node …/desktop-journey.mjs <controlPort> <graphqlUrl> <seed.json> <fresh outDir>
-// J1 board: A and B cards both show the team on their root line, C none. J2 Task A page "Assigned to": the team. J3 Task B page:
-// the same team. J4 the Workspaces tree shows the Manager's run with one team copy (not two). J5 GraphQL: both roots name the
-// same team run; C has no root.
+// J1 board: A and B cards both show the team on their root line, C none. J2 Task A page "Assigned to": the team and the help line
+// (AC-011, en). J3 Task B page: the same. J4 the Workspaces tree shows the Manager's run with one team copy (not two). J5 GraphQL:
+// both roots name the same team run; C has no root. J6 zh-CN: both Task pages show the zh-CN help line (AC-011).
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -31,8 +31,11 @@ const shot = (name, fullPage = false) => page.screenshot({ path: path.join(outDi
 const check = async (name, fn) => { try { const obs = await fn(); results.push({ name, result: 'Pass', obs }); } catch (e) { results.push({ name, result: 'Fail', error: String(e.stack || e) }); await shot(`${name}-failure`).catch(() => {}); } };
 const text = async (loc) => (await loc.innerText()).replace(/\s+/g, ' ').trim();
 const card = (taskId) => page.getByTestId(`project-task-row-${taskId}`);
+const HELP = { en: 'This agent or team stops when its last open Task is Done or Cancelled.', zh: '这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。' };
 const openBoard = async () => {
-  await page.locator('[data-test="app-left-panel-primary-nav"]').getByText(/^Projects$/).first().click();
+  // Settings replaces the primary nav with a "Back to Workspace" link.
+  if (!(await page.locator('[data-test="app-left-panel-primary-nav"]').isVisible().catch(() => false))) { await page.getByText(/^(Back to workspace|返回工作区)$/i).first().click(); await sleep(600); }
+  await page.locator('[data-test="app-left-panel-primary-nav"]').getByText(/^(Projects|项目)$/).first().click();
   await page.getByTestId(`project-card-${seed.projectId}`).click();
   await card(A.taskId).waitFor({ timeout: 30000 });
   await sleep(500);
@@ -57,18 +60,23 @@ const assignedOf = async (taskId, label) => {
   await page.getByTestId('task-page-assigned').waitFor({ timeout: 20000 });
   await sleep(300);
   const section = page.getByTestId('task-page-assigned');
-  const obs = { text: await text(section), name: await text(section.getByTestId('project-task-root-name')).catch(() => null), notAssigned: await section.getByTestId('task-page-not-assigned').count() };
+  const obs = { text: await text(section), name: await text(section.getByTestId('project-task-root-name')).catch(() => null), notAssigned: await section.getByTestId('task-page-not-assigned').count(),
+    help: (await section.getByTestId('task-page-root-help').count()) ? await text(section.getByTestId('task-page-root-help')) : null,
+    helpClipped: await section.getByTestId('task-page-root-help').evaluate((el) => el.scrollWidth > el.clientWidth + 1).catch(() => null) };
+  await section.scrollIntoViewIfNeeded();
   await shot(`${label}-assigned-1440`, true);
   return obs;
 };
 await check('J2-task-A-assigned-to', async () => {
   const obs = await assignedOf(A.taskId, 'J2-task-A');
   assert(obs.name?.toLowerCase() === squadLabel && obs.notAssigned === 0, 'Task A: Assigned to the team', obs);
+  assert(obs.help === HELP.en && obs.helpClipped === false, 'Task A: the help line (AC-011, en)', obs);
   return obs;
 });
 await check('J3-task-B-assigned-to', async () => {
   const obs = await assignedOf(B.taskId, 'J3-task-B');
   assert(obs.name?.toLowerCase() === squadLabel && obs.notAssigned === 0, 'Task B: Assigned to the same team', obs);
+  assert(obs.help === HELP.en && obs.helpClipped === false, 'Task B: the help line (AC-011, en)', obs);
   return obs;
 });
 await check('J4-workspaces-tree', async () => {
@@ -94,6 +102,21 @@ await check('J5-graphql', async () => {
   const by = Object.fromEntries(tasks.map((t) => [t.taskId, t]));
   assert(by[A.taskId].root?.teamRunId === seed.team && by[B.taskId].root?.teamRunId === seed.team && by[C.taskId].root === null, 'roots', by);
   return { A: by[A.taskId].root, B: by[B.taskId].root, C: by[C.taskId].root };
+});
+
+const setLanguage = async (value) => {
+  if (!(await page.locator('[data-test="app-left-panel-primary-nav"]').isVisible().catch(() => false))) { await page.getByText(/^(Back to workspace|返回工作区)$/i).first().click(); await sleep(600); }
+  await page.getByText(/^(Settings|设置)$/).last().click(); await sleep(600);
+  if (!(await page.getByTestId('settings-language-select').count())) await page.getByText(/^(Language|语言)$/).first().click();
+  await page.getByTestId('settings-language-select').selectOption(value); await sleep(800);
+};
+await check('J6-zh-CN-help-line', async () => {
+  await setLanguage('zh-CN');
+  const a = await assignedOf(A.taskId, 'J6-zh-task-A');
+  const b = await assignedOf(B.taskId, 'J6-zh-task-B');
+  await setLanguage('en');
+  assert(a.help === HELP.zh && b.help === HELP.zh && a.helpClipped === false && b.helpClipped === false, 'both Task pages: the zh-CN help line (AC-011)', { a, b });
+  return { a, b };
 });
 
 await fs.writeFile(path.join(outDir, 'result.json'), `${JSON.stringify({ results, errors }, null, 2)}\n`);
