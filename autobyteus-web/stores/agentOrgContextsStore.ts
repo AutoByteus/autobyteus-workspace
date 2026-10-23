@@ -15,7 +15,8 @@ import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget, WorkspaceAccess } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex'
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
-import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
+import { hydrateRemoteOrgMember, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
@@ -38,6 +39,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const submissions = new Map<string, LocalUserSubmissionHandle>()
   const deferredReleases = new Set<string>()
   const keyFor = (root: string, agent: string) => `${root}\0${agent}`
+  const remoteRuns = useRemoteRunsStore()
   const report = (id: string, cause: unknown) => {
     errors.value = { ...errors.value, [id]: cause instanceof Error ? cause.message : String(cause) }
   }
@@ -52,8 +54,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const previous = contexts.value[id]
     // Validate retained identity before committing any projection or activity.
     for (const entry of candidate.listAgentContextEntries()) {
-      const old = previous?.index.agents.get(entry.agentRunId)
-      if (old && old.address !== entry.memberAddress) throw new Error('AgentOrg candidate retained address mismatch.')
+      const old = previous?.index.addressOf(entry.agentRunId)
+      if (old && old !== entry.memberAddress) throw new Error('AgentOrg candidate retained address mismatch.')
       const submission = submissions.get(keyFor(id, entry.agentRunId))
       if (submission && !entry.context.conversation.messages.some((message) => message.type === 'user'
         && (message.messageId === submission.message.messageId || message.dedupeKey === submission.message.dedupeKey))) {
@@ -67,6 +69,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
+    // autobyteus-278: the runs this Org delegated to other nodes; Retry asks their nodes again on the Org's stream.
+    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(id)))
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
   }
@@ -123,6 +127,20 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const select = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
     pendingFocus.value = { ...pendingFocus.value, [id]: selection }
     contexts.value[id]?.select(selection)
+    ensureRemoteHydrated(id, selection)
+  }
+  /** autobyteus-278: a remote child's conversation is read from its node when it is selected. */
+  const ensureRemoteHydrated = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
+    const org = contexts.value[id]
+    if (!org || typeof selection !== 'object' || selection?.kind !== 'agent_execution' || !org.index.remoteAgents.has(selection.agentRunId)) return
+    void hydrateRemoteOrgMember({ orgRunId: id, context: org, agentRunId: selection.agentRunId, isCurrent: () => contexts.value[id] === org })
+      .catch((cause) => console.warn(`[agentOrg] Could not load '${selection.agentRunId}' of '${id}'.`, cause))
+  }
+  const retryRemote = (id: string): void => {
+    const service = services.get(id)
+    if (service?.isReady()) { service.refreshRemote(); return }
+    const selection = contexts.value[id]?.selection ?? null
+    ensureRemoteHydrated(id, selection)
   }
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
@@ -177,6 +195,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const accessFor = (id: string, agentRunId: string): 'live' | 'continuable' | 'read_only' => {
     const org = contexts.value[id]
     const agent = org?.index.agents.get(agentRunId)
+    // autobyteus-278: a remote child takes input while the Org's stream is live (its node applies it).
+    if (org?.index.remoteAgents.has(agentRunId) && !operations.value[id] && !submissions.has(keyFor(id, agentRunId))) {
+      return org.phase === 'live' && org.isActive && services.get(id)?.isReady() ? 'live' : 'read_only'
+    }
     if (!org || !agent || operations.value[id] || submissions.has(keyFor(id, agentRunId))) return 'read_only'
     if (org.phase === 'historical' && !org.isActive && !agent.delegation) return 'continuable'
     if (org.phase === 'live' && org.isActive && agent.live && services.get(id)?.isReady()) return 'live'
@@ -187,7 +209,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     content: string, contextPaths: readonly ContextFilePath[]): Promise<void> => {
     const org = contexts.value[id]
     const access = accessFor(id, agentRunId)
-    if (!org || org.getAgentContext(agentRunId) !== context || org.index.requireAgent(agentRunId).address !== address
+    if (!org || org.getAgentContext(agentRunId) !== context || org.index.addressOf(agentRunId) !== address
       || access === 'read_only') throw new Error('AgentOrg send target is not ready or is stale.')
     if (operations.value[id] || context.submissionPending || submissions.has(keyFor(id, agentRunId))) throw new Error('AgentOrg member submission is already pending.')
     if (access === 'continuable') operations.value = { ...operations.value, [id]: 'continuation' }
@@ -212,7 +234,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         await service.whenReady()
       }
       const ready = contexts.value[id]
-      if (ready?.getAgentContext(agentRunId) !== context || ready.index.requireAgent(agentRunId).address !== address) {
+      if (ready?.getAgentContext(agentRunId) !== context || ready.index.addressOf(agentRunId) !== address) {
         throw new Error('AgentOrg prepared submission identity changed.')
       }
       const service = services.get(id)

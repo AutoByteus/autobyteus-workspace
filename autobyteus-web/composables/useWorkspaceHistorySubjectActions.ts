@@ -52,11 +52,12 @@ export const useWorkspaceHistorySubjectActions = () => {
     const context = orgContexts.contextFor(run.rootRunId)
     if (!context) throw new Error(`AgentOrg inspection '${run.rootRunId}' is unavailable.`)
     if (command.action === 'inspect') {
-      const agent = command.agentRunId ? context.index.agents.get(command.agentRunId) : null
-      if (!agent || (command.memberAddress && agent.address !== command.memberAddress)) {
+      // A task copy, or an agent of a run another node runs (autobyteus-278).
+      const address = command.agentRunId ? context.index.addressOf(command.agentRunId) : null
+      if (!command.agentRunId || !address || (command.memberAddress && address !== command.memberAddress)) {
         throw new Error('Exact task Agent execution is unavailable.')
       }
-      orgContexts.select(run.rootRunId, { kind: 'agent_execution', agentRunId: agent.agentRunId })
+      orgContexts.select(run.rootRunId, { kind: 'agent_execution', agentRunId: command.agentRunId })
     } else if (command.action === 'select') {
       const address = command.memberAddress?.trim()
       if (!address || !context.index.configured.has(address)) throw new Error('AgentOrg member selection requires an exact address.')

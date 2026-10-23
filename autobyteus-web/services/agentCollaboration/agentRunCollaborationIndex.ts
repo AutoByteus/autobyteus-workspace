@@ -1,4 +1,5 @@
 import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
+import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
   collaborationTaskExecutionLists,
@@ -24,6 +25,21 @@ export type AgentRootChildAgent = Readonly<{
   delegatorAgentRunId: string | null
 }>
 
+/**
+ * An agent of a run this root delegated to another node (autobyteus-278): the Agent run, or a member of the Team
+ * run, at its address under this root. Its node keeps its source; this node knows only the link.
+ */
+export type AgentRootRemoteAgent = Readonly<{
+  agentRunId: string
+  address: AgentTeamAddress
+  kind: 'remote_agent' | 'remote_team_member'
+  execution: RemoteTaskExecutionDto
+  /** The remote Team run of a member; null for a remote Agent. */
+  teamRunId: string | null
+  /** The AgentRun that started the remote run; null for Team members (their Team row has it). */
+  delegatorAgentRunId: string | null
+}>
+
 export type AgentRootChildTeam = Readonly<{
   teamRunId: string
   address: AgentTeamAddress
@@ -39,13 +55,16 @@ export type AgentRootChildTeam = Readonly<{
 export class AgentRunCollaborationIndex {
   readonly agents = new Map<string, AgentRootChildAgent>()
   readonly teams = new Map<string, AgentRootChildTeam>()
+  /** autobyteus-278: the agents of the runs this root delegated to other nodes. */
+  readonly remoteAgents = new Map<string, AgentRootRemoteAgent>()
   readonly hostRunId: string
   readonly hostAddress: AgentTeamAddress
 
-  constructor(readonly tree: Tree) {
+  constructor(readonly tree: Tree, readonly remoteExecutions: readonly RemoteTaskExecutionDto[] = []) {
     this.hostRunId = tree.host.agentRunId
     this.hostAddress = parseAgentTeamAddress(tree.host.address)
     tree.taskExecutions.forEach((task) => this.addTask(task, null))
+    remoteExecutions.forEach((execution) => this.addRemote(execution))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegatorAgentRunId
       if (delegator && delegator !== this.hostRunId && !this.agents.has(delegator)) {
@@ -65,7 +84,13 @@ export class AgentRunCollaborationIndex {
   }
 
   addressOf(agentRunId: string): AgentTeamAddress | null {
-    return agentRunId === this.hostRunId ? this.hostAddress : this.agents.get(agentRunId)?.address ?? null
+    return agentRunId === this.hostRunId ? this.hostAddress
+      : this.agents.get(agentRunId)?.address ?? this.remoteAgents.get(agentRunId)?.address ?? null
+  }
+
+  /** A child's address, local or remote (the root stream presents both). */
+  childAddressOf(agentRunId: string): AgentTeamAddress | null {
+    return this.agents.get(agentRunId)?.address ?? this.remoteAgents.get(agentRunId)?.address ?? null
   }
 
   /** The coordinator AgentRun of a task Team (the row a task Team opens). */
@@ -76,6 +101,13 @@ export class AgentRunCollaborationIndex {
     const coordinator = members.find((agent) => agent.address === team.coordinatorAddress) ?? members[0]
     if (!coordinator) throw new Error(`Task Team '${teamRunId}' has no member.`)
     return coordinator
+  }
+
+  /** The coordinator AgentRun a Team row opens: a local task Team's, or a remote Team's (autobyteus-278). */
+  coordinatorRunIdOf(teamRunId: string): string {
+    const remote = this.remoteExecutions.find((execution) => execution.kind === 'agent_team' && execution.team_run_id === teamRunId)
+    if (remote?.kind !== 'agent_team') return this.coordinatorOf(teamRunId).agentRunId
+    return (remote.members.find((member) => member.address === remote.coordinator_address) ?? remote.members[0]!).agent_run_id
   }
 
   private register(runId: string): void {
@@ -104,6 +136,22 @@ export class AgentRunCollaborationIndex {
     }))
     for (const member of team.members) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
     team.taskExecutions.forEach((task) => this.addTask(task, team.teamRunId))
+  }
+
+  private addRemote(execution: RemoteTaskExecutionDto): void {
+    const delegator = execution.delegator_agent_run_id
+    if (execution.kind === 'agent') {
+      this.register(execution.agent_run_id)
+      this.remoteAgents.set(execution.agent_run_id, Object.freeze({ agentRunId: execution.agent_run_id,
+        address: parseAgentTeamAddress(execution.address), kind: 'remote_agent', execution, teamRunId: null, delegatorAgentRunId: delegator }))
+      return
+    }
+    this.register(execution.team_run_id)
+    for (const member of execution.members) {
+      this.register(member.agent_run_id)
+      this.remoteAgents.set(member.agent_run_id, Object.freeze({ agentRunId: member.agent_run_id,
+        address: parseAgentTeamAddress(member.address), kind: 'remote_team_member', execution, teamRunId: execution.team_run_id, delegatorAgentRunId: null }))
+    }
   }
 
   private addTask(task: TaskExecution, _hostTeamRunId: string | null): void {

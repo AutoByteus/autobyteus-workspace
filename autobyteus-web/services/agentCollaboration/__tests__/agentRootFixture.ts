@@ -31,7 +31,7 @@ export const agentRootView = (): MutableView => ({
     messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',
     messageType: 'direct_message', referenceFiles: [], createdAt: created,
   }] },
-  agent_input_states: [],
+  agent_input_states: [], remote_task_executions: [],
   agent_statuses: [
     { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
     { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },

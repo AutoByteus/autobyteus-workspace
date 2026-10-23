@@ -23,6 +23,7 @@ import {
   buildAgentCollaborationMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -48,6 +49,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const childLoads = new WeakMap<AgentRunCollaborationContext, Map<string, Promise<void>>>()
   const binding = useWindowNodeContextStore()
   const activities = useAgentActivityStore()
+  const remoteRuns = useRemoteRunsStore()
   const assertNotTerminating = (id: string) => {
     if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
   }
@@ -65,6 +67,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
+    // autobyteus-278: the runs this root delegated to other nodes; Retry asks their nodes again through this root.
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
@@ -76,7 +80,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    */
   const ensureChildHydrated = (hostRunId: string, agentRunId: string | null) => {
     const context = contexts.value[hostRunId]
-    if (!agentRunId || !context?.getChild(agentRunId) || context.isChildHydrated(agentRunId)) return
+    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId)) || context.isChildHydrated(agentRunId)) return
     const loads = childLoads.get(context) ?? new Map<string, Promise<void>>()
     childLoads.set(context, loads)
     if (loads.has(agentRunId)) return
@@ -117,6 +121,16 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     services.set(hostRunId, service)
     service.connect()
     return service
+  }
+
+  /**
+   * Retry of a remote run (autobyteus-278): the live root asks its nodes again (the answers arrive on its stream);
+   * without a stream, the selected remote child's conversation is read again from its node.
+   */
+  const retryRemote = (hostRunId: string) => {
+    const service = services.get(hostRunId)
+    if (service?.isReady()) { service.refreshRemote(); return }
+    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
 
   const detach = (hostRunId: string) => {
@@ -279,17 +293,20 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const childTargetFor = (hostRunId: string): ActiveAgentWorkspaceTarget | null => {
     const collaboration = contextFor(hostRunId)
     const agentRunId = selectedChild(hostRunId)
-    const child = agentRunId ? collaboration?.getChild(agentRunId) : null
+    const local = agentRunId ? collaboration?.getChild(agentRunId) : null
+    // autobyteus-278: a remote child is opened like a local copy; its node keeps its workspace.
+    const remote = agentRunId && !local ? collaboration?.getRemoteChild(agentRunId) : null
+    const child = local ?? remote
     const context = agentRunId ? collaboration?.getAgentContext(agentRunId) : null
     if (!collaboration || !child || !context) return null
     const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
     return Object.freeze({
-      kind: child.kind === 'task_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+      kind: child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
       host: Object.freeze({ hostRunId }),
       address: child.address,
       agentRunId: child.agentRunId,
       context,
-      workspaceRootPath: child.source.launchConfiguration.workspaceRootPath,
+      workspaceRootPath: local ? local.source.launchConfiguration.workspaceRootPath : null,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
       // A child is not a top-level run package: its pages come from the host's collaboration package.
       browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),

@@ -117,6 +117,13 @@ export class AgentRunCollaborationStreamingService {
     } })
   }
 
+  /** Retry (autobyteus-278): the root asks the nodes of its remote runs again; the answers arrive as events. */
+  refreshRemote(): void {
+    if (!this.isReady()) return
+    this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
+      payload: { root_subject_kind: 'agent', root_run_id: this.options.hostRunId } } satisfies CollaborationStreamClientMessage))
+  }
+
   private commandRoot(targetAgentRunId: string) {
     return {
       root_subject_kind: 'agent' as const,
@@ -126,7 +133,7 @@ export class AgentRunCollaborationStreamingService {
     }
   }
 
-  private command(message: CollaborationStreamClientMessage): Promise<void> {
+  private command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
     if (!this.isReady()) return Promise.reject(new Error('The Agent collaboration stream is not ready.'))
     const socket = this.socket!
     return new Promise<void>((resolve, reject) => {

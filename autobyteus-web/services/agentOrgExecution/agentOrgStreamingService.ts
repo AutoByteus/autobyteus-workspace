@@ -219,6 +219,13 @@ export class AgentOrgStreamingService {
     } })
   }
 
+  /** Retry (autobyteus-278): the Org asks the nodes of its remote runs again; the answers arrive as events. */
+  refreshRemote(): void {
+    if (!this.isReady()) return
+    this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
+      payload: { root_subject_kind: 'agent_org', root_run_id: this.options.orgRunId } } satisfies CollaborationStreamClientMessage))
+  }
+
   private commandRoot(targetAgentRunId: string) {
     return {
       root_subject_kind: 'agent_org' as const,
@@ -236,7 +243,7 @@ export class AgentOrgStreamingService {
     return this.context
   }
 
-  private async command(message: CollaborationStreamClientMessage): Promise<void> {
+  private async command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
     this.requireReadyContext()
     const socket = this.socket!
     return new Promise<void>((resolve, reject) => {

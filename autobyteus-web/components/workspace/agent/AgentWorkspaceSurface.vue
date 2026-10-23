@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full flex-col bg-white" data-testid="agent-workspace-surface">
-    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 px-3 py-2 sm:px-4">
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 px-3 py-2 sm:px-4" :class="remote ? 'min-h-14' : ''">
       <div class="flex min-w-0 flex-1 items-center space-x-3">
         <div class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100">
           <img
@@ -13,15 +13,18 @@
           <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">{{ initials }}</span>
         </div>
         <h4 class="truncate text-base font-medium text-gray-800" :title="headerFullTitle" data-test="agent-workspace-title">{{ headerTitle }}</h4>
+        <!-- autobyteus-278: the node that runs this run, next to its name. -->
+        <RemoteNodeChip v-if="remote" :node-name="remote.nodeName" size="header" />
         <AgentStatusDisplay :status="target.context.state.currentStatus" />
       </div>
       <WorkspaceHeaderActions
-        v-if="showHeaderActions"
+        v-if="showHeaderActions && !remote"
         :show-edit-config="showEditConfig"
         @new-agent="$emit('new-agent')"
         @edit-config="$emit('edit-config')"
       />
     </div>
+    <RemoteRunNotice v-if="remote && remote.reachable === false" :node-name="remote.nodeName" @retry="remoteRuns.retry(remote.runId)" />
     <WorkspaceRecoveryNotice
       v-if="recoveryNotice"
       :message="recoveryNotice"
@@ -53,6 +56,10 @@ import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
+import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
+import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 
@@ -70,6 +77,9 @@ const props = withDefaults(defineProps<{
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
+// autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, and a notice when its node did not answer.
+const remote = useRemoteRun(() => props.target.context.state.runId)
+const remoteRuns = useRemoteRunsStore()
 const avatarFailed = ref(false)
 const agentName = computed(() => props.target.context.config.agentDefinitionName || 'Agent')
 const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.trim()

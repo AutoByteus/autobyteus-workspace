@@ -1,4 +1,5 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
@@ -67,6 +68,7 @@ export const buildRunHistoryTeamExecutionRows = (
   });
   const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
   const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
+  const remoteRuns = useRemoteRunsStore();
   return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
     if (execution.depth < 1) {
       throw new Error(`Team history descendant '${execution.key}' is outside execution root '${rootTeamRunId}'.`);
@@ -91,6 +93,8 @@ export const buildRunHistoryTeamExecutionRows = (
       : execution.kind === 'task_team'
         ? 'task_team'
         : 'task_team_child';
+    // autobyteus-278: a run another node runs carries its node.
+    const remoteRun = execution.teamRunId ? remoteRuns.run(execution.teamRunId) : remoteRuns.runOfAgentRun(execution.agentRunId);
     const transient: RunHistoryTransientExecutionRow = {
       kind: 'transient_execution',
       transientKind,
@@ -105,6 +109,7 @@ export const buildRunHistoryTeamExecutionRows = (
       delegatedBy: execution.delegatedBy,
       depth,
       hasChildren,
+      remote: remoteRun ? Object.freeze({ runId: remoteRun.runId, nodeName: remoteRun.nodeName }) : null,
     };
     return [transient];
   });
