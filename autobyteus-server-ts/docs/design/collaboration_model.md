@@ -112,7 +112,7 @@ other by node and run:
 ```text
 delegating node                                      node that runs it
 memory/<kind>/<coordinatingRunId>/
-  <tree>: taskExecutions
+  <tree root>: remoteTaskExecutions
     Agent: {address, agentRunId, nodeId,               memory/agents/<remoteRunId>/      # a standalone run
             delegatorAgentRunId, startedAt}              run_metadata.json: delegatedFrom {nodeId,
                                                            coordinatingRun, delegatorAgentRunId}
@@ -123,11 +123,12 @@ memory/<kind>/<coordinatingRunId>/
   the delegator's message log                          its own message log and memory
 ```
 
-- On the delegating node, the link is the ordinary `taskExecutions` entry
-  plus `nodeId`, the server ID of the node that runs it. Absent means this
-  node, as for every link stored before remote delegation. A link with `nodeId` is
-  stored whole in the tree: there is no folder for that run on the delegating
-  node, and that node never restores, idle-stops or stops it.
+- On the delegating node, the link has the fields of a `taskExecutions` entry
+  plus `nodeId`, the server ID of the node that runs it. It is stored whole in
+  the root's own `remoteTaskExecutions` list, never in `taskExecutions`, so
+  everything that walks local copies leaves it out. There is no folder for that
+  run on the delegating node, and that node never restores or idle-stops it; it
+  stops it only when its owner asks, through the link (since autobyteus-278).
 - A remote Team's link also holds what a local Team link reads from the Team
   copy's own tree on the same node, under the same names as that tree: the
   coordinator's address (`coordinatorAddress`) and every member's address and
@@ -160,13 +161,29 @@ delegated runs through links. Collaboration with remote nodes adds:
 - **links instead of hosting, for remote runs**: the delegating node records
   the link, and the node that runs it hosts it as an independent run. Local
   delegated runs are still hosted in the coordinating run's process (CM-7);
-- **routing by run ID through the link** (CM-11).
+- **routing by run ID through the link** (CM-11);
+- **remote runs in the delegator's tree** (CM-11, since autobyteus-278): the
+  delegating node lists each remote run as a child of its delegator's root, beside
+  the local copies. The root:
+  1. asks each run's node for the run's title and its agents' statuses whenever
+     someone opens the root's view, with one request per node;
+  2. while someone views the root, follows each run's live output over one stream
+     per run, which the node starts with its own ID and then only frames of the
+     run's paired agents;
+  3. after a stream ends that it did not close, asks the node once more for the
+     summary (no reconnect);
+  4. reads a remote agent's stored conversation from its node when it is opened;
+  5. passes its owner's messages, interrupts and terminate to the run through the
+     link.
+
+  The run's node answers only for runs its delegation from the asking node
+  started, and only about the paired agents.
 
 Later steps add attachment transfer (today `reference_files` are local paths),
-lifecycle control across the link (stop on Task closure, user stop,
-reactivation), messages to active runs on a peer that no delegation linked,
-and peer authentication. Discovery of peers and of what they offer holds since
-autobyteus-261.
+the remaining lifecycle control across the link (stop on Task closure,
+reactivation), a remote run's files in the delegating node's window, messages to
+active runs on a peer that no delegation linked, and peer authentication.
+Discovery of peers and of what they offer holds since autobyteus-261.
 
 ## 5. Current State Versus Target
 
@@ -181,7 +198,7 @@ Status as of the change that published this document (Task 259ddae7,
 | CM-8 Delegated run memory in its own folder | Holds | Since `delegated-copy-own-run-memory` (Task 8641c0ac): a task agent is a run of its own (`agents/<id>/` or `agent_teams/<id>/`) with its own file (a `taskAgent` section); the coordinating run's tree keeps links; deleting a coordinating run keeps its task agents' folders. Startup migration `20261017_task_agent_own_run_v1` moved existing data. Since `delegated-copy-restore-from-own-file` (autobyteus-197) every task agent, also one started from a configured placement, restores from its own file only; startup migration `20261019_delegated_copy_own_file_complete_v1` completed existing own files and removed `taskAgent.origin`. |
 | CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. The coordinating log keeps its older entries; the migration gave each task agent its own log. Since `append-only-message-logs`, each log is append-only JSON Lines that rotates at 4 MiB (`<base>_active.jsonl` plus sealed `<base>_<6 digits>.jsonl`; startup migration `20261018_append_only_message_logs_v1`). |
 | CM-7 through links instead of hosting | **Remote runs: holds** (since remote-delegation slice 1, autobyteus-191). **Local runs: hosting** | A remote delegated run is linked, not hosted (CM-10). Local delegated runs are still hosted in the coordinating run's process, and nested delegations are recorded in the topmost coordinating run's tree. |
-| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Attachments, lifecycle control across the link, messages to unlinked active runs on a peer and peer authentication come in later slices. |
+| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Attachments, a remote run's files, stop on Task closure, messages to unlinked active runs on a peer and peer authentication come in later slices. |
 
 ## 6. Where The Mechanics Live
 

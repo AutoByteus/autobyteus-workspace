@@ -757,6 +757,58 @@ stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
 
+### Remote Delegated Runs In The Tree
+
+A run that another node runs for this node's delegation (autobyteus-278; server
+mechanics in
+[Remote Collaboration](../../autobyteus-server-ts/docs/modules/remote_collaboration.md#remote-runs-in-the-run-tree))
+is a delegated row under its delegator's root (Agent, Team and Org roots), merged
+with the local copies by start time. A remote Team is listed with its members.
+
+- **Data.** Each root view carries `remote_task_executions`, and each root
+  registers them in `useRemoteRunsStore`. The store is window-wide, keyed by run
+  and by agent run, and cleared when the window's node binding changes. It holds
+  the node's name, `reachable` (`null` until the node answers), `checking` while
+  Retry waits, the node's title, and the Retry callback of the root that owns the
+  run.
+- **Updates.** The root's stream adds `remote_task_execution_started` (an unknown
+  run reloads the view; a Team stream recovers) and
+  `remote_task_execution_summary`, which carries `reachable`, the title and the
+  live statuses. An agent the summary does not list is `Offline`.
+- **Shared code.** `services/remoteRuns/remoteChildren.ts` (summary statuses, rows,
+  start-time merge) and `remoteAgentContext.ts` (an `AgentContext` with no local
+  definition) are shared by the three roots.
+- **Live output.** A remote agent's output arrives as ordinary `agent_presentation`
+  events of the root and is dispatched to its own context.
+- **Stored conversation.** It is read through the root's member-projection query,
+  which this node's server answers from the run's node. A failed read marks the
+  run unreachable.
+- **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
+  The `RemoteNodeChip` sits between the status dot and the identity. Members of a
+  remote Team carry no chip of their own. Under the row:
+  - the Task line, or else the node's title;
+  - `Checking <node>…` while Retry waits;
+  - a red `role="alert"` line "Couldn't reach <node>." with Retry, or the
+    stop-failed line.
+
+  The aria-label adds "on <node>". Stop terminates the run through its node.
+- **Run view** (`useRemoteRun(agentRunId)`):
+  - the header shows the node chip and no ⚙ or ＋;
+  - `RemoteRunNotice` (red, Retry) shows while the node is unreachable;
+  - the composer's placeholder is `Message <name> on <node>…`, with no context
+    files and no @-mentions;
+  - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's files,
+    terminal and other node-local panels are on that node.
+- **Retry.** Each root registers one Retry per remote run, which answers whether
+  the node is being asked. A live root asks its stream to fetch the summaries
+  again (`REFRESH_REMOTE_TASK_EXECUTIONS`). A standalone or Org root also reads the
+  selected agent of that run again when its conversation is not loaded. Without
+  a stream, a root reads the run's agent (the selected one, or else the first)
+  from its node. A Team root registers through `teamRemoteRunRegistry`, from its
+  stream snapshot or its stored view (`getTeamRunResumeConfig`). A Team member
+  whose read failed is not focused, so selecting it again reads it. `Checking`
+  ends on every answer or read, and at once when nothing could be asked.
+
 ### Compaction Lifecycle Activity And Center Feed
 
 Native compaction projects one Activity row per operation with requested/start
