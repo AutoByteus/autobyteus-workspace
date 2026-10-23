@@ -1,0 +1,14 @@
+# IMP-07 autobyteus-ts build and unit tests
+# Commands: pnpm -C autobyteus-ts build; env -i PATH="$PATH" HOME=/tmp/ab280/home TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/unit --no-watch
+# Commit: 8b091176bf
+# Environment: macOS darwin arm64, Node 22.23.1, clean env for tests
+# Date: 2026-10-23T19:02Z
+
+
+[verify:runtime-deps] OK
+build exit=0
+$ ls autobyteus-ts/src/memory/migration
+ls: autobyteus-ts/src/memory/migration: No such file or directory
+ Test Files  305 passed (305)
+      Tests  2041 passed (2041)
+tests exit=0

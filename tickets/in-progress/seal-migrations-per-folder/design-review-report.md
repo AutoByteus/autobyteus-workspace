@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `tickets/in-progress/seal-migrations-per-folder/requirements-doc.md` (Approved, SR-001)
+- Upstream Requirements Doc: `tickets/in-progress/seal-migrations-per-folder/requirements-doc.md` (Approved; SR-002 AC-004/AC-005 wording)
 - Upstream Investigation Notes: `tickets/in-progress/seal-migrations-per-folder/investigation-notes.md` (S-01..S-12; autobyteus-204 F-01, A-05, O-1 carried over)
-- Upstream Solution Revision Record: `tickets/in-progress/seal-migrations-per-folder/solution-revision-record.md` (SR-001)
-- Reviewed Design Spec: `tickets/in-progress/seal-migrations-per-folder/design-spec.md` (SR-001, `Ready`, commit `24b003306e`)
-- Supplemental Task Artifacts Reviewed: none in the package (see AR-005 on the missing release-notes text)
-- Relevant Solution Revision IDs: SR-001
+- Upstream Solution Revision Record: `tickets/in-progress/seal-migrations-per-folder/solution-revision-record.md` (SR-001, SR-002)
+- Reviewed Design Spec: `tickets/in-progress/seal-migrations-per-folder/design-spec.md` (SR-003, `Ready`, commit `f40bad9713`; SR-003 answers implementation DI-001)
+- Supplemental Task Artifacts Reviewed: `release-notes.md` (SR-002)
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
 - Architecture Review Revision Record: `tickets/in-progress/seal-migrations-per-folder/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` from `/software_engineering_team/solution_designer` (Large / High)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: SR-003 narrow re-review from `/software_engineering_team/solution_designer` (implementation Design Impact DI-001: two ports, D-7 replaced, no cross-migration imports; guideline "Sealed migration area")
+- Prior Review Round Reviewed: 2 (`ARCH-REV-002`, Pass)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder` at `24b003306e`. Opened at their cited lines:
   - `server-runtime.ts:155-241`;
   - `start-standalone-application-host.ts:147-210`;
@@ -76,15 +76,17 @@
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | Pass | Pass | Fail (boundary rule and live-service dependency unresolved) | Needs Correction | AR-001 |
-| BEH-002 | System | Pass | Pass | Fail (the web error-code consumer; the initial pending state) | Needs Correction | AR-003, AR-004 |
-| BEH-003 | System | Pass | Pass | Unclear (gated entry forms not traced) | Needs Correction | AR-002 |
-| BEH-004 | Operational | Pass | Pass | Fail (the new session source needs the M4 guard) | Needs Correction | AR-005 |
+| BEH-001 | System | Pass | Pass | Pass (AR-001 resolved) | Confirmed | — |
+| BEH-002 | System | Pass | Pass | Pass (AR-003, AR-004 resolved) | Confirmed | — |
+| BEH-003 | System | Pass | Pass | Pass (AR-002 resolved) | Confirmed | — |
+| BEH-004 | Operational | Pass | Pass | Pass (AR-005 resolved) | Confirmed | — |
 | BEH-005 | Contract | Pass | Pass | Pass | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
-None in the package. REQ-008 requires release-notes text, and no supplement carries it (AR-005).
+| Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| `release-notes.md` | Pass | Pass (AC-005) | Pass | Pass | Pass | — (optional wording, R-6) |
 
 ## Task Design Health Assessment Verdict
 
@@ -99,64 +101,61 @@ None in the package. REQ-008 requires release-notes text, and no supplement carr
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 / DS-001b startup (two hosts) | Primary | Pass | Pass | N/A | Pass | Fail: the "readiness → configure each capability owner" sequence is written out in each host and again in DS-003; the initial pending state is not on the spine (AR-004) | Pass | Fail |
-| DS-002 gated features | Primary | Pass | Pass | N/A | Pass | Fail: "`CustomLlmProviderStore` and its callers consult" leaves the gate in several owners and does not trace each entry form (AR-002) | Pass | Fail |
-| DS-003 manual retry | Primary | Pass | Pass | N/A | Pass | Pass, except the shared sequence (AR-004) | Pass | Pass |
-| DS-004 enforcement | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-001 / DS-001b startup (two hosts) | Primary | Pass | Pass | N/A | Pass | Pass: `assertTokenUsageCurrentSchema -> markCapabilitiesPending() -> vault -> runner.runPending() -> applyCapabilityReadiness(runner.capabilityReadiness()) -> readiness index`, one owner (`startup/app-data-capability-readiness.ts`) | Pass | Pass |
+| DS-002 gated features | Primary | Pass | Pass | N/A | Pass | Pass: each entry form goes to `CustomLlmProviderStore` (the only gate) and on to the outcome table; token usage keeps its codes | Pass | Pass |
+| DS-003 manual retry | Primary | Pass | Pass | N/A | Pass | Pass: the resolver calls the same `applyCapabilityReadiness` | Pass | Pass |
+| DS-004 enforcement | Bounded local | Pass | Pass | N/A | Pass | Pass: split rule (`migrations/**`/`frozen/**` versus the contract) | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runner contract (runner, registry, `domain/`, `repositories/`) | Pass | Pass | Fail | Fail | The rule does not say what the contract itself may import, nor how live production side effects reach a migration (AR-001) |
-| `migrations/**`, `frozen/**` | Pass | Pass | Pass | Pass | DS-004 |
+| Runner contract (runner, registry, `domain/`, `repositories/`) | Pass | Pass | Pass | Pass | The contract is the wiring point; the registry builds each migration with explicit arguments (AR-001 resolved) |
+| `migrations/**`, `frozen/**` | Pass | Pass | Pass | Pass | Only `domain/**`, `prisma-client-factory`, node and third-party code |
+| `CustomLlmProviderStore` gate | Pass | Pass | Pass | Pass | No caller checks the capability itself |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Production → contract only | Pass | Pass | Pass | Pass | — |
-| Migration area → production | Fail | Pass | Fail | Fail | AR-001: the runner and registry import `appConfigProvider` today. The custom-provider migration removes old secrets through the live vault (`getSecretVaultRuntime().requireService().removeForConsumer`) and reads the live built-in provider catalog. A frozen copy of the vault would be a second writer of a store that production owns |
+| SR-003 ports: `domain/definition-name-lookup.ts`, `domain/run-history-catalog-invalidation.ts` | Pass | Pass | Pass | Pass | Verified: `run-history-index-v2-migration.ts:374-377` and `team-run-history-index-v2-migration.ts:515-518` dynamically import the live definition providers; `:13,337`, `:26,470` and `agent-org-history-index-transition.ts:3,41-42` call the live `reset*CatalogState` functions. A frozen copy would reset nothing, so a port wired by the registry, called at the same moment, keeps the output and side effect identical. A port carries data or an action, never a current class |
+| D-7 replaced: `context-file-record-locators.ts` → `frozen/server/context-files/services/` | Pass | Pass | Pass | Pass | Verified: its header says "Migration-only module"; its importers are three migration files plus two tests (`released-message-log-repairs.test.ts`, `context-file-access-containment.test.ts`). Nothing moves into production |
+| No cross-migration imports (prerequisite ids as string literals; shared code to `frozen/`) | Pass | Pass | Pass | Pass | The registry already rejects an unregistered or misordered prerequisite at construction; the boundary test adds the folder-to-folder rule |
+| Migration code → `domain/` ports | Pass | Pass | Pass | Pass | The `SecretRemovalOwner` port lives in `domain/` and is implemented by the live vault, so the vault stays its only writer. Built-in provider names are passed live (the same input as today, REQ-007). Registry → migration → port, in call order |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `capabilityReadiness()` (closed `AppDataCapability` union) | Pass | Pass | Pass | Low | Pass |
-| `holdsBackCapabilities?` | Pass | Pass | Pass | Low | Pass |
-| `TokenUsageCapability` error codes | Pass | Pass | Fail (renamed code, consumer not listed) | Low | Fail (AR-003) |
-| `CustomProviderCapability.assertReady()` | Pass | Fail (placement across the store and its callers) | Pass | Medium | Fail (AR-002) |
+| `capabilityReadiness()`; `holdsBackCapabilities?` | Pass | Pass | Pass | Low | Pass |
+| `markCapabilitiesPending()` / `applyCapabilityReadiness(readiness)` | Pass | Pass | Pass | Low | Pass |
+| Token-usage error codes (kept) | Pass | Pass | Pass | Low | Pass |
+| `CustomLlmProviderStoreError('CUSTOM_PROVIDERS_MIGRATION_PENDING')` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Statuses inside `capabilityReadiness` | Pass | Pass | N/A | Pass | `listStatuses` |
-| Architecture test | Pass | Pass | N/A | Pass | `application-framework-boundaries.test.ts` pattern |
-
-Rule check: a mechanism that receives a function reaching another collaborator, a compound owner, or an untraced kind or form fails the row. Custom-provider entry forms: AR-002. Capability application: AR-004.
+`Pass`, as in round 1. Rule check: no function handed to one mechanism to reach another collaborator, no compound owner, every entry form traced.
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-`Pass`. `CustomProviderCapability` sits in `llm-management/llm-providers/`, and token usage keeps its owner.
+`Pass`.
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Frozen copies used by several migrations | Pass | Pass | Pass | Pass | `frozen/server/<path>` and `frozen/autobyteus-ts/<path>`, plus the unused-files report |
+`Pass`, as in round 1.
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Token-usage readiness state (`HISTORY_MIGRATION_PENDING`) | Pass | Pass | Pass | N/A | Pass | — |
+| Token-usage readiness state (internal `HISTORY_MIGRATION_PENDING`; codes unchanged) | Pass | Pass | Pass | N/A | Pass | — |
 
-Derived consumers of a changed structure listed with a decision for each: `Fail`. The token-usage error code is matched by `TokenUsageAnalyticsView.vue:60` and `TokenUsageRunDetailsView.vue:105`. The startup-error summary `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED` appears in `BaseServerManager.spec.ts:214,224`, which is a test only (AR-003).
+Derived consumers of a changed structure listed with a decision for each: `Pass`. The status snapshot consumers are unchanged; the web views matching the token-usage codes are kept working; `CUSTOM_PROVIDERS_MIGRATION_PENDING` reaches the Settings provider page and model availability. One citation path is off (R-4).
 
 ## File Responsibility Mapping Verdict
 
-`Pass`, apart from the custom-provider capability placement (AR-002).
+`Pass`.
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -166,29 +165,28 @@ Derived consumers of a changed structure listed with a decision for each: `Fail`
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Production imports of migration ids; legacy constant import; GraphQL special case; TeamRun V2 warning; migration-id readiness state; D-8 bridge; library `memory/migration/` | Pass | Pass | Pass | Pass | `memory/migration/` has no users besides the one migration and its own tests (grep) |
-| `appConfigProvider` defaults in migration constructors (6 files) | Fail | Pass | Fail | Fail | Implied by "the registry passes paths", but not listed; fold into AR-001 |
+| Production imports of migration ids; legacy constant; GraphQL special case; TeamRun V2 warning; migration-id readiness state; D-8 bridge; library `memory/migration/` | Pass | Pass | Pass | Pass | — |
+| Constructor defaults reading production config or services | Pass | Pass | Pass | Pass | Listed, plus "any further one the architecture test reports" |
 
 ## Legacy / Backward-Compatibility Verdict
 
-`Pass`. No wrapper or dual path; the frozen layer is migration-owned.
+`Pass`.
 
 ## Persisted-Data Transition Verdict
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | All stores | Not Affected (output unchanged) | Pass | Pass | N/A | Pass | REQ-007 with unchanged assertions |
-| 205 helper-run deletion (REQ-008, a same-ID repair of a released migration) | Narrowing | Fail | Pass | Fail | Fail | AR-005: session files become an M1 source, but M4 still deletes them before M3's success is known; same-ID applicability and the release-notes text are not stated |
+| 205 helper-run deletion (REQ-008, a same-ID repair) | Narrowing | Pass | Pass | Pass | Pass | Same-ID applicability stated. M4 guarded like M5; an unreadable session file is preserved. Fixtures cover the compactor survival, the M3-failure retry and the unreadable session (AR-005 resolved) |
+| G-1 narrowing, retry safety | — | Pass | Pass | Pass | Pass | Recorded in the Guidance |
 
 ## Change / Refactor Sequence Verdict
 
-| Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
-| --- | --- | --- | --- | --- |
-| Contract and enforcement first (shrinking exception list) → production side → migrations newest-first → library → docs → final | Pass | Pass (the exception list) | Pass | Pass |
+`Pass`, as in round 1.
 
 ## Example Adequacy Verdict
 
-`Pass`: frozen-import, deep-service and capability examples are given, with the shapes to avoid.
+`Pass`.
 
 ## Material Premise Validation
 
@@ -219,114 +217,37 @@ None beyond the findings.
 
 ## Review Decision
 
-`Fail`. Five Design Impact findings. The direction and structure are sound: the sealed area, the shared frozen layer, the capability rule, D-6..D-8 and the enforcement with a shrinking exception list.
+`Pass`. AR-001..AR-005 remain resolved, and SR-003 (DI-001) is sound against the code at its cited lines (commit `f40bad9713`). The behavior basis is confirmed, and no in-scope machinery depends on an unsupported premise. Ready for implementation.
 
 ## Findings
 
-### AR-001 — State what the runner contract may import, and how live production side effects reach a migration
-
-- Type: Design Impact
-- Severity: Medium (blocking)
-- Protected: REQ-003, REQ-004, REQ-005 (the test must be implementable as written), REQ-007
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence:
-  - Terminology defines the migration area as all of `src/app-data-migrations/`, and Ownership Boundaries allows only `config/prisma-client-factory.ts` from production. But the contract imports `config/app-config-provider.js` (`app-data-migration-runner.ts:3`, `app-data-migration-registry.ts:3`), and the registry must keep passing configured paths (Ownership Map).
-  - Six migration files use `appConfigProvider` as constructor defaults.
-  - `custom-provider-readable-id-app-data-migration.ts:11,141-143,234` removes legacy secrets through the live vault (`getSecretVaultRuntime().requireService().removeForConsumer`), and `:12,145-146` reads the live built-in provider catalog.
-  - Freezing the vault would create a second writer of a store that production owns: its format, keys and locking would drift. The migration already takes both as constructor parameters.
-- Required update:
-  1. Split the import rule by sub-area. `migrations/**` and `frozen/**` may import only the contract's domain types, the database client, node APIs and third-party libraries. The contract (runner, registry, `repositories/`, `domain/`) may also import production configuration.
-  2. Decide the sequence for live side effects. The **registry** constructs each migration and passes in every production dependency that cannot be frozen: paths; the vault's `SecretRemovalOwner` as a narrow port type owned by the contract; and the built-in provider names, injected live or frozen as a list (decide which, against REQ-007). The runner calls `execute()`, and the migration calls the port. It never reaches the vault itself.
-  3. List the constructor defaults to remove in the Removal Plan, and teach DS-004 the split rule.
-- Why proportionate: it uses the migration's existing constructor parameters and the registry's existing role. Without it, the test either fails on the contract or forces a frozen vault writer.
-- Recommended recipient: `/software_engineering_team/solution_designer`
-
-### AR-002 — Trace each custom-provider entry form under the narrowed G-1, and give the gate one owner
-
-- Type: Design Impact
-- Severity: Low–Medium (blocking)
-- Protected: REQ-006, AC-004 ("custom providers report unavailable, and other providers work"), DEC-003
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence: MP-001. DS-002 traces only "custom provider listing", and the Ownership Map says "`CustomLlmProviderStore` and its callers consult". The entry forms are:
-  - listing: `llm-provider-service.ts:297,378`; `model-catalog-service.ts:88` catches;
-  - lookup by id for run model resolution and availability: `model-catalog-service.ts:201,334`, `model-availability-service.ts:73`;
-  - runtime sync: `custom-llm-provider-runtime-sync-service.ts:27`;
-  - create and delete: `llm-provider-service.ts:149-192`;
-  - token-usage display lookups: `statistics-provider.ts:50-57`, `token-usage-analytics-provider.ts:146-151`, both catching.
-- Required update:
-  - Place the capability check in **one** owner, `CustomLlmProviderStore` (every read and write), rather than the store and its callers.
-  - Give each entry form's pending outcome. For example: catalog and display lookups degrade as they already do; run model resolution and CRUD refuse with `CUSTOM_PROVIDERS_MIGRATION_PENDING`.
-  - Record why the narrowing keeps a retry safe. The store's current parser refuses an unconverted file (`custom-llm-provider-store.ts:39-45,80-116`), and a published V3 makes the retry skip (`custom-provider-readable-id-app-data-migration.ts:179-186`).
-  - Extend AC-004's fixture to a run start with a custom model and a CRUD attempt.
-- Why proportionate: a table and one placement decision. It prevents gates repeated across callers and silent gaps.
-- Recommended recipient: `/software_engineering_team/solution_designer`
-
-### AR-003 — The web matches the token-usage error code the design renames
-
-- Type: Design Impact
-- Severity: Low (blocking)
-- Protected: REQ-006 ("G-2 … unchanged behavior"), AC-003 ("refuse as today")
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence: DS-002 introduces `TOKEN_USAGE_HISTORY_MIGRATION_PENDING`. Today's code is `TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` (`token-usage-migration-readiness.ts:27-29,54-60`), and the web shows its friendly message by matching that string (`TokenUsageAnalyticsView.vue:60`, `TokenUsageRunDetailsView.vue:105`). The Change Scope's derived-consumer list omits these.
-- Required update: either keep the existing codes (`TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED`, `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED`) or rename them and update both web views and their specs. In either case, add them to the derived-consumer list.
-- Why proportionate: one decision and two files. Without it the user-visible refusal silently changes.
-- Recommended recipient: `/software_engineering_team/solution_designer`
-
-### AR-004 — One owner applies capability readiness, including the initial pending state
-
-- Type: Design Impact
-- Severity: Low (blocking)
-- Protected: REQ-006, AC-003, AC-004
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence:
-  - DS-001, DS-001b and DS-003 each write out `runner.capabilityReadiness() → configureTokenUsageCapability(...) → configureCustomProviderCapability(...)`, so a third capability must be added in three callers (Principle 13, repeated coordination).
-  - The spines omit today's initial pending state set after the schema check (`server-runtime.ts:161-168`, `start-standalone-application-host.ts:~147-150`). The custom-provider capability's state before the runner answers is not stated, so its behavior during startup follows from a default (Principle 13, behavior by absence).
-- Required update: one production function, for example `applyAppDataCapabilityReadiness(readiness)` beside the capability owners. Both hosts and the retry resolver call it in this order:
-  1. set both capabilities to pending after the schema check;
-  2. after `runPending()` or a retry, apply the runner's answer.
-- Why proportionate: one small function. It keeps the three paths identical.
-- Recommended recipient: `/software_engineering_team/solution_designer`
-
-### AR-005 — Specify the 205 repair: the session-source guard, same-ID applicability and the release-notes text
-
-- Type: Design Impact
-- Severity: Low–Medium (blocking)
-- Protected: REQ-008, AC-005, REQ-005 of autobyteus-205 (preserved), REQ-007
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence:
-  - MP-002. REQ-008 makes the improver session files an identification source, but the current migration deletes session folders in M4 without regard to M3's outcome (`remove-skill-improvement-data-migration.ts`, `deleteSessionFolders`; only M5 has a guard).
-  - The design gives the repair one line ("comes with its folder").
-  - The migration is released (v1.5.8), so this is a same-ID repair that applies only to pending or failed installs (guideline §7). The design does not say so.
-  - REQ-008 requires release-notes text, but the package has no supplement for it.
-- Required update:
-  1. A short M1/M4 description: sessions are a source; M4 deletes a session folder only when the run it names is fully removed (row and folder) or was never present; an unreadable session file is preserved (`PRESERVED_UNREADABLE`), as M5 does.
-  2. State same-ID applicability.
-  3. Add `release-notes.md` with the REQ-008 sentence.
-  4. Fixtures: the compactor run survives (AC-005); a session-only helper run with an injected M3 failure is deleted on the next start.
-- Why proportionate: the same guard pattern the migration already uses for M5.
-- Recommended recipient: `/software_engineering_team/solution_designer`
+None open. The resolution is recorded in `architecture-review-revision-record.md` (ARCH-REV-002, ARCH-REV-003).
 
 ## Classification
 
-`Design Impact` (AR-001..AR-005).
+N/A (Pass).
 
 ## Recommended Recipient
 
-`/software_engineering_team/solution_designer`
+`/software_engineering_team/implementation_engineer`
 
 ## Residual Risks
 
-- R-1: frozen reproductions of deep services (catalog services, definition providers, validators) carry drift risk. The mitigation (newest-first, unchanged assertions, escalation) is adequate. Record each freeze's source commit as the Guidance asks.
-- R-2: the frozen layer size (7,000–12,000 lines) is unverified until step 3. The unused-files report keeps it honest.
-- R-3: the custom-provider migration's own retry skips selector mapping once V3 is published (`:179-186`). This is pre-existing behavior, not changed by this ticket, and could become a follow-up if a failure in that state is ever observed.
+- R-1: frozen reproductions of deep services carry drift risk. Mitigated by newest-first sequencing, unchanged assertions and escalation. Record each freeze's source commit.
+- R-2: the frozen layer size is unverified until step 3; the unused-files report keeps it honest.
+- R-3: the custom-provider migration's own retry skips selector mapping once V3 is published (`custom-provider-readable-id-app-data-migration.ts:179-186`). This is pre-existing behavior, unchanged by this ticket.
+- R-4 (citation): the derived-consumer line cites `autobyteus-web/components/token-usage/TokenUsageAnalyticsView.vue:60`. The files are `autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsView.vue:60` and `autobyteus-web/components/settings/token-usage/TokenUsageRunDetailsView.vue:105`.
+- R-5 (implementation):
+  - The registry is built lazily with the runner (`app-data-migration-registry.ts:155-160`). Pass the vault as the lazy getter the constructor already takes (`() => getSecretVaultRuntime().requireService()`), not as an instance resolved when the registry is built.
+  - Keep the custom-provider gate's state module-level, like `TokenUsageCapability`, so every `CustomLlmProviderStore` instance sees it. The production store is a cached singleton (`custom-llm-provider-store.ts:136-142`), but tests construct their own.
+- R-7 (SR-003, guideline): with prerequisites named by string literal, retiring migration X leaves X's id in a later migration's `prerequisiteMigrationIds`, and the registry then throws at construction ("must be registered earlier"). The registry tests catch it, so it fails loudly. Recommended: add to the guideline's retirement step 2 "and remove its id from the remaining migrations' `prerequisiteMigrationIds`".
+- R-8 (SR-003, implementation):
+  - Build the definition-name port so the provider closure loads only when a row needs a name, as today's dynamic import does (keep a dynamic import in the registry's lazy factory), so startup does not load the 116-file closure.
+  - The catalog-invalidation port must carry the arguments the reset functions take (`memoryDir`; `"agent_org"` / `"agent_team"` for the collaboration catalog), bound by the registry or passed by the migration.
+- R-6 (wording, optional): `release-notes.md` says custom providers stay unavailable "until the next start retries the conversion". A manual retry in Settings also takes effect at once (D-8).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-001 and MP-002 are reachable and drive AR-002 and AR-005)
-- Notes: `ARCH-REV-001`; SR-001. Large / High confirmed. A re-review can be limited to the Ownership Boundaries and DS-004 rule, the registry wiring, DS-001/DS-001b/DS-002/DS-003, the custom-provider entry-form table, the derived-consumer list, the 205 repair section and `release-notes.md`.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass`
+- Notes: `ARCH-REV-003`; SR-001..SR-003. DI-001 is resolved by the SR-003 ports, the frozen locator module and the no-cross-migration-import rule. Classification Large / High is preserved. Next: `/software_engineering_team/implementation_engineer`, to finish the three affected migrations.
