@@ -1,6 +1,7 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../../run-history/projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
+import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import { locatedExecutionSource } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
@@ -61,6 +62,9 @@ export class StandaloneRootMemberViewProjectionService {
   }
 
   async getProjection(hostRunId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
+    // N-403: a remote child's conversation is read from its node (autobyteus-278).
+    const remote = remoteChildOf((await this.locations.readTree(required(hostRunId, "hostRunId")))?.remoteTaskExecutions ?? [], agentRunId.trim());
+    if (remote) return await remoteMemberProjection(remote, memberAddress) as StandaloneRootMemberRunProjection;
     const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({ runId: location.agentRunId, metadata: metadataFor(location) });
     return {

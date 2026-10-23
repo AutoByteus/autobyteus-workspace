@@ -46,6 +46,8 @@ import {
   StandaloneRootBuilder,
   type StandaloneRootBuilderDependencies,
 } from "./standalone-root-builder.js";
+import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
 
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
 export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
@@ -94,6 +96,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private readonly hostContexts: StandaloneHostMemberContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
+  /** autobyteus-278: a run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
+  readonly pairedAgents: PairedAgentAccess = new StandalonePairedAgentAccess(this);
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
@@ -160,7 +164,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   /** N-303 / N-304: a peer's request checked against a run's stored links (back-link included); it loads nothing. */
   async storedRemoteLinkCheck(hostRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
     const hostRunId = hostRunIdInput.trim();
-    if (this.hasRoot(hostRunId)) return "proceed";
+    if (query.kind !== "owner" && this.hasRoot(hostRunId)) return "proceed";
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
     const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);

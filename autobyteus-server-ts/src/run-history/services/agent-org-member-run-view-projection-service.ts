@@ -1,3 +1,4 @@
+import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
@@ -65,6 +66,9 @@ export class AgentOrgMemberRunViewProjectionService {
     memberAddress: string,
     agentRunId: string,
   ): Promise<AgentOrgMemberRunProjection> {
+    // N-403: a remote child's conversation is read from its node (autobyteus-278).
+    const remote = remoteChildOf((await this.locations.readTree(orgRunId.trim()))?.rootOrg.remoteTaskExecutions ?? [], agentRunId.trim());
+    if (remote) return await remoteMemberProjection(remote, memberAddress) as AgentOrgMemberRunProjection;
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({
       runId: location.agentRunId,

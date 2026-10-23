@@ -3,6 +3,7 @@ import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-coll
 import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
+import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { PlacementLaunchOverride } from "../../agent-collaboration/services/collaboration-launch-configuration-resolver.js";
@@ -201,7 +202,9 @@ export class AgentOrgRunService {
   }
 
   async getInspection(orgRunId: string) {
-    return projectAgentOrgExecutionSnapshot(await this.dependencies.manager.getInspection(orgRunId));
+    const inspection = await this.dependencies.manager.getInspection(orgRunId);
+    return projectAgentOrgExecutionSnapshot({ ...inspection,
+      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.rootOrg.remoteTaskExecutions) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

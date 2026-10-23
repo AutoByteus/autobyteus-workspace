@@ -195,7 +195,7 @@ describe("Agent root of a standalone run", () => {
     f.host.crash();
     const inspection = (await f.manager.getInspection(HOST))!;
     expect(f.restores).not.toHaveBeenCalled();
-    const projected = projectAgentCollaborationView(inspection);
+    const projected = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: [] });
     if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
     expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
     expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
@@ -267,7 +267,7 @@ describe("Agent root of a standalone run", () => {
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const snapshotConnection = await root.openPackageSnapshotConnection();
     const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
-      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence });
+      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence, remoteTaskExecutions: [] });
     expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
     if (projected.root_subject_kind === 'agent') {
       expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
@@ -683,7 +683,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
 
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
-    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence });
+    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.

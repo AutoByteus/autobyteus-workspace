@@ -1,3 +1,4 @@
+import { remoteTaskExecutionDtos } from "../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -22,6 +23,11 @@ import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/
 import { RemoteMessageReceiver } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
+import { RemoteRunViewProvider } from "../../../src/remote-collaboration/inbound/remote-run-view-provider.js";
+import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
+import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execution/remote/remote-run-observation.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
@@ -49,10 +55,21 @@ type FakeRun = {
   reserveUserMessage: ReturnType<typeof vi.fn>;
   postUserMessage: ReturnType<typeof vi.fn>;
   publishEvent: ReturnType<typeof vi.fn>;
+  /** autobyteus-278: the host's events, as a peer's observation follows them. */
+  listeners: Set<(event: unknown) => void>;
+  subscribeToEvents(listener: (event: unknown) => void): () => void;
+  emit(event: unknown): void;
+  getStatusSnapshot(): { status: string };
+  interrupt: ReturnType<typeof vi.fn>;
 };
 const fakeRun = (runId: string): FakeRun => {
   const run: FakeRun = {
     runId, active: false, received: [], posted: [],
+    listeners: new Set(),
+    subscribeToEvents: (listener) => { run.listeners.add(listener); return () => run.listeners.delete(listener); },
+    emit: (event) => run.listeners.forEach((listener) => listener(event)),
+    getStatusSnapshot: () => ({ status: "idle" }),
+    interrupt: vi.fn(async () => ({ accepted: true })),
     isActive: () => run.active,
     // A reserved input is admitted only by its commit (a cancelled reservation delivers nothing).
     reserveUserMessage: vi.fn(async (message: { content: string }) => ({ reserved: true as const, reservation: { agentRunId: runId, cancel: vi.fn(),
@@ -99,9 +116,33 @@ const buildNode = async (input: Readonly<{
       const body = JSON.parse(String(init.body));
       const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
     const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
-      : route === "availability" ? await gateway.checkAvailability(body) : await gateway.listAvailableAgents(body);
+      : route === "availability" ? await gateway.checkAvailability(body) : route === "run-summaries" ? await gateway.runSummaries(body)
+        : route === "agent-projection" ? await gateway.agentProjection(body) : route === "owner-commands" ? await gateway.ownerCommand(body)
+          : await gateway.listAvailableAgents(body);
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
+    // autobyteus-278: an observation socket bridged in process to the peer's gateway (the route's own logic).
+    openWebSocket: (url: string) => {
+      const target = input.peers.find((peer) => url.startsWith(peer.baseUrl.replace(/^http/, "ws")));
+      const gateway = target && input.network.get(target.nodeId);
+      if (!gateway) throw new TypeError("connect failed");
+      let observation: { close(): void } | null = null;
+      const deliver = (value: unknown) => socket.onmessage?.({ data: JSON.stringify(value) });
+      const socket: PeerWebSocket = {
+        onopen: null, onmessage: null, onclose: null, onerror: null,
+        send: (data) => {
+          void gateway.openRunObservation(JSON.parse(data), { send: deliver, close: () => { observation?.close(); socket.onclose?.(); } }).then((response) => {
+            const answer = response.answer;
+            if (!answer.accepted || !("observation" in answer)) { deliver(answer); socket.onclose?.(); return; }
+            observation = answer.observation;
+            deliver({ nodeId: answer.nodeId });
+          });
+        },
+        close: () => { observation?.close(); },
+      };
+      queueMicrotask(() => socket.onopen?.());
+      return socket;
+    },
   });
   let allocation = 0;
   const manager = new StandaloneAgentRunRootManager({
@@ -162,6 +203,14 @@ const buildNode = async (input: Readonly<{
       org: async () => null,
     }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
+    runViews: new RemoteRunViewProvider({
+      storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
+      pairedAgents: () => manager.pairedAgents,
+    } as never, {
+      runTitle: async (run) => titles.get(run.runId) ?? null,
+      agentProjection: async (_run, agentRunId) => ({ agentRunId, conversation: [], activities: [], summary: titles.get(agentRunId) ?? null,
+        lastActivityAt: null, hasEarlierActiveTraceEvents: false }),
+    }),
   });
   input.network.set(input.nodeId, gateway);
   return { nodeId: input.nodeId, memoryDir, metadata, runs, runOf, resources, manager, models, titles };
@@ -216,9 +265,13 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(tree.taskExecutions).toEqual([{ address: "/publisher", agentRunId: "publisher_r1", nodeId: B_ID, delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String) }]);
     expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started", open: true,
       hostRoot: { rootSubjectKind: "agent", rootRunId: DELEGATOR } });
-    // Kept out of A's run tree view (S3).
+    // autobyteus-278: A's run tree view lists it as a remote child of the delegator, never among the local copies.
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
-    expect(JSON.stringify(projectAgentCollaborationView(inspection))).not.toContain("publisher_r1");
+    const view = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) });
+    if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
+    expect(view.root_agent.execution_tree.taskExecutions).toEqual([]);
+    expect(view.root_agent.remote_task_executions).toEqual([{ kind: "agent", address: "/publisher", agent_run_id: "publisher_r1", node_id: B_ID,
+      node_name: B_ID, delegator_agent_run_id: DELEGATOR, started_at: expect.any(String) }]);
   });
 
   it("the two runs message each other both ways by run ID; each message is in both logs once, with one ID, and the headers name the node", async () => {
@@ -239,7 +292,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // The stored view of each root keeps them (the remote endpoint is a loaded endpoint), but the public view does not show them.
     const bInspection = (await b.manager.getInspection("publisher_r1"))!;
     expect(bInspection.snapshot.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
-    expect(JSON.stringify(projectAgentCollaborationView(bInspection))).not.toContain("Published to the channel.");
+    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, remoteTaskExecutions: [] }))).not.toContain("Published to the channel.");
   });
 
   it("keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108)", async () => {
@@ -327,5 +380,40 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(rootA.acceptRemoteMessage({ fromNodeId: B_ID, fromNodeName: "docker", message: replay }))
       .resolves.toMatchObject({ accepted: false, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT" });
     expect(a.runOf(DELEGATOR).received.filter((content) => content.includes("Reply."))).toHaveLength(1);
+  });
+  it("autobyteus-278: A's root follows its remote child: summary, live output, an owner message and Stop, through B's link check", async () => {
+    const { a, b } = await twoNodes();
+    await delegate(a);
+    const root = (await a.manager.resolveRoot(DELEGATOR))!;
+    const events: RemoteRunRootEvent[] = [];
+    root.subscribeToEvents(({ event }) => { if (event.kind.startsWith("remote_")) events.push(event as RemoteRunRootEvent); });
+    const settle = async () => { for (let index = 0; index < 20; index += 1) await new Promise((resolve) => setImmediate(resolve)); };
+
+    root.remoteChildren.viewerAttached();
+    await settle();
+    expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
+      title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }] } }]);
+
+    // B's host reports running: A's root presents it at the stored address, as its own event (DS-002).
+    b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
+    expect(events.at(-1)).toMatchObject({ kind: "remote_agent_presentation", nodeId: B_ID, agentRunId: "publisher_r1", memberAddress: "/publisher",
+      message: { type: "AGENT_STATUS", payload: { status: "running" } } });
+
+    // The owner's message reaches B's run as user input naming the owner's node (DS-004).
+    const sent = await root.executeAgentCommand("publisher_r1", { kind: "post_message", message: AgentInputUserMessage.fromDict({
+      content: "status?", context_files: null, metadata: { input_origin: "user_message", message_id: "m1", dedupe_key: "d1" } }) });
+    expect(sent).toEqual({ accepted: true });
+    expect(b.runOf("publisher_r1").posted.at(-1)).toBe("status?");
+    const posted = b.runOf("publisher_r1").postUserMessage.mock.calls.at(-1)![0] as { metadata: Record<string, unknown> };
+    expect(posted.metadata).toMatchObject({ remote_owner: { node_id: A_ID, node_name: "desktop" } });
+
+    // Stop: B stops the run and ends the observation; A reads its final state once (AR-403).
+    events.length = 0;
+    await expect(root.stopDelegatedExecution({ agentRunId: "publisher_r1" })).resolves.toMatchObject({ outcome: "STOPPED" });
+    await settle();
+    expect(b.runOf("publisher_r1").active).toBe(false);
+    expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
+      title: "Publish the video draft.", statuses: [] } }]);
+    root.remoteChildren.viewerDetached();
   });
 });

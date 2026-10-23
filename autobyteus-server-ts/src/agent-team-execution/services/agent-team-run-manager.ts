@@ -222,8 +222,9 @@ export class AgentTeamRunManager {
   /** N-303 / N-304: a peer's request checked against an unmanaged Team run's stored links; it loads nothing. */
   async storedRemoteLinkCheck(rootTeamRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
-    if (this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
-    const tree = await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
+    if (query.kind !== "owner" && this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
+    const tree = this.getManagedTeamRun(rootTeamRunId)?.getExecutionTreeSnapshot()
+      ?? await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
     return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree) : null, query);
   }
 
