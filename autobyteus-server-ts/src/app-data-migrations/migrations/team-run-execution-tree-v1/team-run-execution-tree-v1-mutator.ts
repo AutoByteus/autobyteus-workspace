@@ -10,10 +10,10 @@ import type {
   TaskTeamMemberExecution,
   TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
-} from "./team-run-execution-tree-v1-types.js";
-import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
-import type { TeamAgentPlatformBinding } from "../../../agent-team-execution/domain/team-agent-platform-binding.js";
-import { TeamAgentPlatformBindingError } from "../../../agent-team-execution/domain/team-agent-platform-binding.js";
+} from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
+import { validateTeamRunExecutionTreePayload } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
+import type { TeamAgentPlatformBinding } from "../../frozen/server/agent-team-execution/domain/team-agent-platform-binding.js";
+import { TeamAgentPlatformBindingError } from "../../frozen/server/agent-team-execution/domain/team-agent-platform-binding.js";
 
 type TeamWithTasks =
   | RootConfiguredTeamExecution

@@ -17,7 +17,7 @@ import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-
 import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
-import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
@@ -51,7 +51,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
 export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
   const teamMemoryDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: ROOT, ancestorTeamRunIds: [] });

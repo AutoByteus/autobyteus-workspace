@@ -1,24 +1,20 @@
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { AgentOrgExecutionIndex } from "../../frozen/server/agent-org-execution/services/agent-org-execution-index.js";
+import { validateAgentOrgStatePackage } from "../../frozen/server/agent-org-execution/services/agent-org-state-package-validator.js";
 // SR-006 adaptation: task records are released evidence only, read through the frozen records v1 module.
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
+import { AgentOrgTaskDelegationRecordsV1Store } from "../../frozen/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
-import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
-import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../raw-trace-active-file-name-migration.js";
-import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../raw-trace-rotation-layout-migration.js";
-import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
-import type { AgentOrgRunIndexRowRecord } from "../../../run-history/store/agent-org-run-history-index-record-types.js";
+import { AgentOrgRunHistoryIndexStore } from "../../frozen/server/run-history/store/agent-org-run-history-index-store.js";
+import type { AgentOrgRunIndexRowRecord } from "../../frozen/server/run-history/store/agent-org-run-history-index-record-types.js";
 // Task-agent-own-run (contract §5.4): released trees, messages and package admission are read through
 // frozen copies, because the current stores and validator compose task agents from their own files.
 import {
   ReleasedAgentOrgCommunicationMessagesReader,
   ReleasedAgentOrgRunExecutionTreeReader,
-  asSourceIndependentIndexInput,
-} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
-import { ReleasedAgentOrgRunPackageCatalog } from "../../legacy/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
-import { projectAgentOrgRunHistoryRow } from "../../../run-history/services/agent-org-run-history-row-projector.js";
-import { AgentOrgRunHistorySummaryWriter } from "../../../run-history/services/agent-org-run-history-summary-writer.js";
+} from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+import { ReleasedAgentOrgRunPackageCatalog } from "../../frozen/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
+import { projectAgentOrgRunHistoryRow } from "../../frozen/server/run-history/services/agent-org-run-history-row-projector.js";
+import { AgentOrgRunHistorySummaryWriter } from "../../frozen/server/run-history/services/agent-org-run-history-summary-writer.js";
 import {
   classifyAgentOrgFirstExternalMessage,
   type AgentOrgConfiguredTraceCorpus,
@@ -27,6 +23,9 @@ import {
   buildAgentOrgInternalDeliveryEvidence,
   readStrictCurrentRawTraceCorpus,
 } from "./agent-org-history-first-message-summary-evidence-reader.js";
+const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+const RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID = "20260707_raw_trace_active_file_name";
+const RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID = "20260617_raw_trace_rotation_layout";
 
 export const AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID =
   "20260905_agent_org_history_first_message_summary_v1";
@@ -98,7 +97,7 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       for (const orgRunId of [...this.dependencies.packages.listAdmitted()].sort()) {
         const current = await this.readPackage(orgRunId);
         packages.push(current);
-        projected.push(projectAgentOrgRunHistoryRow(asSourceIndependentIndexInput(current.tree), persisted.get(orgRunId)));
+        projected.push(projectAgentOrgRunHistoryRow(current.tree, persisted.get(orgRunId)));
       }
       rows = Object.freeze(projected);
     } catch (cause) {
@@ -161,7 +160,7 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       throw new Error(`AgentOrg '${orgRunId}' is missing a required current authority.`);
     }
     // The current package is tree V2 + messages; a records file exists only for pre-change runs.
-    const validated = validateAgentOrgStatePackage({ executionTree: asSourceIndependentIndexInput(tree), communicationMessages });
+    const validated = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages });
     const evidenceRecords = taskRecords ?? Object.freeze({ schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId, records: Object.freeze([]) });
     return Object.freeze({ orgRunId, tree, taskRecords: evidenceRecords, communicationMessages, index: validated.index });
   }

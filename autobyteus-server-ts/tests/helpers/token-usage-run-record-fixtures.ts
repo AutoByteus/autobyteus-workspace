@@ -5,7 +5,7 @@ import {
   type TokenUsageUpdatedPayload,
 } from "../../src/agent-execution/domain/agent-run-token-usage.js";
 import { emptyTrustedDimensions, type ResolvedTokenPricingPolicy } from "../../src/token-usage/pricing/token-pricing-policy.js";
-import { TokenUsageMigrationReadiness } from "../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../src/token-usage/providers/token-usage-capability.js";
 import { TokenUsageRunStore } from "../../src/token-usage/providers/token-usage-run-store.js";
 import { SqlTokenUsageRunRepository } from "../../src/token-usage/repositories/sql/token-usage-run-repository.js";
 import { TokenUsageRunAccumulator } from "../../src/token-usage/services/token-usage-run-accumulator.js";
@@ -52,7 +52,7 @@ export const createCurrentTokenUsageTestHarness = (
   const repository = new SqlTokenUsageRunRepository(prisma);
   const accumulator = new TokenUsageRunAccumulator(repository, passthroughTokenCostCalculator as never);
   const readiness = options.useProcessReadiness
-    ? new TokenUsageMigrationReadiness()
+    ? new TokenUsageCapability()
     : {
         assertCurrentSchemaReady: () => undefined,
         assertHistoricalReadReady: () => undefined,

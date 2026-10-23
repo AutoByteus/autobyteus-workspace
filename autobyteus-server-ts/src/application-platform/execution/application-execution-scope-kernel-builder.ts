@@ -33,7 +33,7 @@ import { PublishedArtifactPublicationService } from "../../services/published-ar
 import { PublishedArtifactSnapshotStore } from "../../services/published-artifacts/published-artifact-snapshot-store.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import { ApplicationExecutionShutdownCoordinator } from "./application-execution-shutdown-coordinator.js";
 import type { ApplicationExecutionScopeBuildInput } from "./application-execution-scope-contracts.js";
 import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
@@ -239,7 +239,7 @@ const buildRunServices = (
   },
 ) => {
   const { metadataService, historyCatalogService, agentRunIdentityAllocator } = kernel;
-  const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+  const tokenUsageReadiness = new TokenUsageCapability();
   const provisioningService = new AgentRunProvisioningService(
     input.memoryDir,
     {

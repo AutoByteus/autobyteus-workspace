@@ -13,7 +13,7 @@ import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageEventEnrichmentTransformer } from "../../../src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.js";
 import { TokenUsageRunPersistenceTransformer } from "../../../src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 // Fix-forward for AGY usage (gemini-native-cache-hit REQ-005/AC-007, adapted for token-meter-accuracy D-5/AF-16).
@@ -93,7 +93,7 @@ describe("AGY run record written before the semantic fix continues after it", ()
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));

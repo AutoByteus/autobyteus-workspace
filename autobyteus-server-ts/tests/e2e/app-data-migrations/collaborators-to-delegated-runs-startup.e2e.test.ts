@@ -16,7 +16,7 @@ import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../unit/app-data-migrations/collaborators-to-delegated-runs/released-collaborator-fixtures.js";
+import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data

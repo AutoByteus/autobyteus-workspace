@@ -1,8 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
 import path from "node:path";
-import { resetCollaborationRunHistoryCatalogState } from "../../../run-history/services/collaboration-run-history-catalog-core.js";
-import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
-import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
+import { TeamRunHistoryIndexStore } from "../../frozen/server/run-history/store/team-run-history-index-store.js";
+import { AgentOrgRunHistoryIndexStore } from "../../frozen/server/run-history/store/agent-org-run-history-index-store.js";
+import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
 import type { HistoryCandidatePlan, HistoryCandidateSelection } from "./agent-org-history-candidate-plan.js";
 
 const keyed = <T>(rows: readonly T[], key: (row: T) => string) => [...rows].sort((a, b) => key(a).localeCompare(key(b)));
@@ -12,6 +12,7 @@ export class AgentOrgHistoryIndexTransition {
     private readonly selection: HistoryCandidateSelection,
     private readonly teamStore: TeamRunHistoryIndexStore,
     private readonly orgStore: AgentOrgRunHistoryIndexStore,
+    private readonly catalogInvalidation: RunHistoryCatalogInvalidation,
   ) {}
   async commit(plans: readonly HistoryCandidatePlan[]): Promise<number> {
     if (!plans.length) return 0;
@@ -38,8 +39,8 @@ export class AgentOrgHistoryIndexTransition {
     if (!isDeepStrictEqual((await this.teamStore.readIndexStrict()).rows, nextTeams)) throw new Error("Team index strict reread differs from selected update.");
     // This one-time migration writes beneath the normal catalog boundary.
     const memoryDir = path.dirname(this.orgStore.filePath);
-    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
-    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_team");
+    this.catalogInvalidation.collaborationRunHistoryChanged(memoryDir, "agent_org");
+    this.catalogInvalidation.collaborationRunHistoryChanged(memoryDir, "agent_team");
     return teamSnapshot.rows.length - nextTeams.length;
   }
 }

@@ -4,17 +4,17 @@ import { rootPrismaClient } from "repository_prisma";
 import {
   TOKEN_USAGE_COST_FIELDS,
   TOKEN_USAGE_TOKEN_FIELDS,
-} from "../../../token-usage/domain/token-usage-accounting-summary.js";
-import type { TokenUsageRunRecord } from "../../../token-usage/domain/token-usage-run-record.js";
+} from "../../frozen/server/token-usage/domain/token-usage-accounting-summary.js";
+import type { TokenUsageRunRecord } from "../../frozen/server/token-usage/domain/token-usage-run-record.js";
 import {
   cumulativeSnapshotSourceTokensKey,
   cumulativeSnapshotTokenFields,
-} from "../../../token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
+} from "../../frozen/server/token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
 import {
   fromPrismaTokenUsageRunRecord,
   toPrismaTokenUsageRunRecordData,
-} from "../../../token-usage/repositories/sql/token-usage-run-record-codec.js";
-import { TOKEN_USAGE_SOURCE_SHAPING_BATCH_SIZE } from "../token-usage-source-shaping-constants.js";
+} from "../../frozen/server/token-usage/repositories/sql/token-usage-run-record-codec.js";
+import { TOKEN_USAGE_SOURCE_SHAPING_BATCH_SIZE } from "../../frozen/token-usage-source-shaping-constants.js";
 import type { LegacyTokenUsageLedgerRow } from "./legacy-token-usage-row.js";
 
 const asBigInt = (value: bigint | number | null | undefined): bigint =>

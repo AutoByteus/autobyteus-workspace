@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult } from "../../domain/app-data-migration-types.js";
-import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../team-run-execution-tree-v2-app-data-migration.js";
-import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
-import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../raw-trace-rotation-layout-migration.js";
-import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../raw-trace-active-file-name-migration.js";
+import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 import { TeamContextFileLocatorTransition } from "./team-context-file-locator-transition.js";
-import { packageKey } from "../../legacy/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
+import { packageKey } from "../../frozen/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
 import { isContextFileReferenceUnavailable } from "./context-file-current-locator-validator.js";
+const TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
+const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+const RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID = "20260617_raw_trace_rotation_layout";
+const RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID = "20260707_raw_trace_active_file_name";
 
 export const TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 export class TeamContextFileExecutionLocatorsV1AppDataMigration implements AppDataMigrationDefinition {

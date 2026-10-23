@@ -19,7 +19,7 @@ import {
   type TeamAgentLaunchInput,
   type TeamScopeLaunchInput,
 } from "./flat-team-topology-planner.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
@@ -82,7 +82,7 @@ export class TeamRunService {
   private readonly workspaces: WorkspaceManager;
   private readonly agentIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
   private readonly teamIdentityAllocator: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
-  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+  private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly admission: Pick<DefinitionAdmissionService, "requireAvailable">;
 
@@ -95,7 +95,7 @@ export class TeamRunService {
     memoryLocationService?: AgentMemoryLocationService;
     agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
-    tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+    tokenUsageReadiness?: Pick<TokenUsageCapability,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
     definitionAdmissionService?: Pick<DefinitionAdmissionService, "requireAvailable">;
   } = {}) {
@@ -105,7 +105,7 @@ export class TeamRunService {
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
     this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator();
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
-    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();
   }
 

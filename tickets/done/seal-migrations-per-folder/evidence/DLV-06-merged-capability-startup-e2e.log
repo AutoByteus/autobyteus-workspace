@@ -1,0 +1,15 @@
+# Check: DLV-06 capability-gate startup e2e on the merged build (env -i HOME=<temp>): vitest run tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts --no-watch
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests) 16632ms
+     ✓ takes V1 through secretless staging and exact selector transition to empty V3 across restart  3183ms
+     ✓ orders the real multiversion transition, preserves token identity, and restores selectors through same-name recreation  3994ms
+     ✓ keeps collision selectors unchanged while removing both trusted old secrets after empty V3  2928ms
+     ✓ serves while a fresh recent RUNNING record holds custom providers back, then converges through the ordinary stale retry  3922ms
+     ✓ serves while the custom-provider migrations cannot finish: custom providers refuse with the capability code while built-in runs start; Settings retries after the fix make them available without a restart (needs POSIX mode bits that bind: not root, not Windows)  2605ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 14748ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  4496ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  4050ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4188ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2013ms
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+# Exit code: 0

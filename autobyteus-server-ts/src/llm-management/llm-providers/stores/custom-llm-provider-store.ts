@@ -10,6 +10,7 @@ import {
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { appConfigProvider } from '../../../config/app-config-provider.js';
 import { readJsonFile, updateJsonFile } from '../../../persistence/file/store-utils.js';
+import { areCustomLlmProvidersAvailable } from './custom-llm-provider-availability.js';
 
 const sortProviders = (providers: CustomLlmProviderRecord[]): CustomLlmProviderRecord[] =>
   providers
@@ -26,7 +27,8 @@ export class CustomLlmProviderStoreError extends Error {
     | 'CUSTOM_PROVIDER_CONFIG_INVALID'
     | 'CUSTOM_PROVIDER_NAME_INVALID'
     | 'CUSTOM_PROVIDER_NAME_CONFLICT'
-    | 'CUSTOM_PROVIDER_ID_CONFLICT') {
+    | 'CUSTOM_PROVIDER_ID_CONFLICT'
+    | 'CUSTOM_PROVIDERS_MIGRATION_PENDING') {
     super(code);
     this.name = 'CustomLlmProviderStoreError';
   }
@@ -35,6 +37,11 @@ export class CustomLlmProviderStoreError extends Error {
     return { code: this.code };
   }
 }
+
+// While the custom-provider capability is pending, every read and write refuses.
+const assertCustomProvidersReady = (): void => {
+  if (!areCustomLlmProvidersAvailable()) throw new CustomLlmProviderStoreError('CUSTOM_PROVIDERS_MIGRATION_PENDING');
+};
 
 const parseCurrentConfig = (value: unknown): CustomLlmProviderConfigFile => {
   try {
@@ -58,6 +65,7 @@ export class CustomLlmProviderStore {
   }
 
   async listProviders(): Promise<CustomLlmProviderRecord[]> {
+    assertCustomProvidersReady();
     const rawFile = await readJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
@@ -75,6 +83,7 @@ export class CustomLlmProviderStore {
     providerType: LLMProvider.OPENAI_COMPATIBLE;
     baseUrl: string;
   }): Promise<CustomLlmProviderRecord> {
+    assertCustomProvidersReady();
     let committedRecord: CustomLlmProviderRecord | null = null;
 
     await updateJsonFile<unknown>(
@@ -119,6 +128,7 @@ export class CustomLlmProviderStore {
   }
 
   async deleteProvider(providerId: string): Promise<void> {
+    assertCustomProvidersReady();
     await updateJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,

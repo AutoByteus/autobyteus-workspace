@@ -16,7 +16,7 @@ import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageEventEnrichmentTransformer } from "../../../src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.js";
 import { TokenUsageRunPersistenceTransformer } from "../../../src/agent-execution/events/processors/token-usage/token-usage-run-persistence-transformer.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 // Native Gemini pricing through the server cost path (REQ-004, AC-005, AC-006). A Gemini `usageMetadata` object
@@ -73,7 +73,7 @@ describe("native Gemini catalog pricing through the server cost path", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     for (const modelId of ["gemini-3.1-pro-preview", "gemini-3.8-flash"]) {

@@ -35,6 +35,14 @@ export interface AppDataMigrationExecutionResult {
   errorMessage?: string | null;
 }
 
+/**
+ * A piece of production functionality that a pending migration holds back. Production code asks the runner
+ * whether a capability is ready (`AppDataMigrationRunner.capabilityReadiness()`), never about a migration id.
+ */
+export type AppDataCapability = "token_usage_history" | "custom_llm_providers";
+export const APP_DATA_CAPABILITIES: readonly AppDataCapability[] = ["token_usage_history", "custom_llm_providers"];
+export type AppDataCapabilityReadiness = Readonly<Record<AppDataCapability, boolean>>;
+
 export interface AppDataMigrationDefinition {
   id: string;
   displayName: string;
@@ -42,6 +50,8 @@ export interface AppDataMigrationDefinition {
   requiredOnStartup: boolean;
   executionPolicy?: "ANYTIME" | "STARTUP_ONLY";
   prerequisiteMigrationIds?: readonly string[];
+  /** Capabilities this migration holds back until it has succeeded (`SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS`). */
+  holdsBackCapabilities?: readonly AppDataCapability[];
   execute(): Promise<AppDataMigrationExecutionResult>;
 }
 

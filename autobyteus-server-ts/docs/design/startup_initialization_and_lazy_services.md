@@ -130,13 +130,14 @@ Use lazy service access patterns to avoid import-time construction:
 - `src/app-data-migrations/app-data-migration-runner.ts`
 - `src/app-data-migrations/app-data-migration-registry.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`
-- `src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts`
-- `src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts`
+- `src/startup/app-data-capability-readiness.ts`
+- `src/app-data-migrations/migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.ts`
+- `src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.ts`
 - `src/run-history/services/team-run-package-catalog.ts`
 - `src/run-history/services/team-run-history-index-row-projector.ts`
 - `src/run-history/store/team-run-history-index-store.ts`
-- `src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
-- `src/app-data-migrations/legacy/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts`
+- `src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts`
+- `src/app-data-migrations/frozen/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts`
 
 ## Observed Risk Areas
 

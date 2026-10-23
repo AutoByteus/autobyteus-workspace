@@ -11,14 +11,14 @@ import {
 import { SqlTokenUsageRunRepository } from "../repositories/sql/token-usage-run-repository.js";
 import { TokenUsageRunAccumulator } from "../services/token-usage-run-accumulator.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
-import { TokenUsageMigrationReadiness } from "./token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "./token-usage-capability.js";
 
 export class TokenUsageRunStore {
   constructor(
     private readonly repository = new SqlTokenUsageRunRepository(),
     private readonly accumulator = new TokenUsageRunAccumulator(repository),
     private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
-    private readonly readiness = new TokenUsageMigrationReadiness(),
+    private readonly readiness = new TokenUsageCapability(),
   ) {}
 
   async assertAgentOrgRecordsReady(input: { orgRunId: string; agentRunIds: readonly string[] }): Promise<void> {

@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { validateTeamCommunicationMessagesPayload } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
-import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../frozen/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
+import { validateTeamCommunicationMessagesPayload } from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import { validateTeamRunStatePackage } from "../../frozen/team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
+import { validateTeamRunExecutionTreePayload } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import type { PlannedTeamRunV1Package } from "./predecessor-team-run-planner.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 

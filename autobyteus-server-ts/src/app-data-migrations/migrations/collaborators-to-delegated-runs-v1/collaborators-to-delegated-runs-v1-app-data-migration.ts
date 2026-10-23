@@ -1,18 +1,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../standalone-agent-run-root/persistence/standalone-root-tree-path.js";
-import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../frozen/server/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
+import { getTeamRunExecutionTreePath } from "../../frozen/server/run-history/store/team-run-execution-tree-path.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
-} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
+} from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 import {
   validateAgentOrgRunExecutionTreePayload,
   validateStandaloneRootTreePayload,
   validateTeamRunExecutionTreePayload,
-} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+} from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,

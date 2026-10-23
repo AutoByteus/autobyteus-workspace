@@ -14,7 +14,7 @@ import { ContextFileLocalPathResolver } from "../../../src/context-files/service
 import { ContextFileDraftCleanupService } from "../../../src/context-files/services/context-file-draft-cleanup-service.js";
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
 import { buildFinalContextFileLocator, type ContextFileFinalOwnerDescriptor } from "../../../src/context-files/domain/context-file-owner-types.js";
-import * as records from "../../../src/context-files/services/context-file-record-locators.js";
+import * as records from "../../../src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.js";
 import { assertContainedContextFile, assertContainedContextFileSync } from "../../../src/context-files/services/context-file-path-validation.js";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 

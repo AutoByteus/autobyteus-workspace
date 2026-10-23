@@ -1,0 +1,79 @@
+# IMP-08 migration suites and the 205 startup e2e after CR-001/CR-002 (IR-002)
+# Command: env -i PATH="$PATH" HOME=/tmp/ab280/home TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations tests/unit/app-data-migrations tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts --no-watch
+# Commit: 9b013fcc09
+# Environment: macOS darwin arm64, Node 22.23.1, vitest 4.1.12, clean env, synthesized fixtures only
+# Date: 2026-10-23T19:14Z
+# Also: the new CR-002 test run against the pre-fix migration (HEAD~1 version swapped in, then restored) fails as expected:
+#   × keeps a run only an evolver session names, with its history row, and still deletes that session folder
+#   Tests  1 failed | 11 passed (12)
+
+stdout | tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > is registered last, required on startup and startup-only
+ ✓ tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts (12 tests) 296ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 9309ms
+ ✓ tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts (10 tests) 4582ms
+ ✓ tests/app-data-migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.test.ts (13 tests) 3636ms
+ ✓ tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts (11 tests) 1806ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts (11 tests) 1363ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.test.ts (11 tests) 936ms
+ ✓ tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1.test.ts (25 tests) 943ms
+ ✓ tests/app-data-migrations/custom-provider-readable-id/custom-provider-readable-id-app-data-migration.test.ts (9 tests) 956ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-batch-boundaries.integration.test.ts (2 tests) 777ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts (13 tests) 888ms
+ ✓ tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts (10 tests) 684ms
+ ✓ tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts (22 tests) 638ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.test.ts (16 tests) 559ms
+ ✓ tests/app-data-migrations/upgrade-paths/definition-nonmutation-startup.test.ts (4 tests) 351ms
+ ✓ tests/app-data-migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.test.ts (4 tests) 246ms
+ ✓ tests/app-data-migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.test.ts (7 tests) 441ms
+ ✓ tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts (14 tests) 315ms
+ ✓ tests/app-data-migrations/token-usage-run-records-v1/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests) 334ms
+ ✓ tests/app-data-migrations/upgrade-paths/released-run-tree-skip-version-upgrade.test.ts (1 test) 279ms
+ ✓ tests/app-data-migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.test.ts (9 tests) 215ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-exact-reference.integration.test.ts (1 test) 150ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.test.ts (3 tests) 122ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (24 tests) 32ms
+ ✓ tests/app-data-migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration.test.ts (6 tests) 84ms
+ ✓ tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts (3 tests) 84ms
+ ✓ tests/app-data-migrations/run-history-index-v2/run-history-index-v2-migration.test.ts (4 tests) 82ms
+ ✓ tests/app-data-migrations/custom-provider-v1/custom-provider-v1-app-data-migration.test.ts (6 tests) 71ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.test.ts (4 tests) 54ms
+ ✓ tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-golden-files.integration.test.ts (3 tests) 65ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.test.ts (2 tests) 38ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts (3 tests) 60ms
+ ✓ tests/app-data-migrations/frozen/team-run-migration-state-classifier.test.ts (8 tests) 48ms
+ ✓ tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests) 47ms
+ ✓ tests/app-data-migrations/remove-work-trace-exports/remove-work-trace-exports-migration.test.ts (6 tests) 34ms
+ ✓ tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts (3 tests) 57ms
+ ✓ tests/app-data-migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.test.ts (4 tests) 44ms
+ ✓ tests/app-data-migrations/remove-external-messaging-data/remove-external-messaging-data-migration.test.ts (8 tests) 33ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts (4 tests) 36ms
+ ✓ tests/app-data-migrations/team-run-metadata-member-tree/team-run-metadata-member-tree-migration.test.ts (4 tests) 35ms
+ ✓ tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts (3 tests) 30ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.test.ts (4 tests) 25ms
+ ✓ tests/app-data-migrations/team-communication-projection-address/team-communication-projection-address-migration.test.ts (6 tests) 23ms
+ ✓ tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-migration.test.ts (8 tests) 27ms
+ ✓ tests/app-data-migrations/frozen/released-message-log-repairs.test.ts (5 tests) 23ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts (1 test) 22ms
+ ✓ tests/app-data-migrations/frozen/released-own-file-ownership.test.ts (10 tests) 19ms
+ ✓ tests/app-data-migrations/token-usage-run-records-v1/legacy-token-usage-run-fold.test.ts (8 tests) 16ms
+ ✓ tests/app-data-migrations/remove-global-skill-discovery-mode/remove-global-skill-discovery-mode-migration.test.ts (1 test) 18ms
+ ✓ tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts (14 tests) 16ms
+ ✓ tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-conversion.test.ts (8 tests) 15ms
+ ✓ tests/app-data-migrations/frozen/native-working-context-snapshot-shapes.test.ts (85 tests) 13ms
+ ✓ tests/app-data-migrations/frozen/native-working-context-snapshot-v5-converter.test.ts (11 tests) 11ms
+ ✓ tests/app-data-migrations/frozen/custom-provider-migration-name-snapshot.test.ts (2 tests) 11ms
+ ✓ tests/app-data-migrations/remove-self-evolution-run-metadata/remove-self-evolution-run-metadata-migration.test.ts (1 test) 11ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts (2 tests) 7ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.test.ts (13 tests) 7ms
+ ✓ tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition-classification.test.ts (4 tests) 5ms
+ ✓ tests/app-data-migrations/frozen/team-execution-address-normalizer.test.ts (11 tests) 5ms
+ ✓ tests/app-data-migrations/token-usage-run-records-v1/legacy-token-usage-source-decoder.test.ts (24 tests) 5ms
+ ✓ tests/app-data-migrations/frozen/agent-org-run-history-summary-writer.test.ts (3 tests) 5ms
+ ✓ tests/app-data-migrations/token-usage-provider-name-snapshot-backfill/token-usage-provider-name-snapshot-backfill-migration.test.ts (4 tests) 4ms
+ ✓ tests/app-data-migrations/token-usage-custom-provider-model-value-backfill/token-usage-custom-provider-model-value-backfill-migration.test.ts (3 tests) 4ms
+ ✓ tests/app-data-migrations/frozen/predecessor-team-metadata-converter.test.ts (2 tests) 4ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.test.ts (2 tests) 4ms
+ ✓ tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-run-planner.test.ts (3 tests) 3ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-summary-formatter.test.ts (1 test) 3ms
+ Test Files  67 passed (67)
+      Tests  554 passed (554)

@@ -1,15 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../frozen/autobyteus-ts/memory/store/memory-file-names.js";
 import {
   buildRawTraceSegmentFileName,
   RAW_TRACE_ARCHIVE_MANIFEST_SCHEMA_VERSION,
   RAW_TRACES_MANIFEST_FILE_NAME,
-} from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
-import { getAgentTeamAddressBasename } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import type { AgentOrgCommunicationMessagesFile } from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
+} from "../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
+import { getAgentTeamAddressBasename } from "../../frozen/server/agent-collaboration/domain/agent-team-address.js";
+import type { AgentOrgExecutionIndex } from "../../frozen/server/agent-org-execution/services/agent-org-execution-index.js";
+import type { AgentOrgCommunicationMessagesFile } from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../frozen/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgInternalDeliveryEvidence } from "./agent-org-history-first-message-summary-classifier.js";
 
 /**

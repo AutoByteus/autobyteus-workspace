@@ -1,0 +1,18 @@
+# Case: API-07
+# Command: pnpm -C autobyteus-ts build && pnpm -C autobyteus-ts exec vitest run tests/unit && (ls autobyteus-ts/src/memory/migration 2>&1 || true)
+# Commit: 6170227e3b (code 9b013fcc09)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2; clean env (env -i PATH HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.zp51tmm98Q TMPDIR)
+# Date: 2026-10-23T20:02:55Z
+
+# Excerpt of API-07-library.log (summary lines). Full log (180497 bytes): /tmp/ab280e2e/API-07-library.log
+
+711:stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > prepares tool instances by name
+720:Agent 'test-runtime-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+730:Agent 'enabled-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+745:Agent 'explicit-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+1504:stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_prepare_execution_preserves_validation_errors_and_mode_errors
+1899: Test Files  305 passed (305)
+1900:      Tests  2041 passed (2041)
+1902:   Duration  12.01s (transform 8.44s, setup 4.99s, import 36.85s, tests 26.93s, environment 19ms)
+1904:ls: autobyteus-ts/src/memory/migration: No such file or directory
+1905:# Exit code: 0

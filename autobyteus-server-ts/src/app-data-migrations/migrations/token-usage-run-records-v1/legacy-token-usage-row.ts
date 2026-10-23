@@ -1,9 +1,9 @@
-import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import type { TokenUsageUpdatedPayload } from "../../frozen/server/agent-execution/domain/agent-run-token-usage.js";
 import {
   cumulativeSnapshotTokenFields,
   type CumulativeSnapshotTokenField,
-} from "../../../token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
-import type { CumulativeSnapshotBigIntRecord } from "../../../token-usage/domain/token-usage-snapshot-checkpoint.js";
+} from "../../frozen/server/token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
+import type { CumulativeSnapshotBigIntRecord } from "../../frozen/server/token-usage/domain/token-usage-snapshot-checkpoint.js";
 
 export type LegacyInteger = number | bigint;
 export type LegacyJsonScalarTransport = string;

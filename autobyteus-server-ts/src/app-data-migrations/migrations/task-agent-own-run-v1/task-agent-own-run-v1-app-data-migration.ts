@@ -1,28 +1,27 @@
-import { AgentOrgRunExecutionTreeStore } from "../../../run-history/store/agent-org-run-execution-tree-store.js";
+import { AgentOrgRunExecutionTreeStore } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-store.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
-} from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { TeamRunExecutionTreeStore } from "../../../run-history/store/team-run-execution-tree-store.js";
-import { StandaloneRootPackageStore } from "../../../standalone-agent-run-root/persistence/standalone-root-package-store.js";
+} from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { TeamRunExecutionTreeStore } from "../../frozen/server/run-history/store/team-run-execution-tree-store.js";
+import { StandaloneRootPackageStore } from "../../frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
   AppDataMigrationItemDetail,
   AppDataMigrationRecordRepositoryLike,
 } from "../../domain/app-data-migration-types.js";
-import { getAppDataMigrationRecordRepository } from "../../repositories/app-data-migration-record-repository.js";
-import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
-import { COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID } from "../collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
-import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../team-run-execution-tree-v2-app-data-migration.js";
 import { CoordinatingRunMigration, type TaskAgentDisposition } from "./coordinating-run-migration.js";
 import {
   listCoordinatingTreeFiles,
   readReleasedCoordinatingTree,
   type PredecessorRole,
   type ReleasedCoordinatingTree,
-} from "./released-coordinating-trees.js";
+} from "../../frozen/task-agent-own-run-v1/released-coordinating-trees.js";
+const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+const COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID = "20261015_collaborators_to_delegated_runs_v1";
+const TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+const TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 
 export const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
 
@@ -60,9 +59,10 @@ export class TaskAgentOwnRunV1AppDataMigration implements AppDataMigrationDefini
   constructor(
     private readonly memoryDir: string,
     private readonly dependencies: Readonly<{
-      ledger?: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+      /** The migration ledger, read for predecessor statuses. */
+      ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
       writer?: AtomicRunPackageFileCommitWriter;
-    }> = {},
+    }>,
   ) {}
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
@@ -107,7 +107,7 @@ export class TaskAgentOwnRunV1AppDataMigration implements AppDataMigrationDefini
 
   /** One ledger read per start, only when a tree is not in the input shape. */
   private async succeededPredecessors(): Promise<ReadonlySet<string>> {
-    const ledger = this.dependencies.ledger ?? getAppDataMigrationRecordRepository();
+    const ledger = this.dependencies.ledger;
     const done = new Set<string>();
     for (const id of Object.values(TREE_WRITING_PREDECESSOR_IDS)) {
       const status = (await ledger.getRecord(id))?.status;

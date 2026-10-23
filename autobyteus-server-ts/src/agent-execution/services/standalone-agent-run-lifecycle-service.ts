@@ -14,7 +14,7 @@ import {
   PreviousRuntimeReleasePendingError,
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -55,7 +55,7 @@ export class StandaloneAgentRunLifecycleService {
   private readonly metadataService: AgentRunMetadataService;
   private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
-  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+  private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly modelConfigUpdater: StandaloneStoppedRunModelConfigUpdater;
 
@@ -66,7 +66,7 @@ export class StandaloneAgentRunLifecycleService {
       metadataService?: AgentRunMetadataService;
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
-      tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+      tokenUsageReadiness?: Pick<TokenUsageCapability,
         "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
       modelSelectionValidator: RunModelSelectionValidator;
     },
@@ -76,7 +76,7 @@ export class StandaloneAgentRunLifecycleService {
     this.metadataService = deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService = deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.tokenUsageReadiness = deps.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.tokenUsageReadiness = deps.tokenUsageReadiness ?? new TokenUsageCapability();
     this.modelConfigUpdater = new StandaloneStoppedRunModelConfigUpdater({
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
