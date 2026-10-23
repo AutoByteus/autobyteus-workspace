@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-005, ARCH-REV-002 | Implemented; code review Fail (CRR-001, CR-001, CR-002) |
-| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 | CR-001, CR-002 | `Local Fix` | SR-005, ARCH-REV-002, CRR-001 | Fixed at `985246c53b`; with the code reviewer (Targeted Delta Review) |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 | CR-001, CR-002 | `Local Fix` | SR-005, ARCH-REV-002, CRR-001 | Fixed at `985246c53b`; Targeted Delta Review Pass (CRR-002); with API/E2E |
 
 ## Revision Entries
 
@@ -50,3 +50,4 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-13 — the two new tests fail without the fix and pass with it; affected web suites 1,373 tests pass; guards pass.
 - Next recipient or routing: code reviewer (Targeted Delta Review), from `get_handoff_rules`.
 - Remaining limitations or risks: unchanged from IR-001 (the handoff's Known Risks).
+- Review result: Pass, CRR-002 (Targeted Delta Review of `985246c53b`, CR-001 and CR-002 resolved, `code-review-report.md`); the code reviewer handed the package to API/E2E.

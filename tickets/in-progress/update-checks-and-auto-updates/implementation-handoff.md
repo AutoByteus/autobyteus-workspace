@@ -22,7 +22,7 @@ Code commits: `95a608c456` (server), `802ffd917a` (desktop shell), `25609abdf7` 
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-002` (AR-001..AR-007 and R-1..R-3 as resolved in SR-005; reviewer notes R-6, R-7 applied)
-- Related code-review revision IDs: `CRR-001` (Fail, CR-001, CR-002)
+- Related code-review revision IDs: `CRR-001` (Fail, CR-001, CR-002), `CRR-002` (Pass, Targeted Delta Review of `985246c53b`, 9.3/10)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001`, `CR-002`

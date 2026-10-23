@@ -12,17 +12,17 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (round 2, Pass; notes R-4..R-7)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer's handoff of IR-001, 2026-10-23. Review range `3a0ea2238e..9f4dea898e` (code `95a608c456`, `802ffd917a`, `25609abdf7`, `62082fc36e`; ticket `9f4dea898e`); base `origin/personal` `d2820672c3`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the delta `62082fc36e..985246c53b` touches only the two CR locations (`UpdateChecksCard.vue` mount read; `NotificationRow.vue` runtime waiting sentence), their tests and one clause of `autobyteus-web/docs/settings.md`. No server, shell, store, contract or spine change; round-1 evidence for every other check and score carries forward.
+- Trigger: round 2 — implementation engineer's handoff of IR-002 (fix `985246c53b`, ticket `53932f6a59`), 2026-10-23. Round 1 — handoff of IR-001. Review range `3a0ea2238e..9f4dea898e` (code `95a608c456`, `802ffd917a`, `25609abdf7`, `62082fc36e`; ticket `9f4dea898e`); base `origin/personal` `d2820672c3`
+- Prior Review Round Reviewed: round 1 (CRR-001, Fail, CR-001, CR-002)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E / Delivery records: N/A (implementation review)
 - Failing Scenario IDs / Commands / Evidence: N/A
 - Shared guidance applied: `design-principles.md` and `design-examples.md` as updated 2026-10-23 (Principle 1 kinds/entry forms and cited claims; Principle 2 call-order spines; Principle 11 derived consumers; Principle 13 one owner per sequence and no behavior by absence).
@@ -43,6 +43,7 @@
   - Shell: `electron/updater/{appUpdateCheckSchedule,appUpdateCheckSettingsStore,appUpdateIpc,appUpdateStateFormat,appUpdater,appUpdateController,disabledAppUpdater}.ts`, `electron/server/serverRuntimeEnv.ts`, `shared/appUpdateTypes.ts`, preload and type declarations.
   - Web: `stores/{updateNotificationsStore,updateAutomationStore,notificationCenterStore,appUpdateStore}.ts`; `services/updateNotifications/updateNotificationChangeFeed.ts`; `components/notifications/*`; `SidebarNotificationsEntry.vue`; `UpdateChecksCard.vue`, `UpdateIntervalField.vue`, `AboutSettingsManager.vue`; `ConfirmationModal.vue`; `useAgentRuntimes.ts`, `AgentRuntimesManager.vue`; `utils/{ownNodeWindow,updateInterval,appUpdateErrorDisplay}.ts`; en strings.
   - Tests: names and setup of the new server, Electron and web tests; the request-budget test.
+- Round 2: `git diff 62082fc36e 985246c53b` and IMP-13 (the two new tests fail without the fix; 156 web files / 1,373 tests and the guards pass with it); not rerun.
 - Explicit exclusions: visual fidelity beyond IMP-12; Electron-only and own-node surfaces in a real shell (API/E2E's isolated instances); recorded checks were not rerun (they ran on the reviewed commits).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
@@ -89,7 +90,7 @@
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved | Pass | Pass split from the scheduler; IPC and helpers out of `appUpdater.ts` (499 → 467); Codex through the transport; record rules in the pure `update-notification-records.ts` | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Strings match (IMP-11); panel, switch, confirmation, card, Settings → Updates follow the spec; CR-001 (banner per UI spec line 312, VIS-019) and CR-002 (runtime waiting text) | CR-001, CR-002 |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Strings match (IMP-11); panel, switch, confirmation, card, Settings → Updates follow the spec; round 2 resolves CR-001 (banner read on open) and CR-002 (runtime waiting text only while the switch is on) | — |
 | Data-flow spine inventory clarity and preservation | Pass | DS-001..DS-008 map to code in call order; one governing owner per spine | — |
 | Ownership boundary preservation and clarity | Pass | Owners alone write source state and run updates; the pass calls public methods only; the service alone writes records; the schedule alone writes `app-update-checks.json` (R-6) | — |
 | Off-spine concern clarity | Pass | Gate, jitter, store, hub, settings store, own-node helper each serve one owner | — |
@@ -108,7 +109,7 @@
 | No unjustified duplication of code / repeated structures | Pass | `CHECK_OPERATIONS` list repeated in `AboutSettingsManager.vue` and `appUpdater.ts` across the process boundary; small | — |
 | Patch-on-patch complexity control | Pass | Initial round | — |
 | Dead code removed in the touched files and modules | Pass | Removal plan items gone (`fetchRepositoryRevisionMetadata` only for import; old constants; Codex REST URL; anchor; startup-only quiet rule; updater's own timer and IPC body); searched | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Pass, outcomes, gate, request budget (100 sources), runtime automation, schedule, auto-check, card, switch tests; the card's banner test sets the store directly (CR-001 untested path) | Add a test with CR-001 |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Pass, outcomes, gate, request budget (100 sources), runtime automation, schedule, auto-check, card, switch tests; round 2 adds `UpdateChecksCard.githubWait.spec.ts` (real store, resolved first without a wait) and the switch-off runtime row case | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `agent-runtime-status-fixtures.ts` extracted; new tests in new files | — |
 | No stale, duplicated, or compatibility-only tests are retained | Pass (with residual) | Unit tests updated; the 209 E2E suite is left for API/E2E (C-07) | API/E2E revises it |
 | API/E2E readiness for the next workflow stage | Pass | Embedded-node env, test feed, scripted runtimes and coverage hints in place | — |
@@ -154,8 +155,8 @@ None changed. RSC-001 and RSC-002 are recorded in the scenario gate above.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
 - Score calculation note: simple average; the decision follows the findings.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -167,13 +168,19 @@ None changed. RSC-001 and RSC-002 are recorded in the scenario gate above.
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Facts-only projections; documented field reuse for runtime versions (R-1) | Two source-state types by dependency necessity (C-04) | — |
 | `6` | `Naming Quality and Local Readability` | 9.3 | Clear names and rule comments | — | — |
 | `7` | `API/E2E Readiness` | 9.0 | Isolated-instance hooks ready | The 209 E2E suite needs API/E2E's revision (C-07) | — |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.6 | Pass ordering, gates, outcome rules, runtime update path and the app schedule match the approved rules | CR-001: the card's GitHub wait banner is stale (REQ-004, AC-004); CR-002: a runtime row promises an automatic update after the switch is off (REQ-022, REQ-010) | Fix both (Findings) |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Pass ordering, gates, outcome rules, runtime update path and the app schedule match the approved rules; round 2: the card reads the node's current wait on open, and the runtime row promises an automatic update only while the switch is on | A wait that begins while the card stays open shows at the next open (not required by the spec) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Clean cut to the head read; no dual path | — | — |
 | `10` | `Cleanup Completeness` | 9.4 | Removal plan complete | — | — |
 
 ## Findings
 
-### CR-001 — The Update checks card shows a stale GitHub wait (Local Fix, implementation)
+No open findings. CR-001 and CR-002 are resolved in round 2 (CRR-002).
+
+### CR-001 — The Update checks card shows a stale GitHub wait (Local Fix, implementation) — Resolved (round 2)
+
+- Resolution verified (`985246c53b`): `UpdateChecksCard.vue` `onMounted` calls `automation.refresh()` when the store is resolved, else `ensureResolved()`; the 30 s expiry clock stays. `UpdateChecksCard.githubWait.spec.ts` uses the real store resolved first without a wait, then mounts the card while the node reports one, and asserts the second read and the banner; it fails without the fix (IMP-13). Docs clause added.
+
+Round-1 record:
 
 - Basis: RSC-001 / C-01. REQ-004 ("the Update checks card says until when"), AC-004 ("the Update checks card shows 'GitHub asked this node to wait until HH:MM'"), UI spec line 312 / VIS-019.
 - Evidence:
@@ -183,7 +190,11 @@ None changed. RSC-001 and RSC-002 are recorded in the scenario gate above.
 - Required outcome: opening the card shows the node's current wait (for example, the card re-reads the settings when it mounts instead of relying on a resolved cache). Keep the client clock that clears the banner when the wait ends. Add a test where the store was resolved without a wait and the node reports one when the card opens. A live banner while the card stays open is not required by the spec.
 - Classification: `Local Fix`, implementation (the design's DS-006 ends at "`updateAutomationSettings.waitUntil` → card banner"; how the card reads it is implementation).
 
-### CR-002 — A runtime row promises an automatic update after the switch is off (Local Fix, implementation)
+### CR-002 — A runtime row promises an automatic update after the switch is off (Local Fix, implementation) — Resolved (round 2)
+
+- Resolution verified (`985246c53b`): `NotificationRow.vue` shows `runtime.blockedAuto` only while `automation.resolved.automaticUpdates.agentRuntimes` is true; the new `NotificationCenter.automation.spec.ts` case (an `AUTO_WAITING` row with the switch off reads only the blocked line) fails without the fix (IMP-13).
+
+Round-1 record:
 
 - Basis: RSC-002 / C-02. REQ-022 / AC-020 (automatic runtime updates only with the switch on), REQ-010 (the switch says what it means); UI spec line 108 ("the row says it waits" under runtime automatic updates).
 - Evidence: `NotificationRow.vue` appends `runtime.blockedAuto` ("It will be updated automatically once no agent is running.") whenever `row.outcome === 'AUTO_WAITING'`. The record keeps `AUTO_WAITING` until it is replaced or handled (DS-008; `update-notification-records.ts`), while `UpdatePass.applyAutomaticUpdates` stops acting as soon as `isAutomatic(kind)` is false. After the user turns the runtime switch off (on the same panel card), the row still promises an automatic update that will not happen.
@@ -196,13 +207,11 @@ None changed. RSC-001 and RSC-002 are recorded in the scenario gate above.
 
 ## Classification
 
-- `Local Fix` (CR-001, CR-002), owned by implementation.
+- None (round 2 passes). Round 1 was `Local Fix` (CR-001, CR-002), owned by implementation, now resolved.
 
 ## Recommended Recipient
 
-- Implementation engineer, `/software_engineering_team/implementation_engineer` (rule: source review identifies an implementation-owned Local Fix that must be corrected before executable coverage).
-
-Routing note: after the fixes, a Targeted Delta Review of CR-001 and CR-002, then API/E2E.
+- API/E2E engineer, `/software_engineering_team/api_e2e_engineer` (implementation review passed); then the informational pass notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -212,11 +221,11 @@ Routing note: after the fixes, a Targeted Delta Review of CR-001 and CR-002, the
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass` (round 2, CRR-002)
+- Review Entry Point: `Implementation Review` (Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10 (92/100); Runtime Correctness 8.6 (CR-001, CR-002); all other categories ≥ 9.0
+- Score Summary: 9.3/10 (93/100); every category ≥ 9.0
 - Failure Origin (when applicable): N/A
-- Recommended Recipient (when applicable): `/software_engineering_team/implementation_engineer`
-- Notes: two bounded web Local Fixes. The server pass, gate families, head read, outcome rules, runtime update path and the shell schedule match the approved requirements and the SR-005 design.
+- Recommended Recipient (when applicable): `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001 and CR-002 resolved at `985246c53b`. The server pass, gate families, head read, outcome rules, runtime update path and the shell schedule match the approved requirements and the SR-005 design.
