@@ -236,16 +236,25 @@ run's host, or a Team run's members.
   - `POST /rest/remote/agent-projection` `{targetRoot, agentRunId}` → `{projection: {agentRunId, conversation,
     activities, summary, lastActivityAt, hasEarlierActiveTraceEvents}}`, read from B's stored projection services.
   - `POST /rest/remote/owner-commands` `{targetRoot, agentRunId, command}`. The command is one of:
-    - `post_message {content, messageId, dedupeKey}`, a user message to the paired agent. B records it with
-      metadata `remote_owner {node_id, node_name}`, and the message makes the agent ready, restoring it after
-      idle shutdown, as any input does;
+    - `post_message {content, messageId, dedupeKey}`, a user message to the paired agent. Its content is the
+      owner's text under the heading `From the owner of node "<B's name for A>":` and a blank line (DS-004a,
+      `remoteOwnerUserMessage`, the heading's one owner). The agent, B's stored conversation and both nodes'
+      windows read the mark there. `messageId` and `dedupeKey` pass through unchanged, so A's window replaces its
+      echo with the streamed message. The message makes the agent ready, restoring it after idle shutdown, as any
+      input does;
     - `interrupt`;
     - `terminate`, which stops the whole run (an Agent root's Stop, a Team's terminate) and keeps its history.
-      It also ends the run's open observations.
   - WebSocket `GET /rest/remote/run-observations`. A's first frame is the envelope with `targetRoot`. B's first
-    frame is `{nodeId}` (or a refusal, then close); after it come `{agentRunId, message}` frames, one presentation
-    message of one paired agent each. An Agent run is followed from host to host across idle shutdown
-    (`StandaloneAgentRunRoot.onHostReady`); a Team run through its root publisher, filtered to its members.
+    frame is `{nodeId}` (or a refusal, then close). After it come `{agentRunId, message}` frames, one presentation
+    message of one paired agent each. A frame the run produces while it is being subscribed (a live run's current
+    state) waits in the route and follows `{nodeId}`.
+    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onHostReady`).
+    - A Team run is followed through its root publisher, filtered to its members, and across a restore after idle
+      shutdown (the manager's lifecycle notifications).
+    - B ends the stream when the run is stopped, terminated or deleted by any path: B's own window, GraphQL,
+      history delete or archive, or `owner-commands`. The standalone manager reports the end after the host stopped
+      (`onRunEnded`); the Team lifecycle snapshot carries `ending: "stopped"`. Idle shutdown does not end it
+      (`ending: "idle_shutdown"`, or only the host is replaced). A then reads the final summary (AR-403).
 - **B's owner.** `RemoteRunViewProvider` (`inbound/remote-run-view-provider.ts`) first checks the run's stored
   back-link: `RemoteRootDirectory.storedLinkCheck` with the query kind `owner` (`{fromNodeId, targetAgentRunId}`),
   which admits the node in `delegatedFrom.nodeId` and, when an agent is named, only a paired agent. It then calls

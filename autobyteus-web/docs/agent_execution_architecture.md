@@ -792,7 +792,9 @@ with the local copies by start time. A remote Team is listed with its members.
     stop-failed line.
 
   The aria-label adds "on <node>". Stop terminates the run through its node.
-- **Run view** (`useRemoteRun(agentRunId)`):
+- **Run view.** One owner, `useRemoteRunView`, used by the agent and Team member
+  surfaces (`AgentWorkspaceSurface`, `TeamWorkspaceSurface`), so every family's view
+  of a remote run (standalone, Team, Org) is the same:
   - the header shows the node chip and no ⚙ or ＋;
   - `RemoteRunNotice` (red, Retry) shows while the node is unreachable;
   - the composer's placeholder is `Message <name> on <node>…`, with no context
