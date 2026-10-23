@@ -139,10 +139,10 @@ that ordinary evolution is absorbed by the reader.
   - dual readers or writers;
   - legacy SQL adapters or optional old columns;
   - runtime reconciliation against historical storage.
-- **Freeze source shapes inside the migration.** A migration may import current
-  code only to validate its output. Its source types and validators are frozen,
-  migration-owned copies. Before changing a current schema, repoint any released
-  migration that still imports it.
+- **Freeze source shapes inside the migration area.** A migration's source
+  types, validators and helpers are frozen, migration-owned copies (see
+  "Sealed migration area" below). A migration never imports current code, not
+  even to validate its output: validation uses frozen validators.
 - The boundary is:
 
   `current schema expansion → migration-owned conversion and validation → current runtime`
@@ -152,6 +152,67 @@ that ordinary evolution is absorbed by the reader.
   impossible, so verify the order before retiring source fields.
 - Availability comes from scoped admission, never from restoring an old-runtime
   compatibility path.
+
+### Sealed migration area
+
+Migration code and application code never share code. This is how mature
+frameworks keep old migrations safe: Django gives each migration frozen
+"historical models" rebuilt from the migration history, never the application's
+current models; Rails guides tell a migration not to use the application's
+current model classes and to define what it needs inside the migration. When a
+migration uses current code, every later change to that code can break it, and
+retiring it means untangling it first.
+
+- **Layout.** All migration code lives in `src/app-data-migrations/`:
+  - the **runner contract**: `app-data-migration-runner.ts`,
+    `app-data-migration-registry.ts`, `domain/` and `repositories/`;
+  - one folder per migration under `migrations/<name>/`, holding the code only
+    that migration uses;
+  - one shared **frozen layer**, `frozen/`, holding what several migrations use:
+    frozen copies of application or `autobyteus-ts` code, limited to the members
+    the migrations use (`frozen/server/<original path>`,
+    `frozen/autobyteus-ts/<original path>`), and the released data shapes
+    (`frozen/released-*`). Only migrations import it.
+
+  Each migration's tests live in one folder named after it.
+- **Imports, in both directions.**
+  - Migration folders and `frozen/` import only `domain/` (contract types and
+    ports), `config/prisma-client-factory.ts` (the database client: the Prisma
+    schema is deployed before app-data migrations, so the current schema is the
+    contract), node APIs and third-party libraries. Never application code,
+    never `autobyteus-ts`.
+  - Application code imports only the runner contract, never a migration
+    folder or `frozen/`.
+  - The registry is the one wiring point: it reads configuration and passes
+    paths, ports (for example the secret store's removal port) and live inputs
+    into each migration's constructor.
+  - `tests/architecture/app-data-migration-boundaries.test.ts` fails on any
+    import that breaks these rules.
+- **Copy what you use, not whole services.** Copying a current service drags
+  in most of the application. Freeze the members a migration uses. Where it used
+  a deep service, write a small frozen reader or writer for exactly the files or
+  rows it touches. The migration's tests, with unchanged assertions, prove the
+  result is the same.
+- **Application code never asks about a migration.** It never checks whether
+  migration X succeeded. A migration that must hold back a feature until it has
+  succeeded declares a **capability** (`holdsBackCapabilities`, for example
+  `token_usage_history`). The runner answers which capabilities are ready, and
+  one startup owner applies the answer. Application code names the capability.
+  It never names the migration, and it gates only that feature, never the
+  whole startup (section 1).
+- **Retiring a migration** (once a release declares the minimum upgrade-from
+  version, see "Supported upgrade range"):
+  1. Retire oldest first: each migration expects its predecessor's output.
+  2. Delete its folder, its test folder and its registry line.
+  3. Delete the `frozen/` files the boundary test reports as used by no
+     remaining migration.
+  4. Users whose data has not run it take the start-fresh-with-backup path of
+     the release that moves the minimum.
+
+  No application code changes.
+- **New migrations follow the same rules from the start.** A design or review
+  that adds an import across the boundary, or a check of a migration's status
+  in application code, fails.
 
 ### Rolling back after a migration
 
@@ -422,7 +483,7 @@ mistakes, not approved designs.
 | --- | --- |
 | `team-run-execution-tree-v2-app-data-migration.ts` | Known old/current/missing classification, atomic replacement and a current reread. `SKIPPED_MISSING` doesn't promise the next migration a tree. |
 | `agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts` and its migration entry | Explicit missing-tree warnings preserve sources. A prerequisite's warning success certifies its stated outcomes, not every directory. A frozen released schema lives in `released-team-run-v2-schema.ts`. |
-| `src/app-data-migrations/legacy/released-run-package-shapes/` | Shared frozen strict copies (Team tree v2, Org tree v1, task-records v1, Org state-package v1) that let released migrations keep their classifiers after the current execution-tree readers became tolerant and the records runtime was deleted. Current runtime code never imports it. |
+| `src/app-data-migrations/frozen/` (formerly `legacy/`) | The shared frozen layer: strict copies of released shapes (Team tree v2, Org tree v1, task-records v1, Org state-package v1) and frozen copies of the application code migrations use. It lets released migrations keep their classifiers after current readers changed. Application code never imports it (see "Sealed migration area"). |
 | `agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.ts` | Cross-root references need exact ownership proof and physical file proof. |
 | `token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.ts` | A bounded fold in one SQLite transaction, with coverage and totals validated before source deletion. An empty-source retry is a no-op. |
 | `token-usage-run-records-v1/legacy-token-usage-row.ts` | Real-driver value handling: SQLite values arrived as decimal strings after leading `NULL` rows. Validate exactly, test through the production adapter, and never use permissive coercion. |
