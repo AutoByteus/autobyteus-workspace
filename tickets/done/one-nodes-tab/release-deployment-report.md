@@ -14,9 +14,9 @@ Finalize `codex/one-nodes-tab` into `origin/personal` and publish a beta (the us
 
 - Handoff summary artifact: `tickets/done/one-nodes-tab/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: written when this delivery round completes (`DR-001`).
-- Current delivery revision ID: `DR-001` (in progress)
-- Notes: verification is waiting for the user's AC-711 check.
+- Delivery revision record: `tickets/done/one-nodes-tab/delivery-revision-record.md`
+- Current delivery revision ID: `DR-001`
+- Notes: AC-711 was accepted by the user on the beta.
 
 ## Initial Delivery Integration Refresh
 
@@ -73,11 +73,11 @@ Finalize `codex/one-nodes-tab` into `origin/personal` and publish a beta (the us
 | AC-713 | NP-11, NP-12, API-06 and DLV-04 | `offRequests: 0`, `quietRequests: 0`; offers only from this node's server; two-server E2E 30/30 on the integrated state | Proven |
 | REQ-706 / SCN-A02 | NP-07 | `rowLine.line: "⚠ Turned on here, but not finished on mu. mu already has a node named Embedded Node."`, Try again → `onMu.name: "Embedded Node 2"` | Proven |
 | AC-712 | docs review | see `docs-sync-report.md` | Proven (delivery review) |
-| AC-711 | — | requires the user's own desktop and Docker nodes (TESTING.md rule 2 forbids agents testing against them); everything else around it is proven with test-owned nodes, a container and an isolated desktop | **User Check — pending** |
+| AC-711 | — | requires the user's own desktop and Docker nodes (TESTING.md rule 2 forbids agents testing against them); everything else around it is proven with test-owned nodes, a container and an isolated desktop | **User Check — accepted by the user on `v1.5.9-beta.1`** |
 
 - More evidence requested: `None`.
 - User check needed: `Yes`. AC-711 is defined as a user check in the approved requirements. Every other part was proven on test-owned nodes; only the user's own desktop and Docker nodes remain.
-- User check reference: asked 2026-10-23. The user chose to check on a beta ("release a new beta please"). The check is pending on that beta; it is reported back before the terminal return.
+- User check reference: asked 2026-10-23. The user chose to check on a beta ("release a new beta please"). After `v1.5.9-beta.1` was published, the user reported on 2026-10-23: "i am runing the latest now. the task is done." Recorded as the user's acceptance of AC-711 on his own nodes running the beta.
 - Re-verification after later re-integration: `Not needed` yet.
 
 ## Release Decision
@@ -96,11 +96,52 @@ Finalize `codex/one-nodes-tab` into `origin/personal` and publish a beta (the us
 - Ticket moved to `tickets/done/one-nodes-tab`: `Yes`
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/done/one-nodes-tab` (on `personal` after the merge)
 
+## Version / Tag / Release Commit
+
+- Version: `1.5.9-beta.1` (`python3 scripts/release_versions.py next-beta`; the next patch after stable `v1.5.8`).
+- Release commit: `8c8c099a73` `chore(release): bump workspace release version to 1.5.9-beta.1` (`autobyteus-web/package.json`).
+- Tag: `v1.5.9-beta.1`, annotated, on `8c8c099a73`.
+
 ## Repository Finalization
 
-- Ticket branch: `codex/one-nodes-tab` (local, not pushed), at `e84a0d6253` plus the docs-sync commit.
-- Finalization target: `origin` `personal` (RELEASE.md), via `finalize/one-nodes-tab` in the ticket worktree.
-- Repository finalization status: not started (waiting for verification).
+- Bootstrap context source: the code reviewer's handoff (worktree, branch, base `origin/personal` `ca1f09e52a`); RELEASE.md § Finalization Target.
+- Ticket branch: `codex/one-nodes-tab`.
+- Ticket branch commit result: `Completed`. Commits: `8788ec0e0d` (checkpoint), `e84a0d6253` (base merge), `59abed0996` (docs sync), `124f62411e` (archive).
+- Ticket branch push result: `Completed` (`origin/codex/one-nodes-tab` at `124f62411e`).
+- Finalization target remote: `origin`.
+- Finalization target branch: `personal`.
+- Target advanced after verification / acceptance: `No` (`be315bcf1c` at the integration refresh, again before the merge, and again before the push).
+- Delivery-owned edits protected before re-integration: `Not needed`.
+- Re-integration before final merge result: `Not needed`.
+- Target branch update result: `finalize/one-nodes-tab` created from `origin/personal` `be315bcf1c` in the ticket worktree.
+- Merge into target result: `Completed`. `a4b50ee8fd` (`--no-ff`); its tree is identical to `codex/one-nodes-tab`.
+- Push target branch result: `Completed`. `git push origin HEAD:personal`: `be315bcf1c..8c8c099a73`.
+- Repository finalization status: `Completed`.
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes` (beta, the user's decision).
+- Method: `Project Release Guide`.
+- Method reference / command:
+  - Before tagging: `python3 scripts/check_licensing.py` ("Licensing is consistent.") and `python3 scripts/check_repository_artifact_hygiene.py` (passed, exit 0).
+  - Untracked `*/dist/` folders deleted.
+  - `bash scripts/desktop-release.sh beta --branch finalize/one-nodes-tab --no-push`.
+  - `git fetch origin personal` (unchanged), `git push origin HEAD:personal`, `git push origin v1.5.9-beta.1`.
+- Pipelines triggered and their results (all watched with `gh run watch --exit-status`, all `success`):
+  - Server Docker Release `39912739281`
+  - iOS App Store Connect Release `39912739288`
+  - Android APK Release `39912739353`
+  - Desktop Release `39912739294`
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.9-beta.1`: `isPrerelease: true`, **17 assets**, matching RELEASE.md: macOS arm64/x64 `.dmg`/`.zip` with blockmaps; Linux x64/arm64 AppImages; Windows `.exe`; the Android APK and its `.sha256`; `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.1` and `:beta`, the same digest `sha256:8f2206751bac…`, amd64 and arm64. `:latest` was not moved.
+  - TestFlight upload: the iOS workflow succeeded.
+- Release/publication/deployment result: `Completed`.
+- Release notes handoff result: `Not required` (pre-release tags use GitHub generated notes).
+
+## Deployment Steps
+
+None hosted. Users get the change from the desktop beta channel (Settings → Updates → Receive beta updates) and `autobyteus-docker upgrade --all --tag beta`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -112,12 +153,21 @@ Finalize `codex/one-nodes-tab` into `origin/personal` and publish a beta (the us
 
 Revert the merge on `personal` and cut a new release (RELEASE.md § Rollback). No app-data migration. An older build's `normalizeLoadedNode` (checked at `ca1f09e52a`) treats `capabilities`/`capabilityProbeState` as optional and ignores the extra `serverInstanceId`, so the older build reads the new registry. A rollback is possible.
 
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab`
+- Durable export: after the record push, `tickets/done/one-nodes-tab/` is exported from the pushed commit to `/Users/normy/autobyteus_org/autobyteus-delivery-records/one-nodes-tab-20261023/`.
+- Worktree cleanup result: `git worktree remove --force` after the export (only untracked or ignored build output remains), then `git worktree prune`, from the main repository's git dir.
+- Local ticket branch cleanup result: `codex/one-nodes-tab` and `finalize/one-nodes-tab` are deleted once `origin/personal` contains them.
+- Remote branch cleanup result: `Not required` (repository practice keeps `origin/codex/*`).
+- Test resources: API/E2E recorded its containers and isolated instances as removed. Delivery started no containers or instances.
+
 ## Final Status
 
-- Verification complete: `No` (AC-711 user check pending)
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: waiting for the user's AC-711 check and release decision
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to the Solution Designer: `No`
+- Verification complete: `Yes`. The evidence proves every critical acceptance criterion, and the user accepted AC-711 on `v1.5.9-beta.1`.
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.9-beta.1`, 4/4 workflows, 17 assets, Docker `:1.5.9-beta.1`/`:beta`)
+- Applicable safe cleanup complete or not required: `Yes` (export, worktree and local-branch removal after the record push; the outcome is confirmed in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record commit, the export and the cleanup
