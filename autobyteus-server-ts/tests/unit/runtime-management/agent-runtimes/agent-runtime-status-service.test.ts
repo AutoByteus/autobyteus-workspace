@@ -3,6 +3,8 @@ import {
   AgentRuntimeError, AgentRuntimeStatusService,
 } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-status-service.js";
 import { isSignInBrowserAvailable } from "../../../../src/runtime-management/agent-runtimes/sign-in-browser-availability.js";
+import type { SignInReading } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import type { AgentRuntimeKind } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-types.js";
 import { AGY, build, CLAUDE, CODEX, deferred, GROK, settle, strategy } from "./agent-runtime-status-fixtures.js";
 
 describe("AgentRuntimeStatusService checks", () => {

@@ -20,17 +20,17 @@ describe('appUpdateStore automatic checks', () => {
   });
 
   it('keeps a failed periodic check quiet as well (REQ-025)', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    const bridge: { listener: ((payload: any) => void) | null } = { listener: null };
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({ status: 'idle', currentVersion: '1.1.12', message: '', checkedAt: null }),
-      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => { listener = callback; return vi.fn(); }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => { bridge.listener = callback; return vi.fn(); }),
     });
     const store = useAppUpdateStore();
     await store.initialize();
     addToastMock.mockClear();
-    listener?.({ status: 'error', message: 'offline', errorKind: 'network', errorOperation: 'periodic-check' });
+    bridge.listener?.({ status: 'error', message: 'offline', errorKind: 'network', errorOperation: 'periodic-check' });
     expect(addToastMock).not.toHaveBeenCalled();
-    listener?.({ status: 'error', message: 'offline', errorKind: 'network', errorOperation: 'manual-check' });
+    bridge.listener?.({ status: 'error', message: 'offline', errorKind: 'network', errorOperation: 'manual-check' });
     expect(addToastMock).toHaveBeenCalledTimes(1);
   });
 
