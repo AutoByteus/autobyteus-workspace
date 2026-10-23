@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Rounds 1–2: `Implementation Review`.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/task-agent-several-tasks/requirements-doc.md` (Approved, SR-003)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (AF-001–AF-009), through the design spec and design review
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (to SR-005)
@@ -16,14 +16,21 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/task-agent-several-tasks/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Targeted Delta Review`
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3
+- Review Scope: `N/A` (failure-origin round). Round 2 was a `Targeted Delta Review`.
 - Review Scope Evidence (round >1): the delta `fe8e52b31d..cd8c289b67` touches 3 files, ±3 lines. It changes only the `update_task` text in `project-task-tool-contract.ts`, which is CR-001's file and behavior, plus its two unit pins. No other source, interface or data shape changed, so the round-1 evidence for every other check carries forward.
-- Trigger: CR-001 Local Fix done (IR-002), from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: 1 (CRR-001, Fail — CR-001)
-- Latest Authoritative Round: 2
-- Coverage / execution / API/E2E / delivery records: N/A (implementation review)
+- Trigger: API/E2E validation failed (API-REV-001, finding API-F-001), from `/software_engineering_team/api_e2e_engineer`. Round 2's trigger was the CR-001 fix (IR-002).
+- Prior Review Round Reviewed: 2 (CRR-002, Pass)
+- Latest Authoritative Round: 3
+- Coverage Investigation Reviewed (failure-origin entry point): `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed (failure-origin entry point): `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-001
+- Delivery Revision Record Reviewed: N/A
+- Failing Scenario IDs: API-07 (AC-010), finding API-F-001
+- Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web build:electron:mac`; `pnpm --silent isolated-app start --from-worktree --data-root <own>`; seed with `evidence/API-07-desktop/seed-desktop.mjs` (this worktree's `dist/app.js`, scripted AGY CLI); restart; `evidence/API-07-desktop/desktop-journey.mjs <controlPort> <graphqlUrl> <seed.json> <out>`
+- Failure Evidence Paths: `evidence/API-07-desktop/run1/result.json` (J2 and J3 `obs.text`), `evidence/API-07-desktop/run1/J2-task-A-assigned-1440.png`, `evidence/API-07-desktop/README.md`
 
 Reviewed code:
 - Round 1: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks`, branch `codex/task-agent-several-tasks`, range `3b09fbe308..a18fe714cd`.
@@ -183,7 +190,30 @@ New premises: None (C-07 is pre-existing delete behavior, recorded as FU-001).
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | — | — | — |
 | 10 | Cleanup Completeness | 9.5 | Dead helpers and inputs removed | — | — |
 
+## API/E2E Failure-Origin Review (Round 3)
+
+- Product code is unchanged since `cd8c289b67`: `git diff cd8c289b67..HEAD` shows no change in server `src` or web product files.
+- Failing scenario still represents approved behavior: Yes. SCN-001 / SCN-003: the user opens a Task page whose Task's team also holds another open Task. REQ-004 and BEH-002 say that copy is stopped only when no assignment of it is open. The requirements state that "Each Task's existing 'Assigned to' shows the team" (UI section, DEC-003), so the app is expected to show this card truthfully.
+- Supported product-scenario basis and production path: a supported normal user journey. The Manager gives Task B to the copy that holds open Task A (`delegate_task`, mode 3). The user opens Task A or B in the app. `TaskRootSection.vue:9` renders `projects.root.help` whenever the root is live (`root && !root.closed && root.start !== 'failed'`). That is the case for both Tasks, because the copy is open while any of its Tasks is (`isOpen`, from the current entry).
+- Observed: `run1/result.json` J2 and J3 read "Assigned to release team 278e Offline When the Task is Done, this agent or team stops." for both Tasks. The server keeps the team after the first close (API-02, API-05 SEV-E2E-001), so the sentence is false for whichever Task is closed first. The user is told that closing one Task stops a team that in fact keeps working on the other.
+- Source evidence: `autobyteus-web/localization/messages/en/projects.ts:212` `'projects.root.help': 'When the Task is Done, this agent or team stops.'`; `zh-CN/projects.ts:212` `'任务完成后，这个智能体或团队会停止。'`. A search of the web catalogs, components and docs for other one-Task statements finds none. The `treeRowLeave.css` comment describes a tree row, not this rule.
+- Origin: **design impact**, carried into an earlier review gap.
+  - The design's Change Scope left "the web app and the Workspaces tree" alone. REQ-008 lists only `update_task`, `delegate_task` and CM-6. The requirements' Architecture Phase Input nevertheless asked to "check every other place that assumes one open entry per copy, beyond the resource service". This user-visible string is one of those places and was not checked.
+  - The implementation followed the approved Change Scope, so it is not an implementation defect.
+- Review gap (stated plainly): CRR-001 checked the server's tool texts and docs for the old rule but did not search the web catalogs. A search of the user-visible strings for the stop rule would have found `projects.root.help`. The updated Principle 11 ("list the code that reads anything derived from a changed structure") and Principle 1 ("kinds and forms") point at exactly this consumer, so it was reasonably detectable in source review, as in architecture review.
+- Not detectable by the unit or E2E suites: no test pins the help text against the open-Task count.
+
 ## Findings
+
+### CR-002 — The Task page's "Assigned to" help says the team stops when this Task is Done (Design Impact, round 3)
+
+- Type: `Design Impact` (owner: Solution Designer)
+- Severity: Blocking (AC-010; a user-visible statement made false by this change)
+- Protected: REQ-004 / BEH-002 (stopped only when no open assignment is left); the requirements' UI section (the existing "Assigned to" shows the team); QR-001's intent that the user is not misled about whether the team runs
+- Evidence: as in the failure-origin section above (`TaskRootSection.vue:9`; `en` and `zh-CN` `projects.ts:212`; `API-07-desktop/run1/result.json` J2 / J3).
+- Required update (Solution Designer): widen the Change Scope to include `projects.root.help` in en and zh-CN, and decide the wording. One option is a sentence that is true in every case and needs no condition, for example "When its last open Task is Done, this agent or team stops." Another is a conditional text only when the copy holds other open Tasks, which would need the open-Task count on the client and is more machinery. Decide whether the user should approve the wording; REQ-008 lists only server texts and DEC-003 says no new UI. Then hand to implementation, followed by source review and API/E2E again.
+- Why proportionate: one string in two catalogs; without it the app's card states the old rule on every Task held by a busy team.
+
 
 ### CR-001 — The `update_task` text still says closing a parent's parts stops their task agents (Resolved, round 2)
 
@@ -208,11 +238,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`.
 
 ## Classification
 
-N/A (Pass, round 2). Round 1 was `Local Fix` (CR-001), now resolved.
+`Design Impact` (CR-002, round 3, failure-origin). Round 1 was `Local Fix` (CR-001), resolved in round 2.
 
 ## Recommended Recipient
 
-- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: `/software_engineering_team/api_e2e_engineer` (primary pass rule); informational notice to `/software_engineering_team/implementation_engineer`.
+- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: the Solution Designer (`/software_engineering_team/solution_designer`), under the rule "review identifies a Design Impact … that requires upstream requirements or design revision".
 
 ## Residual Risks
 
@@ -222,11 +252,11 @@ N/A (Pass, round 2). Round 1 was `Local Fix` (CR-001), now resolved.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 2)
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (AP-001 and AP-002 confirmed; no new premises)
-- Score Summary: 9.5 / 10; every category ≥ 9.0
-- Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: CR-001 is resolved. The core change was correct as built in round 1 (release rule, refusal removal, message, sub-work, cascade). FU-001 stays in `follow-ups.md`.
+- Review Decision: `Fail` (round 3, failure-origin): API-F-001 is a design gap (CR-002). Round 2's source-review `Pass` covered the server change and stays valid for it.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (SCN-001 / SCN-003, supported normal)
+- Material-Premise Gate: `Pass` (no new premise)
+- Score Summary: the scorecard is not repeated for a failure-origin round. The round-2 score stands for the server change; the web text is outside what it scored.
+- Failure Origin: Design Impact (Change Scope left the web app out); an earlier review gap in architecture and code review
+- Recommended Recipient: `/software_engineering_team/solution_designer`
+- Notes: every other API/E2E case passes (API-00 to API-06). FU-002 is outside this ticket. After the Solution Designer revises the scope, the change returns through implementation, a source review of the web delta, and API/E2E (AC-010 rerun).

@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 1 / implementation complete (IR-001) | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 2 / CR-001 fixed (IR-002) | Fail (Local Fix) | Pass | CR-001 |
+| CRR-003 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-F-001 (API-REV-001) | Pass (CRR-002) | Fail (Design Impact) | CR-002 |
 
 ## Revision Entries
 
@@ -60,3 +61,30 @@ None.
 - Material score or classification changes: API / Interface / Query / Command Clarity 8.5 → 9.4; overall 9.3 → 9.5
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: FU-001 (a deleted Task keeps its task agents' open entries). The E2E pins listed in the handoff need updating.
+
+### CRR-003 — Failure-origin review of API-F-001 (API-REV-001)
+
+- Canonical review report updated: `tickets/in-progress/task-agent-several-tasks/code-review-report.md` (failure-origin section, CR-002, classification, latest result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 3
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md`; API-07 (AC-010), API-F-001
+- Relevant solution revision IDs: SR-003, SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002, source review)
+- Current authoritative result: Fail, `Design Impact` (CR-002), routed to the Solution Designer
+- What changed in the review result and why: the isolated desktop instance shows `projects.root.help` ("When the Task is Done, this agent or team stops." in en and zh-CN, `projects.ts:212`) on both Tasks of a team that holds two open Tasks; under REQ-004 that is false. The design's Change Scope left the web app out, although the requirements asked to check every place that assumes one open entry per copy. The implementation followed the scope. This is an earlier review gap in architecture and code review: CRR-001 searched only server texts and docs.
+- Supported product scenario / material-premise basis changes: none (SCN-001 / SCN-003)
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-002) | Resolved | IR-002 | Unchanged |
+
+- New or remaining finding IDs: CR-002
+- Material score or classification changes: classification `Design Impact`; the scorecard is not repeated (failure-origin round)
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: FU-001, FU-002 (follow-ups.md). After the revision: implementation, then a source review of the web delta, then API/E2E with AC-010 rerun.
