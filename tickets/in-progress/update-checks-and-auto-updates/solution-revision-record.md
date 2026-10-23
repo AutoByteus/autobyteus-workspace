@@ -11,6 +11,7 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 | SR-002 | Requirements | The user's answers, 2026-10-23 | DEC-003; new category | Ready for Approval | Approved | BEH-008, UC-006, REQ-001/002/005/010/011, REQ-020..023, AC-018..022, SCN-010/011, DEC-003/004/017/018 | Product Design Requested |
 | SR-003 | Requirements | Product designer's Requirement Impact (the user's design-review direction), 2026-10-23 | Impact on REQ-007/008/010 | Approved (SR-002) | Approved (SR-003) | REQ-007, REQ-008, REQ-010, AC-008, SCN-006, BEH-004, DEC-002 → DEC-019, Data Continuity | Design continues |
 | SR-004 | Mixed (Requirements + Design) | The user-approved Product package (2026-10-23); architecture investigation and design | Designer findings (PQ-1, PQ-2, new behaviors, own-node rule) | Approved (SR-003); design not started | Requirements Approved (SR-004); design Ready | REQ-008, REQ-024, REQ-025, AC-022, DEC-020; design DS-001..DS-008 | Architecture Design Complete — Large / High |
+| SR-005 | Design (+ DEC-020/AC-022 restated) | Architecture review ARCH-REV-001 (Fail, Design Impact) | AR-001..AR-007, R-1..R-3 | Requirements Approved (SR-004); design Ready | Requirements Approved (SR-005); design Ready (revised) | REQ-020..022, REQ-005/017, REQ-008/009, REQ-012..014, DEC-020, AC-022 | Architecture Design Complete — Large / High; back to review |
 
 ## Revision Entries
 
@@ -83,3 +84,21 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 - Approval: requirements at SR-004; UI approved by the user.
 - Classification: `task_size=Large`, `architectural_risk=High`.
 - Next action: architecture review (handoff rules).
+
+### SR-005 — Architecture review ARCH-REV-001 resolved
+
+- Phase and classification: Design, `Design Impact`, plus a restatement of DEC-020 and AC-022 within REQ-020.
+- Trigger: ARCH-REV-001 against SR-004, Fail (`design-review-report.md`, `architecture-review-revision-record.md`), `/software_engineering_team/architecture_reviewer`, 2026-10-23.
+- Changes:
+  - AR-001: `runUpdate` owns the refusals and returns results; the pass maps them.
+  - AR-002: re-read before every automatic candidate.
+  - AR-003: DS-008 rows and a `not_applied` result.
+  - AR-004: DS-005 with three entry forms and the one owner `AppUpdateCheckSchedule`; `startAutoCheck` disposition; file split to ≤ 470 lines.
+  - AR-005 (a): the server-side desktop-embedded-node fact (env set by the shell); the runtime kind only there; DEC-020 and AC-022 restated, so REQ-020 and the Out of Scope line hold on every node kind.
+  - AR-006: composition order.
+  - AR-007: background runtime checks read versions only.
+  - R-1: reading recorded. R-2: runtime kind not gated. R-3: `followRedirects: false`.
+  - The supplement tables list the 210 UI spec.
+- Intended behavior changed: no approved requirement changed. DEC-020's browser-window case for non-embedded nodes is restated to match REQ-020; the user is informed. The UI spec left this rule to engineering (Open Decisions).
+- Approval: requirements at SR-005; DEC-020 by the Solution Designer within REQ-020, user informed.
+- Next action: architecture re-review.

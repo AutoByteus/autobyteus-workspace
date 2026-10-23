@@ -2,7 +2,7 @@
 
 - Package: `update-checks-and-auto-updates`, Project Task autobyteus-210 (requested by `/project_task_manager`, run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Classification: `Architecture Design Complete`; `task_size=Large`, `architectural_risk=High`
-- SR entry: SR-004; date 2026-10-23
+- SR entry: SR-005 (round 2: resolves ARCH-REV-001); date 2026-10-23
 
 ## Request And Goal
 
@@ -42,7 +42,7 @@ GitHub's 60-per-hour limit must hold for several nodes on one IP.
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/tickets/in-progress/update-checks-and-auto-updates/`
 - `requirements-doc.md`, `investigation-notes.md` (AF-01..AF-16, probes), `design-spec.md`, `solution-revision-record.md`, `handoff-product-design-request.md` (history).
 - Product (read-only): the UI spec and references above; `.../product-ticket.md`; `/Users/normy/autobyteus_org/autobyteus-web-design/ui-reference-runbook.md` (section update-checks-and-auto-updates).
-- Prior review artifacts: `N/A — not applicable` (first review).
+- Prior review artifacts: `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001, reviewed basis SR-004).
 
 ## Workspace
 
@@ -63,6 +63,21 @@ GitHub's 60-per-hour limit must hold for several nodes on one IP.
 
 An independent architecture review against SR-004 and the UI spec.
 
+## Round 2 (SR-005): What Changed For The Recheck
+
+See the design spec's "SR-005 Revision Notes" and these sections:
+- **AR-001:** `AgentRuntimeStatusService` row; DS-002; Gates table; Examples (`beginUpdate` / `runUpdate` results).
+- **AR-002:** DS-002; `UpdatePass` row.
+- **AR-003:** DS-008 table (new rows, `not_applied`).
+- **AR-004:** DS-005 (launch, timer, settings); `AppUpdateCheckSchedule` and `AppUpdater` rows; Removal Plan (`startAutoCheck`'s timer, helpers); File Mapping (≤ 470 lines).
+- **AR-005 (a):**
+  - the `DesktopEmbeddedNode` fact row; the Gates table; the Interface rows (`desktopEmbeddedNode`); the File Mapping (`serverRuntimeEnv.ts`, `config/desktop-embedded-node.ts`);
+  - the requirements' DEC-020 and AC-022, restated within REQ-020;
+  - the per-node-kind trace in the Revision Notes.
+- **AR-006:** File Mapping (`build-studio-server.ts`).
+- **AR-007:** `AgentRuntimeStatusService` row.
+- **R-1:** "Conflicts or discrepancies". **R-2:** `UpdatePass` row. **R-3:** Interface row (`followRedirects`).
+
 ## Route Record
 
-- `get_handoff_rules` (2026-10-23): Large or High → `/software_engineering_team/architecture_reviewer`.
+- `get_handoff_rules` (2026-10-23): Large or High → `/software_engineering_team/architecture_reviewer` (round 1, SR-004; round 2, SR-005).

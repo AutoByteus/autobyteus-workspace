@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-004` (the user-approved UI/UX package integrated)
-- Current solution revision ID: `SR-004`
+- Status: `Approved` at `SR-005`
+- Current solution revision ID: `SR-005`
 - Package identifier: `update-checks-and-auto-updates`
 - Request / ticket: Project Task autobyteus-210, "Update behaviour and settings"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-20, 2026-10-21 and 2026-10-23
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-10-23
 - Approved by and reference: `User` for DEC-003, the agent-runtime category and "no automatic update of the app" (the user's answers in the Solution Designer conversation, 2026-10-23). The rest by the Solution Designer within the direction, user informed (same conversation).
-- Exact approved requirements baseline / solution revision: this document at `SR-004`
+- Exact approved requirements baseline / solution revision: this document at `SR-005`
 - Behavior-defining supplements and their approved versions: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` with final references `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/visual-references/` VIS-001..037, design repository `personal` at `5f5fb4c`; the user's approval 2026-10-23 after round 7 ("Okay, now I think I like [it]. It's satisfying. I like it now. Works nice. Looks nice as well. Approved.")
 
 ## Problem And Desired Outcome
@@ -157,7 +157,7 @@ None.
 | AC-019 | REQ-021 | SCN-010 | Runtime notification, no running agents / agents running | Update runs the vendor update; "Updated to Y"; with agents running Update is unavailable with the reason | Failure: vendor message, Try again, runtime unchanged | Server + web tests |
 | AC-020 | REQ-022 | SCN-011 | Runtime automatic updates on | Applied by itself when no agent of that runtime runs, and announced; postponed while agents run, then applied at a later pass | Off (default): only notified | Server E2E with scripted CLIs |
 | AC-021 | REQ-023 | — | App update available, any settings | Never downloaded or installed without the user's press | — | Electron tests |
-| AC-022 | REQ-020 | — | A desktop window bound to a remote/Docker node | No runtime category, runtime switch, runtime interval or runtime contact line for that node (VIS-036, VIS-037); a browser window served by a node counts as that node's own window, as on Settings → Agent Runtimes (DEC-020) | — | Web tests |
+| AC-022 | REQ-020 | — | A desktop window bound to a remote/Docker node; a browser window of a Docker node | No runtime category, runtime switch, runtime interval or runtime contact line (VIS-036, VIS-037), and that node makes no background runtime checks (DEC-020) | — | Web and server tests |
 
 ## Relevant Scenarios And Journeys
 
@@ -225,7 +225,8 @@ None.
 
 | Artifact | Purpose | Status |
 | --- | --- | --- |
-| `handoff-product-design-request.md` | Product Design request | To be written after approval |
+| `handoff-product-design-request.md` | Product Design request (history) | UI-facing REQ/AC | Sent | Context only |
+| `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` + `visual-references/VIS-001..037` (external, Product-owned, design repository `5f5fb4c`) | Normative UI | UI-facing REQ/AC | Approved | Behavior-defining; user-approved 2026-10-23 |
 
 ## Assumptions
 
@@ -240,7 +241,7 @@ None.
 | DEC-001 | Scope of automatic updates | Safety vs simplicity | Global; per kind; per source | The user's 2026-10-23 direction names "an automatic updates switch for agent packages and one for skill sources". Per node, like the Update checks switch, because packages live on nodes. Per-source exceptions add UI and state without a stated need; a follow-up if wanted. | Solution Designer (from the user's direction) | Decided |
 | DEC-002 | Automatic update when local files changed | Silent loss of edits | Replace; skip + notify | Today a manual skill update warns that local edits are lost. Automatically losing them breaks trust. Skip and notify, with the manual Update still offered. If unknown, treat as changed. | Solution Designer | Superseded by DEC-019 (SR-003) |
 | DEC-019 | Local changes under automatic updates | The user rejected skip-and-notify | Skip + notify (DEC-002); replace after a one-time confirmation | The user, 2026-10-23: with automatic updates enabled "we should directly overwrite those"; staying on stale packages costs more than losing local edits; instead "give them a confirmation overlay" when they enable the switch. It applies to skill sources as well (the same reasoning; Solution Designer). No record of installed content, no list of what was replaced, no backup (not asked for; consistent with DEC-003). The confirmation is started by the user, so it is not one of the excluded pop-ups. | User (skill sources: Solution Designer for consistency) | Decided |
-| DEC-020 | Which windows count as "the desktop's own node" for the runtime category (UI spec, Open Decisions) | REQ-020, AC-022 | The Agent Runtimes page's rule (`nodeAccess === 'own'`, from `windowNodeContextStore.isEmbeddedWindow`): an Electron window bound to its embedded node, or a browser window served by that node, is "own"; an Electron window bound to another node is not | Use the page's rule exactly, so the category, its switch and its Update appear exactly where the page already offers Update. A browser window served directly by a server node is that node's own window, as on the page today. An Electron window bound to a remote or Docker node shows no runtime category (VIS-036/037). | Solution Designer (consistency with the shipped page) | Decided |
+| DEC-020 | Which windows show the runtime category (UI spec, Open Decisions; restated at SR-005 after architecture review AR-005) | REQ-020 says "the desktop's own node"; the server had no such fact | Web-only window rule vs a node fact | The node knows whether it is the desktop's embedded node (set by the desktop shell when it starts its server). The runtime category, its switch, interval and contact line show only when the bound node is the desktop's embedded node and the window is its own window (the Agent Runtimes page's `nodeAccess === 'own'`). Docker and remote nodes never check runtimes in the background, whether seen from a desktop window or from their own browser window. This makes REQ-020 and the Out of Scope line hold on every node kind; the earlier wording (a browser window of any node counts) is replaced. | Solution Designer (within REQ-020; user informed) | Decided |
 | DEC-003 | Undo, pin to a revision, or skip a version for automatic package/skill updates | Recovery from a bad upstream revision vs complexity | (a) none: the notification links to what changed; a user who does not want automatic updates turns the switch off and keeps using manual Update; (b) "Undo" (reinstall the previous revision, which then needs pinning or the next pass re-updates it); (c) pin per source / skip version | In 209 you said "I personally have never clicked a skip … I update to the latest". Undo only works with pinning (otherwise the next pass re-applies the update), which needs per-source state and UI. **Recommendation: (a)** in this ticket. **The user, 2026-10-23: none** ("nobody is going to just the updates … the user, mostly, user will update by themselves"). | User | Decided: (a) |
 | DEC-004 | Interval defaults and limits | Timeliness vs limits | — | One interval per category (the user). Agent packages and skill sources: each default 30 min (the user), minimum 15 min, maximum 24 h. Agent runtimes: default 60 min (vendor releases are less frequent than package commits; each check runs four short version reads), minimum 15 min, maximum 24 h. App: default 60 min (the user mentioned one hour), minimum 15 min, maximum 24 h; its feed is not on the API quota (Read) but each check fetches the releases feed. 15 min keeps any single source at ≤ 4 requests per hour. | Solution Designer | Decided |
 | DEC-005 | How 30 minutes stays safe | The Task's assumed fix fails | Conditional requests (Measured: still counted); authentication (out of scope); git ref advertisement (Measured: quota-free) | Checks must not consume the REST quota (REQ-002); random delay per pass; one source at a time. The mechanism is the architecture's choice; the git ref advertisement is the measured candidate. | Solution Designer | Decided |

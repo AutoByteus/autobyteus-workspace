@@ -152,6 +152,7 @@
 | --- | --- | --- | --- |
 | 209 archive `tickets/done/settings-update-notifications/` (origin/personal) | — | Baseline design and evidence | Reference |
 | 209 UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/settings-update-notifications/ui-ux-spec.md` | Product Team | The current Notification Center design | Approved (209) |
+| 210 UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` + VIS-001..037 | Product Team | The approved design of this ticket | Approved (SR-004), design repository `5f5fb4c` |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -184,6 +185,7 @@ Recorded 2026-10-23 (SR-004). Paths are relative to the worktree. How establishe
 | AF-14 | `autobyteus-web/composables/settings/useAgentRuntimes.ts:58-160`; `components/settings/agent-runtimes/AgentRuntimesManager.vue:99-100` | The page polls `agentRuntimes` (2 s busy / 10 s idle); rebinding starts a user check (line 140). Own-node access = `isEmbeddedWindow` | Read | The panel's runtime rows read the same query without starting checks; one shared own-node rule (DEC-020) |
 | AF-15 | `autobyteus-web/stores/notificationCenterStore.ts:6-32`; `stores/updateNotificationsStore.ts:72-210` | The panel store keeps a left anchor; the notifications store combines node rows and the app row; counts are waiting-only | Read | Right-side panel (no anchor); counts include unread automatic outcomes |
 | AF-16 | `node_modules/.pnpm/electron@42.4.1/node_modules/electron/electron.d.ts:10197`; `server-settings-service.ts:301, 391-401` | `net.isOnline(): boolean` exists in the shipped Electron; settings support string values (`getSettingValue`, `config.set`) for the interval keys | Read (type definitions) | Premises of DS-004 and DS-005 hold |
+| AF-17 | `autobyteus-web/electron/server/serverRuntimeEnv.ts:117-133`; grep of `autobyteus-server-ts/src` | The shell builds the embedded server's environment; no variable tells the server it is the desktop's embedded server. The server has no such fact; only the web's `isEmbeddedWindow` | Read | AR-005 (a): the shell sets `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1`; the server reads it once |
 
 ## SR-003 Evidence (2026-10-23)
 

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005` (resolves architecture review ARCH-REV-001: AR-001..AR-007, R-1..R-3)
 - Approved requirements baseline: `requirements-doc.md` at SR-004.
   - The user approved DEC-003 (no undo), the agent-runtime category, "no automatic app update" (SR-002), the replacement of local changes after a one-time confirmation (SR-003), and the UI (SR-004).
   - The rest was decided by the Solution Designer within the direction, user informed.
@@ -12,7 +12,7 @@
 - Authorities read (2026-10-23):
   - `references/architecture-design.md`, `references/design-principles.md` (including Principle 1 kinds/forms and citations, Principle 11 derived consumers, Principle 13 one owner per sequence), `references/design-examples.md` (Cases From Our Own Reviews), `references/finding-the-cause.md`, `references/ticket-scope.md`;
   - project `DESIGN.md` (repository root); `autobyteus-server-ts/docs/design/data_migration_guideline.md` §1–3.
-- Conflicts or discrepancies: none.
+- Conflicts or discrepancies, one reading (R-1): runtime versions are stored in `latestRevision` / `fromRevision` / `handledRevision`. The Data Migration Guideline says "never reuse a field name with a different meaning" (`data_migration_guideline.md:105`). Reading: no stored row changes meaning, because runtime rows are a new kind and the fields hold "the source's version identifier" for every kind (a commit SHA for GitHub kinds, a version for runtimes). The domain type documents this. Renaming stored fields would drop 209 rows; that loss is avoided.
 
 ## Current-State Read
 
@@ -197,10 +197,14 @@ The current state is what autobyteus-209 delivered, plus Settings → Agent Runt
 Each chain is in the actual call order; one governing owner calls each mechanism itself.
 
 - **DS-001:** `UpdateCheckScheduler tick -> UpdatePass.run() -> [per kind in order: packages, skill sources, runtimes] -> settings.isChecksEnabled() & gate.isBlocked(web) -> owner.listUpdateStates() -> due(lastCheckedAt + interval(kind) + jitter) -> owner.check(id) (GitHub: GitHubRepositoryClient.fetchDefaultBranchHead -> publicGitHubRequest(POST github.com …/git-upload-pack) + gate(web); runtime: strategy.readLatestVersion) -> owner writes its state -> owner announces (listener) -> UpdateNotificationService.reconcile() -> store -> ChangeFeedHub.broadcast(update_notifications_changed) -> web feed -> updateNotificationsStore.reload() -> entry / panel`
-- **DS-002 (after the checks, same pass):** `UpdatePass -> settings.isAutomatic(kind) & gate.isBlocked(web) -> notifications.listAutomationCandidates(kind) (waiting records not already AUTO_FAILED within the interval) -> [runtime: owner.runningAgents(kind) > 0 -> notifications.recordOutcome(AUTO_WAITING) and next] -> owner.update(id) (packages: AgentPackageService.updateAgentPackage; skills: SkillSourceService.updateGitHubSkillSource; runtimes: AgentRuntimeStatusService.runUpdate) -> owner announces -> reconcile (record handled) -> UpdatePass: notifications.recordOutcome(kind, id, AUTO_UPDATED | AUTO_FAILED{reason})`
+- **DS-002 (after the checks, same pass):** `UpdatePass -> notifications.listAutomationCandidates(kind) -> for each candidate: [closed? / settings.isChecksEnabled() / settings.isAutomatic(kind) / (GitHub kinds) gate.isBlocked(web)] re-read before every candidate (AR-002) -> owner update method (packages: AgentPackageService.updateAgentPackage; skills: SkillSourceService.updateGitHubSkillSource; runtimes: AgentRuntimeStatusService.runUpdate, which applies its own refusals and returns a result, AR-001) -> owner announces -> reconcile (record handled) -> UpdatePass maps the result: updated → recordOutcome(AUTO_UPDATED); refused AGENTS_RUNNING → recordOutcome(AUTO_WAITING, reason); refused BUSY / NOT_INSTALLED → no outcome this tick; failed or thrown → recordOutcome(AUTO_FAILED, reason)`
 - **DS-003:** `Panel row Update -> useAgentRuntimes.update (mutation updateAgentRuntime) -> AgentRuntimeStatusService.startUpdate -> runUpdate -> vendor process -> re-check -> announce -> reconcile (handled) -> feed; the row reads progress and failure from the agentRuntimes query`
 - **DS-004:** `AutoUpdateSwitch (panel or card) -> [packages/skills: ConfirmationModal] -> updateAutomationStore.setAutomaticUpdates(kind, on) -> GraphQL setAutomaticUpdates -> UpdateAutomationSettingsService -> app config -> hub.broadcast(update_settings_changed) -> every window's updateAutomationStore.reload(); UpdateCheckScheduler's next tick (≤ 60 s) runs DS-002`
-- **DS-005:** `AppUpdateCheckSchedule timer -> settings.enabled & !busy & net.isOnline() -> AppUpdater.checkForUpdates('periodic') -> electron-updater (github.com feed) -> AppUpdateNotificationRecord -> AppUpdateState broadcast -> appUpdateStore -> panel / Settings → Updates`
+- **DS-005** (AR-004, three entry forms, one owner `AppUpdateCheckSchedule`):
+  - Launch: `electronApplication → appUpdateController.startAutoCheck() → AppUpdateCheckSchedule.start()` (DisabledAppUpdater: starts nothing). The schedule reads its settings file. If enabled, it arms 8 s.
+  - Timer: `AppUpdateCheckSchedule timer → enabled & !AppUpdater busy (checking/downloading/downloaded/installing) & net.isOnline() → AppUpdater.checkForUpdates('startup' first, then 'periodic') → electron-updater → AppUpdateNotificationRecord → AppUpdateState broadcast → re-arm(interval)`.
+  - Settings: `renderer → IPC app-update:set-auto-check → AppUpdateCheckSchedule.setSettings({ enabled, intervalMinutes }) (validate 15..1440, write app-update-checks.json, re-arm) → schedule notifies its one listener → AppUpdater.applyState({ autoCheck: schedule.settings() }) → broadcast`.
+  - The schedule is the only writer of `app-update-checks.json`. `AppUpdater` never calls the schedule; it only receives its change notification. The schedule calls `AppUpdater.checkForUpdates` and reads `AppUpdater.isBusy()`.
 
 ## Spine Narratives (Mandatory)
 
@@ -221,19 +225,20 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
 | Node | Owns |
 | --- | --- |
 | `UpdateCheckScheduler` (changed, `update-check-scheduler.ts`) | Timer only:<br>- first tick after 60 s plus a random 0–60 s;<br>- then every 60 s;<br>- never overlapping;<br>- `start` / `close`, unref'd. |
-| `UpdatePass` (new, `update-pass.ts`) | The pass sequence:<br>- kind order;<br>- due rule (`lastCheckedAt` null, unparsable, or `now ≥ lastCheckedAt + interval(kind) + jitter(kind)`; `jitter(kind)` = a per-process random value in `[0, min(interval/5, 5 min))`, chosen once);<br>- one source at a time;<br>- stopping on setting off, gate closed or close;<br>- the automation step;<br>- runtime waiting;<br>- recording outcomes;<br>- a reconcile after the pass. |
+| `UpdatePass` (new, `update-pass.ts`) | The pass sequence:<br>- kind order;<br>- due rule (`lastCheckedAt` null, unparsable, or `now ≥ lastCheckedAt + interval(kind) + jitter(kind)`; `jitter(kind)` = a per-process random value in `[0, min(interval/5, 5 min))`, chosen once);<br>- one source at a time;<br>- before every source and every automatic candidate, re-reads `closed`, checks-enabled, `isAutomatic(kind)` (automation) and, for GitHub kinds only, `gate.isBlocked(web)` (AR-002; R-2: runtime checks of Claude, Antigravity and Grok are not GitHub requests and are not gated; the Codex read fails fast through the transport while `web` is blocked);<br>- the automation step and the result-to-outcome mapping;<br>- a reconcile after the pass.<br>The runtime kind is included only when the node is the desktop's embedded node (AR-005). |
 | `UpdateAutomationSettingsService` (new) | The three intervals and three automatic switches: read with defaults, validate, store, broadcast `update_settings_changed`. Its read also exposes the gate's `web` and `api` wait times. |
 | `UpdateChecksCapabilityService` (unchanged) | `ENABLE_UPDATE_CHECKS`. |
+| `DesktopEmbeddedNode` fact (new, server `config/desktop-embedded-node.ts`) | `isDesktopEmbeddedNode()`: true only when the process was started by the desktop shell as its embedded server. The shell sets `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` in `buildServerProcessEnv` (`autobyteus-web/electron/server/serverRuntimeEnv.ts:121-133`), also for isolated instances. Docker and standalone servers never set it. Read once (AR-005). |
 | `GitHubRepositoryClient` (extended) | `fetchDefaultBranchHead(owner, repo)` → `{ defaultBranch, latestRevision }` via v2 `ls-refs`; 401/404 → "GitHub repository not found or not public"; a malformed answer is an error. `fetchLatestReleaseTag(owner, repo)` → the tag from the `/releases/latest` redirect. Both go through `publicGitHubRequest`. |
 | `publicGitHubRequest` (extended) | Hosts `api.github.com`, `codeload.github.com` and `github.com` (only the paths `/<o>/<r>.git/git-upload-pack` and `/<o>/<r>/releases/latest`); method GET or POST with a body; the gate per family before and after each request; manual redirects. |
 | `GitHubRateLimitGate` (extended) | Blocked-until per family. Learns: `api` as today (403/429 headers); `web` from 429 or 503 with `retry-after`, else 60 s. Persisted per family. `isBlocked(family)`, `assertOpen(family)`, `blockedUntil(family)`. |
 | `GitHubAgentPackageUpdates` (changed) | `checkPackage` and `updatePackage` read the head with the stored identity (`normalizeGitHubRepositorySource(record.source)` gives owner/repo) instead of the REST metadata. Update builds the codeload URL from owner/repo/revision and records `defaultBranch` from the head read. Everything else is unchanged. |
 | `SkillSourceService` (changed) | `metadata()` for check/update becomes the head read plus the stored repository and the revision regex; import keeps the REST metadata. |
-| `AgentRuntimeStatusService` (extended) | `checkInBackground(kind)`: checks one runtime without clearing finished operations; skipped while checking or operating. `runUpdate(kind): Promise<RuntimeUpdateOutcome>`: the one update path; `startUpdate` = refusals + `void runUpdate`. `listUpdateStates()`: projection with an explicit `checked` flag. `runningAgents(kind)`. `setUpdateStateListener(listener)`: called when a check or update finishes. |
+| `AgentRuntimeStatusService` (extended) | `checkInBackground(kind)`: reads the installed and newest versions only (no sign-in read, which for Codex acquires the app-server, AR-007); skipped while checking or operating; keeps finished operations. `runUpdate(kind): Promise<RuntimeUpdateResult>` applies the refusals itself and is the one update path (AR-001):<br>- `{ result: 'refused', reason: 'NOT_INSTALLED' \| 'BUSY' \| 'AGENTS_RUNNING', runningAgents }`;<br>- `{ result: 'updated', fromVersion, toVersion }`;<br>- `{ result: 'failed', error }`.<br>`startUpdate(kind)` = `beginUpdate(kind)`: a refusal throws `AgentRuntimeError` with its existing code; otherwise the started promise runs on. Both share one private `beginUpdate` that checks the refusals synchronously and claims the row. `listUpdateStates()`, `runningAgents(kind)`, `setUpdateStateListener(listener)`. |
 | `UpdateNotificationService` (extended) | The `AGENT_RUNTIME` kind and source. Outcome rules (DS-008). `listAutomationCandidates(kind)`. `recordOutcome(kind, id, outcome)`. `markAllRead` also covers unread outcomes. Views with nullable links and outcome fields. |
-| `AppUpdateCheckSchedule` (new, shell) | Timer, enabled/interval from `AppUpdateCheckSettingsStore`, skip conditions, re-arming on a settings change. |
-| `AppUpdater` (changed) | `checkForUpdates('periodic')`; `autoCheck` in state; `setAutoCheck` intent; IPC registration moved to `appUpdateIpc.ts`. |
-| Web stores | `updateNotificationsStore`: rows for three node kinds plus the app, counts (waiting, unread waiting, unread outcomes), order as 209, the runtime category only when `isOwnNodeWindow`. `updateAutomationStore`: node settings and wait times, mutations, feed reload. `appUpdateStore`: `autoCheck` plus `setAutoCheck`. |
+| `AppUpdateCheckSchedule` (new, shell, `appUpdateCheckSchedule.ts`) | The one owner of the app check schedule (AR-004): its settings file (`appUpdateCheckSettingsStore.ts`, its only writer), the timer, the skip rules (off, busy, offline), the launch and periodic sources, `setSettings` (validate, save, re-arm), one change listener. |
+| `AppUpdater` (changed) | `checkForUpdates(source)` accepts `'periodic'` (errors quiet like `startup`); `isBusy()`; `startAutoCheck()` starts the schedule (the 8 s `setTimeout` at `appUpdater.ts:149-160` is removed); `AppUpdateState.autoCheck` from `schedule.settings()` on its change notification. File size: the IPC registration (`:423-435`) moves to `appUpdateIpc.ts`, and the module helpers `isPrereleaseVersion`, `toIsoNow`, `normalizeReleaseNotes`, `buildErrorDedupeSignature` (`:37-71`) move to `appUpdateStateFormat.ts`. Target ≤ 470 lines. |
+| Web stores | `updateNotificationsStore`: rows for three node kinds plus the app, counts (waiting, unread waiting, unread outcomes), order as 209, the runtime category only when `isOwnNodeWindow()` and the node reports `desktopEmbeddedNode` (AR-005). `updateAutomationStore`: node settings and wait times, mutations, feed reload. `appUpdateStore`: `autoCheck` plus `setAutoCheck`. |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -249,10 +254,10 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
 | --- | --- | --- | --- |
 | Update checks switch | Not required (manual Update and on-open checks work when off; REQ-013 of 209) | Required | Explicit (REQ-017) |
 | Automatic switch of the kind | — | Required | REQ-005 |
-| GitHub `web` gate | `assertOpen` throws with the reset time (row shows it) | Skips the kind's step; the banner says until when | Same gate, different presentation |
+| GitHub `web` gate | `assertOpen` throws with the reset time (row shows it) | Re-read before every GitHub-kind source and candidate; stops that kind's step; the banner says until when. Runtimes: not gated (R-2) | Same gate, different presentation |
 | Skill-source confirmation | Asked (existing) | Not asked; the one-time confirmation at switch-on covers it | REQ-007, DEC-019 |
-| Running agents (runtimes) | Refused, with the reason | `AUTO_WAITING`, retried each tick | REQ-021, REQ-022 |
-| Desktop-own-node rule (runtimes) | Web shows Update only in own windows (DEC-020) | Runs on the node when its switch is on (the switch is shown only in own windows) | Explicit |
+| Refusals of a runtime update (not installed, busy, agents running) | `startUpdate` throws the existing codes | `runUpdate` returns the same refusals as results: agents running → `AUTO_WAITING`, retried each tick; busy (a login or a manual update is running) or not installed → no outcome this tick | REQ-021, REQ-022 (AR-001) |
+| Desktop's embedded node (runtimes) | The web shows the runtime category, switch, interval and contact line only when the node reports `desktopEmbeddedNode: true` and the window is its own window (DEC-020 restated) | `UpdatePass` and the notification service include the runtime kind only when `isDesktopEmbeddedNode()` | Explicit (AR-005) |
 | Skill-name conflicts | Error dialog | `AUTO_FAILED` with the conflict message | REQ-008 |
 
 ## Removal / Decommission Plan (Mandatory)
@@ -265,6 +270,8 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
 | `NotificationCenterAnchor`, left positioning in `NotificationCenter.vue` | Right-side panel (spec) | Fixed top-right placement | — |
 | `isQuietStartupAppUpdateError` | Generalized | `isQuietBackgroundAppUpdateError` (startup or periodic) | Update its callers |
 | `appUpdater.ts` `registerIpcHandlers` body | File size | `appUpdateIpc.ts` | Same handlers |
+| `AppUpdater.startAutoCheck`'s own 8 s `setTimeout` (`appUpdater.ts:149-160`) | One owner of launch and periodic checks (AR-004) | `AppUpdateCheckSchedule` (started by `startAutoCheck`) | `electronApplication.ts:396, 401` keep calling `startAutoCheck()` |
+| Helpers `isPrereleaseVersion`, `toIsoNow`, `normalizeReleaseNotes`, `buildErrorDedupeSignature` in `appUpdater.ts:37-71` | File size | `appUpdateStateFormat.ts` | Moved unchanged |
 | `GitHubRateLimitGate` single-time persistence | Families | Per-family shape | — |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -280,9 +287,11 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
   | Event | Result |
   | --- | --- |
   | A newer revision replaces a record | Outcome fields cleared |
-  | `recordOutcome(AUTO_UPDATED, toRevision)` on a record that the preceding reconcile marked handled with that revision | `outcome=AUTO_UPDATED`, `read=false`, `outcomeAt=now` |
-  | `recordOutcome(AUTO_FAILED, reason)` on a waiting record | `outcome=AUTO_FAILED`, `outcomeReason`, `outcomeAt`. `read=false` only if the previous outcome was not `AUTO_FAILED` for the same `latestRevision` (one notice per revision, REQ-009) |
-  | `recordOutcome(AUTO_WAITING, reason)` | The same rule (no repeated unread) |
+  | `recordOutcome(kind, id, AUTO_UPDATED, { candidateFrom })` | Applied when the record exists, is handled, and its `fromRevision` equals `candidateFrom` (the record the pass picked). The handled revision is whatever the update installed, which may be newer than the record's `latestRevision`. Sets `outcome=AUTO_UPDATED`, `read=false`, `outcomeAt=now`. Otherwise (record removed, or replaced by a newer found revision) → result `not_applied`, logged, nothing changed (AR-003) |
+  | `recordOutcome(kind, id, AUTO_FAILED, { candidateLatest, reason })` | Applied only to a waiting record whose `latestRevision` equals `candidateLatest`. Sets `outcome`, `outcomeReason`, `outcomeAt`. `read=false` only if the previous outcome was not `AUTO_FAILED` for the same `latestRevision` (one notice per revision, REQ-009). Otherwise `not_applied` |
+  | `recordOutcome(kind, id, AUTO_WAITING, { candidateLatest, reason })` | The same rule as `AUTO_FAILED` (no repeated unread). Otherwise `not_applied` |
+  | Reconcile marks a waiting record handled (the installed revision changed), whatever its outcome | Outcome fields cleared (`outcome=null`, `outcomeReason=null`, `outcomeAt=null`). A manual update after `AUTO_FAILED` or `AUTO_WAITING` therefore shows the plain "Updated to …" (AR-003). `recordOutcome(AUTO_UPDATED)`, which follows in the same queue for automatic updates, sets it again |
+  | Reconcile removes a record (source gone, or DEC-015) | Outcome goes with it; a later `recordOutcome` for it is `not_applied` |
   | Candidates | Waiting records of the kind, except those with `AUTO_FAILED` and `outcomeAt + interval(kind) > now` |
   | `markAllRead` | Marks waiting records and handled records with an unread outcome |
 
@@ -295,7 +304,7 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
 | `UpdateNotificationStore` | DS-008 | Service | Tolerant read / exact write | Rules in the store |
 | `ChangeFeedHub` | DS-001, 004 | Service, settings | Broadcast | — |
 | `AppUpdateCheckSettingsStore` | DS-005 | Schedule | Shell file | `appUpdater.ts` size |
-| `isOwnNodeWindow()` (web, `utils/ownNodeWindow.ts`) | DS-003, 004 | Panel, card, Agent Runtimes page | DEC-020's one rule | Two derivations drifting |
+| `isOwnNodeWindow()` (web, `utils/ownNodeWindow.ts`) | DS-003, 004 | Panel, card, Agent Runtimes page | "This window is the bound node's own window" (`isEmbeddedWindow`). The runtime parts additionally need the node's `desktopEmbeddedNode` (from `updateAutomationSettings`) | Two derivations drifting |
 | `ConfirmationModal` `layerClass` | DS-004 | Panel | REQ-024 | — |
 
 ## Ownership Boundaries
@@ -329,6 +338,9 @@ Server: `UpdateCheckScheduler`, `UpdatePass`, `AgentPackageService`, `SkillSourc
 | `GitHubRepositoryClient.fetchDefaultBranchHead(owner, repo)` | Repository head | Quota-free head read | owner + repo |
 | `GitHubRepositoryClient.fetchLatestReleaseTag(owner, repo)` | Latest release tag | Quota-free | owner + repo |
 | `AgentRuntimeStatusService.checkInBackground(kind)`, `runUpdate(kind)`, `listUpdateStates()`, `runningAgents(kind)`, `setUpdateStateListener(l)` | One runtime / all | As Ownership Map | `AgentRuntimeKind` |
+| `RuntimeUpdateResult` (`agent-runtime-types.ts`) | One update's result | `refused` (with reason) / `updated` / `failed` | — |
+| `isDesktopEmbeddedNode()` (server) and GraphQL `updateAutomationSettings.desktopEmbeddedNode: Boolean!` | Node fact | Read once from the env set by the shell | — |
+| `publicGitHubRequest(url, { method, body, followRedirects })` | Transport | `followRedirects: false` returns a 3xx response to the caller; `fetchLatestReleaseTag` uses it and validates `location` = `https://github.com/<o>/<r>/releases/tag/<tag>` (R-3) | — |
 | `UpdateNotificationService.listAutomationCandidates(kind)`, `recordOutcome(kind, sourceId, outcome)` | Records | DS-008 | kind + sourceId |
 | GraphQL `updateAutomationSettings: UpdateAutomationSettings` | Node settings | `{ intervals: { agentPackages, skillSources, agentRuntimes } (minutes), automaticUpdates: { agentPackages, skillSources, agentRuntimes }, githubWaitUntil: String (ISO, the later of api/web, or null) }` | — |
 | GraphQL `setUpdateCheckInterval(kind: UpdateNotificationKind!, minutes: Int!)` | One interval | Refuses outside 15..1440 (`UPDATE_CHECK_INTERVAL_OUT_OF_RANGE`) | kind |
@@ -441,7 +453,8 @@ Server (`autobyteus-server-ts/src`):
 | `runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.ts` | Modify | Tag read |
 | `api/graphql/types/update-notifications.ts` | Modify | Settings query and mutations, view |
 | `compositions/update-notifications-composition.ts` | Modify | Runtime source, settings, pass |
-| `compositions/build-studio-server.ts` | Modify | Pass the runtime service handle to the composition |
+| `compositions/build-studio-server.ts` | Modify | Compose update notifications after `composeAgentRuntimeStatus` (`build-studio-server.ts:288` vs `:350`) and pass it the runtime status service itself (AR-006) |
+| `config/desktop-embedded-node.ts` | Add | `isDesktopEmbeddedNode()` (AR-005) |
 
 Shell (`autobyteus-web/electron/updater`):
 
@@ -450,7 +463,10 @@ Shell (`autobyteus-web/electron/updater`):
 | `appUpdateCheckSchedule.ts` | Add | Timer, skip rules |
 | `appUpdateCheckSettingsStore.ts` | Add | `userData` file |
 | `appUpdateIpc.ts` | Add | IPC registration (moved) |
-| `appUpdater.ts` | Modify | `periodic` source, `autoCheck`, `setAutoCheck` |
+| `appUpdater.ts` | Modify | `periodic` source, `isBusy`, `autoCheck`; `startAutoCheck` starts the schedule; IPC and helpers moved out (≤ 470 lines) |
+| `appUpdateStateFormat.ts` | Add | Moved helpers |
+| `../application/electronApplication.ts` | Unchanged | Still calls `startAutoCheck()` at `:396`, `:401` |
+| `../server/serverRuntimeEnv.ts` | Modify | Sets `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` for the embedded server (AR-005) |
 | `disabledAppUpdater.ts`, `appUpdateController.ts`, `../../shared/appUpdateTypes.ts`, `../preload.ts` + types | Modify | Contract |
 
 Web (`autobyteus-web`):
@@ -497,7 +513,7 @@ The existing folders keep their depth; risk `Low`.
 | Topic | Good | Avoided |
 | --- | --- | --- |
 | Automatic update of a package | `UpdatePass` → `packages.updateAgentPackage(id)` (the manual method) → catch error → `notifications.recordOutcome('AGENT_PACKAGE', id, { outcome: 'AUTO_FAILED', reason: error.message })` | A separate "auto-update" pipeline, or the owner learning an `automatic` flag |
-| Runtime update awaited | `startUpdate(kind) { refusals(); void this.runUpdate(kind) }` and the pass `await runtimes.runUpdate(kind)` | Two copies of the vendor-process lifecycle |
+| Runtime update awaited | `private beginUpdate(kind): RuntimeUpdateRefusal \| Promise<RuntimeUpdateResult>`; `startUpdate(kind)` throws for a refusal; `runUpdate(kind)` returns `{ result: 'refused', … }` or awaits the promise. The pass maps results (DS-002) | The pass checking running agents itself and calling an unguarded update (AR-001) |
 | Head read body | pkt-lines, each prefixed with its 4-hex-digit length (payload + 4): `command=ls-refs\n`, `agent=…\n`, `object-format=sha1\n`, delimiter `0001`, `symrefs\n`, `ref-prefix HEAD\n`, flush `0000`. The probe's exact request (with `agent=git/2.43.0`) is in investigation AF-08. Answer: `<40 hex> HEAD symref-target:refs/heads/<branch>` | Fetching `info/refs` (size grows with pull requests, AF-08) |
 | Turning on while updates wait | Switch on → mutation → next tick (≤ 60 s) runs DS-002 for that kind | A "run now" call from the resolver that starts a second pass owner |
 
@@ -552,3 +568,18 @@ The existing folders keep their depth; risk `Low`.
 - `useAgentRuntimes` in the panel must not start checks (`checkOnRebind: false`).
 - Keep every touched file under 500 lines (`appUpdater.ts`: move IPC registration first).
 - Tests to add are listed in the Change Sequence. Isolated-instance checks for AC-001, 006, 007, 010, 012, 013, 018, 020 use real GitHub repositories (read-only), scripted runtime CLIs, and `--test-update-feed`.
+
+
+## SR-005 Revision Notes (ARCH-REV-001)
+
+- AR-001: `runUpdate` owns all refusals and returns results; the pass maps them (DS-002, Ownership Map, Gates table, Examples).
+- AR-002: settings and gate re-read before every automatic candidate (DS-002, `UpdatePass`).
+- AR-003: DS-008 rows for handled-with-outcome, newer installed head, removed record, and the `not_applied` result.
+- AR-004: DS-005 has three entry forms and one owner, `AppUpdateCheckSchedule`. `startAutoCheck` is now its starter. The file split is named (≤ 470 lines).
+- AR-005, option (a): a server-side desktop-embedded-node fact set by the shell. The runtime kind runs only there. The web shows runtime parts only when the bound node reports it and the window is its own (DEC-020 restated in the requirements). REQ-020, the Out of Scope line and AC-022 are unchanged and now hold on every node kind:
+  - the desktop's embedded node: runtimes checked, notified, switchable;
+  - a Docker or remote node seen from a desktop window: nothing for runtimes (the node never checks them; the window is not its own);
+  - the same node in its own browser window: nothing for runtimes (not embedded).
+- AR-006: composition order and the runtime service passed in (File Mapping).
+- AR-007: background runtime checks read versions only.
+- R-1: the reading in "Conflicts or discrepancies". R-2: runtime kind not gated. R-3: `followRedirects: false`.
