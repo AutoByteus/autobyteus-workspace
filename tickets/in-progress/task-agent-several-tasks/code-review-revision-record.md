@@ -7,6 +7,7 @@
 | CRR-001 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 1 / implementation complete (IR-001) | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 2 / CR-001 fixed (IR-002) | Fail (Local Fix) | Pass | CR-001 |
 | CRR-003 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-F-001 (API-REV-001) | Pass (CRR-002) | Fail (Design Impact) | CR-002 |
+| CRR-004 | `tickets/in-progress/task-agent-several-tasks/code-review-report.md` | Implementation Review, round 4 / SR-006 web delta (IR-003) | Fail (Design Impact) | Pass | CR-002 |
 
 ## Revision Entries
 
@@ -88,3 +89,31 @@ None.
 - Material score or classification changes: classification `Design Impact`; the scorecard is not repeated (failure-origin round)
 - Recommended recipient: `/software_engineering_team/solution_designer`
 - Remaining risks or uncertainty: FU-001, FU-002 (follow-ups.md). After the revision: implementation, then a source review of the web delta, then API/E2E with AC-010 rerun.
+
+### CRR-004 — Targeted delta review of the SR-006 help-line correction (IR-003)
+
+- Canonical review report updated: `tickets/in-progress/task-agent-several-tasks/code-review-report.md`
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review`. The delta `41ecca90fe..1fa3a1d87e` is 3 web files, +9 −2, within CR-002's behavior.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-003); CR-002, AC-011
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001 (to be rerun)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, `Design Impact` (CRR-003)
+- Current authoritative result: `Pass`, 9.5 / 10, every category ≥ 9.0
+- What changed in the review result and why: `projects.root.help` (en and zh-CN) now states the rule that holds for every Task ("…stops when its last open Task is Done or Cancelled"), word for word as DEC-013 and AC-011. No other copy of the old text remains. A catalog test pins both strings. IMP-08 (rendered) and IMP-09 (guards, 4759 web tests) pass.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-002) | Resolved | IR-002 | Unchanged |
+| CR-002 | Open (Design Impact) | Resolved | SR-006, ARCH-REV-003, IR-003, `1fa3a1d87e` | `en/projects.ts:212`, `zh-CN/projects.ts:212`; `projectsCatalog.spec.ts` AC-011 case; IMP-08, IMP-09 |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: back to `Pass`; scores as in round 2
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: FU-001, FU-002 (follow-ups.md). API/E2E reruns API-07 (AC-010, AC-011).

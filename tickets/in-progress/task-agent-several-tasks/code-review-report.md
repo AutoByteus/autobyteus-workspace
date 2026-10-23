@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Rounds 1–2: `Implementation Review`.
+- Review Entry Point: `Implementation Review` (round 4, the SR-006 web delta). Round 3: `API/E2E Failure-Origin Review`; rounds 1–2: `Implementation Review`.
 - Requirements Doc Reviewed As Context: `tickets/in-progress/task-agent-several-tasks/requirements-doc.md` (Approved, SR-003)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (AF-001–AF-009), through the design spec and design review
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (to SR-005)
@@ -16,13 +16,13 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `tickets/in-progress/task-agent-several-tasks/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3
-- Review Scope: `N/A` (failure-origin round). Round 2 was a `Targeted Delta Review`.
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Review Scope: `Targeted Delta Review`. The delta `41ecca90fe..1fa3a1d87e` is 3 web files, +9 −2: `projects.root.help` in en and zh-CN, and one catalog test. It stays within CR-002's behavior (the help line). No server, component, interface or data change, so the evidence for every other check carries forward from rounds 1–2.
 - Review Scope Evidence (round >1): the delta `fe8e52b31d..cd8c289b67` touches 3 files, ±3 lines. It changes only the `update_task` text in `project-task-tool-contract.ts`, which is CR-001's file and behavior, plus its two unit pins. No other source, interface or data shape changed, so the round-1 evidence for every other check carries forward.
-- Trigger: API/E2E validation failed (API-REV-001, finding API-F-001), from `/software_engineering_team/api_e2e_engineer`. Round 2's trigger was the CR-001 fix (IR-002).
-- Prior Review Round Reviewed: 2 (CRR-002, Pass)
-- Latest Authoritative Round: 3
+- Trigger: the SR-006 web delta (IR-003; ARCH-REV-003 Pass), from `/software_engineering_team/implementation_engineer`. Round 3 was the API-F-001 failure-origin review (API-REV-001).
+- Prior Review Round Reviewed: 3 (CRR-003, Fail — CR-002, Design Impact)
+- Latest Authoritative Round: 4
 - Coverage Investigation Reviewed (failure-origin entry point): `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed (failure-origin entry point): `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `api-e2e-revision-record.md`
@@ -205,7 +205,19 @@ New premises: None (C-07 is pre-existing delete behavior, recorded as FU-001).
 
 ## Findings
 
-### CR-002 — The Task page's "Assigned to" help says the team stops when this Task is Done (Design Impact, round 3)
+### CR-002 — The Task page's "Assigned to" help says the team stops when this Task is Done (Design Impact, round 3; Resolved, round 4)
+
+- Round 4 verification (`1fa3a1d87e`):
+  - The strings now read "This agent or team stops when its last open Task is Done or Cancelled." (`en/projects.ts:212`) and "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。" (`zh-CN/projects.ts:212`). Both match DEC-013 and AC-011 exactly.
+  - The sentence is true for a copy with one Task and with several, under REQ-004 and the release rule. The deleted-Task case stays FU-001.
+  - A search of web code, tests and probes finds no copy of the old text. `ProjectTaskWorkers.spec.ts` asserts only that the line is present.
+  - The new catalog test pins both strings.
+  - IMP-09: the three web guards pass, and `test:nuxt` 661 files and 4759 tests pass.
+  - IMP-08: rendered on a real stack in en-US and zh-CN, at 1440 and 390 px.
+  - The requirements (SR-006: REQ-008, AC-011, DEC-013) and the design (the derived-consumer table and Change Scope) record the change; ARCH-REV-003 passed it.
+
+Round-3 record:
+
 
 - Type: `Design Impact` (owner: Solution Designer)
 - Severity: Blocking (AC-010; a user-visible statement made false by this change)
@@ -238,11 +250,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`.
 
 ## Classification
 
-`Design Impact` (CR-002, round 3, failure-origin). Round 1 was `Local Fix` (CR-001), resolved in round 2.
+N/A (Pass, round 4). Round 3 was `Design Impact` (CR-002), resolved by SR-006 and IR-003. Round 1 was `Local Fix` (CR-001), resolved in round 2.
 
 ## Recommended Recipient
 
-- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: the Solution Designer (`/software_engineering_team/solution_designer`), under the rule "review identifies a Design Impact … that requires upstream requirements or design revision".
+- Owner of the classified outcome and the recipient `get_handoff_rules` returned for it: `/software_engineering_team/api_e2e_engineer` (primary pass rule); informational notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -252,11 +264,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 3, failure-origin): API-F-001 is a design gap (CR-002). Round 2's source-review `Pass` covered the server change and stays valid for it.
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Supported Product Scenario Gate: `Pass` (SCN-001 / SCN-003, supported normal)
+- Review Decision: `Pass` (round 4)
+- Review Entry Point: `Implementation Review` (targeted delta)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass` (no new premise)
-- Score Summary: the scorecard is not repeated for a failure-origin round. The round-2 score stands for the server change; the web text is outside what it scored.
-- Failure Origin: Design Impact (Change Scope left the web app out); an earlier review gap in architecture and code review
-- Recommended Recipient: `/software_engineering_team/solution_designer`
-- Notes: every other API/E2E case passes (API-00 to API-06). FU-002 is outside this ticket. After the Solution Designer revises the scope, the change returns through implementation, a source review of the web delta, and API/E2E (AC-010 rerun).
+- Score Summary: 9.5 / 10, every category ≥ 9.0. The round-2 scores carry forward; the web text that CR-002 concerned is now true.
+- Failure Origin: N/A (round 3's Design Impact is resolved)
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: API/E2E reruns API-07 for AC-010 and AC-011 on the isolated instance. FU-001 and FU-002 stay in `follow-ups.md`.
