@@ -1,0 +1,74 @@
+{
+  "backendUrl": "http://127.0.0.1:57494",
+  "projectId": "project_b32a73b9-1160-4f84-b8d7-66092f94af5f",
+  "tasks": {
+    "A": {
+      "taskId": "project_task_367fb009-c321-4a46-9c3f-4e071d71486f",
+      "taskKey": "autobyteus-1"
+    },
+    "B": {
+      "taskId": "project_task_8112d26a-b8d1-48e1-aee9-b4b1755e16c1",
+      "taskKey": "autobyteus-2"
+    },
+    "C": {
+      "taskId": "project_task_cde512d5-6460-4f1f-b4bd-b04b308c7771",
+      "taskKey": "autobyteus-3"
+    }
+  },
+  "team": "release_team_2457_78c48f728586439483542c9d635f3409",
+  "coordinator": "release_writer_2457_6c1fc9e2ae4944c3afb6dbb66750aac6",
+  "managerRunId": "project_task_manager_2457_a9bf2ca150454411abc45158763fa49a",
+  "managerName": "Project Task Manager 2457",
+  "squadName": "Release Team 2457",
+  "first": {
+    "delegated": true,
+    "target_kind": "team",
+    "target_team_run_id": "release_team_2457_78c48f728586439483542c9d635f3409",
+    "target_team_coordinator_agent_run_id": "release_writer_2457_6c1fc9e2ae4944c3afb6dbb66750aac6"
+  },
+  "second": {
+    "delegated": true,
+    "target_kind": "team",
+    "target_team_run_id": "release_team_2457_78c48f728586439483542c9d635f3409",
+    "target_team_coordinator_agent_run_id": "release_writer_2457_6c1fc9e2ae4944c3afb6dbb66750aac6"
+  },
+  "rootsWhileRunning": {
+    "autobyteus-3": null,
+    "autobyteus-2": {
+      "kind": "team",
+      "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+      "recipientAddress": "/release_team_2457",
+      "closed": false,
+      "status": "idle"
+    },
+    "autobyteus-1": {
+      "kind": "team",
+      "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+      "recipientAddress": "/release_team_2457",
+      "closed": false,
+      "status": "idle"
+    }
+  },
+  "assignments": {
+    "autobyteus-3": [],
+    "autobyteus-2": [
+      {
+        "kind": "team",
+        "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+        "teamCoordinatorAgentRunId": "release_writer_2457_6c1fc9e2ae4944c3afb6dbb66750aac6",
+        "assignedBy": "project_task_manager_2457_a9bf2ca150454411abc45158763fa49a",
+        "outcome": "accepted"
+      }
+    ],
+    "autobyteus-1": [
+      {
+        "kind": "team",
+        "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+        "teamCoordinatorAgentRunId": "release_writer_2457_6c1fc9e2ae4944c3afb6dbb66750aac6",
+        "assignedBy": "project_task_manager_2457_a9bf2ca150454411abc45158763fa49a",
+        "outcome": "accepted"
+      }
+    ]
+  },
+  "backendStopped": true
+}

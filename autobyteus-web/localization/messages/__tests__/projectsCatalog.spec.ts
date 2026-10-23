@@ -50,6 +50,13 @@ describe('Projects catalogs', () => {
     }
   });
 
+  // task-agent-several-tasks AC-011 (REQ-008, DEC-013): a task agent may hold several open Tasks,
+  // so the "Assigned to" help line states the rule that holds for each of them.
+  it('say on the Task page that the agent or team stops when its last open Task is Done or Cancelled (AC-011)', () => {
+    expect(enProjectMessages['projects.root.help']).toBe('This agent or team stops when its last open Task is Done or Cancelled.')
+    expect(zhCnProjectMessages['projects.root.help']).toBe('这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。')
+  });
+
   it('describe each Project card with open tasks and workspaces (REQ-009)', () => {
     expect(enProjectMessages['projects.components.projects.ProjectCard.oneOpenTask']).toBe('1 open task')
     expect(zhCnProjectMessages['projects.components.projects.ProjectCard.oneOpenTask']).toBeTruthy()

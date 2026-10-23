@@ -4,7 +4,8 @@ import { describe, expect, it } from "vitest";
 
 /**
  * The complete catalogue of results and refusals an agent can read from `send_message_to` and
- * `delegate_task` (wording §7.3, M-01..M-45; SR-014). Each text is written here exactly once and
+ * `delegate_task` (wording §7.3, M-01..M-45; SR-014; M-43, "still works on Task …", was withdrawn when a task
+ * agent became able to hold several open Tasks, task-agent-several-tasks). Each text is written here exactly once and
  * checked two ways: every fixed part of it is present in the server source (so the code says what
  * the catalogue says), and none of it uses a word the agent should not read (wording §2). The
  * behavioural tests next to each code site (and `refusal-texts-vocabulary.test.ts`) produce the
@@ -53,7 +54,6 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-40", "delegate_task", "This task agent has no Task; delegate Task <task_id> with recipient_address instead."],
   ["M-41", "delegate_task", "This task agent works on part of another agent's Task, so you can't give it a Task. Delegate Task <task_id> to a new task agent with recipient_address."],
   ["M-42", "delegate_task", "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task <task_id> to a new task agent with recipient_address instead."],
-  ["M-43", "delegate_task", "This task agent still works on <current Task: Task and its key, or a deleted Task> (<status>). Set it to DONE or CANCELLED first, or delegate Task <task_id> to a new task agent with recipient_address."],
   ["M-44", "delegate_task", "This task agent already has Task <task_id>. To continue it, set Task <task_id> to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."],
   ["M-45", "delegate_task", "This task agent never started, so it has no conversation to continue. Delegate Task <task_id> to a new task agent with recipient_address instead."],
 ];
@@ -78,8 +78,9 @@ const ID_RULE = /(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/;
 const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|the run(?! id)|in the run(?! id)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
-  it("lists M-01 to M-45 once each", () => {
-    expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`));
+  it("lists M-01 to M-45 once each, without the withdrawn M-43", () => {
+    expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
+      .filter((id) => id !== "M-43"));
   });
 
   const source = normalizedSource();

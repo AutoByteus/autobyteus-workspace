@@ -1,0 +1,52 @@
+// TEMPORARY PROBE (Solution Designer, autobyteus-275): not committed; removed after the run.
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ProjectStore } from "../../../src/projects/stores/project-store.js";
+import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
+import { ProjectService } from "../../../src/projects/services/project-service.js";
+import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
+import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
+import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+
+const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
+describe("probe: one copy, two open Tasks", () => {
+  let root: string, layout: ProjectsLayout, store: ProjectStore, projectId: string, tasks: ProjectTaskService, resources: TaskExecutionResourceService;
+  let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
+  beforeEach(async () => {
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "probe-275-"));
+    layout = new ProjectsLayout(path.join(root, "projects"));
+    store = new ProjectStore(layout);
+    projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
+    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map(execution => ({ execution, stopped: true })));
+    resources = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout));
+    tasks = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: release, taskExecutionResources: resources });
+    await tasks.load();
+  });
+  afterEach(async () => { await tasks.drainRuntimeReleases(); await fs.rm(root, { recursive: true, force: true }); });
+
+  it("releases only after the last open Task closes; today's refusal fires", async () => {
+    const a = await tasks.createTask({ projectId, description: "A" });
+    const b = await tasks.createTask({ projectId, description: "B" });
+    const copy = { teamRunId: "team-1" };
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, execution: copy, teamCoordinatorAgentRunId: "lead-1" });
+    await tasks.markStarted(copy);
+    // Today's rule: the advisory check refuses while A is open.
+    const refusal = await tasks.assertAssignable({ execution: copy, requestedBy: "manager", taskId: b.taskId }).then(() => "accepted", (e: Error) => e.message);
+    console.log("REFUSAL:", refusal);
+    // Bypass the refusal: a second open entry for the same copy (what option B would allow).
+    await resources.serialize(b.taskId, () => resources.assignExisting({ projectId, taskId: b.taskId }, { hostRoot, execution: copy, taskId: b.taskId, assignedBy: "manager", teamCoordinatorAgentRunId: "lead-1" } as never));
+    console.log("CURRENT after B:", JSON.stringify(resources.historyOf(copy)?.currentTaskId === b.taskId), "isOpen", resources.isOpen(copy));
+    await tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" } as never);
+    await tasks.drainRuntimeReleases();
+    console.log("after B DONE: release calls", release.mock.calls.length, "isOpen", resources.isOpen(copy), "current is A", resources.historyOf(copy)?.currentTaskId === a.taskId);
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" } as never);
+    await tasks.drainRuntimeReleases();
+    console.log("after A DONE: release calls", release.mock.calls.length, JSON.stringify(release.mock.calls.map(c => c[1])), "isOpen", resources.isOpen(copy));
+    expect(true).toBe(true);
+  });
+});

@@ -1,0 +1,13 @@
+# IMP-02 the several-open-Tasks unit tests, AFTER the fix
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects/task-execution-several-open-tasks.test.ts --no-watch --reporter=verbose
+# Commit: a18fe714cd; macOS darwin, corepack pnpm; 2026-10-23
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > AF-001 (the probe): with two open entries, the first close keeps the copy and the last close asks to stop it once 135ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > gives B while A is open, by the most recent assigner only; both show the copy (AC-001, AC-002) 110ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > closing one Task keeps the copy running; closing the last stops it once (AC-003, AC-004, QR-001) 123ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > closing a parent closes its parts on the same copy; the copy is stopped once, after the last (AC-005) 200ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > sub-work joins the newest open Task; closing that Task stops the sub-work while the copy runs on (AC-006, DEC-007) 126ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > a closed Task can be given back to the copy while it runs on another (AC-007) 138ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > two of its Tasks closing at once never stop it while a third is open; the last stops it once (QR-002) 279ms
+ ✓ tests/unit/projects/task-execution-several-open-tasks.test.ts > a task agent with several open Tasks > concurrent closing of its last two Tasks asks to stop it (at least once, never before both are closed) 244ms
+ Test Files  1 passed (1)
+      Tests  8 passed (8)

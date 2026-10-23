@@ -1,0 +1,24 @@
+# Case: API-01..API-04
+# Command: TASK_EXISTING_COPY_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts --no-watch
+# Commit: code cd8c289b67 (HEAD e421b2896d) + this round's test edits (committed with this evidence)
+# Environment: macOS darwin arm64; corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR; RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+# Date: 2026-10-23
+
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 188247ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  22808ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  22475ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  22138ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  113311ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1407ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1032ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  4629ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (16 tests) 7554ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  470ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  453ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  660ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1422ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  1839ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  811ms
+ Test Files  2 passed (2)
+      Tests  23 passed | 2 skipped (25)
+exit=0
