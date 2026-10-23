@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | API/E2E test-code review Pass (CRR-002) from `/software_engineering_team/code_reviewer` | N/A | Delivery Completed, no release (finalization recorded in the release/deployment report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `follow-ups.md` (FU-005), `evidence/DEL-*` |
+| DR-001 | API/E2E test-code review Pass (CRR-002) from `/software_engineering_team/code_reviewer` | N/A | Delivery Completed, no release; finalized `origin/personal` @ `826daa84d5` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `follow-ups.md` (FU-005), `evidence/DEL-*` |
 
 ## Revision Entries
 
@@ -18,8 +18,8 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: see the release/deployment report.
-- Verification and finalization state: evidence sufficient; finalization as recorded in the release/deployment report.
-- Terminal return to the Solution Designer: sent after finalization and cleanup.
+- Verification and finalization state: evidence sufficient. Finalized with `--no-ff` merge `826daa84d5` into `origin/personal` (the target did not move). Release `Not required`. Cleanup after this record's push.
+- Terminal return to the Solution Designer: `Sent` (after this record commit, the export and the cleanup)
 - Why this baseline was recorded: the first delivery result for the ticket.
-- Next recipient/action: finalize, clean up, then return to the Solution Designer.
+- Next recipient/action: the Solution Designer verifies the receipt and sends the follow-ups (FU-001 to FU-005).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. AC-002 is unit-only; after a rollback an older build drops comments it rewrites (accepted). During this round, at the user's request, TESTING.md was refined (`bf81ce2a0f`).

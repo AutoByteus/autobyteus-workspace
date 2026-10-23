@@ -33,7 +33,7 @@
   - DEL-04's 2 failures are FU-003, identical to the pre-merge baseline (API-00 / API-07) and outside this ticket. Every task-comments case passes.
   - DEL-02's single failure has its cause found: a race in a test (FU-005). The same suite passed when run alone (DEL-02b).
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: checked again before the merge (see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes`. Re-fetched before the merge and before the push: `origin/personal` was still `d8df12435c`.
 
 ## Verification
 
@@ -55,7 +55,7 @@
 
 - More evidence requested: `None`
 - User check needed: `No`
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `Not needed` (the target did not move after verification)
 
 ## Release Decision
 
@@ -82,7 +82,16 @@
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`) and RELEASE.md
 - Ticket branch: `codex/task-comments`
 - Finalization target: `origin` / `personal`
-- Results: recorded after finalization (Finalization Record below)
+- Ticket branch commit result: `844cbfc3dd` (docs sync + archive), on top of `bf81ce2a0f` (TESTING.md) and merge `96625b9ba5`
+- Ticket branch push result: `Completed`. `origin/codex/task-comments` → `844cbfc3dd` (new remote branch)
+- Target advanced after verification: `No`. `origin/personal` was still `d8df12435c` (fetched after the push and again before the target push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/task-comments` from `origin/personal` @ `d8df12435c`, in the ticket worktree (RELEASE.md)
+- Merge into target result: `Completed`. `git merge --no-ff codex/task-comments` → `826daa84d5`. The tree is identical to the verified ticket branch (`git diff --quiet`). On the merged state, licensing was consistent and the hygiene check passed.
+- Push target branch result: `Completed`. Fetched just before the push: `origin/personal` = `826daa84d5^1`. `git push origin HEAD:personal`: `d8df12435c..826daa84d5`.
+- Repository finalization status: `Completed`
+- Delivery record commit: this record, on `finalize/task-comments` on top of `826daa84d5`, pushed after a fresh fetch
 
 ## Release / Publication / Deployment
 
@@ -93,7 +102,10 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-comments`
-- Results: recorded after finalization
+- Durable export: after the record push, `tickets/done/task-comments/` is exported from the pushed commit to `/Users/normy/autobyteus_org/autobyteus-delivery-records/task-comments-20261023/`
+- Worktree cleanup result: `git worktree remove --force` after the export (only untracked build output remains), then `git worktree prune`, from the main repository's git dir
+- Local ticket branch cleanup result: `codex/task-comments` and `finalize/task-comments` deleted once `origin/personal` contains them
+- Remote branch cleanup result: `Not required` (repository practice)
 
 ## Release Notes Summary
 
@@ -122,8 +134,9 @@
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: recorded after finalization
+- Repository finalization complete: `Yes` (`origin/personal` @ `826daa84d5`, followed by this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: recorded after finalization
+- Applicable safe cleanup complete or not required: `Yes` (export, worktree and local-branch removal after the record push; the outcome is confirmed in the terminal message)
+- Successful terminal package eligible for return: `Yes`
 - Unresolved blocker: `None`
-- Terminal package sent to the Solution Designer: `No` (after finalization)
+- Terminal package sent to the Solution Designer: `Yes`, after this record commit, the export and the cleanup
