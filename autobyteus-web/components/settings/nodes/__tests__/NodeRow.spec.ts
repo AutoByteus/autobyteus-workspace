@@ -94,6 +94,13 @@ describe('NodeRow', () => {
     expect(h.dialog.request).toHaveBeenCalledWith('finish', B)
   })
 
+  it('VIS-015 / § Naming Rule 4: a name taken there between plan and run names the name on the row\'s line', () => {
+    const wrapper = mountRow(row({ name: 'mu' }), settled({ out: { state: 'working' }, in: { state: 'notRegisteredThere' }, offers: null,
+      line: { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: { code: 'PEER_NAME_TAKEN', message: 'x' }, stepName: 'Embedded Node' } }))
+    expect(line(wrapper)).toContain('Turned on here, but not finished on mu. mu already has a node named Embedded Node.')
+    expect(line(wrapper)).toContain('Try again')
+  })
+
   it('not collaborating: grey icon, the line with Turn on; the switch and Turn on open the confirmation', async () => {
     const wrapper = mountRow(row({ peer: null }), settled({ out: { state: 'notRegisteredHere' }, line: { kind: 'agentsOff', tone: 'info', fix: 'turnOn' } }))
     expect(get(wrapper, 'node-collab-icon').classes()).toContain('text-slate-400')

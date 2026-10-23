@@ -62,6 +62,9 @@ describe('rowViewOf', () => {
     const v = view({ offer: { phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' }, unfinished })
     expect(v.line).toMatchObject({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error })
     expect(view({ unfinished }).line).toBeNull()
+    const nameTaken = { id: 'registerThere' as const, status: 'failed' as const, name: 'Embedded Node', error: { code: 'PEER_NAME_TAKEN', message: 'x' } }
+    expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_REGISTERED' }, unfinished: nameTaken }).line)
+      .toEqual({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: nameTaken.error, stepName: 'Embedded Node' })
   })
 
   it('not collaborating: "registered only by the other node" when it has this node and is on, else "can\'t work with it yet"; Turn on', () => {

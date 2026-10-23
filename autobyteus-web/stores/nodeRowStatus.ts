@@ -45,6 +45,8 @@ export interface RowLine {
   cause?: NodeProbeCause
   host?: string
   error?: NodeSettingsFailure
+  /** `partial`: the name the failed step wrote (a register step's name, for "already has a node named X"). */
+  stepName?: string
 }
 
 export interface RowView {
@@ -141,7 +143,9 @@ const lineOf = (
   row: RowRow, switchOn: boolean, facts: RowFacts, out: DirState, reachable: boolean | null, unfinished: NodeChangeStep | null, thisNodeId: string | null,
 ): RowLine | null => {
   // A step that did not finish is a row state of its own, with the button that finishes it.
-  if (row.peer && switchOn && unfinished?.error) return { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error }
+  if (row.peer && switchOn && unfinished?.error) {
+    return { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error, ...(unfinished.name ? { stepName: unfinished.name } : {}) }
+  }
   if (reachable === false) {
     const cause = row.desktopIds.length && facts.probe && !facts.probe.ok
       ? { cause: facts.probe.cause, host: hostOfAddress(row.windowAddress) }

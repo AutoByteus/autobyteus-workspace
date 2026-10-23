@@ -169,7 +169,7 @@ const lineText = computed(() => {
   const name = props.row.name
   switch (line?.kind) {
     case 'unreachable': return causeText(t, line.cause, line.host ?? '')
-    case 'partial': return line.error ? failureText(t, line.error, { node: name }) : ''
+    case 'partial': return line.error ? failureText(t, line.error, { node: name, name: line.stepName }) : ''
     case 'offThere': return t(k('line.offThere'), { name })
     case 'notRegisteredThere': return t(k('line.notRegisteredThere'), { name })
     case 'different': return t(k('line.different'))
