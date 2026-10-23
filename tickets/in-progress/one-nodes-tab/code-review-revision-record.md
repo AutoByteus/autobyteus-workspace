@@ -11,6 +11,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001, NP-07) | Pass | Fail — implementation defect (Local Fix) | CR-005 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003), Targeted Delta Review | Fail | Pass | CR-005 (resolved) |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review, round 1 (API-REV-002) | Pass (CRR-004, source) | Fail — Local Fix (API/E2E) | TR-001, TR-002 |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, round 2 (API-REV-003) | Fail | Pass | TR-001, TR-002 (resolved) |
 
 ## Revision Entries
 
@@ -154,3 +155,31 @@ None (first test review). CR-001…CR-005 remain resolved.
 - Material score or classification changes: N/A
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`
 - Remaining risks or uncertainty: none for the product; rerun API-08 after the fix.
+
+### CRR-006 — Test-code review round 2 (TR-001, TR-002 fixed)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/tickets/in-progress/one-nodes-tab/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review): `git diff 164a1fb4da 77d2dc27b2` (`nodes-docker-address-probe.mjs` only)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003); TR-001, TR-002
+- Relevant solution revision IDs: `SR-006`, `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` (CRR-005)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: both findings were fixed in the probe and confirmed by the API-08 run 2 receipt.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open | Resolved | API-REV-003, `77d2dc27b2` | ND-05 asserts the name and the exact URL together; run 2 `deskRow` = `Embedded Node` @ `host.docker.internal:54710` |
+| TR-002 | Open | Resolved | API-REV-003, `77d2dc27b2` | The gateway setup and its claim are removed; ND-02 proves Use this by one save with the suggested address; no `gatewayChange` in the run 2 receipt |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: AC-711 (the user's own nodes); the design-spec § Run Rules `changeAddress` row at docs sync.

@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E round 2 (`API-REV-002`) Pass; durable test code changed (`8adb0650cb`)
+- Review Round: 2
+- Trigger: API/E2E round 3 (`API-REV-003`) Pass. TR-001/TR-002 fixed in `77d2dc27b2` (the Docker probe only); API-08 run 2 passes. Round 1: API-REV-002, `8adb0650cb`.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-006)
 - Investigation Notes Reviewed As Context: as cited by the design
 - Solution Revision Record Reviewed As Context: SR-006, SR-007
@@ -13,13 +13,13 @@
 - Implementation Revision Record Reviewed As Context: IR-003
 - Original Code Review Report: `code-review-report.md` (CRR-004, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-006`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
-- API/E2E Result: Pass (round 2)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001…003)
+- API/E2E Result: Pass (round 3)
 - Final Validation Confidence: 95% (API/E2E's)
-- Prior unresolved test-review findings rechecked: none (first round)
+- Prior unresolved test-review findings rechecked: TR-001, TR-002. Both resolved (see Findings).
 - Project testing guideline applied: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/TESTING.md`. No conflicts. The probes follow its rules: owned stacks, a clean env for servers, a test-owned container on `127.0.0.1` with no volumes, a read-only `dist` mount with an image-diff receipt, `docker rm -f -v`, and browser errors fail the run.
 - Supported Product Scenario Basis Confirmed: `Yes`
 
@@ -39,7 +39,7 @@
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
 | Scenario grouping and names make intent clear | Pass | Case IDs mapped to AC/REQ in each header; one `runCase` per case |
-| Assertions prove approved requirements instead of incidental details | Fail | Exact approved copy, peers.json on both sides, request audit. But ND-05's name assertion is bypassed by operator precedence (TR-001), and ND-02's stated precondition is not asserted (TR-002). |
+| Assertions prove approved requirements instead of incidental details | Pass (round 2) | Exact approved copy, peers.json on both sides, request audit. ND-05 now asserts the name and the exact `host.docker.internal:<port>` together. ND-02 rests on the asserted single save with the suggested address after the refused loopback, and a comment says why the stored value doesn't change. |
 | Fixtures, setup, helpers reuse meaningful repetition | Pass | `startServer`, `register`, `peersOf`, `line`, `dialogSteps`, `addNode`. The two probes repeat a small harness; that's acceptable for standalone scripts. |
 | Isolation and determinism fit the boundary | Pass | Free ports, temp roots, owned frontend and container, cleanup receipts. Timing bounds are generous (theta 19–28 s; fast rows < 8 s); the black-hole copy accepts both the timeout and the unreachable wording. |
 | Large files coherent and navigable | Pass | Each file covers one surface |
@@ -55,6 +55,10 @@
 | TR-001 | `nodes-docker-address-probe.mjs:339`, ND-05 (REQ-713) | `expect(deskRow.name === 'Embedded Node' && deskRow.url?.startsWith('host.docker.internal:') \|\| deskRow.url?.startsWith('gateway.docker.internal:'), …)` parses as `(name && host) \|\| gateway`. Whenever the URL is `gateway.docker.internal:` (the state the probe's own setup tries to create), the row's name is not checked. Run 1 had `name: "Embedded Node"`, so the behavior held, but the assertion does not guard it. | Parenthesize: `name === 'Embedded Node' && (host \|\| gateway)` (or drop the gateway branch with TR-002). | Local Fix — `api_e2e_engineer` |
 | TR-002 | `nodes-docker-address-probe.mjs:324-328`, ND-02 (AC-707 "Use this") | The setup comment says desk's address is changed to `gateway.docker.internal` "so Use this visibly changes it back". In API-08 run 1 that change failed (`PEER_UNREACHABLE`, `timeout`; `gatewayChange.peersAfter` still `host.docker.internal`). The probe records but does not assert it, so ND-02's `peerAfter` equals the starting value and does not show a change. ND-02 still proves Use this through the single `ChangePeerAddress` save with the suggested address (`saves`). | Either remove the gateway setup and its comment, and keep the save-request assertion as the proof; or make the precondition real (an address the container resolves and that answers as desk) and `assert` it before ND-02. | Local Fix — `api_e2e_engineer` |
 
+Round 2: both **Resolved** (`77d2dc27b2`).
+- TR-001: `expect(deskRow.name === 'Embedded Node' && deskRow.url === \`host.docker.internal:${desk.port}\`, …)`. Run 2 `cases.ND-05.deskRow` = `{name: "Embedded Node", url: "host.docker.internal:54710", dot: "Reachable now"}`.
+- TR-002: the gateway setup and its claim are removed (`gqlErrors` is still used by ND-03). ND-02 has one `ChangePeerAddress` save with `http://host.docker.internal:54710` (run 2 `cases.ND-02.saves`). There's no `gatewayChange` in the receipt. Cleanup: `containerLeft: null`, no servers left, no unexpected browser errors.
+
 No source defect is revealed. `remote-nodes-page-probe.mjs` has no findings.
 
 ## Follow-ups
@@ -63,8 +67,11 @@ No source defect is revealed. `remote-nodes-page-probe.mjs` has no findings.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
+- Result: `Pass`
 - Changed durable test paths reviewed: `autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs`, `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs`, `autobyteus-web/package.json`
-- Unresolved finding IDs: TR-001, TR-002
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: both fixes are test-code only, in `nodes-docker-address-probe.mjs`. After the fix, rerun API-08 (the Docker probe) only; API-03/05/06/07/09 are unaffected. Then this review runs again before delivery.
+- Unresolved finding IDs: none
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+- Notes:
+  - Delivery carries the user check AC-711 on the user's own nodes.
+  - Docs sync should update the design-spec § Run Rules `changeAddress` row to a single `changeAddressHere` with the typed address only (A1/CR-002).
+  - The recorded image `dist` deviation (autobyteus-269 files) is API/E2E's residual.
