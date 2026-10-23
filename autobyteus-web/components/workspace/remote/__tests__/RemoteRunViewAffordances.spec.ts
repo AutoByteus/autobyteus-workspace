@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter'
 
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: vi.fn(() => null) }) }))
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
@@ -48,7 +49,7 @@ describe.each(families)('the $family view of a run another node runs', (entry) =
   beforeEach(() => {
     setActivePinia(createPinia())
     retry = vi.fn(() => true)
-    useRemoteRunsStore().register(remoteTeam, retry)
+    useRemoteRunsStore().register(remoteTeam, streamOnlyRetryAdapter(retry))
   })
 
   it('shows the node beside the name, no ⚙ or ＋, and a box naming the node; a run of this node keeps all of them', () => {

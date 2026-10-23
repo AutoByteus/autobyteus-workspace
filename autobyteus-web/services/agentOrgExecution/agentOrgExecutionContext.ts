@@ -169,6 +169,11 @@ export class AgentOrgExecutionContext {
   /** autobyteus-278: the runs this Org delegated to other nodes. */
   get remoteExecutions() { return this.view.remote_task_executions }
 
+  /** autobyteus-278: remote agents whose stored conversation was read from their node into this context (Retry). */
+  private readonly loadedRemoteAgents = new Set<string>()
+  isRemoteAgentLoaded(agentRunId: string): boolean { return this.loadedRemoteAgents.has(agentRunId) }
+  markRemoteAgentLoaded(agentRunId: string): void { this.loadedRemoteAgents.add(agentRunId) }
+
   adoptLocalContexts(previous: AgentOrgExecutionContext): void {
     if (previous.orgRunId !== this.orgRunId) throw new Error('AgentOrg candidate root mismatch.')
     const matches = this.listAgentContextEntries().flatMap((entry) => {

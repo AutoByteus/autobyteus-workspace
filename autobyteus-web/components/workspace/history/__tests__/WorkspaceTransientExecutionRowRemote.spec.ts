@@ -5,6 +5,7 @@ import WorkspaceTransientExecutionRow from '../WorkspaceTransientExecutionRow.vu
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter';
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
@@ -27,7 +28,7 @@ describe('WorkspaceTransientExecutionRow for a run another node runs', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     retried = vi.fn(() => true);
-    useRemoteRunsStore().register(execution, retried);
+    useRemoteRunsStore().register(execution, streamOnlyRetryAdapter(retried));
   });
 
   it('shows the node chip between the status and the identity, and its title under the node once the node answers', async () => {

@@ -24,22 +24,34 @@ export type RemoteRunInfo = Readonly<{
   title: string | null
 }>
 
-/** Asks the run's node again through the root that owns the run; `false` when the root has nothing to ask now. */
-export type RemoteRunRetry = () => boolean
+/**
+ * What the root that owns a remote run supplies for Retry (SR-007/SR-008): only its own mechanisms; the rule is
+ * `retry` below, written once for every family.
+ */
+export type RemoteRunRetryAdapter = Readonly<{
+  /** Asks the root's stream to fetch the summaries again (`REFRESH_REMOTE_TASK_EXECUTIONS`); `false` when not ready. */
+  refreshOnStream(): boolean
+  /** The agent run the family's view has selected. */
+  selectedAgent(): string | null
+  /** Whether this agent's conversation is loaded in the family's view. */
+  isLoaded(agentRunId: string): boolean
+  /** Starts reading the agent's conversation from its node; `false` when nothing starts (an already-loaded agent too). */
+  rereadAgent(agentRunId: string): boolean
+}>
 
 /**
  * The remote runs of every root view in this window, by run and by agent run (run IDs are unique). Each root's
  * context registers its remote executions from its view and applies its nodes' answers; the row, the run view,
- * the composer and the right panel read them here. Retry asks the root that owns the run, through the callback
- * the root registered.
+ * the composer and the right panel read them here. Retry is decided here and acts through the adapter the root
+ * that owns the run registered.
  */
 export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const runs = shallowReactive(new Map<string, RemoteRunInfo>())
   const runOfAgent = shallowReactive(new Map<string, string>())
-  const retries = new Map<string, RemoteRunRetry>()
+  const adapters = new Map<string, RemoteRunRetryAdapter>()
 
   /** A root's remote execution, with the way to ask its node again; an answer it already had stays. */
-  const register = (execution: RemoteTaskExecutionDto, retry: RemoteRunRetry): void => {
+  const register = (execution: RemoteTaskExecutionDto, adapter: RemoteRunRetryAdapter): void => {
     const runId = remoteTaskExecutionRunIdOf(execution)
     const previous = runs.get(runId)
     const agentRunIds = remoteTaskExecutionAgentsOf(execution).map((agent) => agent.agent_run_id)
@@ -48,7 +60,7 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
       reachable: previous?.reachable ?? null, checking: previous?.checking ?? false, title: previous?.title ?? null,
     }))
     agentRunIds.forEach((agentRunId) => runOfAgent.set(agentRunId, runId))
-    retries.set(runId, retry)
+    adapters.set(runId, adapter)
   }
 
   const update = (runId: string, change: Partial<Pick<RemoteRunInfo, 'reachable' | 'checking' | 'title'>>): void => {
@@ -63,10 +75,23 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   /** A read of the run's conversation reached its node, or did not (the opened view's notice); it answers a Retry. */
   const markReachable = (runId: string, reachable: boolean): void => update(runId, { reachable, checking: false })
 
-  /** Retry: "Checking {node}…" until the node answers; the root that owns the run asks again, when it can ask anything. */
+  /**
+   * Retry (SR-008, the one rule): "Checking {node}…" while the node is asked. The root's stream fetches the summaries
+   * again; the selected agent of the run, or else the run's first agent that is not loaded, is read again. When
+   * neither asks anything, it settles at once; otherwise the answers (`applySummary`, `markReachable`) settle it.
+   */
   const retry = (runId: string): void => {
+    const current = runs.get(runId)
+    const adapter = adapters.get(runId)
+    if (!current || !adapter) return
     update(runId, { checking: true })
-    if (!retries.get(runId)?.()) update(runId, { checking: false })
+    const refreshed = adapter.refreshOnStream()
+    const selected = adapter.selectedAgent()
+    const target = selected && current.agentRunIds.includes(selected)
+      ? selected
+      : current.agentRunIds.find((agentRunId) => !adapter.isLoaded(agentRunId)) ?? null
+    const started = target ? adapter.rereadAgent(target) : false
+    if (!refreshed && !started) update(runId, { checking: false })
   }
 
   const run = (runId: string | null | undefined): RemoteRunInfo | null => runId ? runs.get(runId) ?? null : null
@@ -76,7 +101,7 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const clear = (): void => {
     runs.clear()
     runOfAgent.clear()
-    retries.clear()
+    adapters.clear()
   }
   watch(() => useWindowNodeContextStore().bindingRevision, clear, { flush: 'sync' })
 

@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import AgentWorkspaceSurface from '../AgentWorkspaceSurface.vue'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter'
 
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: vi.fn(() => null) }) }))
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
@@ -32,7 +33,7 @@ describe('AgentWorkspaceSurface for a run another node runs', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     retry = vi.fn(() => true)
-    useRemoteRunsStore().register(execution, retry)
+    useRemoteRunsStore().register(execution, streamOnlyRetryAdapter(retry))
   })
 
   it('shows the node chip in the header and no ⚙ or ＋; a local run keeps its header actions', () => {

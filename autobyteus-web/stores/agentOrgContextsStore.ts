@@ -16,8 +16,7 @@ import type { ActiveAgentWorkspaceTarget, WorkspaceAccess } from '~/types/worksp
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex'
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { hydrateRemoteOrgMember, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
-import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
+import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
@@ -70,8 +69,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
-    // autobyteus-278: the runs this Org delegated to other nodes; Retry asks their nodes again on the Org's stream.
-    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(id, remoteTaskExecutionRunIdOf(execution))))
+    // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
+    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
   }
@@ -143,16 +142,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       .catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
     return true
   }
-  /**
-   * Retry of a remote run: the live root asks its nodes again, and the run's agent is read again from its node: the
-   * selected one, or, without a stream, the run's first agent. Answers whether the node is being asked.
-   */
-  const retryRemote = (id: string, runId: string): boolean => {
-    const refreshed = services.get(id)?.refreshRemote() ?? false
-    const agents = remoteRuns.run(runId)?.agentRunIds ?? []
-    const selected = selectedAgentRunId(contexts.value[id]?.selection)
-    return readRemoteMember(id, selected && agents.includes(selected) ? selected : refreshed ? null : agents[0] ?? null) || refreshed
-  }
+  /** autobyteus-278 (SR-008): this Org's mechanisms for the store's Retry rule. */
+  const remoteRetryAdapter = (id: string): RemoteRunRetryAdapter => Object.freeze({
+    refreshOnStream: () => services.get(id)?.refreshRemote() ?? false,
+    selectedAgent: () => selectedAgentRunId(contexts.value[id]?.selection),
+    isLoaded: (agentRunId: string) => contexts.value[id]?.isRemoteAgentLoaded(agentRunId) ?? false,
+    rereadAgent: (agentRunId: string) => !(contexts.value[id]?.isRemoteAgentLoaded(agentRunId) ?? false) && readRemoteMember(id, agentRunId),
+  })
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
     const generation = Symbol(id)

@@ -218,4 +218,5 @@ export const hydrateRemoteOrgMember = async (input: Readonly<{
   if (!input.isCurrent()) return
   remoteRuns.markReachable(runId, true)
   commitMemberRunStates([applyProjection(agent, seed, state)])
+  input.context.markRemoteAgentLoaded(input.agentRunId)
 }

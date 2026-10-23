@@ -1,7 +1,7 @@
-import { remoteTaskExecutionRunIdOf, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
+import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import {
   ensureAuthoritativeTeamMemberProjection,
   isTeamMemberProjectionAuthoritative,
@@ -9,24 +9,31 @@ import {
 
 /**
  * autobyteus-278: a Team root's remote runs in the window's registry, from the Team's stream snapshot or its stored
- * view. Retry asks the run's node again: on the Team's stream when it is ready (the answers arrive there); without a
- * stream, by reading the run's first agent not yet loaded from its node. A Team member whose read failed is not
- * focused, so selecting it again reads it.
+ * view, with this Team's mechanisms for the store's one Retry rule (SR-008): its stream, its focused member, and a
+ * member's authoritative projection as "loaded".
  */
 export const registerTeamRemoteRuns = (teamRunId: string, executions: readonly RemoteTaskExecutionDto[]): void => {
   const remoteRuns = useRemoteRunsStore()
-  executions.forEach((execution) => {
-    const runId = remoteTaskExecutionRunIdOf(execution)
-    remoteRuns.register(execution, () => retryTeamRemoteRun(teamRunId, runId))
-  })
+  const adapter = teamRemoteRetryAdapter(teamRunId)
+  executions.forEach((execution) => remoteRuns.register(execution, adapter))
 }
 
-const retryTeamRemoteRun = (teamRunId: string, runId: string): boolean => {
-  if (useAgentTeamRunStore().refreshTeamRemote(teamRunId)) return true
-  const team = useAgentTeamContextsStore().getTeamContextById(teamRunId)
-  const agentRunId = team ? useRemoteRunsStore().run(runId)?.agentRunIds.find((id) => !isTeamMemberProjectionAuthoritative(team, id)) : null
-  if (!team || !agentRunId) return false
-  void ensureAuthoritativeTeamMemberProjection({ team, agentRunId })
-    .catch((cause) => console.warn(`[agentTeam] Could not load '${agentRunId}' of '${teamRunId}'.`, cause))
-  return true
+const teamRemoteRetryAdapter = (teamRunId: string): RemoteRunRetryAdapter => {
+  const team = () => useAgentTeamContextsStore().getTeamContextById(teamRunId)
+  const isLoaded = (agentRunId: string): boolean => {
+    const current = team()
+    return current ? isTeamMemberProjectionAuthoritative(current, agentRunId) : false
+  }
+  return Object.freeze({
+    refreshOnStream: () => useAgentTeamRunStore().refreshTeamRemote(teamRunId),
+    selectedAgent: () => team()?.view.getFocusedAgentRunId() ?? null,
+    isLoaded,
+    rereadAgent: (agentRunId: string) => {
+      const current = team()
+      if (!current || isLoaded(agentRunId)) return false
+      void ensureAuthoritativeTeamMemberProjection({ team: current, agentRunId })
+        .catch((cause) => console.warn(`[agentTeam] Could not load '${agentRunId}' of '${teamRunId}'.`, cause))
+      return true
+    },
+  })
 }

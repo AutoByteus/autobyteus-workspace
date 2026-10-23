@@ -74,6 +74,24 @@ describe('Retry on an opened remote run', () => {
     expect(store.contextFor('host-run')!.getAgentContext('publisher-run')!.state.conversation.messages).toHaveLength(1)
   })
 
+  it('SR-008: on a live stream with nothing selected, Retry refreshes and also reads the first agent not loaded', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    io.unreachable = false
+    const store = useAgentRunCollaborationStore(); store.syncHost('host-run', true)
+    const socket = Socket.instances[0]!
+    socket.frame({ type: 'CONNECTED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', session_id: 'session' } })
+    socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: remoteView() } })
+    await flush()
+    const remoteRuns = useRemoteRunsStore()
+    expect(store.selectedChild('host-run')).toBeNull()
+
+    remoteRuns.retry('publisher-run'); await flush()
+    const refresh = socket.send.mock.calls.map(([raw]) => JSON.parse(raw)).filter((message) => message.type === 'REFRESH_REMOTE_TASK_EXECUTIONS')
+    expect(refresh).toHaveLength(1)
+    expect(store.contextFor('host-run')!.isChildHydrated('publisher-run')).toBe(true)
+    expect(remoteRuns.run('publisher-run')).toMatchObject({ reachable: true, checking: false })
+  })
+
   it("without a stream, Retry from the row reads the run's agent from its node, and its answer ends 'Checking'", async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const store = useAgentRunCollaborationStore(); await store.inspect('host-run')

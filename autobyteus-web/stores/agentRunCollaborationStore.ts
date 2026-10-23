@@ -23,8 +23,7 @@ import {
   buildAgentCollaborationMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
-import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
+import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -68,8 +67,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
-    // autobyteus-278: the runs this root delegated to other nodes; Retry asks their nodes again through this root.
-    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(hostRunId, remoteTaskExecutionRunIdOf(execution))))
+    // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
@@ -125,18 +124,13 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     return service
   }
 
-  /**
-   * Retry of a remote run (autobyteus-278): the live root asks its nodes again (the answers arrive on its stream),
-   * and the run's agent whose conversation could not be read is read again from its node: the selected one, or,
-   * without a stream, the run's first agent. Answers whether the node is being asked.
-   */
-  const retryRemote = (hostRunId: string, runId: string): boolean => {
-    const refreshed = services.get(hostRunId)?.refreshRemote() ?? false
-    const agents = remoteRuns.run(runId)?.agentRunIds ?? []
-    const selected = selection[hostRunId] ?? null
-    const reread = selected && agents.includes(selected) ? selected : refreshed ? null : agents[0] ?? null
-    return ensureChildHydrated(hostRunId, reread) || refreshed
-  }
+  /** autobyteus-278 (SR-008): this root's mechanisms for the store's Retry rule; a remote child loads as any child. */
+  const remoteRetryAdapter = (hostRunId: string): RemoteRunRetryAdapter => Object.freeze({
+    refreshOnStream: () => services.get(hostRunId)?.refreshRemote() ?? false,
+    selectedAgent: () => selection[hostRunId] ?? null,
+    isLoaded: (agentRunId: string) => contexts.value[hostRunId]?.isChildHydrated(agentRunId) ?? false,
+    rereadAgent: (agentRunId: string) => ensureChildHydrated(hostRunId, agentRunId),
+  })
 
   const detach = (hostRunId: string) => {
     const service = services.get(hostRunId)

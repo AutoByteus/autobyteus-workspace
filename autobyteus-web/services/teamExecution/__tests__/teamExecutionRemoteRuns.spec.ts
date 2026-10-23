@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter'
 
 /** autobyteus-278: a Team root's remote runs: placements, contexts and rows beside its tree; summaries; a new one reloads. */
 
@@ -70,7 +71,7 @@ describe('Team execution view with remote runs', () => {
 
   it("applies a node's summary, dispatches a remote member's output, and reloads for a remote run it does not know", () => {
     const view = withRemoteSnapshot()
-    useRemoteRunsStore().register(remoteTeam, () => true)
+    useRemoteRunsStore().register(remoteTeam, streamOnlyRetryAdapter())
     const summary = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_SUMMARY', payload: { change_sequence: 4, node_id: 'srv_docker',
       run_id: 'marketing-run', reachable: true, title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] } })
     expect(summary.disposition).toBe('applied')

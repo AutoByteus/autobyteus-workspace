@@ -14,6 +14,7 @@ vi.mock('~/services/agentStreaming/agentStreamMessageProjector', () => ({
 }))
 
 import { agentRootView, created } from './agentRootFixture'
+import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter'
 
 /** autobyteus-278: a standalone root's remote children are rows, contexts and presentation targets like its copies. */
 
@@ -63,7 +64,7 @@ describe('AgentRunCollaborationContext with remote children', () => {
   it("applies a node's summary to its agents' statuses and the window's registry; an agent it does not list is offline", () => {
     const context = build()
     const remoteRuns = useRemoteRunsStore()
-    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => true))
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, streamOnlyRetryAdapter()))
     expect(context.applyEvent(5, { kind: 'remote_task_execution_summary', node_id: 'srv_docker', run_id: 'marketing-run', reachable: true,
       title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] })).toBe('applied')
     expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(AgentStatus.Running)
