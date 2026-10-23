@@ -1,5 +1,4 @@
 import type {
-  RemoteChannelRefusal,
   RemoteDeliveryReceipt,
   RemoteMessageTransmission,
   RemotePeer,
@@ -8,6 +7,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
 import type { PeerNode } from "../domain/peer-node.js";
+import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
 import { localRefusalText, peerRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import {
@@ -21,6 +21,7 @@ import {
 } from "../domain/remote-requests.js";
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerIdentityProbe } from "../settings/peer-directory.js";
+import { transportFailureReason, type TransportFailureReason } from "./transport-failure-reason.js";
 
 /** QR-102: a call to a peer answers or is refused within this bound, under the runtimes' tool-call timeouts (A-11). */
 export const PEER_REQUEST_TIMEOUT_MS = 20_000;
@@ -76,8 +77,14 @@ const refusalTargetOf = (value: unknown): RemoteRefusalTarget | undefined => {
 };
 
 const messageOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
-const isTimeout = (error: unknown): boolean => (error as { name?: string } | null)?.name === "TimeoutError"
-  || (error as { name?: string } | null)?.name === "AbortError";
+
+/** The plain cause of an identity probe that got no answer (the settings error the Nodes page words itself). */
+const PROBE_FAILURE_TEXT: Readonly<Record<TransportFailureReason, string>> = Object.freeze({
+  refused: "nothing answers at that address and port",
+  timeout: "it did not answer in time",
+  not_found: "its host name cannot be found",
+  unreachable: "it cannot be reached from this node",
+});
 
 /**
  * Outbound transport to peer nodes (design § Contract Between Nodes). It applies this node's switch and the
@@ -94,7 +101,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     fetch?: FetchLike;
   }>) {}
 
-  async findPeer(name: string): Promise<RemotePeer | RemoteChannelRefusal> {
+  async findPeer(name: string): Promise<RemotePeer | PeerRefusal> {
     if (!this.dependencies.capability.isEnabled()) return refusal(REMOTE_REFUSAL.OFF, localRefusalText.off());
     const peer = await this.dependencies.peers.findByName(name);
     return peer
@@ -119,13 +126,13 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 
   /** autobyteus-261: whether the peer takes this node's requests now (accepted), or the refusal that says why not. */
-  checkAvailability(nodeId: string): Promise<Readonly<{ accepted: true }> | RemoteChannelRefusal> {
+  checkAvailability(nodeId: string): Promise<Readonly<{ accepted: true }> | PeerRefusal> {
     return this.call(nodeId, REMOTE_AVAILABILITY_PATH, (envelope) => ({ ...envelope }), "did not answer in time",
       () => Object.freeze({ accepted: true as const }));
   }
 
   /** autobyteus-261: what the peer offers for delegation; a malformed answer is unreachable ("without its list"). */
-  listAvailableAgents(nodeId: string): Promise<Readonly<{ accepted: true; agents: readonly AvailableCollaboratorEntry[] }> | RemoteChannelRefusal> {
+  listAvailableAgents(nodeId: string): Promise<Readonly<{ accepted: true; agents: readonly AvailableCollaboratorEntry[] }> | PeerRefusal> {
     return this.call(nodeId, REMOTE_AVAILABLE_AGENTS_PATH, (envelope) => ({ ...envelope }), "did not answer in time", (answer, peer) => {
       const agents = availableAgentsOf(answer);
       return agents ? Object.freeze({ accepted: true as const, agents })
@@ -149,12 +156,16 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
 
   /**
    * `PeerIdentityProbe`: the server identity behind a URL, read from its public status route (DS-004). Only a
-   * transport failure or a timeout is `PEER_UNREACHABLE`; a server that answered with anything but its identity
-   * (another status, a page that is not JSON, JSON without `serverInstanceId`) is not an AutoByteus node (CR-002).
+   * transport failure or a timeout is `PEER_UNREACHABLE`, with its classified `reason` (one-nodes-tab REQ-707); a
+   * server that answered with anything but its identity (another status, a page that is not JSON, JSON without
+   * `serverInstanceId`) is not an AutoByteus node (CR-002).
    */
   async fetchServerInstanceId(baseUrl: string): Promise<string> {
-    const unreachable = (error: unknown) => new RemoteCollaborationSettingsError("PEER_UNREACHABLE",
-      `${baseUrl} could not be reached: ${isTimeout(error) ? "it did not answer in time" : messageOf(error)}.`);
+    const unreachable = (error: unknown) => {
+      const reason = transportFailureReason(error);
+      return new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${baseUrl} could not be reached: ${PROBE_FAILURE_TEXT[reason]}.`,
+        { reason, address: baseUrl });
+    };
     const notAutobyteus = () => new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", `${baseUrl} is not an AutoByteus node.`);
     const response = await this.fetchJson(`${baseUrl}/rest/remote-access/status`, { method: "GET" })
       .catch((error: unknown) => { throw unreachable(error); });
@@ -164,7 +175,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       answer = await response.json();
     } catch (error) {
       // The body stopped arriving in time is still the transport; a body that is not JSON is an answer.
-      throw isTimeout(error) ? unreachable(error) : notAutobyteus();
+      throw transportFailureReason(error) === "timeout" ? unreachable(error) : notAutobyteus();
     }
     const id = (answer as { serverInstanceId?: unknown } | null)?.serverInstanceId;
     if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) throw notAutobyteus();
@@ -176,14 +187,15 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     path: string,
     body: (envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => object,
     timeoutText: string,
-    accepted: (answer: PeerAnswer, peer: PeerNode) => TResult | RemoteChannelRefusal,
-  ): Promise<TResult | RemoteChannelRefusal> {
+    accepted: (answer: PeerAnswer, peer: PeerNode) => TResult | PeerRefusal,
+  ): Promise<TResult | PeerRefusal> {
     if (!this.dependencies.capability.isEnabled()) return refusal(REMOTE_REFUSAL.OFF, localRefusalText.off());
     const peer = await this.dependencies.peers.findByNodeId(nodeId);
     if (!peer) {
       return refusal(REMOTE_REFUSAL.PEER_NOT_REGISTERED, `The node of that run (${nodeId}) is no longer a registered peer of this node, so nothing was sent.`);
     }
-    const unreachable = (detail: string) => refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, detail));
+    const unreachable = (detail: string, reason?: TransportFailureReason) =>
+      refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, detail), reason);
     let answer: PeerAnswer;
     try {
       const response = await this.fetchJson(`${peer.baseUrl}${path}`, {
@@ -194,7 +206,8 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       if (!response.ok) return unreachable(`it answered HTTP ${response.status}`);
       answer = await response.json() as PeerAnswer;
     } catch (error) {
-      return unreachable(isTimeout(error) ? `it ${timeoutText}` : messageOf(error));
+      const reason = transportFailureReason(error);
+      return unreachable(reason === "timeout" ? `it ${timeoutText}` : messageOf(error), reason);
     }
     if (!answer || typeof answer !== "object" || answer.nodeId !== peer.nodeId) {
       return refusal(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, ""));
@@ -213,4 +226,5 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 }
 
-const refusal = (code: string, message: string): RemoteChannelRefusal => Object.freeze({ accepted: false, code, message });
+const refusal = (code: string, message: string, reason?: TransportFailureReason): PeerRefusal =>
+  Object.freeze({ accepted: false as const, code, message, ...(reason ? { reason } : {}) });

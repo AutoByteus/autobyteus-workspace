@@ -3,6 +3,7 @@ import type { AvailableNode, RemoteDiscoveryChannel } from "../../agent-collabor
 import type { RemoteChannelRefusal } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerClient } from "../channel/peer-client.js";
 import type { PeerNode } from "../domain/peer-node.js";
+import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 
 /**
@@ -13,6 +14,8 @@ import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
  *   (a refusal by the peer, the wrong node, an HTTP error such as an older build's 404, a transport failure or a
  *   timeout) is `unavailable`: `listAvailableAgents` with that node says why.
  * - `listAvailableAgents`: the peer by name (the same refusals as `delegate_task`), then its *available agents*.
+ * - `listAvailableAgentsOf`, `checkAvailabilityOf`: one peer by its node ID, for the Nodes page (autobyteus-267,
+ *   one-nodes-tab DS-004); an unreachable peer's refusal carries the classified `reason`.
  */
 export class RemoteNodeDiscovery implements RemoteDiscoveryChannel {
   constructor(private readonly dependencies: Readonly<{
@@ -39,8 +42,16 @@ export class RemoteNodeDiscovery implements RemoteDiscoveryChannel {
    * A peer's offer by its node ID (autobyteus-267): the one path for the agent tools (after the name lookup above)
    * and for the Nodes page. The client applies the switch, the registration, the 20 s bound and the refusal codes.
    */
-  async listAvailableAgentsOf(nodeId: string): Promise<readonly AvailableCollaboratorEntry[] | RemoteChannelRefusal> {
+  async listAvailableAgentsOf(nodeId: string): Promise<readonly AvailableCollaboratorEntry[] | PeerRefusal> {
     const answer = await this.dependencies.client.listAvailableAgents(nodeId);
     return answer.accepted ? answer.agents : answer;
+  }
+
+  /**
+   * Whether a peer admits this node's requests now (one-nodes-tab DS-004: asked on the other node for the direction
+   * "it → this node"). The same question `listNodes` asks, for one peer, with the refusal that says why not.
+   */
+  checkAvailabilityOf(nodeId: string): Promise<Readonly<{ accepted: true }> | PeerRefusal> {
+    return this.dependencies.client.checkAvailability(nodeId);
   }
 }

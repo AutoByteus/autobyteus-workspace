@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 import type { DocumentNode } from 'graphql'
 import { getApolloClient } from '~/utils/apolloClient'
-import { GetRemoteCollaborationSettings } from '~/graphql/queries/remoteCollaborationQueries'
-import { AddPeerNode, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
+import {
+  GetPeerAddressCandidates,
+  GetRemoteCollaborationSettings,
+  ResolvePeerAddress,
+} from '~/graphql/queries/remoteCollaborationQueries'
+import { AddPeerNode, ChangePeerAddress, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
+import { throwSettingsErrors } from '~/utils/nodeSettingsError'
 
-/** A node registered on the bound node for remote collaboration. */
+/** A node registered on the bound node for remote collaboration. `baseUrl` is how the bound node reaches it. */
 export interface PeerNode {
   nodeId: string
   name: string
@@ -12,88 +17,80 @@ export interface PeerNode {
   addedAt: string
 }
 
-const messageOf = (error: unknown, fallback: string): string =>
-  error instanceof Error && error.message ? error.message : fallback
-
-const throwGraphqlErrors = (errors: ReadonlyArray<{ message: string }> | undefined): void => {
-  if (errors?.length) throw new Error(errors.map((entry) => entry.message).join(', '))
-}
-
 /**
- * The bound node's peers (Nodes → Remote Collaboration). Every change goes through the
- * server, which checks it; a refused change keeps the lists unchanged and its reason in `error`.
+ * The bound node's peers (one-nodes-tab AR-005: the one write path for this node's peers). Every change goes through
+ * the server, which checks it; a refused change throws a `NodeSettingsError` with the server's code and details and
+ * changes nothing here. The Nodes page reads `peers` to join them with the desktop's list.
  */
 export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore', {
   state: () => ({
     peers: [] as PeerNode[],
-    loading: false,
-    saving: false,
-    error: null as string | null,
-    /** Where the last error belongs, so the tab shows it next to the action that failed. */
-    errorScope: null as 'load' | 'peers' | null,
+    loaded: false,
+    loadError: null as string | null,
   }),
 
   actions: {
-    async load() {
-      this.loading = true
-      this.error = null
-      this.errorScope = null
+    async load(): Promise<void> {
       try {
-        const { data, errors } = await getApolloClient().query<{ peerNodes?: PeerNode[] }>({
-          query: GetRemoteCollaborationSettings,
-          fetchPolicy: 'network-only',
-        })
-        throwGraphqlErrors(errors)
-        this.peers = data?.peerNodes ?? []
+        this.peers = await this.query<{ peerNodes?: PeerNode[] }>(GetRemoteCollaborationSettings, {}).then((data) => data?.peerNodes ?? [])
+        this.loadError = null
       } catch (error) {
-        this.error = messageOf(error, 'Failed to load remote collaboration settings.')
-        this.errorScope = 'load'
+        this.loadError = error instanceof Error ? error.message : String(error)
       } finally {
-        this.loading = false
+        this.loaded = true
       }
     },
 
-    /** The added peer (so the page can ask it at once), or `null` when the server refused it. */
-    async addPeer(input: { baseUrl: string; name: string }): Promise<PeerNode | null> {
-      let added: PeerNode | null = null
-      const accepted = await this.change('peers', AddPeerNode, { input }, async (data) => {
-        added = (data?.addPeerNode as PeerNode | undefined) ?? null
-        await this.load()
-      })
-      return accepted ? added : null
+    /** How other nodes may reach this node (its own address candidates). */
+    async addressCandidates(): Promise<string[]> {
+      const data = await this.query<{ peerAddressCandidates?: string[] }>(GetPeerAddressCandidates, {})
+      return data?.peerAddressCandidates ?? []
     },
 
-    async renamePeer(nodeId: string, name: string): Promise<boolean> {
-      return this.change('peers', RenamePeerNode, { nodeId, name }, async (data) => {
-        const renamed = data?.renamePeerNode as PeerNode | undefined
-        if (renamed) this.peers = this.peers.map((peer) => (peer.nodeId === nodeId ? renamed : peer))
-      })
+    /** The first of `baseUrls` at which this node reaches the node `nodeId` (this node's switch must be on). */
+    async resolveAddress(nodeId: string, baseUrls: string[]): Promise<string> {
+      const data = await this.query<{ resolvePeerAddress?: string }>(ResolvePeerAddress, { nodeId, baseUrls })
+      if (!data?.resolvePeerAddress) throw new Error('No address was returned.')
+      return data.resolvePeerAddress
     },
 
-    async removePeer(nodeId: string): Promise<boolean> {
-      return this.change('peers', RemovePeerNode, { nodeId }, async () => {
-        this.peers = this.peers.filter((peer) => peer.nodeId !== nodeId)
-      })
+    async add(input: { nodeId: string; name: string; baseUrl: string }): Promise<PeerNode> {
+      const added = (await this.mutate<{ addPeerNode: PeerNode }>(AddPeerNode, { input })).addPeerNode
+      this.peers = [...this.peers.filter((peer) => peer.nodeId !== added.nodeId), added]
+      return added
     },
 
-    /** One server change; `true` when it was accepted. A refusal is shown as `error` and changes nothing here. */
-    async change(scope: 'peers', mutation: DocumentNode, variables: Record<string, unknown>,
-      apply: (data: any) => Promise<void>): Promise<boolean> {
-      this.saving = true
-      this.error = null
-      this.errorScope = null
-      try {
-        const { data, errors } = await getApolloClient().mutate<any>({ mutation, variables })
-        throwGraphqlErrors(errors)
-        await apply(data)
-        return true
-      } catch (error) {
-        this.error = messageOf(error, 'The change was not saved.')
-        this.errorScope = scope
-        return false
-      } finally {
-        this.saving = false
-      }
+    async rename(nodeId: string, name: string): Promise<PeerNode> {
+      return this.replace((await this.mutate<{ renamePeerNode: PeerNode }>(RenamePeerNode, { nodeId, name })).renamePeerNode)
+    },
+
+    async changeAddress(nodeId: string, baseUrl: string): Promise<PeerNode> {
+      return this.replace((await this.mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, baseUrl })).changePeerAddress)
+    },
+
+    async remove(nodeId: string): Promise<void> {
+      await this.mutate(RemovePeerNode, { nodeId })
+      this.peers = this.peers.filter((peer) => peer.nodeId !== nodeId)
+    },
+
+    replace(changed: PeerNode): PeerNode {
+      this.peers = this.peers.map((peer) => (peer.nodeId === changed.nodeId ? changed : peer))
+      return changed
+    },
+
+    async query<T>(query: DocumentNode, variables: Record<string, unknown>): Promise<T | undefined> {
+      const { data, errors } = await getApolloClient().query<T>({
+        query, variables, fetchPolicy: 'network-only', errorPolicy: 'all', context: { queryDeduplication: false },
+      })
+      throwSettingsErrors(errors)
+      return data ?? undefined
+    },
+
+    async mutate<T>(mutation: DocumentNode, variables: Record<string, unknown>): Promise<T> {
+      const { data, errors } = await getApolloClient().mutate<T>({ mutation, variables, errorPolicy: 'all' })
+      throwSettingsErrors(errors)
+      if (!data) throw new Error('The change was not confirmed.')
+      return data
     },
   },
 })

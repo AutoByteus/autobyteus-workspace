@@ -201,53 +201,77 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
-## Nodes: Remote Collaboration
+## Nodes: Manage Nodes (one list)
 
-Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`) sets up
-cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
-off by default, through `remoteCollaborationCapabilityStore`, a
-`createBoundNodeCapabilityStore` capability) and the peer nodes (add by URL and name,
-rename, remove; adding needs the switch on). `stores/remoteCollaborationStore.ts` loads and
-changes the peers through GraphQL; a refused change shows the server's reason next to the
-section that failed. The server side is described in the server's
-`docs/modules/remote_collaboration.md`.
+Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
+Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
+once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
+approved UI/UX spec is the design repository's `tickets/done/one-nodes-tab/ui-ux-spec.md`).
+There is no Remote Collaboration tab; `?nodeTab=remoteCollaboration` opens Manage Nodes. The
+server side is described in the server's `docs/modules/remote_collaboration.md`.
 
-Each peer shows its state now and, when it is available, its Agents and Agent Teams
-(autobyteus-267; the approved UI/UX spec is the design repository's
-`tickets/done/remote-nodes-page/ui-ux-spec.md`):
-
-- **Where the answers come from.** `stores/remoteCollaborationOffersStore.ts` asks this
-  node's server for one peer at a time (GraphQL `peerNodeOffer(nodeId)`, network-only); the
-  server asks the peer through the same discovery the agent tools use. The window never
-  contacts a peer. The answer is the entries (`name`, `kind`, a `description` only when it
-  has one; no address) or the refusal code, which the page words itself.
-- **States.** Per peer: Checking… (with "Waiting for {name}… up to 20 seconds."), Available
-  (the offer, or "{name} shares no Agents or Agent Teams."), or one of four unavailable
-  states with a sentence: Off there, Not registered there (amber: the owner can act there),
-  Not reachable (also an older build, or any other refusal or a failed query), Different
-  server (red).
-- **When peers are asked.** Every peer at once when the tab opens with the switch on and
-  when the switch turns on; one peer when it is added and on its Refresh icon. Turning the
-  switch off, or leaving the tab, drops every state and asks nobody; the card shows "Remote
-  Collaboration is off, so peers are not asked. …". Nothing polls and nothing is cached.
-  Each ask takes a token per peer, so an answer that arrives after the peer was removed or
-  asked again, the switch turned off or the tab was left is ignored. Every ask is a new
-  request, even while an earlier ask for that peer is still open: the query turns off
-  Apollo's in-flight deduplication (`context: { queryDeduplication: false }`), which would
-  otherwise join the identical open query and leave the new token unanswered. Each peer
-  settles at its own pace (the server's 20 s bound); the page stays usable meanwhile.
+- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node, its
+  remote collaboration switch (`ENABLE_REMOTE_COLLABORATION`, off by default, through
+  `remoteCollaborationCapabilityStore`, a `createBoundNodeCapabilityStore` capability), its
+  explanation and the collapsed "How remote collaboration works" rules (any shared Agent or
+  Agent Team; each agent's own default runtime and model, a team member without one uses its
+  team's default; this node's temp workspace with tool calls auto-approved; a local login
+  such as Codex or Claude used for every registered node; no default runtime and model is
+  refused).
+- **One list** (`stores/nodeListStore.ts`, `components/settings/nodes/NodeList.vue`,
+  `NodeRow.vue`). Two stored lists keep their owners: the desktop's list (`nodeStore`, the
+  windows this desktop can open, addresses as the desktop reaches them) and this node's peers
+  (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
+  reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
+  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  reached is its own row until it is reached. A row's name is the peer name when the node is
+  a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
+  are rows too; their Open appears once this window reaches them, and the first Open adds a
+  desktop entry. Two desktop entries of one node join into one row.
+- **A row**: a dot (reachable now, not reachable, a different node, checking), the name
+  (click to rename; the embedded node's is not editable), the address, the collaboration
+  switch with its icon, Open and Remove icons, and at most one line with one fixing button
+  (`stores/nodeRowStatus.ts`, by priority: a step not finished [Try again]; not reachable
+  with its cause [Check again]; a different node [Change address]; registered only by the
+  other node [Turn on]; not collaborating [Turn on]; off there [Turn on there]; not
+  registered there [Register this node there]). With this node's switch off, rows show no
+  warnings. Once collaboration is on, the 267 summary line under the row opens the offer
+  list and the connection details (`NodeConnectionDetails.vue`): both directions with the
+  address each side uses, Change address, the node ID and Check again.
+- **When nodes are asked.** Every row once when the tab opens, whatever this node's switch
+  says; a row when it is added and on Check again; every row when the switch changes.
+  Nothing polls. "This node → it" is this node's server asking the peer
+  (`remoteCollaborationOffersStore`, `peerNodeOffer`, with the unreachable reason); the
+  window reads the other node's switch and peers through its own settings API
+  (`services/nodeCollaboration/nodeCollaborationApi.ts` over `directNodeApolloClient.ts`),
+  and asks it `peerNodeAvailability(this node)` for "it → this node". Each ask takes a token
+  per row; a stale answer is ignored.
+- **Add** (`AddNodePanel.vue`): Address, Name, the collaboration switch (on by default), Add
+  node. An address already in the list, whatever its node's state, or another address of a
+  listed node (by node ID) is not added again: "This is X, already in your list." Adding
+  does not open the node's window. With the switch on and the node reachable, the
+  confirmation opens; an unreachable node is added and its row shows the cause.
+- **Every change on another node is confirmed once** (`NodeChangeDialog.vue`,
+  `stores/nodeChangeDialogStore.ts`). `services/nodeCollaboration/nodeCollaborationConnector.ts`
+  plans only the needed steps (turn on here, register it here, turn on there, register this
+  node there; or remove here, remove there, remove from the list) and runs them: this node
+  through its own stores, the other node through its settings API, the desktop's list through
+  `nodeStore`. Each registering server finds the address that works for itself from the
+  other node's window address and advertised candidates (`resolvePeerAddress`); a side whose
+  switch is off finds it once it is on. Names follow the peer name rule and get " 2", " 3"
+  when taken there. Turning on stops at the first failure and keeps what was done (Try again
+  runs what is left); turning off and Remove carry on and say what could not be removed.
+  Rename (no dialog) renames the peer, then the desktop entry, and stops on a refused name.
+- **Causes and the Docker hint** (`utils/nodeConnectionErrorText.ts`): refused, timed out,
+  name not found (from here or from the other node), not an AutoByteus node, a different
+  node; "fetch failed" is never shown. When a node in a container cannot find an address and
+  the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
+  Use this and a link to the Docker Guide tab. The add form never shows it.
 - **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
-  names cut by the line's width) and opens into `RemoteCollaborationOfferList.vue`: Agents
-  and Agent Teams side by side from `md` up, each sorted by name, with a "Checked HH:MM"
-  footer. When either kind has more than 6 entries, a search box narrows both by name
-  ("n of m", "No match.", and a sentence with Clear search when nothing matches). Closing
-  it, or a Refresh, clears the search.
-- **How peers' runs work.** The rules for runs peers start on this node are one collapsed
-  line at the bottom of the Peer nodes card: any shared Agent or Agent Team; each agent's
-  own default runtime and model (a team member without one uses its team's default); this
-  node's temp workspace with tool calls auto-approved for every agent of the run; a local
-  login (Codex, Claude) used for every registered peer; no default runtime and model is
-  refused. There is no separate card for this node's own Agents and Agent Teams.
+  names cut by the line's width, or a label such as "Connection details") and opens into
+  `RemoteCollaborationOfferList.vue` (Agents and Agent Teams side by side from `md` up; a
+  search box when either kind has more than 6) with the connection details below it.
 
 ## Server Settings: Feature Capability Toggles
 

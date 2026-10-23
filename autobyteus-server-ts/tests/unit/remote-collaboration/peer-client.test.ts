@@ -152,6 +152,29 @@ describe("PeerClient", () => {
     await expect(down.client.fetchServerInstanceId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
 
+  it("one-nodes-tab REQ-707: an identity probe that gets no answer names its cause, never 'fetch failed'", async () => {
+    const refused = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }) }); });
+    await expect(refused.client.fetchServerInstanceId("http://localhost:8003")).rejects.toMatchObject({ code: "PEER_UNREACHABLE",
+      message: "http://localhost:8003 could not be reached: nothing answers at that address and port.",
+      details: { reason: "refused", address: "http://localhost:8003" } });
+    const unknownHost = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ENOTFOUND" } }); });
+    await expect(unknownHost.client.fetchServerInstanceId("http://nas.local:29695")).rejects.toMatchObject({ details: { reason: "not_found" } });
+    const slow = client((_url, init) => new Promise((_resolve, reject) => init.signal!.addEventListener("abort", () => reject(init.signal!.reason))), { timeoutMs: 20 });
+    await expect(slow.client.fetchServerInstanceId("http://blackhole")).rejects.toMatchObject({ details: { reason: "timeout" },
+      message: "http://blackhole could not be reached: it did not answer in time." });
+    for (const error of [refused, unknownHost, slow]) expect(JSON.stringify(error.fetch.mock.calls.length)).toBe("1");
+  });
+
+  it("one-nodes-tab REQ-707: an unreachable peer's refusal carries the reason; the agent's text is unchanged", async () => {
+    const refused = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ECONNREFUSED" } }); });
+    await expect(refused.client.checkAvailability(PEER.nodeId)).resolves.toEqual({ accepted: false, code: "PEER_UNREACHABLE", reason: "refused",
+      message: 'Node "docker" could not be reached (fetch failed).' });
+    const broken = client(async () => answer({}, 500));
+    const answered = await broken.client.listAvailableAgents(PEER.nodeId);
+    expect(answered).toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
+    expect("reason" in answered).toBe(false);
+  });
+
   it("calls a server that answered with a page, or with another status, not an AutoByteus node, never unreachable (CR-002)", async () => {
     const page = client(async () => ({ ok: true, status: 200, json: async () => JSON.parse("<!DOCTYPE html><html></html>") }));
     await expect(page.client.fetchServerInstanceId("http://127.0.0.1:3000"))

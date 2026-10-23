@@ -587,7 +587,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const start = await beta.post(PATHS.runs, inboundStart(alpha.nodeId, beta.nodeId));
     const message = await beta.post(PATHS.messages, inboundMessage(alpha.nodeId, beta.nodeId, "collabmsg_off"));
     for (const answer of [start, message]) expect(answer).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_COLLABORATION_OFF", message: "Remote collaboration is turned off on this node." } });
-    const addWhileOff = await alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: toBeta.url, name: LABEL.beta } });
+    const addWhileOff = await alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } });
     expect(addWhileOff.errors?.[0]?.message, JSON.stringify(addWhileOff)).toBeTruthy();
     expect(captured, "nothing contacted the peer").toEqual([]);
     expect(fs.existsSync(path.join(alpha.dataDir, "remote-collaboration", "peers.json")) ? (await readJson(path.join(alpha.dataDir, "remote-collaboration", "peers.json"))).peers : [], "nothing recorded").toEqual([]);
@@ -615,10 +615,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(unregisteredCaller).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_NOT_REGISTERED", message: "The calling node is not a registered peer of this node." } });
     const statusBefore = captured.length;
     const added = (await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { baseUrl: toBeta.url, name: LABEL.beta } })).addPeerNode;
+      { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } })).addPeerNode;
     expect(added).toMatchObject({ nodeId: beta.nodeId, name: LABEL.beta, baseUrl: toBeta.url });
     const addedOnBeta = (await beta.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { baseUrl: toAlpha.url, name: LABEL.alpha } })).addPeerNode;
+      { input: { nodeId: alpha.nodeId, baseUrl: toAlpha.url, name: LABEL.alpha } })).addPeerNode;
     expect(addedOnBeta).toMatchObject({ nodeId: alpha.nodeId, name: LABEL.alpha, baseUrl: toAlpha.url });
     expect(captured.slice(statusBefore).map((entry) => `${entry.via} ${entry.method} ${entry.path}`)).toEqual([`toBeta GET ${PATHS.status}`, `toAlpha GET ${PATHS.status}`]);
 
@@ -630,7 +630,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     });
     const foreignPort = await getFreePort();
     await new Promise<void>((resolve) => foreign.listen(foreignPort, "127.0.0.1", () => resolve()));
-    const addPeer = (baseUrl: string, name: string) => alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl, name } });
+    const addPeer = (baseUrl: string, name: string) => alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`,
+      { input: { nodeId: "srv_expected_peer_000000000000000000000", baseUrl, name } });
     const notAutobyteus = await addPeer(`http://127.0.0.1:${foreignPort}`, "router");
     const notFound = await addPeer(`http://127.0.0.1:${foreignPort}/missing`, "web");
     await new Promise<void>((resolve) => foreign.close(() => resolve()));
@@ -1449,11 +1450,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       await Promise.all(Object.values(extra).map((node) => node.start()));
       for (const node of Object.values(extra)) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
       for (const key of ["gamma", "delta", "epsilon"] as const) {
-        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: extra[key].baseUrl, name: names[key] } });
+        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: extra[key].nodeId, baseUrl: extra[key].baseUrl, name: names[key] } });
         added.push(extra[key].nodeId);
       }
       // gamma and delta know alpha; then gamma stops and delta turns its switch off. epsilon never registers alpha.
-      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: alpha.baseUrl, name: LABEL.alpha } });
+      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: LABEL.alpha } });
       await extra.gamma.stop();
       await extra.delta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
       const listed = await calls(scout, "list_available_nodes", {});

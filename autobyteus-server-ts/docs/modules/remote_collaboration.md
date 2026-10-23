@@ -27,8 +27,23 @@ in later slices.
 | The switch, off by default | `ENABLE_REMOTE_COLLABORATION` in `<data>/.env` | `RemoteCollaborationCapability` |
 | Peer nodes `{nodeId, name, baseUrl, addedAt}` | `<data>/remote-collaboration/peers.json` | `PeerDirectory` |
 
-- Adding a peer contacts `GET <baseUrl>/rest/remote-access/status` and pins the `serverInstanceId` as the
-  peer's `nodeId`; it needs the switch on. `name` is this owner's label, the `node` agents pass.
+- Adding a peer names the node it means (`{nodeId, name, baseUrl}`), contacts `GET <baseUrl>/rest/remote-access/status`
+  and pins that `serverInstanceId` as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
+  needs the switch on. `name` is this owner's label, the `node` agents pass. Changing a peer's address
+  (`changePeerAddress`) checks the pinned node answers at the new one.
+- **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,
+  `PeerAddressResolver`): a node's address depends on who calls (the desktop reaches a Docker node at
+  `localhost:8001`; the Docker node reaches the desktop only at `host.docker.internal:29695`). `resolvePeerAddress(nodeId,
+  baseUrls)` asks every given address at once, each within the 20 s bound, and returns the first one, in order, that
+  answers with the expected node ID, as soon as every address before it has settled. It is read-only and, like adding,
+  needs the switch on: a node whose switch is off asks no other node. When none matches it refuses `PEER_UNREACHABLE`
+  with every attempt's outcome (`refused`, `timeout`, `not_found`, `unreachable`, `not_autobyteus`, `different_node`)
+  and `loopbackInContainer` when the first address was loopback and this server runs in a container
+  (`server-addressing/runs-in-container.ts`, `/.dockerenv`). `peerAddressCandidates` lists this node's own addresses
+  (`ServerAddressCandidateService`), which the other side tries after the address the window uses.
+- Settings errors carry `extensions: {code, reason?, address?, loopbackInContainer?, attempts?}`; `reason` is the
+  transport cause `channel/transport-failure-reason.ts` classifies from Node's `fetch` error. The texts agents read
+  are unchanged.
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
   as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
   Agent Orgs, team-local or application-owned definitions.
@@ -41,13 +56,17 @@ in later slices.
   with that login for any registered peer, as CM-12 says ("a remote run uses its own node's credentials").
   A leftover `published-agents.json` from a development build is neither read nor written.
 - GraphQL: `remoteCollaborationCapability` / `setRemoteCollaborationEnabled`, `peerNodes`, `addPeerNode`,
-  `renamePeerNode`, `removePeerNode`, and `peerNodeOffer(nodeId)` (autobyteus-267). The web's Nodes → Remote
-  Collaboration tab uses them: it manages the peers, shows each peer's state and offer, and states how runs peers
-  start here work.
+  `renamePeerNode`, `changePeerAddress`, `removePeerNode`, `peerNodeOffer(nodeId)` (autobyteus-267),
+  `peerNodeAvailability(nodeId)`, `peerAddressCandidates` and `resolvePeerAddress(nodeId, baseUrls)` (one-nodes-tab).
+  The web's Nodes → Manage Nodes tab uses them on this node and, from the window, on the other node of a row: one
+  list of nodes, and turning collaboration on or off for a node registers or removes both sides after one
+  confirmation (the other node decides through its own settings API; no node writes another node's peers).
 - `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
-  absent) or `{refusalCode}`, exactly one of them, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
+  absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
   the same path as `list_available_agents` with `node`. The window never contacts a peer; the page words the
-  refusal code itself. It takes at most about 20 s (the peer request bound).
+  refusal code itself. It takes at most about 20 s (the peer request bound). `peerNodeAvailability(nodeId)` answers
+  `{available, refusalCode, unreachableReason}` through `RemoteNodeDiscovery.checkAvailabilityOf(nodeId)`, the
+  availability question `list_available_nodes` asks, for one peer.
 
 ## Between nodes
 
