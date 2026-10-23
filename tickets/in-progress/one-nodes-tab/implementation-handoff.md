@@ -18,13 +18,15 @@ Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/t
 
 - Implementation cycle: `Rework` (CRR-001 local fixes)
 - Implementation revision record: `.../one-nodes-tab/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (IR-001: initial implementation)
+- Current implementation revision ID: `IR-003` (IR-001: initial implementation; IR-002: CRR-001 local fixes; IR-003: CR-005 from the failure-origin review CRR-003)
 - Related solution revision IDs: `SR-006`, `SR-007`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`, `CRR-002` (Pass), `CRR-003` (failure origin: CR-005)
+- Related API/E2E revision IDs: `API-REV-001` (Fail: API-07 / NP-07)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: CR-001, CR-002, CR-003, CR-004
+- Triggering finding IDs: CR-005 (IR-003); CR-001 … CR-004 (IR-002)
+
+IR-003 (CR-005): the row's "not finished" line now carries the failed step's name (`RowLine.stepName`, set in `nodeRowStatus.ts` from the unfinished step) and `NodeRow.vue` passes it to `failureText`, so a register step refused with `PEER_NAME_TAKEN` reads "<node> already has a node named <name>." on the row as in the dialog (§ Naming Rule 4, VIS-015). Commit `02fd7bcd9a`; new cases in `NodeRow.spec.ts` (VIS-015 with `PEER_NAME_TAKEN`) and `nodeRowStatus.spec.ts`.
 
 IR-002 (CRR-001) changes, all within the reviewed design:
 - CR-003: the connector's wiring is its own file, `services/nodeCollaboration/windowNodeCollaborationConnector.ts`. `nodeListStore` owns rename, change address (through the connector, no dialog), each row's unfinished step (`setUnfinishedStep`/`unfinishedStepOf`, as design § Product Package Mapping places it) and the change subject (`changeSubjectOf`). `nodeChangeDialogStore` depends on the list only (dialog → list). `addNode` returns `{ok, key, confirm}` and `AddNodePanel` opens the confirmation; `NodeList` cancels the dialog when it unmounts.
@@ -149,6 +151,8 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab
 | IMP-09 | `(autobyteus-web) NUXT_TEST=true pnpm exec vitest run` after the CRR-001 fixes | `23f3feb193` | macOS, Node v22.23.1 | all web specs incl. the new `nodeChangeDialogStore.spec.ts`, `AddNodePanel.spec.ts` and updated list-store, connector, row and store specs | CR-001…CR-003; BEH-701…707 | Pass | `IMP-09-web-unit-crr001.log` | `Test Files  658 passed \| 2 skipped (660)`, `Tests  4733 passed \| 5 skipped (4738)` |
 | IMP-10 | web guards after the CRR-001 fixes | `23f3feb193` | macOS | web boundary and localization rules | REQ-713 | Pass | `IMP-10-web-guards-crr001.log` | the three `Passed` lines |
 | IMP-11 | Rendered re-check of the restructured flows on fresh test-owned servers (add → confirmation, rename, change address; plus `identify` replacing a stale ID) | `23f3feb193` | as IMP-08 | `nodeListStore`, `nodeChangeDialogStore`, `AddNodePanel`, connector, server `changePeerAddress` | CR-002, CR-003; AR-003; TR-702, TR-711 | Pass | `IMP-11-rendered-recheck-crr001.md` | step 3 dialog text; step 6 "Nothing answers at that address and port."; step 7 `lab box @ http://localhost:38702` |
+| IMP-12 | `(autobyteus-web) NUXT_TEST=true pnpm exec vitest run` after CR-005 | `02fd7bcd9a` | macOS, Node v22.23.1 | all web specs incl. the new VIS-015 `PEER_NAME_TAKEN` row and row-status cases | CR-005; § Naming Rule 4, VIS-015 | Pass | `IMP-12-web-unit-cr005.log` | `Test Files  658 passed \| 2 skipped (660)`, `Tests  4736 passed \| 3 skipped (4739)` |
+| IMP-13 | web guards after CR-005 | `02fd7bcd9a` | macOS | web boundary and localization rules | REQ-713 | Pass | `IMP-13-web-guards-cr005.log` | the three `Passed` lines |
 | IMP-08 | Rendered check: Nuxt dev server against two test-owned servers; narrow tab and 1440 px iframe; steps in the notes | `e16d848e0f` | macOS, agent Chromium; servers as IMP-04 | the whole Manage Nodes page, stores, connector, both servers | UXJ-701…707, 709, 710; VIS-001/003/006/008/009/010/011/013/019/022/024/027/028/030 behavior | Pass (two defects found and fixed during the check; see notes) | `IMP-08-rendered-check.md`, `IMP-08-*.png` | the step table; e.g. step 15 "Removed here. lab box could not be reached, so this node is still registered there." |
 
 - Not run, and why:
