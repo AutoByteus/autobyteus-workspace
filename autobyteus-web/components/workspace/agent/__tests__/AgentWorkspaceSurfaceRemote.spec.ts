@@ -31,7 +31,7 @@ describe('AgentWorkspaceSurface for a run another node runs', () => {
   let retry: ReturnType<typeof vi.fn>
   beforeEach(() => {
     setActivePinia(createPinia())
-    retry = vi.fn()
+    retry = vi.fn(() => true)
     useRemoteRunsStore().register(execution, retry)
   })
 

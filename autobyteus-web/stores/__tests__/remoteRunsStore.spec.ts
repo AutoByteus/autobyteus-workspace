@@ -16,10 +16,10 @@ describe('remoteRunsStore', () => {
 
   it("registers a root's remote run; an answer it had stays when the view republishes", () => {
     const store = useRemoteRunsStore()
-    store.register(team, () => undefined)
+    store.register(team, () => true)
     expect(store.runOfAgentRun('lead-run')).toMatchObject({ runId: 'marketing-run', nodeName: 'docker', reachable: null, title: null })
     store.applySummary({ node_id: 'srv_docker', run_id: 'marketing-run', reachable: true, title: 'Plan the October campaign', statuses: [] })
-    store.register(team, () => undefined)
+    store.register(team, () => true)
     expect(store.run('marketing-run')).toMatchObject({ reachable: true, title: 'Plan the October campaign' })
     store.applySummary({ node_id: 'srv_docker', run_id: 'marketing-run', reachable: false, title: null, statuses: [] })
     expect(store.run('marketing-run')).toMatchObject({ reachable: false, title: 'Plan the October campaign' })
@@ -28,7 +28,7 @@ describe('remoteRunsStore', () => {
 
   it('Retry shows checking and asks the owning root; the next answer ends it; rebinding the window forgets everything', () => {
     const store = useRemoteRunsStore()
-    const retry = vi.fn()
+    const retry = vi.fn(() => true)
     store.register(team, retry)
     store.retry('marketing-run')
     expect(retry).toHaveBeenCalledTimes(1)
@@ -37,5 +37,18 @@ describe('remoteRunsStore', () => {
     expect(store.run('marketing-run')?.checking).toBe(false)
     useWindowNodeContextStore().bindingRevision += 1
     expect(store.run('marketing-run')).toBeNull()
+  })
+
+  it("a read of the run's conversation answers a Retry; a root with nothing to ask ends 'checking' at once", () => {
+    const store = useRemoteRunsStore()
+    let asks = true
+    store.register(team, () => asks)
+    store.retry('marketing-run')
+    expect(store.run('marketing-run')?.checking).toBe(true)
+    store.markReachable('marketing-run', true)
+    expect(store.run('marketing-run')).toMatchObject({ reachable: true, checking: false })
+    asks = false
+    store.retry('marketing-run')
+    expect(store.run('marketing-run')?.checking).toBe(false)
   })
 })

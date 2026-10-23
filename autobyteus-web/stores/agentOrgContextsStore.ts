@@ -17,6 +17,7 @@ import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOr
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { hydrateRemoteOrgMember, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
@@ -70,7 +71,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
     // autobyteus-278: the runs this Org delegated to other nodes; Retry asks their nodes again on the Org's stream.
-    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(id)))
+    candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(id, remoteTaskExecutionRunIdOf(execution))))
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
   }
@@ -129,18 +130,28 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     contexts.value[id]?.select(selection)
     ensureRemoteHydrated(id, selection)
   }
-  /** autobyteus-278: a remote child's conversation is read from its node when it is selected. */
+  const selectedAgentRunId = (selection: OrgWorkspaceSelection | string | null | undefined): string | null =>
+    selection && typeof selection === 'object' && selection.kind === 'agent_execution' ? selection.agentRunId : null
   const ensureRemoteHydrated = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
-    const org = contexts.value[id]
-    if (!org || typeof selection !== 'object' || selection?.kind !== 'agent_execution' || !org.index.remoteAgents.has(selection.agentRunId)) return
-    void hydrateRemoteOrgMember({ orgRunId: id, context: org, agentRunId: selection.agentRunId, isCurrent: () => contexts.value[id] === org })
-      .catch((cause) => console.warn(`[agentOrg] Could not load '${selection.agentRunId}' of '${id}'.`, cause))
+    readRemoteMember(id, selectedAgentRunId(selection))
   }
-  /** Retry: the live root asks its nodes again, and a selected remote child's conversation is read again from its node. */
-  const retryRemote = (id: string): void => {
-    const service = services.get(id)
-    if (service?.isReady()) service.refreshRemote()
-    ensureRemoteHydrated(id, contexts.value[id]?.selection ?? null)
+  /** autobyteus-278: a remote child's conversation is read from its node (when it is selected, or on Retry). */
+  const readRemoteMember = (id: string, agentRunId: string | null): boolean => {
+    const org = contexts.value[id]
+    if (!org || !agentRunId || !org.index.remoteAgents.has(agentRunId)) return false
+    void hydrateRemoteOrgMember({ orgRunId: id, context: org, agentRunId, isCurrent: () => contexts.value[id] === org })
+      .catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
+    return true
+  }
+  /**
+   * Retry of a remote run: the live root asks its nodes again, and the run's agent is read again from its node: the
+   * selected one, or, without a stream, the run's first agent. Answers whether the node is being asked.
+   */
+  const retryRemote = (id: string, runId: string): boolean => {
+    const refreshed = services.get(id)?.refreshRemote() ?? false
+    const agents = remoteRuns.run(runId)?.agentRunIds ?? []
+    const selected = selectedAgentRunId(contexts.value[id]?.selection)
+    return readRemoteMember(id, selected && agents.includes(selected) ? selected : refreshed ? null : agents[0] ?? null) || refreshed
   }
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {

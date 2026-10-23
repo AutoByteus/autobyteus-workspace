@@ -31,7 +31,7 @@ const projection = {
 };
 
 const harness = (located: unknown = location) => {
-  const locations = { findAgent: vi.fn(async () => located) };
+  const locations = { findAgent: vi.fn(async () => located), readTree: vi.fn(async () => null) };
   const agentViews = {
     getProjectionFromMetadata: vi.fn(async () => projection),
     getActiveTracePageFromMetadata: vi.fn(async () => ({ events: [], nextCursor: null })),

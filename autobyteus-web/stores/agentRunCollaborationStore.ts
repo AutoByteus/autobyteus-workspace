@@ -24,6 +24,7 @@ import {
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
+import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -68,7 +69,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     setContext(hostRunId, context)
     errors[hostRunId] = null
     // autobyteus-278: the runs this root delegated to other nodes; Retry asks their nodes again through this root.
-    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(hostRunId)))
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => retryRemote(hostRunId, remoteTaskExecutionRunIdOf(execution))))
     returnToHostWhenUnlisted(hostRunId, context)
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
@@ -76,14 +77,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /**
    * Starts loading one child's stored details into the published context, unless it is loaded or
    * loading there already. A load whose context is no longer published ends without writing; a
-   * failed load leaves the child not loaded, so selecting it again retries.
+   * failed load leaves the child not loaded, so selecting it again retries. Answers whether a load is under way.
    */
-  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null) => {
+  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null): boolean => {
     const context = contexts.value[hostRunId]
-    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId)) || context.isChildHydrated(agentRunId)) return
+    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId)) || context.isChildHydrated(agentRunId)) return false
     const loads = childLoads.get(context) ?? new Map<string, Promise<void>>()
     childLoads.set(context, loads)
-    if (loads.has(agentRunId)) return
+    if (loads.has(agentRunId)) return true
     const load = hydrateAgentRunCollaborationChild({
       hostRunId, collaboration: context, agentRunId,
       isPublished: () => contexts.value[hostRunId] === context && !terminations.has(hostRunId),
@@ -92,6 +93,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       console.warn(`[agentRunCollaboration] Could not load '${agentRunId}' of '${hostRunId}'.`, cause)
     }).finally(() => loads.delete(agentRunId))
     loads.set(agentRunId, load)
+    return true
   }
 
   /** A selected child that left the listing (absent, or its Task is DONE) returns the view to the run's own agent. */
@@ -125,12 +127,15 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   /**
    * Retry of a remote run (autobyteus-278): the live root asks its nodes again (the answers arrive on its stream),
-   * and a selected remote child whose conversation could not be read is read again from its node.
+   * and the run's agent whose conversation could not be read is read again from its node: the selected one, or,
+   * without a stream, the run's first agent. Answers whether the node is being asked.
    */
-  const retryRemote = (hostRunId: string) => {
-    const service = services.get(hostRunId)
-    if (service?.isReady()) service.refreshRemote()
-    ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
+  const retryRemote = (hostRunId: string, runId: string): boolean => {
+    const refreshed = services.get(hostRunId)?.refreshRemote() ?? false
+    const agents = remoteRuns.run(runId)?.agentRunIds ?? []
+    const selected = selection[hostRunId] ?? null
+    const reread = selected && agents.includes(selected) ? selected : refreshed ? null : agents[0] ?? null
+    return ensureChildHydrated(hostRunId, reread) || refreshed
   }
 
   const detach = (hostRunId: string) => {

@@ -26,7 +26,7 @@ describe('WorkspaceTransientExecutionRow for a run another node runs', () => {
   let retried: ReturnType<typeof vi.fn>;
   beforeEach(() => {
     setActivePinia(createPinia());
-    retried = vi.fn();
+    retried = vi.fn(() => true);
     useRemoteRunsStore().register(execution, retried);
   });
 

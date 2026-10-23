@@ -47,7 +47,7 @@ describe('Team execution view with remote runs', () => {
 
   it("applies a node's summary, dispatches a remote member's output, and reloads for a remote run it does not know", () => {
     const view = withRemoteSnapshot()
-    useRemoteRunsStore().register(remoteTeam, () => undefined)
+    useRemoteRunsStore().register(remoteTeam, () => true)
     const summary = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_SUMMARY', payload: { change_sequence: 4, node_id: 'srv_docker',
       run_id: 'marketing-run', reachable: true, title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] } })
     expect(summary.disposition).toBe('applied')

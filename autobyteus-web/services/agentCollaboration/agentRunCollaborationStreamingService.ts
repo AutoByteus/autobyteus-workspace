@@ -117,11 +117,13 @@ export class AgentRunCollaborationStreamingService {
     } })
   }
 
-  /** Retry (autobyteus-278): the root asks the nodes of its remote runs again; the answers arrive as events. */
-  refreshRemote(): void {
-    if (!this.isReady()) return
+  /** Retry (autobyteus-278): the root asks the nodes of its remote runs again; the answers arrive as events;
+   * `false` when the stream is not ready. */
+  refreshRemote(): boolean {
+    if (!this.isReady()) return false
     this.socket!.send(JSON.stringify({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS',
       payload: { root_subject_kind: 'agent', root_run_id: this.options.hostRunId } } satisfies CollaborationStreamClientMessage))
+    return true
   }
 
   private commandRoot(targetAgentRunId: string) {

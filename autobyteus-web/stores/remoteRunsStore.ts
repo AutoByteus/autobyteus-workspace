@@ -24,6 +24,9 @@ export type RemoteRunInfo = Readonly<{
   title: string | null
 }>
 
+/** Asks the run's node again through the root that owns the run; `false` when the root has nothing to ask now. */
+export type RemoteRunRetry = () => boolean
+
 /**
  * The remote runs of every root view in this window, by run and by agent run (run IDs are unique). Each root's
  * context registers its remote executions from its view and applies its nodes' answers; the row, the run view,
@@ -33,10 +36,10 @@ export type RemoteRunInfo = Readonly<{
 export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const runs = shallowReactive(new Map<string, RemoteRunInfo>())
   const runOfAgent = shallowReactive(new Map<string, string>())
-  const retries = new Map<string, () => void>()
+  const retries = new Map<string, RemoteRunRetry>()
 
   /** A root's remote execution, with the way to ask its node again; an answer it already had stays. */
-  const register = (execution: RemoteTaskExecutionDto, retry: () => void): void => {
+  const register = (execution: RemoteTaskExecutionDto, retry: RemoteRunRetry): void => {
     const runId = remoteTaskExecutionRunIdOf(execution)
     const previous = runs.get(runId)
     const agentRunIds = remoteTaskExecutionAgentsOf(execution).map((agent) => agent.agent_run_id)
@@ -57,13 +60,13 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const applySummary = (summary: RemoteTaskExecutionSummaryDto): void =>
     update(summary.run_id, { reachable: summary.reachable, checking: false, title: summary.reachable ? summary.title : runs.get(summary.run_id)?.title ?? null })
 
-  /** A read of the run's conversation reached its node, or did not (the opened view's notice). */
-  const markReachable = (runId: string, reachable: boolean): void => update(runId, { reachable })
+  /** A read of the run's conversation reached its node, or did not (the opened view's notice); it answers a Retry. */
+  const markReachable = (runId: string, reachable: boolean): void => update(runId, { reachable, checking: false })
 
-  /** Retry: "Checking {node}…" until the node answers; the root that owns the run asks again. */
+  /** Retry: "Checking {node}…" until the node answers; the root that owns the run asks again, when it can ask anything. */
   const retry = (runId: string): void => {
     update(runId, { checking: true })
-    retries.get(runId)?.()
+    if (!retries.get(runId)?.()) update(runId, { checking: false })
   }
 
   const run = (runId: string | null | undefined): RemoteRunInfo | null => runId ? runs.get(runId) ?? null : null

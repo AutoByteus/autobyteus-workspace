@@ -63,7 +63,7 @@ describe('AgentRunCollaborationContext with remote children', () => {
   it("applies a node's summary to its agents' statuses and the window's registry; an agent it does not list is offline", () => {
     const context = build()
     const remoteRuns = useRemoteRunsStore()
-    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => undefined))
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, () => true))
     expect(context.applyEvent(5, { kind: 'remote_task_execution_summary', node_id: 'srv_docker', run_id: 'marketing-run', reachable: true,
       title: 'Plan the October campaign', statuses: [{ agent_run_id: 'lead-run', status: 'running' }] })).toBe('applied')
     expect(context.getAgentContext('lead-run')?.state.currentStatus).toBe(AgentStatus.Running)
