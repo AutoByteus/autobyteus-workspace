@@ -10,6 +10,7 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-210, 2026-10-23) | N/A | N/A | Ready for Approval | BEH-001..007, REQ-001..019, AC-001..017, SCN-001..009, DEC-001..016 | Waiting for the user on DEC-003 |
 | SR-002 | Requirements | The user's answers, 2026-10-23 | DEC-003; new category | Ready for Approval | Approved | BEH-008, UC-006, REQ-001/002/005/010/011, REQ-020..023, AC-018..022, SCN-010/011, DEC-003/004/017/018 | Product Design Requested |
 | SR-003 | Requirements | Product designer's Requirement Impact (the user's design-review direction), 2026-10-23 | Impact on REQ-007/008/010 | Approved (SR-002) | Approved (SR-003) | REQ-007, REQ-008, REQ-010, AC-008, SCN-006, BEH-004, DEC-002 → DEC-019, Data Continuity | Design continues |
+| SR-004 | Mixed (Requirements + Design) | The user-approved Product package (2026-10-23); architecture investigation and design | Designer findings (PQ-1, PQ-2, new behaviors, own-node rule) | Approved (SR-003); design not started | Requirements Approved (SR-004); design Ready | REQ-008, REQ-024, REQ-025, AC-022, DEC-020; design DS-001..DS-008 | Architecture Design Complete — Large / High |
 
 ## Revision Entries
 
@@ -54,3 +55,31 @@ Package: `update-checks-and-auto-updates` (Project Task autobyteus-210). Canonic
 - Intended behavior changed: `Yes`. Approved by the user's own words; skill-source consistency is within the direction, user informed.
 - Approval: `requirements-doc.md` at SR-003.
 - Next action: the reply to the Product designer; the design continues to the user's approval.
+
+### SR-004 — Approved UI integrated; architecture design complete
+
+- Phase and classification: Mixed (Requirements `Refinement` from the returned Product package, plus Design).
+- Trigger: Design Completed from the Product UI/UX Designer (run `product_ui_ux_designer_d3a466b2a14542698fcb2a9b4ab76b32`), 2026-10-23.
+  - The user approved after round 7: "Okay, now I think I like [it]. It's satisfying. I like it now. Works nice. Looks nice as well. Approved."
+  - The spec and VIS-001..037 are at design repository `5f5fb4c`.
+  - Verified by the Solution Designer (spec status and VIS-010).
+- Requirements changes:
+  - the UI section is now normative from the spec;
+  - REQ-008: the "N updated" entry;
+  - REQ-024: confirmations above the panel (PQ-2 fixed);
+  - REQ-025: quiet periodic app failure and truthful "Automatic checks are off";
+  - AC-022 and DEC-020: own-node rule = the Agent Runtimes page's rule;
+  - PQ-1 recorded as not adopted.
+- Design: `design-spec.md` (new):
+  - quota-free head read (git v2 `ls-refs`, Measured) for checks and updates;
+  - Codex tag from the github.com redirect (Measured);
+  - gate families;
+  - `UpdatePass` as the one owner of the pass sequence (checks, then automatic updates through the owners' own update methods);
+  - outcome fields on records;
+  - runtime service additions;
+  - the shell schedule;
+  - web per spec.
+- Intended behavior changed: the UI per the user's approval. DEC-020 is within the direction, user informed.
+- Approval: requirements at SR-004; UI approved by the user.
+- Classification: `task_size=Large`, `architectural_risk=High`.
+- Next action: architecture review (handoff rules).

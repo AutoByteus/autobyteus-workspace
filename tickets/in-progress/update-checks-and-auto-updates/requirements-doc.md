@@ -2,16 +2,16 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-003`
-- Current solution revision ID: `SR-003`
+- Status: `Approved` at `SR-004` (the user-approved UI/UX package integrated)
+- Current solution revision ID: `SR-004`
 - Package identifier: `update-checks-and-auto-updates`
 - Request / ticket: Project Task autobyteus-210, "Update behaviour and settings"
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-20, 2026-10-21 and 2026-10-23
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-10-23
 - Approved by and reference: `User` for DEC-003, the agent-runtime category and "no automatic update of the app" (the user's answers in the Solution Designer conversation, 2026-10-23). The rest by the Solution Designer within the direction, user informed (same conversation).
-- Exact approved requirements baseline / solution revision: this document at `SR-003`
-- Behavior-defining supplements and their approved versions: none yet. The Product UI/UX package becomes behavior-defining once the user approves it.
+- Exact approved requirements baseline / solution revision: this document at `SR-004`
+- Behavior-defining supplements and their approved versions: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` with final references `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/visual-references/` VIS-001..037, design repository `personal` at `5f5fb4c`; the user's approval 2026-10-23 after round 7 ("Okay, now I think I like [it]. It's satisfying. I like it now. Works nice. Looks nice as well. Approved.")
 
 ## Problem And Desired Outcome
 
@@ -113,7 +113,7 @@ None.
 | REQ-005 | Each node has the settings "automatic updates for agent packages" and "automatic updates for skill sources" (and, on the desktop's own node, "automatic updates for agent runtimes", REQ-022), all off by default. Nothing is updated automatically unless the setting of that kind is on. With both off, behavior is exactly 209's (notify, update only on the user's press). | BEH-003, BEH-004 | Must | Opt-in; trust | User 2026-10-20/21; DEC-001 |
 | REQ-006 | With a kind's setting on, when a check finds a newer revision of a source of that kind, the node applies it by itself through the same update pipeline as a manual update. That covers download, validation, skill-name checks, safe replacement and notices to running agents. Turning a setting on applies updates that are already waiting soon after (within about a minute). | BEH-004 | Must | "they don't have to care" | User; DEC-012 |
 | REQ-007 | With automatic updates on for a kind, a found update replaces the installed source with GitHub's revision, including any local changes or added files, without asking again. This is the same replacement as a manual update. Turning the switch on for agent packages or for skill sources (in the card or in the Notification Center) first opens a confirmation that says what is downloaded and from where, that updates can change what agents do, that local changes and added files are replaced without asking and cannot be restored, and how to turn it off. Cancel leaves the switch off. The node keeps no record of installed content and no backup of replaced files. | BEH-004 | Must | The user: staying on stale packages costs more than losing local edits | The user, 2026-10-23 (design review, relayed with quotes by the Product designer); DEC-019 |
-| REQ-008 | Every automatic outcome is visible as a notification of that source, unread until seen: "updated automatically to <revision/version>" (with what changed); "automatic update failed, nothing was changed" (with the reason and a manual Update). The Settings-row indicator shows while any such notification is unread, even when nothing waits. | BEH-004 | Must | Visible | Task direction; DEC-007 |
+| REQ-008 | Every automatic outcome is visible as a notification of that source, unread until seen: "updated automatically to <revision/version>" (with what changed); "automatic update failed, nothing was changed" (with the reason and a manual Update); for runtimes, waiting while agents run. The Settings-row entry shows while any such notification is unread: when nothing waits it reads "N updated" (UI spec). | BEH-004 | Must | Visible | Task direction; DEC-007; UI spec |
 | REQ-009 | A failed or skipped automatic update keeps the source unchanged and is not retried by itself more than once per interval. It is notified once per revision, not again at every pass. | BEH-004 | Must | No noise | DEC-016 |
 | REQ-010 | The automatic-update switches (packages, skill sources, and on the desktop's own node runtimes) appear in the node's Update checks card (the full home) and in the Notification Center, at the category they belong to (a shortcut to the same settings). At both places the switch shows what turning it on means: what is downloaded and from where, that the content can change what agents do, that local changes are replaced (packages and skill sources), and how to turn it off. Turning a package or skill-source switch on asks for confirmation (REQ-007). | BEH-005 | Must | "some users don't even know the setting exists" | User 2026-10-23 |
 | REQ-011 | The check intervals for agent packages, skill sources and agent runtimes are set in the node's Update checks card, with their minimum enforced and a short note about GitHub's limits beside the controls. | BEH-001, BEH-008 | Must | User Part 3 | User |
@@ -129,6 +129,8 @@ None.
 | REQ-021 | A runtime notification's Update runs the same vendor update as Settings → Agent Runtimes (desktop's own node), with the same rule: not while that runtime has running agents (the row says why). Success marks the notification handled ("Updated to <version>"); failure shows the vendor's message, keeps the runtime unchanged, and offers Try again. | BEH-008 | Must | Same safety | runtime-lifecycle-review |
 | REQ-022 | The desktop's own node has the setting "automatic updates for agent runtimes", off by default. With it on, a found runtime update is applied by itself through the same vendor update, but only when no agent of that runtime is running; otherwise it waits and is tried again at the next pass. Outcomes are notified as in REQ-008 (updated automatically; automatic update failed). | BEH-008 | Must | User 2026-10-23 | DEC-018 |
 | REQ-023 | The app itself is never updated automatically: its update stays Download → Install and restart on the user's action. | BEH-002 | Must | The user, 2026-10-23 | User |
+| REQ-024 | A confirmation opened from the Notification Center (the skill-source update confirmation, the automatic-update confirmations) appears above the panel at every window width (209 PQ-2). | — | Must | The user approved the fix | UI spec (VIS-017) |
+| REQ-025 | A failed periodic app check is quiet (no toast or pop-up); Settings → Updates shows "Check failed" with its time, and "Automatic checks are off" when the switch is off and no check ran. | BEH-007 | Must | Truthful and quiet | UI spec (VIS-025, VIS-026) |
 
 ## Acceptance Criteria
 
@@ -155,7 +157,7 @@ None.
 | AC-019 | REQ-021 | SCN-010 | Runtime notification, no running agents / agents running | Update runs the vendor update; "Updated to Y"; with agents running Update is unavailable with the reason | Failure: vendor message, Try again, runtime unchanged | Server + web tests |
 | AC-020 | REQ-022 | SCN-011 | Runtime automatic updates on | Applied by itself when no agent of that runtime runs, and announced; postponed while agents run, then applied at a later pass | Off (default): only notified | Server E2E with scripted CLIs |
 | AC-021 | REQ-023 | — | App update available, any settings | Never downloaded or installed without the user's press | — | Electron tests |
-| AC-022 | REQ-020 | — | Remote/Docker node window | No runtime notifications, switch or Update for that node's runtimes | — | Web tests |
+| AC-022 | REQ-020 | — | A desktop window bound to a remote/Docker node | No runtime category, runtime switch, runtime interval or runtime contact line for that node (VIS-036, VIS-037); a browser window served by a node counts as that node's own window, as on Settings → Agent Runtimes (DEC-020) | — | Web tests |
 
 ## Relevant Scenarios And Journeys
 
@@ -176,14 +178,24 @@ None.
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: `Yes`
-- Linked UI/UX supplement: pending (Product Team).
-- Design must cover:
-  - the Update checks card: the existing switch, the packages/skills interval with minimum and rate-limit note, the two automatic-update switches with their explanation, the back-off state, the honest network description;
-  - the Notification Center: the automatic-update switches (packages, skill sources, runtimes) at their categories with the explanation at the switch and the confirmation when turning a package or skill-source switch on; the new "Agent runtimes" category; the rows for automatic outcomes (updated, failed, waiting for running agents);
-  - the indicator for unread automatic outcomes;
-  - Settings → Updates: the app check switch, the interval, truthful status and last check;
-  - en and zh-CN strings.
-- Product decisions that need the user: the look (approved in the design step).
+- Linked UI/UX supplement: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md` (Status `Approved`); it is normative for every UI-facing requirement here.
+- Runnable reference: design repository `/Users/normy/autobyteus_org/autobyteus-web-design` (`personal` at `5f5fb4c`), `ui-reference-runbook.md` section `update-checks-and-auto-updates`; baseline WEB-BASELINE-REFRESH-012 (autobyteus-web `9e7a458`; no file this design touches changed up to `d2820672c3`).
+- Product ticket: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/product-ticket.md` (rounds 1–7, the user's words).
+- User confirmation: 2026-10-23, after round 7, in the Product UI/UX Designer conversation (quoted in Document Status).
+- Final references: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/visual-references/VIS-001..037`.
+- Normative details: every visible value in the spec. In summary:
+  - the panel opens at the top right of the window (368 px): a grey surface, a fixed "Notifications" title row, and one white card per category;
+  - an "Agent runtime updates" category (own-node windows only);
+  - an "Update automatically" switch under each category header except software, with 3 short lines of text (2 when on);
+  - a danger confirmation when turning packages or skill sources on; a "within about a minute" line;
+  - outcome rows; the entry "N updated" when only unread outcomes exist;
+  - the full-width Update checks card: contacts list, GitHub wait banner, three intervals saved on blur/Enter with range refusal, three switches, checks-off banner with dimmed blocks;
+  - Settings → Updates: switch, interval, status, Last Checked, "Automatic checks: every X / off", contacts;
+  - confirmations above the panel.
+- Illustrative: names, revisions, versions, counts, times, reasons. The relative-time wording comes from `Intl`. The component split, store, fixtures, timer and `layerClass` are not prescribed.
+- Live order as 209.
+- 209 questions: PQ-1 (indicator on Settings pages) was **not adopted** (the user rejected both tries as "not clean"). PQ-2 is **fixed** (REQ-024).
+- Product decisions that need the user: none open.
 
 ## Quality And Non-Functional Requirements
 
@@ -228,6 +240,7 @@ None.
 | DEC-001 | Scope of automatic updates | Safety vs simplicity | Global; per kind; per source | The user's 2026-10-23 direction names "an automatic updates switch for agent packages and one for skill sources". Per node, like the Update checks switch, because packages live on nodes. Per-source exceptions add UI and state without a stated need; a follow-up if wanted. | Solution Designer (from the user's direction) | Decided |
 | DEC-002 | Automatic update when local files changed | Silent loss of edits | Replace; skip + notify | Today a manual skill update warns that local edits are lost. Automatically losing them breaks trust. Skip and notify, with the manual Update still offered. If unknown, treat as changed. | Solution Designer | Superseded by DEC-019 (SR-003) |
 | DEC-019 | Local changes under automatic updates | The user rejected skip-and-notify | Skip + notify (DEC-002); replace after a one-time confirmation | The user, 2026-10-23: with automatic updates enabled "we should directly overwrite those"; staying on stale packages costs more than losing local edits; instead "give them a confirmation overlay" when they enable the switch. It applies to skill sources as well (the same reasoning; Solution Designer). No record of installed content, no list of what was replaced, no backup (not asked for; consistent with DEC-003). The confirmation is started by the user, so it is not one of the excluded pop-ups. | User (skill sources: Solution Designer for consistency) | Decided |
+| DEC-020 | Which windows count as "the desktop's own node" for the runtime category (UI spec, Open Decisions) | REQ-020, AC-022 | The Agent Runtimes page's rule (`nodeAccess === 'own'`, from `windowNodeContextStore.isEmbeddedWindow`): an Electron window bound to its embedded node, or a browser window served by that node, is "own"; an Electron window bound to another node is not | Use the page's rule exactly, so the category, its switch and its Update appear exactly where the page already offers Update. A browser window served directly by a server node is that node's own window, as on the page today. An Electron window bound to a remote or Docker node shows no runtime category (VIS-036/037). | Solution Designer (consistency with the shipped page) | Decided |
 | DEC-003 | Undo, pin to a revision, or skip a version for automatic package/skill updates | Recovery from a bad upstream revision vs complexity | (a) none: the notification links to what changed; a user who does not want automatic updates turns the switch off and keeps using manual Update; (b) "Undo" (reinstall the previous revision, which then needs pinning or the next pass re-updates it); (c) pin per source / skip version | In 209 you said "I personally have never clicked a skip … I update to the latest". Undo only works with pinning (otherwise the next pass re-applies the update), which needs per-source state and UI. **Recommendation: (a)** in this ticket. **The user, 2026-10-23: none** ("nobody is going to just the updates … the user, mostly, user will update by themselves"). | User | Decided: (a) |
 | DEC-004 | Interval defaults and limits | Timeliness vs limits | — | One interval per category (the user). Agent packages and skill sources: each default 30 min (the user), minimum 15 min, maximum 24 h. Agent runtimes: default 60 min (vendor releases are less frequent than package commits; each check runs four short version reads), minimum 15 min, maximum 24 h. App: default 60 min (the user mentioned one hour), minimum 15 min, maximum 24 h; its feed is not on the API quota (Read) but each check fetches the releases feed. 15 min keeps any single source at ≤ 4 requests per hour. | Solution Designer | Decided |
 | DEC-005 | How 30 minutes stays safe | The Task's assumed fix fails | Conditional requests (Measured: still counted); authentication (out of scope); git ref advertisement (Measured: quota-free) | Checks must not consume the REST quota (REQ-002); random delay per pass; one source at a time. The mechanism is the architecture's choice; the git ref advertisement is the measured candidate. | Solution Designer | Decided |
@@ -269,6 +282,8 @@ None.
 | REQ-021 | UC-006 | BEH-008 | AC-019 | SCN-010 |
 | REQ-022 | UC-006 | BEH-008 | AC-020 | SCN-011 |
 | REQ-023 | UC-004 | BEH-002 | AC-021 | — |
+| REQ-024 | UC-003 | — | review (VIS-017) | SCN-008 |
+| REQ-025 | UC-005 | BEH-007 | AC-015 | SCN-005 |
 
 ## Architecture Phase Input
 
@@ -286,7 +301,7 @@ None.
 - Scope and non-goals clear: `Yes`
 - Requirements and ACs testable and traceable: `Yes`
 - Scenarios covered with validity and evidence: `Yes`
-- Product design integrated: `N/A` (pending)
+- Product design integrated: `Yes` (SR-004)
 - Decisions visible with reasoning: `Yes`
 - Content ready for approval: `Yes`
 - Remaining content blocker: None.
@@ -294,4 +309,4 @@ None.
 ### Approved Basis Ready For Design
 
 - Approval recorded: `Yes` (SR-002; the user's answers of 2026-10-23 for DEC-003, the runtime category and no automatic app update; the rest within the direction, user informed)
-- Approved requirements package ready for architecture design: after the user-approved Product design (the Task requires the design step).
+- Approved requirements package ready for architecture design: `Yes` (SR-004)

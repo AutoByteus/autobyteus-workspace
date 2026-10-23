@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created; ticket folder `tickets/in-progress/update-checks-and-auto-updates/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate, 2026-10-23):
   - `references/requirements-engineering.md`, `references/ticket-scope.md` (read in this conversation);
   - `references/finding-the-cause.md` (new);
@@ -137,7 +137,14 @@
 
 ## Product Design Findings
 
-- Pending.
+- The final package (SR-004) was approved by the user on 2026-10-23 after round 7: "Okay, now I think I like [it]. It's satisfying. I like it now. Works nice. Looks nice as well. Approved."
+- Spec: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/update-checks-and-auto-updates/ui-ux-spec.md`; VIS-001..037; design repository `personal` at `5f5fb4c`; ticket closed.
+- Verified by the Solution Designer: the spec's status block holds the quote; VIS-010 matches the spec (right-side panel, white cards per category, switches, outcome rows, the runtime waiting text).
+- Designer findings integrated in SR-004:
+  - PQ-1 not adopted; PQ-2 fixed (REQ-024);
+  - the "N updated" entry, the quiet periodic app failure and "Automatic checks are off" (REQ-008, REQ-025);
+  - the own-node rule (DEC-020).
+- Mocked in the reference (production supplies): node passes, vendor update commands, the app's periodic timer, settings persistence. The reference's GraphQL shape (kind `AGENT_RUNTIME`, outcomes `AUTO_UPDATED` / `AUTO_FAILED` / `AUTO_WAITING`) is a model, not a prescription.
 
 ## Supplemental Artifact Inventory
 
@@ -157,7 +164,26 @@
 
 ## Architecture Investigation Findings
 
-Not started (after requirements approval and the Product result).
+Recorded 2026-10-23 (SR-004). Paths are relative to the worktree. How established: `Read` / `Measured`.
+
+| ID | Source | Observation | How | Design implication |
+| --- | --- | --- | --- | --- |
+| AF-01 | `autobyteus-server-ts/src/update-notifications/services/update-check-scheduler.ts:3-6, 51-80` | Fixed 60 s first pass, 30 min tick, 6 h due rule; per-source loop with setting and gate checks; the pass, due rule and timer live in one class | Read | Intervals per category from settings; tick every 60 s; the pass sequence gets its own owner (checks, then automatic updates) |
+| AF-02 | `src/compositions/update-notifications-composition.ts:29-52` | The composition wires owner listeners → `reconcile()` and the scheduler with two owners (packages, skill sources) | Read | A third owner (runtimes); settings service and automation wiring |
+| AF-03 | `src/update-notifications/services/update-notification-service.ts:63-74, 142-185`; `domain/update-notification.ts:4, 12-38` | Records are WAITING/HANDLED; `markAllRead` reads only waiting records; reconcile table DS-007; kinds `AGENT_PACKAGE`, `SKILL_SOURCE`; the view has a non-null `repositoryUrl` | Read | New kind `AGENT_RUNTIME`; record fields for automatic outcomes; mark-read also covers unread outcomes; nullable link fields for runtimes |
+| AF-04 | `src/update-notifications/stores/update-notification-store.ts:13-32, 60-71` | Tolerant reader, exact writer; an unknown kind drops the row | Read | Additive outcome fields (absent = none); the `AGENT_RUNTIME` kind is added to the reader's kind list |
+| AF-05 | `src/agent-packages/services/github-agent-package-updates.ts:39-82, 84-170`; `agent-package-service.ts:220-258` | Package check and update both call `fetchRepositoryRevisionMetadata` (2 REST requests); the archive comes from codeload. The skill-name refusal (lines 142-148) rolls back without recording a failure status. Calls are serialized per package and announced in `finally` | Read | Check and update use a quota-free head read with the stored identity; automatic outcomes are recorded by the automation from the thrown error, not from the owner's status |
+| AF-06 | `src/skills/services/skill-source-service.ts:157-205, 265-270` | Skill check/update call `metadata()` → `fetchRepositoryRevisionMetadata` (2 REST requests) with an identity and revision check; checks run in parallel (`Promise.all`, line 159) | Read | Same head read; keep the revision check; the pass calls one source at a time |
+| AF-07 | `src/integrations/github/github-repository-source.ts:93-105` | Archive URLs are `codeload.github.com/.../tar.gz/<rev>` (no REST) | Read | Updates need no REST request once the head read replaces the metadata call |
+| AF-08 | probes `/tmp/sd-probe-210/` (2026-10-23) | Protocol v2 `ls-refs` POST to `https://github.com/<o>/<r>.git/git-upload-pack` with `ref-prefix HEAD`, `symrefs` → 200, about 84 bytes, `<sha> HEAD symref-target:refs/heads/<branch>`, equal to `git ls-remote`. A renamed repository (zeit/next.js) answers directly; a missing or private one answers 401. The v0 advertisement includes `refs/pull/*` (106 of 167 refs), so it grows with pull requests | Measured | The head read uses protocol v2 `ls-refs` (constant size); 401/404 means "not found or not public" |
+| AF-09 | probe; `src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.ts:9, 19-27`; `runtime-source-fetch.ts:4-11` | Codex newest version comes from `api.github.com/.../releases/latest` through a plain fetch (no gate). `https://github.com/openai/codex/releases/latest` answers 302 with `location: .../tag/rust-v0.164.0` and leaves the REST quota untouched | Measured | The Codex source becomes the github.com redirect, read through the GitHub transport and its gate |
+| AF-10 | `src/runtime-management/agent-runtimes/agent-runtime-status-service.ts:133-142, 145-176, 221-265` | `checkAll()` clears finished results (page semantics). `startUpdate()` is fire-and-forget; its outcome lives in `row.operation`. Rows are in memory (`checkedAt` resets on restart). `installed=false` both before the first check and when not installed | Read | Add a background check that keeps results, an awaited update used by both paths, a listener, and a projection with an explicit "not yet checked" state |
+| AF-11 | `src/compositions/agent-runtime-status-composition.ts:28-39`; `getAgentRuntimeStatusService()` (status service 318-321) | The service is composed per studio server and bound for the resolver | Read | The update-notification composition receives the same instance |
+| AF-12 | `autobyteus-web/electron/updater/appUpdater.ts:149-160, 166-210, 423` (499 lines); `appUpdateChannelStore.ts:17-46` | Startup check only; checks are skipped while checking or downloading (line 184); `source` is `manual` or `startup`; preferences are a small `userData` JSON with a tolerant read | Read | A periodic schedule and its settings in their own files; a `periodic` source; `appUpdater.ts` must lose lines (IPC registration moves out) |
+| AF-13 | `autobyteus-web/utils/appUpdateErrorDisplay.ts:38-42` | Quiet errors = `startup-check` only | Read | Periodic-check errors are quiet too (REQ-025) |
+| AF-14 | `autobyteus-web/composables/settings/useAgentRuntimes.ts:58-160`; `components/settings/agent-runtimes/AgentRuntimesManager.vue:99-100` | The page polls `agentRuntimes` (2 s busy / 10 s idle); rebinding starts a user check (line 140). Own-node access = `isEmbeddedWindow` | Read | The panel's runtime rows read the same query without starting checks; one shared own-node rule (DEC-020) |
+| AF-15 | `autobyteus-web/stores/notificationCenterStore.ts:6-32`; `stores/updateNotificationsStore.ts:72-210` | The panel store keeps a left anchor; the notifications store combines node rows and the app row; counts are waiting-only | Read | Right-side panel (no anchor); counts include unread automatic outcomes |
+| AF-16 | `node_modules/.pnpm/electron@42.4.1/node_modules/electron/electron.d.ts:10197`; `server-settings-service.ts:301, 391-401` | `net.isOnline(): boolean` exists in the shipped Electron; settings support string values (`getSettingValue`, `config.set`) for the interval keys | Read (type definitions) | Premises of DS-004 and DS-005 hold |
 
 ## SR-003 Evidence (2026-10-23)
 
