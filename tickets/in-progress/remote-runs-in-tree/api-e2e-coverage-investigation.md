@@ -81,3 +81,19 @@
 ## Investigation Decision
 
 - Proceed: `Yes`; durable coverage changes: `Yes`; reroute: `No`
+
+## Round 3 Note (CRR-005, API-REV-002)
+
+- **Code:** `f60f962d9d` (docs `13280c1e62`): IR-003 / SR-006 (F-001 … F-004) and IR-004 / SR-008 (FU-004, one window owner for Retry). The server is unchanged since `e37ad88b98`, so the round 2 dist is reused.
+- **What the reviewer asked for:**
+  - RC-31: the live frame and the owner heading, without a `remote_owner` scan;
+  - RC-32: beta's own Stop, with AC-805 (RC-36) kept;
+  - RTP-04 in all four families, with a working `@` control;
+  - Retry from a row and from the opened notice, in each family;
+  - the full E2E and the probe.
+- **Plan:** E2E unchanged (round 2 already made the checks hard). Probe:
+  - the Org Team family;
+  - the `@` control on this node's own run;
+  - RTP-06 (row Retry ×4);
+  - RTP-07 (notice Retry ×4).
+- **Testing note:** the window asks a node about a remote run only for an opened root (AC-804: "opening its run"), so the probe opens each family's root before it expects the row's error.

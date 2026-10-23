@@ -2,8 +2,126 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree`; evidence in `…/evidence/api-e2e/`.
 
-## Report Meta
+## Round 3 — CRR-005 rerun (authoritative)
 
+### Report Meta
+
+- Investigation: `…/api-e2e-coverage-investigation.md` (round 3 note)
+- Progress log: `…/api-e2e-test-progress.md` (rows 19–27)
+- Revision: `API-REV-002`; rounds 2 (CRR-004, held for FU-004) and 3 (CRR-005)
+- Trigger: CRR-005. Code `f60f962d9d` (docs `13280c1e62`): IR-003 / SR-006 (F-001 … F-004) and IR-004 / SR-008 (FU-004, one Retry rule). The server is unchanged since `e37ad88b98`. Classification: Large / High.
+- **Result: Fail.** One new finding:
+  - **F-005 (Medium):** in the **Team family**, opening the remote run while beta is down does not open it. The window stays on the previous run, so there is no "beta-node isn't reachable" notice and no notice Retry. The row gets a second red line, "Couldn't load activity. Retry", under the "Couldn't reach beta-node. Retry" line. Reproduced in probe runs 19 and 20.
+- Round 1's findings are resolved:
+  - **F-001:** the live frame of an Agent active at open arrives (RC-31; RTP-04's live answer).
+  - **F-002:** the affordances are right in all four families.
+  - **F-003:** beta's own Stop gives a final offline summary (RC-32).
+  - **F-004:** the owner heading `From the owner of node "alpha-node":` appears on beta and in alpha's window, as one user message (N-405). It is checked by content; there is no `remote_owner` scan any more.
+- Everything else asked in CRR-005 passes:
+  - RTP-04 in all four families (Standalone, Team, Org Agent, Org Team member): chip, no ⚙/＋, placeholder, Files note, no Context Files or upload, and no `@` menu. The `@` check now has a working control.
+  - Retry from the row in all four families (RTP-06).
+  - Retry from the opened notice in three families: Standalone, Org Agent and Org Team (RTP-07). The Team family has no notice (F-005).
+  - The full two-server E2E: 37/37.
+- Durable coverage changed: Yes. Only the browser probe changed this round: four families, two Retry cycles per family, the `@` control, and the tree helper. The E2E test is unchanged since round 2 (`77d4fd50fe`).
+
+### Environment
+
+| ID | Code | Machine | Servers | Data |
+| --- | --- | --- | --- | --- |
+| ENV-3 | `f60f962d9d`. Server dist API-00 round 2 (`e37ad88b98`; the server is unchanged since) | macOS 26.5.2, Node v22.23.1 | the two-server E2E: alpha and beta behind capturing proxies (HTTP and WebSocket upgrades), scripted AGY CLI; RC-27/RC-35 add a third server | temp roots and HOMEs, `env -i`; removed |
+| ENV-4 | as ENV-3, the web app from the worktree (`nuxt dev`) | as ENV-3; Chrome 1440×1100 (playwright-core, headless) | the probe: alpha and beta dist servers, scripted AGY CLI; beta is stopped and started on its own port and data | temp root removed, no server left (`cleanup` in each probe JSON) |
+
+### Cases
+
+| Case | Criteria | Env | Result | Evidence and what to look for |
+| --- | --- | --- | --- | --- |
+| API-01 run 4 | the whole two-server E2E | ENV-3 | **37/37** | `API-01-run4.log`, `API-01-run4/remote-two-server-receipt.json` |
+| RC-31 | AC-801 … 803, DEC-804; F-001, F-004 / SR-006, N-405 | ENV-3 | Pass | `liveSeen: true`. The frames are `CONNECTED`, `ROOT_EXECUTION_VIEW_SNAPSHOT`, `ROOT_LIFECYCLE`, `agent_presentation`, `remote_task_execution_summary`, `agent_presentation_batch`, `AGENT_COMMAND_ACK`. `ownerEntry` is `{role: user, content: "From the owner of node \"alpha-node\":\n\nstatus? Marker OWNER-FROM-ALPHA"}`, and the marker appears once in alpha's re-read. Interrupt, then Stop `STOPPED`; `finalSummary.statuses: []` |
+| RC-32 | C-2 / DS-006; F-003 | ENV-3 | Pass | after beta's own `terminateAgentRun`, a summary with `statuses: []` arrives in alpha's open view without Retry (`summariesAfterOwnerStop`) |
+| RC-36 | AC-805 | ENV-3 | Pass | the quiet run reads `{reachable: true, statuses: []}` (listed, not gone); a message restores it (`--conversation` relaunch) |
+| RC-01 … RC-30, RC-33 … RC-35, RC-37, RC-20 | preserved and round 1 cases | ENV-3 | Pass | run 4 |
+| API-02 runs 14–18 | — | ENV-4 | probe debugging (see the progress log) | `API-02-run14` … `API-02-run18` |
+| **API-02 runs 19 and 20** | AC-801, 802, 803, 804, 806, REQ-808, CRR-001 F-001 | ENV-4 | **RTP-01 … RTP-06 Pass; RTP-07 Fail (F-005)**, the same in both runs | `API-02-run19/`, `API-02-run20/` (`remote-runs-in-tree-probe.json`, screenshots), cases below |
+
+**API-02 run 20 cases** (run 19 is the same):
+- **RTP-01 … RTP-03: Pass.** These cover the Standalone remote Team with its members, the Team order (local A, remote, local B), and the Org row with its chip, title and status dot.
+- **RTP-04: Pass, in all four families:**
+  - **Families:** `standaloneTeamMember`, `teamAgent`, `orgAgent`, `orgTeamMember` (new: the Org lead's second delegation, to `/studio_team`).
+  - **Each family:** header chip `beta-node`; ⚙ 0 and ＋ 0; placeholder "Message {lead|publisher} on beta-node…"; Files note "On beta-node …"; Context Files 0; upload 0; `@` menu 0.
+  - **The `@` control:** typing `@` in this node's own standalone run gives `role=combobox` and `aria-expanded=true`, so the remote "0" is meaningful (`mentionProbe`).
+  - **Owner message:** the live answer shows without a reload, there is exactly one owner message, and the heading `From the owner of node "alpha-node":` shows.
+- **RTP-05: Pass.** Stop on the row stops the run on beta.
+- **RTP-06: Pass, in all four families** (Retry from the row):
+  - **Beta stopped, after a reload:** opening each family's root (this node's own run in it) makes the row read "Couldn't reach beta-node." with Retry within 0–0.2 s (bound 20 s), with no title element, as the spec's row state requires. This node's own run still opens.
+  - **Beta started:** the row's Retry clears the error and shows the title again (Org) or the Task line (Standalone, Team).
+- **RTP-07: Fail in the Team family (F-005); Pass in the other three** (Retry from the opened notice). For each family: beta is stopped, the page is reloaded, the root is opened, and the remote run is opened by its agent's name.
+  - **Standalone, Org Agent, Org Team:** the view shows "beta-node isn't reachable / This run's conversation can't be loaded right now. Your other runs work. Retry when the node is back. / Retry". With beta started, the notice Retry removes the notice and the conversation loads.
+  - **Team:** see F-005.
+- **Browser errors:** only F-005's `Failed to open team member run: Error: Node "beta-node" could not be reached (fetch failed)`, from `selectTreeRunFromHistory` and `onSelectTeamMember`.
+
+### Failures
+
+| ID | Severity | Criteria | Observed | Expected | Evidence | Classification |
+| --- | --- | --- | --- | --- | --- | --- |
+| F-005 | Medium: a stopped peer is the case AC-804 is about, and the Team family is a delegator kind the ticket supports (AC-806) | AC-804 "Beta stopped: opening its run shows the error within 20 s"; UI/UX spec, row state not reachable: "Open (shows the notice)", one red line; REQ-808 notice; SR-008 / FU-004 one owner for a remote run's Retry and loading | **Team family, beta stopped:** clicking the remote publisher's name (after opening the Team's own helper run) does not open it. The window stays on helper, so there is no notice and no notice Retry. The console says `Failed to open team member run: Error: Node "beta-node" could not be reached (fetch failed)` from `selectTreeRunFromHistory` and `onSelectTeamMember`. The row then shows two red lines: the Team member inspection's "Couldn't load activity. Retry" and the remote "Couldn't reach beta-node. Retry". **The other families open the run and show the notice:** Standalone (a remote Team member, through the collaboration child hydration) and Org (Agent and Team member). Row Retry works in the Team family (RTP-06) | the run opens with the notice and its Retry, as in the other three families, and the row keeps one red line | `API-02-run19/`, `API-02-run20/`: RTP-07 `noticeRetry["team (remote Agent)"]` (`viewAtOpen`, `rowAtOpen.text`), `RTP-07-2-beta-down.png`, `browserErrors` | Preliminary: **Local Fix (Implementation Engineer).** `openTeamMemberRunFromHistory` (`stores/runHistorySelectionActions.ts`) commits the selection only after `openTeamRun` reads the member's projection. The remote read in `teamMemberProjectionHydrationService.ts` marks the run unreachable and rethrows, so the selection isn't committed, and `setTeamMemberInspectionError` writes the second error. The Standalone and Org paths commit the view and show the notice. A second loading or error owner in the Team family is the kind of drift FU-004 removed for Retry, so the code reviewer may judge a design impact instead |
+
+### Acceptance-Criteria Proof
+
+| AC | Proven by | Status |
+| --- | --- | --- |
+| AC-801 | RC-31, RC-33, RC-34; RTP-01 … RTP-03 | Proven |
+| AC-802 | RC-31 (live frame of an active Agent), RC-33, RC-34; RTP-04 live answer | Proven (F-001 resolved) |
+| AC-803 | RC-31 (heading, N-405), RC-33, RC-34; RTP-04 (one message with the heading, live answer) | Proven (F-004 resolved by SR-006) |
+| AC-804 | RC-37; RTP-06 (row, four families); RTP-07 (notice, three families) | **Failed in the Team family's opened run (F-005)**; proven for the rows of all four families and the opened run of the other three |
+| AC-805 | RC-36 | Proven |
+| AC-806 | RC-31, RC-33, RC-34; RTP-01 … RTP-04 (four families) | Proven for rows and opened views; the Team family's unreachable opening fails (F-005) |
+| DEC-804, C-2 | RC-31 (interrupt, Stop), RC-32 (beta's own Stop), RTP-05 | Proven (F-003 resolved) |
+| REQ-808 | RTP-04 (four families, with the `@` control) | Proven; the Team family's notice is F-005 |
+| Security | RC-35 | Proven |
+| AC-807 | — | the user's check |
+
+### Validation Confidence Scorecard (Mandatory)
+
+These are scored over what can be proven without the user. A failing critical criterion blocks Pass.
+
+| Category | Score | Basis | Residual uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 88% | everything but AC-804's opened run in the Team family | F-005 |
+| Changed-boundary execution directness | 96% | the real WebSocket route and the real streams of three root kinds; the window in Chrome | — |
+| Cross-boundary integration realism and mock gap | 93% | real processes; the proxy forwards upgrades; beta stopped and started for real | loopback; scripted CLI |
+| Environment, configuration, identity, and fixture fidelity | 95% | clean roots and HOMEs; a third registered node for security | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 88% | unreachable, Retry from the row (×4) and the notice (×3), idle restore, interrupt, both Stops, security | F-005 |
+| User-surface, browser, and desktop-shell confidence | 90% | four families rendered with the `@` control; two Retry cycles per family; reproduced twice | F-005 |
+| Durable regression coverage quality and relevance | 94% | 37 E2E cases; a 7-case probe over four families | the probe's tree opening depends on the tree's current markup |
+
+- Overall final confidence: 91%
+- Every critical AC directly proven: `No` (AC-804 in the Team family)
+- Target met: `No`
+
+### Broader Validation Decision (Mandatory)
+
+- **Decision:** `Required` (executed, API-02).
+- **Mode:** `Browser` with two server processes; beta is stopped and started.
+- **What it addressed:** the Retry cycles had been checked in one family (round 1). Per family they found F-005, which the unit specs and the in-process tests can't see: the Team family's selection path with a real failed read.
+
+### Durable Coverage Changes (this round)
+
+`autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs`:
+- **Org Team family:** the Org lead also delegates `/studio_team`, and RTP-04 opens its member (`orgTeamMember`).
+- **`@` control:** it opens this node's own standalone run (`workspace-agent-run-row[data-run-id]`), so the remote "no menu" is checked against a menu that does open.
+- **RTP-06:** Retry from the row in all four families. Each family's root is opened first, as the window asks the node only for an opened root (AC-804). The 20 s bound and "no title" are asserted.
+- **RTP-07 (new):** Retry from the opened notice in all four families. Rows are opened by the agent's name; the row's middle can be its Task link.
+- **The tree helper:** clicks only group-level disclosures, each bounded to 1.5 s. It opens the Team run and the Org run deliberately, at most once per 5 s each, because they open the run and collapse each other.
+
+### Decision
+
+Fail. This goes to the code reviewer for failure-origin review of F-005 (preliminary: Local Fix, Implementation Engineer). After the fix, rerun the browser probe (RTP-06 and RTP-07 in all four families). The two-server E2E needs a rerun only if the server changes.
+
+---
+
+## Round 1 (history, superseded by round 3)
+
+### Report Meta (round 1)
 - Investigation: `…/api-e2e-coverage-investigation.md` (round 1)
 - Progress log: `…/api-e2e-test-progress.md`
 - Revision record: `…/api-e2e-revision-record.md`
@@ -19,14 +137,14 @@
   - **Two-server E2E:** the proxy forwards WebSocket upgrades; RC-31 … RC-37 are new; RC-06, RC-09 … RC-11, RC-22, RC-23 and RC-20 are updated.
   - **New browser probe:** `autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs`.
 
-## Environment
+### Environment (round 1)
 
 | ID | Code | Machine | Servers | Data |
 | --- | --- | --- | --- | --- |
 | ENV-1 | `1bdcff8ae2` (dist API-00) + the test changes | macOS 26.5.2, Node v22.23.1 | two-server E2E: alpha and beta behind capturing proxies (now also forwarding WebSocket upgrades), scripted AGY CLI; RC-27/RC-35 add a third server | temp roots and HOMEs, `env -i`; removed |
 | ENV-2 | as ENV-1 | as ENV-1; Chrome 1440×1100 (playwright-core, headless) | the probe: alpha and beta dist servers, scripted AGY CLI, `nuxt dev` against alpha | temp root removed; nothing left |
 
-## Cases
+### Cases (round 1)
 
 | Case | Criteria | What runs | Env | Result | Evidence and what to look for |
 | --- | --- | --- | --- | --- | --- |
@@ -67,7 +185,7 @@
   - This node's own runs list and open.
   - With beta back, Retry restores the title.
 
-## Failures
+### Failures (round 1)
 
 | ID | Severity | Criteria | Observed | Expected | Evidence | Classification |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -76,7 +194,7 @@
 | F-003 | Medium | DS-006 / C-2 (code review held it for this evidence), REQ-805 "the row always shows the real state" | Beta's owner stops the run (`terminateAgentRun`) while alpha views it: alpha's view gets no summary and keeps the last state until Retry. Independent of F-001 (also in the diagnostic run) | beta ends the run's observations on any stop, so alpha reads the final state (AR-403) | RC-32 in `API-01-run2` and `API-01-diagnostic-nodeid-first` | Preliminary: **Local Fix (Implementation Engineer).** Deviation 7 ends observations only for a terminate through owner-commands. Beta's own Stop (and other ends of the run, for example the idle shutdown) don't end them |
 | F-004 | Low | AC-803 "marked as from alpha's owner", REQ-803 / DEC-803 "recorded … as from the owner of this node" | The owner message reaches beta's run as an ordinary user message. The `remote_owner` metadata is posted with it, but nothing in beta's stored data for the run contains it (raw traces, journal, metadata, conversation), and neither window shows a mark | a recorded, visible "from alpha's owner" mark, if the requirement means that | RC-31 `ownerMarks: []` (a search of beta's memory) | Preliminary: **Unclear (Solution Designer).** The design says "metadata naming the peer owner"; the requirement says "recorded … as from the owner of this node". Whether a transient mark is enough is a requirement question |
 
-## Acceptance-Criteria Proof
+### Acceptance-Criteria Proof (round 1)
 
 | AC | Proven by | Status |
 | --- | --- | --- |
@@ -90,7 +208,7 @@
 | Security | RC-35 | Proven |
 | AC-807 | — | the user's check |
 
-## Validation Confidence Scorecard (Mandatory)
+### Validation Confidence Scorecard (Mandatory) (round 1)
 
 These are scored over what can be proven without the user. A failing critical criterion blocks Pass.
 
@@ -108,13 +226,13 @@ These are scored over what can be proven without the user. A failing critical cr
 - Every critical AC directly proven: `No`
 - Target met: `No`
 
-## Broader Validation Decision (Mandatory)
+### Broader Validation Decision (Mandatory) (round 1)
 
 - **Decision:** `Required` (executed, API-02).
 - **Mode:** `Browser` with two server processes.
 - **What it addressed:** the Team and Org families had never been rendered (IMP-09 covered only the standalone family). It found F-002.
 
-## Durable Coverage Changes
+### Durable Coverage Changes (round 1)
 
 - `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`:
   - the proxy forwards WebSocket upgrades;
@@ -125,7 +243,7 @@ These are scored over what can be proven without the user. A failing critical cr
   - RC-35 passes `nodeId` to `addPeerNode`.
 - `autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs` (new), with its script `test:e2e:remote-runs-in-tree` in `autobyteus-web/package.json`.
 
-## Decision
+### Decision (round 1)
 
 Fail. This goes to the code reviewer for failure-origin review:
 - F-001, F-002 and F-003: preliminary Local Fix (Implementation Engineer);

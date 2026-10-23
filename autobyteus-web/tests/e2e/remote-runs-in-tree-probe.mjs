@@ -15,7 +15,9 @@
 // RTP-02 the Team family: the remote row sits between the two local copies, in delegation order; RTP-03 the Org family;
 // RTP-04 the opened remote run: header chip, no ⚙ or ＋, the text-only composer's placeholder, the Files note; an owner
 // message from the composer reaches the run on beta, and its answer shows live (AC-802); RTP-05 Stop on the remote row
-// stops the run on beta; RTP-06 beta stopped: the row says "Couldn't reach beta-node." with Retry, the opened run says
+// stops the run on beta; RTP-06 beta stopped, in each family (standalone, Team, Org Agent, Org Team): the row says
+// "Couldn't reach beta-node." with Retry, which recovers it once beta is back; RTP-07 the same through the opened run's
+// notice and its Retry. (Before autobyteus-278 round 3: RTP-06 checked one family.) The opened run says
 // beta-node isn't reachable, the rest of the tree works; beta back and Retry: the title returns.
 //
 // Prerequisite: `pnpm -C autobyteus-server-ts build`. Run: `pnpm -C autobyteus-web test:e2e:remote-runs-in-tree`
@@ -202,17 +204,25 @@ try {
   const orgLead = orgTree.rootOrg.members.find(member => member.address === '/lead').agentRunId;
   const orgConversation = async () => JSON.stringify((await alpha.gql('query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}',
     { id: org.agentOrgRunId, a: orgLead, m: '/lead' })).getAgentOrgMemberRunProjection?.conversation ?? []);
-  const orgBefore = calledResults(await orgConversation()).length;
+  const orgDelegate = async (args) => {
+    const before = calledResults(await orgConversation()).length;
+    await withSocket(`${alpha.baseUrl.replace('http', 'ws')}/ws/agent-org/${org.agentOrgRunId}`, async socket => {
+      socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { root_subject_kind: 'agent_org', root_run_id: org.agentOrgRunId, target_agent_run_id: orgLead, command_id: randomUUID(),
+        message_id: randomUUID(), dedupe_key: randomUUID(), content: callToolText('delegate_task', args), context_file_paths: [], image_urls: [] } }));
+    });
+    let results = [];
+    await waitFor('the org delegation', async () => (results = calledResults(await orgConversation())).length > before);
+    return results[results.length - 1];
+  };
   const orgTitle = 'Org work. Marker REMOTE-ORG.';
-  await withSocket(`${alpha.baseUrl.replace('http', 'ws')}/ws/agent-org/${org.agentOrgRunId}`, async socket => {
-    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { root_subject_kind: 'agent_org', root_run_id: org.agentOrgRunId, target_agent_run_id: orgLead, command_id: randomUUID(),
-      message_id: randomUUID(), dedupe_key: randomUUID(), content: callToolText('delegate_task', { node: NODE, recipient_address: '/publisher', description: orgTitle }), context_file_paths: [], image_urls: [] } }));
-  });
-  let orgResults = [];
-  await waitFor('the org delegation', async () => (orgResults = calledResults(await orgConversation())).length > orgBefore);
-  const orgRemoteRun = pick(orgResults[orgResults.length - 1], 'target_agent_run_id');
-  assert(orgRemoteRun, `org delegation: ${orgResults.at(-1)}`);
-  evidence.runs = { standalone: standalone.runId, remoteTeamRun, studioMembers, team: team.teamRunId, leadRun, localA, remoteAgentRun, localB, org: org.agentOrgRunId, orgLead, orgRemoteRun };
+  const orgRemoteRun = pick(await orgDelegate({ node: NODE, recipient_address: '/publisher', description: orgTitle }), 'target_agent_run_id');
+  assert(orgRemoteRun, 'org delegation to /publisher');
+  const orgTeamTitle = 'Org team work. Marker REMOTE-ORG-TEAM.';
+  const orgRemoteTeamRun = pick(await orgDelegate({ node: NODE, recipient_address: '/studio_team', description: orgTeamTitle }), 'target_team_run_id');
+  assert(orgRemoteTeamRun, 'org delegation to /studio_team');
+  const orgTeamTree = (await beta.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: orgRemoteTeamRun })).getTeamRunResumeConfig.executionTree;
+  const orgTeamMembers = JSON.stringify(orgTeamTree).match(/"agent_run_id":"([^"]+)"/g)?.map(entry => entry.split('"')[3]) ?? [];
+  evidence.runs = { standalone: standalone.runId, remoteTeamRun, studioMembers, team: team.teamRunId, leadRun, localA, remoteAgentRun, localB, org: org.agentOrgRunId, orgLead, orgRemoteRun, orgRemoteTeamRun, orgTeamMembers };
 
   // The web app against alpha.
   const frontendPort = await freePort();
@@ -252,8 +262,16 @@ try {
     await waitFor('the history tree', async () => (await page.locator('[data-test="workspace-row"]').count()) > 0, 60_000);
     const deadline = Date.now() + 60_000;
     let teamClickedAt = 0;
+    let orgClickedAt = 0;
     while (Date.now() < deadline) {
-      for (const handle of await page.locator('[data-test="workspace-history-tree-scroll"] [aria-expanded="false"]:not([data-test="workspace-team-run-disclosure"])').all()) await handle.click().catch(() => undefined);
+      // Group-level disclosures only: a run's own row (Team run, Org run) opens that run, so it is opened deliberately below.
+      for (const handle of await page.locator('[data-test="workspace-history-tree-scroll"] [aria-expanded="false"]:not([data-test="workspace-team-run-disclosure"]):not([data-test^="workspace-team-row-"]):not([data-test^="agent-org-run-open-"])').all()) await handle.click({ timeout: 1_500 }).catch(() => undefined);
+      // The Org run opens its tree when it is opened (not more often than every 5 s).
+      const orgOpen = page.locator(`[data-test="agent-org-run-open-${evidence.runs.org}"]`);
+      if (await orgOpen.count() && (await orgOpen.getAttribute('aria-expanded')) !== 'true' && Date.now() - orgClickedAt > 5_000) {
+        orgClickedAt = Date.now();
+        await orgOpen.click().catch(() => undefined);
+      }
       // A Team run row opens its tree (members and delegated copies) when it is opened.
       if (!(await page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${evidence.runs.team}"]`).count()) && Date.now() - teamClickedAt > 5_000) {
         // Open the Team run's tree with the disclosure nearest to its row (the disclosure toggles, so not more often than every 5 s).
@@ -274,7 +292,8 @@ try {
     throw new Error('the tree rows did not appear');
   };
   const treeReady = async () => (await rowOf(remoteTeamRun).count() || await page.locator(`[data-agent-run-id="${studioMembers[0]}"]`).count())
-    && await rowOf(remoteAgentRun).count() && await rowOf(localA).count() && await rowOf(localB).count() && await rowOf(orgRemoteRun).count();
+    && await rowOf(remoteAgentRun).count() && await rowOf(localA).count() && await rowOf(localB).count() && await rowOf(orgRemoteRun).count()
+    && await rowOf(orgTeamMembers[0]).count();
   await page.goto(frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
   await openTree(treeReady);
   await waitFor('the remote titles', async () => (await rowInfo(remoteAgentRun))?.title === agentTitle && (await rowInfo(orgRemoteRun))?.title === orgTitle, 30_000).catch(() => undefined);
@@ -339,13 +358,18 @@ try {
   const views = {
     standaloneTeamMember: await openedView(studioMembers[0], 'REMOTE-TEAM', 'lead'),
     orgAgent: await openedView(orgRemoteRun, 'REMOTE-ORG', 'publisher'),
+    orgTeamMember: await openedView(orgTeamMembers[0], 'REMOTE-ORG-TEAM', 'lead'),
     teamAgent: await openedView(remoteAgentRun, 'REMOTE-AGENT', 'publisher'),
   };
   await page.screenshot({ path: path.join(outputDir, 'RTP-04-opened-remote-run.png'), fullPage: true });
   // Control: on this node's own run (the Team's lead), typing `@` opens the menu, so the remote check above means something.
-  await page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${leadRun}"], [data-agent-run-id="${leadRun}"]`).first().click().catch(() => undefined);
-  await waitFor('the lead\'s own view', async () => (await centerPane.innerText()).includes('LOCAL-A'), 30_000).catch(() => undefined);
+  await page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`).first().click();
+  await waitFor('the standalone run\'s own view', async () => (await centerPane.innerText()).includes('studio_team')
+    && !(await centerPane.locator('[data-test="remote-node-chip"]').count()), 30_000).catch(() => undefined);
   const mentionMenuLocalControl = await mentionMenuShown();
+  await rowOf(remoteAgentRun).first().click();
+  await waitFor('the Team family\'s remote run again', async () => (await centerPane.locator('[data-test="remote-node-chip"]').count()) > 0
+    && (await centerPane.innerText()).includes('REMOTE-AGENT'), 30_000);
   const affordances = Object.fromEntries(Object.entries(views).map(([family, view]) => [family, Boolean(view.headerChip?.includes(NODE)) && view.editConfig === 0 && view.newRun === 0
     && view.placeholders.some(text => text?.startsWith('Message ') && text.endsWith(`on ${NODE}…`)) && Boolean(view.filesNote?.includes(NODE))
     && view.contextFiles === 0 && view.uploadButtons === 0 && view.mentionMenu === 0]));
@@ -383,31 +407,89 @@ try {
   }, 30_000).catch(() => undefined);
   evidence.cases['RTP-05'] = { result: stopVisible && stoppedOnBeta ? 'Pass' : 'Fail', stopVisible, stoppedOnBeta, rowAfter: await rowInfo(remoteAgentRun) };
 
-  // RTP-06: beta stopped: the row and the opened run say so; the rest works; Retry after beta returns.
-  await beta.stop();
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await openTree(async () => (await rowOf(orgRemoteRun).count()) > 0);
-  let unreachable = null;
-  await waitFor('the unreachable row', async () => (unreachable = await rowInfo(orgRemoteRun))?.error?.startsWith(`Couldn't reach ${NODE}.`), 40_000).catch(() => undefined);
-  const retryVisible = (await rowOf(orgRemoteRun).first().locator('[data-test="workspace-remote-run-retry"]').count()) > 0;
-  await rowOf(orgRemoteRun).first().click();
-  let notice = null;
-  await waitFor('the notice', async () => (notice = (await page.locator('[data-test="remote-run-notice"]').count()) ? (await page.locator('[data-test="remote-run-notice"]').first().innerText()).trim() : null) !== null, 30_000).catch(() => undefined);
-  // The rest of the tree works: this node's own runs are listed and open (the standalone delegator's row and its conversation).
-  const standaloneRow = page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`);
-  let localStillListed = (await standaloneRow.count()) > 0;
-  if (localStillListed) {
-    await standaloneRow.first().click();
-    await waitFor('the standalone run opens', async () => (await centerPane.innerText()).includes('studio_team'), 30_000).catch(() => { localStillListed = false; });
+  // RTP-06 / RTP-07: beta stopped: every family's remote row says "Couldn't reach beta-node." with Retry, and an opened
+  // remote run shows the notice with Retry; the rest of the tree works; beta back: Retry from the row (RTP-06) and from
+  // the opened notice (RTP-07) recover, in each family.
+  // A remote Team's own row has no agent run ID; it is found by its host and its name (its title is hidden while its
+  // node is not reachable, as the spec's row state says: "no title").
+  const remoteTeamRowOf = hostId => page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${hostId}"]:not([data-agent-run-id])`).filter({ hasText: 'studio team' }).first();
+  // Each family's root is opened through this node's own run in it (the window asks the node for an opened root, AC-804).
+  const families = [
+    { name: 'standalone (remote Team)', root: () => page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`).first(), row: () => remoteTeamRowOf(standalone.runId), open: studioMembers[0], openName: 'lead', expected: teamTitle, marker: 'REMOTE-TEAM' },
+    { name: 'team (remote Agent)', root: () => rowOf(localA).first(), row: () => rowOf(remoteAgentRun).first(), open: remoteAgentRun, openName: 'publisher', expected: agentTitle, marker: 'REMOTE-AGENT' },
+    { name: 'org (remote Agent)', root: () => page.locator(`[data-test="agent-org-agent-row-${orgLead}"]`).first(), row: () => rowOf(orgRemoteRun).first(), open: orgRemoteRun, openName: 'publisher', expected: orgTitle, marker: 'REMOTE-ORG' },
+    { name: 'org (remote Team)', root: () => page.locator(`[data-test="agent-org-agent-row-${orgLead}"]`).first(), row: () => remoteTeamRowOf(org.agentOrgRunId), open: orgTeamMembers[0], openName: 'lead', expected: orgTeamTitle, marker: 'REMOTE-ORG-TEAM' },
+  ];
+  const rowStateOf = async (family) => {
+    const row = family.row();
+    if (!(await row.count())) return { present: false };
+    const error = (await row.locator('[data-test="workspace-remote-run-error"]').count()) ? (await row.locator('[data-test="workspace-remote-run-error"]').first().innerText()).trim() : null;
+    const text = (await row.innerText()).trim();
+    return { present: true, error, retry: await row.locator('[data-test="workspace-remote-run-retry"]').count(),
+      titleElement: await row.locator('[data-test="workspace-remote-run-title"]').count(), text,
+      showsTitle: text.includes(family.expected) || ((await row.getAttribute('aria-label')) ?? '').includes(family.expected) };
+  };
+  // With beta stopped the tree has every family's remote row (alpha keeps them); member rows are not required.
+  const downReady = async () => {
+    for (const family of families) if (!(await family.row().count())) return false;
+    return true;
+  };
+  const betaDownAndReload = async () => {
+    await beta.stop();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await openTree(downReady);
+  };
+  const rowRetry = {};
+  await betaDownAndReload();
+  for (const family of families) {
+    rowRetry[family.name] = { beforeRootOpened: await rowStateOf(family) };
+    await family.root().click();
+    const openedAt = Date.now();
+    await waitFor(`${family.name} unreachable`, async () => (rowRetry[family.name].down = await rowStateOf(family)).error?.startsWith(`Couldn't reach ${NODE}.`), 30_000).catch(() => undefined);
+    rowRetry[family.name].secondsToError = rowRetry[family.name].down.error ? Math.round((Date.now() - openedAt) / 100) / 10 : null;
   }
+  // The rest of the tree works: this node's own run opens.
+  await page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`).first().click();
+  let localStillWorks = true;
+  await waitFor('the standalone run opens', async () => (await centerPane.innerText()).includes('studio_team'), 30_000).catch(() => { localStillWorks = false; });
   await page.screenshot({ path: path.join(outputDir, 'RTP-06-unreachable.png'), fullPage: true });
   await beta.start();
-  if (retryVisible) await rowOf(orgRemoteRun).first().locator('[data-test="workspace-remote-run-retry"]').click();
-  let afterRetry = null;
-  await waitFor('the title after Retry', async () => (afterRetry = await rowInfo(orgRemoteRun))?.title === orgTitle, 40_000).catch(() => undefined);
-  await page.screenshot({ path: path.join(outputDir, 'RTP-06-after-retry.png'), fullPage: true });
-  evidence.cases['RTP-06'] = { result: unreachable?.error?.startsWith(`Couldn't reach ${NODE}.`) && retryVisible && notice?.includes(`${NODE} isn't reachable`) && localStillListed && afterRetry?.title === orgTitle ? 'Pass' : 'Fail',
-    unreachable, retryVisible, notice, localStillListed, afterRetry };
+  for (const family of families) {
+    const retry = family.row().locator('[data-test="workspace-remote-run-retry"]');
+    if (await retry.count()) await retry.first().click();
+    let after = null;
+    await waitFor(`${family.name} after Retry from the row`, async () => { after = await rowStateOf(family); return !after.error && after.showsTitle; }, 40_000).catch(() => undefined);
+    rowRetry[family.name].afterRetry = after;
+  }
+  await page.screenshot({ path: path.join(outputDir, 'RTP-06-after-row-retry.png'), fullPage: true });
+  evidence.cases['RTP-06'] = { result: localStillWorks && families.every(family => rowRetry[family.name].down?.error?.startsWith(`Couldn't reach ${NODE}.`)
+    && rowRetry[family.name].down.retry > 0 && rowRetry[family.name].down.titleElement === 0 && rowRetry[family.name].secondsToError <= 20 && !rowRetry[family.name].afterRetry?.error && rowRetry[family.name].afterRetry?.showsTitle) ? 'Pass' : 'Fail', rowRetry, localStillWorks };
+
+  const noticeRetry = {};
+  for (const family of families) {
+    await betaDownAndReload();
+    await family.root().click();
+    await sleep(500);
+    const memberRowShown = (await rowOf(family.open).count()) > 0;
+    // By the agent's name, as a user opens it: the row's middle can be its Task link (which opens the Task instead).
+    await (memberRowShown ? rowOf(family.open).first().getByText(family.openName, { exact: true }).first() : family.row()).click();
+    let notice = null;
+    await waitFor(`${family.name}: the notice`, async () => (notice = (await page.locator('[data-test="remote-run-notice"]').count())
+      ? (await page.locator('[data-test="remote-run-notice"]').first().innerText()).trim() : null) !== null, 40_000).catch(() => undefined);
+    const rowAtOpen = await rowStateOf(family);
+    const viewAtOpen = (await centerPane.innerText()).slice(0, 400);
+    await page.screenshot({ path: path.join(outputDir, `RTP-07-${families.indexOf(family) + 1}-beta-down.png`), fullPage: true });
+    await beta.start();
+    const retry = page.locator('[data-test="remote-run-notice-retry"]');
+    const retryShown = (await retry.count()) > 0;
+    if (retryShown) await retry.first().click();
+    let recovered = false;
+    await waitFor(`${family.name}: the conversation after Retry`, async () => (recovered = !(await page.locator('[data-test="remote-run-notice"]').count())
+      && (await centerPane.innerText()).includes(family.marker)), 40_000).catch(() => undefined);
+    noticeRetry[family.name] = { opened: memberRowShown ? family.open : 'the remote Team row', notice, retryShown, recovered, rowAtOpen, viewAtOpen };
+  }
+  await page.screenshot({ path: path.join(outputDir, 'RTP-07-after-notice-retry.png'), fullPage: true });
+  evidence.cases['RTP-07'] = { result: Object.values(noticeRetry).every(entry => entry.notice?.includes(`${NODE} isn't reachable`) && entry.retryShown && entry.recovered) ? 'Pass' : 'Fail', noticeRetry };
 
   evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools/.test(line)).length === 0 ? 'Pass' : 'Fail';
   if (evidence.result !== 'Pass') process.exitCode = 1;
