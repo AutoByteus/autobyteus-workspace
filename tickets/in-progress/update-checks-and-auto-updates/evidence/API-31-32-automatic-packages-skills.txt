@@ -1,0 +1,24 @@
+# API-31/32 — automatic updates switched on in the panel and in the card (AC-006, AC-007, AC-008a/b, AC-010, AC-011)
+# macOS 26.5.2 arm64; packaged build from 48fe98d65d (code 985246c53b), 1.5.9-beta.2, ad-hoc; instance A on own data root /private/tmp/a210/rootA; real public GitHub (unauthenticated); scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs) via the data root's .env; 2026-10-23
+
+## package switch → confirmation (text) → Cancel
+['Turn on automatic updates for agent packages?This node downloads new revisions of the agent packages you imported, from their GitHub repositories, and installs them without asking.An update can change what your agents do.Local changes and files you added in a package are replaced without asking and cannot be restored.You can turn this off at any time, here or in Settings → Server Settings → Basics → Update checks, and update by hand.CancelTurn on']
+after Cancel: [] [{'id': 'auto-update-agent_package-toggle', 'checked': 'false', 'disabled': False, 'explanation': 'Downloads new revisions from GitHub and installs them without asking. They can change what your agents do. Local changes are replaced.', 'applying': None}]
+
+## Turn on at 2026-10-23T21:17:53.000Z
+[{'id': 'auto-update-agent_package-toggle', 'checked': 'true', 'disabled': False, 'explanation': 'Installs new revisions on its own, replacing local changes. Switch off to update by hand.', 'applying': '1 waiting update will be installed within about a minute.'}]
+## outcome
+{'kind': 'AGENT_PACKAGE', 'sourceId': 'github:autobyteus/autobyteus-agents', 'name': 'AutoByteus/autobyteus-agents', 'repositoryUrl': 'https://github.com/AutoByteus/autobyteus-agents', 'defaultBranch': 'main', 'installedRevision': 'a8a09f3e6b677a874b00940b40da3adb17404fea', 'latestRevision': 'd705e9a367ff6b43f00c47335890b2866dd5f4c3', 'foundAt': '2026-10-23T21:15:58.035Z', 'read': False, 'state': 'HANDLED', 'handledRevision': 'd705e9a367ff6b43f00c47335890b2866dd5f4c3', 'handledAt': '2026-10-23T21:18:00.464Z', 'outcome': 'AUTO_UPDATED', 'outcomeReason': None, 'outcomeAt': '2026-10-23T21:18:00.475Z'}
+[{'id': 'agent_package:github:autobyteus/autobyteus-agents', 'state': 'handled', 'text': 'New: AutoByteus/autobyteus-agentsUpdated automatically to d705e9aClearthis minute·See changes on GitHub', 'compare': 'https://github.com/AutoByteus/autobyteus-agents/compare/a8a09f3e6b677a874b00940b40da3adb17404fea...d705e9a367ff6b43f00c47335890b2866dd5f4c3'}]
+['5 updates available: 4 agent runtime updates, 1 skill update, 1 updated automatically']
+
+## skill source: local edit in README.md and added LOCAL-ADDED.txt in the installed generation a6aab3ef…; switch on in the card at 2026-10-23T21:18:45Z
+card before: ['auto-update-agent_package-toggle=true', 'auto-update-skill_source-toggle=false', 'auto-update-agent_runtime-toggle=false']
+dialog: Turn on automatic updates for skill sources?This node downloads new revisions of the skill sources you imported, from their GitHub repositories, and installs them without asking.An update can change what your agents do.Local changes and files you added in a skill source are replaced without asking and cannot be restored.You can turn this off at any time, here or in Settings → Server Settings → Basics → Update checks, and update by hand.CancelTurn on
+card after: ['auto-update-agent_package-toggle=true', 'auto-update-skill_source-toggle=true', 'auto-update-agent_runtime-toggle=false']
+## outcome
+{'kind': 'SKILL_SOURCE', 'sourceId': 'a57ce8c9-b185-4366-8b2b-cb42bc18ced5', 'name': 'blader/humanizer', 'repositoryUrl': 'https://github.com/blader/humanizer', 'defaultBranch': 'main', 'installedRevision': '6be1fa4e0c768202b126f8bc5c9bf67ead9162bc', 'latestRevision': '8c307f367c91bd974002f10f2be2965d642c13df', 'foundAt': '2026-10-23T21:15:58.216Z', 'read': False, 'state': 'HANDLED', 'handledRevision': '8c307f367c91bd974002f10f2be2965d642c13df', 'handledAt': '2026-10-23T21:19:01.030Z', 'outcome': 'AUTO_UPDATED', 'outcomeReason': None, 'outcomeAt': '2026-10-23T21:19:01.037Z'}
+generations after: 55b4cffc… only; README 'LOCAL EDIT' lines: 0; LOCAL-ADDED.txt: absent; registry installed revision 8c307f36…
+## panel after both (same switch state as the card)
+[('auto-update-agent_runtime-toggle', 'false'), ('auto-update-agent_package-toggle', 'true'), ('auto-update-skill_source-toggle', 'true')]
+['4 updates available: 4 agent runtime updates, 2 updated automatically']

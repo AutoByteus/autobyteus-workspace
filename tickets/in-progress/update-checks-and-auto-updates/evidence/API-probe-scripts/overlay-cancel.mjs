@@ -1,0 +1,1 @@
+export default async (page) => { await page.locator('[data-testid="node-change-overlay"] button').filter({ hasText: /^\s*Cancel\s*$/ }).click(); await page.waitForTimeout(600); return { overlay: await page.locator('[data-testid="node-change-overlay"]').count() }; };
