@@ -1,0 +1,14 @@
+# API-07 — isolated desktop instance (AC-010, AC-009, REQ-003)
+
+- Commit: code `cd8c289b67`; app = this worktree's build `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` (`pnpm -C autobyteus-web build:electron:mac`, exit 0, guards passed). Date 2026-10-23.
+- Environment: macOS arm64; `pnpm --silent isolated-app start --from-worktree --data-root /tmp/ast-e2e/desktop-root`; CDP attach only to the instance's reported control port.
+- Data package (`seed-desktop.mjs`): the instance was started once (creates `server-data` and its database) and stopped; this worktree's `autobyteus-server-ts/dist/app.js` then ran on `<root>/server-data` exactly as the app's embedded server does (`--data-dir`, `DATABASE_URL` on `server-data/db/production.db`), with the scripted AGY CLI. A Manager agent gave Task A to a Team copy, then Task B to the same copy while A was open (`delegate_task task_id` + `target_team_run_id`); C stays unassigned. The server was stopped (`backendStopped: true`, no scripted process of the root left) and the instance started on the root.
+- Journey (`desktop-journey.mjs`): `run1/result.json` 5 × Pass, `errors: []`: J1 the board shows the team on A's and B's cards, none on C; J2/J3 "Assigned to" on both Task pages names the team; J4 one team copy in the Workspaces tree; J5 both roots name the same team run.
+- Finding API-F-001: J2 and J3's `obs.text` read `"Assigned to release team 278e Offline When the Task is Done, this agent or team stops."`. For a team that holds both A and B, that sentence (`projects.root.help`, en and zh-CN) is now false (REQ-004). See the execution report.
+- Cleanup: `stop-b.json` (`wasRunning: true`, ports released), `list-after.json` (no instance of this run; the two stopped records belong to another worktree), root removed.
+
+## Round 2 (API-REV-002, after the SR-006 web fix `1fa3a1d87e`)
+
+- Rebuilt app (`evidence/API-07-r2-electron-build.log`: guards passed, exit 0; the new sentence is in the bundle, the old one nowhere). Fresh data package, same steps.
+- `run2/result.json`: J1–J6 × Pass, `errors: []`. J2/J3 `help`: `"This agent or team stops when its last open Task is Done or Cancelled."`, `helpClipped: false`; J6 (zh-CN) `a.help` / `b.help`: `"这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。"`, `helpClipped: false`. Screenshots `run2/J2-task-A-assigned-1440.png`, `run2/J3-task-B-assigned-1440.png`, `run2/J6-zh-task-A-assigned-1440.png`, `run2/J6-zh-task-B-assigned-1440.png`.
+- Cleanup: `run2/stop-b.json` (`wasRunning: true`), `run2/list-after.json` (no instance of this run), root removed.

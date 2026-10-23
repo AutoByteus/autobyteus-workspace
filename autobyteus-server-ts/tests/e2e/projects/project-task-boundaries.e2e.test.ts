@@ -660,7 +660,9 @@ describe("Project Task production HTTP boundaries", () => {
       expect(tool(name).inputSchema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
     }
     expect(tool("list_project_tasks").description).toContain("TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed)");
-    expect(tool("update_task").description).toContain("CANCELLED means the Task was dropped as not needed (not finished). Both stop the task agents whose current Task this is");
+    expect(tool("update_task").description).toContain("CANCELLED means the Task was dropped as not needed (not finished). Both end this Task's work for its task agents; a task agent is stopped when this was its last open Task");
+    // task-agent-several-tasks REQ-008: another Task for a task agent, also while its other Tasks are open.
+    expect(tool("update_task").description).toContain("To give a task agent another Task, also while its other Tasks are open, use delegate_task with its target_agent_run_id or target_team_run_id.");
     expect(tool("update_task").description).toContain("first set the Task to TODO or IN_PROGRESS");
     expect(tool("create_or_update_task")).toBeUndefined();
     // REQ-001 / AC-002: the GraphQL enum carries CANCELLED (read-only: no status input anywhere).
@@ -843,7 +845,7 @@ describe("Project Task production HTTP boundaries", () => {
       expect(tool(name).description).toContain("Optional part_of");
     }
     expect(tool("update_task").inputSchema.properties.part_of.description).toContain("\"\" clears it; omit to keep.");
-    expect(tool("update_task").description).toContain("Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (stopping their task agents); closedParts lists them.");
+    expect(tool("update_task").description).toContain("Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them.");
     expect(tool("list_project_tasks").description).toContain("the bigger Task it is part of (partOf, a taskId or null) and its parts (parts, by taskId)");
 
     const projectId = await createProject("Parts Tools"), otherId = await createProject("Parts Elsewhere");

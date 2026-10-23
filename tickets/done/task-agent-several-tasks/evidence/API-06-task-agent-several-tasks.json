@@ -1,0 +1,93 @@
+{
+  "parentAndParts": {
+    "team": "sev_squad_63b200_ca9fdb08ad0d432d959ff1ea9c515cb2",
+    "coordinator": "sev_worker_63b200_2af25f7c8f114998837f45f9625a510c",
+    "keys": [
+      "several-tasks-63b200-1",
+      "several-tasks-63b200-2",
+      "several-tasks-63b200-3"
+    ],
+    "cancelled": {
+      "task": {
+        "projectId": "project_ed600518-626a-4421-b32e-e15e926be989",
+        "taskId": "several-tasks-63b200-1",
+        "status": "CANCELLED",
+        "dependsOn": [],
+        "partOf": null,
+        "closedParts": [
+          "several-tasks-63b200-2",
+          "several-tasks-63b200-3"
+        ]
+      }
+    },
+    "closures": 1,
+    "messages": [
+      "New Task assigned to you: several-tasks-63b200-2. Your Task several-tasks-63b200-1 is still open; name the Task key in each report.",
+      "New Task assigned to you: several-tasks-63b200-3. Your Tasks several-tasks-63b200-1, several-tasks-63b200-2 are still open; name the Task key in each report."
+    ]
+  },
+  "subWork": {
+    "worker": "sev_worker_63b200_c2ce46a7c1f640baa4538d9ae2ab4264",
+    "helper": "sev_helper_63b200_030d1d93b26b449f88c1e8d656651209",
+    "assigned": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "sev_worker_63b200_c2ce46a7c1f640baa4538d9ae2ab4264"
+    },
+    "stillOpen": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "sev_worker_63b200_c2ce46a7c1f640baa4538d9ae2ab4264"
+    },
+    "closuresOfWorker": 0
+  },
+  "giveBack": {
+    "whileDone": {
+      "delegated": false,
+      "message": "The Task is DONE; set it to TODO or IN_PROGRESS before you delegate it."
+    },
+    "back": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "sev_worker_63b200_c2ce46a7c1f640baa4538d9ae2ab4264"
+    },
+    "duplicate": {
+      "delegated": false,
+      "message": "This task agent already works on this Task."
+    },
+    "fenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CANCELLED. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.",
+      "target_agent_run_id": null,
+      "isError": true
+    },
+    "bEntries": [
+      {
+        "closedAt": "2026-10-23T13:33:43.471Z"
+      },
+      {
+        "closedAt": null
+      }
+    ]
+  },
+  "wake": {
+    "sleeper": "sev_worker_63b200_d93d4ff327264c03a37a0fd2377c300e",
+    "assigned": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "sev_worker_63b200_d93d4ff327264c03a37a0fd2377c300e"
+    },
+    "keys": [
+      "several-tasks-63b200-6",
+      "several-tasks-63b200-7"
+    ]
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}

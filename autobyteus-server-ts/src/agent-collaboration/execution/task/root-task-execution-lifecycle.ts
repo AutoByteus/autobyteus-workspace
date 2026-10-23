@@ -181,6 +181,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
     let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, comments: readonly string[], referenceFiles: readonly string[];
+    let otherOpenTaskReferences: readonly string[];
     try {
       this.assertAdmitting(context.identity);
       this.adapter.assertCurrentSchemaReady();
@@ -199,6 +200,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       target = found;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
+      // The copy may hold other open Tasks; the message names them (read before any change, so a failure changes nothing).
+      otherOpenTaskReferences = await port.openTaskReferencesOf(target.execution, taskId);
       await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
       await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
         ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
@@ -207,7 +210,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskReference, description, comments });
+    const content = buildExistingCopyTaskMessage({ taskReference, description, comments, otherOpenTaskReferences });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }

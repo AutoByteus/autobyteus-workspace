@@ -1,0 +1,94 @@
+{
+  "results": [
+    {
+      "name": "J1-board",
+      "result": "Pass",
+      "obs": {
+        "A": {
+          "name": "release team 2457",
+          "state": "project-task-root"
+        },
+        "B": {
+          "name": "release team 2457",
+          "state": "project-task-root"
+        },
+        "C": null
+      }
+    },
+    {
+      "name": "J2-task-A-assigned-to",
+      "result": "Pass",
+      "obs": {
+        "text": "Assigned to release team 2457 Offline This agent or team stops when its last open Task is Done or Cancelled.",
+        "name": "release team 2457",
+        "notAssigned": 0,
+        "help": "This agent or team stops when its last open Task is Done or Cancelled.",
+        "helpClipped": false
+      }
+    },
+    {
+      "name": "J3-task-B-assigned-to",
+      "result": "Pass",
+      "obs": {
+        "text": "Assigned to release team 2457 Offline This agent or team stops when its last open Task is Done or Cancelled.",
+        "name": "release team 2457",
+        "notAssigned": 0,
+        "help": "This agent or team stops when its last open Task is Done or Cancelled.",
+        "helpClipped": false
+      }
+    },
+    {
+      "name": "J4-workspaces-tree",
+      "result": "Pass",
+      "obs": {
+        "teamRows": [
+          "release team 2457 Write the release notes for the relay",
+          ""
+        ],
+        "occurrences": 1
+      }
+    },
+    {
+      "name": "J5-graphql",
+      "result": "Pass",
+      "obs": {
+        "A": {
+          "kind": "team",
+          "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+          "recipientAddress": "/release_team_2457",
+          "closed": false,
+          "status": "offline"
+        },
+        "B": {
+          "kind": "team",
+          "teamRunId": "release_team_2457_78c48f728586439483542c9d635f3409",
+          "recipientAddress": "/release_team_2457",
+          "closed": false,
+          "status": "offline"
+        },
+        "C": null
+      }
+    },
+    {
+      "name": "J6-zh-CN-help-line",
+      "result": "Pass",
+      "obs": {
+        "a": {
+          "text": "分配给 release team 2457 离线 这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+          "name": "release team 2457",
+          "notAssigned": 0,
+          "help": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+          "helpClipped": false
+        },
+        "b": {
+          "text": "分配给 release team 2457 离线 这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+          "name": "release team 2457",
+          "notAssigned": 0,
+          "help": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+          "helpClipped": false
+        }
+      }
+    }
+  ],
+  "errors": []
+}

@@ -209,7 +209,7 @@ const projectMessages = {
   // project-manager-ux: a Task's root (the agent or team it was handed to) and its worker status
   'projects.root.listLabel': '分配给',
   'projects.root.notAssigned': '还没有分配给智能体或团队。',
-  'projects.root.help': '任务完成后，这个智能体或团队会停止。',
+  'projects.root.help': '这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。',
   'projects.root.open': '打开 {{name}}',
   'projects.root.kind.agent': '智能体',
   'projects.root.kind.team': '团队',

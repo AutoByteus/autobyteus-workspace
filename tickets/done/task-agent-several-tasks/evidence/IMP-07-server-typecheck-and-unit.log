@@ -1,0 +1,25 @@
+# Check: IMP-07
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts test:unit
+# Commit tested: cd8c289b67 (branch codex/task-agent-several-tasks)
+# Environment: macOS 26.5.2 (darwin), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-23 15:02 CEST
+
+# Excerpt: typecheck tail, failure scan and unit summary. Full unit log: IMP-07-server-typecheck-and-unit.full.log.gz
+## typecheck
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0
+
+## unit: lines matching × (failing tests)
+# (none)
+
+## unit summary
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+
+ Test Files  794 passed | 4 skipped (798)
+      Tests  6518 passed | 7 skipped (6525)
+   Start at  14:51:33
+   Duration  620.96s (transform 15.64s, setup 10.23s, import 317.02s, tests 214.84s, environment 725ms)
+
+exit=0

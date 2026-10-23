@@ -1,0 +1,70 @@
+{
+  "results": [
+    {
+      "name": "J1-board",
+      "result": "Pass",
+      "obs": {
+        "A": {
+          "name": "release team 278e",
+          "state": "project-task-root"
+        },
+        "B": {
+          "name": "release team 278e",
+          "state": "project-task-root"
+        },
+        "C": null
+      }
+    },
+    {
+      "name": "J2-task-A-assigned-to",
+      "result": "Pass",
+      "obs": {
+        "text": "Assigned to release team 278e Offline When the Task is Done, this agent or team stops.",
+        "name": "release team 278e",
+        "notAssigned": 0
+      }
+    },
+    {
+      "name": "J3-task-B-assigned-to",
+      "result": "Pass",
+      "obs": {
+        "text": "Assigned to release team 278e Offline When the Task is Done, this agent or team stops.",
+        "name": "release team 278e",
+        "notAssigned": 0
+      }
+    },
+    {
+      "name": "J4-workspaces-tree",
+      "result": "Pass",
+      "obs": {
+        "teamRows": [
+          "release team 278e Write the release notes for the relay",
+          ""
+        ],
+        "occurrences": 1
+      }
+    },
+    {
+      "name": "J5-graphql",
+      "result": "Pass",
+      "obs": {
+        "A": {
+          "kind": "team",
+          "teamRunId": "release_team_278e_08c953ab481647c8b932432fbec0bdf3",
+          "recipientAddress": "/release_team_278e",
+          "closed": false,
+          "status": "offline"
+        },
+        "B": {
+          "kind": "team",
+          "teamRunId": "release_team_278e_08c953ab481647c8b932432fbec0bdf3",
+          "recipientAddress": "/release_team_278e",
+          "closed": false,
+          "status": "offline"
+        },
+        "C": null
+      }
+    }
+  ],
+  "errors": []
+}

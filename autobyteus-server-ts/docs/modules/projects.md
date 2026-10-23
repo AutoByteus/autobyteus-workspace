@@ -874,22 +874,26 @@ delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent co
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
 ```
 
-**Rule.** A copy has one current Task at a time. It can be given Task B only
-by the run that made its most recent assignment, and only when its current
-Task is DONE or CANCELLED. The copy is hosted in the delegator's root and is
-named by its own ID: a Team copy by its team run ID, an Agent copy by its agent
-run ID.
+**Rule.** A copy may hold several open Tasks (task-agent-several-tasks). It can
+be given Task B only by the run that made its most recent assignment, also while
+its earlier Tasks are open. Its current Task is its newest open one (sub-work it
+starts belongs there); when none is open, its latest one. It is stopped only when
+its last open Task is DONE or CANCELLED. The copy is hosted in the delegator's
+root and is named by its own ID: a Team copy by its team run ID, an Agent copy by
+its agent run ID.
 
 **Path** (`RootTaskExecutionLifecycle.assignToExistingCopy`, all three roots):
 1. The root's adapter finds the copy in its tree (`taskExecutionTargetOf`).
 2. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
    this order of concern: all Task resource data readable; Task B exists, is
-   unique and is not DONE or CANCELLED; the copy's current entry is a closed
+   unique and is not DONE or CANCELLED; the copy's current entry is an
    `assigned` entry made by the sender; some entry of the copy ever started;
-   B is not already the copy's current Task.
+   B is not the copy's closed current Task (a Task it already holds open is
+   refused by the commit: "already works on this Task"). The copy's other open
+   Tasks are read for the message (`openTaskReferencesOf`, keys, oldest first).
 3. The shared resume step (the one reactivation uses) settles the copy's
    previous stop, drops its released authority and checks its saved
-   conversation can be restored.
+   conversation can be restored. A copy that is still open skips it.
 4. The commit (`assignExistingTaskExecution`) re-checks every condition under
    the copy's and then B's serialization (lock order: copy, then Task; DONE
    takes only the Task's) and **appends** B's `starting` `assigned` entry, with
@@ -898,15 +902,22 @@ run ID.
 6. The root's exact delivery (the `send_message_to` path) wakes or restores the
    copy with its conversation and delivers B's description and context files
    to its ingress (the Agent, or the Team's coordinator) as a message from the
-   delegator (`messageType: "task_assignment"`). The entry becomes `started`.
+   delegator (`messageType: "task_assignment"`). The message starts "New Task
+   assigned to you: B." and then, when the copy holds other open Tasks, "Your
+   Task A is still open; name the Task key in each report." (otherwise "Your
+   previous Task is closed; this is the work to do now."). The entry becomes
+   `started`.
 
-**Effect.** B's board root is the copy with its live status; A stays DONE with
-the copy shown closed. Closing A again never stops or hides the copy; closing B
-stops it like any DONE. `list_project_tasks` shows the copy under A's
+**Effect.** B's board root is the copy with its live status; A keeps its own
+status (an open A also shows the copy open). Closing one of the copy's Tasks
+never stops or hides it while another is open; closing its last open Task stops
+it like any DONE (`releasableByHostRoot`: copies with an entry in this Task and
+no open entry left; a repeated DONE re-requests the stop). `list_project_tasks` shows the copy under A's
 `closedAssignments` and B's `assignments`.
 
-**Back to an earlier Task (A → B → A).** After B is DONE and A is reopened, the
-same assigner can give A to the copy again with `delegate_task`. A's file then
+**Back to an earlier Task (A → B → A).** Once A is reopened (TODO or IN_PROGRESS),
+the same assigner can give A to the copy again with `delegate_task`, whether B is
+DONE or still open. A's file then
 holds the copy's earlier, closed period and a new open one; nothing is
 rewritten. Messaging the copy instead is refused with a hint naming its current
 Task (see the reactivation table).
@@ -916,7 +927,7 @@ Task (see the reactivation table).
 
 | Case | Message says |
 | --- | --- |
-| The copy's current Task is still open | It still works on Task A (status); mark it DONE or CANCELLED first, or delegate Task B to a new copy with `recipient_address` |
+| B is already one of the copy's open Tasks | It already works on this Task |
 | The sender did not make the copy's most recent assignment | Only that run can give it a new Task |
 | A sub-work or helper copy | Only an assigned copy can be given a new Task |
 | A Team coordinator passed as `target_agent_run_id` | It is the coordinator of task agent team X; use `target_team_run_id` "X" |

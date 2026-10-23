@@ -1,0 +1,55 @@
+// IMP-08 temporary case (not committed as a test): added to a copy of autobyteus-web/tests/e2e/project-manager-ux-probe.mjs
+// at commit 1fa3a1d87e, registered as CASES['IMP-08'], run with --cases IMP-08. The copy was deleted after the run.
+
+// ---------------------------------------------------------------- IMP-08 (temporary implementation check, not committed)
+/** AC-011 / DEC-013: the "Assigned to" help line on both Task pages of one task agent holding two open Tasks, en and zh-CN. */
+const severalTasksHelpLine = async () => {
+  const s = await setupAgentRoot();
+  const worker = `/${segment(s.names.worker)}`;
+  s.input.send(callTool('delegate_task', { recipient_address: worker, task_id: s.taskA }));
+  const a = await until('Task A started on a new copy', async () => { const r = await rootOf(s.projectId, s.taskA); return r?.start === 'started' ? r : null; }, 90000);
+  s.input.send(callTool('delegate_task', { target_agent_run_id: a.ingressAgentRunId, task_id: s.taskB }));
+  const b = await until('Task B given to the same copy while A is open', async () => {
+    const r = await rootOf(s.projectId, s.taskB); return r && r.ingressAgentRunId === a.ingressAgentRunId && !r.closed ? r : null; }, 60000);
+  const aAgain = await rootOf(s.projectId, s.taskA);
+  assert(aAgain && !aAgain.closed, 'Task A stays open on the copy', aAgain);
+  const expected = { 'en-US': 'This agent or team stops when its last open Task is Done or Cancelled.', 'zh-CN': '这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。' };
+  const out = { a, b, pages: {} };
+  const read = async (page, key) => {
+    const help = page.getByTestId('task-page-root-help');
+    await help.waitFor({ timeout: 30000 });
+    const info = await help.evaluate((e) => { const cs = getComputedStyle(e); const r = e.getBoundingClientRect();
+      return { text: e.innerText.trim(), fontSize: cs.fontSize, lineHeight: cs.lineHeight, color: cs.color, width: Math.round(r.width), height: Math.round(r.height),
+        clipped: e.scrollWidth > e.clientWidth + 1, rootName: document.querySelector('[data-testid="project-task-root-name"]')?.innerText ?? null }; });
+    out.pages[key] = info; return info;
+  };
+  for (const [locale, width] of [['en-US', 1440], ['zh-CN', 1440], ['en-US', 390], ['zh-CN', 390]]) {
+    const { page, errors } = await newPage({ locale, width, height: width === 390 ? 844 : 1000 });
+    for (const [label, taskId] of [['A', s.taskA], ['B', s.taskB]]) {
+      await goto(page, `/projects/${s.projectId}/tasks/${taskId}`);
+      const info = await read(page, `${locale}-${width}-${label}`);
+      assert(info.text === expected[locale], `help line text (${locale}, ${label})`, info);
+      assert(!info.clipped, 'help line not clipped', info);
+      await shot(page, `imp-08-${locale}-${width}-task-${label}`);
+    }
+    assertNoBrowserErrors(errors);
+  }
+  // Closing B: the copy keeps A, so A's page keeps the help line; B's page drops it (closed root).
+  s.input.send(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
+  await until('B closed for the copy', async () => (await rootOf(s.projectId, s.taskB))?.closed === true, 30000);
+  const aAfter = await rootOf(s.projectId, s.taskA);
+  assert(aAfter && !aAfter.closed, 'A stays open after B is DONE', aAfter);
+  const { page, errors } = await newPage();
+  await goto(page, `/projects/${s.projectId}/tasks/${s.taskB}`);
+  await page.getByTestId('task-page-root-help').waitFor({ state: 'detached', timeout: 15000 }).catch(() => undefined);
+  out.bClosedHelpShown = await page.getByTestId('task-page-root-help').count();
+  assert(out.bClosedHelpShown === 0, 'a closed root shows no help line', out);
+  await shot(page, 'imp-08-en-after-B-done-task-B');
+  await goto(page, `/projects/${s.projectId}/tasks/${s.taskA}`);
+  const after = await read(page, 'en-after-B-done-A');
+  assert(after.text === expected['en-US'], 'A still shows the help line after B is DONE', after);
+  await shot(page, 'imp-08-en-after-B-done-task-A');
+  assertNoBrowserErrors(errors);
+  out.aAfter = aAfter;
+  return out;
+};

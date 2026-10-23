@@ -20,9 +20,10 @@ export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed:
 
 /**
  * The sole authority over every Task's `agent_run_resources.json` and the process in-memory view of
- * them (per-Task entries, each copy's entries across Tasks, and the damaged set). It alone owns the
- * current-entry rule: a copy's current entry is its open entry, else its latest linked entry; every
- * ownership, closure and visibility answer reads it. Write preconditions are evaluated on the content
+ * them (per-Task entries, each copy's entries across Tasks, and the damaged set). A copy may hold open
+ * entries in several Tasks (several Tasks given by delegate_task). It alone owns the current-entry rule:
+ * a copy's current entry is its newest open entry, else its latest linked entry; every ownership, closure
+ * and visibility answer reads it, and a copy is open while any of its entries is. Write preconditions are evaluated on the content
  * read under the file's lock; the view is swapped only by the committing write.
  */
 export class TaskExecutionResourceService {
@@ -144,6 +145,12 @@ export class TaskExecutionResourceService {
       .some(entry => entry.start === "started" && taskExecutionReferenceKey(entry.execution) === key));
     return { currentTaskId: current.taskId, current: current.entry, everStarted };
   }
+  /** The Tasks in which this copy has an open entry, oldest first (by `linkedAt`, tie: Task ID), from the view. */
+  openTaskIdsOf(execution: TaskExecutionReference): string[] {
+    return [...this.entriesByExecution.get(taskExecutionReferenceKey(execution))?.entries() ?? []]
+      .filter(([, entry]) => entry.closedAt === null)
+      .sort(([a, x], [b, y]) => x.linkedAt.localeCompare(y.linkedAt) || a.localeCompare(b)).map(([taskId]) => taskId);
+  }
   /** The other Tasks this copy has entries in (its earlier assignment periods), from the view. */
   earlierTaskLocationsOf(execution: TaskExecutionReference): TaskLocation[] {
     const current = this.currentOf(execution)?.taskId;
@@ -172,15 +179,17 @@ export class TaskExecutionResourceService {
   }
 
   /**
-   * The Task's closed entries that are still their copy's current entry, grouped by host root, one per
-   * copy (a repeated DONE or CANCELLED re-requests them). A copy that moved to another Task is never included.
+   * The copies with an entry in this Task and no open entry in any Task, grouped by host root, one per copy
+   * (a repeated DONE or CANCELLED re-requests them). A copy that still holds another open Task is never
+   * included: it is stopped when its last open Task closes.
    */
   releasableByHostRoot(taskId: string): TaskExecutionGroup[] {
     const groups = new Map<string, { hostRoot: RootExecutionIdentity; executions: Map<string, TaskExecutionReference> }>();
     for (const entry of this.files.get(taskId)?.file.executionResources ?? []) {
       const key = taskExecutionReferenceKey(entry.execution);
+      // The current entry is open while any entry of the copy is.
       const current = this.currentByExecution.get(key);
-      if (current?.taskId !== taskId || current.entry.closedAt === null) continue;
+      if (!current || current.entry.closedAt === null) continue;
       const rootKey = rootExecutionIdentityKey(current.entry.hostRoot);
       const group = groups.get(rootKey) ?? { hostRoot: current.entry.hostRoot, executions: new Map() };
       group.executions.set(key, current.entry.execution);
@@ -301,15 +310,14 @@ export class TaskExecutionResourceService {
     return affected;
   }
   /**
-   * The current-entry rule for one copy: its open entry, else its latest `linkedAt` (tie: the greater
-   * Task ID). Two open entries can only come from damaged data: the latest is picked and it is logged.
+   * The current-entry rule for one copy: its newest open entry, else its latest linked entry (by `linkedAt`;
+   * tie: the greater Task ID). A copy may hold several open entries (several Tasks given by delegate_task).
    */
   private deriveCurrent(key: string): void {
     const previous = this.currentByExecution.get(key);
     if (previous && previous.entry.closedAt !== null) this.unmarkClosed(previous.entry.hostRoot, key);
     const candidates = [...this.entriesByExecution.get(key)?.entries() ?? []].map(([taskId, entry]) => ({ taskId, entry }));
     const open = candidates.filter(candidate => candidate.entry.closedAt === null);
-    if (open.length > 1) console.error("TASK_AGENT_RESOURCE_CONFLICT", { execution: key, openTasks: open.map(candidate => candidate.taskId) });
     const latest = (open.length ? open : candidates).reduce<Current | null>((best, candidate) => !best
       || candidate.entry.linkedAt > best.entry.linkedAt
       || (candidate.entry.linkedAt === best.entry.linkedAt && candidate.taskId > best.taskId) ? candidate : best, null);
