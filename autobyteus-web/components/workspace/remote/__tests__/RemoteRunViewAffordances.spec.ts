@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, type VueWrapper } from '@vue/test-utils'
+import type { Component } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
@@ -36,11 +37,11 @@ const families = [
   { family: 'Org (a member of a delegated Team)', surface: TeamWorkspaceSurface, kind: 'agent_org_task_team_member', local: null },
 ] as const
 
-const mountFor = (entry: typeof families[number], runId: string) => mount(entry.surface as never, {
+const mountFor = (entry: typeof families[number], runId: string): VueWrapper => mount(entry.surface as Component, {
   props: { showHeaderActions: true, composerPlaceholder: entry.local,
-    target: { kind: entry.kind, context: context(runId), collaborationMessages, team, browse: null } as never },
+    target: { kind: entry.kind, context: context(runId), collaborationMessages, team, browse: null } },
   global: { stubs },
-})
+} as never)
 
 describe.each(families)('the $family view of a run another node runs', (entry) => {
   let retry: ReturnType<typeof vi.fn>
