@@ -1,6 +1,6 @@
 # Code Review Report
 
-Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder`, branch `codex/seal-migrations-per-folder`, base `origin/personal` `27f2d2f72d`, code reviewed at `8b091176bf` (handoff commit `643abc71f4`).
+Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder`, branch `codex/seal-migrations-per-folder`, base `origin/personal` `27f2d2f72d`, code reviewed at `9b013fcc09` (round 2; handoff `706e532a0c`). Round 1 reviewed `8b091176bf`.
 
 ## Review Round Meta
 
@@ -16,15 +16,22 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/aut
 - Relevant Architecture Review Revision IDs: ARCH-REV-001..ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round 2): `git diff 8b091176bf 9b013fcc09` changes six code files, all within CR-001 and CR-002:
+  - the boundary test's package rule and its negative case;
+  - a new frozen file holding the two contract types;
+  - the two frozen files repointed to it;
+  - the 205 migration's session sources;
+  - one new 205 test.
+
+  No spine, interface or data shape changed outside these findings. Round-1 evidence for every other check carries forward.
+- Trigger: implementation handoff IR-002 (CRR-001 Local Fixes) from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: 1 (`CRR-001`, Fail, CR-001 and CR-002)
+- Latest Authoritative Round: 2
 - Failure-origin fields: N/A
 
 ## Routing Classification Review
@@ -94,7 +101,7 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/aut
 | Task design health assessment present and preserved | Pass | Boundary issue resolved by the seal; both hosts traced (Principle 1) | — |
 | Matches approved supplemental artifacts | Pass | `frozen-layer-record.md` matches the code exactly (subset check: the 7 listed edits, nothing else) | — |
 | Data-flow spine clarity and preservation | Pass | DS-001/001b call order as designed; DS-003 generic | — |
-| Ownership boundary preservation | **Fail** | CR-001: two frozen files depend on a live workspace package, and the enforcing test cannot see that family | Fix CR-001 |
+| Ownership boundary preservation | Pass (round 2) | CR-001 resolved: the rule covers `@autobyteus/*`, the negative case proves it, and no `@autobyteus/` import remains in the migration area | — |
 | Off-spine concern clarity | Pass | Ports in `domain/`, wired by the registry | — |
 | Existing capability reuse | Pass | Runner `listRecords`; architecture-test pattern | — |
 | Reusable owned structures | Pass | Code shared by several migrations is in `frozen/`; no folder imports another | — |
@@ -102,7 +109,7 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/aut
 | Repeated coordination ownership | Pass | One readiness owner used by three paths (AR-004) | — |
 | Empty indirection | Pass | — | — |
 | Separation of concerns / file responsibility | Pass | — | — |
-| Ownership-driven dependency | Fail | CR-001 | Fix CR-001 |
+| Ownership-driven dependency | Pass (round 2) | CR-001 resolved | — |
 | Authoritative Boundary Rule | Pass | Production imports only the contract (test plus typecheck) | — |
 | File placement | Pass | `migrations/<name>/`, `frozen/server/<path>`, `frozen/autobyteus-ts/<path>`; tests in `tests/app-data-migrations/<name>/` | — |
 | Flat-vs-over-split | Pass | — | — |
@@ -134,9 +141,9 @@ Ticket `seal-migrations-per-folder` (autobyteus-280). Worktree `/Users/normy/aut
 | No backward-compatibility mechanisms in changed scope | Pass | — |
 | No legacy old-behavior retention in changed scope | Pass | — |
 | Dead code removed in touched files | Pass | — |
-| Approved persisted-data transition decision followed | **Fail** | CR-002: the 205 repair deletes evolver-session-named runs, against "deletes less, never more" |
+| Approved persisted-data transition decision followed | Pass (round 2) | CR-002 resolved: run ids come only from improver session files; a run only an evolver session names is kept (new test) |
 | No version-specific runtime fallback | Pass | Old shapes only in `frozen/` |
-| Transition mechanics match the reviewed design | Fail | CR-002 (the M1 source list); the M4 guard and the preservation of unreadable files are as designed |
+| Transition mechanics match the reviewed design | Pass (round 2) | M1 sources as REQ-008 lists; the M4 guard and the preservation of unreadable files as designed |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -156,28 +163,35 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
+- Overall score (`/10`): 9.45
+- Overall score (`/100`): 94.5
 - Score calculation note: simple average; the decision follows the findings and the per-category floor.
 
 | Priority | Category | Score | Why | Weak / Holding Down | Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Startup, gate and retry spines are as designed, in both hosts | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 8.5 | The seal is real and enforced for relative imports and `autobyteus-ts` | CR-001: the `@autobyteus/*` family is outside the test, and two frozen files depend on it | Cover the scope in the test; freeze the two types |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | The seal is enforced for relative imports, `autobyteus-ts` and `@autobyteus/*` (round 2) | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.5 | Closed capability union; narrow ports | — | — |
 | 4 | Separation of Concerns and File Placement | 9.5 | One folder per migration; frozen paths mirror their sources | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.5 | — | — | — |
 | 6 | Naming Quality and Local Readability | 9.5 | — | — | — |
 | 7 | API/E2E Readiness | 9.0 | Strong unit and e2e evidence | Real-startup gate scenarios left to API/E2E | As the handoff lists |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.5 | Frozen copies are faithful; gates match the old rules | CR-002: the 205 repair deletes more than approved for evolver-session-named runs | Restrict the session source |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Frozen copies are faithful; gates match the old rules; the 205 repair deletes only what REQ-008 lists (round 2) | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | All migration-id reads gone from production | — | — |
 | 10 | Cleanup Completeness | 9.5 | — | — | — |
 
 ## Findings
 
-### CR-001 — The boundary test does not cover `@autobyteus/*` workspace packages, and two frozen files import one
+No open findings (round 2).
 
-- Severity: Medium. A bounded `Local Fix`.
+### CR-001 — **Resolved (round 2)**: the boundary test does not cover `@autobyteus/*` workspace packages, and two frozen files import one
+
+- Resolution (`9b013fcc09`):
+  - `WORKSPACE_PACKAGE` is now `^(?:autobyteus(?:-[a-z-]+)?|@autobyteus\/[a-z0-9-]+)(?:\/|$)`, and the negative case imports `@autobyteus/application-sdk-contracts` and expects the violation.
+  - `ApplicationExecutionProducer` and `ApplicationExecutionContext` are frozen in `frozen/application-sdk-contracts/application-agent-bindings.ts`, verbatim against `27f2d2f72d` `autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:69-78`.
+  - The record is updated, and `grep -rn '@autobyteus/' src/app-data-migrations` has no match.
+  - IMP-01 (r2) passes with 0 errors, and IMP-02 (r2) passes 3/3.
+- Severity (round 1): Medium. A bounded `Local Fix`.
 - Scope: this ticket (REQ-003, REQ-005, AC-001; design DS-004 and Dependency Rules: "`autobyteus-ts` is not allowed"; the test names its own pattern `WORKSPACE_PACKAGE`).
 - Where:
   - `tests/architecture/app-data-migration-boundaries.test.ts` (`WORKSPACE_PACKAGE`);
@@ -192,9 +206,14 @@ None.
   2. Freeze the two types: copy their definitions as of `27f2d2f72d` into the frozen layer, for example `frozen/server/application-orchestration/domain/` or a frozen copy of the contract file under `frozen/`, recorded in `frozen-layer-record.md`.
   3. Rerun IMP-01 and IMP-02 (and the unit suite if anything else moves).
 
-### CR-002 — The 205 repair deletes runs named only by an evolver session file, beyond REQ-008
+### CR-002 — **Resolved (round 2)**: the 205 repair deletes runs named only by an evolver session file, beyond REQ-008
 
-- Severity: Medium. A bounded `Local Fix`.
+- Resolution (`9b013fcc09`):
+  - `SESSION_FOLDERS` gives only the improver session its run-id fields; an evolver session names none.
+  - M4 still handles both folder kinds: a readable folder goes, and an unreadable one is preserved.
+  - New test: `skill_evolver_6666`, named only by an evolver session, survives byte-identical with its history row and no `helper-run:` item, while the session folder goes. The engineer reports it fails against IR-001.
+  - IMP-08 (r2): every migration suite, the contract tests and the 205 startup e2e, 67 files and 554 tests, pass.
+- Severity (round 1): Medium. A bounded `Local Fix`.
 - Scope: this ticket (REQ-008; the design's persisted-data decision "it deletes less, never more"; MP-002).
 - Where: `src/app-data-migrations/migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.ts`. `SESSION_FOLDERS` gives both kinds a run-id field pair, and `collectSessions` adds every named id to `helperRunIds`.
 - Evidence:
@@ -215,13 +234,15 @@ Findings outside this ticket go in the ticket's `follow-ups.md`. They do not fai
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001, CR-002.
+- None (round 2 passes). Round 1: `Local Fix` CR-001 and CR-002, both resolved.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer`. After the fix: a Targeted Delta Review of CR-001 and CR-002, then API/E2E.
+- `/software_engineering_team/api_e2e_engineer` (pass); informational notification to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
+
+- Guideline wording, for the Solution Designer or delivery's docs sync: the new frozen path `frozen/application-sdk-contracts/<path>` follows the code's `frozen/<package>/<path>` pattern, but the guideline names only `frozen/server/` and `frozen/autobyteus-ts/`. A one-line addition; it does not block.
 
 - Frozen-layer size: 14,336 lines, above the estimate. Faithfulness is checked (line subsets of their sources), but a pruned member referenced dynamically would show only at run time. The unit, integration and startup e2e suites are the cover.
 - The frozen in-process locks and the atomic-writer singleton are separate from production's. Cross-process `.lock` files keep exclusion. The two `ANYTIME` migrations (`team-run-execution-tree-v2`, `team-agent-memory-layout`) can be retried while production runs.
@@ -229,11 +250,11 @@ Findings outside this ticket go in the ticket's `follow-ups.md`. They do not fai
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`. Two bounded Local Fixes; everything else is ready for API/E2E.
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`. MP-002 holds as approved; the code exceeds it (CR-002).
-- Score Summary: 9.2 / 10 (92 / 100). Ownership 8.5 (CR-001), Runtime Correctness 8.5 (CR-002); the others ≥ 9.0.
+- Material-Premise Gate: `Pass`. MP-002 holds, and the code now matches it.
+- Score Summary: 9.45 / 10 (94.5 / 100); every category ≥ 9.0.
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: `CRR-001`, against IR-001 @ `8b091176bf`. The classification Large / High is preserved.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: `CRR-002`, against IR-002 @ `9b013fcc09`. CR-001 and CR-002 are resolved. Round 1: `CRR-001` against IR-001 @ `8b091176bf`. The classification Large / High is preserved.
