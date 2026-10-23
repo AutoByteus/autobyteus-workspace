@@ -1,0 +1,179 @@
+{
+  "probe": "API-08 comments-live-probe",
+  "startedAt": "2026-10-22T19:14:30.637Z",
+  "commit": "1b83434652579174025593241a95509e2b3daa43",
+  "cases": {
+    "API-08": {
+      "result": "Pass",
+      "before": {
+        "page": [
+          {
+            "id": "task-comment-1",
+            "meta": "#1 · this minute",
+            "datetime": "2026-10-22T19:14:53.946Z",
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": "task-comment-2",
+            "meta": "#2 · this minute",
+            "datetime": "2026-10-22T19:14:54.003Z",
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          }
+        ],
+        "tab": [
+          {
+            "id": "task-comment-1",
+            "meta": "#1 · this minute",
+            "datetime": "2026-10-22T19:14:53.946Z",
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": "task-comment-2",
+            "meta": "#2 · this minute",
+            "datetime": "2026-10-22T19:14:54.003Z",
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          }
+        ],
+        "emptyState": "No comments yet.",
+        "order": [
+          "task-comments",
+          "task-parts",
+          "task-dependencies",
+          "task-page-assigned"
+        ]
+      },
+      "after": {
+        "page": [
+          {
+            "id": "task-comment-1",
+            "meta": "#1 · this minute",
+            "datetime": "2026-10-22T19:14:53.946Z",
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": "task-comment-2",
+            "meta": "#2 · this minute",
+            "datetime": "2026-10-22T19:14:54.003Z",
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          },
+          {
+            "id": "task-comment-3",
+            "meta": "#3 · this minute",
+            "datetime": "2026-10-22T19:15:02.898Z",
+            "text": "Added from the tab: the copy is approved."
+          },
+          {
+            "id": "task-comment-4",
+            "meta": "#4 · this minute",
+            "datetime": "2026-10-22T19:15:03.126Z",
+            "text": "Added from the Task page."
+          },
+          {
+            "id": "task-comment-5",
+            "meta": "#5 · this minute",
+            "datetime": "2026-10-22T19:15:03.259Z",
+            "text": "Agent: draft is ready for review."
+          }
+        ],
+        "tab": [
+          {
+            "id": "task-comment-1",
+            "meta": "#1 · this minute",
+            "datetime": "2026-10-22T19:14:53.946Z",
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": "task-comment-2",
+            "meta": "#2 · this minute",
+            "datetime": "2026-10-22T19:14:54.003Z",
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          },
+          {
+            "id": "task-comment-3",
+            "meta": "#3 · this minute",
+            "datetime": "2026-10-22T19:15:02.898Z",
+            "text": "Added from the tab: the copy is approved."
+          },
+          {
+            "id": "task-comment-4",
+            "meta": "#4 · this minute",
+            "datetime": "2026-10-22T19:15:03.126Z",
+            "text": "Added from the Task page."
+          },
+          {
+            "id": "task-comment-5",
+            "meta": "#5 · this minute",
+            "datetime": "2026-10-22T19:15:03.259Z",
+            "text": "Agent: draft is ready for review."
+          }
+        ],
+        "blankDisabled": true,
+        "tabBoxCleared": true
+      },
+      "stored": {
+        "taskId": "project_task_e44674b0-eaec-4e3e-85de-54aaca8f034e",
+        "description": "Release notes for 1.5.6\nCollect the changes since 1.5.5.",
+        "comments": [
+          {
+            "id": 1,
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": 2,
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          },
+          {
+            "id": 3,
+            "text": "Added from the tab: the copy is approved."
+          },
+          {
+            "id": 4,
+            "text": "Added from the Task page."
+          },
+          {
+            "id": 5,
+            "text": "Agent: draft is ready for review."
+          }
+        ]
+      },
+      "boardSearch": {
+        "all": [
+          "project_task_e44674b0-eaec-4e3e-85de-54aaca8f034e",
+          "project_task_7cc6e2bb-51c5-4857-81a1-f89b5de5ed8f",
+          "project_task_79648026-a0ab-4e85-96df-9697acda2a34"
+        ],
+        "searched": [
+          "project_task_e44674b0-eaec-4e3e-85de-54aaca8f034e"
+        ],
+        "restored": 3
+      }
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": 59510,
+      "status": "terminated"
+    },
+    "backend": {
+      "pid": 59485,
+      "status": "terminated"
+    },
+    "dataRootRemoved": true,
+    "liveAgyOfThisRun": 0
+  },
+  "browserErrors": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:65516",
+    "frontendUrl": "http://127.0.0.1:65517",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/comments-live-probe-eSNGhK"
+  },
+  "seed": {
+    "projectId": "project_a3e21a30-b350-4cc3-9011-415fd6d15167",
+    "keys": {
+      "T": "autobyteus-1",
+      "other": "autobyteus-2",
+      "third": "autobyteus-3"
+    }
+  },
+  "finishedAt": "2026-10-22T19:15:31.973Z"
+}

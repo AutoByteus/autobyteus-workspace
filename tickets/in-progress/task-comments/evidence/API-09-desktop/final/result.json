@@ -1,0 +1,121 @@
+{
+  "results": [
+    {
+      "name": "J1-task-page-thread",
+      "result": "Pass",
+      "obs": {
+        "comments": [
+          {
+            "id": "task-comment-1",
+            "meta": "#1 · this minute",
+            "datetime": "2026-10-22T19:13:52.435Z",
+            "title": "10/22/2026, 9:13:52 PM",
+            "text": "Dispatched with this direction: keep it short."
+          },
+          {
+            "id": "task-comment-2",
+            "meta": "#2 · this minute",
+            "datetime": "2026-10-22T19:13:52.451Z",
+            "title": "10/22/2026, 9:13:52 PM",
+            "text": "User decided: mention the quokka mascot.\nSecond line of the same comment."
+          },
+          {
+            "id": "task-comment-3",
+            "meta": "#3 · this minute",
+            "datetime": "2026-10-22T19:13:54.677Z",
+            "title": "10/22/2026, 9:13:54 PM",
+            "text": "Agent: first draft is in the docs folder."
+          },
+          {
+            "id": "task-comment-4",
+            "meta": "#4 · this minute",
+            "datetime": "2026-10-22T19:13:55.414Z",
+            "title": "10/22/2026, 9:13:55 PM",
+            "text": "Agent: started the review."
+          }
+        ],
+        "order": [
+          "task-comments",
+          "task-parts",
+          "task-dependencies",
+          "task-page-assigned"
+        ],
+        "status": "In Progress"
+      }
+    },
+    {
+      "name": "J2-add-from-page",
+      "result": "Pass",
+      "obs": {
+        "last": {
+          "id": 5,
+          "createdAt": "2026-10-22T19:14:06.898Z",
+          "text": "From the desktop app: the copy is approved."
+        },
+        "descriptionUnchanged": true
+      }
+    },
+    {
+      "name": "J3-empty-state",
+      "result": "Pass",
+      "obs": {
+        "none": "No comments yet."
+      }
+    },
+    {
+      "name": "J4-board-search",
+      "result": "Pass",
+      "obs": {
+        "all": 4,
+        "searched": [
+          "autobyteus-1"
+        ]
+      }
+    },
+    {
+      "name": "J5-tab",
+      "result": "Pass",
+      "obs": {
+        "reachable": true,
+        "before": 5,
+        "after": 6,
+        "last": {
+          "id": "task-comment-6",
+          "meta": "#6 · this minute",
+          "text": "Added from the tab in the desktop app."
+        }
+      }
+    },
+    {
+      "name": "J6-zh-CN",
+      "result": "Pass",
+      "obs": {
+        "title": "评论",
+        "placeholder": "添加评论",
+        "add": "添加评论",
+        "firstMeta": "#1 · 此刻",
+        "none": "暂无评论。"
+      }
+    },
+    {
+      "name": "J7-narrow",
+      "result": "Pass",
+      "obs": {
+        "cardRight": 736,
+        "viewport": 760,
+        "inside": true,
+        "texts": true,
+        "docOverflow": true
+      }
+    },
+    {
+      "name": "J8-existing-data",
+      "result": "Pass",
+      "obs": {
+        "none": "No comments yet.",
+        "comments": []
+      }
+    }
+  ],
+  "errors": []
+}

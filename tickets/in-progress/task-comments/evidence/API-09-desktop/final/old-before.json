@@ -1,0 +1,12 @@
+{
+  "taskId": "project_task_bfad14f1-cf36-449a-b384-5826f0c75c4b",
+  "projectId": "project_6522c731-1795-48d3-8a66-6d8e339a4a40",
+  "taskKey": "autobyteus-4",
+  "description": "A Task saved before this release (no comments field)",
+  "status": "TODO",
+  "dependsOnTaskIds": [],
+  "partOfTaskId": null,
+  "createdAt": "2026-10-22T19:13:52.388Z",
+  "updatedAt": "2026-10-22T19:13:52.388Z",
+  "contextFiles": []
+}
