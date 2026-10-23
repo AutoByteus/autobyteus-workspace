@@ -1,0 +1,17 @@
+# IMP-03 server unit suite | cmd: pnpm -C autobyteus-server-ts test:unit | base ca1f09e52a + working tree | 2026-10-23T03:56:30Z | macOS, Node v22.23.1
+     × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 144ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+ Test Files  1 failed | 789 passed | 4 skipped (794)
+      Tests  1 failed | 6483 passed | 7 skipped (6491)
+
+# Cause of the one failure (TESTING.md rule 9), recorded 2026-10-23:
+# tests/unit/projects/project-task-index-status.test.ts "indexes a Project soon after a Task create or edit ... one run
+# per burst" uses a 40 ms index-after-write window that restarts on every write (project-task-search-service.ts:155,190).
+# This first run shared the machine with the full web suite; a gap over 40 ms between the test's three writes split the
+# burst into two runs. Not in the remote-collaboration code. Alone it passed 3/3; with the window at 250 ms it passed
+# 3/3 alone and 3/3 while the web components suite ran alongside. Baseline fix: commit d62efda0ff (test only).

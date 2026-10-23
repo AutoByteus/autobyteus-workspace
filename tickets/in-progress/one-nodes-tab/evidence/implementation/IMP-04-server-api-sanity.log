@@ -1,0 +1,14 @@
+# IMP-04 server API sanity on two test-owned servers of this worktree (dist built from the working tree) | alpha 127.0.0.1:38701, beta 127.0.0.1:38702, own data roots under /tmp/one-nodes-visual, env -i | base ca1f09e52a + working tree | 2026-10-23T03:57:32Z
+## alpha switch off -> resolvePeerAddress refused (DEC-709 b)
+{"data":{"setRemoteCollaborationEnabled":{"enabled":false}}}
+{"data":null,"errors":[{"message":"Turn on Remote Collaboration before looking for another node's address.","locations":[{"line":1,"column":3}],"path":["resolvePeerAddress"],"extensions":{"code":"REMOTE_COLLABORATION_OFF"}}]}
+## alpha switch on -> first address in order that answers as beta; refused + not found classified
+{"data":{"setRemoteCollaborationEnabled":{"enabled":true}}}
+{"data":{"resolvePeerAddress":"http://127.0.0.1:38702"}}
+{"data":null,"errors":[{"message":"No address answered as that node; the first tried was http://localhost:38799.","locations":[{"line":1,"column":3}],"path":["resolvePeerAddress"],"extensions":{"code":"PEER_UNREACHABLE","address":"http://localhost:38799","reason":"refused","loopbackInContainer":false,"attempts":[{"address":"http://localhost:38799","result":"refused"},{"address":"http://no-such-host.invalid:8000","result":"not_found"}]}}]}
+## addPeerNode with the wrong node ID -> PEER_IDENTITY_MISMATCH
+{"data":null,"errors":[{"message":"A different node answers at http://127.0.0.1:38702.","locations":[{"line":1,"column":12}],"path":["addPeerNode"],"extensions":{"code":"PEER_IDENTITY_MISMATCH","address":"http://127.0.0.1:38702"}}]}
+## peerAddressCandidates (the configured address, the Docker alias, then this machine's interface addresses, redacted here)
+{"data":{"peerAddressCandidates":["http://127.0.0.1:38701","http://host.docker.internal:38701", …interface addresses redacted…]}}
+## restore alpha switch off
+{"data":{"setRemoteCollaborationEnabled":{"enabled":false}}}
