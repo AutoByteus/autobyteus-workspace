@@ -8,7 +8,7 @@
 export interface AppUpdateController {
   /** Register the update IPC handlers and publish the initial state. */
   initialize(): void
-  /** Schedule the startup update check, when this controller performs checks at all. */
+  /** Start the automatic update checks (launch and periodic), when this controller performs checks at all. */
   startAutoCheck(): void
 }
 
@@ -21,6 +21,8 @@ export const APP_UPDATE_IPC_SET_CHANNEL = 'app-update:set-channel'
 /** The renderer's intents on the app update notification; the shell owns the record. */
 export const APP_UPDATE_IPC_MARK_NOTIFICATION_READ = 'app-update:mark-notification-read'
 export const APP_UPDATE_IPC_CLEAR_NOTIFICATION = 'app-update:clear-notification'
+/** The app's automatic checks: `{ enabled, intervalMinutes }` (15..1440) → `AppUpdateState`. */
+export const APP_UPDATE_IPC_SET_AUTO_CHECK = 'app-update:set-auto-check'
 
 export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze([
   APP_UPDATE_IPC_GET_STATE,
@@ -30,4 +32,5 @@ export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze(
   APP_UPDATE_IPC_SET_CHANNEL,
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_CLEAR_NOTIFICATION,
+  APP_UPDATE_IPC_SET_AUTO_CHECK,
 ])

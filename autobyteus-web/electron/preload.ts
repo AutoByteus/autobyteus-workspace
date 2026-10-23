@@ -81,6 +81,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setAppUpdateChannel: (channel: string) => ipcRenderer.invoke('app-update:set-channel', channel),
   markAppUpdateNotificationRead: () => ipcRenderer.invoke('app-update:mark-notification-read'),
   clearAppUpdateNotification: () => ipcRenderer.invoke('app-update:clear-notification'),
+  setAppUpdateAutoCheck: (settings: { enabled: boolean; intervalMinutes: number }) =>
+    ipcRenderer.invoke('app-update:set-auto-check', settings),
   onAppUpdateState: (callback: (updateState: any) => void) => {
     return registerIpcListener('app-update-state', callback)
   },

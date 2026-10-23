@@ -91,6 +91,12 @@ function pickBaselineEnv(callerEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   return picked
 }
 
+/**
+ * Tells the server it is the desktop's own node (the only node that checks and updates the
+ * installed agent runtimes). Set last, so no inherited or override value can change it.
+ */
+export const DESKTOP_EMBEDDED_NODE_ENV = 'AUTOBYTEUS_DESKTOP_EMBEDDED_NODE'
+
 export type BuildServerProcessEnvInput = Readonly<{
   policy: ServerEnvironmentPolicy
   callerEnv: NodeJS.ProcessEnv
@@ -130,5 +136,6 @@ export function buildServerProcessEnv({
     AUTOBYTEUS_DATA_DIR: appDataDir,
     AUTOBYTEUS_SERVER_HOST: publicServerUrl,
     ...runtimeOverrides,
+    [DESKTOP_EMBEDDED_NODE_ENV]: '1',
   }
 }

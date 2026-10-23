@@ -8,6 +8,7 @@ import {
   APP_UPDATE_IPC_GET_STATE,
   APP_UPDATE_IPC_INSTALL,
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
+  APP_UPDATE_IPC_SET_AUTO_CHECK,
   APP_UPDATE_IPC_SET_CHANNEL,
   type AppUpdateController,
 } from './appUpdateController'
@@ -43,6 +44,7 @@ export class DisabledAppUpdater implements AppUpdateController {
     )
     ipcMain.handle(APP_UPDATE_IPC_MARK_NOTIFICATION_READ, async () => this.getState())
     ipcMain.handle(APP_UPDATE_IPC_CLEAR_NOTIFICATION, async () => this.getState())
+    ipcMain.handle(APP_UPDATE_IPC_SET_AUTO_CHECK, async () => this.getState())
   }
 
   startAutoCheck(): void {
@@ -67,6 +69,7 @@ export class DisabledAppUpdater implements AppUpdateController {
       errorOperation: null,
       checkedAt: null,
       notification: null,
+      autoCheck: null,
     }
   }
 }

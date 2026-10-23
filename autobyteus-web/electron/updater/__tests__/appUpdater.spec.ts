@@ -96,6 +96,7 @@ vi.mock('electron', () => ({
   app: appMock,
   ipcMain: ipcMainMock,
   BrowserWindow: browserWindowMock,
+  net: { isOnline: () => true },
 }));
 
 vi.mock('electron-updater', () => ({

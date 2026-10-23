@@ -588,7 +588,7 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
 ### Runtime Behavior
 
 - `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'`, unless the launch names a test update feed (see [Updates in isolated launches](#updates-in-isolated-launches)).
-- Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
+- Automatic checks (at launch and periodically, see [Automatic App Checks](#automatic-app-checks)) run only for packaged apps (dev/unpackaged mode is skipped).
 - Renderer windows receive normalized updater state via IPC channel `app-update-state`.
 - Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
 - User actions from UI trigger IPC handlers:
@@ -598,8 +598,40 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:set-channel`
   - `app-update:mark-notification-read`, `app-update:clear-notification` (the
     Notification Center's intents; both return `AppUpdateState`)
+  - `app-update:set-auto-check` (`{ enabled, intervalMinutes }`; returns
+    `AppUpdateState`)
+- The handlers are registered by `electron/updater/appUpdateIpc.ts`.
 - Nothing downloads by itself (`autoDownload = false`). An available update is
   announced only in the Notification Center (the self-opening card is gone).
+
+### Automatic App Checks
+
+`electron/updater/appUpdateCheckSchedule.ts` (`AppUpdateCheckSchedule`) is the
+one owner of the app's automatic update checks; `AppUpdater.startAutoCheck()`
+only starts it.
+
+- Its setting is `userData/app-update-checks.json`
+  (`{ enabled, intervalMinutes }`, default on and 60 minutes, 15 to 1440
+  minutes), read and written only through
+  `electron/updater/appUpdateCheckSettingsStore.ts`. A missing, unreadable or
+  invalid file reads as the default.
+- When on, it checks 8 s after start (`startup`), then one interval after the
+  previous check (`periodic`). It skips a check, and tries again an interval
+  later, while an app update is checking, downloading, downloaded (staged) or
+  installing (`AppUpdater.isBusy()`), or while `net.isOnline()` says the
+  machine is offline. When off, no automatic request is made; Check for Updates
+  still works.
+- `app-update:set-auto-check` goes to the schedule: it validates, saves, re-arms
+  from the last check and tells its one listener, through which `AppUpdater`
+  publishes `AppUpdateState.autoCheck`. `AppUpdater` never writes the setting or
+  re-arms the timer. `DisabledAppUpdater` reports `autoCheck: null` and starts
+  nothing.
+- A failed `startup` or `periodic` check is quiet in the renderer
+  (`errorOperation` `startup-check` / `periodic-check`,
+  `isQuietBackgroundAppUpdateError`); Settings → Updates shows it.
+- `checkedAt` marks a finished check (its result or its failure), not its start.
+- A periodic check that finds an update only announces it: nothing downloads
+  or installs without the user's press.
 
 ### App Update Notification
 
@@ -675,10 +707,10 @@ Renderer-visible update state must stay safe for display:
   field for normal UI, Settings, or toast copy.
 - `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized Settings and
   toast messages.
-- `stores/appUpdateStore.ts` raises no toast for any startup-check failure (a
-  check the user did not start stays quiet; Settings → Updates shows the
-  error), while manual checks and download/install failures still show concise
-  recovery copy.
+- `stores/appUpdateStore.ts` raises no toast for any startup-check or
+  periodic-check failure (a check the user did not start stays quiet; Settings
+  → Updates shows the error), while manual checks and download/install failures
+  still show concise recovery copy.
 - Raw provider details such as `net::ERR_*`, `ERR_UPDATER_*`, provider URLs,
   YAML, stack traces, or file lists belong in the Electron main log with
   classification context, not in user-facing renderer text.
@@ -944,7 +976,10 @@ maps the launch profile to a policy:
 Both add the Electron-owned values: login-shell `PATH` when available,
 `ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
 `AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
-and the browser-bridge runtime overrides. In `e2e` mode, production
+and the browser-bridge runtime overrides, then, last so that no inherited or
+override value changes it, `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` (the server is
+the desktop's own node, the only one that checks and updates the installed agent
+runtimes; see the server's `update_notifications.md`). In `e2e` mode, production
 `AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
 inherited (for example an agent shell inside AutoByteus) therefore never reach
 the isolated server. Its settings come from its own data root's `.env`.
