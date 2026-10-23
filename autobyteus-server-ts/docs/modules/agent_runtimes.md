@@ -25,7 +25,10 @@ Out of scope:
   (last results, current operation, `checkedAt`), runs the checks for each
   runtime on their own, allows one operation per runtime, enforces the
   agents-running rule, and stops its processes on `close()`. It also reports
-  the node fact `signInBrowserAvailable()`, decided once at construction.
+  the node fact `signInBrowserAvailable()`, decided once at construction. For
+  the update notifications (desktop's own node only) it offers
+  `listUpdateStates()`, `checkInBackground(kind)`, `runUpdate(kind)` and one
+  update-state listener; see [Update Notifications](update_notifications.md).
 - `sign-in-browser-availability.ts` — `isSignInBrowserAvailable(platform, env)`:
   whether a runtime's own login can open a browser on this node's desktop.
   macOS and Windows: yes. Otherwise yes only when `BROWSER`, `DISPLAY` or
@@ -56,7 +59,7 @@ Out of scope:
 
 | Runtime | Sign-in read | Newest version from | Update | Sign in from the page |
 | --- | --- | --- | --- | --- |
-| Codex | app-server `account/read`: account → signed in; `requiresOpenaiAuth === false` → not required (page shows "–"); otherwise signed out | GitHub `repos/openai/codex/releases/latest` (`rust-v` stripped) | `codex update` | `codex login` |
+| Codex | app-server `account/read`: account → signed in; `requiresOpenaiAuth === false` → not required (page shows "–"); otherwise signed out | The tag `github.com/openai/codex/releases/latest` redirects to (`rust-v` stripped; no REST API quota, GitHub's `web` gate) | `codex update` | `codex login` |
 | Claude | `claude auth status --json`, JSON read whatever the exit code (signed out exits 1); without JSON, exit 0 + "logged in" text → signed in | `downloads.claude.ai/claude-code-releases/<channel>`, channel = `autoUpdatesChannel` in the user's Claude `settings.json` (`CLAUDE_CONFIG_DIR` or `~/.claude`), default `latest` | `claude update` | No: command-line hint |
 | Antigravity | `agy models` through `listAntigravityModels`; `AGY_SIGN_IN_REQUIRED` → signed out | the vendor updater manifest for the OS and CPU | `agy update` | No: command-line hint |
 | Grok | `grok models`: "You are not authenticated." → signed out; other exit 0 → signed in | `grok update --check --json` | `grok update` | `grok login --oauth` |
@@ -94,6 +97,19 @@ operations on the node: a login started there opens in the node's own browser
 (on a Docker node its VNC Chromium). The web client offers Sign in on a remote
 node only when `agentRuntimeSignInBrowserAvailable` is true, and never offers
 Update there.
+
+## Background Checks And Automatic Updates
+
+On the desktop's own node the update-notifications pass checks each runtime at
+its interval (default 60 minutes) with `checkInBackground(kind)`: the installed
+and newest versions only, never the sign-in, skipped while the runtime is
+checking or has a running operation, and keeping the page's finished update and
+sign-in results. A newer version becomes an "Agent runtime update"
+notification. With automatic updates for agent runtimes on, the pass updates
+through `runUpdate(kind)`, the same path `updateAgentRuntime` starts: the same
+refusals are returned as results (agents running → it waits and tries again at
+the next pass; busy or not installed → nothing this time) instead of thrown
+codes.
 
 ## Running-Agent Rule
 

@@ -30,7 +30,7 @@ package folder's auto-refresh state.
 | --- | --- | --- |
 | `BUILT_IN` | Platform-owned default package root. | Listed for inventory only; not removable, reloadable, checkable, or user-updatable. |
 | `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. Definition edits in the folder are also picked up automatically while the root is watched. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
-| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is ever downloaded or replaced without the user's Update. |
+| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; local changes are then replaced without asking). |
 
 ## GitHub Update State
 
@@ -89,7 +89,10 @@ copy. Mutations are thin adapters over `AgentPackageService`:
 - `reloadAgentPackage(packageId)` validates and rescans a local package without
   mutating its folder.
 - `checkAgentPackageUpdates(packageIds?)` refreshes managed GitHub
-  default-branch metadata for all or selected GitHub packages.
+  default-branch metadata for all or selected GitHub packages. A check (and an
+  update) reads the default branch and its head commit through git (`ls-refs`,
+  one `github.com` request, no REST API quota); an import still reads the REST
+  API for the repository's identity and visibility.
 - `updateAgentPackage(packageId)` downloads, validates, and replaces a managed
   GitHub package with the latest default-branch archive.
 

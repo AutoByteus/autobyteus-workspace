@@ -8,6 +8,7 @@ import type { UpdateNotificationRecord } from "../../../src/update-notifications
 const record: UpdateNotificationRecord = {
   kind: "AGENT_PACKAGE", sourceId: "github:acme/agents", latestRevision: "b".repeat(40), fromRevision: "a".repeat(40),
   foundAt: "2026-10-20T10:00:00.000Z", read: false, handledRevision: null, handledAt: null,
+  outcome: null, outcomeReason: null, outcomeAt: null,
 };
 
 describe("UpdateNotificationStore (QR-005)", () => {
@@ -27,7 +28,8 @@ describe("UpdateNotificationStore (QR-005)", () => {
     expect(store.filePath).toBe(path.join(dir, "update-notifications", "notifications.json"));
     const raw = JSON.parse(fs.readFileSync(store.filePath, "utf8")) as Record<string, unknown>[];
     expect(Object.keys(raw[0]!).sort()).toEqual(
-      ["foundAt", "fromRevision", "handledAt", "handledRevision", "kind", "latestRevision", "read", "sourceId"]);
+      ["foundAt", "fromRevision", "handledAt", "handledRevision", "kind", "latestRevision", "outcome", "outcomeAt",
+        "outcomeReason", "read", "sourceId"]);
     expect(await store.read()).toEqual([record]);
   });
 
@@ -54,5 +56,22 @@ describe("UpdateNotificationStore (QR-005)", () => {
       "not a row",
     ]));
     expect(await store.read()).toEqual([record]);
+  });
+
+  it("keeps a valid outcome and reads an absent or unknown outcome as none (DS-008)", async () => {
+    const failed: UpdateNotificationRecord = { ...record, outcome: "AUTO_FAILED", outcomeReason: "disk full", outcomeAt: "2026-10-20T10:05:00.000Z" };
+    await store.write([failed]);
+    expect(await store.read()).toEqual([failed]);
+    const { outcome: _o, outcomeReason: _r, outcomeAt: _a, ...withoutOutcome } = failed;
+    fs.writeFileSync(store.filePath, JSON.stringify([
+      withoutOutcome,
+      { ...failed, sourceId: "s2", outcome: "AUTO_EXPLODED" },
+      { ...failed, sourceId: "s3", outcomeAt: null },
+    ]));
+    expect(await store.read()).toEqual([
+      record,
+      { ...record, sourceId: "s2" },
+      { ...record, sourceId: "s3" },
+    ]);
   });
 });

@@ -22,8 +22,8 @@ const harness = (initial: { packages?: GitHubSourceUpdateState[]; skills?: GitHu
   let now = new Date("2026-10-20T10:00:00.000Z");
   const service = new UpdateNotificationService({
     sources: [
-      { kind: "AGENT_PACKAGE", listGitHubSourceUpdateStates: async () => packages },
-      { kind: "SKILL_SOURCE", listGitHubSourceUpdateStates: () => skills },
+      { kind: "AGENT_PACKAGE", listUpdateStates: async () => packages },
+      { kind: "SKILL_SOURCE", listUpdateStates: () => skills },
     ],
     store: {
       read: async () => structuredClone(records),
@@ -43,7 +43,8 @@ const harness = (initial: { packages?: GitHubSourceUpdateState[]; skills?: GitHu
 
 const waiting = (overrides: Partial<UpdateNotificationRecord> = {}): UpdateNotificationRecord => ({
   kind: "AGENT_PACKAGE", sourceId: "github:acme/agents", latestRevision: B, fromRevision: A,
-  foundAt: "2026-10-20T08:00:00.000Z", read: true, handledRevision: null, handledAt: null, ...overrides,
+  foundAt: "2026-10-20T08:00:00.000Z", read: true, handledRevision: null, handledAt: null,
+  outcome: null, outcomeReason: null, outcomeAt: null, ...overrides,
 });
 
 describe("UpdateNotificationService reconcile (DS-007)", () => {
@@ -53,7 +54,7 @@ describe("UpdateNotificationService reconcile (DS-007)", () => {
     expect(views).toEqual([{
       kind: "AGENT_PACKAGE", sourceId: "github:acme/agents", name: "acme/agents", repositoryUrl: "https://github.com/acme/agents",
       defaultBranch: "main", installedRevision: A, latestRevision: B, foundAt: "2026-10-20T10:00:00.000Z", read: false,
-      state: "WAITING", handledRevision: null, handledAt: null,
+      state: "WAITING", handledRevision: null, handledAt: null, outcome: null, outcomeReason: null, outcomeAt: null,
     }]);
     expect(h.publish).toHaveBeenCalledOnce();
     expect(h.writes).toHaveLength(1);
@@ -139,8 +140,8 @@ describe("UpdateNotificationService with an owner that cannot be read", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const service = new UpdateNotificationService({
       sources: [
-        { kind: "AGENT_PACKAGE", listGitHubSourceUpdateStates: async () => packages },
-        { kind: "SKILL_SOURCE", listGitHubSourceUpdateStates: () => { throw new Error("GitHub skill sources unavailable"); } },
+        { kind: "AGENT_PACKAGE", listUpdateStates: async () => packages },
+        { kind: "SKILL_SOURCE", listUpdateStates: () => { throw new Error("GitHub skill sources unavailable"); } },
       ],
       store: { read: async () => structuredClone(stored), write: async (next) => { stored = structuredClone(next); } },
       publish,
@@ -187,7 +188,7 @@ describe("UpdateNotificationService with an owner that cannot be read", () => {
     let failing = true;
     let stored = [skillRecord()];
     const service = new UpdateNotificationService({
-      sources: [{ kind: "SKILL_SOURCE", listGitHubSourceUpdateStates: () => {
+      sources: [{ kind: "SKILL_SOURCE", listUpdateStates: () => {
         if (failing) throw new Error("unavailable");
         return [pkg({ sourceId: "s1", displayName: "acme/skills", latestRevision: C })];
       } }],

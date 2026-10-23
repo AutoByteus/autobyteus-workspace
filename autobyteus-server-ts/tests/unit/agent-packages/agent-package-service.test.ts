@@ -10,6 +10,7 @@ import { AgentPackageService } from "../../../src/agent-packages/services/agent-
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/stores/agent-package-root-settings-store.js";
 import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/integrations/github/types.js";
+import type { RepositoryHead } from "../../../src/integrations/github/git-ls-refs.js";
 
 const parseAdditionalRoots = (): string[] => {
   const raw = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS ?? "";
@@ -407,14 +408,8 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
-        return {
-          owner: "AutoByteus",
-          repo: "autobyteus-agents",
-          canonicalUrl: "https://github.com/AutoByteus/autobyteus-agents",
-          defaultBranch: "main",
-          latestRevision: "new-sha",
-        };
+      async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
+        return { defaultBranch: "main", latestRevision: "new-sha" };
       }
     };
     class MockInstaller extends GitHubAgentPackageInstaller {
@@ -478,14 +473,8 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
-        return {
-          owner: "AutoByteus",
-          repo: "autobyteus-agents",
-          canonicalUrl: "https://github.com/AutoByteus/autobyteus-agents",
-          defaultBranch: "main",
-          latestRevision: "new-sha",
-        };
+      async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
+        return { defaultBranch: "main", latestRevision: "new-sha" };
       }
     };
     class MockInstaller extends GitHubAgentPackageInstaller {
@@ -570,14 +559,8 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
-        return {
-          owner: "AutoByteus",
-          repo: "autobyteus-agents",
-          canonicalUrl: "https://github.com/AutoByteus/autobyteus-agents",
-          defaultBranch: "main",
-          latestRevision: "new-sha",
-        };
+      async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
+        return { defaultBranch: "main", latestRevision: "new-sha" };
       }
     };
     class MockInstaller extends GitHubAgentPackageInstaller {
@@ -670,7 +653,7 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
+      async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
         throw new Error("metadata unavailable");
       }
     };
@@ -747,14 +730,8 @@ describe("AgentPackageService", () => {
     });
 
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(_source: GitHubRepositorySource): Promise<GitHubRepositoryRevisionMetadata> {
-        return {
-          owner: "AutoByteus",
-          repo: "autobyteus-agents",
-          canonicalUrl: "https://github.com/AutoByteus/autobyteus-agents",
-          defaultBranch: "main",
-          latestRevision: "new-sha",
-        };
+      async fetchDefaultBranchHead(_owner: string, _repo: string): Promise<RepositoryHead> {
+        return { defaultBranch: "main", latestRevision: "new-sha" };
       }
     };
     class MockInstaller extends GitHubAgentPackageInstaller {

@@ -4,12 +4,12 @@ import { resolveLaunchCommand } from "../../codex/client/codex-app-server-launch
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
-import { fetchRuntimeSource } from "../runtime-source-fetch.js";
-
-const LATEST_RELEASE_URL = "https://api.github.com/repos/openai/codex/releases/latest";
+import { GitHubRepositoryClient } from "../../../integrations/github/github-repository-client.js";
 
 export const createCodexAgentRuntimeStrategy = (dependencies: Readonly<{
   codexClientManager: Pick<CodexAppServerClientManager, "beginAcquire">;
+  /** Codex's releases on GitHub, read through the GitHub transport and its gate (no REST quota). */
+  githubClient?: Pick<GitHubRepositoryClient, "fetchLatestReleaseTag">;
 }>): AgentRuntimeStrategy => ({
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   signInRoute: "browser",
@@ -17,11 +17,9 @@ export const createCodexAgentRuntimeStrategy = (dependencies: Readonly<{
   resolveExecutable: resolveLaunchCommand,
   readVersion: readRuntimeVersion,
   async readLatestVersion() {
-    const release = JSON.parse(await fetchRuntimeSource(LATEST_RELEASE_URL, {
-      Accept: "application/vnd.github+json",
-    })) as { tag_name?: unknown };
+    const tag = await (dependencies.githubClient ?? new GitHubRepositoryClient()).fetchLatestReleaseTag("openai", "codex");
     // Tags look like "rust-v0.163.0".
-    const version = typeof release.tag_name === "string" ? extractRuntimeVersion(release.tag_name) : null;
+    const version = extractRuntimeVersion(tag);
     if (!version) throw new Error("Codex release has no version.");
     return version;
   },

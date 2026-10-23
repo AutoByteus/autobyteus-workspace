@@ -108,7 +108,7 @@ describe("public GitHub redirects", () => {
   it("rejects off-host redirects without requesting the target", async () => {
     const urls: string[] = [];
     const fake = (async (url: string) => { urls.push(url); return new Response(null, { status: 302, headers: { location: "http://127.0.0.1/private" } }); }) as typeof fetch;
-    await expect(publicGitHubRequest("https://api.github.com/repos/a/b/tarball", fake)).rejects.toThrow("Unsupported");
+    await expect(publicGitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake })).rejects.toThrow("Unsupported");
     expect(urls).toHaveLength(1);
   });
   it("allows HTTPS codeload redirects and propagates cancellation", async () => {
@@ -117,6 +117,6 @@ describe("public GitHub redirects", () => {
       expect(init.signal).toBe(signal);
       return ++calls === 1 ? new Response(null, { status: 302, headers: { location: "https://codeload.github.com/a/b/tar.gz/sha" } }) : new Response("data");
     }) as typeof fetch;
-    expect(await (await publicGitHubRequest("https://api.github.com/repos/a/b/tarball", fake, signal)).text()).toBe("data");
+    expect(await (await publicGitHubRequest("https://api.github.com/repos/a/b/tarball", { fetchImpl: fake, signal })).text()).toBe("data");
   });
 });

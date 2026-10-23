@@ -38,3 +38,31 @@ export type AgentRuntimeStatus = Readonly<{
   /** When this runtime's last check finished; null before the first one. */
   checkedAt: Date | null;
 }>;
+
+/**
+ * One runtime's update facts for the update notifications: no status, no operation.
+ * `checked` is false until a check in this process read the installed version.
+ */
+export type RuntimeUpdateState = Readonly<{
+  runtimeKind: AgentRuntimeKind;
+  checked: boolean;
+  /** Null when not installed (or not checked yet). */
+  installedVersion: string | null;
+  /** The newest version when newer than the installed one, else the installed one; null when unknown. */
+  latestVersion: string | null;
+  /** The last check could not read the newest version; the installed one is current. */
+  checkFailed: boolean;
+  lastCheckedAt: Date | null;
+}>;
+
+export type RuntimeUpdateRefusalReason = "NOT_INSTALLED" | "BUSY" | "AGENTS_RUNNING";
+
+/** A refused update: nothing was started. */
+export type RuntimeUpdateRefusal = Readonly<{ result: "refused"; reason: RuntimeUpdateRefusalReason; runningAgents: number }>;
+
+/** The result of one update through `AgentRuntimeStatusService.runUpdate`. */
+export type RuntimeUpdateResult =
+  | RuntimeUpdateRefusal
+  | Readonly<{ result: "updated"; fromVersion: string; toVersion: string }>
+  /** `error`: the vendor's own output, as the page shows it. */
+  | Readonly<{ result: "failed"; error: string }>;

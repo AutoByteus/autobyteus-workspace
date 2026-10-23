@@ -1,6 +1,7 @@
 import type { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import { normalizeGitHubRepositorySource } from "../../integrations/github/github-repository-source.js";
 import type { GitHubSourceUpdateState } from "../../integrations/github/github-source-update-state.js";
+import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
 import type { GitHubAgentPackageInstaller } from "../installers/github-agent-package-installer.js";
 import type { AgentPackageRegistryStore } from "../stores/agent-package-registry-store.js";
 import type { AgentPackageRecord } from "../types.js";
@@ -16,6 +17,23 @@ const GITHUB_SOURCE_KIND = "GITHUB_REPOSITORY";
 const formatErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : String(error);
 
+type HeadReader = Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">;
+
+/** The stored repository's identity with its default branch head, read without REST quota. */
+const readRepositoryHead = async (
+  githubClient: HeadReader,
+  repositorySource: ReturnType<typeof normalizeGitHubRepositorySource>,
+): Promise<GitHubRepositoryRevisionMetadata> => {
+  const head = await githubClient.fetchDefaultBranchHead(repositorySource.owner, repositorySource.repo);
+  return {
+    owner: repositorySource.owner,
+    repo: repositorySource.repo,
+    canonicalUrl: repositorySource.canonicalUrl,
+    defaultBranch: head.defaultBranch,
+    latestRevision: head.latestRevision,
+  };
+};
+
 /**
  * The GitHub update lifecycle of managed agent packages: check, update (stage, validate, record,
  * reload, commit or roll back) and the update-state projection. Internal to
@@ -25,7 +43,7 @@ const formatErrorMessage = (error: unknown): string =>
 export class GitHubAgentPackageUpdates {
   constructor(private readonly deps: {
     registryStore: AgentPackageRegistryStore;
-    githubClient: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
+    githubClient: HeadReader;
     installer: GitHubAgentPackageInstaller;
     reloadAgentPackageDefinitions: () => Promise<void>;
     assertPackageSkillNames: (rootPath: string) => void;
@@ -46,9 +64,7 @@ export class GitHubAgentPackageUpdates {
 
     try {
       const repositorySource = normalizeGitHubRepositorySource(record.source);
-      const revisionMetadata = await this.deps.githubClient.fetchRepositoryRevisionMetadata(
-        repositorySource,
-      );
+      const revisionMetadata = await readRepositoryHead(this.deps.githubClient, repositorySource);
       const installedRevision = previousMetadata?.installedRevision ?? null;
       const updateStatus = installedRevision === null
         ? "UNKNOWN"
@@ -93,15 +109,11 @@ export class GitHubAgentPackageUpdates {
     const previousMetadata = record.sourceMetadata?.github ?? null;
     const checkedAt = new Date().toISOString();
     let repositorySource: ReturnType<typeof normalizeGitHubRepositorySource>;
-    let metadata: Awaited<
-      ReturnType<GitHubRepositoryClient["fetchRepositoryRevisionMetadata"]>
-    >;
+    let metadata: GitHubRepositoryRevisionMetadata;
 
     try {
       repositorySource = normalizeGitHubRepositorySource(record.source);
-      metadata = await this.deps.githubClient.fetchRepositoryRevisionMetadata(
-        repositorySource,
-      );
+      metadata = await readRepositoryHead(this.deps.githubClient, repositorySource);
     } catch (error) {
       await this.markUpdateFailed(record, error).catch(() => undefined);
       throw error;

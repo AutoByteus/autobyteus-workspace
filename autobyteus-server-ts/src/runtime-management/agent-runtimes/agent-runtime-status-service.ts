@@ -4,6 +4,7 @@ import type { AgentRuntimeSignInReader, SignInReading } from "./agent-runtime-si
 import type { AgentRuntimeStrategy } from "./agent-runtime-strategy.js";
 import type {
   AgentRuntimeAccountState, AgentRuntimeKind, AgentRuntimeOperation, AgentRuntimeStatus, AgentRuntimeUpdateState,
+  RuntimeUpdateRefusal, RuntimeUpdateResult, RuntimeUpdateState,
 } from "./agent-runtime-types.js";
 import { OPERATION_TIMEOUT_MS, RuntimeProcessOperation } from "./runtime-process-operation.js";
 import { compareRuntimeVersions } from "./runtime-version.js";
@@ -64,6 +65,13 @@ const accountStateOf = (reading: SignInReading): AgentRuntimeAccountState => {
 const commandLabel = (argv: readonly string[]): string =>
   [path.basename(argv[0] ?? ""), ...argv.slice(1)].join(" ");
 
+const REFUSAL_ERRORS: Record<RuntimeUpdateRefusal["reason"], (agents: number) => AgentRuntimeError> = {
+  NOT_INSTALLED: () => new AgentRuntimeError("AGENT_RUNTIME_NOT_INSTALLED", "This runtime is not installed."),
+  BUSY: () => new AgentRuntimeError("AGENT_RUNTIME_BUSY", "This runtime is already updating or signing in."),
+  AGENTS_RUNNING: (agents) =>
+    new AgentRuntimeError("AGENT_RUNTIME_AGENTS_RUNNING", `Update unavailable while ${agents} agent(s) are running.`),
+};
+
 /**
  * The Agent Runtimes page's state for this node: per runtime its installed version, newest
  * version, sign-in state and at most one running vendor process (update or sign-in). Checks run
@@ -75,6 +83,7 @@ export class AgentRuntimeStatusService {
   private readonly createProcess: NonNullable<AgentRuntimeStatusServiceDependencies["createProcess"]>;
   private readonly browserAvailable: boolean;
   private closed = false;
+  private updateStateListener: (() => void) | null = null;
 
   constructor(private readonly dependencies: AgentRuntimeStatusServiceDependencies) {
     this.rows = new Map(dependencies.strategies.map((strategy) => [strategy.runtimeKind, {
@@ -141,38 +150,79 @@ export class AgentRuntimeStatusService {
     await Promise.all(installReads);
   }
 
-  /** Starts the runtime's own update; refused while its agents run, when not installed or busy. */
+  /** Starts the runtime's own update (the page); a refusal throws its existing error code. */
   startUpdate(runtimeKind: AgentRuntimeKind): void {
-    const row = this.requireIdleInstalledRow(runtimeKind);
-    const agents = this.runningAgents(row);
-    if (agents > 0) {
-      throw new AgentRuntimeError("AGENT_RUNTIME_AGENTS_RUNNING", `Update unavailable while ${agents} agent(s) are running.`);
+    const started = this.beginUpdate(runtimeKind);
+    if ("result" in started) throw REFUSAL_ERRORS[started.reason](started.runningAgents);
+  }
+
+  /**
+   * The same update, awaited (a notification's Update, the automatic update): refused while the
+   * runtime's agents run, when not installed or busy; otherwise the vendor update's result.
+   */
+  runUpdate(runtimeKind: AgentRuntimeKind): Promise<RuntimeUpdateResult> {
+    const started = this.beginUpdate(runtimeKind);
+    return "result" in started ? Promise.resolve(started) : started;
+  }
+
+  /**
+   * A background check (the update notifications' pass): reads the installed and newest versions
+   * only, never the sign-in (which for Codex starts its app-server), and keeps finished update and
+   * sign-in results. Skipped while the runtime is checking or has a running operation.
+   */
+  async checkInBackground(runtimeKind: AgentRuntimeKind): Promise<void> {
+    const row = this.requireRow(runtimeKind);
+    if (row.checking || row.operation?.state === "running") return;
+    const generation = ++row.generation;
+    const current = () => row.generation === generation && !this.closed;
+    row.checking = true;
+    row.updateState = "checking";
+    let executable: string | null = null;
+    let version: string | null = null;
+    try {
+      executable = row.strategy.resolveExecutable();
+      version = await row.strategy.readVersion(executable);
+    } catch {
+      version = null;
     }
-    const executable = row.strategy.resolveExecutable();
-    const argv = row.strategy.updateArgv(executable);
-    const command = commandLabel(argv);
-    const fromVersion = row.installedVersion!;
-    const process = this.createProcess(argv, { timeoutMs: OPERATION_TIMEOUT_MS });
-    row.process = process;
-    row.operation = { kind: "update", state: "running", command, step: null, fromVersion };
-    void process.finished.then(async (result) => {
-      const version = await row.strategy.readVersion(executable);
-      if (row.process !== process) return;
-      row.process = null;
-      if (this.closed) return;
-      if (version) row.installedVersion = version;
-      if (result.exitCode === 0 && version && compareRuntimeVersions(version, fromVersion) > 0) {
-        row.operation = { kind: "update", state: "succeeded", command, fromVersion, toVersion: version };
-        // The automatic re-check keeps "Updated from X to Y." (AR-006).
-        void this.check(row);
-        return;
+    if (!current()) return;
+    row.installedVersion = version;
+    row.installed = version !== null;
+    if (!row.installed || !executable) {
+      row.updateState = "notChecked";
+      row.latestVersion = null;
+      row.accountState = "notApplicable";
+    } else {
+      try {
+        const latest = await row.strategy.readLatestVersion(executable);
+        if (!current()) return;
+        row.latestVersion = latest;
+        row.updateState = compareRuntimeVersions(latest, version!) > 0 ? "updateAvailable" : "upToDate";
+      } catch {
+        if (!current()) return;
+        row.latestVersion = null;
+        row.updateState = "checkFailed";
       }
-      // A failure, or exit 0 without a newer version (e.g. a Homebrew install's "Claude is up to date!").
-      row.operation = {
-        kind: "update", state: "failed", command, fromVersion,
-        error: result.output || `${command} exited with code ${String(result.exitCode)}.`,
-      };
-    });
+    }
+    this.finishCheck(row);
+  }
+
+  /** Each runtime's update facts, in page order. Reads only. */
+  listUpdateStates(): RuntimeUpdateState[] {
+    return [...this.rows.values()].map((row) => ({
+      runtimeKind: row.strategy.runtimeKind,
+      checked: row.checkedAt !== null,
+      installedVersion: row.installedVersion,
+      latestVersion: row.updateState === "updateAvailable" ? row.latestVersion
+        : row.updateState === "upToDate" ? row.installedVersion : null,
+      checkFailed: row.updateState === "checkFailed",
+      lastCheckedAt: row.checkedAt,
+    }));
+  }
+
+  /** One listener, told after a check finished or an update settled. */
+  setUpdateStateListener(listener: (() => void) | null): void {
+    this.updateStateListener = listener;
   }
 
   /** Starts the runtime's own browser login (Codex, Grok); the vendor CLI opens the browser. */
@@ -262,6 +312,52 @@ export class AgentRuntimeStatusService {
   private finishCheck(row: Row): void {
     row.checking = false;
     row.checkedAt = new Date();
+    this.announce();
+  }
+
+  /**
+   * The one update path: the refusals, checked synchronously, or the started vendor update (the
+   * row is claimed before this returns), settling with its result.
+   */
+  private beginUpdate(runtimeKind: AgentRuntimeKind): RuntimeUpdateRefusal | Promise<RuntimeUpdateResult> {
+    const row = this.requireRow(runtimeKind);
+    const agents = this.runningAgents(row);
+    if (!row.installed || !row.installedVersion) return { result: "refused", reason: "NOT_INSTALLED", runningAgents: agents };
+    if (row.operation?.state === "running") return { result: "refused", reason: "BUSY", runningAgents: agents };
+    if (agents > 0) return { result: "refused", reason: "AGENTS_RUNNING", runningAgents: agents };
+    const executable = row.strategy.resolveExecutable();
+    const argv = row.strategy.updateArgv(executable);
+    const command = commandLabel(argv);
+    const fromVersion = row.installedVersion;
+    const process = this.createProcess(argv, { timeoutMs: OPERATION_TIMEOUT_MS });
+    row.process = process;
+    row.operation = { kind: "update", state: "running", command, step: null, fromVersion };
+    return process.finished.then(async (result): Promise<RuntimeUpdateResult> => {
+      const version = await row.strategy.readVersion(executable);
+      const error = result.output || `${command} exited with code ${String(result.exitCode)}.`;
+      if (row.process !== process || this.closed) return { result: "failed", error };
+      row.process = null;
+      if (version) row.installedVersion = version;
+      if (result.exitCode === 0 && version && compareRuntimeVersions(version, fromVersion) > 0) {
+        row.operation = { kind: "update", state: "succeeded", command, fromVersion, toVersion: version };
+        this.announce();
+        // The automatic re-check keeps "Updated from X to Y." (AR-006).
+        void this.check(row);
+        return { result: "updated", fromVersion, toVersion: version };
+      }
+      // A failure, or exit 0 without a newer version (e.g. a Homebrew install's "Claude is up to date!").
+      row.operation = { kind: "update", state: "failed", command, fromVersion, error };
+      this.announce();
+      return { result: "failed", error };
+    });
+  }
+
+  private announce(): void {
+    try {
+      this.updateStateListener?.();
+    } catch (error) {
+      console.warn("AGENT_RUNTIME_UPDATE_STATE_LISTENER_FAILED", error);
+    }
   }
 
   private async readSignIn(row: Row): Promise<SignInReading> {

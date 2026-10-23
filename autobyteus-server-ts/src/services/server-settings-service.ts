@@ -1,7 +1,11 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
 import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
-import { UPDATE_CHECKS_SETTING_KEY } from "../update-notifications/domain/settings.js";
+import {
+  AUTO_UPDATE_SETTING_KEYS,
+  UPDATE_CHECK_INTERVAL_SETTING_KEYS,
+  UPDATE_CHECKS_SETTING_KEY,
+} from "../update-notifications/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -139,8 +143,14 @@ export class ServerSettingsService {
 
     this.registerPredefinedSetting(
       UPDATE_CHECKS_SETTING_KEY,
-      "Controls whether this node checks its imported GitHub agent packages and skill sources for updates in the background. Defaults to enabled.",
+      "Controls whether this node checks its imported GitHub agent packages and skill sources (and, on the desktop's own node, its agent runtimes) for updates in the background, and applies automatic updates. Defaults to enabled.",
     );
+    for (const [kind, key] of Object.entries(UPDATE_CHECK_INTERVAL_SETTING_KEYS)) {
+      this.registerPredefinedSetting(key, `How often this node checks ${kind.toLowerCase().replace("_", " ")} updates, in minutes (15 to 1440). Set in Server Settings → Basics → Update checks.`);
+    }
+    for (const [kind, key] of Object.entries(AUTO_UPDATE_SETTING_KEYS)) {
+      this.registerPredefinedSetting(key, `Whether this node applies ${kind.toLowerCase().replace("_", " ")} updates automatically (true/false). Defaults to false. Set in Server Settings → Basics → Update checks.`);
+    }
 
     this.registerPredefinedSetting(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
