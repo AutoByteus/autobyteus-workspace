@@ -2,7 +2,92 @@
 
 `…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/tickets/in-progress/remote-runs-in-tree`; evidence in `…/evidence/api-e2e/`.
 
-## Round 3 — CRR-005 rerun (authoritative)
+## Round 4 — CRR-007 rerun (authoritative)
+
+### Report Meta
+
+- Investigation: `…/api-e2e-coverage-investigation.md` (round 4 note)
+- Progress log: `…/api-e2e-test-progress.md` (rows 28–30)
+- Revision: `API-REV-003`; round 4
+- Trigger: CRR-007 (a Targeted Delta Review of IR-005).
+  - Code `580e1cac5b` (docs `59d63920ed`): a Team view focuses and commits a remote member first, then reads it (`readRemoteTeamMember`).
+  - The change is web only. The server is unchanged since `e37ad88b98`, so E2E run 4 (37/37, round 3) stands.
+  - Classification: Large / High.
+- **Result: Pass.**
+  - **F-005 is resolved** (the code reviewer's F-006). In the Team family, with beta down, the remote run opens and shows the notice, the row has one red line, and the notice Retry loads the conversation once beta is back.
+  - Every RTP case passes in two consecutive runs, with no browser errors.
+- Durable coverage changed: Yes (small). RTP-07 now also asserts one red line on the row: no "Couldn't load".
+
+### Cases
+
+| Case | Criteria | Env | Result | Evidence and what to look for |
+| --- | --- | --- | --- | --- |
+| API-01 run 4 (round 3) | the whole two-server E2E | ENV-3 | **37/37** (stands: the server is unchanged) | `API-01-run4*` |
+| **API-02 runs 21 and 22** | AC-801 … 804, 806, REQ-808, CRR-001 F-001, F-005 | ENV-4 on `580e1cac5b` | **7/7 in both runs**; `browserErrors: []`; cleanup complete | `API-02-run21/`, `API-02-run22/` (`remote-runs-in-tree-probe.json`, screenshots). Run 22 has the one-red-line assertion; run 21's row texts show the same thing |
+
+**API-02 runs 21 and 22 cases** (the two runs match):
+- **RTP-01 … RTP-03: Pass.** As in round 3.
+- **RTP-04: Pass, four families.**
+  - **Each family:** chip `beta-node`; ⚙ 0 and ＋ 0; "Message {agent} on beta-node…"; the Files note; Context Files 0; upload 0; `@` menu 0.
+  - **The `@` control:** it opens the menu on this node's own run (1).
+  - **Owner message:** the live answer shows, there is one owner message, and the heading shows.
+- **RTP-05: Pass.** Stop on the row stops the run on beta.
+- **RTP-06: Pass, four families** (Retry from the row): "Couldn't reach beta-node." with Retry, 0–0.2 s after the root opens, with no title element. With beta back, Retry clears it and shows the title or the Task line.
+- **RTP-07: Pass, four families** (Retry from the opened notice).
+  - **Each family:** the view shows "beta-node isn't reachable … Retry" under the remote header ("Offline"). The row has one red line: "Couldn't reach beta-node. Retry". With beta back, the notice Retry removes the notice and loads the conversation.
+  - **Team family:** the view is "P / publisher / beta-node / Offline / beta-node isn't reachable". Round 3 stayed on helper, with "Couldn't load activity."
+
+### Acceptance-Criteria Proof
+
+| AC | Proven by | Status |
+| --- | --- | --- |
+| AC-801 | RC-31, RC-33, RC-34; RTP-01 … RTP-03 | Proven |
+| AC-802 | RC-31, RC-33, RC-34; RTP-04 live answer | Proven |
+| AC-803 | RC-31 (heading, N-405), RC-33, RC-34; RTP-04 | Proven |
+| AC-804 | RC-37; RTP-06 and RTP-07 in four families | Proven (F-005 resolved) |
+| AC-805 | RC-36 | Proven |
+| AC-806 | RC-31, RC-33, RC-34; RTP-01 … RTP-07 (four families) | Proven |
+| DEC-804, C-2 | RC-31, RC-32, RTP-05 | Proven |
+| REQ-808 | RTP-04, RTP-07 (four families) | Proven |
+| Security | RC-35 | Proven |
+| AC-807 | — | the user's check (desktop ↔ Docker) |
+
+### Validation Confidence Scorecard (Mandatory)
+
+These are scored over what can be proven without the user.
+
+| Category | Score | Basis | Residual uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | every AC proven, across four families, by the two-server E2E and the browser | AC-807 is the user's |
+| Changed-boundary execution directness | 96% | the real WebSocket route and the streams of three root kinds; the window in Chrome against real servers | — |
+| Cross-boundary integration realism and mock gap | 93% | real processes; the proxy forwards upgrades; beta stopped and started for real | loopback; a scripted CLI instead of a model |
+| Environment, configuration, identity, and fixture fidelity | 95% | clean roots and HOMEs, `env -i`; a third registered node for security | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | unreachable, Retry from the row and the notice ×4, idle restore, interrupt, both Stops, security | — |
+| User-surface, browser, and desktop-shell confidence | 95% | four families rendered, two Retry cycles each, two consecutive passing runs | the desktop shell (Electron) isn't driven; same web app |
+| Durable regression coverage quality and relevance | 95% | 37 E2E cases; a 7-case probe over four families with a working `@` control | the probe's tree opening depends on the tree's current markup |
+
+- Overall final confidence: 95%
+- Every critical AC directly proven: `Yes`
+- Target met: `Yes`
+
+### Broader Validation Decision (Mandatory)
+
+- **Decision:** `Required` (executed, API-02 runs 21 and 22).
+- **Mode:** `Browser` with two server processes; beta is stopped and started.
+
+### Durable Coverage Changes (this round)
+
+`autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs`: RTP-07 also requires that the row at opening has no "Couldn't load" line (SR-008, one owner of the run's error).
+
+### Decision
+
+Pass (Large / High). This goes to the code reviewer for the proportional test-code review of the cumulative test changes:
+- **The probe:** the Org Team family, the `@` control, RTP-06 per family, RTP-07, the tree helper, and the one-red-line assertion.
+- **The two-server E2E:** the proxy's WebSocket upgrade forwarding; the `sentRequests` "nothing sent" counts; RC-31 … RC-37; RC-20.
+
+---
+
+## Round 3 — CRR-005 rerun (superseded by round 4)
 
 ### Report Meta
 

@@ -489,7 +489,9 @@ try {
     noticeRetry[family.name] = { opened: memberRowShown ? family.open : 'the remote Team row', notice, retryShown, recovered, rowAtOpen, viewAtOpen };
   }
   await page.screenshot({ path: path.join(outputDir, 'RTP-07-after-notice-retry.png'), fullPage: true });
-  evidence.cases['RTP-07'] = { result: Object.values(noticeRetry).every(entry => entry.notice?.includes(`${NODE} isn't reachable`) && entry.retryShown && entry.recovered) ? 'Pass' : 'Fail', noticeRetry };
+  evidence.cases['RTP-07'] = { result: Object.values(noticeRetry).every(entry => entry.notice?.includes(`${NODE} isn't reachable`) && entry.retryShown && entry.recovered
+    // One red line on the row: the remote run's, not a second loading error (SR-008, CRR-006 F-006).
+    && !entry.rowAtOpen?.text?.includes("Couldn't load")) ? 'Pass' : 'Fail', noticeRetry };
 
   evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools/.test(line)).length === 0 ? 'Pass' : 'Fail';
   if (evidence.result !== 'Pass') process.exitCode = 1;

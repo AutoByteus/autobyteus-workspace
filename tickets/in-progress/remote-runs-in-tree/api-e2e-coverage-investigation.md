@@ -97,3 +97,8 @@
   - RTP-06 (row Retry ×4);
   - RTP-07 (notice Retry ×4).
 - **Testing note:** the window asks a node about a remote run only for an opened root (AC-804: "opening its run"), so the probe opens each family's root before it expects the row's error.
+
+## Round 4 Note (CRR-007, API-REV-003)
+
+- **Code:** `580e1cac5b` (IR-005). A Team view commits a remote member first, then reads it. The change is web only, so the E2E stands.
+- **Plan:** rerun the probe twice: RTP-06 and RTP-07 in four families, and the other RTP cases. Add an assertion of one red row line (no "Couldn't load") to RTP-07, the criterion the code reviewer named.

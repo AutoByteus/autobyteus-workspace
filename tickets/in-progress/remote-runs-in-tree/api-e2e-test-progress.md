@@ -31,3 +31,6 @@ Evidence: `evidence/api-e2e/` (beside this file).
 | 25 | Probe run 19 (rows opened by the agent's name) | RTP-01 … RTP-06 Pass; **RTP-07 Fail in the Team family → F-005**: the run doesn't open while beta is down (console `Failed to open team member run`), and the row shows "Couldn't load activity." as well | `API-02-run19/` |
 | 26 | Probe run 20 (repeat) | the same as run 19: F-005 reproduced; everything else passes | `API-02-run20/` |
 | 27 | Report (round 3), revision record API-REV-002 (Fail, 91%) | → code reviewer, failure-origin review | `api-e2e-execution-coverage-report.md` |
+| 28 | Round 4 (CRR-007, code `580e1cac5b`, web only): probe runs 21 and 22; RTP-07 also asserts one red row line (added before run 22) | **7/7 in both runs**; F-005 resolved; no browser errors; cleanup complete | `API-02-run21/`, `API-02-run22/` |
+| 29 | E2E: not rerun (the server is unchanged since `e37ad88b98`); run 4 stands | 37/37 | `API-01-run4*` |
+| 30 | Report (round 4), revision record API-REV-003 (Pass, 95%) | → code reviewer, test-code review | `api-e2e-execution-coverage-report.md` |
