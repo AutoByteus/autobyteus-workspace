@@ -209,7 +209,7 @@ const projectMessages = {
   // project-manager-ux: a Task's root (the agent or team it was handed to) and its worker status
   'projects.root.listLabel': 'Assigned to',
   'projects.root.notAssigned': 'Not assigned to an agent or team yet.',
-  'projects.root.help': 'When the Task is Done, this agent or team stops.',
+  'projects.root.help': 'This agent or team stops when its last open Task is Done or Cancelled.',
   'projects.root.open': 'Open {{name}}',
   'projects.root.kind.agent': 'Agent',
   'projects.root.kind.team': 'Team',
