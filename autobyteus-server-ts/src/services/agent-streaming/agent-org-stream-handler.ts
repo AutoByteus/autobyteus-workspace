@@ -12,11 +12,15 @@ import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
+import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
+
+/** A command for one agent of the Org (every client command but Retry). */
+type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
 
 const error = (code: string, message: string): CollaborationStreamServerMessage =>
   CollaborationStreamServerMessageSchema.parse({ type: "ERROR", payload: { code, message } });
 const commandAck = (
-  message: CollaborationStreamClientMessage,
+  message: AgentCommand,
   state: "accepted" | "rejected" | "failed",
   code: string | null,
   detail: string | null,
@@ -54,6 +58,7 @@ export class AgentOrgStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
+    const remoteTaskExecutions = await remoteTaskExecutionDtos(run.getExecutionTreeSnapshot().rootOrg.remoteTaskExecutions);
     const barrier = await run.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
@@ -62,7 +67,7 @@ export class AgentOrgStreamHandler {
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentOrgExecutionView(run, barrier.snapshot, barrier.baseChangeSequence),
+        payload: projectAgentOrgExecutionView(run, barrier.snapshot, barrier.baseChangeSequence, remoteTaskExecutions),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
@@ -97,7 +102,9 @@ export class AgentOrgStreamHandler {
         type: "ROOT_LIFECYCLE",
         payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: true },
       }));
-      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); egress.dispose(); } });
+      // autobyteus-278: a viewer of the Org observes its remote children while connected.
+      run.remoteChildren.viewerAttached();
+      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); run.remoteChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
@@ -111,9 +118,9 @@ export class AgentOrgStreamHandler {
   async handleMessage(sessionId: string, raw: string): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) return;
-    let message: CollaborationStreamClientMessage;
+    let parsed: CollaborationStreamClientMessage;
     try {
-      message = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
+      parsed = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
     } catch (cause) {
       session.egress.send(error(
         "AGENT_ORG_COMMAND_INVALID",
@@ -121,6 +128,14 @@ export class AgentOrgStreamHandler {
       ));
       return;
     }
+    if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
+      // Retry: the answers arrive as root events.
+      if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === session.orgRunId) {
+        void this.service.getActive(session.orgRunId)?.remoteChildren.refresh();
+      }
+      return;
+    }
+    const message: AgentCommand = parsed;
     try {
       if (message.payload.root_subject_kind !== "agent_org" || message.payload.root_run_id !== session.orgRunId) {
         throw new Error("AgentOrg command root correlation mismatch.");

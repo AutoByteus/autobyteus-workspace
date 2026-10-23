@@ -24,6 +24,8 @@ import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
+import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -69,6 +71,13 @@ export interface CreateTeamRunFromRootConfigInput {
 export class TeamRunService {
   private readonly definitions: AgentTeamDefinitionService;
   private readonly manager: AgentTeamRunManager;
+  /** autobyteus-278: a Team run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
+  readonly pairedAgents: PairedAgentAccess = new TeamPairedAgentAccess({
+    getManagedTeamRun: (teamRunId) => this.getManagedTeamRun(teamRunId),
+    resolveManagedTeamRun: (teamRunId) => this.resolveManagedTeamRun(teamRunId),
+    subscribeToLifecycle: (teamRunId, listener) => this.manager.subscribeToLifecycle(teamRunId, listener),
+    terminateTeamRun: (teamRunId) => this.terminateTeamRun(teamRunId),
+  });
   private readonly catalog: TeamRunHistoryCatalogService;
   private readonly workspaces: WorkspaceManager;
   private readonly agentIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
@@ -221,6 +230,10 @@ export class TeamRunService {
    */
   recordRunTitle(teamRunId: string, content: string): Promise<void> {
     return this.catalog.recordTeamRunSummary({ teamRunId, summary: content });
+  }
+  /** The Team run's title as its history row shows it (autobyteus-278: a peer reads it for a run it started). */
+  async readRunTitle(teamRunId: string): Promise<string | null> {
+    return (await this.catalog.getCatalogRow(teamRunId))?.summary || null;
   }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     const success = await this.manager.terminateTeamRun(teamRunId);

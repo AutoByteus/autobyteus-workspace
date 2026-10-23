@@ -407,10 +407,15 @@ describe("DS-004: a peer-started Team root's quiet idle shutdown (AR-301)", () =
 
   it("all members quiet for the grace period: the root ends, keeping its package (no member interrupted)", async () => {
     const { b, root } = await started();
+    // autobyteus-278 F-004: a peer's observation follows the Team across its idle shutdown; it does not end.
+    const onEnded = vi.fn();
+    const observation = await b.teamRuns.pairedAgents.observePairedAgents("studio_team_b", () => undefined, onEnded);
     await vi.advanceTimersByTimeAsync(grace() - 50);
     expect(root.isActive()).toBe(true);
     await vi.advanceTimersByTimeAsync(100);
     expect(root.isActive()).toBe(false);
+    expect(onEnded).not.toHaveBeenCalled();
+    observation?.close();
     await expect(fs.access(path.join(new AgentMemoryLayout(b.dir).getTeamDirPath({ rootTeamRunId: "studio_team_b", ancestorTeamRunIds: [] }),
       "team_run_execution_tree.json"))).resolves.toBeUndefined();
   });

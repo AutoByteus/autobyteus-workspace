@@ -17,8 +17,9 @@ The collaboration roots own the runs and their messages; they reach other nodes 
 Slice 1 (autobyteus-191) is text only, for Agents, on a trusted private network: there is no
 authentication between nodes and no credential ever crosses them. autobyteus-245 removed publishing: with the
 switch on, every shared Agent is available to registered peers. autobyteus-247 added shared Agent Teams,
-autobyteus-261 discovery. Attachments, lifecycle control from the delegating node and peer authentication come
-in later slices.
+autobyteus-261 discovery. autobyteus-278 shows remote runs in the delegator's run tree and lets the owner drive
+them (see [Remote runs in the run tree](#remote-runs-in-the-run-tree)). Attachments, a remote run's files, stop
+on Task closure and peer authentication come in later slices.
 
 ## Settings (per node)
 
@@ -72,7 +73,9 @@ in later slices.
 ## Between nodes
 
 Four requests, `POST /rest/remote/delegated-runs`, `/rest/remote/messages`, `/rest/remote/availability` and
-`/rest/remote/available-agents` (route class `REMOTE_PEER`; a mobile credential is refused). Every request
+`/rest/remote/available-agents`, plus the run-view routes of autobyteus-278 (`/rest/remote/run-summaries`,
+`/agent-projection`, `/owner-commands` and the WebSocket `/rest/remote/run-observations`, described
+[below](#remote-runs-in-the-run-tree)) (route class `REMOTE_PEER`; a mobile credential is refused). Every request
 carries `{fromNodeId, toNodeId}`; every answer carries the responder's `nodeId`. A domain refusal is `200
 {accepted: false, code, message, target?: {kind: "agent" | "agent_team", name}}` (`message` is the responder's
 detail; `target` the target definition there, for `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`, so the delegating
@@ -157,8 +160,8 @@ each offers, then delegates with `delegate_task` without being told an address.
   `RootTaskExecutionLifecycle` runs it. Each root's task adapter hands the remote placement's planning and
   activation to `RemoteDelegation`, the one caller of `startDelegatedRun`: planning asks the peer to create
   the run, so the peer's run ID is known before the Task link (for a Team, the Task's run is the Team, entered
-  through its coordinator, as for a local Team copy); `RemoteTaskActivation` then commits the link (a
-  `taskExecutions` entry with `nodeId` in the topmost coordinating tree: `agentRunId`, or `teamRunId` with
+  through its coordinator, as for a local Team copy); `RemoteTaskActivation` then commits the link (an entry
+  with `nodeId` in the topmost coordinating root's `remoteTaskExecutions`: `agentRunId`, or `teamRunId` with
   `coordinatorAddress` and `members`) and sends the work packet to the Agent run or the Team's coordinator. A
   refusal by the peer leaves nothing on this node. The result is the local copy's shape plus `node`.
 - **Receiving node, an Agent.** The run is an ordinary standalone run; `run_metadata.json` carries
@@ -214,5 +217,79 @@ each offers, then delegates with `delegate_task` without being told an address.
   messages with a remote run therefore still loads, restores and reopens after a restart.
 - **Task closure** fences a remote run or a remote Team: the closed Task refuses its messages both ways, no
   release is invoked, and the result is `fenced_remote` with the text "… runs on node "X". This Task sends it
-  no more messages; it stops there when it goes idle." It keeps running on its node until idle (stopping it
-  from the delegating node is S3).
+  no more messages; it stops there when it goes idle." It keeps running on its node until idle; Task closure
+  does not stop it (the owner can, from the run tree, since autobyteus-278).
+
+## Remote runs in the run tree
+
+autobyteus-278 (CM-11, collaboration model § 4). The delegating node (A) shows each remote run as a child of the
+delegator's root, as it shows a local copy, and its owner talks to it, interrupts and stops it. The node that runs
+it (B) serves only the peer whose delegation started the run, and only about the run's **paired agents**: an Agent
+run's host, or a Team run's members.
+
+- **Requests.** All four go through `PeerGateway` admission (`toNodeId`, switch, registered peer) and then
+  `RemoteRunViewProvider`'s link check. They are:
+  - `POST /rest/remote/run-summaries` `{runs: [{kind, runId}]}` → `{runs: [{kind, runId, title, statuses:
+    [{agentRunId, status}]}]}`. One request per node covers every run A asks about there. A run B's delegation
+    from A did not start is left out of the answer. `statuses` lists only the live paired agents; one not listed
+    is offline. A summary never restores a run.
+  - `POST /rest/remote/agent-projection` `{targetRoot, agentRunId}` → `{projection: {agentRunId, conversation,
+    activities, summary, lastActivityAt, hasEarlierActiveTraceEvents}}`, read from B's stored projection services.
+  - `POST /rest/remote/owner-commands` `{targetRoot, agentRunId, command}`. The command is one of:
+    - `post_message {content, messageId, dedupeKey}`, a user message to the paired agent. Its content is the
+      owner's text under the heading `From the owner of node "<B's name for A>":` and a blank line (DS-004a,
+      `remoteOwnerUserMessage`, the heading's one owner). The agent, B's stored conversation and both nodes'
+      windows read the mark there. `messageId` and `dedupeKey` pass through unchanged, so A's window replaces its
+      echo with the streamed message. The message makes the agent ready, restoring it after idle shutdown, as any
+      input does;
+    - `interrupt`;
+    - `terminate`, which stops the whole run (an Agent root's Stop, a Team's terminate) and keeps its history.
+  - WebSocket `GET /rest/remote/run-observations`. A's first frame is the envelope with `targetRoot`. B's first
+    frame is `{nodeId}` (or a refusal, then close). After it come `{agentRunId, message}` frames, one presentation
+    message of one paired agent each. A frame the run produces while it is being subscribed (a live run's current
+    state) waits in the route and follows `{nodeId}`.
+    - An Agent run is followed from host to host across idle shutdown (`StandaloneAgentRunRoot.onHostReady`).
+    - A Team run is followed through its root publisher, filtered to its members, and across a restore after idle
+      shutdown (the manager's lifecycle notifications).
+    - B ends the stream when the run is stopped, terminated or deleted by any path: B's own window, GraphQL,
+      history delete or archive, or `owner-commands`. The standalone manager reports the end after the host stopped
+      (`onRunEnded`); the Team lifecycle snapshot carries `ending: "stopped"`. Idle shutdown does not end it
+      (`ending: "idle_shutdown"`, or only the host is replaced). A then reads the final summary (AR-403).
+- **B's owner.** `RemoteRunViewProvider` (`inbound/remote-run-view-provider.ts`) first checks the run's stored
+  back-link: `RemoteRootDirectory.storedLinkCheck` with the query kind `owner` (`{fromNodeId, targetAgentRunId}`),
+  which admits the node in `delegatedFrom.nodeId` and, when an agent is named, only a paired agent. It then calls
+  the root kind's `PairedAgentAccess` behind `RemoteRootDirectory.pairedAgents(kind)`:
+  - `StandalonePairedAgentAccess` on `StandaloneAgentRunRootManager`;
+  - `TeamPairedAgentAccess` on `TeamRunService`.
+
+  Titles come from the run services' `readRunTitle`, and projections from the agent and Team-member projection
+  services. A refusal is `REMOTE_TARGET_NOT_PERMITTED` or `REMOTE_TARGET_NOT_FOUND`.
+- **A's client.** `PeerClient.runSummaries` / `agentProjection` / `ownerCommand` read their answers strictly
+  (`channel/peer-run-view-answers.ts`). `openPeerRunObservation` (`channel/peer-run-observation-client.ts`, the
+  global Node `WebSocket`) requires the first frame to be `{nodeId}` equal to the pinned peer. A refusal, any
+  other first frame, a timeout or a close ends the observation once (`onEnd`); A's own `close()` ends it
+  silently.
+- **A's owner.** Each root (standalone, Team, Org) owns one `RemoteRunObservation`
+  (`agent-collaboration/execution/remote/remote-run-observation.ts`) over its `remoteTaskExecutions`:
+  - The root's view streams count viewers (`viewerAttached` / `viewerDetached`). Each new viewer gets a summary
+    fetch (one request per node). The first viewer opens one observation per link; the last viewer to leave
+    closes them.
+  - An observation that ends without A closing it gets one summary fetch. There is no reconnect.
+  - `refresh()` (the client's `REFRESH_REMOTE_TASK_EXECUTIONS`, Retry in the window) fetches the summaries again
+    and reopens the ended observations.
+  - A newly committed remote link (`onRemoteLinkCommitted` from the task adapters) publishes
+    `remote_task_execution_started` with the node's name, and is observed when the root is being viewed.
+  - The root events are `RemoteRunRootEvent`s: `remote_task_execution_started`, `remote_task_execution_summary`
+    and `remote_agent_presentation`. They are published to the root's view stream only. Only the stream DTO
+    projectors map `remote_agent_presentation` to `agent_presentation`; the Team stream wraps them as source
+    `REMOTE`.
+- **Views and commands on A.** The root views carry `remote_task_executions` (the links, with the node's name): the
+  stream snapshots, `agentRunCollaboration`, the Org inspection and the Team's `getTeamRunResumeConfig`, so a root
+  without a live stream still lists them.
+  The member-projection resolvers (`remoteChildOf`) answer a remote agent's conversation through
+  `agentProjection`. The root's agent commands go to `executeRemoteChildCommand` first. Stop of a remote child
+  goes to `stopRemoteChild`, which terminates a Team through its coordinator. Remote commands run outside the
+  root's operation gate, because a peer call can take up to 20 s.
+- **Phase 1 limits.** Neither node reconnects a stream or pushes a change. A root without a live stream (a
+  stopped delegator) lists its remote runs without a title or status: summaries come only over the root's stream.
+  A remote run's files are not read.

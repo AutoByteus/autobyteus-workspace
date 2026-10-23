@@ -21,7 +21,7 @@ import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStrea
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection'
-import { AgentRunCollaborationIndex, type AgentRootChildAgent } from './agentRunCollaborationIndex'
+import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
 import {
   agentRunKey,
   collaborationTreeWalk,
@@ -31,6 +31,7 @@ import {
   type CollaborationTreeNode,
 } from '~/utils/collaboration/taskExecutionClosure'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
+import { applyRemoteSummaryStatuses, isRemoteExecutionKnown, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -74,17 +75,17 @@ export class AgentRunCollaborationContext {
       throw new Error(`Agent collaboration view correlation mismatch for '${input.hostRunId}'.`)
     }
     this.view = structuredClone(input.view)
-    this.index = new AgentRunCollaborationIndex(this.view.execution_tree)
+    this.index = new AgentRunCollaborationIndex(this.view.execution_tree, this.view.remote_task_executions)
     this.nextChangeSequence = input.view.base_change_sequence + 1
     for (const entry of input.entries) {
       if (entry.agentRunId !== entry.context.state.runId || this.contexts.has(entry.agentRunId)
-        || this.index.requireAgent(entry.agentRunId).address !== entry.memberAddress) {
+        || this.index.childAddressOf(entry.agentRunId) !== entry.memberAddress) {
         throw new Error(`Invalid or duplicate Agent collaboration context '${entry.agentRunId}'.`)
       }
       entry.context.state = reactive(entry.context.state)
       this.contexts.set(entry.agentRunId, reactive(entry.context))
     }
-    if (this.contexts.size !== this.index.agents.size) throw new Error('Agent collaboration context scope is incomplete.')
+    if (this.contexts.size !== this.index.agents.size + this.index.remoteAgents.size) throw new Error('Agent collaboration context scope is incomplete.')
     this.assertMessagesCorrelated(this.view.communication_messages.messages)
     const statuses = new Set<string>()
     const inputs = new Set<string>()
@@ -114,6 +115,8 @@ export class AgentRunCollaborationContext {
   get isActive(): boolean { return this.view.is_active }
   get changeSequence(): number { return this.nextChangeSequence - 1 }
   get hasChildren(): boolean { return this.index.agents.size > 0 }
+  /** autobyteus-278: the runs this root delegated to other nodes. */
+  get remoteExecutions() { return this.view.remote_task_executions }
 
   getAgentContext(agentRunId: string): AgentContext | null {
     return this.contexts.get(agentRunId) ?? null
@@ -121,6 +124,11 @@ export class AgentRunCollaborationContext {
 
   getChild(agentRunId: string): AgentRootChildAgent | null {
     return this.index.agents.get(agentRunId) ?? null
+  }
+
+  /** autobyteus-278: an agent of a run this root delegated to another node. */
+  getRemoteChild(agentRunId: string): AgentRootRemoteAgent | null {
+    return this.index.remoteAgents.get(agentRunId) ?? null
   }
 
   isChildHydrated(agentRunId: string): boolean {
@@ -147,6 +155,11 @@ export class AgentRunCollaborationContext {
     } else if (event.kind === 'task_execution_started') {
       // A new child needs its own context; reload the view.
       return 'checkpoint_required'
+    } else if (event.kind === 'remote_task_execution_started') {
+      // A new remote child needs its own context too (one the view already lists needs nothing).
+      if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
+    } else if (event.kind === 'remote_task_execution_summary') {
+      applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
     } else if (event.kind === 'task_executions_closed') {
       // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
       const unknown = event.task_executions.find((reference) => 'agentRunId' in reference
@@ -191,7 +204,7 @@ export class AgentRunCollaborationContext {
   }>[]): void {
     const targets = entries.map((entry) => {
       const context = this.contexts.get(entry.agent_run_id)
-      if (!context || this.index.agents.get(entry.agent_run_id)?.address !== entry.member_address) {
+      if (!context || this.index.childAddressOf(entry.agent_run_id) !== entry.member_address) {
         this.requireReopen(`Agent presentation identity '${entry.agent_run_id}' is not a child of this run.`)
         throw new Error(this.error!)
       }
@@ -220,7 +233,7 @@ export class AgentRunCollaborationContext {
 
   listAgentContextEntries(): readonly AgentRunCollaborationContextEntry[] {
     return [...this.contexts].map(([agentRunId, context]) => Object.freeze({
-      agentRunId, memberAddress: this.index.requireAgent(agentRunId).address, context,
+      agentRunId, memberAddress: this.index.childAddressOf(agentRunId)!, context,
     }))
   }
 
@@ -236,7 +249,7 @@ export class AgentRunCollaborationContext {
       const old = previous.getAgentContext(agentRunId)
       if (!old) continue
       if (old.state.runId !== agentRunId || next.state.runId !== agentRunId
-        || previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {
+        || previous.index.childAddressOf(agentRunId) !== this.index.childAddressOf(agentRunId)) {
         throw new Error('Agent collaboration retained identity mismatch.')
       }
       const before = old.state.inputProjection
@@ -266,7 +279,8 @@ export class AgentRunCollaborationContext {
 
   /** A child is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
   isListed(agentRunId: string): boolean {
-    return this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId))
+    return this.index.remoteAgents.has(agentRunId)
+      || (this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId)))
   }
 
   /** The task rows under the run row: task Agents and task Teams with their members, without closed ones. */
@@ -315,7 +329,15 @@ export class AgentRunCollaborationContext {
       entry.teamStatus = resolveTeamStatus(statuses, this.isActive)
       return statuses
     }
-    this.rootExecutionNodes().forEach((task) => visit(task, 0, true))
+    // autobyteus-278: the root's remote runs are rows like its local copies, in the order they were delegated.
+    const remote = remoteRowsOf({
+      executions: this.view.remote_task_executions, rootRunId: this.hostRunId, isActive: this.isActive,
+      statusOf, delegatorName, isTeamExpanded, nameAt,
+    })
+    mergeByStartTime(
+      this.rootExecutionNodes().map((task) => ({ startedAt: task.startedAt, value: () => { visit(task, 0, true) } })),
+      remote.map((entry) => ({ startedAt: entry.startedAt, value: () => { flat.push(...entry.rows) } })),
+    ).forEach((emit) => emit())
     const hasSibling = (index: number, depth: number): boolean => {
       for (let next = index + 1; next < flat.length; next += 1) {
         if (flat[next]!.row.depth < depth) return false

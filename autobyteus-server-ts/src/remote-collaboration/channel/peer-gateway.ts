@@ -8,16 +8,26 @@ import {
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type {
+  AgentProjectionAnswer,
+  AgentProjectionRequest,
   AvailabilityAnswer,
   AvailableAgentsAnswer,
   DeliverRemoteMessageAnswer,
   DeliverRemoteMessageRequest,
+  OwnerCommandAnswer,
+  OwnerCommandRequest,
   RemoteEnvelope,
   RemoteRefusalTarget,
+  RunObservationOpening,
+  RunSummariesAnswer,
+  RunSummariesRequest,
   StartDelegatedRunAnswer,
   StartDelegatedRunRequest,
 } from "../domain/remote-requests.js";
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
+import type { RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import type { RunObservationSink } from "../inbound/remote-run-view-provider.js";
 
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
 export type PeerGatewayResponse<TAnswer> =
@@ -41,6 +51,17 @@ export type RemoteMessageHandler = Readonly<{
 /** autobyteus-261: what this node offers a peer for delegation. */
 export type AvailableAgentsHandler = Readonly<{
   list(): Promise<Readonly<{ accepted: true; agents: readonly AvailableCollaboratorEntry[] }> | PeerHandlerRefusal>;
+}>;
+
+/**
+ * autobyteus-278: what a peer's owner reads and drives on this node, for runs that peer's delegation started (one
+ * owner, `RemoteRunViewProvider`).
+ */
+export type RemoteRunViewHandler = Readonly<{
+  summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | PeerHandlerRefusal>;
+  projection(request: AgentProjectionRequest, from: PeerNode): Promise<Readonly<{ accepted: true; projection: RemoteAgentProjection }> | PeerHandlerRefusal>;
+  command(request: OwnerCommandRequest, from: PeerNode): Promise<Readonly<{ accepted: true }> | PeerHandlerRefusal>;
+  observe(opening: RunObservationOpening, from: PeerNode, sink: RunObservationSink): Promise<Readonly<{ accepted: true; observation: PairedAgentObservation }> | PeerHandlerRefusal>;
 }>;
 
 class MalformedRequestError extends Error {}
@@ -85,6 +106,55 @@ const parseMessageRequest = (value: unknown): DeliverRemoteMessageRequest => {
   };
 };
 
+const startedRunRef = (value: unknown, label: string) => {
+  const entry = field(() => objectRecord(value, label));
+  if (entry.kind !== "agent" && entry.kind !== "agent_team") throw new MalformedRequestError(`${label}.kind must be 'agent' or 'agent_team'.`);
+  return { kind: entry.kind, runId: field(() => requiredString(entry.runId, `${label}.runId`)) } as const;
+};
+
+const parseRunSummariesRequest = (value: unknown): RunSummariesRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  if (!Array.isArray(body.runs)) throw new MalformedRequestError("runs must be an array.");
+  return { ...parseEnvelope(body), runs: body.runs.map((run, index) => startedRunRef(run, `runs[${index}]`)) };
+};
+
+const parseAgentProjectionRequest = (value: unknown): AgentProjectionRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  return {
+    ...parseEnvelope(body),
+    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
+    agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")),
+  };
+};
+
+const ownerCommandOf = (value: unknown): RemoteOwnerCommand => {
+  const command = field(() => objectRecord(value, "command"));
+  if (command.kind === "interrupt" || command.kind === "terminate") return { kind: command.kind };
+  if (command.kind !== "post_message") throw new MalformedRequestError("command.kind must be 'post_message', 'interrupt' or 'terminate'.");
+  if (typeof command.content !== "string") throw new MalformedRequestError("command.content must be a string.");
+  return {
+    kind: "post_message",
+    content: command.content,
+    messageId: field(() => requiredString(command.messageId, "command.messageId")),
+    dedupeKey: field(() => requiredString(command.dedupeKey, "command.dedupeKey")),
+  };
+};
+
+const parseOwnerCommandRequest = (value: unknown): OwnerCommandRequest => {
+  const body = field(() => objectRecord(value, "request"));
+  return {
+    ...parseEnvelope(body),
+    targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot"),
+    agentRunId: field(() => requiredString(body.agentRunId, "agentRunId")),
+    command: ownerCommandOf(body.command),
+  };
+};
+
+const parseObservationOpening = (value: unknown): RunObservationOpening => {
+  const body = field(() => objectRecord(value, "request"));
+  return { ...parseEnvelope(body), targetRoot: coordinatingRunOf(body.targetRoot, "targetRoot") };
+};
+
 /**
  * The single entry point of every inbound request kind from peer nodes (REQ-114; the place where peer
  * authentication and permissions are added in S6). Before any dispatch, in this order:
@@ -103,6 +173,7 @@ export class PeerGateway {
     delegatedRuns: DelegatedRunHandler;
     messages: RemoteMessageHandler;
     availableAgents: AvailableAgentsHandler;
+    runViews: RemoteRunViewHandler;
   }>) {}
 
   /**
@@ -124,6 +195,29 @@ export class PeerGateway {
 
   deliverMessage(body: unknown): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
     return this.admit(body, parseMessageRequest, (request, peer) => this.dependencies.messages.accept(request, peer));
+  }
+
+  /** autobyteus-278: the titles and statuses of runs the caller's delegation started (read-only). */
+  runSummaries(body: unknown): Promise<PeerGatewayResponse<RunSummariesAnswer>> {
+    return this.admit(body, parseRunSummariesRequest, (request, peer) => this.dependencies.runViews.summaries(request, peer));
+  }
+
+  /** autobyteus-278: one agent's stored conversation in such a run (read-only). */
+  agentProjection(body: unknown): Promise<PeerGatewayResponse<AgentProjectionAnswer>> {
+    return this.admit(body, parseAgentProjectionRequest, (request, peer) => this.dependencies.runViews.projection(request, peer));
+  }
+
+  /** autobyteus-278: a command of the caller's owner for one agent of such a run. */
+  ownerCommand(body: unknown): Promise<PeerGatewayResponse<OwnerCommandAnswer>> {
+    return this.admit(body, parseOwnerCommandRequest, (request, peer) => this.dependencies.runViews.command(request, peer));
+  }
+
+  /**
+   * autobyteus-278: the first frame of an observation stream. Accepted, the answer carries the observation, which the
+   * socket closes when it closes; the frames go to `sink`.
+   */
+  openRunObservation(body: unknown, sink: RunObservationSink) {
+    return this.admit(body, parseObservationOpening, (request, peer) => this.dependencies.runViews.observe(request, peer, sink));
   }
 
   private async admit<TRequest extends RemoteEnvelope, TAccepted extends object>(

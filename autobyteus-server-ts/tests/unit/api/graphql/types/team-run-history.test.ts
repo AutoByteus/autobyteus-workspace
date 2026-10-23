@@ -8,7 +8,13 @@ const mocks = vi.hoisted(() => ({
   getActiveTeamRun: vi.fn(),
   getTeamRunResumeConfig: vi.fn(),
   projectExecutionTree: vi.fn((tree: unknown) => tree),
+  remoteTaskExecutionDtos: vi.fn(async (links: unknown[] | undefined) => (links ?? []).map((link) => ({ ...(link as object), node_name: "docker" }))),
 }));
+
+vi.mock(
+  "../../../../../src/services/agent-streaming/remote-task-execution-dto-projection.js",
+  () => ({ remoteTaskExecutionDtos: mocks.remoteTaskExecutionDtos }),
+);
 
 vi.mock(
   "../../../../../src/services/agent-streaming/team-execution-view-projector.js",
@@ -59,6 +65,22 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
       });
     expect(mocks.getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
     expect(mocks.projectExecutionTree).toHaveBeenCalledTimes(1);
+  });
+
+  it("lists the Team's remote runs, as its stream snapshot does, so a stopped Team still shows them (autobyteus-278)", async () => {
+    const link = { kind: "agent", address: "/publisher", agentRunId: "publisher-run", nodeId: "srv_docker", delegatorAgentRunId: "lead-run", startedAt: "2026-10-23T08:00:00.000Z" };
+    mocks.getTeamRunResumeConfig.mockResolvedValue({
+      teamRunId: "team-run-1",
+      isActive: false,
+      executionTree: { rootTeam: { address: "/", members: [], remoteTaskExecutions: [link] } },
+      closedTaskExecutions: [],
+      modelConfigEditability: { editable: true, reason: null },
+    });
+
+    const config = await new TeamRunHistoryResolver().getTeamRunResumeConfig("team-run-1");
+
+    expect(mocks.remoteTaskExecutionDtos).toHaveBeenCalledWith([link]);
+    expect(config.remoteTaskExecutions).toEqual([{ ...link, node_name: "docker" }]);
   });
 
   it("reads a team member's file changes through the team-scoped member view", async () => {

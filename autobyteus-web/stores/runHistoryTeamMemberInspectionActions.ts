@@ -7,6 +7,8 @@ import { refreshRunNavigationTopologyForStore, type RunHistoryNavigationStoreSta
 import type { TeamMemberInspectionAttempt } from './runHistoryTypes';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { readRemoteTeamMember } from '~/services/teamExecution/teamRemoteRunRegistry';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 
 export type TeamMemberInspectionSelectionMode = 'desktop' | 'mobile';
 
@@ -114,6 +116,13 @@ export const reconcileFocusedTeamMemberProjectionForStore = async (
   try {
     const team = useAgentTeamContextsStore().getTeamContextById(teamRunId);
     if (!team || team.view.getFocusedAgentRunId() !== agentRunId) {
+      if (ownsAttempt()) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+      return;
+    }
+    // autobyteus-278 (F-006): a member of a run another node runs is read lazily; its node's reachability
+    // (remoteRunsStore) is its only error, never a Team inspection error.
+    if (useRemoteRunsStore().runOfAgentRun(agentRunId)) {
+      readRemoteTeamMember(team, agentRunId);
       if (ownsAttempt()) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
       return;
     }

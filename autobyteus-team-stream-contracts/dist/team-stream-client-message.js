@@ -6,6 +6,8 @@ export const teamStreamClientMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("INTERRUPT_GENERATION"), payload: teamInterruptClientPayloadSchema }).strict(),
     z.object({ type: z.literal("APPROVE_TOOL"), payload: teamToolApprovalClientPayloadSchema }).strict(),
     z.object({ type: z.literal("DENY_TOOL"), payload: teamToolApprovalClientPayloadSchema }).strict(),
+    /** Retry (autobyteus-278): ask the nodes of this Team's remote runs for their summaries again. */
+    z.object({ type: z.literal("REFRESH_REMOTE_TASK_EXECUTIONS"), payload: z.object({}).strict() }).strict(),
 ]);
 export const parseTeamStreamClientMessage = (value) => {
     const decoded = typeof value === "string" ? JSON.parse(value) : value;

@@ -1,0 +1,47 @@
+# F-001 | beta sends an agent frame before {nodeId} on /rest/remote/run-observations, so alpha ends the stream (N-401) and the window gets no live output | code 1bdcff8ae2
+
+## Exploratory run (RC-31 then), a direct WebSocket to beta with alpha's identity, opening frame {fromNodeId, toNodeId, targetRoot:{agent, <live run>}}
+frames received: 46; the first three:
+  {"agentRunId":"publisher_0c8e59b8bcfe48748c21f002e38d84b8","message":{"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"14094c40-e484-4170-8516-c5613ab99479","revision":5,"entries":[],"recoverableBlock":null}}}
+  {"nodeId":"srv_h3iB7xZkxGo3tuAVET9sAZkJxsBNryw-"}
+  {"agentRunId":"publisher_0c8e59b8bcfe48748c21f002e38d84b8","message":{"type":"AGENT_STATUS","payload":{"recoverableBlock":null,"status":"initializing","trigger":null,"tool_name":null,"error_message":null,"error_details":null}}}
+
+The same run seen through alpha (the root view /ws/agent-collaboration/<delegator>): no agent_presentation event; two summaries (the viewer attach, then the end of the stream).
+
+## API-01-run2 RC-31: liveSeen=False, frame types=['CONNECTED', 'ROOT_EXECUTION_VIEW_SNAPSHOT', 'ROOT_LIFECYCLE', 'event:remote_task_execution_summary', 'AGENT_COMMAND_ACK']
+## API-01-diagnostic-nodeid-first RC-31: liveSeen=True, frame types=['CONNECTED', 'ROOT_EXECUTION_VIEW_SNAPSHOT', 'ROOT_LIFECYCLE', 'event:agent_presentation', 'event:remote_task_execution_summary', 'event:agent_presentation_batch', 'AGENT_COMMAND_ACK']
+
+## Code
+autobyteus-server-ts/src/api/rest/remote.ts (the route): the sink is live from openRunObservation(body, sink); {nodeId} is sent only after it resolves:
+  60:       let body: unknown;
+  61:       try { body = JSON.parse(data.toString()); } catch { body = null; }
+  62:       const sink = Object.freeze({
+  63:         send: (frame: unknown) => { if (!closed) socket.send(JSON.stringify(frame)); },
+  64:         close: () => { if (!closed) socket.close(1000); },
+  65:       });
+  66:       void remote.gateway.openRunObservation(body, sink).then((response) => {
+  67:         const answer = response.answer;
+  68:         if (!answer.accepted || !("observation" in answer)) {
+  69:           socket.send(JSON.stringify(answer));
+  70:           socket.close(1000);
+  71:           return;
+  72:         }
+  73:         if (closed) { answer.observation.close(); return; }
+  74:         observation = answer.observation;
+  75:         socket.send(JSON.stringify({ nodeId: answer.nodeId }));
+  76:       }, () => socket.close(1011));
+autobyteus-server-ts/src/remote-collaboration/channel/peer-run-observation-client.ts (alpha): a first frame that is not {nodeId} of the pinned node ends the stream:
+  63:     socket.onmessage = (event) => {
+  64:       if (ended) return;
+  65:       let value: unknown;
+  66:       try { value = JSON.parse(frameText(event.data) ?? ""); } catch { value = null; }
+  67:       if (!accepted) {
+  68:         const opening = value as { nodeId?: unknown; accepted?: unknown } | null;
+  69:         // The first frame names the node that answers; a refusal or another node ends the stream.
+  70:         if (!opening || opening.accepted === false || opening.nodeId !== peer.nodeId) return end();
+  71:         accepted = true;
+  72:         if (openingTimer) clearTimeout(openingTimer);
+  73:         openingTimer = null;
+
+## Diagnostic (temporary, reverted with git checkout; dist rebuilt): the route held frames until {nodeId} was sent
+API-01-diagnostic-nodeid-first: Tests 36 passed, 1 failed (only RC-32, C-2). RC-31 liveSeen=true; owner message live; the final summary after Stop offline.

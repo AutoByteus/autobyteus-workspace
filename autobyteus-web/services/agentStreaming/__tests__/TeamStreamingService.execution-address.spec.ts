@@ -35,7 +35,7 @@ const createHarness = (state = 'connected') => {
       base_change_sequence: 0,
       closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
       messages: [],
-      agent_input_states: [],
+      agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
         member_address: entry.memberAddress,

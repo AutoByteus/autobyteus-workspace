@@ -87,7 +87,7 @@ const buildWorkspaceHistoryResponse = () => ({
 });
 
 const buildTeamResumeConfigResponse = () => ({
-  getTeamRunResumeConfig: { closedTaskExecutions: [],
+  getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
     teamRunId: 'team-1',
     isActive: false,
     executionTree: buildCurrentExecutionTree(),

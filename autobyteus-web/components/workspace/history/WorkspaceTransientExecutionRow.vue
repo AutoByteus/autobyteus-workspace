@@ -59,7 +59,7 @@
       aria-hidden="true"
     />
 
-    <div class="flex min-w-0 flex-1 items-start py-1 pr-2">
+    <div class="flex min-w-0 flex-1 items-start py-1 pr-2" :class="remote ? 'flex-wrap' : ''">
       <!-- Status and icon sit in a box as tall as the name line, so they stay centered on it. -->
       <span class="member-status inline-flex h-5 flex-shrink-0 items-center">
         <StatusDot
@@ -73,6 +73,10 @@
           class="mr-1.5"
           :status="teamStatus"
         />
+      </span>
+      <!-- autobyteus-278: a run another node runs carries its node, left of its icon and name. -->
+      <span v-if="remote" class="mr-1.5 inline-flex h-5 min-w-0 flex-shrink items-center" data-test="workspace-remote-run-node">
+        <RemoteNodeChip :node-name="remote.nodeName" />
       </span>
       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
         <!-- Teams share the people-group identity, in the tree's slate. -->
@@ -93,7 +97,7 @@
       <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
-        <TaskWorkerTaskSummary v-if="task" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
+        <TaskWorkerTaskSummary v-if="task && !remote" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
         <span
           v-if="inspectionAttempt?.state === 'loading'"
           class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
@@ -113,6 +117,39 @@
           >{{ t('workspace.task_monitor.retry') }}</button>
         </span>
       </span>
+      <!-- autobyteus-278: the run's title and any error start under the node's name in the chip. -->
+      <div v-if="remote" class="mt-0.5 w-full basis-full pl-9" data-test="workspace-remote-run-lines">
+        <TaskWorkerTaskSummary v-if="task" class="!mt-0" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
+        <span
+          v-if="!task && remoteInfo?.reachable !== false && remoteInfo?.title && !remoteInfo?.checking"
+          class="block truncate text-[0.6875rem] font-normal leading-4"
+          :class="isSelected ? 'text-indigo-700' : 'text-gray-500'"
+          data-test="workspace-remote-run-title"
+          :title="remoteInfo.title"
+        >{{ remoteInfo.title }}</span>
+        <span
+          v-if="remoteInfo?.checking"
+          class="block text-[0.6875rem] font-medium text-indigo-700"
+          role="status"
+          data-test="workspace-remote-run-checking"
+        >{{ t('remote.row.checking', { node: remote.nodeName }) }}</span>
+        <span
+          v-else-if="remoteInfo?.reachable === false || stopError"
+          class="flex items-center gap-1 text-[0.6875rem] font-medium text-red-700"
+          role="alert"
+          data-test="workspace-remote-run-error"
+        >
+          <span>{{ stopError ? t('remote.row.stopFailed', { node: remote.nodeName }) : t('remote.row.unreachable', { node: remote.nodeName }) }}</span>
+          <button
+            v-if="!stopError"
+            type="button"
+            class="rounded px-1 py-0.5 underline focus:outline-none focus-visible:ring-1 focus-visible:ring-red-500"
+            :aria-label="t('remote.row.retryAria', { node: remote.nodeName })"
+            data-test="workspace-remote-run-retry"
+            @click.stop="retryRemote"
+          >{{ t('remote.row.retry') }}</button>
+        </span>
+      </div>
     </div>
     <!-- SR-007: a running copy has the same stop icon as a running run. -->
     <DelegatedStopButton
@@ -121,6 +158,8 @@
       :root="stopRoot"
       :reference="stopReference"
       :name="row.displayName"
+      @started="stopError = false"
+      @failed="stopError = true"
     />
     <span
       class="hierarchy-identity-tooltip pointer-events-none absolute left-2 right-2 top-full z-50 hidden break-words rounded-md bg-slate-900 px-2 py-1.5 text-left text-[0.6875rem] font-medium leading-4 text-white shadow-lg"
@@ -130,13 +169,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
 import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
 import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
+import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -185,6 +226,17 @@ const roleLabel = computed(() => t(
     : 'workspace.history.hierarchy.role.temporary_task_agent',
 ));
 
+// autobyteus-278: the node that runs this copy; a member of a remote Team shows no chip of its own.
+const remoteRuns = useRemoteRunsStore();
+const remote = computed(() => props.row.transientKind === 'task_team_child' ? null : props.row.remote ?? null);
+const remoteInfo = computed(() => remote.value ? remoteRuns.run(remote.value.runId) : null);
+const stopError = ref(false);
+/** Retry asks the node again ("Checking {node}…"); focus stays on the row. */
+const retryRemote = (): void => {
+  stopError.value = false;
+  if (remote.value) remoteRuns.retry(remote.value.runId);
+};
+
 const status = computed(() => props.row.memberKind === 'agent_team'
   ? props.teamStatus
   : props.row.currentStatus || AgentStatus.Offline);
@@ -198,11 +250,14 @@ const inspectionAttempt = computed(() => props.row.agentRunId
   ? runHistoryStore.getTeamMemberInspectionAttempt(props.row.teamRunId, props.row.agentRunId)
   : null);
 
-const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
-  role: roleLabel.value,
-  name: props.row.displayName,
-  address: props.row.memberAddress,
-}));
+const identityLabel = computed(() => {
+  const base = t('workspace.history.hierarchy.identity', {
+    role: roleLabel.value,
+    name: props.row.displayName,
+    address: props.row.memberAddress,
+  });
+  return remote.value ? `${base} · ${t('remote.row.accessible', { node: remote.value.nodeName })}` : base;
+});
 
 const accessibleLabel = computed(() => {
   const label = t('workspace.history.hierarchy.tree_item', {
@@ -212,9 +267,10 @@ const accessibleLabel = computed(() => {
     level: props.row.depth + 1,
     status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
   });
+  const withNode = remote.value ? `${label}, ${t('remote.row.accessible', { node: remote.value.nodeName })}` : label;
   return props.task
-    ? `${label}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
-    : label;
+    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
+    : withNode;
 });
 
 const disclosureLabel = computed(() => t(

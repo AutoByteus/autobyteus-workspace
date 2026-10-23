@@ -67,6 +67,7 @@ vi.mock('~/stores/workspace', () => ({
 }));
 
 import RightSideTabs from '../RightSideTabs.vue';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 
 describe('RightSideTabs', () => {
   beforeEach(() => {
@@ -116,8 +117,23 @@ describe('RightSideTabs', () => {
         ArtifactsTab: { template: '<div class="artifacts-stub" />' },
         BrowserPanel: { template: '<div class="browser-panel-stub" />' },
         ProgressPanel: { template: '<div class="progress-stub" />' },
+        RemoteRunPanelNote: { name: 'RemoteRunPanelNote', props: ['nodeName', 'panel'], template: '<div class="remote-note-stub" />' },
       },
     },
+  });
+
+  // autobyteus-278 UIS-004: for a run another node runs, Files, Terminal, Artifacts and the screen say where it is.
+  it.each(['files', 'terminal', 'artifacts', 'vnc'] as const)('replaces the %s panel with a note naming the node of a remote run', async (tab) => {
+    useRemoteRunsStore().register({ kind: 'agent', address: '/market_researcher', agent_run_id: 'researcher-run', node_id: 'srv_docker',
+      node_name: 'docker', delegator_agent_run_id: 'manager-run', started_at: '2026-10-23T08:00:00.000Z' }, () => undefined);
+    activeTab.value = tab;
+    activeWorkspaceTarget.value = { kind: 'agent_run_task_agent', context: { config: { workspaceId: null }, state: { runId: 'researcher-run' } } };
+    const wrapper = mountSubject();
+    expect(wrapper.findComponent({ name: 'RemoteRunPanelNote' }).props()).toEqual({ nodeName: 'docker', panel: tab });
+    expect(wrapper.findComponent({ name: 'FileExplorerLayout' }).exists()).toBe(false);
+    expect(wrapper.findComponent({ name: 'TerminalPanel' }).exists()).toBe(false);
+    activeTab.value = 'progress'; await nextTick();
+    expect(wrapper.findComponent({ name: 'RemoteRunPanelNote' }).exists()).toBe(false);
   });
 
   it.each(['agent_org_direct_agent', 'agent_org_team_member', 'agent_org_task_agent', 'agent_org_task_team_member'])(

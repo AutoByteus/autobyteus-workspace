@@ -36,6 +36,9 @@ export declare const teamStreamClientMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         agent_run_id: z.ZodString;
         reason: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"REFRESH_REMOTE_TASK_EXECUTIONS">;
+    payload: z.ZodObject<{}, z.core.$strict>;
 }, z.core.$strict>], "type">;
 export type TeamStreamClientMessage = Readonly<z.infer<typeof teamStreamClientMessageSchema>>;
 export declare const parseTeamStreamClientMessage: (value: string | unknown) => TeamStreamClientMessage;

@@ -1,7 +1,13 @@
 import { NodeCatalogPort } from "../agent-collaboration/collaborators/node-catalog-port.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
-import { PeerGateway, type AvailableAgentsHandler, type DelegatedRunHandler, type RemoteMessageHandler } from "./channel/peer-gateway.js";
+import {
+  PeerGateway,
+  type AvailableAgentsHandler,
+  type DelegatedRunHandler,
+  type RemoteMessageHandler,
+  type RemoteRunViewHandler,
+} from "./channel/peer-gateway.js";
 import { RemoteNodeDiscovery } from "./discovery/remote-node-discovery.js";
 import { PeerAddressResolver } from "./settings/peer-address-resolver.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
@@ -41,6 +47,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   runsInContainer?(): boolean;
   handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
+    runViews: RemoteRunViewHandler;
   }>;
 }>): RemoteCollaborationServices => {
   const capability = new RemoteCollaborationCapability(input.settings);

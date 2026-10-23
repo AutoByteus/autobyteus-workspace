@@ -12,6 +12,8 @@ import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import { StandaloneRootExecutionIndex } from "../../standalone-agent-run-root/services/standalone-root-execution-index.js";
 import { isPublicMessage } from "./public-message-scope.js";
+import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
+import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const agentsOf = (tree: StandaloneRootTreeSnapshot) => {
   const index = new StandaloneRootExecutionIndex(tree);
@@ -24,6 +26,8 @@ export const projectAgentCollaborationView = (input: Readonly<{
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
+  /** autobyteus-278: the runs this root delegated to other nodes, with their nodes' names. */
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent",
   root_run_id: input.hostRunId,
@@ -45,6 +49,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
       error_details: null,
       recoverableBlock: status.details.recoverableBlock,
     })),
+    remote_task_executions: input.remoteTaskExecutions,
   },
 });
 
@@ -66,6 +71,16 @@ export const projectAgentCollaborationEvent = (
       return null;
     case "agent_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.execution.memberAddress, agent_run_id: source.execution.agentRunId, message: source.message };
+      break;
+    // N-402: the one place a remote child's output becomes the stream's `agent_presentation`.
+    case "remote_agent_presentation":
+      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
+      break;
+    case "remote_task_execution_summary":
+      event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };
+      break;
+    case "remote_task_execution_started":
+      event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
       break;
     case "task_execution_started":
       event = {

@@ -72,6 +72,7 @@ const startHarness = async () => {
     executeAgentCommand,
     getExecutionTreeSnapshot: () => tree,
     getTaskRecordsSnapshot: () => tasks,
+    remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
   };
   const teamRunService = {
     getActiveTeamRun: vi.fn(() => root),

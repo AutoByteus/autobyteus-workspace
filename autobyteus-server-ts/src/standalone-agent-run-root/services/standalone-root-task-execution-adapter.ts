@@ -71,6 +71,8 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   remoteLinks: RemoteRunLinks;
   /** Remote placements: planning and activation (DS-001). */
   remoteDelegation: RemoteDelegation;
+  /** autobyteus-278: a remote link was recorded (the root's remote children observe it). */
+  onRemoteLinkCommitted(link: RemoteTaskExecution): void;
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
@@ -373,6 +375,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
       commitAfterDurability: () => {
         if (!nextTree) throw new Error("Agent-root remote link tree was not prepared.");
         this.options.replaceTree(nextTree);
+        this.options.onRemoteLinkCommitted(link);
       },
     });
   }

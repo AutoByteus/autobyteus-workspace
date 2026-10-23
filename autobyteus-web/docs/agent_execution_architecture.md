@@ -757,6 +757,73 @@ stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
 
+### Remote Delegated Runs In The Tree
+
+A run that another node runs for this node's delegation (autobyteus-278; server
+mechanics in
+[Remote Collaboration](../../autobyteus-server-ts/docs/modules/remote_collaboration.md#remote-runs-in-the-run-tree))
+is a delegated row under its delegator's root (Agent, Team and Org roots), merged
+with the local copies by start time. A remote Team is listed with its members.
+
+- **Data.** Each root view carries `remote_task_executions`, and each root
+  registers them in `useRemoteRunsStore`. The store is window-wide, keyed by run
+  and by agent run, and cleared when the window's node binding changes. It holds
+  the node's name, `reachable` (`null` until the node answers), `checking` while
+  Retry waits, the node's title, and the Retry callback of the root that owns the
+  run.
+- **Updates.** The root's stream adds `remote_task_execution_started` (an unknown
+  run reloads the view; a Team stream recovers) and
+  `remote_task_execution_summary`, which carries `reachable`, the title and the
+  live statuses. An agent the summary does not list is `Offline`.
+- **Shared code.** `services/remoteRuns/remoteChildren.ts` (summary statuses, rows,
+  start-time merge) and `remoteAgentContext.ts` (an `AgentContext` with no local
+  definition) are shared by the three roots.
+- **Live output.** A remote agent's output arrives as ordinary `agent_presentation`
+  events of the root and is dispatched to its own context.
+- **Stored conversation.** It is read through the root's member-projection query,
+  which this node's server answers from the run's node. A failed read marks the
+  run unreachable, and that is its only error. Every family opens a remote agent
+  first and reads it after. In a Team, opening the Team on a remote member, selecting
+  one in a mounted Team, and the focused reconcile all focus and commit it, then read
+  it through `readRemoteTeamMember` (`teamRemoteRunRegistry.ts`). Its node being
+  down therefore never fails the selection or sets a Team inspection error.
+- **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
+  The `RemoteNodeChip` sits between the status dot and the identity. Members of a
+  remote Team carry no chip of their own. Under the row:
+  - the Task line, or else the node's title;
+  - `Checking <node>…` while Retry waits;
+  - a red `role="alert"` line "Couldn't reach <node>." with Retry, or the
+    stop-failed line.
+
+  The aria-label adds "on <node>". Stop terminates the run through its node.
+- **Run view.** One owner, `useRemoteRunView`, used by the agent and Team member
+  surfaces (`AgentWorkspaceSurface`, `TeamWorkspaceSurface`), so every family's view
+  of a remote run (standalone, Team, Org) is the same:
+  - the header shows the node chip and no ⚙ or ＋;
+  - `RemoteRunNotice` (red, Retry) shows while the node is unreachable;
+  - the composer's placeholder is `Message <name> on <node>…`, with no context
+    files and no @-mentions;
+  - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's files,
+    terminal and other node-local panels are on that node.
+- **Retry.** One rule, `remoteRunsStore.retry(runId)`, for every family
+  (SR-008):
+  1. it shows `Checking <node>…` and asks the root's stream to fetch the summaries
+     again (`REFRESH_REMOTE_TASK_EXECUTIONS`);
+  2. it reads again the run's selected agent, or, when none of the run's agents is
+     selected, the run's first agent that is not loaded;
+  3. when neither asks anything (no ready stream, nothing started, including a
+     loaded selected agent), `Checking` ends at once; otherwise the node's answer
+     or the read ends it.
+
+  Each root registers a `RemoteRunRetryAdapter` with only its own mechanisms
+  (`refreshOnStream`, `selectedAgent`, `isLoaded`, `rereadAgent`):
+  - standalone: the collaboration stream, the selected child, the child hydration;
+  - Org: the Org stream, the selected agent execution, the remote agents the Org
+    context has read (`isRemoteAgentLoaded`);
+  - Team: through `teamRemoteRunRegistry`, from its stream snapshot or its stored
+    view (`getTeamRunResumeConfig`): the Team stream, the focused member, the
+    member's authoritative projection.
+
 ### Compaction Lifecycle Activity And Center Feed
 
 Native compaction projects one Activity row per operation with requested/start

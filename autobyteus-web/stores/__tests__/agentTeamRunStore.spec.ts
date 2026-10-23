@@ -177,6 +177,7 @@ const teamHydrationCandidate = (hydratedContext: AgentTeamContext): any => {
     hydratedContext,
     projectionByAgentRunId: new Map([[focusedAgentRunId, { agentRunId: focusedAgentRunId }]]),
     memberRunStates: [],
+    remoteTaskExecutions: [],
   }
 }
 
