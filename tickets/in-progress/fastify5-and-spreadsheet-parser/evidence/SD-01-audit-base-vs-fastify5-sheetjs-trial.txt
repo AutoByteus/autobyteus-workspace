@@ -1,0 +1,24 @@
+# pnpm audit (workspace lockfile), base origin/personal @ ddd6fdcdf6 vs trial (fastify 5.12.7, mercurius 16.12.1, @fastify/cors 11.3.1, /multipart 10.1.6, /websocket 11.3.4; xlsx 0.20.3 CDN tarball), 2026-10-24
+base  totals: {'info': 0, 'low': 20, 'moderate': 45, 'high': 51, 'critical': 7}
+trial totals: {'info': 0, 'low': 12, 'moderate': 31, 'high': 38, 'critical': 7}
+
+## Base high/critical on the Fastify and spreadsheet paths
+high     @fastify/busboy  GHSA-x8mw-p69m-v3mx  vers=['2.1.1'] patched=>=3.2.1  path=autobyteus-server-ts>mercurius>undici>@fastify/busboy  | @fastify/busboy vulnerable to Denial of Service via prototype-named multipart pa
+high     @fastify/static  GHSA-83w8-p2f5-377r  vers=['7.0.4'] patched=>=10.1.1  path=autobyteus-server-ts>mercurius>@fastify/static  | @fastify/static vulnerable to route guard bypass via path traversal
+high     fastify          GHSA-667r-xxjv-c9mm  vers=['4.29.1'] patched=>=5.12.2  path=autobyteus-server-ts>fastify  | fastify vulnerable to request body replacement via an async validation result co
+high     fastify          GHSA-9q9j-q6p8-xq58  vers=['4.29.1'] patched=>=5.12.2  path=autobyteus-server-ts>fastify  | fastify vulnerable to header validation bypass via incomplete schema case normal
+high     fastify          GHSA-hwr6-493r-vm6h  vers=['4.29.1'] patched=>=5.12.2  path=autobyteus-server-ts>fastify  | fastify vulnerable to request validation bypass via skipped boolean false schema
+high     fastify          GHSA-jx2c-rxcm-jvmq  vers=['4.29.1'] patched=>=5.7.2  path=autobyteus-server-ts>fastify  | Fastify's Content-Type header tab character allows body validation bypass
+high     fastify          GHSA-p68q-wchp-6fh7  vers=['4.29.1'] patched=>=5.12.2  path=autobyteus-server-ts>fastify  | fastify vulnerable to authentication bypass via malformed URLs reaching encapsul
+high     find-my-way      GHSA-c96f-x56v-gq3h  vers=['8.2.2'] patched=>=9.7.0  path=autobyteus-server-ts>fastify>find-my-way  | find-my-way: DDoS with HTTP2
+high     undici           GHSA-v9p9-hfj2-hcw8  vers=['5.28.3'] patched=>=6.24.0  path=autobyteus-server-ts>mercurius>undici  | Undici has Unhandled Exception in WebSocket Client Due to Invalid server_max_win
+high     undici           GHSA-vrm6-8vpv-qv8q  vers=['5.28.3'] patched=>=6.24.0  path=autobyteus-server-ts>mercurius>undici  | Undici has Unbounded Memory Consumption in WebSocket permessage-deflate Decompre
+high     undici           GHSA-vxpw-j846-p89q  vers=['5.28.3'] patched=>=6.27.0  path=autobyteus-server-ts>mercurius>undici  | undici WebSocket client vulnerable to denial of service via fragment count bypas
+high     xlsx             GHSA-4r6h-8v6p-xvw6  vers=['0.18.5'] patched=<0.0.0  path=autobyteus-web>xlsx  | Prototype Pollution in sheetJS
+high     xlsx             GHSA-5pgg-2g8v-p4x9  vers=['0.18.5'] patched=<0.0.0  path=autobyteus-web>xlsx  | SheetJS Regular Expression Denial of Service (ReDoS)
+
+## Removed by trial: [('@fastify/busboy', 'GHSA-x8mw-p69m-v3mx'), ('@fastify/static', 'GHSA-83w8-p2f5-377r'), ('fastify', 'GHSA-667r-xxjv-c9mm'), ('fastify', 'GHSA-9q9j-q6p8-xq58'), ('fastify', 'GHSA-hwr6-493r-vm6h'), ('fastify', 'GHSA-jx2c-rxcm-jvmq'), ('fastify', 'GHSA-p68q-wchp-6fh7'), ('find-my-way', 'GHSA-c96f-x56v-gq3h'), ('undici', 'GHSA-v9p9-hfj2-hcw8'), ('undici', 'GHSA-vrm6-8vpv-qv8q'), ('undici', 'GHSA-vxpw-j846-p89q'), ('xlsx', 'GHSA-4r6h-8v6p-xvw6'), ('xlsx', 'GHSA-5pgg-2g8v-p4x9')]
+## Added by trial: []
+
+## High/critical left with a server-ts path in trial
+body-parser GHSA-27r3-jxmh-p828 >=2.0.0 <2.4.0 patched >=2.4.0 autobyteus-server-ts>@anthropic-ai/claude-agent-sdk>@modelcontextprotocol/sdk>express>body-parser

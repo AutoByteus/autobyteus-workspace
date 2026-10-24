@@ -1,0 +1,32 @@
+# docker build -f autobyteus-message-gateway/docker/Dockerfile . (base origin/personal @ ddd6fdcdf6, scratch worktree), 2026-10-24, exit=1
+# The filtered install selects no package (the gateway is not a workspace member), so tsc is missing.
+#18 2.855             git config --global url."git@github.com:".insteadOf "https://
+#18 2.855         github.com/"
+#18 2.855 
+#18 2.859 [WARN] The install that runs before scripts failed, so your node_modules may be out of sync with your lockfile. Set "verifyDepsBeforeRun: false" to skip this install.
+#18 2.860 $ tsc -p tsconfig.build.json
+#18 2.861 sh: 1: tsc: not found
+#18 2.862 [ELIFECYCLE] Command failed with exit code 127.
+#18 ERROR: process "/bin/sh -c pnpm -C autobyteus-message-gateway build" did not complete successfully: exit code: 127
+------
+ > [13/14] RUN pnpm -C autobyteus-message-gateway build:
+2.855         If git can only reach github.com over SSH here, substitute the
+2.855         transport locally, leaving the recorded URL alone:
+2.855         
+2.855             git config --global url."git@github.com:".insteadOf "https://
+2.855         github.com/"
+2.855 
+2.859 [WARN] The install that runs before scripts failed, so your node_modules may be out of sync with your lockfile. Set "verifyDepsBeforeRun: false" to skip this install.
+2.860 $ tsc -p tsconfig.build.json
+2.861 sh: 1: tsc: not found
+2.862 [ELIFECYCLE] Command failed with exit code 127.
+------
+Dockerfile:28
+--------------------
+  26 |     COPY autobyteus-message-gateway autobyteus-message-gateway
+  27 |     
+  28 | >>> RUN pnpm -C autobyteus-message-gateway build
+  29 |     
+  30 |     WORKDIR /app/autobyteus-message-gateway
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm -C autobyteus-message-gateway build" did not complete successfully: exit code: 127

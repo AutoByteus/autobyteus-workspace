@@ -1,0 +1,53 @@
+# Server on Fastify 5 trial (scratch worktree of base ddd6fdcdf6 with fastify ^5.12.7, mercurius ^16.12.1, @fastify/cors ^11.3.1, /multipart ^10.1.6, /websocket ^11.3.4), 2026-10-24
+
+## tsc -p tsconfig.build.json --noEmit (before the type augmentation)
+src/agent-tools/mcp/agent-tools-mcp-routes.ts(47,19): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(path: string, opts: RouteShorthandOptions<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, { Params: AgentToolsMcpRouteParams; Body: unknown; }, unknown, FastifySchema, FastifyTypeProvider, FastifyBaseLogger> & { ...; }, handler?: WebsocketHandler<...> | undef
+    Object literal may only specify known properties, and 'cors' does not exist in type 'FastifyContextConfig'.
+  Overload 2 of 4, '(path: string, opts: RouteShorthandOptions<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, { Params: AgentToolsMcpRouteParams; Body: unknown; }, unknown, FastifySchema, FastifyTypeProvider, FastifyBaseLogger>, handler: RouteHandlerMethod<...>): FastifyInstance
+    Object literal may only specify known properties, and 'cors' does not exist in type 'FastifyContextConfig'.
+src/agent-tools/mcp/agent-tools-mcp-routes.ts(48,62): error TS2740: Type 'WebSocket' is missing the following properties from type 'FastifyRequest<{ Params: AgentToolsMcpRouteParams; Body: unknown; }, RawServerDefault, IncomingMessage, FastifySchema, FastifyTypeProviderDefault, unknown, FastifyBaseL
+src/agent-tools/mcp/agent-tools-mcp-routes.ts(48,71): error TS2740: Type 'FastifyRequest<{ Params: AgentToolsMcpRouteParams; Body: unknown; }, RawServerDefault, IncomingMessage, FastifySchema, FastifyTypeProvider, unknown, FastifyBaseLogger, ResolveFastifyRequestType<...>>' is missing the following 
+src/mcp-gateway/mcp-gateway-routes.ts(46,19): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(path: string, opts: RouteShorthandOptions<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, { Body: unknown; }, unknown, FastifySchema, FastifyTypeProvider, FastifyBaseLogger> & { ...; }, handler?: WebsocketHandler<...> | undefined): FastifyInstance<...>', gave
+    Object literal may only specify known properties, and 'cors' does not exist in type 'FastifyContextConfig'.
+  Overload 2 of 4, '(path: string, opts: RouteShorthandOptions<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, { Body: unknown; }, unknown, FastifySchema, FastifyTypeProvider, FastifyBaseLogger>, handler: RouteHandlerMethod<...>): FastifyInstance<...>', gave the following error.
+    Object literal may only specify known properties, and 'cors' does not exist in type 'FastifyContextConfig'.
+src/mcp-gateway/mcp-gateway-routes.ts(47,59): error TS2740: Type 'WebSocket' is missing the following properties from type 'FastifyRequest<{ Body: unknown; }, RawServerDefault, IncomingMessage, FastifySchema, FastifyTypeProviderDefault, unknown, FastifyBaseLogger, ResolveFastifyRequestType<...>>': i
+src/mcp-gateway/mcp-gateway-routes.ts(47,68): error TS2740: Type 'FastifyRequest<{ Body: unknown; }, RawServerDefault, IncomingMessage, FastifySchema, FastifyTypeProvider, unknown, FastifyBaseLogger, ResolveFastifyRequestType<...>>' is missing the following properties from type 'FastifyReply<RouteGe
+
+## after adding: declare module "fastify" { interface FastifyContextConfig { cors?: false } } -> clean
+
+## vitest run tests/unit tests/app-data-migrations --exclude **/*.integration.test.ts
+ Test Files  815 passed | 4 skipped (819)
+      Tests  6770 passed | 7 skipped (6777)
+   Duration  568.92s (transform 14.72s, setup 8.28s, import 240.05s, tests 248.61s, environment 797ms)
+
+## vitest run tests/e2e (first run, server not built)
+⎯⎯⎯⎯⎯⎯ Failed Tests 32 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  12 failed | 87 passed | 95 skipped (194)
+      Tests  32 failed | 394 passed | 467 skipped (893)
+   Duration  476.69s (transform 11.91s, setup 1.97s, import 237.20s, tests 219.76s, environment 10ms)
+28 of the 32 failures: dist/app.js or dist/index.js missing (TEST_SERVER_BUILD_REQUIRED / ENOENT)
+
+## after pnpm build: rerun of the 12 failing files
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 10 passed (12)
+      Tests  4 failed | 32 passed (36)
+ FAIL  tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > restores trusted-network remote-node management and protected routes without additional credentials
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once
+
+## same two files on BASE (task worktree, Fastify 4, built)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  4 failed | 1 passed (5)
+ FAIL  tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > restores trusted-network remote-node management and protected routes without additional credentials
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts > Agent-runtime update notifications and automatic runtime updates (real studio server, embedded node, scripted CLIs) > API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once
+
+=> identical 4 failures on base and trial (phone-access status 503 vs 200; update-notifications settings agentRuntimes true vs false): pre-existing, not Fastify 5 (FU-004)
+
+## Not yet run in the trial: test:integration, packaged app, Docker image (left to API/E2E)
