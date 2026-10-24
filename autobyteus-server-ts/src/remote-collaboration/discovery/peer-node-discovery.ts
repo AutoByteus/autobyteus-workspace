@@ -1,5 +1,5 @@
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
-import type { AvailableNode, RemoteDiscoveryChannel } from "../../agent-collaboration/execution/remote/remote-discovery-channel.js";
+import type { PeerNodeStatus, PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import type { RemoteChannelRefusal } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerClient } from "../channel/peer-client.js";
 import type { PeerNode } from "../domain/peer-node.js";
@@ -7,9 +7,9 @@ import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 
 /**
- * This node's discovery of its peers (autobyteus-261 DS-001, DS-002), the `RemoteDiscoveryChannel`. Nothing is
+ * This node's discovery of its peers (autobyteus-261 DS-001, DS-002), the `PeerDiscoveryChannel`. Nothing is
  * stored: every call asks the peers now (REQ-407).
- * - `listNodes`: with the switch on, every registered peer in registration order, all asked for *availability*
+ * - `listPeerNodes`: with the switch on, every registered peer in registration order, all asked for *availability*
  *   at the same time, each within the peer request bound. `available` is an accepted answer; anything else
  *   (a refusal by the peer, the wrong node, an HTTP error such as an older build's 404, a transport failure or a
  *   timeout) is `unavailable`: `listAvailableAgents` with that node says why.
@@ -17,14 +17,14 @@ import { localRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
  * - `listAvailableAgentsOf`, `checkAvailabilityOf`: one peer by its node ID, for the Nodes page (autobyteus-267,
  *   one-nodes-tab DS-004); an unreachable peer's refusal carries the classified `reason`.
  */
-export class RemoteNodeDiscovery implements RemoteDiscoveryChannel {
+export class PeerNodeDiscovery implements PeerDiscoveryChannel {
   constructor(private readonly dependencies: Readonly<{
     capability: Readonly<{ isEnabled(): boolean }>;
     peers: Readonly<{ list(): Promise<readonly PeerNode[]> }>;
     client: Pick<PeerClient, "findPeer" | "checkAvailability" | "listAvailableAgents">;
   }>) {}
 
-  async listNodes(): Promise<readonly AvailableNode[] | RemoteChannelRefusal> {
+  async listPeerNodes(): Promise<readonly PeerNodeStatus[] | RemoteChannelRefusal> {
     if (!this.dependencies.capability.isEnabled()) return Object.freeze({ accepted: false, code: REMOTE_REFUSAL.OFF, message: localRefusalText.off() });
     const peers = await this.dependencies.peers.list();
     const statuses = await Promise.all(peers.map((peer) => this.dependencies.client.checkAvailability(peer.nodeId)
@@ -49,7 +49,7 @@ export class RemoteNodeDiscovery implements RemoteDiscoveryChannel {
 
   /**
    * Whether a peer admits this node's requests now (one-nodes-tab DS-004: asked on the other node for the direction
-   * "it → this node"). The same question `listNodes` asks, for one peer, with the refusal that says why not.
+   * "it → this node"). The same question `listPeerNodes` asks, for one peer, with the refusal that says why not.
    */
   checkAvailabilityOf(nodeId: string): Promise<Readonly<{ accepted: true }> | PeerRefusal> {
     return this.dependencies.client.checkAvailability(nodeId);

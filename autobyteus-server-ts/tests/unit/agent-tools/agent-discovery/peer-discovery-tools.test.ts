@@ -2,10 +2,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { availableCollaboratorEntry } from "../../../../src/agent-collaboration/collaborators/available-collaborator-entry.js";
 import {
-  bindProcessRemoteDiscoveryChannel,
-  releaseProcessRemoteDiscoveryChannel,
-  type RemoteDiscoveryChannel,
-} from "../../../../src/agent-collaboration/execution/remote/remote-discovery-channel.js";
+  bindProcessPeerDiscoveryChannel,
+  releaseProcessPeerDiscoveryChannel,
+  type PeerDiscoveryChannel,
+} from "../../../../src/agent-collaboration/execution/remote/peer-discovery-channel.js";
 import {
   LIST_AVAILABLE_AGENTS_NODE_DESCRIPTION,
   LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION,
@@ -41,15 +41,15 @@ const remote = [{ name: "Publisher", kind: "agent" as const, address: "/publishe
 const off = { accepted: false as const, code: "REMOTE_COLLABORATION_OFF", message: "Remote collaboration is turned off on this node, so nothing was sent to another node." };
 const unknownNode = { accepted: false as const, code: "PEER_NOT_REGISTERED", message: 'No peer node named "nas" is registered on this node, so nothing was sent.' };
 
-const discovery = (): RemoteDiscoveryChannel & { listNodes: ReturnType<typeof vi.fn>; listAvailableAgents: ReturnType<typeof vi.fn> } => ({
-  listNodes: vi.fn(async () => [{ name: "beta", status: "available" as const }, { name: "docker", status: "unavailable" as const }]),
+const discovery = (): PeerDiscoveryChannel & { listPeerNodes: ReturnType<typeof vi.fn>; listAvailableAgents: ReturnType<typeof vi.fn> } => ({
+  listPeerNodes: vi.fn(async () => [{ name: "beta", status: "available" as const }, { name: "docker", status: "unavailable" as const }]),
   listAvailableAgents: vi.fn(async (node: string) => node === "beta" ? remote : unknownNode),
 });
 const withLister = () => testMemberExecutionContext({ listAvailableAgents: vi.fn(async () => local) });
 
-const bound: RemoteDiscoveryChannel[] = [];
-const bind = (channel: RemoteDiscoveryChannel) => { bindProcessRemoteDiscoveryChannel(channel); bound.push(channel); return channel; };
-afterEach(() => { bound.splice(0).forEach(releaseProcessRemoteDiscoveryChannel); });
+const bound: PeerDiscoveryChannel[] = [];
+const bind = (channel: PeerDiscoveryChannel) => { bindProcessPeerDiscoveryChannel(channel); bound.push(channel); return channel; };
+afterEach(() => { bound.splice(0).forEach(releaseProcessPeerDiscoveryChannel); });
 
 describe("the one entry builder (DEC-405)", () => {
   it("keeps name, kind and address, and a description only when it has one", () => {
@@ -96,7 +96,7 @@ describe("list_available_nodes (BEH-401, DEC-401)", () => {
     const d = discovery();
     await expect(listAvailableNodesFor(withLister().collaboration, d)).resolves.toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
     await expect(listAvailableNodesFor(withLister().collaboration, null)).resolves.toEqual(off);
-    d.listNodes.mockResolvedValueOnce(off);
+    d.listPeerNodes.mockResolvedValueOnce(off);
     await expect(listAvailableNodesFor(withLister().collaboration, d)).resolves.toEqual(off);
     await expect(listAvailableNodesFor(testMemberExecutionContext().collaboration, d)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
     expect(LIST_AVAILABLE_NODES_TOOL_DESCRIPTION).toBe("List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.");

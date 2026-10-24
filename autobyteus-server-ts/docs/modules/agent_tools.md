@@ -177,7 +177,7 @@ a sender whose member context can list (a run that can delegate).
   for delegation: exactly the shared Agents and Agent Teams a `delegate_task` with that
   `node` accepts, at the addresses it accepts. Each address works as
   `recipient_address` with the same `node`. It goes through the
-  `RemoteDiscoveryChannel` port (bound at composition), not through the roots; see
+  `PeerDiscoveryChannel` port (bound at composition), not through the roots; see
   [Remote Collaboration](remote_collaboration.md#discovery).
 - `list_available_nodes` takes no arguments and returns
   `{ nodes: [{ name, status: "available" | "unavailable" }] }`: this node's registered

@@ -14,9 +14,9 @@ import { getTeamMemberRunViewProjectionService } from "../run-history/services/t
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
 import {
-  bindProcessRemoteDiscoveryChannel,
-  releaseProcessRemoteDiscoveryChannel,
-} from "../agent-collaboration/execution/remote/remote-discovery-channel.js";
+  bindProcessPeerDiscoveryChannel,
+  releaseProcessPeerDiscoveryChannel,
+} from "../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
@@ -85,13 +85,13 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   });
   bindProcessRemoteCollaboration(services);
   const release = () => {
-    releaseProcessRemoteDiscoveryChannel(services.discovery);
+    releaseProcessPeerDiscoveryChannel(services.discovery);
     releaseProcessRemoteRunChannel(services.client);
     releaseProcessRemoteCollaboration(services);
   };
   try {
     bindProcessRemoteRunChannel(services.client);
-    bindProcessRemoteDiscoveryChannel(services.discovery);
+    bindProcessPeerDiscoveryChannel(services.discovery);
   } catch (error) { release(); throw error; }
   return release;
 };

@@ -29,7 +29,7 @@ import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbo
 import { RemoteMessageReceiver } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import { RemoteTeamRunStarter } from "../../../src/remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
-import { RemoteNodeDiscovery } from "../../../src/remote-collaboration/discovery/remote-node-discovery.js";
+import { PeerNodeDiscovery } from "../../../src/remote-collaboration/discovery/peer-node-discovery.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -134,7 +134,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   const send = async (target: string, content: string) => (await root()).deliverExactAgentMessage({
     sender: { kind: "agent", identity, displayName: "assistant" } as never, targetAgentRunId: target, content, referenceFiles: [] });
   // autobyteus-261: this node's discovery of its peers, over the same client.
-  const discovery = new RemoteNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
+  const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
   return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, setHostActive: (value: boolean) => { hostActive = value; } };
 };
 
@@ -381,7 +381,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
 describe("discovery, then delegation, in process (autobyteus-261 AC-402, AC-408)", () => {
   it("A lists its peers, lists B's offer and delegates to the listed Team without being told its address", async () => {
     const { a, b } = await twoNodes();
-    await expect(a.discovery.listNodes()).resolves.toEqual([{ name: "docker", status: "available" }]);
+    await expect(a.discovery.listPeerNodes()).resolves.toEqual([{ name: "docker", status: "available" }]);
     const offer = await a.discovery.listAvailableAgents("docker");
     expect(offer).toEqual([
       { name: "lead", kind: "agent", address: "/lead", description: "lead" },

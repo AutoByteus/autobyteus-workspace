@@ -4,7 +4,7 @@ import type {
   RemoteDeliveryReceipt,
   RemoteMessageTransmission,
   RemoteOwnerCommand,
-  RemotePeer,
+  PeerNodeRef,
   RemoteRunChannel,
   RemoteRunObservationStream,
   RemoteRunObserver,
@@ -120,7 +120,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     openWebSocket?: OpenWebSocket;
   }>) {}
 
-  async findPeer(name: string): Promise<RemotePeer | PeerRefusal> {
+  async findPeer(name: string): Promise<PeerNodeRef | PeerRefusal> {
     if (!this.dependencies.capability.isEnabled()) return refusal(REMOTE_REFUSAL.OFF, localRefusalText.off());
     const peer = await this.dependencies.peers.findByName(name);
     return peer

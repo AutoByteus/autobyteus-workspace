@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
-import { RemoteNodeDiscovery } from "../../../src/remote-collaboration/discovery/remote-node-discovery.js";
+import { PeerNodeDiscovery } from "../../../src/remote-collaboration/discovery/peer-node-discovery.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
 /**
- * autobyteus-261 DS-001 / DS-002 on the asking node: `RemoteNodeDiscovery` over the real `PeerClient` (only the
+ * autobyteus-261 DS-001 / DS-002 on the asking node: `PeerNodeDiscovery` over the real `PeerClient` (only the
  * network is replaced). Every peer state of AC-401 at the unit level: available, refused (switch off, this node not
  * registered there), an older build (404), stopped (transport failure), black-holed (timeout), the wrong node.
  */
@@ -45,14 +45,14 @@ const setup = (options: { enabled?: boolean; peers?: PeerNode[] } = {}) => {
     findByNodeId: async (nodeId: string) => peers.find((candidate) => candidate.nodeId === nodeId) ?? null,
   };
   const client = new PeerClient({ peers: directory, capability, ownNodeId: async () => SELF, timeoutMs: 50, fetch: fetch as never });
-  return { discovery: new RemoteNodeDiscovery({ capability, peers: directory, client }), fetch };
+  return { discovery: new PeerNodeDiscovery({ capability, peers: directory, client }), fetch };
 };
 
-describe("RemoteNodeDiscovery.listNodes (DS-001)", () => {
+describe("PeerNodeDiscovery.listPeerNodes (DS-001)", () => {
   it("AC-401: each registered peer, in registration order, with its status now; only an accepted answer is available", async () => {
     const f = setup();
     const startedAt = Date.now();
-    await expect(f.discovery.listNodes()).resolves.toEqual([
+    await expect(f.discovery.listPeerNodes()).resolves.toEqual([
       { name: "beta", status: "available" }, { name: "gamma", status: "unavailable" }, { name: "delta", status: "unavailable" },
       { name: "epsilon", status: "unavailable" }, { name: "old", status: "unavailable" }, { name: "black", status: "unavailable" },
       { name: "wrong", status: "unavailable" },
@@ -63,15 +63,15 @@ describe("RemoteNodeDiscovery.listNodes (DS-001)", () => {
   });
 
   it("an empty list when no peer is registered; the 'turned off' refusal, with nothing sent, when this node's switch is off", async () => {
-    await expect(setup({ peers: [] }).discovery.listNodes()).resolves.toEqual([]);
+    await expect(setup({ peers: [] }).discovery.listPeerNodes()).resolves.toEqual([]);
     const off = setup({ enabled: false });
-    await expect(off.discovery.listNodes()).resolves.toEqual({ accepted: false, code: "REMOTE_COLLABORATION_OFF",
+    await expect(off.discovery.listPeerNodes()).resolves.toEqual({ accepted: false, code: "REMOTE_COLLABORATION_OFF",
       message: "Remote collaboration is turned off on this node, so nothing was sent to another node." });
     expect(off.fetch).not.toHaveBeenCalled();
   });
 });
 
-describe("RemoteNodeDiscovery.listAvailableAgents (DS-002)", () => {
+describe("PeerNodeDiscovery.listAvailableAgents (DS-002)", () => {
   it("an available peer's offer, entries as sent (no empty description)", async () => {
     await expect(setup().discovery.listAvailableAgents("beta")).resolves.toEqual(agents);
   });
@@ -99,7 +99,7 @@ describe("RemoteNodeDiscovery.listAvailableAgents (DS-002)", () => {
   });
 });
 
-describe("RemoteNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page)", () => {
+describe("PeerNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page)", () => {
   it("a peer's offer by node ID, with the same answers and refusals as by name", async () => {
     const f = setup();
     await expect(f.discovery.listAvailableAgentsOf(BETA.nodeId)).resolves.toEqual(agents);

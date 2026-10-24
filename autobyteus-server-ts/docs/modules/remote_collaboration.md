@@ -63,11 +63,11 @@ on Task closure and peer authentication come in later slices.
   list of nodes, and turning collaboration on or off for a node registers or removes both sides after one
   confirmation (the other node decides through its own settings API; no node writes another node's peers).
 - `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
-  absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
+  absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `PeerNodeDiscovery.listAvailableAgentsOf(nodeId)`:
   the same path as `list_available_agents` with `node`. The window never asks a peer for its offer (only this
   node's server does); the page words the
   refusal code itself. It takes at most about 20 s (the peer request bound). `peerNodeAvailability(nodeId)` answers
-  `{available, refusalCode, unreachableReason}` through `RemoteNodeDiscovery.checkAvailabilityOf(nodeId)`, the
+  `{available, refusalCode, unreachableReason}` through `PeerNodeDiscovery.checkAvailabilityOf(nodeId)`, the
   availability question `list_available_nodes` asks, for one peer.
 
 ## Between nodes
@@ -142,11 +142,11 @@ not as unreachable or "not an AutoByteus node".
 autobyteus-261. An agent with the opt-in tools (see [Agent Tools](agent_tools.md)) finds its node's peers and what
 each offers, then delegates with `delegate_task` without being told an address.
 
-- **`RemoteDiscoveryChannel`** (`agent-collaboration/execution/remote/remote-discovery-channel.ts`): the port the
-  tools use, owned by `agent-collaboration`, implemented by **`RemoteNodeDiscovery`**
-  (`discovery/remote-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
+- **`PeerDiscoveryChannel`** (`agent-collaboration/execution/remote/peer-discovery-channel.ts`): the port the
+  tools use, owned by `agent-collaboration`, implemented by **`PeerNodeDiscovery`**
+  (`discovery/peer-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
   go through the roots: a peer's offer does not depend on the asking run.
-- `listNodes()` (`list_available_nodes`): with the switch on, the registered peers in registration order, all
+- `listPeerNodes()` (`list_available_nodes`): with the switch on, the registered peers in registration order, all
   asked for *availability* at the same time, each within the 20 s bound, so the whole call takes at most about
   20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
   wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.
