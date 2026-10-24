@@ -24,12 +24,19 @@
 | V-04 | **"peer" meaning the other end of a network connection** (the connecting client's address), not a registered node. | `api/security/remote-access-local-trust.ts` (`NormalizedPeerAddress`, `normalizePeerAddress`, `isLoopbackPeerAddress`, 11 uses), `remote-access-route-policy.ts`, `remote-access-websocket-auth.ts`, `client-facing-url-resolver.ts`, `agent-tools-mcp-local-access.ts` |
 | V-05 | **"peer" meaning a sibling task agent** in the run tree. | `autobyteus-web/stores/runHistoryTeamExecutionRows.ts:61` ("task-Agent leaves become peers"), e2e fixture `task-agent-peer-sidebar.page.vue` |
 | V-06 | **A desktop entry field nobody reads.** `NodeProfile.isSystem` is written as `nodeType === 'embedded'` and never read. | `electron/nodeRegistryStore.ts:32,110`, `stores/nodeStore.ts:25,235`, `electron/application/electronApplication.ts:209`; no reader |
+| V-08 | **"peer" meaning "a run of equal standing" in the contract itself.** "A delegated run is a peer, not a part" (`collaboration_model.md:59`, § 2.2), while § 1 defines **Peer** as a registered node. Reported by the Agent Package Creator's replay of the 191 design under Principle 15. | `autobyteus-server-ts/docs/design/collaboration_model.md:32,59` |
+| V-09 | **The mobile shell's session uses `nodeId` for its own entry ID** (`MOBILE_NODE_ID`), the same V-01 confusion on mobile; it sits beside `serverInstanceId` in the same file. | `autobyteus-web/types/remoteAccess.ts:44-60` (`RemoteAccessStatus.serverInstanceId`, `MobileNodeSession.nodeId`), `stores/mobileNodeSessionStore.ts:153` |
+| V-10 | **A third ID called "node id": Memory Sync's source node id** is a user-entered import identity (`autobyteus-server-ts/src/memory-sync/source/memory-sync-config-service.ts:81-98`; UI "Source node id", `autobyteus-web/localization/messages/en/memorySyncSettings.ts:29`, with the note "the source node id below is the stable import identity"), stored in the sync state and sent to the hub. It is not the node's ID. | the cited lines |
 | V-07 | **Consistent already, keep:** `PeerNode`/`peers.json`/add peer; `nodeType: 'embedded' \| 'remote'` (embedded is how it started; every other entry is a remote node); the remote run chip and "remote runs"; `remote-collaboration` (the feature); `isDesktopEmbeddedNode`; GraphQL `peerNodes`, `peerNodeOffer`, `peerNodeAvailability`; server `nodeId` everywhere outside V-02. | the files named |
 
 ## Stored shapes involved (Data Migration Guideline; DESIGN.md rule 8: "Renaming code never renames a file or value on disk")
 
 - **Server:** the identity file (field `serverInstanceId`); `peers.json` (`nodeId`, `name`, `baseUrl`, `addedAt`; consistent already); run links and `delegatedFrom` (`nodeId`; consistent already).
 - **Desktop:** the node registry file (`electron/nodeRegistryStore.ts`) and the window's copy in `localStorage` (`autobyteus.node_registry.v1`). Both hold `NodeProfile` with `id` (the entry ID), `nodeType`, `serverInstanceId` and `isSystem`.
+
+## Glossary location
+
+The project already has a vocabulary section: `collaboration_model.md` § 1 "Vocabulary" (Run, Unit, Team, Org, …, Node, Peer, Remote delegated run, Link). The project's `DESIGN.md` doesn't say where the glossary is yet (Principle 15 expects it to).
 
 ## Coordination
 

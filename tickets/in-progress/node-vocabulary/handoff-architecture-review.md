@@ -1,0 +1,24 @@
+# Handoff — Architecture Review — node-vocabulary (autobyteus-290)
+
+- From: Solution Designer, 2026-10-24. Classification: `Architecture Design Complete`, `task_size=Large`, `architectural_risk=High`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary`, branch `codex/node-vocabulary`, base `origin/personal` `c78ffb15a2`. Finalization target: `origin/personal`. No release unless the user asks.
+- Original request: Task autobyteus-290. Make the node vocabulary and data model clean: every server is a node with one node ID; remote = location; peer = a registered remote node (relationship); embedded local = how the desktop started its server; consistent names everywhere.
+- Approval:
+  - requirements `Approved` at SR-002 (the user left U-1 and U-2 to the recommendation: keep stored names; rename the identity wire field to `nodeId`);
+  - the user's tool name `list_peer_nodes`;
+  - the new Principle 15 "One Vocabulary" (autobyteus-agents-57), which this design applies.
+- Documents (in `tickets/in-progress/node-vocabulary/`):
+  - `requirements-doc.md`
+  - `investigation-notes.md` (audit V-01 … V-10, cited)
+  - `design-spec.md` (SR-003)
+  - `solution-revision-record.md`
+  - `follow-ups.md` (FU-001, FU-002)
+- Classification evidence: renames across server, web, Electron, iOS, the tool contract and the identity wire field; mapping owners for stored names; no behavior change intended.
+- Please check in particular:
+  - the stored-name mapping owners (one per stored shape);
+  - the Step 4 classification of `nodeId` uses (entry vs node), with the compiler as the guard;
+  - Step 3 as one step (coordination with autobyteus-260);
+  - the glossary location and the `DESIGN.md` pointer;
+  - V-10 left as FU-002.
+- Coordination: autobyteus-260 (tool result files, running) and autobyteus-284 … 289 (per-node record: use `nodeId` from the start).
+- Expected output: the architecture review report; on Pass, the reviewer's handoff to implementation.
