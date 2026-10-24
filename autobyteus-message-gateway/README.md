@@ -19,6 +19,16 @@ Detailed design/runtime docs:
 - `tickets/external_messaging_channel_bridge_ticket/MESSAGING_GATEWAY_DESIGN.md`
 - `tickets/external_messaging_channel_bridge_ticket/MESSAGING_GATEWAY_RUNTIME_SIMULATION.md`
 
+## Install
+
+The gateway is its own pnpm workspace (`pnpm-workspace.yaml` in this folder),
+separate from the repository's root workspace, with its own `pnpm-lock.yaml`.
+Run pnpm commands in this folder: `pnpm install` (or `pnpm install
+--frozen-lockfile` for an exact reinstall) and `pnpm audit`. The pnpm version
+is pinned by `packageManager` in `package.json` (Corepack). Dependencies that
+may run install scripts are listed under `onlyBuiltDependencies` in
+`pnpm-workspace.yaml`.
+
 ## Scripts
 
 - `pnpm typecheck`
@@ -287,8 +297,9 @@ Notes:
 - This personal mode is a real session-based integration, not a mock QR/session flow.
 - The scanned WhatsApp account is persisted under `GATEWAY_WHATSAPP_PERSONAL_AUTH_ROOT`.
 - Phase 1 supports one running personal session per gateway instance.
-- If your package manager blocks dependency build scripts, run:
-  - `pnpm approve-builds`
+- Build scripts for the personal-session dependencies (`@whiskeysockets/baileys`,
+  `protobufjs`) are allowed by `onlyBuiltDependencies` in this folder's
+  `pnpm-workspace.yaml`; no `pnpm approve-builds` step is needed (see [Install](#install)).
 
 ## Personal WeChat quick start (experimental)
 
