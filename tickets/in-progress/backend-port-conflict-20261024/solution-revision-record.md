@@ -42,3 +42,11 @@
 - Evidence: accepted IMP-02 non-overlapping snapshots and actual executor adoption; E-019..021 and P-007/P-008 candidate tests demonstrate retained anchor/TERM behavior locally. Linux/WSL and packaged Electron execution not claimed. Reviewer/implementation artifacts left untouched.
 - Approval impact: none; technical mechanism fulfills already-approved ordinary survivor scenario and safety, not new product lifetime. No additional user question, prerequisite or follow-up.
 - Canonical design/investigation/handoff and design-case provenance updated. ARCH-REV-002 remains evidence of D2 review only. Next: configured Large/High independent review of D3, then specialist implementation if passed; no duplicate direct forwarding.
+
+
+## SR-005 — Explicit terminal settlement when the anchor cannot emit RESULT
+- Trigger: Architecture Reviewer question during D3 review, supported force/control-loss/spawn-failure paths, no finding ID yet.
+- Prior: R1 Approved, D3/SR-004 under review. Current: R1 unchanged Approved, D3.1/SR-005 Ready; Large/High unchanged.
+- Clarification: launcher owns exactly-once terminal completion/STARTED settlement; scope supplies pre-signal intent and bounded finishStop fallback without awaiting result; executor maps to unchanged TerminalResult, including current AbortSignal timedOut semantics and truthful host-stop/failure output. Late events cannot overwrite result; cleanup uncertainty remains independently reported.
+- Affected BEH-003/004, REQ-003/004/005, AC-004/005. Source and P-008 evidence support the clarification; no new implementation/test claim or product decision. Design/investigation/handoff updated; reviewer/implementation artifacts unchanged.
+- Review impact: re-review current D3.1 with this clarification; no implementation forwarding by Solution Designer.

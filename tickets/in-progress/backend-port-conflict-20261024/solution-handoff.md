@@ -4,7 +4,7 @@
 - Package: backend-port-conflict-20261024
 - Task: project_task_8a0359c2-3b8e-47f1-a14a-d18d1459d8ca
 - Requested by: /project_task_manager; run project_task_manager_603e6a7849f24400a3fe9944205f235b
-- Result: Architecture Design Complete. Current SR-004; R1 Approved, D3 Ready for review after IR-001/IMP-DI-001 on reviewed D2.
+- Result: Architecture Design Complete. Current SR-005; R1 Approved, D3.1 Ready for review after IR-001/IMP-DI-001 on reviewed D2.
 - task_size: Large; architectural_risk: High. Material process ownership/lifetime, OS signalling, shutdown concurrency and IPC/status boundary changes across core, server hosts and desktop. Not documentation-volume classification.
 - ARCH-REV-002 passed D2; IR-001 then returned Design Impact before implementation. D3 requires review. No implementation, changed-build acceptance, merge or release has occurred yet.
 
@@ -66,3 +66,8 @@ Implementation Engineer returned IMP-DI-001 / IR-001 (implementation-handoff.md 
 Prior ARCH-REV-002 Pass and AR-001..003 resolutions remain relevant to unchanged D2 sections only; reviewer/implementation reports are unmodified. Independent D3 review is required (Large/High); then reviewer owns implementation forwarding if passed. No direct implementation or delegator duplicate forwarding from this revision.
 
 SR-004 routing after persistence: get_handoff_rules again selects Architecture Design Complete Large/High → /software_engineering_team/architecture_reviewer. Send only that outcome route with current package and IR-001/P-007/P-008 evidence. Prior implementation engineer must await revised reviewed authority; reviewer owns next forward route.
+
+
+## Current Review Clarification / SR-005
+Reviewer question: force kills the anchor before RESULT; who completes the command promise? Canonical design-spec.md now contains “Command-Promise Settlement And Tool Result Mapping (SR-005 clarification)”. It was underspecified, now explicit: AnchoredCommandLauncher owns exactly-once completion and STARTED settlement; scope records stop intent before signals, never awaits command completion to finish stop, and supplies bounded finishStop fallback; ShellCommandExecutor maps internal normal/interrupted/failed outcomes to existing TerminalResult. Expected host shutdown is distinct from timeout, actual AbortSignal retains timedOut=true; process errors preserve partial output/null exit rather than inventing success. Normal received RESULT wins, late events do not override, queued control frames have bounded50ms allowance without waiting for pipe EOF, and cleanup-unconfirmed remains separate. No implementation during review. R1 approval and Large/High route unchanged; D3.1/SR-005 is the current review basis.
+SR-005 rule lookup after persistence retains sole Large/High Architecture Design Complete recipient /software_engineering_team/architecture_reviewer; return this clarification to the ongoing reviewer, not implementation.
