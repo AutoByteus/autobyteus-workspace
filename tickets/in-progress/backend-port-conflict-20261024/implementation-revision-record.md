@@ -3,6 +3,7 @@
 ## Revision Index
 | Revision | Trigger | Findings | Classification | Related revisions | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-003 | Code Reviewer CRR-001 Fail | CR-001/002 Local Fix | Large/High | SR-001..006; ARCH-REV-003; CRR-001; API-REV/DR N/A | Ready for source re-review; scoped validation passes |
 | IR-002 | Architecture Reviewer ARCH-REV-003 / D3.1; SR-006 evidence | IMP-DI-001 resolved upstream; no new design gap | Large/High | SR-001..006; ARCH-REV-003; CRR/API-REV/DR N/A | Ready for Code Review; overall acceptance outstanding |
 | IR-001 | Architecture Reviewer ARCH-REV-002 Pass / D2 implementation handoff | Incoming N/A; new IMP-DI-001 | Design Impact | SR-001..003; ARCH-REV-002; CRR/API-REV/DR N/A | Ownership-continuity design recovery required; no production changes |
 
@@ -24,3 +25,10 @@
 - Actual delta: f34ad8749 initial production implementation; f247bf6f6 unconfirmed WSL/flush fixes; a4bcde070 startup-finally barrier; 1ad504c03 clipped observation deadlines; e3ef32cc2 expired backend wait; 54bd74c83 readiness/result ordering; 9047d0af5 control-error vs exit; 241041c00 empty observation/known-anchor-exit guards;10990feb1 post-preflight bind-race diagnosis after captured exit, preserving non-conflict fatal detail and stale-generation rejection. Full current trace is in implementation-handoff.md.
 - Native short-lived survivors now have a retained gate-created group anchor before user code. Scope belongs to host, not agent output record; both commands share it. Studio/standalone, Windows backend wire, awaited desktop/update preparation and typed safe conflict UI implemented; old in-scope paths removed.
 - Final IMP-13..18 checks at10990feb1:132 native/core,141 Electron,209 server,11 component tests pass; production typechecks pass. IMP-19 current package build passes. IMP-20 actual English/Chinese desktop conflict/retry/recovery, sentinel/no-active-work quit/unrelated survival and cleanup receipts recorded; limitations explicitly retained. No Codex lifecycle source change; native results do not close reported Codex-origin coverage. Full host/desktop conversation evidence remains downstream; no broader acceptance/release/install/integration claimed.
+
+## IR-003 — stop/retirement serialization and capture lifetime
+- Prior result: IR-002 Ready for Code Review, challenged by CRR-001 Fail / CR-001 and CR-002. Trigger report `code-review-report.md`, history `code-review-revision-record.md`, reviewer evidence CR-01, commitffac4611d.
+- Current result: Ready for source re-review; local corrections and scoped revalidation complete. Large/High unchanged; design/requirements valid, no new authority or intended-behavior change. Related SR-001..006, ARCH-REV-003, CRR-001; API-REV/DR N/A.
+- Production d0338db0b: scope operation-kind discrimination, original-deadline retirement→drain sequencing and identity-safe operation removal; manager capture/listener release without consumers; executor/background-start finally release unrecorded captures. Preserves background history/output, ordinary agent lifetimes and host ownership.
+- BEH-003/004, REQ-003/004/005, AC-004/005 affected. No compatibility fallback, new provider policy, user-data mutation or release/install.
+- Eight new durable regressions pass; unchanged reviewer probe reproduced2 failures before fix then2 passes after. Current total501 durable scoped tests, production typechecks and current task-local desktop rebuild pass (IMP-22..32). Shared-foundation rerun plan and exact final evidence in implementation-check-ledger.md. Source review must independently confirm resolution; active-work/full-host/desktop Codex coverage remains outstanding.
