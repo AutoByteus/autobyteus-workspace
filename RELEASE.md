@@ -97,7 +97,11 @@ The hygiene check rejects these tracked paths:
 - paths longer than 200 characters;
 - names Windows cannot check out: `< > : " | ? * \`, a trailing dot or space,
   or device names such as `CON` or `NUL`;
-- raw `.xcresult` bundles and downloaded CI artifact zips.
+- raw `.xcresult` bundles and downloaded CI artifact zips;
+- tracked code that imports a file git does not track. An ignore rule can
+  keep a source file out of git while it stays on your disk, so the build
+  passes in your worktree and fails in a clean checkout
+  (`--only tracked-imports` runs this check alone).
 
 Ticket evidence is the usual source. For example, a log named after a script
 such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
@@ -246,7 +250,7 @@ What the release workflows build, validate and need.
   - `autobyteus-web/package.json` pins the reviewed Electron runtime exactly, and the root `pnpm-lock.yaml` is the canonical workspace lockfile.
   - Electron baseline changes must be validated with native-module rebuild evidence, focused Electron tests, and a desktop package smoke build because Chromium, Node.js, native-module ABI, packaging, and updater behavior change together.
 - Repository artifact hygiene is mandatory:
-  - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, checkout-risk path lengths, and names Windows cannot check out (`< > : " | ? * \`, trailing dot or space, reserved device names).
+  - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, checkout-risk path lengths, and names Windows cannot check out (`< > : " | ? * \`, trailing dot or space, reserved device names), and tracked code importing a file that is not tracked (for example one an ignore rule hides).
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
 - Licensing consistency is mandatory: `python3 scripts/check_licensing.py` verifies the `LICENSE` texts, the `package.json` license fields and the `LICENSING.md` component list, and rejects stray permissive-license claims in AGPL components (see `LICENSING.md`); the desktop, server Docker, Android and iOS release workflows run it before building.
 - Desktop macOS terminal runtime validation is mandatory:

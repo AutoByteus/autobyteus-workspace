@@ -1,0 +1,26 @@
+# Case: API-03 (AC-002)
+# Command: git check-ignore -v on paths in the clone (a root memory/ folder created for the check)
+# Date: 2026-10-23T23:32:02Z
+
+memory/ -> autobyteus-server-ts/.gitignore:44:/memory/	memory/
+memory/agents/x.json -> autobyteus-server-ts/.gitignore:44:/memory/	memory/agents/x.json
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-omissions.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/models/memory-types.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/models/raw-trace-attachments.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/models/raw-trace-item.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/models/system-instruction-trace.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/durable-file-replace.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/jsonl-log-file.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/memory-file-names.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/raw-trace-archive-manager.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/working-context-snapshot-store.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/working-context-finalization-validation.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/working-context-finalizer.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/working-context-provenance.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/working-context.ts -> not ignored
+tests/e2e/memory -> not ignored

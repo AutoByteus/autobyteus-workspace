@@ -1,0 +1,9 @@
+# IMP-04 tracked-imports test, with its negative case (AC-003)
+# From the fresh clone run (IMP-05): vitest run ... tests/architecture ...
+# Commit: 204025a459
+# Date: 2026-10-23T23:26Z
+
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 1563ms
+     ✓ finds no tracked code importing an untracked file in this repository  1360ms
+
+# Both tests in the file pass (2 tests); the negative case runs the script in a temporary git repo where a bare memory rule hides an imported file, expects exit 1 naming autobyteus-server-ts/src/app.ts -> ./frozen/memory/frozen-store.js, then anchors the rule and expects exit 0.

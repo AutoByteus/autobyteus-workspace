@@ -1,0 +1,49 @@
+# IMP-03 tracked-import check on the base tree (before the restore is tracked)
+# Command: python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports, then the full list via collect_untracked_imports
+# Commit: base 1c9edce551 (tracked set) with the new check in the working tree
+# Environment: macOS darwin arm64, Python 3
+# Date: 2026-10-23T23:07Z
+# Expect: fails, and every violation is an import of a missing frozen memory file (C-03)
+
+Tracked-import check failed.
+
+Tracked code importing files that are not tracked: 22
+Action: Add the imported file to git (check `git check-ignore -v <file>`: an ignore rule may hide it), or fix the import. A clean checkout cannot build while these are missing.
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../models/raw-trace-item.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context-finalizer.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts -> ../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/models/raw-trace-attachments.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js
+ - ... 10 more
+exit=1
+
+# full list:
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../models/raw-trace-item.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context-finalizer.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts -> ../working-context.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts -> ../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/models/raw-trace-attachments.js
+ - autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts -> ../../../autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts -> ../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts -> ../../frozen/autobyteus-ts/memory/store/run-memory-file-store.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts -> ../../frozen/autobyteus-ts/memory/store/working-context-snapshot-store.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration-files.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts -> ../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-run.ts -> ../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts -> ../../frozen/autobyteus-ts/memory/store/memory-file-names.js
+ - autobyteus-server-ts/tests/app-data-migrations/frozen/native-working-context-snapshot-v5-converter.test.ts -> ../../../src/app-data-migrations/frozen/autobyteus-ts/memory/working-context-provenance.js
+ - autobyteus-server-ts/tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts -> ../../../src/app-data-migrations/frozen/autobyteus-ts/memory/store/working-context-snapshot-store.js
