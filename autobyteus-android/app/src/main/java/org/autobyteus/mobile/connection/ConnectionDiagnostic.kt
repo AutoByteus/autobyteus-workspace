@@ -8,7 +8,6 @@ enum class ConnectionFailureKind {
     AuthRequired,
     DeviceRevoked,
     WebSocketBlocked,
-    ServerVersionIncompatible,
     UnsafeNavigationBlocked,
     WebViewLoadFailed,
 }

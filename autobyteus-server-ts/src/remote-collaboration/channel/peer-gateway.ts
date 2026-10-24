@@ -1,4 +1,5 @@
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
+import { NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
 import { parseTaskAgentCoordinatingRun } from "../../run-history/store/task-agent-own-file-schema.js";
 import {
   isoTimestamp,
@@ -32,7 +33,9 @@ import type { RunObservationSink } from "../inbound/remote-run-view-provider.js"
 /** The answer of one inbound request: HTTP 200 with an accepted or refused answer, or 400 for a malformed body. */
 export type PeerGatewayResponse<TAnswer> =
   | Readonly<{ status: 200; answer: TAnswer }>
-  | Readonly<{ status: 400; answer: Readonly<{ accepted: false; nodeId: string; code: string; message: string }> }>;
+  | Readonly<{ status: 400; answer: Readonly<{ accepted: false; nodeId: string; code: string; message: string }> }>
+  /** autobyteus-290: this node's identity is held back (`node_identity`), so it cannot name itself yet. */
+  | Readonly<{ status: 503; answer: Readonly<{ accepted: false; code: string; message: string }> }>;
 
 /** What a delegation handler started (the gateway adds this node's ID): an Agent run, or a Team run with its members. */
 export type StartedRunAnswer =
@@ -163,7 +166,7 @@ const parseObservationOpening = (value: unknown): RunObservationOpening => {
  * 3. the switch must be on → `REMOTE_COLLABORATION_OFF`;
  * 4. `fromNodeId` must be a registered peer → `PEER_NOT_REGISTERED`;
  * 5. dispatch to the one handler of the request kind.
- * Every answer names this node (`nodeId`).
+ * Every answer names this node (`nodeId`), except the 503 refusal while this node's identity is held back.
  */
 export class PeerGateway {
   constructor(private readonly dependencies: Readonly<{
@@ -225,7 +228,13 @@ export class PeerGateway {
     parse: (value: unknown) => TRequest,
     handle: (request: TRequest, peer: PeerNode) => Promise<TAccepted | PeerHandlerRefusal>,
   ): Promise<PeerGatewayResponse<(TAccepted & { nodeId: string }) | (PeerHandlerRefusal & { nodeId: string })>> {
-    const nodeId = await this.dependencies.ownNodeId();
+    let nodeId: string;
+    try {
+      nodeId = await this.dependencies.ownNodeId();
+    } catch (error) {
+      if (!(error instanceof NodeIdentityNotMigratedError)) throw error;
+      return { status: 503, answer: { accepted: false, code: REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, message: error.message } };
+    }
     let request: TRequest;
     try { request = parse(body); }
     catch (error) {

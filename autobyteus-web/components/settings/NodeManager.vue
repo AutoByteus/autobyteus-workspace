@@ -98,7 +98,7 @@ const initialActiveTab = (): NodeManagerTabId => {
 };
 const activeTab = ref<NodeManagerTabId>(initialActiveTab());
 
-const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+const currentNode = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
 const nodeTypeLabel = (nodeType: string | undefined) =>
   t(`settings.components.settings.NodeManager.nodeType.${nodeType ?? 'unknown'}` as const);
 const currentNodeTypeLabel = computed(() => nodeTypeLabel(currentNode.value?.nodeType));

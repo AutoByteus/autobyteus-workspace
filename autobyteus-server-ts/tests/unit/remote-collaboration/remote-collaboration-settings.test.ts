@@ -38,7 +38,7 @@ describe("PeerDirectory", () => {
   const directory = async (input: { enabled?: boolean; identity?: string; inContainer?: boolean; probe?: (url: string) => Promise<string> } = {}) => {
     const dir = await dataDir();
     const store = new PeerStore({ getAppDataDir: () => dir });
-    const probe = { fetchServerInstanceId: vi.fn(input.probe ?? (async () => input.identity ?? B)) };
+    const probe = { fetchNodeId: vi.fn(input.probe ?? (async () => input.identity ?? B)) };
     const peers = new PeerDirectory({ store, probe, capability: { isEnabled: () => input.enabled ?? true },
       ownNodeId: async () => SELF, runsInContainer: () => input.inContainer ?? false, now: () => new Date("2026-10-20T09:00:00.000Z") });
     return { dir, store, probe, peers };
@@ -48,7 +48,7 @@ describe("PeerDirectory", () => {
     const f = await directory();
     await expect(f.peers.add({ nodeId: B, baseUrl: "localhost:29700/rest", name: "docker" })).resolves.toEqual({
       nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z" });
-    expect(f.probe.fetchServerInstanceId).toHaveBeenCalledWith("http://localhost:29700");
+    expect(f.probe.fetchNodeId).toHaveBeenCalledWith("http://localhost:29700");
     expect(await readJson(path.join(f.dir, "remote-collaboration", "peers.json"))).toEqual({ peers: [
       { nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z" }] });
     await expect(f.peers.findByName("DOCKER")).resolves.toMatchObject({ nodeId: B });
@@ -65,7 +65,7 @@ describe("PeerDirectory", () => {
   it("refuses to contact a URL while the switch is off, a URL that is this node, a node registered twice and a taken name", async () => {
     const off = await directory({ enabled: false });
     await expect(off.peers.add({ nodeId: B, baseUrl: "http://b", name: "b" })).rejects.toMatchObject({ code: "REMOTE_COLLABORATION_OFF" });
-    expect(off.probe.fetchServerInstanceId).not.toHaveBeenCalled();
+    expect(off.probe.fetchNodeId).not.toHaveBeenCalled();
     const self = await directory({ identity: SELF });
     await expect(self.peers.add({ nodeId: SELF, baseUrl: "http://me", name: "me" })).rejects.toMatchObject({ code: "PEER_IS_THIS_NODE" });
     const f = await directory();
@@ -92,7 +92,7 @@ describe("PeerDirectory", () => {
     await expect(f.peers.changeAddress(B, "host.docker.internal:8001")).resolves.toMatchObject({
       nodeId: B, name: "docker", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-20T09:00:00.000Z" });
     expect((await readJson(path.join(f.dir, "remote-collaboration", "peers.json"))).peers[0].baseUrl).toBe("http://host.docker.internal:8001");
-    f.probe.fetchServerInstanceId.mockResolvedValueOnce("srv_someone_else_000000000000000000000");
+    f.probe.fetchNodeId.mockResolvedValueOnce("srv_someone_else_000000000000000000000");
     await expect(f.peers.changeAddress(B, "http://wrong")).rejects.toMatchObject({ code: "PEER_IDENTITY_MISMATCH" });
     await expect(f.peers.changeAddress("srv_unknown", "http://b")).rejects.toMatchObject({ code: "PEER_NOT_FOUND" });
     expect((await f.peers.list())[0]!.baseUrl).toBe("http://host.docker.internal:8001");

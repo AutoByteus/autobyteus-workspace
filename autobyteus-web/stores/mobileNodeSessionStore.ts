@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { EMBEDDED_NODE_ID } from '~/types/node';
+import { EMBEDDED_ENTRY_ID } from '~/types/node';
 import type {
   MobileConnectionDiagnostic,
   MobileNodeSession,
@@ -18,7 +18,7 @@ import {
   diagnosticFromUnknownError,
 } from '~/utils/remoteAccess/mobileConnectionDiagnostics';
 
-const MOBILE_NODE_ID = 'mobile-paired-node';
+const MOBILE_ENTRY_ID = 'mobile-paired-node';
 
 const resolveSameOriginBaseUrl = (): string => {
   if (typeof window === 'undefined') {
@@ -88,7 +88,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   function bindSession(nextSession: MobileNodeSession): void {
     session.value = nextSession;
     const nodeContext = useWindowNodeContextStore();
-    nodeContext.bindNodeContext(nextSession.nodeId || EMBEDDED_NODE_ID, nextSession.serverBaseUrl);
+    nodeContext.bindNodeContext(nextSession.entryId || EMBEDDED_ENTRY_ID, nextSession.serverBaseUrl);
   }
 
   function initializeFromStorage(): void {
@@ -149,8 +149,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
       }
       const result = await response.json() as PairingExchangeResponse;
       const nextSession: MobileNodeSession = {
-        version: 1,
-        nodeId: MOBILE_NODE_ID,
+        entryId: MOBILE_ENTRY_ID,
         serverBaseUrl: normalizeNodeBaseUrl(result.serverBaseUrl),
         credential: result.credential,
         device: result.device,

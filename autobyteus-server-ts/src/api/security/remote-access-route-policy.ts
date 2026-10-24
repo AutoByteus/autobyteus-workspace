@@ -12,7 +12,7 @@ import {
   readBearerCredential,
   type RemoteAccessAuthService,
 } from "../../remote-access/services/remote-access-auth-service.js";
-import { isLoopbackPeerAddress } from "./remote-access-local-trust.js";
+import { isLoopbackClientAddress } from "./remote-access-local-trust.js";
 
 const normalizeMethod = (method: string): string => String(method || "GET").toUpperCase();
 
@@ -115,8 +115,8 @@ const reject = (
   message: string,
 ): RemoteAccessAuthorizationResult => ({ ok: false, statusCode, code, message });
 
-const trustedNetworkContext = (peerAddress?: string): RemoteAccessAuthContext => {
-  const isLoopback = isLoopbackPeerAddress(peerAddress);
+const trustedNetworkContext = (clientAddress?: string): RemoteAccessAuthContext => {
+  const isLoopback = isLoopbackClientAddress(clientAddress);
   return {
     mode: isLoopback ? "loopback" : "trusted_network",
     isAuthenticated: isLoopback,
@@ -145,13 +145,13 @@ export class RemoteAccessRoutePolicy {
 
   async authorizeHttpRequest(request: FastifyRequest): Promise<RemoteAccessAuthorizationResult> {
     const routeClass = this.classifyRequest(request);
-    const peerAddress = request.raw.socket.remoteAddress;
+    const clientAddress = request.raw.socket.remoteAddress;
 
     if (allowedWithoutAuth.has(routeClass)) {
-      return { ok: true, context: trustedNetworkContext(peerAddress) };
+      return { ok: true, context: trustedNetworkContext(clientAddress) };
     }
     if (routeClass === "LOCAL_DEV_ONLY") {
-      return isLoopbackPeerAddress(peerAddress)
+      return isLoopbackClientAddress(clientAddress)
         ? { ok: true, context: { mode: "loopback", isAuthenticated: true } }
         : reject(404, "REMOTE_ACCESS_ROUTE_UNSUPPORTED", "This route is not available to remote clients.");
     }
@@ -162,13 +162,13 @@ export class RemoteAccessRoutePolicy {
       if (isMobileRemoteAccessCredential(bearerCredential)) {
         return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize peer-node routes.");
       }
-      return { ok: true, context: trustedNetworkContext(peerAddress) };
+      return { ok: true, context: trustedNetworkContext(clientAddress) };
     }
     if (routeClass === "TRUSTED_NETWORK_OWNER") {
       if (isMobileRemoteAccessCredential(bearerCredential)) {
         return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize owner-management routes.");
       }
-      return { ok: true, context: trustedNetworkContext(peerAddress) };
+      return { ok: true, context: trustedNetworkContext(clientAddress) };
     }
 
     if (routeClass === "TRUSTED_NETWORK_WEBSOCKET") {
@@ -176,13 +176,13 @@ export class RemoteAccessRoutePolicy {
       if (isMobileRemoteAccessCredential(credential)) {
         return this.authService.authorizeMobileCredential(credential);
       }
-      return { ok: true, context: trustedNetworkContext(peerAddress) };
+      return { ok: true, context: trustedNetworkContext(clientAddress) };
     }
 
     if (isMobileRemoteAccessCredential(bearerCredential)) {
       return this.authService.authorizeMobileCredential(bearerCredential);
     }
-    return { ok: true, context: trustedNetworkContext(peerAddress) };
+    return { ok: true, context: trustedNetworkContext(clientAddress) };
   }
 }
 

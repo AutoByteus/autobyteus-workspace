@@ -1,0 +1,7 @@
+# DEL-06 upgrade E2E node-vocabulary-stored-names-startup | beda3ed8c2
+ ✓ tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts (3 tests) 13684ms
+     ✓ NV-01 upgrade: same node IDs, renamed files with their values and backups, peers recognize each other, Memory Sync continues into the same import, a third start changes nothing  4853ms
+     ✓ NV-02 a damaged identity file: 503 NODE_IDENTITY_NOT_MIGRATED, no new node ID, the file kept and named, peers refuse with that reason, the rest works; restored, the next start migrates it  3215ms
+     ✓ NV-03 damaged hub credentials: ingestion 503 MEMORY_SYNC_NOT_MIGRATED, reads refuse with the text, only local memory is listed, the files kept; restored, the next start migrates them and alpha syncs again  3195ms
+      Tests  3 passed (3)
+upgrade exit=0

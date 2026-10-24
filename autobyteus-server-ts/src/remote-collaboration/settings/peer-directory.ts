@@ -7,8 +7,8 @@ import type { PeerStore } from "./peer-store.js";
 
 /** How the directory learns the server identity behind a URL (`PeerClient`'s identity probe). */
 export type PeerIdentityProbe = Readonly<{
-  /** The `serverInstanceId` of the AutoByteus node at `baseUrl`; rejects with a settings error otherwise. */
-  fetchServerInstanceId(baseUrl: string): Promise<string>;
+  /** The node ID of the AutoByteus node at `baseUrl`; rejects with a settings error otherwise. */
+  fetchNodeId(baseUrl: string): Promise<string>;
 }>;
 
 const NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$/;
@@ -119,7 +119,7 @@ export class PeerDirectory {
   /** The node at `baseUrl`; an unreachable loopback address says so when this node runs in a container (REQ-708). */
   private async probe(baseUrl: string): Promise<string> {
     try {
-      return await this.dependencies.probe.fetchServerInstanceId(baseUrl);
+      return await this.dependencies.probe.fetchNodeId(baseUrl);
     } catch (error) {
       if (error instanceof RemoteCollaborationSettingsError && error.code === "PEER_UNREACHABLE") {
         throw new RemoteCollaborationSettingsError(error.code, error.message,

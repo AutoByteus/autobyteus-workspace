@@ -12,7 +12,7 @@ import { useNodeChangeDialogStore } from '../nodeChangeDialogStore'
 
 /** one-nodes-tab DS-003, UIS-004: the one confirmation; after a run it tells the list (dialog → list only). */
 
-const subject = { target: { rowKey: 'srv_b', name: '8003', nodeId: 'srv_b', desktopIds: ['d1'], windowAddress: 'http://localhost:8003' },
+const subject = { target: { rowKey: 'srv_b', name: '8003', nodeId: 'srv_b', entryIds: ['d1'], windowAddress: 'http://localhost:8003' },
   here: { name: 'Embedded Node', nodeId: 'srv_a', windowAddress: 'http://127.0.0.1:29695' } }
 const planOf = (kind: string, steps: Array<{ id: string; status: string; error?: unknown }>) =>
   ({ kind, target: subject.target, here: subject.here, steps, phase: 'confirm', candidates: { here: [], there: [] } })

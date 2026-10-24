@@ -2,7 +2,7 @@ import AutoByteusMobileCore
 import UIKit
 
 final class WebShellViewController: UIViewController {
-    private let profile: SavedNodeProfile
+    private let entry: SavedNodeEntry
     private let initialURL: String
     private let onEditNode: () -> Void
     private let onOpenExternal: (URL, UIViewController?) -> Void
@@ -10,12 +10,12 @@ final class WebShellViewController: UIViewController {
     private var overlayView: UIView?
 
     init(
-        profile: SavedNodeProfile,
+        entry: SavedNodeEntry,
         initialURL: String,
         onEditNode: @escaping () -> Void,
         onOpenExternal: @escaping (URL, UIViewController?) -> Void
     ) {
-        self.profile = profile
+        self.entry = entry
         self.initialURL = initialURL
         self.onEditNode = onEditNode
         self.onOpenExternal = onOpenExternal
@@ -33,7 +33,7 @@ final class WebShellViewController: UIViewController {
 
     private func addWebHost() {
         let host = AutoByteusWebViewController(
-            profile: profile,
+            entry: entry,
             initialURL: initialURL,
             onPageStarted: { [weak self] _ in self?.clearDiagnostic() },
             onPageFinished: { [weak self] _ in self?.clearDiagnostic() },

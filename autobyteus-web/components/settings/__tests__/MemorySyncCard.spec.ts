@@ -27,7 +27,7 @@ const { storeSlot, translationCatalog } = vi.hoisted(() => ({
   sourceDescriptionAnd: 'and',
   sourceDescriptionSuffix: 'memory to a hub.',
   enableSource: 'Enable source',
-  sourceNodeId: 'Source node id',
+  memorySyncSourceId: 'Memory Sync source ID',
   displayName: 'Display name',
   hubBaseUrl: 'Hub base URL',
   hubToken: 'Hub token',
@@ -76,7 +76,7 @@ const createStatus = () => ({
   hub: { enabled: true, advertisedHubBaseUrl: 'http://hub.local', updatedAt: null },
   source: {
     enabled: true,
-    sourceNodeId: 'saved-source',
+    memorySyncSourceId: 'saved-source',
     displayName: 'Saved Source',
     hubBaseUrl: 'http://saved-hub.local',
     hubTokenConfigured: true,
@@ -159,12 +159,12 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-display-name"]').setValue('Draft Source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('draft-token');
 
     storeSlot.store.status.source.hubBaseUrl = 'http://poll-hub.local';
-    storeSlot.store.status.source.sourceNodeId = 'poll-source';
+    storeSlot.store.status.source.memorySyncSourceId = 'poll-source';
     storeSlot.store.status.source.displayName = 'Poll Source';
     storeSlot.store.status.sourceState = {
       jobState: 'running',
@@ -175,7 +175,7 @@ describe('MemorySyncCard', () => {
     await nextTick();
 
     expect((wrapper.get('[data-testid="memory-sync-hub-base-url"]').element as HTMLInputElement).value).toBe('http://draft-hub.local');
-    expect((wrapper.get('[data-testid="memory-sync-source-node-id"]').element as HTMLInputElement).value).toBe('draft-source');
+    expect((wrapper.get('[data-testid="memory-sync-source-id"]').element as HTMLInputElement).value).toBe('draft-source');
     expect((wrapper.get('[data-testid="memory-sync-display-name"]').element as HTMLInputElement).value).toBe('Draft Source');
     expect((wrapper.get('[data-testid="memory-sync-hub-token"]').element as HTMLInputElement).value).toBe('draft-token');
     expect(wrapper.get('[data-testid="memory-sync-current-job"]').text()).toContain('syncing…');
@@ -185,7 +185,7 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('');
     await wrapper.get('[data-testid="memory-sync-test-connection"]').trigger('click');
 
@@ -196,14 +196,14 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('draft-token');
     await wrapper.get('[data-testid="memory-sync-test-connection"]').trigger('click');
 
     expect(storeSlot.store.testConnection).toHaveBeenCalledWith({
       mode: 'draft',
       hubBaseUrl: 'http://draft-hub.local',
-      sourceNodeId: 'draft-source',
+      memorySyncSourceId: 'draft-source',
       token: 'draft-token',
     });
   });

@@ -13,9 +13,9 @@ import type { Project } from '~/types/project'
 const project = (projectId: string, updatedAt: string): Project => ({ projectId, name: projectId, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 0, taskCount: 0 })
 /** A fresh app (as after a restart): new Pinia, same localStorage. */
-const restart = (nodeId = 'node-a') => {
+const restart = (entryId = 'node-a') => {
   setActivePinia(createPinia())
-  useWindowNodeContextStore().nodeId = nodeId
+  useWindowNodeContextStore().entryId = entryId
   return useProjectsPanelStore()
 }
 const projectsLoaded = (...projects: Project[]) => { const store = useProjectStore(); store.projects = projects; store.hasFetched = true }
@@ -60,7 +60,7 @@ describe('projectsPanelStore (projects-always-on REQ-007)', () => {
     const panel = restart('node-a')
     projectsLoaded(project('p1', '2026-10-01T00:00:00.000Z'))
     expect(panel.choice).toEqual({ kind: 'project', projectId: 'p1' })
-    useWindowNodeContextStore().nodeId = 'node-b'
+    useWindowNodeContextStore().entryId = 'node-b'
     await nextTick()
     expect(panel.choice).toEqual({ kind: 'temp' })
   })

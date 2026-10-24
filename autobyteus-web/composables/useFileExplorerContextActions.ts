@@ -88,7 +88,7 @@ export function useFileExplorerContextActions({
         if (target.kind !== 'node') return
         renameRequest.value = {
           requestId: ++renameRequestCounter,
-          nodeId: target.nodeId,
+          treeNodeId: target.treeNodeId,
           path: target.path,
           name: target.name,
         }

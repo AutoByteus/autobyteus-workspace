@@ -9,7 +9,7 @@ import {
   getRemoteAccessAuthService,
   isMobileRemoteAccessCredential,
 } from "../../remote-access/services/remote-access-auth-service.js";
-import { isLoopbackPeerAddress } from "../security/remote-access-local-trust.js";
+import { isLoopbackClientAddress } from "../security/remote-access-local-trust.js";
 import { setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import { redactSensitiveUrl } from "../security/redact-sensitive-url.js";
 
@@ -46,8 +46,8 @@ export const extractRemoteAccessWebSocketCredential = (request: FastifyRequest):
   }
 };
 
-const trustedNetworkContext = (peerAddress?: string): RemoteAccessAuthContext => {
-  const isLoopback = isLoopbackPeerAddress(peerAddress);
+const trustedNetworkContext = (clientAddress?: string): RemoteAccessAuthContext => {
+  const isLoopback = isLoopbackClientAddress(clientAddress);
   return {
     mode: isLoopback ? "loopback" : "trusted_network",
     isAuthenticated: isLoopback,

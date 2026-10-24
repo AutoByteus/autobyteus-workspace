@@ -72,7 +72,7 @@ import { WorkspaceShellWindow } from '../workspace-shell-window'
 
 const createShell = (): WorkspaceShellWindow =>
   new WorkspaceShellWindow({
-    nodeId: 'node-1',
+    entryId: 'node-1',
     startUrl: 'http://localhost:3000',
     preloadPath: '/tmp/preload.js',
     iconPath: '/tmp/icon.png',

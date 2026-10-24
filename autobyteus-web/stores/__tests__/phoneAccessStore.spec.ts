@@ -272,9 +272,9 @@ describe('phoneAccessStore', () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_advertised_node_12345678901234567890' }),
+      json: vi.fn().mockResolvedValue({ nodeId: 'srv_advertised_node_12345678901234567890' }),
     }));
-    apiServiceMock.get.mockResolvedValue({ data: { serverInstanceId: 'srv_management_node_12345678901234567890' } });
+    apiServiceMock.get.mockResolvedValue({ data: { nodeId: 'srv_management_node_12345678901234567890' } });
 
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
@@ -293,9 +293,9 @@ describe('phoneAccessStore', () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_same_http_node_id_12345678901234567890' }),
+      json: vi.fn().mockResolvedValue({ nodeId: 'srv_same_http_node_id_12345678901234567890' }),
     }));
-    apiServiceMock.get.mockResolvedValue({ data: { serverInstanceId: 'srv_same_http_node_id_12345678901234567890' } });
+    apiServiceMock.get.mockResolvedValue({ data: { nodeId: 'srv_same_http_node_id_12345678901234567890' } });
     apiServiceMock.post.mockResolvedValue({
       data: {
         payload: {
@@ -331,9 +331,9 @@ describe('phoneAccessStore', () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_same_node_id_12345678901234567890' }),
+      json: vi.fn().mockResolvedValue({ nodeId: 'srv_same_node_id_12345678901234567890' }),
     }));
-    apiServiceMock.get.mockResolvedValue({ data: { serverInstanceId: 'srv_same_node_id_12345678901234567890' } });
+    apiServiceMock.get.mockResolvedValue({ data: { nodeId: 'srv_same_node_id_12345678901234567890' } });
     apiServiceMock.post.mockResolvedValue({
       data: {
         payload: {

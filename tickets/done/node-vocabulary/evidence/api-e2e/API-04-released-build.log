@@ -1,0 +1,9 @@
+# API-04 released build at c78ffb15a2 in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nv-released-c78ffb15a2
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.4s using pnpm v10.28.2
+INSTALL_EXIT=0
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+BUILD_EXIT=0

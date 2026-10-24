@@ -203,6 +203,12 @@ per-team, runtime, provider, or frontend-renderer preference.
 
 ## Nodes: Manage Nodes (one list)
 
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
+
 Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
 Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
 once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
@@ -223,8 +229,11 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   windows this desktop can open, addresses as the desktop reaches them) and this node's peers
   (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
   reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
-  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
-  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
   a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a

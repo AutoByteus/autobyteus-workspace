@@ -46,14 +46,13 @@ export type PairingExchangeResponse = {
 export type RemoteAccessStatus = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
-  compatibilityVersion: number;
-  serverInstanceId?: string;
+  nodeId?: string;
   serverName: string;
 };
 
+/** The phone's paired session, stored by `mobileCredentialStorage`. `entryId` is the window's entry for the paired node. */
 export type MobileNodeSession = {
-  version: 1;
-  nodeId: string;
+  entryId: string;
   serverBaseUrl: string;
   credential: string;
   device: PairedDeviceSummary;
@@ -66,8 +65,7 @@ export type MobileConnectionFailureKind =
   | 'device_revoked'
   | 'phone_access_disabled'
   | 'websocket_blocked'
-  | 'unsupported_mobile_feature'
-  | 'server_version_incompatible';
+  | 'unsupported_mobile_feature';
 
 export type MobileConnectionDiagnostic = {
   kind: MobileConnectionFailureKind;
