@@ -6,6 +6,8 @@
 | ARCH-REV-001 | 1 / first independent Large/High review | SR-001, SR-002 | N/A | Fail — Design Impact | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | 2 / D2 correction re-review | SR-001, SR-002, SR-003 | Fail — Design Impact | Pass | AR-001, AR-002, AR-003 resolved |
 
+| ARCH-REV-003 | 3 / implementation continuity finding and in-round settlement clarification | SR-001 through SR-005 | Pass (D2 only) | Pass (D3.1) | AR-001..003 retained resolved; IMP-DI-001 resolved |
+
 ## Revision Entries
 ### ARCH-REV-001 — Missing Windows cleanup entry and small completeness corrections
 - Canonical design review report: `design-review-report.md` in this ticket directory.
@@ -49,3 +51,27 @@ None.
 - Recommended recipient: Implementation Engineer under the configured primary pass rule.
 - Remaining risk/evidence boundaries: process identity and WSL group association, startup-stage cancellation/finally handling, result/disconnect/exit ordering, deadline enforcement, updater continuation, status freshness, real server and changed desktop proof. No installed app use, Windows certification, implementation, merge or release is claimed.
 - Reviewed package commit: 0f4750aab6c5a150d0db665c22d75734468eeb87. Only reviewer-owned report/history changed in this round; upstream evidence/design/requirements remain untouched.
+
+
+### ARCH-REV-003 — Continuous ownership and bounded terminal settlement
+- Canonical report: `design-review-report.md` in this ticket directory.
+- Round/trigger: 3, Solution Designer's D3/SR-004 package following Implementation Engineer IR-001/IMP-DI-001; review continued on D3.1/SR-005 after a concrete settlement question. Reviewed 2026-10-24.
+- Related revisions: SR-001/R1 unchanged Approved; SR-002/003 historical; SR-004 anchor correction and SR-005 exceptional completion reviewed.
+- Prior authoritative decision: Pass for D2 only (ARCH-REV-002). This was not approval of D3.
+- Current authoritative decision: **Pass for D3.1**.
+- Delta: actual fast-shell survivor observations disprove snapshot-only ownership continuity. The revised launcher establishes a gated persistent exclusive anchor before user code; scope owns stop/release and empty-group retirement. POSIX Node/IPC and WSL bash/setsid mechanisms retain separate command and anchor lifetimes. SR-005 explicitly assigns terminal completion to launcher, stop/fallback to scope and public TerminalResult mapping to executor, without circular waits or equating completion with cleanup.
+
+#### Prior Finding Resolution
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved in D2 | Remains resolved | SR-003 retained in D3.1 | Captured-child Windows IPC, shared startup-aware shutdown owner, result-plus-exit and bounded force remain explicit; native anchor correction does not bypass this path. |
+| AR-002 | Resolved in D2 | Remains resolved | SR-003 retained consumer table | ServerMonitor/ServerSettingsManager and both ambient declarations still dispositioned; typed store/status behavior unchanged. |
+| AR-003 | Resolved in D2 | Remains resolved | SR-003 retained removal plan | Dead cache/accessor removal still explicit; no production source change invalidates independent reference evidence. |
+| IMP-DI-001 | Open implementation Design Impact on D2 | Resolved in design | IR-001; SR-004/005; E-019..021; P-007/008 | Independently read current executor/resolver and IMP-02 actual adopted survivor/non-overlap evidence. Verified gated fixed anchor, independent group/session/birth proof, result versus lease lifetime, retirement and no numeric recovery. Candidate tests support local feasibility, not production or WSL success. |
+
+- In-round question: forced group KILL can remove RESULT emitter; who settles the public tool? Solution Designer accepted the underspecification and added SR-005 before the completed verdict. Launcher once-only terminal latch and STARTED failure, scope pre-signal intent/bounded finishStop without waiting for completion, executor truthful timeout/interruption/failure mapping and partial output are now canonical. No new open AR finding assigned.
+- Material-premise gate: Pass; MP-002 traces ordinary run_bash survivor/timeout triggers through production code, not backwards from the proposed anchor. MP-001 Windows orderly entry remains supported.
+- Classification: Large/High retained, Pass. No requirement change, prerequisite or follow-up Task established.
+- Remaining risks: actual WSL and Electron packaging, admission/retirement/force races, terminal/control framing and output ordering, collective budgets, startup cancellation, updater continuation and complete UI/host acceptance. Tests must assert cleanup independently from command completion. Existing old-defect probes are not regression success.
+- Recommended recipient: Implementation Engineer via configured primary pass rule, carrying D3.1 and current review artifacts; do not use ARCH-REV-002 as authorization for the changed mechanism.
+- Reviewed package commit: fb0de461cd551f3426b653f89c3516395efca9f8. Source/doc/primary-contract review and supplied evidence review only; no new runtime test/build, production edit, installed-app operation, merge or release. Only reviewer-owned report/history changed; upstream and implementation artifacts preserved.
