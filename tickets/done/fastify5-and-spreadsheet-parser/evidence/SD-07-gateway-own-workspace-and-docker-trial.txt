@@ -1,0 +1,11 @@
+# Gateway as its own pnpm workspace (scratch worktree), 2026-10-24
+## plain 'pnpm install --lockfile-only' inside autobyteus-message-gateway/ WITHOUT a local pnpm-workspace.yaml: 'Scope: all 13 workspace projects' -> acts on the root workspace, writes no gateway lockfile
+## with autobyteus-message-gateway/.npmrc ignore-workspace=true: same (not honoured for workspace discovery)
+## with autobyteus-message-gateway/pnpm-workspace.yaml (packages: ['.'], onlyBuiltDependencies): gateway pnpm-lock.yaml written; root pnpm-lock.yaml byte-identical; root 'pnpm install --frozen-lockfile' still OK
+## upgraded manifest (fastify ^5.12.7, @fastify/cors ^11.3.1, baileys 6.7.24): pnpm audit -> 'No known vulnerabilities found'; typecheck clean; Tests 268 passed (268)
+
+## docker build with the new Dockerfile (copy package.json + pnpm-lock.yaml + pnpm-workspace.yaml, pnpm install --frozen-lockfile)
+first attempt, no packageManager in the gateway package.json: Corepack downloaded pnpm 12.15.0; its minimumReleaseAge policy rejected fast-json-stringify@7.2.0 (published 2026-10-24) -> exit 1
+with "packageManager": "pnpm@10.28.2" (the root's pin): build=0
+docker run -e GATEWAY_SERVER_BASE_URL=http://127.0.0.1:9; curl /health -> {"service":"autobyteus-message-gateway","status":"ok",...}
+in-container versions: fastify 5.12.7, @fastify/cors 11.3.1, @whiskeysockets/baileys 6.7.24

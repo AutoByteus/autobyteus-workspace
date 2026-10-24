@@ -1,0 +1,30 @@
+# ExcelViewer spec with the real SheetJS parser (jsdom)
+# Check: IMP-02
+# Command: pnpm -C autobyteus-web test:nuxt components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts --run --reporter=verbose | sed 's/\x1b\[[0-9;]*m//g' | grep -E '✓|×|→|Test Files|Tests '
+# Commit: 195db3c42e
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:49:03Z
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+    at loadExcel [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/[39mcomponents/fileExplorer/viewers/ExcelViewer.vue:87:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders the loading state while the file is fetched 15ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file 31ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsx workbook from a URL with sheet tabs 15ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a biff8 workbook from a URL with sheet tabs 16ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsm workbook from a URL with sheet tabs 10ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a CSV file from a URL 4ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders streamed CSV content when there is no URL 4ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > prefers the URL over streamed content 5ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > keeps markup in cell text inert and renders only table structure 7ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows hyperlinked cells as their text without a link 7ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+
+# exit code: 0

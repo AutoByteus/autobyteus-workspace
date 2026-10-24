@@ -20,7 +20,10 @@ import { resetRemoteAccessAuthServiceForTests } from "../../../src/remote-access
 import { resetPairedDeviceServiceForTests } from "../../../src/remote-access/services/paired-device-service.js";
 import { resetRemoteAccessPairingServiceForTests } from "../../../src/remote-access/services/remote-access-pairing-service.js";
 import { resetRemoteAccessSettingsServiceForTests } from "../../../src/remote-access/services/remote-access-settings-service.js";
-import { resetNodeIdentityServiceForTests } from "../../../src/remote-access/services/node-identity-service.js";
+import {
+  configureNodeIdentityCapability,
+  resetNodeIdentityServiceForTests,
+} from "../../../src/remote-access/services/node-identity-service.js";
 import { resetPairedDeviceStoreForTests } from "../../../src/remote-access/stores/paired-device-store.js";
 import { resetRemoteAccessSettingsStoreForTests } from "../../../src/remote-access/stores/remote-access-settings-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -46,6 +49,9 @@ describe("Phone Access running REST route behavior", () => {
     resetRemoteAccessSingletons();
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir });
+    // Startup marks the node identity ready once the app-data migrations have run
+    // (applyCapabilityReadiness); this test builds its own app without that step.
+    configureNodeIdentityCapability(true);
 
     app = fastify();
     await registerRemoteAccessPolicyPlugin(app);

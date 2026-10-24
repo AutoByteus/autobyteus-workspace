@@ -1,0 +1,14 @@
+# Server integration suite on Fastify 5 (after test:integration:prepare)
+# Check: IMP-11
+# Command: pnpm -C autobyteus-server-ts test:integration 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E '^ FAIL|×|Test Files|Tests |Errors' 
+# Commit: 5c7ab7426c
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T20:07:32Z
+
+     × preserves a wildcard main bind while serving Agent Tools only on one loopback listener and closing both 194ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/application-backend/studio-agent-tools-listener.integration.test.ts > Studio main and Agent Tools listener integration > preserves a wildcard main bind while serving Agent Tools only on one loopback listener and closing both
+ Test Files  1 failed | 77 passed | 20 skipped (98)
+      Tests  1 failed | 420 passed | 69 skipped (490)
+
+# exit code: 0
