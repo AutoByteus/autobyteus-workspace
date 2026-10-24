@@ -24,6 +24,10 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyR
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { buildClosureContext } from '~/services/agentCollaboration/__tests__/agentRootClosureFixture'
+import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
+
+/** Only the Org-rooted targets carry an address. */
+const addressOf = (target: ActiveAgentWorkspaceTarget | null) => (target && 'address' in target ? target.address : undefined)
 
 /** task-run-resources-workspace-cleanup REQ-009: a closed run cannot be selected; an open one returns to the host. */
 describe('agentRunCollaborationStore with closed task executions', () => {
@@ -50,7 +54,7 @@ describe('agentRunCollaborationStore with closed task executions', () => {
     const context = buildClosureContext()
     service.options.publish(context, () => undefined)
     store.selectChild('host-run', 'rb-run')
-    expect(store.childTargetFor('host-run')?.address).toBe('/product_team/bootstrapper')
+    expect(addressOf(store.childTargetFor('host-run'))).toBe('/product_team/bootstrapper')
     context.applyEvent(5, { kind: 'task_executions_closed', task_executions: [{ agentRunId: 'other-task-run' }] })
     service.options.onTaskExecutionsClosed(context)
     expect(store.selectedChild('host-run')).toBe('rb-run')

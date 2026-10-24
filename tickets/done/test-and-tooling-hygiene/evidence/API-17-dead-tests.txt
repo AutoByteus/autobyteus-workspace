@@ -1,0 +1,31 @@
+API-17 — AC-012 dead prompt-engineering tests removed
+Commit: 959b5cc048; base 8b34e8ae10; date 2026-10-24 10:59; macOS
+
+== find autobyteus-server-ts/tests -path '*prompt-engineering*' (files)
+autobyteus-server-ts/tests/integration/prompt-engineering-removal.integration.test.ts
+(end; count=1)
+== grep prompt-engineering autobyteus-server-ts/vitest.config.ts
+(end)
+== src folders exist?
+ls: autobyteus-server-ts/src/agent-tools/prompt-engineering: No such file or directory
+ls: autobyteus-server-ts/src/prompt-engineering: No such file or directory
+== files deleted by the branch:
+      36
+  .ts: 19  .js: 17
+== base vitest.config.ts exclusions (were the deleted .ts files ever collected?)
+19:    exclude: [
+20:      "tests/unit/prompt-engineering/**/*.test.ts",
+21:      "tests/unit/agent-tools/prompt-engineering/**/*.test.ts",
+22:      "tests/integration/prompt-engineering/**/*.test.ts",
+== deleted .ts files not matched by a base exclusion:
+(end)
+== doc names of src paths in docs/modules/prompt_engineering.md, each checked to exist
+exists  src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts
+exists  src/agent-execution/prompt/carpenter-prompt-composer.ts
+exists  src/agent-execution/prompt/carpenter-prompt-sections.ts
+exists  src/agent-execution/prompt/collaboration-prompt-sections.ts
+exists  src/agent-execution/prompt/markdown-heading-containment.ts
+MISSING src/prompt-engineering
+== remaining mentions of deleted code in the doc
+8:`src/prompt-engineering` and its GraphQL prompt API no longer exist.)
+(end)

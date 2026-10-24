@@ -1,0 +1,19 @@
+API-11 — GraphQL schema text on type-graphql rc.3 vs rc.4, two builds each (design escalation trigger 'rc.4 changes any generated schema', QR-003)
+Commit: 959b5cc048 (code af81b3d7d2); date 2026-10-24 11:13 (rc.4) / 12:00 (rc.3); macOS, Node v22.23.1
+Probe: evidence/probes/API-11-schema-sdl-probe.test.ts (temporary, not committed): printSchema(buildGraphqlSchema()) twice in one process, graphql resolved from type-graphql's own folder
+Command: API253_SDL_OUT=/tmp/api253/sdl pnpm -C autobyteus-server-ts exec vitest run tests/tmp-probe/api253-schema-sdl.test.ts --no-watch
+rc.3 run: autobyteus-server-ts/node_modules/type-graphql symlink pointed at the installed rc.3 package for the run only, then restored to rc.4 (readlink checked)
+
+81d67097f67b0064  2894 lines  schema-2.0.0-rc.3-build1.graphql
+81d67097f67b0064  2894 lines  schema-2.0.0-rc.3-build2.graphql
+81d67097f67b0064  2894 lines  schema-2.0.0-rc.4-build1.graphql
+81d67097f67b0064  2894 lines  schema-2.0.0-rc.4-build2.graphql
+
+== diff rc.3 build1 vs rc.4 build1
+IDENTICAL
+== diff rc.4 build1 vs rc.4 build2
+IDENTICAL
+== diff rc.3 build1 vs rc.3 build2
+IDENTICAL
+
+Note: rc.3's double-build defect shifts resolver argument values at run time, not the schema text, so equal rc.3 texts are expected; the run-time argument mapping is proven by the second-build unit case (IMP-03: red on rc.3, green on rc.4) and the E2E folder (API-10, API-10b).

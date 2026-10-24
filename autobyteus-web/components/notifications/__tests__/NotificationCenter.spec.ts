@@ -29,9 +29,13 @@ vi.mock('~/stores/capabilities/updateChecksCapabilityStore', () => ({
 
 const A = 'a'.repeat(40)
 const B = 'b'.repeat(40)
+// Fixed instants: sections sort by the newest `foundAt`, so the order is stated, not left to the clock.
+const FOUND_AT = '2026-10-22T10:00:00.000Z'
+const FOUND_AT_EARLIER = '2026-10-22T09:00:00.000Z'
+const FOUND_AT_LATER = '2026-10-22T11:00:00.000Z'
 const node = (sourceId: string, overrides: Partial<NodeUpdateNotification> = {}): NodeUpdateNotification => ({
   kind: 'AGENT_PACKAGE', sourceId, name: `acme/${sourceId}`, repositoryUrl: `https://github.com/acme/${sourceId}`,
-  defaultBranch: 'main', installedRevision: A, latestRevision: B, foundAt: new Date(Date.now() - 3_600_000).toISOString(),
+  defaultBranch: 'main', installedRevision: A, latestRevision: B, foundAt: FOUND_AT,
   read: false, state: 'WAITING', handledRevision: null, handledAt: null, outcome: null, outcomeReason: null, outcomeAt: null,
   ...overrides,
 })
@@ -76,7 +80,7 @@ afterEach(() => {
 
 describe('Notification Center', () => {
   it('shows the pill only while updates wait, solid while unread; nothing opens by itself (REQ-011)', async () => {
-    await mountWith([node('p1'), node('p2', { kind: 'SKILL_SOURCE' })])
+    await mountWith([node('p1', { foundAt: FOUND_AT_LATER }), node('p2', { kind: 'SKILL_SOURCE', foundAt: FOUND_AT_EARLIER })])
     expect(pill()!.textContent).toContain('2 updates')
     expect(pill()!.className).toContain('bg-sky-700')
     expect(pill()!.getAttribute('aria-label')).toBe('2 updates available: 1 agent package update, 1 skill update')
@@ -196,7 +200,7 @@ describe('Notification Center', () => {
     const app = useAppUpdateStore()
     app.isElectron = true
     app.applyRemoteState({ status: 'idle', currentVersion: '1.5.6', notification: {
-      version: '1.5.7', fromVersion: '1.5.6', foundAt: new Date().toISOString(), read: false, state: 'waiting', handledVersion: null, releasePageUrl: null,
+      version: '1.5.7', fromVersion: '1.5.6', foundAt: FOUND_AT, read: false, state: 'waiting', handledVersion: null, releasePageUrl: null,
     } })
     await mountWith([])
     await openPanel()

@@ -1,0 +1,19 @@
+API-12 — AC-001 failure half: a getInstance() caller outside the decided list must fail the guard
+Commit: 959b5cc048; date 2026-10-24 10:59; macOS, Node v22.23.1
+Temporary file src/agent-memory/tmp-api253-guard-probe.ts (never committed, removed after step 1):
+import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
+export const probe = () => AgentDefinitionService.getInstance();
+
+== step 1 (with the temporary caller): pnpm exec vitest run tests/architecture/application-framework-boundaries.test.ts -t 'guards the exact SR-011' --no-watch
+rc=1
+     × guards the exact SR-011 host definition and public/general run authority 263ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
++   "autobyteus-server-ts/src/agent-memory/tmp-api253-guard-probe.ts",
+      Tests  1 failed | 19 skipped (20)
+
+== step 2 (temporary file removed): same command
+rc=0
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+git status of src after: 0 changed paths

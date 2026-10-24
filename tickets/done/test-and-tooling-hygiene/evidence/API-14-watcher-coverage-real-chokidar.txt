@@ -1,0 +1,128 @@
+API-14 — SR-002 watch self-check with REAL chokidar (temporary probe; source: evidence/probes/API-14-watcher-coverage-probe.test.ts)
+Commit: 959b5cc048 (code af81b3d7d2); date 2026-10-24 11:02; macOS arm64 10 cores, Node v22.23.1; host load avg ~150 from other work; no artificial load
+Command: API253_PROBE_OUT=<file> pnpm -C autobyteus-server-ts exec vitest run tests/tmp-probe/api253-watcher-coverage.test.ts --no-watch --reporter=verbose   (x3 consecutive runs)
+Cases: A symlinked-prefix root (/var -> /private/var) with a realistic layout; A2 same via real path; B first chokidar watch made to miss agents/scout; C scout never watchable (negative control)
+
+== run 1
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A-symlinked-prefix: a realistic layout needs no repair and the empty agent folder is watched 1179ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A2-real-path: a realistic layout needs no repair and the empty agent folder is watched 1174ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > B: a folder the first watch missed is repaired once, quietly, and its later edit is reported 2112ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > C: a folder that can never be watched is repaired once, then warned about, never re-armed again 3115ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > writes the results 9ms
+      Tests  5 passed (5)
+== run 2
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A-symlinked-prefix: a realistic layout needs no repair and the empty agent folder is watched 1173ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A2-real-path: a realistic layout needs no repair and the empty agent folder is watched 1154ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > B: a folder the first watch missed is repaired once, quietly, and its later edit is reported 2115ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > C: a folder that can never be watched is repaired once, then warned about, never re-armed again 3117ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > writes the results 11ms
+      Tests  5 passed (5)
+== run 3
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A-symlinked-prefix: a realistic layout needs no repair and the empty agent folder is watched 1219ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > A2-real-path: a realistic layout needs no repair and the empty agent folder is watched 1155ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > B: a folder the first watch missed is repaired once, quietly, and its later edit is reported 2127ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > C: a folder that can never be watched is repaired once, then warned about, never re-armed again 3133ms
+ ✓ tests/tmp-probe/api253-watcher-coverage.test.ts > API-14 SR-002 watch self-check with real chokidar > writes the results 9ms
+      Tests  5 passed (5)
+
+== per-run key fields
+run 1: {"A-symlinked-prefix": {"prefixIsSymlinked": true, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": []}, "A2-real-path": {"prefixIsSymlinked": false, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": []}, "B": {"firstWatchHasScout": false, "secondWatchHasScout": true, "arms": 2, "reconciles": 2, "packageChanged": 0, "warns": [], "eventsBeforeEdit": ["agent:planner"], "eventsAfterEdit": ["agent:scout"]}, "C": {"arms": 2, "reconciles": 2, "packageChanged": 0, "warns": ["AGENT_PACKAGE_FOLDER_UNWATCHED:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-teIdlm"], "eventsAfterEdits": ["agent:planner"], "scoutEditReported": false}}
+run 2: {"A-symlinked-prefix": {"prefixIsSymlinked": true, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": []}, "A2-real-path": {"prefixIsSymlinked": false, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": ["agent_org:acme"]}, "B": {"firstWatchHasScout": false, "secondWatchHasScout": true, "arms": 2, "reconciles": 2, "packageChanged": 0, "warns": [], "eventsBeforeEdit": ["agent:planner"], "eventsAfterEdit": ["agent:scout"]}, "C": {"arms": 2, "reconciles": 2, "packageChanged": 0, "warns": ["AGENT_PACKAGE_FOLDER_UNWATCHED:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-sxUEAH"], "eventsAfterEdits": ["agent:planner"], "scoutEditReported": false}}
+run 3: {"A-symlinked-prefix": {"prefixIsSymlinked": true, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": []}, "A2-real-path": {"prefixIsSymlinked": false, "arms": 1, "reconciles": 1, "packageChanged": 0, "warns": [], "listedButNotWatched": [], "earlyFolderEvents": ["agent_org:acme"]}, "B": {"firstWatchHasScout": false, "secondWatchHasScout": true, "arms": 2, "reconciles": 2, "packageChanged": 0, "warns": [], "eventsBeforeEdit": ["agent:planner"], "eventsAfterEdit": ["agent:scout"]}, "C": {"arms": 2, "reconciles": 2, "packageChanged": 0, "warns": ["AGENT_PACKAGE_FOLDER_UNWATCHED:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-nTWQYh"], "eventsAfterEdits": ["agent:planner"], "scoutEditReported": false}}
+
+== full result of run 3
+{
+  "A-symlinked-prefix": {
+    "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-477F28",
+    "realPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-477F28",
+    "prefixIsSymlinked": true,
+    "arms": 1,
+    "reconciles": 1,
+    "packageChanged": 0,
+    "warns": [],
+    "listed": [
+      "agent-orgs/acme",
+      "agent-orgs/acme/agent-teams",
+      "agent-orgs/acme/agent-teams/board",
+      "agent-orgs/acme/agent-teams/board/agents",
+      "agent-orgs/acme/agent-teams/board/agents/member",
+      "agent-orgs/acme/agents",
+      "agent-orgs/acme/agents/ceo",
+      "agent-teams/crew",
+      "agent-teams/crew/agents",
+      "agent-teams/crew/agents/lead",
+      "agents/empty-agent",
+      "agents/planner"
+    ],
+    "listedButNotWatched": [],
+    "watchedKeySample": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-477F28",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-477F28/agent-orgs",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-477F28/agent-orgs/acme"
+    ],
+    "earlyFolderEvents": [],
+    "emptyAgentFirstFileReportedMs": 42
+  },
+  "A2-real-path": {
+    "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-LF9ArL",
+    "realPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-LF9ArL",
+    "prefixIsSymlinked": false,
+    "arms": 1,
+    "reconciles": 1,
+    "packageChanged": 0,
+    "warns": [],
+    "listed": [
+      "agent-orgs/acme",
+      "agent-orgs/acme/agent-teams",
+      "agent-orgs/acme/agent-teams/board",
+      "agent-orgs/acme/agent-teams/board/agents",
+      "agent-orgs/acme/agent-teams/board/agents/member",
+      "agent-orgs/acme/agents",
+      "agent-orgs/acme/agents/ceo",
+      "agent-teams/crew",
+      "agent-teams/crew/agents",
+      "agent-teams/crew/agents/lead",
+      "agents/empty-agent",
+      "agents/planner"
+    ],
+    "listedButNotWatched": [],
+    "watchedKeySample": [
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-LF9ArL",
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-LF9ArL/agent-orgs",
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-LF9ArL/agent-orgs/acme"
+    ],
+    "earlyFolderEvents": [
+      "agent_org:acme"
+    ],
+    "emptyAgentFirstFileReportedMs": 21
+  },
+  "B": {
+    "firstWatchHasScout": false,
+    "secondWatchHasScout": true,
+    "arms": 2,
+    "reconciles": 2,
+    "packageChanged": 0,
+    "warns": [],
+    "firstCatchUpMs": 311,
+    "repairMs": 0,
+    "eventsBeforeEdit": [
+      "agent:planner"
+    ],
+    "editReportedMs": 0,
+    "eventsAfterEdit": [
+      "agent:scout"
+    ]
+  },
+  "C": {
+    "arms": 2,
+    "reconciles": 2,
+    "packageChanged": 0,
+    "warns": [
+      "AGENT_PACKAGE_FOLDER_UNWATCHED:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api253-cov-nTWQYh"
+    ],
+    "eventsAfterEdits": [
+      "agent:planner"
+    ],
+    "scoutEditReported": false
+  }
+}
