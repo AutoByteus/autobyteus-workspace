@@ -12,7 +12,7 @@ data class PairingPayload(
 )
 
 data class ParsedPairingInput(
-    val profile: SavedNodeProfile,
+    val entry: SavedNodeEntry,
     val webViewUrl: String,
     val hasPairingPayload: Boolean,
 )
@@ -34,20 +34,20 @@ object PairingLinkParser {
         } catch (_: NodeUrlNormalizationException) {
             val normalized = NodeUrlNormalizer.normalize(text)
             return ParsedPairingInput(
-                profile = SavedNodeProfile.fromNormalized(normalized),
+                entry = SavedNodeEntry.fromNormalized(normalized),
                 webViewUrl = normalized.mobileUrl,
                 hasPairingPayload = false,
             )
         }
         val encoded = encodePairingPayload(text, payload)
         val normalized = NodeUrlNormalizer.normalize(payload.serverBaseUrl)
-        val profile = SavedNodeProfile.fromNormalized(
+        val entry = SavedNodeEntry.fromNormalized(
             normalized,
             displayName = payload.serverName,
             httpAcknowledged = normalized.scheme == "https",
         )
         return ParsedPairingInput(
-            profile = profile,
+            entry = entry,
             webViewUrl = "${normalized.mobileUrl}?pairing=$encoded",
             hasPairingPayload = true,
         )
@@ -60,13 +60,13 @@ object PairingLinkParser {
         if (!pairingParam.isNullOrBlank()) {
             val payload = parsePairingPayload(pairingParam)
             val normalized = NodeUrlNormalizer.normalize(payload.serverBaseUrl)
-            val profile = SavedNodeProfile.fromNormalized(
+            val entry = SavedNodeEntry.fromNormalized(
                 normalized,
                 displayName = payload.serverName,
                 httpAcknowledged = normalized.scheme == "https",
             )
             return ParsedPairingInput(
-                profile = profile,
+                entry = entry,
                 webViewUrl = "${normalized.mobileUrl}?pairing=$pairingParam",
                 hasPairingPayload = true,
             )
@@ -74,7 +74,7 @@ object PairingLinkParser {
 
         val normalized = NodeUrlNormalizer.normalize(url)
         return ParsedPairingInput(
-            profile = SavedNodeProfile.fromNormalized(normalized),
+            entry = SavedNodeEntry.fromNormalized(normalized),
             webViewUrl = normalized.mobileUrl,
             hasPairingPayload = false,
         )

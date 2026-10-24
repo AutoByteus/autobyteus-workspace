@@ -48,7 +48,7 @@ interface MemoryInspectorState {
 }
 
 const sourceKey = (source?: MemoryExplorerSourceInput | null): string => (
-  source?.type === 'IMPORTED' && source.sourceNodeId ? `imported:${source.sourceNodeId}` : 'local'
+  source?.type === 'IMPORTED' && source.memorySyncSourceId ? `imported:${source.memorySyncSourceId}` : 'local'
 );
 
 const sameTarget = (a: MemoryInspectTarget | null, b: MemoryInspectTarget): boolean => {

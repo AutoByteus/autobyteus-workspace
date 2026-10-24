@@ -1,0 +1,11 @@
+# IMP-19 word list and Memory Sync name recheck (IR-002)
+# command: git grep RemotePeer; git grep sourceNodeId outside app-data-migrations/ and the memory_sync.md migration note; git grep -w 'sourceIds?|boundSourceId' in Memory Sync code; git grep doubled prefixes
+# commit: 127fc4806e (run on its working tree just before the commit)
+# environment: macOS Darwin 25.5 (arm64), Node 22.23.1, pnpm; worktree /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary
+# date: 2026-10-24
+
+## RemotePeer
+## sourceNodeId outside migration folders and notes
+## bare sourceId in Memory Sync code
+## doubled prefixes
+(no lines under a heading = no hits)

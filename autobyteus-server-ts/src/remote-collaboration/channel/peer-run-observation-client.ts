@@ -53,7 +53,9 @@ export const openPeerRunObservation = (input: Readonly<{
   void (async () => {
     const peer = await input.resolvePeer().catch(() => null);
     if (!peer || closedByUs) return end();
-    const fromNodeId = await input.ownNodeId();
+    // This node's identity held back (autobyteus-290): nothing is opened, and the stream ends as any refusal does.
+    const fromNodeId = await input.ownNodeId().catch(() => null);
+    if (!fromNodeId || closedByUs) return end();
     const url = `${peer.baseUrl.replace(/^http/, "ws")}${input.path}`;
     try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(url); } catch { return end(); }
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);

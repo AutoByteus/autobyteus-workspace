@@ -42,7 +42,7 @@ export interface NodeChangeTarget {
   /** The node ID (`srv_…`); every plan but `remove` and `rename` of a never-reached node needs it. */
   nodeId: string | null
   /** The desktop entries of this node (several when the old form listed it twice); `[]` for a node only this node knows. */
-  desktopIds: string[]
+  entryIds: string[]
   /** Where this window reaches the node, when it does. */
   windowAddress: string | null
 }

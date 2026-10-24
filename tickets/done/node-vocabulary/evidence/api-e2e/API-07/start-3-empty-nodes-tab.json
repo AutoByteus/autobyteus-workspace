@@ -1,0 +1,4 @@
+{
+  "rows": 0,
+  "panel": "Chat Agents Agent Teams Agent Orgs Projects Skills Memory Nodes Workspaces Temp Workspace Settings Manage Nodes Memory Sync Phone Setup Docker Guide NFS Guide This node Embedded Node EMBEDDED http://127.0.0.1:60430 Remote collaboration Let agents on this node work with agents on the nodes you choose below, and let those nodes start this node's shared agents. For a trusted private network only: nodes are not authenticated, and no credential is shared. Off Off by default. While it is off, this node asks no other node and refuses their requests. How remote collaboration works Nodes Every node you"
+}

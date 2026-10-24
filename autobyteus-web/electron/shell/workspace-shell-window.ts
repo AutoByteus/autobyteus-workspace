@@ -1,7 +1,7 @@
 import { BrowserWindow, type Rectangle, type WebContentsView } from 'electron';
 
 type WorkspaceShellWindowOptions = {
-  nodeId: string;
+  entryId: string;
   startUrl: string;
   preloadPath: string;
   iconPath: string;
@@ -29,13 +29,13 @@ const normalizeBounds = (bounds: Rectangle | null): Rectangle | null => {
 export class WorkspaceShellWindow {
   readonly browserWindow: BrowserWindow;
   readonly shellId: number;
-  readonly nodeId: string;
+  readonly entryId: string;
   private desiredBrowserView: WebContentsView | null = null;
   private attachedBrowserView: WebContentsView | null = null;
   private browserBounds: Rectangle | null = null;
 
   constructor(options: WorkspaceShellWindowOptions) {
-    this.nodeId = options.nodeId;
+    this.entryId = options.entryId;
     this.browserWindow = new BrowserWindow({
       width: 1200,
       height: 800,

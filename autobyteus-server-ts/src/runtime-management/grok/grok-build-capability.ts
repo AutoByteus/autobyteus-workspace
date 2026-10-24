@@ -8,6 +8,9 @@ const REQUIRED_AGENT_HELP_TOKENS = ["stdio", "--model", "--reasoning-effort", "-
 const PROBE_TIMEOUT_MS = 3_000;
 const PROBE_OUTPUT_LIMIT = 64 * 1024;
 
+/** Bound of each probed command in milliseconds; production callers pass nothing and get the default. */
+export type GrokBuildProbeOptions = Readonly<{ timeoutMs?: number }>;
+
 export type GrokBuildDiagnosticCode =
   | "GROK_CLI_UNAVAILABLE"
   | "GROK_CLI_UNSUPPORTED"
@@ -49,7 +52,7 @@ const compareVersions = (left: string, right: string): number => {
 };
 
 /** Bounded, non-blocking command probe; provider output never leaves this function. */
-const runProbe = (args: readonly string[]): Promise<string> => new Promise((resolve, reject) => {
+const runProbe = (args: readonly string[], timeoutMs: number): Promise<string> => new Promise((resolve, reject) => {
   let child: ReturnType<typeof spawn>;
   try { child = spawn(grokBuildCommand(), [...args], { shell: false, stdio: ["ignore", "pipe", "pipe"] }); }
   catch { reject(new GrokBuildDiscoveryError("GROK_CLI_UNAVAILABLE")); return; }
@@ -61,7 +64,7 @@ const runProbe = (args: readonly string[]): Promise<string> => new Promise((reso
     clearTimeout(timer);
     if (error) { child.kill("SIGKILL"); reject(error); } else resolve(value ?? "");
   };
-  const timer = setTimeout(() => finish(null, new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED")), PROBE_TIMEOUT_MS);
+  const timer = setTimeout(() => finish(null, new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED")), timeoutMs);
   const collect = (chunk: Buffer) => {
     output += chunk.toString("utf8");
     if (output.length > PROBE_OUTPUT_LIMIT) finish(null, new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED"));
@@ -74,17 +77,20 @@ const runProbe = (args: readonly string[]): Promise<string> => new Promise((reso
 });
 
 /** Version gate plus ACP agent-mode flags; starts no ACP session and no inference. */
-export const assertGrokBuildCliSupported = async (): Promise<string> => {
-  const match = /\b(\d+\.\d+\.\d+)\b/.exec(await runProbe(["--version"]));
+export const assertGrokBuildCliSupported = async (options: GrokBuildProbeOptions = {}): Promise<string> => {
+  const timeoutMs = options.timeoutMs ?? PROBE_TIMEOUT_MS;
+  const match = /\b(\d+\.\d+\.\d+)\b/.exec(await runProbe(["--version"], timeoutMs));
   if (!match || compareVersions(match[1]!, GROK_BUILD_MINIMUM_VERSION) < 0) throw new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
-  const help = await runProbe(["agent", "--help"]);
+  const help = await runProbe(["agent", "--help"], timeoutMs);
   if (REQUIRED_AGENT_HELP_TOKENS.some((token) => !help.includes(token))) throw new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
   return match[1]!;
 };
 
-export const probeGrokBuildCli = async (): Promise<{ available: boolean; diagnostic: GrokBuildDiagnostic | null }> => {
+export const probeGrokBuildCli = async (
+  options: GrokBuildProbeOptions = {},
+): Promise<{ available: boolean; diagnostic: GrokBuildDiagnostic | null }> => {
   try {
-    await assertGrokBuildCliSupported();
+    await assertGrokBuildCliSupported(options);
     return { available: true, diagnostic: null };
   } catch (error) {
     return { available: false, diagnostic: toGrokBuildDiagnostic(error) };
@@ -92,8 +98,8 @@ export const probeGrokBuildCli = async (): Promise<{ available: boolean; diagnos
 };
 
 /** Offered Grok Build models from a fresh `initialize` handshake (no session, no prompt). */
-export const discoverGrokBuildModels = async (): Promise<ModelInfo[]> => {
-  await assertGrokBuildCliSupported();
+export const discoverGrokBuildModels = async (options: GrokBuildProbeOptions = {}): Promise<ModelInfo[]> => {
+  await assertGrokBuildCliSupported(options);
   let models: ModelInfo[];
   try {
     models = grokBuildLaunchProfile.normalizeModels(await runAcpDiscoveryHandshake(grokBuildLaunchProfile));

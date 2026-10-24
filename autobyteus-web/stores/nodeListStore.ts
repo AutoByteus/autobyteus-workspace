@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { NodeProfile } from '~/types/node'
+import type { NodeEntry } from '~/types/node'
 import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useRemoteCollaborationStore, type PeerNode } from '~/stores/remoteCollaborationStore'
@@ -64,7 +64,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const unfinished = ref<Record<string, NodeChangeStep>>({})
   let flashTimer: ReturnType<typeof setTimeout> | null = null
 
-  const currentNode = computed<NodeProfile | null>(() => nodeStore.getNodeById(windowNode.nodeId))
+  const currentNode = computed<NodeEntry | null>(() => nodeStore.getEntryById(windowNode.entryId))
   const thisName = computed(() => currentNode.value?.name ?? '')
   const switchOn = computed(() => capability.isEnabled)
   const switchBusy = computed(() => capability.status === 'loading')
@@ -72,26 +72,26 @@ export const useNodeListStore = defineStore('nodeList', () => {
 
   const rows = computed<NodeRow[]>(() => {
     const ownId = currentNode.value?.id
-    const groups = new Map<string, NodeProfile[]>()
+    const groups = new Map<string, NodeEntry[]>()
     const entries = [...nodeStore.nodes].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
     for (const entry of entries) {
-      if (entry.id === ownId || (entry.serverInstanceId && entry.serverInstanceId === thisNodeId.value)) continue
-      const key = entry.serverInstanceId ?? `d:${entry.id}`
+      if (entry.id === ownId || (entry.nodeId && entry.nodeId === thisNodeId.value)) continue
+      const key = entry.nodeId ?? `d:${entry.id}`
       groups.set(key, [...(groups.get(key) ?? []), entry])
     }
     const peers = new Map<string, PeerNode>(peerStore.peers.map((peer) => [peer.nodeId, peer]))
     const result: NodeRow[] = [...groups.entries()].map(([key, group]) => {
       const first = group[0]!
-      const peer = first.serverInstanceId ? peers.get(first.serverInstanceId) ?? null : null
+      const peer = first.nodeId ? peers.get(first.nodeId) ?? null : null
       return {
-        key, serverInstanceId: first.serverInstanceId ?? null, desktopIds: group.map((entry) => entry.id),
+        key, nodeId: first.nodeId ?? null, entryIds: group.map((entry) => entry.id),
         windowAddress: first.baseUrl, peer, name: peer?.name ?? first.name, isEmbedded: first.nodeType === 'embedded',
       }
     })
     // DEC-706: the peers of this node that are not in the desktop's list.
     for (const peer of peerStore.peers) {
       if (groups.has(peer.nodeId) || peer.nodeId === thisNodeId.value) continue
-      result.push({ key: peer.nodeId, serverInstanceId: peer.nodeId, desktopIds: [], windowAddress: null, peer, name: peer.name, isEmbedded: false })
+      result.push({ key: peer.nodeId, nodeId: peer.nodeId, entryIds: [], windowAddress: null, peer, name: peer.name, isEmbedded: false })
     }
     return result
   })
@@ -100,7 +100,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
 
   const views = computed<Record<string, RowView>>(() => Object.fromEntries(rows.value.map((row) => [row.key, rowViewOf({
     row, switchOn: switchOn.value, thisNodeId: thisNodeId.value, facts: facts.value[row.key],
-    offer: row.serverInstanceId ? offers.peers[row.serverInstanceId] : undefined, unfinishedStep: unfinished.value[row.key] ?? null,
+    offer: row.nodeId ? offers.peers[row.nodeId] : undefined, unfinishedStep: unfinished.value[row.key] ?? null,
   })])))
 
   const unfinishedStepOf = (key: string): NodeChangeStep | null => unfinished.value[key] ?? null
@@ -114,7 +114,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
   /** Where this window reaches the row's node now, when it does (the probe answered with the row's node). */
   const reachedAddressOf = (row: NodeRow): string | null => {
     const probe = facts.value[row.key]?.probe
-    return probe?.ok && (!row.serverInstanceId || probe.serverInstanceId === row.serverInstanceId) ? probeAddressOf(row) : null
+    return probe?.ok && (!row.nodeId || probe.nodeId === row.nodeId) ? probeAddressOf(row) : null
   }
 
   // ---------------------------------------------------------------- asking a node (DS-001, DS-004)
@@ -126,10 +126,10 @@ export const useNodeListStore = defineStore('nodeList', () => {
 
   /** The window learned the node ID of a desktop entry: it is stored, and the row moves to its node's key. */
   const learn = async (row: NodeRow, result: NodeIdentityProbeResult, token: number): Promise<string> => {
-    if (!result.ok || !row.desktopIds.length || row.serverInstanceId === result.serverInstanceId) return row.key
-    await Promise.all(row.desktopIds.map((desktopId) => nodeStore.identifyNode(desktopId, result.serverInstanceId)))
+    if (!result.ok || !row.entryIds.length || row.nodeId === result.nodeId) return row.key
+    await Promise.all(row.entryIds.map((entryId) => nodeStore.identifyNode(entryId, result.nodeId)))
     if (tokens[row.key] === token) { delete facts.value[row.key]; delete tokens[row.key] }
-    return result.serverInstanceId
+    return result.nodeId
   }
 
   const ask = async (row: NodeRow): Promise<void> => {
@@ -144,14 +144,14 @@ export const useNodeListStore = defineStore('nodeList', () => {
     // The entry's node ID was just learned: the row is now the node's row (perhaps joined with its peer); ask that.
     if (key !== row.key) { askAgain(key); return }
     // A desktop entry's own address is authoritative for it (learned above); a peer's address must answer as that peer.
-    const reached = probe.ok && (row.desktopIds.length > 0 || probe.serverInstanceId === row.serverInstanceId)
+    const reached = probe.ok && (row.entryIds.length > 0 || probe.nodeId === row.nodeId)
     if (!reached || !address) { update(key, token, { remote: null, availability: null }); return }
     const api = createNodeCollaborationApi(address)
     const remote = await Promise.all([api.capability(), api.peers()])
       .then(([state, peers]) => ({ switchOn: state.enabled, peers }), () => null)
     if (!update(key, token, { remote })) return
     await offerAsked
-    const offer = row.serverInstanceId ? offers.peers[row.serverInstanceId] : undefined
+    const offer = row.nodeId ? offers.peers[row.nodeId] : undefined
     if (!remote || offer?.phase !== 'available' || !thisNodeId.value) { update(key, token, { availability: null }); return }
     const availability = await api.peerNodeAvailability(thisNodeId.value).catch(() => null)
     update(key, token, { availability })
@@ -166,8 +166,8 @@ export const useNodeListStore = defineStore('nodeList', () => {
     if (!own) return
     const probe = await probeNodeIdentity(own.baseUrl)
     if (!probe.ok) return
-    thisNodeId.value = probe.serverInstanceId
-    await nodeStore.identifyNode(own.id, probe.serverInstanceId)
+    thisNodeId.value = probe.nodeId
+    await nodeStore.identifyNode(own.id, probe.nodeId)
   }
 
   /** The tab opened: every row is asked once (TR-701), whatever this node's switch says. */
@@ -214,12 +214,12 @@ export const useNodeListStore = defineStore('nodeList', () => {
       new Promise<null>((resolve) => setTimeout(() => resolve(null), ADD_PROBE_WAIT_MS)),
     ])
     if (probe?.ok) {
-      if (probe.serverInstanceId === thisNodeId.value) return { ok: false, error: 'duplicate', existing: thisName.value }
-      const sameNode = rows.value.find((row) => row.serverInstanceId === probe.serverInstanceId)
+      if (probe.nodeId === thisNodeId.value) return { ok: false, error: 'duplicate', existing: thisName.value }
+      const sameNode = rows.value.find((row) => row.nodeId === probe.nodeId)
       if (sameNode) { flash(sameNode.key); return { ok: false, error: 'duplicate', existing: sameNode.name } }
     }
-    const added = await nodeStore.addRemoteNode({ name: input.name.trim(), baseUrl: address, serverInstanceId: probe?.ok ? probe.serverInstanceId : undefined })
-    const key = added.serverInstanceId ?? `d:${added.id}`
+    const added = await nodeStore.addRemoteNode({ name: input.name.trim(), baseUrl: address, nodeId: probe?.ok ? probe.nodeId : undefined })
+    const key = added.nodeId ?? `d:${added.id}`
     flash(key)
     const row = rowByKey(key)
     if (row) void ask(row)
@@ -231,20 +231,20 @@ export const useNodeListStore = defineStore('nodeList', () => {
   const canOpen = (key: string): boolean => {
     const row = rowByKey(key)
     if (!row || !hasOpen.value) return false
-    return row.desktopIds.length > 0 || Boolean(reachedAddressOf(row))
+    return row.entryIds.length > 0 || Boolean(reachedAddressOf(row))
   }
 
   const openNode = async (key: string): Promise<void> => {
     const row = rowByKey(key)
     if (!row || !window.electronAPI?.openNodeWindow) return
-    let desktopId = row.desktopIds[0]
-    if (!desktopId) {
+    let entryId = row.entryIds[0]
+    if (!entryId) {
       // A node only this node knows gets a desktop entry at its first Open, at the address this window reached.
       const address = reachedAddressOf(row)
       if (!address) return
-      desktopId = (await nodeStore.addRemoteNode({ name: row.name, baseUrl: address, serverInstanceId: row.serverInstanceId ?? undefined })).id
+      entryId = (await nodeStore.addRemoteNode({ name: row.name, baseUrl: address, nodeId: row.nodeId ?? undefined })).id
     }
-    await window.electronAPI.openNodeWindow(desktopId)
+    await window.electronAPI.openNodeWindow(entryId)
   }
 
   // ---------------------------------------------------------------- the changes of a row (DS-003)
@@ -255,7 +255,7 @@ export const useNodeListStore = defineStore('nodeList', () => {
     return {
       // Where this window reaches the node: its desktop entry's address, or for a node only this node knows, the
       // address this window reached it at.
-      target: { rowKey: row.key, name: row.name, nodeId: row.serverInstanceId, desktopIds: row.desktopIds,
+      target: { rowKey: row.key, name: row.name, nodeId: row.nodeId, entryIds: row.entryIds,
         windowAddress: row.windowAddress ?? reachedAddressOf(row) },
       here: { name: thisName.value, nodeId: thisNodeId.value, windowAddress: currentNode.value?.baseUrl ?? '' },
     }

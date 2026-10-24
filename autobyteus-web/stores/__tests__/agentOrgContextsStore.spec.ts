@@ -6,7 +6,7 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 const mocks = vi.hoisted(() => ({
   applyAgentOrgActivity: vi.fn(),
   instances: [] as Array<Record<string, any>>,
-  refreshAgentOrgHistoryItem: vi.fn(async () => undefined),
+  refreshAgentOrgHistoryItem: vi.fn(async (_orgRunId: string) => undefined),
 }))
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: any) => variables.agentRunId

@@ -42,8 +42,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return registerIpcListener('server-status', callback)
   },
 
-  openNodeWindow: (nodeId: string) => ipcRenderer.invoke('open-node-window', nodeId),
-  focusNodeWindow: (nodeId: string) => ipcRenderer.invoke('focus-node-window', nodeId),
+  openNodeWindow: (entryId: string) => ipcRenderer.invoke('open-node-window', entryId),
+  focusNodeWindow: (entryId: string) => ipcRenderer.invoke('focus-node-window', entryId),
   listNodeWindows: () => ipcRenderer.invoke('list-node-windows'),
   getWindowContext: () => ipcRenderer.invoke('get-window-context'),
   upsertNodeRegistry: (change: NodeRegistryChange) => ipcRenderer.invoke('upsert-node-registry', change),

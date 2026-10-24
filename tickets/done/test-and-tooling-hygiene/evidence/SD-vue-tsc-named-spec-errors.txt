@@ -1,0 +1,7 @@
+services/agentStreaming/__tests__/TeamStreamingService.spec.ts(199,52): error TS2339: Property 'segments' does not exist on type 'AIMessage | UserMessage'.
+services/runHydration/__tests__/teamRunContextHydrationService.spec.ts(112,44): error TS2339: Property 'push' does not exist on type 'readonly TaskExecutionDto[]'.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(252,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(261,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(275,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+stores/__tests__/agentOrgContextsStore.spec.ts(68,64): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+stores/__tests__/agentRunCollaborationStoreClosure.spec.ts(53,46): error TS2339: Property 'address' does not exist on type 'ActiveAgentWorkspaceTarget'.

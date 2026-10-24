@@ -2,7 +2,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const memorySyncSettingsMessages = {
   'settings.components.settings.MemorySyncCard.targetNodeTitle': '记忆同步目标节点',
-  'settings.components.settings.MemorySyncCard.targetNodeDescription': '将此后端配置为记忆 Hub、记忆同步源，或同时承担两种角色。前端节点名称仅用于导航；下方源节点 ID 是稳定的导入身份。',
+  'settings.components.settings.MemorySyncCard.targetNodeDescription': '将此后端配置为记忆 Hub、记忆同步源，或同时承担两种角色。前端节点名称仅用于导航；下方记忆同步源 ID 是稳定的导入身份。',
   'settings.components.settings.MemorySyncCard.hubTitle': '记忆 Hub',
   'settings.components.settings.MemorySyncCard.hubDescriptionPrefix': '将导入的记忆接收到',
   'settings.components.settings.MemorySyncCard.enableHub': '启用 Hub',
@@ -26,7 +26,7 @@ const memorySyncSettingsMessages = {
   'settings.components.settings.MemorySyncCard.sourceDescriptionAnd': '和',
   'settings.components.settings.MemorySyncCard.sourceDescriptionSuffix': '记忆推送到 Hub。',
   'settings.components.settings.MemorySyncCard.enableSource': '启用源',
-  'settings.components.settings.MemorySyncCard.sourceNodeId': '源节点 ID',
+  'settings.components.settings.MemorySyncCard.memorySyncSourceId': '记忆同步源 ID',
   'settings.components.settings.MemorySyncCard.displayName': '显示名称',
   'settings.components.settings.MemorySyncCard.hubBaseUrl': 'Hub 基础 URL',
   'settings.components.settings.MemorySyncCard.hubToken': 'Hub 令牌',

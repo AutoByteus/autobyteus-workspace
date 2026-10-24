@@ -6,13 +6,13 @@ public final class ConnectionInputResolver {
     public func resolve(rawText: String, httpAcknowledged: Bool) -> ConnectionInputResolution {
         do {
             let parsed = try PairingLinkParser.parse(rawText)
-            let profile = parsed.profile.updating(
-                httpAcknowledged: parsed.profile.scheme == "https" || httpAcknowledged
+            let entry = parsed.entry.updating(
+                httpAcknowledged: parsed.entry.scheme == "https" || httpAcknowledged
             )
-            if profile.isHTTP && !profile.httpAcknowledged {
-                return .failure(ConnectionDiagnosticMapper.httpNeedsAcknowledgement(profile.mobileURL))
+            if entry.isHTTP && !entry.httpAcknowledged {
+                return .failure(ConnectionDiagnosticMapper.httpNeedsAcknowledgement(entry.mobileURL))
             }
-            return .success(profile: profile, webViewURL: parsed.webViewURL)
+            return .success(entry: entry, webViewURL: parsed.webViewURL)
         } catch {
             return .failure(
                 ConnectionDiagnosticMapper.invalidURL(
@@ -24,6 +24,6 @@ public final class ConnectionInputResolver {
 }
 
 public enum ConnectionInputResolution: Equatable {
-    case success(profile: SavedNodeProfile, webViewURL: String)
+    case success(entry: SavedNodeEntry, webViewURL: String)
     case failure(ConnectionDiagnostic)
 }

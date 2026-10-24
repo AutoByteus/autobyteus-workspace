@@ -43,6 +43,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.cause.dns': "{{host}} can't be found from here.",
   'settings.components.settings.NodesPage.cause.dnsFrom': "{{host}} can't be found from {{node}}.",
   'settings.components.settings.NodesPage.cause.notAutobyteus': "Something answers there, but it isn't an AutoByteus node.",
+  'settings.components.settings.NodesPage.cause.identityPending': "This node's identity is waiting for its data migration.",
   'settings.components.settings.NodesPage.dir.thisToIt': 'This node → {{name}}',
   'settings.components.settings.NodesPage.dir.itToThis': '{{name}} → this node',
   'settings.components.settings.NodesPage.dir.via': 'via {{address}}',

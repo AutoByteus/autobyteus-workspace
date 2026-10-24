@@ -100,7 +100,7 @@ const nodeAccess = computed<AgentRuntimeNodeAccess>(() => {
   if (isOwnNodeWindow(windowNodeContextStore)) return 'own'
   return signInBrowserAvailable.value ? 'remoteDesktop' : 'remoteStatusOnly'
 })
-const nodeName = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId)?.name
+const nodeName = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId)?.name
   || t('settings.components.settings.NodeManager.currentNodeUnknown'))
 const isChecking = computed(() => state.requestingCheck.value || (runtimes.value ?? []).some(isRowChecking))
 

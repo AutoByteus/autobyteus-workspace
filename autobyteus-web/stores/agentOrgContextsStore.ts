@@ -28,6 +28,8 @@ import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 
+const MAX_CONFIG_READ_ATTEMPTS = 3
+
 export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const contexts = ref<Record<string, AgentOrgExecutionContext>>({})
   const errors = ref<Record<string, string | null>>({})
@@ -355,20 +357,37 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     }
     return metadata
   }
+  /**
+   * autobyteus-265: a target change (context released, node switched, Org operation pending) refuses the read.
+   * A refresh of the same Org's own view (its stream's reload after a live Save) reads again, up to the bound.
+   */
   const readRunConfig = async (orgRunId: string) => {
-    const org = requireConfigOwner(orgRunId), view = org.view
-    const binding = useWindowNodeContextStore().bindingRevision
-    const current = () => contexts.value[orgRunId] === org && org.view === view && !operations.value[orgRunId]
-      && org.phase === 'historical' && !org.isActive && binding === useWindowNodeContextStore().bindingRevision
-    const canonical = await readAgentOrgRunConfig(orgRunId)
-    if (contexts.value[orgRunId] !== org || org.view !== view || operations.value[orgRunId]
-      || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Org configuration read is stale; refresh required.')
-    if (!canonical.isActive && current()) {
-      const metadata = await prepareConfigWorkspaces(org, canonical.executionTree, current)
-      if (!current()) throw new Error('Org configuration read is stale; refresh required.')
-      org.applyRunConfig(canonical.executionTree, canonical.isActive, metadata)
+    const stale = () => new Error('Org configuration read is stale; refresh required.')
+    for (let attempt = 1; ; attempt += 1) {
+      const org = requireConfigOwner(orgRunId), view = org.view
+      const binding = useWindowNodeContextStore().bindingRevision
+      const targetChanged = () => !contexts.value[orgRunId] || !!operations.value[orgRunId] || inspections.has(orgRunId)
+        || binding !== useWindowNodeContextStore().bindingRevision
+      const viewRefreshed = () => contexts.value[orgRunId] !== org || org.view !== view
+      const stopped = () => org.phase === 'historical' && !org.isActive
+      // true: consistent with this attempt's view; false: read again; throws on a target change or past the bound.
+      const consistent = () => {
+        if (targetChanged()) throw stale()
+        if (!viewRefreshed()) return true
+        if (attempt < MAX_CONFIG_READ_ATTEMPTS) return false
+        throw stale()
+      }
+      const canonical = await readAgentOrgRunConfig(orgRunId)
+      if (!consistent()) continue
+      if (!canonical.isActive && stopped()) {
+        const metadata = await prepareConfigWorkspaces(org, canonical.executionTree,
+          () => !targetChanged() && !viewRefreshed() && stopped())
+        if (!consistent()) continue
+        if (!stopped()) throw stale()
+        org.applyRunConfig(canonical.executionTree, canonical.isActive, metadata)
+      }
+      return canonical
     }
-    return canonical
   }
   const saveRunConfig = async (orgRunId: string, patches: Readonly<{
     modelPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]

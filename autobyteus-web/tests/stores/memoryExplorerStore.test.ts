@@ -39,7 +39,7 @@ describe('memoryExplorerStore', () => {
       key: 'imported:finance-node',
       type: 'IMPORTED',
       label: 'Imported: Finance Node',
-      sourceNodeId: 'finance-node',
+      memorySyncSourceId: 'finance-node',
       displayName: 'Finance Node',
       readOnly: true,
       lastImportedAt: '2026-06-23T00:00:00Z',
@@ -53,7 +53,7 @@ describe('memoryExplorerStore', () => {
               key: 'local',
               type: 'LOCAL',
               label: 'Local Memory',
-              sourceNodeId: null,
+              memorySyncSourceId: null,
               displayName: null,
               readOnly: false,
               lastImportedAt: null,
@@ -84,7 +84,7 @@ describe('memoryExplorerStore', () => {
     expect(sources).toHaveLength(2);
     expect(store.setSelectedSourceByKey('imported:finance-node')).toBe(true);
     expect(store.selectedSource).toMatchObject(importedSource);
-    expect(store.selectedSourceInput).toEqual({ type: 'IMPORTED', sourceNodeId: 'finance-node' });
+    expect(store.selectedSourceInput).toEqual({ type: 'IMPORTED', memorySyncSourceId: 'finance-node' });
     expect(store.selectedSourceQueryValue).toBe('imported:finance-node');
     expect(store.isImportedSource).toBe(true);
     expect(store.agents.page).toBe(1);
@@ -92,7 +92,7 @@ describe('memoryExplorerStore', () => {
 
     await store.fetchAgents();
 
-    expect(queryMock.mock.calls[1][0].variables.source).toEqual({ type: 'IMPORTED', sourceNodeId: 'finance-node' });
+    expect(queryMock.mock.calls[1][0].variables.source).toEqual({ type: 'IMPORTED', memorySyncSourceId: 'finance-node' });
     expect(store.agents.entries[0]?.agentDefinitionId).toBe('finance-agent');
   });
 
@@ -206,8 +206,8 @@ describe('memoryExplorerStore', () => {
   });
 
   it('loadSources only replaces the list: it never changes the selected source, and a failure keeps the previous list (REQ-011)', async () => {
-    const local = { key: 'local', type: 'LOCAL', label: 'Local Memory', sourceNodeId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
-    const imported = { ...local, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', sourceNodeId: 'finance', readOnly: true };
+    const local = { key: 'local', type: 'LOCAL', label: 'Local Memory', memorySyncSourceId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
+    const imported = { ...local, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', memorySyncSourceId: 'finance', readOnly: true };
     const queryMock = vi.fn()
       .mockResolvedValueOnce({ data: { listMemoryExplorerSources: [local, imported] } })
       .mockResolvedValueOnce({ data: { listMemoryExplorerSources: [local] } })

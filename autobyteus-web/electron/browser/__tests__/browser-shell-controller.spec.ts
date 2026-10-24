@@ -143,7 +143,7 @@ const createViewFactory = (
 
 class FakeShellWindow {
   readonly browserWindow = new EventEmitter();
-  readonly nodeId = "embedded-local";
+  readonly entryId = "embedded-local";
   private readonly stableShellId: number;
   throwOnShellIdRead = false;
 

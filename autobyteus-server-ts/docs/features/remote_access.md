@@ -14,7 +14,7 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
 | Pairing session creation/exchange | `src/remote-access/services/remote-access-pairing-service.ts` |
 | Paired device credentials and revocation | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |
-| Stable server instance identity | `src/remote-access/services/server-instance-identity-service.ts` |
+| Stable node identity (the node ID) | `src/remote-access/services/node-identity-service.ts` |
 | Client-facing absolute/relative resource URLs | `src/remote-access/services/client-facing-url-resolver.ts` |
 | Mobile static asset serving | `src/api/static/mobile-web.ts` |
 | Sensitive URL redaction | `src/api/security/redact-sensitive-url.ts` |
@@ -81,9 +81,9 @@ Credential-bearing URLs, pairing payloads, mobile credentials, and authorization
 
 ## Server Instance Identity
 
-`GET /rest/remote-access/status` returns a stable `serverInstanceId` in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered phone-facing private-network URL reaches the same node as the desktop management URL before a QR is created.
+`GET /rest/remote-access/status` returns the stable node ID (`nodeId`) in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered phone-facing private-network URL reaches the same node as the desktop management URL before a QR is created.
 
-Display names, hostnames, and user-entered URLs are not node identity. Remote-node QR creation should fail when the management URL and advertised phone-facing URL cannot both return matching `serverInstanceId` values.
+Display names, hostnames, and user-entered URLs are not node identity. Remote-node QR creation should fail when the management URL and advertised phone-facing URL cannot both return matching `nodeId` values.
 
 ## Client-facing URL Resolution
 
@@ -122,7 +122,7 @@ Remote Access data lives under the app data directory:
 
 - `remote-access/settings.json` stores `phoneAccessEnabled` and update metadata.
 - `remote-access/paired-devices.json` stores device id, display name, credential hash, client-facing base URL, created/last-seen/revoked timestamps.
-- `remote-access/server-instance.json` stores the stable `serverInstanceId` used for same-node advertised URL verification.
+- `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released before autobyteus-290 had it as `server-instance.json` `{serverInstanceId}`; the sealed app-data migration `node-identity-file-name` renames it once. Until that migration has succeeded (capability `node_identity`), `NodeIdentityService.getNodeId()` throws `NodeIdentityNotMigratedError` and creates nothing, and the status route answers HTTP 503 `{code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration."}`.
 
 Disabling Phone Access does not delete paired-device records. Revoking a device marks its `revokedAt` timestamp and retains the record for history and revoked-credential diagnostics. `GET /rest/remote-access/devices` returns active devices only; trusted-network desktop management can read retained revoked rows through `GET /rest/remote-access/devices/revoked`. While disabled, new pairing sessions are rejected and existing mobile credentials fail with `PHONE_ACCESS_DISABLED`.
 
@@ -140,7 +140,7 @@ Validation for this feature should cover:
 - Phone Access enabled state and credential usability after backend restart against the same app data;
 - seeded agent/team visibility through paired mobile GraphQL/routes;
 - Docker image packaging of the `/mobile` web shell for public launcher, remote-server, and all-in-one image paths;
-- status `serverInstanceId` use for phone-facing advertised URL verification.
+- status `nodeId` use for phone-facing advertised URL verification.
 
 ## Phase Two Boundary
 

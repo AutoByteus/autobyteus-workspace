@@ -2,7 +2,7 @@ const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const READABLE_MIGRATION_ID = "20260803_custom_provider_readable_identity";
-const ALL_READY = { token_usage_history: true, custom_llm_providers: true };
+const ALL_READY = { token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true };
 
 const mocks = vi.hoisted(() => {
   const app = {
@@ -242,7 +242,7 @@ describe("Studio app-data migration startup", () => {
     "starts with only custom providers held back while the readable identity migration is %s (AC-004)",
     async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, ...statuses]);
-      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false });
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true, memory_sync: true });
 
       await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
         .resolves.toBeUndefined();

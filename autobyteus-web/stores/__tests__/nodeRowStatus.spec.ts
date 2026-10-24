@@ -10,9 +10,9 @@ const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695',
 const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z' }
 
 const row = (overrides: Partial<NodeRow> = {}): NodeRow => ({
-  key: B, serverInstanceId: B, desktopIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
+  key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
 })
-const reached: RowFacts = { probe: { ok: true, serverInstanceId: B }, remote: { switchOn: true, peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
+const reached: RowFacts = { probe: { ok: true, nodeId: B }, remote: { switchOn: true, peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
 const working: PeerOffer = { phase: 'available', entries: [{ name: 'Writer', kind: 'agent' }], checkedAt: '2026-10-23T08:00:00.000Z' }
 const view = (input: { row?: NodeRow; switchOn?: boolean; facts?: RowFacts; offer?: PeerOffer; unfinished?: Parameters<typeof rowViewOf>[0]['unfinishedStep'] }) => rowViewOf({
   row: input.row ?? row(), switchOn: input.switchOn ?? true, thisNodeId: A, facts: 'facts' in input ? input.facts : reached,
@@ -47,13 +47,13 @@ describe('rowViewOf', () => {
   it('not reachable: the window\'s cause, or for a node only this node knows, this node\'s cause; Check again', () => {
     const down = view({ facts: { probe: { ok: false, cause: 'refused' }, remote: null, availability: null, checkedAt: 'x' }, offer: { phase: 'unavailable', code: 'PEER_UNREACHABLE', reason: 'refused' } })
     expect(down).toMatchObject({ reachable: false, line: { kind: 'unreachable', tone: 'info', fix: 'checkAgain', cause: 'refused', host: '192.168.2.31:29695' } })
-    const peerOnly = view({ row: row({ desktopIds: [], windowAddress: null }), facts: { probe: { ok: false, cause: 'unreachable' }, remote: null, availability: null, checkedAt: 'x' },
+    const peerOnly = view({ row: row({ entryIds: [], windowAddress: null }), facts: { probe: { ok: false, cause: 'unreachable' }, remote: null, availability: null, checkedAt: 'x' },
       offer: { phase: 'unavailable', code: 'PEER_UNREACHABLE', reason: 'timeout' } })
     expect(peerOnly).toMatchObject({ reachable: false, line: { kind: 'unreachable', cause: 'timeout' } })
   })
 
   it('a node only this node can reach is reachable by this node\'s answer, not the window\'s (DS-004)', () => {
-    const v = view({ row: row({ desktopIds: [], windowAddress: null }), facts: { probe: { ok: false, cause: 'not_found' }, remote: null, availability: null, checkedAt: 'x' } })
+    const v = view({ row: row({ entryIds: [], windowAddress: null }), facts: { probe: { ok: false, cause: 'not_found' }, remote: null, availability: null, checkedAt: 'x' } })
     expect(v).toMatchObject({ reachable: true, line: null, out: { state: 'working' } })
   })
 
@@ -78,7 +78,7 @@ describe('rowViewOf', () => {
   it('this node\'s switch off: no warnings; the directions say "off on this node"', () => {
     const v = view({ switchOn: false, offer: undefined })
     expect(v).toMatchObject({ line: null, out: { state: 'offHere' }, in: { state: 'offHere' } })
-    const peerOnly = view({ switchOn: false, offer: undefined, row: row({ desktopIds: [], windowAddress: null }), facts: { ...reached, probe: { ok: false, cause: 'unreachable' }, remote: null } })
+    const peerOnly = view({ switchOn: false, offer: undefined, row: row({ entryIds: [], windowAddress: null }), facts: { ...reached, probe: { ok: false, cause: 'unreachable' }, remote: null } })
     expect(peerOnly).toMatchObject({ reachable: null, line: null })
   })
 
