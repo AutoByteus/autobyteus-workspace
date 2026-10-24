@@ -4,7 +4,7 @@
 
 - Package: `node-vocabulary`; Task autobyteus-290.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-006. U-2 (a): rename the identity wire field to `nodeId`. U-3: stored names follow the code through sealed migrations (U-1 reversed).
-- Current solution revision ID: `SR-007` (ARCH-REV-004: AR-905 the hold-back chains, AR-906 the phone keys, N-906 … N-909). Design status: `Ready`.
+- Current solution revision ID: `SR-008` (CRR-001 F-001: Memory Sync's identity is `syncSourceId`; design-text corrections from the implementation's assumptions 1, 2, 4). Design status: `Ready`.
 - Authorities read:
   - `solution-designer/SKILL.md`;
   - `references/architecture-design.md`;
@@ -39,7 +39,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 - **Where (N-901):** a repository-level `GLOSSARY.md` at the workspace root is the project glossary. It holds the node words below, which govern the server, the web, the desktop shell and the phone apps.
   - `collaboration_model.md` § 1 keeps the collaboration words (Run, Unit, Team, Org, …). Its Node and Peer entries link to `GLOSSARY.md` instead of defining them again, so there is one definition per word.
   - `DESIGN.md` gets one line under "Project-specific design documents": "Domain vocabulary: `GLOSSARY.md` is the authority for domain words, with `collaboration_model.md` § 1 for collaboration words (Principle 15)."
-  - The glossary also lists **source ID** (Memory Sync).
+  - The glossary also lists **sync source ID** (Memory Sync).
 - **Entries:**
   - **Node:** one AutoByteus server, identified by its **node ID** (`srv_…`).
   - **This node / remote node:** a point of view. Every node other than this one is a remote node, even a Docker node on the same machine. *Remote* names a location.
@@ -55,10 +55,9 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 - **Derived consumers (Principle 11):** see the per-step consumer lists. Stored names are migrated (§ Stored Names Migration); current code reads and writes only the new names.
 - **Left alone:**
   - `PeerNode`, `peers.json`, add peer, GraphQL `peerNodes` / `peerNodeOffer` / `peerNodeAvailability`;
-  - `EMBEDDED_NODE_ID = 'embedded-local'`, `nodeType: 'embedded' | 'remote'`, `isDesktopEmbeddedNode`;
+  - the value `'embedded-local'`, `nodeType: 'embedded' | 'remote'`, `isDesktopEmbeddedNode` (the constant itself is renamed `EMBEDDED_ENTRY_ID` in Step 4);
   - the remote chip and remote runs;
   - the `remote-collaboration` and `remote-access` feature names (remote access = access from another device, a location meaning);
-  - the localStorage key's value `autobyteus.node_registry.v1` (a stored value, rule 8);
   - every behavior.
 - **Memory Sync's "source node id" (V-10):** renamed now (AR-903), Step 5. Whether a source should be identified by its node ID instead stays FU-002 (the user's decision).
 - **Follow-ups:** FU-002 (Memory Sync's source identity). FU-001 is pulled in as Step 1b (the user).
@@ -138,15 +137,15 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 - **Siblings:** `stores/runHistoryTeamExecutionRows.ts` wording; e2e fixture `task-agent-peer-sidebar.page.vue` → `task-agent-sibling-sidebar.page.vue` and its spec references.
 - **The contract:** `collaboration_model.md` § 2.2 (V-08).
 
-### Step 5b: Memory Sync's source ID (V-10, AR-903)
+### Step 5b (name corrected at SR-008: `sourceId` already names three other IDs, so this one is `syncSourceId`): Memory Sync's sync source ID (V-10, AR-903)
 
 - **Code:**
-  - `sourceNodeId` → `sourceId` across `memory-sync/` (`shared/source-node-id.ts` → `shared/source-id.ts`, the config, state store, manifest, hub client, ingestion service, types);
+  - `sourceNodeId` → `syncSourceId` across `memory-sync/` (`shared/source-node-id.ts` → `shared/sync-source-id.ts`, the config, state store, manifest, hub client, ingestion service, types);
   - the GraphQL `memory-sync` types and the web (`types/memory.ts`, `memorySyncStore.ts`, `memoryExplorerStore.ts`, `memoryInspectorStore.ts`, `MemorySyncCard.vue`, the memory GraphQL documents, `generated/graphql.ts` by codegen).
-- **UI:** "Source node id" → "Source ID", and the card's description "the source node id below is the stable import identity" → "the source ID below …", in English and Chinese.
+- **UI:** "Source node id" → "Sync source ID", and the card's description "the source node id below is the stable import identity" → "the sync source ID below …", in English and Chinese.
 - **Wire to the hub:** renamed as a clean cut (rule 9; the hub is a node of the same release). Covers `memory-hub-client.ts:24` (the query parameter) and the ingestion side.
-- **Docs:** `autobyteus-server-ts/docs/features/memory_sync.md` and `docs/modules/agent_memory.md`: "`sourceNodeId`" → "source ID" (the folder `memory/imports/<source ID>` keeps its stored value), and "`NodeProfile.id`" → "entry ID".
-- **Stored names:** migrated by SM-2 … SM-5 (§ Stored Names Migration); current code reads and writes only `sourceId`, `boundSourceId` and `source.json`.
+- **Docs:** `autobyteus-server-ts/docs/features/memory_sync.md` and `docs/modules/agent_memory.md`: "`sourceNodeId`" → "sync source ID" (the folder `memory/imports/<sync source ID>` keeps its stored value), and "`NodeProfile.id`" → "entry ID".
+- **Stored names:** migrated by SM-2 … SM-5 (§ Stored Names Migration); current code reads and writes only `syncSourceId`, `boundSyncSourceId` and `sync-source.json`.
 
 ### Step 6: glossary and docs (REQ-907)
 
@@ -171,10 +170,10 @@ The mapping owners of SR-003 … SR-005 are **removed from the design**. Current
 | ID | Store (owner today) | Released shape | New shape |
 | --- | --- | --- | --- |
 | SM-1 | Server identity (`NodeIdentityService`) | `<data>/remote-access/server-instance.json` `{serverInstanceId}` | `<data>/remote-access/node-identity.json` `{nodeId}`, same value |
-| SM-2 | Memory Sync source config (`memory-sync-config-service.ts:43`) | `memory-sync/memory-sync-config.json` `source.sourceNodeId` | `source.sourceId` |
-| SM-3 | Memory Sync source state (`local-file-memory-sync-state-store.ts:44`) | `memory-sync/source-state/*.json` `sourceNodeId` | `sourceId` (file names are derived from values; unchanged) |
-| SM-4 | Hub credentials (`local-file-memory-hub-credential-store.ts:17`) | `memory-sync/hub-credentials.json` records' `boundSourceNodeId` | `boundSourceId` |
-| SM-5 | Hub imports (`local-file-memory-import-store.ts:91-225`) | `memory/imports/<id>/source-node.json` `{sourceNodeId, …}` and `sync-manifest.json` `sourceNodeId` | `source.json` `{sourceId, …}` and `sourceId`; folder names (values) unchanged |
+| SM-2 | Memory Sync source config (`memory-sync-config-service.ts:43`) | `memory-sync/memory-sync-config.json` `source.sourceNodeId` | `source.syncSourceId` |
+| SM-3 | Memory Sync source state (`local-file-memory-sync-state-store.ts:44`) | `memory-sync/source-state/*.json` `sourceNodeId` | `syncSourceId` (file names are derived from values; unchanged) |
+| SM-4 | Hub credentials (`local-file-memory-hub-credential-store.ts:17`) | `memory-sync/hub-credentials.json` records' `boundSourceNodeId` | `boundSyncSourceId` |
+| SM-5 | Hub imports (`local-file-memory-import-store.ts:91-225`) | `memory/imports/<id>/source-node.json` `{sourceNodeId, …}` and `sync-manifest.json` `sourceNodeId` | `sync-sync-source.json` `{syncSourceId, …}` and `syncSourceId`; folder names (values) unchanged |
 | SM-6 | Desktop node list (`electron/nodeRegistryStore.ts:11`) | `userData/node-registry.v1.json`: `nodes[].serverInstanceId`, `nodes[].isSystem` | `userData/node-registry.json`: `nodes[].nodeId`; `isSystem` dropped; `id` (the entry's own ID) unchanged |
 | SM-7 | The window's node list in browser mode (`stores/nodeStore.ts`, key `autobyteus.node_registry.v1`; written only without the Electron API, `nodeStore.ts:31`) | the same snapshot shape | key `autobyteus.node_registry`, same field changes |
 | SM-9 | iOS saved entries (`AutoByteusMobileCore/SavedNodeStore.swift:65-68`) | UserDefaults keys `autobyteus.saved-node-profiles`, `autobyteus.selected-node-profile-id` | `autobyteus.saved-node-entries`, `autobyteus.selected-node-entry-id`; record fields unchanged |
@@ -214,12 +213,12 @@ The iOS and Android saved records keep their fields (no node-ID field; `id` is t
    - **Server:** the runner's record and atomic file writes (write the new file or name, then remove the old). For SM-1 the new file is written first, then the old one is removed, so a crash in between re-runs safely: both files present with the same value → keep the new one.
    - **Client:** the same order (new key or file first, then the old removed). Backups are `.bak` copies for files and a `…:backup` key for storage, kept until the next successful start.
 6. **Current-only boundary:**
-   - current code knows only `nodeId`, `sourceId`, `source.json`, `node-identity.json`, `node-registry.json` and the unversioned keys;
+   - current code knows only `nodeId`, `syncSourceId`, `sync-source.json`, `node-identity.json`, `node-registry.json` and the unversioned keys;
    - old names exist only inside migration folders and their frozen shapes;
    - the existing in-place "legacy node record" normalization in `nodeRegistryStore.ts:139-146` stays as current validation only (it drops invalid records). It gains no old-name branch.
 7. **Cost:** a handful of small JSON files and keys; the import folders scale with the number of Memory Sync sources (two small files each). It runs once.
 8. **References:**
-   - the source ID value names hub folders and source-state files: unchanged;
+   - the sync source ID value names hub folders and source-state files: unchanged;
    - the node ID value is pinned by peers (`peers.json`) and links: unchanged.
 9. **Evidence:**
    - migration unit tests per shape, plus re-run and crash-between-steps cases;
@@ -240,8 +239,8 @@ The iOS and Android saved records keep their fields (no node-ID field; `id` is t
      - `PeerClient.fetchNodeId` (`peer-client.ts:232-235`) refuses with `NODE_IDENTITY_NOT_MIGRATED` and that text, not `PEER_NOT_AUTOBYTEUS`;
      - the phone apps show their existing "server unavailable" state for a 503.
    - **Remote collaboration:** `ownNodeId` (`remote-collaboration-composition.ts:58`) is used by `PeerGateway` and `PeerClient`. Both answer with a refusal, `NODE_IDENTITY_NOT_MIGRATED` ("This node's identity is waiting for its data migration"), for inbound and outbound requests and the discovery tools. Delegation and messages to peers get it as a refusal text. Nothing is sent.
-   - **Phone-access pairing:** it refuses to issue a pairing while held back (it embeds the node ID).
-   - **GraphQL showing the node ID** (the Nodes tab): the field is null, and the tab shows "Node ID: waiting for its data migration".
+   - **Phone-access pairing:** not affected. Pairing doesn't embed the node ID (corrected at SR-008, from the implementation's Assumption 1).
+   - **The Nodes tab:** no GraphQL field serves the node ID. The tab shows the probe's `identity_pending` reason (corrected at SR-008, from the implementation's Assumption 2).
 5. **Unit cases:** held back → `getNodeId` throws and no file is written; the status route answers without `nodeId`; the gateway refuses; fresh install → created; ready → read.
 
 **`memory_sync` (SM-2 … SM-5):**

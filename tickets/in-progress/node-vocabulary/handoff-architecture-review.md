@@ -54,3 +54,11 @@
 | AR-905 | § Hold-back chains: configure calls in both readiness functions; `NodeIdentityService` throws `NodeIdentityNotMigratedError` and never writes while held back; status route, gateway and client, pairing and GraphQL answers named; fresh install; the Memory Sync gates; unit cases |
 | AR-906 | (a): SM-9 (iOS) and SM-10 (Android) rename the "profile" keys to "entry" through sealed steps; the word list extended |
 | N-906 … N-909 | SM-1 with different values fails; `createdAt` kept; SM-6 per-field copy; the runner call sites (`electronApplication.ts:362`, plugin `19.clientDataMigrations`) |
+
+## Round 6 — 2026-10-24 (SR-008), after CRR-001
+
+| Item | Resolution |
+| --- | --- |
+| CRR-001 F-001 (Design Impact) | Memory Sync's identity is `syncSourceId` / "Sync source ID", not `sourceId`, which names three other IDs (145 uses). SM-2 … SM-5 targets: `syncSourceId`, `boundSyncSourceId`, `sync-source.json` (unreleased, so changed in place). REQ-910, Step 5b, the SM table and the glossary (implementation) updated |
+| Assumptions 1, 2, 4 (design text) | Pairing isn't gated (it doesn't embed the node ID); the Nodes tab uses the probe's `identity_pending`; the "Left alone" list corrected |
+| F-002 | Implementation-owned Local Fix (`PeerStartedRunViews`) |
