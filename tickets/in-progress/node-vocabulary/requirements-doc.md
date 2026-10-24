@@ -24,12 +24,13 @@ The words node, peer, remote and embedded, and the word `nodeId`, mean different
 
 | ID | Requirement |
 | --- | --- |
-| REQ-901 | In code, `nodeId` means only the node's ID. The desktop's ID for its own record is the **entry ID** (`entryId`), in the registry, its changes, the window context and every caller (V-01). |
+| REQ-901 | In code, `nodeId` means only the node's ID. A client's own record of a node is an **entry** with an **entry ID** (`entryId`): the desktop's registry, its changes, the window context, the mobile session, and the phone apps' saved node records (iOS `SavedNodeProfile`, Android `NodeProfile`), with every caller (V-01, V-09). |
 | REQ-902 | The node's ID has one name in code: `nodeId`. `ServerInstanceIdentityService` becomes `NodeIdentityService` (`getNodeId`); the web's `serverInstanceId` and `isServerInstanceId` become `nodeId` and `isNodeId` (V-02). The wire field is U-2. |
 | REQ-903 | Names that mean "registered peers" say peer (V-03): the tool `list_available_nodes` becomes `list_peer_nodes` (the user's decision); `AvailableNode` → `PeerNodeStatus`; `RemoteDiscoveryChannel` → `PeerDiscoveryChannel`; `RemoteNodeDiscovery` → `PeerNodeDiscovery`; `RemotePeer` → `PeerNodeRef`. The tool's texts and the docs and agent configs that name it change with it. |
 | REQ-904 | "peer" is not used for other things. The connecting client's network address is the **client address** (V-04). Sibling task agents in the run tree are **siblings** (V-05). |
 | REQ-905 | The desktop entry drops the field nobody reads, `isSystem` (V-06); the stored side is U-1. |
-| REQ-906 | Behavior is unchanged: the Nodes tab, pairing, delegation, discovery results, the tools' abilities and exposure. |
+| REQ-909 | The remote-access status answer has no version field. `compatibilityVersion` is removed from the server's answer and its readers: the web type and the iOS app's decode and its `>= minimum` check, with whatever that check alone used (DESIGN.md rule 9; the user, 2026-10-24: "we should remove it … it's against our rule"). |
+| REQ-906 | Behavior is unchanged: the Nodes tab, pairing, delegation, discovery results, the tools' abilities and exposure. The one intended exception is REQ-909: an iOS app no longer refuses a server by a version number. |
 | REQ-907 | The docs (`collaboration_model.md`, `remote_collaboration.md`, the web `settings.md`, `agent_tools.md`, `agent_communication.md`) state the vocabulary rule. No old name is left. |
 | REQ-908 | Done in steps that each change no behavior, each green: server identity, server peer names, the tool rename, the web entry ID, the other "peer" meanings, docs. |
 

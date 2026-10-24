@@ -4,7 +4,7 @@
 
 - Package: `node-vocabulary`; Task autobyteus-290.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-002. U-1 (a): keep stored names. U-2 (a): rename the identity wire field to `nodeId`.
-- Current solution revision ID: `SR-003`. Design status: `Ready`.
+- Current solution revision ID: `SR-004` (FU-001 pulled in; the phone apps' entry names). Design status: `Ready`.
 - Authorities read:
   - `solution-designer/SKILL.md`;
   - `references/architecture-design.md`;
@@ -58,7 +58,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - the localStorage key's value `autobyteus.node_registry.v1` (a stored value, rule 8);
   - every behavior.
 - **Memory Sync's "source node id" (V-10), left alone:** it is a user-entered import identity (`memory-sync-config-service.ts:81-98`, label "Source node id" in `memorySyncSettings.ts:29`), stored in the sync state and sent to the hub. It is not the node's ID. Renaming it, or making it the node's ID, changes stored data and the hub protocol: FU-002, the user's decision.
-- **Follow-ups:** FU-001 (`compatibilityVersion` on the status answer, rule 9); FU-002 (Memory Sync's source identity).
+- **Follow-ups:** FU-002 (Memory Sync's source identity). FU-001 is pulled in as Step 1b (the user).
 
 ## Steps (each no behavior change, green before the next)
 
@@ -75,6 +75,16 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - iOS `AutoByteusMobileCore/ConnectionValidator.swift` (`serverInstanceID = "serverInstanceId"` → `nodeId`) and its tests.
 - **UI text:** none needed; the Nodes tab already says "Node ID" (`localization/messages/en/nodesPage.ts:57`).
 - **Consumers check:** a search for `serverInstanceId` and `ServerInstance` finds only the identity service's stored-field mapping and the desktop registry mapping (Step 4).
+
+### Step 1b: no version field on the status answer (REQ-909, the user's request)
+
+- **Server:** `api/rest/remote-access.ts:30` stops answering `compatibilityVersion`.
+- **Readers:**
+  - web `types/remoteAccess.ts:49` (the field), the mobile shell specs' fixtures;
+  - the server E2E type `phone-access-running-routes.e2e.test.ts:36`;
+  - iOS `ConnectionValidator.swift`: the field, its decode and encode, `minimumCompatibilityVersion` and the `>= minimum` guard (line 135), plus `ConnectionDiagnosticMapper.incompatibleServer()` if nothing else reaches it (it is also referenced at `ConnectionDiagnostic.swift:110`; keep it only if that path is live, otherwise remove it as dead code, Principle 7); the iOS tests' JSON.
+  - Android: no reader (search: none).
+- **Behavior:** the only change is that an iOS app no longer refuses a server for a version number (rule 9: versions are the user's to keep together). Everything else is unchanged.
 
 ### Step 2: registered-peer names say peer (V-03)
 
@@ -103,6 +113,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - `EMBEDDED_NODE_ID` keeps its value and is named `EMBEDDED_ENTRY_ID`.
 - **Stores and shell:** `stores/nodeStore.ts`, `stores/windowNodeContextStore.ts` (`nodeId` → `entryId`, `isEmbeddedWindow` stays), `electron/nodeRegistryStore.ts`, `electron/preload.ts`, `electron/types.d.ts`, `electron/application/electronApplication.ts`, and every caller (the 87 web files using `nodeId`, each classified: entry meaning → `entryId`; node meaning stays `nodeId`).
 - **Stored-name mapping (U-1), one owner:** a new `utils/nodeEntryStorage.ts` (`toStoredNodeEntry` / `fromStoredNodeEntry`), used by both stores that persist the snapshot (the Electron file and the window's localStorage copy). It maps `entryId` ⇄ stored `id` and `nodeId` ⇄ stored `serverInstanceId`. It reads and ignores a stored `isSystem`, and no longer writes it. Old files load unchanged (rule 7); there is no migration.
+- **Phone apps:** iOS `SavedNodeProfile` → `SavedNodeEntry` (13 files) and Android `NodeProfile` → `NodeEntry` (`ui/ConnectionScreen.kt` and its users). Their stored keys stay through each app's one store owner (U-1).
 - **Mobile (V-09):** `MobileNodeSession.nodeId` → `entryId` (`MOBILE_NODE_ID` → `MOBILE_ENTRY_ID`). The stored credential session keeps its field name through `utils/remoteAccess/mobileCredentialStorage.ts`, its one owner.
 - **Consumers check:** every window-scoped endpoint resolver, the Nodes tab, phone access, the window switcher; the remote runs store keeps `nodeId` (the node's ID).
 

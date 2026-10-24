@@ -28,3 +28,12 @@
 - Audit additions: V-08 ("a delegated run is a peer" in the contract), V-09 (the mobile session's `nodeId` = its entry ID), V-10 (Memory Sync's "source node id", a third ID: FU-002). FU-001: `compatibilityVersion`, rule 9.
 - Design: six steps, each with no behavior change. A glossary in `collaboration_model.md` § 1 with a `DESIGN.md` pointer. Stored names keep their form through one mapping owner each (U-1); the identity wire field becomes `nodeId` (U-2), with iOS included.
 - Classification: `Large` / `High`. Route: architecture review.
+
+### SR-004 — The version field removed; the phone apps' entries (2026-10-24)
+
+- Trigger: the user on FU-001: "The version number like compatibility number, I think we should remove it … it's against our rule". The iOS app checks it (`ConnectionValidator.swift:135`, `>= minimumCompatibilityVersion`), which is a version check rule 9 rules out.
+- Changes:
+  - REQ-909 and design Step 1b: remove the field and the iOS check; the only intended behavior change.
+  - REQ-901 and Step 4 extended to the phone apps' saved node records (iOS `SavedNodeProfile`, Android `NodeProfile` → entry), found while tracing the field.
+- Approval: REQ-909 is the user's request; the entry naming is within the approved direction.
+- Route: an addendum to the architecture review in progress.
