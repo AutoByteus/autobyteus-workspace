@@ -1,0 +1,13 @@
+IMP-05 — LM Studio suite (autobyteus-253, W-05, AC-007), commit b421d37faa, macOS, LM Studio 0.4.26, 2026-10-24
+Live: lms load qwen/qwen3.6-35b-a3b; env -i PATH HOME=<temp> TMPDIR LMSTUDIO_TARGET_TEXT_MODEL=qwen/qwen3.6-35b-a3b pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/lmstudio-llm.test.ts --reporter=verbose; then lms unload qwen/qwen3.6-35b-a3b (lms ps: No models are currently loaded)
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > uses metadata-aware LM Studio discovery to create a runnable text model with truthful context metadata 4296ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should return a completion for a text model 2100ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (autobyteus-ts/tests/assets/sample_image.png) 5094ms
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (http://192.168.2.124:29695/rest/files/images/d0d0f29a-824c-4af0-9457-ecfba83ff9be.jpg) 1013ms [the image URL http://192.168.2.124:29695/rest/files/images/d0d0f29a-824c-4af0-9457-ecfba83ff9be.jpg is not reachable from this machine (fetch failed)]
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream responses from a text model 16039ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream reasoning from a reasoning-capable text model 23994ms
+ ✓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should emit tool calls for LM Studio 15383ms
+      Tests  6 passed | 1 skipped (7)
+
+Closed port: env -i ... LMSTUDIO_HOSTS=http://127.0.0.1:9 (same command): Tests 7 skipped (7), each '[LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]'
+Nothing loaded: metadata case '[no text model is loaded in LM Studio; load one to check its context metadata]', reasoning case '[no reasoning-capable text model is loaded in LM Studio; ...]'
