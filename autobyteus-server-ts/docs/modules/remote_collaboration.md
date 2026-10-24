@@ -130,6 +130,13 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 The refusal codes are one list next to the port (`agent-collaboration/execution/remote/remote-refusal-codes.ts`);
 the agent-facing texts are in `domain/remote-refusals.ts`.
 
+While this node's identity waits for its data migration (autobyteus-290, capability `node_identity`), nothing is sent
+or admitted: the gateway answers HTTP 503 `NODE_IDENTITY_NOT_MIGRATED` (with no `nodeId`), the client refuses with the
+same code ("This node's identity is waiting for its data migration, so nothing was sent to another node."), and
+adding a peer or resolving an address is refused with it as a settings error. A peer that answers 503 with the code is
+named as waiting for its data migration (a refusal, a probe's settings error, an address attempt `identity_pending`),
+not as unreachable or "not an AutoByteus node".
+
 ## Discovery
 
 autobyteus-261. An agent with the opt-in tools (see [Agent Tools](agent_tools.md)) finds its node's peers and what

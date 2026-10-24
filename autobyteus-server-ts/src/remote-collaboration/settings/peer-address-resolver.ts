@@ -25,6 +25,7 @@ type Settled = Readonly<{ address: string; nodeId: string } | { address: string;
 const resultOf = (error: unknown): PeerAddressAttemptResult => {
   if (error instanceof RemoteCollaborationSettingsError && error.code === "PEER_UNREACHABLE") return error.details.reason ?? "unreachable";
   if (error instanceof RemoteCollaborationSettingsError && error.code === "PEER_NOT_AUTOBYTEUS") return "not_autobyteus";
+  if (error instanceof RemoteCollaborationSettingsError && error.code === "NODE_IDENTITY_NOT_MIGRATED") return "identity_pending";
   return "unreachable";
 };
 

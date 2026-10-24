@@ -4,7 +4,7 @@ import { getAddressCandidateService } from "../../remote-access/services/address
 import { getPairedDeviceService } from "../../remote-access/services/paired-device-service.js";
 import { getRemoteAccessPairingService } from "../../remote-access/services/remote-access-pairing-service.js";
 import { getRemoteAccessSettingsService } from "../../remote-access/services/remote-access-settings-service.js";
-import { getNodeIdentityService } from "../../remote-access/services/node-identity-service.js";
+import { getNodeIdentityService, NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
 
 const sendRemoteAccessError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
   if (error instanceof RemoteAccessError) {
@@ -22,13 +22,21 @@ const sendRemoteAccessError = (reply: { code: (statusCode: number) => { send: (p
 };
 
 export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<void> {
-  app.get("/remote-access/status", async () => {
+  app.get("/remote-access/status", async (_request, reply) => {
     const settings = await getRemoteAccessSettingsService().getSettings();
+    let nodeId: string;
+    try {
+      nodeId = await getNodeIdentityService().getNodeId();
+    } catch (error) {
+      // autobyteus-290 N-910: the reason, so a probe says "waiting for its data migration", not "not AutoByteus".
+      if (error instanceof NodeIdentityNotMigratedError) return reply.code(503).send({ code: error.code, message: error.message });
+      throw error;
+    }
     return {
       phoneAccessEnabled: settings.phoneAccessEnabled,
       pairingAvailable: settings.phoneAccessEnabled,
       compatibilityVersion: 1,
-      nodeId: await getNodeIdentityService().getNodeId(),
+      nodeId,
       serverName: "AutoByteus Desktop",
     };
   });

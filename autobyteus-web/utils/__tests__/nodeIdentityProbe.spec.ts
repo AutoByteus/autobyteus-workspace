@@ -13,6 +13,14 @@ describe('probeNodeIdentity', () => {
     expect(fetchImpl.mock.calls[0]![0]).toBe('http://localhost:8001/rest/remote-access/status')
   })
 
+  it("autobyteus-290 N-910: a node whose identity waits for its data migration (503 with the code) says so; another 503 is not AutoByteus", async () => {
+    const pending = vi.fn(async () => ({ ok: false, status: 503,
+      json: async () => ({ code: 'NODE_IDENTITY_NOT_MIGRATED', message: "This node's identity is waiting for its data migration." }) }) as unknown as Response)
+    await expect(probeNodeIdentity('http://localhost:8001', { fetchImpl: pending })).resolves.toEqual({ ok: false, cause: 'identity_pending' })
+    const busy = vi.fn(async () => ({ ok: false, status: 503, json: async () => ({}) }) as unknown as Response)
+    await expect(probeNodeIdentity('http://web', { fetchImpl: busy })).resolves.toEqual({ ok: false, cause: 'not_autobyteus' })
+  })
+
   it('something that answers without an identity is not an AutoByteus node', async () => {
     await expect(probeNodeIdentity('http://web', { fetchImpl: answer({ hello: 1 }) })).resolves.toEqual({ ok: false, cause: 'not_autobyteus' })
     await expect(probeNodeIdentity('http://web', { fetchImpl: answer({}, false) })).resolves.toEqual({ ok: false, cause: 'not_autobyteus' })

@@ -11,6 +11,8 @@ export { REMOTE_REFUSAL };
 /** Texts for refusals decided on this node (before anything is sent). */
 export const localRefusalText = Object.freeze({
   off: () => REMOTE_ROOT_REFUSAL_TEXT.off,
+  /** autobyteus-290: this node's identity is held back (capability `node_identity`). */
+  nodeIdentityPending: () => "This node's identity is waiting for its data migration, so nothing was sent to another node.",
   peerNotRegistered: (node: string) =>
     `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.`,
 });
@@ -38,6 +40,7 @@ export const peerRefusalText = (node: string, code: string, detail: string, targ
     }
     case REMOTE_REFUSAL.TARGET_NOT_PERMITTED: return `Node "${node}" refused the message: that run is not linked with the sender.`;
     case REMOTE_REFUSAL.TARGET_NOT_FOUND: return `That run no longer exists on node "${node}".`;
+    case REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED: return `Node "${node}"'s identity is waiting for its data migration, so it refused the request.`;
     default: return `Node "${node}" refused the request: ${detail}`;
   }
 };

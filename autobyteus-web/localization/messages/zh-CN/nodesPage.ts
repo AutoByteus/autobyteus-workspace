@@ -43,6 +43,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.cause.dns': '从这里找不到 {{host}}。',
   'settings.components.settings.NodesPage.cause.dnsFrom': '{{node}} 找不到 {{host}}。',
   'settings.components.settings.NodesPage.cause.notAutobyteus': '该地址有应答，但它不是 AutoByteus 节点。',
+  'settings.components.settings.NodesPage.cause.identityPending': '该节点的身份正在等待数据迁移。',
   'settings.components.settings.NodesPage.dir.thisToIt': '本节点 → {{name}}',
   'settings.components.settings.NodesPage.dir.itToThis': '{{name}} → 本节点',
   'settings.components.settings.NodesPage.dir.via': '经由 {{address}}',

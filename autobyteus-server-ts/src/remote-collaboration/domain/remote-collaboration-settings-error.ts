@@ -11,10 +11,12 @@ export type RemoteCollaborationSettingsErrorCode =
   | "PEER_ALREADY_REGISTERED"
   | "PEER_NAME_INVALID"
   | "PEER_NAME_TAKEN"
-  | "PEER_NOT_FOUND";
+  | "PEER_NOT_FOUND"
+  /** autobyteus-290: this node's, or the asked node's, identity is waiting for its data migration. */
+  | "NODE_IDENTITY_NOT_MIGRATED";
 
 /** What one address answered when this node looked for another node there (one-nodes-tab DS-005). */
-export type PeerAddressAttemptResult = TransportFailureReason | "not_autobyteus" | "different_node";
+export type PeerAddressAttemptResult = TransportFailureReason | "not_autobyteus" | "different_node" | "identity_pending";
 export type PeerAddressAttempt = Readonly<{ address: string; result: PeerAddressAttemptResult }>;
 
 /**

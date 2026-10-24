@@ -16,6 +16,8 @@ export const REMOTE_REFUSAL = Object.freeze({
   TARGET_NOT_PERMITTED: "REMOTE_TARGET_NOT_PERMITTED",
   TARGET_NOT_FOUND: "REMOTE_TARGET_NOT_FOUND",
   BAD_REQUEST: "REMOTE_REQUEST_INVALID",
+  /** autobyteus-290: this node's or the peer's identity is waiting for its data migration (capability `node_identity`). */
+  NODE_IDENTITY_NOT_MIGRATED: "NODE_IDENTITY_NOT_MIGRATED",
 } as const);
 
 /** Texts of refusals a root decides before anything is sent, and of its results for remote runs. */

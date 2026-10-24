@@ -40,6 +40,7 @@ import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-onl
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports/remove-work-trace-exports-migration.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
+import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
 
 /**
  * Definition names as the application resolves them. The definition providers are loaded only when a migration needs a
@@ -146,6 +147,8 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
       memoryDir,
       config.getAgentsDir(),
     ),
+    // The node identity file follows the code's name (autobyteus-290 SM-1); holds back `node_identity`.
+    new NodeIdentityFileNameMigration(appDataDir),
   ];
 };
 

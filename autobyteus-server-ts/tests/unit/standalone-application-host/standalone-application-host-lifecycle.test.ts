@@ -256,7 +256,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.runPending.mockResolvedValue(successfulStatuses());
-    mocks.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true });
+    mocks.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true, node_identity: true });
   });
 
   it("runs phases 5-10 in order before event-pipeline and application construction", async () => {
@@ -405,7 +405,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       status(TEAM_MIGRATION_ID, "FAILED", { logPath: "/tmp/team.log", errorMessage: "legacy package" }),
       status(READABLE_MIGRATION_ID, "SUCCEEDED"),
     ]);
-    mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: false, custom_llm_providers: true });
+    mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: false, custom_llm_providers: true, node_identity: true });
 
     const handle = await startStandaloneApplicationHost(input);
 
@@ -427,7 +427,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     "starts with only custom providers held back while readable-provider identity is %s (AC-004)",
     async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"), ...statuses]);
-      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false });
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true });
 
       const handle = await startStandaloneApplicationHost(input);
 
