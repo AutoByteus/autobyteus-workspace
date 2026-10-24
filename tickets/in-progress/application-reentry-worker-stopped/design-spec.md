@@ -47,7 +47,7 @@ A worker that calls the host on start is refused (`application-availability-serv
 - In scope: UC-001…UC-003 (code), UC-004 (report only). Files in the Target mapping.
 - Derived consumers: `recoverParticipants` has one caller (`ApplicationCatalogTransitionService.commitAndRecover`); `ApplicationSetupRequiredError` keeps its message (built by the same function); `getDiagnosticsByApplicationId` stays for the lifecycle's iteration or is replaced by the new method there (no other readers).
 - Deliberately left alone: participant preparation (`prepareParticipants`), `quarantineParticipants`, the `recoverPreviouslyInactive` policy (finding 5), the removed/persisted-only branches (`:88-101`), startup order, readiness rules, every finding in `application-framework-design-findings.md` except 1–3.
-- Follow-ups: findings 4–12 of `application-framework-design-findings.md`, reported to the user (not `follow-ups.md` rows unless the user asks; the user decides what becomes a Task).
+- Follow-ups: at the user's request (2026-10-24), the design assessment's recommendations are `follow-ups.md` FU-001 (one owner for bringing an application into service + state table), FU-002 (one availability reader; remove global fallbacks), FU-003 (real-worker lifecycle e2e), FU-004 (user's recovery path for a quarantined app; package-reload policy), FU-005 (application vocabulary and glossary). The remaining findings (#7 within FU-002; #10–12) stay in `application-framework-design-findings.md` for the user to decide.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
