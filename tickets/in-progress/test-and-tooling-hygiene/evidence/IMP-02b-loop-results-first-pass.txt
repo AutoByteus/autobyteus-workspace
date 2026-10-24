@@ -1,0 +1,6 @@
+IMP-02b — 40-run loops under load (autobyteus-253, W-02, AC-004), first pass at commit f14a84e2b8; 2 x ncpu 'yes' loops, macOS 10 cores, 2026-10-24
+integration: tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts x40; e2e: agent-package-definitions-live-refresh.e2e.test.ts x40 (env -i)
+RESULT integ pass=38 fail=2 of 40 (load=1, ncpu=10)
+RESULT e2e pass=35 fail=5 of 40 (load=1, ncpu=10)
+integration failures: run 6 = AC-006 burst test, whole test took 276 s (host stalled; the other runs took ~19 s); run 38 = AC-016 (test read at 200 ms, before the 300 ms catch-up; fixed in 7bce694c91)
+e2e failures: runs 16 (DCF-E2E-003 FOLDER_MISSING not seen in 5 s), 19, 20, 30, 39 (DCF-E2E-002 'edited instructions')
