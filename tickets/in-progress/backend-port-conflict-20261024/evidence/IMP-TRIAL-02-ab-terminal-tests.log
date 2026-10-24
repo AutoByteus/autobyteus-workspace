@@ -212,4 +212,3 @@ This error originated in "tests/unit/tools/terminal/command-execution/shell-comm
      Errors  1 error
    Start at  20:32:06
    Duration  6.53s (transform 816ms, setup 421ms, import 719ms, tests 16.90s, environment 1ms)
-

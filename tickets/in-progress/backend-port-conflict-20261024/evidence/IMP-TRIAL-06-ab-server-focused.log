@@ -590,4 +590,3 @@ TypeError: app.addHook is not a function
       Tests  11 failed | 99 passed (110)
    Start at  20:34:23
    Duration  11.49s (transform 3.41s, setup 133ms, import 8.08s, tests 1.13s, environment 1ms)
-

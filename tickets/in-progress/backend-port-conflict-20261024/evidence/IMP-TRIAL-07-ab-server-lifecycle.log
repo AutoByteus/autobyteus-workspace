@@ -119,4 +119,3 @@ prisma:info Starting a sqlite pool with 21 connections.
       Tests  31 passed (31)
    Start at  20:34:50
    Duration  2.84s (transform 1.19s, setup 39ms, import 2.19s, tests 36ms, environment 0ms)
-

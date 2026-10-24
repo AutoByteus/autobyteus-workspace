@@ -32,7 +32,7 @@ To eliminate this warning, add "type": "module" to /Users/normy/autobyteus-org/a
 > node ./scripts/prepare-server-dispatch.mjs
 
 =======================================
-   Preparing AutoByteus Server Files   
+   Preparing AutoByteus Server Files
 =======================================
 ✓ Created target directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/resources/server
 
@@ -340,7 +340,7 @@ Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyte
 ℹ .nuxt/dist/client/_nuxt/B4jaGF1a.js                                      1,844.83 kB │ gzip:   495.36 kB
 ℹ .nuxt/dist/client/_nuxt/CLS7LmHU.js                                      3,952.19 kB │ gzip: 1,236.89 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
@@ -466,7 +466,7 @@ Removing symlinks that point outside the bundle...
 Removed 0 external symlinks from /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/resources/server
 
 =======================================
-   Server files prepared successfully!   
+   Server files prepared successfully!
 =======================================
 Target directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/resources/server
 You can now build the Electron app with the server included
@@ -713,7 +713,7 @@ Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyte
 ℹ .nuxt/dist/client/_nuxt/entry.BRsW5NfJ.js                                   1,846.21 kB │ gzip:   495.90 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.DimKwvzJ.js                3,954.25 kB │ gzip: 1,238.31 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks

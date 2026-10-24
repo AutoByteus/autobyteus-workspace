@@ -86,4 +86,3 @@ TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
       Tests  132 passed (132)
    Start at  20:53:46
    Duration  8.79s (transform 1.01s, setup 539ms, import 879ms, tests 19.15s, environment 1ms)
-

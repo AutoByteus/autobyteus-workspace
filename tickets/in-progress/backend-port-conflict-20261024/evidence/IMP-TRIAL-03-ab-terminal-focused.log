@@ -121,4 +121,3 @@ AssertionError: expected [ 'wsl.exe', …(2) ] to match object [ 'wsl.exe', …(
       Tests  2 failed | 21 passed (23)
    Start at  20:32:41
    Duration  6.40s (transform 385ms, setup 272ms, import 252ms, tests 8.45s, environment 0ms)
-

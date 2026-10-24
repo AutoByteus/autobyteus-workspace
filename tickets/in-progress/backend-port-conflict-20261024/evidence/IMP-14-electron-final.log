@@ -36,4 +36,3 @@ Log finished: 2026-10-24T18:53:57.521314+00:00
       Tests  141 passed (141)
    Start at  20:53:56
    Duration  963ms (transform 697ms, setup 0ms, collect 1.52s, tests 740ms, environment 2ms, prepare 1.19s)
-

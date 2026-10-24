@@ -28,4 +28,3 @@ stdout | tests/unit/tools/terminal/command-execution/native-command-process-scop
       Tests  23 passed (23)
    Start at  20:42:05
    Duration  8.55s (transform 341ms, setup 210ms, import 233ms, tests 8.33s, environment 0ms)
-

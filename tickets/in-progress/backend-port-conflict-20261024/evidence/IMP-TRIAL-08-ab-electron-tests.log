@@ -71,7 +71,7 @@ Error: Test timed out in 5000ms.
 If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
  ❯ server/__tests__/BaseServerManager.spec.ts:179:3
     177|   })
-    178| 
+    178|
     179|   it('reports one prompt startup error when the child closes with code…
        |   ^
     180|     mockedFs.existsSync.mockReturnValue(true)
@@ -87,7 +87,7 @@ Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
      32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
        |         ^
      33| }
-     34| 
+     34|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
 
@@ -99,7 +99,7 @@ Error: Backend shutdown incomplete: Error: Managed backend IPC capability missin
      32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
        |         ^
      33| }
-     34| 
+     34|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
 
@@ -109,7 +109,7 @@ Error: Test timed out in 5000ms.
 If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
  ❯ server/__tests__/StartupDelayLifecycle.spec.ts:167:58
     165| })
-    166| 
+    166|
     167| it.each(['fatal', 'error', 'close-zero', 'close-nonzero'])('retains ge…
        |                                                          ^
     168|   const response = deferred<typeof healthy>()
@@ -125,7 +125,7 @@ Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
      32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
        |         ^
      33| }
-     34| 
+     34|
  ❯ server/__tests__/StartupDelayLifecycle.spec.ts:219:3
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
@@ -155,7 +155,7 @@ Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
      32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
        |         ^
      33| }
-     34| 
+     34|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { diagnostic: { kind: 'shutdown-incomplete', message: 'Backend shutdown incomplete: Error: Backend did not exit cleanly' } }
@@ -172,7 +172,7 @@ Error: Backend shutdown incomplete: Error: Managed backend IPC capability missin
      32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
        |         ^
      33| }
-     34| 
+     34|
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { diagnostic: { kind: 'shutdown-incomplete', message: 'Backend shutdown incomplete: Error: Managed backend IPC capability missing' } }
@@ -188,4 +188,3 @@ The latest test that might've caused the error is "disposes pending observations
      Errors  2 errors
    Start at  20:33:00
    Duration  10.58s (transform 512ms, setup 0ms, collect 1.29s, tests 15.57s, environment 2ms, prepare 977ms)
-

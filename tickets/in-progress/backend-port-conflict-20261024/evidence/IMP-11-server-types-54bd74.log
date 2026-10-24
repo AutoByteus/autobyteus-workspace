@@ -24,4 +24,3 @@ autobyteus-application-backend-sdk build: Done
 
 > autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
 > tsc -p tsconfig.build.json --noEmit
-

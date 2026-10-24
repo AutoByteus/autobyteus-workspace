@@ -136,4 +136,3 @@ AgentFactory (Singleton) initialized.
       Tests  27 passed (27)
    Start at  20:42:19
    Duration  4.84s (transform 1.08s, setup 50ms, import 2.47s, tests 1.53s, environment 0ms)
-
