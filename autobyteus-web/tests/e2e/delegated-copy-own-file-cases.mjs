@@ -9,7 +9,8 @@
 //           source and no `origin`; Settings shows "As configured in this run"; its sidebar name is the address basename
 //           (D-7). The Team run is stopped and `/worker` is set to another model in Settings. The copy restores on its
 //           started model and its own runtime conversation (not the slot's); a new delegation starts on the edited
-//           model; "+" from each copy prefills its own model; the run view of the copy shows its own conversation.
+//           model; the Team context of each copy (what its conversation and composer run with) holds its own model and
+//           the slot's its edit, all named "worker"; the run view of the copy shows its own conversation.
 //   DCR-002 (AC-001..AC-004, Org root) A direct agent `/writer` and a mounted Team `/pair` are delegated to (agent copy
 //           and Team copy of configured placements). Own files, Settings rows. The Org is stopped, `/writer` and `/pair`
 //           are set to another model; the copies restore on their started values (the agent copy on its own runtime

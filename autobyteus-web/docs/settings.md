@@ -1342,8 +1342,10 @@ The saved-run view uses the start surfaces' visual language:
   - These cards are locked while the copy runs and editable while it is stopped
     (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. Names follow Members: the role,
-    else the last address segment.
+    can hold several copies. A row is named as the sidebar names the copy: in a
+    Team run a catalog copy and its members by display name (`scribe 5083`), a
+    copy of a configured member by its address basename (`code_reviewer`)
+    (`teamMemberName`); in Org and Agent runs every copy by display name.
   - **Source labels:**
     - Agent default;
     - Team default;
