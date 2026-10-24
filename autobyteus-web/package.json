@@ -56,6 +56,7 @@
     "test:e2e:remote-runs-in-tree": "node tests/e2e/remote-runs-in-tree-probe.mjs",
     "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",
     "test:e2e:remote-nodes-page": "node tests/e2e/remote-nodes-page-probe.mjs",
+    "test:e2e:node-vocabulary": "node tests/e2e/node-vocabulary-probe.mjs",
     "test:e2e:nodes-docker-address": "node tests/e2e/nodes-docker-address-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",

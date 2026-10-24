@@ -47,7 +47,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
  *   261 (discovery): RC-26 an agent that selects the discovery tools lists exactly beta's offer (only name, kind, address
  *   and description; built-ins, Orgs, team-local and application-owned definitions left out), listing writes nothing,
- *   every listed address is accepted by delegate_task, an agent without the tools does not have them (its MCP tool list,
+ *   every listed address is accepted by delegate_task, an agent without the tools (or selecting only the former name
+ *   list_available_nodes, 290) does not have them (its MCP tool list,
  *   `LIST_TOOLS` in the scripted CLI) and the tool texts are as approved (AC-402/404/406, QR-402); RC-27 the node list
  *   with three more servers (gamma stopped, delta switched off, epsilon not knowing alpha) in registration order, each
  *   reason the same as delegate_task's, and a black-holed beta unavailable within the 20 s bound (AC-401, QR-401);
@@ -607,6 +608,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.worker = await agentDefinition(alpha, "Remote Worker");
     // 261: the discovery tools are opt-in; Scout selects both, the Delegator neither.
     defs.scout = await agentDefinition(alpha, "Scout", ["list_peer_nodes", "list_available_agents"]);
+    // 290 REQ-906: a definition that still selects the tool's former name (as a stored agent config may).
+    defs.oldNameScout = await agentDefinition(alpha, "Old Name Scout", ["list_available_nodes"]);
     defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
@@ -1703,7 +1706,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-24", { stopped, listed, relaunch: relaunches[0] });
   }, 180_000);
 
-  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them", async () => {
+  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)", async () => {
     const scout = await createStandalone(alpha, defs.scout, "alpha scout");
     ids.scout = scout.runId;
     const delegator = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1713,6 +1716,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const tool = (tools: Rec[], name: string) => tools.find((entry) => entry.name === name);
     expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
     expect(delegatorTools.map((entry) => entry.name)).not.toContain("list_available_agents");
+    // 290 REQ-906 (the accepted exception): selecting only the former name `list_available_nodes` gives no discovery tool.
+    const oldNameScout = await createStandalone(alpha, defs.oldNameScout, "alpha old-name scout");
+    const oldNameTools = (await toolsOf(oldNameScout)).map((entry) => entry.name);
+    expect(oldNameTools, "the former name selects nothing").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
+    expect(oldNameTools).not.toContain("list_available_nodes");
+    expect(oldNameTools, "the agent still has its other tools").toContain("delegate_task");
     expect(tool(scoutTools, "list_peer_nodes")?.description).toBe(TEXT_261.listPeerNodes);
     expect(tool(scoutTools, "list_available_agents")?.description).toBe(TEXT_261.listAgents);
     expect(tool(scoutTools, "list_available_agents")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.listAgentsNode);
