@@ -13,27 +13,29 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary`, bra
 - Supplemental task artifacts: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002 open; FU-003 added by this implementation)
 - Design review report: `tickets/in-progress/node-vocabulary/design-review-report.md` (ARCH-REV-005 pass)
 - Architecture review revision record: `tickets/in-progress/node-vocabulary/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial)
+- Triggering rework report: `code-review-report.md` (CRR-001: F-001 Design Impact, resolved by SR-008 at design `8e3512429b`; F-002 Local Fix), `code-review-revision-record.md`; ARCH-REV-006 pass with N-912
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `tickets/in-progress/node-vocabulary/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-007 (SR-006 for U-3)
-- Related architecture-review revision IDs: ARCH-REV-005
-- Related code-review / API/E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Current implementation revision ID: `IR-002` (baseline IR-001)
+- Related solution revision IDs: SR-008 (SR-007; SR-006 for U-3)
+- Related architecture-review revision IDs: ARCH-REV-006 (ARCH-REV-005)
+- Related code-review revision IDs: CRR-001
+- Related API/E2E / delivery revision IDs: N/A
+- Triggering finding IDs: CRR-001 F-001, F-002; ARCH-REV-006 N-912
 
 One vocabulary across server, web, desktop shell, phone apps, tools and docs (`GLOSSARY.md`): `nodeId` is only a
 node's ID (`srv_…`); a client's own record of a node is an **entry** (`entryId`); **peer** only means a registered
-remote node; the connecting address is the **client address**; Memory Sync's import identity is the **source ID**.
+remote node; the connecting address is the **client address**; Memory Sync's import identity is the **Memory Sync source ID** (`memorySyncSourceId`, IR-002).
 Stored names follow the code through sealed one-time migrations with backups (SM-1 … SM-10); the node identity and
 Memory Sync are held back with one stated reason until their migrations succeed.
 
 Commits (oldest first): `ad36e4d61e` Step 1 · `232e847ed3` SM-1 + `node_identity` hold-back · `b085e15a02` Step 1b ·
 `075ce323ca` Step 2 · `437da24719` Step 3 · `32cf99830e` Step 4 + SM-6 … SM-10 · `92ff02df4a` Step 5 ·
-`4b7d13b8c7` SM-1 backup · `3692422aef` Step 5b + SM-2 … SM-5 + `memory_sync` hold-back · `cb37d82fab` Step 6.
+`4b7d13b8c7` SM-1 backup · `3692422aef` Step 5b + SM-2 … SM-5 + `memory_sync` hold-back · `cb37d82fab` Step 6 ·
+`127fc4806e` IR-002 (`memorySyncSourceId`, F-001; `PeerStartedRunViews`, F-002).
 Note: the Solution Designer's docs commit `b3d9c758f2` also carries the Step 1 file rename
 `server-instance-identity-service(.test).ts` → `node-identity-service(.test).ts` (it was in the shared index when that
 commit was made); Step 1 `ad36e4d61e` builds on it.
@@ -59,13 +61,14 @@ commit was made); Step 1 `ad36e4d61e` builds on it.
 | REQ-903 / Step 3 | Tool `list_peer_nodes`; abilities and exposure unchanged | `agent-tools/agent-discovery/list-peer-nodes-{contract,tool}.ts`, `agent-tools/mcp/providers/list-peer-nodes-mcp-adapter-provider.ts`, `runtime-agent-tool-exposure.ts` (`listPeerNodesEnabled`), `claude-session-tooling-options.ts`, `remote-refusals.ts` | Done. No alias, no migration (REQ-906). Release-note text for delivery: "`list_available_nodes` is now `list_peer_nodes`; agents that use it need the new name selected." |
 | REQ-901, REQ-905 / Step 4 | A client's record is an entry; `isSystem` gone | web `types/node.ts` (`NodeEntry`, `WindowNodeContext.entryId`, registry changes `entryId`, `EMBEDDED_ENTRY_ID`), `electron/nodeRegistryStore.ts`, `electron/application/electronApplication.ts` and the AR-902 carriers (`preload.ts`, `shell/workspace-shell-window(-registry).ts`, `rendererConsoleDiagnostics.ts`, `types.d.ts`), `stores/nodeStore.ts` (`getEntryById`, `getEntryBaseUrl`), `stores/windowNodeContextStore.ts`, `stores/nodeListStore.ts` (`entryIds`), `stores/mobileNodeSessionStore.ts` (`MOBILE_ENTRY_ID`), `types/remoteAccess.ts` (`MobileNodeSession.entryId`); iOS / Android `SavedNodeEntry` and store methods | Done. AC-901 list: `evidence/implementation/ac901-nodeId-inventory.md` |
 | REQ-904 / Step 5 | "peer" only for registered nodes | `api/security/remote-access-local-trust.ts` (`normalizeClientAddress`, `isLoopbackClientAddress`, `NormalizedClientAddress`) and its callers; web `stores/runHistoryTeamExecutionRows.ts` comment; probe `tests/e2e/task-agent-sibling-sidebar-probe.mjs` + fixture; `collaboration_model.md` § 2.2 | Done |
-| REQ-910 / Step 5b | Memory Sync's identity is the source ID | `memory-sync/shared/source-id.ts`, config/state/credential/import stores, hub client and REST (`sourceId` query and batch body), GraphQL `memory-sync-schema.ts` / `memory-explorer-schema.ts`, web types/stores/card/GraphQL documents, `generated/graphql.ts`, en / zh-CN "Source ID" | Done |
+| REQ-910 / Step 5b (SR-008) | Memory Sync's identity is the Memory Sync source ID | `memory-sync/shared/memory-sync-source-id.ts` (`normalizeMemorySyncSourceId`, `MemorySyncSourceIdError`), config/state/credential/import stores (`boundMemorySyncSourceId`, `MemorySyncSourceMetadata`), hub client and REST (`memorySyncSourceId` query and batch body), GraphQL `memory-sync-schema.ts` / `memory-explorer-schema.ts`, web types/stores/card (test id `memory-sync-source-id`)/GraphQL documents, `generated/graphql.ts` (Memory Sync types only), en "Memory Sync source ID" / zh-CN "记忆同步源 ID" | Done (IR-002); the skill, update-notification and package `sourceId`s are untouched |
 | REQ-911 SM-1 | `server-instance.json {serverInstanceId}` → `node-identity.json {nodeId}` | `app-data-migrations/migrations/node-identity-file-name/`, `frozen/released-node-identity-file.ts` | Done, with a `.backup-<timestamp>` copy (`4b7d13b8c7`) |
-| REQ-911 SM-2 … SM-5 | Memory Sync stored names | `app-data-migrations/migrations/memory-sync-source-id-names/`, `frozen/released-memory-sync-files.ts`; startup-only, registered last | Done, backups per file |
+| REQ-911 SM-2 … SM-5 | Memory Sync stored names | `app-data-migrations/migrations/memory-sync-source-id-names/` (targets `memorySyncSourceId`, `boundMemorySyncSourceId`, `memory-sync-source.json`; changed in place at IR-002, unreleased), `frozen/released-memory-sync-files.ts`; startup-only, registered last | Done, backups per file; N-912 below |
 | REQ-911 SM-6 / SM-7 / SM-8 | Desktop file, browser node list, mobile session | `autobyteus-web/client-data-migrations/` (`migrations/node-registry-entry-names/`, `migrations/mobile-session-entry-names/`, `frozen/`), `electron-file-runner.ts` (called in `electronApplication.start()` before `loadNodeRegistrySnapshot`), `browser-storage-runner.ts` (`plugins/19.clientDataMigrations.client.ts`); boundary spec `client-data-migrations/__tests__/boundaries.spec.ts` | Done. `.bak` / `:backup` |
 | REQ-911 SM-9 / SM-10 | Phone saved-entry keys | iOS `AutoByteusMobileCore/DataMigrations/SavedNodeEntryKeysMigration.swift` called in `AppShellCoordinator.init` before `SavedNodeStore(...)`; Android `datamigrations/SavedNodeEntryKeysMigration.kt` called in `MainActivity.onCreate` before `SavedNodeStore(this)`; each with a boundary unit test | Done |
 | REQ-913 `node_identity` | No new node ID while held back; stated reason | `NodeIdentityNotMigratedError`; status route 503 `{code: NODE_IDENTITY_NOT_MIGRATED, message}`; gateway 503 answer; `PeerClient` refusal; settings error; observation end; web probe cause `identity_pending` | Done (N-910) |
 | REQ-913 `memory_sync` | Memory Sync held back the same way | `memory-sync/shared/memory-sync-capability.ts` (`MemorySyncNotMigratedError`, `requireMemorySyncReady`); every Memory Sync store refuses before touching a file; REST 503 `{error: MEMORY_SYNC_NOT_MIGRATED, message}`; worker does not schedule; GraphQL reads/saves fail with the text (the card shows it); Memory page lists only local memory | Done |
+| AC-901 / CRR-001 F-002 | No word-list hit | `remote-collaboration/inbound/remote-run-view-provider.ts` (`PeerStartedRunViews`) | Done (IR-002) |
 | REQ-912 / REQ-907 / Step 6 | Glossary and docs | `GLOSSARY.md`, `DESIGN.md` pointer, `collaboration_model.md` § 1 links, `remote_collaboration.md`, web `docs/settings.md`, `agent_tools.md`, `agent_communication.md`, `memory_sync.md`, `remote_access.md` | Done |
 | REQ-906 | Behavior unchanged except the two exceptions | — | No behavior change apart from REQ-909 and the tool name; the hold-backs are new states only reachable after a failed migration |
 
@@ -78,6 +81,15 @@ commit was made); Step 1 `ad36e4d61e` builds on it.
 - Phones: `autobyteus-ios/AutoByteusMobileCore/{SavedNodeEntry,SavedNodeStore}.swift`, `DataMigrations/`; `autobyteus-android/.../connection/{SavedNodeEntry,SavedNodeStore}.kt`, `datamigrations/`.
 
 ## Important Assumptions
+
+IR-002 notes:
+
+- **The name.** ARCH-REV-006's report and message name `syncSourceId` / "Sync source ID" / `sync-source.json`. The design at `8e3512429b` (SR-008 addendum, the user's choice) and the Solution Designer's message name `memorySyncSourceId` / "Memory Sync source ID" / `boundMemorySyncSourceId` / `memory-sync-source.json`; this is what is implemented.
+- **Design typo:** the SM-5 row of `design-spec.md` reads `sync-memory-sync-source.json`; implemented as `memory-sync-source.json` (SR-008 addendum, the Solution Designer's message).
+- **N-912 disposition (dev and test data only):** SM-2 … SM-5 changed in place. A development or test data directory where the IR-001 variant of `20261024_memory_sync_source_id_names` already ran has a completed migration record and the interim names (`sourceId`, `boundSourceId`, `source.json`), so the migration does not run there again and the current code finds no Memory Sync source ID. Reset such a directory by hand (delete its `memory-sync/` folder and `memory/imports/`, or the whole data directory), or remove that migration's record so it runs again on old-format data. No runtime handling was added; released data is unaffected (the IR-001 commit `3692422aef` is in no tag).
+- Assumptions 1, 2 and 4 below were accepted into the design at SR-008.
+
+IR-001 notes:
 
 Design-document discrepancies found while building (the code follows the more specific, later section; for the Solution Designer):
 
@@ -95,7 +107,7 @@ Design-document discrepancies found while building (the code follows the more sp
 ## Known Risks
 
 - **FU-003 (new):** the message gateway uses "peer" for the chat counterpart (`peerId` in its stored inbox/outbox records, `SessionPeerCandidate`, the channel adapters). Outside the Change Scope; recorded in `follow-ups.md`.
-- **Other observations for the glossary (not changed):** `sourceId` also names an update notification's source (`UpdateNotification.sourceId`) and a skill source (`skillStore` source `sourceId`), different IDs; the run tree calls its elements nodes (`TeamRunAgentNode`, `sourceNode` in team execution) and the file explorer has `nodeIdToNode` for tree nodes — "node" as a tree node is a separate, long-standing meaning. The file explorer's context-menu `nodeId` (a tree node) was renamed `treeNodeId` in Step 4 because it sat in `utils/`/`components/` under AC-901.
+- **Other observations for the glossary (not changed):** (the `sourceId` collision is resolved at IR-002: Memory Sync no longer uses `sourceId`); the run tree calls its elements nodes (`TeamRunAgentNode`, `sourceNode` in team execution) and the file explorer has `nodeIdToNode` for tree nodes — "node" as a tree node is a separate, long-standing meaning. The file explorer's context-menu `nodeId` (a tree node) was renamed `treeNodeId` in Step 4 because it sat in `utils/`/`components/` under AC-901.
 - **Memory Sync config keeps `schemaVersion: 1`** (and state / manifest / source records keep theirs); the design renames only the source fields. A follow-up could drop them under rule 9 if wanted.
 - **`*PeerAddress` names remain** (`resolvePeerAddress`, `changePeerAddress`, `PeerAddressResolver`, `PeerAddressAttempt`, `peerAddressCandidates`): each is a registered peer's address, the correct meaning. The word list's `PeerAddress` targeted the client-address names, which are gone.
 - **Agent definitions selecting `list_available_nodes`** lose the tool until updated (accepted REQ-906 exception; the Agent Package Creator updates packages in a separate ticket).
@@ -153,14 +165,22 @@ commit is named in the handoff message). Environment for all: macOS Darwin 25.5 
 | IMP-10 | `generate-project.sh` + `xcodebuild … -only-testing:AutoByteusMobileCoreTests test`; IMP-10b app `build` | `32cf99830e` (no iOS change since) | as above, iPhone 17 simulator | iOS core incl. SM-9 and its boundary test; app target incl. the call site | REQ-901, REQ-909, REQ-911 SM-9 | Pass | `IMP-10-ios-core-tests.log`, `IMP-10b-ios-app-build.log` | `Executed 27 tests, with 0 failures`, `** TEST SUCCEEDED **`; `** BUILD SUCCEEDED **` |
 | IMP-11 | `./gradlew :app:testDebugUnitTest :app:assembleDebug`; `:app:compileDebugAndroidTestKotlin` | `32cf99830e` (no Android change since) | as above, Android SDK | Android incl. SM-10 and its boundary test | REQ-901, REQ-909, REQ-911 SM-10 | Pass | `IMP-11-android.log` | `BUILD SUCCESSFUL`, `ANDROID_EXIT=0`; SM-10 report `tests="6" … failures="0"` |
 | IMP-12 | the design's § Verification word list over the repository | `cb37d82fab` | as above | all code and docs | AC-901 | Pass | `IMP-12-word-list.log` | each remaining hit is in a migration folder, its tests or released fixtures, a migration note in docs, the published 1.5.8 release notes, or a `*PeerAddress` name for a registered peer's address |
-| IMP-13 | the four in-process memory e2e files (Memory Sync API, imported / collaboration / view GraphQL) | `3692422aef` | as above | Memory Sync wire (`sourceId`), GraphQL, readiness set by the test | REQ-910 | Pass | `IMP-13-memory-e2e-in-process.log` | `Test Files  4 passed (4)`, `Tests  16 passed (16)` |
+| IMP-13 | the four in-process memory e2e files (Memory Sync API, imported / collaboration / view GraphQL) | `3692422aef` | as above | Memory Sync wire (IR-001 name `sourceId`; rerun at IR-002 with `memorySyncSourceId` in the focused set, see below), GraphQL, readiness set by the test | REQ-910 | Pass | `IMP-13-memory-e2e-in-process.log` | `Test Files  4 passed (4)`, `Tests  16 passed (16)` |
 | IMP-14 | `grep -rnw nodeId` over web `electron/ stores/ utils/ services/ components/` | `cb37d82fab` | as above | web | AC-901 / AR-902 | Pass | `IMP-14-ac901-nodeId-inventory.md` | every row "the node's ID" |
+
+| IMP-15 | `pnpm -C autobyteus-server-ts typecheck`; `test:unit` (IR-002) | `127fc4806e` | as above | server, incl. Memory Sync, SM-2 … SM-5 with the new targets, the hold-back | REQ-910, REQ-911, REQ-913 | Pass | `IMP-15-server-unit-ir002.log` | `TYPECHECK_EXIT=0`; `Test Files  814 passed \| 4 skipped (818)`, `Tests  6743 passed \| 7 skipped (6750)` |
+| IMP-16 | web Nuxt suite; web guards (IR-002) | `127fc4806e` | as above | web memory types, stores, card, en/zh-CN keys | REQ-910 | Pass | `IMP-16-web-nuxt-guards-ir002.log` | `Test Files  685 passed \| 2 skipped (687)`; `Passed with zero unresolved findings.` |
+| IMP-17 | `vue-tsc --noEmit`, filtered to files changed in IR-002 | `127fc4806e` | as above | web types | REQ-910 | Pass (no new errors) | `IMP-17-web-vuetsc-ir002.log` | total `457` (unchanged); only the existing Apollo module errors in `generated/graphql.ts`; none name `memorySyncSourceId` |
+| IMP-18 | print the server schema, run codegen, diff the Memory Sync lines of `generated/graphql.ts` | `127fc4806e` | as above | generated GraphQL types | REQ-910 | Pass | `IMP-18-generated-types-ir002.log` | `IDENTICAL_MEMORY_SYNC_LINES`, `NO_MEMORY_LINE_WITH_SOURCEID` |
+| IMP-19 | word list and name recheck (`RemotePeer`, `sourceNodeId`, bare `sourceId` in Memory Sync code, doubled prefixes) | `127fc4806e` | as above | all code and docs | AC-901, F-002 | Pass | `IMP-19-word-list-ir002.log` | no lines under any heading |
+
+- IR-002 also reran the focused server set (`tests/unit/memory-sync`, `tests/unit/agent-memory`, the SM-2 … SM-5 tests, `tests/unit/remote-collaboration`, `tests/architecture`, the in-process memory e2e files): all pass except the existing SR-011 architecture test (IMP-04). Not rerun in IR-002, because the change does not reach them: server integration (IMP-03), web Electron (IMP-06), Electron typecheck (IMP-07), iOS (IMP-10), Android (IMP-11).
 
 - Not run, and why: the two-server E2E, the browser probes (remote-nodes page, Docker address, electron launch profile, sibling sidebar), `memory-sync-multiprocess.e2e` (needs a server build), the full `tests/e2e` folder, the packaged Electron harness and the phone UI tests — API/E2E's scope (AC-902 … AC-905).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: the Memory Sync card's label "Source ID" and its description sentence (en, zh-CN); every other web change is a rename with no rendered difference (the Nodes tab, phone shell and window switcher behave as before).
+- Affected surfaces / journeys: the Memory Sync card's label "Memory Sync source ID" (zh-CN "记忆同步源 ID") and its description sentence; every other web change is a rename with no rendered difference (the Nodes tab, phone shell and window switcher behave as before).
 - Approved references: design § Step 5b (UI text).
 - Design system / adjacent surfaces reviewed: the card's existing label and description keys (`memorySyncSettings.ts`), unchanged layout.
 - Surface used: the component spec `components/settings/__tests__/MemorySyncCard.spec.ts` (mounts the card and checks the label), part of IMP-05.
