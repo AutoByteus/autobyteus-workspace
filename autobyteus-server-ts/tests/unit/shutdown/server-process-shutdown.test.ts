@@ -35,3 +35,16 @@ it('bounds missing send flush callbacks', async () => {
   const owner = new ServerProcessShutdown(proc); owner.settleStartup(); const stop = owner.request();
   await vi.advanceTimersByTimeAsync(501); await stop; expect(proc.exit).toHaveBeenCalledWith(1);
 });
+
+it('does not send successful completion when readiness flush fails during signal cleanup', async () => {
+  const proc = runtime(); let readyCallback!: (error: Error) => void;
+  vi.mocked(proc.send!).mockImplementationOnce(((_message: string, callback: (error: Error) => void) => {
+    readyCallback = callback; return true;
+  }) as never);
+  const owner = new ServerProcessShutdown(proc); const cleanup = vi.fn(async () => {});
+  owner.setCleanup(cleanup); owner.settleStartup(); const stop = owner.request();
+  await Promise.resolve(); readyCallback(new Error('closed channel')); await stop;
+  expect(cleanup).toHaveBeenCalledOnce();
+  expect(proc.send).toHaveBeenLastCalledWith(SHUTDOWN_WIRE.failed, expect.any(Function));
+  expect(proc.exit).toHaveBeenCalledExactlyOnceWith(1);
+});

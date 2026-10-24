@@ -15,3 +15,12 @@ it('bounded failure never resumes clean quit', async () => {
   owner.quit({ preventDefault() {} }, vi.fn(), resume, fail)
   await vi.advanceTimersByTimeAsync(30); expect(fail).toHaveBeenCalledOnce(); expect(resume).not.toHaveBeenCalled(); vi.useRealTimers()
 })
+
+it('records failed cleanup before the final logger flush and blocks updater preparation', async () => {
+  const events: string[] = []
+  const owner = new ApplicationShutdown(async () => { throw new Error('cleanup failed') },
+    () => events.push('flush'), 30000, () => events.push('report'))
+  await expect(owner.stop()).rejects.toThrow('cleanup failed')
+  await expect(owner.stop()).rejects.toThrow('cleanup failed')
+  expect(events).toEqual(['report', 'flush'])
+})
