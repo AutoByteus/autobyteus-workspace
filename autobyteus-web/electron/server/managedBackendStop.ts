@@ -6,6 +6,7 @@ export class ShutdownIncompleteError extends Error {
 export const childExited = (child: ChildProcess): boolean => child.exitCode != null || child.signalCode != null
 export function waitForChildExit(child: ChildProcess, timeoutMs: number): Promise<void> {
   if (childExited(child)) return Promise.resolve()
+  if (timeoutMs <= 0) return Promise.reject(new Error('Backend exit not confirmed'))
   return new Promise((resolve, reject) => {
     const finish = (error?: Error) => { clearTimeout(timer); child.off('exit', onExit); child.off('error', onError); error ? reject(error) : resolve() }
     const onExit = () => finish()
