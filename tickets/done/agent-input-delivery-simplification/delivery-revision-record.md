@@ -73,7 +73,8 @@
 - Release/publication/deployment report: `release-deployment-report.md` (v3)
 - Integration and post-integration verification: merge `cd0b15f806`; logs `delivery-evidence/v3/dr3-*.log`
 - User verification/finalization state: decided by the user in advance and confirmed during delivery (finalize, new beta)
-- Terminal return to `/solution_designer`: see `release-deployment-report.md` Final Status
+- Finalization: merge `5c4e80e807` on `personal`. Release `v1.5.9-beta.6` (`fdc582c21f`): 4/4 workflows, 17 assets, Docker `:beta` moved.
+- Terminal return to `/solution_designer`: `Sent` after cleanup
 - Why this delivery revision was recorded: the v3 package replaced v2
 - Next recipient/action: finalization, release, cleanup, then terminal return
 - Remaining blockers, rollback concerns, or untested scope: accepted residuals are in `handoff-summary.md`.

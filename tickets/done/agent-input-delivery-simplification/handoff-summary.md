@@ -72,3 +72,9 @@ The user announced in advance that this delivery would be finalized with a new b
 - Release/deployment report: `release-deployment-report.md`
 - Delivery revision record: `delivery-revision-record.md` (DR-001/DR-002 are v2 history; DR-003 onward are v3)
 - User verification: `user-verification.md`
+
+## Outcome
+
+- Finalized: merge `5c4e80e807` on `origin/personal`. Ticket branch `codex/agent-input-delivery-simplification-v3` pushed after the Secret Gate.
+- Released: **`v1.5.9-beta.6`** (release commit `fdc582c21f`). All 4 workflows succeeded on attempt 1. It is a GitHub pre-release with 17 assets; Docker images are `:1.5.9-beta.6` and `:beta`, and `:latest` is unchanged.
+- Details: `release-deployment-report.md` (DR-003)
