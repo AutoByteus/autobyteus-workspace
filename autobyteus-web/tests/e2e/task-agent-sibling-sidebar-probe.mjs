@@ -148,6 +148,8 @@ const graphQlData = (operationName, query) => {
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
   // The opened run's Files tab reads its file changes (added after this probe); the fixture runs have none.
   if (operationName === 'GetRunFileChanges' || query.includes('getRunFileChanges')) return { getRunFileChanges: [] };
+  // Baseline fix (autobyteus-290 API/E2E): a Team member's file changes are read since autobyteus-278 (`580e1cac5b`).
+  if (operationName === 'GetTeamMemberFileChanges' || query.includes('getTeamMemberFileChanges')) return { getTeamMemberFileChanges: [] };
   return {};
 };
 
@@ -245,6 +247,8 @@ try {
   await routeTaskWorkerBoundaries(page);
   // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
   await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
+  // Baseline fix (autobyteus-290 API/E2E): the window opens the update-notifications stream since autobyteus-210.
+  await page.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="sibling-sidebar-probe"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__siblingSidebarProbe));
