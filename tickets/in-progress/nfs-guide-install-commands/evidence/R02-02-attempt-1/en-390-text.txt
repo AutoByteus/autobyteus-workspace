@@ -1,0 +1,98 @@
+# R02 actual /nodes; 4e308b716cf70ed5bc914ab780984e59df30af7f; Chrome/en/390; 2026-10-24T04:13:55.049Z
+SHARED NETWORK WORKSPACES
+
+AutoByteus NFS
+
+AutoByteus NFS is an independent host storage service. AutoByteus uses ordinary filesystem paths and does not detect or manage the underlying storage.
+
+Command copied. Paste it into a terminal on the intended computer.
+
+1. Install the CLI
+
+Copy only—nothing runs in AutoByteus. Review the installer at the URL shown in the command first, then paste into a host terminal (not an agent container) in an empty working directory. The script is saved there, installs the tool and prints its version; it does not configure storage. Requires curl, a shell and the checksum utility shown below, not a compiler or Homebrew.
+
+Published installer: v0.1.0. The installer selects the matching OS/architecture archive and verifies it.
+
+macOS
+
+macOS 26+ with APFS. ARM64 / x64 downloads; native storage hosting and host connections.
+
+Copy
+curl --fail --location --proto '=https' --tlsv1.2 \
+  'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh' \
+  -o autobyteus-nfs-install.sh &&
+printf '%s  %s\n' '65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa' 'autobyteus-nfs-install.sh' | shasum -a 256 -c - &&
+bash autobyteus-nfs-install.sh version
+Linux
+
+Ubuntu 24.04 with ext4. ARM64 / x64 downloads; native or Linux Docker storage hosting and host connections.
+
+Copy
+curl --fail --location --proto '=https' --tlsv1.2 \
+  'https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh' \
+  -o autobyteus-nfs-install.sh &&
+printf '%s  %s\n' '65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa' 'autobyteus-nfs-install.sh' | sha256sum -c - &&
+bash autobyteus-nfs-install.sh version
+2. Choose what this computer does
+
+After installation: create on the storage host, then connect the other computers. These commands are interactive and may request administrator approval.
+
+Create storage once
+Copy
+
+On the storage host, choose an existing or new source folder and trusted computers or private subnet. Existing files stay in place; review administrator changes before approving.
+
+~/.local/bin/autobyteus-nfs create
+Connect each other computer
+Copy
+
+On each other host, paste the connection JSON printed by create. Review and approve the setup. Application and container configuration stays separate.
+
+~/.local/bin/autobyteus-nfs connect
+3. Installed commands
+
+Run these only after installing the CLI. Commands use its explicit path, so no PATH setup is needed. Except for version, they may request administrator approval.
+
+Interactive menu
+Copy
+
+Open setup or saved-state options without arguments.
+
+~/.local/bin/autobyteus-nfs
+Check status
+Copy
+
+Report actual host readiness. This can wait while checking storage or the network.
+
+~/.local/bin/autobyteus-nfs status
+Reconnect
+Copy
+
+Resume saved storage or pending setup with consent. This is not data recovery.
+
+~/.local/bin/autobyteus-nfs reconnect
+Detach safely
+Copy
+
+Stop users of the mount first, then review and approve detach. Source files and private data are preserved.
+
+~/.local/bin/autobyteus-nfs detach
+Show version
+Copied
+
+Print the installed version without configuring storage.
+
+~/.local/bin/autobyteus-nfs version
+Public CLI documentation and advanced flags (v0.1.0)
+
+Use the printed mount path as an ordinary directory. AutoByteus does not check its mount type or storage identity. For the Docker launcher, choose an operator-managed shared root with shared/ and nodes/<name>/ subdirectories.
+
+Use only on a trusted private network
+
+NFS traffic is unencrypted. Access trusts the allowed computers, not individual users; writes map to the selected nonroot source owner. Connection details are not an access token. Do not expose this service to the public internet.
+
+If storage or the network goes offline, file operations, previews and unrelated work may stall. Restore connectivity before retrying; there is no offline copy or local fallback.
+
+Mac Docker storage hosting and Windows are not supported. The service does not attach or restart application containers. The Docker Guide configures ordinary directory binds separately.
+
+Downloads are available; physical-host, shared-filesystem, independent-client and user testing remains deferred. Availability does not prove host readiness. Checksums do not replace publisher trust, signing or operating-system security checks.

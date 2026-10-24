@@ -1,0 +1,9 @@
+{
+  "case": "C01",
+  "date": "2026-10-24T04:12:58.286617+00:00",
+  "commit": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "step": "Record prior history prefix before API002 execution",
+  "historyBytes": 1729,
+  "historySha256": "a9bc2c503f533aca7e50fe931ff8c2c61e2d85ab54a8f17f1ef5de9c9b67ad34",
+  "environment": "local worktree only"
+}

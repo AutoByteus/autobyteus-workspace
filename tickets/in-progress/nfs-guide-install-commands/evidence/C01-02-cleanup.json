@@ -1,0 +1,48 @@
+{
+  "case": "C01",
+  "date": "2026-10-24T04:16:15.153754+00:00",
+  "commit": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "command": "python3 tickets/in-progress/nfs-guide-install-commands/evidence/C01-02-cleanup.py",
+  "environment": "macOS arm64; own processes/ports/temp only",
+  "observations": [
+    {
+      "attempt": "R02-02-attempt-1",
+      "groupIds": [
+        49459,
+        49486
+      ],
+      "groupsAbsent": [
+        true,
+        true
+      ],
+      "port": 51842,
+      "portClosed": true,
+      "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api002-vrv4LC",
+      "rootAbsent": true,
+      "browserClosed": true,
+      "sourceChanges": ""
+    },
+    {
+      "attempt": "R02-02-attempt-2",
+      "groupIds": [
+        58160,
+        58219
+      ],
+      "groupsAbsent": [
+        true,
+        true
+      ],
+      "port": 51928,
+      "portClosed": true,
+      "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api002-OqWovQ",
+      "rootAbsent": true,
+      "browserClosed": true,
+      "sourceChanges": ""
+    }
+  ],
+  "sourceDiff": "",
+  "oldHistoryPrefixUnchanged": true,
+  "otherTrackedOwnerFilesUnchanged": true,
+  "dependencies": "Ignored worktree node_modules/.nuxt retained; no temp product page added",
+  "result": "Pass"
+}

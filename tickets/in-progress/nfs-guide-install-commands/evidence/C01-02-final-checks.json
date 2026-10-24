@@ -1,0 +1,16 @@
+{
+  "case": "C01",
+  "date": "2026-10-24T04:17:47.348089+00:00",
+  "commitTested": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "command": "Read result artifacts; git diff source; prior history prefix hash comparison; git diff --check",
+  "environment": "assigned macOS worktree only",
+  "result": "Pass",
+  "failedAttemptPreserved": true,
+  "currentComplete": true,
+  "priorHistoryPreserved": true,
+  "productChangesByAPI": false,
+  "evidenceScope": "copy-only current renderer, six ACs; no installer/backend/Electron qualification",
+  "finalConfidence": 95.71,
+  "routeClassification": "Small/Low Direct; test review Not Required",
+  "cleanup": "C01-02-cleanup.json"
+}
