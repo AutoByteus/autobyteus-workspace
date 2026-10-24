@@ -23,8 +23,13 @@ The latest docs sync report, handoff summary and release/deployment report remai
   - `origin/personal` @ `1138e8fbef` merged into the ticket branch as `f7c9648821`, without conflicts.
   - The rerun-by-impact set passed on a clean clone: `evidence/DR-01-ac016-clean-clone.txt`.
   - I first started a full suite rerun and stopped it. API/E2E confirmed that only the merge delta needed a rerun.
-- Verification and finalization state: see the release report.
-- Terminal return to the Solution Designer: sent after the rollout finishes (see the release report's Final Status).
+- Verification and finalization state:
+  - Verified from the evidence.
+  - Merged `--no-ff` into `personal` as `233b98e572`.
+  - Release commit `1ac4c53421` and tag `v1.5.9-beta.4`.
+  - All four release workflows succeeded: 17 GitHub assets, Docker `1.5.9-beta.4` and `:beta`, and TestFlight.
+  - Worktree and local branches cleaned up.
+- Terminal return to the Solution Designer: `Sent` (`Delivery Completed`, right after this record's commit)
 - Why recorded: first completed delivery round.
 - Next recipient/action: Solution Designer (`Delivery Completed`)
 - Remaining blockers, rollback concerns, or untested scope: macOS-only validation; RISK-001 and RISK-002 (handoff summary)

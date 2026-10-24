@@ -60,7 +60,7 @@
 | AC-004 (critical) | API-15 `API-15-ac004-loops-under-load.txt`; API-13 `API-13-live-refresh-with-agy.txt` | `RESULT integ pass=40 fail=0 of 40`, `RESULT e2e pass=40 fail=0 of 40`, `yes left from this run: 0`. `RESULT dcf-agy pass=5 fail=0 of 5`; DCF-E2E-007 and 008 passed; `frames total 53 invalid []` | Proven |
 | AC-005 (critical) | IMP-03 row (rc.3 red `expected "clear" to be called once`, rc.4 green, E2E 12/12); API-10 `API-10-server-e2e-folder.txt`; API-11 | `Test Files  99 passed \| 93 skipped (192)`, `rc=0`. Schema text `81d67097f67b0064 2894 lines` ×4, `IDENTICAL` ×3. API-10b's 4 failures each have a shown cause outside this ticket (FU-002/003/004) | Proven |
 | AC-006…AC-015 (non-critical) | API-01…05, API-16…19 rows and their reused IMP checks | Each row's result and look-for line; API-16 and API-19 spot-checked | Proven |
-| AC-016 (critical) | API-21 `API-21-clean-clone-suites.txt` (clean clone of `959b5cc048`); DR-01 (clean clone of the merged `f7c9648821`) | API-21: install `rc=0`, rc.4 only; `typecheck rc=0`; `Tests  6736 passed`; `Tests  421 passed`; `Tests  4858 passed`; `Tests  237 passed`; guards `rc=0`; `# pass 15`. DR-01 covers the merge delta (above). The finalize merge carries the same tree, `ac1a2e3e01` (checked at finalization) | Proven |
+| AC-016 (critical) | API-21 `API-21-clean-clone-suites.txt` (clean clone of `959b5cc048`); DR-01 (clean clone of the merged `f7c9648821`) | API-21: install `rc=0`, rc.4 only; `typecheck rc=0`; `Tests  6736 passed`; `Tests  421 passed`; `Tests  4858 passed`; `Tests  237 passed`; guards `rc=0`; `# pass 15`. DR-01 covers the merge delta (above). The finalize merge `233b98e572` differs from the tested `f7c9648821` only under `tickets/` (`git diff --name-only f7c9648821 233b98e572`, outside `tickets/`: 0 files; checked at finalization) | Proven |
 
 - More evidence requested: `None`. I asked API/E2E one question about rerun scope, at the user's request. It confirmed that API-21 plus a rerun of what the merge changed covers AC-016.
 - User check needed: `No`. Every criterion is proven by test evidence and nothing needs the user's own accounts or nodes.
@@ -84,21 +84,68 @@
 
 ## Version / Tag / Release Commit
 
-- Planned: `v1.5.9-beta.4` (`python3 scripts/release_versions.py next-beta` → `1.5.9-beta.4`; the previous release tag is `v1.5.9-beta.3`), made by `scripts/desktop-release.sh beta --branch finalize/test-and-tooling-hygiene --no-push`.
-- Result: filled in at release time below.
+- Version: `1.5.9-beta.4` (`python3 scripts/release_versions.py next-beta`; the previous release tag is `v1.5.9-beta.3`)
+- Release commit: `1ac4c53421` "chore(release): bump workspace release version to 1.5.9-beta.4", made by `bash scripts/desktop-release.sh beta --branch finalize/test-and-tooling-hygiene --no-push`
+- Annotated tag: `v1.5.9-beta.4` (tag object `aa1190d1b5`) on `1ac4c53421`, pushed.
+- Git identity: the commits and the tag were recorded as `normy <normy@macbookpro.speedport.ip>` (git's auto-detected identity, with a warning). `v1.5.9-beta.3` and earlier commits use the same identity, so this follows existing practice; nothing was changed.
 
 ## Repository Finalization
 
 - Bootstrap context source: `handoff-solution-designer.md` and `RELEASE.md` (target `origin/personal`, merged `--no-ff` through `finalize/test-and-tooling-hygiene`)
 - Ticket branch: `codex/test-and-tooling-hygiene`
-- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/test-and-tooling-hygiene` → PASS (22 commits)
-- Remaining results: recorded in the section below after finalization.
+- Ticket branch commit result: `eeb487bbb9` (delivery docs and archive)
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/test-and-tooling-hygiene` → PASS (23 commits)
+- Ticket branch push result: pushed to `origin/codex/test-and-tooling-hygiene` @ `eeb487bbb9`
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification: `No`. `origin/personal` was still `1138e8fbef` when the ticket was archived, when the finalize branch was created, and just before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `git checkout -b finalize/test-and-tooling-hygiene origin/personal` @ `1138e8fbef`
+- Merge into target result: `git merge --no-ff codex/test-and-tooling-hygiene` → `233b98e572`. Outside `tickets/` it is identical to the clean-clone-tested `f7c9648821`.
+- Checks on the merged state: `scripts/check_secrets.sh` (24 commits) PASS; `check_licensing.py` rc 0; `check_repository_artifact_hygiene.py` rc 0 (77,550 tracked paths, longest 200 characters); `scripts/check_secrets.sh v1.5.9-beta.3..HEAD` (40 commits) PASS.
+- Push target branch result: `git push origin HEAD:personal` → `origin/personal` = `1ac4c53421` (merge plus release commit)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
-- Method: `Project Release Guide` (`scripts/desktop-release.sh beta`, then push `personal` and the tag)
-- Results: recorded after the release.
+- Method: `Project Release Guide`
+- Method reference / command: `bash scripts/desktop-release.sh beta --branch finalize/test-and-tooling-hygiene --no-push`; `git push origin HEAD:personal`; `git push origin v1.5.9-beta.4`. Before running it, I deleted the untracked `*/dist/` build folders the guide names, so the worktree was clean.
+- Pipelines triggered and their results (all watched with `gh run watch --exit-status`):
+
+| Workflow | Run ID | Result | Finished (UTC) |
+| --- | --- | --- | --- |
+| Desktop Release | 40089628778 | success | 2026-10-24 11:47 |
+| Android APK Release | 40089628770 | success | 2026-10-24 11:26 |
+| iOS App Store Connect Release | 40089628768 | success | 2026-10-24 11:38 |
+| Server Docker Release | 40089628769 | success | 2026-10-24 11:56 |
+
+- Published artifacts checked against what the release should produce:
+  - The GitHub release `v1.5.9-beta.4` is a pre-release with 17 assets, the complete set:
+    - macOS arm64 and x64: `.dmg`, `.zip` and their blockmaps (8);
+    - Linux x64 and arm64 AppImages (2);
+    - the Windows `.exe` (1);
+    - the Android APK and its `.sha256` (2);
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` (4).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.4` (amd64 and arm64, `sha256:b88a5c738345…`). `:beta` moved to the same digest. `:latest` is unchanged (2026-10-22, `sha256:ff6bf251b33b…`), as a beta should leave it.
+  - TestFlight: the iOS workflow succeeded. App Store review and listing stay outside this release (RELEASE.md).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (beta tags use generated notes)
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene`
+- Worktree cleanup result: `Completed`. `git worktree remove --force` ran after confirming the worktree HEAD equalled `origin/personal` and the ticket branch was merged. The only uncommitted file was this report's update, which was copied out first and is committed here. Ignored build output went with the worktree.
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed`. `codex/test-and-tooling-hygiene` (was `eeb487bbb9`) and `finalize/test-and-tooling-hygiene` (was `1ac4c53421`) were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/test-and-tooling-hygiene` is kept, like earlier tickets' branches; RELEASE.md asks for no remote cleanup.
+- Temporary files: the clean clone `/tmp/dr253/clone` was removed. This record was committed from a temporary sparse worktree, `/tmp/dr253/rec`, removed afterwards.
+
+## Verification Checks
+
+- After the rollout: all four workflows `success`; the GitHub pre-release has the 17 assets; Docker `1.5.9-beta.4` and `:beta` share one multi-arch digest; `:latest` is unchanged.
+- `origin/personal` after the release: `1ac4c53421`, plus this report commit.
 
 ## Release Notes Summary
 
@@ -117,3 +164,14 @@
 
 - Revert the merge on `personal` and cut a newer beta (RELEASE.md, Rollback). No data migration is involved, so rolling back loses nothing.
 - If the watcher catch-up misbehaves (extra reloads or frames), the revert restores the previous event-only watcher; the manual Reload remains the recovery path.
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete: `Yes` (beta `v1.5.9-beta.4`, all four workflows succeeded)
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, by `send_message_to` through the delivery engineer's handoff rule, right after this report commit
+- Terminal message/reference: `Delivery Completed` for autobyteus-253
