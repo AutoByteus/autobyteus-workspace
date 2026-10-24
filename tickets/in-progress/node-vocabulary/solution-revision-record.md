@@ -7,6 +7,8 @@
 | SR-001 | 2026-10-24 | Requirements | The audit and the proposed renames |
 | SR-002 | 2026-10-24 | Requirements | Approved; held for the naming principle |
 | SR-003 | 2026-10-24 | Design | Design complete under Principle 15; Large / High |
+| SR-004 | 2026-10-24 | Mixed | The version field removed; phone apps' entries |
+| SR-005 | 2026-10-24 | Mixed | ARCH-REV-001 (AR-901 … AR-903, N-901 … N-904) |
 
 ## Revision Entries
 
@@ -37,3 +39,12 @@
   - REQ-901 and Step 4 extended to the phone apps' saved node records (iOS and Android `SavedNodeProfile` → `SavedNodeEntry`), found while tracing the field.
 - Approval: REQ-909 is the user's request; the entry naming is within the approved direction.
 - Route: an addendum to the architecture review in progress.
+
+### SR-005 — ARCH-REV-001 resolved (2026-10-24)
+
+- AR-901 (Requirement Gap, the user's decision): the stored tool selections are out of this ticket. No migration, no alias. REQ-906 states the exception. The Agent Package Creator updates its package in a separate ticket, and a release note covers it.
+- AR-902: the Electron string carriers listed in Step 4 with citations; AC-901 made concrete (a list of remaining `nodeId` uses with meanings).
+- AR-903: Memory Sync renamed now (REQ-910, Step 5b): `sourceId` / "Source ID" in code, GraphQL, hub wire and UI; stored names through their owners. FU-002 keeps only "should it be the node ID?".
+- N-901: a repository-level `GLOSSARY.md` with a `DESIGN.md` pointer. N-902: iOS 426 branch and `incompatibleServer` removed. N-903: FU-001 already marked as pulled in. N-904: every mapping owner named.
+- Approval: AR-901 decided by the user (2026-10-24). REQ-910 is within the approved direction (REQ-901's rule applied).
+- Route: round 2 of the architecture review.

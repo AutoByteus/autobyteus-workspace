@@ -22,3 +22,12 @@
   - V-10 left as FU-002.
 - Coordination: autobyteus-260 (tool result files, running) and autobyteus-284 … 289 (per-node record: use `nodeId` from the start).
 - Expected output: the architecture review report; on Pass, the reviewer's handoff to implementation.
+
+## Round 2 — 2026-10-24 (SR-005), answering ARCH-REV-001
+
+| Finding | Resolution |
+| --- | --- |
+| AR-901 | The user's decision: updating stored agent configs is out of this ticket (the Agent Package Creator's own later ticket); no migration, no alias; REQ-906 states the exception; release-note text in Step 3 |
+| AR-902 | Step 4 lists the Electron string carriers with citations; AC-901 requires the implementation's list of every remaining `nodeId` with its meaning |
+| AR-903 | REQ-910, Step 5b: `sourceId` / "Source ID" in code, GraphQL, hub wire and UI; stored names through their owners; FU-002 narrowed |
+| N-901 … N-904 | `GLOSSARY.md` at repository level with a `DESIGN.md` pointer; iOS 426 branch removed; FU-001 marked; every mapping owner named |

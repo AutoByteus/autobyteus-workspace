@@ -4,7 +4,7 @@
 
 - Package: `node-vocabulary`; Task autobyteus-290.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-002. U-1 (a): keep stored names. U-2 (a): rename the identity wire field to `nodeId`.
-- Current solution revision ID: `SR-004` (FU-001 pulled in; the phone apps' entry names). Design status: `Ready`.
+- Current solution revision ID: `SR-005` (ARCH-REV-001: AR-901 … AR-903, N-901 … N-904). Design status: `Ready`.
 - Authorities read:
   - `solution-designer/SKILL.md`;
   - `references/architecture-design.md`;
@@ -36,8 +36,11 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 
 ## Glossary (Principle 15)
 
-- **Where:** `collaboration_model.md` § 1 "Vocabulary" is the project glossary. `DESIGN.md` gets one line under "Project-specific design documents": "Domain vocabulary: the glossary in `collaboration_model.md` § 1 is the authority for domain words (Principle 15)."
-- **Entries added or tightened in § 1:**
+- **Where (N-901):** a repository-level `GLOSSARY.md` at the workspace root is the project glossary. It holds the node words below, which govern the server, the web, the desktop shell and the phone apps.
+  - `collaboration_model.md` § 1 keeps the collaboration words (Run, Unit, Team, Org, …). Its Node and Peer entries link to `GLOSSARY.md` instead of defining them again, so there is one definition per word.
+  - `DESIGN.md` gets one line under "Project-specific design documents": "Domain vocabulary: `GLOSSARY.md` is the authority for domain words, with `collaboration_model.md` § 1 for collaboration words (Principle 15)."
+  - The glossary also lists **source ID** (Memory Sync).
+- **Entries:**
   - **Node:** one AutoByteus server, identified by its **node ID** (`srv_…`).
   - **This node / remote node:** a point of view. Every node other than this one is a remote node, even a Docker node on the same machine. *Remote* names a location.
   - **Peer:** a remote node registered with this node (mutual registration, pinned node ID). *Peer* names a relationship; a remote node that isn't registered is not a peer.
@@ -57,7 +60,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - the `remote-collaboration` and `remote-access` feature names (remote access = access from another device, a location meaning);
   - the localStorage key's value `autobyteus.node_registry.v1` (a stored value, rule 8);
   - every behavior.
-- **Memory Sync's "source node id" (V-10), left alone:** it is a user-entered import identity (`memory-sync-config-service.ts:81-98`, label "Source node id" in `memorySyncSettings.ts:29`), stored in the sync state and sent to the hub. It is not the node's ID. Renaming it, or making it the node's ID, changes stored data and the hub protocol: FU-002, the user's decision.
+- **Memory Sync's "source node id" (V-10):** renamed now (AR-903), Step 5. Whether a source should be identified by its node ID instead stays FU-002 (the user's decision).
 - **Follow-ups:** FU-002 (Memory Sync's source identity). FU-001 is pulled in as Step 1b (the user).
 
 ## Steps (each no behavior change, green before the next)
@@ -74,7 +77,12 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - `stores/phoneAccessStore.ts`, `nodeRowStatus.ts`, `nodeListStore.ts`, `components/settings/nodes/NodeRow.vue`, `NodeConnectionDetails.vue`;
   - iOS `AutoByteusMobileCore/ConnectionValidator.swift` (`serverInstanceID = "serverInstanceId"` → `nodeId`) and its tests.
 - **UI text:** none needed; the Nodes tab already says "Node ID" (`localization/messages/en/nodesPage.ts:57`).
-- **Consumers check:** a search for `serverInstanceId` and `ServerInstance` finds only the identity service's stored-field mapping and the desktop registry mapping (Step 4).
+- **Mapping owners of stored names (N-904).** Each is the only reader and writer of its stored shape, and AC-901's search allows the old names only in these:
+  - the server's `NodeIdentityService` (identity file `serverInstanceId`);
+  - `autobyteus-web/utils/nodeEntryStorage.ts` (desktop registry file and its localStorage copy: `id`, `serverInstanceId`);
+  - `utils/remoteAccess/mobileCredentialStorage.ts` (mobile session `nodeId`);
+  - iOS `SavedNodeStore.swift` and Android `connection/SavedNodeStore.kt` (their saved records' keys);
+  - and, for Step 5b, `memory-sync-config-service.ts`, `local-file-memory-sync-state-store.ts`, `memory-sync-manifest.ts` (`sourceNodeId`).
 
 ### Step 1b: no version field on the status answer (REQ-909, the user's request)
 
@@ -82,7 +90,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 - **Readers:**
   - web `types/remoteAccess.ts:49` (the field), the mobile shell specs' fixtures;
   - the server E2E type `phone-access-running-routes.e2e.test.ts:36`;
-  - iOS `ConnectionValidator.swift`: the field, its decode and encode, `minimumCompatibilityVersion` and the `>= minimum` guard (line 135), plus `ConnectionDiagnosticMapper.incompatibleServer()` if nothing else reaches it (it is also referenced at `ConnectionDiagnostic.swift:110`; keep it only if that path is live, otherwise remove it as dead code, Principle 7); the iOS tests' JSON.
+  - iOS `ConnectionValidator.swift`: the field, its decode and encode, `minimumCompatibilityVersion` and the `>= minimum` guard (line 135), plus the HTTP 426 → `incompatibleServer` branch (`ConnectionDiagnostic.swift:110`; no server answers 426, N-902) and `ConnectionDiagnosticMapper.incompatibleServer()` itself, both dead after the guard goes (Principle 7); the iOS tests' JSON.
   - Android: no reader (search: none).
 - **Behavior:** the only change is that an iOS app no longer refuses a server for a version number (rule 9: versions are the user's to keep together). Everything else is unchanged.
 
@@ -101,7 +109,11 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - the tool description: "List the peer nodes registered on this node, …" (unchanged apart from naming itself);
   - the `list_available_agents` and `delegate_task` texts and the refusal hints that name `list_available_nodes` → `list_peer_nodes` (`remote-refusals.ts`).
 - **Docs:** `remote_collaboration.md`, `agent_tools.md`, `agent_communication.md`.
-- **Agent definitions in this repository** that select the tool: none found. The PTM's own config, skill and board are updated by the PTM through the Agent Package Creator after this ships (PTM, 2026-10-24).
+- **Stored tool selections (AR-901, the user's decision 2026-10-24):** an agent definition stores the tools it uses (`toolNames` in `agent-config.json`). Exposure matches by name (`runtime-agent-tool-exposure.ts:80`), so a definition that still lists `list_available_nodes` no longer gets the tool after the rename. The user ruled updating agent configs out of this ticket: "The agent config file belongs to another ticket after you have done your task … the agent package creator could create another task to update its own package."
+  - There is no startup migration and no alias.
+  - REQ-906 states this as its one accepted exception besides REQ-909. A definition that selects the old name must be updated to `list_peer_nodes`. The PTM's own package is updated by the Agent Package Creator in a separate ticket after this one.
+  - The release note (whenever a release is made) says: "`list_available_nodes` is now `list_peer_nodes`; agents that use it need the new name selected."
+  - This repository's built-in definitions select neither name (search: none).
 - **Abilities and exposure unchanged:** opt-in by definition, the same results.
 
 ### Step 4: the client's own record is an entry (V-01, V-06, V-09; U-1)
@@ -111,17 +123,34 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - `WindowNodeContext.nodeId` → `entryId`;
   - the registry changes' `nodeId` → `entryId`;
   - `EMBEDDED_NODE_ID` keeps its value and is named `EMBEDDED_ENTRY_ID`.
+- **Carriers the compiler does not catch (AR-902)**, renamed by hand to `entryId`. Cited at `electron/application/electronApplication.ts:126-260`, `electron/preload.ts:45-46`, `electron/shell/workspace-shell-window-registry.ts:44`:
+  - `createNodeBoundWindow(nodeId)`, `openNodeWindow(nodeId)`, `ensureNodeExists(nodeId)`;
+  - the IPC handlers `open-node-window` / `focus-node-window` (their parameter; the channel names stay, since they open a node's window);
+  - `preload.openNodeWindow` / `focusNodeWindow`;
+  - `shellWindowRegistry.getNodeIdForShell` → `getEntryIdForShell`, `getByNodeId` → `getByEntryId`, `closeNodeWindow(entryId)`;
+  - the `WorkspaceShellWindow` and `attachRendererConsoleDiagnostics` options;
+  - the log texts (`nodeId=` → `entryId=`).
 - **Stores and shell:** `stores/nodeStore.ts`, `stores/windowNodeContextStore.ts` (`nodeId` → `entryId`, `isEmbeddedWindow` stays), `electron/nodeRegistryStore.ts`, `electron/preload.ts`, `electron/types.d.ts`, `electron/application/electronApplication.ts`, and every caller (the 87 web files using `nodeId`, each classified: entry meaning → `entryId`; node meaning stays `nodeId`).
 - **Stored-name mapping (U-1), one owner:** a new `utils/nodeEntryStorage.ts` (`toStoredNodeEntry` / `fromStoredNodeEntry`), used by both stores that persist the snapshot (the Electron file and the window's localStorage copy). It maps `entryId` ⇄ stored `id` and `nodeId` ⇄ stored `serverInstanceId`. It reads and ignores a stored `isSystem`, and no longer writes it. Old files load unchanged (rule 7); there is no migration.
 - **Phone apps:** iOS `SavedNodeProfile` → `SavedNodeEntry` (13 files) and Android `SavedNodeProfile` → `SavedNodeEntry` (`connection/SavedNodeProfile.kt`, `SavedNodeStore.kt`, `ConnectionValidator.kt` and their users). Their stored keys stay through each app's one store owner (U-1).
 - **Mobile (V-09):** `MobileNodeSession.nodeId` → `entryId` (`MOBILE_NODE_ID` → `MOBILE_ENTRY_ID`). The stored credential session keeps its field name through `utils/remoteAccess/mobileCredentialStorage.ts`, its one owner.
 - **Consumers check:** every window-scoped endpoint resolver, the Nodes tab, phone access, the window switcher; the remote runs store keeps `nodeId` (the node's ID).
+- **AC-901 made concrete (AR-902):** the implementation lists every remaining `nodeId` in `autobyteus-web/electron/`, `stores/`, `utils/`, `services/` and `components/` with its meaning (all must be the node's ID) in its handoff, and the code review checks that list.
 
 ### Step 5: other meanings of "peer" (V-04, V-05, V-08)
 
 - **Client address:** `api/security/remote-access-local-trust.ts` (`NormalizedPeerAddress` → `NormalizedClientAddress`, `normalizePeerAddress` → `normalizeClientAddress`, `isLoopbackPeerAddress` → `isLoopbackClientAddress`), and the route policy, websocket auth, URL resolver and MCP local access that call them.
 - **Siblings:** `stores/runHistoryTeamExecutionRows.ts` wording; e2e fixture `task-agent-peer-sidebar.page.vue` → `task-agent-sibling-sidebar.page.vue` and its spec references.
 - **The contract:** `collaboration_model.md` § 2.2 (V-08).
+
+### Step 5b: Memory Sync's source ID (V-10, AR-903)
+
+- **Code:**
+  - `sourceNodeId` → `sourceId` across `memory-sync/` (`shared/source-node-id.ts` → `shared/source-id.ts`, the config, state store, manifest, hub client, ingestion service, types);
+  - the GraphQL `memory-sync` types and the web (`types/memory.ts`, `memorySyncStore.ts`, `memoryExplorerStore.ts`, `memoryInspectorStore.ts`, `MemorySyncCard.vue`, the memory GraphQL documents, `generated/graphql.ts` by codegen).
+- **UI:** "Source node id" → "Source ID", and the card's description "the source node id below is the stable import identity" → "the source ID below …", in English and Chinese.
+- **Wire to the hub:** renamed as a clean cut (rule 9; the hub is a node of the same release). Covers `memory-hub-client.ts:24` (the query parameter) and the ingestion side.
+- **Stored names kept (U-1)**, mapped by their one owner each: the source config (`memory-sync-config-service.ts`), the sync state (`local-file-memory-sync-state-store.ts`), the hub's stored manifest (`memory-sync-manifest.ts` read and write). Stored values (the identity itself) are unchanged.
 
 ### Step 6: glossary and docs (REQ-907)
 
