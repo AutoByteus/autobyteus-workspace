@@ -1,0 +1,3221 @@
+From 3e78b455ec3b4d141b6c8a5b1dc0ce843df22121 Mon Sep 17 00:00:00 2001
+From: normy <normy@macbookpro.speedport.ip>
+Date: Fri, 9 Oct 2026 08:13:37 +0200
+Subject: [PATCH] refactor(collaboration): one teammate-delivery owner for
+ every root
+
+RootCommunicationEngine now owns teammate delivery from resolved recipient
+to released input for the standalone, AgentOrg and Team roots. Each root
+supplies a RootCommunicationPort object; the standalone/Org adapters and
+the Team service, adapter and append plan are removed. The engine-owned
+one-shot RootMessageAppend runs the open/duplicate/scope checks under each
+root's history lock through one coordinator contract, commitMessageAppend.
+
+A Task closing, or the recipient stopping input, after the durable write
+is now a normal rejection instead of a root persistence fail-stop
+(REQ-012): the record stays, the recipient never gets the input.
+
+Also removes the dead InterAgentMessageRouter and
+TaskAgentExecutionRegistry.reserveInput, defines admission validation once
+in reserve(), and updates the module docs to the real input path.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ .../features/artifact_file_serving_design.md  |   8 +-
+ .../docs/modules/agent_communication.md       |  79 ++++-
+ .../docs/modules/agent_execution.md           |  25 +-
+ .../docs/modules/agent_memory.md              |   2 +-
+ .../docs/modules/agent_orgs.md                |   8 +-
+ .../docs/modules/agent_team_execution.md      |  12 +-
+ .../docs/modules/codex_integration.md         |   2 +-
+ .../docs/modules/standalone_agent_run_root.md |  11 +-
+ .../root-communication-adapter.ts             |  42 ---
+ .../root-communication-engine.ts              |  90 +++---
+ .../communication/root-communication-port.ts  |  57 ++++
+ .../root-communication-runtime-builder.ts     |   2 +-
+ .../communication/root-message-append.ts      | 106 +++++++
+ .../input/agent-run-input-admission-state.ts  |  15 -
+ .../domain/agent-org-run.ts                   |  34 ++-
+ .../agent-org-communication-adapter.ts        |  78 -----
+ .../agent-org-run-persistence-coordinator.ts  |  27 +-
+ .../domain/root-team-run.ts                   |  51 ++--
+ .../task-agent-execution-registry.ts          |   8 -
+ .../services/inter-agent-message-router.ts    |  24 --
+ .../inter-agent-message-runtime-builders.ts   |  32 +-
+ .../services/team-run-message-delivery.ts     |  38 +--
+ .../services/team-run-persistence-contract.ts |  38 ---
+ .../team-run-persistence-coordinator.ts       |  48 ++-
+ .../team-communication-adapter.ts             | 106 -------
+ .../team-communication-message-append-plan.ts | 100 -------
+ .../team-communication-service.ts             |  44 ---
+ .../domain/standalone-agent-run-root.ts       |  34 ++-
+ .../standalone-root-communication-adapter.ts  |  81 ------
+ ...standalone-root-persistence-coordinator.ts |  27 +-
+ ...nt-provider-composition-boundaries.test.ts |   2 +-
+ .../root-communication-engine.test.ts         | 233 +++++++++++++++
+ .../root-communication-roots.test.ts          | 274 ++++++++++++++++++
+ ...ent-org-communication-presentation.test.ts |  27 +-
+ .../helpers/org-collaborator-harness.ts       |   9 +-
+ .../root-team-run-termination.test.ts         |   2 +-
+ ...nput-claude-active-turn-admission.test.ts} |  15 +-
+ ...plication-team-input-root-dispatch.test.ts |   2 +-
+ ...cation-message-append-plan-current.test.ts |  47 ---
+ .../team-communication-service.test.ts        | 168 -----------
+ .../helpers/standalone-root-harness.ts        | 139 +++++++++
+ .../standalone-agent-run-root.test.ts         | 128 +-------
+ 42 files changed, 1192 insertions(+), 1083 deletions(-)
+ delete mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-port.ts
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/communication/root-message-append.ts
+ delete mode 100644 autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts
+ delete mode 100644 autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts
+ delete mode 100644 autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts
+ delete mode 100644 autobyteus-server-ts/src/services/team-communication/team-communication-message-append-plan.ts
+ delete mode 100644 autobyteus-server-ts/src/services/team-communication/team-communication-service.ts
+ delete mode 100644 autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-engine.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-roots.test.ts
+ rename autobyteus-server-ts/tests/unit/agent-team-execution/{inter-agent-message-router-claude-input-admission.test.ts => teammate-input-claude-active-turn-admission.test.ts} (88%)
+ delete mode 100644 autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/standalone-agent-run-root/helpers/standalone-root-harness.ts
+
+diff --git a/autobyteus-server-ts/docs/features/artifact_file_serving_design.md b/autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+index cc8cfe4e6..80340a85f 100644
+--- a/autobyteus-server-ts/docs/features/artifact_file_serving_design.md
++++ b/autobyteus-server-ts/docs/features/artifact_file_serving_design.md
+@@ -58,9 +58,11 @@ scope-local instance and never bind it as the process authority.
+    `memberAddress`, and nullable `taskAgentRunId`).
+ 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
+    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
+-4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
+-   team events and persists one message-first projection at
+-   `agent_teams/<teamRunId>/team_communication_messages.json`.
++4. Team teammate delivery (`RootCommunicationEngine` with the `RootTeamRun`
++   port) saves one message-first record at
++   `agent_teams/<teamRunId>/team_communication_messages.json` before the
++   recipient may process the message (see
++   [Teammate Delivery Path](../modules/agent_communication.md#teammate-delivery-path)).
+ 5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
+    hydration.
+ 6. Reference bytes are served by message-owned identity:
+diff --git a/autobyteus-server-ts/docs/modules/agent_communication.md b/autobyteus-server-ts/docs/modules/agent_communication.md
+index 426656ffe..534c440dc 100644
+--- a/autobyteus-server-ts/docs/modules/agent_communication.md
++++ b/autobyteus-server-ts/docs/modules/agent_communication.md
+@@ -51,16 +51,19 @@ do not cross this shared message/task placement boundary.
+ ## `recipient_address` Team Route
+ 
+ `recipient_address` is the logical Team route. It requires an active
+-`MemberTeamContext` with `send_message_to` enabled and delegates to the root
+-Team delivery boundary owned by `TeamRun` / `MixedTeamManager`. Child managers
+-forward root-bound delivery intent without rewriting it into flat names or
+-synthetic representative identities.
++`MemberTeamContext` with `send_message_to` enabled and delegates to the sender's
++root (`RootTeamRun`, `AgentOrgRun` or `StandaloneAgentRunRoot`), which resolves
++the address and hands the message to the one
++[teammate delivery path](#teammate-delivery-path). Child managers forward
++root-bound delivery intent without rewriting it into flat names or synthetic
++representative identities.
+ 
+ Accepted team-route deliveries are the only `send_message_to` path that creates
+ Team Communication projection:
+ 
+-- recipient input is admitted through the resolved member/team handle into the
+-  exact target AgentRun FIFO;
++- recipient input is held in the exact target AgentRun FIFO through the
++  resolved member/team handle and becomes eligible only after the message is
++  saved to the root's history;
+ - accepted `INTER_AGENT_MESSAGE` events carry the team context needed by the Team
+   Communication processor to build address-first `senderAddress` and
+   `receiverAddress` values;
+@@ -72,13 +75,62 @@ Team Communication projection:
+ Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
+ attempt. It does not mean a provider turn has completed and does not synchronously
+ wait for a next-turn-only backend. Team Communication/member-input projection is
+-created once at admission; forwarding and terminal lifecycle facts do not
+-republish it.
++created once, when the saved message is committed to the recipient; forwarding
++and terminal lifecycle facts do not republish it.
+ 
+ Team-owned internals may still use task-agent/recovery machinery for task
+ delegation workflows, but public logical delivery has one rooted address
+ authority and no flat-roster or bare-name fallback.
+ 
++## Teammate Delivery Path
++
++`send_message_to(recipient_address)`, handoffs and same-root
++`send_message_to(target_agent_run_id)` end in one implementation for the
++standalone Agent root, the AgentOrg root and the Team root:
++`RootCommunicationEngine` (`agent-collaboration/execution/communication`).
++
++`SendMessageToDispatcher -> member collaboration context -> root delivery (StandaloneRootMessageDelivery | AgentOrgRunMessageDelivery | TeamRunMessageDelivery) -> RootCommunicationEngine.deliver -> member handle -> AgentRun.reserveUserMessage -> root persistence coordinator commitMessageAppend -> history event -> reservation commit -> recipient presentation -> release -> AgentRun dispatch`
++
++1. The root delivery service resolves the recipient and takes the live lease.
++   Address resolution stays root-specific.
++2. The engine checks the delivery: the root is accepting messages, sender and
++   receiver are exact live executions of this root, the target is not the
++   sender, the Task scope allows the pair, and the content is not empty. It
++   then builds the immutable message record and the recipient input, and holds
++   a slot in the recipient's FIFO with `reserveUserMessage`.
++3. The engine hands one one-shot `RootMessageAppend` to the root's persistence
++   coordinator (`commitMessageAppend`). Under the root's history lock the
++   append checks again that the root is open, the message is not a duplicate
++   and the Task scope is still open. The coordinator then writes the root's
++   message file.
++4. File not written: the slot is cancelled and the sender gets
++   `*_HISTORY_COMMIT_FAILED`. Write indeterminate: the root enters persistence
++   fail-stop, the slot is cancelled and the error is thrown.
++5. File written: the engine updates its message list and publishes the history
++   event, then commits the slot, publishes the recipient presentation and
++   releases the slot. The recipient therefore processes a message only after it
++   is saved.
++6. The Task may close, or the recipient may stop accepting input, between the
++   write and the commit. Then the saved record and its history event stay, but
++   the recipient never gets the input and the root keeps working. The sender
++   gets the Task-closed `TaskDelegationError` (`TASK_AGENT_RESOURCE_CLOSED`),
++   the same as for a closure just before the save, or
++   `{ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT" }`. Only a failure
++   of the local list update or the publication itself still fail-stops the
++   root.
++
++Each root's constructor supplies its differences as a `RootCommunicationPort`
++object. The port carries data and effects only; the engine decides the order:
++
++| Root | History file | Recipient input | Events after the save | Codes (not accepting / conflict / not saved) |
++| --- | --- | --- | --- | --- |
++| Standalone Agent | `{schemaVersion, subjectKind: "agent", hostRunId, messages}` | Generic builder (`root_subject_kind`, `root_run_id`) | `communication`, then the recipient's presentation (for the host, an inter-agent event on its own Agent stream) | `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES` / `AGENT_ROOT_MESSAGE_COMMIT_CONFLICT` / `AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED` |
++| AgentOrg | `{schemaVersion, subjectKind: "agent_org", orgRunId, messages}` | Generic builder | `communication`, then the member presentation | `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES` / `AGENT_ORG_MESSAGE_COMMIT_CONFLICT` / `AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED` |
++| Team | `{schemaVersion, rootTeamRunId, messages}` | Team builder (`team_run_id`) | `COMMUNICATION`, then `MEMBER_INPUT` | `TEAM_RUN_NOT_ACCEPTING_MESSAGES` / `TEAM_MESSAGE_COMMIT_CONFLICT` / `TEAM_MESSAGE_HISTORY_COMMIT_FAILED` |
++
++The engine owns the authoritative message list. A root's
++`getCommunicationSnapshot()` builds its file envelope from that list.
++
+ ## `get_handoff_rules`
+ 
+ `get_handoff_rules` is a configured, read-only Team-member tool with no
+@@ -144,6 +196,8 @@ that same object; it is not wrapped in an operation result.
+ ## `target_agent_run_id` Global Direct Route
+ 
+ `target_agent_run_id` has two paths, chosen by `GlobalAgentRunMessageRouter`.
++The router is kept for exactly this: run-ID messaging, handing a same-root
++target to its root, and live-only cross-root delivery with optional grants.
+ 
+ **Same-root path.** When the sender has a member collaboration context and the
+ target AgentRun is recorded in the sender's own active root
+@@ -151,7 +205,8 @@ target AgentRun is recorded in the sender's own active root
+ `deliverExactAgentMessage`. The root takes a live lease on the target's chain,
+ wakes a shut-down delegated child in `restore` mode (rejecting with
+ `TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
+-that is impossible), and delivers as ordinary root communication. An unknown
++that is impossible), and delivers through the
++[teammate delivery path](#teammate-delivery-path). An unknown
+ run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
+ use this path. When the target belongs to closed Task work, the root first
+ reactivates it if the sender is the run that assigned it, the target is the run
+@@ -243,8 +298,8 @@ They cannot use `recipient_address` unless they are running with an active
+ semantics stay identical across AutoByteus, Codex, Claude, and the
+ server-hosted Agent Tools MCP surface.
+ 
+-All runtime projections end at the same `AgentRun.postUserMessage(...)`
+-admission owner. Codex, Claude, AutoByteus, Team routing, external callers, and
++All runtime projections end at the same `AgentRun` input admission:
++`postUserMessage(...)`, or `reserveUserMessage(...)` for teammate delivery. Codex, Claude, AutoByteus, Team routing, external callers, and
+ the command registry do not select start/append/wait behavior themselves.
+ 
+ Configured Team members receive `get_handoff_rules` through the same runtime
+@@ -378,7 +433,7 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
+   member); any other to its catalog address. **Nothing is written, allocated,
+   hosted or published.** The `@` caller
+   (Team, Org and collaboration stream handlers, and the standalone host path
+-  `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
++  `AgentRunCommandCoordinator.postUserMessage` → `StandaloneAgentRunRoot.postHostUserMessage` →
+   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
+   note with each name, kind and address, telling the agent to `delegate_task` to
+   the address, follow up by the returned run ID and, when the result also has a
+diff --git a/autobyteus-server-ts/docs/modules/agent_execution.md b/autobyteus-server-ts/docs/modules/agent_execution.md
+index 567b7c1d1..16a494229 100644
+--- a/autobyteus-server-ts/docs/modules/agent_execution.md
++++ b/autobyteus-server-ts/docs/modules/agent_execution.md
+@@ -131,7 +131,7 @@ their own bundle first.
+ 
+ `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
+ 
+-`AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
++Both `AgentRun` input entry points (`postUserMessage(...)` and `reserveUserMessage(...)`) feed an internal command-observer seam. Observers are notified only when an admitted input is forwarded to the runtime, and observer failures are isolated from the input result.
+ 
+ Current user context-file references are part of runtime input construction, not
+ Team Communication metadata. For native AutoByteus turns, the shared
+@@ -395,15 +395,28 @@ activated or historical runs. Standalone `activationState` is not persisted; the
+ `prepareAgentRun` response may still return `activationState: "PREPARED"` as a
+ launch API response field.
+ 
+-`AgentRun.postUserMessage(...)` is the sole runtime-level input-admission,
+-status, and turn authority once an `AgentRun` exists. Its runtime events are the
+-source that replaces command overlays and drives later `running`, `idle`,
+-`offline`, and `error` projections.
++Once an `AgentRun` exists it is the runtime-level input-admission, status, and
++turn authority. Its runtime events are the source that replaces command overlays
++and drives later `running`, `idle`, `offline`, and `error` projections. Input
++enters through one of two entry points:
++
++- `postUserMessage(...)` admits and dispatches in one serialized step. It is
++  used for operator and application input, delegated-task seeds, Skill
++  Improvement, and cross-root run-ID messages. Only an immediately admitted
++  `USER` input here may authorize a failed-compaction retry.
++- `reserveUserMessage(...)` holds a FIFO slot that stays invisible and
++  undispatchable until the caller commits and releases it, or cancels it
++  without trace. Teammate delivery uses it (see
++  [Agent Communication](./agent_communication.md#teammate-delivery-path)): the slot is committed only after
++  the message is saved to the root's history. A held slot never authorizes
++  compaction recovery, and root shutdown drops held slots.
+ 
+ ## Active Input And Interrupt Command Results
+ 
+ Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind
+-`postUserMessage(...)`. It validates and admits a private FIFO entry, owns one
++both entry points. Its `reserve` step holds the only admission validation
++(accepting input, non-empty content); posting is reserve, commit and release in
++one step. It admits a private FIFO entry, owns one
+ provider-dispatch claim at a time, and selects exactly one explicit
+ `start_turn` or `append_to_active_turn` dispatch from canonical turn state plus
+ the backend's declared `activeTurnAppend` capability. `accepted: true` means the
+diff --git a/autobyteus-server-ts/docs/modules/agent_memory.md b/autobyteus-server-ts/docs/modules/agent_memory.md
+index 4a8604f17..8ef8f90e9 100644
+--- a/autobyteus-server-ts/docs/modules/agent_memory.md
++++ b/autobyteus-server-ts/docs/modules/agent_memory.md
+@@ -182,7 +182,7 @@ native rows for loaded contexts; it is not durable native cold replay. See
+ Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
+ 
+ 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
+-2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
++2. User messages are observed only when the `AgentRun` forwards an admitted input to the runtime, whether it entered through `postUserMessage(...)` or a committed `reserveUserMessage(...)` slot (teammate delivery). Both keep the raw-trace `sourceEvent: "AgentRun.postUserMessage"` literal.
+ 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
+ 4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
+ 
+diff --git a/autobyteus-server-ts/docs/modules/agent_orgs.md b/autobyteus-server-ts/docs/modules/agent_orgs.md
+index b66689920..d418f1444 100644
+--- a/autobyteus-server-ts/docs/modules/agent_orgs.md
++++ b/autobyteus-server-ts/docs/modules/agent_orgs.md
+@@ -231,7 +231,13 @@ re-admit a committed message against later liveness or a configured-only gate.
+ The presentation preserves canonical sender address, content, reference context,
+ parent message id, origin, and committed time.
+ Rejected, failed, self-targeted, cross-root, or uncommitted sends publish no
+-receiver input event.
++receiver input event. This is the shared
++[teammate delivery path](./agent_communication.md#teammate-delivery-path); the
++Org root supplies only its port (`AGENT_ORG_*` codes, its sidecar file and
++events) and `AgentOrgRunPersistenceCoordinator.commitMessageAppend`. If the
++Task closes, or the receiver stops accepting input, after the append is durable,
++the message and its root-stream event stay, no input is presented or released,
++and the root keeps working.
+ 
+ The delegation work packet is the only task-system input. The shared
+ `task-system-input-presentation.ts` helper marks its SYSTEM provenance, display
+diff --git a/autobyteus-server-ts/docs/modules/agent_team_execution.md b/autobyteus-server-ts/docs/modules/agent_team_execution.md
+index 909ae3c42..78972b94e 100644
+--- a/autobyteus-server-ts/docs/modules/agent_team_execution.md
++++ b/autobyteus-server-ts/docs/modules/agent_team_execution.md
+@@ -661,9 +661,15 @@ root-bound delivery intent without rewriting the sender/receiver into flat or
+ representative identities. Team Communication persists the actual sender and
+ receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
+ structured metadata and natural message prose is not scanned for paths.
+-An accepted delivery is projected once when the target AgentRun owns the input;
+-later provider forwarding or terminal observation does not publish a duplicate
+-Team Communication or member-input record.
++The message is saved to `team_communication_messages.json` before the target
++AgentRun may process it, through the one
++[teammate delivery path](./agent_communication.md#teammate-delivery-path):
++`RootTeamRun` builds its `RootCommunicationPort` (Team recipient builder,
++`TEAM_*` codes, `COMMUNICATION` then `MEMBER_INPUT` events) and
++`TeamRunPersistenceCoordinator.commitMessageAppend` does the locked write. An
++accepted delivery is projected once, when the saved message is committed to the
++target AgentRun; later provider forwarding or terminal observation does not
++publish a duplicate Team Communication or member-input record.
+ 
+ Successful logical messaging returns that existing Agent or AgentTeam
+ coordinator run as flat `target_agent_run_id`; rejection returns null identity.
+diff --git a/autobyteus-server-ts/docs/modules/codex_integration.md b/autobyteus-server-ts/docs/modules/codex_integration.md
+index 82d6bc1dd..1b7227b25 100644
+--- a/autobyteus-server-ts/docs/modules/codex_integration.md
++++ b/autobyteus-server-ts/docs/modules/codex_integration.md
+@@ -233,7 +233,7 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
+   task-Agent runs append the task AgentRun id within the same resolved physical
+   Team scope. Callers use `AgentMemoryLocationService`; they do not derive a
+   directory from the logical member address.
+-- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
++- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures user input forwarded by the `AgentRun` (posted or committed from a held teammate slot) plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
+ - `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` rows through the `autobyteus-ts` `RunMemoryFileStore` primitives and restores sequencing/tool lifecycle from active plus complete rotated traces. It never loads or persists a WorkingContext snapshot; Codex thread state owns continuation.
+ 
+ New Codex tool traces use the shared split physical contract. A `tool_call`
+diff --git a/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md b/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
+index dbd9abbaa..aa6e57d10 100644
+--- a/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
++++ b/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
+@@ -33,7 +33,10 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
+ - **`StandaloneAgentRunRoot`** (`domain/standalone-agent-run-root.ts`): one operation gate, the
+   root lifecycle (`activating → active → terminating → terminated`, or `fail_stop`) and the public
+   API. Delivery, addressing, admission and child commands are in
+-  `services/standalone-root-message-delivery.ts`.
++  `services/standalone-root-message-delivery.ts`. The root builds the `RootCommunicationPort`
++  for teammate messages (generic recipient input, `AGENT_ROOT_*` codes, `communication` event);
++  the shared `RootCommunicationEngine` delivers them and owns the message list (see
++  [Teammate Delivery Path](./agent_communication.md#teammate-delivery-path)).
+ - **`StandaloneHostAgentHandle`** (`domain/standalone-host-agent-handle.ts`): the host's single
+   execution, like a configured member's handle. `ensureReady()` activates a prepared run,
+   restores a stopped or crashed one, or returns the live run; concurrent callers join one attempt.
+@@ -138,8 +141,8 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
+ ## Surfaces
+ 
+ - **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
+-  root after the host is ready (`AgentRunCommandCoordinator.post` →
+-  `StandaloneAgentRunRoot.postUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
++  root after the host is ready (`AgentRunCommandCoordinator.postUserMessage` →
++  `StandaloneAgentRunRoot.postHostUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
+   SEND_MESSAGE with `mentions` on the collaboration stream is resolved by the root
+   (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
+   steering the agent to `delegate_task`. An ineligible mention rejects the send with
+@@ -206,6 +209,8 @@ and [memory](agent_memory.md) for the persistence boundaries.
+ - `src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts`
+ - `src/standalone-agent-run-root/services/standalone-root-message-delivery.ts`
+ - `src/standalone-agent-run-root/services/standalone-root-builder.ts`
++- `src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts`
++- `src/agent-collaboration/execution/communication/root-communication-engine.ts`
+ - `src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts`
+ - `src/standalone-agent-run-root/services/standalone-root-location-service.ts`
+ - `src/standalone-agent-run-root/persistence/standalone-root-package-store.ts`
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts
+deleted file mode 100644
+index 301910833..000000000
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-adapter.ts
++++ /dev/null
+@@ -1,42 +0,0 @@
+-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+-import type { AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
+-import type {
+-  CollaborationMemberExecutionIdentity,
+-  RootExecutionIdentity,
+-} from "../domain/root-execution-identity.js";
+-import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+-
+-export type RootCommunicationDeliveryInput = Readonly<{
+-  senderIdentity: CollaborationMemberExecutionIdentity;
+-  senderDisplayName: string;
+-  receiverIdentity: CollaborationMemberExecutionIdentity;
+-  receiverDisplayName: string;
+-  content: string;
+-  messageType?: string | null;
+-  referenceFiles?: readonly string[] | null;
+-}>;
+-
+-export type RootCommunicationAppendResult =
+-  | Readonly<{ committed: true }>
+-  | Readonly<{ committed: false; code: string; message: string }>;
+-
+-/** Subject-private persistence and event port for RootCommunicationEngine. */
+-export interface RootCommunicationAdapter {
+-  readonly root: RootExecutionIdentity;
+-  readonly initialMessages: readonly CollaborationCommunicationMessageV1[];
+-  isOpen(): boolean;
+-  assertDeliveryAllowed(sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity): void;
+-  isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
+-  buildRecipientInput(input: Readonly<{
+-    delivery: RootCommunicationDeliveryInput;
+-    message: CollaborationCommunicationMessageV1;
+-  }>): AgentInputUserMessage;
+-  reserveRecipientInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult>;
+-  commitAppend(input: Readonly<{
+-    message: CollaborationCommunicationMessageV1;
+-    inputMessage: AgentInputUserMessage;
+-    reservation: Extract<AgentRunInputReservationResult, { reserved: true }>["reservation"];
+-    getCurrentMessages(): readonly CollaborationCommunicationMessageV1[];
+-    commitMessages(messages: readonly CollaborationCommunicationMessageV1[]): void;
+-  }>): Promise<RootCommunicationAppendResult>;
+-}
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
+index e311ff6a6..33fd8ffd7 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts
+@@ -1,43 +1,52 @@
+ import { createHash } from "node:crypto";
+ import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
++import { CollaborationContractError } from "../../domain/collaboration-contract-error.js";
+ import {
+   rootExecutionIdentityKey,
+   sameRootExecutionIdentity,
+ } from "../domain/root-execution-identity.js";
++import { TaskDelegationError } from "../task/task-delegation-command.js";
+ import type {
+-  RootCommunicationAdapter,
+   RootCommunicationDeliveryInput,
+-} from "./root-communication-adapter.js";
++  RootCommunicationPort,
++  RootCommunicationRejection,
++} from "./root-communication-port.js";
++import { createRootMessageAppend, type RootMessageAppendResult } from "./root-message-append.js";
+ import { validateCollaborationCommunicationMessageArrayV1 } from "./collaboration-communication-message-v1-schema.js";
+ import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+ 
+-/** Same-root message validation, accepted-record construction, and reservation lifecycle. */
++const rejected = (rejection: RootCommunicationRejection): AgentOperationResult =>
++  ({ accepted: false, code: rejection.code, message: rejection.message });
++
++/**
++ * The one teammate-delivery owner for every root (DS-001/DS-002): validation, the accepted
++ * message record, the held recipient slot, the history append run under the root's lock,
++ * the committed-message consequences, and the authoritative message list.
++ */
+ export class RootCommunicationEngine {
+   private current: readonly CollaborationCommunicationMessageV1[];
+   private accepting = true;
+ 
+-  constructor(private readonly adapter: RootCommunicationAdapter) {
+-    this.current = validateCollaborationCommunicationMessageArrayV1(adapter.initialMessages);
++  constructor(private readonly port: RootCommunicationPort) {
++    this.current = validateCollaborationCommunicationMessageArrayV1(port.initialMessages);
+   }
+ 
+   getMessages(): readonly CollaborationCommunicationMessageV1[] { return this.current; }
+   closeAdmission(): void { this.accepting = false; }
+ 
+   async deliver(input: RootCommunicationDeliveryInput): Promise<AgentOperationResult> {
+-    if (!this.accepting || !this.adapter.isOpen()) {
+-      return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES", message: "The collaboration root is not accepting messages." };
+-    }
+-    if (!sameRootExecutionIdentity(input.senderIdentity.root, this.adapter.root)
+-      || !sameRootExecutionIdentity(input.receiverIdentity.root, this.adapter.root)
+-      || !this.adapter.isCurrentAgent(input.senderIdentity)
+-      || !this.adapter.isCurrentAgent(input.receiverIdentity)) {
++    if (!this.isOpen()) return rejected(this.port.rejections.notAccepting);
++    if (!sameRootExecutionIdentity(input.senderIdentity.root, this.port.root)
++      || !sameRootExecutionIdentity(input.receiverIdentity.root, this.port.root)
++      || !this.port.isCurrentAgent(input.senderIdentity)
++      || !this.port.isCurrentAgent(input.receiverIdentity)) {
+       return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "Sender and receiver must be exact live executions in the same collaboration root." };
+     }
+     if (input.senderIdentity.agentRunId === input.receiverIdentity.agentRunId) {
+       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An AgentRun cannot send an ordinary collaboration message to itself." };
+     }
+-    const assertAllowed = () => this.adapter.assertDeliveryAllowed(input.senderIdentity, input.receiverIdentity);
+-    assertAllowed();
++    const assertDeliveryAllowed = () => this.port.assertDeliveryAllowed(input.senderIdentity, input.receiverIdentity);
++    assertDeliveryAllowed();
+     const content = input.content.trim();
+     if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
+     const createdAt = new Date().toISOString();
+@@ -50,32 +59,45 @@ export class RootCommunicationEngine {
+       referenceFiles: Object.freeze([...(input.referenceFiles ?? [])]),
+       createdAt,
+     });
+-    const inputMessage = this.adapter.buildRecipientInput({ delivery: input, message });
+-    const reservationResult = await this.adapter.reserveRecipientInput(input.receiverIdentity.agentRunId, inputMessage);
+-    if (!reservationResult.reserved) {
+-      return { accepted: false, code: reservationResult.code, message: reservationResult.message };
+-    }
+-    const exact = reservationResult.reservation;
+-    const guarded = Object.freeze({ agentRunId: exact.agentRunId,
+-      cancel: () => exact.cancel(),
+-      commit: () => { assertAllowed(); const committed = exact.commit(); return Object.freeze({ release: () => { assertAllowed(); committed.release(); } }); },
+-    });
+-    try { assertAllowed(); } catch (error) { exact.cancel(); throw error; }
+-    const result = await this.adapter.commitAppend({
++    const inputMessage = this.port.buildRecipientInput({ delivery: input, message });
++    const reserved = await this.port.reserveRecipientInput(input.receiverIdentity.agentRunId, inputMessage);
++    if (!reserved.reserved) return { accepted: false, code: reserved.code, message: reserved.message };
++
++    const append = createRootMessageAppend({
+       message,
+-      inputMessage,
+-      reservation: guarded,
+-      getCurrentMessages: () => this.current,
+-      commitMessages: (messages) => { this.current = validateCollaborationCommunicationMessageArrayV1(messages); },
++      reservation: reserved.reservation,
++      isOpen: () => this.isOpen(),
++      getMessages: () => this.current,
++      setMessages: (messages) => { this.current = messages; },
++      assertDeliveryAllowed,
++      publishMessage: () => this.port.publishMessage(message),
++      presentRecipientInput: () => this.port.presentRecipientInput(message, inputMessage),
+     });
+-    return result.committed
+-      ? { accepted: true, agentRunId: input.receiverIdentity.agentRunId, displayName: input.receiverDisplayName }
+-      : { accepted: false, code: result.code, message: result.message };
++    let result: RootMessageAppendResult;
++    try {
++      result = await this.port.commitMessageAppend(append.append);
++    } catch (error) {
++      append.abandon();
++      throw error;
++    }
++    if (result.outcome === "conflict") return rejected(this.port.rejections.commitConflict);
++    if (result.outcome === "not_committed") {
++      return { accepted: false, code: this.port.rejections.historyCommitFailedCode, message: result.cause.message };
++    }
++    const closure = append.closureAfterDurability();
++    if (closure) {
++      // Same outcome as a closure found just before the write (REQ-012).
++      if (closure.error instanceof TaskDelegationError || closure.error instanceof CollaborationContractError) throw closure.error;
++      return { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." };
++    }
++    return { accepted: true, agentRunId: input.receiverIdentity.agentRunId, displayName: input.receiverDisplayName };
+   }
+ 
++  private isOpen(): boolean { return this.accepting && this.port.isOpen(); }
++
+   private messageId(input: RootCommunicationDeliveryInput, content: string, createdAt: string): string {
+     const digest = createHash("sha256").update([
+-      rootExecutionIdentityKey(this.adapter.root),
++      rootExecutionIdentityKey(this.port.root),
+       input.senderIdentity.agentRunId,
+       input.receiverIdentity.agentRunId,
+       content,
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-port.ts b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-port.ts
+new file mode 100644
+index 000000000..880de0807
+--- /dev/null
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-port.ts
+@@ -0,0 +1,57 @@
++import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
++import type { AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
++import type {
++  CollaborationMemberExecutionIdentity,
++  RootExecutionIdentity,
++} from "../domain/root-execution-identity.js";
++import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
++import type { RootMessageAppend, RootMessageAppendResult } from "./root-message-append.js";
++
++export type RootCommunicationDeliveryInput = Readonly<{
++  senderIdentity: CollaborationMemberExecutionIdentity;
++  senderDisplayName: string;
++  receiverIdentity: CollaborationMemberExecutionIdentity;
++  receiverDisplayName: string;
++  content: string;
++  messageType?: string | null;
++  referenceFiles?: readonly string[] | null;
++}>;
++
++export type RootCommunicationRejection = Readonly<{ code: string; message: string }>;
++
++/** The standalone and Org roots' "not accepting" rejection. */
++export const COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES: RootCommunicationRejection = Object.freeze({
++  code: "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
++  message: "The collaboration root is not accepting messages.",
++});
++
++/**
++ * One root's facts and effects for RootCommunicationEngine (DS-001). It owns no sequencing:
++ * the engine decides when each member is called.
++ */
++export type RootCommunicationPort = Readonly<{
++  root: RootExecutionIdentity;
++  initialMessages: readonly CollaborationCommunicationMessageV1[];
++  rejections: Readonly<{
++    notAccepting: RootCommunicationRejection;
++    commitConflict: RootCommunicationRejection;
++    /** The rejection message is the write failure's own message. */
++    historyCommitFailedCode: string;
++  }>;
++  /** Root-specific openness, checked together with the engine's own admission. */
++  isOpen(): boolean;
++  isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
++  /** Throws the root's scope error (e.g. a closed Task) when the pair may not exchange messages. */
++  assertDeliveryAllowed(sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity): void;
++  buildRecipientInput(input: Readonly<{
++    delivery: RootCommunicationDeliveryInput;
++    message: CollaborationCommunicationMessageV1;
++  }>): AgentInputUserMessage;
++  reserveRecipientInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult>;
++  /** The root persistence coordinator's `commitMessageAppend` (history lock and durable write). */
++  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
++  /** The committed-message history event. */
++  publishMessage(message: CollaborationCommunicationMessageV1): void;
++  /** Shows the committed input in the recipient's conversation. */
++  presentRecipientInput(message: CollaborationCommunicationMessageV1, input: AgentInputUserMessage): void;
++}>;
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts
+index 42de869e4..be3925237 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts
+@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+ import { rootExecutionIdentityKey } from "../domain/root-execution-identity.js";
+-import type { RootCommunicationDeliveryInput } from "./root-communication-adapter.js";
++import type { RootCommunicationDeliveryInput } from "./root-communication-port.js";
+ import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+ 
+ const references = (values: readonly string[] | null | undefined): readonly string[] => Object.freeze([
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-message-append.ts b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-message-append.ts
+new file mode 100644
+index 000000000..ab716a0d3
+--- /dev/null
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-message-append.ts
+@@ -0,0 +1,106 @@
++import type {
++  AgentRunInputReservation,
++  CommittedAgentRunInput,
++} from "../../../agent-execution/input/agent-run-input-contract.js";
++import { validateCollaborationCommunicationMessageArrayV1 } from "./collaboration-communication-message-v1-schema.js";
++import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
++
++export type RootMessageAppendPreparation =
++  | Readonly<{ kind: "append"; messages: readonly CollaborationCommunicationMessageV1[] }>
++  | Readonly<{ kind: "conflict" }>;
++
++/** A coordinator's result for one append. An indeterminate write is thrown, never returned. */
++export type RootMessageAppendResult =
++  | Readonly<{ outcome: "committed" }>
++  | Readonly<{ outcome: "conflict" }>
++  | Readonly<{ outcome: "not_committed"; cause: Error }>;
++
++/**
++ * One message append, run once by a root persistence coordinator under its history lock
++ * (DS-002): `prepare`, write, then `cancelBeforeDurability` or `commitAfterDurability`.
++ * Built only by RootCommunicationEngine; the coordinator never touches the reservation.
++ */
++export type RootMessageAppend = Readonly<{
++  /** Open, duplicate and scope checks against the current list. A scope error is thrown with nothing changed. */
++  prepare(): RootMessageAppendPreparation;
++  cancelBeforeDurability(): void;
++  /** Throws only on a genuine local failure (list update, publication), which fail-stops the root. */
++  commitAfterDurability(): void;
++}>;
++
++export type RootMessageAppendControl = Readonly<{
++  append: RootMessageAppend;
++  /** Cancels the held slot when the coordinator threw before finishing the append. */
++  abandon(): void;
++  /** The closure found after the durable write (Task closed or recipient stopped), if any. */
++  closureAfterDurability(): Readonly<{ error: unknown }> | null;
++}>;
++
++type AppendState = "sealed" | "prepared" | "cancelled" | "committed" | "closed_after_durability";
++
++export const createRootMessageAppend = (input: Readonly<{
++  message: CollaborationCommunicationMessageV1;
++  reservation: AgentRunInputReservation;
++  isOpen(): boolean;
++  getMessages(): readonly CollaborationCommunicationMessageV1[];
++  setMessages(messages: readonly CollaborationCommunicationMessageV1[]): void;
++  assertDeliveryAllowed(): void;
++  publishMessage(): void;
++  presentRecipientInput(): void;
++}>): RootMessageAppendControl => {
++  let state: AppendState = "sealed";
++  let next: readonly CollaborationCommunicationMessageV1[] = [];
++  let closure: Readonly<{ error: unknown }> | null = null;
++  const cancel = () => {
++    state = "cancelled";
++    input.reservation.cancel();
++  };
++
++  const append: RootMessageAppend = Object.freeze({
++    prepare: () => {
++      if (state !== "sealed") throw new Error(`Root message append '${input.message.messageId}' is not sealed.`);
++      const current = input.getMessages();
++      if (!input.isOpen() || current.some((row) => row.messageId === input.message.messageId)) {
++        cancel();
++        return Object.freeze({ kind: "conflict" as const });
++      }
++      input.assertDeliveryAllowed();
++      next = validateCollaborationCommunicationMessageArrayV1([...current, input.message]);
++      state = "prepared";
++      return Object.freeze({ kind: "append" as const, messages: next });
++    },
++    cancelBeforeDurability: () => {
++      if (state === "prepared") cancel();
++    },
++    commitAfterDurability: () => {
++      if (state !== "prepared") return;
++      input.setMessages(next);
++      input.publishMessage();
++      let committed: CommittedAgentRunInput;
++      try {
++        input.assertDeliveryAllowed();
++        committed = input.reservation.commit();
++      } catch (error) {
++        // REQ-012: the history record stays; the recipient never gets the input. Not a fail-stop.
++        state = "closed_after_durability";
++        closure = Object.freeze({ error });
++        try { input.reservation.cancel(); } catch { /* the recipient already dropped the slot */ }
++        return;
++      }
++      state = "committed";
++      try {
++        input.presentRecipientInput();
++      } finally {
++        committed.release();
++      }
++    },
++  });
++
++  return Object.freeze({
++    append,
++    abandon: () => {
++      if (state === "sealed" || state === "prepared") cancel();
++    },
++    closureAfterDurability: () => closure,
++  });
++};
+diff --git a/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts b/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts
+index 07867a0c6..bb232da15 100644
+--- a/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts
++++ b/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts
+@@ -77,21 +77,6 @@ export class AgentRunInputAdmissionState {
+     observer: AgentRunInputLifecycleObserver | null,
+     runtimeAvailable: boolean,
+   ): AgentRunInputAdmission {
+-    if (!this.accepting || !runtimeAvailable) {
+-      return {
+-        accepted: false,
+-        code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+-        message: "AgentRun is not accepting input.",
+-      };
+-    }
+-    if (!message || !requiredString(message.content)) {
+-      return {
+-        accepted: false,
+-        code: "AGENT_RUN_INPUT_INVALID",
+-        message: "AgentRun input content must be a non-empty string.",
+-      };
+-    }
+-
+     const reservation = this.reserve(message, observer, runtimeAvailable);
+     if (!reservation.accepted) return reservation;
+     this.commitReservation(reservation.entrySequence);
+diff --git a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+index 2bae7b09a..5a71f2e24 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+@@ -17,6 +17,8 @@ import type { AgentConversationActivityInspector } from "../../agent-memory/serv
+ import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+ import { parseBackgroundTaskUpdatedPayload } from "../../agent-execution/domain/agent-background-task.js";
+ import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
++import { COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES } from "../../agent-collaboration/execution/communication/root-communication-port.js";
++import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
+ import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+ import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+ import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
+@@ -30,7 +32,6 @@ import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/
+ import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
+ import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
+ import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
+-import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
+ import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
+ import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
+ import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
+@@ -64,7 +65,6 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
+ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
+   private tree: AgentOrgRunExecutionTreeSnapshot;
+-  private messages: AgentOrgCommunicationMessagesFileV1;
+   private index: AgentOrgExecutionIndex;
+   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
+   private readonly communication: RootCommunicationEngine;
+@@ -80,7 +80,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+ 
+   constructor(private readonly options: import("./agent-org-run-options.js").AgentOrgRunOptions) {
+     this.tree = options.tree;
+-    this.messages = options.messages;
+     this.index = new AgentOrgExecutionIndex(this.tree);
+     this.assertCorrelation();
+     this.operationGate = new RootOperationGate({
+@@ -148,18 +147,23 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+       publisher: options.publisher,
+       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
+     });
+-    this.communication = new RootCommunicationEngine(new AgentOrgCommunicationAdapter({
++    this.communication = new RootCommunicationEngine({
+       root: options.root,
+-      initial: options.messages,
+-      persistence: options.persistence,
++      initialMessages: options.messages.messages,
++      rejections: {
++        notAccepting: COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES,
++        commitConflict: { code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." },
++        historyCommitFailedCode: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
++      },
+       isOpen: () => this.isAdmitting(),
+-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
+       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
++      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
++      buildRecipientInput: buildRootCommunicationInputMessage,
+       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
+-      replaceMessages: (messages) => { this.messages = messages; },
+-      publish: (message) => options.publisher.publish({ kind: "communication", message }),
+-      presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
+-    }));
++      commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
++      publishMessage: (message) => options.publisher.publish({ kind: "communication", message }),
++      presentRecipientInput: (message, input) => this.delivery.presentCommittedCommunication(message, input),
++    });
+   }
+ 
+   assertExecutionInputAllowed(agentRunId: string): void {
+@@ -182,7 +186,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     this.lifecycle = "active";
+   }
+   getExecutionTreeSnapshot(): AgentOrgRunExecutionTreeSnapshot { return this.tree; }
+-  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFileV1 { return this.messages; }
++  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFileV1 {
++    return Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: this.orgRunId, messages: this.communication.getMessages() });
++  }
+   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
+     return projectAgentOrgAgentStatusSnapshots({
+       tree: this.tree,
+@@ -296,7 +302,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
+       tree: this.tree,
+       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
+-      messages: this.messages,
++      messages: this.getCommunicationSnapshot(),
+       statuses: this.getAgentStatusSnapshots(),
+       inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
+         ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
+@@ -390,7 +396,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   private assertCorrelation(): void {
+     if (this.options.root.rootSubjectKind !== "agent_org"
+       || this.options.root.rootRunId !== this.tree.rootOrg.orgRunId
+-      || this.messages.orgRunId !== this.orgRunId) {
++      || this.options.messages.orgRunId !== this.orgRunId) {
+       throw new Error("AgentOrg aggregate authorities do not correlate to one exact root.");
+     }
+   }
+diff --git a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts
+deleted file mode 100644
+index 880ae45be..000000000
+--- a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts
++++ /dev/null
+@@ -1,78 +0,0 @@
+-import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
+-import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
+-import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
+-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+-import { validateAgentOrgCommunicationMessagesV1 } from "../persistence/agent-org-communication-messages-v1-schema.js";
+-import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
+-
+-/** Org-private sidecar/input/event adapter for RootCommunicationEngine. */
+-export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
+-  readonly root;
+-  readonly initialMessages;
+-
+-  constructor(private readonly options: Readonly<{
+-    root: RootCommunicationAdapter["root"];
+-    initial: AgentOrgCommunicationMessagesFileV1;
+-    persistence: AgentOrgRunPersistenceCoordinator;
+-    isOpen(): boolean;
+-    isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+-  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
+-    reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
+-    replaceMessages(messages: AgentOrgCommunicationMessagesFileV1): void;
+-    publish(message: AgentOrgCommunicationMessagesFileV1["messages"][number]): void;
+-    presentCommittedMessage(
+-      message: AgentOrgCommunicationMessagesFileV1["messages"][number],
+-      receiverInput: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>,
+-    ): void;
+-  }>) {
+-    this.root = options.root;
+-    this.initialMessages = options.initial.messages;
+-  }
+-  isOpen(): boolean { return this.options.isOpen(); }
+-  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+-    this.options.assertDeliveryAllowed(...identities);
+-  }
+-  isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
+-    return this.options.isCurrentAgent(identity);
+-  }
+-  buildRecipientInput(input: Parameters<RootCommunicationAdapter["buildRecipientInput"]>[0]) {
+-    return buildRootCommunicationInputMessage(input);
+-  }
+-  reserveRecipientInput(agentRunId: string, message: ReturnType<AgentOrgCommunicationAdapter["buildRecipientInput"]>) {
+-    return this.options.reserveRecipientInput(agentRunId, message);
+-  }
+-  async commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
+-    if (!this.options.isOpen() || input.getCurrentMessages().some((message) => message.messageId === input.message.messageId)) {
+-      input.reservation.cancel();
+-      return Object.freeze({ committed: false as const, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." });
+-    }
+-    const next = validateAgentOrgCommunicationMessagesV1({
+-      schemaVersion: 1,
+-      subjectKind: "agent_org",
+-      orgRunId: this.root.rootRunId,
+-      messages: [...input.getCurrentMessages(), input.message],
+-    }, this.root.rootRunId);
+-    let reservationCommitted = false;
+-    try {
+-      return await this.options.persistence.commitCommunication({
+-        nextMessages: next,
+-        cancelBeforeDurability: () => input.reservation.cancel(),
+-        commitAfterDurability: () => {
+-          input.commitMessages(next.messages);
+-          this.options.replaceMessages(next);
+-          const committed = input.reservation.commit();
+-          reservationCommitted = true;
+-          try {
+-            this.options.publish(input.message);
+-            this.options.presentCommittedMessage(input.message, input.inputMessage);
+-          } finally {
+-            committed.release();
+-          }
+-        },
+-      });
+-    } catch (error) {
+-      if (!reservationCommitted) input.reservation.cancel();
+-      throw error;
+-    }
+-  }
+-}
+diff --git a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts
+index 8d998ce4b..309aeb00d 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts
+@@ -4,6 +4,8 @@ import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-r
+ import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
+ import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+ import type { AgentOrgCommunicationMessagesV1Store } from "../persistence/agent-org-communication-messages-v1-store.js";
++import { validateAgentOrgCommunicationMessagesV1 } from "../persistence/agent-org-communication-messages-v1-schema.js";
++import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
+ 
+ export class AgentOrgPersistenceFailStoppedError extends Error {
+   constructor(readonly orgRunId: string) {
+@@ -89,23 +91,28 @@ export class AgentOrgRunPersistenceCoordinator {
+     });
+   }
+ 
+-  commitCommunication(input: Readonly<{
+-    nextMessages: AgentOrgCommunicationMessagesFileV1;
+-    commitAfterDurability(): void;
+-    cancelBeforeDurability(): void;
+-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
++  /** One teammate message: prepared and written under the lock; an indeterminate write is thrown. */
++  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
+     return this.withLock(async () => {
+-      const result = await this.options.communicationStore.write(this.options.orgMemoryDir, input.nextMessages);
++      const prepared = append.prepare();
++      if (prepared.kind === "conflict") return { outcome: "conflict" };
++      const next = validateAgentOrgCommunicationMessagesV1({
++        schemaVersion: 1,
++        subjectKind: "agent_org",
++        orgRunId: this.options.orgRunId,
++        messages: prepared.messages,
++      }, this.options.orgRunId);
++      const result = await this.options.communicationStore.write(this.options.orgMemoryDir, next);
+       if (result.outcome === "not_renamed") {
+-        input.cancelBeforeDurability();
+-        return { committed: false, code: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
++        append.cancelBeforeDurability();
++        return { outcome: "not_committed", cause: result.cause };
+       }
+       if (result.outcome === "renamed_finalization_indeterminate") {
+         this.latch(result);
+         throw this.indeterminate(result);
+       }
+-      this.finalizeAfterDurability("communication_messages", input.commitAfterDurability);
+-      return { committed: true };
++      this.finalizeAfterDurability("communication_messages", () => append.commitAfterDurability());
++      return { outcome: "committed" };
+     });
+   }
+ 
+diff --git a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+index 59bebbcbf..b5d4caef0 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+@@ -5,7 +5,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+ import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
+-import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
++import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+ import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+ import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
+ import {
+@@ -20,7 +20,7 @@ import {
+ } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+ import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
+ import type { TeamRunConfig } from "./team-run-config.js";
+-import type { TeamRunEvent } from "./team-run-event.js";
++import { TeamRunEventSourceType, type TeamRunEvent } from "./team-run-event.js";
+ import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
+ import type { AgentLaunchConfiguration } from "./team-run-config.js";
+ import type { TeamRun } from "./team-run.js";
+@@ -32,6 +32,8 @@ import { TeamRunResolver } from "../services/team-run-resolver.js";
+ import type { RootEventListener, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
+ import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
+ import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
++import { buildTeamCommunicationInputMessage } from "../services/inter-agent-message-runtime-builders.js";
++import { buildTeamMemberInputEventPayload } from "../services/team-member-input-event-builder.js";
+ import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
+ import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+ import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+@@ -74,11 +76,10 @@ type RootLifecycleState = "active" | "persistence_fail_stop" | "terminating" | "
+ export class RootTeamRun {
+   private lifecycle: RootLifecycleState = "active";
+   private tree: TeamRunExecutionTreeSnapshot;
+-  private messages: TeamCommunicationMessagesSnapshot;
+   private index: TeamExecutionIndex;
+   private readonly teamRunResolver: TeamRunResolver;
+   private readonly taskExecutions: TeamTaskExecutionService;
+-  private readonly communication: TeamCommunicationService;
++  private readonly communication: RootCommunicationEngine;
+   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
+   private readonly materializationGate: RootTeamRunMaterializationGate;
+   private readonly collaborators: TeamRunCollaborators;
+@@ -112,7 +113,6 @@ export class RootTeamRun {
+       throw new Error("RootTeamRun task execution identity capabilities are required.");
+     }
+     this.tree = options.tree;
+-    this.messages = options.messages;
+     this.index = new TeamExecutionIndex(options.tree);
+     this.materializationGate = new RootTeamRunMaterializationGate({
+       rootTeamRunId: this.teamRunId,
+@@ -141,15 +141,27 @@ export class RootTeamRun {
+       idleShutdown: options.taskExecutionIdleShutdown,
+       taskAgentResources: options.taskAgentResources,
+     });
+-    this.communication = new TeamCommunicationService({
+-      rootTeamRunId: this.teamRunId,
+-      initial: options.messages,
+-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
++    this.communication = new RootCommunicationEngine({
++      root: createTeamRootExecutionIdentity(this.teamRunId),
++      initialMessages: options.messages.messages,
++      rejections: {
++        notAccepting: { code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.teamRunId}' is not accepting messages.` },
++        commitConflict: { code: "TEAM_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current root state." },
++        historyCommitFailedCode: "TEAM_MESSAGE_HISTORY_COMMIT_FAILED",
++      },
++      // Team message admission closes only through the engine's closeAdmission (fail-stop, terminate).
++      isOpen: () => true,
+       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
+-      requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
+-      commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
+-      publish: (event) => options.publisher.publish(event),
+-      replaceSnapshot: (messages) => this.replaceMessages(messages),
++      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
++      buildRecipientInput: (input) => buildTeamCommunicationInputMessage(this.teamRunId, input),
++      reserveRecipientInput: async (agentRunId, message) => (await this.requireContainingTeamRun(agentRunId)).reserveDirectAgentInput(agentRunId, message),
++      commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
++      publishMessage: (message) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: message }),
++      presentRecipientInput: (message, input) => options.publisher.publish({
++        eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
++        agentRunId: message.receiverAgentRunId,
++        payload: buildTeamMemberInputEventPayload({ rootTeamRunId: this.teamRunId, recipientAgentRunId: message.receiverAgentRunId, message: input, receivedAt: message.createdAt }),
++      }),
+     });
+     this.collaborators = new TeamRunCollaborators({
+       rootTeamRunId: this.teamRunId,
+@@ -230,7 +242,9 @@ export class RootTeamRun {
+   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
+   /** Same-root membership for run-ID routing; a shut-down child is still a member. */
+   hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
+-  getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
++  getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
++    return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
++  }
+ 
+   commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
+     return this.platformBindings.commit(change);
+@@ -374,7 +388,7 @@ export class RootTeamRun {
+       this.options.persistence.readConsistent(() => ({
+         tree: this.tree,
+         closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
+-        messages: this.messages,
++        messages: this.getCommunicationSnapshot(),
+         statuses: this.getLeafAgentStatusSnapshots(),
+         inputStates: this.options.rootRun.getInputStateSnapshots(),
+       })),
+@@ -484,15 +498,10 @@ export class RootTeamRun {
+     this.assertRootCorrelation();
+   }
+ 
+-  private replaceMessages(messages: TeamCommunicationMessagesSnapshot): void {
+-    this.messages = messages;
+-    this.assertRootCorrelation();
+-  }
+-
+   private assertRootCorrelation(): void {
+     if (
+       this.options.rootRun.teamRunId !== this.tree.rootTeam.teamRunId ||
+-      this.messages.rootTeamRunId !== this.tree.rootTeam.teamRunId
++      this.options.messages.rootTeamRunId !== this.tree.rootTeam.teamRunId
+     ) throw new Error("RootTeamRun subject identities do not agree.");
+   }
+ }
+diff --git a/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts b/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+index 953d21a7f..1336eba13 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts
+@@ -1,8 +1,6 @@
+ import { acceptTaskSeed } from "../../../agent-collaboration/execution/task/task-execution-seed-admission.js";
+-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+ import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
+-import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
+ import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
+ import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
+ import type { TeamRunContext } from "../../domain/team-run-context.js";
+@@ -218,12 +216,6 @@ export class TaskAgentExecutionRegistry {
+     return handle ? handle.releaseRuntime() : Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
+   }
+ 
+-  reserveInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
+-    const handle = this.active.get(agentRunId);
+-    if (!handle) return Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Task AgentRun '${agentRunId}' is not active.` });
+-    return handle.reserveInput(message, options);
+-  }
+-
+   async executeCommand(agentRunId: string, command: import("../../domain/team-member-execution-command.js").TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+     const handle = this.active.get(agentRunId);
+     if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Task AgentRun '${agentRunId}' is not active.` };
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts b/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts
+deleted file mode 100644
+index 6427ad62f..000000000
+--- a/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
+-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+-import type { ResolvedInterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
+-import { buildInterAgentDeliveryInputMessage } from "./inter-agent-message-runtime-builders.js";
+-
+-export class InterAgentMessageRouter {
+-  async deliver(input: {
+-    recipientRun: AgentRun;
+-    request: ResolvedInterAgentMessageDeliveryRequest;
+-  }): Promise<AgentOperationResult> {
+-    return input.recipientRun.postUserMessage(
+-      buildInterAgentDeliveryInputMessage(input.request),
+-    );
+-  }
+-}
+-
+-let cachedInterAgentMessageRouter: InterAgentMessageRouter | null = null;
+-
+-export const getInterAgentMessageRouter = (): InterAgentMessageRouter => {
+-  if (!cachedInterAgentMessageRouter) {
+-    cachedInterAgentMessageRouter = new InterAgentMessageRouter();
+-  }
+-  return cachedInterAgentMessageRouter;
+-};
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts b/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts
+index f72e90dc3..75c6411da 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts
+@@ -1,6 +1,11 @@
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+-import type { ResolvedInterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
++import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
++import type { RootCommunicationDeliveryInput } from "../../agent-collaboration/execution/communication/root-communication-port.js";
++import {
++  buildDeliveryEndpointForParticipant,
++  type ResolvedInterAgentMessageDeliveryRequest,
++} from "../domain/inter-agent-message-delivery.js";
+ import { buildTeamCommunicationReferenceId } from "../../services/team-communication/team-communication-identity.js";
+ import { inferTeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-normalizer.js";
+ import { buildTeamMemberInputDedupeKey, buildTeamMemberInputMessageId } from "./team-member-input-event-builder.js";
+@@ -64,3 +69,28 @@ export const buildInterAgentDeliveryInputMessage = (
+     reference_files: files,
+   });
+ };
++
++/** The Team root's recipient input for one root message (its `message_id`/`dedupe_key` hash over the root TeamRun ID). */
++export const buildTeamCommunicationInputMessage = (rootTeamRunId: string, input: Readonly<{
++  delivery: RootCommunicationDeliveryInput;
++  message: CollaborationCommunicationMessageV1;
++}>): AgentInputUserMessage => buildInterAgentDeliveryInputMessage({
++  rootTeamRunId,
++  recipientAddress: input.delivery.receiverIdentity.memberAddress,
++  sender: buildDeliveryEndpointForParticipant(Object.freeze({
++    kind: "agent",
++    identity: input.delivery.senderIdentity,
++    displayName: input.delivery.senderDisplayName,
++  })),
++  recipient: buildDeliveryEndpointForParticipant(Object.freeze({
++    kind: "agent",
++    identity: input.delivery.receiverIdentity,
++    displayName: input.delivery.receiverDisplayName,
++  })),
++  senderIdentity: input.delivery.senderIdentity,
++  receiverIdentity: input.delivery.receiverIdentity,
++  content: input.message.content,
++  messageType: input.message.messageType,
++  referenceFiles: [...input.message.referenceFiles],
++  parentCommunicationMessageId: input.message.messageId,
++});
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts b/autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+index 841c1db8e..4e7e952af 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+@@ -9,11 +9,11 @@ import {
+ import { resolveMessageRecipient } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+ import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+ import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+-import type { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
+-import {
+-  buildDeliveryEndpointForParticipant,
+-  type InterAgentMessageDeliveryIntent,
+-  type InterAgentMessageParticipant,
++import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
++import type { RootCommunicationDeliveryInput } from "../../agent-collaboration/execution/communication/root-communication-port.js";
++import type {
++  InterAgentMessageDeliveryIntent,
++  InterAgentMessageParticipant,
+ } from "../domain/inter-agent-message-delivery.js";
+ import type { TeamExecutionIndex } from "./team-execution-index.js";
+ import { TeamRecipientResolver } from "./team-recipient-resolver.js";
+@@ -41,7 +41,7 @@ export class TeamRunMessageDelivery {
+     taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
+     getIndex(): TeamExecutionIndex;
+     collaborators: TeamRunCollaborators;
+-    communication: TeamCommunicationService;
++    communication: RootCommunicationEngine;
+     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
+     isLiveAgent(agentRunId: string): boolean;
+     /** Target lease that records the receiver's first accepted message. */
+@@ -65,10 +65,12 @@ export class TeamRunMessageDelivery {
+     });
+     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
+     const target = resolution.placement.receiver;
+-    return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
+-      intent,
++    return this.options.withLiveLease(target.agentRunId, () => this.deliver(intent.sender.participant, {
+       receiverIdentity: this.identityFor(target.address, target.agentRunId),
+       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
++      content: intent.content,
++      messageType: intent.messageType,
++      referenceFiles: intent.referenceFiles,
+     }));
+   }
+ 
+@@ -80,17 +82,12 @@ export class TeamRunMessageDelivery {
+       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
+     }
+     const receiver = this.identityFor(execution.address, execution.agentRunId);
+-    return this.options.withLiveLease(execution.agentRunId, () => this.options.communication.deliver({
+-      intent: {
+-        rootTeamRunId: this.options.rootTeamRunId,
+-        sender: buildDeliveryEndpointForParticipant(input.sender),
+-        recipientAddress: execution.address,
+-        content: input.content,
+-        messageType: input.messageType,
+-        referenceFiles: input.referenceFiles ? [...input.referenceFiles] : null,
+-      },
++    return this.options.withLiveLease(execution.agentRunId, () => this.deliver(input.sender, {
+       receiverIdentity: receiver,
+       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
++      content: input.content,
++      messageType: input.messageType,
++      referenceFiles: input.referenceFiles,
+     }));
+   }
+ 
+@@ -112,6 +109,13 @@ export class TeamRunMessageDelivery {
+     return this.options.collaborators.listAvailable();
+   }
+ 
++  private deliver(
++    sender: InterAgentMessageParticipant,
++    message: Omit<RootCommunicationDeliveryInput, "senderIdentity" | "senderDisplayName">,
++  ): Promise<AgentOperationResult> {
++    return this.options.communication.deliver({ senderIdentity: sender.identity, senderDisplayName: sender.displayName, ...message });
++  }
++
+   private identityFor(memberAddress: CollaborationMemberExecutionIdentity["memberAddress"], agentRunId: string) {
+     return createCollaborationMemberExecutionIdentity({
+       root: createTeamRootExecutionIdentity(this.options.rootTeamRunId), memberAddress, agentRunId,
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-contract.ts b/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-contract.ts
+index 6d531c619..5cdf1b563 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-contract.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-contract.ts
+@@ -1,6 +1,5 @@
+ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+ import type {
+   RunPackageDirectoryFinalizationStage,
+ } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
+@@ -46,43 +45,6 @@ export type ExecutionTreeCommitResult =
+       stage: TeamRunDirectoryFinalizationStage;
+     }>;
+ 
+-export type TeamMessageAppendRejectionCode =
+-  | "TEAM_MESSAGE_COMMIT_CONFLICT"
+-  | "TEAM_MESSAGE_HISTORY_COMMIT_FAILED";
+-
+-export type PreparedTeamMessageCommit = Readonly<{
+-  nextMessages: TeamCommunicationMessagesSnapshot;
+-  cancelBeforeDurability(code: TeamMessageAppendRejectionCode): void;
+-  commitAfterDurability(): void;
+-}>;
+-
+-export type PreparedTeamMessageAppend = Readonly<{
+-  rootTeamRunId: string;
+-  messageId: string;
+-  prepareAgainstCurrent():
+-    | Readonly<{
+-        prepared: false;
+-        code: "TEAM_MESSAGE_COMMIT_CONFLICT";
+-        message: string;
+-      }>
+-    | Readonly<{ prepared: true; commit: PreparedTeamMessageCommit }>;
+-  cancelBeforePreparation(): void;
+-  disposeAfterRootFailStop(): void;
+-}>;
+-
+-export type TeamMessageCommitResult =
+-  | Readonly<{
+-      outcome: "conflict";
+-      code: "TEAM_MESSAGE_COMMIT_CONFLICT";
+-      message: string;
+-    }>
+-  | Readonly<{ outcome: "not_committed"; cause: Error }>
+-  | Readonly<{ outcome: "committed" }>
+-  | Readonly<{
+-      outcome: "finalization_indeterminate";
+-      stage: TeamRunDirectoryFinalizationStage;
+-    }>;
+-
+ export type PreparedExecutionTreeCommit = Readonly<{
+   nextTree: TeamRunExecutionTreeSnapshot;
+   requiresWrite: boolean;
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts b/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts
+index 021fcd419..488fe6e25 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts
+@@ -1,15 +1,18 @@
+ import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
+ import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
++import { validateTeamCommunicationMessagesV1Payload } from "../../services/team-communication/team-communication-v1-schema.js";
+ import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
++import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
+ import type {
+   ExecutionTreeCommitResult,
+   PreparedExecutionTreeMutation,
+   PreparedTaskActivationMutation,
+-  PreparedTeamMessageAppend,
+-  TeamMessageCommitResult,
+   TeamRunFileRole,
+ } from "./team-run-persistence-contract.js";
+-import { TeamRunPersistenceFailStoppedError } from "./team-run-persistence-contract.js";
++import {
++  TeamRunPersistenceFailStoppedError,
++  TeamRunPersistenceFinalizationIndeterminateError,
++} from "./team-run-persistence-contract.js";
+ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+ 
+ export type TeamRunPersistenceFailStop = (input: {
+@@ -40,8 +43,9 @@ export class TeamRunPersistenceCoordinator {
+     this.failStopped = true;
+   }
+ 
+-  commitReservedMessageAppend(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult> {
+-    return this.withRootLock(() => this.commitReservedMessageAppendLocked(plan));
++  /** One teammate message: prepared and written under the root lock; an indeterminate write is thrown. */
++  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
++    return this.withRootLock(() => this.commitMessageAppendLocked(append));
+   }
+ 
+   commitExecutionTreeMutation(plan: PreparedExecutionTreeMutation): Promise<ExecutionTreeCommitResult> {
+@@ -101,34 +105,24 @@ export class TeamRunPersistenceCoordinator {
+     return { outcome: "committed" };
+   }
+ 
+-  private async commitReservedMessageAppendLocked(
+-    plan: PreparedTeamMessageAppend,
+-  ): Promise<TeamMessageCommitResult> {
+-    if (plan.rootTeamRunId !== this.options.rootTeamRunId) {
+-      plan.cancelBeforePreparation();
+-      return {
+-        outcome: "conflict",
+-        code: "TEAM_MESSAGE_COMMIT_CONFLICT",
+-        message: `Message append belongs to root '${plan.rootTeamRunId}', not '${this.options.rootTeamRunId}'.`,
+-      };
+-    }
+-    const prepared = plan.prepareAgainstCurrent();
+-    if (!prepared.prepared) {
+-      return { outcome: "conflict", code: prepared.code, message: prepared.message };
+-    }
+-    const result = await this.options.communicationStore.write(
+-      this.options.teamMemoryDir,
+-      prepared.commit.nextMessages,
+-    );
++  private async commitMessageAppendLocked(append: RootMessageAppend): Promise<RootMessageAppendResult> {
++    const prepared = append.prepare();
++    if (prepared.kind === "conflict") return { outcome: "conflict" };
++    const next = validateTeamCommunicationMessagesV1Payload({
++      schemaVersion: 1,
++      rootTeamRunId: this.options.rootTeamRunId,
++      messages: prepared.messages,
++    }, this.options.rootTeamRunId);
++    const result = await this.options.communicationStore.write(this.options.teamMemoryDir, next);
+     if (result.outcome === "not_renamed") {
+-      prepared.commit.cancelBeforeDurability("TEAM_MESSAGE_HISTORY_COMMIT_FAILED");
++      append.cancelBeforeDurability();
+       return { outcome: "not_committed", cause: result.cause };
+     }
+     if (result.outcome === "renamed_finalization_indeterminate") {
+       this.latchPersistenceFailStop(result);
+-      return { outcome: "finalization_indeterminate", stage: result.stage };
++      throw new TeamRunPersistenceFinalizationIndeterminateError("communication_messages", result.stage);
+     }
+-    this.finalizeAfterDurability("communication_messages", () => prepared.commit.commitAfterDurability());
++    this.finalizeAfterDurability("communication_messages", () => append.commitAfterDurability());
+     return { outcome: "committed" };
+   }
+ 
+diff --git a/autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts b/autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts
+deleted file mode 100644
+index 35e940ea5..000000000
+--- a/autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts
++++ /dev/null
+@@ -1,106 +0,0 @@
+-import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
+-import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+-import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
+-import { buildDeliveryEndpointForParticipant } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+-import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+-import {
+-  TeamRunPersistenceFailStoppedError,
+-  type PreparedTeamMessageAppend,
+-  type TeamMessageCommitResult,
+-} from "../../agent-team-execution/services/team-run-persistence-contract.js";
+-import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
+-import { createTeamCommunicationMessageAppendPlan } from "./team-communication-message-append-plan.js";
+-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+-
+-export type TeamCommunicationAdapterOptions = Readonly<{
+-  rootTeamRunId: string;
+-  initial: TeamCommunicationMessagesSnapshot;
+-  isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+-  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
+-  requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
+-  commit(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult>;
+-  publish(event: TeamRunEvent): void;
+-  replaceSnapshot(messages: TeamCommunicationMessagesSnapshot): void;
+-}>;
+-
+-/** Team-private persistence/event/input adapter for RootCommunicationEngine. */
+-export class TeamCommunicationAdapter implements RootCommunicationAdapter {
+-  readonly root;
+-  readonly initialMessages;
+-
+-  constructor(
+-    private readonly options: TeamCommunicationAdapterOptions,
+-    private readonly isAccepting: () => boolean,
+-  ) {
+-    this.root = createTeamRootExecutionIdentity(options.rootTeamRunId);
+-    this.initialMessages = options.initial.messages;
+-  }
+-  isOpen(): boolean { return this.isAccepting(); }
+-  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+-    this.options.assertDeliveryAllowed(...identities);
+-  }
+-  isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
+-    return this.options.isCurrentAgent(identity);
+-  }
+-  buildRecipientInput(input: Parameters<RootCommunicationAdapter["buildRecipientInput"]>[0]) {
+-    return buildInterAgentDeliveryInputMessage({
+-      rootTeamRunId: this.options.rootTeamRunId,
+-      recipientAddress: input.delivery.receiverIdentity.memberAddress,
+-      sender: buildDeliveryEndpointForParticipant(Object.freeze({
+-        kind: "agent",
+-        identity: input.delivery.senderIdentity,
+-        displayName: input.delivery.senderDisplayName,
+-      })),
+-      recipient: buildDeliveryEndpointForParticipant(Object.freeze({
+-        kind: "agent",
+-        identity: input.delivery.receiverIdentity,
+-        displayName: input.delivery.receiverDisplayName,
+-      })),
+-      senderIdentity: input.delivery.senderIdentity,
+-      receiverIdentity: input.delivery.receiverIdentity,
+-      content: input.message.content,
+-      messageType: input.message.messageType,
+-      referenceFiles: [...input.message.referenceFiles],
+-      parentCommunicationMessageId: input.message.messageId,
+-    });
+-  }
+-  async reserveRecipientInput(agentRunId: string, message: ReturnType<TeamCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult> {
+-    const receiverRun = await this.options.requireContainingTeamRun(agentRunId);
+-    return receiverRun.reserveDirectAgentInput(agentRunId, message);
+-  }
+-  async commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
+-    const plan = createTeamCommunicationMessageAppendPlan({
+-      rootTeamRunId: this.options.rootTeamRunId,
+-      message: input.message,
+-      inputMessage: input.inputMessage,
+-      reservation: input.reservation,
+-      isAccepting: this.isAccepting,
+-      getCurrent: () => this.envelope(input.getCurrentMessages()),
+-      replaceCurrent: (messages) => {
+-        input.commitMessages(messages.messages);
+-        this.options.replaceSnapshot(messages);
+-      },
+-      publish: (event) => this.options.publish(event),
+-    });
+-    let result: TeamMessageCommitResult;
+-    try {
+-      result = await this.options.commit(plan);
+-    } catch (error) {
+-      if (error instanceof TeamRunPersistenceFailStoppedError) plan.disposeAfterRootFailStop();
+-      throw error;
+-    }
+-    if (result.outcome === "committed") return Object.freeze({ committed: true as const });
+-    if (result.outcome === "conflict") return Object.freeze({ committed: false as const, code: result.code, message: result.message });
+-    if (result.outcome === "not_committed") {
+-      return Object.freeze({ committed: false as const, code: "TEAM_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message });
+-    }
+-    plan.disposeAfterRootFailStop();
+-    throw new Error(`Team message finalization is indeterminate at '${result.stage}'.`);
+-  }
+-
+-  private envelope(messages: readonly CollaborationCommunicationMessageV1[]): TeamCommunicationMessagesSnapshot {
+-    return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.options.rootTeamRunId, messages });
+-  }
+-}
+diff --git a/autobyteus-server-ts/src/services/team-communication/team-communication-message-append-plan.ts b/autobyteus-server-ts/src/services/team-communication/team-communication-message-append-plan.ts
+deleted file mode 100644
+index d2714a961..000000000
+--- a/autobyteus-server-ts/src/services/team-communication/team-communication-message-append-plan.ts
++++ /dev/null
+@@ -1,100 +0,0 @@
+-import type { AgentRunInputReservation } from "../../agent-execution/input/agent-run-input-contract.js";
+-import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+-import type { PreparedTeamMessageAppend } from "../../agent-team-execution/services/team-run-persistence-contract.js";
+-import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
+-import { validateTeamCommunicationMessagesV1Payload } from "./team-communication-v1-schema.js";
+-import type {
+-  TeamCommunicationMessageV1,
+-  TeamCommunicationMessagesSnapshot,
+-} from "./team-communication-v1-types.js";
+-
+-type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail_stop_disposed";
+-
+-/**
+- * Builds the one-shot logical append capability consumed under the root file lock.
+- * The service retains message policy; this owner alone derives the next immutable
+- * message snapshot from the latest authoritative state.
+- */
+-export const createTeamCommunicationMessageAppendPlan = (input: {
+-  rootTeamRunId: string;
+-  message: TeamCommunicationMessageV1;
+-  inputMessage: Parameters<typeof buildTeamMemberInputEventPayload>[0]["message"];
+-  reservation: AgentRunInputReservation;
+-  isAccepting(): boolean;
+-  getCurrent(): TeamCommunicationMessagesSnapshot;
+-  replaceCurrent(messages: TeamCommunicationMessagesSnapshot): void;
+-  publish(event: TeamRunEvent): void;
+-}): PreparedTeamMessageAppend => {
+-  let state: AppendPlanState = "sealed";
+-
+-  return Object.freeze({
+-    rootTeamRunId: input.rootTeamRunId,
+-    messageId: input.message.messageId,
+-    cancelBeforePreparation: () => {
+-      if (state !== "sealed") return;
+-      state = "cancelled";
+-      input.reservation.cancel();
+-    },
+-    disposeAfterRootFailStop: () => {
+-      if (state !== "sealed" && state !== "prepared") return;
+-      state = "fail_stop_disposed";
+-      input.reservation.cancel();
+-    },
+-    prepareAgainstCurrent: () => {
+-      if (state !== "sealed") {
+-        return {
+-          prepared: false as const,
+-          code: "TEAM_MESSAGE_COMMIT_CONFLICT" as const,
+-          message: "Message append plan is no longer current.",
+-        };
+-      }
+-      const current = input.getCurrent();
+-      if (!input.isAccepting() || current.messages.some((row) => row.messageId === input.message.messageId)) {
+-        state = "cancelled";
+-        input.reservation.cancel();
+-        return {
+-          prepared: false as const,
+-          code: "TEAM_MESSAGE_COMMIT_CONFLICT" as const,
+-          message: "Message append conflicts with current root state.",
+-        };
+-      }
+-      const nextMessages = validateTeamCommunicationMessagesV1Payload({
+-        ...current,
+-        messages: [...current.messages, input.message],
+-      }, input.rootTeamRunId);
+-      state = "prepared";
+-      return {
+-        prepared: true as const,
+-        commit: Object.freeze({
+-          nextMessages,
+-          cancelBeforeDurability: () => {
+-            if (state !== "prepared") return;
+-            state = "cancelled";
+-            input.reservation.cancel();
+-          },
+-          commitAfterDurability: () => {
+-            if (state !== "prepared") return;
+-            state = "committed";
+-            input.replaceCurrent(nextMessages);
+-            const committed = input.reservation.commit();
+-            input.publish({
+-              eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+-              payload: input.message,
+-            });
+-            input.publish({
+-              eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+-              agentRunId: input.message.receiverAgentRunId,
+-              payload: buildTeamMemberInputEventPayload({
+-                rootTeamRunId: input.rootTeamRunId,
+-                recipientAgentRunId: input.message.receiverAgentRunId,
+-                message: input.inputMessage,
+-                receivedAt: input.message.createdAt,
+-              }),
+-            });
+-            committed.release();
+-          },
+-        }),
+-      };
+-    },
+-  });
+-};
+diff --git a/autobyteus-server-ts/src/services/team-communication/team-communication-service.ts b/autobyteus-server-ts/src/services/team-communication/team-communication-service.ts
+deleted file mode 100644
+index 92bf1e3b8..000000000
+--- a/autobyteus-server-ts/src/services/team-communication/team-communication-service.ts
++++ /dev/null
+@@ -1,44 +0,0 @@
+-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+-import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+-import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+-import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+-import { TeamCommunicationAdapter, type TeamCommunicationAdapterOptions } from "./team-communication-adapter.js";
+-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+-
+-/** Team-private facade over the root-neutral accepted-message engine. */
+-export class TeamCommunicationService {
+-  private readonly engine: RootCommunicationEngine;
+-  private accepting = true;
+-
+-  constructor(private readonly options: TeamCommunicationAdapterOptions) {
+-    this.engine = new RootCommunicationEngine(new TeamCommunicationAdapter(options, () => this.accepting));
+-  }
+-
+-  getSnapshot(): TeamCommunicationMessagesSnapshot {
+-    return Object.freeze({
+-      schemaVersion: 1,
+-      rootTeamRunId: this.options.rootTeamRunId,
+-      messages: this.engine.getMessages(),
+-    });
+-  }
+-  closeAdmission(): void { this.accepting = false; this.engine.closeAdmission(); }
+-
+-  deliver(input: {
+-    intent: InterAgentMessageDeliveryIntent;
+-    receiverIdentity: CollaborationMemberExecutionIdentity;
+-    receiverDisplayName: string;
+-  }): Promise<AgentOperationResult> {
+-    if (!this.accepting) {
+-      return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.options.rootTeamRunId}' is not accepting messages.` });
+-    }
+-    return this.engine.deliver({
+-      senderIdentity: input.intent.sender.participant.identity,
+-      senderDisplayName: input.intent.sender.participant.displayName,
+-      receiverIdentity: input.receiverIdentity,
+-      receiverDisplayName: input.receiverDisplayName,
+-      content: input.intent.content,
+-      messageType: input.intent.messageType,
+-      referenceFiles: input.intent.referenceFiles,
+-    });
+-  }
+-}
+diff --git a/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts b/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+index 2e29a33cc..d408d4462 100644
+--- a/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
++++ b/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+@@ -25,6 +25,8 @@ import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/
+ import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
+ import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
++import { COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES } from "../../agent-collaboration/execution/communication/root-communication-port.js";
++import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
+ import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+ import type { RootEventPublisher, RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+ import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+@@ -50,7 +52,6 @@ import type { StandaloneRootEvent } from "./standalone-root-event.js";
+ import type { StandaloneHostAgentHandle } from "./standalone-host-agent-handle.js";
+ import { StandaloneRootExecutionIndex } from "../services/standalone-root-execution-index.js";
+ import { StandaloneRootCollaborators } from "../services/standalone-root-collaborators.js";
+-import { StandaloneRootCommunicationAdapter } from "../services/standalone-root-communication-adapter.js";
+ import type { StandaloneRootPersistenceCoordinator } from "../services/standalone-root-persistence-coordinator.js";
+ import { StandaloneRootRecipientResolver } from "../services/standalone-root-recipient-resolver.js";
+ import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
+@@ -75,7 +76,6 @@ export type StandaloneRootPackageSnapshot = Readonly<{
+ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
+   private tree: StandaloneRootTreeSnapshot;
+-  private messages: StandaloneRootMessagesFileV1;
+   private index: StandaloneRootExecutionIndex;
+   private readonly taskExecutions: RootTaskExecutionLifecycle<StandaloneRootPlacement>;
+   private readonly communication: RootCommunicationEngine;
+@@ -109,10 +109,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+     onTerminated?(): void;
+   }>) {
+     this.tree = options.tree;
+-    this.messages = options.messages;
+     this.index = new StandaloneRootExecutionIndex(this.tree);
+     if (options.root.rootSubjectKind !== "agent" || options.root.rootRunId !== this.tree.host.agentRunId
+-      || this.messages.hostRunId !== this.tree.host.agentRunId || options.host.hostRunId !== this.tree.host.agentRunId) {
++      || options.messages.hostRunId !== this.tree.host.agentRunId || options.host.hostRunId !== this.tree.host.agentRunId) {
+       throw new Error("Agent root authorities do not correlate to one exact host run.");
+     }
+     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
+@@ -174,18 +173,23 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+       publisher: options.publisher,
+       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
+     });
+-    this.communication = new RootCommunicationEngine(new StandaloneRootCommunicationAdapter({
++    this.communication = new RootCommunicationEngine({
+       root: options.root,
+-      initial: options.messages,
+-      persistence: options.persistence,
++      initialMessages: options.messages.messages,
++      rejections: {
++        notAccepting: COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES,
++        commitConflict: { code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with the current Agent root state." },
++        historyCommitFailedCode: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED",
++      },
+       isOpen: () => this.isAdmitting(),
+-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
+       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
++      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
++      buildRecipientInput: buildRootCommunicationInputMessage,
+       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
+-      replaceMessages: (messages) => { this.messages = messages; },
+-      publish: (message) => options.publisher.publish({ kind: "communication", message }),
+-      presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
+-    }));
++      commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
++      publishMessage: (message) => options.publisher.publish({ kind: "communication", message }),
++      presentRecipientInput: (message, input) => this.delivery.presentCommittedCommunication(message, input),
++    });
+   }
+ 
+   assertExecutionInputAllowed(agentRunId: string): void {
+@@ -209,7 +213,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+     this.lifecycle = "active";
+   }
+   getExecutionTreeSnapshot(): StandaloneRootTreeSnapshot { return this.tree; }
+-  getCommunicationSnapshot(): StandaloneRootMessagesFileV1 { return this.messages; }
++  getCommunicationSnapshot(): StandaloneRootMessagesFileV1 {
++    return Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId: this.hostRunId, messages: this.communication.getMessages() });
++  }
+   /** Children only: every child without a live execution reports `offline`. */
+   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
+     // Root-level Teams: task Teams and collaborator Teams (each reports its members and nested children).
+@@ -336,7 +342,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
+       tree: this.tree,
+       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
+-      messages: this.messages,
++      messages: this.getCommunicationSnapshot(),
+       statuses: this.getAgentStatusSnapshots(),
+       inputStates: collectStandaloneRootInputSnapshots(this.index, [
+         ...this.options.rootAgents.getInputStateSnapshots(),
+diff --git a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts b/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts
+deleted file mode 100644
+index dd9d4de10..000000000
+--- a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts
++++ /dev/null
+@@ -1,81 +0,0 @@
+-import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
+-import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
+-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+-import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
+-import { validateStandaloneRootMessagesV1 } from "../persistence/standalone-root-tree-schema.js";
+-import type { StandaloneRootMessagesFileV1 } from "../domain/standalone-root-tree.js";
+-import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
+-
+-/** Agent-root sidecar/input/event adapter for RootCommunicationEngine (v1 messages, subjectKind `agent`). */
+-export class StandaloneRootCommunicationAdapter implements RootCommunicationAdapter {
+-  readonly root;
+-  readonly initialMessages;
+-
+-  constructor(private readonly options: Readonly<{
+-    root: RootCommunicationAdapter["root"];
+-    initial: StandaloneRootMessagesFileV1;
+-    persistence: StandaloneRootPersistenceCoordinator;
+-    isOpen(): boolean;
+-    isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+-  assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
+-    reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
+-    replaceMessages(messages: StandaloneRootMessagesFileV1): void;
+-    publish(message: CollaborationCommunicationMessageV1): void;
+-    presentCommittedMessage(
+-      message: CollaborationCommunicationMessageV1,
+-      receiverInput: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>,
+-    ): void;
+-  }>) {
+-    this.root = options.root;
+-    this.initialMessages = options.initial.messages;
+-  }
+-
+-  isOpen(): boolean { return this.options.isOpen(); }
+-  assertDeliveryAllowed(...identities: Parameters<RootCommunicationAdapter["assertDeliveryAllowed"]>): void {
+-    this.options.assertDeliveryAllowed(...identities);
+-  }
+-  isCurrentAgent(identity: Parameters<RootCommunicationAdapter["isCurrentAgent"]>[0]): boolean {
+-    return this.options.isCurrentAgent(identity);
+-  }
+-  buildRecipientInput(input: Parameters<RootCommunicationAdapter["buildRecipientInput"]>[0]) {
+-    return buildRootCommunicationInputMessage(input);
+-  }
+-  reserveRecipientInput(agentRunId: string, message: ReturnType<StandaloneRootCommunicationAdapter["buildRecipientInput"]>) {
+-    return this.options.reserveRecipientInput(agentRunId, message);
+-  }
+-
+-  async commitAppend(input: Parameters<RootCommunicationAdapter["commitAppend"]>[0]) {
+-    if (!this.options.isOpen() || input.getCurrentMessages().some((message) => message.messageId === input.message.messageId)) {
+-      input.reservation.cancel();
+-      return Object.freeze({ committed: false as const, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with the current Agent root state." });
+-    }
+-    const next = validateStandaloneRootMessagesV1({
+-      schemaVersion: 1,
+-      subjectKind: "agent",
+-      hostRunId: this.root.rootRunId,
+-      messages: [...input.getCurrentMessages(), input.message],
+-    }, this.root.rootRunId);
+-    let reservationCommitted = false;
+-    try {
+-      return await this.options.persistence.commitCommunication({
+-        nextMessages: next,
+-        cancelBeforeDurability: () => input.reservation.cancel(),
+-        commitAfterDurability: () => {
+-          input.commitMessages(next.messages);
+-          this.options.replaceMessages(next);
+-          const committed = input.reservation.commit();
+-          reservationCommitted = true;
+-          try {
+-            this.options.publish(input.message);
+-            this.options.presentCommittedMessage(input.message, input.inputMessage);
+-          } finally {
+-            committed.release();
+-          }
+-        },
+-      });
+-    } catch (error) {
+-      if (!reservationCommitted) input.reservation.cancel();
+-      throw error;
+-    }
+-  }
+-}
+diff --git a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts b/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts
+index ed6ce9012..a6ffd010e 100644
+--- a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts
++++ b/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts
+@@ -1,6 +1,8 @@
+ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
++import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
+ import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
+ import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
++import { validateStandaloneRootMessagesV1 } from "../persistence/standalone-root-tree-schema.js";
+ import type {
+   StandaloneRootMessagesFileV1,
+   StandaloneRootTreeSnapshot,
+@@ -102,20 +104,25 @@ export class StandaloneRootPersistenceCoordinator {
+     });
+   }
+ 
+-  commitCommunication(input: Readonly<{
+-    nextMessages: StandaloneRootMessagesFileV1;
+-    commitAfterDurability(): void;
+-    cancelBeforeDurability(): void;
+-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
++  /** One teammate message: prepared and written under the lock; an indeterminate write is thrown. */
++  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
+     return this.withLock(async () => {
+-      const result = await this.options.store.writeMessages(this.options.collaborationDir, input.nextMessages);
++      const prepared = append.prepare();
++      if (prepared.kind === "conflict") return { outcome: "conflict" };
++      const next = validateStandaloneRootMessagesV1({
++        schemaVersion: 1,
++        subjectKind: "agent",
++        hostRunId: this.options.hostRunId,
++        messages: prepared.messages,
++      }, this.options.hostRunId);
++      const result = await this.options.store.writeMessages(this.options.collaborationDir, next);
+       if (result.outcome === "not_renamed") {
+-        input.cancelBeforeDurability();
+-        return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
++        append.cancelBeforeDurability();
++        return { outcome: "not_committed", cause: result.cause };
+       }
+       if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
+-      this.finalize("communication_messages", input.commitAfterDurability);
+-      return { committed: true };
++      this.finalize("communication_messages", () => append.commitAfterDurability());
++      return { outcome: "committed" };
+     });
+   }
+ 
+diff --git a/autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts b/autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts
+index 547192af8..fc00db34a 100644
+--- a/autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts
++++ b/autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts
+@@ -82,7 +82,7 @@ const AGENT_RUN_TESTS = [
+   "autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts",
+   "autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts",
+   "autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts",
+-  "autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts",
++  "autobyteus-server-ts/tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts",
+   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts",
+   "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
+ ];
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-engine.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-engine.test.ts
+new file mode 100644
+index 000000000..3ab6b05a5
+--- /dev/null
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-engine.test.ts
+@@ -0,0 +1,233 @@
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
++import { SenderType } from "autobyteus-ts/agent/sender-type.js";
++import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
++import type { RootCommunicationPort } from "../../../src/agent-collaboration/execution/communication/root-communication-port.js";
++import { TaskDelegationError } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
++import {
++  createAgentRootExecutionIdentity,
++  createCollaborationMemberExecutionIdentity,
++} from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
++import {
++  StandaloneRootPersistenceCoordinator,
++  StandaloneRootPersistenceFailStoppedError,
++} from "../../../src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.js";
++import type { RunPackageFileWriteResult } from "../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
++
++/**
++ * RootCommunicationEngine protocol (DS-002) against a real root persistence coordinator. The
++ * port is a double; per-root wiring is covered through the real roots in
++ * root-communication-roots.test.ts.
++ */
++const hostRunId = "host-run";
++const root = createAgentRootExecutionIdentity(hostRunId);
++const sender = createCollaborationMemberExecutionIdentity({ root, memberAddress: "/host", agentRunId: "host-run" });
++const helper = createCollaborationMemberExecutionIdentity({ root, memberAddress: "/helper", agentRunId: "helper-run" });
++const reviewer = createCollaborationMemberExecutionIdentity({ root, memberAddress: "/reviewer", agentRunId: "reviewer-run" });
++const committed = { outcome: "committed" as const, file: "communication_messages" };
++const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
++
++const subject = () => {
++  const order: string[] = [];
++  const closedReceivers = new Set<string>();
++  const reservations: Array<{ agentRunId: string; commit: ReturnType<typeof vi.fn>; cancel: ReturnType<typeof vi.fn>; release: ReturnType<typeof vi.fn> }> = [];
++  let commitFailure: Error | null = null;
++  const writes: Array<() => Promise<RunPackageFileWriteResult>> = [];
++  const store = {
++    writeMessages: vi.fn(async (_dir: string, file: { messages: readonly unknown[] }) => {
++      order.push(`write:${file.messages.length}`);
++      return (writes.shift() ?? (async () => committed))();
++    }),
++  };
++  const enterPersistenceFailStop = vi.fn();
++  const persistence = new StandaloneRootPersistenceCoordinator({
++    hostRunId, collaborationDir: "/memory/collaboration", store: store as never, packageExists: true,
++    getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages: [] }),
++    onPackageCreated: async () => undefined, enterPersistenceFailStop,
++  });
++  let open = true;
++  const port: RootCommunicationPort = {
++    root,
++    initialMessages: [],
++    rejections: {
++      notAccepting: { code: "ROOT_CLOSED", message: "Root closed." },
++      commitConflict: { code: "ROOT_COMMIT_CONFLICT", message: "Append conflicts." },
++      historyCommitFailedCode: "ROOT_HISTORY_COMMIT_FAILED",
++    },
++    isOpen: () => open,
++    isCurrentAgent: () => true,
++    assertDeliveryAllowed: (_from, to) => { if (closedReceivers.has(to.agentRunId)) throw closed(); },
++    buildRecipientInput: ({ message }) => new AgentInputUserMessage(message.content, SenderType.AGENT),
++    reserveRecipientInput: vi.fn(async (agentRunId: string) => {
++      const release = vi.fn(() => { order.push("release"); });
++      const reservation = {
++        agentRunId,
++        release,
++        cancel: vi.fn(() => { order.push("cancel"); }),
++        commit: vi.fn(() => {
++          if (commitFailure) throw commitFailure;
++          order.push("reservation_commit");
++          return { release };
++        }),
++      };
++      reservations.push(reservation);
++      return { reserved: true as const, reservation };
++    }),
++    commitMessageAppend: (append) => persistence.commitMessageAppend(append),
++    publishMessage: vi.fn(() => { order.push("history_event"); }),
++    presentRecipientInput: vi.fn(() => { order.push("presentation"); }),
++  };
++  const engine = new RootCommunicationEngine(port);
++  const send = (receiver = helper, content = "Final report") => engine.deliver({
++    senderIdentity: sender, senderDisplayName: "host", receiverIdentity: receiver, receiverDisplayName: "helper", content,
++  });
++  /** Holds the next history write open until `finish` is called. */
++  const holdNextWrite = () => {
++    let finish!: (result?: RunPackageFileWriteResult) => void;
++    let started!: () => void;
++    const writeStarted = new Promise<void>((resolve) => { started = resolve; });
++    writes.push(() => new Promise((resolve) => { started(); finish = (result = committed) => resolve(result); }));
++    return { writeStarted, finish: (result?: RunPackageFileWriteResult) => finish(result) };
++  };
++  return {
++    engine, port, persistence, store, order, reservations, enterPersistenceFailStop, send, holdNextWrite,
++    closeTaskOf: (receiver: { agentRunId: string }) => closedReceivers.add(receiver.agentRunId),
++    stopRecipient: () => { commitFailure = new Error("AgentRun input reservation '1' cannot be committed."); },
++    failNextWrite: (result: RunPackageFileWriteResult) => writes.push(async () => result),
++    closeRootOpenness: () => { open = false; },
++  };
++};
++
++afterEach(() => { vi.useRealTimers(); });
++
++describe("RootCommunicationEngine", () => {
++  it("saves the message, then publishes it, commits, presents and releases the held slot", async () => {
++    const s = subject();
++    await expect(s.send()).resolves.toEqual({ accepted: true, agentRunId: "helper-run", displayName: "helper" });
++    expect(s.order).toEqual(["write:1", "history_event", "reservation_commit", "presentation", "release"]);
++    expect(s.engine.getMessages()).toMatchObject([{ senderAgentRunId: "host-run", receiverAgentRunId: "helper-run", content: "Final report" }]);
++  });
++
++  it("rejects with the port's not-accepting rejection before reserving", async () => {
++    const s = subject();
++    s.engine.closeAdmission();
++    await expect(s.send()).resolves.toEqual({ accepted: false, code: "ROOT_CLOSED", message: "Root closed." });
++    const other = subject();
++    other.closeRootOpenness();
++    await expect(other.send()).resolves.toMatchObject({ accepted: false, code: "ROOT_CLOSED" });
++    expect(s.port.reserveRecipientInput).not.toHaveBeenCalled();
++    expect(other.port.reserveRecipientInput).not.toHaveBeenCalled();
++  });
++
++  it("throws the scope error before reserving when the Task is already closed", async () => {
++    const s = subject();
++    s.closeTaskOf(helper);
++    await expect(s.send()).rejects.toMatchObject({ name: "TaskDelegationError", code: "TASK_AGENT_RESOURCE_CLOSED" });
++    expect(s.port.reserveRecipientInput).not.toHaveBeenCalled();
++    expect(s.store.writeMessages).not.toHaveBeenCalled();
++  });
++
++  it("checks scope under the history lock: a Task closed while waiting writes nothing and cancels the held slot", async () => {
++    const s = subject();
++    const first = s.holdNextWrite();
++    const toReviewer = s.send(reviewer, "first");
++    await first.writeStarted;
++    const toHelper = s.send(helper, "second");
++    await vi.waitFor(() => expect(s.reservations).toHaveLength(2));
++    s.closeTaskOf(helper);
++    first.finish();
++    await expect(toReviewer).resolves.toMatchObject({ accepted: true });
++    await expect(toHelper).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
++    expect(s.store.writeMessages).toHaveBeenCalledTimes(1);
++    expect(s.reservations[1]!.cancel).toHaveBeenCalledOnce();
++    expect(s.reservations[1]!.commit).not.toHaveBeenCalled();
++    expect(s.engine.getMessages().map((message) => message.content)).toEqual(["first"]);
++  });
++
++  it("returns the commit conflict for a duplicate message or a root closed while waiting for the lock", async () => {
++    vi.useFakeTimers({ toFake: ["Date"] });
++    vi.setSystemTime(new Date("2026-10-08T10:00:00.000Z"));
++    const s = subject();
++    await expect(s.send()).resolves.toMatchObject({ accepted: true });
++    await expect(s.send()).resolves.toEqual({ accepted: false, code: "ROOT_COMMIT_CONFLICT", message: "Append conflicts." });
++    expect(s.reservations[1]!.cancel).toHaveBeenCalledOnce();
++    expect(s.store.writeMessages).toHaveBeenCalledTimes(1);
++
++    const closing = subject();
++    const first = closing.holdNextWrite();
++    const pending = closing.send(reviewer, "first");
++    await first.writeStarted;
++    const queued = closing.send(helper, "second");
++    await vi.waitFor(() => expect(closing.reservations).toHaveLength(2));
++    closing.engine.closeAdmission();
++    first.finish();
++    await pending;
++    await expect(queued).resolves.toMatchObject({ accepted: false, code: "ROOT_COMMIT_CONFLICT" });
++    expect(closing.reservations[1]!.cancel).toHaveBeenCalledOnce();
++  });
++
++  it("returns the history-commit failure with the write's message when the file was not renamed", async () => {
++    const s = subject();
++    s.failNextWrite({ outcome: "not_renamed", file: "communication_messages", stage: "write_temp", cause: new Error("disk full") });
++    await expect(s.send()).resolves.toEqual({ accepted: false, code: "ROOT_HISTORY_COMMIT_FAILED", message: "disk full" });
++    expect(s.order).toEqual(["write:1", "cancel"]);
++    expect(s.engine.getMessages()).toEqual([]);
++    expect(s.port.publishMessage).not.toHaveBeenCalled();
++  });
++
++  it("throws an indeterminate write, fail-stops the root and cancels the held slot", async () => {
++    const s = subject();
++    s.failNextWrite({ outcome: "renamed_finalization_indeterminate", file: "communication_messages", stage: "sync_directory", cause: new Error("fsync") });
++    await expect(s.send()).rejects.toMatchObject({ name: "RootTaskPersistenceFinalizationIndeterminateError", stage: "sync_directory" });
++    expect(s.enterPersistenceFailStop).toHaveBeenCalledOnce();
++    expect(s.reservations[0]!.cancel).toHaveBeenCalledOnce();
++    expect(s.reservations[0]!.commit).not.toHaveBeenCalled();
++    // A fail-stopped coordinator never runs the next append; the engine abandons it.
++    await expect(s.send(reviewer)).rejects.toBeInstanceOf(StandaloneRootPersistenceFailStoppedError);
++    expect(s.reservations[1]!.cancel).toHaveBeenCalledOnce();
++  });
++
++  it("REQ-012: a Task closed during the write keeps the record, publishes it, never delivers, and does not fail-stop", async () => {
++    const s = subject();
++    const write = s.holdNextWrite();
++    const delivery = s.send();
++    await write.writeStarted;
++    s.closeTaskOf(helper);
++    write.finish();
++    await expect(delivery).rejects.toSatisfy((error: unknown) =>
++      error instanceof TaskDelegationError && error.code === "TASK_AGENT_RESOURCE_CLOSED");
++    expect(s.enterPersistenceFailStop).not.toHaveBeenCalled();
++    expect(s.order).toEqual(["write:1", "history_event", "cancel"]);
++    expect(s.reservations[0]!.commit).not.toHaveBeenCalled();
++    expect(s.reservations[0]!.release).not.toHaveBeenCalled();
++    expect(s.engine.getMessages()).toHaveLength(1);
++    await expect(s.send(reviewer, "later")).resolves.toMatchObject({ accepted: true });
++    expect(s.engine.getMessages()).toHaveLength(2);
++  });
++
++  it("REQ-012: a recipient that stopped accepting input during the write is a rejection, not a fail-stop", async () => {
++    const s = subject();
++    const write = s.holdNextWrite();
++    const delivery = s.send();
++    await write.writeStarted;
++    s.stopRecipient();
++    write.finish();
++    await expect(delivery).resolves.toEqual({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." });
++    expect(s.enterPersistenceFailStop).not.toHaveBeenCalled();
++    expect(s.order).toEqual(["write:1", "history_event", "cancel"]);
++    expect(s.port.presentRecipientInput).not.toHaveBeenCalled();
++    expect(s.engine.getMessages()).toHaveLength(1);
++  });
++
++  it("still releases committed input and fail-stops when presentation throws after durability", async () => {
++    const s = subject();
++    vi.mocked(s.port.presentRecipientInput).mockImplementationOnce(() => { throw new Error("presentation failed"); });
++    await expect(s.send()).rejects.toMatchObject({
++      name: "RootTaskPersistenceFinalizationIndeterminateError",
++      stage: "post_durability_publication",
++    });
++    expect(s.order).toEqual(["write:1", "history_event", "reservation_commit", "release"]);
++    expect(s.reservations[0]!.cancel).not.toHaveBeenCalled();
++    expect(s.enterPersistenceFailStop).toHaveBeenCalledOnce();
++  });
++});
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-roots.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-roots.test.ts
+new file mode 100644
+index 000000000..45a6ff57d
+--- /dev/null
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/root-communication-roots.test.ts
+@@ -0,0 +1,274 @@
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
++import { TaskDelegationError } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
++import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
++import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
++import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
++import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
++import type { RunPackageFileWriteResult } from "../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
++import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
++import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
++import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
++import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
++import { buildOrg, cleanupDirectories as cleanupOrgDirectories } from "../agent-org-execution/helpers/org-collaborator-harness.js";
++import { ROOT as TEAM_ROOT, cleanupDirectories as cleanupTeamDirectories, harness as teamHarness } from "../agent-team-execution/helpers/team-root-collaborator-harness.js";
++import { HOST, buildManager, directories as standaloneDirectories } from "../standalone-agent-run-root/helpers/standalone-root-harness.js";
++
++/**
++ * Teammate delivery through each real root (standalone, AgentOrg, Team): its port, its real
++ * persistence coordinator and its on-disk message store. A Task copy delegated by the root's
++ * first agent is the recipient; its reservation is the test's own so each step is visible.
++ */
++type MessageStore = Readonly<{ prototype: object; method: string }>;
++type RootSubject = Readonly<{
++  codes: Readonly<{ conflict: Readonly<{ code: string; message: string }>; historyFailed: string; indeterminate: string }>;
++  messageStore: MessageStore;
++  resources: InMemoryTaskAgentResources;
++  copyRunId: string;
++  order: string[];
++  copyHandle: { reserveInput: ReturnType<typeof vi.fn> };
++  send(content: string): Promise<AgentOperationResult>;
++  sendLater(): Promise<AgentOperationResult>;
++  failStop: ReturnType<typeof vi.fn>;
++  isActive(): boolean;
++  snapshotContents(): string[];
++  persistedContents(): Promise<string[]>;
++}>;
++
++const standalone = async (): Promise<RootSubject> => {
++  const resources = new InMemoryTaskAgentResources();
++  resources.addTask("A");
++  const f = await buildManager(resources);
++  const root = (await f.manager.resolveRoot(HOST))!;
++  const order: string[] = [];
++  root.subscribeToEvents(({ event }) => {
++    if (event.kind === "communication") order.push("history");
++    if (event.kind === "agent_presentation" && event.message.type === "MEMBER_INPUT_MESSAGE") order.push("presentation");
++  });
++  const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
++  await flushMicrotasks();
++  const copyRunId = assigned.target_agent_run_id!;
++  const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
++  return {
++    codes: {
++      conflict: { code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with the current Agent root state." },
++      historyFailed: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED",
++      indeterminate: "RootTaskPersistenceFinalizationIndeterminateError",
++    },
++    messageStore: { prototype: StandaloneRootPackageStore.prototype, method: "writeMessages" },
++    resources, copyRunId, order,
++    copyHandle: f.handles.get(copyRunId)!.handle as never,
++    send: (content) => root.deliverExactAgentMessage({
++      sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" }, targetAgentRunId: copyRunId, content,
++    }),
++    sendLater: () => root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/lead" as never, content: "Later work" }),
++    failStop: vi.spyOn(root, "enterPersistenceFailStop") as never,
++    isActive: () => root.isActive(),
++    snapshotContents: () => root.getCommunicationSnapshot().messages.map((message) => message.content),
++    persistedContents: async () => ((await new StandaloneRootPackageStore().readMessages(dir, HOST))?.messages ?? []).map((message) => message.content),
++  };
++};
++
++const org = async (): Promise<RootSubject> => {
++  const resources = new InMemoryTaskAgentResources();
++  resources.addTask("A");
++  const o = await buildOrg({ taskAgentResources: resources });
++  const order: string[] = [];
++  o.publisher.subscribe(({ event }) => {
++    if (event.kind === "communication") order.push("history");
++    if (event.kind === "agent_presentation" && event.message.type === "MEMBER_INPUT_MESSAGE") order.push("presentation");
++  });
++  const director = createCollaborationMemberExecutionIdentity({ root: o.root, memberAddress: "/director", agentRunId: "director" });
++  const assigned = await o.owner.delegateTask({ identity: director }, { recipient_address: "/code_reviewer", task_id: "A" });
++  await flushMicrotasks();
++  const copyRunId = assigned.target_agent_run_id!;
++  const sender = { kind: "agent" as const, identity: director, displayName: "director" };
++  return {
++    codes: {
++      conflict: { code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." },
++      historyFailed: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
++      indeterminate: "RootTaskPersistenceFinalizationIndeterminateError",
++    },
++    messageStore: { prototype: AgentOrgCommunicationMessagesV1Store.prototype, method: "write" },
++    resources, copyRunId, order,
++    copyHandle: o.handles.get(copyRunId)!.handle as never,
++    send: (content) => o.owner.deliverExactAgentMessage({ sender, targetAgentRunId: copyRunId, content }),
++    sendLater: () => o.owner.deliverExactAgentMessage({ sender, targetAgentRunId: "configured-lead", content: "Later work" }),
++    failStop: o.enterPersistenceFailStop,
++    isActive: () => o.owner.isActive(),
++    snapshotContents: () => o.owner.getCommunicationSnapshot().messages.map((message) => message.content),
++    persistedContents: async () => ((await new AgentOrgCommunicationMessagesV1Store().read(o.orgMemoryDir, o.root.rootRunId))?.messages ?? [])
++      .map((message) => message.content),
++  };
++};
++
++const team = async (): Promise<RootSubject> => {
++  const h = await teamHarness();
++  const resources = h.dependencies.taskAgentResources;
++  resources.addTask("A");
++  const order: string[] = [];
++  h.root.subscribeToEvents(({ event }) => {
++    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) order.push("history");
++    if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) order.push("presentation");
++  });
++  const coordinator = h.identity("/coordinator", "run-coordinator");
++  const assigned = await h.root.delegateTask({ identity: coordinator }, { recipient_address: "/code_reviewer", task_id: "A" });
++  await flushMicrotasks();
++  const copyRunId = assigned.target_agent_run_id!;
++  return {
++    codes: {
++      conflict: { code: "TEAM_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current root state." },
++      historyFailed: "TEAM_MESSAGE_HISTORY_COMMIT_FAILED",
++      indeterminate: "TeamRunPersistenceFinalizationIndeterminateError",
++    },
++    messageStore: { prototype: TeamCommunicationV1Store.prototype, method: "write" },
++    resources, copyRunId, order,
++    copyHandle: h.handles.get(copyRunId)!.handle as never,
++    send: (content) => h.root.deliverExactAgentMessage({
++      sender: { kind: "agent", identity: coordinator, displayName: "coordinator" }, targetAgentRunId: copyRunId, content,
++    }),
++    sendLater: () => h.message(coordinator, "/lead", "Later work"),
++    failStop: vi.spyOn(h.root, "enterPersistenceFailStop") as never,
++    isActive: () => h.root.isActive(),
++    snapshotContents: () => h.root.getCommunicationSnapshot().messages.map((message) => message.content),
++    persistedContents: async () => ((await new TeamCommunicationV1Store().read(h.teamMemoryDir, TEAM_ROOT))?.messages ?? [])
++      .map((message) => message.content),
++  };
++};
++
++/** The copy's next held slot, recorded into the subject's step order. */
++const trackNextReservation = (subject: RootSubject, commitError?: Error) => {
++  const release = vi.fn(() => { subject.order.push("release"); });
++  const reservation = {
++    agentRunId: subject.copyRunId,
++    release,
++    cancel: vi.fn(() => { subject.order.push("cancel"); }),
++    commit: vi.fn(() => {
++      if (commitError) throw commitError;
++      subject.order.push("commit");
++      return { release };
++    }),
++  };
++  subject.copyHandle.reserveInput.mockImplementationOnce(async () => ({ reserved: true as const, reservation }));
++  return reservation;
++};
++
++const spyMessageWrite = (store: MessageStore) => {
++  const target = store.prototype as Record<string, (...args: unknown[]) => Promise<RunPackageFileWriteResult>>;
++  const original = target[store.method]!;
++  return { spy: vi.spyOn(target, store.method), original };
++};
++
++/** Holds the next message-history write open until `finish`; the file is then really written. */
++const holdNextMessageWrite = (store: MessageStore) => {
++  const { spy, original } = spyMessageWrite(store);
++  let started!: () => void;
++  let finish!: () => void;
++  const writeStarted = new Promise<void>((resolve) => { started = resolve; });
++  const gate = new Promise<void>((resolve) => { finish = resolve; });
++  spy.mockImplementationOnce(async function (this: unknown, ...args: unknown[]) {
++    started();
++    await gate;
++    return original.apply(this, args);
++  });
++  return { writeStarted, finish: () => finish() };
++};
++
++const failNextMessageWrite = (store: MessageStore, result: RunPackageFileWriteResult) => {
++  spyMessageWrite(store).spy.mockImplementationOnce(async () => result);
++};
++
++afterEach(async () => {
++  vi.useRealTimers();
++  vi.restoreAllMocks();
++  await Promise.all([
++    ...standaloneDirectories.splice(0).map((dir) => import("node:fs/promises").then((fs) => fs.rm(dir, { recursive: true, force: true }))),
++    cleanupOrgDirectories(),
++    cleanupTeamDirectories(),
++  ]);
++});
++
++describe.each([
++  ["standalone Agent root", standalone],
++  ["AgentOrg root", org],
++  ["Team root", team],
++] as const)("teammate delivery through the %s", (_label, build) => {
++  it("saves the message, publishes it, then commits, presents and releases the recipient input", async () => {
++    const s = await build();
++    const reservation = trackNextReservation(s);
++    await expect(s.send("Please review.")).resolves.toMatchObject({ accepted: true, agentRunId: s.copyRunId });
++    expect(s.order).toEqual(["history", "commit", "presentation", "release"]);
++    expect(reservation.cancel).not.toHaveBeenCalled();
++    expect(s.snapshotContents()).toEqual(["Please review."]);
++    expect(await s.persistedContents()).toEqual(["Please review."]);
++  });
++
++  it("keeps the root's own conflict and history-failure codes; neither saves nor delivers", async () => {
++    vi.useFakeTimers({ toFake: ["Date"] });
++    vi.setSystemTime(new Date("2026-10-08T10:00:00.000Z"));
++    const s = await build();
++    trackNextReservation(s);
++    await expect(s.send("Same words.")).resolves.toMatchObject({ accepted: true });
++    const duplicate = trackNextReservation(s);
++    await expect(s.send("Same words.")).resolves.toEqual({ accepted: false, ...s.codes.conflict });
++    expect(duplicate.cancel).toHaveBeenCalledOnce();
++
++    const failed = trackNextReservation(s);
++    failNextMessageWrite(s.messageStore, { outcome: "not_renamed", file: "communication_messages", stage: "write_temp", cause: new Error("disk full") });
++    await expect(s.send("Lost words.")).resolves.toEqual({ accepted: false, code: s.codes.historyFailed, message: "disk full" });
++    expect(failed.cancel).toHaveBeenCalledOnce();
++    expect(failed.commit).not.toHaveBeenCalled();
++    expect(s.snapshotContents()).toEqual(["Same words."]);
++    expect(await s.persistedContents()).toEqual(["Same words."]);
++  });
++
++  it("REQ-012: a Task closed during the history write keeps the saved record, never delivers it, and keeps the root working", async () => {
++    const s = await build();
++    const reservation = trackNextReservation(s);
++    const write = holdNextMessageWrite(s.messageStore);
++    const delivery = s.send("Final report.");
++    await write.writeStarted;
++    s.resources.close("A");
++    write.finish();
++
++    await expect(delivery).rejects.toSatisfy((error: unknown) =>
++      error instanceof TaskDelegationError && error.code === "TASK_AGENT_RESOURCE_CLOSED");
++    expect(s.failStop).not.toHaveBeenCalled();
++    expect(s.isActive()).toBe(true);
++    expect(reservation.commit).not.toHaveBeenCalled();
++    expect(reservation.release).not.toHaveBeenCalled();
++    expect(s.order).toEqual(["history", "cancel"]);
++    expect(s.snapshotContents()).toEqual(["Final report."]);
++    expect(await s.persistedContents()).toEqual(["Final report."]);
++
++    await expect(s.sendLater()).resolves.toMatchObject({ accepted: true });
++    expect(await s.persistedContents()).toEqual(["Final report.", "Later work"]);
++    expect(s.failStop).not.toHaveBeenCalled();
++  });
++
++  it("REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop", async () => {
++    const s = await build();
++    const reservation = trackNextReservation(s, new Error("AgentRun input reservation '1' cannot be committed."));
++    await expect(s.send("Final report.")).resolves.toEqual({
++      accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input.",
++    });
++    expect(s.failStop).not.toHaveBeenCalled();
++    expect(s.isActive()).toBe(true);
++    expect(reservation.cancel).toHaveBeenCalledOnce();
++    expect(s.order).toEqual(["history", "cancel"]);
++    expect(await s.persistedContents()).toEqual(["Final report."]);
++  });
++
++  it("throws an indeterminate history write, fail-stops the root and cancels the held slot", async () => {
++    const s = await build();
++    const reservation = trackNextReservation(s);
++    failNextMessageWrite(s.messageStore, {
++      outcome: "renamed_finalization_indeterminate", file: "communication_messages", stage: "sync_directory", cause: new Error("fsync"),
++    });
++    await expect(s.send("Unsure words.")).rejects.toMatchObject({ name: s.codes.indeterminate });
++    expect(s.failStop).toHaveBeenCalledOnce();
++    expect(reservation.cancel).toHaveBeenCalledOnce();
++    expect(reservation.commit).not.toHaveBeenCalled();
++    expect(s.order).toEqual(["cancel"]);
++  });
++});
+diff --git a/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts b/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+index fc26579d0..025a8efad 100644
+--- a/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts
+@@ -1,4 +1,5 @@
+ import { describe, expect, it, vi } from "vitest";
++import type { RootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
+ import {
+   createAgentOrgRootExecutionIdentity,
+   createCollaborationMemberExecutionIdentity,
+@@ -120,9 +121,10 @@ const createSubject = (options: Readonly<{
+     } as never,
+     callbacks: {} as never,
+     persistence: options.persistence?.(orgRunId) ?? {
+-      commitCommunication: vi.fn(async (input) => {
+-        input.commitAfterDurability();
+-        return { committed: true as const };
++      commitMessageAppend: vi.fn(async (append: RootMessageAppend) => {
++        if (append.prepare().kind === "conflict") return { outcome: "conflict" as const };
++        append.commitAfterDurability();
++        return { outcome: "committed" as const };
+       }),
+     } as never,
+     publisher,
+@@ -167,8 +169,8 @@ describe("AgentOrg committed communication presentation", () => {
+     })).resolves.toMatchObject({ accepted: true, agentRunId: subject.mounted.agentRunId });
+ 
+     expect(subject.order).toEqual([
+-      "reservation_commit",
+       "communication",
++      "reservation_commit",
+       "MEMBER_INPUT_MESSAGE",
+       "release",
+     ]);
+@@ -216,8 +218,8 @@ describe("AgentOrg committed communication presentation", () => {
+     })).resolves.toMatchObject({ accepted: true, agentRunId: targetAgentRunId });
+ 
+     expect(subject.order).toEqual([
+-      "reservation_commit",
+       "communication",
++      "reservation_commit",
+       "MEMBER_INPUT_MESSAGE",
+       "release",
+     ]);
+@@ -253,7 +255,7 @@ describe("AgentOrg committed communication presentation", () => {
+       content: "Task-scoped update.",
+     })).resolves.toMatchObject({ accepted: true, agentRunId: targetAgentRunId });
+ 
+-    expect(subject.order).toEqual(["reservation_commit", "communication", "MEMBER_INPUT_MESSAGE", "release"]);
++    expect(subject.order).toEqual(["communication", "reservation_commit", "MEMBER_INPUT_MESSAGE", "release"]);
+     expect(subject.sequences).toEqual([1, 2]);
+     expect(subject.events).toHaveLength(2);
+     expect(subject.events[1]).toMatchObject({ kind: "agent_presentation",
+@@ -281,13 +283,10 @@ describe("AgentOrg committed communication presentation", () => {
+ 
+     const uncommitted = createSubject({
+       persistence: () => ({
+-        commitCommunication: vi.fn(async (input) => {
+-          input.cancelBeforeDurability();
+-          return {
+-            committed: false as const,
+-            code: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
+-            message: "write failed",
+-          };
++        commitMessageAppend: vi.fn(async (append: RootMessageAppend) => {
++          append.prepare();
++          append.cancelBeforeDurability();
++          return { outcome: "not_committed" as const, cause: new Error("write failed") };
+         }),
+       } as never),
+     });
+@@ -332,7 +331,7 @@ describe("AgentOrg committed communication presentation", () => {
+       name: "RootTaskPersistenceFinalizationIndeterminateError",
+       stage: "post_durability_publication",
+     });
+-    expect(subject.order).toEqual(["reservation_commit", "communication", "release"]);
++    expect(subject.order).toEqual(["communication", "reservation_commit", "release"]);
+     expect(subject.run.getCommunicationSnapshot().messages).toHaveLength(1);
+     expect(enterPersistenceFailStop).toHaveBeenCalledTimes(1);
+ 
+diff --git a/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts b/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts
+index 6ea02ac33..0581e44fc 100644
+--- a/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts
++++ b/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/org-collaborator-harness.ts
+@@ -59,7 +59,7 @@ export const admission = (runnable = true) => {
+   }, validator(runnable));
+ };
+ 
+-export const buildOrg = async (options: { runnable?: boolean } = {}) => {
++export const buildOrg = async (options: { runnable?: boolean; taskAgentResources?: InMemoryTaskAgentResources } = {}) => {
+   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+   const handles = observeConfiguredHandles();
+   const root = createAgentOrgRootExecutionIdentity("org-collaborators");
+@@ -71,8 +71,9 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
+   ] });
+   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
+   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
++  const enterPersistenceFailStop = vi.fn();
+   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
+-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
++    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop });
+   await persistence.commitInitial({ tree, messages });
+   let run: AgentOrgRun | undefined;
+   const callbacks: FlatTeamExecutionCallbacks = {
+@@ -104,10 +105,10 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
+     collaboratorAdmission: admission(options.runnable ?? true),
+     prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
+     // Production always binds the Task side; every delegated copy belongs to a Task.
+-    taskAgentResources: new InMemoryTaskAgentResources(),
++    taskAgentResources: options.taskAgentResources ?? new InMemoryTaskAgentResources(),
+   });
+   run.activate();
+-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher };
++  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, enterPersistenceFailStop };
+ };
+ 
+ /**
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts
+index c759cb55e..a38728809 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts
+@@ -46,7 +46,7 @@ const buildRoot = (input: {
+     drain: vi.fn(async () => undefined),
+     commitTaskMutation: vi.fn(),
+     commitTaskSettlement: vi.fn(),
+-    commitReservedMessageAppend: vi.fn(),
++    commitMessageAppend: vi.fn(),
+     commitExecutionTreeMutation: vi.fn(),
+     readConsistent: vi.fn(),
+     enterRootFailStop: vi.fn(),
+diff --git a/autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts b/autobyteus-server-ts/tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts
+similarity index 88%
+rename from autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
+rename to autobyteus-server-ts/tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts
+index 446addc15..ac75bcadd 100644
+--- a/autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts
+@@ -15,7 +15,7 @@ import { ClaudeSessionToolUseCoordinator } from "../../../src/agent-execution/ba
+ import { ClaudeProviderSessionLifecycle } from "../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
+ import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+ import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
+-import { InterAgentMessageRouter } from "../../../src/agent-team-execution/services/inter-agent-message-router.js";
++import { buildInterAgentDeliveryInputMessage } from "../../../src/agent-team-execution/services/inter-agent-message-runtime-builders.js";
+ 
+ const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
+   const senderIdentity = {
+@@ -51,8 +51,8 @@ const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
+ 
+ const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
+ 
+-describe("InterAgentMessageRouter Claude input admission", () => {
+-  it("delivers a task-peer message into the running Claude turn without waiting for it to end (AC-004)", async () => {
++describe("Teammate input Claude admission", () => {
++  it("appends a committed teammate message (held slot) into the running Claude turn without waiting for it to end (AC-004)", async () => {
+     const sdkClient = createFakeClaudeSdkClient({ providerSessionId: PROVIDER_SESSION_ID });
+     const messageCache = new ClaudeSessionMessageCache();
+     const runContext = new AgentRunContext({
+@@ -110,11 +110,14 @@ describe("InterAgentMessageRouter Claude input admission", () => {
+     fake.init();
+     await flushClaudeSession();
+ 
+-    const request = buildRequest();
+-    const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
++    // The teammate path: hold a slot, (save history,) commit, then release.
++    const reserved = await run.reserveUserMessage(buildInterAgentDeliveryInputMessage(buildRequest()));
++    if (!reserved.reserved) throw new Error(`Expected a held slot, got ${reserved.code}.`);
++    await flushClaudeSession();
++    expect(fake.sent).toHaveLength(1);
++    reserved.reservation.commit().release();
+     await vi.waitFor(() => expect(fake.sent).toHaveLength(2));
+ 
+-    expect(result).toEqual({ accepted: true, turnId: started.turnId });
+     const deliveredText = JSON.stringify(fake.sent[1]!.message.content);
+     expect(deliveredText).toContain("The delegated analysis is complete.");
+     expect(deliveredText).toContain("sender id: student-two-task-run");
+diff --git a/autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts b/autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+index d52732d71..728bae482 100644
+--- a/autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
++++ b/autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+@@ -75,7 +75,7 @@ const buildRootTeamRuntime = () => {
+     persistence: {
+       commitTaskMutation: vi.fn(),
+       commitTaskSettlement: vi.fn(),
+-      commitReservedMessageAppend: vi.fn(),
++      commitMessageAppend: vi.fn(),
+       commitExecutionTreeMutation: vi.fn(),
+       readConsistent: vi.fn(),
+       enterRootFailStop: vi.fn(),
+diff --git a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts b/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts
+deleted file mode 100644
+index 755cc84d5..000000000
+--- a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts
++++ /dev/null
+@@ -1,47 +0,0 @@
+-import { describe, expect, it, vi } from "vitest";
+-import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+-import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+-import { createTeamCommunicationMessageAppendPlan } from "../../../../src/services/team-communication/team-communication-message-append-plan.js";
+-
+-describe("current Team communication append plan", () => {
+-  it("releases a retained indeterminate reservation only after root fail-stop disposal", () => {
+-    const cancel = vi.fn();
+-    const commit = vi.fn(() => Object.freeze({ release: vi.fn() }));
+-    const replaceCurrent = vi.fn();
+-    const publish = vi.fn();
+-    const current = Object.freeze({
+-      schemaVersion: 1 as const,
+-      rootTeamRunId: "root-run",
+-      messages: Object.freeze([]),
+-    });
+-    const message = Object.freeze({
+-      messageId: "message-1",
+-      senderAgentRunId: "sender-run",
+-      receiverAgentRunId: "receiver-run",
+-      content: "hello",
+-      messageType: "agent_message",
+-      referenceFiles: Object.freeze([]),
+-      createdAt: "2026-08-15T00:00:00.000Z",
+-    });
+-    const plan = createTeamCommunicationMessageAppendPlan({
+-      rootTeamRunId: current.rootTeamRunId,
+-      message,
+-      inputMessage: new AgentInputUserMessage("hello", SenderType.AGENT),
+-      reservation: Object.freeze({ agentRunId: "receiver-run", cancel, commit }),
+-      isAccepting: () => true,
+-      getCurrent: () => current,
+-      replaceCurrent,
+-      publish,
+-    });
+-
+-    const prepared = plan.prepareAgainstCurrent();
+-    expect(prepared.prepared).toBe(true);
+-    plan.disposeAfterRootFailStop();
+-    expect(cancel).toHaveBeenCalledOnce();
+-    if (!prepared.prepared) throw new Error("Expected prepared append plan.");
+-    prepared.commit.commitAfterDurability();
+-    expect(commit).not.toHaveBeenCalled();
+-    expect(replaceCurrent).not.toHaveBeenCalled();
+-    expect(publish).not.toHaveBeenCalled();
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts b/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
+deleted file mode 100644
+index a6cbd4651..000000000
+--- a/autobyteus-server-ts/tests/unit/services/team-communication/team-communication-service.test.ts
++++ /dev/null
+@@ -1,168 +0,0 @@
+-import { describe, expect, it, vi } from "vitest";
+-import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+-import type { CollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+-import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
+-import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+-import type { PreparedTeamMessageAppend } from "../../../../src/agent-team-execution/services/team-run-persistence-contract.js";
+-import { TeamCommunicationService } from "../../../../src/services/team-communication/team-communication-service.js";
+-
+-const rootTeamRunId = "root-team-run";
+-const root = Object.freeze({ rootSubjectKind: "agent_team" as const, rootRunId: rootTeamRunId });
+-const senderIdentity: CollaborationMemberExecutionIdentity = Object.freeze({
+-  root,
+-  memberAddress: "/sender",
+-  agentRunId: "sender-run",
+-});
+-const receiverIdentity: CollaborationMemberExecutionIdentity = Object.freeze({
+-  root,
+-  memberAddress: "/squad/receiver",
+-  agentRunId: "receiver-run",
+-});
+-
+-const sender = buildDeliveryEndpointForParticipant(Object.freeze({
+-  kind: "agent" as const,
+-  identity: senderIdentity,
+-  displayName: "sender",
+-}));
+-
+-const buildHarness = (input: {
+-  assertDeliveryAllowed?: (sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity) => void;
+-  currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
+-  commit?: (plan: PreparedTeamMessageAppend) => Promise<
+-    | { outcome: "committed" }
+-    | { outcome: "conflict"; code: "TEAM_MESSAGE_COMMIT_CONFLICT"; message: string }
+-  >;
+-} = {}) => {
+-  const cancel = vi.fn();
+-  const release = vi.fn();
+-  const reservationCommit = vi.fn(() => Object.freeze({ release }));
+-  const reserveDirectAgentInput = vi.fn(async () => ({
+-    reserved: true as const,
+-    reservation: Object.freeze({ agentRunId: receiverIdentity.agentRunId, cancel, commit: reservationCommit }),
+-  }));
+-  const publish = vi.fn();
+-  const replaceSnapshot = vi.fn();
+-  const commit = vi.fn(input.commit ?? (async (plan: PreparedTeamMessageAppend) => {
+-    const prepared = plan.prepareAgainstCurrent();
+-    if (!prepared.prepared) {
+-      return { outcome: "conflict" as const, code: prepared.code, message: prepared.message };
+-    }
+-    prepared.commit.commitAfterDurability();
+-    return { outcome: "committed" as const };
+-  }));
+-  const assertDeliveryAllowed = vi.fn(input.assertDeliveryAllowed ?? (() => undefined));
+-  const service = new TeamCommunicationService({
+-    rootTeamRunId,
+-    initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
+-    assertDeliveryAllowed,
+-    isCurrentAgent: input.currentAgent ?? (() => true),
+-    requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
+-    commit,
+-    publish,
+-    replaceSnapshot,
+-  });
+-  return { service, assertDeliveryAllowed, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
+-};
+-
+-const intent = (overrides: Record<string, unknown> = {}) => ({
+-  rootTeamRunId,
+-  sender,
+-  recipientAddress: "/squad/receiver",
+-  content: "Please review the attached report.",
+-  messageType: "handoff",
+-  referenceFiles: ["/tmp/report.md"],
+-  ...overrides,
+-});
+-
+-describe("TeamCommunicationService", () => {
+-  it("does not reserve or persist input when the current lifetime fence rejects delivery", async () => {
+-    const harness = buildHarness({ assertDeliveryAllowed: () => { throw new Error("TASK_LIFETIME_CLOSED"); } });
+-    await expect(harness.service.deliver({ intent: intent(), receiverIdentity, receiverDisplayName: "receiver" }))
+-      .rejects.toThrow("TASK_LIFETIME_CLOSED");
+-    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+-    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+-    expect(harness.commit).not.toHaveBeenCalled();
+-    expect(harness.release).not.toHaveBeenCalled();
+-    expect(harness.service.getSnapshot().messages).toEqual([]);
+-  });
+-  it("commits one root-owned message and only then releases exact receiver input", async () => {
+-    const harness = buildHarness();
+-
+-    await expect(harness.service.deliver({
+-      intent: intent(),
+-      receiverIdentity,
+-      receiverDisplayName: "receiver",
+-    })).resolves.toEqual({ accepted: true, agentRunId: "receiver-run", displayName: "receiver" });
+-
+-    expect(harness.reserveDirectAgentInput).toHaveBeenCalledWith(
+-      "receiver-run",
+-      expect.objectContaining({
+-        content: expect.stringContaining("Please review the attached report."),
+-        metadata: expect.objectContaining({
+-          team_run_id: rootTeamRunId,
+-          sender_agent_id: "sender-run",
+-          receiver_member_address: "/squad/receiver",
+-          reference_files: ["/tmp/report.md"],
+-        }),
+-      }),
+-    );
+-    expect(harness.assertDeliveryAllowed).toHaveBeenCalledWith(senderIdentity, receiverIdentity);
+-    expect(harness.commit).toHaveBeenCalledOnce();
+-    expect(harness.reservationCommit).toHaveBeenCalledOnce();
+-    expect(harness.release).toHaveBeenCalledOnce();
+-    expect(harness.cancel).not.toHaveBeenCalled();
+-    expect(harness.service.getSnapshot()).toMatchObject({
+-      schemaVersion: 1,
+-      rootTeamRunId,
+-      messages: [{
+-        senderAgentRunId: "sender-run",
+-        receiverAgentRunId: "receiver-run",
+-        content: "Please review the attached report.",
+-        messageType: "handoff",
+-        referenceFiles: ["/tmp/report.md"],
+-      }],
+-    });
+-    expect(harness.replaceSnapshot).toHaveBeenCalledWith(harness.service.getSnapshot());
+-    expect(harness.publish.mock.calls.map(([event]) => event.eventSourceType)).toEqual([
+-      TeamRunEventSourceType.COMMUNICATION,
+-      TeamRunEventSourceType.MEMBER_INPUT,
+-    ]);
+-  });
+-
+-  it("rejects a self target before reservation or persistence", async () => {
+-    const harness = buildHarness();
+-
+-    await expect(harness.service.deliver({
+-      intent: intent({ recipientAddress: "/sender" }),
+-      receiverIdentity: senderIdentity,
+-      receiverDisplayName: "sender",
+-    })).resolves.toMatchObject({ accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED" });
+-    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+-    expect(harness.commit).not.toHaveBeenCalled();
+-  });
+-
+-  it("rejects stale execution identity before reserving receiver input", async () => {
+-    const harness = buildHarness({ currentAgent: (identity) => identity.agentRunId !== "receiver-run" });
+-
+-    await expect(harness.service.deliver({
+-      intent: intent(),
+-      receiverIdentity,
+-      receiverDisplayName: "receiver",
+-    })).resolves.toMatchObject({ accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED" });
+-    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+-  });
+-
+-  it("closes admission without fallback and leaves the V1 snapshot unchanged", async () => {
+-    const harness = buildHarness();
+-    harness.service.closeAdmission();
+-
+-    await expect(harness.service.deliver({
+-      intent: intent(),
+-      receiverIdentity,
+-      receiverDisplayName: "receiver",
+-    })).resolves.toMatchObject({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES" });
+-    expect(harness.service.getSnapshot().messages).toEqual([]);
+-    expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
+-    expect(harness.commit).not.toHaveBeenCalled();
+-  });
+-});
+diff --git a/autobyteus-server-ts/tests/unit/standalone-agent-run-root/helpers/standalone-root-harness.ts b/autobyteus-server-ts/tests/unit/standalone-agent-run-root/helpers/standalone-root-harness.ts
+new file mode 100644
+index 000000000..cb641bfb7
+--- /dev/null
++++ b/autobyteus-server-ts/tests/unit/standalone-agent-run-root/helpers/standalone-root-harness.ts
+@@ -0,0 +1,139 @@
++import fs from "node:fs/promises";
++import os from "node:os";
++import path from "node:path";
++import { vi } from "vitest";
++import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
++import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
++import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
++import { ActiveCollaborationRootDirectory } from "../../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
++import { RootedAgentMemoryLocator } from "../../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
++import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
++import { StandaloneAgentRunRootManager } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
++import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
++import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
++import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
++import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
++import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
++import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
++import type { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
++import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
++import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
++import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
++
++/** A standalone Agent root (host `/research_assistant`) over a shared catalog, with real package stores. */
++export const runnable = {
++  validate: vi.fn(),
++  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
++} as unknown as RunModelSelectionValidator;
++
++export const directories: string[] = [];
++
++export const HOST = "research-assistant-run";
++
++export const definitions = () => {
++  const agents = [
++    new AgentDefinition({ id: "research-assistant", name: "Research Assistant", description: "Researches", instructions: "x" }),
++    new AgentDefinition({ id: "code-reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x" }),
++    new AgentDefinition({ id: "lead", name: "Lead", description: "Leads", instructions: "x" }),
++    new AgentDefinition({ id: "designer", name: "Designer", description: "Designs", instructions: "x" }),
++  ];
++  const teams = [new AgentTeamDefinition({
++    id: "product-team", name: "Product Team", description: "Product", instructions: "Ship the product UI.",
++    nodes: [new TeamMember({ memberName: "lead", ref: "lead", refScope: "shared" }), new TeamMember({ memberName: "designer", ref: "designer", refScope: "shared" })],
++    coordinatorMemberName: "lead",
++    handoffs: [{ from: "/lead", to: "/designer", rules: ["When UI work is needed."] }],
++  })];
++  return {
++    agents,
++    teams,
++    catalog: {
++      listAgentDefinitions: async () => agents,
++      listTeamDefinitions: async () => teams,
++      getAgentDefinition: async (id: string) => agents.find((agent) => agent.id === id) ?? null,
++      getTeamDefinition: async (id: string) => teams.find((team) => team.id === id) ?? null,
++    },
++  };
++};
++
++export const metadata = (memoryDir: string, extra: Partial<AgentRunMetadata> = {}): AgentRunMetadata => ({
++  runId: HOST,
++  agentDefinitionId: "research-assistant",
++  workspaceRootPath: "/work",
++  memoryDir: path.join(memoryDir, "agents", HOST),
++  llmModelIdentifier: "gpt-host",
++  llmConfig: { effort: "high" },
++  autoExecuteTools: true,
++  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
++  platformAgentRunId: "thread-1",
++  startedAt: "2026-09-30T00:00:00.000Z",
++  ...extra,
++});
++
++/** The host is a standalone run owned elsewhere; this double records reservations and restores. */
++export const hostRun = () => {
++  let active = true;
++  const reserved: string[] = [];
++  const published: unknown[] = [];
++  const run = {
++    runId: HOST,
++    isActive: () => active,
++    reserveUserMessage: vi.fn(async (message: { content: string }) => {
++      reserved.push(message.content);
++      return { reserved: true as const, reservation: { agentRunId: HOST, cancel: vi.fn(), commit: vi.fn(() => ({ release: vi.fn() })) } };
++    }),
++    publishEvent: vi.fn(async (event: unknown) => { published.push(event); }),
++    postUserMessage: vi.fn(async (_message: { content: string }, _options: unknown) => ({ accepted: true as const })),
++  };
++  return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
++};
++
++/** Production always binds the Task side; every delegated copy belongs to a Task. */
++export const buildManager = async (taskAgentResources: InMemoryTaskAgentResources = new InMemoryTaskAgentResources()) => {
++  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
++  const handles = observeConfiguredHandles();
++  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
++  const host = hostRun();
++  // The host's activation backend (the standalone lifecycle): records the root-built member context.
++  const contexts: MemberExecutionContext[] = [];
++  let currentMetadata = metadata(memoryDir);
++  const restores = vi.fn(async (_hostRunId: string, input: { memberExecutionContext: MemberExecutionContext | null }) => {
++    contexts.push(input.memberExecutionContext!);
++    host.restore();
++    return { run: host.run as never, metadata: currentMetadata };
++  });
++  const catalogFlag = vi.fn(async () => undefined);
++  let allocation = 0;
++  const { catalog } = definitions();
++  const directory = new ActiveCollaborationRootDirectory();
++  const manager = new StandaloneAgentRunRootManager({
++    memoryDir,
++    activeRootDirectory: directory,
++    definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
++    host: {
++      getActiveRun: () => (host.run.isActive() ? host.run as never : null),
++      activateHost: restores,
++      terminateHost: vi.fn(async () => {
++        const wasActive = host.run.isActive();
++        host.crash();
++        return { outcome: wasActive ? "terminated" as const : "not_active" as const, runtimeKind: null };
++      }),
++      readMetadata: async () => currentMetadata,
++      recordCollaborationPackageCreated: catalogFlag,
++    },
++    taskAgentResources,
++    rootDependencies: {
++      taskAgentResources,
++      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new RootedAgentMemoryLocator({ memoryDir }) }),
++      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
++      teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
++      memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
++      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
++      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable),
++    },
++  });
++  const hostIdentity = createCollaborationMemberExecutionIdentity({
++    root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
++  });
++  return { manager, memoryDir, host, restores, contexts, catalogFlag, handles, directory, hostIdentity, store: new StandaloneRootPackageStore(),
++    setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); } };
++};
+diff --git a/autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts b/autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts
+index 724d8357f..092517cc6 100644
+--- a/autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts
++++ b/autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts
+@@ -1,155 +1,31 @@
+ import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+ import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
+ import fs from "node:fs/promises";
+-import os from "node:os";
+ import path from "node:path";
+ import { afterEach, describe, expect, it, vi } from "vitest";
+-import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+-import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
+ import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
+-import { RootedAgentMemoryLocator } from "../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+ import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+ import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+ import { StandaloneRootLocationService } from "../../../src/standalone-agent-run-root/services/standalone-root-location-service.js";
+-import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
+-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+ import { automaticCollaborationToolNames } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import type { MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+-import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-execution/helpers/task-publication-handles.js";
+-import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
++import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+ import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+ import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+ import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+ import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+ import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
++import { HOST, buildManager, definitions, directories, metadata, runnable } from "./helpers/standalone-root-harness.js";
+ 
+-const runnable = {
+-  validate: vi.fn(),
+-  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
+-} as unknown as RunModelSelectionValidator;
+-
+-const directories: string[] = [];
+ afterEach(async () => {
+   vi.restoreAllMocks();
+   await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+ });
+ 
+-const HOST = "research-assistant-run";
+-
+-const definitions = () => {
+-  const agents = [
+-    new AgentDefinition({ id: "research-assistant", name: "Research Assistant", description: "Researches", instructions: "x" }),
+-    new AgentDefinition({ id: "code-reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x" }),
+-    new AgentDefinition({ id: "lead", name: "Lead", description: "Leads", instructions: "x" }),
+-    new AgentDefinition({ id: "designer", name: "Designer", description: "Designs", instructions: "x" }),
+-  ];
+-  const teams = [new AgentTeamDefinition({
+-    id: "product-team", name: "Product Team", description: "Product", instructions: "Ship the product UI.",
+-    nodes: [new TeamMember({ memberName: "lead", ref: "lead", refScope: "shared" }), new TeamMember({ memberName: "designer", ref: "designer", refScope: "shared" })],
+-    coordinatorMemberName: "lead",
+-    handoffs: [{ from: "/lead", to: "/designer", rules: ["When UI work is needed."] }],
+-  })];
+-  return {
+-    agents,
+-    teams,
+-    catalog: {
+-      listAgentDefinitions: async () => agents,
+-      listTeamDefinitions: async () => teams,
+-      getAgentDefinition: async (id: string) => agents.find((agent) => agent.id === id) ?? null,
+-      getTeamDefinition: async (id: string) => teams.find((team) => team.id === id) ?? null,
+-    },
+-  };
+-};
+-
+-const metadata = (memoryDir: string, extra: Partial<AgentRunMetadata> = {}): AgentRunMetadata => ({
+-  runId: HOST,
+-  agentDefinitionId: "research-assistant",
+-  workspaceRootPath: "/work",
+-  memoryDir: path.join(memoryDir, "agents", HOST),
+-  llmModelIdentifier: "gpt-host",
+-  llmConfig: { effort: "high" },
+-  autoExecuteTools: true,
+-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+-  platformAgentRunId: "thread-1",
+-  startedAt: "2026-09-30T00:00:00.000Z",
+-  ...extra,
+-});
+-
+-/** The host is a standalone run owned elsewhere; this double records reservations and restores. */
+-const hostRun = () => {
+-  let active = true;
+-  const reserved: string[] = [];
+-  const published: unknown[] = [];
+-  const run = {
+-    runId: HOST,
+-    isActive: () => active,
+-    reserveUserMessage: vi.fn(async (message: { content: string }) => {
+-      reserved.push(message.content);
+-      return { reserved: true as const, reservation: { agentRunId: HOST, cancel: vi.fn(), commit: vi.fn(() => ({ release: vi.fn() })) } };
+-    }),
+-    publishEvent: vi.fn(async (event: unknown) => { published.push(event); }),
+-    postUserMessage: vi.fn(async (_message: { content: string }, _options: unknown) => ({ accepted: true as const })),
+-  };
+-  return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
+-};
+-
+-/** Production always binds the Task side; every delegated copy belongs to a Task. */
+-const buildManager = async (taskAgentResources: InMemoryTaskAgentResources = new InMemoryTaskAgentResources()) => {
+-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+-  const handles = observeConfiguredHandles();
+-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
+-  const host = hostRun();
+-  // The host's activation backend (the standalone lifecycle): records the root-built member context.
+-  const contexts: MemberExecutionContext[] = [];
+-  let currentMetadata = metadata(memoryDir);
+-  const restores = vi.fn(async (_hostRunId: string, input: { memberExecutionContext: MemberExecutionContext | null }) => {
+-    contexts.push(input.memberExecutionContext!);
+-    host.restore();
+-    return { run: host.run as never, metadata: currentMetadata };
+-  });
+-  const catalogFlag = vi.fn(async () => undefined);
+-  let allocation = 0;
+-  const { catalog } = definitions();
+-  const directory = new ActiveCollaborationRootDirectory();
+-  const manager = new StandaloneAgentRunRootManager({
+-    memoryDir,
+-    activeRootDirectory: directory,
+-    definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
+-    host: {
+-      getActiveRun: () => (host.run.isActive() ? host.run as never : null),
+-      activateHost: restores,
+-      terminateHost: vi.fn(async () => {
+-        const wasActive = host.run.isActive();
+-        host.crash();
+-        return { outcome: wasActive ? "terminated" as const : "not_active" as const, runtimeKind: null };
+-      }),
+-      readMetadata: async () => currentMetadata,
+-      recordCollaborationPackageCreated: catalogFlag,
+-    },
+-    taskAgentResources,
+-    rootDependencies: {
+-      taskAgentResources,
+-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new RootedAgentMemoryLocator({ memoryDir }) }),
+-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
+-      teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
+-      memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
+-      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
+-      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable),
+-    },
+-  });
+-  const hostIdentity = createCollaborationMemberExecutionIdentity({
+-    root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
+-  });
+-  return { manager, memoryDir, host, restores, contexts, catalogFlag, handles, directory, hostIdentity, store: new StandaloneRootPackageStore(),
+-    setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); } };
+-};
+-
+ /** The host member context its root builds: what the root hands the host's activation. */
+ const hostContextOf = async (f: Awaited<ReturnType<typeof buildManager>>): Promise<MemberExecutionContext> => {
+   f.host.crash();
+-- 
+2.50.1 (Apple Git-155)
+

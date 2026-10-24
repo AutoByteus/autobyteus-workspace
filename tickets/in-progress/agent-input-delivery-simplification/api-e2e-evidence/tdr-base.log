@@ -1,0 +1,592 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:81431) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/aids-api-e2e-base/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T04:25:20.835Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-10T04:25:21.046Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39m[2026-10-10T04:25:21.046Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tdr-manager-ac4310.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tdr-manager-ac4310
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tdr-closer-ac4310.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tdr-closer-ac4310
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tdr-worker-ac4310.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tdr-worker-ac4310
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39m[2026-10-10T04:25:21.289Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID tdr-squad-ac4310.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: tdr-squad-ac4310
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39m[2026-10-10T04:25:21.312Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID tdr-team-ac4310.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: tdr-team-ac4310
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreated and registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_closer_ac4310_656ce61a7563493abf253b5b85900176: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAgent websocket attached for run tdr_closer_ac4310_656ce61a7563493abf253b5b85900176
+Created agent session 8938615d-a575-406f-92a8-bca1713139ad for run tdr_closer_ac4310_656ce61a7563493abf253b5b85900176
+Agent WebSocket connected: session=8938615d-a575-406f-92a8-bca1713139ad, run=tdr_closer_ac4310_656ce61a7563493abf253b5b85900176
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agents/tdr_closer_ac4310_656ce61a7563493abf253b5b85900176/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_manager_ac4310_25f15516eee14fc1adff982a830a7f84: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAgent websocket attached for run tdr_manager_ac4310_25f15516eee14fc1adff982a830a7f84
+Created agent session c88e105e-79ee-4d98-a74c-ef6759ce2a36 for run tdr_manager_ac4310_25f15516eee14fc1adff982a830a7f84
+Agent WebSocket connected: session=c88e105e-79ee-4d98-a74c-ef6759ce2a36, run=tdr_manager_ac4310_25f15516eee14fc1adff982a830a7f84
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agents/tdr_manager_ac4310_25f15516eee14fc1adff982a830a7f84/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_ac65b083327540d9b08cf6bf5d8b76dd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_d13a95aa9bad473ab7cbb4b2a91274ee: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_047b8ec99916498eb000a620c213959b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAgent team websocket attached for team run tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11
+Created agent session bcaa1662-e7c2-4fa7-b56a-e286ec374563 for run tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAgent Team WebSocket connected: session=bcaa1662-e7c2-4fa7-b56a-e286ec374563, run=tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_teams/tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11/tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_teams/tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11/tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_teams/tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11/tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_teams/tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11/tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_teams/tdr_team_ac4310_c81b219345684cc8b2b7ac7d663acf11/tdr_manager_ac4310_f404a2f4d7d740cfa9f41c03b7419a9e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_a40faeee844d4b5da4031d86c73dacde: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_eb3b7ee197084adcab36a2d5434ab829: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_5751edb88ea54aa0a9545f73571fbb04: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_orgs/tdr_org_ac4310_2617737897584ce7b0b43a6034d972ea/tdr_manager_ac4310_beadd7a7b4f44be5a48f419ad19adb12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_orgs/tdr_org_ac4310_2617737897584ce7b0b43a6034d972ea/tdr_manager_ac4310_beadd7a7b4f44be5a48f419ad19adb12/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_orgs/tdr_org_ac4310_2617737897584ce7b0b43a6034d972ea/tdr_manager_ac4310_beadd7a7b4f44be5a48f419ad19adb12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_manager_ac4310_beadd7a7b4f44be5a48f419ad19adb12: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/memory/agent_orgs/tdr_org_ac4310_2617737897584ce7b0b43a6034d972ea/tdr_manager_ac4310_beadd7a7b4f44be5a48f419ad19adb12/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_5ca5edd571264d88814ba4576e6b66b8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_c4e6f6d562af4809a26eac9d26d70f26: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/teammate-delivery-race-e2e-0t34ce/workspace.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mReusing registered workspace ID: agent_ws_e772089d55ede02c1ef9ff12003420f98fd31e214c82f808f6c95ca95922261c
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22m[2morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[22m[39mAGY compaction detection off for run tdr_worker_ac4310_0469c93fbc59430e9ab0610124ddced0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mClosed agent session bcaa1662-e7c2-4fa7-b56a-e286ec374563
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mClosed agent session c88e105e-79ee-4d98-a74c-ef6759ce2a36
+Agent WebSocket disconnected: c88e105e-79ee-4d98-a74c-ef6759ce2a36
+
+[90mstdout[2m | tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22m[2mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[22m[39mClosed agent session 8938615d-a575-406f-92a8-bca1713139ad
+Agent WebSocket disconnected: 8938615d-a575-406f-92a8-bca1713139ad
+
+ [31m❯[39m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 611837[2mms[22m[39m
+[31m     [31m×[31m agent root: Task closure during and before a teammate message save; the root keeps working and restores its history[39m[33m 4528[2mms[22m[39m
+[31m     [31m×[31m team root: Task closure during and before a teammate message save; the root keeps working and restores its history[39m[33m 303740[2mms[22m[39m
+[31m     [31m×[31m org root: Task closure during and before a teammate message save; the root keeps working and restores its history[39m[33m 302820[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)
+[31m[1mAssertionError[22m: owned cleanup: expected [ …(2) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "AssertionError: Agent team run not found.: expected false to be true // Object.is equality",[39m
+[31m+   "AssertionError: Agent organization run not found.: expected false to be true // Object.is equality",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m257:37[22m[39m
+    [90m255| [39m          remainingRoots: active.length, leftoverProcesses: leftover, …
+    [90m256| [39m    }
+    [90m257| [39m    [34mexpect[39m(errors[33m,[39m [32m"owned cleanup"[39m)[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                                    [31m^[39m
+    [90m258| [39m  }[33m,[39m [34m120_000[39m)[33m;[39m
+    [90m259| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22magent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[31m[1mAssertionError[22m: agent TDR-001 delivery outcome: expected { thrown: { name: 'Error', …(2) } } to match object { thrown: { …(2) } }
+(1 matching property omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "thrown": {[22m
+[32m-     "code": "TASK_AGENT_RESOURCE_CLOSED",[39m
+[32m-     "name": "TaskDelegationError",[39m
+[31m+     "code": null,[39m
+[31m+     "name": "Error",[39m
+[2m    },[22m
+[2m  }[22m
+
+[36m [2m❯[22m rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m427:60[22m[39m
+    [90m425| [39m    record[33m.[39mtdr001 [33m=[39m { agentSaw[33m:[39m outcome1[33m,[39m delivery[33m:[39m delivered1 }[33m;[39m
+    [90m426| [39m    // Server side: the same Task-closed error a closure just before t…
+    [90m427| [39m    expect(delivered1, `${kind} TDR-001 delivery outcome`).toMatchObje…
+    [90m   | [39m                                                           [31m^[39m
+    [90m428| [39m    // The agent sees a thrown delivery error as the MCP layer reports…
+    [90m429| [39m    expect(outcome1, `${kind} TDR-001 agent-visible outcome`).toMatchO…
+[90m [2m❯[22m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m499:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22mteam root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[31m[1mError[22m: Timed out waiting for team: TDR-001 sender outcome[39m
+[36m [2m❯[22m until tests/e2e/helpers/agy-runtime-error-fixture.ts:[2m20:9[22m[39m
+    [90m 18| [39m  [35mconst[39m deadline [33m=[39m [33mDate[39m[33m.[39m[34mnow[39m() [33m+[39m ms[33m;[39m
+    [90m 19| [39m  while (Date.now() < deadline) { if (await predicate()) return; await…
+    [90m 20| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 21| [39m}[33m;[39m
+    [90m 22| [39m
+[90m [2m❯[22m awaitToolOutcome tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m133:5[22m[39m
+[90m [2m❯[22m rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m422:22[22m[39m
+[90m [2m❯[22m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m499:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts[2m > [22mA Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor)[2m > [22morg root: Task closure during and before a teammate message save; the root keeps working and restores its history
+[31m[1mError[22m: Timed out waiting for org: TDR-001 sender outcome[39m
+[36m [2m❯[22m until tests/e2e/helpers/agy-runtime-error-fixture.ts:[2m20:9[22m[39m
+    [90m 18| [39m  [35mconst[39m deadline [33m=[39m [33mDate[39m[33m.[39m[34mnow[39m() [33m+[39m ms[33m;[39m
+    [90m 19| [39m  while (Date.now() < deadline) { if (await predicate()) return; await…
+    [90m 20| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 21| [39m}[33m;[39m
+    [90m 22| [39m
+[90m [2m❯[22m awaitToolOutcome tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m133:5[22m[39m
+[90m [2m❯[22m rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m422:22[22m[39m
+[90m [2m❯[22m tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:[2m499:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m   Start at [22m 06:25:06
+[2m   Duration [22m 625.68s[2m (transform 8.34s, setup 58ms, import 12.30s, tests 611.84s, environment 0ms)[22m
+

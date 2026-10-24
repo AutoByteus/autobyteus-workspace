@@ -1,0 +1,621 @@
+{
+  "baselineCommit": "46e94fdea",
+  "standalone.delivery": {
+    "copyRunId": "code-reviewer-run-1",
+    "accepted": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "code-reviewer-run-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4",
+            "senderAgentRunId": "research-assistant-run",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:00.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "research-assistant-run"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "code-reviewer-run-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_yMM8T1hInzZUv5QFgXilBujaCCA0ojaU",
+              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_yMM8T1hInzZUv5QFgXilBujaCCA0ojaU",
+              "content": "You received a message from sender name: research_assistant, sender address: /research_assistant, sender id: research-assistant-run\nmessage:\nBaseline teammate message",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-10T08:00:00.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "research-assistant-run",
+              "parent_communication_message_id": "collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4"
+            }
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientInput": {
+      "content": "You received a message from sender name: research_assistant, sender address: /research_assistant, sender id: research-assistant-run\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_yMM8T1hInzZUv5QFgXilBujaCCA0ojaU",
+        "recipient_input_message_id": "memberinput_yMM8T1hInzZUv5QFgXilBujaCCA0ojaU",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_yMM8T1hInzZUv5QFgXilBujaCCA0ojaU",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "research-assistant-run",
+        "sender_agent_name": "research_assistant",
+        "sender_member_address": "/research_assistant",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with the current Agent root state."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "code-reviewer-run-1"
+        }
+      },
+      "events": [
+        {
+          "kind": "task_executions_closed",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "kind": "task_executions_reopened",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_XzNEKh_mxISg5wgwjaqRBGC0oTdHJJg-",
+            "senderAgentRunId": "research-assistant-run",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /research_assistant\nTask delegator AgentRun ID: research-assistant-run\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:03.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "research-assistant-run"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "code-reviewer-run-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_HD46gHrg3eR286kS0kweMij_O0SLTu3Q",
+              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_HD46gHrg3eR286kS0kweMij_O0SLTu3Q",
+              "content": "You received a message from sender name: research_assistant, sender address: /research_assistant, sender id: research-assistant-run\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /research_assistant\nTask delegator AgentRun ID: research-assistant-run\n\nDescription:\nFollow-up cleanup",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-10T08:00:03.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "research-assistant-run",
+              "parent_communication_message_id": "collabmsg_XzNEKh_mxISg5wgwjaqRBGC0oTdHJJg-"
+            }
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_XzNEKh_mxISg5wgwjaqRBGC0oTdHJJg-\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /research_assistant\\nTask delegator AgentRun ID: research-assistant-run\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from sender name: research_assistant, sender address: /research_assistant, sender id: research-assistant-run\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /research_assistant\nTask delegator AgentRun ID: research-assistant-run\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_HD46gHrg3eR286kS0kweMij_O0SLTu3Q",
+        "recipient_input_message_id": "memberinput_HD46gHrg3eR286kS0kweMij_O0SLTu3Q",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_HD46gHrg3eR286kS0kweMij_O0SLTu3Q",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "research-assistant-run",
+        "sender_agent_name": "research_assistant",
+        "sender_member_address": "/research_assistant",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "collabmsg_XzNEKh_mxISg5wgwjaqRBGC0oTdHJJg-",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "RootTaskPersistenceFinalizationIndeterminateError",
+          "code": null,
+          "message": "agent task persistence 'communication_messages' is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [
+        {
+          "kind": "lifecycle",
+          "isActive": false
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent\",\n  \"hostRunId\": \"research-assistant-run\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_PVwiq7oKnLiVuShlKeeXZPCRcAve_7E4\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_XzNEKh_mxISg5wgwjaqRBGC0oTdHJJg-\",\n      \"senderAgentRunId\": \"research-assistant-run\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /research_assistant\\nTask delegator AgentRun ID: research-assistant-run\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    }
+  },
+  "standalone.notAccepting": {
+    "rootNotAccepting": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "Agent root 'research-assistant-run' is not accepting execution operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with the current Agent root state."
+    },
+    "slot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  },
+  "org.delivery": {
+    "copyRunId": "task-agent-1",
+    "accepted": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "task-agent-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK",
+            "senderAgentRunId": "director",
+            "receiverAgentRunId": "task-agent-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:00.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "task-agent-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_V5NZMZPbxzUyBFLUoja0jVylm7txCj6b",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_V5NZMZPbxzUyBFLUoja0jVylm7txCj6b",
+              "content": "You received a message from sender name: director, sender address: /director, sender id: director\nmessage:\nBaseline teammate message",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-10T08:00:00.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "director",
+              "parent_communication_message_id": "collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK"
+            }
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientInput": {
+      "content": "You received a message from sender name: director, sender address: /director, sender id: director\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_V5NZMZPbxzUyBFLUoja0jVylm7txCj6b",
+        "recipient_input_message_id": "memberinput_V5NZMZPbxzUyBFLUoja0jVylm7txCj6b",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_V5NZMZPbxzUyBFLUoja0jVylm7txCj6b",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "director",
+        "sender_agent_name": "director",
+        "sender_member_address": "/director",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ORG_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current AgentOrg state."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "task-agent-1"
+        }
+      },
+      "events": [
+        {
+          "kind": "task_executions_closed",
+          "taskExecutions": [
+            {
+              "agentRunId": "task-agent-1"
+            }
+          ]
+        },
+        {
+          "kind": "task_executions_reopened",
+          "taskExecutions": [
+            {
+              "agentRunId": "task-agent-1"
+            }
+          ]
+        },
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_G3OeJGPCaoiPKme61hiLP1dXBjuikaXg",
+            "senderAgentRunId": "director",
+            "receiverAgentRunId": "task-agent-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /director\nTask delegator AgentRun ID: director\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:03.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "task-agent-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_SHdS3VW8MbfXMawtUq_rFMGyyxjntLKy",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_SHdS3VW8MbfXMawtUq_rFMGyyxjntLKy",
+              "content": "You received a message from sender name: director, sender address: /director, sender id: director\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /director\nTask delegator AgentRun ID: director\n\nDescription:\nFollow-up cleanup",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-10T08:00:03.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "director",
+              "parent_communication_message_id": "collabmsg_G3OeJGPCaoiPKme61hiLP1dXBjuikaXg"
+            }
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_G3OeJGPCaoiPKme61hiLP1dXBjuikaXg\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /director\\nTask delegator AgentRun ID: director\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from sender name: director, sender address: /director, sender id: director\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /director\nTask delegator AgentRun ID: director\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_SHdS3VW8MbfXMawtUq_rFMGyyxjntLKy",
+        "recipient_input_message_id": "memberinput_SHdS3VW8MbfXMawtUq_rFMGyyxjntLKy",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_SHdS3VW8MbfXMawtUq_rFMGyyxjntLKy",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "director",
+        "sender_agent_name": "director",
+        "sender_member_address": "/director",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "collabmsg_G3OeJGPCaoiPKme61hiLP1dXBjuikaXg",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "RootTaskPersistenceFinalizationIndeterminateError",
+          "code": null,
+          "message": "agent_org task persistence 'communication_messages' is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"subjectKind\": \"agent_org\",\n  \"orgRunId\": \"org-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_vV-gecXZwyYdjoES_7ayLoqHdAjkL0HK\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_G3OeJGPCaoiPKme61hiLP1dXBjuikaXg\",\n      \"senderAgentRunId\": \"director\",\n      \"receiverAgentRunId\": \"task-agent-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /director\\nTask delegator AgentRun ID: director\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    }
+  },
+  "org.notAccepting": {
+    "rootNotAccepting": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "AgentOrg 'org-collaborators' is not accepting execution operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "AGENT_ORG_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with current AgentOrg state."
+    },
+    "slot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  },
+  "team.delivery": {
+    "copyRunId": "code-reviewer-run-1",
+    "accepted": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "code-reviewer-run-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "eventSourceType": "COMMUNICATION",
+          "payload": {
+            "messageId": "collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO",
+            "senderAgentRunId": "run-coordinator",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:00.000Z"
+          }
+        },
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "code-reviewer-run-1",
+          "payload": {
+            "recipientAgentRunId": "code-reviewer-run-1",
+            "messageId": "memberinput_Vhf5t9F88IQCpt0aemN07WhRTAPQnvJ5",
+            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_Vhf5t9F88IQCpt0aemN07WhRTAPQnvJ5",
+            "content": "You received a message from sender name: coordinator, sender address: /coordinator, sender id: run-coordinator\nmessage:\nBaseline teammate message",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-10T08:00:00.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "run-coordinator",
+            "parentCommunicationMessageId": "collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO"
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientInput": {
+      "content": "You received a message from sender name: coordinator, sender address: /coordinator, sender id: run-coordinator\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_Vhf5t9F88IQCpt0aemN07WhRTAPQnvJ5",
+        "recipient_input_message_id": "memberinput_Vhf5t9F88IQCpt0aemN07WhRTAPQnvJ5",
+        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_Vhf5t9F88IQCpt0aemN07WhRTAPQnvJ5",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "run-coordinator",
+        "sender_agent_name": "coordinator",
+        "sender_member_address": "/coordinator",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "team_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current root state."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "TEAM_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "code-reviewer-run-1"
+        }
+      },
+      "events": [
+        {
+          "eventSourceType": "TASK_EXECUTIONS_CLOSED",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "eventSourceType": "TASK_EXECUTIONS_REOPENED",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "eventSourceType": "COMMUNICATION",
+          "payload": {
+            "messageId": "collabmsg_QrJJVRZnXWewiiSg96flb66V156lMLgy",
+            "senderAgentRunId": "run-coordinator",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /coordinator\nTask delegator AgentRun ID: run-coordinator\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-10T08:00:03.000Z"
+          }
+        },
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "code-reviewer-run-1",
+          "payload": {
+            "recipientAgentRunId": "code-reviewer-run-1",
+            "messageId": "memberinput_cPBZHtw5acH3GfZF-_plH5jZXrt6vlGJ",
+            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_cPBZHtw5acH3GfZF-_plH5jZXrt6vlGJ",
+            "content": "You received a message from sender name: coordinator, sender address: /coordinator, sender id: run-coordinator\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /coordinator\nTask delegator AgentRun ID: run-coordinator\n\nDescription:\nFollow-up cleanup",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-10T08:00:03.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "run-coordinator",
+            "parentCommunicationMessageId": "collabmsg_QrJJVRZnXWewiiSg96flb66V156lMLgy"
+          }
+        }
+      ],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_QrJJVRZnXWewiiSg96flb66V156lMLgy\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /coordinator\\nTask delegator AgentRun ID: run-coordinator\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from sender name: coordinator, sender address: /coordinator, sender id: run-coordinator\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask delegator address: /coordinator\nTask delegator AgentRun ID: run-coordinator\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_cPBZHtw5acH3GfZF-_plH5jZXrt6vlGJ",
+        "recipient_input_message_id": "memberinput_cPBZHtw5acH3GfZF-_plH5jZXrt6vlGJ",
+        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_cPBZHtw5acH3GfZF-_plH5jZXrt6vlGJ",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "run-coordinator",
+        "sender_agent_name": "coordinator",
+        "sender_member_address": "/coordinator",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "team_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "collabmsg_QrJJVRZnXWewiiSg96flb66V156lMLgy",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "Error",
+          "code": null,
+          "message": "Team message finalization is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [],
+      "history": "{\n  \"schemaVersion\": 1,\n  \"rootTeamRunId\": \"team-root-collaborators\",\n  \"messages\": [\n    {\n      \"messageId\": \"collabmsg_NfCxD--xIsXVUNLGBhusdftkcxXA-0HO\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"Baseline teammate message\",\n      \"messageType\": \"agent_message\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:00.000Z\"\n    },\n    {\n      \"messageId\": \"collabmsg_QrJJVRZnXWewiiSg96flb66V156lMLgy\",\n      \"senderAgentRunId\": \"run-coordinator\",\n      \"receiverAgentRunId\": \"code-reviewer-run-1\",\n      \"content\": \"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask delegator address: /coordinator\\nTask delegator AgentRun ID: run-coordinator\\n\\nDescription:\\nFollow-up cleanup\",\n      \"messageType\": \"task_assignment\",\n      \"referenceFiles\": [],\n      \"createdAt\": \"2026-10-10T08:00:03.000Z\"\n    }\n  ]\n}\n"
+    }
+  },
+  "team.notAccepting": {
+    "rootNotAccepting": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "RootTeamRun 'team-root-collaborators' is not accepting materializing operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with current root state."
+    },
+    "slot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  }
+}

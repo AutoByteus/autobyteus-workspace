@@ -1,0 +1,7 @@
+baseline 46e94fdea: tests 6270 failed 102
+after: tests 6298 failed 103
+new failures: 1
+  tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts :: token usage analytics GraphQL E2E reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+no longer failing: 0
+files only in baseline: ['tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts', 'tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts', 'tests/unit/services/team-communication/team-communication-service.test.ts']
+files only after: ['tests/unit/agent-collaboration/root-communication-baseline-contract.test.ts', 'tests/unit/agent-collaboration/root-communication-engine.test.ts', 'tests/unit/agent-collaboration/root-communication-roots.test.ts', 'tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts']
