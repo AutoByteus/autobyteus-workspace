@@ -1,0 +1,49 @@
+# CRR-001 code-review probes (code reviewer), 2026-10-24, worktree HEAD 2efacb42ea
+
+## P1 — gateway build context: does the repo's .dockerignore keep operator env files and runtime data out of COPY autobyteus-message-gateway/ ./ ?
+# Scratch dir with the worktree's root .dockerignore copied in, a dummy docker/.env.docker (value 'dummy-not-a-secret') and a dummy memory/whatsapp-personal/creds.json ('{}'); no real secret used.
+# Dockerfile.probe: FROM busybox:latest / WORKDIR /app/autobyteus-message-gateway / COPY autobyteus-message-gateway/ ./ / RUN find . -type f | sort
+# Command: docker build --no-cache --progress=plain -f Dockerfile.probe .   (scratch dir and image removed afterwards)
+# Output (files present in the image layer):
+./docker/.env.docker
+./memory/whatsapp-personal/creds.json
+
+## P2 — studio CORS on non-MCP routes (cors options from build-studio-server.ts L374-377), Fastify 4.29.1 + @fastify/cors 9.0.1 vs Fastify 5.12.7 + @fastify/cors 11.3.1
+# Script:
+// Usage: node cors-preflight.mjs <fastify-dir> <@fastify/cors-dir>
+// Studio cors options (build-studio-server.ts L374-377) on a non-MCP route: full Access-Control-*/Vary headers.
+import { pathToFileURL } from "node:url";
+import path from "node:path";
+import fs from "node:fs";
+const load = async (dir) => { const pkg = JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")); return (await import(pathToFileURL(path.join(dir, pkg.main || "index.js")).href)).default; };
+const fastify = await load(process.argv[2]);
+const cors = await load(process.argv[3]);
+const app = fastify();
+await app.register(cors, { origin: true, methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] });
+app.post("/graphql", async () => ({ ok: 1 }));
+app.get("/rest/health", async () => ({ ok: 1 }));
+await app.ready();
+const pick = (h) => Object.fromEntries(Object.entries(h).filter(([k]) => k.startsWith("access-control") || k === "vary").sort());
+const cases = [
+  ["OPTIONS", "/graphql", { origin: "file://", "access-control-request-method": "POST", "access-control-request-headers": "content-type,authorization" }],
+  ["OPTIONS", "/rest/health", { origin: "http://localhost:3000", "access-control-request-method": "GET" }],
+  ["POST", "/graphql", { origin: "http://localhost:3000", "content-type": "application/json" }],
+  ["GET", "/rest/health", {}],
+];
+for (const [method, url, headers] of cases) {
+  const r = await app.inject({ method, url, headers, payload: method === "POST" ? "{}" : undefined });
+  console.log(method, url, r.statusCode, JSON.stringify(pick(r.headers)));
+}
+await app.close();
+# Command: node cors-preflight.mjs node_modules/.pnpm/<fastify>/node_modules/fastify node_modules/.pnpm/<cors>/node_modules/@fastify/cors
+## fastify 4.29.1 + cors 9.0.1
+OPTIONS /graphql 204 {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"}
+OPTIONS /rest/health 204 {"access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"http://localhost:3000","vary":"Origin, Access-Control-Request-Headers"}
+POST /graphql 200 {"access-control-allow-origin":"http://localhost:3000","vary":"Origin"}
+GET /rest/health 200 {"vary":"Origin"}
+## fastify 5.12.7 + cors 11.3.1
+OPTIONS /graphql 204 {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"}
+OPTIONS /rest/health 204 {"access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"http://localhost:3000","vary":"Origin, Access-Control-Request-Headers"}
+POST /graphql 200 {"access-control-allow-origin":"http://localhost:3000","vary":"Origin"}
+GET /rest/health 200 {"vary":"Origin"}
+## diff: NO DIFFERENCE
