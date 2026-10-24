@@ -96,7 +96,7 @@ export class PeerAddressResolver {
         })) });
       };
       candidates.forEach((address, index) => {
-        this.dependencies.probe.fetchServerInstanceId(address).then(
+        this.dependencies.probe.fetchNodeId(address).then(
           (answered) => { outcomes[index] = { address, nodeId: answered }; },
           (error: unknown) => { outcomes[index] = { address, result: resultOf(error) }; },
         ).finally(decide);

@@ -5,7 +5,7 @@ import type {
   NodeProfile,
   NodeRegistrySnapshot,
 } from './nodeRegistryTypes'
-import { EMBEDDED_NODE_ID, isServerInstanceId } from './nodeRegistryTypes'
+import { EMBEDDED_NODE_ID, isNodeId } from './nodeRegistryTypes'
 import { logger } from './logger'
 
 const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json'
@@ -106,7 +106,7 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
     baseUrl: sanitizeBaseUrl(baseUrlRaw),
     nodeType,
     // Absent or not a valid ID: not learned yet (one-nodes-tab, design § Persisted Data).
-    ...(isServerInstanceId(node.serverInstanceId) ? { serverInstanceId: node.serverInstanceId } : {}),
+    ...(isNodeId(node.serverInstanceId) ? { serverInstanceId: node.serverInstanceId } : {}),
     isSystem: nodeType === 'embedded',
     createdAt,
     updatedAt,
@@ -185,7 +185,7 @@ export function identifyNodeEntry(
 ): NodeProfile[] {
   const index = nodes.findIndex((node) => node.id === change.nodeId)
   if (index === -1) throw new Error(`Node does not exist: ${change.nodeId}`)
-  if (!isServerInstanceId(change.serverInstanceId)) throw new Error(`Invalid server instance ID: ${change.serverInstanceId}`)
+  if (!isNodeId(change.serverInstanceId)) throw new Error(`Invalid server instance ID: ${change.serverInstanceId}`)
   if (nodes[index]!.serverInstanceId === change.serverInstanceId) return nodes
   return nodes.map((node, at) => at === index ? { ...node, serverInstanceId: change.serverInstanceId, updatedAt: now } : node)
 }

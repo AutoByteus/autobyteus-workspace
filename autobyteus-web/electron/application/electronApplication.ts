@@ -13,7 +13,7 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from '../nodeRegistryTypes'
-import { EMBEDDED_NODE_ID, isServerInstanceId } from '../nodeRegistryTypes'
+import { EMBEDDED_NODE_ID, isNodeId } from '../nodeRegistryTypes'
 import { logger } from '../logger'
 import { attachRendererConsoleDiagnostics } from '../rendererConsoleDiagnostics'
 import {
@@ -194,7 +194,7 @@ export class ElectronApplication {
       if (existingNodes.some((node) => node.id === candidate.id)) {
         throw new Error(`Node id already exists: ${candidate.id}`)
       }
-      if (candidate.serverInstanceId !== undefined && !isServerInstanceId(candidate.serverInstanceId)) {
+      if (candidate.serverInstanceId !== undefined && !isNodeId(candidate.serverInstanceId)) {
         throw new Error(`Invalid server instance ID: ${candidate.serverInstanceId}`)
       }
       const normalizedBaseUrl = sanitizeBaseUrl(candidate.baseUrl)

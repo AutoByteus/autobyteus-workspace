@@ -218,12 +218,12 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 
   /**
-   * `PeerIdentityProbe`: the server identity behind a URL, read from its public status route (DS-004). Only a
+   * `PeerIdentityProbe`: the node ID behind a URL, read from its public status route (DS-004). Only a
    * transport failure or a timeout is `PEER_UNREACHABLE`, with its classified `reason` (one-nodes-tab REQ-707); a
    * server that answered with anything but its identity (another status, a page that is not JSON, JSON without
-   * `serverInstanceId`) is not an AutoByteus node (CR-002).
+   * `nodeId`) is not an AutoByteus node (CR-002).
    */
-  async fetchServerInstanceId(baseUrl: string): Promise<string> {
+  async fetchNodeId(baseUrl: string): Promise<string> {
     const unreachable = (error: unknown) => {
       const reason = transportFailureReason(error);
       return new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${baseUrl} could not be reached: ${PROBE_FAILURE_TEXT[reason]}.`,
@@ -240,7 +240,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       // The body stopped arriving in time is still the transport; a body that is not JSON is an answer.
       throw transportFailureReason(error) === "timeout" ? unreachable(error) : notAutobyteus();
     }
-    const id = (answer as { serverInstanceId?: unknown } | null)?.serverInstanceId;
+    const id = (answer as { nodeId?: unknown } | null)?.nodeId;
     if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) throw notAutobyteus();
     return id;
   }

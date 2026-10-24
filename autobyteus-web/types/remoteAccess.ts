@@ -47,7 +47,7 @@ export type RemoteAccessStatus = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
   compatibilityVersion: number;
-  serverInstanceId?: string;
+  nodeId?: string;
   serverName: string;
 };
 

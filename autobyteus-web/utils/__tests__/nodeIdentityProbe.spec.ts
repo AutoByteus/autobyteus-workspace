@@ -8,8 +8,8 @@ const answer = (body: unknown, ok = true) => vi.fn(async (_url: string, _init?: 
 
 describe('probeNodeIdentity', () => {
   it('reads the node ID from the public status route of the address', async () => {
-    const fetchImpl = answer({ serverInstanceId: SRV })
-    await expect(probeNodeIdentity('localhost:8001/', { fetchImpl })).resolves.toEqual({ ok: true, serverInstanceId: SRV })
+    const fetchImpl = answer({ nodeId: SRV })
+    await expect(probeNodeIdentity('localhost:8001/', { fetchImpl })).resolves.toEqual({ ok: true, nodeId: SRV })
     expect(fetchImpl.mock.calls[0]![0]).toBe('http://localhost:8001/rest/remote-access/status')
   })
 

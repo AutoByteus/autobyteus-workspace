@@ -29,7 +29,7 @@ on Task closure and peer authentication come in later slices.
 | Peer nodes `{nodeId, name, baseUrl, addedAt}` | `<data>/remote-collaboration/peers.json` | `PeerDirectory` |
 
 - Adding a peer names the node it means (`{nodeId, name, baseUrl}`), contacts `GET <baseUrl>/rest/remote-access/status`
-  and pins that `serverInstanceId` as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
+  and pins that node ID as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
   needs the switch on. `name` is this owner's label, the `node` agents pass. Changing a peer's address
   (`changePeerAddress`) checks the pinned node answers at the new one.
 - **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,

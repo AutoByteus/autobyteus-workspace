@@ -22,7 +22,7 @@ import {
   composeRemoteCollaboration,
   releaseProcessRemoteCollaboration,
 } from "../remote-collaboration/remote-collaboration-services.js";
-import { getServerInstanceIdentityService } from "../remote-access/services/server-instance-identity-service.js";
+import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
 import { getServerSettingsService } from "../services/server-settings-service.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
@@ -55,7 +55,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
     settings: getServerSettingsService(),
-    ownNodeId: () => getServerInstanceIdentityService().getServerInstanceId(),
+    ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     handlers: (services) => ({
       delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,

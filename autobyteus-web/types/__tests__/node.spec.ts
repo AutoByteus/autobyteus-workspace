@@ -3,7 +3,7 @@ import {
   EMBEDDED_NODE_ID,
   NODE_REGISTRY_STORAGE_KEY,
   isEmbeddedNode,
-  isServerInstanceId,
+  isNodeId,
   type NodeProfile,
   type NodeRegistrySnapshot,
 } from '../node';
@@ -44,9 +44,9 @@ describe('node types contract', () => {
   });
 
   it('recognizes a server instance ID as the server writes it (srv_ + 32 or more base64url characters)', () => {
-    expect(isServerInstanceId('srv_m9VFq2LwAAAAAAAAAAAAAAAAAAAAAAAAAAAA')).toBe(true);
-    expect(isServerInstanceId('srv_short')).toBe(false);
-    expect(isServerInstanceId('remote-1')).toBe(false);
-    expect(isServerInstanceId(undefined)).toBe(false);
+    expect(isNodeId('srv_m9VFq2LwAAAAAAAAAAAAAAAAAAAAAAAAAAAA')).toBe(true);
+    expect(isNodeId('srv_short')).toBe(false);
+    expect(isNodeId('remote-1')).toBe(false);
+    expect(isNodeId(undefined)).toBe(false);
   });
 });

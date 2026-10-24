@@ -173,8 +173,8 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
         apiService.get<RemoteAccessStatus>('/remote-access/status'),
         fetchRemoteAccessStatusFromBaseUrl(validation.normalizedBaseUrl),
       ]);
-      const managementId = managementResponse.data.serverInstanceId;
-      const advertisedId = advertisedStatus.serverInstanceId;
+      const managementId = managementResponse.data.nodeId;
+      const advertisedId = advertisedStatus.nodeId;
       if (!managementId || !advertisedId) {
         return 'Could not verify this URL because one status response does not include a server instance ID.';
       }

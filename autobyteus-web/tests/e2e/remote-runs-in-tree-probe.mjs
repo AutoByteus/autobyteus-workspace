@@ -91,7 +91,7 @@ const serverAt = async (name, port) => {
       if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
       return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
     }, 120_000);
-    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
     evidence.servers[name] = { port, nodeId: node.nodeId };
   };
   node.stop = async () => {

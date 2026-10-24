@@ -10,9 +10,9 @@ const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695',
 const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z' }
 
 const row = (overrides: Partial<NodeRow> = {}): NodeRow => ({
-  key: B, serverInstanceId: B, desktopIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
+  key: B, nodeId: B, desktopIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
 })
-const reached: RowFacts = { probe: { ok: true, serverInstanceId: B }, remote: { switchOn: true, peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
+const reached: RowFacts = { probe: { ok: true, nodeId: B }, remote: { switchOn: true, peers: [peerA] }, availability: { available: true }, checkedAt: '2026-10-23T08:00:00.000Z' }
 const working: PeerOffer = { phase: 'available', entries: [{ name: 'Writer', kind: 'agent' }], checkedAt: '2026-10-23T08:00:00.000Z' }
 const view = (input: { row?: NodeRow; switchOn?: boolean; facts?: RowFacts; offer?: PeerOffer; unfinished?: Parameters<typeof rowViewOf>[0]['unfinishedStep'] }) => rowViewOf({
   row: input.row ?? row(), switchOn: input.switchOn ?? true, thisNodeId: A, facts: 'facts' in input ? input.facts : reached,

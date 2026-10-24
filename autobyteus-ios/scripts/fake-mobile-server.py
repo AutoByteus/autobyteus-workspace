@@ -19,7 +19,7 @@ class Handler(BaseHTTPRequestHandler):
                 "pairingAvailable": True,
                 "compatibilityVersion": 1,
                 "serverName": "Fake AutoByteus Node",
-                "serverInstanceId": "fake-ios-smoke-node",
+                "nodeId": "fake-ios-smoke-node",
             }).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

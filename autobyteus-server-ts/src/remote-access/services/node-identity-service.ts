@@ -3,7 +3,8 @@ import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile } from "../../persistence/file/store-utils.js";
 
-type ServerInstanceIdentityFile = {
+/** The stored identity file, `<data>/remote-access/server-instance.json`. */
+type StoredNodeIdentityFile = {
   serverInstanceId?: string;
   createdAt?: string;
 };
@@ -12,13 +13,14 @@ type AppConfigLike = {
   getAppDataDir(): string;
 };
 
-const isValidServerInstanceId = (value: unknown): value is string =>
+const isValidNodeId = (value: unknown): value is string =>
   typeof value === "string" && /^srv_[A-Za-z0-9_-]{32,}$/.test(value);
 
-const createServerInstanceId = (): string =>
+const createNodeId = (): string =>
   `srv_${randomBytes(24).toString("base64url")}`;
 
-export class ServerInstanceIdentityService {
+/** This node's ID (`srv_…`), created once and kept for the life of the data directory. */
+export class NodeIdentityService {
   private cachedId: string | null = null;
 
   constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
@@ -27,20 +29,20 @@ export class ServerInstanceIdentityService {
     return path.join(this.config.getAppDataDir(), "remote-access", "server-instance.json");
   }
 
-  async getServerInstanceId(): Promise<string> {
+  async getNodeId(): Promise<string> {
     if (this.cachedId) {
       return this.cachedId;
     }
 
     const filePath = this.getFilePath();
-    const existing = await readJsonFile<ServerInstanceIdentityFile>(filePath, {});
-    if (isValidServerInstanceId(existing.serverInstanceId)) {
+    const existing = await readJsonFile<StoredNodeIdentityFile>(filePath, {});
+    if (isValidNodeId(existing.serverInstanceId)) {
       this.cachedId = existing.serverInstanceId;
       return this.cachedId;
     }
 
-    const nextId = createServerInstanceId();
-    const next: ServerInstanceIdentityFile = {
+    const nextId = createNodeId();
+    const next: StoredNodeIdentityFile = {
       serverInstanceId: nextId,
       createdAt: new Date().toISOString(),
     };
@@ -50,13 +52,13 @@ export class ServerInstanceIdentityService {
   }
 }
 
-let singleton: ServerInstanceIdentityService | null = null;
+let singleton: NodeIdentityService | null = null;
 
-export const getServerInstanceIdentityService = (): ServerInstanceIdentityService => {
-  singleton ??= new ServerInstanceIdentityService();
+export const getNodeIdentityService = (): NodeIdentityService => {
+  singleton ??= new NodeIdentityService();
   return singleton;
 };
 
-export const resetServerInstanceIdentityServiceForTests = (): void => {
+export const resetNodeIdentityServiceForTests = (): void => {
   singleton = null;
 };

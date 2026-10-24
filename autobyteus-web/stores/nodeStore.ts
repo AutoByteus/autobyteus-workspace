@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import {
   EMBEDDED_NODE_ID,
   NODE_REGISTRY_STORAGE_KEY,
-  isServerInstanceId,
+  isNodeId,
   type NodeProfile,
   type NodeRegistryChange,
   type NodeRegistrySnapshot,
@@ -235,7 +235,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
       isSystem: false,
       createdAt: now,
       updatedAt: now,
-      ...(isServerInstanceId(input.serverInstanceId) ? { serverInstanceId: input.serverInstanceId } : {}),
+      ...(isNodeId(input.serverInstanceId) ? { serverInstanceId: input.serverInstanceId } : {}),
     };
 
     if (window.electronAPI) {
@@ -302,7 +302,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
    */
   async function identifyNode(nodeId: string, serverInstanceId: string): Promise<void> {
     const node = getNodeById(nodeId);
-    if (!node || node.serverInstanceId === serverInstanceId || !isServerInstanceId(serverInstanceId)) {
+    if (!node || node.serverInstanceId === serverInstanceId || !isNodeId(serverInstanceId)) {
       return;
     }
 

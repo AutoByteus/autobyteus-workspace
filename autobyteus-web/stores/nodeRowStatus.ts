@@ -9,7 +9,7 @@ import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
 export interface NodeRow {
   /** The node ID (`srv_…`) when known; `d:<desktop entry ID>` for a node this desktop has never reached. */
   key: string
-  serverInstanceId: string | null
+  nodeId: string | null
   /** The desktop entries of this node, the first-created first (`[]` for a node only this node knows). */
   desktopIds: string[]
   /** Where this desktop opens the node (its first desktop entry). */
@@ -104,7 +104,7 @@ const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: strin
   return { state: 'unreachable', cause: answer.reason ?? 'unreachable', host: hostOfAddress(viaIt), fromOther: true }
 }
 
-type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'desktopIds' | 'serverInstanceId'>
+type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'desktopIds' | 'nodeId'>
 
 /**
  * A row's dot, directions and its one line (UI/UX spec § State Behavior, by priority): a step not finished; not
@@ -154,7 +154,7 @@ const lineOf = (
   }
   if (out.state === 'different') return { kind: 'different', tone: 'error', fix: 'changeAddress' }
   if (!row.peer) {
-    if (!row.serverInstanceId) return null
+    if (!row.nodeId) return null
     // The other node has registered this node, but this node has not registered it.
     if (facts.remote?.switchOn && facts.remote.peers.some((peer) => peer.nodeId === thisNodeId)) return { kind: 'notRegisteredHereInfo', tone: 'info', fix: 'turnOn' }
     return { kind: 'agentsOff', tone: 'info', fix: 'turnOn' }

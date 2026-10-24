@@ -81,7 +81,7 @@ const startServer = async (name, port) => {
     if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
     return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
   }, 120_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const gql = async (query, variables) => {
     const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);

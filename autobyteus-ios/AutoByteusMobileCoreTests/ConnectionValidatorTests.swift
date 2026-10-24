@@ -5,13 +5,13 @@ final class ConnectionValidatorTests: XCTestCase {
     private let validator = ConnectionValidator(timeoutSeconds: 1)
 
     func testParsesStatusWithAdditionalFields() throws {
-        let json = #"{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"Home Desktop","serverInstanceId":"instance-1","extra":"ignored"}"#
+        let json = #"{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"Home Desktop","nodeId":"instance-1","extra":"ignored"}"#
         let status = try RemoteAccessStatus.fromJSONData(Data(json.utf8))
         XCTAssertTrue(status.phoneAccessEnabled)
         XCTAssertTrue(status.pairingAvailable)
         XCTAssertEqual(1, status.compatibilityVersion)
         XCTAssertEqual("Home Desktop", status.serverName)
-        XCTAssertEqual("instance-1", status.serverInstanceID)
+        XCTAssertEqual("instance-1", status.nodeID)
     }
 
     func testMapsDisabledStatusToRecoveryDiagnostic() throws {

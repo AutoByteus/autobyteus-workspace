@@ -1,4 +1,4 @@
-import { isServerInstanceId } from '~/types/node'
+import { isNodeId } from '~/types/node'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
 
 /**
@@ -9,7 +9,7 @@ export type NodeTransportReason = 'refused' | 'timeout' | 'not_found' | 'unreach
 export type NodeProbeCause = NodeTransportReason | 'not_autobyteus'
 
 export type NodeIdentityProbeResult =
-  | { ok: true; serverInstanceId: string }
+  | { ok: true; nodeId: string }
   | { ok: false; cause: NodeProbeCause }
 
 /** The window's own identity probe waits this long (design § Off-Spine Concerns: window, desktop-local). */
@@ -54,9 +54,9 @@ export async function probeNodeIdentity(
   }
   if (!response.ok) return { ok: false, cause: 'not_autobyteus' }
   try {
-    const answer = await response.json() as { serverInstanceId?: unknown } | null
-    const id = answer?.serverInstanceId
-    return isServerInstanceId(id) ? { ok: true, serverInstanceId: id } : { ok: false, cause: 'not_autobyteus' }
+    const answer = await response.json() as { nodeId?: unknown } | null
+    const id = answer?.nodeId
+    return isNodeId(id) ? { ok: true, nodeId: id } : { ok: false, cause: 'not_autobyteus' }
   } catch (error) {
     return windowFailureReason(error, baseUrl) === 'timeout' ? { ok: false, cause: 'timeout' } : { ok: false, cause: 'not_autobyteus' }
   }

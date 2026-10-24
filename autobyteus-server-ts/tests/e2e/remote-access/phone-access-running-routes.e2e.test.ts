@@ -20,7 +20,7 @@ import { resetRemoteAccessAuthServiceForTests } from "../../../src/remote-access
 import { resetPairedDeviceServiceForTests } from "../../../src/remote-access/services/paired-device-service.js";
 import { resetRemoteAccessPairingServiceForTests } from "../../../src/remote-access/services/remote-access-pairing-service.js";
 import { resetRemoteAccessSettingsServiceForTests } from "../../../src/remote-access/services/remote-access-settings-service.js";
-import { resetServerInstanceIdentityServiceForTests } from "../../../src/remote-access/services/server-instance-identity-service.js";
+import { resetNodeIdentityServiceForTests } from "../../../src/remote-access/services/node-identity-service.js";
 import { resetPairedDeviceStoreForTests } from "../../../src/remote-access/stores/paired-device-store.js";
 import { resetRemoteAccessSettingsStoreForTests } from "../../../src/remote-access/stores/remote-access-settings-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -34,7 +34,7 @@ type RemoteAccessStatusResponse = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
   compatibilityVersion: number;
-  serverInstanceId: string;
+  nodeId: string;
   serverName: string;
 };
 
@@ -212,17 +212,17 @@ describe("Phone Access running REST route behavior", () => {
     });
     expect(firstStatusResponse.statusCode).toBe(200);
     const firstStatus = firstStatusResponse.json() as RemoteAccessStatusResponse;
-    expect(firstStatus.serverInstanceId).toMatch(/^srv_[A-Za-z0-9_-]{32,}$/);
+    expect(firstStatus.nodeId).toMatch(/^srv_[A-Za-z0-9_-]{32,}$/);
 
-    resetServerInstanceIdentityServiceForTests();
+    resetNodeIdentityServiceForTests();
     const secondStatusResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/status",
       remoteAddress: "100.64.1.2",
     });
     expect(secondStatusResponse.statusCode).toBe(200);
-    expect((secondStatusResponse.json() as RemoteAccessStatusResponse).serverInstanceId)
-      .toBe(firstStatus.serverInstanceId);
+    expect((secondStatusResponse.json() as RemoteAccessStatusResponse).nodeId)
+      .toBe(firstStatus.nodeId);
 
     const enableResponse = await inject({
       method: "PUT",
@@ -375,7 +375,7 @@ function resetRemoteAccessSingletons(): void {
   resetRemoteAccessAuthServiceForTests();
   resetRemoteAccessPairingServiceForTests();
   resetRemoteAccessSettingsServiceForTests();
-  resetServerInstanceIdentityServiceForTests();
+  resetNodeIdentityServiceForTests();
   resetPairedDeviceServiceForTests();
   resetRemoteAccessSettingsStoreForTests();
   resetPairedDeviceStoreForTests();

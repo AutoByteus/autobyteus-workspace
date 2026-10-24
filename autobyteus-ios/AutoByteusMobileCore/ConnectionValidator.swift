@@ -5,20 +5,20 @@ public struct RemoteAccessStatus: Codable, Equatable {
     public let pairingAvailable: Bool
     public let compatibilityVersion: Int
     public let serverName: String
-    public let serverInstanceID: String?
+    public let nodeID: String?
 
     public init(
         phoneAccessEnabled: Bool,
         pairingAvailable: Bool,
         compatibilityVersion: Int,
         serverName: String,
-        serverInstanceID: String? = nil
+        nodeID: String? = nil
     ) {
         self.phoneAccessEnabled = phoneAccessEnabled
         self.pairingAvailable = pairingAvailable
         self.compatibilityVersion = compatibilityVersion
         self.serverName = serverName
-        self.serverInstanceID = serverInstanceID
+        self.nodeID = nodeID
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -26,7 +26,7 @@ public struct RemoteAccessStatus: Codable, Equatable {
         case pairingAvailable
         case compatibilityVersion
         case serverName
-        case serverInstanceID = "serverInstanceId"
+        case nodeID = "nodeId"
     }
 
     public init(from decoder: Decoder) throws {
@@ -37,7 +37,7 @@ public struct RemoteAccessStatus: Codable, Equatable {
             pairingAvailable: try container.decodeIfPresent(Bool.self, forKey: .pairingAvailable) ?? false,
             compatibilityVersion: try container.decodeIfPresent(Int.self, forKey: .compatibilityVersion) ?? 0,
             serverName: decodedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "AutoByteus Desktop" : decodedName,
-            serverInstanceID: try container.decodeIfPresent(String.self, forKey: .serverInstanceID)
+            nodeID: try container.decodeIfPresent(String.self, forKey: .nodeID)
         )
     }
 
@@ -47,7 +47,7 @@ public struct RemoteAccessStatus: Codable, Equatable {
         try container.encode(pairingAvailable, forKey: .pairingAvailable)
         try container.encode(compatibilityVersion, forKey: .compatibilityVersion)
         try container.encode(serverName, forKey: .serverName)
-        try container.encodeIfPresent(serverInstanceID, forKey: .serverInstanceID)
+        try container.encodeIfPresent(nodeID, forKey: .nodeID)
     }
 
     public static func fromJSONData(_ data: Data) throws -> RemoteAccessStatus {

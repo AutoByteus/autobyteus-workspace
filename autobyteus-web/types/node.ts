@@ -3,11 +3,11 @@ export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry.v1';
 
 export type NodeType = 'embedded' | 'remote';
 
-/** A node's server instance ID (`srv_…`), as `/rest/remote-access/status` answers it. */
-export const SERVER_INSTANCE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
+/** A node's ID (`srv_…`), as `/rest/remote-access/status` answers it. */
+export const NODE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
 
-export function isServerInstanceId(value: unknown): value is string {
-  return typeof value === 'string' && SERVER_INSTANCE_ID_PATTERN.test(value);
+export function isNodeId(value: unknown): value is string {
+  return typeof value === 'string' && NODE_ID_PATTERN.test(value);
 }
 
 /**

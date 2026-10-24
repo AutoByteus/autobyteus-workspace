@@ -218,8 +218,8 @@ class NodeServer {
       await wait(300);
     }
     const status = await (await fetch(`${this.baseUrl}${PATHS.status}`)).json() as Rec;
-    if (this.nodeId && status.serverInstanceId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
-    this.nodeId = status.serverInstanceId as string;
+    if (this.nodeId && status.nodeId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
+    this.nodeId = status.nodeId as string;
   }
   async stop(): Promise<void> {
     const child = this.child;

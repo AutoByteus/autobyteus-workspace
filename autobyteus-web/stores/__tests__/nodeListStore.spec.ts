@@ -78,9 +78,9 @@ describe('nodeListStore', () => {
     })
     h.offers = reactive({ peers: {} as Record<string, unknown>, ask: vi.fn(async (id: string) => { h.offers.peers[id] = { phase: 'available', entries: [], checkedAt: 'x' } }), clear: vi.fn() })
     h.capability = reactive({ isEnabled: true, status: 'resolved', ensureResolved: vi.fn(async () => null), setEnabled: vi.fn(async () => null) })
-    h.probes.set('http://127.0.0.1:29695', { ok: true, serverInstanceId: A })
-    h.probes.set('http://localhost:8001', { ok: true, serverInstanceId: D1 })
-    h.probes.set('http://localhost:8003', { ok: true, serverInstanceId: D3 })
+    h.probes.set('http://127.0.0.1:29695', { ok: true, nodeId: A })
+    h.probes.set('http://localhost:8001', { ok: true, nodeId: D1 })
+    h.probes.set('http://localhost:8003', { ok: true, nodeId: D3 })
     h.remote.set('http://localhost:8001', { switchOn: true, peers: [peer(A, 'electron', 'http://host.docker.internal:29695')] })
     h.remote.set('http://localhost:8003', { switchOn: false, peers: [] })
     Object.defineProperty(window, 'electronAPI', { configurable: true, writable: true, value: { openNodeWindow: vi.fn() } })
@@ -136,7 +136,7 @@ describe('nodeListStore', () => {
   })
 
   it('TR-703: another address of a listed node is refused by its node ID; invalid fields are refused', async () => {
-    h.probes.set('http://192.168.2.20:8001', { ok: true, serverInstanceId: D1 })
+    h.probes.set('http://192.168.2.20:8001', { ok: true, nodeId: D1 })
     const store = useNodeListStore()
     await store.open()
     await flush()
@@ -146,7 +146,7 @@ describe('nodeListStore', () => {
 
   it('TR-702: adding stores the node with its node ID, opens no window, and asks for the confirmation only when reachable and the switch is on', async () => {
     const E = 'srv_newNodeEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'
-    h.probes.set('http://localhost:8004', { ok: true, serverInstanceId: E })
+    h.probes.set('http://localhost:8004', { ok: true, nodeId: E })
     const store = useNodeListStore()
     await store.open()
     await flush()
@@ -198,7 +198,7 @@ describe('nodeListStore', () => {
   })
 
   it('DEC-706: a node only this node knows has Open once this window reaches it; its first Open adds a desktop entry', async () => {
-    h.probes.set('http://192.168.2.55:29695', { ok: true, serverInstanceId: NAS })
+    h.probes.set('http://192.168.2.55:29695', { ok: true, nodeId: NAS })
     const store = useNodeListStore()
     await store.open()
     await flush()

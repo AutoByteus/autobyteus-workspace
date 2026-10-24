@@ -28,7 +28,7 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
 - **Coordinating run**: the run that records and coordinates a delegated run
   (see CM-7 for nested delegation).
 - **Node**: one AutoByteus server (the desktop's embedded server, a remote or
-  Docker server), identified by its stable server ID (`serverInstanceId`).
+  Docker server), identified by its stable node ID (`nodeId`).
 - **Peer**: another node that this node's owner registered for remote
   collaboration. Its name is this owner's local label for it.
 - **Remote delegated run**: a delegated run that runs on a peer. It is a run

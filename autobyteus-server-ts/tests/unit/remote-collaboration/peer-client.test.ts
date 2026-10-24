@@ -143,24 +143,24 @@ describe("PeerClient", () => {
   });
 
   it("reads a URL's server identity from its public status route, and refuses what is not an AutoByteus node", async () => {
-    const node = client(async () => answer({ serverInstanceId: PEER.nodeId }));
-    await expect(node.client.fetchServerInstanceId("http://peer:29700")).resolves.toBe(PEER.nodeId);
+    const node = client(async () => answer({ nodeId: PEER.nodeId }));
+    await expect(node.client.fetchNodeId("http://peer:29700")).resolves.toBe(PEER.nodeId);
     expect(node.fetch.mock.calls[0]![0]).toBe("http://peer:29700/rest/remote-access/status");
     const other = client(async () => answer({ hello: "world" }));
-    await expect(other.client.fetchServerInstanceId("http://web")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
+    await expect(other.client.fetchNodeId("http://web")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
     const down = client(async () => { throw new TypeError("fetch failed"); });
-    await expect(down.client.fetchServerInstanceId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+    await expect(down.client.fetchNodeId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
 
   it("one-nodes-tab REQ-707: an identity probe that gets no answer names its cause, never 'fetch failed'", async () => {
     const refused = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }) }); });
-    await expect(refused.client.fetchServerInstanceId("http://localhost:8003")).rejects.toMatchObject({ code: "PEER_UNREACHABLE",
+    await expect(refused.client.fetchNodeId("http://localhost:8003")).rejects.toMatchObject({ code: "PEER_UNREACHABLE",
       message: "http://localhost:8003 could not be reached: nothing answers at that address and port.",
       details: { reason: "refused", address: "http://localhost:8003" } });
     const unknownHost = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ENOTFOUND" } }); });
-    await expect(unknownHost.client.fetchServerInstanceId("http://nas.local:29695")).rejects.toMatchObject({ details: { reason: "not_found" } });
+    await expect(unknownHost.client.fetchNodeId("http://nas.local:29695")).rejects.toMatchObject({ details: { reason: "not_found" } });
     const slow = client((_url, init) => new Promise((_resolve, reject) => init.signal!.addEventListener("abort", () => reject(init.signal!.reason))), { timeoutMs: 20 });
-    await expect(slow.client.fetchServerInstanceId("http://blackhole")).rejects.toMatchObject({ details: { reason: "timeout" },
+    await expect(slow.client.fetchNodeId("http://blackhole")).rejects.toMatchObject({ details: { reason: "timeout" },
       message: "http://blackhole could not be reached: it did not answer in time." });
     for (const error of [refused, unknownHost, slow]) expect(JSON.stringify(error.fetch.mock.calls.length)).toBe("1");
   });
@@ -177,12 +177,12 @@ describe("PeerClient", () => {
 
   it("calls a server that answered with a page, or with another status, not an AutoByteus node, never unreachable (CR-002)", async () => {
     const page = client(async () => ({ ok: true, status: 200, json: async () => JSON.parse("<!DOCTYPE html><html></html>") }));
-    await expect(page.client.fetchServerInstanceId("http://127.0.0.1:3000"))
+    await expect(page.client.fetchNodeId("http://127.0.0.1:3000"))
       .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:3000 is not an AutoByteus node." });
     const missing = client(async () => ({ ok: false, status: 404, json: async () => { throw new Error("no body"); } }));
-    await expect(missing.client.fetchServerInstanceId("http://127.0.0.1:8080"))
+    await expect(missing.client.fetchNodeId("http://127.0.0.1:8080"))
       .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:8080 is not an AutoByteus node." });
     const slowBody = client(async () => ({ ok: true, status: 200, json: async () => { throw Object.assign(new Error("aborted"), { name: "TimeoutError" }); } }));
-    await expect(slowBody.client.fetchServerInstanceId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+    await expect(slowBody.client.fetchNodeId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
 });
