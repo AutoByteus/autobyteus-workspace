@@ -5,6 +5,7 @@ import type {
 import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
 import type { ApplicationCatalogReconciliationService } from "../../application-platform/runtime/application-catalog-reconciliation-service.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "../../application-platform/runtime/application-definition-runtime-readiness.js";
+import type { ApplicationStorageLifecycleService } from "../../application-storage/services/application-storage-lifecycle-service.js";
 import {
   buildApplicationCatalogTransitionPlan,
 } from "../domain/application-catalog-transition-plan.js";
@@ -36,6 +37,10 @@ export class ApplicationCatalogTransitionService {
     catalogReconciliation: ApplicationCatalogReconciliationService;
     definitionReadiness: ApplicationDefinitionRuntimeReadiness;
     availabilityService: ApplicationAvailabilityService;
+    storageLifecycleService: Pick<
+      ApplicationStorageLifecycleService,
+      "ensureRuntimeDirectoryPrepared"
+    >;
   }>) {}
 
   runPackageTransition<T>(mutation: ApplicationPackageCatalogMutation<T>): Promise<T> {
@@ -134,6 +139,11 @@ export class ApplicationCatalogTransitionService {
     this.dependencies.bundleService.commitPreparedCatalogSlice(bundlePlan);
     this.dependencies.applicationAgentToolCatalog.commitPreparedDelta(toolDelta);
 
+    // As at startup: readiness runs each application's runtime in its runtime folder.
+    for (const applicationId of transitionPlan.currentApplicationIds) {
+      await this.dependencies.storageLifecycleService
+        .ensureRuntimeDirectoryPrepared(applicationId);
+    }
     const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
     await this.dependencies.catalogReconciliation.reconcile(snapshot);
     let readinessFailure: unknown = null;

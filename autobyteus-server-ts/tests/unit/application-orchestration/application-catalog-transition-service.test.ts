@@ -78,6 +78,12 @@ const buildHarness = (input: {
     prepare: vi.fn(async () => { order.push("readiness"); }),
     isApplicationReady: vi.fn(() => true),
   };
+  const storageLifecycleService = {
+    ensureRuntimeDirectoryPrepared: vi.fn(async (applicationId: string) => {
+      order.push(`runtime:${applicationId}`);
+      return {} as never;
+    }),
+  };
   const availability = {
     getAvailability: vi.fn(async (applicationId: string) => ({
       applicationId,
@@ -95,10 +101,12 @@ const buildHarness = (input: {
     },
     definitionReadiness: readiness,
     availabilityService: availability,
+    storageLifecycleService,
   } as never);
   return {
     service,
     order,
+    storageLifecycleService,
     bundleService,
     applicationAgentToolCatalog,
     reentryService,
@@ -236,6 +244,44 @@ describe("ApplicationCatalogTransitionService", () => {
       applyBeforeStage: async () => "next",
       rollbackSource: async () => undefined,
     })).resolves.toBe("next");
+  });
+
+  it("prepares each current application's runtime folder after the commits and before readiness on import", async () => {
+    const harness = buildHarness({
+      oldApplications: [],
+      packageCandidate: candidate([application("app-a"), application("app-b")]),
+    });
+
+    await expect(harness.service.runPackageTransition({
+      kind: "import",
+      packageId: "pkg-a",
+      applyBeforeStage: async () => "imported",
+      rollbackSource: async () => undefined,
+    })).resolves.toBe("imported");
+
+    expect(harness.order.slice(harness.order.indexOf("tool.commit"))).toEqual([
+      "tool.commit",
+      "runtime:app-a",
+      "runtime:app-b",
+      "snapshot.committed",
+      "reconcile",
+      "readiness",
+      "recover:app-a,app-b:app-a,app-b:{}",
+    ]);
+  });
+
+  it("prepares the reloaded application's runtime folder before readiness", async () => {
+    const harness = buildHarness({
+      oldApplications: [application("app-a")],
+      applicationCandidate: candidate([application("app-a")], "application"),
+    });
+
+    await harness.service.reloadAndReenter("app-a");
+
+    expect(harness.storageLifecycleService.ensureRuntimeDirectoryPrepared)
+      .toHaveBeenCalledExactlyOnceWith("app-a");
+    expect(harness.order.indexOf("runtime:app-a")).toBeGreaterThan(harness.order.indexOf("tool.commit"));
+    expect(harness.order.indexOf("runtime:app-a")).toBeLessThan(harness.order.indexOf("readiness"));
   });
 
   it("uses the same staged owner for exact-application repair and can recover a previously inactive participant", async () => {

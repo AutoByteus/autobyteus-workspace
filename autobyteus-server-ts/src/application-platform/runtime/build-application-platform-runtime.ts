@@ -186,6 +186,7 @@ export const buildApplicationPlatformRuntime = (
       catalogReconciliation,
       definitionReadiness: services.definitionRuntimeReadiness,
       availabilityService: services.availabilityService,
+      storageLifecycleService,
     });
     const lifecycle = new ApplicationPlatformLifecycle({
       preparation: {
