@@ -119,8 +119,14 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
   catalog commit owner. It serializes import, reload, removal, and exact-app
   re-entry; closes and drains affected application-tool calls; stops affected
   workers; stages the target bundle slice and matching application-tool delta;
-  commits those validated in-memory assignments together; and then reconciles,
-  recovers, or quarantines only the affected applications.
+  commits those validated in-memory assignments together; prepares each
+  current application's runtime folder
+  (`<data>/applications/<storageKey>/runtime`, through
+  `ApplicationStorageLifecycleService.ensureRuntimeDirectoryPrepared`), as
+  startup does, before launch readiness runs, so a readiness probe that starts
+  a runtime in that folder (Codex) works for an application imported or
+  reloaded while the server runs; and then reconciles, recovers, or quarantines
+  only the affected applications.
 - Default list rows hide empty platform-owned built-in packages, show non-empty built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
 - Linked local package rows may show the user-chosen root path directly.
 - GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.
