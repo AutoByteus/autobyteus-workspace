@@ -1,0 +1,7 @@
+# IMP-03 web TypeScript check, filtered to the changed files
+# cmd: pnpm -C autobyteus-web exec tsc --noEmit -p .nuxt/tsconfig.json | grep -E "agentOrgContextsStore.ts|agentOrgRunConfigRead"
+# commit: 29b51ebcef  env: macOS (darwin)  date: 2026-10-24
+# Note: autobyteus-web has no typecheck script; the full project output has 1161 pre-existing "error TS" lines in other files (none in the changed files).
+# The one match below is the pre-existing, untouched stores/__tests__/agentOrgContextsStore.spec.ts (not changed by this ticket).
+
+stores/__tests__/agentOrgContextsStore.spec.ts(68,64): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
