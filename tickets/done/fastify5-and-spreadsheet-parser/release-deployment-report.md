@@ -99,7 +99,20 @@ Not applicable: there is no release. `autobyteus-web/package.json` stays at the 
 
 ## Repository Finalization
 
-Filled in after finalization; see DR-001 in `delivery-revision-record.md`.
+- Bootstrap context source: the code reviewer's delivery handoff (worktree, branch, base `origin/personal`) and `RELEASE.md` Finalization Target (`origin` / `personal`, `--no-ff`).
+- Ticket branch: `codex/fastify5-and-spreadsheet-parser`
+- Ticket branch commit result: archive commit `4ce564db3a`, on top of the base merge `2b166a2f9f` and the validated head `7d0f080d0c`.
+- Ticket branch push result: pushed as the new branch `origin/codex/fastify5-and-spreadsheet-parser` at `4ce564db3a`. The Secret Gate on `origin/personal..HEAD` (15 commits) passed first.
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No`. It was still `72048f5b87` when fetched after verification, before the merge, and again right before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/fastify5-and-spreadsheet-parser` created from `origin/personal` `72048f5b87`.
+- Merge into target result: `git merge --no-ff codex/fastify5-and-spreadsheet-parser` gave `0b296bd051`, with no conflicts. Its tree is identical to the verified ticket branch (`git diff` is empty). The Secret Gate on the merged state (16 commits) passed.
+- Push target branch result: `72048f5b87..0b296bd051  HEAD -> personal`. Before the push, `origin/personal` was confirmed to equal the merge's first parent.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
@@ -134,6 +147,26 @@ None. This repository deploys no hosted service (`RELEASE.md` Deployment).
   - a spreadsheet the viewer used to open no longer opens.
 - A developer who relied on `/graphiql` now gets 404. That is DEC-001, not a regression.
 
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser`
+- Worktree cleanup result: `Completed`. The worktree's only uncommitted content was untracked build output (`applications/brief-studio/dist/`, `autobyteus-application-*/dist/`) and ignored output. No process was running from it. It was removed with `git worktree remove --force`, and the path no longer exists.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Both local branches were deleted, and both are contained in `origin/personal`:
+  - `codex/fastify5-and-spreadsheet-parser` (`4ce564db3a`);
+  - `finalize/fastify5-and-spreadsheet-parser` (`0b296bd051`).
+- Remote branch cleanup result: `Not required`. `origin/codex/fastify5-and-spreadsheet-parser` is kept as the pushed ticket history.
+- Blocker (if applicable): None
+
+This record was committed afterwards from a temporary detached worktree on `origin/personal`, which was removed after the push.
+
 ## Final Status
 
-Filled in after finalization; see DR-001.
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release was requested)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`. It was sent after this record was pushed.
+- Terminal message/reference: `Delivery Completed` to `/software_engineering_team/solution_designer`
