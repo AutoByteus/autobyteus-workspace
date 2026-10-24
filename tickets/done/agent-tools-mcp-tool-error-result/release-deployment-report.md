@@ -84,3 +84,35 @@ Revert the merge on `personal`. This is a server-only response-shape change for 
 ## Repository Finalization
 
 Recorded after the merge in "Finalization Record" below.
+
+## Finalization Record
+
+- Bootstrap context source: `solution-designer-handoff.md` and RELEASE.md
+- Ticket branch: `fix/agent-tools-mcp-tool-error-result`
+- Ticket branch commit result: archive commit `749bd63b1a` (code `253854bf8d`, base merge `7df5b0a3f3`)
+- Ticket branch push result: pushed `origin/fix/agent-tools-mcp-tool-error-result` @ `749bd63b1a`; Secret Gate on `origin/personal..HEAD` passed first
+- Finalization target: `origin/personal`
+- Target advanced after verification: `No` (`ea817b2431` at verification, at the merge and right before the push)
+- Re-integration before final merge result: `Not needed`
+- Merge into target result: `git merge --no-ff` → `c64be1e6a8`. On the merged state: Secret Gate PASS, `check_repository_artifact_hygiene.py` exit 0, `check_licensing.py` "Licensing is consistent."
+- Push target branch result: `ea817b2431..c64be1e6a8  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-tool-error-result`
+- Worktree cleanup result: `Completed`. Its only uncommitted content was untracked build output (`*/dist/`). It was removed with `git worktree remove --force`, and the path no longer exists.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `fix/agent-tools-mcp-tool-error-result` (`749bd63b1a`) and `finalize/agent-tools-mcp-tool-error-result` (`c64be1e6a8`) were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required` (`origin/fix/agent-tools-mcp-tool-error-result` is kept as the pushed ticket history)
+- Other: the main checkout was not touched. API/E2E reported LM Studio's model as unloaded and the throwaway CODEX_HOME as its own. This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab232-record`), which is removed after the push.
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence)
+- Repository finalization complete: `Yes` (`c64be1e6a8` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
