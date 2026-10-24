@@ -73,13 +73,14 @@
 - Route: round 5 of the architecture review.
 - SR-007 addendum (ARCH-REV-005 Pass, 2026-10-24): N-910 decided as the status route answering 503 `NODE_IDENTITY_NOT_MIGRATED`, with the web probe (`identity_pending`), PeerClient and the phone apps stating the reason. N-911: the phone call sites and boundary checks cited. The reviewer's files committed.
 
-### SR-008 — `syncSourceId`; design-text corrections (CRR-001, 2026-10-24)
+### SR-008 — `memorySyncSourceId`; design-text corrections (CRR-001, 2026-10-24)
 
 - Trigger: the code reviewer's CRR-001 F-001 (Design Impact). The new name `sourceId` collides with three existing IDs: a skill source (`skills/domain/skill-source.ts:23`), an update notification's source (`update-notifications/domain/update-notification.ts:26`), and a package source (`agent-package-mappers.ts:183`); 145 uses at the base. My SR-005 choice judged the name only against Memory Sync's own files, the mistake design-cases Case 7 records (and Case 6 in the package's case studies).
-- Design: Memory Sync's identity is `syncSourceId` ("Sync source ID"; checked: no use at the base). The SM-2 … SM-5 targets become `syncSourceId`, `boundSyncSourceId`, `sync-source.json`, and `shared/sync-source-id.ts`. They are unreleased, so the targets change in place with no extra migration. REQ-910 and Step 5b updated; implementation updates `GLOSSARY.md`.
+- Design: Memory Sync's identity is `memorySyncSourceId` ("Memory Sync source ID"; checked: no use at the base). The SM-2 … SM-5 targets become `memorySyncSourceId`, `boundMemorySyncSourceId`, `memory-sync-source.json`, and `shared/memory-sync-source-id.ts`. They are unreleased, so the targets change in place with no extra migration. REQ-910 and Step 5b updated; implementation updates `GLOSSARY.md`.
 - Design-text corrections from the implementation's accepted assumptions:
   - 1: pairing doesn't embed the node ID, so it isn't gated;
   - 2: no GraphQL field serves the node ID, so the Nodes tab uses the probe's `identity_pending`;
   - 4: the "Left alone" list no longer names `EMBEDDED_NODE_ID` or the `.v1` key.
 - F-002 (`RemotePeerStartedRunViews` → `PeerStartedRunViews`): a Local Fix, owned by implementation.
 - Classification unchanged. Route: architecture review of the delta, then implementation, then the code reviewer's Targeted Delta Review of F-001 and F-002.
+- SR-008 addendum (2026-10-24): the name is the user's choice of the full feature prefix: `memorySyncSourceId` / "Memory Sync source ID", `boundMemorySyncSourceId`, hub file `memory-sync-source.json` (no abbreviation such as "mem", which has other meanings). Checked: no use of these names at the base.

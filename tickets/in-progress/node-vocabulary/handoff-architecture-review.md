@@ -59,6 +59,6 @@
 
 | Item | Resolution |
 | --- | --- |
-| CRR-001 F-001 (Design Impact) | Memory Sync's identity is `syncSourceId` / "Sync source ID", not `sourceId`, which names three other IDs (145 uses). SM-2 … SM-5 targets: `syncSourceId`, `boundSyncSourceId`, `sync-source.json` (unreleased, so changed in place). REQ-910, Step 5b, the SM table and the glossary (implementation) updated |
+| CRR-001 F-001 (Design Impact) | Memory Sync's identity is `memorySyncSourceId` / "Memory Sync source ID", not `sourceId`, which names three other IDs (145 uses). SM-2 … SM-5 targets: `memorySyncSourceId`, `boundMemorySyncSourceId`, `memory-sync-source.json` (unreleased, so changed in place). REQ-910, Step 5b, the SM table and the glossary (implementation) updated |
 | Assumptions 1, 2, 4 (design text) | Pairing isn't gated (it doesn't embed the node ID); the Nodes tab uses the probe's `identity_pending`; the "Left alone" list corrected |
 | F-002 | Implementation-owned Local Fix (`PeerStartedRunViews`) |
