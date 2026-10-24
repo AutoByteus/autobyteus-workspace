@@ -237,7 +237,7 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
   task-Agent runs append the task AgentRun id within the same resolved physical
   Team scope. Callers use `AgentMemoryLocationService`; they do not derive a
   directory from the logical member address.
-- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
+- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures user input the `AgentRun` forwards (posted, or committed from a held teammate slot) plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` rows through the `autobyteus-ts` `RunMemoryFileStore` primitives and restores sequencing/tool lifecycle from active plus complete rotated traces. It never loads or persists a WorkingContext snapshot; Codex thread state owns continuation.
 
 New Codex tool traces use the shared split physical contract. A `tool_call`

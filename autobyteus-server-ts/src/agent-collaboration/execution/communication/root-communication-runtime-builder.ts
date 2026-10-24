@@ -6,7 +6,7 @@ import {
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
 } from "../domain/root-execution-identity.js";
-import type { RootCommunicationDeliveryInput } from "./root-communication-adapter.js";
+import type { RootCommunicationDeliveryInput } from "./root-communication-port.js";
 import { receivedMessageHeader } from "./received-message-header.js";
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
