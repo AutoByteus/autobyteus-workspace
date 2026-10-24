@@ -4,3 +4,13 @@ RESULT integ pass=38 fail=2 of 40 (load=1, ncpu=10)
 RESULT e2e pass=35 fail=5 of 40 (load=1, ncpu=10)
 integration failures: run 6 = AC-006 burst test, whole test took 276 s (host stalled; the other runs took ~19 s); run 38 = AC-016 (test read at 200 ms, before the 300 ms catch-up; fixed in 7bce694c91)
 e2e failures: runs 16 (DCF-E2E-003 FOLDER_MISSING not seen in 5 s), 19, 20, 30, 39 (DCF-E2E-002 'edited instructions')
+
+Stalled run (integration run 6, kept for the record as the Solution Designer asked; the full log was later overwritten when the
+run's number passed in a later loop, so these lines are copied from it as read on 2026-10-24 ~07:15):
+  × AC-006: a 50-file burst is coalesced into a bounded number of publications 276702ms
+  Error: Condition not met within 5000 ms; last value: 0   (waitFor at package-auto-refresh.integration.test.ts:238)
+  Duration  292.85s (transform 6.11s, setup 98ms, import 7.64s, tests 284.13s)
+Host load at that time (uptime, 06:51-06:57): load averages 221.72 / 261.40 / 298.04 (1-min), with mdworker_shared (Spotlight),
+duetexpertd, WindowServer and a Virtualization.framework VM at the top of `ps -r` besides the 20 'yes' loops; even `ps` took >2 min.
+The other 39 runs of that loop took ~19 s each. Classification: host starvation, not attributed to the product; the same file then
+passed 40/40 twice more (IMP-02d) and 39/40 with a different, understood cause (AC-016).
