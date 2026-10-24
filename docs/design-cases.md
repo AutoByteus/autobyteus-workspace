@@ -91,6 +91,14 @@ Principle 15.
   - autobyteus-191 (`e15408025f`) stored the peer's `serverInstanceId` as `nodeId`, while `nodeId` already meant the desktop's node-profile ID (`autobyteus-web/types/node.ts`, `types/remoteAccess.ts:50-56`); and `collaboration_model.md` § 2.2 said "a delegated run is a peer, not a part" while "peer" meant a registered node;
   - autobyteus-261 (`3024a61dce`) added `AvailableNode` with `status: "unavailable"` and a tool `list_available_nodes` that lists unavailable nodes too.
 - **What happened:** `nodeId` came to mean two IDs in one window, a node's ID got two names (`nodeId`, `serverInstanceId`), and "peer" got three more meanings (a client address, a sibling task agent, a run's standing). No review caught it, because no rule asked for one meaning per word.
-- **The fix:** autobyteus-290, under the new Principle 15 (autobyteus-agents-57): a glossary (node, remote, peer, embedded local, entry, source ID) and the renames, with the stored names migrated (`DESIGN.md` rule 10). This entry is completed with 290's final fixes when it is delivered.
+- **The fix:** autobyteus-290 (merged `522bc2e825`), under Principle 15 (autobyteus-agents-57):
+  - `GLOSSARY.md` at the root, named from `DESIGN.md`: node, node ID, remote, peer, embedded local, entry, client address, sibling, Memory Sync source ID;
+  - `nodeId` means only the node's ID (`srv_…`), in code and on the wire (`/rest/remote-access/status`, the iOS app); `serverInstanceId` is gone;
+  - a client's own record of a node is an **entry** with an `entryId`: `NodeEntry` on the desktop, `SavedNodeEntry` on iOS and Android, the mobile session;
+  - registered peers say peer: `list_peer_nodes`, `PeerNodeDiscovery`, `PeerNodeStatus`, `PeerNodeRef`, `PeerStartedRunViews`;
+  - "peer" for other things became "client address" and "sibling"; "a delegated run is a peer" became "a run of its own";
+  - Memory Sync's typed identity became `memorySyncSourceId`;
+  - stored names were migrated by sealed migrations SM-1 … SM-10 on the server, desktop, browser and phone apps, with backups (`DESIGN.md` rule 10). A failed identity migration holds remote features back (`NODE_IDENTITY_NOT_MIGRATED`) and never mints a new node ID.
+- **Again in autobyteus-290 itself (CRR-001 F-001):** the design renamed Memory Sync's "source node id" to `sourceId`, judging the name only against Memory Sync's files. `sourceId` already named three other IDs (a skill source, an update notification's source, a package source; 145 uses). The code review caught it; the fix took the feature's full prefix, which the user chose, matching the feature's other types (`MemorySyncConfig`, `MemorySyncManifest`).
 - **Why it mattered:** a word with two meanings makes readers and agents mix up IDs, which is a correctness risk, not only a readability one.
-- **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun.
+- **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun; a new name checked only against its own feature's files, especially a common word ("source", "status", "config") without the feature's prefix.

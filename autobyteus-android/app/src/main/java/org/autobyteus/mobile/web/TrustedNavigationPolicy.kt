@@ -1,6 +1,6 @@
 package org.autobyteus.mobile.web
 
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 import java.net.URI
 
 enum class NavigationDecisionType {
@@ -15,7 +15,7 @@ data class NavigationDecision(
 )
 
 object TrustedNavigationPolicy {
-    fun classify(targetUrl: String, profile: SavedNodeProfile): NavigationDecision {
+    fun classify(targetUrl: String, entry: SavedNodeEntry): NavigationDecision {
         val uri = try {
             URI(targetUrl)
         } catch (error: Exception) {
@@ -33,9 +33,9 @@ object TrustedNavigationPolicy {
 
         val host = uri.host?.lowercase()
             ?: return NavigationDecision(NavigationDecisionType.Block, "URL has no host")
-        val sameOrigin = scheme == profile.scheme.lowercase() &&
-            host == profile.host.lowercase() &&
-            normalizedPort(scheme, uri.port) == normalizedPort(profile.scheme, profile.port ?: -1)
+        val sameOrigin = scheme == entry.scheme.lowercase() &&
+            host == entry.host.lowercase() &&
+            normalizedPort(scheme, uri.port) == normalizedPort(entry.scheme, entry.port ?: -1)
         if (!sameOrigin) {
             return NavigationDecision(NavigationDecisionType.OpenExternal, "Different origin opens outside the WebView")
         }

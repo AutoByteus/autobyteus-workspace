@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
@@ -196,7 +197,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     });
 
     expect(teacher.state.currentStatus).toBe(AgentStatus.Running);
-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({
+    expect((teacher.state.conversation.messages[0] as AIMessage | undefined)?.segments[0]).toMatchObject({
       content: 'Exact teacher output',
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);

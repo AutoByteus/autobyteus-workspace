@@ -29,8 +29,8 @@ export const useNodeCollaborationConnector = (): NodeCollaborationConnector => {
       changePeerAddress: (nodeId, baseUrl) => useRemoteCollaborationStore().changeAddress(nodeId, baseUrl),
     },
     list: {
-      rename: (desktopId, name) => useNodeStore().renameNode(desktopId, name),
-      remove: (desktopId) => useNodeStore().removeRemoteNode(desktopId),
+      rename: (entryId, name) => useNodeStore().renameNode(entryId, name),
+      remove: (entryId) => useNodeStore().removeRemoteNode(entryId),
     },
     there: (windowAddress) => createNodeCollaborationApi(windowAddress),
   })

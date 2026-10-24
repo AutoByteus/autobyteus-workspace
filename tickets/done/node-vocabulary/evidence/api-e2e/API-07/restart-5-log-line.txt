@@ -1,0 +1,1 @@
+[2026-10-24T13:09:27.195Z] [WARN] [electron] Kept /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nv-desktop.Cf6V8esHPt/app/electron/user-data/node-registry.v1.json for recovery: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nv-desktop.Cf6V8esHPt/app/electron/user-data/node-registry.json exists and was not converted from it.

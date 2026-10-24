@@ -89,13 +89,31 @@ async function createOrResolveDataRoot({ safety, requestedRoot, protectedPaths }
   }
 }
 
+const HOST_BUILD_SCRIPTS = Object.freeze({
+  darwin: 'build:electron:mac',
+  linux: 'build:electron:linux',
+  win32: 'build:electron:windows',
+})
+
+/**
+ * The package script that builds the current host's package. The bare `build:electron` builds every platform
+ * and fails on a non-Linux host, so the harness never runs it.
+ */
+export function hostElectronBuildScript(platform) {
+  const script = HOST_BUILD_SCRIPTS[platform]
+  if (!script) {
+    throw new Error(`No Electron build script for platform "${platform}"; supported: ${Object.keys(HOST_BUILD_SCRIPTS).join(', ')}`)
+  }
+  return script
+}
+
 export async function prepareElectronE2ELaunch(options = {}) {
   const webRoot = path.resolve(options.webRoot ?? defaultWebRoot)
+  const platform = options.platform ?? process.platform
   if (options.build !== false) {
-    await runCommand(options.packageManager ?? 'pnpm', ['build:electron'], webRoot)
+    await runCommand(options.packageManager ?? 'pnpm', [hostElectronBuildScript(platform)], webRoot)
   }
   const { safety } = loadCompiledLaunchBoundaries(webRoot)
-  const platform = options.platform ?? process.platform
   const arch = options.arch ?? process.arch
   const sourceEnv = options.sourceEnv ?? process.env
   const protectedPaths = options.protectedPaths ?? defaultProtectedPaths(sourceEnv, platform)

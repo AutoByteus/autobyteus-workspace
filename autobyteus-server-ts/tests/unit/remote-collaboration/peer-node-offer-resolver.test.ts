@@ -9,7 +9,7 @@ import {
 import { RemoteCollaborationSettingsError } from "../../../src/remote-collaboration/domain/remote-collaboration-settings-error.js";
 
 /**
- * autobyteus-267 DS-001: `peerNodeOffer(nodeId)` answers through `RemoteNodeDiscovery.listAvailableAgentsOf` (the agent
+ * autobyteus-267 DS-001: `peerNodeOffer(nodeId)` answers through `PeerNodeDiscovery.listAvailableAgentsOf` (the agent
  * tools' path) and maps it for the window: entries without an address, `description` null when absent, or the
  * refusal code alone. Exactly one of the two is set.
  */

@@ -2999,6 +2999,8 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      // Default factory of the injectable agent-definition lookup port (3e3a7b08cc); the service itself takes the port.
+      "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",

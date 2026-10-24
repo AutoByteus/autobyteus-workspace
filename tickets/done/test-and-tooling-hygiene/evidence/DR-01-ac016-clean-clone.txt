@@ -1,0 +1,33 @@
+DR-01 — AC-016 on a clean clone (not a worktree) of the integrated ticket branch
+clone HEAD f7c9648821; tree ac1a2e3e01111e5e5884e95da2e726d6607549cc; git status lines: 0; start 2026-10-24 13:06:36
+node v22.23.1; pnpm 10.28.2; load: load averages: 59.15 88.79 110.86
+== install: pnpm install --frozen-lockfile
+install rc=0 9s
+type-graphql in node_modules/.pnpm: type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0 
+== prebuild: pnpm -C autobyteus-server-ts prebuild
+prebuild rc=0 7s
+== nuxtprepare: pnpm -C autobyteus-web exec nuxt prepare
+nuxtprepare rc=0 4s
+== integprepare: pnpm -C autobyteus-server-ts test:integration:prepare
+integprepare rc=0 23s
+== typecheck: pnpm -C autobyteus-server-ts typecheck
+typecheck rc=0 13s
+== unit: pnpm -C autobyteus-server-ts test:unit
+
+-- full rerun stopped by delivery at 13:14 during server test:unit (no result taken from it): rerun-by-impact (TESTING.md) and API/E2E's reply say the merge delta needs only the web nuxt layer and the guards; server unit/integration, electron, node tests and the E2E files stay proven by API-21/API-10…19 on unchanged code
+== impact set on the same clean clone, HEAD f7c9648821, start 2026-10-24 13:13:57, load averages: 106.93 87.54 99.00
+== nuxt: pnpm -C autobyteus-web test:nuxt --run
+nuxt rc=0 326s
+ Test Files  681 passed | 2 skipped (683)
+      Tests  4860 passed | 5 skipped (4865)
+stderr | components/settings/__tests__/NfsGuideCard.spec.ts
+stdout | components/settings/__tests__/NfsGuideCard.spec.ts
+ ✓ components/settings/__tests__/NfsGuideCard.spec.ts (13 tests) 353ms
+== guardweb: pnpm -C autobyteus-web guard:web-boundary
+guardweb rc=0 1s
+== guardloc: pnpm -C autobyteus-web guard:localization-boundary
+guardloc rc=0 0s
+== auditloc: pnpm -C autobyteus-web audit:localization-literals
+auditloc rc=0 1s
+git status lines after run (tracked changes): 0
+done 2026-10-24 13:19:25

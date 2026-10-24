@@ -1,7 +1,7 @@
 import type { NodeTransportReason } from '~/utils/nodeIdentityProbe'
 
 /** What one address answered when a node looked for another node there (server `PeerAddressAttempt`). */
-export type NodeAddressAttempt = { address: string; result: NodeTransportReason | 'not_autobyteus' | 'different_node' }
+export type NodeAddressAttempt = { address: string; result: NodeTransportReason | 'not_autobyteus' | 'different_node' | 'identity_pending' }
 
 /**
  * A refused remote-collaboration settings change, on this node or on another one, as the server's GraphQL error

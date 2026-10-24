@@ -124,7 +124,7 @@ const startServer = async (name, port) => {
     if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
     return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
   }, 120_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   evidence.servers[name] = { port, baseUrl, nodeId };
   return { name, port, baseUrl, nodeId, child, gql: graphqlClient(name, baseUrl) };
 };
@@ -160,7 +160,7 @@ const startContainer = async port => {
   containerStarted = true;
   const baseUrl = `http://127.0.0.1:${port}`;
   await waitFor('the Docker node health', async () => fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false), 240_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const dockerenv = await run('docker', ['exec', containerName, 'test', '-f', '/.dockerenv']).then(() => true, () => false);
   evidence.servers.docker = { port, baseUrl, nodeId, dockerenv };
   return { name: 'docker', port, baseUrl, nodeId, gql: graphqlClient('docker', baseUrl) };

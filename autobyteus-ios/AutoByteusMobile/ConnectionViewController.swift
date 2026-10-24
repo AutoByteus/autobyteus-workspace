@@ -3,15 +3,15 @@ import UIKit
 
 final class ConnectionViewController: UIViewController {
     struct Callbacks {
-        let onOpenSaved: (SavedNodeProfile) -> Void
-        let onRemoveSaved: (SavedNodeProfile) -> Void
+        let onOpenSaved: (SavedNodeEntry) -> Void
+        let onRemoveSaved: (SavedNodeEntry) -> Void
         let onSubmitInput: (String, Bool) -> Void
         let onScanQR: (UIViewController) -> Void
         let onOpenTailscale: (UIViewController) -> Void
         let onOpenSettings: () -> Void
     }
 
-    private let savedProfiles: [SavedNodeProfile]
+    private let savedEntries: [SavedNodeEntry]
     private let diagnostic: ConnectionDiagnostic?
     private let notice: String?
     private let isBusy: Bool
@@ -22,14 +22,14 @@ final class ConnectionViewController: UIViewController {
     private let httpSwitch = UISwitch()
 
     init(
-        savedProfiles: [SavedNodeProfile],
+        savedEntries: [SavedNodeEntry],
         diagnostic: ConnectionDiagnostic?,
         notice: String?,
         isBusy: Bool,
         initialInput: String,
         callbacks: Callbacks
     ) {
-        self.savedProfiles = savedProfiles
+        self.savedEntries = savedEntries
         self.diagnostic = diagnostic
         self.notice = notice
         self.isBusy = isBusy
@@ -62,7 +62,7 @@ final class ConnectionViewController: UIViewController {
         if let notice { stack.addArrangedSubview(card(title: "Shared input", body: notice, tone: .info)) }
         if let diagnostic { stack.addArrangedSubview(card(title: diagnostic.title, body: "\(diagnostic.message)\n\n\(diagnostic.recoveryAction)", tone: .warning)) }
         if isBusy { stack.addArrangedSubview(busyRow()) }
-        if !savedProfiles.isEmpty { addSavedProfiles(to: stack) }
+        if !savedEntries.isEmpty { addSavedEntries(to: stack) }
         addInputSection(to: stack)
         addGuidance(to: stack)
 
@@ -78,9 +78,9 @@ final class ConnectionViewController: UIViewController {
         ])
     }
 
-    private func addSavedProfiles(to stack: UIStackView) {
+    private func addSavedEntries(to stack: UIStackView) {
         stack.addArrangedSubview(sectionLabel("Saved nodes"))
-        for profile in savedProfiles {
+        for entry in savedEntries {
             let row = UIStackView()
             row.axis = .vertical
             row.spacing = 8
@@ -88,13 +88,13 @@ final class ConnectionViewController: UIViewController {
             row.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
             row.backgroundColor = .white
             row.layer.cornerRadius = 12
-            row.addArrangedSubview(label(profile.displayName, size: 17, weight: .semibold, color: .primaryText))
-            row.addArrangedSubview(label(profile.mobileURL, size: 13, color: .secondaryText))
+            row.addArrangedSubview(label(entry.displayName, size: 17, weight: .semibold, color: .primaryText))
+            row.addArrangedSubview(label(entry.mobileURL, size: 13, color: .secondaryText))
             let buttons = UIStackView()
             buttons.axis = .horizontal
             buttons.spacing = 10
-            buttons.addArrangedSubview(button("Open") { [callbacks] in callbacks.onOpenSaved(profile) })
-            buttons.addArrangedSubview(button("Remove") { [callbacks] in callbacks.onRemoveSaved(profile) })
+            buttons.addArrangedSubview(button("Open") { [callbacks] in callbacks.onOpenSaved(entry) })
+            buttons.addArrangedSubview(button("Remove") { [callbacks] in callbacks.onRemoveSaved(entry) })
             row.addArrangedSubview(buttons)
             stack.addArrangedSubview(row)
         }

@@ -29,9 +29,8 @@ import { headReadRepository, headReadResponse } from "../helpers/github-head-rea
 // Time moves with Vitest's fake clock (`setTimeout`/`Date`, advancing with real time): the first tick (60 s plus up to
 // 60 s), the one-minute tick, and each kind's interval plus this process's spreading delay (at most 5 min).
 // A "restart" closes the server, drops every process singleton and the settings read from the data root (as a new
-// process would) and starts a new server on the same data root. The GraphQL schema is built once per test process:
-// type-graphql 2.0.0-rc.3 appends every `@Arg` to its params cache again on each `buildSchema()`
-// (`MetadataStorage.initCache`), so a second build in one process shifts multi-argument resolvers' arguments.
+// process would) and starts a new server on the same data root; each start builds the GraphQL schema again (type-graphql
+// 2.0.0-rc.4 rebuilds its params cache on every build; rc.3 shifted multi-argument resolvers' arguments from the second).
 // This node is not the desktop's embedded node, so it has no agent-runtime kind (AR-005); the runtime kind is
 // covered by `agent-runtime-update-notifications.e2e.test.ts`.
 // Cases (API/E2E ticket IDs of update-checks-and-auto-updates): API-02 due pass, API-03 restart, API-04 newer revision
@@ -41,12 +40,6 @@ import { headReadRepository, headReadResponse } from "../helpers/github-head-rea
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
 //     pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications/update-notifications-live.e2e.test.ts --no-watch
 // UPDATE_NOTIFICATIONS_E2E_EVIDENCE_DIR keeps a JSON receipt of the GitHub requests and feed frames.
-
-vi.mock("../../../src/api/graphql/schema.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../../../src/api/graphql/schema.js")>();
-  let built: ReturnType<typeof actual.buildGraphqlSchema> | null = null;
-  return { ...actual, buildGraphqlSchema: () => (built ??= actual.buildGraphqlSchema()) };
-});
 
 type Frame = { type: string };
 type Feed = { socket: WebSocket; frames: Frame[] };

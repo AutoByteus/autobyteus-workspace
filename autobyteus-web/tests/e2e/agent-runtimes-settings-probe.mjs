@@ -183,10 +183,10 @@ const kase = async (id, title, body) => {
 };
 const notApplicable = reason => { throw Object.assign(new Error(reason), { notApplicable: true }); };
 /** Binds this window to another node, as a remote node's window is bound (the node id is not the embedded one). */
-const bindWindow = (nodeId, url) => page.evaluate(([id, base]) => {
+const bindWindow = (entryId, url) => page.evaluate(([id, base]) => {
   const pinia = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia;
   pinia._s.get('windowNodeContext').bindNodeContext(id, base);
-}, [nodeId, url]);
+}, [entryId, url]);
 /** Layout facts of the list at the current window width. */
 const layout = () => page.evaluate(() => {
   const list = document.querySelector('[data-testid="agent-runtimes-list"]');

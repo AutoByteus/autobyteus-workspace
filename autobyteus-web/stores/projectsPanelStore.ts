@@ -30,11 +30,11 @@ export const useProjectsPanelStore = defineStore('projectsPanel', () => {
   const node = useWindowNodeContextStore()
   const projectStore = useProjectStore()
   const taskStore = useProjectTaskStore()
-  const storageKey = () => `${PROJECTS_PANEL_STORAGE_PREFIX}${node.nodeId}`
+  const storageKey = () => `${PROJECTS_PANEL_STORAGE_PREFIX}${node.entryId}`
   const remembered = ref<ProjectsPanelChoice | null>(null)
   const readRemembered = () => { remembered.value = parseChoice(storage()?.getItem(storageKey()) ?? null) }
   readRemembered()
-  watch(() => node.nodeId, readRemembered)
+  watch(() => node.entryId, readRemembered)
 
   const defaultChoice = computed<ProjectsPanelChoice>(() => {
     const latest = [...projectStore.projects].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]

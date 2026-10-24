@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="profiles">[{&quot;id&quot;:&quot;saved-home-box&quot;,&quot;displayName&quot;:&quot;Home box&quot;,&quot;baseUrl&quot;:&quot;http://192.168.1.25:29695&quot;,&quot;mobileUrl&quot;:&quot;http://192.168.1.25:29695/mobile&quot;,&quot;scheme&quot;:&quot;http&quot;,&quot;host&quot;:&quot;192.168.1.25&quot;,&quot;port&quot;:29695,&quot;httpAcknowledged&quot;:true,&quot;createdAtEpochMillis&quot;:1792000000000,&quot;updatedAtEpochMillis&quot;:1792000000000},{&quot;id&quot;:&quot;saved-tailnet&quot;,&quot;displayName&quot;:&quot;Tailnet desk&quot;,&quot;baseUrl&quot;:&quot;https://desk.tailnet.ts.net&quot;,&quot;mobileUrl&quot;:&quot;https://desk.tailnet.ts.net/mobile&quot;,&quot;scheme&quot;:&quot;https&quot;,&quot;host&quot;:&quot;desk.tailnet.ts.net&quot;,&quot;port&quot;:null,&quot;httpAcknowledged&quot;:false,&quot;createdAtEpochMillis&quot;:1792000100000,&quot;updatedAtEpochMillis&quot;:1792000100000}]</string>
+    <string name="selected_profile_id">saved-tailnet</string>
+</map>

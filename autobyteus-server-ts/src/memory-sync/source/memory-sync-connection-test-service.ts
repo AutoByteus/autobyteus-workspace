@@ -1,5 +1,5 @@
 import { normalizeMemoryHubBaseUrl } from "../hub/memory-hub-config.js";
-import { normalizeSourceNodeId } from "../shared/source-node-id.js";
+import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import { MemoryHubClient, type MemoryHubHealthResult } from "./memory-hub-client.js";
 import { getMemorySyncConfigService, type MemorySyncConfigService } from "./memory-sync-config-service.js";
 
@@ -8,7 +8,7 @@ export type MemorySyncConnectionTestInput =
   | {
       mode: "draft";
       hubBaseUrl?: string | null;
-      sourceNodeId?: string | null;
+      memorySyncSourceId?: string | null;
       token?: string | null;
     };
 
@@ -40,16 +40,16 @@ export class MemorySyncConnectionTestService {
       source.hubBaseUrl,
       "Saved Memory Sync source hubBaseUrl is required before testing connection.",
     );
-    const sourceNodeId = requireNonEmpty(
-      source.sourceNodeId,
-      "Saved Memory Sync source node id is required before testing connection.",
+    const memorySyncSourceId = requireNonEmpty(
+      source.memorySyncSourceId,
+      "Saved Memory Sync source ID is required before testing connection.",
     );
     const token = requireNonEmpty(
       source.hubToken,
       "Saved Memory Sync source hub token is required before testing connection.",
     );
 
-    return this.hubClient.testConnection({ hubBaseUrl, sourceNodeId, token });
+    return this.hubClient.testConnection({ hubBaseUrl, memorySyncSourceId, token });
   }
 
   private async testDraftConnection(input: Extract<MemorySyncConnectionTestInput, { mode: "draft" }>): Promise<MemoryHubHealthResult> {
@@ -57,10 +57,10 @@ export class MemorySyncConnectionTestService {
     if (!hubBaseUrl) {
       throw new Error("hubBaseUrl is required.");
     }
-    const sourceNodeId = normalizeSourceNodeId(input.sourceNodeId);
+    const memorySyncSourceId = normalizeMemorySyncSourceId(input.memorySyncSourceId);
     const token = requireNonEmpty(input.token, "Hub token is required for draft connection testing.");
 
-    return this.hubClient.testConnection({ hubBaseUrl, sourceNodeId, token });
+    return this.hubClient.testConnection({ hubBaseUrl, memorySyncSourceId, token });
   }
 }
 

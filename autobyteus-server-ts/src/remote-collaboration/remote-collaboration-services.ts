@@ -1,4 +1,6 @@
 import { NodeCatalogPort } from "../agent-collaboration/collaborators/node-catalog-port.js";
+import { RemoteCollaborationSettingsError } from "./domain/remote-collaboration-settings-error.js";
+import { NodeIdentityNotMigratedError } from "../remote-access/services/node-identity-service.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
 import {
@@ -8,7 +10,7 @@ import {
   type RemoteMessageHandler,
   type RemoteRunViewHandler,
 } from "./channel/peer-gateway.js";
-import { RemoteNodeDiscovery } from "./discovery/remote-node-discovery.js";
+import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
 import { PeerAddressResolver } from "./settings/peer-address-resolver.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
 import { PeerStore } from "./settings/peer-store.js";
@@ -29,8 +31,8 @@ export type RemoteCollaborationServices = Readonly<{
   catalogPort: NodeCatalogPort;
   client: PeerClient;
   gateway: PeerGateway;
-  /** autobyteus-261: the peers with their status, and a peer's offer (the `RemoteDiscoveryChannel`). */
-  discovery: RemoteNodeDiscovery;
+  /** autobyteus-261: the peers with their status, and a peer's offer (the `PeerDiscoveryChannel`). */
+  discovery: PeerNodeDiscovery;
 }>;
 
 /**
@@ -59,12 +61,21 @@ export const composeRemoteCollaboration = (input: Readonly<{
     ownNodeId: input.ownNodeId,
   });
   const runsInContainer = input.runsInContainer ?? processRunsInContainer;
-  peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: input.ownNodeId, runsInContainer });
+  // autobyteus-290: a settings change while this node's identity is held back is refused with that reason.
+  const ownNodeIdForSettings = async (): Promise<string> => {
+    try {
+      return await input.ownNodeId();
+    } catch (error) {
+      if (error instanceof NodeIdentityNotMigratedError) throw new RemoteCollaborationSettingsError("NODE_IDENTITY_NOT_MIGRATED", error.message);
+      throw error;
+    }
+  };
+  peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
   const services = { capability, peers, catalogPort: new NodeCatalogPort(input.tempWorkspaceDir), client };
   const handlers = input.handlers(services);
   const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers });
-  const discovery = new RemoteNodeDiscovery({ capability, peers, client });
-  const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: input.ownNodeId, runsInContainer });
+  const discovery = new PeerNodeDiscovery({ capability, peers, client });
+  const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
   return Object.freeze({ ...services, gateway, discovery, addresses });
 };
 

@@ -46,7 +46,7 @@ describe('apiService node routing', () => {
     windowNodeContextStore.initializeFromWindowContext(
       {
         windowId: 3,
-        nodeId: 'remote-node-1',
+        entryId: 'remote-node-1',
       },
       'http://127.0.0.1:8000',
     );
@@ -105,7 +105,7 @@ describe('apiService node routing', () => {
     windowNodeContextStore.initializeFromWindowContext(
       {
         windowId: 3,
-        nodeId: 'remote-node-1',
+        entryId: 'remote-node-1',
       },
       'http://127.0.0.1:8000',
     );

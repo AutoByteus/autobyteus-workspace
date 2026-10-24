@@ -1,0 +1,12 @@
+[probe] NVP-01 started
+[probe] NVP-01 Pass
+[probe] NVP-02 started
+[probe] NVP-02 Pass
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] NVP-05 Pass
+[probe] result Fail; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/evidence/api-e2e/API-05-run2
+EXIT=1
