@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002` (SR-001 plus the watcher self-check below)
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-001`; approved by the Solution Designer within the Task's direction, user informed in the `autobyteus-253` conversation, 2026-10-24
 - Behavior-defining supplements and their approval references: none
 - Design status: `Ready`
@@ -13,6 +13,18 @@
 ## Current-State Read
 
 The watcher (`AgentPackageFolderWatcher`) is a chokidar wrapper that reports "this definition folder changed" to the reloader, which is the single writer of the definition store and owns the settle timing (watcher L11-L14 sink; reloader L98-L141). Everything is event-driven. `composeAgentPackageDefinitionFeed` arms the watch before the first read, and `runFullReload` → `registrationListener` → `syncPackageFolders` arms new package folders after a full reload. Nothing ever re-reads a folder whose event the OS did not deliver. Measured: events are lost right after arming (the macOS watch is live up to ~60 ms after chokidar's `ready`) and while chokidar adds a watch for a newly found folder (OBS-W1…W6). So a Team folder written within milliseconds of an agent folder can stay unseen. The rest of the items are independent test or tooling defects, each with its cause in the investigation notes (OBS-G1, OBS-T1…T10). Only the watcher item changes production behavior.
+
+## SR-002 Addendum — Watcher Self-Check (Design Impact from implementation IR-001)
+
+Found by the implementation's 40-run loops under load (evidence IMP-02a/IMP-02b): the SR-001 catch-up repairs the store but not the watcher's own blindness. (1) When the OS never reports a new folder (e.g. `agents/scout`), chokidar never adds a watch on it, so later edits inside it produce no events; the folder stays unwatched until a later sibling event makes chokidar re-read its parent. (2) The presence watch can lose the event of a package folder renamed right after arming, so `FOLDER_MISSING` is never reported. Both are in the same event-loss class (OBS-W1…W6).
+
+Decision (approved, design-only; requirements unchanged): when the catch-up timer fires, the watcher first checks its own health, then sends `reconcilePackageFolder`:
+- Presence: `checkPackageFolder(entry, null, 'presence')` (existing identity check); coverage runs only while the state is `WATCHING`.
+- Coverage: list the directory names under each kind dir that pass the layout allow-list (`isWatchedPackagePath(…, true)`, nested team/org agent folders included; no file content is read) and compare with the chokidar watch set (`PackageFolderWatch.getWatched()`, new on the type and its fakes). If a directory on disk is not watched, repair by closing the watcher and calling `arm()` again, with no `markPackageFolderChanged` (so no `agent_packages` frame); the new `ready` schedules the next catch-up, which reconciles quietly.
+- Bound: one coverage repair per arm or per structural event; if the same directories stay unwatched (e.g. unreadable), log a warning and stop; the guard resets on the next `addDir`/`unlinkDir` event or a real arm. No loop is possible.
+- Rule change: "the watcher never reads definitions" becomes "never reads definition files"; it may list directory names to compare with its own watch set (the watcher's own health, not definition content). The reloader is unchanged.
+- Residual (accepted, RISK-001-like): a write inside the lag window of a watch added after the last catch-up; each repair needs a lost event first.
+- Classification unchanged: `Medium` / `Low` (one more bounded method in the same owner; no new owner or contract).
 
 ## Task Size And Architectural Risk (Mandatory)
 
