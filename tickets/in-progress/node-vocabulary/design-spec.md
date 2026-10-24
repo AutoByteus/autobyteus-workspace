@@ -4,7 +4,7 @@
 
 - Package: `node-vocabulary`; Task autobyteus-290.
 - Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-006. U-2 (a): rename the identity wire field to `nodeId`. U-3: stored names follow the code through sealed migrations (U-1 reversed).
-- Current solution revision ID: `SR-006` (U-3: stored names follow the code, through sealed migrations; the mapping owners of SR-003 … SR-005 are replaced). Design status: `Ready`.
+- Current solution revision ID: `SR-007` (ARCH-REV-004: AR-905 the hold-back chains, AR-906 the phone keys, N-906 … N-909). Design status: `Ready`.
 - Authorities read:
   - `solution-designer/SKILL.md`;
   - `references/architecture-design.md`;
@@ -177,9 +177,11 @@ The mapping owners of SR-003 … SR-005 are **removed from the design**. Current
 | SM-5 | Hub imports (`local-file-memory-import-store.ts:91-225`) | `memory/imports/<id>/source-node.json` `{sourceNodeId, …}` and `sync-manifest.json` `sourceNodeId` | `source.json` `{sourceId, …}` and `sourceId`; folder names (values) unchanged |
 | SM-6 | Desktop node list (`electron/nodeRegistryStore.ts:11`) | `userData/node-registry.v1.json`: `nodes[].serverInstanceId`, `nodes[].isSystem` | `userData/node-registry.json`: `nodes[].nodeId`; `isSystem` dropped; `id` (the entry's own ID) unchanged |
 | SM-7 | The window's node list in browser mode (`stores/nodeStore.ts`, key `autobyteus.node_registry.v1`; written only without the Electron API, `nodeStore.ts:31`) | the same snapshot shape | key `autobyteus.node_registry`, same field changes |
+| SM-9 | iOS saved entries (`AutoByteusMobileCore/SavedNodeStore.swift:65-68`) | UserDefaults keys `autobyteus.saved-node-profiles`, `autobyteus.selected-node-profile-id` | `autobyteus.saved-node-entries`, `autobyteus.selected-node-entry-id`; record fields unchanged |
+| SM-10 | Android saved entries (`connection/SavedNodeStore.kt:84-86`) | SharedPreferences `saved_nodes` keys `profiles`, `selected_profile_id` | `entries`, `selected_entry_id`; record fields unchanged |
 | SM-8 | Mobile session (`utils/remoteAccess/mobileCredentialStorage.ts:3`) | key `autobyteus.remote_access.mobile_session.v1` `{version: 1, nodeId, …}` | key `autobyteus.remote_access.mobile_session` `{entryId, …}`; the schema `version` field dropped (Guideline § 3) |
 
-The iOS and Android saved lists change no stored key (only the type is renamed; the type name isn't stored). So they need no migration.
+The iOS and Android saved records keep their fields (no node-ID field; `id` is the entry's own ID). Their **keys** say "profile", the second name rule 10 removes, so SM-9 and SM-10 rename them (AR-906, decided (a) under rule 10). Renaming the Swift and Kotlin types changes no key string by itself; the keys change only through these migrations.
 
 ### Where the migrations live (sealed)
 
@@ -187,15 +189,16 @@ The iOS and Android saved lists change no stored key (only the type is renamed; 
   - `node-identity-file-name`: SM-1. Declares `holdsBackCapabilities: ["node_identity"]`, a new `AppDataCapability`.
   - `memory-sync-source-id-names`: SM-2 … SM-5. Declares `holdsBackCapabilities: ["memory_sync"]`.
   - They run before the services are built (`server-runtime.ts:183-206`: `runPending`, then `applyCapabilityReadiness`, then `buildStudioServer`).
+- **Phone apps, SM-9 and SM-10:** each app gets a sealed one-time step in its own migration folder (`autobyteus-ios/AutoByteusMobileCore/DataMigrations/`, `autobyteus-android/app/src/main/java/org/autobyteus/mobile/datamigrations/`). Each is called once at app start, before `SavedNodeStore` is first read. It follows the same order: write the new keys, then remove the old ones, keeping a backup key. Structural recognition: old key present and new absent. Current code knows only the new keys.
 - **Desktop and browser, SM-6 … SM-8:** a new sealed area, `autobyteus-web/client-data-migrations/`, with the same rules as the server's area (Guideline § 3, "Client-side stores … follow the same rule"):
   - `migrations/<name>/`: pure transforms with frozen released shapes, imported by no current code;
-  - two runners: `electron-file-runner.ts` (main process, called before `nodeRegistryStore` loads) and `browser-storage-runner.ts` (renderer, called once before `nodeStore` and the mobile session store read);
+  - two runners (N-908): `electron-file-runner.ts` (main process, called in `electronApplication.ts` right before `loadNodeRegistrySnapshot` at :362) and `browser-storage-runner.ts` (renderer, called by a new plugin `19.clientDataMigrations.client.ts`, ordered before `20.windowNodeBootstrap.client.ts` and `21.mobileRemoteAccessBootstrap.client.ts`). Several open tabs are safe: each step is idempotent through the structural check;
   - a boundary spec: current code imports only the two runners, at their two call sites.
 
 ### Checklist (Data Migration Guideline § 2)
 
 1. **Need:** a stored name carries a wrong or second meaning (rule 10). It is not cosmetic.
-2. **Availability:** a failed migration never locks out the app.
+2. **Availability:** a failed migration never locks out the app. The hold-back chains (AR-905) are below.
    - SM-1 holds back `node_identity`. Remote access and remote collaboration report "not available until the node identity is migrated", while everything else works. `NodeIdentityService` never creates a new ID while `node_identity` is held back (REQ-913).
    - SM-2 … SM-5 hold back `memory_sync`.
    - SM-6 … SM-8: a failed client migration logs a warning and leaves the original. The desktop starts with the embedded entry only, and the old file stays for recovery (rule 7).
@@ -204,6 +207,8 @@ The iOS and Android saved lists change no stored key (only the type is renamed; 
    - No real user data was read: the user declined (2026-10-24). The fixtures are built from the released writers' exact output.
 4. **Disposition:** each item is converted, already current (the new name is present and the old one absent: skipped), or failed (logged, original kept).
    - Recognition is by structure (Guideline § 3): the old file or key present and the new one absent. There is no version field.
+5. **SM-1 specifics (N-906):** if both files are present with the same value, keep the new one and remove the old. If both are present with **different** values, that's a failure: hold back, keep both, log a warning naming both files. Never "keep new". `createdAt` is copied into `node-identity.json`.
+   **SM-6 specifics (N-907):** per record, rename only `serverInstanceId` → `nodeId` and drop `isSystem`, copying every other field as it is. It fails only when the file is not readable JSON. A record today's tolerant reader would drop is still copied; the current reader decides about it, as today.
 5. **Commit and retry:**
    - **Server:** the runner's record and atomic file writes (write the new file or name, then remove the old). For SM-1 the new file is written first, then the old one is removed, so a crash in between re-runs safely: both files present with the same value → keep the new one.
    - **Client:** the same order (new key or file first, then the old removed). Backups are `.bak` copies for files and a `…:backup` key for storage, kept until the next successful start.
@@ -221,6 +226,28 @@ The iOS and Android saved lists change no stored key (only the type is renamed; 
    - the two-server E2E starting from pre-change data: peers still pinned, Memory Sync continuing;
    - a desktop start with a pre-change node list.
 10. **Lessons:** `custom-provider-readable-id` (rewriting definition JSON in place with frozen readers); `token-usage-run-records-v1` (capability hold-back).
+
+### Hold-back chains (AR-905)
+
+**`node_identity` (SM-1):**
+1. `markCapabilitiesPending()` (`startup/app-data-capability-readiness.ts:10-13`) gains `configureNodeIdentityCapability(false)`. `applyCapabilityReadiness()` (:15-20) gains `configureNodeIdentityCapability(readiness.node_identity)`. `AppDataCapability` (`app-data-migration-types.ts:42`) gains `"node_identity"` and `"memory_sync"`.
+2. `NodeIdentityService` holds the readiness. While it is not ready, `getNodeId()` throws one explicit `NodeIdentityNotMigratedError` ("This node's identity is waiting for its data migration.") and **never creates or writes a file**. When ready, it behaves as today: it reads `node-identity.json`, and creates a new ID only when no identity file exists.
+3. **Fresh install:** no file under either name means SM-1 is already current. The capability is ready, and the service creates the ID as today.
+4. **Each consumer's answer while held back:**
+   - **`/rest/remote-access/status`** (`api/rest/remote-access.ts:31`): it answers without `nodeId` and with `phoneAccessEnabled` as configured. The desktop, phone and peer probes then treat the node as "not identified" (their existing missing-ID path), not as a different node.
+   - **Remote collaboration:** `ownNodeId` (`remote-collaboration-composition.ts:58`) is used by `PeerGateway` and `PeerClient`. Both answer with a refusal, `NODE_IDENTITY_NOT_MIGRATED` ("This node's identity is waiting for its data migration"), for inbound and outbound requests and the discovery tools. Delegation and messages to peers get it as a refusal text. Nothing is sent.
+   - **Phone-access pairing:** it refuses to issue a pairing while held back (it embeds the node ID).
+   - **GraphQL showing the node ID** (the Nodes tab): the field is null, and the tab shows "Node ID: waiting for its data migration".
+5. **Unit cases:** held back → `getNodeId` throws and no file is written; the status route answers without `nodeId`; the gateway refuses; fresh install → created; ready → read.
+
+**`memory_sync` (SM-2 … SM-5):**
+1. The same two configure calls (`configureMemorySyncCapability`).
+2. While held back:
+   - the source's background loop and "Sync now" don't run (the status says "waiting for its data migration");
+   - hub ingestion answers the source with an unavailable status;
+   - the Memory Sync settings GraphQL reads answer with that status and refuse saves.
+3. Nothing reads or writes Memory Sync files until it is ready.
+4. **Unit cases** for each gate.
 
 ## Persisted Data / State Transition Decision
 
@@ -244,7 +271,7 @@ The iOS and Android saved lists change no stored key (only the type is renamed; 
   - the Nodes tab browser check;
   - loading a pre-change desktop node list and `peers.json` from a clean clone (AC-903);
   - the word-list search (AC-901):
-    - `serverInstanceId`, `sourceNodeId`, `source-node.json`, `server-instance.json`, `node-registry.v1`, `mobile_session.v1` only inside the migration folders and their frozen shapes;
+    - `serverInstanceId`, `sourceNodeId`, `source-node.json`, `server-instance.json`, `node-registry.v1`, `mobile_session.v1`, `saved-node-profiles`, `selected-node-profile-id`, `selected_profile_id` (and the Android `profiles` key constant) only inside the migration folders and their frozen shapes;
     - `list_available_nodes` only in the release-note text (Step 3);
     - none of `AvailableNode`, `RemoteNodeDiscovery`, `RemoteDiscoveryChannel`, `RemotePeer`, `PeerAddress`, `isSystem` (outside the migration folder), `NodeProfile`, `SavedNodeProfile`, `MOBILE_NODE_ID`;
     - `nodeId` only in node-ID meaning, per the implementation's list (AR-902).

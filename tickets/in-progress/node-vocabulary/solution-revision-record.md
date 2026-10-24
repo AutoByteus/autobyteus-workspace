@@ -63,3 +63,11 @@
 - Verified: migrations run before services are built (`server-runtime.ts:183-206`); capability hold-back precedent (`token-usage-run-records-v1`, `custom-provider-readable-id`).
 - Implementation was told to hold the mapping owners (message 2026-10-24) and continue the plain renames.
 - Classification: `Large` / `High` (now with persisted-data migrations on server and client). Route: architecture review.
+
+### SR-007 — ARCH-REV-004 resolved (2026-10-24)
+
+- AR-905: the hold-back chains are named. `markCapabilitiesPending` and `applyCapabilityReadiness` gain `node_identity` and `memory_sync`. `NodeIdentityService` throws one explicit error and never writes while held back; each consumer's answer is named (status route, gateway and client, pairing, GraphQL); fresh install; the Memory Sync gates. Verified at `node-identity-service.ts:32-50`, `app-data-capability-readiness.ts:10-20`.
+- AR-906: decided (a) under rule 10 (within the user's U-3 direction). SM-9 (iOS keys) and SM-10 (Android keys) rename "profile" → "entry" through each app's sealed step; record fields unchanged.
+- N-906: SM-1 with different values fails and holds back; `createdAt` is kept. N-907: SM-6 copies records field by field and fails only on unreadable JSON. N-908: runner call sites cited. N-909: noted.
+- A design mistake of the kind design-examples Case 5 describes (a guarantee claimed without naming its owner and consumers) goes into the Case 7 material for the PTM.
+- Route: round 5 of the architecture review.

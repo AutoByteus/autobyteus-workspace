@@ -5,16 +5,28 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002; REQ-909 and the extended REQ-901 / REQ-906 at SR-004, at the user's request)
 - Upstream Investigation Notes: `…/investigation-notes.md` (V-01 … V-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `f9d826f1b6` (SR-005 plus the AR-904 text alignment)
+- Reviewed Design Spec: `…/design-spec.md` at commit `f92030a027` (SR-006; the project rule change `b3d9c758f2`)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002)
-- Relevant Solution Revision IDs: SR-001 … SR-005
+- Relevant Solution Revision IDs: SR-001 … SR-006
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: the Solution Designer's AR-904 fix (commit `f9d826f1b6`)
-- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, `Fail`)
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: SR-006 widens the scope by the user's decision U-3, which reverses U-1. Stored names follow the code through sealed migrations SM-1 … SM-8 (server and client). The project rule changed: `DESIGN.md` rule 10 and Data Migration Guideline § 2 / § 3.
+- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, `Pass`)
+- Latest Authoritative Round: 4
 - Review method: the shared principles as updated 2026-10-24, including Principle 15 "One Vocabulary" and the "Vocabulary drift" trigger (`autobyteus-agents` `b87a507`), and the updated design examples.
+- Round-4 evidence (at `f92030a027`):
+  - `autobyteus-server-ts/src/server-runtime.ts:183-206` (`runPending` → `applyCapabilityReadiness` → `buildStudioServer`: confirmed);
+  - `remote-access/services/node-identity-service.ts:23-50` (`getNodeId()` creates and writes a new ID when the file has none);
+  - callers `api/rest/remote-access.ts:31`, `compositions/remote-collaboration-composition.ts:58`;
+  - `app-data-migrations/domain/app-data-migration-types.ts:42-54` (today's capabilities: `token_usage_history`, `custom_llm_providers`);
+  - `startup/app-data-capability-readiness.ts:15-20` (one configure call per capability);
+  - `autobyteus-web/electron/nodeRegistryStore.ts:100-158` (a tolerant per-record reader; an invalid file regenerates the default registry);
+  - `electron/application/electronApplication.ts:362` (the registry load);
+  - `plugins/20.windowNodeBootstrap.client.ts`, `21.mobileRemoteAccessBootstrap.client.ts` (renderer bootstrap order);
+  - `stores/nodeStore.ts:44-198` (localStorage only without `electronAPI`);
+  - iOS `SavedNodeProfile.swift:7-17`, `SavedNodeStore.swift:65-68` (keys `autobyteus.saved-node-profiles`, `autobyteus.selected-node-profile-id`);
+  - Android `SavedNodeProfile.kt:9-19`, `SavedNodeStore.kt:84-86` (`saved_nodes`, `profiles`, `selected_profile_id`).
 - Current-State Evidence Basis: code read in the worktree at `0b72123468`:
   - `autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts:47-80` (the exposure is `requestedToolNameSet.has(LIST_AVAILABLE_NODES_TOOL_NAME)`; an unknown name is silently ignored);
   - `agent-definition/providers/agent-definition-node-reader.ts:65-73`, `file-agent-definition-provider.ts:73` (definitions are stored `agent-config.json` files under the node's agents directory, with `toolNames`);
@@ -116,7 +128,16 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 | `isSystem`, the version field and guard | Pass | N/A | Pass | Pass | — |
 | iOS `incompatibleServer()` and the 426 case | Pass | N/A | Fail | Fail (non-blocking) | N-902: decide now. No server path answers 426, so it is a version-handshake remnant |
 
-## Persisted-Data Transition Verdict
+## Persisted-Data Transition Verdict (round 4, SR-006)
+
+| Stored Subject | Approved Decision | Evidence | Proportionate? | Migration Safety Complete? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| SM-1 identity file | Migration Required (U-3) | Pass | Pass | Fail | Fail | AR-905 (hold-back owner and consumers); N-906 |
+| SM-2 … SM-5 Memory Sync | Migration Required | Pass | Pass | Fail | Fail | AR-905 (`memory_sync` is a new capability without a consumer) |
+| SM-6 … SM-8 client stores | Migration Required | Pass | Pass | Pass | Pass | N-907, N-908; SM-7 scope confirmed (N-909) |
+| iOS / Android saved lists | No migration (claimed) | Fail | — | — | Fail | AR-906 |
+
+## Persisted-Data Transition Verdict (rounds 1 … 3, superseded by SR-006)
 
 | Stored Subject | Decision | Evidence | Proportionate? | Migration | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -152,14 +173,69 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 ## Review Decision
 
-`Pass` (round 3). AR-904 is resolved:
-- § Verification points to Step 1's owner list for `serverInstanceId`, allows `sourceNodeId` only in Step 5b's three owners and `list_available_nodes` only in the release-note text, and adds `SavedNodeProfile`, with `isSystem` allowed only in the desktop entry storage owner;
-- REQ-903 says "the docs in this repository" and records that agent configs here select neither name;
-- the Scope Guardrail marks agent configs and packages out of scope (REQ-906) and lists the phone apps.
+`Fail` (round 4; `Design Impact`, AR-905 and AR-906). The migration design is sound in shape:
+- server migrations in the existing sealed area, run before the services;
+- a client sealed area with two runners and a boundary spec;
+- recognition by structure, with no version field;
+- new name first, then the old one removed;
+- backups;
+- a checklist answered item by item;
+- the mapping owners removed, as rule 10 requires.
 
-AR-901 … AR-903 and N-901 … N-904 stay resolved. One non-blocking wording note: N-905. The design is ready for implementation.
+Two gaps remain: who applies the two hold-backs (and how `NodeIdentityService` refuses to create an ID), and the phone apps' stored keys under the new rule 10. AR-901 … AR-904 stay resolved.
 
 ## Findings
+
+### AR-905 — The hold-backs have no named consumers; REQ-913 depends on the identity service refusing
+
+- Type: Design Impact
+- Severity: Medium (blocking)
+- Protects: REQ-913 ("never gives a node a new node ID … the features that need the node's ID are held back, the rest of the app works"), AC-905, REQ-911; Principle 11 (derived consumers); Principle 13 (behavior by absence)
+- Scope status: Within Approved Scope
+- Changes approved behavior: No
+- Evidence:
+  - `NodeIdentityService.getNodeId()` creates and writes a fresh `srv_…` ID whenever the identity file has no valid ID (`node-identity-service.ts:32-50`). After a failed SM-1, the new file is absent, so the next caller (the status route at `api/rest/remote-access.ts:31`, or remote collaboration's `ownNodeId` at `remote-collaboration-composition.ts:58`) would create a **new** node ID. That is exactly what REQ-913 forbids.
+  - A capability takes effect only through its configure call in `applyCapabilityReadiness` (`startup/app-data-capability-readiness.ts:15-20`, one per capability). Today's capabilities are `token_usage_history` and `custom_llm_providers` (`app-data-migration-types.ts:42-43`). So `memory_sync` is new too, not only `node_identity`.
+  - The design says remote access and remote collaboration "report 'not available …'" but names no owner that does it.
+- Required update: in § Stored Names Migration, name the hold-back chain for each capability.
+  - **`node_identity`:**
+    - `applyCapabilityReadiness` configures `NodeIdentityService` (for example `configureNodeIdentityAvailability(ready)`);
+    - while it is not ready, `getNodeId()` throws one explicit "node identity not migrated" error and never creates or writes. This is the single owner of REQ-913;
+    - name each consumer's answer: the status route (an explicit unavailable answer, not a new ID), `PeerGateway` admission and `PeerClient` (the remote-collaboration refusal), phone-access pairing, and the GraphQL that shows this node's ID.
+    - On a fresh install (no file at either name), the migration is "already current" and the service creates the ID as today. Say so.
+  - **`memory_sync`:** add it to `AppDataCapability`; configure the Memory Sync source loop, the hub ingestion route and the settings GraphQL, with their "not available until migrated" answer.
+  - Add unit cases: a held-back identity creates no file, and the status route returns the unavailable answer.
+- Why proportionate: one configure call per capability plus one guard in the identity service, on the existing readiness mechanism.
+- Recommended recipient: Solution Designer
+
+### AR-906 — The phone apps' stored keys still say "profile"; under rule 10, decide
+
+- Type: Design Impact
+- Severity: Low (blocking: the claim governs the AC-901 word list and the "no migration" for phones)
+- Protects: REQ-911 ("Stored names follow the renames"), REQ-901 (an entry is an entry); `DESIGN.md` rule 10; Principle 15
+- Scope status: Within Approved Scope (a decision within U-3)
+- Changes approved behavior: No
+- Evidence:
+  - The design says "The iOS and Android saved lists change no stored key (only the type is renamed; the type name isn't stored)".
+  - The records' fields are safe: there is no node-ID field, and `id` stays (`SavedNodeProfile.swift:7-17`, `SavedNodeProfile.kt:9-19`).
+  - But the storage **keys** carry the word the rename removes: iOS `autobyteus.saved-node-profiles` and `autobyteus.selected-node-profile-id` (`SavedNodeStore.swift:65-68`); Android `profiles` and `selected_profile_id` (`SavedNodeStore.kt:84-86`).
+  - Rule 10 renames stored keys when a rename removes a second name for one concept, and skips them when the change is "pure style".
+- Required update: decide and state it.
+  - (a) "Profile" → "entry" is a second name for one concept (as D-1 and REQ-901 treat it). The phone keys are then renamed by a sealed step in each app, with that app's own runner, the same order and a backup. Add them to REQ-911's list and to the AC-901 word list.
+  - (b) It is pure style for these keys. Then say so in § Stored Names Migration with that reasoning, and accept that the keys say "profile" while the code says "entry". That contradicts Principle 15's "one concept, one name", so (b) needs a sentence the user can see.
+
+  Either way, Step 4's "rename the type" must not touch the key strings by accident.
+- Why proportionate: a decision and, for (a), two small native steps.
+- Recommended recipient: Solution Designer
+
+### Round-4 notes (non-blocking)
+
+- N-906, SM-1 edge cases:
+  - "Both files present with the same value → keep the new one" covers the crash between write and remove. Both present with *different* values is not reachable through the product. If it is seen anyway, treat it as a failure (hold back, log), never "keep the new one".
+  - The released identity file also has `createdAt` (`node-identity-service.ts:45-47`). The new shape should keep it (`{nodeId, createdAt}`); § Stored Names Migration lists only `{nodeId}`.
+- N-907, SM-6 tolerance: today's reader normalizes record by record and drops invalid records (`nodeRegistryStore.ts:100-158`), so files written by older releases load. SM-6 should rename only the named fields per record (`serverInstanceId` → `nodeId`, drop `isSystem`) and copy every other field unchanged, failing only for unreadable JSON. Then older-release records migrate, and a failure has the same consequence as today: an unreadable file regenerates the default registry. Otherwise, a structurally strict migration that fails on an older record would let current code write `node-registry.json` with the embedded entry only, and the next start's structural check (old and new both present) would never retry.
+- N-908, call sites (handoff point 2): cite them. The Electron runner goes before `loadNodeRegistrySnapshot` at `electron/application/electronApplication.ts:362`. The browser runner goes in a client plugin ordered before `20.windowNodeBootstrap.client.ts` and `21.mobileRemoteAccessBootstrap.client.ts` (for example `19.clientDataMigrations.client.ts`). Several tabs of one origin may run it at once; the structural check makes that idempotent, so state it.
+- N-909, SM-7 scope (handoff point 3): confirmed. `nodeStore.ts` writes the key only when `window.electronAPI` is absent (`:130-198`). In Electron windows the runner finds no old key, a no-op.
 
 ### Round-3 note (non-blocking)
 
@@ -243,11 +319,11 @@ The round-1 text follows, kept for traceability (AR-901 … AR-903 resolved in A
 
 ## Classification
 
-N/A (Pass).
+`Design Impact` (AR-905, AR-906).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
+Solution Designer (`/software_engineering_team/solution_designer`). Implementation is holding the mapping owners and continuing the plain renames; that may go on.
 
 ## Residual Risks
 
@@ -256,6 +332,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 3)
+- Review Decision: `Fail` (round 4; AR-905, AR-906)
 - Material-Premise Gate: `Pass` (MP-901 handled by the user's decision: a stated REQ-906 exception plus the release note)
-- Notes: classification `Large` / `High`. Design at commit `f9d826f1b6`. AR-901 … AR-904 are resolved; N-905 is a wording note.
+- Notes: classification `Large` / `High`, now with migrations. Design at commit `f92030a027` (SR-006).

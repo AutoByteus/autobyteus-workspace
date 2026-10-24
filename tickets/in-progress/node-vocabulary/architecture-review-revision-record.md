@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` (SR-003) with the SR-004 addendum | SR-003, SR-004 | N/A | Fail | AR-901, AR-902, AR-903 |
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Fail | AR-901 … AR-903 resolved; AR-904 (new, text) |
 | ARCH-REV-003 | Round 3 / the AR-904 text fix | SR-005 | Fail | Pass | AR-904 resolved; N-905 |
+| ARCH-REV-004 | Round 4 / SR-006 (U-3: stored names migrate) | SR-006 | Pass | Fail | AR-905, AR-906 (new) |
 
 ## Revision Entries
 
@@ -84,3 +85,42 @@ None.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-901 (accepted).
+
+### ARCH-REV-004 — Round 4: sealed migrations sound in shape; hold-back owners and phone keys
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/design-review-report.md`
+- Review round and trigger: round 4; SR-006 (commit `f92030a027`) widens the scope by the user's U-3, reversing U-1. Project rule commit `b3d9c758f2`.
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 4.
+- Relevant solution revision IDs: SR-006
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Fail` (`Design Impact`)
+- What changed in the review result:
+  - Reviewed against Principle 5 and the updated Data Migration Guideline.
+  - Verified:
+    - the startup order (`server-runtime.ts:183-206`);
+    - the identity service's lazy creation (`node-identity-service.ts:32-50`);
+    - the capability mechanism (`app-data-capability-readiness.ts:15-20`; only two capabilities exist today);
+    - the registry reader's tolerance (`nodeRegistryStore.ts:100-158`);
+    - the renderer bootstrap plugins;
+    - `nodeStore`'s browser-mode-only writes;
+    - the phone apps' record fields and storage keys.
+  - The four handoff points:
+    - (1) the identity hold-back needs a named owner (AR-905);
+    - (2) the call sites are identifiable (N-908);
+    - (3) the SM-7 scope is confirmed (N-909);
+    - (4) "no old name in current code" holds for the server and desktop, but not for the phone keys unless decided (AR-906).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-901 … AR-904 | Resolved | Resolved (unchanged by SR-006) | — | — |
+| N-905 | Note | Done | RSK-902 reworded | Design § Risks |
+
+- New or remaining finding IDs:
+  - AR-905 (Medium): name the hold-back chain for `node_identity` (the identity service refuses without creating; the status route, `PeerGateway` and `PeerClient`, pairing and GraphQL answers) and `memory_sync` (a new capability: source loop, hub ingestion, GraphQL).
+  - AR-906 (Low): decide the phone storage keys under rule 10.
+  - Non-blocking: N-906 … N-909.
+- Material classification changes: none (`Large` / `High`, now with persisted-data migrations).
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: RSK-901 (accepted). Migration fixtures are built from the released writers, since the user declined a real-data read; N-907 makes SM-6 tolerant of older records.
