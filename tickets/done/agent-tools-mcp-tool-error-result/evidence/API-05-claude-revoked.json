@@ -1,0 +1,45 @@
+{
+  "runtime": "claude_agent_sdk",
+  "model": "haiku",
+  "toolNamesSelected": [
+    "tok_auth_probe"
+  ],
+  "remoteRequests": [
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "rpcMethod": "initialize",
+      "toolName": null,
+      "auth": "other"
+    }
+  ],
+  "events": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "AGENT_INPUT_STATE",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+    "SEGMENT_END",
+    "TOOL_EXECUTION_FAILED",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "TOKEN_USAGE_UPDATED",
+    "TOKEN_USAGE_UPDATED",
+    "TURN_COMPLETED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE"
+  ],
+  "lastEvents": "CONNECTED:{\"agent_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\",\"session_id\":\"f2f75a40-18dc-4a06-a2e8-d4f3049b7276\"} | AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b1208e0-7078-45cd-90d6-afb6f2c3ad25\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null} | AGENT_STATUS:{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b1208e0-7078-45cd-90d6-afb6f2c3ad25\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-af39082b-b3fc-4a57-ac3b-ab57e0878937\",\"dedupe_key\":\"agent_run_input:e2e:e2e-af39082b-b | AGENT_COMMAND_ACK:{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\",\"message_id\":\"e2e-af39082b-b3fc-4a57-ac3b-ab57e0878937\",\"dedupe_key\":\"agent_r | AGENT_STATUS:{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\"} | TURN_STARTED:{\"turnId\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06 | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b1208e0-7078-45cd-90d6-afb6f2c3ad25\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-af39082b-b3fc-4a57-ac3b-ab57e0878937\",\"dedupe_key\":\"agent_run_input:e2e:e2e-af39082b-b | SYSTEM_INSTRUCTIONS_SUPPLIED:{\"trace_id\":\"rt_1792863253194_7397b5b7-3c1f-49f2-9d8b-a9ac151620d5\",\"content\":\"## Agent Identity\\n\\n- Name: mcp-http-auth-claude-revoked-5cb865fb-94f0-4410-94bb-cfc6c0def495\\n- Description: Calls cred | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b1208e0-7078-45cd-90d6-afb6f2c3ad25\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-af39082b-b3fc-4a57-ac3b-ab57e0878937\",\"dedupe_key\":\"agent_run_input:e2e:e2e-af39082b-b | SEGMENT_START:{\"id\":\"toolu_01Hd2PHYwm6NEdUJtqWRsnZq\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe\",\"segment_type\":\"tool_call\" | TOOL_EXECUTION_STARTED:{\"invocation_id\":\"toolu_01Hd2PHYwm6NEdUJtqWRsnZq\",\"tool_name\":\"tok_auth_probe\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067- | SEGMENT_END:{\"id\":\"toolu_01Hd2PHYwm6NEdUJtqWRsnZq\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe\",\"metadata\":{\"tool_name\":\"t | TOOL_EXECUTION_FAILED:{\"invocation_id\":\"toolu_01Hd2PHYwm6NEdUJtqWRsnZq\",\"tool_name\":\"tok_auth_probe\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067- | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"8aee228f-bb2f-4a80-b591-f6a142f16d2c\",\"idempotency_key\":\"claude_sdk_call:40126a67-f5d6-4dd7-a213-dc2b31ae70ef:msg_011CgMTsxK9KSm5U7j5pGi52\",\"observed_at\":\"2026-10-24T17:34:15.887Z\", | SEGMENT_START:{\"id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe:claude-text:msg_011CgMTt4buzwHULBEVveSXG:0\",\"turn_id\":\"mcp_http_auth_c | SEGMENT_CONTENT:{\"id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe:claude-text:msg_011CgMTt4buzwHULBEVveSXG:0\",\"turn_id\":\"mcp_http_auth_c | SEGMENT_END:{\"id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe:claude-text:msg_011CgMTt4buzwHULBEVveSXG:0\",\"turn_id\":\"mcp_http_auth_c | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"e850238e-a5f6-46b4-a065-da5c62020f0e\",\"idempotency_key\":\"claude_sdk_call:40126a67-f5d6-4dd7-a213-dc2b31ae70ef:msg_011CgMTt4buzwHULBEVveSXG\",\"observed_at\":\"2026-10-24T17:34:17.370Z\", | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"e1a1c77a-8f3f-4627-bfe4-3f886c652a83\",\"idempotency_key\":\"claude_sdk_result:9e5b09ea-1986-4bf4-b0b7-8345a9725037\",\"observed_at\":\"2026-10-24T17:34:17.377Z\",\"run_id\":\"mcp_http_auth_cla | TURN_COMPLETED:{\"turnId\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53:turn:d86678b0-db6e-4626-b067-9063ee28c6fe\",\"turn_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06 | AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_claude_revoked_5cb865fb_94f0_4410_168d06bb87aa405abc237f2f68e65a53\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b1208e0-7078-45cd-90d6-afb6f2c3ad25\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}",
+  "statusInToolResult": true,
+  "dummyValueOnAgentWire": false
+}

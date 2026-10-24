@@ -136,10 +136,11 @@ code parses it. The one addition is the HTTP status of a failed remote connect:
   The text carries no header or token value. Preview prefixes it with `Failed to
   preview tools for MCP server: `; discovery returns it as the `message` of a
   `success: false` result; a native agent's tool call that has to connect
-  reports it inside `Error executing tool '<name>' (ID: …): …`. Agents on the
-  other runtimes reach the tool through the Agent Tools MCP endpoint, which
-  currently answers any external tool failure with JSON-RPC `Internal error`,
-  so they do not see this text.
+  reports it inside `Error executing tool '<name>' (ID: …): …`. Agents on AGY,
+  Codex and Claude reach the tool through the Agent Tools MCP endpoint, which
+  returns the same text as the tool's result with `isError: true`, so their
+  turn goes on and the agent reads the reason (see
+  [Agent Tools MCP Server](agent_tools_mcp_server.md#supported-tool-families)).
 - A failure without an HTTP answer keeps the SDK's or Node's text with no
   status, for example `TypeError: fetch failed` when nothing listens.
 - An HTTP error on a session that is already connected (listing tools, a tool

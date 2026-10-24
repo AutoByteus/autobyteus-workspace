@@ -5,10 +5,10 @@
  * `Authorization` header (Basic) and one with the token (sent as Bearer), calls both through the AutoByteus server,
  * and each remote server sees its credential on the `tools/call` request itself. Native AutoByteus runs the
  * registry MCP tool directly; AGY, Codex and Claude reach it through the run's `autobyteus_agent_tools` endpoint.
- * Then the token server revokes the token: a new native AutoByteus run's tool call fails, and the agent's tool
- * failure states the HTTP status (`HTTP 401 Unauthorized: …`). Native only: the Agent Tools MCP endpoint that AGY,
- * Codex and Claude use answers every failed configured-MCP tool call with JSON-RPC `Internal error`
- * (tickets/…/mcp-http-error-status/follow-ups.md FU-001).
+ * Then the token server revokes the token: on each runtime a new run's tool call fails, and the agent's tool
+ * failure states the HTTP status (`HTTP 401 Unauthorized: …`), with no credential value. For AGY, Codex and Claude
+ * the Agent Tools MCP endpoint answers the failed call with an `isError` tool result carrying that text, so the
+ * turn goes on instead of ending in JSON-RPC `Internal error` (autobyteus-232).
  * Gates (each runtime runs only when its gate is set; a skip is not a pass):
  *   - AGY, scripted (no model): RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs
  *   - Native AutoByteus with a local LM Studio model: RUN_LMSTUDIO_E2E=1 (optional LMSTUDIO_TARGET_TEXT_MODEL)
@@ -240,37 +240,44 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
     }, 360_000);
   }
 
-  const native = RUNTIMES.find((runtime) => runtime.key === "native")!;
-  it.skipIf(!native.enabled)("native: after the server revokes the token, the agent's tool call fails with the HTTP status", async () => {
-    // The tools were registered with the token; the server now accepts another value only, as after a revocation.
-    tok.setRequiredAuthorization("Bearer test-rotated");
-    try {
-      const started = await startRun(native, "native-revoked", [TOK_TOOL]);
-      const mark = tok.observations.length;
-      const preview = await runTurn(started,
-        `Call the tool ${TOK_TOOL} once with no arguments. Then reply with the exact text the tool returned.`);
-      const wire = JSON.stringify(started.messages);
+  for (const runtime of RUNTIMES) {
+    it.skipIf(!runtime.enabled)(`${runtime.key}: after the server revokes the token, the agent's tool call fails with the HTTP status`, async () => {
+      // The tools were registered with the token; the server now accepts another value only, as after a revocation.
+      tok.setRequiredAuthorization("Bearer test-rotated");
+      try {
+        const started = await startRun(runtime, `${runtime.key}-revoked`, [TOK_TOOL]);
+        const mark = tok.observations.length;
+        const preview = await runTurn(started, runtime.key === "agy"
+          ? `CALL_TOOLS:${JSON.stringify([{ name: TOK_TOOL, arguments: {} }])}`
+          : `Call the tool ${TOK_TOOL} once with no arguments. Then reply with the exact text the tool returned.`);
+        const wire = JSON.stringify(started.messages);
 
-      // Each connect of the run was refused with 401 at initialize; no tool call reached the server.
-      const seen = tok.observations.slice(mark);
-      expect(seen.length, preview).toBeGreaterThanOrEqual(1);
-      expect(new Set(seen.map((entry) => entry.rpcMethod)), preview).toEqual(new Set(["initialize"]));
-      expect(new Set(seen.map((entry) => entry.auth))).toEqual(new Set(["other"]));
-      // The tool failure the agent and the user see states the status, then the SDK's text.
-      expect(wire, preview).toContain(REVOKED_TOOL_RESULT);
-      expect(wire).not.toContain(tok.marker);
-      expect(wire).not.toContain(DUMMY);
+        // Each connect of the run was refused with 401 at initialize; no tool call reached the server.
+        const seen = tok.observations.slice(mark);
+        expect(seen.length, preview).toBeGreaterThanOrEqual(1);
+        expect(new Set(seen.map((entry) => entry.rpcMethod)), preview).toEqual(new Set(["initialize"]));
+        expect(new Set(seen.map((entry) => entry.auth))).toEqual(new Set(["other"]));
+        // The tool failure the agent and the user see states the status, then the SDK's text.
+        expect(wire, preview).toContain(REVOKED_TOOL_RESULT);
+        expect(wire).not.toContain(tok.marker);
+        expect(wire).not.toContain(DUMMY);
+        // Through the Agent Tools MCP endpoint the failure is the tool's result: the turn goes on and completes.
+        if (runtime.key !== "native") {
+          expect(started.messages.some((m) => m.type === "ERROR"), preview).toBe(false);
+          expect(started.messages.some((m) => m.type === "TURN_COMPLETED"), preview).toBe(true);
+        }
 
-      if (evidenceDir) {
-        await fs.mkdir(evidenceDir, { recursive: true });
-        await fs.writeFile(path.join(evidenceDir, "native-revoked.json"), JSON.stringify({
-          runtime: native.runtimeKind, model: started.model, toolNamesSelected: [TOK_TOOL], remoteRequests: seen,
-          events: started.messages.map((m) => m.type),
-          lastEvents: preview, statusInToolResult: wire.includes(REVOKED_TOOL_RESULT), dummyValueOnAgentWire: wire.includes(DUMMY),
-        }, null, 2));
+        if (evidenceDir) {
+          await fs.mkdir(evidenceDir, { recursive: true });
+          await fs.writeFile(path.join(evidenceDir, `${runtime.key}-revoked.json`), JSON.stringify({
+            runtime: runtime.runtimeKind, model: started.model, toolNamesSelected: [TOK_TOOL], remoteRequests: seen,
+            events: started.messages.map((m) => m.type),
+            lastEvents: preview, statusInToolResult: wire.includes(REVOKED_TOOL_RESULT), dummyValueOnAgentWire: wire.includes(DUMMY),
+          }, null, 2));
+        }
+      } finally {
+        tok.setRequiredAuthorization(`Bearer ${DUMMY}`);
       }
-    } finally {
-      tok.setRequiredAuthorization(`Bearer ${DUMMY}`);
-    }
-  }, 360_000);
+    }, 360_000);
+  }
 });
