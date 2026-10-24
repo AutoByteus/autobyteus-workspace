@@ -8,7 +8,7 @@
     <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
       <h4 class="text-sm font-semibold text-slate-900">{{ t('settings.components.settings.NfsGuideCard.firstUse') }}</h4>
       <p class="mt-1 text-sm leading-6 text-slate-600">{{ t('settings.components.settings.NfsGuideCard.computerHint') }}</p>
-      <p v-if="downloadUrl" class="mt-2 text-xs font-semibold text-slate-700">{{ t('settings.components.settings.NfsGuideCard.releaseVersion', { version: release!.tag }) }}</p>
+      <p v-if="hasAvailableInstaller" class="mt-2 text-xs font-semibold text-slate-700">{{ t('settings.components.settings.NfsGuideCard.releaseVersion', { version: release!.tag }) }}</p>
       <div class="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
         <div v-for="computer in computers" :key="computer.id" class="min-w-0 rounded-xl border border-slate-200 bg-white p-4">
           <div class="flex items-start justify-between gap-3">
@@ -28,8 +28,6 @@
         </div>
       </div>
       <p v-if="!allAvailable" id="nfs-release-unavailable" class="mt-3 text-sm leading-6 text-slate-600">{{ t('settings.components.settings.NfsGuideCard.unavailable') }}</p>
-      <a v-if="downloadUrl" :href="downloadUrl" target="_blank" rel="noopener noreferrer" class="mt-3 inline-block text-sm font-semibold text-blue-700 underline underline-offset-4">{{ t('settings.components.settings.NfsGuideCard.download') }}</a>
-      <a v-if="downloadUrl" :href="release!.installerUrl" target="_blank" rel="noopener noreferrer" class="mt-3 block text-sm font-semibold text-blue-700 underline underline-offset-4">{{ t('settings.components.settings.NfsGuideCard.installerReview') }}</a>
     </div>
 
     <div v-for="group in commandGroups" :key="group.id" class="mt-5">
@@ -75,7 +73,7 @@ const computers = computed(() => (['macos', 'linux'] as const).map(id => ({ id,
   command: nfsLauncherCommand(id, props.release),
 })));
 const allAvailable = computed(() => computers.value.every(computer => computer.command));
-const downloadUrl = computed(() => computers.value.some(computer => computer.command) ? props.release?.downloadUrl : null);
+const hasAvailableInstaller = computed(() => computers.value.some(computer => Boolean(computer.command)));
 const commandGroups = [
   { id: 'roles', titleKey: 'settings.components.settings.NfsGuideCard.roleTitle', hintKey: 'settings.components.settings.NfsGuideCard.roleHint', commands: nfsUsageCommands.filter(entry => entry.id === 'create' || entry.id === 'connect') },
   { id: 'reference', titleKey: 'settings.components.settings.NfsGuideCard.commandsTitle', hintKey: 'settings.components.settings.NfsGuideCard.installedHint', commands: nfsUsageCommands.filter(entry => entry.id !== 'create' && entry.id !== 'connect') },

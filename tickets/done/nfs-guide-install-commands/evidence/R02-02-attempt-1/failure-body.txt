@@ -1,0 +1,123 @@
+# R02/API002 failed attempt1 observed body; actual /nodes; HEAD4e308b7; macOS Chrome/privateHOME; 2026-10-24
+管理节点
+记忆同步
+手机设置
+Docker 指南
+NFS 指南
+
+DOCKER 节点
+
+启动 Docker 节点
+
+先安装一次 Docker 启动器，然后创建常规 Docker 节点，用于本机或可信私有网络访问。
+
+1. 安装一次启动器
+
+MACOS / LINUX
+
+安装 autobyteus-docker
+
+安装或更新本地启动器，并输出直接路径、当前 shell PATH、持久化更新或复制粘贴配置指引。
+
+复制
+curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+
+WINDOWS POWERSHELL
+
+安装 autobyteus-docker
+
+安装或更新本地启动器，并输出直接路径、当前 shell PATH、持久化更新或复制粘贴配置指引。
+
+复制
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+2. 使用本地命令
+
+安装后，这些命令在本地运行，不会再次下载启动器。
+
+启动器会把私有服务器状态保存在 Docker 命名卷中，发布服务器/浏览器端口，并创建主机可见的工作区和共享文件夹绑定挂载。
+
+创建 Docker 节点
+
+拉取最新镜像并创建下一个编号的 Docker 容器；可用时优先使用连续易读的主机端口。
+
+复制
+autobyteus-docker new-container
+
+升级所有 Docker 节点
+
+使用每个节点保存的镜像引用重新创建所有已管理容器，同时保留命名卷。
+
+复制
+autobyteus-docker upgrade --all
+
+销毁所有 Docker 节点
+
+移除所有已管理容器和未使用的旧镜像，同时保留命名卷。
+
+复制
+autobyteus-docker destroy --all
+
+销毁一个 Docker 节点
+
+请先运行 autobyteus-docker status，然后将 <node-name> 替换为准确的已管理节点名称。此操作只移除该节点的容器和启动器状态，同时保留命名卷和主机工作区；下次运行 new-container 时可以重新使用释放的编号槽位。
+
+复制
+autobyteus-docker destroy --name <node-name>
+
+重置 Docker 节点
+
+销毁所有已管理容器、保留卷，然后创建一个新的 autobyteus-server-0。
+
+复制
+autobyteus-docker reset
+
+显示工作区路径
+
+默认打印所有已管理节点中 /home/autobyteus/workspace 和 /home/autobyteus/shared 对应的主机文件夹。
+
+复制
+autobyteus-docker workspace paths
+
+为所有节点应用共享工作区
+
+用新的绑定挂载安全重建已管理容器，同时保留现有命名卷。
+
+复制
+autobyteus-docker workspace apply --all
+
+查看 Docker 存储
+
+默认显示所有已管理节点的私有命名卷、主机绑定挂载和启动器状态。
+
+复制
+autobyteus-docker storage
+
+显示 Docker 节点 URL
+
+默认打印所有已管理节点的 Backend、noVNC、VNC 和调试 URL。
+
+复制
+autobyteus-docker urls
+
+显示 Docker 节点状态
+
+列出已管理节点及其当前 Docker 状态。
+
+复制
+autobyteus-docker status
+
+显示 Docker 节点日志
+
+打印默认 Docker 节点的近期日志。
+
+复制
+autobyteus-docker logs
+
+停止 Docker 节点
+
+停止默认节点，但不删除命名卷。
+
+复制
+autobyteus-docker stop
+
+new-container 输出 Backend 后，将该 URL 添加为远程节点，并通过你信任的私有网络打开 Docker 节点窗口。手机访问需要在该窗口中使用手机可访问、已验证的 HTTPS 或已确认可信私有 HTTP /mobile URL 创建二维码。

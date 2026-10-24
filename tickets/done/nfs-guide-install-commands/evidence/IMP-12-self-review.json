@@ -1,0 +1,42 @@
+{
+  "id": "IMP-12",
+  "date": "2026-10-24T04:06:10.226769+00:00",
+  "input": "1103c5f9f7c6986a77ef34620b02d790e2297621",
+  "sourceCommit": "3d95a5c4a16759060983489735e77820661cff53",
+  "changedPaths": [
+    "autobyteus-web/components/settings/NfsGuideCard.vue",
+    "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+    "autobyteus-web/docs/nfs_guide.md",
+    "autobyteus-web/localization/messages/en/settings.ts",
+    "autobyteus-web/localization/messages/zh-CN/settings.ts"
+  ],
+  "preservedBytesSHA256": {
+    "autobyteus-web/utils/nfsLauncherCommands.ts": "a79edab2955c9452cf902e820d1db8d8ea884acacc1017ef556a707d12ee108f",
+    "autobyteus-web/components/settings/NodeManager.vue": "325034a74fdaf445bec97716827862eb5548d5bb68cbbe77e2f463b39a5d9bec",
+    "autobyteus-web/components/settings/DockerNodeStartGuideCard.vue": "7095015a34247566860250c97b4df6e0e2fec899e5e40e7c593ce39937720e20",
+    "autobyteus-web/utils/dockerNodeLauncherCommands.ts": "194359a05c84132f3fded0efaa7de12eb7756d48ecb92deb2b8c81865919f499"
+  },
+  "clipboardAndUsageOwnerSuffixUnchanged": true,
+  "localeChanges": {
+    "en": [
+      "  \"settings.components.settings.NfsGuideCard.computerHint\": \"Copy only—nothing runs in AutoByteus. Review the installer first, then paste into a host terminal (not an agent container) in an empty working directory. The script is saved there, installs the tool and prints its version; it does not configure storage. Requires curl, a shell and the checksum utility shown below, not a compiler or Homebrew.\",",
+      "  \"settings.components.settings.NfsGuideCard.download\": \"View release downloads\",",
+      "  \"settings.components.settings.NfsGuideCard.installerReview\": \"Review the pinned installer script\",",
+      "  \"settings.components.settings.NfsGuideCard.computerHint\": \"Copy only—nothing runs in AutoByteus. Review the installer at the URL shown in the command first, then paste into a host terminal (not an agent container) in an empty working directory. The script is saved there, installs the tool and prints its version; it does not configure storage. Requires curl, a shell and the checksum utility shown below, not a compiler or Homebrew.\","
+    ],
+    "zh-CN": [
+      "  \"settings.components.settings.NfsGuideCard.computerHint\": \"这里只复制命令，AutoByteus 不会执行。请先查看安装脚本，再在主机终端（非智能体容器）的空工作目录中粘贴。脚本会保存在该目录，安装工具并显示版本，不会配置存储。需要 curl、Shell 和下方的校验工具，无需编译器或 Homebrew。\",",
+      "  \"settings.components.settings.NfsGuideCard.download\": \"查看版本下载\",",
+      "  \"settings.components.settings.NfsGuideCard.installerReview\": \"查看固定版本的安装脚本\",",
+      "  \"settings.components.settings.NfsGuideCard.computerHint\": \"这里只复制命令，AutoByteus 不会执行。请先查看命令中网址对应的安装脚本，再在主机终端（非智能体容器）的空工作目录中粘贴。脚本会保存在该目录，安装工具并显示版本，不会配置存储。需要 curl、Shell 和下方的校验工具，无需编译器或 Homebrew。\","
+    ]
+  },
+  "effectiveSourceLines": {
+    "autobyteus-web/components/settings/NfsGuideCard.vue": 95,
+    "autobyteus-web/localization/messages/en/settings.ts": 443,
+    "autobyteus-web/localization/messages/zh-CN/settings.ts": 443
+  },
+  "result": "Pass",
+  "classification": "Small/Low confirmed; no new design issue/persistence/compatibility/execution",
+  "limits": "Source/diff review only. Current tests and browser proof separately recorded."
+}

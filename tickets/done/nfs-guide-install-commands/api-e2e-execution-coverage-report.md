@@ -1,77 +1,76 @@
 # API/E2E execution coverage report — nfs-guide-install-commands
 
-## API-REV-001 — Pass, 96.43%
-Task **autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**. R1/SR001 Approved, SR002 Ready, IR001. Initial API baseline; no earlier API result. Source/tests/docs **2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb**, intake/tested HEAD **66b00b8c654c82f0fe8abd44a7094bf9b2799cc4**; product diff empty. Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands`, branch `codex/nfs-guide-install-commands`. Finalization **origin/personal; NO release**.
+## API-REV-002 — Pass, 95.71%
+**autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**. Reopened R2/SR003 Approved, SR004 Ready, IR002. Source/tests/scoped docs **3d95a5c4a16759060983489735e77820661cff53**, tested HEAD **4e308b716cf70ed5bc914ab780984e59df30af7f**; no non-ticket delta between them. Worktree **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2**, branch **codex/nfs-guide-install-commands-r2**. Finalization **origin/personal; NO release**.
 
-Canonical plan: api-e2e-coverage-investigation.md. History: api-e2e-revision-record.md. Progress: api-e2e-test-progress.md (append-only). Evidence: **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/evidence**. This validates the copy-only guide, NOT NFS installation/storage, standalone release, or packaged Electron.
+Plan/upstream inventory: api-e2e-coverage-investigation.md. History: api-e2e-revision-record.md. Append-only progress: api-e2e-test-progress.md. Evidence folder **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/evidence**. The earlier API001 Pass96.43 is historical exact-input proof, not this revision's acceptance. New case evidence is suffixed `-02`; old evidence/history unchanged.
 
-## Classification and route
-- Task size **Small**, architectural risk **Low**, input **Direct Low-Risk**.
-- Architecture/source review: **N/A—not selected**; no independent review invented.
-- Test review: **Not Required — direct low-risk route**. Successful output: Delivery via fresh rule lookup after evidence commit.
-- API durable test/source edits: **None**. Existing focused tests are adequate; temporary reproducible browser driver retained as evidence for actual page composition/visual/clipboard gap, not installed as a new test framework.
+## Classification / impact
+- **Small / Low / Direct Low-Risk**. Architecture/source review N/A—not selected. Test review **Not Required — direct low-risk route**. Successful-output route Delivery, using fresh rules after evidence commit.
+- API product or durable-test edits: **None**. IR002's focused two-locale regression already covers the intended removal/partial version. A ticket-owned temporary current-page driver supplies composition/real clipboard/visual evidence, not a new test framework.
+- API001 source2c6b414→current HEAD:2062 paths, including shared core/contracts, so old API cases are **Rerun**, not blindly carried. IMP08 recorded2010 paths at earlier input1103c5f9; later count includes current ticket additions. Scope remains renderer-only.
+- R01 is current replacement evidence: IMP10/11 ran on3d95a5c4; diff to current exercised inputs is empty, so reuse rather than repeat for independence. R02/R03/C01 personally executed against current source. Five approved source changes only vs1103c5f9; helper/parent/Docker bytes preserved.
 
-## Tested environments and setup
-| ID | Source / setup | Proven boundary / limits |
+## Tested environments / setup
+| Env | Commit / execution | Boundary and limits |
 |---|---|---|
-| I |IMP03/04 on2c6b414; macOSarm64, Node22.23.1, pnpm10.28.2, Vitest3.2.7; already prepared isolated worktree|Attributed repository evidence:5files/53tests including6 inert shell cases, focused utility typecheck and3guards. Same source; no duplicate rerun|
-| B |Current Nuxt dev /nodes and /settings?section=language, Nodev22.23.1, Chrome155.0.8059.85, macOSarm64, own localhost ephemeral port/privateHOME+TMP/browser profile; one dev server at a time|Actual router, NodeManager, NFS/Docker components, real catalogs and browser clipboard. Only unrelated app read APIs/feeds emulated. Not backend/Electron/OS-install proof|
-| C |Local owned process-group/port/root checks; exact Git diff|No user app or unowned processes/data changed; ignored node_modules/.nuxt retained|
+|I|Attributed IMP10/IMP11 on3d95a5c4, macOSarm64 Node22.23.1, Nuxt/Vitest3.2.7, privateHOME/TMP; current frozen filtered install/Nuxt prepare from IMP08|54tests/5files, focused helper typecheck/3guards; component browser negative-state proof. No repeated suites, no live installer|
+|B|Current Nuxt dev on4e308b7, Node22.23.1, actual Chrome156.0.8078.47; fresh privateHOME/TMP/browsercontext, localhost51928; en/zh-CN ×1280/390|Actual /settings language selector and /nodes Manage→Docker→NFS, real catalogs/helper/router/clipboard. Final run explicitly chromiumSandbox=true and root launch argv checked for absence of --no-sandbox. Unrelated app read APIs/feeds emulated; not backend/Electron acceptance|
+|C|Own process-group/port/root inspection, Git source/history check|No user's app/browser/data/containers touched. Current generated Nuxt outputs/dependencies retained, no stale server dist used|
 
-Followed root AGENTS/TESTING/DESIGN and web AGENTS/ARCHITECTURE/README/config. Dependency install and Nuxt prepare were already successful on identical source; no stale server build is used. Actual navigation is **Nodes → NFS Guide** (`/nodes`); language set through real Settings selector. The guide has no API/IPC/host operation; starting real model/server/storage systems would add no relevant evidence.
+Root TESTING.md and web AGENTS/ARCHITECTURE/README/package/Vitest/Nuxt config govern this renderer/browser layer. One frontend dev server at a time. Each attempt has fresh owned environment; no inherited AUTOBYTEUS roots, credentials or model providers. Actual page is **Nodes → NFS Guide**, Settings used only for language. No requirement for full product/Electron-shell journey in this unchanged-shell copy-only revision.
 
-## Cases
-Evidence paths below relative to ticket; raw commands/header/environment retained. Four planned cases completed, no skipped in-scope case.
+## Cases (the validation ledger)
+Evidence names below relative to `evidence/`; each raw result has identity/environment/command/date. Four cases complete, no skipped in-scope case.
 
-| ID | Criteria/scenario | Command or journey | Env | Result | Evidence / look for / limits |
+| ID | Criteria/scenario | Command or steps | Env | Result | Evidence / look for / limits |
 |---|---|---|---|---|---|
-| R01 |AC001–005;SCN001–004|`/usr/bin/python3 tickets/in-progress/nfs-guide-install-commands/evidence/R01-reuse.py` from worktree; reuse IMP03/04/05/06 after diff/validity audit|I|Pass — Reused|`evidence/R01-reuse.json`, `R01-reused-excerpts.log`: `Test Files  5 passed (5)`, `Tests  53 passed (53)`. IMP03 six shell-stub success/download/checksum controls; actual locale/null/invalid/partial/clipboard/timer/unmount tests; adjacent Docker7. IMP04 typecheck header exit0 and3guards exit0. No new suite execution|
-| R02 |AC001/002/003/005;SCN001/002|`node tickets/in-progress/nfs-guide-install-commands/evidence/R02-browser.mjs R02-attempt-2`; actual language UI→/nodes Manage→Docker→keyboard End→NFS; en/zh-CN ×1280/390|B|Pass|`evidence/R02-summary.json`, `R02-attempt-2/result.json`, four text snapshots/eight screenshots, `R02-visual-review.md`:9independent expected strings/36actual clipboard comparisons,3safe links,9unique accessible names/polite status, tabs/panel correlation, no horizontal document overflow, local code scrolling. Docker rendered/copied before and command bytes unchanged after NFS|
-| R03 |AC003;SCN003|Same current browser session: native Enter Copy and2second reset; controlled pending write Promise, disabled second copy, leave tab→late resolve→return; denied/missing clipboard/manual selection|B|Pass|`R02-summary.json` clipboardEdgeCases; `R02-attempt-2/denied.png`; result scenarios: pendingAll9Disabled/secondRequestExcluded/unmountLateResolve/denialManualSelection/missingClipboard true. Real success36copies plusEnter; failure boundary deliberately doubled; no false success/pageerrors|
-| C01 |AC005/safety|`/usr/bin/python3 tickets/in-progress/nfs-guide-install-commands/evidence/C01-finalize.py`; inspect screenshots and owned lifecycle, compare source/other files|C|Pass|`evidence/C01-cleanup.json`: both attempts' process groups absent, ports closed, own roots absent/browser closed; all tracked inputs unchanged. No source/temp page or persistent runtime added|
+|R01|AC001–006;SCN001–005|`python3 tickets/in-progress/nfs-guide-install-commands/evidence/R01-02-reuse.py`; inspect current IMP10/11 and diff since tested commit|I|**Pass — Reused**|`R01-02-reuse.json`, `R01-02-reused-excerpts.log`; `Test Files  5 passed (5)`, `Tests  54 passed (54)`, all5 commands exit0. Exact commands/full logs/env in implementation-handoff Checks Run IMP10. Component13/helper24/parent10/Docker7 includes6 inert shell controls (not additional unique tests). IMP11-verified/result.json+driver: partial version preserved, null version hidden, zero events. No new product test invocation|
+|R02|AC001/002/003/005/006;SCN001/002/005|`node tickets/in-progress/nfs-guide-install-commands/evidence/R02-02-browser.mjs R02-02-attempt-2`; real locale settings→actual /nodes Manage→Docker→keyboard End→NFS; four locale/width combinations|B|**Pass**|`R02-02-summary.json`, `R02-02-attempt-2/result.json`, four text snapshots and12 view screenshots;9 independent expected commands ×4 =36 exact actual clipboard checks, exactly1safe advanced README, removed labels absent, review reminder/version present, installGap17 in every view,9unique aria names/polite status, selected tab/panel labels and no horizontal document overflow. Docker copied before and strings unchanged after each locale. `R02-02-visual-review.md` records actual inspected images|
+|R03|AC003;SCN003|Same browser current page: Enter Copy→actual nativeclipboard→2s reset; controlled pending write, second excluded, leave tab→late resolve→return; denial/missing/manual selection|B|**Pass**|`R02-02-summary.json` clipboardEdgeCases; raw result R03: timerReset/pendingAll9Disabled/secondRequestExcluded/unmountLateResolve/denialManualSelection/missingClipboard alltrue. One additional realNFS keyboardcopy,2Docker copies inR02. `R02-02-attempt-2/denied.png`. Final errors=[] and no NFS asset requests; controlled permission errors are deliberately emulated|
+|C01|AC005/safety|`python3 tickets/in-progress/nfs-guide-install-commands/evidence/C01-02-cleanup.py`; only own process groups/ports/roots, source/prior history/other-owner preservation|C|**Pass**|`C01-02-cleanup.json`: both attempts' groupsAbsent alltrue, portClosed/rootAbsent/browserClosed true, sourceDiff empty, oldHistoryPrefixUnchanged/otherTrackedOwnerFilesUnchanged true. Owned Chrome cleanup assistance disclosed below; no product fixture page created|
 
-### Attempts / honest attribution
-- R01 initial metadata reader required literal `exit=0`; actual IMP04 header correctly says `; exit0`. Reader-only correction, `R01-attempt-note.json`; metadata audit resumed. No failed product typecheck or repeated suite.
-- R02 attempt1 **incomplete/failed harness**, not Pass: expected Chinese “未加密” whereas actual correct wording is “不加密”; actual full page also requested nine additional unrelated read queries not supplied by initial component-sized fixture. `R02-attempt-1/result.json`, failure screenshot/body and original driver retained. Corrected locale expectation and modeled exact observed empty query contracts; no product change/error suppression. New attempt2 full planned journey passed with **zero browser errors/unexpected GraphQL**. R03 ran only on attempt2. Both attempts cleaned up.
-- Earlier Implementation setup/preview failures remain attributed in implementation-handoff, not erased or promoted. Full53 includes focused shell/Docker counts; do not add overlapping observations as unique repository tests.
+### Attempts / causal diagnosis
+- **R02-02-attempt-1 remains Fail**, not acceptance: all four guide views reached, then browser-error guard rejected missing fixture boundaries on current Manage Nodes. New nodeListStore reads GetRemoteCollaborationSettings (`peerNodes`), GetRemoteCollaborationCapability and GET /rest/remote-access/status. The historical fixture supplied neither remote-collaboration query nor status; Apollo errors and an unsafe-port error came from the deliberately inert port1 URL. Actual query/request bodies, failure image/body, original driver and result retained.
+- Read current nodeListStore, capability store, nodeIdentityProbe, GraphQL/types; supply empty peers, disabled capability and synthetic valid node identity. Backend fixture base becomes owned frontend origin, no live backend connection. Unknown operations/browser errors still fail. Corrected attempt2 passed **zero browser errors**. No product edit, no error suppression; R01's passing suite not repeated. R03 only executed on attempt2.
+- Browser close on attempt1 waited for an orphaned owned network helper; exact recorded PID/profile/group was verified then SIGTERM'd (`cleanup-assist.json`). Observed Playwright's implicit no-sandbox default on this failed attempt; authoritative attempt2 explicitly enables Chromium sandbox and checks actual launch argv. No host policy/security setting changed. Attempt2 close needed its bounded owned browser-group SIGTERM; actual final absence verified, not assumed from close().
+- `R02-02-attempt-note.json` holds diagnosis and correction. These are API harness failures, not an established implementation defect or an erased passing-first-attempt claim. Earlier implementation failed preview/typename attempts remain in IMP11 evidence with their original limits.
 
 ## Acceptance-criteria proof
-| Criterion | Critical | Cases | Result / exact proof |
-|---|---|---|---|
-| AC001 |Yes|R01/R02|**Proven**: two independent pinned URL/hash/OS-checker strings ending `version`, displayed+actualclipboard; retained public script hash matches65769690…de86d25fa. Six inert controls show failed download/checksum stops invocation; NO real installer executed. Valid data lacks unavailable state|
-| AC002 |Yes|R01/R02|**Proven**: menu +create/connect/status/reconnect/detach/version, explicit installed path; correct once-storage/other-host order, approval/drain/wait/prerequisite text; no invented commands. Actual text snapshots in both locales|
-| AC003 |Yes|R01/R02/R03|**Proven**: exact36clipboard values plus keyboardEnter; fulfillment-only feedback/reset; pending9disabled/onewrite, unmountlate completion ignored, deny/missing/manual selection; guide causes zero NFS asset/release requests or execution|
-| AC004 |Yes|R01/R02|**Proven**: unchanged current tests verify null/invalid/partial disabledinstall/safelinks/installed-prerequisite; original negative component browser evidence reused. Actual Docker command/copy before-after intact and parent/Docker production unchanged|
-| AC005 |Yes|R01/R02/C01|**Proven**: current both locales/desktop+narrow, unique names/role/status/keyboard, full warning text/no horizontaldocumentoverflow and local code scrolling; source/tracked state preserved|
+All six are critical in this bounded UI scope. No Only The User Can Check designation or missing in-scope evidence.
 
-No Only The User Can Check designation or unproven in-scope AC. NFS/field tests are explicitly outside this UI ticket, not silently Passed; existing autobyteus-nfs-4 custody unchanged. No host questionnaire or user verification requested.
+| Criterion | Cases | Result and proof |
+|---|---|---|
+|AC001|R01/R02|**Proven**: unchanged two fixed v0.1.0 URL/checksum/OS-specific chains ending version; independently expected displayed and actualclipboard bytes in4views; valid release notice. Six inert shell tests show download/checksum failure prevents stub invocation. No actual installer executed or current download availability re-qualified|
+|AC002|R01/R02|**Proven**:7installed commands/menu and explicit ~/.local/bin path, create-once/connect-other-host order, prerequisite/admin/drain/wait prose; advanced README exact URL/target_blank/relnoopener noreferrer retained|
+|AC003|R01/R02/R03|**Proven**:9unique Copy controls,36exactclipboard comparisons+Enter, success only after fulfillment/reset, pending guard, component tab unmount/late completion, denied/missing/manualselection; no NFS request or execution. Clipboard negatives deliberate boundary emulation|
+|AC004|R01/R02|**Proven**: current13component/24helper cases cover invalid/null/partial and both locales; current IMP11 actual component confirms partial Macenabled/Linuxdisabled/versionpreserved and nullbothdisabled/versionhidden. No standalone link in any state. Parent10/Docker7 plus current actual Docker copy/beforeafter preserved|
+|AC005|R01/R02/R03/C01|**Proven**:actual en/zh ×1280/390, selectable locallyscrolling code, unique accessible names/politefeedback/keyboard tab+Enter, documentwidth≤viewport; host/trust/outage/deferred text in snapshots and screenshots. No field proof conflated, no unrelated resources changed|
+|AC006|R01/R02|**Proven**:both removed labels and anchors absent in bothlocales/all descriptor states; exactly advancedREADME, reviewreminder names URL incommand, measured17px existing padding/border only afterinstallgrid inall4views. Desktop visual flow directly proceeds to roles; no reservedlinkcontainer. Current IR002 regression fails oldshape2/2 and passes current54suite|
 
-## Confidence and broader validation
-Simple mean across seven applicable categories; scores scoped to approved copy-only renderer behavior.
+## Confidence / broader validation
+Simple mean of seven applicable categories; scope is copy-only renderer, not storage/installer or full product qualification.
 
-| Category | Post-repository | Final | Evidence / remaining limitation |
+| Category | Post-repository | Final | Evidence and residual limitation |
 |---|---:|---:|---|
-| Requirement/AC proof |90|95|All5criteria directly or exact-input attributed; no live-install qualification claimed|
-| Changed-boundary execution directness |85|100|Actual current page/parent/descriptor/locales/browser clipboard, independent command expectations and controlled error lifecycle|
-| Cross-boundary realism/mock gap |75|95|Real browserclipboard; unrelated app feeds/queries doubled, no changed guide behavior depends on them|
-| Environment/configuration/identity |95|100|Exact current source vs validated2c6b414, clean owned profile/home/port, confirmed cleanup; no stale backend build|
-| Failure/edge/lifecycle/recovery |90|95|Durable null/partial/unsafe data and six inert shell cases + actual page pending/denial/missing/unmount tests; synthetic permission failure clearly labeled|
-| User surface/browser (shell N/A) |75|95|2locales×2widths, keyboard/semantic/realclipboard/visual evidence; not packaged Electron or exhaustive assistive-tech certification|
-| Durable regression quality |95|95|Existing focused53tests represent approved assertions; new browsercomposition proof complements them without a parallel framework|
+|Requirement/AC proof|90|95|R01+R02 prove all6 directly at relevant boundary; fixed contract, not refreshed remoteasset availability|
+|Changed-boundary execution directness|85|100|R02 actual current Nodes parent/router/locales/template/browserclipboard and exact remnant anchor/version/layout|
+|Cross-boundary realism/mock gap|75|95|Real browser clipboard/navigation, unrelated read services/feeds emulated; no changed guide behavior requires real backend|
+|Environment/configuration/identity|95|95|Exact current source/current prepareddeps, isolated sandboxedChrome/profiles, no stale backendoutput; synthetic surrounding node identity explicit|
+|Failure/edge/lifecycle/recovery|95|95|Current durable null/invalid/partial and shellfailclosed controls plus current tabpending/unmount/denial/missing. Actual OS permission dialog not forced|
+|User surface/browser (shell N/A)|75|95|Four actualpage views/semantics/keyboard/realcopy and inspected screenshots. Not exhaustive assistive-tech certification or packagedElectron|
+|Durable regression relevance|95|95|Current54tests valid, two targeted locale/state regressions sensitive to oldshape. Temporary composition probe complements—not replaces—durablecoverage|
 
-Post-repository605/7=**86.43%**; final675/7=**96.43%**. Final minimum95; clean target met. Every critical AC proven within scope. **Broader Required and executed**—actual page composition/clipboard/layout was not proven by component tests alone. No material untested in-scope boundary remains. Desktop-shell work not selected: no shell delta and project browser layer directly exercises this renderer-only behavior; not full product acceptance.
+Post-repository610/7=**87.14%**. Final670/7=**95.71%**, minimum95. All critical ACs proven; no material unresolved in-scope risk. **Broader validation Required → executed Browser** to close actual page/layout/clipboard gap. No deeper product-shell/storage run would add relevant removal evidence; no new user check or dependency request.
 
-## Emulation / safety / transition
-- Mocked only read-only GetUpdateNotifications, provider catalog/credentials, applications capability, workspace/run/root history, Agent/Team/Org definitions (all empty or disabled), health and two invalidation feeds. Names/actual request shapes retained in raw result. They let actual application pages mount without touching a live backend or credentials; no claim those service APIs were validated.
-- Controlled clipboard Promise/rejection/absence used only for R03. Success uses actual Chrome clipboard, never pasted into a terminal. No installer/release link clicked/fetched by guide; public immutable bytes came from attributed SD evidence.
-- Data transition **Not Affected/N/A**. No persistence reader/writer changed; browser-owned preferences removed with profile. No legacy wrapper, old `qualifiedComputers` alias, runtime coupling or migration introduced. Explicit unavailable fixtures are supported failures, not compatibility behavior.
-- API source/durable test changes **None**; retained temporary driver does not edit product source. No leftover diagnostic code/page. Both browser/dev-server/processgroup/temp roots removed. Ignored worktree deps/.nuxt retained. Canonical dirty checkout/PM data/NFS repo/artifacts/user app/live nodes untouched.
+## Safety, emulation, transition and cleanup
+- Emulated only unrelated read initialization: notifications/update automation, providercatalog/credentials, applications capability, workspace/history/root lists, Agent/Team/Org definitions; current remote peers/capability/identity, health and two invalidation feeds. Exact operations in summary/raw requests. No mutation, credentials, live data or NFS operation. Public icon assets may load normally; NFS download/release URLs never requested.
+- Controlled clipboard Promise/reject/absence only for R03; happy paths use actual Chrome. No command pasted into terminal, no host install/CLI/version invocation/mount/export/Docker creation or field test.
+- Persisted-data transition **Not Affected**. Own browser preferences/profile removed. No migration/compatibility fallback/hidden legacy label or anchor; retained helper downloadUrl is live validation, not dead UI compatibility.
+- Current repository durable coverage paths unchanged by API; implementation changed only `autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts` for this request. Temporary driver and evidence only; no production diagnostics left.
+- Both Chrome/Nuxt process groups, localhost51842/51928 and ownedHOME/TMP roots absent. Ignored node_modules/.nuxt retained in this worktree. Canonical dirtycheckout/PMboards/NFSrepo/liveapp/old detached receipt6d90a825 untouched. Prior other-owner artifacts preserved; no cleanup outside owned resources.
 
-## Delivery notes / result
-**Pass96.43%, direct Delivery; Not Required—direct low-risk test review.** No product finding/new follow-up; no independent reviewer dispatch. Delivery owns final docs synchronization/integration checks/finalization to fresh origin/personal, **NO release**.
+## Latest result / downstream
+**Pass95.71%**. No new product finding/blocker/follow-up. Direct successful Delivery route; **Not Required — direct low-risk test review**. No Code Reviewer/Designer/Implementation duplicate dispatch. Delivery verifies evidence, fresh origin/personal integration and any impacted checks, scoped docs/finalization/owned cleanup. **NO release**, tag, deployment or mandatory user verification; existing autobyteus-nfs-4 deferred field custody stays separate. Original API001 docs-intro note is already corrected in current source; not a new outstanding item. No API merge/push/TaskDone/Terminal claim.
 
-One normal scoped docs-sync correction: `autobyteus-web/docs/nfs_guide.md` intro says “Settings → Nodes → NFS Guide”; actual sidebar/page is **Nodes → NFS Guide**. Correct that wording during Delivery docs sync; Settings is used only for language. This does not invalidate the guide's user-visible ACs or require a new approval/implementation loop.
-
-Evidence/artifacts committed before handoff; commit/selected fresh route recorded with handoff. No merge/push/tag/release/TaskDone/Terminal/user-verification action by API.
-
-Fresh rule selects ONLY `/software_engineering_team/delivery_engineer`; evidence commit `cd9126c29de9bb1e597a0a49f382628360024357`. Receipt: evidence/C01-routing.json.
+Fresh rule selected only `/software_engineering_team/delivery_engineer`. Evidence commit `c0170a50a758cac1e1cc930e8a27c49ebdf99284`; route receipt `evidence/C01-02-routing.json`.

@@ -1,0 +1,84 @@
+[
+  {
+    "check": "unit",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "utils/__tests__/nfsLauncherCommands.spec.ts",
+      "components/settings/__tests__/NfsGuideCard.spec.ts",
+      "components/settings/__tests__/NodeManager.spec.ts",
+      "components/settings/__tests__/DockerNodeStartGuideCard.spec.ts",
+      "utils/__tests__/dockerNodeLauncherCommands.spec.ts",
+      "--run",
+      "--maxWorkers=2"
+    ],
+    "date": "2026-10-24T04:05:29.989347+00:00",
+    "commit": "3d95a5c4a16759060983489735e77820661cff53",
+    "exit": 0,
+    "log": "IMP-10-unit.log"
+  },
+  {
+    "check": "typecheck",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "exec",
+      "tsc",
+      "--noEmit",
+      "--skipLibCheck",
+      "--target",
+      "es2022",
+      "--module",
+      "esnext",
+      "--moduleResolution",
+      "bundler",
+      "utils/nfsLauncherCommands.ts"
+    ],
+    "date": "2026-10-24T04:05:42.113272+00:00",
+    "commit": "3d95a5c4a16759060983489735e77820661cff53",
+    "exit": 0,
+    "log": "IMP-10-typecheck.log"
+  },
+  {
+    "check": "guard:web-boundary",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "guard:web-boundary"
+    ],
+    "date": "2026-10-24T04:05:43.144837+00:00",
+    "commit": "3d95a5c4a16759060983489735e77820661cff53",
+    "exit": 0,
+    "log": "IMP-10-guard-web-boundary.log"
+  },
+  {
+    "check": "guard:localization-boundary",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "guard:localization-boundary"
+    ],
+    "date": "2026-10-24T04:05:43.660047+00:00",
+    "commit": "3d95a5c4a16759060983489735e77820661cff53",
+    "exit": 0,
+    "log": "IMP-10-guard-localization-boundary.log"
+  },
+  {
+    "check": "audit:localization-literals",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "audit:localization-literals"
+    ],
+    "date": "2026-10-24T04:05:44.026293+00:00",
+    "commit": "3d95a5c4a16759060983489735e77820661cff53",
+    "exit": 0,
+    "log": "IMP-10-audit-localization-literals.log"
+  }
+]

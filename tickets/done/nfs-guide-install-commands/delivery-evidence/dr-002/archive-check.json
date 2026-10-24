@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-24T04:21:05.482549+00:00",
+  "incoming": "04951598bf70cda1f77d5d961597fc370a63f26b",
+  "from": "tickets/in-progress/nfs-guide-install-commands",
+  "to": "tickets/done/nfs-guide-install-commands",
+  "upstreamTrackedFilesByteIdentical": 212,
+  "ownCurrentReportsUpdated": [
+    "delivery-revision-record.md",
+    "docs-sync-report.md",
+    "handoff-summary.md",
+    "release-deployment-report.md",
+    "release-notes.md"
+  ],
+  "oldDetachedReceipt": "6d90a825feae66f4c397924370562a271da722a0 untouched",
+  "historicalPaths": "Raw in-progress paths retained as executed evidence; current references resolve archived folder"
+}

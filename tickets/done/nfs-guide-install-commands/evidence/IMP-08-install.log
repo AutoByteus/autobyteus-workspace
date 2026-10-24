@@ -1,0 +1,42 @@
+# IMP-08 | 2026-10-24 | input 1103c5f9
+# Darwin arm64 / Node22.23.1 / private HOME and TMPDIR (IMP-08-environment.json)
+# Command: pnpm --filter autobyteus... install --frozen-lockfile
+# Original output follows.
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+Scope: 5 of 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        |    +1464 ++++++++++++++++++++++++++++
+Progress: resolved 1464, reused 0, downloaded 71, added 71
+Progress: resolved 1464, reused 0, downloaded 222, added 220
+Progress: resolved 1464, reused 0, downloaded 321, added 313
+Progress: resolved 1464, reused 0, downloaded 415, added 409
+Progress: resolved 1464, reused 0, downloaded 533, added 528
+Progress: resolved 1464, reused 0, downloaded 675, added 675
+Progress: resolved 1464, reused 0, downloaded 752, added 751
+Progress: resolved 1464, reused 0, downloaded 829, added 831
+Progress: resolved 1464, reused 0, downloaded 893, added 892
+Progress: resolved 1464, reused 0, downloaded 976, added 978
+Progress: resolved 1464, reused 0, downloaded 1070, added 1071
+Progress: resolved 1464, reused 0, downloaded 1157, added 1159
+Progress: resolved 1464, reused 0, downloaded 1277, added 1280
+Progress: resolved 1464, reused 0, downloaded 1366, added 1368
+Progress: resolved 1464, reused 0, downloaded 1442, added 1445
+Progress: resolved 1464, reused 0, downloaded 1452, added 1455
+Progress: resolved 1464, reused 0, downloaded 1457, added 1460
+Progress: resolved 1464, reused 0, downloaded 1458, added 1461
+Progress: resolved 1464, reused 0, downloaded 1459, added 1462
+Progress: resolved 1464, reused 0, downloaded 1460, added 1463
+Progress: resolved 1464, reused 0, downloaded 1461, added 1463
+Progress: resolved 1464, reused 0, downloaded 1461, added 1464, done
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+.../node_modules/@parcel/watcher install: Done
+.../node_modules/vue-demi postinstall: Done
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+Done in 27.4s using pnpm v10.28.2
