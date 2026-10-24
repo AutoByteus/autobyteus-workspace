@@ -9,7 +9,7 @@
  * - `<memory>/imports/<id>/source-node.json` `{schemaVersion, sourceNodeId, displayName, …}` and
  *   `<memory>/imports/<id>/sync-manifest.json` with `sourceNodeId` (`local-file-memory-import-store.ts`).
  *
- * The values (the source IDs, and the folder and file names derived from them) are not part of the rename.
+ * The values (the Memory Sync source IDs, and the folder and file names derived from them) are not part of the rename.
  */
 export const RELEASED_MEMORY_SYNC_SOURCE_ID_FIELD = "sourceNodeId";
 export const RELEASED_MEMORY_HUB_BOUND_SOURCE_ID_FIELD = "boundSourceNodeId";

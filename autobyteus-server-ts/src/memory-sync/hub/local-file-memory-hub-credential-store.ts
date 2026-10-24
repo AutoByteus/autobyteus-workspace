@@ -25,7 +25,7 @@ export class LocalFileMemoryHubCredentialStore {
       .map((record) => ({
         ...record,
         label: record.label ?? null,
-        boundSourceId: record.boundSourceId ?? null,
+        boundMemorySyncSourceId: record.boundMemorySyncSourceId ?? null,
         lastUsedAt: record.lastUsedAt ?? null,
         revokedAt: record.revokedAt ?? null,
       }));
@@ -44,7 +44,7 @@ export class LocalFileMemoryHubCredentialStore {
       const normalized = records.filter(isRecord).map((record) => ({
         ...record,
         label: record.label ?? null,
-        boundSourceId: record.boundSourceId ?? null,
+        boundMemorySyncSourceId: record.boundMemorySyncSourceId ?? null,
         lastUsedAt: record.lastUsedAt ?? null,
         revokedAt: record.revokedAt ?? null,
       }));

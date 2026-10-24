@@ -47,7 +47,7 @@ const releasedCredentials = [
   { credentialId: "cred-1", label: "Laptop", credentialHash: "hash-1", boundSourceNodeId: "laptop-1", createdAt: "2026-05-01T00:00:00.000Z", lastUsedAt: null, revokedAt: null },
   { credentialId: "cred-2", label: null, credentialHash: "hash-2", boundSourceNodeId: null, createdAt: "2026-05-01T00:00:00.000Z", lastUsedAt: null, revokedAt: null },
 ];
-const releasedSourceMetadata = (sourceNodeId: string) => ({ schemaVersion: 1, sourceNodeId, displayName: `Name of ${sourceNodeId}`,
+const releasedMemorySyncSourceMetadata = (sourceNodeId: string) => ({ schemaVersion: 1, sourceNodeId, displayName: `Name of ${sourceNodeId}`,
   firstImportedAt: "2026-05-01T00:00:00.000Z", lastImportedAt: "2026-05-02T00:00:00.000Z", lastKnownEndpoint: null,
   sourceServerVersion: null, lastSyncStatus: "success", lastError: null });
 const releasedManifest = (sourceNodeId: string) => ({ schemaVersion: 1, sourceNodeId, lastCommittedBatchId: "b1", lastCommittedAt: "x",
@@ -60,7 +60,7 @@ const seedReleased = async () => {
   await writeJson(path.join(syncDir(), "source-state", `${hubKey}--laptop-1.json`), releasedState("laptop-1"));
   await writeJson(path.join(syncDir(), "hub-credentials.json"), releasedCredentials);
   for (const id of ["laptop-1", "desk.2"]) {
-    await writeJson(path.join(importDir(id), "source-node.json"), releasedSourceMetadata(id));
+    await writeJson(path.join(importDir(id), "source-node.json"), releasedMemorySyncSourceMetadata(id));
     await writeJson(path.join(importDir(id), "sync-manifest.json"), releasedManifest(id));
   }
 };
@@ -90,53 +90,53 @@ describe("MemorySyncSourceIdNamesMigration (SM-2 … SM-5)", () => {
     expect(result.status).toBe("SUCCEEDED");
     expect(result.summary).toMatchObject({ migratedCount: 7, failedCount: 0 });
     const config = await readJson(path.join(syncDir(), "memory-sync-config.json"));
-    expect(config.source).toEqual({ ...releasedConfig("laptop-1").source, sourceNodeId: undefined, sourceId: "laptop-1" });
-    expect(Object.keys(config.source)).toEqual(Object.keys(releasedConfig("laptop-1").source).map((key) => key === "sourceNodeId" ? "sourceId" : key));
+    expect(config.source).toEqual({ ...releasedConfig("laptop-1").source, sourceNodeId: undefined, memorySyncSourceId: "laptop-1" });
+    expect(Object.keys(config.source)).toEqual(Object.keys(releasedConfig("laptop-1").source).map((key) => key === "sourceNodeId" ? "memorySyncSourceId" : key));
     const importFiles = await files(importDir("desk.2"));
-    expect(importFiles.filter((name) => !name.includes(".backup-"))).toEqual(["source.json", "sync-manifest.json"]);
+    expect(importFiles.filter((name) => !name.includes(".backup-"))).toEqual(["memory-sync-source.json", "sync-manifest.json"]);
     expect(importFiles.filter((name) => name.includes(".backup-")).map((name) => name.replace(/\.backup-.*/, ""))).toEqual(["source-node.json", "sync-manifest.json"]);
     expect(result.summary.details.every((detail) => detail.status !== "MIGRATED" || detail.backupPath)).toBe(true);
 
     const configService = new MemorySyncConfigService({ getAppDataDir: () => appDataDir });
-    expect((await configService.getConfig()).source).toMatchObject({ sourceId: "laptop-1", displayName: "Laptop", hubToken: "mst_secret" });
+    expect((await configService.getConfig()).source).toMatchObject({ memorySyncSourceId: "laptop-1", displayName: "Laptop", hubToken: "mst_secret" });
     const state = await new LocalFileMemorySyncStateStore({ getAppDataDir: () => appDataDir }).readState(HUB, "laptop-1");
-    expect(state).toMatchObject({ sourceId: "laptop-1", lastJobState: "success", lastSuccessfulSyncAt: "2026-05-02T00:00:00.000Z" });
+    expect(state).toMatchObject({ memorySyncSourceId: "laptop-1", lastJobState: "success", lastSuccessfulSyncAt: "2026-05-02T00:00:00.000Z" });
     expect(Object.keys(state.files)).toEqual(["agents/run-1/raw_traces.jsonl"]);
     const credentials = await new LocalFileMemoryHubCredentialStore({ getAppDataDir: () => appDataDir }).listRecords();
-    expect(credentials.map((record) => [record.credentialId, record.boundSourceId])).toEqual([["cred-1", "laptop-1"], ["cred-2", null]]);
+    expect(credentials.map((record) => [record.credentialId, record.boundMemorySyncSourceId])).toEqual([["cred-1", "laptop-1"], ["cred-2", null]]);
     expect(credentials.some((record) => "boundSourceNodeId" in record)).toBe(false);
     const imports = new LocalFileMemoryImportStore({ getMemoryDir: () => memoryDir });
-    expect(await imports.listSourceIds()).toEqual(["desk.2", "laptop-1"]);
-    expect(await imports.readSourceMetadata("desk.2")).toMatchObject({ sourceId: "desk.2", displayName: "Name of desk.2" });
-    expect(await imports.readManifest("laptop-1")).toMatchObject({ sourceId: "laptop-1", lastCommittedBatchId: "b1", totals: { fileCount: 1, totalBytes: 5 } });
+    expect(await imports.listMemorySyncSourceIds()).toEqual(["desk.2", "laptop-1"]);
+    expect(await imports.readMemorySyncSourceMetadata("desk.2")).toMatchObject({ memorySyncSourceId: "desk.2", displayName: "Name of desk.2" });
+    expect(await imports.readManifest("laptop-1")).toMatchObject({ memorySyncSourceId: "laptop-1", lastCommittedBatchId: "b1", totals: { fileCount: 1, totalBytes: 5 } });
   });
 
-  it("a config without a source ID, a fresh install, and a re-run change nothing", async () => {
+  it("a config without a Memory Sync source ID, a fresh install, and a re-run change nothing", async () => {
     await expect(run()).resolves.toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0, failedCount: 0 } });
     await writeJson(path.join(syncDir(), "memory-sync-config.json"), releasedConfig(null));
     await run();
-    expect((await readJson(path.join(syncDir(), "memory-sync-config.json"))).source).toMatchObject({ sourceId: null });
+    expect((await readJson(path.join(syncDir(), "memory-sync-config.json"))).source).toMatchObject({ memorySyncSourceId: null });
     await seedReleased();
     await run();
-    const before = await readJson(path.join(importDir("laptop-1"), "source.json"));
+    const before = await readJson(path.join(importDir("laptop-1"), "memory-sync-source.json"));
     await expect(run()).resolves.toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 0, failedCount: 0 } });
-    expect(await readJson(path.join(importDir("laptop-1"), "source.json"))).toEqual(before);
+    expect(await readJson(path.join(importDir("laptop-1"), "memory-sync-source.json"))).toEqual(before);
   });
 
-  it("finishes source-node.json interrupted after source.json was written: same source removes the old file", async () => {
-    await writeJson(path.join(importDir("laptop-1"), "source-node.json"), releasedSourceMetadata("laptop-1"));
-    await writeJson(path.join(importDir("laptop-1"), "source.json"), { ...releasedSourceMetadata("laptop-1"), sourceNodeId: undefined, sourceId: "laptop-1" });
+  it("finishes source-node.json interrupted after memory-sync-source.json was written: same source removes the old file", async () => {
+    await writeJson(path.join(importDir("laptop-1"), "source-node.json"), releasedMemorySyncSourceMetadata("laptop-1"));
+    await writeJson(path.join(importDir("laptop-1"), "memory-sync-source.json"), { ...releasedMemorySyncSourceMetadata("laptop-1"), sourceNodeId: undefined, memorySyncSourceId: "laptop-1" });
 
     await expect(run()).resolves.toMatchObject({ status: "SUCCEEDED" });
-    expect((await files(importDir("laptop-1"))).filter((name) => !name.includes(".backup-"))).toEqual(["source.json"]);
+    expect((await files(importDir("laptop-1"))).filter((name) => !name.includes(".backup-"))).toEqual(["memory-sync-source.json"]);
   });
 
   it("fails without touching anything it cannot convert, naming the file, and so holds back memory_sync", async () => {
-    await writeJson(path.join(importDir("laptop-1"), "source-node.json"), releasedSourceMetadata("laptop-1"));
-    await writeJson(path.join(importDir("laptop-1"), "source.json"), { sourceId: "someone-else" });
+    await writeJson(path.join(importDir("laptop-1"), "source-node.json"), releasedMemorySyncSourceMetadata("laptop-1"));
+    await writeJson(path.join(importDir("laptop-1"), "memory-sync-source.json"), { memorySyncSourceId: "someone-else" });
     await fs.mkdir(syncDir(), { recursive: true });
     await fs.writeFile(path.join(syncDir(), "hub-credentials.json"), "{broken");
-    await writeJson(path.join(syncDir(), "source-state", `${hubKey}--x.json`), { sourceNodeId: "x", sourceId: "y" });
+    await writeJson(path.join(syncDir(), "source-state", `${hubKey}--x.json`), { sourceNodeId: "x", memorySyncSourceId: "y" });
 
     const result = await run();
 
@@ -145,6 +145,6 @@ describe("MemorySyncSourceIdNamesMigration (SM-2 … SM-5)", () => {
     expect(result.errorMessage).toContain(path.join(importDir("laptop-1"), "source-node.json"));
     expect(result.errorMessage).toContain(path.join(syncDir(), "hub-credentials.json"));
     expect(await fs.readFile(path.join(syncDir(), "hub-credentials.json"), "utf-8")).toBe("{broken");
-    expect(await files(importDir("laptop-1"))).toEqual(["source-node.json", "source.json"]);
+    expect(await files(importDir("laptop-1"))).toEqual(["memory-sync-source.json", "source-node.json"]);
   });
 });

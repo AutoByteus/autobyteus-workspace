@@ -26,7 +26,7 @@ export type MemoryFileOperation = MemoryFileFingerprint & {
 export type MemorySyncBatch = {
   protocolVersion: 1;
   batchId: string;
-  sourceId: string;
+  memorySyncSourceId: string;
   sourceDisplayName?: string | null;
   sourceEndpoint?: string | null;
   generatedAt: string;
@@ -41,9 +41,9 @@ export type MemorySyncBatchCommitResult = {
   operationCount: number;
 };
 
-export type SourceMetadata = {
+export type MemorySyncSourceMetadata = {
   schemaVersion: 1;
-  sourceId: string;
+  memorySyncSourceId: string;
   displayName: string | null;
   firstImportedAt: string;
   lastImportedAt: string;
@@ -67,7 +67,7 @@ export type MemorySyncManifestBatchRecord = {
 
 export type MemorySyncManifest = {
   schemaVersion: 1;
-  sourceId: string;
+  memorySyncSourceId: string;
   lastCommittedBatchId: string | null;
   lastCommittedAt: string | null;
   batchDigests: Record<string, MemorySyncManifestBatchRecord>;
@@ -88,7 +88,7 @@ export type MemorySyncSourceState = {
   schemaVersion: 1;
   hubKey: string;
   hubBaseUrl: string;
-  sourceId: string;
+  memorySyncSourceId: string;
   lastSuccessfulSyncAt: string | null;
   lastError: string | null;
   lastJobState: MemorySyncJobState;
@@ -99,7 +99,7 @@ export type MemoryHubSourceCredentialRecord = {
   credentialId: string;
   label: string | null;
   credentialHash: string;
-  boundSourceId: string | null;
+  boundMemorySyncSourceId: string | null;
   createdAt: string;
   lastUsedAt: string | null;
   revokedAt: string | null;
@@ -118,7 +118,7 @@ export type MemorySyncConfig = {
   };
   source: {
     enabled: boolean;
-    sourceId: string | null;
+    memorySyncSourceId: string | null;
     displayName: string | null;
     hubBaseUrl: string | null;
     hubToken: string | null;
@@ -137,7 +137,7 @@ export type MemorySyncPublicConfig = Omit<MemorySyncConfig, "source"> & {
 };
 
 export type MemoryImportSummary = {
-  sourceId: string;
+  memorySyncSourceId: string;
   displayName: string | null;
   lastKnownEndpoint: string | null;
   firstImportedAt: string | null;
@@ -152,13 +152,13 @@ export type MemoryImportSummary = {
 
 export type MemoryExplorerSourceInput =
   | { type: "LOCAL" }
-  | { type: "IMPORTED"; sourceId: string };
+  | { type: "IMPORTED"; memorySyncSourceId: string };
 
 export type MemoryExplorerSourceOption = {
   key: "local" | `imported:${string}`;
   type: "LOCAL" | "IMPORTED";
   label: string;
-  sourceId: string | null;
+  memorySyncSourceId: string | null;
   displayName: string | null;
   readOnly: boolean;
   lastImportedAt: string | null;

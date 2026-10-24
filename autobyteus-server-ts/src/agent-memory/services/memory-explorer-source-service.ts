@@ -2,7 +2,7 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getMemoryImportCatalogService, type MemoryImportCatalogService } from "../../memory-sync/hub/memory-import-catalog-service.js";
 import { getLocalFileMemoryImportStore, type LocalFileMemoryImportStore } from "../../memory-sync/hub/local-file-memory-import-store.js";
 import type { MemoryExplorerSourceInput, MemoryExplorerSourceOption } from "../../memory-sync/shared/memory-sync-types.js";
-import { normalizeSourceId } from "../../memory-sync/shared/source-id.js";
+import { normalizeMemorySyncSourceId } from "../../memory-sync/shared/memory-sync-source-id.js";
 import { isMemorySyncReady, MEMORY_SYNC_NOT_MIGRATED, MEMORY_SYNC_NOT_MIGRATED_TEXT } from "../../memory-sync/shared/memory-sync-capability.js";
 
 export type ResolvedMemoryExplorerSource = {
@@ -23,7 +23,7 @@ const localOption = (): MemoryExplorerSourceOption => ({
   key: "local",
   type: "LOCAL",
   label: "Local Memory",
-  sourceId: null,
+  memorySyncSourceId: null,
   displayName: null,
   readOnly: false,
   lastImportedAt: null,
@@ -43,10 +43,10 @@ export class MemoryExplorerSourceService {
     return [
       localOption(),
       ...imports.map((summary) => ({
-        key: `imported:${summary.sourceId}` as const,
+        key: `imported:${summary.memorySyncSourceId}` as const,
         type: "IMPORTED" as const,
-        label: `Imported: ${summary.displayName || summary.sourceId}`,
-        sourceId: summary.sourceId,
+        label: `Imported: ${summary.displayName || summary.memorySyncSourceId}`,
+        memorySyncSourceId: summary.memorySyncSourceId,
         displayName: summary.displayName,
         readOnly: true,
         lastImportedAt: summary.lastImportedAt,
@@ -68,25 +68,25 @@ export class MemoryExplorerSourceService {
     if (!isMemorySyncReady()) {
       throw new MemoryExplorerSourceError(MEMORY_SYNC_NOT_MIGRATED_TEXT, MEMORY_SYNC_NOT_MIGRATED);
     }
-    let sourceId: string;
+    let memorySyncSourceId: string;
     try {
-      sourceId = normalizeSourceId(input.sourceId);
+      memorySyncSourceId = normalizeMemorySyncSourceId(input.memorySyncSourceId);
     } catch (error) {
       throw new MemoryExplorerSourceError(error instanceof Error ? error.message : String(error), "INVALID_SOURCE");
     }
-    if (!(await this.importStore.sourceExists(sourceId))) {
-      throw new MemoryExplorerSourceError(`Imported memory source '${sourceId}' was not found.`, "UNKNOWN_IMPORTED_SOURCE");
+    if (!(await this.importStore.sourceExists(memorySyncSourceId))) {
+      throw new MemoryExplorerSourceError(`Imported memory source '${memorySyncSourceId}' was not found.`, "UNKNOWN_IMPORTED_SOURCE");
     }
-    const metadata = await this.importStore.readSourceMetadata(sourceId);
+    const metadata = await this.importStore.readMemorySyncSourceMetadata(memorySyncSourceId);
     return {
-      source: { type: "IMPORTED", sourceId },
-      rootDir: this.importStore.getImportRootDir(sourceId),
+      source: { type: "IMPORTED", memorySyncSourceId },
+      rootDir: this.importStore.getImportRootDir(memorySyncSourceId),
       readOnly: true,
       option: {
-        key: `imported:${sourceId}`,
+        key: `imported:${memorySyncSourceId}`,
         type: "IMPORTED",
-        label: `Imported: ${metadata?.displayName || sourceId}`,
-        sourceId,
+        label: `Imported: ${metadata?.displayName || memorySyncSourceId}`,
+        memorySyncSourceId,
         displayName: metadata?.displayName ?? null,
         readOnly: true,
         lastImportedAt: metadata?.lastImportedAt ?? null,

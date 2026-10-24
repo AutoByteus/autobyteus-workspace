@@ -27,7 +27,7 @@ export class MemorySyncSourceConfigGql {
   enabled!: boolean;
 
   @Field(() => String, { nullable: true })
-  sourceId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -63,7 +63,7 @@ export class MemoryHubCredentialSummaryGql {
   label?: string | null;
 
   @Field(() => String, { nullable: true })
-  boundSourceId?: string | null;
+  boundMemorySyncSourceId?: string | null;
 
   @Field(() => String)
   createdAt!: string;
@@ -81,7 +81,7 @@ export class MemoryHubCredentialSummaryGql {
 @ObjectType()
 export class MemoryImportSummaryGql {
   @Field(() => String)
-  sourceId!: string;
+  memorySyncSourceId!: string;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -234,7 +234,7 @@ export class MemoryHubConnectionTestResultGql {
   hubEnabled!: boolean;
 
   @Field(() => String)
-  sourceId!: string;
+  memorySyncSourceId!: string;
 
   @Field(() => Boolean)
   authenticated!: boolean;
@@ -258,7 +258,7 @@ export class UpdateMemorySyncSourceConfigInput {
   enabled?: boolean | null;
 
   @Field(() => String, { nullable: true })
-  sourceId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -285,7 +285,7 @@ export class CreateMemoryHubCredentialInput {
   label?: string | null;
 
   @Field(() => String, { nullable: true })
-  boundSourceId?: string | null;
+  boundMemorySyncSourceId?: string | null;
 }
 
 @InputType()
@@ -300,5 +300,5 @@ export class TestMemoryHubConnectionInput {
   token?: string | null;
 
   @Field(() => String, { nullable: true })
-  sourceId?: string | null;
+  memorySyncSourceId?: string | null;
 }

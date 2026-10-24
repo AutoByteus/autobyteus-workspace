@@ -17,9 +17,9 @@ import {
 
 const MIGRATION_ID = "20261024_memory_sync_source_id_names";
 /** The current names (`src/memory-sync/`), as this migration writes them. */
-const SOURCE_ID_FIELD = "sourceId";
-const BOUND_SOURCE_ID_FIELD = "boundSourceId";
-const SOURCE_METADATA_FILE_NAME = "source.json";
+const SOURCE_ID_FIELD = "memorySyncSourceId";
+const BOUND_SOURCE_ID_FIELD = "boundMemorySyncSourceId";
+const SOURCE_METADATA_FILE_NAME = "memory-sync-source.json";
 
 type JsonObject = Record<string, unknown>;
 type Decision = { kind: "current" } | { kind: "convert"; value: unknown } | { kind: "failed"; message: string };
@@ -79,14 +79,14 @@ const renameKey = (record: JsonObject, oldKey: string, newKey: string): Decision
   return { kind: "convert", value: Object.fromEntries(Object.entries(record).map(([key, value]) => [key === oldKey ? newKey : key, value])) };
 };
 
-const renameSourceIdIn = (value: unknown): Decision =>
+const renameMemorySyncSourceIdIn = (value: unknown): Decision =>
   isObject(value) ? renameKey(value, RELEASED_MEMORY_SYNC_SOURCE_ID_FIELD, SOURCE_ID_FIELD) : { kind: "current" };
 
 /** SM-2: `source.sourceNodeId` in the config. */
 const decideConfig = (value: unknown): Decision => {
   const config = value as ReleasedMemorySyncConfig;
   if (!isObject(config) || !isObject(config.source)) return { kind: "current" };
-  const decision = renameSourceIdIn(config.source);
+  const decision = renameMemorySyncSourceIdIn(config.source);
   return decision.kind === "convert" ? { kind: "convert", value: { ...config, source: decision.value } } : decision;
 };
 
@@ -107,16 +107,16 @@ const decideCredentials = (value: unknown): Decision => {
 };
 
 /**
- * SM-2 … SM-5 (autobyteus-290): Memory Sync's stored names follow the code (`sourceNodeId` → `sourceId`,
- * `boundSourceNodeId` → `boundSourceId`, `source-node.json` → `source.json`). Values, folder names and file names
- * derived from a source ID are unchanged. Each rewritten file is backed up next to itself first. A failed item keeps
+ * SM-2 … SM-5 (autobyteus-290): Memory Sync's stored names follow the code (`sourceNodeId` → `memorySyncSourceId`,
+ * `boundSourceNodeId` → `boundMemorySyncSourceId`, `source-node.json` → `memory-sync-source.json`). Values, folder names and file names
+ * derived from a Memory Sync source ID are unchanged. Each rewritten file is backed up next to itself first. A failed item keeps
  * its file and holds back `memory_sync` until a later start converts it.
  */
 export class MemorySyncSourceIdNamesMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
   readonly displayName = "Memory Sync source ID names migration";
   readonly description =
-    "Renames Memory Sync's stored sourceNodeId to sourceId (config, source state, hub credentials, imports) and source-node.json to source.json.";
+    "Renames Memory Sync's stored sourceNodeId to memorySyncSourceId (config, source state, hub credentials, imports) and source-node.json to memory-sync-source.json.";
   readonly requiredOnStartup = true;
   /** Hub ingestion may write these files while the server runs, so the rename runs only at startup. */
   readonly executionPolicy = "STARTUP_ONLY" as const;
@@ -130,15 +130,15 @@ export class MemorySyncSourceIdNamesMigration implements AppDataMigrationDefinit
     details.push(await this.rewrite(path.join(syncDir, "memory-sync-config.json"), "memory-sync/config", decideConfig));
     for (const entry of await listEntries(path.join(syncDir, "source-state"))) {
       if (!entry.isFile() || !entry.name.endsWith(".json")) continue;
-      details.push(await this.rewrite(path.join(syncDir, "source-state", entry.name), `memory-sync/source-state/${entry.name}`, renameSourceIdIn));
+      details.push(await this.rewrite(path.join(syncDir, "source-state", entry.name), `memory-sync/source-state/${entry.name}`, renameMemorySyncSourceIdIn));
     }
     details.push(await this.rewrite(path.join(syncDir, "hub-credentials.json"), "memory-sync/hub-credentials", decideCredentials));
     const importsDir = path.join(this.memoryDir, "imports");
     for (const entry of await listEntries(importsDir)) {
       if (!entry.isDirectory()) continue;
       const folder = path.join(importsDir, entry.name);
-      details.push(await this.renameSourceMetadata(folder, `imports/${entry.name}/source`));
-      details.push(await this.rewrite(path.join(folder, "sync-manifest.json"), `imports/${entry.name}/sync-manifest`, renameSourceIdIn));
+      details.push(await this.renameMemorySyncSourceMetadata(folder, `imports/${entry.name}/source`));
+      details.push(await this.rewrite(path.join(folder, "sync-manifest.json"), `imports/${entry.name}/sync-manifest`, renameMemorySyncSourceIdIn));
     }
     const failed = details.filter((detail) => detail.status === "FAILED");
     return {
@@ -167,15 +167,15 @@ export class MemorySyncSourceIdNamesMigration implements AppDataMigrationDefinit
     return { itemId, filePath, backupPath, status: "MIGRATED", message: `${filePath} now uses the current names (backup ${backupPath}).` };
   }
 
-  /** SM-5: `source-node.json` `{sourceNodeId}` → `source.json` `{sourceId}`; new file first, the old one removed last. */
-  private async renameSourceMetadata(folder: string, itemId: string): Promise<AppDataMigrationItemDetail> {
+  /** SM-5: `source-node.json` `{sourceNodeId}` → `memory-sync-source.json` `{memorySyncSourceId}`; new file first, the old one removed last. */
+  private async renameMemorySyncSourceMetadata(folder: string, itemId: string): Promise<AppDataMigrationItemDetail> {
     const oldPath = path.join(folder, RELEASED_MEMORY_IMPORT_SOURCE_METADATA_FILE_NAME);
     const newPath = path.join(folder, SOURCE_METADATA_FILE_NAME);
     const old = await readJson(oldPath);
     if (old.kind === "absent") return { itemId, filePath: oldPath, status: "SKIPPED", message: `${oldPath} does not exist.` };
     if (old.kind === "unreadable") return { itemId, filePath: oldPath, status: "FAILED", message: `${oldPath} could not be read: ${old.message}. It was kept.` };
     if (!isObject(old.value)) return { itemId, filePath: oldPath, status: "FAILED", message: `${oldPath} is not a source record. It was kept.` };
-    const decision = renameSourceIdIn(old.value);
+    const decision = renameMemorySyncSourceIdIn(old.value);
     if (decision.kind === "failed") return { itemId, filePath: oldPath, status: "FAILED", message: `${oldPath} ${decision.message}. It was kept.` };
     const converted = (decision.kind === "convert" ? decision.value : old.value) as JsonObject;
 

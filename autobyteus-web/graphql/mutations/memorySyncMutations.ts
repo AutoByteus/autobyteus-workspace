@@ -9,7 +9,7 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
     }
     source {
       enabled
-      sourceId
+      memorySyncSourceId
       displayName
       hubBaseUrl
       hubTokenConfigured
@@ -28,7 +28,7 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
       credentials {
         credentialId
         label
-        boundSourceId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -42,7 +42,7 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
       trackedFileCount
     }
     imports {
-      sourceId
+      memorySyncSourceId
       displayName
       lastKnownEndpoint
       firstImportedAt
@@ -83,7 +83,7 @@ export const CREATE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
       credential {
         credentialId
         label
-        boundSourceId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -100,7 +100,7 @@ export const REGENERATE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
       credential {
         credentialId
         label
-        boundSourceId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -115,7 +115,7 @@ export const REVOKE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
     revokeMemoryHubSourceCredential(credentialId: $credentialId) {
       credentialId
       label
-      boundSourceId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -129,7 +129,7 @@ export const TEST_MEMORY_HUB_CONNECTION = gql`
     testMemoryHubConnection(input: $input) {
       ok
       hubEnabled
-      sourceId
+      memorySyncSourceId
       authenticated
       message
     }

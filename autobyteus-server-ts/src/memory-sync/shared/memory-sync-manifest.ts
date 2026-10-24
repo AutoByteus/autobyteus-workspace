@@ -1,8 +1,8 @@
 import type { MemorySyncManifest } from "./memory-sync-types.js";
 
-export const createEmptyMemorySyncManifest = (sourceId: string): MemorySyncManifest => ({
+export const createEmptyMemorySyncManifest = (memorySyncSourceId: string): MemorySyncManifest => ({
   schemaVersion: 1,
-  sourceId,
+  memorySyncSourceId,
   lastCommittedBatchId: null,
   lastCommittedAt: null,
   batchDigests: {},
@@ -12,10 +12,10 @@ export const createEmptyMemorySyncManifest = (sourceId: string): MemorySyncManif
 });
 
 export const normalizeMemorySyncManifest = (
-  sourceId: string,
+  memorySyncSourceId: string,
   value: Partial<MemorySyncManifest> | null | undefined,
 ): MemorySyncManifest => {
-  const fallback = createEmptyMemorySyncManifest(sourceId);
+  const fallback = createEmptyMemorySyncManifest(memorySyncSourceId);
   if (!value || typeof value !== "object") {
     return fallback;
   }
@@ -37,7 +37,7 @@ export const normalizeMemorySyncManifest = (
   }
   return {
     schemaVersion: 1,
-    sourceId,
+    memorySyncSourceId,
     lastCommittedBatchId: typeof value.lastCommittedBatchId === "string" ? value.lastCommittedBatchId : null,
     lastCommittedAt: typeof value.lastCommittedAt === "string" ? value.lastCommittedAt : null,
     batchDigests: normalizedBatchDigests,

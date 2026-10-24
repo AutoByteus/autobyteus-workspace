@@ -3,14 +3,14 @@ export type MemoryExplorerSourceType = 'LOCAL' | 'IMPORTED';
 
 export interface MemoryExplorerSourceInput {
   type: MemoryExplorerSourceType;
-  sourceId?: string | null;
+  memorySyncSourceId?: string | null;
 }
 
 export interface MemoryExplorerSourceOption {
   key: string;
   type: MemoryExplorerSourceType;
   label: string;
-  sourceId?: string | null;
+  memorySyncSourceId?: string | null;
   displayName?: string | null;
   readOnly: boolean;
   lastImportedAt?: string | null;

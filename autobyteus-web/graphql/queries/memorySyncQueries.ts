@@ -10,7 +10,7 @@ export const GET_MEMORY_SYNC_STATUS = gql`
       }
       source {
         enabled
-        sourceId
+        memorySyncSourceId
         displayName
         hubBaseUrl
         hubTokenConfigured
@@ -29,7 +29,7 @@ export const GET_MEMORY_SYNC_STATUS = gql`
         credentials {
           credentialId
           label
-          boundSourceId
+          boundMemorySyncSourceId
           createdAt
           lastUsedAt
           revokedAt
@@ -43,7 +43,7 @@ export const GET_MEMORY_SYNC_STATUS = gql`
         trackedFileCount
       }
       imports {
-        sourceId
+        memorySyncSourceId
         displayName
         lastKnownEndpoint
         firstImportedAt
@@ -83,7 +83,7 @@ export const GET_MEMORY_HUB_CONNECTION_INFO = gql`
       credentials {
         credentialId
         label
-        boundSourceId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt

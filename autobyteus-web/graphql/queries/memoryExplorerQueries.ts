@@ -6,7 +6,7 @@ export const LIST_MEMORY_EXPLORER_SOURCES = gql`
       key
       type
       label
-      sourceId
+      memorySyncSourceId
       displayName
       readOnly
       lastImportedAt

@@ -27,7 +27,7 @@ For a hub:
 For a source:
 
 1. Open the source node in its own node-bound window.
-2. Set a stable `sourceId` such as `docker-node-1`, `finance-prod`, or
+2. Set a stable `memorySyncSourceId` such as `docker-node-1`, `finance-prod`, or
    `cluster-a__finance__autobyteus-server`.
 3. Paste the hub base URL and hub token, then save source settings.
 4. Click **Test connection** from that source node. A blank token field tests the
@@ -36,7 +36,7 @@ For a source:
 5. Run **Sync now** or enable background sync.
 
 Frontend node names and the desktop's entry IDs are navigation metadata only.
-They are not the durable import identity. `sourceId` is the stable folder and
+They are not the durable import identity. `memorySyncSourceId` is the stable folder and
 catalog identity used by the hub.
 
 ## Storage Layout
@@ -54,8 +54,8 @@ Imported memory is stored separately under the hub's memory root:
 ```text
 memory/
   imports/
-    <sourceId>/
-      source.json
+    <memorySyncSourceId>/
+      memory-sync-source.json
       sync-manifest.json
       agents/
       agent_teams/
@@ -72,7 +72,7 @@ memory-sync/
   memory-sync-config.json          # hub/source enablement and source token config
   hub-credentials.json             # hub token hashes and credential metadata
   source-state/
-    <hubHash>--<sourceId>.json # source-side changed-file state per hub/source
+    <hubHash>--<memorySyncSourceId>.json # source-side changed-file state per hub/source
 ```
 
 The source-side hub token is stored in node-local config so background sync can
@@ -81,9 +81,9 @@ configured/redacted token state.
 
 Data released before autobyteus-290 used the names `sourceNodeId`,
 `boundSourceNodeId` and `source-node.json`. The sealed startup migration
-`memory-sync-source-id-names` renames them once to `sourceId`, `boundSourceId`
-and `source.json`, keeping a `<file>.backup-<timestamp>` copy of each file it
-rewrites; the source ID values, and the folder and file names made from them,
+`memory-sync-source-id-names` renames them once to `memorySyncSourceId`, `boundMemorySyncSourceId`
+and `memory-sync-source.json`, keeping a `<file>.backup-<timestamp>` copy of each file it
+rewrites; the Memory Sync source ID values, and the folder and file names made from them,
 do not change. Until that migration has succeeded (capability `memory_sync`),
 nothing reads or writes Memory Sync files: the settings card shows "Memory Sync
 is waiting for its data migration.", the background loop and Sync now do not
@@ -114,17 +114,17 @@ a container or pod.
 
 The Memory Hub REST endpoints are:
 
-- `GET /rest/memory-sync/v1/health?sourceId=<sourceId>`
+- `GET /rest/memory-sync/v1/health?memorySyncSourceId=<memorySyncSourceId>`
 - `POST /rest/memory-sync/v1/batches`
 
 Sources authenticate with an `Authorization: Bearer <mhub_...>` token. GraphQL
 connection testing is explicit about which configuration is being tested:
 
-- `mode: SAVED` loads the persisted source `hubBaseUrl`, `sourceId`, and
+- `mode: SAVED` loads the persisted source `hubBaseUrl`, `memorySyncSourceId`, and
   saved hub token from node-local config. This is the mode used by the UI when
   the token field is blank after source settings were saved and the token is
   only visible as a redacted placeholder.
-- `mode: DRAFT` uses the request's draft `hubBaseUrl`, `sourceId`, and
+- `mode: DRAFT` uses the request's draft `hubBaseUrl`, `memorySyncSourceId`, and
   plaintext token together. This is the mode used by the UI when the operator
   pastes a draft token before saving it.
 
@@ -141,12 +141,12 @@ stores only a SHA-256 hash plus credential metadata:
 
 - credential id;
 - optional label;
-- optional or first-use `boundSourceId`;
+- optional or first-use `boundMemorySyncSourceId`;
 - created/last-used/revoked timestamps.
 
 Plaintext token values are returned only on creation or regeneration. If the
 operator loses the token, regenerate it and update the source node. Revoked
-tokens are rejected. A token that is bound to one `sourceId` cannot be reused
+tokens are rejected. A token that is bound to one `memorySyncSourceId` cannot be reused
 by another source id.
 
 Use Memory Sync only across trusted private networks, VPNs, tailnets, or HTTPS
@@ -235,12 +235,12 @@ queries accept `MemoryExplorerSourceInput`:
 
 ```graphql
 { type: LOCAL }
-{ type: IMPORTED, sourceId: "docker-node-1" }
+{ type: IMPORTED, memorySyncSourceId: "docker-node-1" }
 ```
 
 The backend resolves imported sources under
-`memory/imports/<sourceId>/agents` and
-`memory/imports/<sourceId>/agent_teams`. Unknown imported source ids return
+`memory/imports/<memorySyncSourceId>/agents` and
+`memory/imports/<memorySyncSourceId>/agent_teams`. Unknown imported source ids return
 an error instead of silently falling back to local memory.
 
 Imported lists and details are labeled read-only/imported in the UI. Runtime

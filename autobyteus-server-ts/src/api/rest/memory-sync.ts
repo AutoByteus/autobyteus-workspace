@@ -20,11 +20,11 @@ const sendMemorySyncError = (
 };
 
 export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<void> {
-  app.get<{ Querystring: { sourceId?: string } }>("/memory-sync/v1/health", async (request, reply) => {
+  app.get<{ Querystring: { memorySyncSourceId?: string } }>("/memory-sync/v1/health", async (request, reply) => {
     try {
       return await getMemoryHubIngestionService().health({
         token: readBearerToken(request.headers.authorization),
-        sourceId: request.query.sourceId ?? "",
+        memorySyncSourceId: request.query.memorySyncSourceId ?? "",
       });
     } catch (error) {
       return sendMemorySyncError(reply, error);

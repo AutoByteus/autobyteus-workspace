@@ -4,7 +4,7 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile } from "../../persistence/file/store-utils.js";
 import { normalizeMemoryHubBaseUrl } from "../hub/memory-hub-config.js";
 import type { MemorySyncConfig, MemorySyncPublicConfig } from "../shared/memory-sync-types.js";
-import { normalizeSourceId } from "../shared/source-id.js";
+import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import {
   createDefaultMemorySyncConfig,
@@ -80,7 +80,7 @@ export class MemorySyncConfigService {
 
   async updateSourceConfig(input: {
     enabled?: boolean | null;
-    sourceId?: string | null;
+    memorySyncSourceId?: string | null;
     displayName?: string | null;
     hubBaseUrl?: string | null;
     hubToken?: string | null;
@@ -95,9 +95,9 @@ export class MemorySyncConfigService {
       source: {
         ...existing.source,
         enabled: typeof input.enabled === "boolean" ? input.enabled : existing.source.enabled,
-        sourceId: input.sourceId === undefined
-          ? existing.source.sourceId
-          : (input.sourceId ? normalizeSourceId(input.sourceId) : null),
+        memorySyncSourceId: input.memorySyncSourceId === undefined
+          ? existing.source.memorySyncSourceId
+          : (input.memorySyncSourceId ? normalizeMemorySyncSourceId(input.memorySyncSourceId) : null),
         displayName: input.displayName === undefined ? existing.source.displayName : normalizeOptionalString(input.displayName),
         hubBaseUrl: input.hubBaseUrl === undefined
           ? existing.source.hubBaseUrl
@@ -112,8 +112,8 @@ export class MemorySyncConfigService {
       },
     };
     if (next.source.enabled) {
-      if (!next.source.sourceId) {
-        throw new Error("sourceId is required when Memory Sync source is enabled.");
+      if (!next.source.memorySyncSourceId) {
+        throw new Error("memorySyncSourceId is required when Memory Sync source is enabled.");
       }
       if (!next.source.hubBaseUrl) {
         throw new Error("hubBaseUrl is required when Memory Sync source is enabled.");

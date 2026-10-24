@@ -33,14 +33,14 @@ const makeOperation = (relativePath: string, content: string): MemoryFileOperati
 });
 
 const makeBatch = (input: {
-  sourceId?: string;
+  memorySyncSourceId?: string;
   batchId: string;
   relativePath: string;
   content: string;
 }): MemorySyncBatch => ({
   protocolVersion: 1,
   batchId: input.batchId,
-  sourceId: input.sourceId ?? "source-a",
+  memorySyncSourceId: input.memorySyncSourceId ?? "source-a",
   sourceDisplayName: "Source A",
   sourceEndpoint: "http://source.local",
   generatedAt: new Date(0).toISOString(),
@@ -62,7 +62,7 @@ describe("Memory Sync local fix regressions", () => {
     }
   });
 
-  it("keys source sync state by hub URL and sourceId", async () => {
+  it("keys source sync state by hub URL and memorySyncSourceId", async () => {
     const root = await makeTempRoot();
     const store = new LocalFileMemorySyncStateStore({ getAppDataDir: () => root });
     const hubBaseUrl = "http://hub.local";
@@ -86,7 +86,7 @@ describe("Memory Sync local fix regressions", () => {
     const newState = await store.readState(hubBaseUrl, "new-source");
 
     expect(Object.keys(oldState.files)).toEqual(["agents/agent-a/raw_traces_active.jsonl"]);
-    expect(newState.sourceId).toBe("new-source");
+    expect(newState.memorySyncSourceId).toBe("new-source");
     expect(newState.files).toEqual({});
     expect(store.getFilePath(hubBaseUrl, "old-source")).not.toBe(store.getFilePath(hubBaseUrl, "new-source"));
   });
@@ -96,7 +96,7 @@ describe("Memory Sync local fix regressions", () => {
     config.source = {
       ...config.source,
       enabled: true,
-      sourceId: "source-a",
+      memorySyncSourceId: "source-a",
       hubBaseUrl: "http://hub.local",
       hubToken: "short",
     };
@@ -177,7 +177,7 @@ describe("Memory Sync local fix regressions", () => {
       ...createDefaultMemorySyncConfig(),
       source: {
         enabled: true,
-        sourceId: "saved-source",
+        memorySyncSourceId: "saved-source",
         displayName: null,
         hubBaseUrl: "http://saved-hub.local",
         hubToken: "saved-token",
@@ -194,7 +194,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceId: "saved-source",
+        memorySyncSourceId: "saved-source",
         authenticated: true,
         message: "ok",
       })),
@@ -205,7 +205,7 @@ describe("Memory Sync local fix regressions", () => {
 
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://saved-hub.local",
-      sourceId: "saved-source",
+      memorySyncSourceId: "saved-source",
       token: "saved-token",
     });
   });
@@ -218,7 +218,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceId: "draft-source",
+        memorySyncSourceId: "draft-source",
         authenticated: true,
         message: "ok",
       })),
@@ -228,14 +228,14 @@ describe("Memory Sync local fix regressions", () => {
     await service.testConnection({
       mode: "draft",
       hubBaseUrl: "http://draft-hub.local/",
-      sourceId: "draft-source",
+      memorySyncSourceId: "draft-source",
       token: "draft-token",
     });
 
     expect(configService.getConfig).not.toHaveBeenCalled();
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://draft-hub.local",
-      sourceId: "draft-source",
+      memorySyncSourceId: "draft-source",
       token: "draft-token",
     });
   });
@@ -247,7 +247,7 @@ describe("Memory Sync local fix regressions", () => {
       ...createDefaultMemorySyncConfig(),
       source: {
         enabled: true,
-        sourceId: "source-a",
+        memorySyncSourceId: "source-a",
         displayName: null,
         hubBaseUrl: "http://hub.local",
         hubToken: "secret-token",

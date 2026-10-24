@@ -36,6 +36,8 @@ delegated run, …) are defined in the
 
 ## Memory Sync
 
-- **Source ID:** a Memory Sync source's own import identity (`sourceId`), set
-  by the user, for example `docker-node-1`. The hub keeps a source's imported
-  memory under `memory/imports/<source ID>/`. It is not a node ID.
+- **Memory Sync source ID:** a Memory Sync source's own import identity
+  (`memorySyncSourceId`), set by the user, for example `docker-node-1`. The hub
+  keeps a source's imported memory under
+  `memory/imports/<Memory Sync source ID>/`. It is not a node ID, and it is not
+  the `sourceId` of a skill source, an update notification or a package source.

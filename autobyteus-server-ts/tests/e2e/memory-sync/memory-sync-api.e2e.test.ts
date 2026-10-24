@@ -66,12 +66,12 @@ const makeOperation = (kind: "agents" | "agent_teams", relativePath: string, con
 
 const makeBatch = (input: {
   batchId: string;
-  sourceId?: string;
+  memorySyncSourceId?: string;
   operations: MemoryFileOperation[];
 }): MemorySyncBatch => ({
   protocolVersion: 1,
   batchId: input.batchId,
-  sourceId: input.sourceId ?? SOURCE_NODE_ID,
+  memorySyncSourceId: input.memorySyncSourceId ?? SOURCE_NODE_ID,
   sourceDisplayName: "Finance Kubernetes Node",
   sourceEndpoint: "http://source.local:8000",
   generatedAt: new Date(0).toISOString(),
@@ -168,7 +168,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
         connectionInfo: {
           ingestEndpointUrl: string | null;
           healthEndpointUrl: string | null;
-          credentials: Array<{ credentialId: string; status: string; boundSourceId: string | null }>;
+          credentials: Array<{ credentialId: string; status: string; boundMemorySyncSourceId: string | null }>;
         };
         oneTimePlaintextToken: string | null;
       };
@@ -179,7 +179,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
           connectionInfo {
             ingestEndpointUrl
             healthEndpointUrl
-            credentials { credentialId status boundSourceId }
+            credentials { credentialId status boundMemorySyncSourceId }
           }
           oneTimePlaintextToken
         }
@@ -193,16 +193,16 @@ describe("Memory Sync public API and imported memory e2e", () => {
     sourceToken = hubStatus.updateMemoryHubConfig.oneTimePlaintextToken ?? "";
     expect(sourceToken).toMatch(/^mhub_/);
 
-    const connectionTest = await execGraphql<{ testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; sourceId: string } }>(`
+    const connectionTest = await execGraphql<{ testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; memorySyncSourceId: string } }>(`
       mutation TestConnection($input: TestMemoryHubConnectionInput!) {
-        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceId }
+        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated memorySyncSourceId }
       }
-    `, { input: { mode: "DRAFT", hubBaseUrl, token: sourceToken, sourceId: SOURCE_NODE_ID } });
+    `, { input: { mode: "DRAFT", hubBaseUrl, token: sourceToken, memorySyncSourceId: SOURCE_NODE_ID } });
     expect(connectionTest.testMemoryHubConnection).toEqual({
       ok: true,
       hubEnabled: true,
       authenticated: true,
-      sourceId: SOURCE_NODE_ID,
+      memorySyncSourceId: SOURCE_NODE_ID,
     });
 
     const sourceStatus = await execGraphql<{ updateMemorySyncSourceConfig: { source: Record<string, unknown>; oneTimePlaintextToken: string | null } }>(`
@@ -210,7 +210,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
         updateMemorySyncSourceConfig(input: $input) {
           source {
             enabled
-            sourceId
+            memorySyncSourceId
             displayName
             hubBaseUrl
             hubTokenConfigured
@@ -224,7 +224,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
     `, {
       input: {
         enabled: true,
-        sourceId: SOURCE_NODE_ID,
+        memorySyncSourceId: SOURCE_NODE_ID,
         displayName: "Finance Kubernetes Node",
         hubBaseUrl,
         hubToken: sourceToken,
@@ -234,7 +234,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
     });
     expect(sourceStatus.updateMemorySyncSourceConfig.source).toMatchObject({
       enabled: true,
-      sourceId: SOURCE_NODE_ID,
+      memorySyncSourceId: SOURCE_NODE_ID,
       hubBaseUrl,
       hubTokenConfigured: true,
       hubTokenPreview: "••••••••",
@@ -243,23 +243,23 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(JSON.stringify(sourceStatus)).not.toContain(sourceToken);
     expect(Object.prototype.hasOwnProperty.call(sourceStatus.updateMemorySyncSourceConfig.source, "hubToken")).toBe(false);
 
-    const savedConnectionTest = await execGraphql<{ testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; sourceId: string } }>(`
+    const savedConnectionTest = await execGraphql<{ testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; memorySyncSourceId: string } }>(`
       mutation TestSavedConnection($input: TestMemoryHubConnectionInput!) {
-        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceId }
+        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated memorySyncSourceId }
       }
     `, {
       input: {
         mode: "SAVED",
         hubBaseUrl: "http://127.0.0.1:9",
         token: "mhub_poisoned_draft_token",
-        sourceId: "poisoned-draft-source",
+        memorySyncSourceId: "poisoned-draft-source",
       },
     });
     expect(savedConnectionTest.testMemoryHubConnection).toEqual({
       ok: true,
       hubEnabled: true,
       authenticated: true,
-      sourceId: SOURCE_NODE_ID,
+      memorySyncSourceId: SOURCE_NODE_ID,
     });
 
     const localRunId = "source-local-run";
@@ -314,14 +314,14 @@ describe("Memory Sync public API and imported memory e2e", () => {
     const statusAfterSync = await execGraphql<{
       getMemorySyncStatus: {
         sourceState: { jobState: string; lastSuccessfulSyncAt: string | null; lastError: string | null; trackedFileCount: number } | null;
-        imports: Array<{ sourceId: string; fileCount: number; lastCommittedBatchId: string | null }>;
+        imports: Array<{ memorySyncSourceId: string; fileCount: number; lastCommittedBatchId: string | null }>;
         oneTimePlaintextToken: string | null;
       };
     }>(`
       query Status {
         getMemorySyncStatus {
           sourceState { jobState lastSuccessfulSyncAt lastError trackedFileCount }
-          imports { sourceId fileCount lastCommittedBatchId }
+          imports { memorySyncSourceId fileCount lastCommittedBatchId }
           oneTimePlaintextToken
         }
       }
@@ -330,7 +330,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(statusAfterSync.getMemorySyncStatus.sourceState?.lastSuccessfulSyncAt).toEqual(expect.any(String));
     expect(statusAfterSync.getMemorySyncStatus.sourceState?.lastError).toBeNull();
     expect(statusAfterSync.getMemorySyncStatus.sourceState?.trackedFileCount).toBeGreaterThanOrEqual(3);
-    expect(statusAfterSync.getMemorySyncStatus.imports.find((item) => item.sourceId === SOURCE_NODE_ID)?.fileCount).toBeGreaterThanOrEqual(3);
+    expect(statusAfterSync.getMemorySyncStatus.imports.find((item) => item.memorySyncSourceId === SOURCE_NODE_ID)?.fileCount).toBeGreaterThanOrEqual(3);
     expect(statusAfterSync.getMemorySyncStatus.oneTimePlaintextToken).toBeNull();
     const lastSuccessfulSyncAt = statusAfterSync.getMemorySyncStatus.sourceState?.lastSuccessfulSyncAt;
 
@@ -379,7 +379,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(duplicateRestCommit.status).toBe(200);
     expect(duplicateRestJson).toMatchObject({ duplicate: true, operationCount: 2 });
 
-    const wrongSourceHealth = await fetch(`${hubBaseUrl}/rest/memory-sync/v1/health?sourceId=other-source`, {
+    const wrongSourceHealth = await fetch(`${hubBaseUrl}/rest/memory-sync/v1/health?memorySyncSourceId=other-source`, {
       headers: { Authorization: `Bearer ${sourceToken}` },
     });
     expect(wrongSourceHealth.status).toBe(403);
@@ -393,15 +393,15 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(badPathResponse.status).toBe(400);
     expect(fs.existsSync(path.join(memoryDir, "imports", "escape.txt"))).toBe(false);
 
-    const sourceInput = { type: "IMPORTED", sourceId: SOURCE_NODE_ID };
-    const sources = await execGraphql<{ listMemoryExplorerSources: Array<{ key: string; type: string; sourceId: string | null; readOnly: boolean }> }>(`
+    const sourceInput = { type: "IMPORTED", memorySyncSourceId: SOURCE_NODE_ID };
+    const sources = await execGraphql<{ listMemoryExplorerSources: Array<{ key: string; type: string; memorySyncSourceId: string | null; readOnly: boolean }> }>(`
       query Sources {
-        listMemoryExplorerSources { key type sourceId readOnly lastSyncStatus }
+        listMemoryExplorerSources { key type memorySyncSourceId readOnly lastSyncStatus }
       }
     `);
     expect(sources.listMemoryExplorerSources).toEqual(expect.arrayContaining([
       expect.objectContaining({ key: "local", type: "LOCAL", readOnly: false }),
-      expect.objectContaining({ key: `imported:${SOURCE_NODE_ID}`, type: "IMPORTED", sourceId: SOURCE_NODE_ID, readOnly: true }),
+      expect.objectContaining({ key: `imported:${SOURCE_NODE_ID}`, type: "IMPORTED", memorySyncSourceId: SOURCE_NODE_ID, readOnly: true }),
     ]));
 
     const localOnlySearch = await execGraphql<{ listAgentsWithMemory: { total: number } }>(`
@@ -445,7 +445,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
       query MissingSource($source: MemoryExplorerSourceInput!) {
         listAgentsWithMemory(source: $source, search: null, page: 1, pageSize: 10) { total }
       }
-    `, { source: { type: "IMPORTED", sourceId: "missing-source" } });
+    `, { source: { type: "IMPORTED", memorySyncSourceId: "missing-source" } });
     expect(missingSourceResult.errors?.[0]?.message).toContain("Imported memory source 'missing-source' was not found");
 
     await execGraphql(`

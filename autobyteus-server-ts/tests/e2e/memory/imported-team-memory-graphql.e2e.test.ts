@@ -34,7 +34,7 @@ const hashesOf = async (root: string): Promise<Map<string, string>> => {
 };
 
 describe("imported Team memory GraphQL e2e", () => {
-  const sourceId = "imported-team-memory-e2e";
+  const memorySyncSourceId = "imported-team-memory-e2e";
   const definitionId = "imported-team-definition";
   const rootIds = ["imported-team-run-1", "imported-team-run-2"];
   let appDataDir: string;
@@ -54,10 +54,10 @@ describe("imported Team memory GraphQL e2e", () => {
     resetLocalFileMemoryImportStoreForTests();
     resetMemoryImportCatalogServiceForTests();
     resetMemoryExplorerSourceServiceForTests();
-    importRoot = path.join(config.getMemoryDir(), "imports", sourceId);
+    importRoot = path.join(config.getMemoryDir(), "imports", memorySyncSourceId);
     await fs.mkdir(importRoot, { recursive: true });
-    await fs.writeFile(path.join(importRoot, "source.json"), JSON.stringify({
-      schemaVersion: 1, sourceId, displayName: "Imported Team E2E",
+    await fs.writeFile(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
+      schemaVersion: 1, memorySyncSourceId, displayName: "Imported Team E2E",
       firstImportedAt: "2026-09-01T00:00:00.000Z",
       lastImportedAt: "2026-09-01T00:00:00.000Z",
       lastKnownEndpoint: null, lastSyncStatus: null, lastError: null,
@@ -108,7 +108,7 @@ describe("imported Team memory GraphQL e2e", () => {
   });
 
   const execute = async <T>(source: string): Promise<T> => {
-    const result = await graphql({ schema, source, variableValues: { source: { type: "IMPORTED", sourceId } } });
+    const result = await graphql({ schema, source, variableValues: { source: { type: "IMPORTED", memorySyncSourceId } } });
     if (result.errors?.length) throw result.errors[0];
     return result.data as T;
   };

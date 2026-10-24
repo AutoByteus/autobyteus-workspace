@@ -8,15 +8,15 @@ export class MemoryImportCatalogService {
   constructor(private readonly store: LocalFileMemoryImportStore = getLocalFileMemoryImportStore()) {}
 
   async listImports(): Promise<MemoryImportSummary[]> {
-    const sourceIds = await this.store.listSourceIds();
+    const memorySyncSourceIds = await this.store.listMemorySyncSourceIds();
     const summaries: MemoryImportSummary[] = [];
-    for (const sourceId of sourceIds) {
+    for (const memorySyncSourceId of memorySyncSourceIds) {
       const [metadata, manifest] = await Promise.all([
-        this.store.readSourceMetadata(sourceId),
-        this.store.readManifest(sourceId),
+        this.store.readMemorySyncSourceMetadata(memorySyncSourceId),
+        this.store.readManifest(memorySyncSourceId),
       ]);
       summaries.push({
-        sourceId,
+        memorySyncSourceId,
         displayName: metadata?.displayName ?? null,
         lastKnownEndpoint: metadata?.lastKnownEndpoint ?? null,
         firstImportedAt: metadata?.firstImportedAt ?? null,

@@ -29,7 +29,7 @@ describe("Memory view GraphQL e2e", () => {
   let usingTemp = false;
   let memoryDir: string;
   const createdAgentIds: string[] = [];
-  const createdImportedSourceIds: string[] = [];
+  const createdImportedMemorySyncSourceIds: string[] = [];
   const config = appConfigProvider.config;
 
   beforeAll(async () => {
@@ -57,8 +57,8 @@ describe("Memory view GraphQL e2e", () => {
       const dir = path.join(memoryDir, "agents", agentId);
       fs.rmSync(dir, { recursive: true, force: true });
     }
-    for (const sourceId of createdImportedSourceIds.splice(0)) {
-      fs.rmSync(path.join(memoryDir, "imports", sourceId), { recursive: true, force: true });
+    for (const memorySyncSourceId of createdImportedMemorySyncSourceIds.splice(0)) {
+      fs.rmSync(path.join(memoryDir, "imports", memorySyncSourceId), { recursive: true, force: true });
     }
   });
 
@@ -516,15 +516,15 @@ describe("Memory view GraphQL e2e", () => {
   });
 
   it("uses raw trace file selection for imported read-only memory sources", async () => {
-    const sourceId = "imported-raw-trace-source";
+    const memorySyncSourceId = "imported-raw-trace-source";
     const agentId = "memory-view-imported-agent";
-    createdImportedSourceIds.push(sourceId);
-    const importRoot = path.join(memoryDir, "imports", sourceId);
+    createdImportedMemorySyncSourceIds.push(memorySyncSourceId);
+    const importRoot = path.join(memoryDir, "imports", memorySyncSourceId);
     const agentDir = path.join(importRoot, "agents", agentId);
 
-    writeJson(path.join(importRoot, "source.json"), {
+    writeJson(path.join(importRoot, "memory-sync-source.json"), {
       schemaVersion: 1,
-      sourceId,
+      memorySyncSourceId,
       displayName: "Imported Raw Trace Source",
       firstImportedAt: "2026-06-25T00:00:00.000Z",
       lastImportedAt: "2026-06-25T00:00:00.000Z",
@@ -550,7 +550,7 @@ describe("Memory view GraphQL e2e", () => {
       };
     }>(memoryViewRawTraceFilesQuery, {
       runId: agentId,
-      source: { type: "IMPORTED", sourceId },
+      source: { type: "IMPORTED", memorySyncSourceId },
       includeRawTraceFiles: true,
       rawTraceFileName: "raw_traces_000001.jsonl",
     });

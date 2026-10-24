@@ -48,7 +48,7 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
     const dirs = { getAppDataDir: () => hoisted.root, getMemoryDir: () => hoisted.root };
     const config = new MemorySyncConfigService(dirs);
     await expectHeldBack(config.getConfig());
-    await expectHeldBack(config.updateSourceConfig({ sourceId: "laptop-1" }));
+    await expectHeldBack(config.updateSourceConfig({ memorySyncSourceId: "laptop-1" }));
     await expectHeldBack(config.updateHubConfig({ enabled: false }));
     const state = new LocalFileMemorySyncStateStore(dirs);
     await expectHeldBack(state.readState("http://hub", "laptop-1"));
@@ -57,9 +57,9 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
     await expectHeldBack(credentials.listRecords());
     await expectHeldBack(credentials.writeRecords([]));
     const imports = new LocalFileMemoryImportStore(dirs);
-    await expectHeldBack(imports.listSourceIds());
+    await expectHeldBack(imports.listMemorySyncSourceIds());
     await expectHeldBack(imports.readManifest("laptop-1"));
-    await expectHeldBack(imports.commitBatch({ protocolVersion: 1, batchId: "b1", sourceId: "laptop-1", operations: [] } as never));
+    await expectHeldBack(imports.commitBatch({ protocolVersion: 1, batchId: "b1", memorySyncSourceId: "laptop-1", operations: [] } as never));
     await expect(fs.readdir(hoisted.root)).resolves.toEqual([]);
     await expect(config.getConfig()).rejects.toMatchObject({ code: MEMORY_SYNC_NOT_MIGRATED, message: MEMORY_SYNC_NOT_MIGRATED_TEXT });
   });
@@ -75,7 +75,7 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
     const { registerMemorySyncRoutes } = await import("../../../src/api/rest/memory-sync.js");
     const app = Fastify();
     await registerMemorySyncRoutes(app);
-    const health = await app.inject({ method: "GET", url: "/memory-sync/v1/health?sourceId=laptop-1" });
+    const health = await app.inject({ method: "GET", url: "/memory-sync/v1/health?memorySyncSourceId=laptop-1" });
     const batch = await app.inject({ method: "POST", url: "/memory-sync/v1/batches", payload: { protocolVersion: 1 } });
     await app.close();
     for (const answer of [health, batch]) {
@@ -93,11 +93,11 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
 
   it("the Memory page lists only this node's memory and refuses an imported source with the reason", async () => {
     const catalog = { listImports: vi.fn() };
-    const importStore = { sourceExists: vi.fn(), readSourceMetadata: vi.fn(), getImportRootDir: vi.fn() };
+    const importStore = { sourceExists: vi.fn(), readMemorySyncSourceMetadata: vi.fn(), getImportRootDir: vi.fn() };
     const service = new MemoryExplorerSourceService(catalog as never, importStore as never);
     const sources = await service.listSources();
     expect(sources.map((source) => source.type)).toEqual(["LOCAL"]);
-    await expect(service.resolveSource({ type: "IMPORTED", sourceId: "laptop-1" } as never))
+    await expect(service.resolveSource({ type: "IMPORTED", memorySyncSourceId: "laptop-1" } as never))
       .rejects.toMatchObject({ code: MEMORY_SYNC_NOT_MIGRATED, message: MEMORY_SYNC_NOT_MIGRATED_TEXT });
     expect(catalog.listImports).not.toHaveBeenCalled();
     expect(importStore.sourceExists).not.toHaveBeenCalled();
