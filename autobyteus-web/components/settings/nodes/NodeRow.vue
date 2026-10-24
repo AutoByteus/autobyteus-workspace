@@ -148,7 +148,7 @@ const dotClass = computed(() => view.value.different ? 'bg-red-500'
 const dotLabel = computed(() => view.value.checking ? t(k('row.checking'))
   : view.value.reachable === true && !view.value.different ? t(k('row.reachable')) : t(k('row.notReachable')))
 
-const switchDisabled = computed(() => !props.row.serverInstanceId || view.value.checking || dialog.preparing === props.row.key
+const switchDisabled = computed(() => !props.row.nodeId || view.value.checking || dialog.preparing === props.row.key
   // A node that does not answer cannot be set up; turning collaboration off stays possible.
   || (!collaborating.value && view.value.reachable !== true))
 

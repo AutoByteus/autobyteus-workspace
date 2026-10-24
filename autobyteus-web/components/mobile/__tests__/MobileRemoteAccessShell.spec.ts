@@ -31,8 +31,7 @@ vi.mock("vue-router", async (importOriginal) => {
 });
 
 const pairedSession = {
-  version: 1,
-  nodeId: "mobile-paired-node",
+  entryId: "mobile-paired-node",
   serverBaseUrl: "http://desktop-private.local:29695",
   credential: "credential-1",
   pairedAt: "2026-05-18T12:00:00.000Z",
@@ -61,7 +60,6 @@ const initialState = {
     lastStatus: {
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     },
   },
@@ -637,7 +635,6 @@ ${activitySource}`).not.toContain(
       lastStatus: {
         phoneAccessEnabled: true,
         pairingAvailable: true,
-        compatibilityVersion: 1,
         serverName: "Desktop Node",
       },
       lastDiagnostic: null,
@@ -702,7 +699,6 @@ ${activitySource}`).not.toContain(
     vi.mocked(sessionStore.fetchStatus).mockResolvedValue({
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     });
     const unauthorized = new Error("Received status code 401");
@@ -789,7 +785,6 @@ ${activitySource}`).not.toContain(
     resolveStatus({
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     });
     await flushPromises();

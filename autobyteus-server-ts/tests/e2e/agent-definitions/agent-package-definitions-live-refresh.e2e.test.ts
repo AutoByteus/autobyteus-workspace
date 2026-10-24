@@ -169,8 +169,6 @@ describe("Agent package definitions live refresh at the real server/wire boundar
       { input: { sourceKind: "LOCAL_PATH", source: root } })).importAgentPackage as PackageRow[];
     const row = rows.find((entry) => entry.path === root);
     expect(row, `imported row for ${root}`).toBeTruthy();
-    // A real user writes after import; this also lets macOS directory watches start (see the monitor's notes).
-    await sleep(1000);
     return row!;
   };
   const newPackage = async (label: string) => {

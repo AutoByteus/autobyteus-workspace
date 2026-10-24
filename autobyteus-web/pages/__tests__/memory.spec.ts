@@ -375,8 +375,8 @@ describe('memory page', () => {
 type Operation = { name: string; variables: Record<string, unknown> };
 const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
 const page = <T>(entries: T[]) => ({ entries, total: entries.length, page: 1, pageSize: 25, totalPages: 1 });
-const localSourceOption = { key: 'local', type: 'LOCAL', label: 'Local Memory', sourceNodeId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
-const importedSourceOption = { ...localSourceOption, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', sourceNodeId: 'finance', readOnly: true };
+const localSourceOption = { key: 'local', type: 'LOCAL', label: 'Local Memory', memorySyncSourceId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
+const importedSourceOption = { ...localSourceOption, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', memorySyncSourceId: 'finance', readOnly: true };
 
 /**
  * Real store actions over a recording Apollo client: each mount is one route sync, so the recorded operations are
@@ -495,7 +495,7 @@ describe('memory page route sync request ownership (REQ-011)', () => {
     await flushPromises();
 
     expect(operations.map((operation) => operation.name)).toEqual(['ListMemoryExplorerSources', 'ListAgentTeamRunsWithMemory']);
-    expect(operations[1]?.variables.source).toEqual({ type: 'IMPORTED', sourceNodeId: 'finance' });
+    expect(operations[1]?.variables.source).toEqual({ type: 'IMPORTED', memorySyncSourceId: 'finance' });
     expect(routerMock.replace).not.toHaveBeenCalled();
   });
 });

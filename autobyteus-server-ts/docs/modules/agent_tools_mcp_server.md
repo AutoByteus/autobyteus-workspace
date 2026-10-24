@@ -70,7 +70,7 @@ The endpoint handles the MCP Streamable HTTP methods:
   lifecycle remains the owner of run-session deactivation.
 
 Every request is admitted before method handling or session lookup. Admission
-requires the raw TCP peer address to be loopback, the `Host` header to be
+requires the raw TCP client address to be loopback, the `Host` header to be
 `localhost` or a loopback address, and any supplied `Origin` to be HTTP(S) on a
 current loopback host. A failed local-admission check returns `403`; an admitted
 request for an inactive run-session ID returns the redacted `404
@@ -267,7 +267,15 @@ provider-facing tool name is the registered AutoByteus tool name, including any
 configured `toolNamePrefix` such as `db_query`. Execution creates the registry
 tool and delegates through the existing `GenericMcpTool` / MCP proxy path, so
 remote tool-name mapping, transport ownership, connection reuse, and cleanup
-remain with MCP Server Management and `autobyteus-ts`.
+remain with MCP Server Management and `autobyteus-ts`. A configured tool call
+that fails, because the tool throws (for example `HTTP 401 Unauthorized: Error
+POSTing to endpoint: …` after a revoked token) or because the tool is no longer
+available for the session at call time, is answered with a tool result:
+`isError: true` and one text item with the failure message, the same text the
+native runtime shows. It is not a JSON-RPC `Internal error`
+(`ConfiguredMcpRegistryToolAdapter`). The message carries no token or header
+value. Text that a remote server puts in its own response body is passed on as
+it is.
 
 Family-specific behavior remains owned by the existing family services and
 manifests:

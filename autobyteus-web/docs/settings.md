@@ -203,6 +203,12 @@ per-team, runtime, provider, or frontend-renderer preference.
 
 ## Nodes: Manage Nodes (one list)
 
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
+
 Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
 Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
 once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
@@ -223,8 +229,11 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   windows this desktop can open, addresses as the desktop reaches them) and this node's peers
   (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
   reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
-  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
-  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
   a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a
@@ -1397,8 +1406,11 @@ The saved-run view uses the start surfaces' visual language:
     "Settings were saved, but could not be refreshed. Refresh before making more
     changes." It locks editing and offers **Refresh** rather than showing stale
     "Saved" or treating committed changes as unsaved. Refresh rereads the same
-    canonical snapshot without another Save or starting/resuming the run. Cancel
-    before Save writes nothing; repeated edits start from the accepted values.
+    canonical snapshot without another Save or starting/resuming the run. A
+    running Org's view reloading during the readback does not fail it: the Org
+    reads its settings again, up to three times (`agentOrgContextsStore.readRunConfig`);
+    only a closed Org, a switched node or a pending Org operation fails the readback.
+    Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is

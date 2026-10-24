@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-10-24T13:09:46.092Z",
+  "completedAt": "2026-10-24T13:11:37.103Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web",
+  "skipBuild": false,
+  "artifact": null,
+  "ordinaryApplication": {
+    "before": {
+      "label": "before packaged validation",
+      "listenerPids": [
+        35464
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 35464,
+          "fingerprint": "36ee5d52d80eb4ee1200051fc4e76d985b3a47352cdd573b9afb56320a752d9f",
+          "commandIsAutoByteus": true
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "E2E-PKG-001": {
+      "id": "E2E-PKG-001",
+      "title": "Direct same-artifact coexistence, isolated paths, and caller-root retention",
+      "startedAt": "2026-10-24T13:09:46.458Z",
+      "completedAt": "2026-10-24T13:11:37.100Z",
+      "result": "fail",
+      "details": {
+        "message": "Command failed (1): pnpm build:electron",
+        "stack": "Error: Command failed (1): pnpm build:electron\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/scripts/electron-e2e/electronE2ELaunchPreparation.mjs:30:19)\n    at Object.onceWrapper (node:events:634:26)\n    at ChildProcess.emit (node:events:519:28)\n    at maybeClose (node:internal/child_process:1101:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:304:5)"
+      }
+    }
+  },
+  "failures": [
+    {
+      "id": "E2E-PKG-001",
+      "message": "Command failed (1): pnpm build:electron",
+      "stack": "Error: Command failed (1): pnpm build:electron\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/scripts/electron-e2e/electronE2ELaunchPreparation.mjs:30:19)\n    at Object.onceWrapper (node:events:634:26)\n    at ChildProcess.emit (node:events:519:28)\n    at maybeClose (node:internal/child_process:1101:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:304:5)"
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "controlled caller root",
+      "result": "pass"
+    },
+    {
+      "label": "probe temporary root",
+      "result": "pass"
+    }
+  ]
+}

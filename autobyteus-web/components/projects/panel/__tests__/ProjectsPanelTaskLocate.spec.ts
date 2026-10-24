@@ -87,7 +87,7 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
     await settle()
 
     expect(useProjectsPanelStore().choice).toEqual({ kind: 'project', projectId: 'p2' })
-    expect(JSON.parse(window.localStorage.getItem(`autobyteus.projectsPanel.choice.${useWindowNodeContextStore().nodeId}`)!)).toEqual({ kind: 'project', projectId: 'p2' })
+    expect(JSON.parse(window.localStorage.getItem(`autobyteus.projectsPanel.choice.${useWindowNodeContextStore().entryId}`)!)).toEqual({ kind: 'project', projectId: 'p2' })
     const card = row(wrapper, 'b1')
     expect(card.classes()).toContain('is-located')
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })

@@ -13,7 +13,6 @@ const {
       name: 'Embedded Node',
       baseUrl: 'http://127.0.0.1:29695',
       nodeType: 'embedded',
-      isSystem: true,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
     },
@@ -22,7 +21,6 @@ const {
       name: 'Remote One',
       baseUrl: 'http://node-a:8000',
       nodeType: 'remote',
-      isSystem: false,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
     },
@@ -32,12 +30,11 @@ const {
     nodeStoreMock: {
       nodes: initialNodes,
       initializeRegistry: vi.fn().mockResolvedValue(undefined),
-      getNodeById: vi.fn((id: string) => initialNodes.find((node) => node.id === id) || null),
+      getEntryById: vi.fn((id: string) => initialNodes.find((node) => node.id === id) || null),
       addRemoteNode: vi.fn().mockImplementation(async (input: any) => ({
         ...input,
         id: 'remote-added',
         nodeType: 'remote',
-        isSystem: false,
         createdAt: '2026-02-08T00:00:00.000Z',
         updatedAt: '2026-02-08T00:00:00.000Z',
       })),
@@ -48,7 +45,7 @@ const {
       query: {},
     },
     windowNodeContextStoreMock: {
-      nodeId: 'embedded-local',
+      entryId: 'embedded-local',
       isEmbeddedWindow: true,
     },
   };
@@ -110,7 +107,7 @@ describe('NodeManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routeMock.query = {};
-    windowNodeContextStoreMock.nodeId = 'embedded-local';
+    windowNodeContextStoreMock.entryId = 'embedded-local';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
     Object.defineProperty(window, 'electronAPI', {
       configurable: true,
@@ -219,7 +216,7 @@ describe('NodeManager', () => {
   });
 
   it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
-    windowNodeContextStoreMock.nodeId = 'remote-1';
+    windowNodeContextStoreMock.entryId = 'remote-1';
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();

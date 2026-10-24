@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
-const node = vi.hoisted(() => ({ isEmbeddedWindow: true, nodeId: 'embedded-local', bindingRevision: 0 }))
+const node = vi.hoisted(() => ({ isEmbeddedWindow: true, entryId: 'embedded-local', bindingRevision: 0 }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ ...node, lastReadyError: null, waitForBoundBackendReady: async () => true }),
 }))
 vi.mock('~/stores/nodeStore', () => ({
-  useNodeStore: () => ({ getNodeById: (id: string) => ({ name: id === 'embedded-local' ? 'Embedded Node' : 'Docker Node' }) }),
+  useNodeStore: () => ({ getEntryById: (id: string) => ({ name: id === 'embedded-local' ? 'Embedded Node' : 'Docker Node' }) }),
 }))
 
 import AgentRuntimesManager from '../AgentRuntimesManager.vue'
@@ -62,7 +62,7 @@ describe('AgentRuntimesManager', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
-    Object.assign(node, { isEmbeddedWindow: true, nodeId: 'embedded-local', bindingRevision: 0 })
+    Object.assign(node, { isEmbeddedWindow: true, entryId: 'embedded-local', bindingRevision: 0 })
     current = baseline()
     browserAvailable = true
     io.query.mockImplementation(async () => respond())
@@ -222,7 +222,7 @@ describe('AgentRuntimesManager', () => {
   })
 
   it("offers Sign in on a remote node that can open a browser on its own desktop, finished in that node's browser", async () => {
-    Object.assign(node, { isEmbeddedWindow: false, nodeId: 'docker-1' })
+    Object.assign(node, { isEmbeddedWindow: false, entryId: 'docker-1' })
     set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' }, runningAgentCount: 1 })
     await mountPage()
     expect(textOf(get('agent-runtimes-node'))).toBe('Docker Node · Remote node')
@@ -264,7 +264,7 @@ describe('AgentRuntimesManager', () => {
   })
 
   it('keeps a remote node that cannot open a browser status only: no Update, no Sign in, no sign-in hint', async () => {
-    Object.assign(node, { isEmbeddedWindow: false, nodeId: 'docker-1' })
+    Object.assign(node, { isEmbeddedWindow: false, entryId: 'docker-1' })
     browserAvailable = false
     set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' }, runningAgentCount: 1 })
     await mountPage()

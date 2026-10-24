@@ -1,9 +1,10 @@
+import { NodeIdentityNotMigratedError, NODE_IDENTITY_NOT_MIGRATED_TEXT } from "../../remote-access/services/node-identity-service.js";
 import type {
   RemoteAgentProjectionAnswer,
   RemoteDeliveryReceipt,
   RemoteMessageTransmission,
   RemoteOwnerCommand,
-  RemotePeer,
+  PeerNodeRef,
   RemoteRunChannel,
   RemoteRunObservationStream,
   RemoteRunObserver,
@@ -119,7 +120,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     openWebSocket?: OpenWebSocket;
   }>) {}
 
-  async findPeer(name: string): Promise<RemotePeer | PeerRefusal> {
+  async findPeer(name: string): Promise<PeerNodeRef | PeerRefusal> {
     if (!this.dependencies.capability.isEnabled()) return refusal(REMOTE_REFUSAL.OFF, localRefusalText.off());
     const peer = await this.dependencies.peers.findByName(name);
     return peer
@@ -218,12 +219,12 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 
   /**
-   * `PeerIdentityProbe`: the server identity behind a URL, read from its public status route (DS-004). Only a
+   * `PeerIdentityProbe`: the node ID behind a URL, read from its public status route (DS-004). Only a
    * transport failure or a timeout is `PEER_UNREACHABLE`, with its classified `reason` (one-nodes-tab REQ-707); a
    * server that answered with anything but its identity (another status, a page that is not JSON, JSON without
-   * `serverInstanceId`) is not an AutoByteus node (CR-002).
+   * `nodeId`) is not an AutoByteus node (CR-002).
    */
-  async fetchServerInstanceId(baseUrl: string): Promise<string> {
+  async fetchNodeId(baseUrl: string): Promise<string> {
     const unreachable = (error: unknown) => {
       const reason = transportFailureReason(error);
       return new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${baseUrl} could not be reached: ${PROBE_FAILURE_TEXT[reason]}.`,
@@ -232,6 +233,9 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     const notAutobyteus = () => new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", `${baseUrl} is not an AutoByteus node.`);
     const response = await this.fetchJson(`${baseUrl}/rest/remote-access/status`, { method: "GET" })
       .catch((error: unknown) => { throw unreachable(error); });
+    if (await isNodeIdentityPendingAnswer(response)) {
+      throw new RemoteCollaborationSettingsError("NODE_IDENTITY_NOT_MIGRATED", `${baseUrl}: ${NODE_IDENTITY_NOT_MIGRATED_TEXT}`, { address: baseUrl });
+    }
     if (!response.ok) throw notAutobyteus();
     let answer: unknown;
     try {
@@ -240,7 +244,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       // The body stopped arriving in time is still the transport; a body that is not JSON is an answer.
       throw transportFailureReason(error) === "timeout" ? unreachable(error) : notAutobyteus();
     }
-    const id = (answer as { serverInstanceId?: unknown } | null)?.serverInstanceId;
+    const id = (answer as { nodeId?: unknown } | null)?.nodeId;
     if (typeof id !== "string" || !/^srv_[A-Za-z0-9_-]{32,}$/.test(id)) throw notAutobyteus();
     return id;
   }
@@ -259,13 +263,25 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     }
     const unreachable = (detail: string, reason?: TransportFailureReason) =>
       refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, detail), reason);
+    let fromNodeId: string;
+    try {
+      fromNodeId = await this.dependencies.ownNodeId();
+    } catch (error) {
+      if (error instanceof NodeIdentityNotMigratedError) {
+        return refusal(REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, localRefusalText.nodeIdentityPending());
+      }
+      throw error;
+    }
     let answer: PeerAnswer;
     try {
       const response = await this.fetchJson(`${peer.baseUrl}${path}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(body({ fromNodeId: await this.dependencies.ownNodeId(), toNodeId: peer.nodeId })),
+        body: JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId })),
       });
+      if (await isNodeIdentityPendingAnswer(response)) {
+        return refusal(REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, peerRefusalText(peer.name, REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, ""));
+      }
       if (!response.ok) return unreachable(`it answered HTTP ${response.status}`);
       answer = await response.json() as PeerAnswer;
     } catch (error) {
@@ -288,6 +304,17 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     return (this.dependencies.fetch ?? fetch)(url, { ...init, signal: timeout });
   }
 }
+
+/**
+ * autobyteus-290 N-910: another node answered that its identity is waiting for its data migration (HTTP 503 with
+ * `NODE_IDENTITY_NOT_MIGRATED`); every other non-OK answer keeps its meaning.
+ */
+const isNodeIdentityPendingAnswer = async (response: Pick<Response, "json" | "status">): Promise<boolean> => {
+  if (response.status !== 503) return false;
+  // Only a 503 is read here; a non-OK answer's body is not read again.
+  const answer = await response.json().catch(() => null) as { code?: unknown } | null;
+  return answer?.code === REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED;
+};
 
 const refusal = (code: string, message: string, reason?: TransportFailureReason): PeerRefusal =>
   Object.freeze({ accepted: false as const, code, message, ...(reason ? { reason } : {}) });

@@ -45,7 +45,7 @@ Memory Home starts directly with the functional browser panel rather than a repe
 When imported Memory Sync sources exist, a source selector is shown above the
 tabs. `Local Memory` is the default for initial page load and for missing or
 invalid source route state. Imported options are labeled as read-only imported
-corpora and use `source=imported:<sourceNodeId>` in the route query.
+corpora and use `source=imported:<memorySyncSourceId>` in the route query.
 
 The sources list is refreshed in the background every time the Memory home view
 is shown (including first page entry); the refresh never delays the home list,
@@ -140,8 +140,8 @@ Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPa
 The `source` variable is explicit:
 
 - `{ type: "LOCAL" }` reads the current node's local runtime memory.
-- `{ type: "IMPORTED", sourceNodeId }` reads the selected hub import under
-  `memory/imports/<sourceNodeId>`.
+- `{ type: "IMPORTED", memorySyncSourceId }` reads the selected hub import under
+  `memory/imports/<memorySyncSourceId>`.
 
 Unknown imported sources are backend errors rather than silent local fallbacks.
 
@@ -181,9 +181,9 @@ Storage is server-owned and identity-opaque:
 - Delegated task-team members: `memory/agent_teams/<rootTeamRunId>/<taskTeamRunId>/<memberRunId>/...`; a task team delegated inside a task team appends its run id before the member id
 - Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...`
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...teamRunIds>/<agentRunId>/...` (team runs hosted inside the org, including task teams, contribute their run ids before the agent run id)
-- Imported source memory: `memory/imports/<sourceNodeId>/agents/...` and
-  `memory/imports/<sourceNodeId>/agent_teams/...`, plus hub-managed
-  `source-node.json` and `sync-manifest.json`.
+- Imported source memory: `memory/imports/<memorySyncSourceId>/agents/...` and
+  `memory/imports/<memorySyncSourceId>/agent_teams/...`, plus hub-managed
+  `memory-sync-source.json` and `sync-manifest.json`.
 
 Required server startup migration `20260823_repair_team_agent_memory_layout`
 relocates affected flat nested-member directories into this canonical hierarchy
@@ -219,7 +219,7 @@ current raw traces or provider continuation.
 The frontend does not infer memory ownership from runtime-specific thread/session IDs, generated run-id strings, route-key slugs, or archive internals. It selects agent definition groups, unattributed groups, agent run IDs, or exposed team/member targets and lets the backend resolve memory directories, complete archive segments, ordering, and de-duplication.
 
 The frontend also does not infer imported-memory identity from Nodes page profile
-ids or display names. Memory Sync uses the backend `sourceNodeId` selected in
+ids or display names. Memory Sync uses the backend `memorySyncSourceId` selected in
 **Nodes -> Memory Sync** as the durable import identity.
 
 ## Memory Sync Setup
@@ -248,7 +248,7 @@ rather than relying on page-level alerts. **Test connection** enters a
 tested endpoint, source id, timestamp, hub-enabled/authentication flags when
 available, and no token value. When the token field is blank and a saved source
 token exists, the connection test uses the fully persisted source settings:
-saved hub URL, saved `sourceNodeId`, and saved token. Unsaved draft URL or source
+saved hub URL, saved `memorySyncSourceId`, and saved token. Unsaved draft URL or source
 id edits are not mixed with the saved token; save first or paste a draft token to
 test draft settings. When a draft token is pasted, the test uses the draft hub
 URL, draft source id, and draft token together without persisting the token.

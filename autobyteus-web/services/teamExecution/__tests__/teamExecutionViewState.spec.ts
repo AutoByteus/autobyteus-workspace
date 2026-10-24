@@ -32,8 +32,13 @@ const studyGroupSource = {
   handoffs: [], default_launch_configuration: launch,
 };
 
+/** The test tree, whose root Team's `task_executions` the cases replace (the DTO declares it read-only). */
+type EditableExecutionTree = Omit<TeamRunExecutionTreeDto, 'root_team'> & {
+  root_team: { -readonly [K in keyof TeamRunExecutionTreeDto['root_team']]: TeamRunExecutionTreeDto['root_team'][K] }
+};
+
 /** A flat root Team whose Teacher delegated a study-group Team copy (`study-team-persistent`). */
-const tree = (): TeamRunExecutionTreeDto => ({
+const tree = (): EditableExecutionTree => ({
   created_at: createdAt,
   archived_at: null,
   application_binding: null,

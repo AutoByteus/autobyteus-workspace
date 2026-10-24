@@ -108,10 +108,13 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   });
 
   it.each([true, false])('hydrates a delegated execution as a standard navigable row under active=%s', async isActive => {
-    const retainedTree = structuredClone(tree);
-    retainedTree.root_team.task_executions.push({ kind: 'task_agent', address: '/member-a',
-      agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
-      started_at: retainedTree.created_at, source: memberACopySource });
+    const clonedTree = structuredClone(tree);
+    const retainedTree = { ...clonedTree, root_team: { ...clonedTree.root_team, task_executions: [
+      ...clonedTree.root_team.task_executions,
+      { kind: 'task_agent' as const, address: '/member-a',
+        agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
+        started_at: clonedTree.created_at, source: memberACopySource },
+    ] } };
     queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
       : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });

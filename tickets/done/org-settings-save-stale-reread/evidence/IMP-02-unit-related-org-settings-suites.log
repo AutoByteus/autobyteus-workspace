@@ -1,0 +1,42 @@
+# IMP-02 related Org / Settings / stream web suites (AC-004 unit layer)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run stores/__tests__/agentOrg stores/__tests__/existingRunConfig stores/__tests__/delegatedLaunchDraftStore.spec.ts stores/__tests__/nativeOrgCompactionTermination.spec.ts stores/__tests__/retainedOrgActivityTermination.spec.ts services/agentOrgExecution components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts components/workspace/config --run
+# commit: 29b51ebcef  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:30Z
+
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (31 tests) 271ms
+ ✓ stores/__tests__/nativeOrgCompactionTermination.spec.ts (9 tests) 148ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 421ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (8 tests) 150ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (16 tests) 1407ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (25 tests) 1874ms
+ ✓ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests) 1273ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  638ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  600ms
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 109ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 172ms
+ ✓ components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts (3 tests) 82ms
+ ✓ stores/__tests__/retainedOrgActivityTermination.spec.ts (4 tests) 95ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts (7 tests) 70ms
+ ✓ stores/__tests__/agentOrgInspectionApollo.spec.ts (25 tests) 3818ms
+ ✓ stores/__tests__/agentOrgDefinitionCache.spec.ts (11 tests) 38ms
+ ✓ stores/__tests__/agentOrgRunConfigPublication.spec.ts (6 tests) 26ms
+ ✓ stores/__tests__/agentOrgLaunchDraftStore.spec.ts (14 tests) 35ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (11 tests) 21ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 32ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 13ms
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (7 tests) 17ms
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 22ms
+ ✓ stores/__tests__/agentOrgRemoteRetry.spec.ts (2 tests) 17ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests) 31ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionContextBatch.spec.ts (3 tests) 11ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (8 tests) 13ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (2 tests) 18ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts (2 tests) 9ms
+ ✓ stores/__tests__/agentOrgDefinitionStore.spec.ts (1 test) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts (3 tests) 3ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (2 tests) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (4 tests) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionViewIndex.spec.ts (2 tests) 3ms
+ ✓ stores/__tests__/agentOrgHistoryApollo.spec.ts (85 tests) 9507ms
+ Test Files  33 passed (33)
+      Tests  359 passed (359)
+   Duration  17.20s (transform 6.03s, setup 94.12s, collect 13.46s, tests 19.72s, environment 6.27s, prepare 4.28s)

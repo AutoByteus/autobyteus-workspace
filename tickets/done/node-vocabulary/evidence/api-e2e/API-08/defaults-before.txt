@@ -1,0 +1,4 @@
+{
+    "autobyteus.saved-node-profiles" = {length = 606, bytes = 0x5b7b2269 64223a22 73617665 642d686f ... 31303030 30307d5d };
+    "autobyteus.selected-node-profile-id" = "saved-tailnet";
+}

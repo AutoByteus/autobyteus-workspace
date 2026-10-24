@@ -25,13 +25,6 @@ TRACKED_IMPORT_SUFFIXES = (".ts", ".mts", ".vue")
 # Build output: neither scanned nor required to be tracked (tests import it after building).
 MODULE_EXTENSIONS = frozenset({".js", ".mjs", ".cjs", ".ts", ".mts", ".tsx", ".vue", ".json", ".css", ".scss", ".svg", ".png"})
 BUILD_OUTPUT_PARTS = frozenset({"node_modules", "dist", ".nuxt", ".output", "electron-dist"})
-# Test folders the server's vitest config excludes: their source was deleted (`src/prompt-engineering/`, 2026-03-06),
-# so they import files that no longer exist. Follow-up autobyteus-282 FU-001 removes them.
-EXCLUDED_DEAD_TEST_DIRS = (
-    "autobyteus-server-ts/tests/unit/prompt-engineering/",
-    "autobyteus-server-ts/tests/unit/agent-tools/prompt-engineering/",
-    "autobyteus-server-ts/tests/integration/prompt-engineering/",
-)
 # Files whose import-like strings are fixture text, not imports of this repository.
 TRACKED_IMPORT_FIXTURE_FILES = {
     "autobyteus-server-ts/tests/architecture/app-data-migration-boundaries.test.ts":
@@ -128,7 +121,7 @@ def collect_untracked_imports(paths: list[str], read_text=None) -> list[str]:
     for importer in paths:
         if not importer.startswith(TRACKED_IMPORT_ROOTS) or not importer.endswith(TRACKED_IMPORT_SUFFIXES):
             continue
-        if is_build_output(importer) or importer in TRACKED_IMPORT_FIXTURE_FILES or importer.startswith(EXCLUDED_DEAD_TEST_DIRS):
+        if is_build_output(importer) or importer in TRACKED_IMPORT_FIXTURE_FILES:
             continue
         try:
             text = read(importer)

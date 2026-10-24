@@ -496,20 +496,23 @@ ownership before changing the pin.
 ### Build Commands
 
 ```bash
-# Build for current platform
-npx ts-node build/scripts/build.ts
+# Build for the current platform (run from the repository root)
+pnpm -C autobyteus-web build:electron:mac        # macOS
+pnpm -C autobyteus-web build:electron:linux      # Linux (host architecture)
+pnpm -C autobyteus-web build:electron:windows    # Windows
 
-# Build for specific platform
-npx ts-node build/scripts/build.ts --linux
-npx ts-node build/scripts/build.ts --linux --x64
-npx ts-node build/scripts/build.ts --linux --arm64
-npx ts-node build/scripts/build.ts --windows
-npx ts-node build/scripts/build.ts --mac
+# Build for a specific Linux architecture
+pnpm -C autobyteus-web build:electron:linux:x64
+pnpm -C autobyteus-web build:electron:linux:arm64
 
 # Build for all platforms. The Linux target uses the native Linux host architecture
-# and fails if a Linux package is requested from a non-Linux host.
-npx ts-node build/scripts/build.ts
+# and fails if a Linux package is requested from a non-Linux host, so run it on Linux.
+pnpm -C autobyteus-web build:electron
 ```
+
+Each script runs the boundary guards, `prepare-server`, `generate:electron` and `transpile-electron`, compiles
+`build/tsconfig.json`, then runs `build/dist/build.js` (the platform flag is passed to it). The packaged
+Electron harness (`pnpm test:e2e:electron`) builds the current host with the matching script.
 
 The package keeps the ordinary `AutoByteus` product name, app ID, signing
 configuration, and release/update channel in both runtime profiles. E2E values

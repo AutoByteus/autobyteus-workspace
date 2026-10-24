@@ -219,8 +219,8 @@ importers:
         specifier: 7.5.22
         version: 7.5.22
       type-graphql:
-        specifier: ^2.0.0-rc.2
-        version: 2.0.0-rc.3(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
+        specifier: ^2.0.0-rc.4
+        version: 2.0.0-rc.4(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -7996,8 +7996,8 @@ packages:
     resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
     engines: {node: '>=20'}
 
-  type-graphql@2.0.0-rc.3:
-    resolution: {integrity: sha512-o01aQg5/PWvd6nmZ55H1C74ROc9q0uNIAU2o65sbBailLmeG20LvkUuuYYA/E6fNoGABYFQlCVrIzlZlrSRDgQ==}
+  type-graphql@2.0.0-rc.4:
+    resolution: {integrity: sha512-RQlOW7sTYeoIquTbQV3oAHgCKikEhqSFLZTj0SB9395O3rHmqziTto+F7ZaSdP4CDlBgNPehDW4WoXo1jH0JeA==}
     engines: {node: '>= 20.11.1'}
     peerDependencies:
       class-validator: '>=0.14.3'
@@ -17269,7 +17269,7 @@ snapshots:
     dependencies:
       tagged-tag: 1.0.0
 
-  type-graphql@2.0.0-rc.3(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0):
+  type-graphql@2.0.0-rc.4(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0):
     dependencies:
       '@graphql-yoga/subscription': 5.0.5
       '@types/node': 25.3.0

@@ -1,0 +1,53 @@
+API-21 — AC-016 pre-check on a clean clone of the branch (not a worktree); QR-003 frozen lockfile
+Commit: 959b5cc048; clone: git clone --branch codex/test-and-tooling-hygiene <superrepo> /tmp/api253/clone (git status 0 lines; no untracked build output); date 2026-10-24 12:04-13:03; macOS arm64 10 cores, Node v22.23.1, pnpm 10.28.2; host load from other work; no artificial load
+Delivery still owns AC-016 on the finalized origin/personal; this shows the branch does not lean on the worktree's untracked build outputs.
+
+== pnpm install --frozen-lockfile
+Done in 18.7s using pnpm v10.28.2
+rc=0
+type-graphql in node_modules/.pnpm: type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0 (only)
+
+clone HEAD 959b5cc048; git status lines: 0; date 2026-10-24 12:45:06
+== prebuild: pnpm -C autobyteus-server-ts prebuild
+prebuild rc=0 8s
+== nuxtprepare: pnpm -C autobyteus-web exec nuxt prepare
+nuxtprepare rc=0 3s
+== integprepare: pnpm -C autobyteus-server-ts test:integration:prepare
+integprepare rc=0 22s
+== typecheck: pnpm -C autobyteus-server-ts typecheck
+typecheck rc=0 13s
+== unit: pnpm -C autobyteus-server-ts test:unit
+unit rc=0 559s
+ Test Files  810 passed | 4 skipped (814)
+      Tests  6736 passed | 7 skipped (6743)
+== integration: pnpm -C autobyteus-server-ts test:integration
+integration rc=0 203s
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+== nuxt: pnpm -C autobyteus-web test:nuxt --run
+nuxt rc=0 255s
+ Test Files  681 passed | 2 skipped (683)
+      Tests  4858 passed | 5 skipped (4863)
+== electron: pnpm -C autobyteus-web test:electron --run
+electron rc=0 5s
+ Test Files  40 passed | 1 skipped (41)
+      Tests  237 passed | 1 skipped (238)
+== guardweb: pnpm -C autobyteus-web guard:web-boundary
+guardweb rc=0 0s
+== guardloc: pnpm -C autobyteus-web guard:localization-boundary
+guardloc rc=0 0s
+== auditloc: pnpm -C autobyteus-web audit:localization-literals
+auditloc rc=0 1s
+== nodetest: node --test autobyteus-web/scripts/electron-e2e/__tests__/
+nodetest rc=1 0s
+# tests 1
+# pass 0
+# fail 1
+done 2026-10-24 13:02:55
+
+Note: the last step above used a wrong command form (node --test given a directory: 'Cannot find module …/__tests__'), not a test failure. Rerun with the form IMP-S used:
+== node --test autobyteus-web/scripts/electron-e2e/__tests__/*.node-test.mjs
+rc=0
+# tests 15
+# pass 15
+# fail 0

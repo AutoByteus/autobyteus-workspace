@@ -1,0 +1,7 @@
+# IMP-03 Agent Tools MCP routes integration test (AC-004)
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch
+# commit: 253854bf8d  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:44Z
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Duration  6.18s (transform 3.70s, setup 47ms, import 5.43s, tests 173ms, environment 0ms)

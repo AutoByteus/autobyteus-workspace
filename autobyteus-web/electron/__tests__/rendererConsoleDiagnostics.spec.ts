@@ -17,7 +17,7 @@ describe('attachRendererConsoleDiagnostics', () => {
 
     attachRendererConsoleDiagnostics(webContents as never, {
       logger: logger as never,
-      nodeId: 'embedded',
+      entryId: 'embedded',
     });
 
     webContents.emit(
@@ -31,7 +31,7 @@ describe('attachRendererConsoleDiagnostics', () => {
 
     expect(logger.child).toHaveBeenCalledWith('renderer.console');
     expect(childLogger.info).toHaveBeenCalledWith(
-      '[ApplicationSurface] committed launch descriptor sessionId=session-1 iframeLaunchId=session-1::iframe-launch-1 (nodeId=embedded, source=file:///Applications/AutoByteus.app/Contents/Resources/app/index.html, line=21)',
+      '[ApplicationSurface] committed launch descriptor sessionId=session-1 iframeLaunchId=session-1::iframe-launch-1 (entryId=embedded, source=file:///Applications/AutoByteus.app/Contents/Resources/app/index.html, line=21)',
     );
   });
 
@@ -49,7 +49,7 @@ describe('attachRendererConsoleDiagnostics', () => {
 
     attachRendererConsoleDiagnostics(webContents as never, {
       logger: logger as never,
-      nodeId: 'embedded',
+      entryId: 'embedded',
     });
 
     webContents.emit(
@@ -63,7 +63,7 @@ describe('attachRendererConsoleDiagnostics', () => {
 
     expect(logger.child).toHaveBeenCalledWith('renderer.console');
     expect(childLogger.info).toHaveBeenCalledWith(
-      '[ApplicationIframeHost] posted bootstrap payload sessionId=session-1 (nodeId=embedded, source=http://127.0.0.1:29695/application-bundles/app/assets/ui/index.html, line=42)',
+      '[ApplicationIframeHost] posted bootstrap payload sessionId=session-1 (entryId=embedded, source=http://127.0.0.1:29695/application-bundles/app/assets/ui/index.html, line=42)',
     );
   });
 
@@ -81,7 +81,7 @@ describe('attachRendererConsoleDiagnostics', () => {
 
     attachRendererConsoleDiagnostics(webContents as never, {
       logger: logger as never,
-      nodeId: 'embedded',
+      entryId: 'embedded',
     });
 
     webContents.emit('console-message', {}, 1, '[Vue warn]: component missing key', 12, 'renderer.js');

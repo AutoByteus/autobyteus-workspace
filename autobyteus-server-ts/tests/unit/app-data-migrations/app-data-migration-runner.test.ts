@@ -695,23 +695,25 @@ describe("AppDataMigrationRunner", () => {
     );
 
     // Not run yet: held back. A capability no registered migration declares is ready.
-    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true });
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
     record("m-history-a", "SUCCEEDED");
     record("m-history-b", "FAILED");
-    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true });
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
     record("m-history-b", "RUNNING");
-    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true });
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
     record("m-history-b", "SUCCEEDED_WITH_WARNINGS");
-    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: true, custom_llm_providers: true });
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 
-  it("registers the token-usage and custom-provider migrations as the holders of their capabilities", () => {
+  it("registers the token-usage, custom-provider, node-identity and Memory Sync migrations as the holders of their capabilities", () => {
     const holders = new AppDataMigrationRegistry().listDefinitions()
       .filter((definition) => (definition.holdsBackCapabilities ?? []).length > 0)
       .map((definition) => [definition.id, definition.holdsBackCapabilities]);
     expect(holders).toEqual([
       ["20260819_token_usage_run_records_v1", ["token_usage_history"]],
       ["20260803_custom_provider_readable_identity", ["custom_llm_providers"]],
+      ["20261024_node_identity_file_name", ["node_identity"]],
+      ["20261024_memory_sync_source_id_names", ["memory_sync"]],
     ]);
   });
 

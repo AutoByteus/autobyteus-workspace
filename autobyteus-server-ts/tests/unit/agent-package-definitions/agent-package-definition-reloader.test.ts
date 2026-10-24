@@ -222,6 +222,83 @@ describe("AgentPackageDefinitionReloader", () => {
     reloader.close();
   });
 
+  describe("reconcilePackageFolder (the watcher's catch-up)", () => {
+    it("lists a folder nobody marked after the quiet window, and announces only the definition lists", async () => {
+      vi.useFakeTimers();
+      const { readers, reloader, store, published } = setup({ quietMs: 1000, capMs: 3000 });
+      await reloader.applyPendingChanges();
+      // The OS dropped this folder's events: the store never heard of it.
+      readers.agent_team.folders.set("squad", { instructions: "v1" });
+      expect(store.getDefinition("agent_team", "squad")).toBeNull();
+
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await vi.advanceTimersByTimeAsync(999);
+      expect(store.getDefinition("agent_team", "squad")).toBeNull();
+      await vi.advanceTimersByTimeAsync(1);
+      await reloader.applyPendingChanges();
+      expect(store.getDefinition("agent_team", "squad")).not.toBeNull();
+      expect(published).toEqual([["agents", "agent_teams", "agent_orgs"]]);
+      reloader.close();
+    });
+
+    it("announces nothing and re-reads each folder once for an unchanged package, however often it is asked", async () => {
+      vi.useFakeTimers();
+      const { readers, reloader, published } = setup({ quietMs: 1000, capMs: 3000 });
+      readers.agent.folders.set("a", { instructions: "v1" });
+      readers.agent_team.folders.set("t", { instructions: "v1" });
+      await reloader.applyPendingChanges();
+      readers.agent.reads = 0;
+      readers.agent_team.reads = 0;
+
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await vi.advanceTimersByTimeAsync(500);
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      await reloader.applyPendingChanges();
+      expect(readers.agent.reads).toBe(1);
+      expect(readers.agent_team.reads).toBe(1);
+      expect(published).toEqual([]);
+      reloader.close();
+    });
+
+    it("is applied by the next read before it answers", async () => {
+      const { readers, reloader, store } = setup();
+      await reloader.applyPendingChanges();
+      readers.agent.folders.set("late", { instructions: "v1" });
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await reloader.applyPendingChanges();
+      expect(store.getDefinition("agent", "late")).not.toBeNull();
+      reloader.close();
+    });
+
+    it("keeps the last loaded definitions of a package folder that is missing and does not announce the package", async () => {
+      vi.useFakeTimers();
+      let present = true;
+      const { readers, reloader, store, published } = setup({ quietMs: 1000, capMs: 3000, rootPresent: () => present });
+      readers.agent.folders.set("a", { instructions: "v1" });
+      await reloader.applyPendingChanges();
+      present = false;
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      await reloader.applyPendingChanges();
+      expect(store.getDefinition("agent", "a")?.instructions).toBe("v1");
+      expect(published.flat()).not.toContain("agent_packages");
+      reloader.close();
+    });
+
+    it("is ignored once the reloader is closed", async () => {
+      vi.useFakeTimers();
+      const { readers, reloader, store } = setup({ quietMs: 1000, capMs: 3000 });
+      await reloader.applyPendingChanges();
+      readers.agent.folders.set("a", { instructions: "v1" });
+      reloader.close();
+      reloader.reconcilePackageFolder(ROOT.rootPath);
+      await vi.advanceTimersByTimeAsync(5000);
+      expect(store.getDefinition("agent", "a")).toBeNull();
+    });
+  });
+
   it("keeps the folders of a registered root whose folder is missing, and recovers when it returns", async () => {
     let present = true;
     const { readers, reloader, store, published } = setup({ rootPresent: () => present });

@@ -7,8 +7,9 @@ import android.widget.Toast
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionValidationResult
 import org.autobyteus.mobile.connection.ConnectionValidator
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 import org.autobyteus.mobile.connection.SavedNodeStore
+import org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigration
 import org.autobyteus.mobile.shell.AndroidAppShellViewModel
 import org.autobyteus.mobile.shell.AndroidExternalActions
 import org.autobyteus.mobile.shell.ConnectionInputResolution
@@ -36,6 +37,8 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // autobyteus-290 SM-10: the saved entries' stored keys follow the code before the store first reads them.
+        SavedNodeEntryKeysMigration.run(this)
         savedNodeStore = SavedNodeStore(this)
         validator = ConnectionValidator()
         connectionScreen = ConnectionScreen(this)
@@ -56,9 +59,9 @@ class MainActivity : Activity() {
             return
         }
 
-        val savedProfile = savedNodeStore.loadSelectedProfile()
-        if (savedProfile != null) {
-            validateAndOpen(savedProfile, savedProfile.mobileUrl, saveAfterValidation = false)
+        val savedEntry = savedNodeStore.loadSelectedEntry()
+        if (savedEntry != null) {
+            validateAndOpen(savedEntry, savedEntry.mobileUrl, saveAfterValidation = false)
         } else {
             showConnection()
         }
@@ -122,14 +125,14 @@ class MainActivity : Activity() {
         }
         setContentView(
             connectionScreen.render(
-                savedProfiles = savedNodeStore.loadProfiles(),
+                savedEntries = savedNodeStore.loadEntries(),
                 diagnostic = diagnostic,
                 isBusy = isBusy,
                 initialInput = initialInput,
                 callbacks = ConnectionScreen.Callbacks(
-                    onOpenSaved = { profile -> validateAndOpen(profile, profile.mobileUrl, saveAfterValidation = false) },
-                    onRemoveSaved = { profile ->
-                        savedNodeStore.removeProfile(profile.id)
+                    onOpenSaved = { entry -> validateAndOpen(entry, entry.mobileUrl, saveAfterValidation = false) },
+                    onRemoveSaved = { entry ->
+                        savedNodeStore.removeEntry(entry.id)
                         showConnection()
                     },
                     onSubmitInput = ::submitInput,
@@ -143,25 +146,25 @@ class MainActivity : Activity() {
     private fun submitInput(rawText: String, httpAcknowledged: Boolean) {
         when (val resolution = inputResolver.resolve(rawText, httpAcknowledged)) {
             is ConnectionInputResolution.Success ->
-                validateAndOpen(resolution.profile, resolution.webViewUrl, saveAfterValidation = true)
+                validateAndOpen(resolution.entry, resolution.webViewUrl, saveAfterValidation = true)
             is ConnectionInputResolution.Failure ->
                 showConnection(resolution.diagnostic, initialInput = rawText)
         }
     }
 
     private fun validateAndOpen(
-        profile: SavedNodeProfile,
+        entry: SavedNodeEntry,
         initialUrl: String,
         saveAfterValidation: Boolean,
     ) {
-        viewModel.validating(profile)
+        viewModel.validating(entry)
         showConnection(isBusy = true)
         executor.execute {
-            val result = validator.validate(profile)
+            val result = validator.validate(entry)
             runOnUiThread {
                 when (result) {
-                    is ConnectionValidationResult.Reachable -> openReachableProfile(
-                        profile = profile,
+                    is ConnectionValidationResult.Reachable -> openReachableEntry(
+                        entry = entry,
                         initialUrl = initialUrl,
                         serverName = result.status.serverName,
                         saveAfterValidation = saveAfterValidation,
@@ -172,37 +175,37 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun openReachableProfile(
-        profile: SavedNodeProfile,
+    private fun openReachableEntry(
+        entry: SavedNodeEntry,
         initialUrl: String,
         serverName: String,
         saveAfterValidation: Boolean,
     ) {
-        val stableProfile = profile.copy(
-            displayName = serverName.ifBlank { profile.displayName },
+        val stableEntry = entry.copy(
+            displayName = serverName.ifBlank { entry.displayName },
             updatedAtEpochMillis = System.currentTimeMillis(),
         )
-        if (saveAfterValidation || savedNodeStore.loadProfiles().none { it.id == stableProfile.id }) {
-            savedNodeStore.saveProfile(stableProfile)
+        if (saveAfterValidation || savedNodeStore.loadEntries().none { it.id == stableEntry.id }) {
+            savedNodeStore.saveEntry(stableEntry)
         } else {
-            savedNodeStore.selectProfile(stableProfile.id)
+            savedNodeStore.selectEntry(stableEntry.id)
         }
-        openWebShell(stableProfile, initialUrl)
+        openWebShell(stableEntry, initialUrl)
     }
 
-    private fun openWebShell(profile: SavedNodeProfile, initialUrl: String) {
+    private fun openWebShell(entry: SavedNodeEntry, initialUrl: String) {
         currentWebHost?.destroy()
-        viewModel.opening(profile, initialUrl)
+        viewModel.opening(entry, initialUrl)
         val webHost = AutoByteusWebView(
             context = this,
-            profile = profile,
+            entry = entry,
             fileChooserCoordinator = fileChooserCoordinator,
             onPageStarted = {
-                viewModel.opening(profile, it)
+                viewModel.opening(entry, it)
                 renderCurrentWebShell(null)
             },
             onPageFinished = {
-                viewModel.active(profile)
+                viewModel.active(entry)
                 renderCurrentWebShell(null)
             },
             onDiagnostic = { diagnostic -> showWebDiagnostic(diagnostic) },
@@ -215,7 +218,7 @@ class MainActivity : Activity() {
 
     private fun showWebDiagnostic(diagnostic: ConnectionDiagnostic) {
         val webHost = currentWebHost ?: return
-        viewModel.recoverableError(diagnostic, webHost.profile)
+        viewModel.recoverableError(diagnostic, webHost.entry)
         renderCurrentWebShell(diagnostic)
     }
 
@@ -225,19 +228,19 @@ class MainActivity : Activity() {
             webShellScreen.render(
                 webView = webHost.webView,
                 diagnostic = diagnostic,
-                callbacks = webCallbacks(webHost.profile),
+                callbacks = webCallbacks(webHost.entry),
             ),
         )
     }
 
-    private fun webCallbacks(profile: SavedNodeProfile): WebShellScreen.Callbacks = WebShellScreen.Callbacks(
+    private fun webCallbacks(entry: SavedNodeEntry): WebShellScreen.Callbacks = WebShellScreen.Callbacks(
         onEditNode = {
             currentWebHost?.destroy()
             currentWebHost = null
             showConnection()
         },
-        onRetry = { currentWebHost?.loadTrusted(profile.mobileUrl) ?: validateAndOpen(profile, profile.mobileUrl, false) },
-        onOpenInBrowser = { externalActions.openExternal(profile.mobileUrl) },
+        onRetry = { currentWebHost?.loadTrusted(entry.mobileUrl) ?: validateAndOpen(entry, entry.mobileUrl, false) },
+        onOpenInBrowser = { externalActions.openExternal(entry.mobileUrl) },
     )
 
     private fun extractSharedText(intent: Intent?): String? {

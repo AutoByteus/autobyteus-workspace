@@ -22,6 +22,7 @@ export const causeText = (t: Translate, cause: NodeProbeCause | undefined, host:
     case 'timeout': return t(k('cause.timeout'))
     case 'not_found': return fromNode ? t(k('cause.dnsFrom'), { host: hostName(host), node: fromNode }) : t(k('cause.dns'), { host: hostName(host) })
     case 'not_autobyteus': return t(k('cause.notAutobyteus'))
+    case 'identity_pending': return t(k('cause.identityPending'))
     default: return t(k('cause.unreachable'))
   }
 }
@@ -59,6 +60,7 @@ export const failureText = (
     }
     case 'PEER_IDENTITY_MISMATCH': return t(k('address.different'))
     case 'PEER_NOT_AUTOBYTEUS': return t(k('cause.notAutobyteus'))
+    case 'NODE_IDENTITY_NOT_MIGRATED': return t(k('cause.identityPending'))
     case 'PEER_IS_THIS_NODE': return t(k('cause.thisNode'))
     case 'REMOTE_COLLABORATION_OFF': return t(k('line.offThere'), { name: node })
     case 'PEER_NOT_REGISTERED': return t(k('line.notRegisteredThere'), { name: node })

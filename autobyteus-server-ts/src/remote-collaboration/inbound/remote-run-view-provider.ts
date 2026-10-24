@@ -19,7 +19,7 @@ import type {
 import type { RemoteRootDirectory } from "./remote-message-receiver.js";
 
 /** The stored reads of a run a peer started, as this node's own window has them. */
-export type RemotePeerStartedRunViews = Readonly<{
+export type PeerStartedRunViews = Readonly<{
   /** The run's title from its history catalog; `null` when it has none yet. */
   runTitle(run: RemoteStartedRunRef): Promise<string | null>;
   /** One agent's stored conversation projection (the run-view projection this node's window reads). */
@@ -50,7 +50,7 @@ const startedRunOf = (root: RemoteTargetRoot): RemoteStartedRunRef | null =>
  * calling node started it), and then served by the root kind's own API behind `RemoteRootDirectory` (N-304).
  */
 export class RemoteRunViewProvider {
-  constructor(private readonly roots: RemoteRootDirectory, private readonly views: RemotePeerStartedRunViews) {}
+  constructor(private readonly roots: RemoteRootDirectory, private readonly views: PeerStartedRunViews) {}
 
   async summaries(request: RunSummariesRequest, from: PeerNode): Promise<Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }>> {
     const runs: RemoteRunSummary[] = [];

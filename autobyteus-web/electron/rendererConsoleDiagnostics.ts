@@ -30,7 +30,7 @@ export function attachRendererConsoleDiagnostics(
   webContents: Pick<WebContents, 'on'>,
   options: {
     logger: ElectronAppLogger;
-    nodeId: string;
+    entryId: string;
   },
 ): void {
   const rendererLogger = options.logger.child('renderer.console');
@@ -41,7 +41,7 @@ export function attachRendererConsoleDiagnostics(
 
     const loggerMethod = toLoggerMethod(level);
     rendererLogger[loggerMethod](
-      `${message} (nodeId=${options.nodeId}, source=${sourceId || 'unknown'}, line=${line})`,
+      `${message} (entryId=${options.entryId}, source=${sourceId || 'unknown'}, line=${line})`,
     );
   });
 }
