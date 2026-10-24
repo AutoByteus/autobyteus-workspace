@@ -1,0 +1,8 @@
+# API-01 exact text match: docs/design-cases.md Cases 1-6 vs autobyteus-agents 56daf38 shared/design-examples.md
+worktree head: 1a17575fb2
+agents commit: 56daf38
+package lines 1205 - 1282 (ends before: '## How To Use These Examples' )
+doc lines 7 - 85 (Case 7 starts at 86 )
+strict (byte-exact per line) differences: 0
+
+package section after the cases: '## How To Use These Examples' ... headings: ['## How To Use These Examples']
