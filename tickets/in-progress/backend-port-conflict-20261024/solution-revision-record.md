@@ -50,3 +50,11 @@
 - Clarification: launcher owns exactly-once terminal completion/STARTED settlement; scope supplies pre-signal intent and bounded finishStop fallback without awaiting result; executor maps to unchanged TerminalResult, including current AbortSignal timedOut semantics and truthful host-stop/failure output. Late events cannot overwrite result; cleanup uncertainty remains independently reported.
 - Affected BEH-003/004, REQ-003/004/005, AC-004/005. Source and P-008 evidence support the clarification; no new implementation/test claim or product decision. Design/investigation/handoff updated; reviewer/implementation artifacts unchanged.
 - Review impact: re-review current D3.1 with this clarification; no implementation forwarding by Solution Designer.
+
+
+## SR-006 — Codex conversation background lifecycle measured
+- Trigger: user confirms Codex-origin server, asks how completion is known and explicitly requests experiments; implementation confirms no conversation-tool evidence/changes.
+- Phase: evidence-only investigation. Prior R1 Approved/D3.1, ARCH-REV-003 Pass, native implementation underway. Current R1 unchanged Approved/D3.1 technical decisions unchanged; reported Codex path still requires integrated verification. Large/High classification unchanged, not a newly completed architecture package.
+- P-009..011 use real Codex0.164.0 conversation tools plus deterministic local model SSE, not standalone command/exec or paid inference. Final6cases pass; failed early receipt/cleanup attempts retained. Start/completion events and experimental list/clean/terminate verified. Turn completion can precede command completion. Orderly production Codex client.close cleans measured yielded server; simple & and nohup & do not reproduce leak.
+- Affected BEH-003/004, REQ-003/004/005, AC-004/005. Investigation and design factual basis updated; requirements problem wording clarifies accepted user origin, no intended behavior change or renewed approval required. Native anchor is not a Codex fix.
+- Full context codex-background-investigation.md. No formal new design handoff; answer user and pending implementation evidence question. No original-incident fix, integrated acceptance, merge or Terminal claim. Full host/desktop Codex shutdown experiment remains next.

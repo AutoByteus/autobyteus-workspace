@@ -1,0 +1,137 @@
+{
+  "knownFixturePids": [
+    "70895",
+    "74531",
+    "74582",
+    "74641",
+    "74853",
+    "74897",
+    "74944",
+    "74983",
+    "75230",
+    "75284",
+    "75362",
+    "75418",
+    "75475",
+    "75530"
+  ],
+  "remainingPids": [],
+  "remainingKnownPrivateRoots": [],
+  "schemaPrivateRootRemoved": true,
+  "latestRun": [
+    {
+      "check": "P-011",
+      "mode": "yielded-clean",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75230,
+        "port": 51484
+      },
+      "ancestry": "75230 75203 75230 Sat Oct 24 20:45:54 2026",
+      "httpBeforeClose": 426,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "yielded-clean",
+      "pid": 75230,
+      "privateRootRemoved": true
+    },
+    {
+      "check": "P-011",
+      "mode": "yielded-terminate",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75284,
+        "port": 51495
+      },
+      "ancestry": "75284 75259 75284 Sat Oct 24 20:45:56 2026",
+      "httpBeforeClose": 426,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "yielded-terminate",
+      "pid": 75284,
+      "privateRootRemoved": true
+    },
+    {
+      "check": "P-011",
+      "mode": "yielded-close",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75362,
+        "port": 51507
+      },
+      "ancestry": "75362 75334 75362 Sat Oct 24 20:45:58 2026",
+      "httpBeforeClose": 426,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "yielded-close",
+      "pid": 75362,
+      "privateRootRemoved": true
+    },
+    {
+      "check": "P-011",
+      "mode": "shell-background",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75418,
+        "port": 51517
+      },
+      "ancestry": "exited before inspection",
+      "httpBeforeClose": null,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "shell-background",
+      "pid": 75418,
+      "privateRootRemoved": true
+    },
+    {
+      "check": "P-011",
+      "mode": "nohup-background",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75475,
+        "port": 51527
+      },
+      "ancestry": "exited before inspection",
+      "httpBeforeClose": null,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "nohup-background",
+      "pid": 75475,
+      "privateRootRemoved": true
+    },
+    {
+      "check": "P-011",
+      "mode": "natural-completion",
+      "codex": "0.164.0",
+      "child": {
+        "pid": 75530,
+        "port": 51536
+      },
+      "ancestry": "75530 75505 75530 Sat Oct 24 20:46:02 2026",
+      "httpBeforeClose": 426,
+      "httpAfterClose": null,
+      "model": "deterministic localhost SSE fixture; actual Codex conversation exec_command"
+    },
+    {
+      "check": "P-011-cleanup",
+      "mode": "natural-completion",
+      "pid": 75530,
+      "privateRootRemoved": true
+    }
+  ]
+}
