@@ -19,3 +19,14 @@ it('does not translate inspection denial into empty absence', async () => {
   const observer = new ProcessGroupObserver(async () => { throw new Error('permission denied'); });
   await expect(observer.snapshot(target)).rejects.toThrow('permission denied');
 });
+
+it('clips a shared observation to each caller deadline without starting another scan', async () => {
+  let release!: (value: { stdout: string }) => void;
+  const run = vi.fn(() => new Promise<{ stdout: string }>(resolve => { release = resolve; }));
+  const observer = new ProcessGroupObserver(run);
+  const first = observer.snapshot(target, Date.now() + 500);
+  await expect(observer.snapshot(target, Date.now() + 10)).rejects.toThrow('deadline exceeded');
+  expect(run).toHaveBeenCalledTimes(1);
+  release({ stdout: '100 1 100 100 S 555\n' });
+  await expect(first).resolves.toHaveLength(1);
+});

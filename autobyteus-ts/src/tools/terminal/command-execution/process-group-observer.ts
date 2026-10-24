@@ -1,3 +1,4 @@
+import { beforeDeadline } from './command-deadline.js';
 import { execFile } from 'node:child_process';
 import { HOST_PROCESS_TARGET, type ProcessExecutionTarget, type OwnedCommandGroup, type ObservedProcess } from './process-identity.js';
 export type { ObservedProcess } from './process-identity.js';
@@ -21,10 +22,10 @@ export class ProcessGroupObserver {
   snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + 500): Promise<ObservedProcess[]> {
     const key = JSON.stringify(target);
     const existing = this.pending.get(key);
-    if (existing) return existing;
+    if (existing) return beforeDeadline(existing, deadline);
     const promise = this.read(target, deadline).finally(() => this.pending.delete(key));
     this.pending.set(key, promise);
-    return promise;
+    return beforeDeadline(promise, deadline);
   }
   private async read(target: ProcessExecutionTarget, deadline: number): Promise<ObservedProcess[]> {
     const timeout = Math.min(500, deadline - Date.now());
@@ -55,6 +56,7 @@ export class ProcessGroupObserver {
   }
   async signal(group: OwnedCommandGroup, signal: 'TERM' | 'KILL', deadline: number): Promise<void> {
     if (!this.matches(group, await this.snapshot(group.target, deadline))) throw new Error('Command anchor identity lost');
+    if (Date.now() >= deadline) throw new Error('Process signal deadline exceeded');
     if (group.target.kind === 'host') process.kill(-group.anchor.pid, signal === 'TERM' ? 'SIGTERM' : 'SIGKILL');
     else await this.runner(group.target.wslExecutable,
       ['-d', group.target.distro, '--exec', '/bin/kill', `-${signal}`, '--', `-${group.anchor.pid}`],

@@ -1,4 +1,5 @@
-import { AnchoredCommandLauncher, AnchoredCommandHandle, beforeDeadline, type StopReason } from './anchored-command-launcher.js';
+import { beforeDeadline } from './command-deadline.js';
+import { AnchoredCommandLauncher, AnchoredCommandHandle, type StopReason } from './anchored-command-launcher.js';
 import { ProcessGroupObserver } from './process-group-observer.js';
 import { type NonInteractiveShellInvocation } from './non-interactive-shell-resolver.js';
 import { type CommandStopOutcome, type ObservedProcess } from './process-identity.js';
