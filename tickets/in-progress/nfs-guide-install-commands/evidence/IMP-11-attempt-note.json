@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-24T04:07:20.777391+00:00",
+  "id": "IMP-11",
+  "attempt1": "IMP-11-current/result.json",
+  "result": "Fail, fixture boundary missing",
+  "cause": "New integrated app NotificationCenter requests GetUpdateAutomationSettings. Historical component-sized driver supplied GetUpdateNotifications only; Apollo rejected missing updateAutomationSettings. Actual query and schema inspected; model read-only settings with automatic updates false. No product edits/error suppression. Rerun failed browser case only, not passed unit suite.",
+  "cleanupObservation": "Dev-server exit awaited after SIGTERM. When bounded escalation was considered, safety process-group assertion found no matching owned group; no kill signal was sent. Original driver completed natural cleanup and wrote failure receipt. All original evidence preserved.",
+  "fixtureFollowup": "Second preview had no browser errors and passed renderer assertions, but subsequent schema read found the unrelated automaticUpdates.__typename used AutomaticUpdateSwitches rather than the actual AutomaticUpdates. Corrected that fixture literal; running the single browser case with the exact fixture (no repeated repository suite). Previous result/driver retained, not used as current complete fixture proof.",
+  "currentResult": "IMP-11-verified/result.json: Pass; exact current-schema fixture; zero browser events; all owned cleanup complete"
+}

@@ -1,0 +1,73 @@
+# IMP-09 | 2026-10-24 | input 1103c5f9 original component + new test assertions
+# Darwin arm64 / Node22.23.1 / private HOME and TMPDIR (IMP-08-environment.json)
+# Command: pnpm -C autobyteus-web test:nuxt components/settings/__tests__/NfsGuideCard.spec.ts -t 'retains only the advanced README link' --run --maxWorkers=1
+# Original output follows.
+
+> autobyteus@1.5.9-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__/NfsGuideCard.spec.ts -t 'retains only the advanced README link' --run --maxWorkers=1
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/__tests__/NfsGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/NfsGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/settings/__tests__/NfsGuideCard.spec.ts (13 tests | 2 failed | 11 skipped) 24ms
+   × NFS guide > retains only the advanced README link across descriptor states in en 17ms
+     → expected [ …(3) ] to deeply equal [ Array(1) ]
+   × NFS guide > retains only the advanced README link across descriptor states in zh-CN 7ms
+     → expected [ …(3) ] to deeply equal [ Array(1) ]
+   ↓ NFS guide > disables invalid/unavailable installers and version notice but keeps prerequisite installed reference
+   ↓ NFS guide > disables invalid/unavailable installers and version notice but keeps prerequisite installed reference
+   ↓ NFS guide > disables invalid/unavailable installers and version notice but keeps prerequisite installed reference
+   ↓ NFS guide > only enables the available platform of a partial descriptor
+   ↓ NFS guide > copies exactly each displayed command with one success lifecycle and safe links
+   ↓ NFS guide > does not start a second clipboard request while one is pending
+   ↓ NFS guide > clears stale success on denial and supports unavailable clipboard/manual selection
+   ↓ NFS guide > does not schedule state/timers after unmount on resolve
+   ↓ NFS guide > does not schedule state/timers after unmount on reject
+   ↓ NFS guide > clears the success reset timer on unmount
+   ↓ NFS guide > renders actual Chinese messages and still copies exact command bytes
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/settings/__tests__/NfsGuideCard.spec.ts > NFS guide > retains only the advanced README link across descriptor states in en
+ FAIL  components/settings/__tests__/NfsGuideCard.spec.ts > NFS guide > retains only the advanced README link across descriptor states in zh-CN
+AssertionError: expected [ …(3) ] to deeply equal [ Array(1) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[31m+   "https://github.com/AutoByteus/autobyteus-nfs/releases/tag/v0.1.0",[39m
+[31m+   "https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh",[39m
+[2m    "https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md",[22m
+[2m  ][22m
+
+ ❯ components/settings/__tests__/NfsGuideCard.spec.ts:25:61
+     23|     for (const release of [nfsPublishedRelease, { ...nfsPublishedRelea…
+     24|       const w = render(release);
+     25|       expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['…
+       |                                                             ^
+     26|       expect(w.get('a').attributes('target')).toBe('_blank');
+     27|       expect(w.get('a').attributes('rel')).toBe('noopener noreferrer');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 skipped (13)
+   Start at  06:04:59
+   Duration  6.56s (transform 3.12s, setup 6.01s, collect 55ms, tests 24ms, environment 186ms, prepare 122ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,14 @@
+# IMP-08 | 2026-10-24 | input 1103c5f9
+# Darwin arm64 / Node22.23.1 / private HOME and TMPDIR (IMP-08-environment.json)
+# Command: pnpm -C autobyteus-web exec nuxt prepare
+# Original output follows.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.

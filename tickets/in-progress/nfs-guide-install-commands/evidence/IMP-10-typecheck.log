@@ -1,0 +1,4 @@
+IMP-10 / typecheck; 2026-10-24T04:05:42.113272+00:00; commit 3d95a5c4a16759060983489735e77820661cff53; macOS arm64 Node22 private HOME/TMPDIR
+Command: ['pnpm', '-C', 'autobyteus-web', 'exec', 'tsc', '--noEmit', '--skipLibCheck', '--target', 'es2022', '--module', 'esnext', '--moduleResolution', 'bundler', 'utils/nfsLauncherCommands.ts']
+
+exit=0
