@@ -1,0 +1,10 @@
+# IMP-01 import-then-launch E2E (AC-001, AC-002)
+# cmd: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" \&\& pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch
+# commit: 1d49973440  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:37Z
+
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2517ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1146ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  644ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  11.92s (transform 6.23s, setup 42ms, import 8.86s, tests 2.52s, environment 0ms)

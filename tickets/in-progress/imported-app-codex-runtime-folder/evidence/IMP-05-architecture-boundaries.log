@@ -1,0 +1,34 @@
+# IMP-05 architecture boundary test (AC-004): 1 failure, pre-existing on base, cause recorded below
+# cmd: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" \&\& pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts --no-watch
+# commit: 1d49973440  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:37Z
+
+# Cause: base commit 3e3a7b08cc (Memory page task-agent definition name) added AgentDefinitionService.getInstance() in
+# src/agent-memory/services/agent-memory-explorer-service.ts:53 without adding it to the exact getter list asserted here (list from 2d76ea493a).
+# Neither file is touched by this ticket.
+
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  594ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1453ms
+     ✓ extracts every governed import form without reading comments or arbitrary strings 9ms
+     ✓ enforces every named AFB-001 private runtime category while retaining exact inputs 18ms
+     ✓ enforces each GraphQL and Studio presentation direction in AFB-002 13ms
+     ✓ enforces every AFB-003 outward owner direction with only the named catalog-transition seam 17ms
+     ✓ fails closed for malformed Vue and unresolved governed source 9ms
+     ✓ resolves Vue external-script imports from that script while keeping SFC-owned diagnostics 6ms
+     ✓ governs Vue external-script targets under AFB-002 and AFB-005 8ms
+     ✓ resolves package imports only from the owning manifest 9ms
+     ✓ uses each AFB-005 importer's own manifest and project root 9ms
+     ✓ resolves named aliases and namespace members for every direct AFB-004 callee 14ms
+     ✓ accepts only the two named assembly roots as general-process selection exemptions 9ms
+     ✓ accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread 219ms
+     ✓ enforces the exact scope, orchestration, and platform assembly call shapes 30ms
+     ✓ guards the exact ApplicationExecutionScope containment and consumer shapes 33ms
+     ✓ rejects synthetic live-aggregate escape and direct consumer access 1ms
+     × guards the exact SR-011 host definition and public/general run authority 145ms
+     ✓ guards SR-003 completion-only correlation and the two lifecycle control callsites 53ms
+     ✓ guards the revised root-neutral Agent and flat-Team execution boundary 208ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+AssertionError: expected [ …(23) ] to deeply equal [ …(22) ]
++   "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
