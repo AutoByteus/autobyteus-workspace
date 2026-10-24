@@ -1,35 +1,39 @@
-# Architecture Design Complete — nfs-guide-install-commands
+# Architecture Design Complete — nfs-guide-install-commands, R2
 
-## Identity / result
-Task **autobyteus-254**, `project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3`; requested by `/project_task_manager` (run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`). **R1 / SR-001 Approved**, **SR-002 design Ready**, **Small / Low**. Outcome Architecture Design Complete, not implementation/validation/TaskDone.
+## Identity / direction
+Task **autobyteus-254** / `project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3`, requested by `/project_task_manager` run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Existing Task explicitly reopened Oct24; not a new NFS task. User: “remove the redundant links here ... dispatch to the same worker which earlier worked on this ticket.” PM and screenshots specify only “View release downloads” and “Review the pinned installer script” below installation cards.
 
-## Request and approved direction
-PM's approved user request: put actual copyable standalone NFS installer commands in the application NFS tab like Docker, replacing stale disabled commands now that v0.1.0 is public. User emphasized a small UI update and then added: “add some basic guidelines there just like docker guide, like all the avaialble commands”. Include concise quick-start and all documented public usage commands. Requirements approved by Solution Designer within this direction; user informed in conversation. No new user decision needed.
+**R2/SR-003 Approved; SR-004 Ready; Small / Low; Architecture Design Complete.** Requirements approved within direction, user informed. No Needs user decision, prerequisite, Product artifact or new follow-up. Implementation/validation for this delta not yet done.
 
-## Workspace / repository
-- Author only in **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands**.
-- Branch **codex/nfs-guide-install-commands**; refreshed creation base origin/personal **33171e13855b4bcbcb8a9d650f2403cacb03d965**. Finalization target **origin/personal** per root RELEASE.md, no release requested.
-- Canonical superrepo checkout is dirty/unrelated; preserve it and PM boards. NFS canonical repo was a read-only source reference; do not modify it, prior archived tickets/candidates or shared/workspace skills.
-- Ticket **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands**. Only Solution Designer docs/evidence authored so far; no product code, dependencies, app/test runtime or live storage changes.
+## Authoring / preservation
+- **Worktree:** /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2
+- **Branch:** codex/nfs-guide-install-commands-r2
+- **Fresh base:** origin/personal 8b34e8ae108a281b0c93c679c60883df28a30773; finalization origin/personal per RELEASE.md. No release requested.
+- **Canonical active ticket:** /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands
+- Original task delivered at ca1f09e52a71e061fce36b04288e5495fc2356e7. Existing archive moved byte-preserving (except own current docs) to in-progress in this NEW worktree for authorized reopen; prior other-owner reports/evidence are historical, not current readiness.
+- Preserve old detached worktree /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands at 6d90a825feae66f4c397924370562a271da722a0; canonical dirty superrepo/PM boards and NFS repo untouched. No dependencies, runtime, browser, installer or live storage action started by Solution Designer. Only new worktree/branch and ticket documentation authored.
 
-## Findings and design to implement
-The actual TS helper has `nfsPublishedRelease=null`, reproduced through Node; component disables Copy from this, not from a runtime/host failure. Anonymous actual release/installer/checksums confirm public v0.1.0; retained installer SHA256 `65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa` matches manifest and public digest. Actual published installer forwards args and `version` avoids configuration/elevation. Read published CLI at source238bdc183e8affac99ffdee9be9cb333b0eb126f.
+## Design to implement
+Remove only NfsGuideCard.vue anchors at current base lines31–32. Keep advanced README link line54, all nine cards/Copy buttons, existing exact command strings and all remaining guidance. Local downloadUrl computed also controls version paragraph: replace with explicit hasAvailableInstaller boolean derived from any validated command, preserving version visibility for partial data; keep allAvailable separate. **Do not remove descriptor.downloadUrl validation or change the command helper.**
+Delete just the two obsolete label keys from English/Chinese; clarify review reminder via URL already displayed in command. Update focused component expectations (remaining link exact, partial/invalid version behavior, both locales) and stale guide-doc link-state sentence. Current design-spec lists exact paths/consumers and boundaries. No broad cleanup, new architecture, CSS-hidden legacy links or relocated substitutes.
 
-Implement within current helper/component/locales: static versioned release descriptor (available, not field-qualified), platform-specific checksum-checked install-only command ending in `version`, create/connect quick-start, seven installed-command entries (no-args menu plus create/connect/status/reconnect/detach/version), same single clipboard owner/error/timer lifecycle. Use ~/.local/bin path, localized en/zh-CN descriptions, host/admin/drain/private-network/outage/unsupported/deferred-testing caveats. Reuse existing card styling; don't refactor Docker or invent execution. Preserve null/invalid/partial unavailable states. Exact change map, shell shape, boundaries and tests in design-spec.md.
-
-## Constraints and evidence limits
-This is explicitly an **application UI documentation/copy-only** task, not renewed NFS release engineering. Copy must not execute, download, install, elevate or mutate mounts/nodes/data. No app-node/UUID/launcher coupling, no skills changes, dashboard, release/version/tag or mandatory user check. Autobyteus-nfs-4 already owns deferred field testing; don't duplicate or run it. Normal v0.1.0 distribution does not prove physical/independent-client/user filesystem qualification. Current-source probe is a diagnosis, not a rendered UI or implementation Pass. No installer/CLI binary executed in this investigation.
+## Constraints / verification intent
+Copy-only application UI revision. No NFS source/installer/release/field changes; no app-node/UUID/launcher coupling; no shared/workspace skill edit; no Docker change, links elsewhere, version/tag/deployment, mandatory user check or live execution. Existing autobyteus-nfs-4 remains separate.
+Current helper/component/test/docs equal original completed source; catalogs contain unrelated later additions to preserve. Static code + user screenshots fully establish removal premise; no new execution verdict claimed. Focused component/command/localization checks plus affected real browser layout/copy journey under current TESTING.md; impact-plan against current base and preserve original failures/results. No need to repeat NFS/installer qualification or previous 36 clipboard samples merely as a ritual.
 
 ## Expected next output
-Implement approved R1/SR-002, maintain focused durable tests and implementation checks; route through required executable validation and Delivery. Establish real rendered tab/clipboard behavior, not just helper mocks; scope browser/desktop evidence truthfully. Root TESTING and web AGENTS apply. Use only owned scratch/profile/resources. Finalize to current origin/personal without release, preserving unrelated state. Return Design Impact only for a real necessary boundary expansion, not an NFS field gate.
+Implementation Engineer implements this approved bounded revision and owns implementation checks; then configured executable validation and Delivery. Append new rounds in existing owner histories without rewriting original round results. Finalize freshly on origin/personal and clean owned resources, leaving old retained receipt checkout intact. Return only genuine requirement/design expansion to Solution Designer.
 
-## Authoritative documents (absolute paths)
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/requirements-doc.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/investigation-notes.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/design-spec.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/solution-revision-record.md
-- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands/solution-design-handoff.md
-Factual supplements in investigation inventory; attached public release contract, script text and checksums are the necessary next-step external contract. Existing screenshots/terminal receipt remain linked, not forwarded wholesale. Independent review / implementation / API / Delivery reports for this new task: N/A, not yet produced. No new follow-ups or blockers.
+## Own documents (all absolute)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/requirements-doc.md
+- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/investigation-notes.md
+- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/design-spec.md
+- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/solution-revision-record.md
+- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/solution-design-handoff.md
+
+Two supplied current screenshots identify exact removals; attach these, not the entire historical evidence chain. Prior terminal receipt and old owner reports remain linked in investigation/ticket for reference. No outstanding solution gaps; downstream evidence required before closing again.
 
 ## Route
-Fresh `get_handoff_rules` on 2026-10-21 selected its **Small or Medium + Low / Architecture Design Complete** rule, exact recipient **/software_engineering_team/implementation_engineer**. Direct implementation route: approved requirements, investigation, design and cumulative revision included. Large/High review and delivery-gap rules do not match. Independent architecture/source reviews are N/A on this classified direct route; implementation self-checks and executable validation still required. No duplicate PM, API, Product or reviewer dispatch.
+Fresh `get_handoff_rules` on 2026-10-24 selected its Architecture Design Complete + Small/Medium + Low rule: **/software_engineering_team/implementation_engineer**, direct implementation. Large/High review and delivery-receipt-gap rules do not match. Independent architecture/source review N/A—not selected; implementation self-checks and executable API validation remain required. Only this primary recipient; no duplicate PM/API/Delivery dispatch.
+
+Pre-handoff document audit: all 107 other-owner/history files moved byte-identically from the base archive; only ticket paths changed; staged/working whitespace checks passed. No current product test or completion claim.

@@ -1,3 +1,49 @@
+# Current reopen — 2026-10-24 (requirements investigation)
+- Task/package unchanged: autobyteus-254 / nfs-guide-install-commands. PM carries explicit user direction to remove only “View release downloads” and “Review the pinned installer script”.
+- New isolated authoring worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2; branch codex/nfs-guide-install-commands-r2; fresh origin/personal base 8b34e8ae108a281b0c93c679c60883df28a30773; finalization origin/personal, no release.
+- New worktree checkout completed exit0; initially clean. Existing archived package moved to in-progress only in this new worktree for explicitly authorized reopen. Old detached receipt worktree at 6d90a825feae66f4c397924370562a271da722a0 remains read-only, untouched. Canonical dirty checkout and PM boards untouched.
+- Read incoming completed terminal receipt ctx_6710a1aed153__nfs-guide-install-commands-terminal-receipt.md; viewed both current screenshots ctx_5360021223e7__ctx_f21fe1e3dc61_image.png and ctx_17c199767d2d__ctx_ed768f3add91_image.png before deeper investigation. All under the original PM task context directory recorded below.
+- Reopened requirements Draft, affected design Needs Revision; original completed rounds remain historical. No current implementation, tests or browser/installer run. No dependencies/resources created beyond new Git worktree/branch.
+- Updated skill/principles/examples/design template reread; unchanged phase gate files previously read in this conversation. Root DESIGN/AGENTS and web ARCHITECTURE/AGENTS unchanged from previously read base. TESTING/RELEASE changed; read current before validation design/finalization guidance.
+
+## Current findings and evidence (R2, 2026-10-24)
+All paths below relative to the new worktree at base `8b34e8ae108a281b0c93c679c60883df28a30773`. Method **Read** means static source, not executed UI proof.
+
+| ID | Established finding and exact sources | Method / disposition |
+|---|---|---|
+| INV-06 | `NfsGuideCard.vue:31–32` renders exactly the two requested anchors. `:54` is a different advanced README link and must stay. Supplied full/cropped screenshots agree with the source. | Read + viewed user images; this ticket's local removal |
+| INV-07 | The component's `downloadUrl` computed at `:78` has three template consumers: release-version notice at `:11`, anchor at `:31`, guard at `:32`. Removing anchors must not remove the surviving version-availability behavior. `computers` at `:72–76` obtains validated commands; `allAvailable` at `:77` separately controls unavailable prose at `:30`. | Read after R2 approval; design uses an explicit any-valid-install-command boolean, retains allAvailable |
+| INV-08 | `nfsLauncherCommands.ts:28–35` still validates `release.downloadUrl` as well as installer URL, version and digest. It is NOT dead merely because a link is removed. The helper, command data, clipboard handler (`NfsGuideCard.vue:83–99`) and NodeManager wiring (`NodeManager.vue:60–74`) need no change. | Read; preserve contracts, no installer work |
+| INV-09 | `rg` over current autobyteus-web finds the exact `NfsGuideCard.download` and `.installerReview` keys only in two template usages and two definitions per language (`settings.ts:405/418` in en/zh-CN). The review reminder at `:395` can point to the URL already in the command; no new control. | Read/search; delete these dead labels only, edit one reminder per locale |
+| INV-10 | Current component tests require the installer-review link for partial data (`NfsGuideCard.spec.ts:33–38`); null/invalid case already expects only advanced link (`:19–30`). Exact-copy/lifecycle and Chinese cases exist (`:39–103`). Guide maintenance docs still promise disappearing installer/release links (`docs/nfs_guide.md:49–50`). | Read; update expectations and narrow docs, preserve other tests |
+
+### Reproduction / causal confidence
+This is an explicitly requested presentation change, not an uncertain runtime fault. The two literal template elements and screenshot show the cause completely; no dependency experiment, installer download, browser campaign or NFS reproduction is necessary for design. Runtime proof of the new UI belongs to Implementation/API. Historical API001 results are not current revision results.
+
+### Production / derived-consumer inventory
+- Normal entry: user opens Nodes → NFS Guide → `NodeManager.vue:60–63` passes `nfsPublishedRelease` → `NfsGuideCard.vue:70–78` derives validated install strings and availability → template cards/version/prose.
+- Localization: `useLocalization.ts:4–6` calls existing runtime.translate; the two locale catalogs own the removed labels and review reminder. No localization-framework change.
+- Copy: existing button handlers `:22/:42` → `copy` `:88–99` → browser `navigator.clipboard.writeText`; feedback/timer/unmount stays local. The removed anchors do not feed this path.
+- Derived consumers: the surviving version label must retain any-valid-command availability, distinct from all-platform availability; invalid/partial tests cover this distinction. Documentation describing link visibility changes. Command helper validation and advanced README link are deliberately retained.
+- No persisted data, external host or app runtime boundary changes. No Product UI/UX deliverable requested; screenshots are scope evidence, not a separate normative specification.
+
+### Exact checks performed (read-only, not tests)
+- `git diff --name-only 33171e13855b4bcbcb8a9d650f2403cacb03d965 HEAD -- AGENTS.md DESIGN.md TESTING.md RELEASE.md autobyteus-web/AGENTS.md autobyteus-web/ARCHITECTURE.md`: only root TESTING/RELEASE changed. Read both current files fully; unchanged project design/package instructions previously read in this conversation remain applicable. No deeper package AGENTS found under components/localization/docs.
+- `git diff --quiet ca1f09e52a71e061fce36b04288e5495fc2356e7 HEAD -- <NfsGuideCard.vue> <nfsLauncherCommands.ts> <NfsGuideCard.spec.ts> <docs/nfs_guide.md>`: exit0. These sources match the previously delivered implementation. Both catalogs have other integrated changes; a diff filtered to NfsGuideCard entries is empty. Preserve those unrelated changes.
+- Read numbered component/helper/test sources and selected parent/localization lines; `rg` exact label keys confirms six total occurrences in web source (two usages, four definitions). No dynamic key family references these names; existing dynamic keys address computer labels and usage command title/detail only.
+- No application, unit test, browser, binary/installer, build or dependency install executed by Solution Designer for R2. No network release check needed: delta explicitly preserves published command data, not a refreshed availability claim.
+
+## Current authority, supplements and historical paths
+- Updated SKILL.md, design-principles.md, design-examples.md and design-spec-template.md reread. Current requirements-engineering, architecture-design and handoff reread as well; finding-the-cause, ticket-scope and other templates already read in this conversation. Root DESIGN/AGENTS/web ARCHITECTURE unchanged; current TESTING and RELEASE read. No shared skill edits: this is a user presentation preference, not a design-principle mistake.
+- Current own canonical documents are this folder's requirements, investigation, design, solution revision record and solution-design-handoff. Historical other-owner reports/raw evidence moved byte-preserving in this fresh worktree; their old absolute paths remain historical, not rewritten logs. The old detached checkout is untouched.
+- Supplemental current intake evidence (external, PM owned, read-only): `ctx_5360021223e7__ctx_f21fe1e3dc61_image.png` full screen and `ctx_17c199767d2d__ctx_ed768f3add91_image.png` crop in PM context directory below; purpose identify the two anchors, BEH-005/REQ-007/AC-006. User approval is carried in PM's exact Oct24 request, not inferred from image alone.
+- Incoming prior completed app receipt `ctx_6710a1aed153__nfs-guide-install-commands-terminal-receipt.md`, same context directory: historical provenance/cleanup only. Original complete receipt also at `/Users/normy/autobyteus_org/delivery-reports/nfs-guide-install-commands-terminal-receipt.md`. Never reopen that retained checkout or promote its tests to R2.
+- Previous factual supplements remain inventoried below; not re-fetched, re-executed or attached wholesale. No current blocker/follow-up or new behavior-defining supplement.
+- Current TESTING requires impact analysis against validated source and current base, particularly changed shared dependencies/harness. Downstream decides affected reruns; do not blindly carry the old 53 tests/36 clipboard results or turn this UI change into backend/Electron/NFS testing.
+
+---
+## Historical investigation (2026-10-21; not current reproduction)
+
 # Investigation — NFS guide installer commands
 
 ## Identity, scope and bootstrap

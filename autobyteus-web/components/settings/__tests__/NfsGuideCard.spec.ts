@@ -9,15 +9,31 @@ const render = (release: NfsPublishedRelease | null = nfsPublishedRelease) => {
   const wrapper = mount(NfsGuideCard, { props: { release } }); wrappers.push(wrapper); return wrapper;
 };
 const installed = ['interactive', 'create', 'connect', 'status', 'reconnect', 'detach', 'version'];
-beforeEach(() => {
+beforeEach(async () => {
+  await localizationRuntime.setPreference('en');
   vi.useFakeTimers();
   Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn().mockResolvedValue(undefined) } });
 });
 afterEach(() => { wrappers.splice(0).forEach(w => w.unmount()); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 describe('NFS guide', () => {
+  it.each(['en', 'zh-CN'] as const)('retains only the advanced README link across descriptor states in %s', async locale => {
+    await localizationRuntime.setPreference(locale);
+    const notice = locale === 'en' ? 'Published installer: v0.1.0' : '已发布安装器：v0.1.0';
+    for (const release of [nfsPublishedRelease, { ...nfsPublishedRelease, availableComputers: ['macos'] as const }, null, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }]) {
+      const w = render(release);
+      expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md']);
+      expect(w.get('a').attributes('target')).toBe('_blank');
+      expect(w.get('a').attributes('rel')).toBe('noopener noreferrer');
+      for (const label of ['View release downloads', 'Review the pinned installer script', '查看版本下载', '查看固定版本的安装脚本']) {
+        expect(w.text()).not.toContain(label);
+      }
+      expect(w.text().includes(notice)).toBe(release !== null && release.downloadUrl.startsWith('https:'));
+      expect(w.text()).toContain(locale === 'en' ? 'URL shown in the command' : '命令中网址对应的安装脚本');
+    }
+  });
   it.each([null, { ...nfsPublishedRelease, installerSha256: '' }, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }])(
-    'disables invalid/unavailable installers and links but keeps clearly prerequisite installed reference', async release => {
+    'disables invalid/unavailable installers and version notice but keeps prerequisite installed reference', async release => {
       const w = render(release);
       expect(w.get('#nfs-release-unavailable').text()).toContain('Install separately');
       for (const id of ['macos', 'linux']) {
@@ -34,7 +50,8 @@ describe('NFS guide', () => {
     const w = render({ ...nfsPublishedRelease, availableComputers: ['macos'] });
     expect(w.get('[data-testid="copy-nfs-macos"]').attributes('disabled')).toBeUndefined();
     expect(w.get('[data-testid="copy-nfs-linux"]').attributes('disabled')).toBeDefined();
-    expect(w.findAll('a').map(a => a.attributes('href'))).toContain(nfsPublishedRelease.installerUrl);
+    expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md']);
+    expect(w.text()).toContain('Published installer: v0.1.0');
   });
   it('copies exactly each displayed command with one success lifecycle and safe links', async () => {
     const w = render();

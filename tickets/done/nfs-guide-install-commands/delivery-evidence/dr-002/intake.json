@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-24T04:20:09.962332+00:00",
+  "task": "autobyteus-254",
+  "taskId": "project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3",
+  "head": "04951598bf70cda1f77d5d961597fc370a63f26b",
+  "branch": "codex/nfs-guide-install-commands-r2",
+  "base": "8b34e8ae108a281b0c93c679c60883df28a30773",
+  "guideRevision": "83e8e12125a9fa32aebb3c6025b00eb8caf70d63",
+  "initialTrackedClean": true,
+  "initialRefresh": "git fetch origin personal then git merge --no-edit origin/personal: Already up to date; rev-list HEAD...origin/personal=5/0",
+  "nonTicketDiffSinceApiTested": [],
+  "rerunPlan": {
+    "R01": "Still valid: current IMP10/11 source3d95 equals current exercised inputs",
+    "R02": "Still valid: API002 exact current renderer/browser drivers and dependencies",
+    "R03": "Still valid: unchanged lifecycle tested currently",
+    "C01": "Still valid: own cleanup receipts; roots checked again before handoff"
+  },
+  "newBaseIntegrated": false,
+  "noRuntimeRerunReason": "No changed inputs since API002; old API001 not carried across intervening shared-foundation change",
+  "priorReceipt": {
+    "head": "6d90a825feae66f4c397924370562a271da722a0",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/done/nfs-guide-install-commands/delivery-evidence/dr-001/finalization.json",
+    "sha256": "443ff296e095d1e978bca18d4656b89350d780370a3dbf6ce829e4f199a4e709",
+    "result": "Delivery Completed DR001, read-only; remote snapshot contains pre-finalization wording"
+  },
+  "release": "None",
+  "ownership": "New r2 worktree only; preserve prior detached receipt/canonical/PM/NFS repository"
+}

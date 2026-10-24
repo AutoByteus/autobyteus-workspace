@@ -10,7 +10,7 @@ admits a workspace by NFS identity. AutoByteus uses ordinary filesystem APIs.
 
 The macOS/Linux install commands download the pinned v0.1.0 script to an empty
 host working directory, verify its SHA-256, then invoke it with `version`. Review
-the script first. This installs the CLI and prints its version, **without storage
+the script at the URL shown in the command first. This installs the CLI and prints its version, **without storage
 setup**. Download or checksum failure stops the chain before invoking the script.
 The installer also checks its downloaded archive/manifest. Checksums do not
 replace publisher trust, signing or OS security checks. curl, a shell and the
@@ -50,8 +50,9 @@ strings. To deliberately update it, verify the actual public release, installer
 bytes and published SHA256SUMS; update tag, URLs, `installerSha256` and
 `availableComputers` together. Do not substitute build fixtures, `latest`, or a
 field-qualified label. Keep checksum verification and the trailing `version`.
-Invalid/null descriptors remove installer/release links and disable affected
-install buttons; the installed-tool reference remains explicitly prerequisite.
+Standalone installer/release links are not shown; use the URL in the command to
+review the script. Invalid/null descriptors suppress the version notice and
+disable affected install buttons; the installed-tool reference remains explicitly prerequisite.
 
 `NfsGuideCard.vue` owns one promise-based clipboard lifecycle for all nine buttons:
 pending exclusion, success only after fulfillment, a two-second reset, manual

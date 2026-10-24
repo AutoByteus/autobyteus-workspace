@@ -1,0 +1,16 @@
+{
+  "inputHygiene": {
+    "exit": 0,
+    "files": 77513,
+    "longestPath": 200
+  },
+  "inputLicensing": {
+    "exit": 0,
+    "files": 7272
+  },
+  "inputSecret": {
+    "exit": 0,
+    "commits": 5
+  },
+  "productRerun": "Not required, no input drift; impact plan in intake/release report"
+}

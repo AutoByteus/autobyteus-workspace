@@ -1,0 +1,19 @@
+{
+  "case": "R02/C01",
+  "date": "2026-10-24T04:15:04.345707+00:00",
+  "commit": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "step": "Diagnose R02-02-attempt-1 before rerunning only failed browser case",
+  "observed": "Four layout/copy assertion groups reached, then browser-error guard failed; R03 never ran",
+  "cause": "Current integrated NodeManager/Manage tab uses nodeListStore.loadPeers/GetRemoteCollaborationSettings, capability store and probeNodeIdentity GET /rest/remote-access/status. Historical harness only supplied older page queries. Missing two query responses produced Apollo errors; unhandled REST request hit deliberately inert port1 and Chromium refused unsafe port. No guide/runtime source defect established.",
+  "readSources": [
+    "autobyteus-web/stores/nodeListStore.ts",
+    "autobyteus-web/stores/remoteCollaborationCapabilityStore.ts",
+    "autobyteus-web/utils/nodeIdentityProbe.ts",
+    "autobyteus-web/types/remoteAccess.ts",
+    "autobyteus-web/graphql/queries/remoteCollaborationQueries.ts"
+  ],
+  "correction": "Supply exact current read-only empty peer/default-disabled capability and synthetic valid identity, backend URL owned same-origin; never send to live services. Keep unknown-operation/error guard. Re-run R02, then not-yet-executed R03; IMP10 suite not repeated.",
+  "cleanup": "browser.close held by exact own orphan helper50147/profileWZ8FiK; helper SIGTERM unblocked, server/root removed. cleanup-assist.json retained.",
+  "sandbox": "Observed Playwright launch default inserted no-sandbox on failed attempt. Explicit chromiumSandbox:true added for authoritative rerun; record and assert actual own root process lacks --no-sandbox. No host security settings changed.",
+  "productEdits": false
+}

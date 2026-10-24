@@ -59,9 +59,18 @@ how to apply them; they do not replace user-approved product requirements.
    the shape changes. Old shapes live only inside migrations: name a frozen copy
    after the migration that owns it or the period it comes from (for example
    `released-trees-before-task-agent-own-run.ts`), not after an invented shape
-   number. Renaming code never renames a file or value on disk. Product or
-   external names that contain a number (a model name, an external API version)
-   are not schema versions.
+   number. Product or external names that contain a number (a model name, an
+   external API version) are not schema versions.
+10. **Stored names stay in sync with the code.** Code and stored data use the
+   same name for the same thing. When a rename removes a wrong or second meaning
+   (see the domain vocabulary below), the stored name is renamed too: field
+   names, file names and keys, through a sealed migration (the
+   [Data Migration Guideline](autobyteus-server-ts/docs/design/data_migration_guideline.md)).
+   Never keep an old stored name behind a permanent mapping in current code: a
+   mapping is a second name for the same concept, and the code and the data
+   drift apart with every rename. Stored *values* (an ID, a folder named after an
+   ID) are not names and stay as they are. A rename that changes no meaning (pure
+   style) is not done on stored data.
 9. **No compatibility between different software versions.** The desktop app, its
    web UI, its embedded server and any server node the user connects are built
    from one release and are expected to run the same version. When one of them
@@ -333,8 +342,9 @@ update it in the same change.
   is the canonical policy for any change to persisted app data. Answer its
   checklist (section 2) in the design spec. Historical data must never lock
   users out of startup or new work; prefer tolerant readers over migrations; no
-  schema version fields; never reuse a field name with a new meaning; old shapes
-  live only inside registered migrations.
+  schema version fields; never reuse a field name with a new meaning; stored
+  names follow renames that remove a wrong or second meaning (rule 10); old
+  shapes live only inside registered migrations.
 - **Agent collaboration and orchestration:** the
   [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
   is the canonical contract for runs, membership versus delegation,
@@ -346,6 +356,10 @@ update it in the same change.
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**
   [Mandatory Processor Defaults](autobyteus-server-ts/docs/design/mandatory-processor-defaults.md).
+- **Design cases:** [docs/design-cases.md](docs/design-cases.md) records real
+  design mistakes from this project's reviews, with their tickets, findings and
+  fixes. The Solution Designer adds a case when it fixes a design mistake that
+  the design principles describe.
 - **Area contracts:**
   [Agent WebSocket Streaming Protocol](autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md),
   [Streaming Parsing Architecture](autobyteus-server-ts/docs/design/streaming_parsing_architecture.md),

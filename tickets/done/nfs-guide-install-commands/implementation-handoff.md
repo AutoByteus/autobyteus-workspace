@@ -1,62 +1,61 @@
-# Implementation handoff — NFS guide install commands
+# Implementation handoff — reopened NFS guide link removal
 
-## Basis and workspace
-- Task autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3; package `nfs-guide-install-commands`.
-- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands`; branch `codex/nfs-guide-install-commands`; finalization `origin/personal`; **no release**.
-- Canonical ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands/tickets/in-progress/nfs-guide-install-commands`.
-- Upstream: [requirements-doc.md](requirements-doc.md), [investigation-notes.md](investigation-notes.md), [design-spec.md](design-spec.md), [solution-revision-record.md](solution-revision-record.md), [solution-design-handoff.md](solution-design-handoff.md). R1/SR-001 Approved, SR-002 Ready. External contract: `evidence/published-release-contract.json`, retained installer and SHA256SUMS files.
-- Independent architecture/source reviews: **N/A — Small/Low direct route**. No earlier NFS task's verdict is reused as this task's acceptance.
+## Current authority / identity
+- Task **autobyteus-254**, `project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3`; package `nfs-guide-install-commands`.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2`; branch `codex/nfs-guide-install-commands-r2`; input `1103c5f9f7c6986a77ef34620b02d790e2297621`, creation base origin/personal `8b34e8ae108a281b0c93c679c60883df28a30773`. Finalization later to personal; **no release**.
+- Canonical ticket `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands`.
+- Approved basis: [requirements-doc.md](requirements-doc.md) **R2/SR-003 Approved**, [design-spec.md](design-spec.md) **SR-004 Ready**; [investigation-notes.md](investigation-notes.md), [solution-revision-record.md](solution-revision-record.md), [solution-design-handoff.md](solution-design-handoff.md), supplied screenshots indexed there. No separate Product supplement or pending decision.
+- Architecture/source review **N/A — direct Small/Low route**. Original IR-001/API-REV-001/DR-001 passes remain historical exact-input results, not current revision acceptance.
 
-## Current implementation
-**Initial / IR-001**; [implementation-revision-record.md](implementation-revision-record.md). Source/tests/docs commit `2c6b41462a` (full identity in IMP-06). Related SR-001/SR-002; ARCH/CRR/API/DR: N/A. Trigger: SD's reproduced null installer, plus approved basic-guidelines/public-command scope; no review finding.
+## Implementation summary / round
+**Rework / IR-002**, appended in [implementation-revision-record.md](implementation-revision-record.md). Trigger: explicit Oct24 removal preference, not a product failure. Related SR-003/SR-004; current ARCH/CRR/API/DR **N/A**. Source/tests/scoped documentation commit **3d95a5c4a16759060983489735e77820661cff53**.
 
-The app now offers checksum-checked v0.1.0 macOS/Linux installation text ending in `version`, then interactive create/connect guidance and all seven public installed CLI commands. One component clipboard lifecycle serves nine buttons. Both locales, unavailable/partial fallbacks, honest deferred testing limits, and independent-service documentation are retained. **No installer, CLI, mount or live storage command was executed.**
+Deleted exactly the two standalone install-section anchors and their two locale labels. Replaced local URL-valued presentation computed with `hasAvailableInstaller`, using **any** valid command so partial data still shows version. Review prose now points to the URL already in the displayed command. Corrected the guide's obsolete link-state sentence. Advanced README link, all nine commands/Copy cards and unchanged helper `downloadUrl` validation remain. No replacement link/control, hidden legacy anchor or empty link container.
 
-## Classification and self-review
-**Small / Low — Confirmed**, as design's final classification. Content and local string projection inside existing owners; no new route, store, backend API, runtime execution, persistence, security authority or deployment behavior. Selected route: **Direct API/E2E** under fresh handoff rules. Lightweight implementation self-review completed; no new design impact.
+## Classification / self-review
+**Small / Low — Confirmed** against design's Completed classification. Lightweight self-review completed; **Direct API/E2E** applicable under fresh rules. Five bounded paths, same presentation/localization owners, no API/persistence/execution/security/installer behavior change. No design impact or new follow-up.
 
-| Behavior / criteria | Actual implementation path | Outcome |
+| Behavior / criteria | Production path and outcome |
+| --- | --- |
+| BEH-005 / AC-006 | NodeManager's unchanged prop → NfsGuideCard template: two anchors removed; en/zh-CN labels removed and review wording clarified. Exactly the advanced README remains; no reserved link area. |
+| BEH-001 / AC-001/004 | Unchanged helper validation → existing Mac/Linux command projections → explicit `some(Boolean(command))` for version. Valid/partial version retained; null/invalid hidden. |
+| BEH-002/003 / AC-002/003 | Same public command rows and clipboard owner, byte-identical from `const commandGroups` through handler/unmount. Nine displayed strings and copy behavior retained. |
+| BEH-004 / AC-005 | All other guidance and adjacent Docker production unchanged; only targeted NFS prose changed. Field testing still deferred, not a prerequisite. |
+
+Changes stayed within Scope Guardrail: **Yes**. Old detached task worktree, canonical dirty checkout/PM data, NFS repo/installer/runtime/releases and shared/workspace/agent skills untouched.
+
+## Design health, removal, placement and data
+- User-requested presentation revision; **No Design Issue Found / No Refactor Needed**, confirmed. Existing owners absorb deletion without new layer/state/module.
+- Removed `.download`/`.installerReview` locale keys only after confirming their two template consumers; surviving descriptor `downloadUrl` validator remains live and untouched. No backward compatibility aliases, dual paths, obsolete markup or dead imports introduced. No unrelated cleanup/follow-up.
+- Effective nonempty changed source: component95; both catalogs443. All decrease, below500; deltas below220. Existing file placement and local structures remain appropriate.
+- Persistence **Not Affected**; no reader/writer/schema/migration or data cleanup. No deviation from design.
+- Current shared design principles (including kind/consumer tracing), root DESIGN.md/TESTING.md and web AGENTS.md/ARCHITECTURE.md applied. Normal, partial, null/invalid and both locales explicitly checked; no gate inferred solely from happy path.
+
+## Impact plan and checks
+Before validation, [evidence/IMP-08-impact-plan.md](evidence/IMP-08-impact-plan.md) compares prior source2c6b414 against current input: 2010 changed paths including contracts/core. Re-run the scoped recorded implementation checks with current foundation; do **not** call old totals a current pass. No unrelated server/NFS campaign. Current units execute once; only the browser case is repeated for diagnosed fixture corrections, without repeating passed repository suites.
+
+Environment: macOS arm64 / Node22.23.1; filtered frozen pnpm install, private HOME/TMPDIR, fresh Nuxt prepare, serialized tests/dev server, fresh Chrome context. No credential read, installer/CLI/live-host execution or user application data.
+
+| ID | Command / exercised code / input | Result and evidence |
 | --- | --- | --- |
-| BEH-001; AC-001/004 | unchanged NodeManager descriptor prop → `utils/nfsLauncherCommands.ts` → NfsGuideCard install cards | Pinned real public URL/hash; HTTPS/shell-safe/version/digest validation; null/invalid/partial fallback. Download/check/install are chained; `version` avoids storage setup. |
-| BEH-002; AC-002 | utility readonly public-command list → two role cards + five reference cards | Explicit installed path; no args/create/connect/status/reconnect/detach/version exactly once each. No internal/invented commands. |
-| BEH-003; AC-003 | NfsGuideCard handler → browser clipboard promise → common status and button label | Exact displayed bytes; pending exclusion, fulfillment-only success, reset/error/unmount guards; no execution callback. |
-| BEH-004; AC-005 | en/zh-CN settings catalogs + NFS component + scoped docs | Host/version/prerequisite/trust/outage/field-limit guidance; local code overflow; unchanged Docker and NodeManager production. |
+| IMP-08 | Filtered `pnpm --filter autobyteus... install --frozen-lockfile`; `pnpm -C autobyteus-web exec nuxt prepare`; input1103c5f9 | Setup complete, logs `IMP-08-install.log` / `IMP-08-prepare.log`; environment and impact plan saved. |
+| IMP-09 | New component tests only: `pnpm -C autobyteus-web test:nuxt components/settings/__tests__/NfsGuideCard.spec.ts -t 'retains only the advanced README link' --run --maxWorkers=1`, original1103c5f9 component plus new assertions | **Expected Fail**: 2 failed/11 unselected; actual3anchors vs desired1 in both locales. `IMP-09-before.log`. No original bug claim: requirements changed. |
+| IMP-10 | `python3 tickets/in-progress/nfs-guide-install-commands/evidence/IMP-10-checks.py`; exact five-file Nuxt command, focused helper tsc and three guards listed in JSON; source3d95a5c4 | **Pass: 54 tests/5 files** (component13/helper24/NodeManager10/Docker7), focused typecheck exit0, web/localization guards exit0/zero unresolved literals. `IMP-10-checks.json` and per-check logs. Includes six inert shell controls; no real installer. |
+| IMP-11 | Ticket-owned temporary Nuxt component fixture, en/zh ×1280/390, current product source3d95a5c4; exact driver/command/result in evidence | **Pass**: `IMP-11-verified/result.json`, four en/zh ×1280/390 states, nine cards/one link each, eight actual clipboard samples, keyboard/timer/denial/null/partial controls, zero browser events. `IMP-11-visual-review.md` and final screenshots. Not full Nodes composition, Electron or API sign-off. |
+| IMP-12 | Diff/read self-review vs1103c5f9 | **Pass**: five approved paths only; helper/parent/Docker byte identity, unchanged usage+clipboard suffix, precisely two deleted labels + reminder per locale; `IMP-12-self-review.json`. |
+| IMP-13 | Inspect owned preview ports/PIDs/page and remove exact private setup; source3d95a5c4 | **Pass**: three preview ports closed, PIDs absent, temporary page gone; owned HOME/TMP removed. `IMP-13-cleanup.json`. |
 
-Scope Guardrail: **Yes**. NFS repo/runtime, installer/artifacts, app/agent packages, shared/workspace skills, canonical dirty checkout, PM data and live storage untouched.
+Current count54 differs from old53: current integrated NodeManager suite has10 (historical11), and this round adds2 localized cases. Not a dropped test by this change. Nuxt duplicate-getter / package-type and HappyDOM KaTeX warnings are retained; no unit error or failed assertion on current source. Whole-app Vue/desktop/backend typecheck/build not claimed: Nuxt compiles and renders the changed component; focused helper tsc is separately scoped.
 
-## Health, removal and data review
-- Confirmed stale static publication value + missing usage information, not architectural drift; **No Refactor Needed**, no Design Impact.
-- Removed old production null, pipe-to-implicit-setup string and `qualifiedComputers` local field cleanly. No dual spelling, compatibility wrapper or old behavior retained. Explicit unavailable state is intentional, not legacy compatibility.
-- Touched imports and NFS localization keys checked against static/dynamic consumers; no dead additions or obsolete aliases remain. No dead-code follow-ups found elsewhere in the scoped inspection.
-- Structures stay local and tight: release descriptor, public command rows, component clipboard state. Existing localization owner remains authoritative. No shared framework extraction.
-- Effective nonempty source lines: component97, utility44, catalogs495 each. All below500; no changed source delta above220. Tests excluded from source size limit. Catalogs remain below the limit without unrelated splitting.
-- Persistence: **Not Affected / design N/A**. No readers/writers/migration or user-state reset.
-- Applied repository DESIGN.md, TESTING.md, web AGENTS.md/ARCHITECTURE.md and current shared design principles. No applicable policy conflict discovered.
+## Rendered-result feedback loop and limits
+Reviewed approved removal screenshots and existing cards. Own Nuxt fixture renders the actual component, localization and styles, supplying only unrelated app-start read/notification/feed boundaries. Checks preserve nine cards, exact remaining link and review reminder; valid/partial/null version, two locales/two widths, local scrolling/no document overflow, sampled actual clipboard, keyboard success/reset and controlled denial. Install section bottom has only its existing17px border/padding, no reserved link gap. No production styling/lifecycle change was needed.
 
-## Checks run — implementation-scoped, not downstream acceptance
-All evidence paths below are relative to this ticket. Current checks use committed product source `2c6b41462a`; earlier attempts state their original input explicitly. macOS arm64, Node22.23.1, pnpm10.28.2, Vitest3.2.7, Chrome155.0.8059.85. Private HOME/TMPDIR; no credentials or user application data.
+First attempt `IMP-11-current/result.json` is **Fail**, retained: integrated NotificationCenter additionally requested `GetUpdateAutomationSettings`; historical fixture lacked that response and Apollo logged a missing-field error. Driver/model corrected from current query and schema; no product edit or error suppression. Passed repository checks were not repeated. Second attempt passed assertions but was superseded after schema inspection corrected its fixture-only nested typename. Final `IMP-11-verified/result.json` is Pass with the exact current-schema fixture and zero browser events. Attempts remain in `IMP-11-attempt-note.json`; directly inspected final English1280/Chinese390 screenshots and recorded visual findings in `IMP-11-visual-review.md`.
 
-| ID | Command / steps and code exercised | Criteria | Result and evidence / look for |
-| --- | --- | --- | --- |
-| IMP-01 | Actual Node `--experimental-strip-types` import of helper; assert both installers exist, on baseline3dd60f90 | AC-001 | **Expected Fail**, exit1, both null; `evidence/IMP-01-baseline.json`. Confirms handed reproduction before edits. |
-| IMP-02 | Filtered frozen-lockfile pnpm install; `pnpm -C autobyteus-web exec nuxt prepare` | setup | Pass; install/prepare logs. Initial unit invocation omitted prepare and collected no tests; retained as failed setup attempt, not a product result. |
-| IMP-03 | `pnpm -C autobyteus-web test:nuxt utils/__tests__/nfsLauncherCommands.spec.ts components/settings/__tests__/NfsGuideCard.spec.ts components/settings/__tests__/NodeManager.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts utils/__tests__/dockerNodeLauncherCommands.spec.ts --run --maxWorkers=2` | AC-001–005 | **Pass, 5 files / 53 tests**; `evidence/IMP-03-unit-current.log`. Includes six inert shell-stub cases (both OS strings × success/download fail/checksum fail), real locale content, pending/denial/missing clipboard/timer/unmount, parent route wiring and seven unchanged Docker controls. |
-| IMP-04 | `pnpm -C autobyteus-web exec tsc --noEmit --skipLibCheck --target es2022 --module esnext --moduleResolution bundler utils/nfsLauncherCommands.ts`; `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | AC-003/005 | Pass, focused utility typecheck exit0; three guards exit0/zero unresolved literals; `evidence/IMP-04-typecheck.log`, `evidence/IMP-04-boundaries-current.log`. Not a whole-app typecheck. |
-| IMP-05 | `node tickets/in-progress/nfs-guide-install-commands/evidence/IMP-05-preview.mjs IMP-05-current`; actual component in temporary Nuxt page, real localization/style, owned Chrome context with app-feed/notification/health fixtures | AC-001–005 rendering/copy subset | Pass; `evidence/IMP-05-current/result.json` and four locale/width screenshots. Nine exact clipboard writes per en/zh ×1280/390; actual Enter activation and two-second reset; controlled denial/null/partial. No browser errors; no document overflow. Browser/component self-check, **not** full Settings/Electron/API acceptance. |
-| IMP-06 | Focused read/diff review; hash retained public installer against retained SHA256SUMS; source-size and unchanged Docker/parent production check | scope/AC-001/005 | Pass; `evidence/IMP-06-self-review.json`. Exact installer digest65769690…de86d25fa; approved nine paths only. |
+API/E2E still owns current actual **Nodes → NFS Guide** composition and acceptance judgement. These are implementation component checks, not a user check or packaged Electron/real backend/NFS proof. No need to requalify installers, storage, independent clients or field tests. Existing autobyteus-nfs-4 custody unchanged.
 
-Raw earlier attempts are retained: initial missing `.nuxt/tsconfig.json`; second test selector matched four files rather than the Docker utility, corrected to the actual filename for all53. Browser attempt1 had missing fixture `GetUpdateNotifications`/`rest/health` boundaries (Apollo/HTTP errors); supplied these boundaries, not product workarounds. All later runs assert absence of browser errors. Existing Nuxt duplicate-getter auto-import, package-type and HappyDOM KaTeX warnings are logged, with no failed assertion/unhandled test error. No global cleanup or unrelated code change was made for these warnings.
-
-## Rendered-result feedback loop
-Reviewed adjacent Docker cards and approved D3/D4. Rendered current NFS component through a temporary owned Nuxt page using actual app styles/localization and pure descriptor, not a screenshot mock. Inspected English desktop and narrow plus Chinese desktop/narrow, code overflow and button labels, status/error states and warning hierarchy. Initial bottom-sticky feedback obscured section content; moved it to a reserved top common status area. Re-rendered and directly inspected the corrected screenshots. Product content/spacing/cards remained aligned; horizontal overflow stayed inside code areas. Clipboard was actually written/read in a fresh headless Chrome context, never pasted into a terminal. Fixture navigation controls are not product additions and the temporary page is removed.
-
-Remaining: actual Settings/Nodes tab/browser journey and independent clipboard/accessibility/locale judgement belong to API/E2E. NodeManager wiring is covered here by its actual component unit test, not falsely called a browser journey. Packaged Electron, installer execution, live storage, physical/independent-client/user field tests and broad platform campaigns were **not run** and are not reinstated gates. Existing autobyteus-nfs-4 field custody unchanged.
-
-## Environment, cleanup and assumptions
-- Initial worktree clean3dd60f90, base33171e13855b4bcbcb8a9d650f2403cacb03d965. No fetch/target merge/push/version/tag/release actions.
-- Static metadata is manually maintained; this guide does not dynamically confirm remote availability. Retained SD public download evidence independently hashes to the pinned digest. Future updates must reverify public bytes, not copy build fixtures.
-- Private owned home/temp/cache, browser and dev-server lifecycle recorded in IMP-01/IMP-05; final cleanup receipt `evidence/IMP-07-cleanup.json`. Ignored worktree dependency/Nuxt outputs retained for downstream use. No other process/data touched.
-- No blockers or new follow-ups. Clipboard may be denied; manual selection remains available. Download availability does not prove filesystem readiness.
-
-## Downstream request
-Continue **direct API/E2E** on Small/Low, reuse unchanged scoped results above. Judge AC-001–005 against current approved R1/SR002: actual NFS tab wiring, both locales and widths, exact copy/links/pending/error/keyboard behavior, unavailable/partial fixtures and Docker preservation. Do not run the installer for shell guards (stubs only), change standalone NFS, add runtime coupling, request host questionnaires or reopen old release/field campaigns. Delivery owns docs final synchronization and finalization to fresh origin/personal after acceptance; no release requested.
+## Remaining handoff / cleanup
+- No requirement/design gap, new blocker, follow-up, merge/push/tag/release/deploy or completion claim.
+- Owned browser/dev server/temp page/home cleanup is recorded with current renderer evidence and `IMP-13-cleanup.json`; ignored worktree dependencies/Nuxt outputs may remain for downstream use. No unrelated resources touched.
+- API: validate R2 AC-001–006 by impact, especially removed anchors in both locales, retained advanced link/nine Copy cards, partial-version behavior and no visual gap. Reuse current scoped proof where unchanged. Never execute installer for guard checks; stubs only.
+- Delivery later refreshes personal, syncs only scoped docs and finalizes per release guide without release. Preserve old receipt checkout and other-owner/history artifacts. Direct low-risk route, no Code Reviewer dispatch.
