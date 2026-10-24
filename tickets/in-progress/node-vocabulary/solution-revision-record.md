@@ -84,3 +84,4 @@
 - F-002 (`RemotePeerStartedRunViews` → `PeerStartedRunViews`): a Local Fix, owned by implementation.
 - Classification unchanged. Route: architecture review of the delta, then implementation, then the code reviewer's Targeted Delta Review of F-001 and F-002.
 - SR-008 addendum (2026-10-24): the name is the user's choice of the full feature prefix: `memorySyncSourceId` / "Memory Sync source ID", `boundMemorySyncSourceId`, hub file `memory-sync-source.json` (no abbreviation such as "mem", which has other meanings). Checked: no use of these names at the base.
+- ARCH-REV-006 Pass on SR-008 (`39dd672b4a`). N-912 (a reset note for dev/test data that ran the unreleased earlier SM-2 … SM-5): accepted, owned by implementation's handoff. After the pass, the name became the user's `memorySyncSourceId` (`8e3512429b`), a name-only change sent to the reviewer and implementation.

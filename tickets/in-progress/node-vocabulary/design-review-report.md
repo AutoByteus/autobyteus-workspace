@@ -5,16 +5,22 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002; REQ-909 and the extended REQ-901 / REQ-906 at SR-004, at the user's request)
 - Upstream Investigation Notes: `…/investigation-notes.md` (V-01 … V-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `f75d537365` (SR-007)
+- Reviewed Design Spec: `…/design-spec.md` at commit `39dd672b4a` (SR-008)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002)
-- Relevant Solution Revision IDs: SR-001 … SR-007
+- Relevant Solution Revision IDs: SR-001 … SR-008
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: 5
-- Trigger: the Solution Designer's SR-007 (commit `f75d537365`), answering ARCH-REV-004 (AR-905, AR-906, N-906 … N-909)
-- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, `Fail`)
-- Latest Authoritative Round: 5
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: 6 (a delta review)
+- Trigger: the Solution Designer's SR-008 (commit `39dd672b4a`), answering the code reviewer's CRR-001 F-001 (Design Impact: `sourceId` already names three other IDs), plus design-text corrections taken from implementation
+- Prior Review Round Reviewed: round 5 (`ARCH-REV-005`, `Pass`)
+- Latest Authoritative Round: 6
 - Review method: the shared principles as updated 2026-10-24, including Principle 15 "One Vocabulary" and the "Vocabulary drift" trigger (`autobyteus-agents` `b87a507`), and the updated design examples.
+- Round-6 evidence (base `c78ffb15a2`, head `39dd672b4a`):
+  - `git grep -w sourceId` at the base: 124 uses outside generated code (skill, update-notification and package sources);
+  - `git grep -w syncSourceId` at the base: 0;
+  - the SM-2 … SM-5 commit `3692422aef` is in no tag (unreleased);
+  - `remote-access/` pairing services do not read the node identity; the only `getNodeId()` callers are `api/rest/remote-access.ts:29` and `compositions/remote-collaboration-composition.ts:58`;
+  - GraphQL `nodeId` fields (`api/graphql/types/remote-collaboration-settings.ts:18, 55`) are peers' IDs, not this node's.
 - Round-5 evidence (at `f75d537365`):
   - `startup/app-data-capability-readiness.ts:10-20` (`markCapabilitiesPending` and `applyCapabilityReadiness` exist; also called by `standalone-application-host/start-standalone-application-host.ts:142`);
   - `autobyteus-web/utils/nodeIdentityProbe.ts:57-59` (a status answer without `nodeId` → `{ok: false, cause: 'not_autobyteus'}`);
@@ -178,20 +184,32 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 ## Review Decision
 
-`Pass` (round 5). AR-905 and AR-906 are resolved and verified; N-906 … N-909 are done.
+`Pass` (round 6, delta). CRR-001 F-001 is resolved in the design. Memory Sync's identity becomes `syncSourceId` / "Sync source ID", a name with no other use. The SM-2 … SM-5 targets are corrected in place, which is allowed because they are unreleased. REQ-910, Step 5b and the SM table are aligned.
 
-- AR-905, § Hold-back chains:
-  - `node_identity` and `memory_sync` are added to `AppDataCapability` and configured by `markCapabilitiesPending` and `applyCapabilityReadiness`;
-  - while held back, `NodeIdentityService.getNodeId()` throws `NodeIdentityNotMigratedError` and never creates or writes;
-  - a fresh install is ready at once;
-  - each consumer's answer is named (the status route, `PeerGateway` and `PeerClient`, pairing, GraphQL and the Nodes tab), as are Memory Sync's gates (the loop, "Sync now", ingestion, settings), each with unit cases.
-- AR-906: decided (a) under rule 10. SM-9 and SM-10 rename the phone keys "profile" → "entry" through each app's own sealed step; the record fields are unchanged and the word list is extended.
+The three design-text corrections hold against the code:
+- pairing is not gated, because it does not use the node ID;
+- the Nodes tab shows the probe's `identity_pending`, because no GraphQL field serves this node's ID;
+- the "Left alone" list no longer names renamed items.
 
-Two non-blocking notes: N-910 (a cited claim about the probes) and N-911 (phone call sites). The design is ready for implementation.
+F-002 is implementation-owned. N-910 and N-911 were fixed and verified at `9bc90eff80`. One new note: N-912. The design is ready for implementation.
+
+**Reviewer accountability:**
+- F-001's collision came from my own AR-903 suggestion (`sourceId`), which I did not check against its other uses (Principle 15: judge a name against its other uses).
+- AR-905 named pairing and "the GraphQL that shows this node's ID" as hold-back consumers without opening them.
+
+Both suggestions were taken on trust, the Case 5 pattern, now corrected.
 
 ## Findings
 
-### Round-5 notes (non-blocking)
+### Round-6 note (non-blocking; disposition expected)
+
+- N-912, machines that ran the unreleased variant: SM-2 … SM-5 change in place. A development or test data directory where the earlier variant already ran has a completed migration record and fields named `sourceId`, so the corrected migration will not re-run there, and Memory Sync would not find its names. State in the implementation handoff that such directories are reset by hand (or their migration record removed); no runtime handling. Released user data is unaffected.
+
+### Round-5 notes (non-blocking) — dispositions verified
+
+- Disposition check (2026-10-24, commit `9bc90eff80`):
+  - N-910 is **fixed**: design § Hold-back chains point 4 — while held back, the status route answers 503 `{code: "NODE_IDENTITY_NOT_MIGRATED"}`; the web probe gets the cause `identity_pending`; `PeerClient.fetchNodeId` refuses with `NODE_IDENTITY_NOT_MIGRATED`; the phones show their 503 "server unavailable" state.
+  - N-911 is **fixed**: the call sites `AutoByteusMobile/AppShellCoordinator.swift:18` and `MainActivity.kt:39` are opened and correct (each is the line that creates `SavedNodeStore`), and each app has a boundary test.
 
 - N-910, the probes' answer to a held-back node: § Hold-back chains says that without `nodeId` "the desktop, phone and peer probes then treat the node as 'not identified' (their existing missing-ID path)". In the code, the web probe returns `cause: 'not_autobyteus'` (`nodeIdentityProbe.ts:57-59`), and `PeerClient.fetchNodeId` throws `PEER_NOT_AUTOBYTEUS`, "… is not an AutoByteus node" (`peer-client.ts:232-235`). REQ-913 still holds: no new ID is created, nothing is paired with a wrong ID. But a node waiting for its identity migration would be called "not an AutoByteus node". Either correct the sentence, or let the status route state the reason, for example an `identity: "waiting_for_migration"` field or a 503 with `NODE_IDENTITY_NOT_MIGRATED`, so the probes say "waiting for its data migration". The implementation chooses within REQ-913; the design text should match what is built.
 - N-911, phone call sites: SM-9 and SM-10 are "called once at app start, before `SavedNodeStore` is first read". Cite the two call sites when implementing: the iOS app's launch path, and the Android `Application` or launcher `onCreate` that first builds `SavedNodeStore`. Also cite their boundary checks (current code imports only the step's entry point), mirroring the web boundary spec.
@@ -342,6 +360,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 5)
+- Review Decision: `Pass` (round 6, delta)
 - Material-Premise Gate: `Pass` (MP-901 handled by the user's decision: a stated REQ-906 exception plus the release note)
-- Notes: classification `Large` / `High`, with migrations SM-1 … SM-10. Design at commit `f75d537365` (SR-007).
+- Notes: classification `Large` / `High`, with migrations SM-1 … SM-10. Design at commit `39dd672b4a` (SR-008). F-001 resolved (`syncSourceId`); N-912 is open with a disposition expected.

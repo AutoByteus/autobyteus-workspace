@@ -11,6 +11,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-003 | Round 3 / the AR-904 text fix | SR-005 | Fail | Pass | AR-904 resolved; N-905 |
 | ARCH-REV-004 | Round 4 / SR-006 (U-3: stored names migrate) | SR-006 | Pass | Fail | AR-905, AR-906 (new) |
 | ARCH-REV-005 | Round 5 / SR-007 answers ARCH-REV-004 | SR-007 | Fail | Pass | AR-905, AR-906 resolved; N-910, N-911 |
+| ARCH-REV-006 | Round 6 (delta) / SR-008 answers CRR-001 F-001 | SR-008 | Pass | Pass | None new; N-912 |
 
 ## Revision Entries
 
@@ -149,3 +150,35 @@ None.
 - Material classification changes: none (`Large` / `High`, with migrations).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-901 (accepted). The fixtures come from the released writers (no real-data read, by the user's choice).
+
+#### Note dispositions after ARCH-REV-005 (2026-10-24; no new review round)
+
+| Note | Disposition | Verified at | Evidence |
+| --- | --- | --- | --- |
+| N-910 | Fixed | `9bc90eff80` | Design § Hold-back chains point 4: a 503 `NODE_IDENTITY_NOT_MIGRATED` status; the probe cause `identity_pending`; `PeerClient` refuses with that code |
+| N-911 | Fixed | `9bc90eff80` | `AppShellCoordinator.swift:18` and `MainActivity.kt:39` opened (the `SavedNodeStore` creation lines); boundary tests named |
+
+### ARCH-REV-006 — Round 6 (delta): `syncSourceId`; design-text corrections; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/design-review-report.md`
+- Review round and trigger: round 6; the Solution Designer's SR-008 (commit `39dd672b4a`), answering the code reviewer's CRR-001 F-001 (Design Impact).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 6; `code-review-report.md` CRR-001 F-001 (F-002 is a Local Fix).
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: `Pass` (ARCH-REV-005)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Verified: `sourceId` at the base (124 uses), `syncSourceId` (0), SM-2 … SM-5 unreleased (`3692422aef` in no tag), pairing not using the node ID, and the GraphQL `nodeId` fields being peers' IDs.
+  - **Reviewer lessons, recorded honestly:** two of my own earlier suggestions were taken on trust. AR-903 proposed `sourceId` without checking its other uses (Principle 15). AR-905 named pairing and a GraphQL node-ID field as consumers without opening them (Principle 1).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-903 (the name) | Resolved (ARCH-REV-002) | Superseded by SR-008 | REQ-910, Step 5b, the SM table | `syncSourceId` / "Sync source ID"; 0 base uses |
+| AR-905 (the consumer list) | Resolved (ARCH-REV-005) | Corrected by SR-008 | § Hold-back chains | Pairing removed from the list (no node-ID use); the Nodes tab uses the probe's `identity_pending` |
+| N-910, N-911 | Fixed (`9bc90eff80`) | Verified | — | — |
+
+- New or remaining finding IDs: none blocking. N-912 (a dev and test data reset for the unreleased in-place change; disposition expected).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: RSK-901 (accepted).
