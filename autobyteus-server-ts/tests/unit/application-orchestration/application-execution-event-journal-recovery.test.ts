@@ -370,6 +370,7 @@ describe("application execution-event journal recovery", () => {
         isApplicationReady: vi.fn(() => true),
       } as never,
       availabilityService: availabilityService as never,
+      storageLifecycleService: storageLifecycle,
     });
 
     await expect(service.reloadAndReenter(APPLICATION_ID)).resolves.toMatchObject({
