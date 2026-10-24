@@ -1,13 +1,14 @@
 import type { ChildProcess } from 'child_process'
 import axios from 'axios'
 import { EventEmitter } from 'events'
-import { setTimeout as sleep } from 'node:timers/promises'
+import { waitForBackendPort, assertBackendPortAvailable, isAddressInUse, PortConflictError } from './backendPortAvailability'
+import { inspectPortOwner } from './portOwnerInspector'
+import { stopManagedBackend, waitForChildExit, childExited, ShutdownIncompleteError } from './managedBackendStop'
 import { logger as rootLogger } from '../logger'
 import {
   formatEmbeddedServerClientBaseUrl,
   formatEmbeddedServerClientWebSocketBaseUrl,
 } from '../../shared/embeddedServerClientEndpoint'
-import { assertEmbeddedServerListenerPortAvailable } from '../launch-profile/e2eLaunchPreflight'
 import { AppDataService } from './services/AppDataService'
 import { createServerProcessOutputForwarder } from './serverOutputLogging'
 import { parseEmbeddedServerPlatformFatal, platformFatalError } from './embeddedServerPlatformFatal'
@@ -36,10 +37,11 @@ export abstract class BaseServerManager extends EventEmitter {
   protected appDataDir: string = ''
   protected firstRun: boolean = false
   protected serverDir: string = ''
-  protected gracefulShutdownTimeoutMs: number = 5000  // 5 seconds for graceful shutdown
+  protected gracefulShutdownTimeoutMs: number = 20000
   protected appDataService: AppDataService
   protected runtimeEnvOverrides: Record<string, string> = {}
   protected healthPollIntervalMs: number = 250
+  private stopPromise: Promise<void> | null = null
   private pendingStartup: { promise: Promise<void>; cancel: () => void } | null = null
   private startupGeneration: number = 0
   private settledStartupGeneration: number = 0
@@ -74,25 +76,14 @@ export abstract class BaseServerManager extends EventEmitter {
     timeoutMs: number = (process.platform === 'linux' ? 10000 : 5000),
     signal?: AbortSignal
   ): Promise<void> {
-    const startTime = Date.now();
-    while (Date.now() - startTime < timeoutMs) {
-      signal?.throwIfAborted()
-      const isFree = await assertEmbeddedServerListenerPortAvailable(this.serverPort)
-        .then(() => true, () => false)
-      signal?.throwIfAborted()
-      if (isFree) {
-        logger.info(`Port ${this.serverPort} is free.`);
-        return;
-      }
-      await sleep(100, undefined, { signal });
-    }
-    throw new Error(`Port ${this.serverPort} is still in use after ${timeoutMs}ms`);
+    await waitForBackendPort(this.serverPort, timeoutMs, signal)
   }
 
   /** Start once; all callers share the same pending startup, including preflight. */
   public startServer(): Promise<void> {
     if (this.pendingStartup) return this.pendingStartup.promise
     if (this.isRunning()) return Promise.resolve()
+    if (this.serverProcess && !childExited(this.serverProcess)) return Promise.reject(new ShutdownIncompleteError('Previous backend exit remains unconfirmed'))
 
     const generation = ++this.startupGeneration
     this.settledStartupGeneration = 0
@@ -183,66 +174,24 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   public stopServer(): Promise<void> {
     this.cancelPendingStartup()
-    if (!this.serverProcess) {
-      logger.info('Server is not running');
-      return Promise.resolve();
-    }
-    
-    const proc = this.serverProcess;
-
-    return new Promise((resolve) => {
-      let forceKillTimeout: NodeJS.Timeout;
-      let stopped = false;
-      
-      const cleanup = () => {
-        if (stopped) return
-        stopped = true
-        clearTimeout(forceKillTimeout);
-        proc.removeListener('close', onClose)
-        if (this.serverProcess !== proc) return
-        this.isServerRunning = false;
-        this.ready = false;
-        this.serverProcess = null;
-        this.emit('stopped');
-      };
-      
-      // When process closes, cleanup and resolve
-      const onClose = () => {
-        logger.info('Server process closed');
-        cleanup();
-        resolve();
-      };
-      proc.once('close', onClose)
-
-      logger.info('Stopping server...');
-      
-      try {
-        // Step 1: Send SIGTERM for graceful shutdown
-        logger.info('Sending SIGTERM signal for graceful shutdown');
-        proc.kill('SIGTERM');
-        
-        // Step 2: Set timeout to escalate to SIGKILL if graceful fails
-        if (stopped) return
-        forceKillTimeout = setTimeout(() => {
-          if (this.serverProcess === proc) {
-            logger.warn(`Graceful shutdown timed out after ${this.gracefulShutdownTimeoutMs}ms, sending SIGKILL`);
-            try {
-              proc.kill('SIGKILL');
-            } catch (killError) {
-              logger.error('Error sending SIGKILL:', killError);
-              // Process is likely already gone, cleanup
-              cleanup();
-              resolve();
-            }
-          }
-        }, this.gracefulShutdownTimeoutMs);
-      } catch (error) {
-        logger.error('Error sending SIGTERM to server:', error);
-        // If kill fails, assume process is gone and cleanup state manually.
-        cleanup();
-        resolve();
-      }
-    });
+    if (this.stopPromise) return this.stopPromise
+    const proc = this.serverProcess
+    if (!proc) return Promise.resolve()
+    this.stopPromise = stopManagedBackend(proc, this.gracefulShutdownTimeoutMs,
+      () => this.requestGracefulStop(proc), () => this.forceStop(proc)).finally(() => {
+        if (childExited(proc) && this.serverProcess === proc) {
+          this.serverProcess = null; this.isServerRunning = false; this.ready = false; this.emit('stopped')
+        }
+        this.stopPromise = null
+      })
+    return this.stopPromise
+  }
+  protected async requestGracefulStop(proc: ChildProcess): Promise<void> {
+    if (!childExited(proc)) proc.kill('SIGTERM')
+    await waitForChildExit(proc, this.gracefulShutdownTimeoutMs)
+  }
+  protected async forceStop(proc: ChildProcess): Promise<void> {
+    if (!childExited(proc)) proc.kill('SIGKILL')
   }
 
   /**
@@ -407,9 +356,10 @@ export abstract class BaseServerManager extends EventEmitter {
       this.isServerRunning = false
       this.ready = false
       this.settleStartupError(generation, error)
+      if (!process.pid) this.serverProcess = null
     })
 
-    this.serverProcess.on('close', (code) => {
+    this.serverProcess.on('exit', (code) => {
       stdoutForwarder.flush()
       stderrForwarder.flush()
       logger.info(`Server process exited with code ${code}`)
@@ -418,16 +368,21 @@ export abstract class BaseServerManager extends EventEmitter {
       this.isServerRunning = false
       this.ready = false
       this.serverProcess = null
-      if (closedBeforeHealth) {
-        this.settleStartupError(
-          generation,
-          new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`)
-        )
+      if (closedBeforeHealth && !this.stopPromise) {
+        void this.diagnoseExitedStartup(generation, new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`))
       } else if (code !== 0 && code !== null) {
         this.emit('error', new Error(`Server process exited with code ${code}`))
       }
-      this.emit('stopped');
+      if (this.stopPromise || !closedBeforeHealth) this.emit('stopped');
     })
+  }
+
+  private async diagnoseExitedStartup(generation: number, error: Error): Promise<void> {
+    try { await assertBackendPortAvailable(this.serverPort) }
+    catch (bindError) {
+      if (isAddressInUse(bindError)) error = new PortConflictError(await inspectPortOwner(this.serverPort))
+    }
+    this.settleStartupError(generation, error)
   }
 
   private settleStartupError(generation: number, error: Error): void {

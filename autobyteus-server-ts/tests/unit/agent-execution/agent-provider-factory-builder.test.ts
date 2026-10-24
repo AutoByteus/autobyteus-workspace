@@ -9,6 +9,7 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
   workspaceManager: { marker: "workspace" } as never,
   skillService: { marker: "skills" } as never,
   autoByteus: {
+    nativeCommandProcessScope: {} as never,
     agentFactory: { marker: "agent-factory" } as never,
     createLlm: vi.fn() as never,
     processorRegistries: {
@@ -37,6 +38,7 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
 const PROCESS_LEAVES = [
   "workspaceManager",
   "skillService",
+  "autoByteus.nativeCommandProcessScope",
   "autoByteus.agentFactory",
   "autoByteus.createLlm",
   "autoByteus.processorRegistries.input",

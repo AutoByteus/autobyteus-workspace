@@ -1,3 +1,4 @@
+import { ApplicationShutdown } from './applicationShutdown'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import * as fsSync from 'fs'
 import * as fs from 'fs/promises'
@@ -45,7 +46,6 @@ type ElectronApplicationOptions = {
   profile: ElectronLaunchProfile
 }
 
-const shutdownTimeoutMs = 8000
 
 export class ElectronApplication {
   private readonly profile: ElectronLaunchProfile
@@ -55,8 +55,7 @@ export class ElectronApplication {
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
-  private hasShutdownRun = false
-  private shutdownTimer: NodeJS.Timeout | null = null
+  private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close())
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
 
   constructor({ profile }: ElectronApplicationOptions) {
@@ -69,9 +68,9 @@ export class ElectronApplication {
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     this.appUpdateController = profile.updaterEnabled
-      ? new AppUpdater()
+      ? new AppUpdater({ prepareForInstall: () => this.stop() })
       : profile.testUpdateFeedUrl
-        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl })
+        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl, prepareForInstall: () => this.stop() })
         : new DisabledAppUpdater()
   }
 
@@ -247,8 +246,6 @@ export class ElectronApplication {
   private installIpcHandlers(): void {
     ipcMain.on('ping', (event) => event.reply('pong', 'Pong from main process!'))
     ipcMain.on('start-shutdown', () => {
-      if (this.shutdownTimer) clearTimeout(this.shutdownTimer)
-      this.shutdownTimer = null
       app.quit()
     })
     ipcMain.handle('open-node-window', async (_event, nodeId: string) => {
@@ -343,15 +340,13 @@ export class ElectronApplication {
   }
 
   private installLifecycleHandlers(): void {
-    app.on('before-quit', () => {
-      this.shellWindowRegistry.broadcast('app-quitting', undefined)
-      this.shutdownTimer = setTimeout(() => app.quit(), shutdownTimeoutMs)
-    })
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') app.quit()
     })
-    app.on('will-quit', () => {
-      void this.stop()
+    app.on('will-quit', event => {
+      this.shutdown.quit(event,
+        () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
+        () => app.quit(), error => { logger.error('Application shutdown incomplete', error); app.exit(1) })
     })
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_NODE_ID)
@@ -404,22 +399,11 @@ export class ElectronApplication {
     })
   }
 
-  async stop(): Promise<void> {
-    if (this.hasShutdownRun) return
-    this.hasShutdownRun = true
-    if (this.shutdownTimer) clearTimeout(this.shutdownTimer)
-    this.shutdownTimer = null
-    try {
-      await this.serverManager.stopServer()
-    } catch (error) {
-      logger.error('Error during server shutdown:', error)
-    }
-    try {
-      await this.browserRuntime?.stop()
-    } catch (error) {
-      logger.error('Error during browser runtime shutdown:', error)
-    } finally {
-      logger.close()
-    }
+  stop(): Promise<void> { return this.shutdown.stop() }
+  private async stopResources(): Promise<void> {
+    const errors: unknown[] = []
+    try { await this.serverManager.stopServer() } catch (error) { errors.push(error); logger.error('Backend shutdown incomplete', error) }
+    try { await this.browserRuntime?.stop() } catch (error) { errors.push(error); logger.error('Browser shutdown incomplete', error) }
+    if (errors.length) throw new AggregateError(errors, 'Application shutdown incomplete')
   }
 }

@@ -1,221 +1,66 @@
 import { execFile } from 'node:child_process';
-import { HOST_PROCESS_TARGET, type ProcessExecutionTarget } from './process-identity.js';
-
+import { HOST_PROCESS_TARGET, type ProcessExecutionTarget, type OwnedCommandGroup, type ObservedProcess } from './process-identity.js';
+export type { ObservedProcess } from './process-identity.js';
 export type ExecFileResult = { stdout: string; stderr?: string };
-export type ExecFileRunner = (
-  file: string,
-  args: string[],
-  options: { encoding: BufferEncoding; maxBuffer?: number; timeout?: number }
-) => Promise<ExecFileResult>;
-
-const defaultExecFileRunner: ExecFileRunner = (file, args, options) =>
-  new Promise((resolve, reject) => {
-    execFile(file, args, options, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve({ stdout, stderr });
-    });
-  });
-
-export interface ObservedProcess {
-  pid: number;
-  parentPid: number;
-  processGroupId: number;
-  status: string;
-  command: string;
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function parsePsLine(line: string): ObservedProcess | null {
-  const trimmed = line.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const match = /^(\d+)\s+(\d+)\s+(-?\d+)\s+(\S+)\s*(.*)$/.exec(trimmed);
-  if (!match) {
-    return null;
-  }
-
-  return {
-    pid: Number.parseInt(match[1], 10),
-    parentPid: Number.parseInt(match[2], 10),
-    processGroupId: Number.parseInt(match[3], 10),
-    status: match[4],
-    command: match[5] ?? ''
-  };
-}
-
-function isLiveStatus(status: string): boolean {
-  return status.length > 0 && !status.includes('Z');
-}
-
+export type ExecFileRunner = (file: string, args: string[], options: {
+  encoding: BufferEncoding; maxBuffer?: number; timeout?: number; env?: NodeJS.ProcessEnv;
+}) => Promise<ExecFileResult>;
+const run: ExecFileRunner = (file, args, options) => new Promise((resolve, reject) => {
+  execFile(file, args, options, (error, stdout, stderr) => error ? reject(error) : resolve({ stdout, stderr }));
+});
+// /proc stat provides Linux start ticks and session identity without localized ps fields.
+const LINUX_SNAPSHOT = String.raw`for f in /proc/[0-9]*/stat; do
+  IFS= read -r line < "$f" 2>/dev/null || continue
+  pid=\${line%% *}; rest=\${line##*) }; name=\${line#*(}; name=\${name%)*}
+  set -- $rest
+  printf '%s %s %s %s %s %s\n' "$pid" "$2" "$3" "$4" "$1" "\${20}"
+done`.replaceAll('\\$', '$');
 export class ProcessGroupObserver {
-  constructor(private readonly execFileRunner: ExecFileRunner = defaultExecFileRunner) {}
-
-  async findLiveProcessesInGroup(
-    processGroupId: number,
-    excludePids: number[] = [],
-    target: ProcessExecutionTarget = HOST_PROCESS_TARGET
-  ): Promise<ObservedProcess[]> {
-    if (!Number.isInteger(processGroupId) || processGroupId <= 0) {
-      return [];
-    }
-
-    const excluded = new Set(excludePids);
-    const processes = await this.listProcesses(target);
-    return processes.filter((process) =>
-      process.processGroupId === processGroupId &&
-      !excluded.has(process.pid) &&
-      isLiveStatus(process.status)
-    );
+  private readonly pending = new Map<string, Promise<ObservedProcess[]>>();
+  constructor(private readonly runner: ExecFileRunner = run) {}
+  snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + 500): Promise<ObservedProcess[]> {
+    const key = JSON.stringify(target);
+    const existing = this.pending.get(key);
+    if (existing) return existing;
+    const promise = this.read(target, deadline).finally(() => this.pending.delete(key));
+    this.pending.set(key, promise);
+    return promise;
   }
-
-  async isProcessRunning(pid: number, target: ProcessExecutionTarget = HOST_PROCESS_TARGET): Promise<boolean> {
-    if (!Number.isInteger(pid) || pid <= 0) {
-      return false;
-    }
-
-    const processInfo = await this.getProcess(pid, target);
-    if (processInfo) {
-      return isLiveStatus(processInfo.status);
-    }
-
-    if (target.kind === 'wsl') {
-      return false;
-    }
-
-    try {
-      process.kill(pid, 0);
-      return true;
-    } catch {
-      return false;
-    }
+  private async read(target: ProcessExecutionTarget, deadline: number): Promise<ObservedProcess[]> {
+    const timeout = Math.min(500, deadline - Date.now());
+    if (timeout <= 0) throw new Error('Process observation deadline exceeded');
+    if (target.kind === 'host' && process.platform === 'win32') throw new Error('Host process groups unavailable on Windows');
+    const { stdout } = await this.runner(target.kind === 'wsl' ? target.wslExecutable : 'ps',
+      target.kind === 'wsl' ? ['-d', target.distro, '--exec', 'bash', '-c', LINUX_SNAPSHOT]
+        : ['-axo', 'pid=,ppid=,pgid=,stat=,lstart=,comm='],
+      { encoding: 'utf8', timeout, maxBuffer: 2 * 1024 * 1024, env: { ...process.env, LC_ALL: 'C' } });
+    return stdout.split(/\r?\n/).filter(line => line.trim()).map(line => {
+      const m = target.kind === 'wsl' ? /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\d+)\s*$/.exec(line)
+        : /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\w+\s+\w+\s+\d+\s+[\d:]+\s+\d+)\s*(.*)$/.exec(line);
+      if (!m) throw new Error('Malformed process identity observation');
+      return { pid: Number(m[1]), parentPid: Number(m[2]), processGroupId: Number(m[3]),
+        ...(target.kind === 'wsl' ? { sessionId: Number(m[4]), status: m[5], birth: m[6], command: '' }
+          : { status: m[4], birth: m[5], command: m[6] }) };
+    }).filter(p => !p.status.includes('Z'));
   }
-
-  async stopProcess(
-    pid: number,
-    processGroupId?: number,
-    target: ProcessExecutionTarget = HOST_PROCESS_TARGET
-  ): Promise<boolean> {
-    if (target.kind === 'wsl') {
-      return this.stopWslProcess(pid, processGroupId, target);
-    }
-
-    const targets: number[] = [];
-    if (processGroupId && processGroupId > 0 && process.platform !== 'win32') {
-      targets.push(-processGroupId);
-    }
-    targets.push(pid);
-
-    let signalled = false;
-    for (const targetPid of targets) {
-      try {
-        process.kill(targetPid, 'SIGTERM');
-        signalled = true;
-      } catch {
-        // Try the next target.
-      }
-    }
-
-    if (!signalled) {
-      return false;
-    }
-
-    await sleep(250);
-    if (await this.isProcessRunning(pid, target)) {
-      for (const targetPid of targets) {
-        try {
-          process.kill(targetPid, 'SIGKILL');
-        } catch {
-          // Best effort cleanup.
-        }
-      }
-    }
-
-    return true;
+  async establish(target: ProcessExecutionTarget, pid: number, deadline: number): Promise<OwnedCommandGroup> {
+    const anchor = (await this.snapshot(target, deadline)).find(p => p.pid === pid);
+    if (!anchor || anchor.processGroupId !== pid || (target.kind === 'wsl' && anchor.sessionId !== pid))
+      throw new Error('Command anchor is not a live exclusive process group');
+    return { target, anchor };
   }
-
-  private async stopWslProcess(
-    pid: number,
-    processGroupId: number | undefined,
-    target: Extract<ProcessExecutionTarget, { kind: 'wsl' }>
-  ): Promise<boolean> {
-    const wasRunning = await this.isProcessRunning(pid, target);
-    const hasLiveGroupMembers = processGroupId
-      ? (await this.findLiveProcessesInGroup(processGroupId, [], target)).length > 0
-      : false;
-    if (!wasRunning && !hasLiveGroupMembers) {
-      return false;
-    }
-
-    await this.signalWslProcess(pid, processGroupId, target, 'TERM');
-    await sleep(250);
-    if (await this.isProcessRunning(pid, target)) {
-      await this.signalWslProcess(pid, processGroupId, target, 'KILL');
-    }
-
-    return true;
+  matches(group: OwnedCommandGroup, processes: ObservedProcess[]): boolean {
+    return processes.some(p => p.pid === group.anchor.pid && p.birth === group.anchor.birth &&
+      p.processGroupId === group.anchor.pid && (group.target.kind !== 'wsl' || p.sessionId === group.anchor.pid));
   }
-
-  private async signalWslProcess(
-    pid: number,
-    processGroupId: number | undefined,
-    target: Extract<ProcessExecutionTarget, { kind: 'wsl' }>,
-    signal: 'TERM' | 'KILL'
-  ): Promise<void> {
-    const commands: string[] = [];
-    if (processGroupId && processGroupId > 0) {
-      commands.push(`kill -${signal} -- -${processGroupId} 2>/dev/null || true`);
-    }
-    commands.push(`kill -${signal} ${pid} 2>/dev/null || true`);
-
-    try {
-      await this.execFileRunner(
-        target.wslExecutable,
-        ['-d', target.distro, '--exec', 'bash', '-lc', commands.join('; ')],
-        { encoding: 'utf8', timeout: 5000 }
-      );
-    } catch {
-      // Best effort cleanup.
-    }
+  async signal(group: OwnedCommandGroup, signal: 'TERM' | 'KILL', deadline: number): Promise<void> {
+    if (!this.matches(group, await this.snapshot(group.target, deadline))) throw new Error('Command anchor identity lost');
+    if (group.target.kind === 'host') process.kill(-group.anchor.pid, signal === 'TERM' ? 'SIGTERM' : 'SIGKILL');
+    else await this.runner(group.target.wslExecutable,
+      ['-d', group.target.distro, '--exec', '/bin/kill', `-${signal}`, '--', `-${group.anchor.pid}`],
+      { encoding: 'utf8', timeout: Math.max(1, Math.min(500, deadline - Date.now())), maxBuffer: 32768 });
   }
-
-  private async getProcess(
-    pid: number,
-    target: ProcessExecutionTarget = HOST_PROCESS_TARGET
-  ): Promise<ObservedProcess | null> {
-    const processes = await this.listProcesses(target);
-    return processes.find((process) => process.pid === pid) ?? null;
-  }
-
-  private async listProcesses(target: ProcessExecutionTarget = HOST_PROCESS_TARGET): Promise<ObservedProcess[]> {
-    if (target.kind === 'host' && process.platform === 'win32') {
-      return [];
-    }
-
-    try {
-      const { stdout } = await this.execFileRunner(
-        target.kind === 'wsl' ? target.wslExecutable : 'ps',
-        target.kind === 'wsl'
-          ? ['-d', target.distro, '--exec', 'ps', '-axo', 'pid=,ppid=,pgid=,stat=,command=']
-          : ['-axo', 'pid=,ppid=,pgid=,stat=,command='],
-        {
-          encoding: 'utf8',
-          maxBuffer: 2 * 1024 * 1024
-        }
-      );
-      return stdout
-        .split(/\r?\n/)
-        .map(parsePsLine)
-        .filter((entry): entry is ObservedProcess => entry !== null);
-    } catch {
-      return [];
-    }
+  async isProcessRunning(pid: number, target = HOST_PROCESS_TARGET): Promise<boolean> {
+    return (await this.snapshot(target)).some(p => p.pid === pid);
   }
 }

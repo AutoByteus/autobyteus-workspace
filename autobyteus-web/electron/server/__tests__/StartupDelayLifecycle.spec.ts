@@ -14,7 +14,7 @@ const { get, spawn, portCheck, log } = vi.hoisted(() => {
   log.child.mockReturnValue(log)
   return { get: vi.fn(), spawn: vi.fn(), portCheck: vi.fn(), log }
 })
-vi.mock('../../launch-profile/e2eLaunchPreflight', () => ({ assertEmbeddedServerListenerPortAvailable: portCheck }))
+vi.mock('../backendPortAvailability', async importOriginal => ({ ...await importOriginal<typeof import('../backendPortAvailability')>(), assertBackendPortAvailable: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('axios', () => ({ default: { get } }))
 vi.mock('child_process', async (importOriginal) => {
   // Partial mock: modules on the import path use other child_process exports (and the default export).
@@ -38,7 +38,7 @@ const deferred = <T,>() => {
   return { promise, resolve }
 }
 const child = () => Object.assign(new EventEmitter(), {
-  stdout: new PassThrough(), stderr: new PassThrough(), pid: 1234, exitCode: null, kill: vi.fn(() => true),
+  stdout: new PassThrough(), stderr: new PassThrough(), pid: 1234, exitCode: null, signalCode: null, kill: vi.fn(() => true),
 }) as unknown as ChildProcess
 const healthy = { status: 200, data: { status: 'ok' } }
 const notice = 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
@@ -133,34 +133,20 @@ describe.each([['base', BaseProbe], ['Windows override', WindowsProbe]] as const
     expect(vi.getTimerCount()).toBe(0)
   })
 
-  it('disposes pending observations on stop, even when shutdown produces no child close', async () => {
+  it('cancels readiness but reports unconfirmed stop and retains its live child', async () => {
     const manager = new Probe(config)
     const start = manager.startServer()
     const rejected = expect(start).rejects.toThrow('startup stopped')
     await vi.advanceTimersByTimeAsync(100_001)
     const oldChild = manager.currentChild()!
-    vi.mocked(oldChild.kill).mockImplementation(() => { throw new Error('already gone') })
-    const stopping = manager.stopServer()
+    vi.mocked(oldChild.kill).mockImplementation(() => { throw new Error('signal denied') })
+    const stopping = expect(manager.stopServer()).rejects.toThrow('shutdown incomplete')
     await rejected
     const observed = get.mock.calls.length
-    // Windows actual override reaches its bounded no-close hard cleanup, not Base.stopServer.
-    await vi.advanceTimersByTimeAsync(12_001)
-    await stopping
+    await vi.advanceTimersByTimeAsync(22_001); await stopping
     expect(get.mock.calls.length).toBe(observed)
-    expect(manager.currentChild()).toBeNull()
-    expect(manager.listenerCount('ready')).toBe(0)
-    expect(manager.listenerCount('error')).toBe(0)
-    expect(manager.listenerCount('stopped')).toBe(0)
-    const next = manager.startServer()
-    await vi.advanceTimersByTimeAsync(0)
-    const current = manager.currentChild()
-    oldChild.emit('close', 0)
-    expect(manager.currentChild()).toBe(current)
-    expect(manager.startServer()).toBe(next)
-    get.mockResolvedValue(healthy)
-    await vi.advanceTimersByTimeAsync(250)
-    await next
-    expect(vi.getTimerCount()).toBe(0)
+    expect(manager.currentChild()).toBe(oldChild)
+    await expect(manager.startServer()).rejects.toThrow('exit remains unconfirmed')
   })
 })
 
@@ -180,7 +166,7 @@ it.each(['fatal', 'error', 'close-zero', 'close-nonzero'])('retains genuine %s f
     expect(errors).not.toHaveBeenCalled()
     proc.stderr!.emit('data', record.slice(40))
   } else if (cause === 'error') proc.emit('error', new Error('spawn fault'))
-  else proc.emit('close', cause === 'close-zero' ? 0 : 1)
+  else proc.emit('exit', cause === 'close-zero' ? 0 : 1)
   await rejected
   response.resolve(healthy)
   proc.stdout!.emit('data', 'Server listening on port 29695\n')
@@ -215,7 +201,8 @@ it('ignores a stopped generation health result while its successor remains pendi
   const first = manager.startServer()
   const rejected = expect(first).rejects.toThrow('startup stopped')
   await vi.advanceTimersByTimeAsync(0)
-  vi.mocked(manager.currentChild()!.kill).mockImplementation(() => { throw new Error('gone') })
+  const old = manager.currentChild()!
+  vi.mocked(old.kill).mockImplementation(() => { Object.assign(old, { exitCode: 0 }); old.emit('exit', 0); return true })
   await manager.stopServer(); await rejected
   const next = manager.startServer()
   await vi.advanceTimersByTimeAsync(0)
@@ -225,18 +212,4 @@ it('ignores a stopped generation health result while its successor remains pendi
   expect(manager.startServer()).toBe(next)
   get.mockResolvedValue(healthy)
   await vi.advanceTimersByTimeAsync(250); await next
-})
-
-it('aborts the real bounded port-release polling operation without launching after stop', async () => {
-  const manager = new BaseProbe(config)
-  manager.realPortWait = true
-  const start = manager.startServer()
-  const rejected = expect(start).rejects.toThrow('startup stopped')
-  await vi.advanceTimersByTimeAsync(0)
-  expect(portCheck).toHaveBeenCalledOnce()
-  await manager.stopServer()
-  await rejected
-  await vi.advanceTimersByTimeAsync(10_001)
-  expect(portCheck).toHaveBeenCalledOnce()
-  expect(manager.children).toHaveLength(0)
 })

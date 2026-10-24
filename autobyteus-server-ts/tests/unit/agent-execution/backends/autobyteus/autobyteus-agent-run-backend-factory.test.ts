@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -119,7 +120,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         new LLMConfig(),
       ),
     );
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -196,7 +197,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       content: [{ type: "text" as const, text: "application-state" }],
     }));
     const resolveSelectedRoutes = vi.fn(() => new Map([[applicationToolName, route]]));
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
           id: "agent-1",
@@ -279,7 +280,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ] as any);
     vi.spyOn(LLMFactory, "requiresGeminiRuntimeResolver").mockResolvedValue(false);
     const createLLM = vi.spyOn(LLMFactory, "createLLM").mockResolvedValue(llm);
-    const factory = new AutoByteusAgentRunBackendFactory();
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope() });
 
     await expect(
       (factory as any).createLLM("dummy-model", { temperature: 0.2 }),
@@ -295,7 +296,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("composes server team prompts, and injects primitive team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -369,7 +370,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("advertises the strict filesystem-like logical protocol without a flat roster", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -447,7 +448,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps task-management tools for standalone AutoByteus runs without member team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -509,7 +510,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       code: "TARGET_MEMBER_NOT_FOUND",
       message: "Writer is unavailable.",
     });
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -580,7 +581,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps the exact-run send_message_to selector on the canonical Team binding", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -665,7 +666,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
       taskCommands,
     });
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -754,7 +755,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("enables policy-only compaction: the core summarizer always uses the agent's own model", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
