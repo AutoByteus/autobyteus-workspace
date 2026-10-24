@@ -131,7 +131,7 @@ their own bundle first.
 
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 
-`AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
+Both `AgentRun` input entry points (`postUserMessage(...)` and `reserveUserMessage(...)`) feed an internal command-observer seam. Observers are notified only when an admitted input is forwarded to the runtime, and observer failures are isolated from the input result.
 
 Current user context-file references are part of runtime input construction, not
 Team Communication metadata. For native AutoByteus turns, the shared
@@ -398,15 +398,29 @@ activated or historical runs. Standalone `activationState` is not persisted; the
 `prepareAgentRun` response may still return `activationState: "PREPARED"` as a
 launch API response field.
 
-`AgentRun.postUserMessage(...)` is the sole runtime-level input-admission,
-status, and turn authority once an `AgentRun` exists. Its runtime events are the
-source that replaces command overlays and drives later `running`, `idle`,
-`offline`, and `error` projections.
+Once an `AgentRun` exists it is the runtime-level input-admission, status, and
+turn authority. Its runtime events are the source that replaces command overlays
+and drives later `running`, `idle`, `offline`, and `error` projections. Input
+enters through one of two entry points:
+
+- `postUserMessage(...)` admits and dispatches in one serialized step. It is
+  used for operator and application input, delegated-task seeds, Skill
+  Improvement and skill-update notices, and run-ID messages to a run in another
+  root. Only an immediately admitted `USER` input here may authorize a
+  failed-compaction retry.
+- `reserveUserMessage(...)` holds a FIFO slot that stays invisible and
+  undispatchable until the caller commits and releases it, or cancels it without
+  trace. Teammate delivery uses it (see
+  [Agent Communication](./agent_communication.md#teammate-delivery-path)): the
+  slot is committed only after the message is saved to the root's log. A held
+  slot never authorizes compaction recovery, and root shutdown drops held slots.
 
 ## Active Input And Interrupt Command Results
 
 Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind
-`postUserMessage(...)`. It validates and admits a private FIFO entry, owns one
+both entry points. Its `reserve` step holds the only admission validation
+(accepting input, non-empty content); posting is reserve, commit and release in
+one step. It admits a private FIFO entry, owns one
 provider-dispatch claim at a time, and selects exactly one explicit
 `start_turn` or `append_to_active_turn` dispatch from canonical turn state plus
 the backend's declared `activeTurnAppend` capability. `accepted: true` means the

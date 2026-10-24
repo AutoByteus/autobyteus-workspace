@@ -1,3 +1,5 @@
+import type { RootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
+import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
 import { describe, expect, it, vi } from "vitest";
 import {
   createAgentOrgRootExecutionIdentity,
@@ -120,10 +122,7 @@ const createSubject = (options: Readonly<{
     } as never,
     callbacks: {} as never,
     persistence: options.persistence?.(orgRunId) ?? {
-      commitCommunication: vi.fn(async (input) => {
-        input.commitAfterDurability();
-        return { committed: true as const };
-      }),
+      commitMessageAppend: vi.fn(runAppendDurably),
     } as never,
     publisher,
     taskExecutionIdentity: {} as never,
@@ -281,13 +280,11 @@ describe("AgentOrg committed communication presentation", () => {
 
     const uncommitted = createSubject({
       persistence: () => ({
-        commitCommunication: vi.fn(async (input) => {
-          input.cancelBeforeDurability();
-          return {
-            committed: false as const,
-            code: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
-            message: "write failed",
-          };
+        commitMessageAppend: vi.fn(async (append: RootMessageAppend) => {
+          const prepared = append.prepare();
+          if (prepared.kind !== "append") return { outcome: prepared.kind };
+          append.cancelBeforeDurability();
+          return { outcome: "not_committed" as const, cause: new Error("write failed") };
         }),
       } as never),
     });

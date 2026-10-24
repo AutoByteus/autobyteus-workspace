@@ -56,7 +56,7 @@ import type { StandaloneRootEvent } from "./standalone-root-event.js";
 import type { StandaloneHostAgentHandle } from "./standalone-host-agent-handle.js";
 import { StandaloneRootExecutionIndex } from "../services/standalone-root-execution-index.js";
 import { StandaloneRootCollaborators } from "../services/standalone-root-collaborators.js";
-import { StandaloneRootCommunicationAdapter } from "../services/standalone-root-communication-adapter.js";
+import { createStandaloneRootCommunicationPort } from "../services/standalone-root-communication-port.js";
 import type { StandaloneRootPersistenceCoordinator } from "../services/standalone-root-persistence-coordinator.js";
 import { StandaloneRootRecipientResolver } from "../services/standalone-root-recipient-resolver.js";
 import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
@@ -91,7 +91,6 @@ export type StandaloneRootPackageSnapshot = Readonly<{
 export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
   private tree: StandaloneRootTreeSnapshot;
-  private messages: StandaloneRootMessagesFile;
   private index: StandaloneRootExecutionIndex;
   private readonly taskExecutions: RootTaskExecutionLifecycle<StandaloneRootPlacement>;
   private readonly communication: RootCommunicationEngine;
@@ -133,10 +132,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
-    this.messages = options.messages;
     this.index = new StandaloneRootExecutionIndex(this.tree);
     if (options.root.rootSubjectKind !== "agent" || options.root.rootRunId !== this.tree.host.agentRunId
-      || this.messages.hostRunId !== this.tree.host.agentRunId || options.host.hostRunId !== this.tree.host.agentRunId) {
+      || options.messages.hostRunId !== this.tree.host.agentRunId || options.host.hostRunId !== this.tree.host.agentRunId) {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
@@ -215,7 +213,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       onHostReady: (run) => { this.hostIdle?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
-    this.communication = new RootCommunicationEngine(new StandaloneRootCommunicationAdapter({
+    this.communication = new RootCommunicationEngine(createStandaloneRootCommunicationPort({
       root: options.root,
       initial: options.messages,
       persistence: options.persistence,
@@ -228,7 +226,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
         : this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
           : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
-      replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
       presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
     }));
@@ -266,7 +263,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.lifecycle = "active";
   }
   getExecutionTreeSnapshot(): StandaloneRootTreeSnapshot { return this.tree; }
-  getCommunicationSnapshot(): StandaloneRootMessagesFile { return this.messages; }
+  getCommunicationSnapshot(): StandaloneRootMessagesFile {
+    return Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId: this.hostRunId, messages: this.communication.getMessages() });
+  }
   /** Children only: every child without a live execution reports `offline`. */
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     // Root-level Teams: task Teams (each reports its members and nested children).
@@ -416,7 +415,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-      messages: this.messages,
+      messages: this.getCommunicationSnapshot(),
       statuses: this.getAgentStatusSnapshots(),
       inputStates: collectStandaloneRootInputSnapshots(this.index, [
         ...this.options.rootAgents.getInputStateSnapshots(),

@@ -167,7 +167,7 @@ flowchart LR
 
   I[Accepted team-route INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
-  K --> L[TeamCommunicationService]
+  K --> L[RootCommunicationEngine: Team root port]
   L --> N[agent_teams/<teamRunId>/team_communication_messages_*.jsonl]
   K --> M[team websocket]
   M --> P[teamCommunicationStore]
