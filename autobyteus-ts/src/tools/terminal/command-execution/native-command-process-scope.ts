@@ -4,13 +4,14 @@ import { ProcessGroupObserver } from './process-group-observer.js';
 import { type NonInteractiveShellInvocation } from './non-interactive-shell-resolver.js';
 import { type CommandStopOutcome, type ObservedProcess } from './process-identity.js';
 const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+type ScopeOperation = { kind: 'retirement' | 'stop'; promise: Promise<CommandStopOutcome> };
 export interface NativeCommandCloseReport { outcomes: CommandStopOutcome[] }
 /** Host lifetime, independent of transient agent/output records. */
 export class NativeCommandProcessScope {
   private state: 'open' | 'closing' | 'closed' = 'open';
   private readonly retired = new WeakSet<AnchoredCommandHandle>();
   private readonly leases = new Set<AnchoredCommandHandle>();
-  private readonly operations = new Map<AnchoredCommandHandle, Promise<CommandStopOutcome>>();
+  private readonly operations = new Map<AnchoredCommandHandle, ScopeOperation>();
   private closePromise?: Promise<NativeCommandCloseReport>;
   private maintenance?: Promise<void>;
   private timer?: NodeJS.Timeout;
@@ -54,13 +55,21 @@ export class NativeCommandProcessScope {
     if (this.retired.has(handle)) return Promise.resolve({ outcome: 'already-exited' });
     if (!this.leases.has(handle)) return Promise.resolve({ outcome: 'unconfirmed', reason: 'Command lease does not belong to this scope' });
     const pending = this.operations.get(handle);
-    if (pending) return pending;
-    const operation = this.drain(handle, deadline).then(outcome => {
+    if (pending?.kind === 'stop') return pending.promise;
+    // Inspection/release is not a stop. Queue one real drain behind it, without
+    // resetting the caller's budget, and publish that stop before yielding.
+    const operation = (async (): Promise<CommandStopOutcome> => {
+      try {
+        if (pending) await beforeDeadline(pending.promise, deadline);
+        if (this.retired.has(handle)) return { outcome: 'already-exited' };
+        return await this.drain(handle, deadline);
+      } catch (error) { return { outcome: 'unconfirmed', reason: String(error) }; }
+    })().then(outcome => {
       handle.finishStop(outcome);
       if (outcome.outcome !== 'unconfirmed') this.retire(handle);
       return outcome;
     }).finally(() => this.operations.delete(handle));
-    this.operations.set(handle, operation);
+    this.operations.set(handle, { kind: 'stop', promise: operation });
     return operation;
   }
   private async drain(handle: AnchoredCommandHandle, deadline: number): Promise<CommandStopOutcome> {
@@ -104,15 +113,17 @@ export class NativeCommandProcessScope {
       try {
         const deadline = Date.now() + 500;
         if ((await this.members(handle, deadline)).length) return { outcome: 'unconfirmed', reason: 'Group still active' };
-        if (!this.isOpen) return { outcome: 'unconfirmed', reason: 'Host close owns retirement' };
+        if (!this.isOpen || handle.stopReason) return { outcome: 'unconfirmed', reason: 'Stop owns retirement' };
         handle.release();
         await beforeDeadline(handle.exited, deadline);
         this.retire(handle);
         return { outcome: 'already-exited' };
       } catch (error) { return { outcome: 'unconfirmed', reason: String(error) }; }
     })();
-    this.operations.set(handle, operation);
-    try { await operation; } finally { this.operations.delete(handle); }
+    this.operations.set(handle, { kind: 'retirement', promise: operation });
+    try { await operation; } finally {
+      if (this.operations.get(handle)?.promise === operation) this.operations.delete(handle);
+    }
   }
   private async retireEmpty(): Promise<void> { await Promise.all([...this.leases].map(h => this.retireCompleted(h))); }
   close(): Promise<NativeCommandCloseReport> {
@@ -122,7 +133,7 @@ export class NativeCommandProcessScope {
     for (const handle of this.leases) handle.noteStopRequested('host-shutdown');
     this.closePromise = (async () => {
       try {
-        await beforeDeadline(Promise.all([this.maintenance, ...this.operations.values()]), deadline);
+        await beforeDeadline(Promise.all([this.maintenance, ...[...this.operations.values()].map(operation => operation.promise)]), deadline);
       } catch (error) {
         const outcomes: CommandStopOutcome[] = [...this.leases].map(handle => {
           const outcome = { outcome: 'unconfirmed' as const, reason: String(error) };

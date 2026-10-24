@@ -48,6 +48,7 @@ export class ShellCommandExecutor {
     } finally {
       clearTimeout(timer); options.signal?.removeEventListener('abort', abort);
       handle?.flushOutput(); handle?.stdout.off('data', onOut); handle?.stderr.off('data', onErr);
+      if (handle) options.backgroundManager?.releaseUnusedCapture(handle);
     }
     if (result.kind !== 'result') stderr.push(Buffer.from(`${result.kind === 'failed' ? result.message : result.reason}\n`));
     return new TerminalResult(Buffer.concat(stdout).toString('utf8'), Buffer.concat(stderr).toString('utf8'),

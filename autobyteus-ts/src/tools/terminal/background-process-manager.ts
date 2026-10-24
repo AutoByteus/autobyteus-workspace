@@ -5,13 +5,14 @@ import { NonInteractiveShellResolver } from './command-execution/non-interactive
 import { ProcessGroupObserver, type ObservedProcess } from './command-execution/process-group-observer.js';
 import { NativeCommandProcessScope } from './command-execution/native-command-process-scope.js';
 import { type AnchoredCommandHandle } from './command-execution/anchored-command-launcher.js';
+interface OutputCapture { output: OutputBuffer; append: (bytes: Buffer) => void }
 interface BackgroundProcessRecord {
   pid: number; command: string; effectiveCwd: string; startedAt: Date;
   status: BackgroundProcessStatus; handle: AnchoredCommandHandle; output: OutputBuffer;
 }
 export class BackgroundProcessManager {
   private readonly processes = new Map<number, BackgroundProcessRecord>();
-  private readonly outputs = new Map<AnchoredCommandHandle, OutputBuffer>();
+  private readonly outputs = new Map<AnchoredCommandHandle, OutputCapture>();
   readonly scope: NativeCommandProcessScope;
   constructor(private readonly maxOutputBytes = 1_000_000,
     private readonly resolver = new NonInteractiveShellResolver(),
@@ -21,19 +22,31 @@ export class BackgroundProcessManager {
   capture(handle: AnchoredCommandHandle): void {
     if (this.outputs.has(handle)) return;
     const output = new OutputBuffer(this.maxOutputBytes);
-    this.outputs.set(handle, output);
-    handle.stdout.on('data', bytes => output.append(bytes));
-    handle.stderr.on('data', bytes => output.append(bytes));
+    const append = (bytes: Buffer) => output.append(bytes);
+    this.outputs.set(handle, { output, append });
+    handle.stdout.on('data', append);
+    handle.stderr.on('data', append);
+  }
+  /** Foreground/failed launch captures have no record consumer after the caller returns. */
+  releaseUnusedCapture(handle: AnchoredCommandHandle): void {
+    if ([...this.processes.values()].some(record => record.handle === handle)) return;
+    const capture = this.outputs.get(handle);
+    if (!capture) return;
+    handle.stdout.off('data', capture.append); handle.stderr.off('data', capture.append);
+    this.outputs.delete(handle);
   }
   async startCommand(command: string, cwd: string): Promise<BackgroundProcessInfo> {
-    const handle = await this.scope.start(this.resolver.resolve(command, cwd), undefined, h => this.capture(h));
-    const record = this.record(handle.commandPid!, command, cwd, handle);
-    void handle.completion.then(result => {
-      if (record.status === 'running') record.status = 'exited';
-      // Completion does not prove cleanup: only explicit successful stop uses 'stopped'.
-      void this.scope.retireCompleted(handle);
-    });
-    return this.info(record);
+    let handle: AnchoredCommandHandle | undefined;
+    try {
+      handle = await this.scope.start(this.resolver.resolve(command, cwd), undefined, h => { handle = h; this.capture(h); });
+      const record = this.record(handle.commandPid!, command, cwd, handle);
+      void handle.completion.then(() => {
+        if (record.status === 'running') record.status = 'exited';
+        // Retain completed background history; only confirmed explicit stop removes it.
+        void this.scope.retireCompleted(record.handle);
+      });
+      return this.info(record);
+    } finally { if (handle) this.releaseUnusedCapture(handle); }
   }
   adoptObservedProcesses(options: { command: string; effectiveCwd: string;
     handle: AnchoredCommandHandle; processes: ObservedProcess[] }): BackgroundProcessInfo[] {
@@ -44,7 +57,7 @@ export class BackgroundProcessManager {
   private record(pid: number, command: string, cwd: string, handle: AnchoredCommandHandle): BackgroundProcessRecord {
     this.capture(handle);
     const record: BackgroundProcessRecord = { pid, command, effectiveCwd: cwd, startedAt: new Date(),
-      status: 'running', handle, output: this.outputs.get(handle)! };
+      status: 'running', handle, output: this.outputs.get(handle)!.output };
     this.processes.set(pid, record);
     return record;
   }
@@ -69,7 +82,7 @@ export class BackgroundProcessManager {
     for (const [key, sibling] of this.processes) if (sibling.handle === record.handle) {
       sibling.status = 'stopped'; this.processes.delete(key);
     }
-    this.outputs.delete(record.handle);
+    this.releaseUnusedCapture(record.handle);
     return true;
   }
   async stopAll(): Promise<number> {
@@ -77,7 +90,9 @@ export class BackgroundProcessManager {
     const handles = new Set([...this.processes.values()].map(record => record.handle));
     const results = await Promise.all([...handles].map(handle => this.scope.stop(handle, 'explicit-stop')));
     if (results.some(result => result.outcome === 'unconfirmed')) throw new Error('Native background cleanup unconfirmed');
-    this.processes.clear(); this.outputs.clear(); return count;
+    this.processes.clear();
+    for (const handle of handles) this.releaseUnusedCapture(handle);
+    return count;
   }
   get processCount(): number { return this.processes.size; }
   private async refresh(record: BackgroundProcessRecord): Promise<void> {
