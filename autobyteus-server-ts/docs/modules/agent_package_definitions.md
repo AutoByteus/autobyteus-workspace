@@ -128,6 +128,19 @@ Each event path is mapped to one definition folder `(kind, folderId)`.
 them after **1000 ms of quiet, capped at 3000 ms** from the first pending
 change. Both constants are injectable for tests.
 
+**Catch-up for dropped events.** The OS can drop directory events right after a
+watch arms (on macOS the watch goes live up to about 60 ms after chokidar's
+`ready`) and while chokidar adds a watch for a new folder, so a definition
+folder written in that moment may never be reported. The watcher therefore
+asks the reloader to re-read the whole package once it has been quiet for
+**300 ms** after the watch armed and after the last folder was added or
+removed (`reconcilePackageFolder`; one timer per package, constant
+`PACKAGE_CATCH_UP_DELAY_MS`). The reloader treats it like a package change
+except that it announces only the definitions that really changed: an
+unchanged package sends no `agent_packages` frame. A write that coincides with
+watch churn caused by another component, with no definition event of its own,
+is still not caught; the Reload action covers it.
+
 **Read-your-writes.** Every service read first calls `applyPendingChanges()`,
 which applies pending changes before answering. A definition written by an
 agent's tool is therefore visible to the next `delegate_task` or

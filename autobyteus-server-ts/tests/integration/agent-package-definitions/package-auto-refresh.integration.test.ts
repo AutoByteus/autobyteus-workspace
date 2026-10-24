@@ -147,7 +147,9 @@ describe("package auto-refresh: the next delegation sees current definitions", {
   it("AC-016: a lookup inside the settle window applies the detected change first", async () => {
     await start();
     await writeAgent(path.join(packageRoot, "agents", "fresh"), "Fresh");
-    await sleep(200); // detected (milliseconds) but well inside the 1 s settle window
+    // Past the watcher's 300 ms catch-up request (the OS may have dropped the write's own event) and still well
+    // inside the 1 s settle window, which the request restarts: the lookup itself must apply the change.
+    await sleep(600);
     expect(definitionFrames()).toEqual([]);
     expect(await listAvailable()).toContain("agent:Fresh");
     expect((await policy().requireAdmissible(port, { kind: "agent", definitionId: "fresh" })).definition.instructions).toBe("Fresh instructions\n");
