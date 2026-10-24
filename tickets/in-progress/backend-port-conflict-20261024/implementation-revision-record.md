@@ -3,6 +3,7 @@
 ## Revision Index
 | Revision | Trigger | Findings | Classification | Related revisions | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-002 | Architecture Reviewer ARCH-REV-003 / D3.1; SR-006 evidence | IMP-DI-001 resolved upstream; no new design gap | Large/High | SR-001..006; ARCH-REV-003; CRR/API-REV/DR N/A | Ready for Code Review; overall acceptance outstanding |
 | IR-001 | Architecture Reviewer ARCH-REV-002 Pass / D2 implementation handoff | Incoming N/A; new IMP-DI-001 | Design Impact | SR-001..003; ARCH-REV-002; CRR/API-REV/DR N/A | Ownership-continuity design recovery required; no production changes |
 
 ## IR-001 — Native survivor ownership continuity
@@ -16,3 +17,10 @@
 - Validation: IMP-01 initial first-snapshot hypothesis failed and retained; corrected IMP-02 demonstrates non-overlapping observations in 10/10 cases and actual executor adoption; IMP-03 reconfirms P-005 baseline false stop success. These are not acceptance passes. Exact fixture processes/root cleanup completed.
 - Next route: returned Design Impact rule -> `/software_engineering_team/solution_designer`; no duplicate reviewer/source-review forwarding.
 - Remaining limitations: no package build, changed server/desktop execution, frontend inspection or Windows/WSL runtime validation. All implementation remains pending concrete design recovery.
+
+## IR-002 — D3.1 retained-anchor implementation and scoped validation
+- Prior result: Design Impact IR-001 / IMP-DI-001. Trigger: Architecture Reviewer ARCH-REV-003 Pass, D3.1, SR-004/005 resolves continuous native ownership and forced completion settlement. SR-006 adds Codex conversation evidence/limits without changing approved design. CRR/API-REV/DR N/A.
+- Current result: Ready for Code Review; not overall acceptance. Large/High unchanged. BEH-001..004 / REQ-001..006.
+- Actual delta: f34ad8749 initial production implementation; f247bf6f6 unconfirmed WSL/flush fixes; a4bcde070 startup-finally barrier; 1ad504c03 clipped observation deadlines; e3ef32cc2 expired backend wait; 54bd74c83 readiness/result ordering; 9047d0af5 control-error vs exit; 241041c00 empty observation/known-anchor-exit guards;10990feb1 post-preflight bind-race diagnosis after captured exit, preserving non-conflict fatal detail and stale-generation rejection. Full current trace is in implementation-handoff.md.
+- Native short-lived survivors now have a retained gate-created group anchor before user code. Scope belongs to host, not agent output record; both commands share it. Studio/standalone, Windows backend wire, awaited desktop/update preparation and typed safe conflict UI implemented; old in-scope paths removed.
+- Final IMP-13..18 checks at10990feb1:132 native/core,141 Electron,209 server,11 component tests pass; production typechecks pass. IMP-19 current package build passes. IMP-20 actual English/Chinese desktop conflict/retry/recovery, sentinel/no-active-work quit/unrelated survival and cleanup receipts recorded; limitations explicitly retained. No Codex lifecycle source change; native results do not close reported Codex-origin coverage. Full host/desktop conversation evidence remains downstream; no broader acceptance/release/install/integration claimed.

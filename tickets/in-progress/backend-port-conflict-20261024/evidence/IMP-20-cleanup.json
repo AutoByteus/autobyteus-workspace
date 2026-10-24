@@ -1,0 +1,30 @@
+{
+  "check": "IMP-20",
+  "date": "2026-10-24T19:03:30.382Z",
+  "observedAbsentPids": [
+    82913,
+    82941,
+    83231,
+    83559,
+    83572,
+    83697,
+    83842,
+    83864
+  ],
+  "portsAvailable": {
+    "52503": true,
+    "52504": true,
+    "52676": true,
+    "52677": true,
+    "52769": true
+  },
+  "rootRemoved": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-a9T9I9",
+  "otherDataTouched": false,
+  "evidenceMetadata": {
+    "checkId": "IMP-20",
+    "commit": "10990feb1",
+    "environment": "macOS arm64 / Electron42.11.16 / Node26.12.0 / task-local isolated desktop",
+    "date": "2026-10-24",
+    "steps": "IMP-20-rendered-notes.md; not API/E2E sign-off"
+  }
+}

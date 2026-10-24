@@ -1,0 +1,17 @@
+IMP-TRIAL-04 — archived implementation attempt; not reusable current acceptance
+Step: ab-anchor-focused; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:32:59.720563+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (5 tests) 4ms
+ ✓ tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts (5 tests) 7ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  20:32:59
+   Duration  184ms (transform 83ms, setup 66ms, import 46ms, tests 11ms, environment 0ms)
+

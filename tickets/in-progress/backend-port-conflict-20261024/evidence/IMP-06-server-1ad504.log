@@ -1,0 +1,139 @@
+IMP-06-server-1ad504
+Command (root, clean env): pnpm -C autobyteus-server-ts exec vitest run tests/unit/shutdown/server-process-shutdown.test.ts tests/unit/compositions/native-command-shutdown.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 1ad504c03
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:42:24.012042+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (20 tests) 624ms
+     ✓ builds and listens only after readable identity status SUCCEEDED  599ms
+stderr | tests/unit/shutdown/server-process-shutdown.test.ts > reports failed cleanup and exits nonzero
+Backend shutdown incomplete Error: group absence unconfirmed
+    at ServerProcessShutdown.cleanup (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts:30:40)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:29:99
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:35:13
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts:30:107
+    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+stderr | tests/unit/shutdown/server-process-shutdown.test.ts > bounds missing send flush callbacks
+Backend shutdown result unconfirmed Error: Shutdown IPC flush timed out
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:46:45
+    at callTimer (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:1773:25)
+    at doTickInner (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2444:30)
+    at Immediate.nextPromiseTick (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2505:26)
+    at processImmediate (node:internal/timers:574:21)
+
+ ✓ tests/unit/shutdown/server-process-shutdown.test.ts (5 tests) 8ms
+stdout | tests/unit/compositions/native-command-shutdown.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/compositions/native-command-shutdown.test.ts (2 tests) 894ms
+   ✓ drains real commands before the remaining Fastify cleanup, retaining commands after their manager is discarded  892ms
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  20:42:19
+   Duration  4.84s (transform 1.08s, setup 50ms, import 2.47s, tests 1.53s, environment 0ms)
+

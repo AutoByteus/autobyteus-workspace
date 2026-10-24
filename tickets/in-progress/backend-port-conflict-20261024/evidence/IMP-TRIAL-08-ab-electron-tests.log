@@ -1,0 +1,191 @@
+IMP-TRIAL-08 — archived implementation attempt; not reusable current acceptance
+Step: ab-electron-tests; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:33:10.932633+00:00
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 6ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 4ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 13ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 3ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 21ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 8ms
+ ✓ updater/__tests__/appUpdater.spec.ts (34 tests) 43ms
+(node:67394) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 1207)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67394) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 1614)
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 3ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 10ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 10ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 3ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 90ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 139ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 1ms
+ ❯ server/__tests__/BaseServerManager.spec.ts (4 tests | 1 failed) 5067ms
+   ✓ BaseServerManager > resetAppDataDir removes and recreates the app data directory 2ms
+   ✓ BaseServerManager > ignores ready-looking logs and settles only after current-process health succeeds 31ms
+   × BaseServerManager > reports one prompt startup error when the child closes with code zero before health 5004ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ BaseServerManager > returns one current-generation structured platform fatal with identity, summary, and log path 30ms
+stderr | server/__tests__/StartupDelayLifecycle.spec.ts > ignores a stopped generation health result while its successor remains pending
+Promise returned by `expect(actual).rejects.toThrow(expected)` was not awaited. Vitest currently auto-awaits hanging assertions at the end of the test, but this will cause the test to fail in Vitest 3. Please remember to await the assertion.
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts:216:32
+
+stderr | server/__tests__/StartupDelayLifecycle.spec.ts > aborts the real bounded port-release polling operation without launching after stop
+Promise returned by `expect(actual).rejects.toThrow(expected)` was not awaited. Vitest currently auto-awaits hanging assertions at the end of the test, but this will cause the test to fail in Vitest 3. Please remember to await the assertion.
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts:234:32
+
+ ❯ server/__tests__/StartupDelayLifecycle.spec.ts (14 tests | 6 failed) 10147ms
+   ✓ waits beyond 100s, notifies once, keeps the same child and bridge snapshot, then becomes ready once 53ms
+   ✓ base stop contract > cancels pending preflight without close and does not let old setup launch or clear the next attempt 2ms
+   × base stop contract > disposes pending observations on stop, even when shutdown produces no child close 26ms
+     → Backend shutdown incomplete: Error: Backend did not exit cleanly
+   ✓ Windows override stop contract > cancels pending preflight without close and does not let old setup launch or clear the next attempt 1ms
+   × Windows override stop contract > disposes pending observations on stop, even when shutdown produces no child close 24ms
+     → Backend shutdown incomplete: Error: Managed backend IPC capability missing
+   ✓ retains genuine fatal failure once; delayed/late health and output cannot revive it 16ms
+   ✓ retains genuine error failure once; delayed/late health and output cannot revive it 8ms
+   × retains genuine close-zero failure once; delayed/late health and output cannot revive it 5003ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   × retains genuine close-nonzero failure once; delayed/late health and output cannot revive it 5002ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ reports genuine environment setup failure and permits a fresh attempt 1ms
+   ✓ reports genuine port setup failure and permits a fresh attempt 0ms
+   ✓ reports genuine launch setup failure and permits a fresh attempt 0ms
+   × ignores a stopped generation health result while its successor remains pending 3ms
+     → Backend shutdown incomplete: Error: Backend did not exit cleanly
+   × aborts the real bounded port-release polling operation without launching after stop 4ms
+     → expected "spy" to be called once, but got 0 times
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  server/__tests__/BaseServerManager.spec.ts > BaseServerManager > reports one prompt startup error when the child closes with code zero before health
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ server/__tests__/BaseServerManager.spec.ts:179:3
+    177|   })
+    178| 
+    179|   it('reports one prompt startup error when the child closes with code…
+       |   ^
+    180|     mockedFs.existsSync.mockReturnValue(true)
+    181|     axiosGet.mockRejectedValue(new Error('not healthy yet'))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > base stop contract > disposes pending observations on stop, even when shutdown produces no child close
+Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
+ ❯ stopManagedBackend server/managedBackendStop.ts:32:9
+     30|     }
+     31|   }
+     32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
+       |         ^
+     33| }
+     34| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > Windows override stop contract > disposes pending observations on stop, even when shutdown produces no child close
+Error: Backend shutdown incomplete: Error: Managed backend IPC capability missing
+ ❯ stopManagedBackend server/managedBackendStop.ts:32:9
+     30|     }
+     31|   }
+     32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
+       |         ^
+     33| }
+     34| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > retains genuine close-zero failure once; delayed/late health and output cannot revive it
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > retains genuine close-nonzero failure once; delayed/late health and output cannot revive it
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ server/__tests__/StartupDelayLifecycle.spec.ts:167:58
+    165| })
+    166| 
+    167| it.each(['fatal', 'error', 'close-zero', 'close-nonzero'])('retains ge…
+       |                                                          ^
+    168|   const response = deferred<typeof healthy>()
+    169|   get.mockReturnValue(response.promise)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > ignores a stopped generation health result while its successor remains pending
+Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
+ ❯ stopManagedBackend server/managedBackendStop.ts:32:9
+     30|     }
+     31|   }
+     32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
+       |         ^
+     33| }
+     34| 
+ ❯ server/__tests__/StartupDelayLifecycle.spec.ts:219:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  server/__tests__/StartupDelayLifecycle.spec.ts > aborts the real bounded port-release polling operation without launching after stop
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ server/__tests__/StartupDelayLifecycle.spec.ts:236:21
+    234|   const rejected = expect(start).rejects.toThrow('startup stopped')
+    235|   await vi.advanceTimersByTimeAsync(0)
+    236|   expect(portCheck).toHaveBeenCalledOnce()
+       |                     ^
+    237|   await manager.stopServer()
+    238|   await rejected
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Backend shutdown incomplete: Error: Backend did not exit cleanly
+ ❯ stopManagedBackend server/managedBackendStop.ts:32:9
+     30|     }
+     31|   }
+     32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
+       |         ^
+     33| }
+     34| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { diagnostic: { kind: 'shutdown-incomplete', message: 'Backend shutdown incomplete: Error: Backend did not exit cleanly' } }
+This error originated in "server/__tests__/StartupDelayLifecycle.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "disposes pending observations on stop, even when shutdown produces no child close". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Backend shutdown incomplete: Error: Managed backend IPC capability missing
+ ❯ stopManagedBackend server/managedBackendStop.ts:32:9
+     30|     }
+     31|   }
+     32|   throw new ShutdownIncompleteError(`Backend shutdown incomplete: ${St…
+       |         ^
+     33| }
+     34| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { diagnostic: { kind: 'shutdown-incomplete', message: 'Backend shutdown incomplete: Error: Managed backend IPC capability missing' } }
+This error originated in "server/__tests__/StartupDelayLifecycle.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "disposes pending observations on stop, even when shutdown produces no child close". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed | 15 passed (17)
+      Tests  7 failed | 137 passed (144)
+     Errors  2 errors
+   Start at  20:33:00
+   Duration  10.58s (transform 512ms, setup 0ms, collect 1.29s, tests 15.57s, environment 2ms, prepare 977ms)
+

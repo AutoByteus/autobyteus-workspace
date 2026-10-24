@@ -1,0 +1,593 @@
+IMP-TRIAL-06 — archived implementation attempt; not reusable current acceptance
+Step: ab-server-focused; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:34:35.141349+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes server team prompts, and injects primitive team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes server team prompts, and injects primitive team context
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > enables policy-only compaction: the core summarizer always uses the agent's own model
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > enables policy-only compaction: the core summarizer always uses the agent's own model
+Using temp workspace (ID: workspace-1) for agent.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts (10 tests) 17ms
+stdout | tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (17 tests | 11 failed) 12ms
+     × runs phases 5-10 in order before event-pipeline and application construction 5ms
+     ✓ marks current-schema failure critical and unwinds Prisma before later phases 2ms
+     ✓ treats vault initialization failure as fatal and unwinds the started vault and Prisma owners 0ms
+     ✓ treats migration runner failure as fatal before catalog rebuild and unwinds repository owners 0ms
+     × keeps token history held back and strict TeamRun admission without blocking a current-schema run 0ms
+     × starts with only custom providers held back while readable-provider identity is missing (AC-004) 0ms
+     × starts with only custom providers held back while readable-provider identity is running (AC-004) 0ms
+     × starts with only custom providers held back while readable-provider identity is failed (AC-004) 0ms
+     ✓ treats catalog rebuild failure as fatal and still unwinds repository resources 0ms
+     ✓ unwinds the bound definition and Agent Tools owners when general run assembly fails 0ms
+     ✓ unwinds general, Agent Tools, and definition owners when application assembly fails 0ms
+     × uses independent package admission for attachment status MISSING 0ms
+     × uses independent package admission for attachment status NOT_RUN 0ms
+     × uses independent package admission for attachment status RUNNING 0ms
+     × uses independent package admission for attachment status FAILED 0ms
+     × uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS 0ms
+     × uses independent package admission for attachment status SUCCEEDED 0ms
+ ✓ tests/unit/startup/migrations-prisma-engine-env.test.ts (30 tests) 567ms
+stdout | tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-provider-factory-builder.test.ts (23 tests) 7ms
+stdout | tests/unit/startup/app-data-capability-readiness.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/startup/app-data-capability-readiness.test.ts > app-data capability readiness > refuses token-usage history reads and existing-run restore with the unchanged codes while its migration is pending, and serves them once it has succeeded (AC-003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+
+ ✓ tests/unit/startup/app-data-capability-readiness.test.ts (2 tests) 14ms
+stdout | tests/unit/compositions/update-notifications-composition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/compositions/update-notifications-composition.test.ts (3 tests) 62ms
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:156:15)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:96:5
+    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
+  [errors]: [
+    Error: Required tool unit 'Task Delegation Tools' registration failed: Error: delegation registry unavailable
+        at loadUnit (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:122:11)
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        ... 3 lines matching cause stack trace ...
+        at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
+      [cause]: Error: delegation registry unavailable
+          at Object.onRegister (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:90:46)
+          at registerTaskDelegationTools (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:33:21)
+          at loadUnit (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:120:11)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5)
+          at async Promise.allSettled (index 2)
+          at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:24)
+          at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:96:5
+          at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+    }
+  ]
+}
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:156:15)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:112:21
+    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20 {
+  [errors]: [
+    Error: Required tool unit 'Media Tools' is missing export 'registerMediaTools'.
+        at loadUnit (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:115:11)
+        at processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Promise.allSettled (index 6)
+        at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:24)
+        at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:112:21
+        at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+  ]
+}
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a module-load failure and retains the rejected memoized promise
+Required agent tool readiness failed. Error: Required tool unit 'Core Tools' could not load 'autobyteus-ts/tools/register-tools.js': Error: core module unavailable
+    at loadUnit (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:108:11)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:146:20) {
+  [cause]: Error: core module unavailable
+      at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:28:45
+      at Mock (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+spy@4.1.12/node_modules/@vitest/spy/dist/index.js:332:34)
+      at loadUnit (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:106:20)
+      at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:146:26)
+      at AgentToolRegistryReadiness.registerRequiredGroups (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/startup/agent-tool-loader.ts:140:32)
+      at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:127:31
+      at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+      at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+      at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+      at new Promise (<anonymous>)
+}
+
+ ✓ tests/unit/startup/agent-tool-loader.test.ts (5 tests) 7ms
+ ✓ tests/unit/startup/migrations-command.test.ts (8 tests) 16ms
+ ✓ tests/unit/startup/token-meter-context-readings-migration.test.ts (1 test) 416ms
+     ✓ adds the threshold column and clears only pre-fix Claude SDK readings, leaving totals untouched  415ms
+ ✓ tests/unit/startup/token-usage-current-schema-readiness.test.ts (2 tests) 2ms
+stdout | tests/unit/compositions/host-definition-services.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/compositions/host-definition-services.test.ts (3 tests) 3ms
+stdout | tests/unit/startup/agent-customization-loader.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/startup/agent-customization-loader.test.ts > loadAgentCustomizations > registers the server's input and LLM response processors and no tool invocation preprocessor
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/startup/agent-customization-loader.test.ts > loadAgentCustomizations > registers the server's input and LLM response processors and no tool invocation preprocessor
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/unit/startup/agent-customization-loader.test.ts > loadAgentCustomizations > registers the server's input and LLM response processors and no tool invocation preprocessor
+Cleared 2 definitions from the AgentUserInputMessageProcessorRegistry.
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+ ✓ tests/unit/startup/agent-customization-loader.test.ts (1 test) 2ms
+stderr | tests/unit/shutdown/server-process-shutdown.test.ts > reports failed cleanup and exits nonzero
+Backend shutdown incomplete Error: group absence unconfirmed
+    at ServerProcessShutdown.cleanup (/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts:30:40)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:28:99
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:34:13
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts:30:107
+    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/@vitest+runner@4.1.12/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+stderr | tests/unit/shutdown/server-process-shutdown.test.ts > bounds missing send flush callbacks
+Backend shutdown result unconfirmed Error: Shutdown IPC flush timed out
+    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/src/shutdown/server-process-shutdown.ts:45:45
+    at callTimer (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:1773:25)
+    at doTickInner (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2444:30)
+    at Immediate.nextPromiseTick (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/vitest@4.1.12_@types+node@25.3.0_happy-dom@15.11.7_jsdom@25.0.1_vite@7.3.7_@types+node@_809a0c663a7f753e276742fb89da4c9a/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:2505:26)
+    at processImmediate (node:internal/timers:574:21)
+
+ ✓ tests/unit/shutdown/server-process-shutdown.test.ts (5 tests) 8ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > runs phases 5-10 in order before event-pipeline and application construction
+TypeError: app.addHook is not a function
+ ❯ NativeCommandShutdown.install src/compositions/native-command-shutdown.ts:8:9
+      6|   private completion?: Promise<void>;
+      7|   install(app: FastifyInstance): void {
+      8|     app.addHook('preClose', async () => { await this.scope.close(); });
+       |         ^
+      9|   }
+     10|   close(cleanup: () => Promise<void>): Promise<void> {
+ ❯ Module.startStandaloneApplicationHost src/standalone-application-host/start-standalone-application-host.ts:287:20
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts:263:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > keeps token history held back and strict TeamRun admission without blocking a current-schema run
+TypeError: app.addHook is not a function
+ ❯ NativeCommandShutdown.install src/compositions/native-command-shutdown.ts:8:9
+      6|   private completion?: Promise<void>;
+      7|   install(app: FastifyInstance): void {
+      8|     app.addHook('preClose', async () => { await this.scope.close(); });
+       |         ^
+      9|   }
+     10|   close(cleanup: () => Promise<void>): Promise<void> {
+ ❯ Module.startStandaloneApplicationHost src/standalone-application-host/start-standalone-application-host.ts:287:20
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts:410:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is missing (AC-004)
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is running (AC-004)
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is failed (AC-004)
+TypeError: app.addHook is not a function
+ ❯ NativeCommandShutdown.install src/compositions/native-command-shutdown.ts:8:9
+      6|   private completion?: Promise<void>;
+      7|   install(app: FastifyInstance): void {
+      8|     app.addHook('preClose', async () => { await this.scope.close(); });
+       |         ^
+      9|   }
+     10|   close(cleanup: () => Promise<void>): Promise<void> {
+ ❯ Module.startStandaloneApplicationHost src/standalone-application-host/start-standalone-application-host.ts:287:20
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts:432:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status MISSING
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status NOT_RUN
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status RUNNING
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status FAILED
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS
+ FAIL  tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED
+TypeError: app.addHook is not a function
+ ❯ NativeCommandShutdown.install src/compositions/native-command-shutdown.ts:8:9
+      6|   private completion?: Promise<void>;
+      7|   install(app: FastifyInstance): void {
+      8|     app.addHook('preClose', async () => { await this.scope.close(); });
+       |         ^
+      9|   }
+     10|   close(cleanup: () => Promise<void>): Promise<void> {
+ ❯ Module.startStandaloneApplicationHost src/standalone-application-host/start-standalone-application-host.ts:287:20
+ ❯ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts:488:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  11 failed | 99 passed (110)
+   Start at  20:34:23
+   Duration  11.49s (transform 3.41s, setup 133ms, import 8.08s, tests 1.13s, environment 1ms)
+

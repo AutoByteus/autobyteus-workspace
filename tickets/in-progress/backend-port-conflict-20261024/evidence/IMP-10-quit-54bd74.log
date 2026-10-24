@@ -1,0 +1,22 @@
+IMP-10-quit-54bd74
+Command (root, clean env): pnpm -C autobyteus-web test:electron --run electron/application/__tests__/ApplicationShutdown.spec.ts electron/server/__tests__/ManagedBackendShutdown.spec.ts
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 54bd74c83
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:48:26.450292+00:00
+
+
+> autobyteus@1.5.9-beta.4 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/application/__tests__/ApplicationShutdown.spec.ts electron/server/__tests__/ManagedBackendShutdown.spec.ts
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (3 tests) 4ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 6ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  20:48:26
+   Duration  304ms (transform 38ms, setup 0ms, collect 48ms, tests 10ms, environment 0ms, prepare 108ms)
+
