@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` (SR-003) with the SR-004 addendum | SR-003, SR-004 | N/A | Fail | AR-901, AR-902, AR-903 |
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Fail | AR-901 … AR-903 resolved; AR-904 (new, text) |
+| ARCH-REV-003 | Round 3 / the AR-904 text fix | SR-005 | Fail | Pass | AR-904 resolved; N-905 |
 
 ## Revision Entries
 
@@ -60,4 +61,26 @@ None.
 - New or remaining finding IDs: AR-904 (Low, text): § Verification points to Step 1's owner list and adds `sourceNodeId` to the word list; REQ-903 and the Scope Guardrail stop saying "agent configs".
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: RSK-901 (accepted).
+
+### ARCH-REV-003 — Round 3: text aligned; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/design-review-report.md`
+- Review round and trigger: round 3; the AR-904 fix (commit `f9d826f1b6`).
+- Triggering role, report path, and finding IDs: Solution Designer; AR-904.
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: `Fail` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result: § Verification, REQ-903 and the Scope Guardrail were verified at `f9d826f1b6`. A search found no remaining "agent configs that name it" or "two mapping owners". RSK-902's wording still overstates the compiler (N-905, non-blocking).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-904 | Open (Low, text) | Resolved | design-spec § Verification lines 190-195; requirements REQ-903, Scope Guardrail lines 58-59 | Points to Step 1's owners; `sourceNodeId` and `list_available_nodes` constrained; agent configs out of scope per REQ-906 |
+| AR-901 … AR-903 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: none blocking. N-905 (reword RSK-902).
+- Material classification changes: none (`Large` / `High`).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-901 (accepted).

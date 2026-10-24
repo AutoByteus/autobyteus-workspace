@@ -150,6 +150,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - the GraphQL `memory-sync` types and the web (`types/memory.ts`, `memorySyncStore.ts`, `memoryExplorerStore.ts`, `memoryInspectorStore.ts`, `MemorySyncCard.vue`, the memory GraphQL documents, `generated/graphql.ts` by codegen).
 - **UI:** "Source node id" → "Source ID", and the card's description "the source node id below is the stable import identity" → "the source ID below …", in English and Chinese.
 - **Wire to the hub:** renamed as a clean cut (rule 9; the hub is a node of the same release). Covers `memory-hub-client.ts:24` (the query parameter) and the ingestion side.
+- **Docs:** `autobyteus-server-ts/docs/features/memory_sync.md` and `docs/modules/agent_memory.md`: "`sourceNodeId`" → "source ID" (the folder `memory/imports/<source ID>` keeps its stored value), and "`NodeProfile.id`" → "entry ID".
 - **Stored names kept (U-1)**, mapped by their one owner each: the source config (`memory-sync-config-service.ts`), the sync state (`local-file-memory-sync-state-store.ts`), the hub's stored manifest (`memory-sync-manifest.ts` read and write). Stored values (the identity itself) are unchanged.
 
 ### Step 6: glossary and docs (REQ-907)
@@ -197,4 +198,4 @@ The glossary entries above; the `DESIGN.md` pointer; `remote_collaboration.md`, 
 ## Risks
 
 - RSK-901: an older phone app or desktop can't identify an updated node until it updates (U-2, rule 9; the user accepted it).
-- RSK-902: classifying 87 web `nodeId` uses by meaning is manual. The type change (`entryId` on `WindowNodeContext` and `NodeEntry`) makes the compiler find every entry-meaning use. The rest stays `nodeId`.
+- RSK-902: classifying 87 web `nodeId` uses by meaning is manual. The type change (`entryId` on `WindowNodeContext` and `NodeEntry`) makes the compiler find the uses through those types, IPC included. It does not find plain string parameters, separate option types or logs: Step 4's carrier list covers those, and AC-901's per-identifier list proves none is left (N-905).

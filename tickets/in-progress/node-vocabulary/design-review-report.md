@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002; REQ-909 and the extended REQ-901 / REQ-906 at SR-004, at the user's request)
 - Upstream Investigation Notes: `…/investigation-notes.md` (V-01 … V-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `2b11eb4169` (SR-005)
+- Reviewed Design Spec: `…/design-spec.md` at commit `f9d826f1b6` (SR-005 plus the AR-904 text alignment)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002)
 - Relevant Solution Revision IDs: SR-001 … SR-005
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: the Solution Designer's SR-005 (commit `2b11eb4169`), answering ARCH-REV-001 (AR-901 … AR-903, N-901 … N-904)
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: the Solution Designer's AR-904 fix (commit `f9d826f1b6`)
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, `Fail`)
+- Latest Authoritative Round: 3
 - Review method: the shared principles as updated 2026-10-24, including Principle 15 "One Vocabulary" and the "Vocabulary drift" trigger (`autobyteus-agents` `b87a507`), and the updated design examples.
 - Current-State Evidence Basis: code read in the worktree at `0b72123468`:
   - `autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts:47-80` (the exposure is `requestedToolNameSet.has(LIST_AVAILABLE_NODES_TOOL_NAME)`; an unknown name is silently ignored);
@@ -152,20 +152,20 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 ## Review Decision
 
-`Fail` (round 2; `Design Impact`, AR-904, text only). AR-901 … AR-903 and N-901 … N-904 are resolved in the authoritative sections:
-- AR-901, by the user's decision: updating agent configs is out of this ticket, REQ-906 states the exception, and Step 3 carries the release-note text;
-- AR-902: the string carriers are listed with citations, and AC-901's per-identifier list is checked by code review;
-- AR-903: REQ-910 and Step 5b rename Memory Sync's ID to `sourceId` / "Source ID" in code, GraphQL, the hub wire (a clean cut) and the UI, with the stored names kept through their three owners;
-- N-901: `GLOSSARY.md`, with § 1 linking to it for Node and Peer and `DESIGN.md` pointing to it;
-- N-902: the iOS 426 branch and `incompatibleServer` are removed;
-- N-903: FU-001 is marked as pulled in;
-- N-904: the mapping owners are named.
+`Pass` (round 3). AR-904 is resolved:
+- § Verification points to Step 1's owner list for `serverInstanceId`, allows `sourceNodeId` only in Step 5b's three owners and `list_available_nodes` only in the release-note text, and adds `SavedNodeProfile`, with `isSystem` allowed only in the desktop entry storage owner;
+- REQ-903 says "the docs in this repository" and records that agent configs here select neither name;
+- the Scope Guardrail marks agent configs and packages out of scope (REQ-906) and lists the phone apps.
 
-Two places in the documents still contradict these decisions; the implementation and code review check against them.
+AR-901 … AR-903 and N-901 … N-904 stay resolved. One non-blocking wording note: N-905. The design is ready for implementation.
 
 ## Findings
 
-### AR-904 — Two places still contradict the resolved decisions
+### Round-3 note (non-blocking)
+
+- N-905: § Risks RSK-902 still says the type change "makes the compiler find every entry-meaning use". AR-902 asked to reword it: the compiler finds renamed fields on the shared types, and Step 4's carrier list plus AC-901's per-identifier list cover what it can't see. Align the sentence; the implementation follows Step 4 and AC-901.
+
+### AR-904 (resolved in ARCH-REV-003) — Two places still contradict the resolved decisions
 
 - Type: Design Impact
 - Severity: Low (blocking: text only, but AC-901's check and the scope are read from these lines)
@@ -243,11 +243,11 @@ The round-1 text follows, kept for traceability (AR-901 … AR-903 resolved in A
 
 ## Classification
 
-`Design Impact` (AR-904).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -256,6 +256,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 2; AR-904, text only)
+- Review Decision: `Pass` (round 3)
 - Material-Premise Gate: `Pass` (MP-901 handled by the user's decision: a stated REQ-906 exception plus the release note)
-- Notes: classification `Large` / `High`. Design at commit `2b11eb4169` (SR-005).
+- Notes: classification `Large` / `High`. Design at commit `f9d826f1b6`. AR-901 … AR-904 are resolved; N-905 is a wording note.

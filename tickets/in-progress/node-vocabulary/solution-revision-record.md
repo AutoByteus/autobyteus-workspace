@@ -49,3 +49,4 @@
 - Approval: AR-901 decided by the user (2026-10-24). REQ-910 is within the approved direction (REQ-901's rule applied).
 - Route: round 2 of the architecture review.
 - SR-005 addendum (ARCH-REV-002, AR-904): § Verification's word list points to Step 1's owners, adds `sourceNodeId` and allows `list_available_nodes` only in the release note. REQ-903 and the Scope Guardrail no longer name agent configs (REQ-906).
+- SR-005 addendum (ARCH-REV-003 Pass, 2026-10-24): N-905 (RSK-902 reworded); Step 5b also renames the Memory Sync docs (memory_sync.md, agent_memory.md). The reviewer's round-3 files committed.
