@@ -13,19 +13,19 @@ Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-an
 - Supplemental task artifacts: `evidence/SD-01`..`SD-09`, `probes/` (Solution Designer); `follow-ups.md`
 - Design review report: `design-review-report.md` (round 2, `Pass`)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial round)
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` (CRR-001), `code-review-revision-record.md`, `code-review-evidence/CRR-001-probes.txt` (P1)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, Local Fix for CR-001; IR-001 was the initial round)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001` (gateway image carried build-context secrets and session state)
 
 Commits, in the order the design asked for, plus one test adaptation:
 
@@ -35,6 +35,7 @@ Commits, in the order the design asked for, plus one test adaptation:
 | `bbd88fd3ea` | Server: Fastify 5 + plugin majors, GraphiQL off, MCP `cors: false` config removed |
 | `5c7ab7426c` | Gateway: Fastify 5, own workspace + lockfile, Dockerfile, README |
 | `29aeb5d721` | Server test: the studio listener integration test no longer depends on `listen()`'s return string (see Known Risks / IMP-13) |
+| `25a45ee5d3` | Gateway Dockerfile copies only build inputs (IR-002, CR-001) |
 
 The ticket folder (this handoff, the revision record, evidence and probes) is committed on top of these in a `docs(ticket)` commit.
 
@@ -58,7 +59,7 @@ The ticket folder (this handoff, the revision record, evidence and probes) is co
 | BEH-003 | Changed: no GraphiQL; `/graphiql*` → 404 | `src/api/graphql/index.ts`: `graphiql: true` removed (no flag) | `/graphiql`, `/graphiql/main.js` and `/graphiql/config.js` return 404 (IMP-17, IMP-19) |
 | BEH-004 | Preserved, including the CORS headers | `src/agent-tools/mcp/agent-tools-mcp-routes.ts`, `src/mcp-gateway/mcp-gateway-routes.ts`: `{ config: { cors: false } }` removed | Base (Fastify 4.29.1) and branch (5.12.7) give identical status codes and `Access-Control-*`/`Vary` headers for 6 cases on each route (IMP-06 vs IMP-08) |
 | BEH-005 | Preserved on multipart 10 | `@fastify/multipart` ^10.1.6; upload code unchanged | Unit and integration suites pass. The live upload-limit journey is left to API/E2E |
-| BEH-006 | Changed: own lockfile, audited, Docker works | `autobyteus-message-gateway/{package.json, pnpm-workspace.yaml, pnpm-lock.yaml, docker/Dockerfile, README.md}` | Frozen install, typecheck, 268 tests and `pnpm audit` pass (no known vulnerabilities); root lockfile untouched (IMP-10). Image builds from a clean clone and `/health` returns 200 (IMP-18) |
+| BEH-006 | Changed: own lockfile, audited, Docker works | `autobyteus-message-gateway/{package.json, pnpm-workspace.yaml, pnpm-lock.yaml, docker/Dockerfile, README.md}` | Frozen install, typecheck, 268 tests and `pnpm audit` pass (no known vulnerabilities); root lockfile untouched (IMP-10). Image builds from a clean clone and `/health` returns 200 (IMP-18). After IR-002, an image built with planted dummy secrets and session files contains none of them, and `/health` still returns 200 (IMP-20) |
 | BEH-007 | Same rendering; new parser; sanitised; hyperlinked cells as text | `autobyteus-web/package.json` (`xlsx` tarball URL), `ExcelViewer.vue` `sheetHtml`, spec, `docs/content_rendering.md` | Spec 10/10 (IMP-02); mutation without the sanitiser fails the 2 security cases (IMP-03); rendered in Chrome (IMP-14); probe now prints `ESCAPED` (IMP-01) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -69,7 +70,7 @@ The ticket folder (this handoff, the revision record, evidence and probes) is co
 - `autobyteus-web/components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts`: rewritten as a real-parser spec covering every case in the design. It runs under `// @vitest-environment jsdom` (see Important Assumptions).
 - `autobyteus-server-ts/src/api/graphql/index.ts`, `src/agent-tools/mcp/agent-tools-mcp-routes.ts`, `src/mcp-gateway/mcp-gateway-routes.ts`: one line removed in each.
 - `autobyteus-message-gateway/pnpm-workspace.yaml`: `packages: ["."]`; `onlyBuiltDependencies: ["@whiskeysockets/baileys", protobufjs]`. These are the only two packages pnpm reported as having build scripts. `esbuild`, `node-pty` and `sharp` scripts are not in the gateway tree.
-- `autobyteus-message-gateway/docker/Dockerfile`: installs from the gateway's `package.json`, `pnpm-lock.yaml` and `pnpm-workspace.yaml` only (`--frozen-lockfile`), with pnpm 10.28.2 through Corepack. The root-workspace install, the `printf` allowlist and the `autobyteus-ts` copies are gone.
+- `autobyteus-message-gateway/docker/Dockerfile`: installs from the gateway's `package.json`, `pnpm-lock.yaml` and `pnpm-workspace.yaml` only (`--frozen-lockfile`), with pnpm 10.28.2 through Corepack. It then copies only `LICENSE`, `tsconfig.json`, `tsconfig.build.json` and `src/` (IR-002), so an operator's `docker/.env.docker`, any `.env*` and the compose-mounted `memory/` never enter the image. The root-workspace install, the `printf` allowlist and the `autobyteus-ts` copies are gone.
 - Root `pnpm-lock.yaml`. Commit 1: 7 insertions and 61 deletions, only the `xlsx` entry and 0.18.5's seven dependencies. Commit 2: 233 insertions and 282 deletions, all in the fastify, mercurius and `@fastify/*` trees (fastify 4 → 5, find-my-way 8 → 9, avvio, light-my-request, `@fastify/static` 7 → 10, undici 5, `@fastify/busboy`, mqemitter and similar). The only entries outside the server are the web Apollo packages, whose optional peer `@fastify/websocket` id changes from 10.0.1 to 11.3.4 inside their snapshot keys; no web package version changes.
 
 ## Important Assumptions
@@ -147,7 +148,8 @@ Evidence files are in `evidence/` unless another path is given. The probes are i
 | IMP-15 | `pnpm -C autobyteus-server-ts build` | `29aeb5d721` | same | server build | AC-002 | Pass | `IMP-15-server-build.log` | `build exit: 0` |
 | IMP-16 | Clean clone of the branch; `pnpm install --frozen-lockfile --store-dir <empty>` | `29aeb5d721` | same | lockfiles; cold CDN fetch | REQ-009, REQ-013, AC-011 | Pass | `IMP-16-clean-clone-frozen-install-cold-store.log` | `install exit: 0`; `0.20.3`; `integrity: sha512-oLDq3jw7…` |
 | IMP-17 | Clean clone: `pnpm --silent isolated-app start --build`; `probes/instance-server-smoke.mjs`; renderer bundle check; stop | `29aeb5d721` | packaged macOS arm64 app (Electron) | packaged server + renderer | AC-007, AC-014 (partial), BEH-003 | Pass (limits below) | `IMP-17-packaged-app-clean-clone.log` | `fastify@5.12.7`, `mercurius@16.12.1`; `SMOKE PASS`; `GET /graphiql: 404`; `"firstMessage": "connection_ack"`; `sanitize(o,{ALLOWED_TAGS:[…],…ALLOW_DATA_ATTR:!1})`; `"instances": []` |
-| IMP-18 | Clean clone: `docker build -f autobyteus-message-gateway/docker/Dockerfile .`; run on 127.0.0.1; `/health`; `docker rm -f -v` | `29aeb5d721` | Docker 29.0.1 | gateway image | AC-010, REQ-008 | Pass | `IMP-18-gateway-docker-clean-clone.log` | `pnpm install --frozen-lockfile` step; `health status code: 200`; `/app/autobyteus-message-gateway`; `fastify@5.12.7 @fastify/cors@11.3.1 @whiskeysockets/baileys@6.7.24` |
+| IMP-18 | (IR-001 Dockerfile; superseded for the COPY scope by IMP-20) Clean clone: `docker build -f autobyteus-message-gateway/docker/Dockerfile .`; run on 127.0.0.1; `/health`; `docker rm -f -v` | `29aeb5d721` | Docker 29.0.1 | gateway image | AC-010, REQ-008 | Pass | `IMP-18-gateway-docker-clean-clone.log` | `pnpm install --frozen-lockfile` step; `health status code: 200`; `/app/autobyteus-message-gateway`; `fastify@5.12.7 @fastify/cors@11.3.1 @whiskeysockets/baileys@6.7.24` |
+| IMP-20 | Clean clone of the IR-002 commit with DUMMY `docker/.env.docker`, `.env` and `memory/whatsapp-personal/dummy-session.json` planted; `docker build -f autobyteus-message-gateway/docker/Dockerfile .`; filesystem-wide `find` and a `grep` for the markers inside the image; layer history; run on 127.0.0.1 and `/health`; `docker rm -f -v` and `rmi` | `25a45ee5d3` | Docker 29.0.1 | gateway image COPY scope | CR-001, AC-010, REQ-008, REQ-013 | Pass | `IMP-20-gateway-image-no-context-secrets.log` | `files named .env* or under a memory dir in /app:` followed directly by `(end)`; `grep … DUMMY-CR001 … none`; layer history lists only explicit COPYs; `health status code: 200` |
 | IMP-19 | Clean clone: `docker build -f autobyteus-server-ts/docker/Dockerfile.monorepo .`; test-owned container on 127.0.0.1, no volumes; smoke; `docker rm -f -v` | `29aeb5d721` | Docker 29.0.1 | server image (Node 22) | AC-008 (smoke), REQ-003 | Pass | `IMP-19-server-docker-clean-clone.log` | `RUN pnpm -C autobyteus-web build:mobile-web` step present (bundles `xlsx` after a cold in-container install); `v22.23.3`; `fastify@5.12.7 mercurius@16.12.1 …`; `SMOKE PASS`; `graphiql 404` from inside |
 
 - Not run, and why:

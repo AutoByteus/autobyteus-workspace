@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-004, ARCH-REV-002 | Implemented; implementation-scoped checks green; ready for code review |
+| IR-002 | Code Reviewer, `code-review-report.md`, round 1 (Fail) | CR-001 | `Local Fix` | SR-004, ARCH-REV-002, CRR-001 | Gateway image copies only build inputs; proven with planted dummy files (IMP-20) |
 
 ## Revision Entries
 
@@ -34,3 +35,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: see the handoff's Checks Run (IMP-01..IMP-19)
 - Next recipient or routing: Code Reviewer (Medium + High route)
 - Remaining limitations or risks: server E2E folder, packaged-app user journeys and full AC-007/AC-008/AC-014 acceptance left to API/E2E; RSK-001..RSK-003; standalone host `handle.url` reports `127.0.0.1` for a wildcard bind on Fastify 5
+
+### IR-002 — Gateway image copies only build inputs (CR-001)
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/fastify5-and-spreadsheet-parser/code-review-report.md`, round 1 (CRR-001, `Fail`)
+- Triggering finding IDs: CR-001
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001. The gateway Dockerfile ran `COPY autobyteus-message-gateway/ ./`, so an operator's `docker/.env.docker` and the compose-mounted `memory/` (both inside the build context; the root `.dockerignore` excludes neither) were baked into the image (CRR-001 probe P1).
+- Current authoritative result: commit `25a45ee5d3`. The Dockerfile copies only `LICENSE`, `tsconfig.json`, `tsconfig.build.json` and `src/` after the unchanged three-file frozen install. `WORKDIR /app/autobyteus-message-gateway` is kept. `tests/`, `tickets/`, `tools/`, `docker/`, `scripts/`, `memory/`, `README.md` and any `.env*` stay out of the image.
+- Related solution revision IDs: SR-004
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this baseline or implementation revision is recorded: implementation-owned packaging fix requested by code review
+- Approved behavior or requirement IDs affected: BEH-006, REQ-008, REQ-013 (no secrets in artifacts)
+- Implementation delta: `autobyteus-message-gateway/docker/Dockerfile`: `COPY autobyteus-message-gateway/ ./` replaced by two explicit COPY lines, with a comment giving the reason. The gateway reads nothing else from its package folder at run time; its only file reads are its data roots (`src/infrastructure/**` stores).
+- Changed files or areas: `autobyteus-message-gateway/docker/Dockerfile`
+- Local validation and result: IMP-20. A clean clone of `25a45ee5d3` with dummy `docker/.env.docker`, `.env` and `memory/whatsapp-personal/dummy-session.json` was built. None of these files or their markers is in the image: a filesystem-wide `find` and a `grep` over `/app` both come back empty, and the layer history shows only the explicit COPYs. The container's `/health` returns 200, with fastify 5.12.7, cors 11.3.1 and baileys 6.7.24. Gateway source, lockfile and tests are unchanged, so IMP-10 still holds.
+- Next recipient or routing: Code Reviewer (targeted delta review)
+- Remaining limitations or risks: none new. The wechaty sidecar Dockerfile copies only `tools/wechaty-sidecar`, and its compose state mount sits under the gateway's `memory/`, outside that copy, so it is not affected.
