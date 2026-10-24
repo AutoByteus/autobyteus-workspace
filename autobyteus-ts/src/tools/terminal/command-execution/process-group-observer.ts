@@ -11,7 +11,10 @@ const run: ExecFileRunner = (file, args, options) => new Promise((resolve, rejec
 });
 // /proc stat provides Linux start ticks and session identity without localized ps fields.
 const LINUX_SNAPSHOT = String.raw`for f in /proc/[0-9]*/stat; do
-  IFS= read -r line < "$f" 2>/dev/null || continue
+  if ! IFS= read -r line < "$f" 2>/dev/null; then
+    [ ! -e "$f" ] && continue
+    exit 1
+  fi
   pid=\${line%% *}; rest=\${line##*) }; name=\${line#*(}; name=\${name%)*}
   set -- $rest
   printf '%s %s %s %s %s %s\n' "$pid" "$2" "$3" "$4" "$1" "\${20}"
@@ -35,6 +38,7 @@ export class ProcessGroupObserver {
       target.kind === 'wsl' ? ['-d', target.distro, '--exec', 'bash', '-c', LINUX_SNAPSHOT]
         : ['-axo', 'pid=,ppid=,pgid=,stat=,lstart=,comm='],
       { encoding: 'utf8', timeout, maxBuffer: 2 * 1024 * 1024, env: { ...process.env, LC_ALL: 'C' } });
+    if (!stdout.trim()) throw new Error('Empty process observation is not absence evidence');
     return stdout.split(/\r?\n/).filter(line => line.trim()).map(line => {
       const m = target.kind === 'wsl' ? /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\d+)\s*$/.exec(line)
         : /^\s*(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\w+\s+\w+\s+\d+\s+[\d:]+\s+\d+)\s*(.*)$/.exec(line);
@@ -54,8 +58,9 @@ export class ProcessGroupObserver {
     return processes.some(p => p.pid === group.anchor.pid && p.birth === group.anchor.birth &&
       p.processGroupId === group.anchor.pid && (group.target.kind !== 'wsl' || p.sessionId === group.anchor.pid));
   }
-  async signal(group: OwnedCommandGroup, signal: 'TERM' | 'KILL', deadline: number): Promise<void> {
+  async signal(group: OwnedCommandGroup, signal: 'TERM' | 'KILL', deadline: number, anchorStillLive: () => boolean): Promise<void> {
     if (!this.matches(group, await this.snapshot(group.target, deadline))) throw new Error('Command anchor identity lost');
+    if (!anchorStillLive()) throw new Error('Command anchor exit observed');
     if (Date.now() >= deadline) throw new Error('Process signal deadline exceeded');
     if (group.target.kind === 'host') process.kill(-group.anchor.pid, signal === 'TERM' ? 'SIGTERM' : 'SIGKILL');
     else await this.runner(group.target.wslExecutable,

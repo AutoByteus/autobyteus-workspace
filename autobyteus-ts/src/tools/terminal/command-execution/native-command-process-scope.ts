@@ -77,14 +77,14 @@ export class NativeCommandProcessScope {
       }
       const group = handle.group!;
       await this.members(handle, deadline);
-      await this.observer.signal(group, 'TERM', deadline);
+      await this.observer.signal(group, 'TERM', deadline, () => !handle.anchorExited);
       await sleep(Math.max(0, Math.min(500, deadline - Date.now())));
       const members = await this.members(handle, deadline);
       if (!members.length) {
         handle.release();
         await beforeDeadline(handle.exited, deadline);
       } else {
-        await this.observer.signal(group, 'KILL', deadline);
+        await this.observer.signal(group, 'KILL', deadline, () => !handle.anchorExited);
       }
       while (Date.now() < deadline) {
         const rows = await this.observer.snapshot(group.target, deadline);
