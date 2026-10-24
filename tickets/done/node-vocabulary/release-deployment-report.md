@@ -14,3 +14,15 @@
 - Release: `Not required`.
 - Cleanup: the worktree (no process running from it; the untracked full web-suite log and build output go with it) and the local branches `codex/node-vocabulary` and `finalize/node-vocabulary` are removed after this record's push. The remote ticket branch is kept.
 - Final status: AC-901/902/903/905 verified; AC-904 open (the user's check); finalized; no release; cleanup done. Terminal package sent to the Solution Designer.
+
+## DR-002 Addendum — Beta v1.5.9-beta.5 (2026-10-24)
+
+- Decision: the user's ("now finalize and release a new beta"). This ticket was already finalized (DR-001). The beta carries it (merge `522bc2e825`) on top of `v1.5.9-beta.4`.
+- Method: `RELEASE.md`, from a fresh worktree of `origin/personal` `2033fa9bdd`.
+- Checks before tagging: licensing consistent; hygiene exit 0; Secret Gate `v1.5.9-beta.4..HEAD` (38 commits) PASS.
+- Release commit and tag: `desktop-release.sh beta --branch finalize/release-beta --no-push` made `0216c6fb14` (`autobyteus-web/package.json` = `1.5.9-beta.5`) and the annotated tag `v1.5.9-beta.5`. `origin/personal` was unchanged; pushed `2033fa9bdd..0216c6fb14`, then the tag.
+- Pipelines, all `success`: Desktop `40110772773`, Android `40110772629`, iOS `40110773179`, Docker `40110772734`.
+- Published: the GitHub pre-release with 17 assets. Docker `1.5.9-beta.5` and `:beta` are `sha256:3728d948d23b…` (amd64, arm64); `:latest` stays on `1.5.8`.
+- Release notes: generated (pre-release). The curated text for the next stable is in `release-notes.md`.
+- Cleanup: the release worktree and `finalize/release-beta` are removed after this record's push.
+- AC-904 (the user's check) can now be run on this beta.
