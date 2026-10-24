@@ -3,33 +3,32 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md`. Approved at SR-003 and re-confirmed in SR-005 (2026-10-10). Relevant: REQ-007/008/009/011/012/013, BEH-004/008, SCN-014, "Not Pursued", R-1..R-3 dispositions.
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (Q1–Q5, OBS-003)
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001..SR-005)
-- Design Spec Reviewed As Context: `design-spec.md` (SR-004 D-1..D-8, DS-001/DS-002, append states, SR-005 verification gates)
-- Supplemental Task Artifacts Reviewed As Context: `handoff-sr-005-rebootstrap.md`, `handover.md`, `followup-cleanup-ticket-brief.md`, `probes/task-close-during-delivery.probe.ts`
-- Relevant Solution Revision IDs: SR-003, SR-004, SR-005
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002 Pass; RR-001..RR-004; AR2-NB-001..003)
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-006, user-approved 2026-10-24; DEC-003/004/005)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (complete re-investigation RI-1..RI-8, OBS-003)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-006, SR-007)
+- Design Spec Reviewed As Context: `design-spec.md` (SR-007: D-1..D-9, DS-004 append spine, self-validation A1–A16, C-1..C-4)
+- Supplemental Task Artifacts Reviewed As Context: `follow-ups.md` (FU-001..FU-004), `handoff-sr-007-design.md`, `probes/req-012-task-close-during-append.repro.test.ts`
+- Project design and testing guidelines: `DESIGN.md` (rules 1–10; rules 4, 5 and 8 are relevant here), `TESTING.md`
+- Relevant Solution Revision IDs: SR-006, SR-007
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-003 Pass; AR3-NB-001..005)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
+- Relevant Architecture Review Revision IDs: ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-002, IR-003 (fix `10b843f47`)
+- Relevant Implementation Revision IDs: IR-004 (supersedes IR-001..IR-003; no v2 code reused)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Targeted Delta Review` (round 2). Round 1 was a `Full Review` of `git diff ff25511f6 367108604`.
-- Review Scope Evidence (round 2): the delta `git diff ffa1cc1c7 10b843f47` touches only `root-message-append.ts` (+12/−2, the one `dropSlot()` helper) and two test files. That is exactly the CR-001 area. No spine, interface or data-shape change, so the round-1 evidence for all other checks carries forward.
-- Trigger:
-  - Round 1: implementation_engineer, "Implementation Complete" (IR-002), Large / High.
-  - Round 2: implementation_engineer, Local Fix complete (IR-003).
-- Prior Review Round Reviewed: CRR-001 (round 1, Fail, CR-001)
-- Latest Authoritative Round: 2
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 3
+- Review Scope: `Full Review`. This is a new implementation on a new base (`origin/personal@0216c6fb14`), so the v2 rounds (CRR-001..004) give context only.
+  - Target: `git diff 1e7a7cca4d dbc27db9df`, with the baseline contract commit `1e7a7cca4d` as context.
+- Review Scope Evidence: the v2 code is superseded. IR-004 is a fresh implementation of SR-007 (24 source files, +577/−798), so a targeted delta against v2 does not apply.
+- Trigger: implementation_engineer, IR-004 ready for review, Large / High.
+- Prior Review Round Reviewed: CRR-002 (v2 implementation Pass) and CRR-004 (v2 test review Pass). They are context only, and their lessons (CR-001 dropped slot, TR-001) were checked against the new code.
+- Latest Authoritative Round: 3
+- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification-v3`, `codex/agent-input-delivery-simplification-v3`
 - Reviewer commands:
-  - `pnpm exec vitest run tests/unit/agent-collaboration tests/unit/agent-org-execution tests/unit/agent-team-execution tests/unit/standalone-agent-run-root tests/unit/agent-execution tests/unit/services --no-watch` → 240 files passed, 4 skipped; 2327 tests passed, 6 skipped.
   - `pnpm exec tsc -p tsconfig.build.json --noEmit` → clean.
-  - Temporary probe, deleted afterwards, built from the `root-communication-roots.test.ts` harness for all three real roots. See CR-001.
-  - Round 2: the same unit directories (excluding `tests/unit/services`) → 211 files passed, 4 skipped; 2038 tests passed, 6 skipped. `tsc` clean.
+  - `pnpm exec vitest run tests/unit/agent-collaboration tests/unit/agent-org-execution tests/unit/agent-team-execution tests/unit/standalone-agent-run-root tests/unit/agent-execution tests/unit/services tests/unit/remote-collaboration tests/unit/application-orchestration --no-watch` → 318 files passed, 4 skipped; 2983 tests passed, 6 skipped. This includes the baseline contract (V-2/V-3), the new append, closure and per-root suites, and the retargeted Claude admission test.
 
 ## Routing Classification Review
 
@@ -42,108 +41,121 @@
 ## Review Scope
 
 - Changed implementation reviewed:
-  - `RootCommunicationEngine`, the new `RootCommunicationPort` and `root-message-append.ts`;
-  - the three persistence coordinators' `commitMessageAppend`;
-  - the three roots' port construction and `getCommunicationSnapshot()`;
-  - `TeamRunMessageDelivery`, `buildTeamCommunicationInputMessage`;
-  - removal of the Team service, adapter and plan, the standalone and Org adapters, `InterAgentMessageRouter` and `TaskAgentExecutionRegistry.reserveInput`;
-  - `admit()` validation;
-  - docs.
-- Areas also read: the reservation capability (`agent-run-input-reservation.ts`); `AgentRunInputAdmissionState.fenceForRootShutdown`; `AgentRun.forceReleaseRuntime`; `AgentRunManager.releaseExactRun`; Task closure ordering in `root-task-execution-resource-scope.ts`.
+  - `RootCommunicationEngine`;
+  - the new `RootCommunicationPort` and `root-message-append.ts`;
+  - the three per-root ports, each in its own file (standalone, Org, Team);
+  - the three coordinators' `commitMessageAppend`;
+  - the three roots: removal of the message-list mirrors, `getCommunicationSnapshot()` built from `engine.getMessages()`, and the correlation checks on the loaded input;
+  - `TeamRunMessageDelivery.deliverIntent`;
+  - `RemoteMessageSend` now wired to the engine;
+  - `admit()`;
+  - removal of the Team service, adapter and plan, the standalone and Org adapters, `InterAgentMessageRouter`, `TaskAgentExecutionRegistry.reserveInput`, `nextMessages` and the Team root-mismatch branch;
+  - module docs.
+- Also read:
+  - the removed base files at `1e7a7cca4d` (Team service, Team append plan, engine) to verify the A-table preservation claims and K-1;
+  - the reservation capability.
 - Explicit exclusions:
-  - behavior the design leaves unchanged: the `TeamRun`/`TeamRunBackend` seam, the handles, address resolution, the global router;
-  - R-1..R-3 (user-confirmed out of scope);
-  - the baseline-contract JSON record itself (API/E2E-adjacent evidence).
+  - behavior the design leaves unchanged: `AgentRun` semantics, member handles, `TeamRun`, address resolution, `RemoteMessageSend` sequencing, stores;
+  - FU-001..FU-004 (follow-ups);
+  - the uncommitted `docs/design-cases.md` (not implementation source).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood:
-  - one teammate-delivery implementation with per-root outcomes preserved byte-for-byte;
-  - REQ-012 defines the Task-closed outcome: no fail-stop, and the sender gets `TaskDelegationError TASK_AGENT_RESOURCE_CLOSED` "as for a closure just before the save";
-  - dead code removed; validation written once; docs.
-- Design-spec behavior map verified against the implementation:
-  - DS-001/DS-002 match: engine → port → coordinator `commitMessageAppend`, with `prepare` under the lock, then write, then `cancelBeforeDurability` or `commitAfterDurability`, and `abandon` on a coordinator throw.
-  - RR-001 is applied: the Team indeterminate error is a plain `Error` with the old text.
-  - RR-004 is applied: the Team port's `isOpen()` returns `true`, the engine's own `accepting` replaces the Team service flag, `closeAdmission()` is called at `root-team-run.ts:420,433`, and the code and text `TEAM_RUN_NOT_ACCEPTING_MESSAGES` are unchanged.
-- Design review report and round confirmed: ARCH-REV-002 Pass.
+  - REQ-007/008/013: one append owner for every root and entry form, with per-root codes, texts, bytes and order preserved.
+  - REQ-012 + DEC-005: every Task-scope closure on the teammate path returns `{accepted:false, code:"TASK_AGENT_RESOURCE_CLOSED", message}`, whether it is found before the slot, under the lock or after durability. Closure after durability keeps and publishes the record, drops the slot and never presents. A recipient that stopped gives `AGENT_RUN_NOT_ACCEPTING_INPUT`. A genuine post-durability throw still fail-stops.
+- Design-spec behavior map verified against the implementation: DS-004 pseudo-code matches `root-message-append.ts` and `reserveAndCommit`, step by step. A1–A16 were spot-checked against the base code:
+  - A1 order. Team base: list → commit → `COMMUNICATION` → `MEMBER_INPUT` → release. New: `setMessages` → scope → `commit` → `publishToRootView` → `present` → `release`.
+  - A4 / C-1: `deliverNotAccepting` is used only by `deliver`. The Team keeps `TEAM_RUN_NOT_ACCEPTING_MESSAGES` with `ROOT_NOT_ACTIVE_MESSAGE`, the same text as the removed service. The remote forms use the generic refusal.
+  - A5: conflict texts are byte-identical to the design list.
+  - A7: the Team indeterminate `Error("Team message finalization is indeterminate at '<stage>'.")` is kept.
+  - A10: the correlation checks now read `options.messages`.
+  - A11: the Team port's `isOpen()` returns `true`, and the engine flag closes via `closeAdmission`.
+  - A12: `admit()` now relies on `reserve()`'s checks.
+  - A16: the duplicate check runs under the lock for every root.
+- Design review report and round confirmed: ARCH-REV-003 Pass; AR3-NB-001..004 applied, per the handoff and spot checks.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior: None (CR-001 is an implementation gap against the existing REQ-012 contract).
+- Changed or newly discovered behavior: K-1 (Team release in `finally`), judged below, falls within DS-004 as designed.
 - Remaining material ambiguity: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting / Newly Discovered Evidence |
 | --- | --- | --- | --- |
-| BEH-004 (one delivery owner, per-root outcomes preserved) | Confirmed | Three ports into one engine. V-2/V-3 baseline contract passes per root (bytes, IDs, codes, messages, event order) | — |
-| BEH-005 (dead code removed, global router kept) | Confirmed | `InterAgentMessageRouter` and `TaskAgentExecutionRegistry.reserveInput` deleted; no remaining references (tsc clean) | — |
-| BEH-001 (`admit()` validation once) | Confirmed | `admit()` = reserve + commit + release; checks only in `reserve()` | — |
-| BEH-007 (docs) | Confirmed | Module docs now name both entry points and the real teammate path | — |
-| BEH-008 / REQ-012, post-durability closure | Confirmed | `commitAfterDurability` catch: closure recorded, cancel failure tolerated ("the recipient already dropped the slot"); the engine rethrows `TaskDelegationError`/`CollaborationContractError`, or returns `AGENT_RUN_NOT_ACCEPTING_INPUT` | — |
-| BEH-008 / REQ-012, closure found under the lock before the write ("just before the save") | Confirmed (round 2) | `prepare()` → `assertDeliveryAllowed()` throws → coordinator rejects → engine `abandon()` → `dropSlot()`, which tolerates a slot the forced release already dropped, so the `TaskDelegationError` propagates unchanged. Engine and per-root CR-001 tests cover it (the IE reports they fail with the fix stashed) | Round 1: CR-001 (resolved) |
+| BEH-004 (one append owner, per-root outcomes preserved) | Confirmed | Engine → port → coordinator `commitMessageAppend` → `RootMessageAppend`. V-2/V-3 baseline contract per root and entry form passes (rerun by the reviewer) | — |
+| BEH-005 (dead code) | Confirmed | Router, registry method, `nextMessages` and the Team mismatch branch are removed; `tsc` clean; the router test is retargeted (`teammate-input-claude-active-turn-admission.test.ts`) | — |
+| BEH-001 (`admit()` validation once) | Confirmed | `admit()` = reserve + commit + release | — |
+| BEH-007 (docs) | Confirmed | The module docs describe both entry points and the one append owner | — |
+| BEH-008 / REQ-012 + DEC-005 | Confirmed | Before slot: `refuseOutsideTaskScope`. Under lock: `prepare` → `refused` → `dropSlot`. After durability: `closeAfterDurability` → publish, `dropSlot`, `task_scope` closure. The engine maps each to the refusal. CR-001 lesson applied: a single tolerant `dropSlot`, with a test for a dropped slot under the lock in every root | — |
+| K-1 (Team release on a post-durability publish/present throw) | Confirmed within the design | Base Team plan released only after both publishes, so a throw left a committed entry unreleased. Now the release is in `finally`, as standalone and Org already did and as DS-004 states | Judged in CAND-302 |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
 | Scenario ID | Related Behavior / Contract IDs | Kind | Actor / Initiator | Coherent Goal Or Governing Event | Supported Entry Surface / Event | Scenario Shape | Forward Production Path / Lifecycle | Expected Outcome / Consequence | Independent Evidence | Scenario Validity | Review Use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-005/006 | BEH-004, REQ-007/008/013 | System | Agent (sender) | Message a teammate | `send_message_to`, handoffs | Normal | DS-001/DS-002 | Saved and delivered together; per-root codes and events | requirements; V-2/V-3 contract test | Supported Normal Scenario | Use |
-| SCN-014 (Task closes while a teammate message is being saved) | BEH-008, REQ-012, DEC-001 | Operational | Task owner (user or Manager) marks DONE/CANCELLED while another agent's message is in flight | Close the Task | Task DONE/CANCELLED | Explicit Edge (approved by DEC-001) | Reserve → wait for the root history lock → Task closes (scope closed, then `releaseTaskExecutions` → `releaseExactRun` → `forceReleaseRuntime` → `fenceForRootShutdown` removes **reserved** entries) → `prepare` scope check | REQ-012: thrown `TaskDelegationError TASK_AGENT_RESOURCE_CLOSED`, no fail-stop | requirements REQ-012 text; OBS-003 probe; source chain cited in CR-001 | Supported Explicit Edge Scenario | Use |
+| SCN-005/006 | BEH-004, REQ-007/008/013 | System | Agent (sender) | Message a teammate | `send_message_to`, handoffs | Normal | `deliver` → DS-004 | Saved and delivered together; per-root codes and events | requirements; V-2/V-3 contract | Supported Normal Scenario | Use |
+| SCN-016 | REQ-007, remote contract rows | System | Remote peer / local sender | Remote messaging | `acceptFromRemote`, `prepareRemoteSend` → `commitSentToRemote` | Normal | DS-004 with no root-view publish (accept) or no receiver (sender record) | Only the own run's log line; codes unchanged | requirements SCN-016; `remote-message-view-sequence.test.ts`, contract | Supported Normal Scenario | Use |
+| SCN-014 | BEH-008, REQ-012, DEC-005 | Operational | Task owner marks DONE/CANCELLED while a message is in flight | Close the Task | Task DONE/CANCELLED | Explicit Edge (approved) | Scope closes → copy force-released (slot may be dropped) → under-lock or post-durability scope check | Refusal, no fail-stop, the root keeps working | requirements; OBS-003 repro; v2 CR-001 evidence | Supported Explicit Edge Scenario | Use |
 
 ### Candidate Finding And Mechanism Gate
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| CAND-001 | `abandon()` / conflict / `cancelBeforeDurability` call `reservation.cancel()` unguarded. After a Task's forced release has dropped the reserved entry, `cancel()` throws and the sender gets `Error("AgentRun input reservation '<n>' cannot be cancelled.")` instead of `TASK_AGENT_RESOURCE_CLOSED` | SCN-014 / REQ-012 | Task DONE/CANCELLED while the message waits for the root history lock (for example behind another teammate's write) | The scope closes before the release (`root-task-execution-resource-scope.ts:77-97`). The release force-releases the run (`agent-run-manager.ts:~320`, `agent-run.ts:133-136`), which removes reserved entries (`agent-run-input-admission-state.ts:384-390`). `cancel()` then throws when `cancelEntry()` is false (`agent-run-input-reservation.ts:33-35`). `prepare()` throws the scope error (`root-message-append.ts`), and the engine's catch calls `abandon()` → `cancel()` → a new throw that masks the scope error | Reviewer probe on all three real roots, with the held slot dropped as the forced release does: `{"error":{"name":"Error","message":"AgentRun input reservation '2' cannot be cancelled."}}` for standalone, Org and Team | Promote → CR-001 | Contract deviation in an approved scenario. The same file already tolerates exactly this in the post-durability path, so the fix is one tolerant cancel helper and one test |
-| CAND-002 | A history-publish throw after durability now fail-stops **before** the input is committed (before: committed and released, then fail-stop) | REQ-012 "genuine post-durability failures still fail-stop" | A local listener/publisher throw | The root fail-stops and terminates in both orders. The recipient's input is moot | IE note 2; design D-4 | Reject | Genuine local failure; outcome (fail-stop) preserved; no supported scenario where the difference is observable after termination |
-| CAND-003 | Excluding the handle doubles' agent-status events from the V-2/V-3 record | Contract test boundary | — | A real `reservation.commit()` publishes no status. Dispatch, and with it any status change, happens only after `release()` through the drain microtask, in both old and new order. The root-published order is history then presentation in both | `agent-run.ts` reserve/commit path; `agent-run-input-reservation.ts` | Reject (boundary confirmed correct) | Answers IE question: the boundary is right, and the internal reorder is caller-invisible |
-| CAND-004 | `release()` no longer re-asserts the delivery scope (the old guarded release did) | — | Closure between `commit()` and `release()` | Both run synchronously in `commitAfterDurability` (`presentRecipientInput` is synchronous) | `root-message-append.ts` | Reject | Not reachable |
-| CAND-005 | A conflict-path `cancel()` after root-shutdown fencing has the same unguarded-cancel shape | Root stop | Root terminate during a message | The sender is being shut down with the root | — | Covered by the CR-001 fix | The same helper fixes it; no separate finding |
+| CAND-301 | v2 CR-001 regression risk: an unguarded slot cancel masks the outcome | SCN-014 | DONE while waiting for the lock | `dropSlot()` swallows only `cancel()` failures. It is used by the conflict, refused, `cancelBeforeDurability`, closure and `abandon` paths. Per-root test "DEC-005: … dropping the held slot … gives the same refusal" | `root-message-append.ts`; `root-communication-task-closure.test.ts:236` | Reject (not present) | Lesson applied and covered |
+| CAND-302 | K-1: Team now releases a committed slot in `finally` when publish/present throws after durability (base did not) | DS-004; "genuine post-durability failure fail-stops" | A local publisher/listener throw | Releasing makes the recorded input dispatchable while the root fail-stops and terminates. Without the release, a committed entry stays in the recipient's FIFO, which blocks later input until termination. The durable history already records the message, so releasing is consistent with the record. Caller-visible codes, texts and order are unchanged (V-3) | Base Team plan at `1e7a7cca4d`; DS-004 "release the slot (in a finally, as today)"; standalone/Org base did this already | Reject as a finding; accept K-1 | Genuine-failure path with no supported trigger. Unifying on the existing standalone/Org behavior is the designed shape and removes a root-kind difference |
+| CAND-303 | Standalone package creation now runs after `prepare` (base: the conflict check was before the lock, then package creation) | A8 | First message to a peer-started run | A conflict or refused message now writes no package. The package's messages file is still `getMessages()` without the new message, then appended. Bytes are unchanged on the success path (V-2) | `standalone-root-persistence-coordinator.ts` `commitMessageAppend` | Reject | Equivalent or stricter; no supported scenario changes |
+| CAND-304 | The contract test closes Team admission with a white-box `communication.closeAdmission()` | V-3 test boundary | — | Team admission closes only through `closeAdmission` in production (fail-stop, terminate), so the call reproduces that state directly | handoff note; `root-team-run.ts` | Reject | Acceptable test seam; the production close path is the same method |
+| CAND-305 | The contract filters agent-status events that only the handle doubles emit | V-2/V-3 boundary | — | A real `reservation.commit()` publishes nothing; dispatch follows `release()` (confirmed in v2 CRR-001 CAND-003, and the code is unchanged) | `agent-run-input-reservation.ts` | Reject (boundary correct) | — |
+| CAND-306 | Root files still near the size limit | DESIGN guidance; design "must not grow" | — | They shrank. Effective lines: `root-team-run.ts` 495 (base 499), `standalone-agent-run-root.ts` 488 (base 489), `agent-org-run.ts` 428 (base 429) | measured | Reject | Within the limit, and shrinking. The split stays out of scope as designed |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment preserved | Pass | Duplicated policy (three commit protocols, two adapters plus the Team service) replaced by one engine-owned append | None |
-| Matches behavior-defining supplemental artifacts | Pass | Baseline contract (V-2/V-3) passes per root | None |
-| Data-flow spine clarity and preservation | Pass | `deliver` → port reserve → coordinator `commitMessageAppend` (lock) → append steps → engine outcome mapping | None |
-| Ownership boundary preservation | Pass | Engine owns sequencing and the reservation lifecycle; coordinators own lock, envelope, write and latch; ports own facts and effects | None |
-| Off-spine concern clarity | Pass | Per-root builders and publishers stay in the ports | None |
-| Existing capability reuse | Pass | Reuses the per-root validators, stores and publishers | None |
-| Reusable owned structures | Pass | One `RootMessageAppend` / `RootMessageAppendResult` contract for all three coordinators | None |
-| Shared-structure tightness | Pass | `RootCommunicationPort` holds only the root differences Q4 found real (rejections, recipient input, history event, presentation) | None |
-| Repeated coordination ownership | Pass | The duplicate and open checks now run once, under the lock, for every root (closing the Q4 drift) | None |
-| Empty indirection | Pass | Team service, adapter and plan removed; `TeamRunMessageDelivery.deliver` is a small identity mapping | None |
+| Task design health assessment preserved | Pass | Duplicated policy (three commit implementations, Team facade, mirrors) replaced by one engine-owned append | None |
+| Matches behavior-defining supplemental artifacts | Pass | Contract V-2/V-3 per root and entry form | None |
+| Data-flow spine clarity | Pass | One spine for `deliver`, `acceptFromRemote` and `commitSentToRemote` | None |
+| Ownership boundary preservation | Pass | Engine owns list, slot and sequencing; coordinators own lock, store, latch and error types; ports supply facts only | None |
+| Off-spine concern clarity | Pass | Ports in their own files, so the root files do not grow | None |
+| Existing capability reuse | Pass | Existing stores, `messageLogOwners`, builders and refusal set (C-2) | None |
+| Reusable owned structures | Pass | One `RootMessageAppend` / `RootMessageAppendResult` / closure type for all coordinators | None |
+| Shared-structure tightness | Pass | The port holds only real root differences (rejections, recipient input, log owners, view publish, presentation) | None |
+| Repeated coordination ownership | Pass | The duplicate and open check moves under the lock for every root (A16) | None |
+| Empty indirection | Pass | Team service removed; `deliverIntent` is a small field mapping; ports are thin by design (facts) | None |
 | Separation of concerns / file responsibility | Pass | — | None |
-| Ownership-driven dependencies | Pass | Coordinators depend only on the `RootMessageAppend` type; no reservation access | None |
-| Authoritative Boundary Rule | Pass | Roots call only `engine.deliver/getMessages/closeAdmission` | None |
-| File placement | Pass | New files are under `agent-collaboration/execution/communication` | None |
+| Ownership-driven dependencies | Pass | Coordinators depend only on the append type | None |
+| Authoritative Boundary Rule | Pass | Roots use `engine.deliver/acceptFromRemote/prepareRemoteSend/commitSentToRemote/getMessages/closeAdmission` only | None |
+| File placement | Pass | Each port sits beside its root's services | None |
 | Flat-vs-over-split layout | Pass | — | None |
-| Interface clarity | Pass | Port members documented; results are a closed union | None |
-| Naming quality | Pass | `commitMessageAppend`, `closureAfterDurability`, `abandon` | None |
-| No unjustified duplication | Pass | The standalone and Org port literals are similar, but they are the data of each root (R-2 is out of scope by user decision) | None |
-| Patch-on-patch complexity | Pass | — | None |
+| Interface clarity | Pass | Closed result unions; documented port members | None |
+| Naming quality (DESIGN rule 8: no version numbers in current names) | Pass | New files and types carry no version numbers. `schemaVersion: 1` is a stored field value, not a name | None |
+| No unjustified duplication | Pass | The standalone and Org port factories are near-identical, but they carry the per-root data (FU-001 covers delivery routing, which is out of scope) | None |
+| Patch-on-patch complexity | Pass | Clean rewrite on the new base; no layering on v2 | None |
 | Dead/obsolete cleanup | Pass | — | None |
-| Tests clear and requirement-aligned | Pass (round 2) | Dropped-slot doubles now throw as AgentRun's do. Covered: CR-001 at engine level and in all three real roots, plus conflict-while-closing, not-written and indeterminate paths with a dropped slot | None |
-| Test fixtures reusable and coherent | Pass | The per-root `RootSubject` harness is reused | None |
-| No stale/duplicated/compat tests | Pass | Team service and plan tests removed together with their code; the router test is retargeted | None |
-| API/E2E readiness | Pass (round 2) | CR-001 resolved; suites pass | None |
+| Tests clear and requirement-aligned | Pass | `root-message-append.test.ts` covers every state and closure, including a dropped slot and abandon after indeterminate. Per-root REQ-012, DEC-005 (dropped slot), recipient-stopped and the genuine-failure counterpart run with real coordinators. The baseline contract was recorded on the unchanged base | None |
+| Test fixtures reusable and coherent | Pass | `communication-port-double.ts`; per-root harnesses reused | None |
+| No stale/duplicated/compat tests | Pass | Append-plan test removed with its code; service test renamed to a port test; router test retargeted | None |
+| API/E2E readiness | Pass | — | API/E2E per the design's gate list |
 
 ## Source File Size And Structure Audit
 
 | Source File | Effective Non-Empty Lines | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `agent-team-execution/domain/root-team-run.ts` | 482 | Pass (near the limit) | Pass (+30/−21) | Pass | Pass | Pass | Watch; no action |
-| `agent-execution/input/agent-run-input-admission-state.ts` | 450 | Pass | Pass (−15) | Pass | Pass | Pass | None |
-| `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | 421 | Pass | Pass | Pass | Pass | Pass | None |
-| `agent-org-execution/domain/agent-org-run.ts` | 395 | Pass | Pass | Pass | Pass | Pass | None |
-| `root-communication-engine.ts` / `root-message-append.ts` / `root-communication-port.ts` | 100 / 98 / 53 | Pass | Pass | Pass | Pass | Pass | None |
-| Three persistence coordinators | 157 / 150 / 144 | Pass | Pass | Pass | Pass | Pass | None |
+| `agent-team-execution/domain/root-team-run.ts` | 495 (base 499) | Pass | Pass (+12/−17) | Pass | Pass | Pass (near the limit, shrinking) | None |
+| `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | 488 (base 489) | Pass | Pass | Pass | Pass | Pass | None |
+| `agent-execution/input/agent-run-input-admission-state.ts` | 451 | Pass | Pass (−15) | Pass | Pass | Pass | None |
+| `agent-org-execution/domain/agent-org-run.ts` | 428 | Pass | Pass | Pass | Pass | Pass | None |
+| `root-communication-engine.ts` | 257 | Pass | Pass (+86/−52) | Pass | Pass | Pass | None |
+| `root-message-append.ts` (new) | 163 | Pass | Pass | Pass | Pass | Pass | None |
+| Three coordinators | 169 / 144 / 143 | Pass | Pass | Pass | Pass | Pass | None |
+| Three ports (new) | 74 / ~40 / ~40 | Pass | Pass | Pass | Pass | Pass | None |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
 | No backward-compatibility mechanisms | Pass | — |
-| No legacy old-behavior retention | Pass | — |
+| No legacy old-behavior retention | Pass | The thrown closure form is removed (DEC-005) |
 | Dead/obsolete cleanup | Pass | — |
-| Persisted-data transition followed | Pass | `Not Affected`; history bytes identical per the baseline contract |
+| Persisted-data transition followed | Pass | `Not Affected`; byte-identical logs per V-2 |
 | No version-specific dual reads/writes | Pass | — |
 | Transition mechanics | Pass | N/A |
 
@@ -153,87 +165,45 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`, already included (REQ-011). The module docs were updated in the same commit. No further doc change is needed for CR-001.
+- Docs impact: `Yes`, already included (D-9 / REQ-011). Seven module docs were updated in `dbc27db9df`. Delivery should verify them against the final head.
 
 ## Additional Material Premise Validation
 
-### Upstream Design-Review Material-Premise Decisions
-
-None reclassified.
-
-### `PREM-CR-001` — the held slot can already be dropped when the engine abandons the append
-
-- Origin: `New`
-- Related contract: REQ-012 ("same Task-closed outcome as a closure just before the save")
-- Behavior: BEH-008
-- Coherent goal or governing event: the Task owner closes the Task while a teammate message waits for the root history lock.
-- Scenario validity: `Supported Explicit Edge Scenario` (SCN-014, DEC-001 approved)
-- Initiating basis kind: `Operational` / `Contract`
-- Trigger: Task DONE/CANCELLED through the Task tools or the UI.
-- Forward path:
-  1. `RootTaskExecutionResourceScope` marks the copy closed, then `releaseTaskExecutions`;
-  2. `releaseOwnedExecution` → `ConfiguredAgentExecutionHandle.releaseRuntime` → `AgentRunManager.releaseExactRun` → `AgentRun.forceReleaseRuntime` → `fenceForRootShutdown` removes `reserved` entries;
-  3. the delivery's queued `commitMessageAppend` reaches `prepare` → `assertDeliveryAllowed` throws;
-  4. `abandon()` → `reservation.cancel()` throws.
-- Lifecycle and consequence: the sender gets a generic `Error` (the MCP internal error path) instead of `TASK_AGENT_RESOURCE_CLOSED`. No fail-stop, and no wrong delivery.
-- Reachability: `Reachable`. The window is the lock wait, which is widened by a concurrent teammate write. The reviewer probe reproduces the outcome on all three real roots.
-- Review consequence: CR-001, a proportionate local fix.
+None new. PREM-301 (ARCH-REV-003) confirmed as implemented and covered by tests.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.4 / 10 (94 / 100), round 2. This is a simple average, for trend only. Round 1 was 9.2.
+- Overall score: 9.5 / 10 (95 / 100). This is a simple average, for trend only.
 
 | Priority | Category | Score | Why | Weak / Holding Down | Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | One traceable delivery spine for three roots | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Engine owns the reservation lifecycle; coordinators never touch it | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.3 | Small port; closed append results | — | — |
-| 4 | Separation of Concerns and File Placement | 9.3 | Clean split | `root-team-run.ts` at 482 lines | Keep future Team root growth out of that file |
-| 5 | Shared-Structure / Data-Model Tightness | 9.3 | Port carries only the real root differences | — | — |
-| 6 | Naming Quality and Local Readability | 9.3 | Clear names; states documented | — | — |
-| 7 | API/E2E Readiness | 9.4 | Strong suites and baseline contract; dropped-slot coverage added at engine level and per root | — | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | REQ-012 is correct both before and after durability. One cleanup rule (`dropSlot`) means cleanup never masks an outcome | Accepted residual: CAND-002 publish-throw ordering | — |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.6 | One append spine for three entry forms and three roots, matching DS-004 | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Engine is the only list and slot owner; coordinators never touch the slot | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | Closed unions; per-entry-form rejection made explicit (C-1) | `RootMessageAppendControl.closure()` is one more thing to read after the result; acceptable | — |
+| 4 | Separation of Concerns and File Placement | 9.4 | Ports in their own files; root files shrank | Root files are still near 500 (pre-existing) | Split remains a later choice |
+| 5 | Shared-Structure / Data-Model Tightness | 9.4 | Port carries only real differences | The standalone and Org port factories look alike, but they are data | — |
+| 6 | Naming Quality and Local Readability | 9.5 | Clear names; comments explain why | — | — |
+| 7 | API/E2E Readiness | 9.5 | Contract, per-root REQ-012/DEC-005 and genuine-failure tests; reviewer rerun green | — | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | A1–A16 hold; CR-001 lesson applied; K-1 aligns Team with the designed release | Genuine-failure ordering differences are accepted (K-1) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean removal | — | — |
-| 10 | Cleanup Completeness | 9.5 | Dead router, registry method, service, adapters and plan removed | — | — |
+| 10 | Cleanup Completeness | 9.6 | Facade, adapters, plan, router, dead method and fields removed; source shrank by 221 lines | — | — |
 
 ## Findings
 
-No open findings (round 2).
+None.
 
-### CR-001 — A Task closed while the message waits for the history lock can mask `TASK_AGENT_RESOURCE_CLOSED` (Resolved in round 2)
+## Answer To The Implementation Engineer's Review Question
 
-- Resolution (IR-003, `10b843f47`):
-  - `dropSlot()` in `root-message-append.ts` is the one cleanup rule. It is used by the prepare conflict, `cancelBeforeDurability`, `abandon` and the post-durability closure.
-  - It swallows only `reservation.cancel()` failures, whose only producer is a slot no longer in the reserved state.
-  - Verified by code reading, the new engine and per-root tests, and the reviewer's suite rerun.
-
-Round-1 record:
-
-- Protects: REQ-012 / BEH-008 / SCN-014. The sender must get the same `TaskDelegationError TASK_AGENT_RESOURCE_CLOSED` as for "a closure just before the save".
-- Candidate: CAND-001; premise PREM-CR-001.
-- Evidence:
-  - `root-message-append.ts`: the shared `cancel` helper calls `input.reservation.cancel()` unguarded. It is used by `prepare` (conflict), `cancelBeforeDurability` and `abandon`. Only the `commitAfterDurability` path tolerates a dropped slot (`try { input.reservation.cancel(); } catch { /* the recipient already dropped the slot */ }`).
-  - `agent-run-input-reservation.ts:33-35`: `cancel()` throws when the entry is gone.
-  - `agent-run-input-admission-state.ts:384-390`: a Task's forced release removes `reserved` entries.
-  - `root-communication-engine.ts`: the engine's catch calls `append.abandon()` before rethrowing, so an `abandon()` throw replaces the original scope error.
-  - Reviewer probe on the three real roots (harness from `root-communication-roots.test.ts`; first write held; second message queued; Task closed; second slot's `cancel` throwing as after a forced release): the sender receives `Error: AgentRun input reservation '2' cannot be cancelled.` in the standalone, Org and Team roots.
-- Required action (implementation-owned, small):
-  1. Make the single `cancel` helper in `root-message-append.ts` tolerate a slot the recipient already dropped, the same way the post-durability path does. Use that helper everywhere, including the post-durability catch, so there is one rule. `abandon()` must never replace the original error.
-  2. Add a test, at engine level and per root through `root-communication-roots.test.ts`, for: Task closed while waiting for the lock **and** the held slot already dropped → `TaskDelegationError TASK_AGENT_RESOURCE_CLOSED`, nothing written, no fail-stop.
-  3. Optional, same helper: a conflict while the root is closing, with a dropped slot, returns the root's conflict rejection rather than a thrown `Error`.
-- No design change: the design already intends `abandon()` to clean up the slot (DS-002, ARCH-REV-002 note "`prepare()` must not change append state before throwing…"). It did not account for the slot already being gone.
-
-## Answers To The Implementation Engineer's Review Questions
-
-1. **Closure classification:** it is correct for the post-durability path. It absorbs only the scope re-check and `reservation.commit()` throws, maps `TaskDelegationError`/`CollaborationContractError` to a rethrow and everything else to `AGENT_RUN_NOT_ACCEPTING_INPUT`. `commit()` throws only when the entry is gone or the fence is closed. The gap is in the **pre-write** cleanup path (CR-001).
-2. **History-publish throw before commit (semantic shift):** accepted (CAND-002). It fail-stops either way, and the difference is not observable after termination.
-3. **RR-004, Team `isOpen()` = `true`:** confirmed equivalent. `closeAdmission()` is called at fail-stop and terminate (`root-team-run.ts:420,433`), and the code and text are unchanged.
-4. **`getCommunicationSnapshot()` built from `engine.getMessages()`:** confirmed. It is the validated list set at commit, and all three roots plus the root-correlation checks now use the initial snapshot's IDs consistently.
-5. **V-2/V-3 boundary (excluding the doubles' status events):** agreed (CAND-003). A real `commit()` publishes nothing, and dispatch follows `release()` in both orders.
+- **K-1 (Team release in `finally`):** accepted, keep the unified behavior (CAND-302).
+  - It only matters on a genuine post-durability publish/present failure, which fail-stops the root either way.
+  - Releasing keeps the recipient's FIFO consistent with the durable record instead of leaving a committed entry stuck.
+  - It matches the standalone/Org base behavior and DS-004.
+  - Caller-visible codes, texts and event order are unchanged.
+- **Contract-test notes:** the white-box Team `closeAdmission()` and the filtered double-only status events are both acceptable (CAND-304, CAND-305).
 
 ## Classification
 
-N/A — `Pass` (round 2). Round 1 was `Local Fix` (CR-001), now resolved.
+N/A — `Pass`.
 
 ## Recommended Recipient
 
@@ -241,17 +211,20 @@ N/A — `Pass` (round 2). Round 1 was `Local Fix` (CR-001), now resolved.
 
 ## Residual Risks
 
-- R-1..R-3 stay out by user decision. R-3 (a throw before the configured handle exists) remains a recorded residual.
-- The V-1 full-suite comparison shows 102 failures that also fail on the baseline. The implementation engineer says each is named; the reviewer did not re-verify that list. Per TESTING rule 9 they need an owner, but outside this ticket.
-- `root-team-run.ts` is at 482 effective lines.
+- FU-001..FU-004 remain follow-ups (shared standalone/Org recipient routing; untyped throw before a member handle exists; the post-start rejection status asymmetry; opaque `-32603` for thrown delivery errors).
+- The root files are near the 500-line limit (pre-existing; they shrank).
+- V-1 reports the same 24 failures before and after; the reviewer did not re-verify that list. They need an owner outside this ticket (TESTING rule 9).
+- `docs/design-cases.md` is modified in the worktree but uncommitted (Solution Designer's edit). Delivery decides whether to commit it.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 2)
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (PREM-CR-001 Reachable)
-- Score Summary: 9.4/10. Every category is ≥ 9.0.
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.5/10. Every category is ≥ 9.0.
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: CR-001 is resolved. For API/E2E: re-run the delivery-relevant gated suites, REQ-012 / SCN-014 in a real root, and the V-2/V-3 baseline contract on the final head.
+- Notes: API/E2E gates per the design:
+  - a real teammate message, a Task-closure race (during the write and while waiting for the lock) and a remote message per root, through the server;
+  - re-run the v2 race suite's intent on the new base if it is carried over.
