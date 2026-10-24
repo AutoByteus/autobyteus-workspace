@@ -345,6 +345,10 @@ update it in the same change.
   schema version fields; never reuse a field name with a new meaning; stored
   names follow renames that remove a wrong or second meaning (rule 10); old
   shapes live only inside registered migrations.
+- **Domain vocabulary:** [`GLOSSARY.md`](GLOSSARY.md) is the authority for
+  domain words, with
+  [`collaboration_model.md` § 1](autobyteus-server-ts/docs/design/collaboration_model.md)
+  for collaboration words (Principle 15).
 - **Agent collaboration and orchestration:** the
   [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
   is the canonical contract for runs, membership versus delegation,

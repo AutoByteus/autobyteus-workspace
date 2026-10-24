@@ -5,6 +5,11 @@
 The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-10 … CM-12, § 4);
 this document describes the mechanics.
 
+Vocabulary ([Glossary](../../../GLOSSARY.md#nodes)): a *node* is one server with its node ID (`nodeId`, `srv_…`);
+*remote* says where a node is; a *peer* is a remote node registered with this node (`PeerNode`, `peers.json`,
+`list_peer_nodes`). In this module `nodeId` always means a node's ID, and a request's network address is its
+*client address*, never a peer.
+
 `src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent or shared Agent
 Team of another node, and lets the delegator and the remote run (every member of a remote Team) message each
 other by run ID. With the discovery tools, an agent also finds the peers and what each offers (autobyteus-261).

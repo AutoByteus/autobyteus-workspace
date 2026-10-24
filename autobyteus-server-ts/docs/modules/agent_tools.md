@@ -181,7 +181,9 @@ a sender whose member context can list (a run that can delegate).
   [Remote Collaboration](remote_collaboration.md#discovery).
 - `list_peer_nodes` takes no arguments and returns
   `{ nodes: [{ name, status: "available" | "unavailable" }] }`: this node's registered
-  peers in registration order, each asked now. `available` means the peer answers and
+  peers in registration order, each asked now. A *peer* is a remote node registered with
+  this node ([Glossary](../../../GLOSSARY.md#nodes)); a remote node that isn't registered
+  is not listed. `available` means the peer answers and
   takes this node's requests; anything else is `unavailable`, and
   `list_available_agents` with that node gives the reason.
 - Both need this node's remote collaboration switch on: with it off the agent gets

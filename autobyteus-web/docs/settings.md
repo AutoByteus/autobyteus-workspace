@@ -203,6 +203,12 @@ per-team, runtime, provider, or frontend-renderer preference.
 
 ## Nodes: Manage Nodes (one list)
 
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
+
 Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
 Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
 once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
