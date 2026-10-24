@@ -34,6 +34,6 @@
 - Trigger: the user on FU-001: "The version number like compatibility number, I think we should remove it … it's against our rule". The iOS app checks it (`ConnectionValidator.swift:135`, `>= minimumCompatibilityVersion`), which is a version check rule 9 rules out.
 - Changes:
   - REQ-909 and design Step 1b: remove the field and the iOS check; the only intended behavior change.
-  - REQ-901 and Step 4 extended to the phone apps' saved node records (iOS `SavedNodeProfile`, Android `NodeProfile` → entry), found while tracing the field.
+  - REQ-901 and Step 4 extended to the phone apps' saved node records (iOS and Android `SavedNodeProfile` → `SavedNodeEntry`), found while tracing the field.
 - Approval: REQ-909 is the user's request; the entry naming is within the approved direction.
 - Route: an addendum to the architecture review in progress.

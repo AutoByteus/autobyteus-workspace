@@ -24,7 +24,7 @@ The words node, peer, remote and embedded, and the word `nodeId`, mean different
 
 | ID | Requirement |
 | --- | --- |
-| REQ-901 | In code, `nodeId` means only the node's ID. A client's own record of a node is an **entry** with an **entry ID** (`entryId`): the desktop's registry, its changes, the window context, the mobile session, and the phone apps' saved node records (iOS `SavedNodeProfile`, Android `NodeProfile`), with every caller (V-01, V-09). |
+| REQ-901 | In code, `nodeId` means only the node's ID. A client's own record of a node is an **entry** with an **entry ID** (`entryId`): the desktop's registry, its changes, the window context, the mobile session, and the phone apps' saved node records (iOS and Android `SavedNodeProfile`), with every caller (V-01, V-09). |
 | REQ-902 | The node's ID has one name in code: `nodeId`. `ServerInstanceIdentityService` becomes `NodeIdentityService` (`getNodeId`); the web's `serverInstanceId` and `isServerInstanceId` become `nodeId` and `isNodeId` (V-02). The wire field is U-2. |
 | REQ-903 | Names that mean "registered peers" say peer (V-03): the tool `list_available_nodes` becomes `list_peer_nodes` (the user's decision); `AvailableNode` → `PeerNodeStatus`; `RemoteDiscoveryChannel` → `PeerDiscoveryChannel`; `RemoteNodeDiscovery` → `PeerNodeDiscovery`; `RemotePeer` → `PeerNodeRef`. The tool's texts and the docs and agent configs that name it change with it. |
 | REQ-904 | "peer" is not used for other things. The connecting client's network address is the **client address** (V-04). Sibling task agents in the run tree are **siblings** (V-05). |
