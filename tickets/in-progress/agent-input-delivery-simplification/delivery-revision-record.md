@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-004 Pass from `/software_engineering_team/code_reviewer` (HEAD `a55b727dc`) | N/A | Integrated, docs synced, handed to the user for verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 | DR-002 | User request: merge the latest `origin/personal` | DR-001 (held for verification on `d28c56d5d`) | Re-integrated on `359d2c0ef` (`3e27756d5`), rechecked, held for verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
+| DR-003 | v3 package from `/software_engineering_team/code_reviewer` (CRR-006, HEAD `34561796af`); v2 superseded | DR-002 (v2, superseded) | v3 integrated on `ddd6fdcdf6`, docs synced, finalized and released as a beta (see report) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `user-verification.md` |
 
 ## Revision Entries
 
@@ -54,3 +55,25 @@
 - Why this delivery revision was recorded: base refresh at user request, changing the verified candidate
 - Next recipient/action: the user. Verify, then decide on finalization and release.
 - Remaining blockers, rollback concerns, or untested scope: none new. Accepted residuals are unchanged (`handoff-summary.md`).
+
+### DR-003 — v3 package: integration, docs sync, finalization and beta release
+
+- Delivery round and trigger: round 3. The v3 package came from `/software_engineering_team/code_reviewer` (CRR-006 Pass, HEAD `34561796af`, base `0216c6fb14`). It supersedes v2: DR-001/DR-002 and the `history/*.v2.md` reports are history only, and the v2 branch is not merged.
+- Triggering upstream report, verification, or evidence: `api-e2e-test-review-report.md` (CRR-006), `api-e2e-execution-coverage-report.md` (API-REV-003, 95%), `code-review-report.md` (CRR-005, 9.5/10); `user-verification.md`
+- Prior authoritative result: DR-002 (v2, held for verification; superseded)
+- Current authoritative result:
+  - Ticket records and `docs/design-cases.md` checkpointed as `de6fa6fbea`.
+  - `origin/personal` `ddd6fdcdf6` (41 commits) merged as `cd0b15f806` with no conflicts.
+  - Post-merge checks: builds, tsc, 3602 unit tests, 89 integration tests, 30 focused E2E tests and 37 two-server tests pass.
+  - The broad regression rerun was stopped at the tool limit after 6 files; the only failure was the known `delegated-launch-config-defaults`.
+  - Docs verified, and two stale references fixed.
+  - Finalization and the beta release are recorded in `release-deployment-report.md`.
+- Docs sync report: `docs-sync-report.md` (v3)
+- Handoff summary: `handoff-summary.md` (v3)
+- Release/publication/deployment report: `release-deployment-report.md` (v3)
+- Integration and post-integration verification: merge `cd0b15f806`; logs `delivery-evidence/v3/dr3-*.log`
+- User verification/finalization state: decided by the user in advance and confirmed during delivery (finalize, new beta)
+- Terminal return to `/solution_designer`: see `release-deployment-report.md` Final Status
+- Why this delivery revision was recorded: the v3 package replaced v2
+- Next recipient/action: finalization, release, cleanup, then terminal return
+- Remaining blockers, rollback concerns, or untested scope: accepted residuals are in `handoff-summary.md`.
