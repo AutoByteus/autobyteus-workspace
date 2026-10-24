@@ -53,7 +53,11 @@ export class AnchoredCommandHandle {
     this.child.stdout?.on('data', (bytes: Buffer) => !this.stdout.writableEnded && this.stdout.write(bytes));
     this.child.stderr?.on('data', (bytes: Buffer) => !this.stderr.writableEnded && this.stderr.write(this.decoder ? this.decoder.push(bytes) : bytes));
     this.child.on('message', value => { const frame = parseAnchorFrame(value); if (frame) this.frame(frame); });
-    this.child.once('error', error => { this.anchorExited = true; this.exitLatch.resolve(); this.fail(error.message); });
+    this.child.on('error', error => {
+      // Only failed spawn has no PID. A send/kill error is not process-exit evidence.
+      if (!this.child.pid) { this.anchorExited = true; this.exitLatch.resolve(); }
+      this.fail(error.message);
+    });
     this.child.once('exit', () => { this.anchorExited = true; this.exitLatch.resolve(); this.controlLost(); });
     this.child.once('disconnect', () => this.controlLost());
     this.child.stdin?.on('error', error => this.fail(error.message));
