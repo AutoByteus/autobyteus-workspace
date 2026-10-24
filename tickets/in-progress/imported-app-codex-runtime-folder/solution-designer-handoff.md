@@ -29,6 +29,15 @@ New E2E (AC-001, AC-002); the transition unit test (AC-003); the existing lifecy
 
 None.
 
+## SR-002 (2026-10-24): decision on code review CRR-001
+
+- Code review CRR-001 found a pre-existing reentry defect (C-01). Reload or repair of a previously ACTIVE Brief Studio ends QUARANTINED because `recoverParticipants` starts the worker while the app is REENTERING. Identical on base. It made AC-003 as first written ("the application stays usable" after a reload) fail in API-06.
+- Decision (DEC-004): option 3, narrow AC-003 to this ticket's change: on a reload, each current application's runtime folder is prepared after the catalog commit and before readiness. API-02 already proves this. C-01 is not a prerequisite, because the Task's goal (import, then start without a restart) is proven by AC-001/AC-002. It is recorded as follow-up FU-003 with its evidence and suggested Task, and it is sent when this ticket leaves the team.
+- AC-005 clarified: the desktop journey is import then launch with the real `codex`, with no reload or repair. It can run now.
+- No code change: implementation `1d49973440` stands; design unchanged; `Small` / `Low` unchanged.
+- Next: API/E2E resumes. Record AC-003 against API-02 and API-06 as FU-003 evidence (not a case of this ticket); run API-07 (AC-005).
+- Route: handoff rule "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer`, who forwards to API/E2E with no code change.
+
 ## Route
 
 Handoff rule "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer` (2026-10-24).

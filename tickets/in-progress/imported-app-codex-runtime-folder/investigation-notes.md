@@ -91,6 +91,15 @@
 | --- | --- | --- | --- | --- | --- |
 | R-01 | Risk | Folder creation fails (permissions, disk) | Import then fails | Error propagates like any transition failure; the transition's rollback path handles it, as for startup | Accepted |
 
+## SR-002 Evidence (code review CRR-001)
+
+| Date | Type | Source | Finding | Established |
+| --- | --- | --- | --- | --- |
+| 2026-10-24 | Report | `code-review-report.md` C-01; API/E2E `api-e2e-execution-coverage-report.md` API-06 | Reload or repair of a previously ACTIVE Brief Studio ends QUARANTINED: `recoverParticipants` (`application-reentry-service.ts:150-155`) starts the worker before `activateApplication`; the worker's start hook calls `listRunBindings`, which `requireApplicationActive` refuses in REENTERING | Reproduced by API/E2E (base and fix identical); read and confirmed by the Solution Designer in the report's cited evidence (`evidence/API-06-cause-stack-diagnostic.log`) |
+| 2026-10-24 | Doc | `autobyteus-server-ts/docs/modules/application_orchestration.md:175-180`, `applications.md:111` | Docs say reentry activates with the worker stopped | Read (via the report) |
+
+Disposition: not caused by this ticket and not a prerequisite (the Task's goal is proven without it). AC-003 narrowed; follow-up FU-003 (requirements DEC-004).
+
 ## Architecture Investigation Findings
 
 - Startup and catalog transition both bring catalog applications to readiness; only startup prepares the runtime folder first (E-01, E-03). The owner of the folder exists (E-06) and is available at the wiring site (E-07).

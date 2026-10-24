@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
-- Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the direction (user informed, 2026-10-24)
+- Current solution revision ID: `SR-002`
+- Approved requirements baseline: `requirements-doc.md` at SR-002 (AC-003 narrowed after code-review CRR-001), approved by the Solution Designer within the direction (user informed, 2026-10-24). The design itself is unchanged by SR-002.
 - Behavior-defining supplements: none
 - Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/tickets/in-progress/imported-app-codex-runtime-folder/investigation-notes.md`
@@ -40,8 +40,9 @@ The catalog transition prepares each current application's runtime folder (throu
 
 - In scope: UC-001, UC-002. `application-catalog-transition-service.ts` (dependency + step), `build-application-platform-runtime.ts` (pass `storageLifecycleService`), unit test of the transition service, new server E2E.
 - Derived consumers: `ApplicationPackageCommandService` (import/reload/remove) and `reloadAndReenter` callers get the fix through `commitAndRecover`; no change to them.
-- Deliberately left alone: readiness rules and texts (`ApplicationProviderCredentialReadinessAdapter`, `AgentRuntimeSignInReader`); Antigravity/Grok readiness (FU-004 of autobyteus-207, its own Task); startup lifecycle; engine storage preparation.
-- Follow-ups: none found.
+- Deliberately left alone: readiness rules and texts (`ApplicationProviderCredentialReadinessAdapter`, `AgentRuntimeSignInReader`); Antigravity/Grok readiness (FU-004 of autobyteus-207, its own Task); startup lifecycle; engine storage preparation; reentry recovery after the readiness step (`ApplicationReentryService.recoverParticipants`, which starts the worker before ACTIVE; SR-002).
+- Follow-ups: FU-001, FU-002 (implementation), FU-003 (reentry starts the worker before ACTIVE; code-review C-01, SR-002).
+- SR-002 correction of this spec's spine: DS-001 ends at `recoverParticipants -> availability ACTIVE` for a newly imported application (no prior participant: `activateApplication` directly). For a previously ACTIVE participant (reload, repair), the tail first starts the worker and can quarantine it (FU-003). The design assumed that tail worked for reload; it does not, independently of this change.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 

@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `imported-app-codex-runtime-folder` (Project Task `autobyteus-238`)
 - Request / ticket: autobyteus-238. An application imported while the server runs, with Codex as its launch runtime, is quarantined until the server restarts (FU-006 of autobyteus-207)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on behalf of the user
 - Requirements owner: Solution Designer
 - Date: 2026-10-24
-- Approved by and reference: `Solution Designer within the direction (user informed)`. Reference: the Solution Designer's conversation message of 2026-10-24 (SR-001)
-- Exact approved requirements baseline / solution revision: this document at SR-001
+- Approved by and reference: `Solution Designer within the direction (user informed)`. Reference: the Solution Designer's conversation messages of 2026-10-24 (SR-001; SR-002 narrowing AC-003 after code-review CRR-001)
+- Exact approved requirements baseline / solution revision: this document at SR-002
 - Behavior-defining supplements: none
 
 ## Problem And Desired Outcome
@@ -26,7 +26,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | SCN-001 | Import → readiness spawns Codex in `<data>/applications/<app>/runtime`, which does not exist yet → `ENOENT` → "Codex authentication is unavailable: …" → not ready → QUARANTINED | The application's runtime folder exists before its readiness check; readiness reads Codex's real sign-in state; the application becomes ACTIVE | Readiness rules and texts for Codex/Claude/providers; a really signed-out Codex still blocks with "Codex authentication is unavailable: no logged-in account." | E-01…E-05, SD-01 |
 | BEH-002 | System | SCN-002 | At startup the runtime folder of each catalog application is prepared before readiness (works) | Unchanged | Startup order | E-03 |
-| BEH-003 | User | SCN-003 | Reload of an imported package goes through the same catalog transition | Same fix applies | — | E-02 |
+| BEH-003 | User | SCN-003 | Reload of an imported package goes through the same catalog transition. Separately, a reload or repair of a previously ACTIVE application whose worker start hook calls the host (Brief Studio) ends QUARANTINED: reentry starts the worker before it activates the application (C-01, follow-up FU-003; identical on base) | The runtime folder is prepared before readiness on reload too | Reentry recovery itself (FU-003, out of scope) | E-02; code-review CRR-001 |
 
 ## Stakeholders, Actors, And Outcomes
 
@@ -48,6 +48,7 @@
 - FU-004 of autobyteus-207 (application readiness for Antigravity and Grok, now "unsupported"). It touches the same readiness code but changes launch behavior. It is a separate Task, not assigned to this bundle.
 - How readiness reads sign-in (`AgentRuntimeSignInReader`), and its texts.
 - The application engine's own storage preparation (`ensureStoragePrepared` on engine start).
+- Reentry recovery and admission after a reload or repair (`ApplicationReentryService.recoverParticipants` starting the worker before ACTIVE): pre-existing (`598ee2c2f8`), other functionality; follow-up FU-003 (SR-002, DEC-004).
 
 ### Non-Goals
 
@@ -82,9 +83,9 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, REQ-002 | BEH-001, SCN-001 | Server running without the package; Codex signed in (scripted); import Brief Studio by GraphQL | The application is ACTIVE; launch settings GET returns 200 with readiness `RUNNABLE`; launching its drafting team returns `ATTACHED` and its Codex thread starts | — | New server E2E (starts from `evidence/repro-imported-app-codex-launch.e2e.test.ts`, fails on base) |
 | AC-002 | REQ-003 | BEH-001 | Same, Codex signed out | Readiness `HOST_REQUIREMENT_MISSING` with "Codex authentication is unavailable: no logged-in account." (not a spawn ENOENT) | — | Same E2E, second case |
-| AC-003 | REQ-001 | BEH-003, SCN-003 | Reload of the imported package | Runtime folder exists; the application stays usable | — | Unit test of the catalog transition order |
+| AC-003 | REQ-001 | BEH-003, SCN-003 | Reload of an imported package (catalog transition) | Each current application's runtime folder is prepared after the catalog commit and before readiness runs (SR-002: the application's usability after the reload depends on reentry recovery, FU-003, and is not part of this criterion) | — | Unit test of the catalog transition order |
 | AC-004 | — | BEH-002 | Existing suites | Server unit tests for catalog transition, platform lifecycle; `agent-runtimes-running-agents.e2e` pass | — | Existing tests |
-| AC-005 | REQ-001 | SCN-001 | Real app | An imported Codex-default application starts without a restart | — | API/E2E judgement; user check optional |
+| AC-005 | REQ-001 | SCN-001 | Real app, real `codex`: import while the server runs, then launch (no reload or repair in the journey, SR-002) | An imported Codex-default application starts without a restart | — | API/E2E judgement; user check optional |
 
 ## Relevant Scenarios And Journeys
 
@@ -128,6 +129,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Prepare the folder before readiness, or let readiness handle a missing folder? | Where the fix lives | (a) catalog transition prepares runtime folders, as startup does; (b) readiness creates the folder; (c) readiness skips/uses another cwd | (a). The runtime folder is the application's working directory for its runs too; storage preparation belongs to storage, and startup already does it in this order (SD-02 proves it sufficient). (b) puts a write into a read; (c) would check readiness in a folder the run does not use. | Solution Designer | Decided |
 | DEC-002 | Do FU-004 (Antigravity/Grok readiness) together? | Scope | The Task says "may"; FU-004 changes launch behavior and is its own Task | Keep separate; it is not in this bundle | Solution Designer | Decided |
+| DEC-004 (SR-002) | Code review CRR-001 found reload/repair of an ACTIVE Brief Studio ends QUARANTINED (C-01). Prerequisite, extend this ticket, or narrow AC-003? | AC-003 as first written ("stays usable") fails | C-01 is pre-existing (identical on base), in reentry admission (`application-reentry-service.ts:150-155`, `598ee2c2f8`), unrelated to runtime folders. The Task's goal (import, then start without a restart) is proven by AC-001/AC-002. Reload entered this ticket only because the folder step sits on the same transition | Narrow AC-003 to what this ticket changes (the folder step on reload). C-01 is not a prerequisite: this ticket reaches its goal without it. It is a real user-visible defect in other functionality, so record it as follow-up FU-003 with the documented fix direction (activate with the worker stopped, as `application_orchestration.md:175-180` describes) and its consequence for an app imported while Codex is signed out. Extending this ticket would change reentry behavior shared by import, reload and repair; that deserves its own Task and review | Solution Designer (within the Task's direction; user informed) | Decided |
 
 ## Traceability
 
