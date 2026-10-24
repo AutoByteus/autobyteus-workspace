@@ -5,7 +5,7 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-r
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Architecture Design Complete, `Small` + `Low` → direct implementation (no architecture review), per `solution-designer-handoff.md`
+- Upstream review applicability and handoff-rule result: Architecture Design Complete, `Small` + `Low` → direct implementation (no architecture review), per `solution-designer-handoff.md`; re-routed at SR-002 after CRR-001 with no code change (DEC-004 narrows AC-003; C-01 → FU-003; AC-005 clarified)
 - Requirements doc: `requirements-doc.md` (SR-001, Approved)
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md`
@@ -19,12 +19,12 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-r
 
 `ApplicationCatalogTransitionService` takes `storageLifecycleService: Pick<ApplicationStorageLifecycleService, "ensureRuntimeDirectoryPrepared">` (same `Pick` as the startup lifecycle's contract). In `commitAndRecover`, after `commitPreparedCatalogSlice`/`commitPreparedDelta` and before the committed snapshot, reconciliation and `definitionReadiness.prepare()`, it awaits `ensureRuntimeDirectoryPrepared` for each `transitionPlan.currentApplicationIds` entry. `build-application-platform-runtime.ts` passes the existing `storageLifecycleService`. Import, reload, remove (empty current set → no step) and `reloadAndReenter` all get it through `commitAndRecover`; their callers are unchanged.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (no code change; IR-002)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
-- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-002`
+- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A` / `CRR-001` / `API-REV-001` / `N/A`
+- Triggering finding IDs: C-01 (CRR-001), API-06 (API-REV-001)
 
 ## Routing Classification (Mandatory)
 
@@ -51,7 +51,7 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-r
 | --- | --- | --- | --- |
 | BEH-001 | Import: runtime folder before readiness → ACTIVE, RUNNABLE, launches | DS-001: GraphQL `importApplicationPackage` → `ApplicationPackageCommandService` → `ApplicationCatalogTransitionService.runPackageTransition` → `commitAndRecover`: commits → **`storageLifecycleService.ensureRuntimeDirectoryPrepared` (each current app)** → snapshot → reconcile → `definitionReadiness.prepare()` → `recoverParticipants` | IC-01 passes (failed on base, IMP-00); IC-02: signed out gives today's reason |
 | BEH-002 | Startup unchanged | `application-platform-lifecycle.ts` untouched | IMP-02 lifecycle tests, IMP-03 pass |
-| BEH-003 | Reload: same step | `reloadAndReenter` → `commitAndRecover` | Unit "prepares the reloaded application's runtime folder before readiness" passes; journal-recovery reload test passes with the real storage service |
+| BEH-003 | Reload: same step (AC-003 as narrowed by DEC-004: folders prepared after the commit and before readiness) | `reloadAndReenter` → `commitAndRecover` | Unit "prepares the reloaded application's runtime folder before readiness" passes; journal-recovery reload test passes with the real storage service; API-02 proves it end to end. "Stays usable after reload" is FU-003 (C-01, pre-existing reentry admission), not this ticket |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
