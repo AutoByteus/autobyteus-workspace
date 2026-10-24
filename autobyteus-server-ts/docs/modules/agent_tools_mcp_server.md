@@ -267,7 +267,15 @@ provider-facing tool name is the registered AutoByteus tool name, including any
 configured `toolNamePrefix` such as `db_query`. Execution creates the registry
 tool and delegates through the existing `GenericMcpTool` / MCP proxy path, so
 remote tool-name mapping, transport ownership, connection reuse, and cleanup
-remain with MCP Server Management and `autobyteus-ts`.
+remain with MCP Server Management and `autobyteus-ts`. A configured tool call
+that fails, because the tool throws (for example `HTTP 401 Unauthorized: Error
+POSTing to endpoint: …` after a revoked token) or because the tool is no longer
+available for the session at call time, is answered with a tool result:
+`isError: true` and one text item with the failure message, the same text the
+native runtime shows. It is not a JSON-RPC `Internal error`
+(`ConfiguredMcpRegistryToolAdapter`). The message carries no token or header
+value. Text that a remote server puts in its own response body is passed on as
+it is.
 
 Family-specific behavior remains owned by the existing family services and
 manifests:
