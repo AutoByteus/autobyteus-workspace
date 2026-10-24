@@ -102,6 +102,17 @@ Principle 15.
 Principles 1, 2 and 13.
 
 - **The existing design did:** native background command managers lived on agent contexts, but background commands outlived those agents. Shutdown omitted those managers. The stop mechanism escalated only while the original process lived, and desktop quit started asynchronous cleanup without awaiting it.
-- **The designed correction:** one application-owned native command scope, retained independently of agent contexts; verified process-group drain even after the leader exits; an awaited application quit boundary. The ticket's D2 records the proposed correction; implementation and verification remain pending.
+- **The designed correction:** one application-owned native command scope, retained independently of agent contexts; verified process-group drain even after the leader exits; an awaited application quit boundary. The ticket's D3 records the proposed correction; implementation and verification remain pending.
 - **Why it mattered:** isolated probes left an HTTP listener alive after both successful native shutdown and a stopAll result reporting success. Signal delivery and parent exit are not proof that owned resources have gone.
 - **Notice it by:** a resource that outlives its registry owner, an asynchronous teardown invoked without an exit barrier, or a completion predicate that checks a parent rather than the resource set. Port-owner inspection is diagnostic evidence, never authority to kill unrelated processes.
+
+
+### Case 9: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001)
+
+Principles 1, 2 and 13.
+
+- **The design said:** capture the command shell identity at launch, retain live anchors as it exits, then adopt remaining group members; never signal an unanchored numeric group.
+- **What happened:** implementation's real resolver/executor probe captured shell-before-child, then child-after-shell-exit in10/10 cases. The ordinary supported `sleep &` command had no overlapping observed live identity. The safety rule and cleanup requirement could not both be met by the unspecified handoff.
+- **The designed correction:** D3 creates a gated internal group/session leader before user code and retains it beyond command-result/agent lifetime until the group is verified empty. It separates command RESULT from anchor exit; WSL explicitly creates a new session. Candidate local probes demonstrate retained authority through quick shell exit and TERM; product implementation/validation remain pending.
+- **Why it mattered:** faster polling is not an ownership mechanism, and fail-closed is not a successful implementation of a normal supported path.
+- **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner.

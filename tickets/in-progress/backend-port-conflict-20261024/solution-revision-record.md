@@ -33,3 +33,12 @@
 - Affected IDs: BEH-001..004, SCN-001..005, REQ-001..005, AC-001..005; REQ-006/AC-006 constraints preserved. Canonical design, investigation, handoff and project design case updated. Reviewer-owned reports untouched.
 - Approval impact: none, technical completeness within R1. No new user product decision or narrowing supported Windows form. Review findings are proposed resolved by D2, not marked Pass by Solution Designer.
 - No prerequisite/follow-up; same workspace/base/finalization. No implementation or validation claim. Reapply Large/High review route after persistence.
+
+
+## SR-004 — Continuous native group lifetime after short-lived command exit
+- Trigger: Implementation Engineer IR-001/IMP-DI-001 at2b414e6dc, after ARCH-REV-002 Pass of D2. Prior R1 Approved/D2 reviewed Pass; implementation not started.
+- Current: R1 unchanged Approved, D3 Ready for review, Large/High retained. Findings affect BEH-003/004, REQ-003/004/005, AC-004/005, SCN-003/004; all other intent/constraints preserved.
+- Concrete correction: gated persistent exclusive group anchor pins identity through quick shell exit, adoption, ended-agent retention and cleanup. POSIX uses Node anchor/IPC; WSL uses bash under setsid --wait with independent session/birth proof; both keep command RESULT separate from anchor exit. Scope owns bounded TERM/verify/KILL/release and empty-group retirement; no raw-PGID reclamation or faster-polling assumption.
+- Evidence: accepted IMP-02 non-overlapping snapshots and actual executor adoption; E-019..021 and P-007/P-008 candidate tests demonstrate retained anchor/TERM behavior locally. Linux/WSL and packaged Electron execution not claimed. Reviewer/implementation artifacts left untouched.
+- Approval impact: none; technical mechanism fulfills already-approved ordinary survivor scenario and safety, not new product lifetime. No additional user question, prerequisite or follow-up.
+- Canonical design/investigation/handoff and design-case provenance updated. ARCH-REV-002 remains evidence of D2 review only. Next: configured Large/High independent review of D3, then specialist implementation if passed; no duplicate direct forwarding.
