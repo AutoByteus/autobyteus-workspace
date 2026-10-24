@@ -14,20 +14,20 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: Implementation Engineer, IR-001 ready for source review
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review` (round 1 was `Full Review`)
+- Review Scope Evidence (round >1): `18d2e8f343..3f8e785647` changes one implementation file, `autobyteus-message-gateway/docker/Dockerfile` (the file of CR-001, +5/−1). The rest is ticket docs and the IMP-20 evidence. It does not touch the data-flow spine, shared interfaces, any other file, or earlier fixes, so round-1 evidence for the other checks carries forward
+- Trigger: Implementation Engineer, IR-002 (Local Fix for CR-001)
+- Prior Review Round Reviewed: 1 (CRR-001, `Fail`: CR-001)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
-- Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser`, branch `codex/fastify5-and-spreadsheet-parser`, `ddd6fdcdf6..2efacb42ea` (commits `195db3c42e`, `bbd88fd3ea`, `5c7ab7426c`, `29aeb5d721`)
-- Reviewer evidence: `code-review-evidence/CRR-001-probes.txt` (P1 gateway build context, P2 non-MCP CORS headers on Fastify 4 vs 5)
+- Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser`, branch `codex/fastify5-and-spreadsheet-parser`, round 1 `ddd6fdcdf6..2efacb42ea` (commits `195db3c42e`, `bbd88fd3ea`, `5c7ab7426c`, `29aeb5d721`); round 2 `25a45ee5d3` (HEAD `3f8e785647`)
+- Reviewer evidence: `code-review-evidence/CRR-001-probes.txt` (P1 gateway build context, P2 non-MCP CORS headers on Fastify 4 vs 5). Round 2 relies on the implementation's `evidence/IMP-20-gateway-image-no-context-secrets.log`
 
 ## Routing Classification Review
 
@@ -67,7 +67,7 @@
 | BEH-003 | Confirmed | `graphiql: true` deleted, no flag; `/graphiql*` returns 404 (IMP-17, IMP-19) | — |
 | BEH-004 | Confirmed | Both `{ config: { cors: false } }` removed. IMP-06 vs IMP-08 show no difference | — |
 | BEH-005 | Confirmed | Multipart registration unchanged (`limits.fileSize`); the live limit journey is for API/E2E (AC-006) | — |
-| BEH-006 | Confirmed (with CR-001) | Gateway workspace file, lockfile, `packageManager`, Dockerfile installing from the gateway files only; the root lockfile is untouched by `5c7ab7426c` (IMP-10) | CR-001 concerns what the now-working image also copies, not the install path |
+| BEH-006 | Confirmed | Gateway workspace file, lockfile, `packageManager`, Dockerfile installing from the gateway files only; the root lockfile is untouched by `5c7ab7426c` (IMP-10) | CR-001 resolved in round 2 (`25a45ee5d3`, IMP-20) |
 | BEH-007 | Confirmed | `sheet_to_html(sheet, {header:'', footer:''})` → `DOMPurify.sanitize` with the design allowlist and `ALLOW_DATA_ATTR: false`. Both entry forms are unchanged (`type:'array'` for URL bytes, `type:'string'` for content). Loading, error, Retry and tabs are untouched | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
@@ -107,7 +107,7 @@
 | Shared-structure/data-model tightness check | Pass | No shared structure changes | — |
 | Repeated coordination ownership check | Pass | — | — |
 | Empty indirection check | Pass | None added | — |
-| Scope-appropriate separation of concerns and file responsibility clarity | Fail | The gateway Dockerfile copies the whole package folder, including operator env files and runtime data (CR-001) | CR-001 |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Round 2: the Dockerfile copies only the build inputs (`LICENSE`, `tsconfig*.json`, `src/`). The gateway's only run-time file reads are its data-root stores under `memory/` (grep of `src`), so nothing else is needed | — |
 | Ownership-driven dependency check | Pass | Root workspace ↔ gateway separation held (IMP-10); web depends on `xlsx` only via the tarball URL | — |
 | Authoritative Boundary Rule check | Pass | No caller bypass introduced | — |
 | File placement check | Pass | Workspace and lock files at the gateway package root | — |
@@ -120,7 +120,7 @@
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The spec covers AC-012/AC-013 case by case. The hyperlink test asserts the precondition that the parser emits the links. The mutation check proves the sanitiser cases bite (IMP-03) | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `book`, `serve`, `mountWithUrl`, `cellTexts` helpers; generated fixtures only | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The mock-based tests were replaced | — |
-| API/E2E readiness for the next workflow stage | Fail | AC-010 must be validated on the corrected image (CR-001) | CR-001, then API/E2E |
+| API/E2E readiness for the next workflow stage | Pass | IMP-20: the corrected image builds from a clean clone and `/health` returns 200; the remaining journeys are listed in the handoff | — |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -128,7 +128,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue` | 232 | 238 | Pass | Pass (+6) | Pass | Pass | — | — |
 | `autobyteus-server-ts/src/api/graphql/index.ts`, `agent-tools-mcp-routes.ts`, `mcp-gateway-routes.ts` | — | −1 line each | Pass | Pass | Pass | Pass | — | — |
-| `autobyteus-message-gateway/docker/Dockerfile` | ~27 | ~27 | Pass | Pass | Fail (CR-001) | Pass | Local Fix | CR-001 |
+| `autobyteus-message-gateway/docker/Dockerfile` | ~27 | ~31 | Pass | Pass | Pass (round 2) | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -172,12 +172,12 @@ None.
 - Forward path: compose build with the repo-root context → root `.dockerignore` (no `.env*` or `memory` rule) → Dockerfile L25 `COPY autobyteus-message-gateway/ ./` → image layer holds `docker/.env.docker`; after the first run, rebuilds also hold `memory/` (the volume's host path is inside the context).
 - Lifecycle preconditions and material consequence: the image exists only since this ticket fixed the build (SD-03 base failure). Its layers carry the server shared secret, admin token, webhook secrets and WhatsApp/WeChat personal session credentials to anyone who obtains the image.
 - Reachability: `Reachable` (P1)
-- Review consequence / proportionate response: CR-001, a Local Fix in the Dockerfile (or a Dockerfile-specific ignore file). No new behavior.
+- Review consequence / proportionate response: CR-001, a Local Fix in the Dockerfile. Resolved in round 2: IMP-20 plants dummy `docker/.env.docker`, `.env` and `memory/…` files, and none of them reaches the image.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
+- Overall score (`/10`): 9.5
+- Overall score (`/100`): 95
 - Score calculation note: simple average; not the decision rule.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -185,19 +185,22 @@ None.
 | `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | DS-001..DS-006 preserved exactly; registration order untouched | — | — |
 | `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Each edit stays in its owner; the template reads only the sanitised value | — | — |
 | `3` | `API / Interface / Query / Command Clarity` | 9.5 | Only `/graphiql*` removed, as DEC-001 decides | — | — |
-| `4` | `Separation of Concerns and File Placement` | 8.5 | Gateway files at the package root; the viewer owns its sanitiser | The Dockerfile's final COPY takes the whole package folder (operator data, tests, tickets, tools) instead of the build inputs (CR-001) | Copy only what the build needs, or exclude operator data |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | Gateway files at the package root; the viewer owns its sanitiser; the Dockerfile copies only the build inputs, with an explicit list (round 2) | — | — |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | No shared structure touched | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.5 | Clear comments explain the jsdom choice, the WORKDIR and the sanitiser | — | — |
-| `7` | `API/E2E Readiness` | 8.5 | Server, web and lockfiles are ready; the handoff lists the remaining journeys precisely | AC-010 would validate an image that leaks operator secrets | Fix CR-001, then rebuild and show `/health` |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.5 | MCP and non-MCP CORS identical (IMP-08, P2); GraphQL, WebSocket and GraphiQL 404 shown; the viewer sanitises in Chrome and jsdom | CR-001: the delivered gateway image carries secrets and session state | CR-001 |
+| `7` | `API/E2E Readiness` | 9.5 | Server, web, lockfiles and the corrected gateway image are ready (IMP-20); the handoff lists the remaining journeys precisely | — | — |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | MCP and non-MCP CORS identical (IMP-08, P2); GraphQL, WebSocket and GraphiQL 404 shown; the viewer sanitises in Chrome and jsdom; the gateway image holds no build-context secrets and stays healthy (IMP-20) | Live journeys remain with API/E2E (RSK-001) | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Clean cuts: no flag, no augmentation, no fallback parser | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | All of the design's removals done | — | — |
 
 ## Findings
 
-### CR-001 — The gateway Docker image bakes the operator's env file and runtime session data into its layers
+No open findings.
 
-- Severity: blocking (security; introduced in effect by this change)
+### CR-001 — The gateway Docker image bakes the operator's env file and runtime session data into its layers (Resolved in round 2)
+
+- Status: `Resolved` (CRR-002). `25a45ee5d3` replaces `COPY autobyteus-message-gateway/ ./` with explicit copies of `LICENSE`, `tsconfig.json`, `tsconfig.build.json` and `src/`. IMP-20 (clean clone with dummy `docker/.env.docker`, `.env` and `memory/whatsapp-personal/dummy-session.json`) shows: no `.env*` or `memory` path in `/app`; no planted name anywhere in the image filesystem; no marker in `/app`; only the explicit COPYs in the layer history; `/health` 200 with fastify 5.12.7, cors 11.3.1 and baileys 6.7.24. `WORKDIR` and the three-file frozen install are unchanged. I confirmed by grep that the gateway reads no other folder files at run time (only data-root stores and `import.meta.url`)
+- Severity (round 1): blocking (security; introduced in effect by this change)
 - Candidate / premise: C-01, CRP-001
 - Protects: REQ-008/AC-010 (the image this ticket makes buildable), BEH-006, and the README's runtime-only `env_file` secret contract
 - Location: `autobyteus-message-gateway/docker/Dockerfile` L25 `COPY autobyteus-message-gateway/ ./`. The root `.dockerignore` has no rule for `**/.env*` or `autobyteus-message-gateway/memory`.
@@ -211,14 +214,14 @@ None.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001, a bounded packaging correction within DS-005. No requirement or design change is needed: the design's dependency rule still holds ("The gateway Docker build reads only the licence files and `autobyteus-message-gateway/`").
+- None. The review passes. (Round 1: `Local Fix` for CR-001, now resolved.)
 
 ## Recommended Recipient
 
-- Implementation Engineer (Local Fix), the recipient `get_handoff_rules` returns for a failed implementation review.
+- API/E2E Engineer (primary pass handoff); Implementation Engineer gets the informational pass notification.
 
 Routing note:
-- After the fix: source review (targeted delta on the Dockerfile) and then API/E2E.
+- Next: API/E2E coverage and execution. After a passed run, the proportional test-code review comes back here.
 
 ## Residual Risks
 
@@ -231,11 +234,11 @@ Routing note:
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass` (CRP-001 reachable and supported)
-- Score Summary: 9.2/10. Categories 4, 7 and 8 are at 8.5 because of CR-001.
+- Score Summary: 9.5/10. Every category is ≥ 9.5.
 - Failure Origin: N/A
-- Recommended Recipient: Implementation Engineer (Local Fix, CR-001)
-- Notes: everything else reviewed is ready, with no other finding. That covers the server move, GraphiQL removal, MCP config removal, the viewer, the lockfile scope and both deviations. The re-review after the fix will be a targeted delta on the gateway Dockerfile (or its ignore file).
+- Recommended Recipient: API/E2E Engineer
+- Notes: CR-001 is resolved; there are no open findings. Round-1 evidence for the server move, GraphiQL removal, MCP config removal, the viewer, the lockfile scope and both deviations carries forward unchanged.
