@@ -3,32 +3,33 @@ import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, updateJsonFile, writeJsonFile } from "../../persistence/file/store-utils.js";
 import type { MemorySyncSourceState } from "../shared/memory-sync-types.js";
-import { normalizeSourceNodeId } from "../shared/source-node-id.js";
+import { normalizeSourceId } from "../shared/source-id.js";
+import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import type { MemorySyncStateStore } from "./memory-sync-state-store.js";
 
 type AppConfigLike = { getAppDataDir(): string };
 
 const hubKeyFor = (hubBaseUrl: string): string => createHash("sha256").update(hubBaseUrl, "utf8").digest("hex").slice(0, 24);
 
-const sourceStateKeyFor = (hubBaseUrl: string, sourceNodeId: string): string =>
-  `${hubKeyFor(hubBaseUrl)}--${normalizeSourceNodeId(sourceNodeId)}`;
+const sourceStateKeyFor = (hubBaseUrl: string, sourceId: string): string =>
+  `${hubKeyFor(hubBaseUrl)}--${normalizeSourceId(sourceId)}`;
 
-const defaultState = (hubBaseUrl: string, sourceNodeId: string): MemorySyncSourceState => ({
+const defaultState = (hubBaseUrl: string, sourceId: string): MemorySyncSourceState => ({
   schemaVersion: 1,
   hubKey: hubKeyFor(hubBaseUrl),
   hubBaseUrl,
-  sourceNodeId,
+  sourceId,
   lastSuccessfulSyncAt: null,
   lastError: null,
   lastJobState: "idle",
   files: {},
 });
 
-const normalizeState = (hubBaseUrl: string, sourceNodeId: string, value: Partial<MemorySyncSourceState>): MemorySyncSourceState => ({
+const normalizeState = (hubBaseUrl: string, sourceId: string, value: Partial<MemorySyncSourceState>): MemorySyncSourceState => ({
   schemaVersion: 1,
   hubKey: hubKeyFor(hubBaseUrl),
   hubBaseUrl,
-  sourceNodeId,
+  sourceId,
   lastSuccessfulSyncAt: typeof value.lastSuccessfulSyncAt === "string" ? value.lastSuccessfulSyncAt : null,
   lastError: typeof value.lastError === "string" ? value.lastError : null,
   lastJobState: value.lastJobState === "running" || value.lastJobState === "success" || value.lastJobState === "error"
@@ -40,33 +41,36 @@ const normalizeState = (hubBaseUrl: string, sourceNodeId: string, value: Partial
 export class LocalFileMemorySyncStateStore implements MemorySyncStateStore {
   constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
 
-  getFilePath(hubBaseUrl: string, sourceNodeId: string): string {
-    return path.join(this.config.getAppDataDir(), "memory-sync", "source-state", `${sourceStateKeyFor(hubBaseUrl, sourceNodeId)}.json`);
+  getFilePath(hubBaseUrl: string, sourceId: string): string {
+    return path.join(this.config.getAppDataDir(), "memory-sync", "source-state", `${sourceStateKeyFor(hubBaseUrl, sourceId)}.json`);
   }
 
-  async readState(hubBaseUrl: string, sourceNodeId: string): Promise<MemorySyncSourceState> {
-    const normalizedSourceNodeId = normalizeSourceNodeId(sourceNodeId);
+  async readState(hubBaseUrl: string, sourceId: string): Promise<MemorySyncSourceState> {
+    requireMemorySyncReady();
+    const normalizedSourceId = normalizeSourceId(sourceId);
     const raw = await readJsonFile<Partial<MemorySyncSourceState>>(
-      this.getFilePath(hubBaseUrl, normalizedSourceNodeId),
-      defaultState(hubBaseUrl, normalizedSourceNodeId),
+      this.getFilePath(hubBaseUrl, normalizedSourceId),
+      defaultState(hubBaseUrl, normalizedSourceId),
     );
-    return normalizeState(hubBaseUrl, normalizedSourceNodeId, raw);
+    return normalizeState(hubBaseUrl, normalizedSourceId, raw);
   }
 
   async writeState(state: MemorySyncSourceState): Promise<void> {
-    await writeJsonFile(this.getFilePath(state.hubBaseUrl, state.sourceNodeId), state);
+    requireMemorySyncReady();
+    await writeJsonFile(this.getFilePath(state.hubBaseUrl, state.sourceId), state);
   }
 
   async updateState(
     hubBaseUrl: string,
-    sourceNodeId: string,
+    sourceId: string,
     updater: (state: MemorySyncSourceState) => MemorySyncSourceState | Promise<MemorySyncSourceState>,
   ): Promise<MemorySyncSourceState> {
-    const normalizedSourceNodeId = normalizeSourceNodeId(sourceNodeId);
+    requireMemorySyncReady();
+    const normalizedSourceId = normalizeSourceId(sourceId);
     return updateJsonFile<MemorySyncSourceState>(
-      this.getFilePath(hubBaseUrl, normalizedSourceNodeId),
-      defaultState(hubBaseUrl, normalizedSourceNodeId),
-      async (existing) => updater(normalizeState(hubBaseUrl, normalizedSourceNodeId, existing)),
+      this.getFilePath(hubBaseUrl, normalizedSourceId),
+      defaultState(hubBaseUrl, normalizedSourceId),
+      async (existing) => updater(normalizeState(hubBaseUrl, normalizedSourceId, existing)),
     );
   }
 }

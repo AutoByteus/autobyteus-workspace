@@ -1,5 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import { normalizeSourceNodeId } from "../shared/source-node-id.js";
+import { normalizeSourceId } from "../shared/source-id.js";
 import type {
   MemoryHubSourceCredentialRecord,
   MemoryHubSourceCredentialSummary,
@@ -38,7 +38,7 @@ const normalizeLabel = (value: string | null | undefined): string | null => {
 const toSummary = (record: MemoryHubSourceCredentialRecord): MemoryHubSourceCredentialSummary => ({
   credentialId: record.credentialId,
   label: record.label,
-  boundSourceNodeId: record.boundSourceNodeId,
+  boundSourceId: record.boundSourceId,
   createdAt: record.createdAt,
   lastUsedAt: record.lastUsedAt,
   revokedAt: record.revokedAt,
@@ -58,7 +58,7 @@ export class MemoryHubCredentialService {
 
   async createCredential(input: {
     label?: string | null;
-    boundSourceNodeId?: string | null;
+    boundSourceId?: string | null;
   } = {}): Promise<{ summary: MemoryHubSourceCredentialSummary; plaintextToken: string }> {
     const now = new Date().toISOString();
     const plaintextToken = generateCredential();
@@ -66,7 +66,7 @@ export class MemoryHubCredentialService {
       credentialId: generateCredentialId(),
       label: normalizeLabel(input.label),
       credentialHash: hashMemoryHubCredential(plaintextToken),
-      boundSourceNodeId: input.boundSourceNodeId ? normalizeSourceNodeId(input.boundSourceNodeId) : null,
+      boundSourceId: input.boundSourceId ? normalizeSourceId(input.boundSourceId) : null,
       createdAt: now,
       lastUsedAt: null,
       revokedAt: null,
@@ -115,14 +115,14 @@ export class MemoryHubCredentialService {
 
   async validateCredentialForSource(input: {
     plaintextToken: string | null | undefined;
-    sourceNodeId: string;
+    sourceId: string;
     bindOnFirstUse?: boolean;
   }): Promise<MemoryHubSourceCredentialSummary> {
     const token = String(input.plaintextToken ?? "").trim();
     if (!token || !token.startsWith(TOKEN_PREFIX)) {
       throw new MemoryHubCredentialError("Memory Hub source token is required.");
     }
-    const sourceNodeId = normalizeSourceNodeId(input.sourceNodeId);
+    const sourceId = normalizeSourceId(input.sourceId);
     const hash = hashMemoryHubCredential(token);
     let matched: MemoryHubSourceCredentialRecord | null = null;
     let conflict = false;
@@ -136,14 +136,14 @@ export class MemoryHubCredentialService {
         matched = record;
         return record;
       }
-      if (record.boundSourceNodeId && record.boundSourceNodeId !== sourceNodeId) {
+      if (record.boundSourceId && record.boundSourceId !== sourceId) {
         conflict = true;
         matched = record;
         return record;
       }
       const next = {
         ...record,
-        boundSourceNodeId: record.boundSourceNodeId ?? (input.bindOnFirstUse === false ? null : sourceNodeId),
+        boundSourceId: record.boundSourceId ?? (input.bindOnFirstUse === false ? null : sourceId),
         lastUsedAt: now,
       };
       matched = next;
@@ -158,7 +158,7 @@ export class MemoryHubCredentialService {
       throw new MemoryHubCredentialError("Memory Hub source token has been revoked.", 403);
     }
     if (conflict) {
-      throw new MemoryHubCredentialError("Memory Hub source token is bound to a different source node.", 403);
+      throw new MemoryHubCredentialError("Memory Hub source token is bound to a different source ID.", 403);
     }
     return toSummary(validated);
   }

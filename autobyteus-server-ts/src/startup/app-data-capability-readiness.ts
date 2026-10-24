@@ -2,6 +2,7 @@ import type { AppDataCapabilityReadiness } from "../app-data-migrations/domain/a
 import { configureCustomLlmProviderAvailability } from "../llm-management/llm-providers/stores/custom-llm-provider-availability.js";
 import { configureTokenUsageCapability } from "../token-usage/providers/token-usage-capability.js";
 import { configureNodeIdentityCapability } from "../remote-access/services/node-identity-service.js";
+import { configureMemorySyncCapability } from "../memory-sync/shared/memory-sync-capability.js";
 
 /**
  * The one owner that applies app-data capability readiness to the features a pending migration holds back. Both startup
@@ -12,6 +13,7 @@ export const markCapabilitiesPending = (): void => {
   configureTokenUsageCapability({ kind: "HISTORY_MIGRATION_PENDING" });
   configureCustomLlmProviderAvailability(false);
   configureNodeIdentityCapability(false);
+  configureMemorySyncCapability(false);
 };
 
 export const applyCapabilityReadiness = (readiness: AppDataCapabilityReadiness): void => {
@@ -20,4 +22,5 @@ export const applyCapabilityReadiness = (readiness: AppDataCapabilityReadiness):
   );
   configureCustomLlmProviderAvailability(readiness.custom_llm_providers);
   configureNodeIdentityCapability(readiness.node_identity);
+  configureMemorySyncCapability(readiness.memory_sync);
 };

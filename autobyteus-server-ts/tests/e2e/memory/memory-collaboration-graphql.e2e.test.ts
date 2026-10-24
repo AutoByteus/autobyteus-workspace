@@ -22,6 +22,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
 
 /**
  * Team and AgentOrg memory explorer + member memory view through the built GraphQL schema
@@ -158,6 +159,10 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   const orgDir = (...parts: string[]) => path.join(memoryDir, "agent_orgs", ...parts);
 
   beforeAll(async () => {
+
+    // Memory Sync's stored names are current in this fresh data (autobyteus-290 `memory_sync`).
+
+    configureMemorySyncCapability(true);
     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-memory-collaboration-"));
     if (!config.isInitialized()) {
       config.setCustomAppDataDir(tempRoot);
@@ -411,9 +416,9 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   it("serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate)", async () => {
     const importRoot = path.join(memoryDir, "imports", "gql-collab-import");
     fs.mkdirSync(importRoot, { recursive: true });
-    fs.writeFileSync(path.join(importRoot, "source-node.json"), JSON.stringify({
+    fs.writeFileSync(path.join(importRoot, "source.json"), JSON.stringify({
       schemaVersion: 1,
-      sourceNodeId: "gql-collab-import",
+      sourceId: "gql-collab-import",
       displayName: "Imported Collaboration Source",
       firstImportedAt: "2026-09-01T00:00:00.000Z",
       lastImportedAt: "2026-09-01T00:00:00.000Z",
@@ -423,7 +428,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     }), "utf-8");
     await writeTeamRoot(importRoot, writingTeamTree("gql-imported-team-run", "2026-08-20T00:00:00.000Z"));
     semantic(path.join(importRoot, "agent_teams", "gql-imported-team-run", "gql-imported-team-run-writer"), "imported", "2026-08-20T01:00:00.000Z");
-    const source = { type: "IMPORTED", sourceNodeId: "gql-collab-import" };
+    const source = { type: "IMPORTED", sourceId: "gql-collab-import" };
 
     const teams = await execGraphql<{ listAgentTeamsWithMemory: { total: number; entries: Array<{ teamDefinitionId: string; teamRunCount: number }> } }>(teamsQuery, { source });
     expect(teams.listAgentTeamsWithMemory.entries.map((entry) => [entry.teamDefinitionId, entry.teamRunCount])).toEqual([["gql-writing-team", 1]]);

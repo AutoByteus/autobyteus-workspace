@@ -26,7 +26,7 @@ A user manages one or more AutoByteus nodes and wants to know whether a Docker/r
 
 - User arrives from: Nodes navigation → Memory Sync tab for the current node.
 - User sees:
-  - The existing source fields: source node id, display name, hub URL, redacted token, background sync checkbox, interval.
+  - The existing source fields: source ID, display name, hub URL, redacted token, background sync checkbox, interval.
   - A compact **Connection test** result beside or immediately below the `Test connection` button.
   - The `Sync now` button changing to disabled spinner/`Syncing…` during a manual sync.
   - A compact job-state line: `Current job: idle` or `Current job: syncing…`.

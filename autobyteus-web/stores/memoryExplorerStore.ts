@@ -67,7 +67,7 @@ const localSource = (): MemoryExplorerSourceOption => ({
   key: 'local',
   type: 'LOCAL',
   label: 'Local Memory',
-  sourceNodeId: null,
+  sourceId: null,
   displayName: null,
   readOnly: false,
   lastImportedAt: null,
@@ -112,8 +112,8 @@ const applyPage = <T>(state: ListState<T>, payload: MemoryExplorerPage<T> | null
 };
 
 const sourceInputFor = (source: MemoryExplorerSourceOption): MemoryExplorerSourceInput => (
-  source.type === 'IMPORTED' && source.sourceNodeId
-    ? { type: 'IMPORTED', sourceNodeId: source.sourceNodeId }
+  source.type === 'IMPORTED' && source.sourceId
+    ? { type: 'IMPORTED', sourceId: source.sourceId }
     : { type: 'LOCAL' }
 );
 
@@ -144,8 +144,8 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
       return sourceInputFor(state.selectedSource);
     },
     selectedSourceQueryValue(state): string | undefined {
-      return state.selectedSource.type === 'IMPORTED' && state.selectedSource.sourceNodeId
-        ? `imported:${state.selectedSource.sourceNodeId}`
+      return state.selectedSource.type === 'IMPORTED' && state.selectedSource.sourceId
+        ? `imported:${state.selectedSource.sourceId}`
         : undefined;
     },
     isImportedSource(state): boolean {

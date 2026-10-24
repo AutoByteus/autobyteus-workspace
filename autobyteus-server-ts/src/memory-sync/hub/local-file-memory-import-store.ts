@@ -10,8 +10,9 @@ import {
 } from "../shared/memory-sync-manifest.js";
 import { normalizeMemorySyncFileKind, normalizeMemorySyncRelativePath, resolveKindRelativePathUnderRoot, resolveUnderRoot, toMemorySyncFileKey } from "../shared/memory-sync-path-policy.js";
 import { digestMemorySyncOperations, validateMemorySyncBatchId } from "./memory-sync-batch-identity.js";
-import type { MemoryFileOperation, MemorySyncBatch, MemorySyncBatchCommitResult, MemorySyncManifest, SourceNodeMetadata } from "../shared/memory-sync-types.js";
-import { normalizeSourceNodeId } from "../shared/source-node-id.js";
+import type { MemoryFileOperation, MemorySyncBatch, MemorySyncBatchCommitResult, MemorySyncManifest, SourceMetadata } from "../shared/memory-sync-types.js";
+import { normalizeSourceId } from "../shared/source-id.js";
+import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import type { MemoryImportStore } from "./memory-import-store.js";
 
 type AppConfigLike = { getMemoryDir(): string };
@@ -43,17 +44,19 @@ const sha256Buffer = (buffer: Buffer): string => createHash("sha256").update(buf
 export class LocalFileMemoryImportStore implements MemoryImportStore {
   constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
 
+  /** Every path into the imports goes through here, so nothing reads or writes them while Memory Sync is held back. */
   getImportsRootDir(): string {
+    requireMemorySyncReady();
     return path.join(this.config.getMemoryDir(), "imports");
   }
 
-  getImportRootDir(sourceNodeId: string): string {
-    return resolveUnderRoot(this.getImportsRootDir(), normalizeSourceNodeId(sourceNodeId));
+  getImportRootDir(sourceId: string): string {
+    return resolveUnderRoot(this.getImportsRootDir(), normalizeSourceId(sourceId));
   }
 
-  async sourceExists(sourceNodeId: string): Promise<boolean> {
+  async sourceExists(sourceId: string): Promise<boolean> {
     try {
-      const stat = await fs.stat(this.getImportRootDir(sourceNodeId));
+      const stat = await fs.stat(this.getImportRootDir(sourceId));
       return stat.isDirectory();
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
@@ -63,7 +66,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
     }
   }
 
-  async listSourceNodeIds(): Promise<string[]> {
+  async listSourceIds(): Promise<string[]> {
     try {
       const entries = await fs.readdir(this.getImportsRootDir(), { withFileTypes: true });
       return entries
@@ -71,7 +74,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
         .map((entry) => entry.name)
         .filter((name) => {
           try {
-            normalizeSourceNodeId(name);
+            normalizeSourceId(name);
             return true;
           } catch {
             return false;
@@ -86,20 +89,20 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
     }
   }
 
-  async readSourceMetadata(sourceNodeId: string): Promise<SourceNodeMetadata | null> {
-    const normalizedSourceNodeId = normalizeSourceNodeId(sourceNodeId);
-    return readJsonFile<SourceNodeMetadata>(path.join(this.getImportRootDir(normalizedSourceNodeId), "source-node.json"));
+  async readSourceMetadata(sourceId: string): Promise<SourceMetadata | null> {
+    const normalizedSourceId = normalizeSourceId(sourceId);
+    return readJsonFile<SourceMetadata>(path.join(this.getImportRootDir(normalizedSourceId), "source.json"));
   }
 
-  async readManifest(sourceNodeId: string): Promise<MemorySyncManifest> {
-    const normalizedSourceNodeId = normalizeSourceNodeId(sourceNodeId);
-    const filePath = path.join(this.getImportRootDir(normalizedSourceNodeId), "sync-manifest.json");
+  async readManifest(sourceId: string): Promise<MemorySyncManifest> {
+    const normalizedSourceId = normalizeSourceId(sourceId);
+    const filePath = path.join(this.getImportRootDir(normalizedSourceId), "sync-manifest.json");
     const raw = await readJsonFile<Partial<MemorySyncManifest>>(filePath);
-    return normalizeMemorySyncManifest(normalizedSourceNodeId, raw);
+    return normalizeMemorySyncManifest(normalizedSourceId, raw);
   }
 
   async commitBatch(batch: MemorySyncBatch): Promise<MemorySyncBatchCommitResult> {
-    const sourceNodeId = normalizeSourceNodeId(batch.sourceNodeId);
+    const sourceId = normalizeSourceId(batch.sourceId);
     const batchId = validateMemorySyncBatchId(batch.batchId);
     if (batch.protocolVersion !== 1) {
       throw new Error("Unsupported Memory Sync protocol version.");
@@ -108,16 +111,16 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
       throw new Error("Memory Sync batch operations must be an array.");
     }
 
-    const importRoot = this.getImportRootDir(sourceNodeId);
+    const importRoot = this.getImportRootDir(sourceId);
     const manifestPath = path.join(importRoot, "sync-manifest.json");
     const digest = digestMemorySyncOperations(batch.operations);
     let result: MemorySyncBatchCommitResult | null = null;
 
     await updateLockedJsonFile<MemorySyncManifest>(
       manifestPath,
-      createEmptyMemorySyncManifest(sourceNodeId),
+      createEmptyMemorySyncManifest(sourceId),
       async (existing) => {
-        let manifest = normalizeMemorySyncManifest(sourceNodeId, existing);
+        let manifest = normalizeMemorySyncManifest(sourceId, existing);
         const existingBatch = manifest.batchDigests[batchId];
         if (existingBatch) {
           if (existingBatch.digest !== digest) {
@@ -153,7 +156,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
         const batchRecord = { batchId, digest, committedAt, operationCount: batch.operations.length };
         manifest = recomputeMemorySyncManifestTotals({
           ...manifest,
-          sourceNodeId,
+          sourceId,
           lastCommittedBatchId: batchId,
           lastCommittedAt: committedAt,
           batchDigests: {
@@ -209,11 +212,11 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
   }
 
   private async writeSourceMetadata(batch: MemorySyncBatch, importedAt: string): Promise<void> {
-    const sourceNodeId = normalizeSourceNodeId(batch.sourceNodeId);
-    const existing = await this.readSourceMetadata(sourceNodeId);
-    const metadata: SourceNodeMetadata = {
+    const sourceId = normalizeSourceId(batch.sourceId);
+    const existing = await this.readSourceMetadata(sourceId);
+    const metadata: SourceMetadata = {
       schemaVersion: 1,
-      sourceNodeId,
+      sourceId,
       displayName: batch.sourceDisplayName?.trim() || existing?.displayName || null,
       firstImportedAt: existing?.firstImportedAt ?? importedAt,
       lastImportedAt: importedAt,
@@ -222,7 +225,7 @@ export class LocalFileMemoryImportStore implements MemoryImportStore {
       lastSyncStatus: "success",
       lastError: null,
     };
-    await writeJsonFile(path.join(this.getImportRootDir(sourceNodeId), "source-node.json"), metadata);
+    await writeJsonFile(path.join(this.getImportRootDir(sourceId), "source.json"), metadata);
   }
 }
 

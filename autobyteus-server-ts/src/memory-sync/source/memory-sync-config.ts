@@ -12,7 +12,7 @@ export const createDefaultMemorySyncConfig = (): MemorySyncConfig => ({
   },
   source: {
     enabled: false,
-    sourceNodeId: null,
+    sourceId: null,
     displayName: null,
     hubBaseUrl: null,
     hubToken: null,
@@ -52,7 +52,7 @@ export const normalizeMemorySyncConfig = (value: Partial<MemorySyncConfig> | nul
     },
     source: {
       enabled: Boolean(source.enabled),
-      sourceNodeId: normalizeOptionalString(source.sourceNodeId),
+      sourceId: normalizeOptionalString(source.sourceId),
       displayName: normalizeOptionalString(source.displayName),
       hubBaseUrl: normalizeOptionalString(source.hubBaseUrl),
       hubToken: normalizeOptionalString(source.hubToken),

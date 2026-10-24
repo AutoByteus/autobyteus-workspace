@@ -306,10 +306,10 @@ Runtime memory stays in the existing local roots:
 
 Hub imports are stored separately as read-only corpus data:
 
-- `memory/imports/<sourceNodeId>/agents/`
-- `memory/imports/<sourceNodeId>/agent_teams/`
-- `memory/imports/<sourceNodeId>/source-node.json`
-- `memory/imports/<sourceNodeId>/sync-manifest.json`
+- `memory/imports/<sourceId>/agents/`
+- `memory/imports/<sourceId>/agent_teams/`
+- `memory/imports/<sourceId>/source.json`
+- `memory/imports/<sourceId>/sync-manifest.json`
 
 Hub setup uses a user-confirmed advertised hub base URL. Candidate URLs are
 suggestions only; Docker, Kubernetes, LAN, VPN, and tailnet deployments must use

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LocalFileMemoryImportStore } from "../../../src/memory-sync/hub/local-file-memory-import-store.js";
 import { createDefaultMemorySyncConfig, toPublicMemorySyncConfig } from "../../../src/memory-sync/source/memory-sync-config.js";
 import { MemorySyncConfigService } from "../../../src/memory-sync/source/memory-sync-config-service.js";
@@ -13,6 +13,10 @@ import { MemorySyncService } from "../../../src/memory-sync/source/memory-sync-s
 import type { LocalMemoryExportScanner } from "../../../src/memory-sync/source/local-memory-export-scanner.js";
 import type { MemoryHubClient } from "../../../src/memory-sync/source/memory-hub-client.js";
 import type { MemoryFileOperation, MemorySyncBatch, MemorySyncConfig } from "../../../src/memory-sync/shared/memory-sync-types.js";
+import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+
+// Memory Sync's stored names are current here; the hold-back itself is covered by memory-sync-hold-back.test.ts.
+beforeEach(() => configureMemorySyncCapability(true));
 
 const sha256 = (content: string): string => createHash("sha256").update(content).digest("hex");
 
@@ -29,14 +33,14 @@ const makeOperation = (relativePath: string, content: string): MemoryFileOperati
 });
 
 const makeBatch = (input: {
-  sourceNodeId?: string;
+  sourceId?: string;
   batchId: string;
   relativePath: string;
   content: string;
 }): MemorySyncBatch => ({
   protocolVersion: 1,
   batchId: input.batchId,
-  sourceNodeId: input.sourceNodeId ?? "source-a",
+  sourceId: input.sourceId ?? "source-a",
   sourceDisplayName: "Source A",
   sourceEndpoint: "http://source.local",
   generatedAt: new Date(0).toISOString(),
@@ -58,7 +62,7 @@ describe("Memory Sync local fix regressions", () => {
     }
   });
 
-  it("keys source sync state by hub URL and sourceNodeId", async () => {
+  it("keys source sync state by hub URL and sourceId", async () => {
     const root = await makeTempRoot();
     const store = new LocalFileMemorySyncStateStore({ getAppDataDir: () => root });
     const hubBaseUrl = "http://hub.local";
@@ -82,7 +86,7 @@ describe("Memory Sync local fix regressions", () => {
     const newState = await store.readState(hubBaseUrl, "new-source");
 
     expect(Object.keys(oldState.files)).toEqual(["agents/agent-a/raw_traces_active.jsonl"]);
-    expect(newState.sourceNodeId).toBe("new-source");
+    expect(newState.sourceId).toBe("new-source");
     expect(newState.files).toEqual({});
     expect(store.getFilePath(hubBaseUrl, "old-source")).not.toBe(store.getFilePath(hubBaseUrl, "new-source"));
   });
@@ -92,7 +96,7 @@ describe("Memory Sync local fix regressions", () => {
     config.source = {
       ...config.source,
       enabled: true,
-      sourceNodeId: "source-a",
+      sourceId: "source-a",
       hubBaseUrl: "http://hub.local",
       hubToken: "short",
     };
@@ -173,7 +177,7 @@ describe("Memory Sync local fix regressions", () => {
       ...createDefaultMemorySyncConfig(),
       source: {
         enabled: true,
-        sourceNodeId: "saved-source",
+        sourceId: "saved-source",
         displayName: null,
         hubBaseUrl: "http://saved-hub.local",
         hubToken: "saved-token",
@@ -190,7 +194,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceNodeId: "saved-source",
+        sourceId: "saved-source",
         authenticated: true,
         message: "ok",
       })),
@@ -201,7 +205,7 @@ describe("Memory Sync local fix regressions", () => {
 
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://saved-hub.local",
-      sourceNodeId: "saved-source",
+      sourceId: "saved-source",
       token: "saved-token",
     });
   });
@@ -214,7 +218,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceNodeId: "draft-source",
+        sourceId: "draft-source",
         authenticated: true,
         message: "ok",
       })),
@@ -224,14 +228,14 @@ describe("Memory Sync local fix regressions", () => {
     await service.testConnection({
       mode: "draft",
       hubBaseUrl: "http://draft-hub.local/",
-      sourceNodeId: "draft-source",
+      sourceId: "draft-source",
       token: "draft-token",
     });
 
     expect(configService.getConfig).not.toHaveBeenCalled();
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://draft-hub.local",
-      sourceNodeId: "draft-source",
+      sourceId: "draft-source",
       token: "draft-token",
     });
   });
@@ -243,7 +247,7 @@ describe("Memory Sync local fix regressions", () => {
       ...createDefaultMemorySyncConfig(),
       source: {
         enabled: true,
-        sourceNodeId: "source-a",
+        sourceId: "source-a",
         displayName: null,
         hubBaseUrl: "http://hub.local",
         hubToken: "secret-token",

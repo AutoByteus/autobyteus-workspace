@@ -2,6 +2,7 @@ import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonArrayFile, updateJsonArrayFile, writeJsonArrayFile } from "../../persistence/file/store-utils.js";
 import type { MemoryHubSourceCredentialRecord } from "../shared/memory-sync-types.js";
+import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 
 type AppConfigLike = { getAppDataDir(): string };
 
@@ -18,29 +19,32 @@ export class LocalFileMemoryHubCredentialStore {
   }
 
   async listRecords(): Promise<MemoryHubSourceCredentialRecord[]> {
+    requireMemorySyncReady();
     return (await readJsonArrayFile<MemoryHubSourceCredentialRecord>(this.getFilePath()))
       .filter(isRecord)
       .map((record) => ({
         ...record,
         label: record.label ?? null,
-        boundSourceNodeId: record.boundSourceNodeId ?? null,
+        boundSourceId: record.boundSourceId ?? null,
         lastUsedAt: record.lastUsedAt ?? null,
         revokedAt: record.revokedAt ?? null,
       }));
   }
 
   async writeRecords(records: MemoryHubSourceCredentialRecord[]): Promise<void> {
+    requireMemorySyncReady();
     await writeJsonArrayFile(this.getFilePath(), records);
   }
 
   async updateRecords(
     updater: (records: MemoryHubSourceCredentialRecord[]) => MemoryHubSourceCredentialRecord[] | Promise<MemoryHubSourceCredentialRecord[]>,
   ): Promise<MemoryHubSourceCredentialRecord[]> {
+    requireMemorySyncReady();
     return updateJsonArrayFile<MemoryHubSourceCredentialRecord>(this.getFilePath(), async (records) => {
       const normalized = records.filter(isRecord).map((record) => ({
         ...record,
         label: record.label ?? null,
-        boundSourceNodeId: record.boundSourceNodeId ?? null,
+        boundSourceId: record.boundSourceId ?? null,
         lastUsedAt: record.lastUsedAt ?? null,
         revokedAt: record.revokedAt ?? null,
       }));

@@ -3,11 +3,16 @@ import { getMemoryHubIngestionService, MemoryHubIngestionError } from "../../mem
 import { MemoryHubCredentialError } from "../../memory-sync/hub/memory-hub-credential-service.js";
 import { readBearerToken } from "../../memory-sync/hub/memory-hub-auth.js";
 import type { MemorySyncBatch } from "../../memory-sync/shared/memory-sync-types.js";
+import { MemorySyncNotMigratedError } from "../../memory-sync/shared/memory-sync-capability.js";
 
 const sendMemorySyncError = (
   reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } },
   error: unknown,
 ) => {
+  // While Memory Sync is held back (autobyteus-290 `memory_sync`), the hub answers its sources that it is unavailable.
+  if (error instanceof MemorySyncNotMigratedError) {
+    return reply.code(503).send({ error: error.code, message: error.message });
+  }
   if (error instanceof MemoryHubIngestionError || error instanceof MemoryHubCredentialError) {
     return reply.code(error.statusCode).send({ error: error.name, message: error.message });
   }
@@ -15,11 +20,11 @@ const sendMemorySyncError = (
 };
 
 export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<void> {
-  app.get<{ Querystring: { sourceNodeId?: string } }>("/memory-sync/v1/health", async (request, reply) => {
+  app.get<{ Querystring: { sourceId?: string } }>("/memory-sync/v1/health", async (request, reply) => {
     try {
       return await getMemoryHubIngestionService().health({
         token: readBearerToken(request.headers.authorization),
-        sourceNodeId: request.query.sourceNodeId ?? "",
+        sourceId: request.query.sourceId ?? "",
       });
     } catch (error) {
       return sendMemorySyncError(reply, error);

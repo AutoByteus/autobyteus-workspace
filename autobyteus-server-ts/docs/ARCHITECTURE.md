@@ -95,7 +95,7 @@ Persistence is subsystem-owned rather than selected through a global mode.
 - Memory Sync hub/source config, source-state fingerprints, and hub credential
   metadata are file-backed under `<appDataDir>/memory-sync/`; imported memory
   corpus files are kept under the configured memory root at
-  `memory/imports/<sourceNodeId>/`.
+  `memory/imports/<sourceId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 - Required app-data migrations run after Prisma schema migrations so data repair
   can rely on the expanded current shape before runtime/API reads begin. Token

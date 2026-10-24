@@ -37,8 +37,8 @@ const buildStatus = async (oneTimePlaintextToken?: string | null): Promise<Memor
   const publicConfig = toPublicMemorySyncConfig(config);
   const connectionInfo = await getMemoryHubConnectionInfoService().getConnectionInfo();
   let sourceState: MemorySyncSourceStateGql | null = null;
-  if (config.source.sourceNodeId && config.source.hubBaseUrl) {
-    const state = await getLocalFileMemorySyncStateStore().readState(config.source.hubBaseUrl, config.source.sourceNodeId);
+  if (config.source.sourceId && config.source.hubBaseUrl) {
+    const state = await getLocalFileMemorySyncStateStore().readState(config.source.hubBaseUrl, config.source.sourceId);
     sourceState = {
       jobState: state.lastJobState,
       lastSuccessfulSyncAt: state.lastSuccessfulSyncAt,
@@ -141,7 +141,7 @@ export class MemorySyncResolver {
     return await getMemorySyncConnectionTestService().testConnection({
       mode: "draft",
       hubBaseUrl: input.hubBaseUrl,
-      sourceNodeId: input.sourceNodeId,
+      sourceId: input.sourceId,
       token: input.token,
     });
   }

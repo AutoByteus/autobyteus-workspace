@@ -4,7 +4,8 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile } from "../../persistence/file/store-utils.js";
 import { normalizeMemoryHubBaseUrl } from "../hub/memory-hub-config.js";
 import type { MemorySyncConfig, MemorySyncPublicConfig } from "../shared/memory-sync-types.js";
-import { normalizeSourceNodeId } from "../shared/source-node-id.js";
+import { normalizeSourceId } from "../shared/source-id.js";
+import { requireMemorySyncReady } from "../shared/memory-sync-capability.js";
 import {
   createDefaultMemorySyncConfig,
   normalizeMemorySyncConfig,
@@ -44,6 +45,7 @@ export class MemorySyncConfigService {
   }
 
   async getConfig(): Promise<MemorySyncConfig> {
+    requireMemorySyncReady();
     const raw = await readJsonFile<Partial<MemorySyncConfig>>(this.getFilePath(), createDefaultMemorySyncConfig());
     return normalizeMemorySyncConfig(raw);
   }
@@ -78,7 +80,7 @@ export class MemorySyncConfigService {
 
   async updateSourceConfig(input: {
     enabled?: boolean | null;
-    sourceNodeId?: string | null;
+    sourceId?: string | null;
     displayName?: string | null;
     hubBaseUrl?: string | null;
     hubToken?: string | null;
@@ -93,9 +95,9 @@ export class MemorySyncConfigService {
       source: {
         ...existing.source,
         enabled: typeof input.enabled === "boolean" ? input.enabled : existing.source.enabled,
-        sourceNodeId: input.sourceNodeId === undefined
-          ? existing.source.sourceNodeId
-          : (input.sourceNodeId ? normalizeSourceNodeId(input.sourceNodeId) : null),
+        sourceId: input.sourceId === undefined
+          ? existing.source.sourceId
+          : (input.sourceId ? normalizeSourceId(input.sourceId) : null),
         displayName: input.displayName === undefined ? existing.source.displayName : normalizeOptionalString(input.displayName),
         hubBaseUrl: input.hubBaseUrl === undefined
           ? existing.source.hubBaseUrl
@@ -110,8 +112,8 @@ export class MemorySyncConfigService {
       },
     };
     if (next.source.enabled) {
-      if (!next.source.sourceNodeId) {
-        throw new Error("sourceNodeId is required when Memory Sync source is enabled.");
+      if (!next.source.sourceId) {
+        throw new Error("sourceId is required when Memory Sync source is enabled.");
       }
       if (!next.source.hubBaseUrl) {
         throw new Error("hubBaseUrl is required when Memory Sync source is enabled.");

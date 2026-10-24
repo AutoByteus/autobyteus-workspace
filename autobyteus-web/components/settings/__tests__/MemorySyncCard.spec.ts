@@ -27,7 +27,7 @@ const { storeSlot, translationCatalog } = vi.hoisted(() => ({
   sourceDescriptionAnd: 'and',
   sourceDescriptionSuffix: 'memory to a hub.',
   enableSource: 'Enable source',
-  sourceNodeId: 'Source node id',
+  sourceId: 'Source ID',
   displayName: 'Display name',
   hubBaseUrl: 'Hub base URL',
   hubToken: 'Hub token',
@@ -76,7 +76,7 @@ const createStatus = () => ({
   hub: { enabled: true, advertisedHubBaseUrl: 'http://hub.local', updatedAt: null },
   source: {
     enabled: true,
-    sourceNodeId: 'saved-source',
+    sourceId: 'saved-source',
     displayName: 'Saved Source',
     hubBaseUrl: 'http://saved-hub.local',
     hubTokenConfigured: true,
@@ -164,7 +164,7 @@ describe('MemorySyncCard', () => {
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('draft-token');
 
     storeSlot.store.status.source.hubBaseUrl = 'http://poll-hub.local';
-    storeSlot.store.status.source.sourceNodeId = 'poll-source';
+    storeSlot.store.status.source.sourceId = 'poll-source';
     storeSlot.store.status.source.displayName = 'Poll Source';
     storeSlot.store.status.sourceState = {
       jobState: 'running',
@@ -203,7 +203,7 @@ describe('MemorySyncCard', () => {
     expect(storeSlot.store.testConnection).toHaveBeenCalledWith({
       mode: 'draft',
       hubBaseUrl: 'http://draft-hub.local',
-      sourceNodeId: 'draft-source',
+      sourceId: 'draft-source',
       token: 'draft-token',
     });
   });

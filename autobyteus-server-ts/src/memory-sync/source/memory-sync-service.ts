@@ -52,19 +52,19 @@ export class MemorySyncService {
   private async runOnce(): Promise<MemorySyncRunResult> {
     const config = await this.configService.getConfig();
     const source = config.source;
-    if (!source.enabled || !source.sourceNodeId || !source.hubBaseUrl || !source.hubToken) {
+    if (!source.enabled || !source.sourceId || !source.hubBaseUrl || !source.hubToken) {
       throw new Error("Memory Sync source is not fully configured.");
     }
 
     const startedAt = new Date().toISOString();
-    await this.stateStore.updateState(source.hubBaseUrl, source.sourceNodeId, (state) => ({
+    await this.stateStore.updateState(source.hubBaseUrl, source.sourceId, (state) => ({
       ...state,
       lastJobState: "running",
       lastError: null,
     }));
 
     try {
-      const state = await this.stateStore.readState(source.hubBaseUrl, source.sourceNodeId);
+      const state = await this.stateStore.readState(source.hubBaseUrl, source.sourceId);
       const scan = await this.scanner.scan();
       const plan = await this.planner.planChangedFiles(scan.files, state.files, { maxOperations: source.batchSize });
       let committedBatches = 0;
@@ -75,7 +75,7 @@ export class MemorySyncService {
           const batch: MemorySyncBatch = {
             protocolVersion: 1,
             batchId: createBatchId(),
-            sourceNodeId: source.sourceNodeId,
+            sourceId: source.sourceId,
             sourceDisplayName: source.displayName,
             sourceEndpoint: this.safeBaseUrl(),
             generatedAt: new Date().toISOString(),
@@ -88,12 +88,12 @@ export class MemorySyncService {
           });
           committedBatches += response.duplicate ? 0 : 1;
           duplicateBatches += response.duplicate ? 1 : 0;
-          await this.markOperationsSynced(source.hubBaseUrl, source.sourceNodeId, batchOperations, response.batchId, response.committedAt);
+          await this.markOperationsSynced(source.hubBaseUrl, source.sourceId, batchOperations, response.batchId, response.committedAt);
         }
       }
 
       const finishedAt = new Date().toISOString();
-      await this.stateStore.updateState(source.hubBaseUrl, source.sourceNodeId, (latest) => ({
+      await this.stateStore.updateState(source.hubBaseUrl, source.sourceId, (latest) => ({
         ...latest,
         lastSuccessfulSyncAt: finishedAt,
         lastJobState: "success",
@@ -110,7 +110,7 @@ export class MemorySyncService {
         duplicateBatches,
       };
     } catch (error) {
-      await this.stateStore.updateState(source.hubBaseUrl, source.sourceNodeId, (latest) => ({
+      await this.stateStore.updateState(source.hubBaseUrl, source.sourceId, (latest) => ({
         ...latest,
         lastJobState: "error",
         lastError: error instanceof Error ? error.message : String(error),
@@ -121,12 +121,12 @@ export class MemorySyncService {
 
   private async markOperationsSynced(
     hubBaseUrl: string,
-    sourceNodeId: string,
+    sourceId: string,
     operations: MemoryFileOperation[],
     batchId: string,
     syncedAt: string,
   ): Promise<void> {
-    await this.stateStore.updateState(hubBaseUrl, sourceNodeId, (state) => {
+    await this.stateStore.updateState(hubBaseUrl, sourceId, (state) => {
       const files = { ...state.files };
       for (const operation of operations) {
         const key = toMemorySyncFileKey(operation.kind, operation.relativePath);

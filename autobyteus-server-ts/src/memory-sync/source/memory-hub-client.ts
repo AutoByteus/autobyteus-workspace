@@ -5,7 +5,7 @@ import { parseMemoryHubJsonResponse } from "./memory-hub-response-parser.js";
 export type MemoryHubHealthResult = {
   ok: boolean;
   hubEnabled: boolean;
-  sourceNodeId: string;
+  sourceId: string;
   authenticated: boolean;
   message?: string | null;
 };
@@ -14,14 +14,14 @@ export class MemoryHubClient {
   async testConnection(input: {
     hubBaseUrl: string;
     token: string;
-    sourceNodeId: string;
+    sourceId: string;
   }): Promise<MemoryHubHealthResult> {
     const hubBaseUrl = normalizeMemoryHubBaseUrl(input.hubBaseUrl);
     if (!hubBaseUrl) {
       throw new Error("hubBaseUrl is required.");
     }
     const url = new URL(buildMemoryHubHealthEndpoint(hubBaseUrl));
-    url.searchParams.set("sourceNodeId", input.sourceNodeId);
+    url.searchParams.set("sourceId", input.sourceId);
     const response = await fetch(url, {
       method: "GET",
       headers: { Authorization: `Bearer ${input.token}` },
