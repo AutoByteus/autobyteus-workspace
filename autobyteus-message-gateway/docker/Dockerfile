@@ -21,7 +21,11 @@ WORKDIR /app/autobyteus-message-gateway
 COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/pnpm-lock.yaml autobyteus-message-gateway/pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
-COPY autobyteus-message-gateway/ ./
+# Copy only the build inputs. The rest of the gateway folder stays out of the
+# image: operators keep secrets in docker/.env.docker and the compose files mount
+# ./memory (session state), both inside the build context.
+COPY autobyteus-message-gateway/LICENSE autobyteus-message-gateway/tsconfig.json autobyteus-message-gateway/tsconfig.build.json ./
+COPY autobyteus-message-gateway/src ./src
 
 RUN pnpm build
 
