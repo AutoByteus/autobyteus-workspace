@@ -4,8 +4,11 @@ import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-
 import type { CollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
-import type { PreparedTeamMessageAppend } from "../../../../src/agent-team-execution/services/team-run-persistence-contract.js";
-import { TeamCommunicationService } from "../../../../src/services/team-communication/team-communication-service.js";
+import type { RootMessageAppend } from "../../../../src/agent-collaboration/execution/communication/root-message-append.js";
+import { RootCommunicationEngine } from "../../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
+import type { InterAgentMessageDeliveryIntent } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { createTeamCommunicationPort } from "../../../../src/services/team-communication/team-communication-port.js";
+import { runAppendDurably } from "../../agent-collaboration/helpers/communication-port-double.js";
 
 const rootTeamRunId = "root-team-run";
 const root = Object.freeze({ rootSubjectKind: "agent_team" as const, rootRunId: rootTeamRunId });
@@ -29,10 +32,7 @@ const sender = buildDeliveryEndpointForParticipant(Object.freeze({
 const buildHarness = (input: {
   assertDeliveryAllowed?: (senderAgentRunId: string, receiverAgentRunId: string) => void;
   currentAgent?: (identity: CollaborationMemberExecutionIdentity) => boolean;
-  commit?: (plan: PreparedTeamMessageAppend) => Promise<
-    | { outcome: "committed" }
-    | { outcome: "conflict"; code: "TEAM_MESSAGE_COMMIT_CONFLICT"; message: string }
-  >;
+  commit?: (append: RootMessageAppend) => Promise<{ outcome: "committed" } | { outcome: "conflict" }>;
 } = {}) => {
   const cancel = vi.fn();
   const release = vi.fn();
@@ -42,31 +42,37 @@ const buildHarness = (input: {
     reservation: Object.freeze({ agentRunId: receiverIdentity.agentRunId, cancel, commit: reservationCommit }),
   }));
   const publish = vi.fn();
-  const replaceSnapshot = vi.fn();
-  const commit = vi.fn(input.commit ?? (async (plan: PreparedTeamMessageAppend) => {
-    const prepared = plan.prepareAgainstCurrent();
-    if (!prepared.prepared) {
-      return { outcome: "conflict" as const, code: prepared.code, message: prepared.message };
-    }
-    prepared.commit.commitAfterDurability();
-    return { outcome: "committed" as const };
-  }));
+  const commit = vi.fn(input.commit ?? runAppendDurably);
   const assertDeliveryAllowed = vi.fn(input.assertDeliveryAllowed ?? (() => undefined));
-  const service = new TeamCommunicationService({
+  const engine = new RootCommunicationEngine(createTeamCommunicationPort({
     rootTeamRunId,
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
     messageLogOwnerOf: () => COORDINATING_LOG,
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
-    commit,
+    commitMessageAppend: commit,
     publish,
-    replaceSnapshot,
-  });
-  return { service, assertDeliveryAllowed, cancel, release, reservationCommit, reserveDirectAgentInput, publish, replaceSnapshot, commit };
+  }));
+  /** The Team root's delivery hands the engine one intent at a time (TeamRunMessageDelivery). */
+  const service = {
+    deliver: (delivery: { intent: InterAgentMessageDeliveryIntent; receiverIdentity: CollaborationMemberExecutionIdentity; receiverDisplayName: string }) => engine.deliver({
+      senderIdentity: delivery.intent.sender.participant.identity,
+      senderDisplayName: delivery.intent.sender.participant.displayName,
+      senderAddress: null,
+      receiverIdentity: delivery.receiverIdentity,
+      receiverDisplayName: delivery.receiverDisplayName,
+      content: delivery.intent.content,
+      messageType: delivery.intent.messageType,
+      referenceFiles: delivery.intent.referenceFiles,
+    }),
+    getMessages: () => engine.getMessages(),
+    closeAdmission: () => engine.closeAdmission(),
+  };
+  return { service, assertDeliveryAllowed, cancel, release, reservationCommit, reserveDirectAgentInput, publish, commit };
 };
 
-const intent = (overrides: Record<string, unknown> = {}) => ({
+const intent = (overrides: Record<string, unknown> = {}): InterAgentMessageDeliveryIntent => ({
   rootTeamRunId,
   sender,
   recipientAddress: "/squad/receiver",
@@ -74,9 +80,9 @@ const intent = (overrides: Record<string, unknown> = {}) => ({
   messageType: "handoff",
   referenceFiles: ["/tmp/report.md"],
   ...overrides,
-});
+}) as never;
 
-describe("TeamCommunicationService", () => {
+describe("RootCommunicationEngine with the Team port", () => {
   it("does not reserve or persist input when the current lifetime fence rejects delivery", async () => {
     const harness = buildHarness({ assertDeliveryAllowed: () => { throw new Error("TASK_LIFETIME_CLOSED"); } });
     await expect(harness.service.deliver({ intent: intent(), receiverIdentity, receiverDisplayName: "receiver" }))
@@ -85,7 +91,7 @@ describe("TeamCommunicationService", () => {
     expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
     expect(harness.commit).not.toHaveBeenCalled();
     expect(harness.release).not.toHaveBeenCalled();
-    expect(harness.service.getSnapshot().messages).toEqual([]);
+    expect(harness.service.getMessages()).toEqual([]);
   });
   it("commits one root-owned message and only then releases exact receiver input", async () => {
     const harness = buildHarness();
@@ -113,18 +119,13 @@ describe("TeamCommunicationService", () => {
     expect(harness.reservationCommit).toHaveBeenCalledOnce();
     expect(harness.release).toHaveBeenCalledOnce();
     expect(harness.cancel).not.toHaveBeenCalled();
-    expect(harness.service.getSnapshot()).toMatchObject({
-      schemaVersion: 1,
-      rootTeamRunId,
-      messages: [{
+    expect(harness.service.getMessages()).toMatchObject([{
         senderAgentRunId: "sender-run",
         receiverAgentRunId: "receiver-run",
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: ["/tmp/report.md"],
-      }],
-    });
-    expect(harness.replaceSnapshot).toHaveBeenCalledWith(harness.service.getSnapshot());
+      }]);
     expect(harness.publish.mock.calls.map(([event]) => event.eventSourceType)).toEqual([
       TeamRunEventSourceType.COMMUNICATION,
       TeamRunEventSourceType.MEMBER_INPUT,
@@ -163,7 +164,7 @@ describe("TeamCommunicationService", () => {
       receiverIdentity,
       receiverDisplayName: "receiver",
     })).resolves.toMatchObject({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES" });
-    expect(harness.service.getSnapshot().messages).toEqual([]);
+    expect(harness.service.getMessages()).toEqual([]);
     expect(harness.reserveDirectAgentInput).not.toHaveBeenCalled();
     expect(harness.commit).not.toHaveBeenCalled();
   });

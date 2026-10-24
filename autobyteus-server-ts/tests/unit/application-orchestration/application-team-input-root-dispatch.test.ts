@@ -75,7 +75,7 @@ const buildRootTeamRuntime = () => {
     persistence: {
       commitTaskMutation: vi.fn(),
       commitTaskSettlement: vi.fn(),
-      commitReservedMessageAppend: vi.fn(),
+      commitMessageAppend: vi.fn(),
       commitExecutionTreeMutation: vi.fn(),
       readConsistent: vi.fn(),
       enterRootFailStop: vi.fn(),

@@ -15,7 +15,7 @@ import { ClaudeSessionToolUseCoordinator } from "../../../src/agent-execution/ba
 import { ClaudeProviderSessionLifecycle } from "../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
-import { InterAgentMessageRouter } from "../../../src/agent-team-execution/services/inter-agent-message-router.js";
+import { buildInterAgentDeliveryInputMessage } from "../../../src/agent-team-execution/services/inter-agent-message-runtime-builders.js";
 
 const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
   const senderIdentity = {
@@ -51,7 +51,7 @@ const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
 
 const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
 
-describe("InterAgentMessageRouter Claude input admission", () => {
+describe("teammate input admission into a running Claude turn (the teammate path: reserve, commit, release)", () => {
   it("delivers a task-peer message into the running Claude turn without waiting for it to end (AC-004)", async () => {
     const sdkClient = createFakeClaudeSdkClient({ providerSessionId: PROVIDER_SESSION_ID });
     const messageCache = new ClaudeSessionMessageCache();
@@ -110,11 +110,13 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     fake.init();
     await flushClaudeSession();
 
-    const request = buildRequest();
-    const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
+    // Teammate delivery holds the slot, saves the message, then commits and releases (RootCommunicationEngine).
+    const held = await run.reserveUserMessage(buildInterAgentDeliveryInputMessage(buildRequest()));
+    if (!held.reserved) throw new Error(held.message);
+    expect(fake.sent).toHaveLength(1);
+    held.reservation.commit().release();
     await vi.waitFor(() => expect(fake.sent).toHaveLength(2));
 
-    expect(result).toEqual({ accepted: true, turnId: started.turnId });
     const deliveredText = JSON.stringify(fake.sent[1]!.message.content);
     expect(deliveredText).toContain("The delegated analysis is complete.");
     expect(deliveredText).toContain('sender run id \\"student-two-task-run\\"');

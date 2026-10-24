@@ -718,9 +718,14 @@ root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
 receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
 structured metadata and natural message prose is not scanned for paths.
-An accepted delivery is projected once when the target AgentRun owns the input;
-later provider forwarding or terminal observation does not publish a duplicate
-Team Communication or member-input record.
+The message is saved to the Team's log before the target AgentRun may run it,
+through the one [teammate delivery path](./agent_communication.md#teammate-delivery-path):
+`RootTeamRun` builds its `RootCommunicationPort` (`team-communication-port.ts`:
+the Team recipient builder, `TEAM_*` codes, `COMMUNICATION` then `MEMBER_INPUT`
+events) and `TeamRunPersistenceCoordinator.commitMessageAppend` does the locked
+write. An accepted delivery is projected once, when the saved message is
+committed to the target AgentRun; later provider forwarding or terminal
+observation does not publish a duplicate Team Communication or member-input record.
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.

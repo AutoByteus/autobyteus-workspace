@@ -82,7 +82,7 @@ const AGENT_RUN_TESTS = [
   "autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts",
   "autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts",
   "autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts",
-  "autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-team-execution/teammate-input-claude-active-turn-admission.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts",
   "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
 ];
