@@ -187,7 +187,12 @@ The glossary entries above; the `DESIGN.md` pointer; `remote_collaboration.md`, 
   - the two-server E2E (Nodes tab, pairing identity, discovery with `list_peer_nodes`, remote runs);
   - the Nodes tab browser check;
   - loading a pre-change desktop node list and `peers.json` from a clean clone (AC-903);
-  - the word-list search (AC-901): `serverInstanceId` only in the two mapping owners; none of `list_available_nodes`, `AvailableNode`, `RemoteNodeDiscovery`, `RemoteDiscoveryChannel`, `RemotePeer`, `PeerAddress`, `isSystem`, `NodeProfile`, `MOBILE_NODE_ID`; `nodeId` only in node-ID meaning.
+  - the word-list search (AC-901):
+    - `serverInstanceId` only in the mapping owners Step 1 names (N-904);
+    - `sourceNodeId` only in Step 5b's three owners;
+    - `list_available_nodes` only in the release-note text (Step 3);
+    - none of `AvailableNode`, `RemoteNodeDiscovery`, `RemoteDiscoveryChannel`, `RemotePeer`, `PeerAddress`, `isSystem` (outside the desktop entry storage owner, which reads and ignores it), `NodeProfile`, `SavedNodeProfile`, `MOBILE_NODE_ID`;
+    - `nodeId` only in node-ID meaning, per the implementation's list (AR-902).
 
 ## Risks
 

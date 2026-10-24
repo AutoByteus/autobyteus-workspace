@@ -26,7 +26,7 @@ The words node, peer, remote and embedded, and the word `nodeId`, mean different
 | --- | --- |
 | REQ-901 | In code, `nodeId` means only the node's ID. A client's own record of a node is an **entry** with an **entry ID** (`entryId`): the desktop's registry, its changes, the window context, the mobile session, and the phone apps' saved node records (iOS and Android `SavedNodeProfile`), with every caller (V-01, V-09). |
 | REQ-902 | The node's ID has one name in code: `nodeId`. `ServerInstanceIdentityService` becomes `NodeIdentityService` (`getNodeId`); the web's `serverInstanceId` and `isServerInstanceId` become `nodeId` and `isNodeId` (V-02). The wire field is U-2. |
-| REQ-903 | Names that mean "registered peers" say peer (V-03): the tool `list_available_nodes` becomes `list_peer_nodes` (the user's decision); `AvailableNode` → `PeerNodeStatus`; `RemoteDiscoveryChannel` → `PeerDiscoveryChannel`; `RemoteNodeDiscovery` → `PeerNodeDiscovery`; `RemotePeer` → `PeerNodeRef`. The tool's texts and the docs and agent configs that name it change with it. |
+| REQ-903 | Names that mean "registered peers" say peer (V-03): the tool `list_available_nodes` becomes `list_peer_nodes` (the user's decision); `AvailableNode` → `PeerNodeStatus`; `RemoteDiscoveryChannel` → `PeerDiscoveryChannel`; `RemoteNodeDiscovery` → `PeerNodeDiscovery`; `RemotePeer` → `PeerNodeRef`. The tool's texts and the docs in this repository that name it change with it. Agent configs in this repository select neither name (search: none); stored agent configs and packages are outside this ticket (REQ-906). |
 | REQ-904 | "peer" is not used for other things. The connecting client's network address is the **client address** (V-04). Sibling task agents in the run tree are **siblings** (V-05). |
 | REQ-905 | The desktop entry drops the field nobody reads, `isSystem` (V-06); the stored side is U-1. |
 | REQ-910 | Memory Sync's own source identity is named **source ID** in code, GraphQL, the hub wire and the UI ("Source ID"), not "node id" (V-10, AR-903). Stored names stay through their owners. Whether it should become the node's ID is FU-002. |
@@ -55,6 +55,6 @@ The words node, peer, remote and embedded, and the word `nodeId`, mean different
 
 ## Scope Guardrail
 
-- In scope: renames in server, web, desktop shell, GraphQL types where they carry the mixed words, tools and their texts, docs and agent configs that name the tool.
+- In scope: renames in server, web, desktop shell, phone apps, GraphQL types where they carry the mixed words, tools and their texts, and docs. Agent configs and packages are out of scope (REQ-906).
 - Out of scope: any behavior change; a merged node record (the desktop entry and the server's peer stay two records joined by node ID, one-nodes-tab DEC-701); the restart-and-resume record (284 … 289).
 - Preserved: everything users and agents can do.

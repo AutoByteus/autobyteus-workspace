@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002; REQ-909 and the extended REQ-901 / REQ-906 at SR-004, at the user's request)
 - Upstream Investigation Notes: `…/investigation-notes.md` (V-01 … V-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `0b72123468` (SR-004; the first handoff named `5b6fd22982`, SR-003)
+- Reviewed Design Spec: `…/design-spec.md` at commit `2b11eb4169` (SR-005)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002)
-- Relevant Solution Revision IDs: SR-001 … SR-004
+- Relevant Solution Revision IDs: SR-001 … SR-005
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` (SR-003), with the SR-004 addendum
-- Prior Review Round Reviewed: N/A (first review of this package)
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: the Solution Designer's SR-005 (commit `2b11eb4169`), answering ARCH-REV-001 (AR-901 … AR-903, N-901 … N-904)
+- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, `Fail`)
+- Latest Authoritative Round: 2
 - Review method: the shared principles as updated 2026-10-24, including Principle 15 "One Vocabulary" and the "Vocabulary drift" trigger (`autobyteus-agents` `b87a507`), and the updated design examples.
 - Current-State Evidence Basis: code read in the worktree at `0b72123468`:
   - `autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts:47-80` (the exposure is `requestedToolNameSet.has(LIST_AVAILABLE_NODES_TOOL_NAME)`; an unknown name is silently ignored);
@@ -152,13 +152,38 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 ## Review Decision
 
-`Fail`. AR-901 is a `Requirement Gap`; AR-902 and AR-903 are `Design Impact`.
+`Fail` (round 2; `Design Impact`, AR-904, text only). AR-901 … AR-903 and N-901 … N-904 are resolved in the authoritative sections:
+- AR-901, by the user's decision: updating agent configs is out of this ticket, REQ-906 states the exception, and Step 3 carries the release-note text;
+- AR-902: the string carriers are listed with citations, and AC-901's per-identifier list is checked by code review;
+- AR-903: REQ-910 and Step 5b rename Memory Sync's ID to `sourceId` / "Source ID" in code, GraphQL, the hub wire (a clean cut) and the UI, with the stored names kept through their three owners;
+- N-901: `GLOSSARY.md`, with § 1 linking to it for Node and Peer and `DESIGN.md` pointing to it;
+- N-902: the iOS 426 branch and `incompatibleServer` are removed;
+- N-903: FU-001 is marked as pulled in;
+- N-904: the mapping owners are named.
 
-The vocabulary work is careful and well evidenced, and the stored-name pattern (keep stored names, one mapping owner each) is right. The tool rename needs a decision about stored definitions, and two claims need tightening.
+Two places in the documents still contradict these decisions; the implementation and code review check against them.
 
 ## Findings
 
-### AR-901 — The tool name is a stored value in definitions; renaming it silently removes the tool from them
+### AR-904 — Two places still contradict the resolved decisions
+
+- Type: Design Impact
+- Severity: Low (blocking: text only, but AC-901's check and the scope are read from these lines)
+- Protects: AC-901, REQ-906; design principles 14 and 15 (one place per decision)
+- Scope status: Within Approved Scope
+- Changes approved behavior: No
+- Evidence:
+  - `design-spec.md` § Verification: "the word-list search (AC-901): `serverInstanceId` only in the two mapping owners". Step 1's "Mapping owners of stored names (N-904)" now names seven owners, and Step 5b adds `sourceNodeId` (kept only in its three owners), which the word list does not include.
+  - `requirements-doc.md` REQ-903 ("the docs and agent configs that name it change with it") and § Scope Guardrail ("… and agent configs that name the tool") contradict REQ-906's exception: updating stored agent configs and packages is out of this ticket, by the user's decision.
+- Required update:
+  - § Verification: point to Step 1's owner list ("old names only in the mapping owners listed in Step 1"), and add `sourceNodeId` to the word list (allowed only in Step 5b's three owners) and `list_available_nodes` outside the release-note text.
+  - REQ-903 and the Scope Guardrail: drop "agent configs", or say "agent configs in this repository (none found)" with a pointer to REQ-906.
+- Why proportionate: three sentences.
+- Recommended recipient: Solution Designer
+
+The round-1 text follows, kept for traceability (AR-901 … AR-903 resolved in ARCH-REV-002).
+
+### AR-901 (resolved) — The tool name is a stored value in definitions; renaming it silently removes the tool from them
 
 - Type: Requirement Gap (it needs the user's decision: a migration of stored definitions, or an accepted behavior change)
 - Severity: Medium (blocking)
@@ -179,7 +204,7 @@ The vocabulary work is careful and well evidenced, and the stored-name pattern (
 - Why proportionate: one decision and, for (a), one small isolated migration. No compatibility alias (Principle 8).
 - Recommended recipient: Solution Designer (to obtain the user's decision)
 
-### AR-902 — "The compiler finds every entry-meaning use" is only partly true; name the carriers it can't see
+### AR-902 (resolved) — "The compiler finds every entry-meaning use" is only partly true; name the carriers it can't see
 
 - Type: Design Impact
 - Severity: Low (blocking: it is the method behind AC-901's "entry-meaning `nodeId`" check)
@@ -194,7 +219,7 @@ The vocabulary work is careful and well evidenced, and the stored-name pattern (
 - Why proportionate: a list and a check method; no new mechanism.
 - Recommended recipient: Solution Designer
 
-### AR-903 — Memory Sync's `sourceNodeId` and "Source node id" contradict REQ-901 and the new glossary; rename the names, keep the data
+### AR-903 (resolved) — Memory Sync's `sourceNodeId` and "Source node id" contradict REQ-901 and the new glossary; rename the names, keep the data
 
 - Type: Design Impact
 - Severity: Low (blocking)
@@ -218,7 +243,7 @@ The vocabulary work is careful and well evidenced, and the stored-name pattern (
 
 ## Classification
 
-`Requirement Gap` (AR-901); `Design Impact` (AR-902, AR-903).
+`Design Impact` (AR-904).
 
 ## Recommended Recipient
 
@@ -231,6 +256,6 @@ Solution Designer (`/software_engineering_team/solution_designer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (MP-901 reachable, with a complete witness)
-- Notes: classification `Large` / `High` confirmed. Design at commit `0b72123468` (SR-004).
+- Review Decision: `Fail` (round 2; AR-904, text only)
+- Material-Premise Gate: `Pass` (MP-901 handled by the user's decision: a stated REQ-906 exception plus the release note)
+- Notes: classification `Large` / `High`. Design at commit `2b11eb4169` (SR-005).

@@ -48,3 +48,4 @@
 - N-901: a repository-level `GLOSSARY.md` with a `DESIGN.md` pointer. N-902: iOS 426 branch and `incompatibleServer` removed. N-903: FU-001 already marked as pulled in. N-904: every mapping owner named.
 - Approval: AR-901 decided by the user (2026-10-24). REQ-910 is within the approved direction (REQ-901's rule applied).
 - Route: round 2 of the architecture review.
+- SR-005 addendum (ARCH-REV-002, AR-904): § Verification's word list points to Step 1's owners, adds `sourceNodeId` and allows `list_available_nodes` only in the release note. REQ-903 and the Scope Guardrail no longer name agent configs (REQ-906).

@@ -7,6 +7,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` (SR-003) with the SR-004 addendum | SR-003, SR-004 | N/A | Fail | AR-901, AR-902, AR-903 |
+| ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Fail | AR-901 … AR-903 resolved; AR-904 (new, text) |
 
 ## Revision Entries
 
@@ -34,5 +35,29 @@ None.
   - AR-903 (Low): rename Memory Sync's `sourceNodeId` / "Source node id" in code and UI, keeping its stored and wire names through their owners; FU-002 keeps the semantic question.
   - Non-blocking: N-901 … N-904.
 - Material classification changes: none.
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: RSK-901 (accepted).
+
+### ARCH-REV-002 — Round 2: round-1 findings resolved; two contradictory sentences remain
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/design-review-report.md`
+- Review round and trigger: round 2; the Solution Designer's SR-005 (commit `2b11eb4169`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 2; AR-901 … AR-903, N-901 … N-904.
+- Relevant solution revision IDs: SR-005
+- Prior authoritative decision: `Fail` (ARCH-REV-001)
+- Current authoritative decision: `Fail` (`Design Impact`, text only)
+- What changed in the review result: each round-1 item was verified in the requirements and design. A search for leftovers found two places that still state the old decisions.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-901 | Open (Medium, Requirement Gap) | Resolved by the user's decision | REQ-906 exception; Step 3 release note | The user: agent configs are another ticket; no migration, no alias |
+| AR-902 | Open (Low) | Resolved | Step 4 carriers (`electronApplication.ts:126-260`, `preload.ts:45-46`, `workspace-shell-window-registry.ts:44`); AC-901 per-identifier list | — |
+| AR-903 | Open (Low) | Resolved | REQ-910; Step 5b | `sourceId` / "Source ID" in code, GraphQL, the hub wire and the UI; stored names kept through three owners; FU-002 narrowed |
+| N-901 … N-904 | Notes | Done | `GLOSSARY.md` with links from § 1 and `DESIGN.md`; the 426 branch removed; FU-001 marked; the owners named | The Verification line still lags (AR-904) |
+
+- New or remaining finding IDs: AR-904 (Low, text): § Verification points to Step 1's owner list and adds `sourceNodeId` to the word list; REQ-903 and the Scope Guardrail stop saying "agent configs".
+- Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: RSK-901 (accepted).
