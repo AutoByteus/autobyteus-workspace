@@ -5,11 +5,13 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: 1, implementation IR-001 complete (direct low-risk route)
-- Prior round reviewed: none
-- Deviations from the investigation's plan, and why: API-06 was planned as new durable coverage. It failed for a pre-existing reason, so it is kept as evidence instead (investigation "Execution findings"). API-07 (AC-005 desktop journey) was deferred until the failure-origin decision.
+- Round and trigger: 2. IR-002 after SR-002 (code review CRR-001 C-01; requirements DEC-004). No code change since `1d49973440`. AC-003 is narrowed to the folder step on reload, API-06 becomes FU-003 evidence, and AC-005 is clarified (import, then launch with the real `codex`, no reload or repair).
+- Prior round reviewed: round 1 (`API-REV-001`, Fail on API-06 / AC-003 as first written)
+- Deviations from the investigation's plan, and why:
+  - The Applications module had to be enabled first (Settings → Server Settings → Applications), because `ENABLE_APPLICATIONS` is off by default in a fresh data root. This is a user step, done through the UI.
+  - The planned immediate termination of the draft run was not needed: the app-owned run finished both turns in about 35 s. `terminateAgentTeamRun` then answered "Agent team run not found."
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/tickets/in-progress/imported-app-codex-runtime-folder/evidence/`
 
 ## Routing Classification
@@ -17,102 +19,98 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 - Task size: `Small`
 - Architectural risk: `Low`
 - Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (not reached: result `Fail`)
-- Proportional test-code review decision: `Not Applicable` (Fail: failure-origin review requested)
+- Successful-output route: `Delivery`
+- Proportional test-code review decision: `Not Required — direct low-risk route`
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `8ab3a2129a` (code `1d49973440`) | macOS 26.5.2, Node v22.23.1 | Server E2E from source (vitest), real studio server over HTTP; scripted runtime CLIs (`agent-runtimes-fake-cli.mjs`) | `env -i PATH HOME=<resolved temp> TMPDIR`; test-owned data dirs; Brief Studio `applications/brief-studio/dist/importable-package` |
-| ENV-1-base | ENV-1 with `application-catalog-transition-service.ts` and `build-application-platform-runtime.ts` replaced by `1138e8fbef`'s for one probe run | same | same | Restored with `git checkout -- autobyteus-server-ts/src`; `git diff` empty afterwards |
+| ENV-1 | `8ab3a2129a` (code `1d49973440`) | macOS 26.5.2, Node v22.23.1 | Server E2E from source (vitest), real studio server; scripted runtime CLIs | `env -i PATH HOME=<resolved temp> TMPDIR`; test-owned data dirs |
+| ENV-1-base | ENV-1 with the two changed sources from `1138e8fbef` (round-1 probe only) | same | same | Restored; `git diff` empty |
+| ENV-2 | `2ddfc07e51` (code `1d49973440`) | macOS 26.5.2 | Isolated desktop instance of this worktree: `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build` → `iso-60554-6d7d` (`electron-dist/mac-arm64/AutoByteus.app`, own data root and ports); real `codex-cli 0.164.0`, model `gpt-5.6-luna` | Throwaway `CODEX_HOME`: an empty `config.toml` plus a symlink to `~/.codex/auth.json` (the user's sign-in; their Codex config is not used, and `~/.codex` is not written). The user's AutoByteus (port 29695, `~/.autobyteus`) is not touched. UI driven over CDP on the instance's control port (`cdp.mjs`, attach only) |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-01 | AC-001, AC-002, REQ-001…003 | real server: import → readiness → launch | Reused: IMP-01, IMP-00 | — | Pass | — | — | Ran on `1d49973440`; only ticket files changed since. The temporary probe run of the same file with an appended step (`API-06-probe-active-reload-repair.log`) passed IC-01 and IC-02 again: `✓ IC-01 …`, `✓ IC-02 …` |
-| API-02 | AC-003 (order), AC-004 | transition order, lifecycle, assembly | Reused: IMP-02 | — | Pass | — | — | Proves the ordering with fakes; the reentry recovery's worker start is not exercised by it |
+| API-01 | AC-001, AC-002, REQ-001…003 | real server: import → readiness → launch | Reused: IMP-01, IMP-00 | — | Pass | — | — | Code unchanged since `1d49973440` |
+| API-02 | AC-003, AC-004 | transition order (import and reload), lifecycle, assembly | Reused: IMP-02 | — | Pass | — | — | AC-003 as narrowed by SR-002: "prepares the reloaded application's runtime folder before readiness" (after the commits, before readiness), plus the import order test |
 | API-03 | AC-004 | startup-loaded app runs | Reused: IMP-03 | — | Pass | — | — | — |
 | API-04 | AC-004 | server typecheck | Reused: IMP-04 | — | Pass | — | — | — |
-| API-05 | AC-004 (guard) | architecture guard failure cause | Reused: IMP-05; `git log -S "AgentDefinitionService.getInstance" -- autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts`; `git merge-base --is-ancestor 3e3a7b08cc 1138e8fbef`; `git diff --name-only 1138e8fbef 1d49973440` | ENV-1 | Pass (failure out of scope, cause confirmed) | `IMP-05-architecture-boundaries.log` | `3e3a7b08cc fix: Memory page shows a task-agent group's definition name`; it is in base; the ticket's diff touches neither file | FU-001 (out of scope, recorded by implementation) |
-| API-06 | AC-003, REQ-001 (reload), UC-002, SCN-003; SCN-001b | real server: package reload and app-scoped repair of Brief Studio | (1) Draft E2E `env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-signed-out-recovery.e2e.test.ts --no-watch` (file now in evidence). (2) Temporary stack diagnostic in `requireApplicationActive` (removed). (3) Temporary probes: startup-quarantined repair; signed-out import + package reload; reload + repair of the ACTIVE imported app after IC-01/IC-02; startup-loaded ACTIVE app reload + repair on base sources and on the fix. (4) Asserting reproduction `evidence/API-06-repro-reload-reentry.e2e.test.ts` run on the fix | ENV-1, ENV-1-base | **Fail** | `API-06-repro-reload-reentry.e2e.test.ts`, `API-06-repro-reload-reentry-on-fix.log`, `API-06-probe-base-startup-reload.log`, `API-06-probe-fix-startup-reload.log`, `API-06-probe-active-reload-repair.log`, `API-06-cause-stack-diagnostic.log`, `API-06-probe-startup-quarantine.log`, `API-06-probe-package-reload.log`, `API-06-draft-signed-out-recovery-run.log`, `API-06-draft-signed-out-recovery.e2e.test.ts` | Reproduction on the fix: `[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes." … "availabilityState":"QUARANTINED"`; base and fix probe logs show identical lines for `after package reload`, `repair` (`"state":"QUARANTINED"`) and `after repair`; stack: `ApplicationOrchestrationHostService.listRunBindings (…application-orchestration-host-service.ts:269:5)` ← `ApplicationEngineClient.handleWorkerRequest (…application-engine-client.ts:255:23)`, refused `REENTERING` | Expected (AC-003): after a reload the application stays usable. Observed: a package reload of an ACTIVE imported Brief Studio (and of a startup-loaded one), and the documented repair, leave it QUARANTINED. Not caused by this change (identical on base). Cause: during reentry `ApplicationReentryService.recoverParticipants` (`application-reentry-service.ts:150-151`) calls `engineLauncher.ensureReady`; the started worker calls the host's `listRunBindings`, whose `requireApplicationActive` refuses while the application is REENTERING; the error quarantines it (`:158-172`). Also: an application imported while Codex is signed out cannot be brought back without a restart (repair → same refusal; package reload → prior quarantine kept by policy) |
-| API-07 | AC-005 | isolated desktop instance, real `codex` | — | — | Not Tested | — | — | Deferred to the next round: a rework of the reentry path would change `recoverParticipants`, which import also uses, and the journey includes a reload |
+| API-05 | AC-004 (guard) | architecture guard failure cause | Reused: IMP-05; `git log -S` / `merge-base` check (round 1) | ENV-1 | Pass (failure out of scope, cause confirmed) | `IMP-05-architecture-boundaries.log` | `3e3a7b08cc fix: Memory page shows a task-agent group's definition name`, in base | FU-001 |
+| API-06 | — (FU-003 evidence, not a case of this ticket since SR-002) | reload/repair of an ACTIVE Brief Studio | Round 1 probes and reproduction | ENV-1, ENV-1-base | Not a case of this ticket (round 1: Fail, pre-existing) | `API-06-repro-reload-reentry.e2e.test.ts`, `API-06-repro-reload-reentry-on-fix.log`, `API-06-probe-base-startup-reload.log`, `API-06-probe-fix-startup-reload.log`, `API-06-cause-stack-diagnostic.log`, other `API-06-*` | `after package reload 503 … currently reentering` on base and on the fix | Reentry defect C-01, follow-up FU-003 (requirements DEC-004) |
+| API-07 | AC-005, REQ-001 | real desktop app of this worktree, real `codex`, import UI, the application's own launch | (1) Start the isolated instance with a throwaway `CODEX_HOME`; baseline: no packages and no `server-data/applications`. (2) Settings → Application Packages → path `applications/brief-studio/dist/importable-package` → Import Package. (3) No restart: `listApplications`, the runtime folder, launch settings. (4) Settings → Server Settings → Applications → Enabled. (5) Applications → Brief Studio → Open app → Enter application; backend status. (6) In the app: Create brief → Generate draft; watch the Codex sessions; read the app's result. (7) Stop the instance | ENV-2 | Pass | `API-07-journey.log`, `API-07-codex-sessions-summary.txt`, `API-07-instance-start.json.txt`, `API-07-instance-stop.json.txt`, `API-07-instance-log-excerpt.log`, `API-07-01-import-done.png`, `API-07-02-applications-list.png`, `API-07-03-app-opened.png`, `API-07-04-app-entered.png`, `API-07-05-draft-generated.png` | UI "Application package imported." / "Local Path · Applications: 1"; launch settings `HTTP 200`, readiness `{"status": "RUNNABLE", "issues": []}`, runtime `codex_app_server`, `gpt-5.6-luna`; the runtime folder present after the import; backend `state ready, ready true, lastFailure null`; sessions: `agent='Brief Studio Researcher' cli_version=0.164.0 originator=autobyteus-server-ts` and `agent='Brief Studio Writer' …`, both `cwd=<dataRoot>/server-data/applications/<storageKey>/runtime`, `task_complete=True`; app: "Status in_review", "DRAFT OUTPUTS 2 / 1 final", `runtime/brief-studio/research.md` and `final-brief.md`; stop: `"dataRootRemoved": true`, both ports released, `list` empty | Import, then launch, with no restart, no reload and no repair. The real `codex` read the sign-in at import (the throwaway `CODEX_HOME` gained its state files at the import time, 18:06Z) and later ran both agents with the runtime folder as their working directory. Real model use: two short turns, about 318k tokens in total (279k of them cached input; 2.9k output), on the user's Codex sign-in. The server log's one error line is my own GraphQL validation mistake (no ENOENT, no quarantine) |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-01 (IC-01: import → ACTIVE, `RUNNABLE`, `ATTACHED`, Codex thread; fails on base, IMP-00) | Proven | — |
-| AC-002 | Yes | API-01 (IC-02) | Proven (on the implementation's reading: signed out after import; signed out at import gives the generic quarantine, FU-002) | — |
-| AC-003 | Yes | API-02 proves the order only; API-06 shows the observable outcome fails end to end | **Not Proven** (the application does not stay usable after a reload, for a pre-existing reason) | — |
+| AC-001 | Yes | API-01 (IC-01; fails on base, IMP-00) | Proven | — |
+| AC-002 | Yes | API-01 (IC-02) | Proven (signed out after import; signed out at import gives the generic quarantine detail, FU-002) | — |
+| AC-003 (SR-002) | Yes | API-02 | Proven | — |
 | AC-004 | Yes | API-02, API-03, API-04, API-05 | Proven (guard failure out of scope, FU-001) | — |
-| AC-005 | No | — | Not Proven (API-07 deferred) | Optional user check after the next round |
+| AC-005 | No (judgement; user check optional) | API-07 | Proven on a worktree desktop build with the real `codex` | Optional user check: delivery may offer it |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 50% | AC-001/002/004 proven; AC-003 fails end to end (API-06) | AC-003 outcome | Rework or a scope decision on reload/repair |
-| Changed-boundary execution directness | 90% | 90% | Import path through the real server (API-01); reload path through the real server (API-06) | — | — |
-| Cross-boundary integration realism and mock gap | 75% | 90% | API-06 exposed what the unit fakes skip (worker start during reentry) | — | — |
-| Environment, configuration, identity, and fixture fidelity | 90% | 90% | Clean env, test-owned data, scripted CLIs | Real `codex` binary not run (API-07 deferred) | API-07 |
-| Failure, edge-case, lifecycle, and recovery evidence | 75% | 50% | Signed-out text (IC-02); reload/repair recovery fails (API-06) | Recovery paths | Rework |
-| User-surface, browser, and desktop-shell confidence | N/A | 50% | — | AC-005 not run | API-07 |
-| Durable regression coverage quality and relevance | 85% | 75% | IC-01/IC-02 strong; reload covered by fakes only | No durable reload E2E (it would be red today) | Add `API-06-repro-reload-reentry` as durable once fixed |
+| Requirement and acceptance-criteria proof | 90% | 100% | AC-001…004 (API-01…05); AC-005 (API-07) | — | — |
+| Changed-boundary execution directness | 90% | 100% | Import through the real transition on the real server (API-01) and the packaged server (API-07); the folder exists before readiness and runs | — | — |
+| Cross-boundary integration realism and mock gap | 75% | 95% | Scripted CLI in API-01; real `codex` 0.164.0 in API-07 (readiness and both agents' turns) | — | — |
+| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Isolated packaged build, own data root, the user's Codex sign-in through a throwaway `CODEX_HOME` | — | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 90% | Signed-out readiness (IC-02); no restart between import and launch (API-01, API-07) | Signed-out-at-import recovery depends on FU-002/FU-003 (out of scope) | Follow-ups |
+| User-surface, browser, and desktop-shell confidence | N/A | 95% | API-07: import UI, Applications page, app entry, the app's own launch, screenshots | — | — |
+| Durable regression coverage quality and relevance | 90% | 90% | IC-01/IC-02 E2E and the order unit tests | No durable reload E2E (it would be red until FU-003) | FU-003 can promote `API-06-repro-reload-reentry.e2e.test.ts` |
 
-- Overall post-repository confidence: 82%
-- Overall final confidence: 64%
-- Calculation method: simple average of the applicable final scores (50, 90, 90, 90, 50, 50, 75)
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-003)
-- Any final applicable category below `90%`: `Yes`: requirement proof, failure/recovery, user surface, durable coverage
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: AC-003 outcome; AC-005 not run
+- Overall post-repository confidence: 86%
+- Overall final confidence: 95% (simple average of the seven final scores: 100, 100, 95, 95, 90, 95, 90 → 95.0%)
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: FU-003 (reload/repair of an ACTIVE application quarantines it) and FU-002 (generic quarantine detail on a signed-out import), both pre-existing and out of scope by DEC-004
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required`
-- Execution mode: `Project Desktop Validation` (isolated instance) for AC-005; deferred this round
-- Confidence gap: the real packaged server and real `codex` at import; deferred because the round already fails and the likely rework touches the same recovery path
-- If `Blocked`: N/A
+- Decision: `Required` (executed)
+- Execution mode: `Project Desktop Validation` (isolated instance of a worktree build)
+- Gap closed: the real packaged server, real `codex`, the real import UI and the application's own launch (AC-005)
+
+## Desktop Application Validation
+
+- Approach executed: isolated instance (`isolated-app start --build`), driven over CDP; GraphQL/REST read on the instance's backend
+- Cases: API-07 (shell-hosted renderer, embedded server, real CLI spawn and working directory)
+- Effect on the already-running desktop application: `None`
+- Not directly proven: none in scope
 
 ## Compatibility / Legacy Scope Check
 
-- Backward compatibility introduced or tolerated in scope: `No`
-- Compatibility-only behavior observed: `No`
-- Durable coverage for compatibility-only behavior: `No`
+- Backward compatibility introduced or tolerated in scope: `No`; compatibility-only behavior observed: `No`; durable coverage for compatibility-only behavior: `No`
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `No` (see Deviations; drafts kept in evidence)
+- Repository-resident durable coverage added, updated, or removed by API/E2E: `No`. The round-1 drafts stay in evidence (`API-06-draft-signed-out-recovery.e2e.test.ts`, `API-06-repro-reload-reentry.e2e.test.ts`) for FU-002/FU-003.
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Codex/Claude/AGY CLIs | scripted `agent-runtimes-fake-cli.mjs` | Deterministic sign-in states, no account use | The real `codex` `account/read` in the folder (API-07) |
+| Runtime CLIs in API-01…03 | scripted `agent-runtimes-fake-cli.mjs` | Deterministic sign-in states | Closed by API-07 (real `codex`) |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Stack diagnostic in `application-availability-service.ts` | Yes | `git checkout` right after the run | `git status` clean for `autobyteus-server-ts/src` |
-| Base swap of the two source files | Yes | `git checkout -- autobyteus-server-ts/src` | `git diff` empty |
-| `zz-probe-ab238-*` test files, temporary IC-03 in `application-import-codex-launch.e2e.test.ts` | Yes | Deleted / original restored from a copy | `git status` shows no test-tree change |
-| Draft durable test and reproduction | Yes | Moved into the ticket evidence folder | Not in the test tree |
-| Test servers, data dirs, scripted CLIs | Yes | Test teardown | — |
-
-## Preliminary Classification (On `Fail`)
-
-- Preliminary classification: `Design Impact` (pre-existing origin). The ticket's change is correct for what it does, and it does not cause the failure (identical on base). AC-003's observable outcome ("the application stays usable" after a reload) and UC-002 depend on a reentry path that quarantines Brief Studio for another reason. The design assumed the missing folder was the only gap (its escalation trigger: "another missing prerequisite" → Design Impact).
-- Recommended owner after failure-origin review: Solution Designer, to decide one of two:
-  - (a) the reentry admission fix is in this ticket: the host must let the application's own worker read its bindings during REENTERING, or recovery must not start the worker before ACTIVE, as `docs/modules/applications.md:111` describes;
-  - (b) it is a separate Task: AC-003 is narrowed to the order proof, and a follow-up is recorded, together with the signed-out-import recovery consequence.
+| Isolated instance `iso-60554-6d7d` and its data root | Yes | `pnpm --silent isolated-app stop iso-60554-6d7d` | `wasRunning: true`, `forced: false`, `dataRootRemoved: true`, ports released; `list` → `[]` |
+| Throwaway `CODEX_HOME` (with the Codex sessions) | Yes | `rm -rf` | Removed; a sanitized summary is kept (`API-07-codex-sessions-summary.txt`) |
+| Copies of Codex's sqlite files made for inspection | Yes | Deleted | — |
+| `autobyteus-web/electron-dist` | Yes (build output) | Left (untracked build output) | — |
+| Round-1 temporary diagnostics, probes and base swap | Yes | Removed or restored in round 1 | `git status` clean for source and tests |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-003 (fails end to end), AC-005 (deferred)
-- Preliminary classification and recommended owner: `Design Impact` (pre-existing origin), Solution Designer after failure-origin review
-- Next recipient from `get_handoff_rules`: Code Reviewer (failure-origin review)
-- Notes: AC-001, AC-002 and AC-004 are proven and need no rerun unless the rework touches their paths.
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check: none. AC-005's optional user check may be offered by delivery.
+- Next recipient from `get_handoff_rules`: Delivery
+- Notes: follow-ups FU-001 (architecture guard red on base), FU-002 (generic quarantine detail) and FU-003 (reentry quarantines an ACTIVE application) are recorded in `follow-ups.md`.

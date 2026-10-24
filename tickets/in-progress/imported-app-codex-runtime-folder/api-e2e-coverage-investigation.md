@@ -18,10 +18,10 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/imported
 - Code Review Report / Revision Record: `N/A — not applicable` (direct low-risk route)
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: implementation complete (IR-001), direct API/E2E route
-- Prior Investigation Reviewed: none
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: IR-002 after SR-002 (code review CRR-001 C-01, API-REV-001 API-06): no code change; AC-003 narrowed to the folder step on reload (DEC-004); AC-005 clarified (import, then launch with the real `codex`, no reload or repair)
+- Prior Investigation Reviewed: round 1 (this file before the Round 2 section)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -115,10 +115,10 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/imported
 | API-03 | AC-004 | startup-imported app runs | Reused | IMP-03 | same; `Tests  4 passed (4)` |
 | API-04 | AC-004 | server typecheck | Reused | IMP-04 | same; `exit=0` |
 | API-05 | AC-004 (guard) | architecture guard failure cause | Reused + check | IMP-05; confirm with `git log -S "AgentDefinitionService.getInstance" -- autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts` and that this ticket touches neither file | TESTING Rule 9: a failure needs its cause |
-| API-06 | REQ-001, AC-003, SCN-001b, SCN-003 | real server: signed-out import, repair, package reload | Durable (new) | `env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-signed-out-recovery.e2e.test.ts --no-watch` on the fix, and once with the fix's two source files reverted to base (expect failure) | The reload/repair path and the signed-out import had unit coverage only |
-| API-07 | AC-005, REQ-001 | isolated desktop instance of this worktree, real `codex` | Journey | Build and start an isolated instance with a throwaway `CODEX_HOME`; Settings → Applications → import `applications/brief-studio/dist/importable-package` by path in the UI; then, without a restart: the application is listed, its launch settings read 200 `RUNNABLE` (real Codex `account/read` in the runtime folder), its runtime folder exists under the instance's data root, the application opens and its backend `ensure-ready` succeeds; then the devkit's package reload keeps it RUNNABLE | The real packaged server, real CLI and real import UI |
+| API-06 | — (round 2: FU-003 evidence, not a case of this ticket) | real server: package reload and repair of an ACTIVE Brief Studio | Temporary Probe + reproduction (evidence) | as round 1; no rerun | SR-002: the reload/repair quarantine is pre-existing reentry defect C-01, follow-up FU-003; its evidence stays in `evidence/API-06-*` |
+| API-07 | AC-005, REQ-001 | isolated desktop instance of this worktree, real `codex` | Journey | `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build`; in the window: Settings → Application packages → import `applications/brief-studio/dist/importable-package` by path; without a restart: Brief Studio listed, launch settings 200 `RUNNABLE` (real `codex` `account/read` in the runtime folder), runtime folder present under the instance data root, open the app (backend `ensure-ready`), launch a draft run from the app (its Codex drafting team) and confirm the Codex threads start in the runtime folder; then terminate the team run at once. No reload or repair (SR-002) | The real packaged server, real CLI, real import UI and the app's own launch |
 
-- AC-005's draft launch on a real Codex is **not** run: `launchDraftRun` sends a launch text, so it would spend the user's Codex usage on a multi-agent run. The launch path itself is proven by IC-01 with the scripted CLI; the boundary this ticket changes (Codex spawned in the runtime folder at readiness) is proven by API-07 with the real CLI. Launching on a real Codex is left to the user's optional check.
+- AC-005's draft launch on a real Codex (round 2, SR-002 clarification): run, and the team run is terminated as soon as its Codex threads have started, so it spends only the start of the coordinator's first turn. The runtime folder is also the working directory of the application's runs (DEC-001), so the launch proves it on the real CLI as well.
 - Test progress log needed: `Yes`
 
 ## Durable Coverage To Add
@@ -167,6 +167,13 @@ None.
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | None | — | — | — |
+
+## Round 2 (SR-002 / IR-002)
+
+- No code change since `1d49973440` (`git diff --name-only 1d49973440 2ddfc07e51 -- autobyteus-server-ts autobyteus-web applications` is empty): API-01…05 stay valid.
+- AC-003 (narrowed): proven by API-02 (the transition order unit tests: the reloaded application's runtime folder prepared after the commits and before readiness).
+- API-06: kept as FU-003 evidence only.
+- API-07: run this round.
 
 ## Investigation Decision
 
