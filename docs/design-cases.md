@@ -23,7 +23,7 @@ Principles 2 and 13.
   ```
 
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
-- **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake ([Common Bad-Practice Pattern 2](#2-fragmented-coordinator-chain)).
+- **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
 ### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002)
 
