@@ -33,4 +33,4 @@ FU-001 (in-place recording of the event for Org/Agent views; not urgent), in `fo
 
 ## Route
 
-Recorded below after applying the handoff rules.
+Handoff rule "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer` (2026-10-24). Package commit `6448f1ae3e`.
