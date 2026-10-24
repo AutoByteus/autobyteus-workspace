@@ -4,7 +4,7 @@ import path from "node:path";
 import chokidar from "chokidar";
 import type { AgentPackageDefinitionKind, RegisteredPackageRoot } from "../domain/agent-package-definition-types.js";
 import { errorText, kindFoldersUnreadableError } from "../domain/definition-files.js";
-import { findDefinitionFolderForPath, isWatchedPackagePath } from "./agent-package-layout.js";
+import { findDefinitionFolderForPath, isWatchedPackagePath, listWatchedLayoutDirectories } from "./agent-package-layout.js";
 
 export type PackageFolderWatchState = "WATCHING" | "FOLDER_MISSING" | "UNAVAILABLE";
 export type PackageFolderWatchStatus = Readonly<{ state: PackageFolderWatchState; message: string | null }>;
@@ -28,6 +28,8 @@ export type PackageFolderWatch = {
   on(event: "all", listener: (eventName: string, filePath: string) => void): unknown;
   on(event: "error", listener: (error: unknown) => void): unknown;
   on(event: "ready", listener: () => void): unknown;
+  /** The directories the watch holds (keys) and their entries, as chokidar reports them. */
+  getWatched(): Record<string, string[]>;
   close(): Promise<void>;
 };
 export type PackageFolderWatchFactory = (
@@ -65,6 +67,8 @@ type PackageFolderEntry = {
   generation: number;
   /** Pending catch-up request; restarted by every arming and every added or removed folder. */
   catchUpTimer: NodeJS.Timeout | null;
+  /** The unwatched folders a coverage repair was already made for; reset by a structural event or a real arm. */
+  coverageRepairedFor: string | null;
 };
 
 /**
@@ -130,7 +134,7 @@ export class AgentPackageFolderWatcher {
         if (!entry) {
           const created: PackageFolderEntry = {
             root, state: "WATCHING", message: null, watcher: null, presenceWatch: null, identity: null,
-            ready: Promise.resolve(), generation: 0, catchUpTimer: null,
+            ready: Promise.resolve(), generation: 0, catchUpTimer: null, coverageRepairedFor: null,
           };
           this.entries.set(root.rootPath, created);
           await this.arm(created);
@@ -185,6 +189,7 @@ export class AgentPackageFolderWatcher {
   }
 
   private async rearm(entry: PackageFolderEntry): Promise<void> {
+    entry.coverageRepairedFor = null;
     this.closeEntry(entry);
     await this.arm(entry);
     this.options.sink.markPackageFolderChanged(entry.root.rootPath);
@@ -265,7 +270,10 @@ export class AgentPackageFolderWatcher {
     const resolved = path.resolve(filePath);
     const kindDirs = Object.values(root.kindDirs).map((dir) => path.resolve(dir));
     // Adding or removing a folder rebuilds directory watches, the moment the OS drops other folders' events.
-    if (eventName === "addDir" || eventName === "unlinkDir") this.scheduleCatchUp(entry);
+    if (eventName === "addDir" || eventName === "unlinkDir") {
+      entry.coverageRepairedFor = null;
+      this.scheduleCatchUp(entry);
+    }
     if (eventName === "unlinkDir" && (resolved === path.resolve(root.rootPath) || kindDirs.includes(resolved))) {
       void this.serial(() => this.checkPackageFolder(entry, null));
       return;
@@ -286,10 +294,50 @@ export class AgentPackageFolderWatcher {
       entry.catchUpTimer = null;
       if (this.closed || generation !== entry.generation || entry.state !== "WATCHING") return;
       if (this.entries.get(entry.root.rootPath) !== entry) return;
-      this.options.sink.reconcilePackageFolder(entry.root.rootPath);
+      void this.serial(() => this.runCatchUp(entry, generation));
     }, this.catchUpDelayMs);
     timer.unref?.();
     entry.catchUpTimer = timer;
+  }
+
+  private isStillArmed(entry: PackageFolderEntry, generation: number): boolean {
+    return !this.closed && generation === entry.generation && entry.state === "WATCHING" && this.entries.get(entry.root.rootPath) === entry;
+  }
+
+  /**
+   * The catch-up: first check the watch itself (the package folder is still the same folder; every definition folder
+   * on disk is watched), then ask the reloader to re-read the package. The OS can drop the event that would have made
+   * chokidar watch a new folder, and a folder it does not watch never reports an edit.
+   */
+  private async runCatchUp(entry: PackageFolderEntry, generation: number): Promise<void> {
+    try {
+      await this.checkPackageFolder(entry, null, "presence");
+      if (!this.isStillArmed(entry, generation)) return;
+      if (await this.repairCoverage(entry)) return;
+      if (this.isStillArmed(entry, generation)) this.options.sink.reconcilePackageFolder(entry.root.rootPath);
+    } catch (error) {
+      this.logger.warn(`AGENT_PACKAGE_FOLDER_CATCH_UP_FAILED:${entry.root.rootPath}`, error);
+    }
+  }
+
+  /**
+   * Re-arms the watch, without announcing anything, when a definition folder exists on disk that the watch does not
+   * hold. One repair per set of unwatched folders: a folder that stays unwatched (for example an unreadable one) is
+   * logged and left alone. Returns whether the watch was re-armed; its new `ready` schedules the next catch-up.
+   */
+  private async repairCoverage(entry: PackageFolderEntry): Promise<boolean> {
+    const watched = new Set(Object.keys(entry.watcher?.getWatched() ?? {}).map((directory) => path.resolve(directory)));
+    const unwatched = (await listWatchedLayoutDirectories(entry.root)).filter((directory) => !watched.has(directory)).sort();
+    if (unwatched.length === 0) return false;
+    const key = unwatched.join("\n");
+    if (entry.coverageRepairedFor === key) {
+      this.logger.warn(`AGENT_PACKAGE_FOLDER_UNWATCHED:${entry.root.rootPath}`, unwatched);
+      return false;
+    }
+    entry.coverageRepairedFor = key;
+    this.closeWatcher(entry);
+    await this.arm(entry);
+    return true;
   }
 
   private clearCatchUp(entry: PackageFolderEntry): void {
@@ -363,6 +411,7 @@ export class AgentPackageFolderWatcher {
     if (this.entries.get(entry.root.rootPath) !== entry || entry.state !== "FOLDER_MISSING") return;
     if (await this.identityOf(entry.root.rootPath)) {
       this.closePresenceWatch(entry);
+      entry.coverageRepairedFor = null;
       await this.arm(entry);
       this.options.sink.markPackageFolderChanged(entry.root.rootPath);
       return;

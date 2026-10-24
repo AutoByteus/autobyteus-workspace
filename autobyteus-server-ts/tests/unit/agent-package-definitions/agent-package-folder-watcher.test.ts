@@ -195,6 +195,7 @@ describe("AgentPackageFolderWatcher", () => {
         (listeners[event] ??= []).push(listener);
         return fake;
       }) as PackageFolderWatch["on"],
+      getWatched: () => ({}),
       close: async () => undefined,
     };
     const recorded = recordingSink();
@@ -229,6 +230,9 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
       this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]);
       return this;
     }
+    /** What the watch holds; tests fill it to say which folders chokidar knows. */
+    watched: Record<string, string[]> = {};
+    getWatched(): Record<string, string[]> { return this.watched; }
     close = vi.fn(async () => undefined);
     emit(event: string, ...args: unknown[]): void {
       for (const listener of this.listeners.get(event) ?? []) listener(...args);
@@ -257,6 +261,25 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
   });
 
+  /** Moves the fake clock, then lets the catch-up's file-system work finish (the real event loop still runs). */
+  const advance = async (ms: number) => {
+    await vi.advanceTimersByTimeAsync(ms);
+    for (let turn = 0; turn < 50; turn += 1) await new Promise((resolve) => setImmediate(resolve));
+  };
+
+  /** Runs the catch-up of the newest watch and lets its file-system work finish while timers stay fake. */
+  const catchUp = async (watch: FakeWatch) => {
+    watch.emit("ready");
+    await advance(PACKAGE_CATCH_UP_DELAY_MS);
+  };
+  const agentFolderOnDisk = async (rootPath: string, name: string) => {
+    await fs.mkdir(path.join(rootPath, "agents", name), { recursive: true });
+    await fs.writeFile(path.join(rootPath, "agents", name, "agent.md"), "x");
+  };
+  const watching = (rootPath: string, ...folders: string[]) => Object.fromEntries([
+    path.join(rootPath, "agents"), ...folders.map((folder) => path.join(rootPath, folder)),
+  ].map((directory) => [directory, []]));
+
   it("asks once, after the delay, when a watch is armed (default 300 ms)", async () => {
     expect(PACKAGE_CATCH_UP_DELAY_MS).toBe(300);
     const rootPath = path.join(base, "pkg");
@@ -264,11 +287,11 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     const { recorded, watches } = await armWith(rootPath);
 
     watches[0]!.emit("ready");
-    await vi.advanceTimersByTimeAsync(PACKAGE_CATCH_UP_DELAY_MS - 1);
+    await advance(PACKAGE_CATCH_UP_DELAY_MS - 1);
     expect(recorded.reconciles).toEqual([]);
-    await vi.advanceTimersByTimeAsync(1);
+    await advance(1);
     expect(recorded.reconciles).toEqual([rootPath]);
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.reconciles).toEqual([rootPath]);
   });
 
@@ -278,19 +301,19 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     const { recorded, watches } = await armWith(rootPath, { catchUpDelayMs: 100 });
     const watch = watches[0]!;
     watch.emit("ready");
-    await vi.advanceTimersByTimeAsync(100);
+    await advance(100);
     expect(recorded.reconciles).toHaveLength(1);
 
     for (let index = 0; index < 25; index += 1) {
       watch.emit("all", "addDir", path.join(rootPath, "agents", `a${index}`));
-      await vi.advanceTimersByTimeAsync(40);
+      await advance(40);
     }
     watch.emit("all", "unlinkDir", path.join(rootPath, "agents", "a0"));
-    await vi.advanceTimersByTimeAsync(99);
+    await advance(99);
     expect(recorded.reconciles).toHaveLength(1);
-    await vi.advanceTimersByTimeAsync(1);
+    await advance(1);
     expect(recorded.reconciles).toHaveLength(2);
-    await vi.advanceTimersByTimeAsync(1_000);
+    await advance(1_000);
     expect(recorded.reconciles).toHaveLength(2);
     expect(recorded.folders).toContain("agent:a1");
   });
@@ -302,7 +325,7 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
 
     watches[0]!.emit("all", "change", path.join(rootPath, "agents", "a", "agent.md"));
     watches[0]!.emit("all", "add", path.join(rootPath, "agents", "a", "agent-config.json"));
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.folders).toEqual(["agent:a", "agent:a"]);
     expect(recorded.reconciles).toEqual([]);
   });
@@ -313,7 +336,7 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     const { recorded, watches } = await armWith(rootPath);
     watches[0]!.emit("ready");
     await monitor!.close();
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.reconciles).toEqual([]);
   });
 
@@ -325,7 +348,7 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     await fs.rm(rootPath, { recursive: true });
     watches[0]!.emit("all", "unlinkDir", rootPath);
     await untilIdle(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "FOLDER_MISSING");
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.reconciles).toEqual([]);
   });
 
@@ -336,8 +359,100 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     watches[0]!.emit("ready");
     watches[0]!.emit("error", Object.assign(new Error("too many open files"), { code: "EMFILE" }));
     await untilIdle(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "UNAVAILABLE");
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.reconciles).toEqual([]);
+  });
+
+  it("re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready", async () => {
+    const rootPath = path.join(base, "pkg");
+    await agentFolderOnDisk(rootPath, "scout");
+    await fs.mkdir(path.join(rootPath, "agent-teams", "squad", "agents", "lead"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    // chokidar knows the kind folder but never heard of scout, squad or squad's local agent.
+    watches[0]!.watched = watching(rootPath);
+
+    await catchUp(watches[0]!);
+    expect(watches).toHaveLength(2);
+    expect(watches[0]!.close).toHaveBeenCalled();
+    expect(recorded.roots).toEqual([]);
+    expect(recorded.reconciles).toEqual([]);
+
+    // The new watch covers everything that exists: its catch-up only reconciles.
+    watches[1]!.watched = watching(rootPath, "agents/scout", "agent-teams", "agent-teams/squad",
+      "agent-teams/squad/agents", "agent-teams/squad/agents/lead");
+    watches[1]!.watched[path.join(rootPath, "agent-teams")] = [];
+    await catchUp(watches[1]!);
+    expect(watches).toHaveLength(2);
+    expect(recorded.reconciles).toEqual([rootPath]);
+    expect(recorded.roots).toEqual([]);
+  });
+
+  it("repairs a folder that stays unwatched only once, warns, and still reconciles", async () => {
+    const rootPath = path.join(base, "pkg");
+    await agentFolderOnDisk(rootPath, "stubborn");
+    const warn = vi.fn();
+    const recorded = recordingSink();
+    const watches: FakeWatch[] = [];
+    monitor = new AgentPackageFolderWatcher({
+      sink: recorded.sink,
+      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
+      logger: { warn },
+    });
+    await monitor.syncPackageFolders([rootAt(rootPath)]);
+    watches[0]!.watched = watching(rootPath);
+
+    await catchUp(watches[0]!);
+    expect(watches).toHaveLength(2);
+    watches[1]!.watched = watching(rootPath);
+    await catchUp(watches[1]!);
+    await catchUp(watches[1]!);
+    expect(watches).toHaveLength(2);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("AGENT_PACKAGE_FOLDER_UNWATCHED"), [path.join(rootPath, "agents", "stubborn")]);
+    expect(recorded.reconciles).toEqual([rootPath, rootPath]);
+  });
+
+  it("allows another repair after a folder is added or removed", async () => {
+    const rootPath = path.join(base, "pkg");
+    await agentFolderOnDisk(rootPath, "stubborn");
+    const { watches } = await armWith(rootPath);
+    watches[0]!.watched = watching(rootPath);
+    await catchUp(watches[0]!);
+    expect(watches).toHaveLength(2);
+    watches[1]!.watched = watching(rootPath);
+
+    watches[1]!.emit("all", "addDir", path.join(rootPath, "agents", "other"));
+    await advance(PACKAGE_CATCH_UP_DELAY_MS);
+    expect(watches).toHaveLength(3);
+  });
+
+  it("does not re-arm when every definition folder on disk is watched, and ignores unwatched layouts", async () => {
+    const rootPath = path.join(base, "pkg");
+    await agentFolderOnDisk(rootPath, "scout");
+    // Not part of the layout: skills, hidden and _-prefixed folders, files.
+    await fs.mkdir(path.join(rootPath, "agents", "scout", "skills", "s"), { recursive: true });
+    await fs.mkdir(path.join(rootPath, "agents", "_template"), { recursive: true });
+    await fs.mkdir(path.join(rootPath, "agents", ".git"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.watched = watching(rootPath, "agents/scout");
+
+    await catchUp(watches[0]!);
+    expect(watches).toHaveLength(1);
+    expect(recorded.reconciles).toEqual([rootPath]);
+  });
+
+  it("checks that the package folder is still there first: a folder renamed away is reported missing, with no coverage repair", async () => {
+    const rootPath = path.join(base, "pkg");
+    await agentFolderOnDisk(rootPath, "scout");
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.watched = watching(rootPath);
+    // The presence watch's own event was lost: only the catch-up can notice the rename.
+    await fs.rename(rootPath, path.join(base, "moved"));
+
+    await catchUp(watches[0]!);
+    expect(monitor!.getPackageFolderWatchStatus(rootPath)?.state).toBe("FOLDER_MISSING");
+    expect(recorded.roots).toEqual([rootPath]);
+    expect(recorded.reconciles).toEqual([]);
+    expect(watches).toHaveLength(1);
   });
 
   it("drops the request of a watch that was re-armed and asks again for the new watch", async () => {
@@ -354,11 +469,12 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     expect(watches).toHaveLength(2);
     expect(watches[0]!.close).toHaveBeenCalled();
 
-    await vi.advanceTimersByTimeAsync(5_000);
+    await advance(5_000);
     expect(recorded.reconciles).toEqual([]);
+    watches[1]!.watched = watching(rootPath, "agents/b");
     watches[0]!.emit("ready");
     watches[1]!.emit("ready");
-    await vi.advanceTimersByTimeAsync(PACKAGE_CATCH_UP_DELAY_MS);
+    await advance(PACKAGE_CATCH_UP_DELAY_MS);
     expect(recorded.reconciles).toEqual([rootPath]);
   });
 });
