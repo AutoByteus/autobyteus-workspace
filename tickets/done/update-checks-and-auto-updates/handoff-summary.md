@@ -71,7 +71,8 @@
 
 ## Release
 
-- `No release`. The Task's done-when, the requirements doc's Observable definition of success, asks for none, and the Solution Designer confirmed "No release, per the done-when". The change ships with the next release.
+- Beta `v1.5.9-beta.3` (DR-003) was published completely. The Task's done-when asked for a beta and the user's check; DR-002 had recorded `No release` in error.
+- The user's check was accepted on that beta, relayed, with no item-level results (`release-deployment-report.md`, Verification).
 
 ## Residual Risks And Follow-ups
 

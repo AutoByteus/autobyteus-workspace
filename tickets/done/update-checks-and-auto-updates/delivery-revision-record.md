@@ -8,6 +8,7 @@ The latest release/deployment report remains authoritative.
 | --- | --- | --- | --- | --- |
 | DR-001 | Test-code review pass CRR-003 (code reviewer) | N/A | Blocked: the latest base cannot build the server (prerequisite, routed to the Solution Designer) | `release-deployment-report.md`, `evidence/DEL-01..07` |
 | DR-002 | Solution Designer: resume, PRQ-001 fixed by autobyteus-282 (`bf087d3166`) | Blocked (DR-001) | Delivery Completed: re-integrated, verified, finalized, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `follow-ups.md` (FU-002), `evidence/DEL-11..17` |
+| DR-003 | Solution Designer receipt check DG-001: the Task's done-when requires a beta and the user's check | Delivery Completed (DR-002), blocked at receipt | Delivery Completed: beta `v1.5.9-beta.3` published completely; the user's check accepted (relayed) | `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -62,3 +63,21 @@ The latest release/deployment report remains authoritative.
   - AC-014 busy/offline is proven by tests only;
   - the AC-007 notice to running agents was not rerun live;
   - older builds reading the new file shapes was not checked, and `RELEASE.md` does not require it.
+
+### DR-003 — Beta v1.5.9-beta.3 and the user's check (receipt gap DG-001)
+
+- Delivery round and trigger: round 3. The Solution Designer's receipt check of DR-002 found DG-001: the Task's done-when ends with "a beta and the user's check in the app", and DR-002 recorded `No release`.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/delivery-receipts/update-checks-and-auto-updates-receipt-verification/receipt-verification.md`
+- Prior authoritative result: DR-002 `Delivery Completed`, blocked at receipt
+- Current authoritative result: `Delivery Completed`
+- Release: `v1.5.9-beta.3`
+  - release commit `f853af14a7` on `personal`;
+  - the checks before tagging passed (Secret Gate over 103 commits);
+  - Desktop, Android, iOS and Server Docker all succeeded;
+  - 17 assets on a pre-release;
+  - Docker `1.5.9-beta.3` = `:beta`.
+- User check: accepted, relayed on 2026-10-24 by the Project Task Manager through the Solution Designer. The user runs `v1.5.9-beta.3` and counts that as his in-app check, and asked that the Task not be held open. No item-level results were reported, so AC-007's running-agent notice and AC-014's busy/offline skip stay as bounded in the evidence.
+- Terminal return to the Solution Designer: `Sent`
+- Why this delivery revision was recorded: to correct the release decision and record the beta
+- Next recipient/action: none. The Solution Designer has classified the Task Terminal.
+- Remaining blockers: none
