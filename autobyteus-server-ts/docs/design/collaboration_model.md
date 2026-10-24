@@ -56,8 +56,8 @@ are parts of one run. They work together only by **messages**
 
 `delegate_task` hands one Task's work to an **independent** unit. It starts a
 new delegated run of that Agent or Team, or gives a saved Task to an existing
-delegated run by its run ID. A delegated run is a peer, not a part: it has its
-own identity, conversation and memory.
+delegated run by its run ID. A delegated run is a run of its own, not a part:
+it has its own identity, conversation and memory.
 
 **Inside your run you message; outside your run you delegate first, then
 message the delegated run by its run ID.**

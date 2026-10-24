@@ -1,6 +1,6 @@
 <template>
-  <main data-test="peer-sidebar-probe" class="min-h-screen bg-slate-100 p-4 text-slate-900">
-    <h1 class="mb-4 text-xl font-semibold">Task Agent peer history sidebar probe</h1>
+  <main data-test="sibling-sidebar-probe" class="min-h-screen bg-slate-100 p-4 text-slate-900">
+    <h1 class="mb-4 text-xl font-semibold">Task Agent sibling history sidebar probe</h1>
     <div class="flex h-[48rem] bg-white">
       <aside data-test="sidebar" class="shrink-0 border-r p-2" :style="{ width: narrow ? '260px' : '360px' }">
         <WorkspaceHistoryWorkspaceSection v-if="workspaceNode" :workspace-node="workspaceNode"
@@ -27,14 +27,14 @@ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamT
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 definePageMeta({ layout: false });
-const ROOT = 'peer-root';
-const WORKER = 'peer-worker';
-const REVIEWER = 'peer-reviewer';
-const TASK_A = 'peer-task-a';
-const TASK_B = 'peer-task-b';
-const TEAM = 'peer-task-team';
-const MEMBER = 'peer-task-team-member';
-const NESTED = 'peer-nested-task';
+const ROOT = 'sibling-root';
+const WORKER = 'sibling-worker';
+const REVIEWER = 'sibling-reviewer';
+const TASK_A = 'sibling-task-a';
+const TASK_B = 'sibling-task-b';
+const TEAM = 'sibling-task-team';
+const MEMBER = 'sibling-task-team-member';
+const NESTED = 'sibling-nested-task';
 const mode = useRoute().query.mode;
 const retained = mode === 'retained';
 const empty = mode === 'empty';
@@ -42,8 +42,8 @@ const narrow = ref(false);
 const noop = () => {};
 const started = '2026-09-26T08:00:00.000Z';
 const context = buildTestTeamContext({
-  teamRunId: ROOT, teamDefinitionId: 'peer-definition', teamDefinitionName: 'Peer Team',
-  coordinatorAddress: '/Reviewer', focusedAgentRunId: REVIEWER, workspaceRootPath: '/peer-fixture',
+  teamRunId: ROOT, teamDefinitionId: 'sibling-definition', teamDefinitionName: 'Sibling Team',
+  coordinatorAddress: '/Reviewer', focusedAgentRunId: REVIEWER, workspaceRootPath: '/sibling-fixture',
   isActive: !retained,
   rootChildren: [testAgentNode('/Worker', { agentRunId: WORKER, currentStatus: AgentStatus.Idle }),
     testAgentNode('/Reviewer', { agentRunId: REVIEWER, currentStatus: AgentStatus.Idle })],
@@ -67,15 +67,15 @@ const teamStore = useAgentTeamContextsStore();
 const selectionStore = useAgentSelectionStore();
 const runHistoryStore = useRunHistoryStore();
 const workspaceStore = useWorkspaceStore();
-workspaceStore.workspaces['test-workspace'] = { workspaceId: 'test-workspace', name: 'Peer Workspace',
-  absolutePath: '/peer-fixture', workspaceRootPath: '/peer-fixture', workspaceConfig: {}, kind: 'filesystem' };
+workspaceStore.workspaces['test-workspace'] = { workspaceId: 'test-workspace', name: 'Sibling Workspace',
+  absolutePath: '/sibling-fixture', workspaceRootPath: '/sibling-fixture', workspaceConfig: {}, kind: 'filesystem' };
 workspaceStore.workspacesFetched = true;
 teamStore.addTeamContext(context);
 selectionStore.setRunSelection(ROOT, 'team');
-runHistoryStore.refreshRunNavigationTopology('peer-fixture-seed');
+runHistoryStore.refreshRunNavigationTopology('sibling-fixture-seed');
 const tree = useWorkspaceHistoryTreeState({ runHistoryStore, selectionStore });
-const historyTeams = computed(() => runHistoryStore.getTeamNodes('/peer-fixture'));
-const workspaceNode = computed(() => runHistoryStore.getTreeNodes().find(row => row.workspaceRootPath === '/peer-fixture'));
+const historyTeams = computed(() => runHistoryStore.getTeamNodes('/sibling-fixture'));
+const workspaceNode = computed(() => runHistoryStore.getTreeNodes().find(row => row.workspaceRootPath === '/sibling-fixture'));
 const sectionState = {
   ...tree, toggleWorkspace: (node: { stableKey: string }) => tree.toggleWorkspace(node.stableKey), selectedRunId: null, isTeamRunSelected: (id: string) => selectionStore.selectedRunId === id,
   isRunTerminating: () => false, isTeamTerminating: () => false, isRunDeleting: () => false,
@@ -114,6 +114,6 @@ const probe = {
     authoritative: Object.fromEntries([TASK_A, TASK_B, WORKER, NESTED].map(id => [id, isTeamMemberProjectionAuthoritative(context, id)])),
   }),
 };
-onMounted(() => { (window as any).__peerSidebarProbe = probe; });
-onBeforeUnmount(() => { delete (window as any).__peerSidebarProbe; });
+onMounted(() => { (window as any).__siblingSidebarProbe = probe; });
+onBeforeUnmount(() => { delete (window as any).__siblingSidebarProbe; });
 </script>

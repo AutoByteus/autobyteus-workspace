@@ -70,7 +70,7 @@ The endpoint handles the MCP Streamable HTTP methods:
   lifecycle remains the owner of run-session deactivation.
 
 Every request is admitted before method handling or session lookup. Admission
-requires the raw TCP peer address to be loopback, the `Host` header to be
+requires the raw TCP client address to be loopback, the `Host` header to be
 `localhost` or a loopback address, and any supplied `Origin` to be HTTP(S) on a
 current loopback host. A failed local-admission check returns `403`; an admitted
 request for an inactive run-session ID returns the redacted `404

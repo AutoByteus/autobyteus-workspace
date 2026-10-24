@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Run from autobyteus-web: node tests/e2e/task-agent-peer-sidebar-probe.mjs
+// Run from autobyteus-web: node tests/e2e/task-agent-sibling-sidebar-probe.mjs
 // Optional: --output-dir <path> --browser-executable <path> --ledger <absolute path>.
 // Production history projection/selection/hydration, emulated GraphQL transport;
 // temporary Nuxt route and owned browser/process are always removed in finally.
@@ -18,9 +18,9 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const webDir = path.resolve(scriptDir, '../..');
-const fixturePath = path.join(scriptDir, 'fixtures/task-agent-peer-sidebar.page.vue');
-const installedPagePath = path.join(webDir, 'pages/api-e2e-task-agent-peer-sidebar.vue');
-const routePath = '/api-e2e-task-agent-peer-sidebar';
+const fixturePath = path.join(scriptDir, 'fixtures/task-agent-sibling-sidebar.page.vue');
+const installedPagePath = path.join(webDir, 'pages/api-e2e-task-agent-sibling-sidebar.vue');
+const routePath = '/api-e2e-task-agent-sibling-sidebar';
 
 const getArg = (name, fallback = undefined) => {
   const inline = process.argv.find((argument) => argument.startsWith(`--${name}=`));
@@ -43,7 +43,7 @@ const afterLeave = async (predicate) => {
   }
   return Boolean(await predicate());
 };
-const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/task-agent-peer-sidebar'));
+const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/task-agent-sibling-sidebar'));
 const explicitPort = getArg('port');
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
 const browserCandidates = [
@@ -137,7 +137,7 @@ const waitFor = async (label, predicate, timeout = timeoutMs) => {
   }
   throw new Error(`Timed out waiting for ${label}${lastError ? `: ${lastError.message}` : ''}`);
 };
-const state = (page) => page.evaluate(() => window.__peerSidebarProbe.state());
+const state = (page) => page.evaluate(() => window.__siblingSidebarProbe.state());
 const graphQlData = (operationName, query) => {
   if (operationName === 'GetAgentDefinitions' || query.includes('agentDefinitions')) return { agentDefinitions: [] };
   if (operationName === 'GetAgentTeamDefinitions' || query.includes('agentTeamDefinitions')) return { agentTeamDefinitions: [] };
@@ -217,10 +217,10 @@ try {
         requestedAt: new Date().toISOString(),
       });
       await new Promise((resolve) => setTimeout(resolve, 500));
-      if (requestedAgentRunId === 'peer-task-b' && failTaskB) {
+      if (requestedAgentRunId === 'sibling-task-b' && failTaskB) {
         failTaskB = false;
         await route.fulfill({ status: 200, contentType: 'application/json',
-          body: JSON.stringify({ errors: [{ message: 'PEER_EXPECTED_PROJECTION_FAILURE' }] }) });
+          body: JSON.stringify({ errors: [{ message: 'SIBLING_EXPECTED_PROJECTION_FAILURE' }] }) });
       } else {
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
           data: { getTeamMemberRunProjection: {
@@ -246,8 +246,8 @@ try {
   // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
   await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
-  await page.locator('[data-test="peer-sidebar-probe"]').waitFor({ state: 'visible' });
-  await page.waitForFunction(() => Boolean(window.__peerSidebarProbe));
+  await page.locator('[data-test="sibling-sidebar-probe"]').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => Boolean(window.__siblingSidebarProbe));
   // Vite may perform a one-time dependency optimization reload when a newly
   // installed fixture imports production components not yet warmed in this
   // process. The visible control above proves the reloaded fixture is ready;
@@ -255,63 +255,63 @@ try {
   evidence.browserEvents = [];
 
   const worker = page.locator('[role="treeitem"][data-row-kind="stable_member"][data-member-address="/Worker"]');
-  const taskA = page.locator('[role="treeitem"][data-agent-run-id="peer-task-a"]');
-  const taskB = page.locator('[role="treeitem"][data-agent-run-id="peer-task-b"]');
-  const outer = page.locator('[data-test="workspace-team-row-peer-root"]');
+  const taskA = page.locator('[role="treeitem"][data-agent-run-id="sibling-task-a"]');
+  const taskB = page.locator('[role="treeitem"][data-agent-run-id="sibling-task-b"]');
+  const outer = page.locator('[data-test="workspace-team-row-sibling-root"]');
   const selectedConversation = async (id) => {
     await waitFor(`exact ${id} focus`, async () => (await state(page)).focus === id);
     await page.getByText(`CONVERSATION_${id}`, { exact: true }).waitFor();
     assert(await page.locator('[role="treeitem"][aria-selected="true"]').count() === 1, 'Selection highlight is not unique');
   };
-  await scenario('PEER-001', 'Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry', async () => {
+  await scenario('SIBLING-001', 'Initially visible siblings; mouse/keyboard exact conversations; delayed loading, failure and retry', async () => {
     await taskA.waitFor({ state: 'visible' });
     await taskB.waitFor({ state: 'visible' });
     assert(await worker.getAttribute('aria-level') === '1', 'Worker depth wrong');
-    assert(await taskA.getAttribute('aria-level') === '1' && await taskB.getAttribute('aria-level') === '1', 'Tasks are not peers');
+    assert(await taskA.getAttribute('aria-level') === '1' && await taskB.getAttribute('aria-level') === '1', 'Tasks are not siblings');
     assert(await worker.getAttribute('aria-expanded') === null, 'Worker has phantom disclosure');
     assert((await taskA.getAttribute('aria-label')).includes('Started by'), 'Delegated row lost its delegator line');
     const layout = await Promise.all([worker, taskA, taskB].map(row => row.evaluate(el => ({
       x: el.getBoundingClientRect().x, padding: getComputedStyle(el).paddingLeft, label: el.getAttribute('aria-label'),
     }))));
-    assert(layout.every(row => row.x === layout[0].x && row.padding === layout[0].padding), 'Peers do not share visual indentation', layout);
+    assert(layout.every(row => row.x === layout[0].x && row.padding === layout[0].padding), 'Siblings do not share visual indentation', layout);
     const initial = await state(page);
-    assert(initial.rows.map(row => row.agent).slice(0, 4).join('|') === 'peer-worker|peer-task-a|peer-task-b|peer-reviewer', 'Peer order changed', initial);
+    assert(initial.rows.map(row => row.agent).slice(0, 4).join('|') === 'sibling-worker|sibling-task-a|sibling-task-b|sibling-reviewer', 'Sibling order changed', initial);
     assert(initial.taskAncestors.length === 0, 'Task retains regular Agent ancestor', initial);
-    await screenshot('initial-peers');
+    await screenshot('initial-siblings');
     await taskA.focus();
     await page.keyboard.press('Enter');
     await waitFor('task A loading', async () => await taskA.getAttribute('aria-busy') === 'true');
-    assert((await state(page)).focus === 'peer-reviewer', 'Focus committed before hydration');
-    await selectedConversation('peer-task-a');
+    assert((await state(page)).focus === 'sibling-reviewer', 'Focus committed before hydration');
+    await selectedConversation('sibling-task-a');
     assert(await taskA.getAttribute('aria-selected') === 'true', 'Task A not selected');
     await taskB.click();
-    await waitFor('task B error', async () => (await state(page)).attempts['peer-task-b']?.state === 'error');
-    assert((await state(page)).focus === 'peer-task-a', 'Failed selection stole focus');
+    await waitFor('task B error', async () => (await state(page)).attempts['sibling-task-b']?.state === 'error');
+    assert((await state(page)).focus === 'sibling-task-a', 'Failed selection stole focus');
     await taskB.getByRole('alert').waitFor();
     await screenshot('retry-error');
     await taskB.getByRole('button', { name: /retry/i }).click();
-    await selectedConversation('peer-task-b');
+    await selectedConversation('sibling-task-b');
     assert(await taskB.getAttribute('aria-selected') === 'true', 'Task B not selected');
     await worker.focus();
     await page.keyboard.press('Space');
-    await selectedConversation('peer-worker');
+    await selectedConversation('sibling-worker');
     assert(await worker.getAttribute('aria-selected') === 'true', 'Configured Agent not selected');
-    assert(await page.getByText('CONVERSATION_peer-task-b', { exact: true }).count() === 0, 'Task conversation leaked into regular Agent');
-    assert(evidence.projectionRequests.map(r => r.agentRunId).join('|') === 'peer-task-a|peer-task-b|peer-task-b|peer-worker', 'Incorrect exact-ID request sequence', evidence.projectionRequests);
-    assert(evidence.projectionRequests.every(r => r.teamRunId === 'peer-root'), 'Incorrect root identity');
-    await page.evaluate(() => window.__peerSidebarProbe.narrow());
+    assert(await page.getByText('CONVERSATION_sibling-task-b', { exact: true }).count() === 0, 'Task conversation leaked into regular Agent');
+    assert(evidence.projectionRequests.map(r => r.agentRunId).join('|') === 'sibling-task-a|sibling-task-b|sibling-task-b|sibling-worker', 'Incorrect exact-ID request sequence', evidence.projectionRequests);
+    assert(evidence.projectionRequests.every(r => r.teamRunId === 'sibling-root'), 'Incorrect root identity');
+    await page.evaluate(() => window.__siblingSidebarProbe.narrow());
     assert(await page.locator('[data-test="sidebar"]').evaluate(el => el.getBoundingClientRect().width) === 260, 'Narrow sidebar not applied');
     await screenshot('narrow-selected');
     return { initial, layout, final: await state(page), requests: [...evidence.projectionRequests] };
   });
 
-  await scenario('PEER-002', 'Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers', async () => {
-    const nested = page.locator('[role="treeitem"][data-agent-run-id="peer-nested-task"]');
+  await scenario('SIBLING-002', 'Task-Team containment and actual ancestor auto-reveal; outer collapse preserves siblings', async () => {
+    const nested = page.locator('[role="treeitem"][data-agent-run-id="sibling-nested-task"]');
     assert(await nested.count() === 0, 'Task-Team descendant escaped collapsed actual containers');
-    await page.evaluate(() => window.__peerSidebarProbe.revealNested());
+    await page.evaluate(() => window.__siblingSidebarProbe.revealNested());
     await nested.waitFor({ state: 'visible' });
     const current = await state(page);
-    assert(current.ancestors.join('|') === 'team:peer-task-team', 'Wrong actual Team ancestry', current);
+    assert(current.ancestors.join('|') === 'team:sibling-task-team', 'Wrong actual Team ancestry', current);
     assert(await nested.getAttribute('aria-level') === '2', 'Nested task Agent escaped task-Team depth');
     const member = page.locator('[data-transient-kind="task_team_child"][data-member-address="/Research/Analyst"]');
     assert(await member.getAttribute('aria-level') === '2' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
@@ -321,7 +321,7 @@ try {
     await teamRow.getByRole('button').click();
     await nested.waitFor({ state: 'visible' });
     await nested.click();
-    await selectedConversation('peer-nested-task');
+    await selectedConversation('sibling-nested-task');
     await screenshot('task-team-containment');
     await outer.click();
     assert(await afterLeave(async () => await page.locator('[role="treeitem"]').count() === 0), 'Outer Team collapse left rows visible');
@@ -332,32 +332,32 @@ try {
     return { final: await state(page) };
   });
 
-  await scenario('PEER-003', 'Retained delegated execution reload uses exact conversation; no-delegation list unchanged', async () => {
+  await scenario('SIBLING-003', 'Retained delegated execution reload uses exact conversation; no-delegation list unchanged', async () => {
     await page.goto(`${baseUrl}${routePath}?mode=retained`, { waitUntil: 'domcontentloaded' });
     await taskA.waitFor({ state: 'visible' });
     await taskB.waitFor({ state: 'visible' });
     assert((await state(page)).mode === 'retained', 'Retained mode not loaded');
-    assert(await taskA.getAttribute('aria-level') === '1', 'Retained peer depth changed');
+    assert(await taskA.getAttribute('aria-level') === '1', 'Retained sibling depth changed');
     assert(/\boffline\b/i.test(await taskA.getAttribute('aria-label')), 'Retained delegated row is not offline', { label: await taskA.getAttribute('aria-label') });
     await taskA.click();
-    await selectedConversation('peer-task-a');
+    await selectedConversation('sibling-task-a');
     await screenshot('retained-selected');
     await page.reload({ waitUntil: 'domcontentloaded' });
     await taskB.waitFor({ state: 'visible' });
     await taskB.focus();
     await page.keyboard.press('Enter');
-    await selectedConversation('peer-task-b');
+    await selectedConversation('sibling-task-b');
     const retained = await state(page);
     await page.goto(`${baseUrl}${routePath}?mode=empty`, { waitUntil: 'domcontentloaded' });
     await worker.waitFor({ state: 'visible' });
     assert(await page.locator('[role="treeitem"]').count() === 2, 'No-task regular list changed');
     assert(await page.locator('[data-transient-kind]').count() === 0, 'No-task list synthesized transient rows');
     await worker.click();
-    await selectedConversation('peer-worker');
+    await selectedConversation('sibling-worker');
     return { retained, empty: await state(page) };
   });
   const browserErrors = evidence.browserEvents.filter(event => event.type === 'pageerror'
-    || (event.type === 'console:error' && !event.text.includes('PEER_EXPECTED_PROJECTION_FAILURE')));
+    || (event.type === 'console:error' && !event.text.includes('SIBLING_EXPECTED_PROJECTION_FAILURE')));
   assert(browserErrors.length === 0, 'Unexpected browser error', browserErrors);
 } catch (error) {
   result = 'Fail';
@@ -367,7 +367,7 @@ try {
   }
   if (!evidence.failures.some((failure) => failure.message === error.message)) {
     evidence.failures.push({
-      id: 'HARNESS', description: 'Run task Agent peer sidebar browser probe',
+      id: 'HARNESS', description: 'Run task Agent sibling sidebar browser probe',
       message: error instanceof Error ? error.message : String(error), details: error?.details,
       stack: error instanceof Error ? error.stack : undefined,
     });
@@ -393,8 +393,8 @@ try {
   await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8');
 }
 
-if (result === 'Pass') process.stdout.write(`Task Agent peer sidebar browser probe passed. Evidence: ${evidencePath}\n`);
+if (result === 'Pass') process.stdout.write(`Task Agent sibling sidebar browser probe passed. Evidence: ${evidencePath}\n`);
 else {
-  process.stderr.write(`Task Agent peer sidebar browser probe failed. See ${evidencePath}\n`);
+  process.stderr.write(`Task Agent sibling sidebar browser probe failed. See ${evidencePath}\n`);
   process.exitCode = 1;
 }

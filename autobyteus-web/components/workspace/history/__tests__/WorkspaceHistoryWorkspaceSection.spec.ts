@@ -433,7 +433,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     }, 'workspace:/ws/a');
   });
 
-  it('keeps multiple peer tasks independently selectable and obeys outer Team collapse', async () => {
+  it('keeps multiple sibling tasks independently selectable and obeys outer Team collapse', async () => {
     const liveContext = buildTestTeamContext({
       teamRunId: 'team-run-1', coordinatorAddress: '/worker',
       rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
