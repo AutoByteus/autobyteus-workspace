@@ -3,8 +3,8 @@
 ## Solution And Approval Basis
 
 - Package: `node-vocabulary`; Task autobyteus-290.
-- Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-002. U-1 (a): keep stored names. U-2 (a): rename the identity wire field to `nodeId`.
-- Current solution revision ID: `SR-005` (ARCH-REV-001: AR-901 … AR-903, N-901 … N-904). Design status: `Ready`.
+- Requirements: [requirements-doc.md](requirements-doc.md), `Approved` at SR-006. U-2 (a): rename the identity wire field to `nodeId`. U-3: stored names follow the code through sealed migrations (U-1 reversed).
+- Current solution revision ID: `SR-006` (U-3: stored names follow the code, through sealed migrations; the mapping owners of SR-003 … SR-005 are replaced). Design status: `Ready`.
 - Authorities read:
   - `solution-designer/SKILL.md`;
   - `references/architecture-design.md`;
@@ -27,7 +27,7 @@ The audit is in [investigation-notes.md](investigation-notes.md), V-01 … V-09,
 ## Task Size And Architectural Risk (Mandatory)
 
 - `task_size`: `Large`. Renames span the server, the web window, the Electron shell, the iOS app, the tool contract, the wire between nodes and clients, and the docs: well over 100 files, in six steps.
-- `architectural_risk`: `High`. It changes the identity wire field (U-2), read by the desktop, peers and the phone apps, and an agent-facing tool name. Stored data is not changed (U-1), but stored-to-code name mapping is added in each store's one owner.
+- `architectural_risk`: `High`. It changes the identity wire field (U-2), read by the desktop, peers and the phone apps, and an agent-facing tool name. Stored names are migrated by sealed migrations on the server, the desktop and the window (U-3, § Stored Names Migration), with the node identity held back until its migration succeeds.
 - Escalation trigger: none further; behavior must not change. Any step that would change behavior is a defect of that step.
 
 ## Intended Change
@@ -52,7 +52,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 ## Change Scope (Mandatory)
 
 - **In scope:** the renames below, in server, web, Electron, iOS (the identity field only), tools and texts, GraphQL types where they carry these words, docs and the glossary.
-- **Derived consumers (Principle 11):** see the per-step consumer lists. The stored files (U-1) are read through one mapping owner each.
+- **Derived consumers (Principle 11):** see the per-step consumer lists. Stored names are migrated (§ Stored Names Migration); current code reads and writes only the new names.
 - **Left alone:**
   - `PeerNode`, `peers.json`, add peer, GraphQL `peerNodes` / `peerNodeOffer` / `peerNodeAvailability`;
   - `EMBEDDED_NODE_ID = 'embedded-local'`, `nodeType: 'embedded' | 'remote'`, `isDesktopEmbeddedNode`;
@@ -69,7 +69,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 
 - **Server:**
   - `remote-access/services/server-instance-identity-service.ts` → `node-identity-service.ts`: `ServerInstanceIdentityService` → `NodeIdentityService`, `getServerInstanceId` → `getNodeId`, `isValidServerInstanceId` → `isValidNodeId`.
-  - The stored identity file keeps its field `serverInstanceId` (U-1). This service is its only reader and writer, and maps it. Documented in its header.
+  - The stored identity file becomes `node-identity.json` `{nodeId}` through migration SM-1 (§ Stored Names Migration). This service reads and writes only the new file; it never creates a new ID while the `node_identity` capability is held back (REQ-913).
 - **Wire:** `/rest/remote-access/status` answers `nodeId` instead of `serverInstanceId` (U-2, a clean cut).
 - **Readers, all renamed:**
   - `PeerClient.fetchServerInstanceId` → `fetchNodeId` (`PeerIdentityProbe`);
@@ -77,12 +77,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - `stores/phoneAccessStore.ts`, `nodeRowStatus.ts`, `nodeListStore.ts`, `components/settings/nodes/NodeRow.vue`, `NodeConnectionDetails.vue`;
   - iOS `AutoByteusMobileCore/ConnectionValidator.swift` (`serverInstanceID = "serverInstanceId"` → `nodeId`) and its tests.
 - **UI text:** none needed; the Nodes tab already says "Node ID" (`localization/messages/en/nodesPage.ts:57`).
-- **Mapping owners of stored names (N-904).** Each is the only reader and writer of its stored shape, and AC-901's search allows the old names only in these:
-  - the server's `NodeIdentityService` (identity file `serverInstanceId`);
-  - `autobyteus-web/utils/nodeEntryStorage.ts` (desktop registry file and its localStorage copy: `id`, `serverInstanceId`);
-  - `utils/remoteAccess/mobileCredentialStorage.ts` (mobile session `nodeId`);
-  - iOS `SavedNodeStore.swift` and Android `connection/SavedNodeStore.kt` (their saved records' keys);
-  - and, for Step 5b, `memory-sync-config-service.ts`, `local-file-memory-sync-state-store.ts`, `memory-sync-manifest.ts` (`sourceNodeId`).
+- **Old stored names (N-904, now SR-006):** they appear only inside the migration folders and their frozen shapes (`autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/`, `…/memory-sync-source-id-names/`, `autobyteus-web/client-data-migrations/`). The boundary tests enforce it.
 
 ### Step 1b: no version field on the status answer (REQ-909, the user's request)
 
@@ -116,10 +111,10 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - This repository's built-in definitions select neither name (search: none).
 - **Abilities and exposure unchanged:** opt-in by definition, the same results.
 
-### Step 4: the client's own record is an entry (V-01, V-06, V-09; U-1)
+### Step 4: the client's own record is an entry (V-01, V-06, V-09; U-3)
 
 - **Types:**
-  - `types/node.ts`: `NodeProfile` → `NodeEntry`; `id` → `entryId`; `serverInstanceId` → `nodeId` (from Step 1); `isSystem` removed (V-06; no reader);
+  - `types/node.ts`: `NodeProfile` → `NodeEntry`; the record keeps `id` (an entry's own ID is correctly `id`); `serverInstanceId` → `nodeId` (from Step 1); `isSystem` removed (V-06; no reader). References to an entry from elsewhere use `entryId`;
   - `WindowNodeContext.nodeId` → `entryId`;
   - the registry changes' `nodeId` → `entryId`;
   - `EMBEDDED_NODE_ID` keeps its value and is named `EMBEDDED_ENTRY_ID`.
@@ -131,9 +126,9 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
   - the `WorkspaceShellWindow` and `attachRendererConsoleDiagnostics` options;
   - the log texts (`nodeId=` → `entryId=`).
 - **Stores and shell:** `stores/nodeStore.ts`, `stores/windowNodeContextStore.ts` (`nodeId` → `entryId`, `isEmbeddedWindow` stays), `electron/nodeRegistryStore.ts`, `electron/preload.ts`, `electron/types.d.ts`, `electron/application/electronApplication.ts`, and every caller (the 87 web files using `nodeId`, each classified: entry meaning → `entryId`; node meaning stays `nodeId`).
-- **Stored-name mapping (U-1), one owner:** a new `utils/nodeEntryStorage.ts` (`toStoredNodeEntry` / `fromStoredNodeEntry`), used by both stores that persist the snapshot (the Electron file and the window's localStorage copy). It maps `entryId` ⇄ stored `id` and `nodeId` ⇄ stored `serverInstanceId`. It reads and ignores a stored `isSystem`, and no longer writes it. Old files load unchanged (rule 7); there is no migration.
-- **Phone apps:** iOS `SavedNodeProfile` → `SavedNodeEntry` (13 files) and Android `SavedNodeProfile` → `SavedNodeEntry` (`connection/SavedNodeProfile.kt`, `SavedNodeStore.kt`, `ConnectionValidator.kt` and their users). Their stored keys stay through each app's one store owner (U-1).
-- **Mobile (V-09):** `MobileNodeSession.nodeId` → `entryId` (`MOBILE_NODE_ID` → `MOBILE_ENTRY_ID`). The stored credential session keeps its field name through `utils/remoteAccess/mobileCredentialStorage.ts`, its one owner.
+- **Stored names:** the desktop node list file and the window's browser-mode copy are migrated by SM-6 and SM-7 (§ Stored Names Migration). `nodeRegistryStore.ts` and `nodeStore.ts` read and write only the new file and key and the new field names.
+- **Phone apps:** iOS `SavedNodeProfile` → `SavedNodeEntry` (13 files) and Android `SavedNodeProfile` → `SavedNodeEntry` (`connection/SavedNodeProfile.kt`, `SavedNodeStore.kt`, `ConnectionValidator.kt` and their users). No stored key changes (the type name isn't stored).
+- **Mobile (V-09):** `MobileNodeSession.nodeId` → `entryId` (`MOBILE_NODE_ID` → `MOBILE_ENTRY_ID`). The stored session is migrated by SM-8 (new key, `entryId`, no schema `version`).
 - **Consumers check:** every window-scoped endpoint resolver, the Nodes tab, phone access, the window switcher; the remote runs store keeps `nodeId` (the node's ID).
 - **AC-901 made concrete (AR-902):** the implementation lists every remaining `nodeId` in `autobyteus-web/electron/`, `stores/`, `utils/`, `services/` and `components/` with its meaning (all must be the node's ID) in its handoff, and the code review checks that list.
 
@@ -151,7 +146,7 @@ One vocabulary, applied everywhere. Each step is a rename with no behavior chang
 - **UI:** "Source node id" → "Source ID", and the card's description "the source node id below is the stable import identity" → "the source ID below …", in English and Chinese.
 - **Wire to the hub:** renamed as a clean cut (rule 9; the hub is a node of the same release). Covers `memory-hub-client.ts:24` (the query parameter) and the ingestion side.
 - **Docs:** `autobyteus-server-ts/docs/features/memory_sync.md` and `docs/modules/agent_memory.md`: "`sourceNodeId`" → "source ID" (the folder `memory/imports/<source ID>` keeps its stored value), and "`NodeProfile.id`" → "entry ID".
-- **Stored names kept (U-1)**, mapped by their one owner each: the source config (`memory-sync-config-service.ts`), the sync state (`local-file-memory-sync-state-store.ts`), the hub's stored manifest (`memory-sync-manifest.ts` read and write). Stored values (the identity itself) are unchanged.
+- **Stored names:** migrated by SM-2 … SM-5 (§ Stored Names Migration); current code reads and writes only `sourceId`, `boundSourceId` and `source.json`.
 
 ### Step 6: glossary and docs (REQ-907)
 
@@ -161,16 +156,76 @@ The glossary entries above; the `DESIGN.md` pointer; `remote_collaboration.md`, 
 
 | Node / Subject | Current / Proposed Name | Natural And Self-Descriptive? | Same Meaning And Name Everywhere, Per The Glossary? | Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- | --- |
-| A server's identity | `serverInstanceId` / `nodeId` → `nodeId` | Yes | Yes after Step 1 | stored field keeps old name | one mapping owner, documented |
+| A server's identity | `serverInstanceId` / `nodeId` → `nodeId` | Yes | Yes after Step 1 and SM-1 | none after the migration | SM-1 |
 | The client's record of a node | `NodeProfile.id`, `nodeId` → `NodeEntry.entryId` | Yes | Yes after Step 4 | `nodeId` reused for it | Step 4 |
 | Registered remote node | `RemotePeer`, `AvailableNode`, "available nodes" → `PeerNodeRef`, `PeerNodeStatus`, `list_peer_nodes` | Yes | Yes | qualifier repeats or contradicts | Steps 2–3 |
 | Request origin address | `peerAddress` → `clientAddress` | Yes | Yes | collided with peer | Step 5 |
 | A delegated run's standing | "a peer" → "a run of its own" | Yes | Yes | collided with peer | Step 5 |
 
+## Stored Names Migration (SR-006, U-3; `DESIGN.md` rule 10; Data Migration Guideline)
+
+The mapping owners of SR-003 … SR-005 are **removed from the design**. Current code reads and writes only the new names. Sealed migrations rename the stored names once.
+
+### What is renamed on disk
+
+| ID | Store (owner today) | Released shape | New shape |
+| --- | --- | --- | --- |
+| SM-1 | Server identity (`NodeIdentityService`) | `<data>/remote-access/server-instance.json` `{serverInstanceId}` | `<data>/remote-access/node-identity.json` `{nodeId}`, same value |
+| SM-2 | Memory Sync source config (`memory-sync-config-service.ts:43`) | `memory-sync/memory-sync-config.json` `source.sourceNodeId` | `source.sourceId` |
+| SM-3 | Memory Sync source state (`local-file-memory-sync-state-store.ts:44`) | `memory-sync/source-state/*.json` `sourceNodeId` | `sourceId` (file names are derived from values; unchanged) |
+| SM-4 | Hub credentials (`local-file-memory-hub-credential-store.ts:17`) | `memory-sync/hub-credentials.json` records' `boundSourceNodeId` | `boundSourceId` |
+| SM-5 | Hub imports (`local-file-memory-import-store.ts:91-225`) | `memory/imports/<id>/source-node.json` `{sourceNodeId, …}` and `sync-manifest.json` `sourceNodeId` | `source.json` `{sourceId, …}` and `sourceId`; folder names (values) unchanged |
+| SM-6 | Desktop node list (`electron/nodeRegistryStore.ts:11`) | `userData/node-registry.v1.json`: `nodes[].serverInstanceId`, `nodes[].isSystem` | `userData/node-registry.json`: `nodes[].nodeId`; `isSystem` dropped; `id` (the entry's own ID) unchanged |
+| SM-7 | The window's node list in browser mode (`stores/nodeStore.ts`, key `autobyteus.node_registry.v1`; written only without the Electron API, `nodeStore.ts:31`) | the same snapshot shape | key `autobyteus.node_registry`, same field changes |
+| SM-8 | Mobile session (`utils/remoteAccess/mobileCredentialStorage.ts:3`) | key `autobyteus.remote_access.mobile_session.v1` `{version: 1, nodeId, …}` | key `autobyteus.remote_access.mobile_session` `{entryId, …}`; the schema `version` field dropped (Guideline § 3) |
+
+The iOS and Android saved lists change no stored key (only the type is renamed; the type name isn't stored). So they need no migration.
+
+### Where the migrations live (sealed)
+
+- **Server, SM-1 … SM-5:** `src/app-data-migrations/migrations/<name>/`, registered in `app-data-migration-registry.ts`, with frozen released shapes in `frozen/released-*`. They follow the sealed-area import rules, enforced by `app-data-migration-boundaries.test.ts`.
+  - `node-identity-file-name`: SM-1. Declares `holdsBackCapabilities: ["node_identity"]`, a new `AppDataCapability`.
+  - `memory-sync-source-id-names`: SM-2 … SM-5. Declares `holdsBackCapabilities: ["memory_sync"]`.
+  - They run before the services are built (`server-runtime.ts:183-206`: `runPending`, then `applyCapabilityReadiness`, then `buildStudioServer`).
+- **Desktop and browser, SM-6 … SM-8:** a new sealed area, `autobyteus-web/client-data-migrations/`, with the same rules as the server's area (Guideline § 3, "Client-side stores … follow the same rule"):
+  - `migrations/<name>/`: pure transforms with frozen released shapes, imported by no current code;
+  - two runners: `electron-file-runner.ts` (main process, called before `nodeRegistryStore` loads) and `browser-storage-runner.ts` (renderer, called once before `nodeStore` and the mobile session store read);
+  - a boundary spec: current code imports only the two runners, at their two call sites.
+
+### Checklist (Data Migration Guideline § 2)
+
+1. **Need:** a stored name carries a wrong or second meaning (rule 10). It is not cosmetic.
+2. **Availability:** a failed migration never locks out the app.
+   - SM-1 holds back `node_identity`. Remote access and remote collaboration report "not available until the node identity is migrated", while everything else works. `NodeIdentityService` never creates a new ID while `node_identity` is held back (REQ-913).
+   - SM-2 … SM-5 hold back `memory_sync`.
+   - SM-6 … SM-8: a failed client migration logs a warning and leaves the original. The desktop starts with the embedded entry only, and the old file stays for recovery (rule 7).
+3. **Source and target:** the shapes come from the released code (`origin/personal` before this ticket; the files cited above) and are frozen as `frozen/released-*` and `client-data-migrations/frozen/`.
+   - One fixture per shape: config with and without a source; state files; credentials with null and set bindings; several import folders; registry with 0, 1 and several entries, with and without `serverInstanceId` and `isSystem`; the mobile session.
+   - No real user data was read: the user declined (2026-10-24). The fixtures are built from the released writers' exact output.
+4. **Disposition:** each item is converted, already current (the new name is present and the old one absent: skipped), or failed (logged, original kept).
+   - Recognition is by structure (Guideline § 3): the old file or key present and the new one absent. There is no version field.
+5. **Commit and retry:**
+   - **Server:** the runner's record and atomic file writes (write the new file or name, then remove the old). For SM-1 the new file is written first, then the old one is removed, so a crash in between re-runs safely: both files present with the same value → keep the new one.
+   - **Client:** the same order (new key or file first, then the old removed). Backups are `.bak` copies for files and a `…:backup` key for storage, kept until the next successful start.
+6. **Current-only boundary:**
+   - current code knows only `nodeId`, `sourceId`, `source.json`, `node-identity.json`, `node-registry.json` and the unversioned keys;
+   - old names exist only inside migration folders and their frozen shapes;
+   - the existing in-place "legacy node record" normalization in `nodeRegistryStore.ts:139-146` stays as current validation only (it drops invalid records). It gains no old-name branch.
+7. **Cost:** a handful of small JSON files and keys; the import folders scale with the number of Memory Sync sources (two small files each). It runs once.
+8. **References:**
+   - the source ID value names hub folders and source-state files: unchanged;
+   - the node ID value is pinned by peers (`peers.json`) and links: unchanged.
+9. **Evidence:**
+   - migration unit tests per shape, plus re-run and crash-between-steps cases;
+   - the boundary tests;
+   - the two-server E2E starting from pre-change data: peers still pinned, Memory Sync continuing;
+   - a desktop start with a pre-change node list.
+10. **Lessons:** `custom-provider-readable-id` (rewriting definition JSON in place with frozen readers); `token-usage-run-records-v1` (capability hold-back).
+
 ## Persisted Data / State Transition Decision
 
-`Directly Usable — No Migration` (U-1).
-- The identity file, the desktop node list file, its localStorage copy and the mobile session keep their stored field names. Each is read and written by one owner that maps them.
+`Migration Required` (U-3, SR-006): see § Stored Names Migration. Superseded text: `Directly Usable — No Migration` (U-1, SR-002 … SR-005).
+- Old stored names are renamed once by SM-1 … SM-8; current code knows only the new names.
 - `isSystem` is ignored when read and no longer written. Old code doesn't read new files (rule 9), and new code reads old files (rule 7).
 
 ## Legacy Removal / Backward-Compatibility Rejection Log
@@ -179,7 +234,7 @@ The glossary entries above; the `DESIGN.md` pointer; `remote_collaboration.md`, 
 | --- | --- |
 | Answering both `serverInstanceId` and `nodeId` on the status route | Rule 9: a clean cut; every reader is renamed in Step 1 |
 | Aliases for the old tool name | Principle 8 / rule 9: one name |
-| A data migration for stored names | U-1 (the user's decision): no behavior gain; rule 8 |
+| A permanent mapping of old stored names in current code | U-3 / `DESIGN.md` rule 10: a mapping is a second name for one concept |
 
 ## Verification
 
@@ -189,10 +244,9 @@ The glossary entries above; the `DESIGN.md` pointer; `remote_collaboration.md`, 
   - the Nodes tab browser check;
   - loading a pre-change desktop node list and `peers.json` from a clean clone (AC-903);
   - the word-list search (AC-901):
-    - `serverInstanceId` only in the mapping owners Step 1 names (N-904);
-    - `sourceNodeId` only in Step 5b's three owners;
+    - `serverInstanceId`, `sourceNodeId`, `source-node.json`, `server-instance.json`, `node-registry.v1`, `mobile_session.v1` only inside the migration folders and their frozen shapes;
     - `list_available_nodes` only in the release-note text (Step 3);
-    - none of `AvailableNode`, `RemoteNodeDiscovery`, `RemoteDiscoveryChannel`, `RemotePeer`, `PeerAddress`, `isSystem` (outside the desktop entry storage owner, which reads and ignores it), `NodeProfile`, `SavedNodeProfile`, `MOBILE_NODE_ID`;
+    - none of `AvailableNode`, `RemoteNodeDiscovery`, `RemoteDiscoveryChannel`, `RemotePeer`, `PeerAddress`, `isSystem` (outside the migration folder), `NodeProfile`, `SavedNodeProfile`, `MOBILE_NODE_ID`;
     - `nodeId` only in node-ID meaning, per the implementation's list (AR-902).
 
 ## Risks

@@ -50,3 +50,16 @@
 - Route: round 2 of the architecture review.
 - SR-005 addendum (ARCH-REV-002, AR-904): § Verification's word list points to Step 1's owners, adds `sourceNodeId` and allows `list_available_nodes` only in the release note. REQ-903 and the Scope Guardrail no longer name agent configs (REQ-906).
 - SR-005 addendum (ARCH-REV-003 Pass, 2026-10-24): N-905 (RSK-902 reworded); Step 5b also renames the Memory Sync docs (memory_sync.md, agent_memory.md). The reviewer's round-3 files committed.
+
+### SR-006 — Stored names follow the code (U-3, 2026-10-24)
+
+- Trigger: the user reversed U-1. Stored names must stay in sync with the code, through sealed migrations (quoted at U-3), and the project documents say so now.
+- Project documents updated (commit `b3d9c758f2`): `DESIGN.md` rule 10 "Stored names stay in sync with the code" (the old sentence in rule 8 removed), and the Data Migration Guideline (§ 2 item 1, § 3 "Stored names follow the code"). The team's principles are aligned by the PTM's autobyteus-agents-54.
+- Requirements: U-3 added; REQ-911 (migrations SM-1 … SM-8), REQ-912 (the documents), REQ-913 (no new node ID on a failed identity migration; remote features held back); AC-905. REQ-905 and AC-901 aligned.
+- Design: § Stored Names Migration, with the guideline checklist.
+  - Server SM-1 … SM-5 in `app-data-migrations` (new capabilities `node_identity`, `memory_sync`).
+  - Client SM-6 … SM-8 in a new sealed `autobyteus-web/client-data-migrations/` (an Electron file runner and a browser-storage runner).
+  - The mapping owners are removed; an entry keeps `id` on the record itself. No real user data was read (the user declined); the fixtures come from the released writers.
+- Verified: migrations run before services are built (`server-runtime.ts:183-206`); capability hold-back precedent (`token-usage-run-records-v1`, `custom-provider-readable-id`).
+- Implementation was told to hold the mapping owners (message 2026-10-24) and continue the plain renames.
+- Classification: `Large` / `High` (now with persisted-data migrations on server and client). Route: architecture review.

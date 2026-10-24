@@ -31,3 +31,18 @@
 | AR-902 | Step 4 lists the Electron string carriers with citations; AC-901 requires the implementation's list of every remaining `nodeId` with its meaning |
 | AR-903 | REQ-910, Step 5b: `sourceId` / "Source ID" in code, GraphQL, hub wire and UI; stored names through their owners; FU-002 narrowed |
 | N-901 … N-904 | `GLOSSARY.md` at repository level with a `DESIGN.md` pointer; iOS 426 branch removed; FU-001 marked; every mapping owner named |
+
+## Round 4 — 2026-10-24 (SR-006): stored names follow the code (the user's U-3)
+
+- The user reversed U-1 and changed the project rule (`DESIGN.md` rule 10; Data Migration Guideline § 2/§ 3; commit `b3d9c758f2`).
+- New: design § Stored Names Migration:
+  - SM-1 … SM-5 are server sealed migrations; SM-1 holds back the new capability `node_identity`, and REQ-913 says no new node ID is ever created;
+  - SM-6 … SM-8 run in a new client sealed area, `autobyteus-web/client-data-migrations/`, with an Electron file runner and a browser-storage runner;
+  - the checklist answers are in that section.
+- Removed: every stored-name mapping owner. An entry keeps `id` on the record (`entryId` is used for references).
+- Please check in particular:
+  - the identity hold-back (REQ-913) and the crash-between-steps rule;
+  - the client sealed area and where its two runners are called;
+  - SM-7's scope (browser mode only);
+  - that no old name remains in current code.
+- Implementation is holding the mapping owners and continuing the plain renames.
