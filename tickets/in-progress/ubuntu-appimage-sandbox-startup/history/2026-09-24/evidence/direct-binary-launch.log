@@ -1,0 +1,3 @@
+probe_root=/tmp/autobyteus-e2e-sandbox.zAK9lb
+./autobyteus: bad option: --user-data-dir=/tmp/autobyteus-e2e-sandbox.zAK9lb/chromium
+exit=9

@@ -1,0 +1,11 @@
+date_utc=2026-09-24T11:00:07Z
+host=Ubuntu 26.04
+unshare_path=/usr/bin/unshare
+unshare_is_executable=yes
+probe_command=env -u LD_LIBRARY_PATH LC_ALL=C /usr/bin/unshare -Ur true
+probe_exit=1
+probe_output=unshare: write failed /proc/self/uid_map: Operation not permitted
+apparmor_restrict_unprivileged_userns=1
+unprivileged_userns_clone=1
+user.max_user_namespaces=123849
+current_apparmor_label=unconfined

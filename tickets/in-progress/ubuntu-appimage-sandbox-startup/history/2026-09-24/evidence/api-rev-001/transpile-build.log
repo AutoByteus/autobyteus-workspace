@@ -1,0 +1,4 @@
+
+> autobyteus@1.4.78 transpile-build /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-investigation/autobyteus-web
+> tsc -p build/tsconfig.json
+

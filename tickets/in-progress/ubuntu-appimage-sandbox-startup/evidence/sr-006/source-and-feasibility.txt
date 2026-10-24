@@ -1,0 +1,50 @@
+6937da444 Record AppImage API/E2E restricted-host validation and fix layout probe output
+40d1849d5 Pass renewed AppImage source review
+80b00b205 Record IR-002 deterministic probe test handoff
+a189b3380 Make AppImage probe-path tests deterministic
+8638f194b Record initial AppImage source review finding
+31da9e1b3 Confirm high-risk source review handoff route
+36cf8fe33 Record reviewed AppImage solution and implementation handoff
+658a854dd Add conditional AppImage sandbox startup launcher
+--- beta4 to current packaging/entrypoint diff ---
+--- beta4 versions ---
+  "version": "1.5.8-beta.4",
+    "electron": "42.4.1",
+    "electron-builder": "^25.1.8",
+--- current versions ---
+  "version": "1.5.9-beta.3",
+    "electron-updater": "^6.8.9",
+    "electron": "42.11.16",
+    "electron-builder": "^25.1.8",
+--- local installed profiles (read only) ---
+# This profile allows everything and only exists to give the
+# application a name instead of having the label "unconfined"
+
+abi <abi/5.0>,
+include <tunables/global>
+
+profile vscode /usr/share/code{/bin,}/code flags=(unconfined) {
+  userns,
+  @{exec_path} mr,
+
+  # Site-specific additions and overrides. See local/README for details.
+  include if exists <local/code>
+}
+# This profile allows everything and only exists to give the
+# application a name instead of having the label "unconfined"
+
+abi <abi/5.0>,
+include <tunables/global>
+
+profile obsidian /opt/Obsidian/obsidian flags=(unconfined) {
+  userns,
+  @{exec_path} mr,
+
+  # Site-specific additions and overrides. See local/README for details.
+  include if exists <local/obsidian>
+}
+apparmor: /etc/apparmor.d/code
+--- tooling ---
+/usr/bin/gh
+/usr/bin/docker
+KVM_read_write_available

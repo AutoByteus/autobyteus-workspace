@@ -1,0 +1,121 @@
+# Ubuntu AppImage Sandbox Startup — Investigation Notes
+
+## Investigation Meta
+- Package: `ubuntu-appimage-sandbox-startup`; resumed 2026-10-24; current round **SR-006**.
+- Workspace: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-startup`.
+- Git branch: `fix/ubuntu-appimage-sandbox-startup`.
+- Resolved base: `origin/personal` at `1138e8fbefadeb3b30fdb88eb4a5a09beaf372ea`, refreshed with `git fetch origin personal` on 2026-10-24.
+- Finalization target: `origin/personal`, through Delivery. **No beta/stable release authorized.**
+- Bootstrap: succeeded; shared checkout and old task worktree unchanged. Shared local `personal` was stale; fresh remote used.
+- Authorities read 2026-10-24: solution-designer SKILL.md; requirements-engineering.md; finding-the-cause.md; ticket-scope.md; handoff.md; requirements, investigation and solution-revision templates; repository root AGENTS.md and TESTING.md; autobyteus-web/AGENTS.md.
+- Investigation state: current-release failure reproduced; requirements decision ready for user. Architecture phase not started or approved. No current-source implementation or final validation claim.
+
+## Initial Request And Clarifications
+Requested by `/project_task_manager`, run `project_task_manager_cc9f793c7e8c4d0ab0f38c5097b48805`, Project Task `project_task_1cc6e385-5adf-43b1-b800-d7793933018a`.
+User reports v1.5.8-beta.4 needs --no-sandbox on newer Ubuntu, unlike Ubuntu 22; requests ordinary startup and comparison with other Electron apps. User approved dispatch, not a security downgrade or a distribution change. Preserve running app/data, do not weaken global security, do not publish. Historical fallback approval expressly does not settle the resumed decision.
+Incoming reference read before action: `/home/ryan-ai/.autobyteus/server-data/projects/project_de48ed0e-f4a2-43d7-b22a-4c162c9b1dda/tasks/project_task_1cc6e385-5adf-43b1-b800-d7793933018a/context/ctx_2d9df7f8ce9e__api-e2e-execution-coverage-report.md`.
+
+## History And Preservation
+Old isolated branch `codex/ubuntu-appimage-sandbox-investigation`, tip `6937da444acfbc19a0b42f4b31a252c3b2ebc317`, has eight branch-only commits since `40b1783f40c072b577ad9d0c5d8fe4f5418c6c38`. Working tree clean. Old root: `/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-investigation`.
+Its whole ticket is preserved read-only under `history/2026-09-24/`. Old source candidate is additionally preserved as `history/2026-09-24/source-candidate.patch`; this is NOT applied. Cumulative SR-001–005 retained unchanged. Historical absolute paths and early progress paragraphs are historical, not current authorities.
+Latest old record was API-REV-001 **Blocked**, after ARCH-REV-002 and CRR-002 Pass: actual restricted Ubuntu 26.04 x64 launch succeeded, but capable-host actual isolation, ARM64, update/relaunch and Ubuntu 24.04 were not proven. A stub launcher suite cannot establish those properties. Early analysis-result and design-status paragraphs were superseded by later specialist records. Valuable mechanisms/tests may be adapted only after renewed requirements and design; old review passes do not cover current code.
+
+## Product And Supported Paths
+| Behavior / scenario | Supported trigger and product outcome | Current evidence |
+| --- | --- | --- |
+| BEH-001 / SCN-001 | User directly opens downloaded AppImage on restricted newer Ubuntu, wants GUI and local server | Both reported and latest locally available releases abort before app startup |
+| BEH-002 / SCN-002 | User opens AppImage directly or via integrated desktop shortcut on sandbox-capable Linux | Older Ubuntu success is user-reported, not locally reproduced; embedded shortcut currently disables sandbox regardless of capability |
+| BEH-003 / SCN-003 | Embedded server or tooling runs packaged Electron in Node mode, or caller supplies arguments | Current LinuxServerManager uses process.execPath; supported operational path, not a synthetic requirement |
+| BEH-004 / SCN-004 | User downloads update, installs and relaunches; operator builds x64/ARM64 artifacts | Current updater and workflow establish product contract, not current task success |
+| BEH-005 / SCN-005 | Proposed: install an Ubuntu-native package once, then launch ordinarily with sandbox | No current AutoByteus DEB product path; requires explicit distribution/security decision |
+
+## Current Reproduction: OS Versus Application Version
+**Host:** Ubuntu 26.04 LTS x86_64, kernel 7.0.0-38-generic, uid 1000; AppArmor active. Both `kernel.apparmor_restrict_unprivileged_userns` and `kernel.apparmor_restrict_unprivileged_unconfined` are 1. `kernel.unprivileged_userns_clone=1` and `user.max_user_namespaces=123849` do NOT prove Chromium sandbox availability.
+
+| Method | Release / source | Observation | Evidence |
+| --- | --- | --- | --- |
+| Reproduced | Official downloaded v1.5.8-beta.4, Electron 42.4.1 in tag | No-argument AppImage traps (Python return -5 = SIGTRAP, shell convention 133), exact SUID-helper FATAL; no profile files created | `evidence/sr-006/normal-1.5.8-beta.4.json` |
+| Reproduced | Local released v1.5.9-beta.3, Electron 42.11.16 in current source | Same no-argument failure and no profile files | `evidence/sr-006/normal-1.5.9-beta.3.json` |
+| Measured | Kernel audit correlated to each PID/time | `autobyteus` enters restricted `unprivileged_userns`; `sys_admin` denied immediately before fatal/trap | `evidence/sr-006/kernel-audit.txt` |
+| Measured | `/usr/bin/unshare -Ur true` | uid-map write EPERM, exit 1 | `evidence/sr-006/host-and-current-package.txt` |
+| Read/Measured, not modified | Existing latest-release FUSE mount | `ro,nosuid,nodev`; root-owned chrome-sandbox mode 0755; AppRun forwards args; desktop entry `Exec=AppRun --no-sandbox %U` | same evidence file |
+| Read | `git diff v1.5.8-beta.4..HEAD` for build.ts, afterPack.ts, main.ts | No changes in these three startup/packaging paths despite newer Electron | `evidence/sr-006/source-and-feasibility.txt` |
+
+Reported beta4 asset downloaded from official GitHub release (published 2026-10-20 18:29:19Z): https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.5.8-beta.4/AutoByteus_personal_linux-x64-1.5.8-beta.4.AppImage . SHA256 `88d0c4fcd10138583ae71b0129397b7dee77f0912f02a335a17cfce77b256be2`, 470830078 bytes. Latest local artifact `/home/ryan-ai/Downloads/AutoByteus_personal_linux-x64-1.5.9-beta.3.AppImage`, SHA256 `a90a971ce9f29ea4a9999eee77584b6e9e63380faac7f2feafdc178652d133b1`. This is released-artifact diagnosis, not proof of unreleased source.
+
+**Causal conclusion:** the namespace route is blocked by host AppArmor capability policy; the mounted AppImage cannot use the setuid fallback; Chromium aborts before AutoByteus JS/main bootstrap. This is not an application-server or renderer rendering failure. The same failure persists across the two current releases despite the Electron update. Ubuntu's documented default policy difference explains why Ubuntu 22 can differ, but an actual same-artifact 22.04/24.04 comparison remains unexecuted. Do not call that matrix reproduced or claim every newer Ubuntu installation fails.
+
+**Entry-surface caveat:** direct execution/double-click of the file is not necessarily the same as an integrated desktop shortcut using the embedded Exec. The latter currently requests no-sandbox on every host. Earlier successful startup alone cannot prove isolation.
+
+## Probe Safety, Reproduction And Cleanup
+Run `python3 evidence/sr-006/probe-normal-launch.py /absolute/released.AppImage /absolute/result.json` from the ticket or use absolute script path. The retained probe uses clean allowlisted environment, private HOME/XDG and E2E profile/data roots, a free nonproduction loopback port, no providers/credentials, no core dumps, no no-sandbox flag, a 15-second bounded process group and owned cleanup. Both failures occurred before profile initialization; both private roots removed. No diagnostic source edits. The user's running app (PIDs 9032/9037) and server (9275) remained alive; no signal targeted them. Four policy settings unchanged; evidence in `cleanup-and-policy-after.txt`. Read-only existing mount inspection is not testing against the running user instance.
+Downloaded beta4 retained in `/tmp/autobyteus-sandbox-sr006-download/` for follow-on isolated update testing; no owned process remains. Delivery must delete this owned cache when no longer needed. Old worktree still retained pending final evidence/source preservation and safe cleanup; it has not been rebased or deleted.
+
+## Relevant Codebase And Real Dependencies (Read)
+- `autobyteus-web/package.json`, `pnpm-lock.yaml`: current app 1.5.9-beta.3, Electron 42.11.16, builder resolved 25.1.8, updater resolved 6.8.9. Beta4 used Electron 42.4.1, same builder range.
+- `build/scripts/build.ts`: Linux AppImage-only targets at config and target-selection branches; afterPack hook. `afterPack.ts` is still Mac-only. No historical launcher is merged.
+- Installed **builder 25.1.8 real source**, `app-builder-lib/out/targets/AppImageTarget.js`: empty/absent executableArgs becomes unconditional desktop `--no-sandbox`. Also checked exact upstream source S7. Empty array is not a fix.
+- `electron/main.ts`: profile isolation is applied after Electron reaches bootstrap; cannot intercept pre-bootstrap fatal there. Current isolated profile has a loopback-only test update feed.
+- `electron/server/linuxServerManager.ts` and launch-profile files: Node child uses real process.execPath; existing isolated roots/port contract and quiet update mode available. A wrapper change must preserve this boundary.
+- `electron/browser/browser-view-factory.ts`, `shell/workspace-shell-window.ts`: sandbox true, contextIsolation true, nodeIntegration false. App includes external browsing; removing Chromium isolation is material. These preferences alone do not restore OS sandbox when the CLI disables it. Main process/agent execution is not made sandboxed merely by protecting renderers.
+- `electron/updater/appUpdater.ts`, `electronLaunchProfile.ts`: current updater 6.8.9, explicit local test-feed support. This improves old update-test feasibility; no production release is needed to exercise an isolated newer-version feed.
+- `.github/workflows/release-desktop.yml`: x64 Ubuntu 22.04, ARM64 Ubuntu 24.04-arm; metadata and Node startup checks. Existing build-only dispatch has publish_release false. Workflow labels/build checks are not actual desktop isolation proof; hosted runner kernel/policy must be recorded.
+- Real builder 25.1.8 `templates/linux/after-install.tpl`: probes `unshare --user true` during package install then selects chrome-sandbox mode; lacks scoped AppArmor handling. An installer-time/root probe does not establish the end user's later capability. Merely adding `deb` to the target list is not a verified solution.
+- Real updater 6.8.9 source S10: Linux defaults to AppImageUpdater but supports `package-type` based DebUpdater. DEB installation uses privileged package tools. This is feasible, not a free packaging toggle: feed selection, cancellation/elevation, relaunch and install integrity require design/validation; do not blindly adopt broad apt fallback flags. No need to promise a hosted APT repository to discuss an installer.
+
+## Primary Source Log (consulted 2026-10-24)
+| ID | Exact source | Finding / limitation |
+| --- | --- | --- |
+| S1 | https://discourse.ubuntu.com/t/ubuntu-24-04-lts-noble-numbat-release-notes/39890 | Default unconfined userns capability restrictions in 24.04; app-specific permission recommended instead of no-sandbox. No global setting changes made. |
+| S2 | https://documentation.ubuntu.com/security/security-features/security-features-overview/ | Matrix lacks this restriction in 22.04, includes it in 24.04/26.04; documentary comparison only. |
+| S3 | https://www.electronjs.org/docs/latest/tutorial/sandbox | no-sandbox disables Chromium sandbox for all processes; Electron advises testing-only use. |
+| S4 | https://code.visualstudio.com/docs/setup/linux and https://code.visualstudio.com/docs/setup/portable | VS Code distributes native DEB/RPM/Snap; portable Linux documents root-owned setuid helper setup when needed. Portable is not magically exempt. |
+| S5 | https://gitlab.com/apparmor/apparmor/-/raw/master/profiles/apparmor.d/code and https://gitlab.com/apparmor/apparmor/-/raw/master/profiles/apparmor.d/obsidian | Scoped fixed-path `userns` profiles for VS Code and Obsidian. Local Ubuntu apparmor package supplies corresponding files; not a claim those apps themselves ship every distro profile. These are unconfined profiles granting an exception, not full app confinement. |
+| S6 | https://docs.flatpak.org/en/latest/electron.html | Supported Electron packaging uses Zypak wrapper; additional permissions/integration, not equivalent to sprinkling no-sandbox on AppImage. |
+| S7 | https://raw.githubusercontent.com/electron-userland/electron-builder/electron-builder@25.1.8/packages/app-builder-lib/src/targets/AppImageTarget.ts and https://raw.githubusercontent.com/electron-userland/electron-builder/electron-builder@25.1.8/packages/app-builder-lib/templates/linux/after-install.tpl | Exact builder defaults read and matched to local dependency; source statements not new package tests. |
+| S8 | https://www.electron.build/docs/appimage/ and https://www.electron.build/docs/migration/v27-breaking-changes/ | v27 runtime documents conditional no-sandbox fallback. Same security concession, not a preserved-sandbox solution. |
+| S9 | https://github.com/electron-userland/electron-builder/releases/latest and GitHub releases API | Latest stable 26.18.0 (Oct 20); current v27 is 27.0.0-alpha.12 (Oct 24). Do not assume current docs describe our 25.1.8 or justify alpha migration. |
+| S10 | https://raw.githubusercontent.com/electron-userland/electron-builder/electron-updater@6.8.9/packages/electron-updater/src/main.ts and https://raw.githubusercontent.com/electron-userland/electron-builder/electron-updater@6.8.9/packages/electron-updater/src/DebUpdater.ts | Exact updater native-DEB branch exists, requires privileged install and release-feed adaptation; no local execution. |
+| S11 | https://www.electron.build/v26/docs/linux/ | Custom AppArmor profile option in newer builder; feasibility input only, not current-version capability proof. |
+| S12 | https://docs.appimage.org/user-guide/troubleshooting/electron-sandboxing.html | AppImage namespace dependency; simple sysctl-only advice is incomplete for this measured AppArmor restriction. |
+
+## Alternatives And Recommendation (Requirements Feasibility, NOT Design)
+| Alternative | User experience | Security / support trade-off | Judgement |
+| --- | --- | --- | --- |
+| A: add recommended Ubuntu-native DEB alongside AppImage, with app-scoped namespace permission at installation | One standard install/authorization; subsequent normal launches need no flag; AppImage remains portable on capable hosts and gives actionable help on restricted hosts | Keep Chromium sandbox; narrowly authorize this installed app rather than all programs. New package/update/install/uninstall responsibility. Does NOT promise untouched portable file starts sandboxed under restrictive policy | **Recommended**, subject to explicit scope/security approval and actual runtime verification |
+| B: retain AppImage-only, strictly conditional automatic retry without sandbox | No-install/no-flag portable launch; preserve sandbox where actual launch can use it | Affected hosts lose Chromium process isolation, including external browser content. Must clearly diagnose/document reduced isolation; unrelated errors must not downgrade | Usability-first compromise; explicit NEW user approval mandatory. Historical code is candidate, not selected design |
+| Per-AppImage one-time policy installer | Can retain single download but requires administrator setup | Random mutable mounts make broad path allowlisting unsafe; stable trusted installation and cleanup/update policy still needed | Not genuinely zero-install; no broad /tmp mount wildcard profile recommendation |
+| Setuid helper via extraction | Requires administrative installed helper outside nosuid mount | Root-owned trust/maintenance surface; default-root probe unreliable for ordinary-user sandbox feasibility | Possible installed-package technique, not an AppImage chmod fix |
+| Flatpak/Snap | Managed distribution/installation | Host filesystem, shell, CLI/provider and sandbox integration for agent workstation is substantial; classic confinement not equivalent to a renderer sandbox guarantee | Broader product project, not default for this narrow request |
+| Global AppArmor/sysctl disable, unconditional no-sandbox, or just upgrade Electron | Easy workaround | Global security loss, unnecessary capable-host downgrade, or reproduced ineffective change | Reject |
+
+Technical limit: an unprivileged portable launcher cannot simply overrule the host's namespace policy while retaining that forbidden sandbox. Normal startup on this default restricted host needs either scoped installation/permission or an explicitly accepted reduced-isolation path. A framework's automatic fallback does not remove this decision.
+
+## Structural / Payload / State Inventory
+Payload: AppImage, desktop entry, updater metadata, docs, old evidence. Structural: pre-Electron package entrypoint, host security boundary, Node process identity, release/updater lifecycle; native install/profile lifecycle only if A approved. No domain API/data-schema change proposed. Data-root identity and update settings must be preserved; no real user data copied or converted. Zero acceptable loss. Product UI/UX team request not stated; no Product-owned visual artifacts or approvals exist.
+
+## Validation Feasibility And Unknowns
+- Current x64 Ubuntu 26.04 reproduced. Ubuntu 22.04 and default restricted 24.04 actual GUI/isolation remain untested; do not substitute containers sharing this kernel for separate OS policy evidence.
+- Native ARM64 not present locally. Existing native CI job is a candidate, no run of this solution observed.
+- `/dev/kvm` is readable/writable; qemu/virsh/multipass/lxc and xvfb-run absent; Docker/gh available. pnpm executable/g++/make absent. These are ordinary setup leads, not proof that VM tests are impossible, and not yet a separate prerequisite Task. Prefer owned temporary VM tooling or authorized build-only CI; do not weaken user's host.
+- Local newer-version update feed is now supported; use synthetic data, isolated artifacts and a deliberately distinct test version, never production publication. ARM64 coverage proportionate but must include real native package/startup evidence before blanket support claims.
+- For A: validate installation, narrow profile attachment, unprivileged renderer security, policy denial/refusal recovery, upgrade/relaunch, uninstall without removing unrelated policy; approved privilege changes only in owned disposable targets. AppImage direct/desktop convergence remains relevant.
+- For B: validate actual capable renderer sandbox, exact failure-gated retry, unrelated failures/no downgrade, Node/args, signals/cleanup, direct and desktop launch, artifact architecture, actual old-to-new updater/relaunch.
+- A missing flag, unit stub or absence of crash is not sandbox proof. API/E2E must inspect actual process sandbox state (including Linux process/namespace/seccomp evidence) through the real package.
+- No final coverage, merger, release or cleanup-complete claim; current state is decision hold.
+
+## Supplemental Artifact Inventory
+All relative paths below are within this ticket; absolute root is above.
+| Path | Owner | Purpose / scope / IDs | Status | Approval applicability |
+| --- | --- | --- | --- | --- |
+| history/2026-09-24/ | Historical specialist owners | Full old v1.4.78 package, evidence, reviews, source patch; BEH-001–004 | Preserved, superseded for current authority | Historical SR-002 not renewed |
+| evidence/sr-006/probe-normal-launch.py and normal-*.json | Solution Designer | Reproducible no-flag failure, hashes, cleanup; REQ-001–003 | Reproduced, not validation pass | Evidence only |
+| evidence/sr-006/{host-and-current-package,source-and-feasibility,kernel-audit,cleanup-and-policy-after}.txt | Solution Designer | Host/runtime/dependency facts; all current REQ | Read/measured | Evidence only |
+| approval-request-sr006.md | Solution Designer | Full decision context and hold/next action | Ready for user decision | Choices not approved |
+| design-spec.md | Solution Designer | Current target architecture | N/A — not authored before approval; historical design is archived | None |
+
+## Requirement Implications And Next Action
+Preserve stable BEH/SCN/UC/REQ/AC identities, replace the old fallback assumption with an explicit A/B decision. Bring the scoped native-package recommendation and portable compromise to the user directly. Keep requirements Ready for Approval; no architecture/implementation handoff until selected behavior is approved. No outside-functionality prerequisite or follow-up has been established; adjacent testing-doc sandbox guidance is within this ticket's relevant user guidance.
+
+## Record Integrity
+Original archived logs and source patch retain whitespace verbatim; full staged diff-check reports historical/raw-evidence whitespace, not product source defects. Current authored Markdown/probe check is run separately. Initial documentation commit attempt had no configured Git identity; retry uses explicit agent-only commit identity without changing global/repository configuration. No remote push performed.

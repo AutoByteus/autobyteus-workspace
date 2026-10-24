@@ -1,0 +1,16 @@
+{
+  "artifact": "/home/ryan-ai/Downloads/AutoByteus_personal_linux-x64-1.5.9-beta.3.AppImage",
+  "sha256": "a90a971ce9f29ea4a9999eee77584b6e9e63380faac7f2feafdc178652d133b1",
+  "argv": [
+    "/home/ryan-ai/Downloads/AutoByteus_personal_linux-x64-1.5.9-beta.3.AppImage"
+  ],
+  "isolated_root": "/tmp/autobyteus-sandbox-sr006-w1f2ib6w",
+  "port": 48719,
+  "pid": 14554,
+  "exit_code": -5,
+  "timed_out": false,
+  "stdout": "",
+  "stderr": "[14554:1024/125011.855855:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /tmp/.mount_AutoBy6NtDEy/chrome-sandbox is owned by root and has mode 4755.\n",
+  "created_profile_files": [],
+  "isolated_root_removed": true
+}

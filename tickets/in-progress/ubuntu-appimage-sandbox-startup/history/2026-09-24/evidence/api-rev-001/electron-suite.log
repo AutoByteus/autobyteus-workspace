@@ -1,0 +1,49 @@
+
+> autobyteus@1.4.78 test:electron /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-investigation/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run
+
+
+ RUN  v3.2.4 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/ubuntu-appimage-sandbox-investigation/autobyteus-web/electron
+
+ ✓ __tests__/logger.spec.ts (4 tests) 117ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 136ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 84ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 110ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (14 tests) 130ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 175ms
+ ✓ __tests__/preload.spec.ts (1 test) 48ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 77ms
+ ✓ updater/__tests__/appUpdater.spec.ts (8 tests) 34ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 16ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 28ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 10ms
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 880ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  477ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 20ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (3 tests) 24ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 16ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 25ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 15ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 20ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 14ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 18ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 15ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 5ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 6ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 15ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (1 test) 11ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 7ms
+ ✓ __tests__/nodeRegistryStore.spec.ts (4 tests) 14ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 8ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 8ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 6ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (4 tests) 5ms
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 5ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 9ms
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+
+ Test Files  34 passed | 1 skipped (35)
+      Tests  152 passed | 1 skipped (153)
+   Start at  13:41:48
+   Duration  3.00s (transform 1.47s, setup 0ms, collect 3.45s, tests 2.11s, environment 9ms, prepare 4.62s)
+

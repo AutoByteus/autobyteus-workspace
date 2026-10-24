@@ -1,0 +1,19 @@
+2026-09-24T11:51:07Z
+Linux ryan-ai-linux 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 26.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04 (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+unshare: unshare: write failed /proc/self/uid_map: Operation not permitted
+exit=1
+architecture: x86_64
+docker absent
+podman absent
+qemu-aarch64-static absent
+package version: 1.4.78
+old released artifact: -rwxr-xr-x 1 ryan-ai ryan-ai 436M Sep 24 11:33 /home/ryan-ai/Downloads/AutoByteus_personal_linux-x64-1.4.78.AppImage
+new local artifact: -rwxr-xr-x 1 ryan-ai ryan-ai 535M Sep 24 13:45 autobyteus-web/electron-dist/AutoByteus_personal_linux-x64-1.4.78.AppImage

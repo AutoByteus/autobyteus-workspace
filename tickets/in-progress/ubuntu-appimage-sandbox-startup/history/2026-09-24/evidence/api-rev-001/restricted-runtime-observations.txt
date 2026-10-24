@@ -1,0 +1,5 @@
+kernel.unprivileged_userns_clone = 1
+user.max_user_namespaces = 123849
+kernel.apparmor_restrict_unprivileged_userns = 1
+kernel.apparmor_restrict_unprivileged_unconfined = 1
+

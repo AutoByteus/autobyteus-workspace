@@ -1,0 +1,670 @@
+diff --git a/.github/workflows/release-desktop.yml b/.github/workflows/release-desktop.yml
+index ee9e9a0db..54e90facb 100644
+--- a/.github/workflows/release-desktop.yml
++++ b/.github/workflows/release-desktop.yml
+@@ -413,6 +413,9 @@ jobs:
+           AUTOBYTEUS_BUILD_FLAVOR: "personal"
+         run: pnpm build:electron:linux:x64
+ 
++      - name: Check AppImage launch policy and hook
++        run: node --test autobyteus-web/scripts/test-appimage-launcher.mjs
++
+       - name: Verify Linux x64 AppImage and updater metadata
+         run: |
+           APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-x64*.AppImage' -print -quit)"
+@@ -423,6 +426,7 @@ jobs:
+           python3 scripts/validate_linux_updater_metadata.py \
+             --metadata autobyteus-web/electron-dist/latest-linux.yml \
+             --arch-token linux-x64
++          node autobyteus-web/scripts/verify-linux-appimage-layout.mjs "$APPIMAGE"
+ 
+       - name: Verify Linux x64 Prisma engines
+         run: |
+@@ -497,6 +501,9 @@ jobs:
+           AUTOBYTEUS_BUILD_FLAVOR: "personal"
+         run: pnpm build:electron:linux:arm64
+ 
++      - name: Check AppImage launch policy and hook
++        run: node --test autobyteus-web/scripts/test-appimage-launcher.mjs
++
+       - name: Verify Linux ARM64 AppImage and updater metadata
+         run: |
+           APPIMAGE="$(find autobyteus-web/electron-dist -maxdepth 1 -type f -name '*linux-arm64*.AppImage' -print -quit)"
+@@ -507,6 +514,7 @@ jobs:
+           python3 scripts/validate_linux_updater_metadata.py \
+             --metadata autobyteus-web/electron-dist/latest-linux-arm64.yml \
+             --arch-token linux-arm64
++          node autobyteus-web/scripts/verify-linux-appimage-layout.mjs "$APPIMAGE"
+ 
+       - name: Verify Linux ARM64 Prisma engines
+         run: |
+diff --git a/autobyteus-web/build/appimage/launcher.sh b/autobyteus-web/build/appimage/launcher.sh
+new file mode 100644
+index 000000000..3678f3ce5
+--- /dev/null
++++ b/autobyteus-web/build/appimage/launcher.sh
+@@ -0,0 +1,121 @@
++#!/bin/bash
++# AppImage-only GUI launch boundary. A failed namespace probe is never a reason
++# to disable Chromium's sandbox without the real ELF's observed startup fatal.
++desktop_marker=--autobyteus-appimage-desktop-entry
++real="${0}-real"
++
++if [[ ! -x "$real" ]]; then
++  printf 'AutoByteus AppImage: real executable missing: %s\n' "$real" >&2
++  exit 127
++fi
++
++if [[ "${1-}" == "$desktop_marker" ]]; then
++  shift
++fi
++
++if [[ "${ELECTRON_RUN_AS_NODE-}" == 1 ]]; then
++  exec "$real" "$@"
++fi
++
++for argument in "$@"; do
++  if [[ "$argument" == --no-sandbox ]]; then
++    exec "$real" "$@"
++  fi
++done
++
++# Success is a fast-path hint only. All failure modes, including a missing
++# utility, must first try the actual Electron binary with the sandbox intact.
++if [[ -x /usr/bin/unshare && -x /usr/bin/timeout ]] &&
++    /usr/bin/env -u LD_LIBRARY_PATH LC_ALL=C /usr/bin/timeout 2s /usr/bin/unshare -Ur true >/dev/null 2>&1; then
++  exec "$real" "$@"
++fi
++
++capture_dir=$(mktemp -d "${TMPDIR:-/tmp}/autobyteus-sandbox.XXXXXXXX") || exit 1
++fifo="$capture_dir/stderr"
++fatal_marker="$capture_dir/fatal"
++mkfifo -m 600 "$fifo" || { rmdir "$capture_dir"; exit 1; }
++child_pid=
++drainer_pid=
++cleanup() {
++  if [[ -n "$drainer_pid" ]]; then
++    kill "$drainer_pid" 2>/dev/null || true
++    wait "$drainer_pid" 2>/dev/null || true
++  fi
++  rm -rf -- "$capture_dir"
++}
++trap cleanup EXIT
++forward_signal() {
++  local signal="$1"
++  if [[ -n "$child_pid" ]]; then
++    kill -s "$signal" "$child_pid" 2>/dev/null || true
++  fi
++}
++trap 'forward_signal HUP' HUP
++trap 'forward_signal INT' INT
++trap 'forward_signal TERM' TERM
++
++# Read at most 4096 bytes per turn. The rolling match buffer is bounded;
++# application stderr is immediately forwarded rather than spooled to disk.
++(
++  window=
++  fatal_regex="FATAL:sandbox/linux/suid/client/setuid_sandbox_host\\.cc:[0-9]+\\].*Rather than run without sandboxing I'm aborting now\\."
++  while true; do
++    chunk=
++    IFS= read -r -n 4096 chunk
++    read_status=$?
++    if [[ -z "$chunk" && "$read_status" -ne 0 ]]; then
++      break
++    fi
++    if [[ "$read_status" -eq 0 && ${#chunk} -lt 4096 ]]; then
++      printf '%s\n' "$chunk" >&2
++    else
++      printf '%s' "$chunk" >&2
++    fi
++    window="${window}${chunk}"
++    if [[ "$window" =~ $fatal_regex ]]; then
++      : > "$fatal_marker"
++    fi
++    if [[ "$read_status" -eq 0 && ${#chunk} -lt 4096 ]]; then
++      window=
++    elif (( ${#window} > 1024 )); then
++      window="${window: -1024}"
++    fi
++  done < "$fifo"
++) &
++drainer_pid=$!
++
++started_ns=$(/usr/bin/date +%s%N)
++"$real" "$@" 2> "$fifo" &
++child_pid=$!
++while true; do
++  wait "$child_pid"
++  child_status=$?
++  if ! kill -0 "$child_pid" 2>/dev/null; then
++    break
++  fi
++done
++finished_ns=$(/usr/bin/date +%s%N)
++
++# The ELF has exited. Give its drainer a bounded opportunity to flush; a
++# descendant that inherited stderr must not hold the wrapper forever.
++for ((attempt = 0; attempt < 20; attempt++)); do
++  if ! kill -0 "$drainer_pid" 2>/dev/null; then
++    break
++  fi
++  sleep 0.1
++done
++if kill -0 "$drainer_pid" 2>/dev/null; then
++  kill "$drainer_pid" 2>/dev/null || true
++fi
++wait "$drainer_pid" 2>/dev/null || true
++drainer_pid=
++
++if [[ "$child_status" -eq 133 && -f "$fatal_marker" ]] &&
++    (( finished_ns - started_ns <= 30000000000 )); then
++  printf 'AutoByteus AppImage: Chromium sandbox initialization failed; retrying this GUI launch with --no-sandbox (reduced process isolation).\n' >&2
++  cleanup
++  trap - EXIT
++  exec "$real" --no-sandbox "$@"
++fi
++
++exit "$child_status"
+diff --git a/autobyteus-web/build/scripts/afterPack.ts b/autobyteus-web/build/scripts/afterPack.ts
+index c838e9315..049a95828 100644
+--- a/autobyteus-web/build/scripts/afterPack.ts
++++ b/autobyteus-web/build/scripts/afterPack.ts
+@@ -1,56 +1,14 @@
+-/**
+- * afterPack hook for electron-builder.
+- *
+- * This hook only normalizes packaged native resource file modes before macOS
+- * signing. Entitlement selection and codesigning are owned by macSign.ts.
+- */
+-import * as path from 'path'
+-import * as fs from 'fs'
+ import { AfterPackContext } from 'electron-builder'
+-
+-function getAllFiles(dirPath: string, files: string[] = []): string[] {
+-  if (!fs.existsSync(dirPath)) return files
+-
+-  const entries = fs.readdirSync(dirPath, { withFileTypes: true })
+-  for (const entry of entries) {
+-    const fullPath = path.join(dirPath, entry.name)
+-    if (entry.isDirectory()) {
+-      getAllFiles(fullPath, files)
+-    } else if (entry.isFile()) {
+-      files.push(fullPath)
+-    }
+-  }
+-
+-  return files
+-}
+-
+-function normalizeNodePtySpawnHelpers(resourcesPath: string): void {
+-  const nodeModulesPath = path.join(resourcesPath, 'node_modules')
+-  const scanRoot = fs.existsSync(nodeModulesPath) ? nodeModulesPath : resourcesPath
+-  const helpers = getAllFiles(scanRoot).filter((filePath) => (
+-    path.basename(filePath) === 'spawn-helper' &&
+-    filePath.split(path.sep).includes('node-pty')
+-  ))
+-
+-  for (const helper of helpers) {
+-    const currentMode = fs.statSync(helper).mode & 0o777
+-    fs.chmodSync(helper, currentMode | 0o111)
+-  }
+-
+-  console.log(`  Normalized execute bits on ${helpers.length} node-pty spawn-helper file(s)`)
+-}
++import { normalizeMacNativeResourceModes } from './macNativeResourceModes'
++import { installLinuxAppImageLauncher } from './linuxAppImageLauncher'
+ 
+ export default async function afterPack(context: AfterPackContext): Promise<void> {
+-  if (process.platform !== 'darwin') return
+-
+-  const appPath = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`)
+-  const resourcesPath = path.join(appPath, 'Contents', 'Resources', 'server')
+-
+-  if (!fs.existsSync(resourcesPath)) {
+-    console.log(`  Server resources not found at ${resourcesPath}, skipping`)
++  if (context.electronPlatformName === 'darwin') {
++    normalizeMacNativeResourceModes(context)
+     return
+   }
+ 
+-  console.log('\nNormalizing packaged terminal native resources...')
+-  normalizeNodePtySpawnHelpers(resourcesPath)
++  if (context.electronPlatformName === 'linux' && context.targets.some((target) => target.name === 'appImage')) {
++    installLinuxAppImageLauncher(context)
++  }
+ }
+diff --git a/autobyteus-web/build/scripts/build.ts b/autobyteus-web/build/scripts/build.ts
+index dedb7dd3e..e0ba8f0f9 100644
+--- a/autobyteus-web/build/scripts/build.ts
++++ b/autobyteus-web/build/scripts/build.ts
+@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
+ import * as path from 'path'
+ import { execSync } from 'child_process'
+ import { existsSync } from 'fs'
++import { APPIMAGE_DESKTOP_MARKER } from './linuxAppImageLauncher'
+ import {
+   NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES,
+   NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+@@ -219,7 +220,7 @@ const options: Configuration = {
+   directories: {
+     output: 'electron-dist'
+   },
+-  // Hook to normalize packaged native resources before signing on macOS.
++  // Dispatch platform-specific afterPack transformations before target packaging.
+   afterPack: './build/dist/afterPack.js',
+   files: [
+     "dist/**/*",
+@@ -299,7 +300,11 @@ const options: Configuration = {
+   linux: {
+     target: ['AppImage'],
+     icon: 'build/icons', // Linux will use the icons directory containing multiple sizes
+-  }
++  },
++  appImage: {
++    // Builder 25.1.8 otherwise writes --no-sandbox into every desktop entry.
++    executableArgs: [APPIMAGE_DESKTOP_MARKER],
++  },
+ }
+ 
+ const sanitizeFileEntries = <T>(value?: T[] | null): T[] | undefined => {
+diff --git a/autobyteus-web/build/scripts/linuxAppImageLauncher.ts b/autobyteus-web/build/scripts/linuxAppImageLauncher.ts
+new file mode 100644
+index 000000000..1ca4b4892
+--- /dev/null
++++ b/autobyteus-web/build/scripts/linuxAppImageLauncher.ts
+@@ -0,0 +1,50 @@
++import * as fs from 'fs'
++import * as path from 'path'
++import { AfterPackContext } from 'electron-builder'
++
++export const APPIMAGE_DESKTOP_MARKER = '--autobyteus-appimage-desktop-entry'
++const REAL_EXECUTABLE_SUFFIX = '-real'
++
++export function installLinuxAppImageLauncher(context: AfterPackContext): void {
++  // LinuxPackager owns this field in builder 25.1.8 but its base hook type omits it.
++  const executableName = (context.packager as typeof context.packager & { executableName: string }).executableName
++  if (!executableName || path.basename(executableName) !== executableName) {
++    throw new Error(`Unexpected AppImage executable name: ${executableName}`)
++  }
++  const launcherPath = path.join(context.appOutDir, executableName)
++  const realPath = `${launcherPath}${REAL_EXECUTABLE_SUFFIX}`
++  const sourcePath = path.resolve(__dirname, '..', 'appimage', 'launcher.sh')
++
++  if (!fs.existsSync(sourcePath)) throw new Error(`AppImage launcher source missing: ${sourcePath}`)
++  const launcherSource = fs.readFileSync(sourcePath, 'utf8')
++  if (!launcherSource.includes(`desktop_marker=${APPIMAGE_DESKTOP_MARKER}`)) {
++    throw new Error('AppImage desktop marker does not match launcher source')
++  }
++  if (fs.existsSync(realPath)) throw new Error(`AppImage real executable already exists: ${realPath}`)
++  if (!fs.existsSync(launcherPath) || !fs.statSync(launcherPath).isFile()) {
++    throw new Error(`Expected AppImage ELF not found: ${launcherPath}`)
++  }
++  if ((fs.statSync(launcherPath).mode & 0o111) === 0) {
++    throw new Error(`Expected executable AppImage ELF: ${launcherPath}`)
++  }
++  const fd = fs.openSync(launcherPath, 'r')
++  try {
++    const magic = Buffer.alloc(4)
++    if (fs.readSync(fd, magic, 0, 4, 0) !== 4 || magic.toString('hex') !== '7f454c46') {
++      throw new Error(`Expected AppImage ELF magic at: ${launcherPath}`)
++    }
++  } finally {
++    fs.closeSync(fd)
++  }
++
++  fs.renameSync(launcherPath, realPath)
++  try {
++    fs.copyFileSync(sourcePath, launcherPath, fs.constants.COPYFILE_EXCL)
++    fs.chmodSync(launcherPath, 0o755)
++  } catch (error) {
++    fs.rmSync(launcherPath, { force: true })
++    fs.renameSync(realPath, launcherPath)
++    throw error
++  }
++  console.log(`  Installed AppImage launcher: ${launcherPath} -> ${realPath}`)
++}
+diff --git a/autobyteus-web/build/scripts/macNativeResourceModes.ts b/autobyteus-web/build/scripts/macNativeResourceModes.ts
+new file mode 100644
+index 000000000..814a7da28
+--- /dev/null
++++ b/autobyteus-web/build/scripts/macNativeResourceModes.ts
+@@ -0,0 +1,48 @@
++import * as path from 'path'
++import * as fs from 'fs'
++import { AfterPackContext } from 'electron-builder'
++
++function getAllFiles(dirPath: string, files: string[] = []): string[] {
++  if (!fs.existsSync(dirPath)) return files
++
++  const entries = fs.readdirSync(dirPath, { withFileTypes: true })
++  for (const entry of entries) {
++    const fullPath = path.join(dirPath, entry.name)
++    if (entry.isDirectory()) {
++      getAllFiles(fullPath, files)
++    } else if (entry.isFile()) {
++      files.push(fullPath)
++    }
++  }
++
++  return files
++}
++
++function normalizeNodePtySpawnHelpers(resourcesPath: string): void {
++  const nodeModulesPath = path.join(resourcesPath, 'node_modules')
++  const scanRoot = fs.existsSync(nodeModulesPath) ? nodeModulesPath : resourcesPath
++  const helpers = getAllFiles(scanRoot).filter((filePath) => (
++    path.basename(filePath) === 'spawn-helper' &&
++    filePath.split(path.sep).includes('node-pty')
++  ))
++
++  for (const helper of helpers) {
++    const currentMode = fs.statSync(helper).mode & 0o777
++    fs.chmodSync(helper, currentMode | 0o111)
++  }
++
++  console.log(`  Normalized execute bits on ${helpers.length} node-pty spawn-helper file(s)`)
++}
++
++export function normalizeMacNativeResourceModes(context: AfterPackContext): void {
++  const appPath = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`)
++  const resourcesPath = path.join(appPath, 'Contents', 'Resources', 'server')
++
++  if (!fs.existsSync(resourcesPath)) {
++    console.log(`  Server resources not found at ${resourcesPath}, skipping`)
++    return
++  }
++
++  console.log('\nNormalizing packaged terminal native resources...')
++  normalizeNodePtySpawnHelpers(resourcesPath)
++}
+diff --git a/autobyteus-web/electron/main.ts b/autobyteus-web/electron/main.ts
+index 765905f43..a9987db31 100644
+--- a/autobyteus-web/electron/main.ts
++++ b/autobyteus-web/electron/main.ts
+@@ -1,6 +1,6 @@
+ import { app } from 'electron'
+ import { getCanonicalBaseDataPath } from './appDataPaths'
+-import { configureElectronLogger } from './logger'
++import { configureElectronLogger, logger } from './logger'
+ import { registerLocalFileProtocolScheme } from './local-file-protocol/register-local-file-scheme'
+ import { assertEmbeddedServerListenerPortAvailable } from './launch-profile/e2eLaunchPreflight'
+ import { resolveElectronLaunchProfile } from './launch-profile/electronLaunchProfile'
+@@ -35,6 +35,9 @@ async function bootstrap(): Promise<void> {
+       baseDataPath: profile.baseDataRoot,
+       env: process.env,
+     })
++    if (process.argv.includes('--no-sandbox')) {
++      logger.warn('Chromium sandbox is disabled for this GUI launch (--no-sandbox); process isolation is reduced.')
++    }
+ 
+     if (profile.name === 'e2e') {
+       await assertEmbeddedServerListenerPortAvailable(profile.clientEndpoint.port)
+diff --git a/autobyteus-web/scripts/test-appimage-launcher.mjs b/autobyteus-web/scripts/test-appimage-launcher.mjs
+new file mode 100644
+index 000000000..050c7de20
+--- /dev/null
++++ b/autobyteus-web/scripts/test-appimage-launcher.mjs
+@@ -0,0 +1,213 @@
++import assert from 'node:assert/strict'
++import { spawn, spawnSync } from 'node:child_process'
++import fs from 'node:fs'
++import os from 'node:os'
++import path from 'node:path'
++import { fileURLToPath } from 'node:url'
++import test from 'node:test'
++
++const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
++const launcherSource = path.join(webRoot, 'build/appimage/launcher.sh')
++const { installLinuxAppImageLauncher } = await import('../build/dist/linuxAppImageLauncher.js')
++const afterPack = (await import('../build/dist/afterPack.js')).default.default
++const productionLauncher = fs.readFileSync(launcherSource, 'utf8')
++// Patch only each test-owned copy. The shipped launcher retains its two fixed,
++// trusted /usr/bin/unshare references and has no runtime probe override.
++assert.equal((productionLauncher.match(/\/usr\/bin\/unshare/g) ?? []).length, 2)
++assert.ok(fs.statSync('/usr/bin/timeout').mode & 0o111)
++const fatalLine = "[123:0924/114230.900112:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now."
++
++function fixture(probeOutcome = 'negative') {
++  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-launcher-test-'))
++  const launcher = path.join(dir, 'autobyteus')
++  const probe = path.join(dir, 'unshare-stub')
++  fs.writeFileSync(launcher, productionLauncher.replaceAll('/usr/bin/unshare', probe))
++  fs.chmodSync(launcher, 0o755)
++  if (probeOutcome !== 'missing') {
++    fs.writeFileSync(probe, `#!/bin/bash
++printf '%s\\n' "$*" >> "$PROBE_EVENT_FILE"
++case "$PROBE_OUTCOME" in
++  positive) exit 0 ;;
++  negative) printf 'unshare: permission denied\\n' >&2; exit 1 ;;
++  ambiguous) printf 'unshare: unexpected utility failure\\n' >&2; exit 124 ;;
++esac
++exit 99
++`)
++    fs.chmodSync(probe, 0o755)
++  }
++  fs.writeFileSync(`${launcher}-real`, `#!/bin/bash
++printf '%s\\n' "$*" >> "$EVENT_FILE"
++printf '%s\\0' "$@" > "$ARGS_FILE"
++if [[ "\${TEST_MODE-}" == fatal && "\${ELECTRON_RUN_AS_NODE-}" != 1 && " $* " != *" --no-sandbox "* ]]; then
++  printf '%s\\n' "$FATAL_LINE" >&2
++  exit "\${FATAL_STATUS:-133}"
++fi
++if [[ "\${TEST_MODE-}" == unrelated ]]; then
++  printf 'unrelated crash\\n' >&2
++  exit 133
++fi
++if [[ "\${TEST_MODE-}" == signal ]]; then
++  trap 'printf terminated > "$SIGNAL_FILE"; exit 143' TERM
++  printf 'live stderr\\n' >&2
++  printf ready > "$READY_FILE"
++  while true; do sleep 0.1; done
++fi
++printf 'live stderr\\n' >&2
++exit 0
++`)
++  fs.chmodSync(`${launcher}-real`, 0o755)
++  const { ELECTRON_RUN_AS_NODE: _ignoredNodeMode, ...baseEnv } = process.env
++  const env = {
++    ...baseEnv,
++    EVENT_FILE: path.join(dir, 'events'),
++    ARGS_FILE: path.join(dir, 'args'),
++    SIGNAL_FILE: path.join(dir, 'signal'),
++    READY_FILE: path.join(dir, 'ready'),
++    PROBE_EVENT_FILE: path.join(dir, 'probe-events'),
++    PROBE_OUTCOME: probeOutcome,
++    FATAL_LINE: fatalLine,
++  }
++  return { dir, launcher, env, dispose: () => fs.rmSync(dir, { recursive: true, force: true }) }
++}
++
++function run(f, args = [], extraEnv = {}) {
++  return spawnSync(f.launcher, args, { env: { ...f.env, ...extraEnv }, encoding: 'utf8', timeout: 10_000 })
++}
++
++test('build hook installs an executable wrapper and preserves a real ELF; fails on duplicate or wrong layout', async () => {
++  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-hook-test-'))
++  try {
++    const elf = path.join(dir, 'autobyteus')
++    fs.copyFileSync('/bin/true', elf)
++    const context = { appOutDir: dir, packager: { executableName: 'autobyteus' }, electronPlatformName: 'linux', targets: [{ name: 'appImage' }] }
++    installLinuxAppImageLauncher(context)
++    assert.equal(fs.readFileSync(`${elf}-real`).subarray(0, 4).toString('hex'), '7f454c46')
++    assert.match(fs.readFileSync(elf, 'utf8'), /^#!\/bin\/bash/)
++    assert.ok(fs.statSync(elf).mode & 0o111)
++    assert.throws(() => installLinuxAppImageLauncher(context), /already exists/)
++    const other = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-hook-other-'))
++    try {
++      const nonAppImage = { ...context, appOutDir: other, targets: [{ name: 'deb' }] }
++      await afterPack(nonAppImage)
++      assert.deepEqual(fs.readdirSync(other), [])
++      fs.writeFileSync(path.join(other, 'autobyteus'), 'not ELF')
++      fs.chmodSync(path.join(other, 'autobyteus'), 0o755)
++      assert.throws(() => installLinuxAppImageLauncher({ ...context, appOutDir: other }), /ELF magic/)
++    } finally {
++      fs.rmSync(other, { recursive: true, force: true })
++    }
++  } finally {
++    fs.rmSync(dir, { recursive: true, force: true })
++  }
++})
++
++test('Node mode and explicit no-sandbox preserve argv and bypass GUI decision', () => {
++  const f = fixture()
++  try {
++    let result = run(f, ['--autobyteus-appimage-desktop-entry', 'two words'], { ELECTRON_RUN_AS_NODE: '1', TEST_MODE: 'fatal' })
++    assert.equal(result.status, 0)
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['two words'])
++    result = run(f, ['--no-sandbox', 'two words'], { TEST_MODE: 'fatal' })
++    assert.equal(result.status, 0)
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['--no-sandbox', 'two words'])
++    assert.ok(!fs.existsSync(f.env.PROBE_EVENT_FILE), 'Node and explicit-flag launches bypass the probe')
++  } finally { f.dispose() }
++})
++
++test('negative probe: sandboxed success remains sandboxed; exact startup fatal retries once', () => {
++  const f = fixture()
++  try {
++    let result = run(f, ['--autobyteus-appimage-desktop-entry', 'two words'])
++    assert.equal(result.status, 0)
++    assert.match(result.stderr, /live stderr/)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8').trim(), 'two words')
++    result = run(f, ['two words'], { TEST_MODE: 'fatal' })
++    assert.equal(result.status, 0)
++    assert.match(result.stderr, /retrying this GUI launch with --no-sandbox/)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8').trim().split('\n').length, 3)
++    assert.equal(fs.readFileSync(f.env.PROBE_EVENT_FILE, 'utf8'), '-Ur true\n-Ur true\n')
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['--no-sandbox', 'two words'])
++  } finally { f.dispose() }
++})
++
++test('negative probe: unrelated exit 133 is propagated without downgrade', () => {
++  const f = fixture()
++  try {
++    const result = run(f, [], { TEST_MODE: 'unrelated' })
++    assert.equal(result.status, 133)
++    assert.doesNotMatch(result.stderr, /retrying this GUI launch/)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8'), '\n')
++  } finally { f.dispose() }
++})
++
++test('negative probe: fatal signature without status 133 cannot downgrade', () => {
++  const f = fixture()
++  try {
++    const result = run(f, [], { TEST_MODE: 'fatal', FATAL_STATUS: '1' })
++    assert.equal(result.status, 1)
++    assert.doesNotMatch(result.stderr, /retrying this GUI launch/)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8'), '\n')
++  } finally { f.dispose() }
++})
++
++test('positive probe: normal GUI exec remains sandboxed', () => {
++  const f = fixture('positive')
++  try {
++    let result = run(f, ['--autobyteus-appimage-desktop-entry', 'two words'])
++    assert.equal(result.status, 0)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8').trim(), 'two words')
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['two words'])
++    result = run(f, ['two words'], { TEST_MODE: 'fatal' })
++    assert.equal(result.status, 133, 'positive probe directly execs the unmodified ELF')
++    assert.doesNotMatch(result.stderr, /retrying this GUI launch/)
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8'), 'two words\ntwo words\n')
++    assert.equal(fs.readFileSync(f.env.PROBE_EVENT_FILE, 'utf8'), '-Ur true\n-Ur true\n')
++  } finally { f.dispose() }
++})
++
++test('missing probe: successful sandboxed ELF stays unmodified, fatal retries only after confirmation', () => {
++  const f = fixture('missing')
++  try {
++    let result = run(f, ['two words'])
++    assert.equal(result.status, 0)
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['two words'])
++    assert.doesNotMatch(result.stderr, /retrying this GUI launch/)
++    result = run(f, ['two words'], { TEST_MODE: 'fatal' })
++    assert.equal(result.status, 0)
++    assert.match(result.stderr, /retrying this GUI launch with --no-sandbox/)
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['--no-sandbox', 'two words'])
++    assert.equal(fs.readFileSync(f.env.EVENT_FILE, 'utf8'), 'two words\ntwo words\n--no-sandbox two words\n')
++    assert.ok(!fs.existsSync(f.env.PROBE_EVENT_FILE))
++  } finally { f.dispose() }
++})
++
++test('ambiguous probe failure cannot itself downgrade a successful sandboxed ELF', () => {
++  const f = fixture('ambiguous')
++  try {
++    const result = run(f, ['two words'])
++    assert.equal(result.status, 0)
++    assert.doesNotMatch(result.stderr, /retrying this GUI launch/)
++    assert.deepEqual(fs.readFileSync(f.env.ARGS_FILE).toString().split('\0').filter(Boolean), ['two words'])
++    assert.equal(fs.readFileSync(f.env.PROBE_EVENT_FILE, 'utf8'), '-Ur true\n')
++  } finally { f.dispose() }
++})
++
++test('negative probe: wrapper forwards TERM to supervised child', async () => {
++  const f = fixture()
++  try {
++    const child = spawn(f.launcher, [], { env: { ...f.env, TEST_MODE: 'signal' }, stdio: ['ignore', 'ignore', 'pipe'] })
++    let stderr = ''
++    child.stderr.setEncoding('utf8')
++    child.stderr.on('data', (chunk) => { stderr += chunk })
++    const deadline = Date.now() + 5000
++    while ((!fs.existsSync(f.env.READY_FILE) || !stderr.includes('live stderr')) && Date.now() < deadline) {
++      await new Promise((resolve) => setTimeout(resolve, 25))
++    }
++    assert.ok(fs.existsSync(f.env.READY_FILE), 'child started')
++    assert.match(stderr, /live stderr/, 'stderr is streamed while Electron is still running')
++    child.kill('SIGTERM')
++    const exit = await new Promise((resolve) => child.on('exit', (code, signal) => resolve({ code, signal })))
++    assert.deepEqual(exit, { code: 143, signal: null })
++    assert.equal(fs.readFileSync(f.env.SIGNAL_FILE, 'utf8'), 'terminated')
++  } finally { f.dispose() }
++})
+diff --git a/autobyteus-web/scripts/verify-linux-appimage-layout.mjs b/autobyteus-web/scripts/verify-linux-appimage-layout.mjs
+new file mode 100644
+index 000000000..9c1d92da6
+--- /dev/null
++++ b/autobyteus-web/scripts/verify-linux-appimage-layout.mjs
+@@ -0,0 +1,44 @@
++import assert from 'node:assert/strict'
++import { execFileSync } from 'node:child_process'
++import fs from 'node:fs'
++import os from 'node:os'
++import path from 'node:path'
++
++const appImage = process.argv[2]
++if (!appImage) throw new Error('Usage: verify-linux-appimage-layout.mjs <AppImage>')
++const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-appimage-layout-'))
++try {
++  execFileSync(path.resolve(appImage), ['--appimage-extract'], {
++    cwd: tempDir,
++    // A full AppImage prints every extracted path, which exceeds Node's
++    // default captured-output buffer before the layout assertions can run.
++    stdio: ['ignore', 'ignore', 'pipe'],
++    timeout: 120_000,
++  })
++  const root = path.join(tempDir, 'squashfs-root')
++  const desktopFiles = fs.readdirSync(root).filter((name) => name.endsWith('.desktop'))
++  assert.equal(desktopFiles.length, 1, 'expected one embedded desktop entry')
++  const desktop = fs.readFileSync(path.join(root, desktopFiles[0]), 'utf8')
++  assert.match(desktop, /^Exec=AppRun --autobyteus-appimage-desktop-entry %U$/m)
++  assert.doesNotMatch(desktop, /^Exec=.*--no-sandbox/m)
++
++  const executable = fs.readdirSync(root).find((name) =>
++    name === 'autobyteus' && fs.statSync(path.join(root, name)).isFile())
++  assert.ok(executable, 'expected autobyteus package launcher')
++  const launcherPath = path.join(root, executable)
++  const realPath = `${launcherPath}-real`
++  assert.ok(fs.statSync(launcherPath).mode & 0o111, 'launcher must be executable')
++  assert.ok(fs.statSync(realPath).mode & 0o111, 'real Electron must be executable')
++  assert.match(fs.readFileSync(launcherPath, 'utf8'), /^#!\/bin\/bash/)
++  const fd = fs.openSync(realPath, 'r')
++  try {
++    const magic = Buffer.alloc(4)
++    assert.equal(fs.readSync(fd, magic, 0, 4, 0), 4)
++    assert.equal(magic.toString('hex'), '7f454c46')
++  } finally {
++    fs.closeSync(fd)
++  }
++  console.log(`Verified AppImage launcher, real ELF and desktop marker: ${appImage}`)
++} finally {
++  fs.rmSync(tempDir, { recursive: true, force: true })
++}
