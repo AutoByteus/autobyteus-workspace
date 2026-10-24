@@ -53,6 +53,20 @@ Finalize the fix into `origin/personal` so a clean checkout builds again. No rel
 
 - 280's delivery checks (DLV-01..06) ran in the ticket worktree, which held the ignored files on disk, so they could not see the defect. The Secret Gate and hygiene check at the time did not look at imports. The new tracked-imports check now runs in every server test run and before tagging, so this failure class shows up in any worktree. A 280 `DR-002` note in its delivery record points here.
 
-## Repository Finalization / Release / Cleanup / Final Status
+## Repository Finalization
 
-- Recorded in `delivery-revision-record.md` DR-001 once completed.
+- Ticket branch pushed (`83e8e12125`, confirmed by `git ls-remote`). The Secret Gate passed first.
+- `--no-ff` merge `4ec837de16` on `origin/personal`, tree identical to the ticket branch. Gates on the merged state exit 0. Status: `Completed`.
+- Clean-checkout confirmation from GitHub at `4ec837de16`: install, prebuild and server typecheck exit 0 (details in `delivery-revision-record.md`).
+
+## Release / Publication / Deployment
+
+- `Not required` (no release requested). Rollback: `git revert -m 1 4ec837de16`; no data involved.
+
+## Post-Finalization Cleanup
+
+- Worktree removed and pruned; local branches deleted after a containment check; remote ticket branch kept.
+
+## Final Status
+
+- Verification complete: `Yes`. Repository finalization: `Yes`. Release: `Not required`. Cleanup: `Completed`. Blocker: `None`. Terminal package sent: `Yes`.
