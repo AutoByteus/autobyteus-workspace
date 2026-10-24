@@ -15,6 +15,8 @@ final class AppShellCoordinator {
 
     init(window: UIWindow) {
         self.window = window
+        // autobyteus-290 SM-9: the saved entries' stored keys follow the code before the store first reads them.
+        SavedNodeEntryKeysMigration.run(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
         self.savedNodeStore = SavedNodeStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
         self.pendingStore = PendingSharedInputStore(appGroupIdentifier: SavedNodeStore.appGroupIdentifier)
     }
@@ -39,8 +41,8 @@ final class AppShellCoordinator {
             savedNodeStore.clear()
             pendingStore.clear()
         }
-        if let saved = savedNodeStore.loadSelectedProfile() {
-            validateAndOpen(profile: saved, webViewURL: saved.mobileURL, saveAfterValidation: false)
+        if let saved = savedNodeStore.loadSelectedEntry() {
+            validateAndOpen(entry: saved, webViewURL: saved.mobileURL, saveAfterValidation: false)
         } else {
             showConnection()
         }
@@ -71,7 +73,7 @@ final class AppShellCoordinator {
         notice: String? = nil
     ) {
         let controller = ConnectionViewController(
-            savedProfiles: savedNodeStore.loadProfiles(),
+            savedEntries: savedNodeStore.loadEntries(),
             diagnostic: diagnostic,
             notice: notice,
             isBusy: isBusy,
@@ -85,11 +87,11 @@ final class AppShellCoordinator {
 
     private func connectionCallbacks() -> ConnectionViewController.Callbacks {
         ConnectionViewController.Callbacks(
-            onOpenSaved: { [weak self] profile in
-                self?.validateAndOpen(profile: profile, webViewURL: profile.mobileURL, saveAfterValidation: false)
+            onOpenSaved: { [weak self] entry in
+                self?.validateAndOpen(entry: entry, webViewURL: entry.mobileURL, saveAfterValidation: false)
             },
-            onRemoveSaved: { [weak self] profile in
-                self?.savedNodeStore.removeProfile(id: profile.id)
+            onRemoveSaved: { [weak self] entry in
+                self?.savedNodeStore.removeEntry(id: entry.id)
                 self?.showConnection()
             },
             onSubmitInput: { [weak self] rawText, httpAcknowledged in
@@ -109,47 +111,47 @@ final class AppShellCoordinator {
 
     private func submitInput(_ rawText: String, httpAcknowledged: Bool) {
         switch inputResolver.resolve(rawText: rawText, httpAcknowledged: httpAcknowledged) {
-        case .success(let profile, let webViewURL):
-            validateAndOpen(profile: profile, webViewURL: webViewURL, saveAfterValidation: true)
+        case .success(let entry, let webViewURL):
+            validateAndOpen(entry: entry, webViewURL: webViewURL, saveAfterValidation: true)
         case .failure(let diagnostic):
             showConnection(diagnostic: diagnostic, initialInput: rawText)
         }
     }
 
     private func validateAndOpen(
-        profile: SavedNodeProfile,
+        entry: SavedNodeEntry,
         webViewURL: String,
         saveAfterValidation: Bool
     ) {
-        showConnection(isBusy: true, initialInput: profile.mobileURL)
+        showConnection(isBusy: true, initialInput: entry.mobileURL)
         Task { [weak self] in
             guard let self else { return }
-            let result = await validator.validate(profile: profile)
+            let result = await validator.validate(entry: entry)
             await MainActor.run {
                 switch result {
                 case .reachable(_, let status):
-                    let stable = profile.updating(
+                    let stable = entry.updating(
                         displayName: status.serverName,
-                        httpAcknowledged: profile.httpAcknowledged
+                        httpAcknowledged: entry.httpAcknowledged
                     )
-                    if saveAfterValidation || !self.savedNodeStore.loadProfiles().contains(where: { $0.id == stable.id }) {
-                        self.savedNodeStore.saveProfile(stable)
+                    if saveAfterValidation || !self.savedNodeStore.loadEntries().contains(where: { $0.id == stable.id }) {
+                        self.savedNodeStore.saveEntry(stable)
                     } else {
-                        self.savedNodeStore.selectProfile(id: stable.id)
+                        self.savedNodeStore.selectEntry(id: stable.id)
                     }
-                    self.openWebShell(profile: stable, initialURL: webViewURL)
+                    self.openWebShell(entry: stable, initialURL: webViewURL)
                 case .failed(let diagnostic):
-                    self.showConnection(diagnostic: diagnostic, initialInput: profile.mobileURL)
+                    self.showConnection(diagnostic: diagnostic, initialInput: entry.mobileURL)
                 }
             }
         }
     }
 
-    private func openWebShell(profile: SavedNodeProfile, initialURL: String) {
+    private func openWebShell(entry: SavedNodeEntry, initialURL: String) {
         let controller = WebShellViewController(
-            profile: profile,
+            entry: entry,
             initialURL: initialURL,
-            onEditNode: { [weak self] in self?.showConnection(initialInput: profile.mobileURL) },
+            onEditNode: { [weak self] in self?.showConnection(initialInput: entry.mobileURL) },
             onOpenExternal: { [weak self] url, presenter in self?.externalActions.openExternal(url, from: presenter) }
         )
         currentWebShell = controller

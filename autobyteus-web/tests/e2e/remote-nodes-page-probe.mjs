@@ -70,7 +70,9 @@ const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/remote-no
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
 const BOUND_MS = 20_000;
-const REGISTRY_KEY = 'autobyteus.node_registry.v1';
+// The window seeds the list as the released app stored it; autobyteus-290 SM-7 converts it to REGISTRY_KEY on load.
+const RELEASED_REGISTRY_KEY = 'autobyteus.node_registry.v1';
+const REGISTRY_KEY = 'autobyteus.node_registry';
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, browserExecutable: executablePath || 'playwright-default',
   servers: {}, cases: {}, requests: [], browserErrors: [], cleanup: {}, error: null };
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
@@ -133,7 +135,7 @@ const startServer = async (name, port) => {
     if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
     return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
   }, 120_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const gql = async (query, variables) => {
     const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ query, variables }) })).json();
@@ -229,12 +231,14 @@ try {
     localStorage.setItem('autobyteus.localization.preference-mode', 'en');
     // Only the first page load gets the release-shaped list; later loads keep what the page saved.
     if (!localStorage.getItem('probe-seeded')) { localStorage.setItem(key, JSON.stringify(registry)); localStorage.setItem('probe-seeded', '1'); }
-  }, { key: REGISTRY_KEY, registry: seededRegistry });
+  }, { key: RELEASED_REGISTRY_KEY, registry: seededRegistry });
   const page = await context.newPage();
   // Warm the dev server (first compile) on the page itself, then reload it fresh.
   await page.goto(`${frontendUrl}/nodes?nodeTab=memorySync`, { waitUntil: 'networkidle', timeout: 240_000 });
   await page.locator('[data-testid="node-manager-panel-memorySync"]').waitFor({ state: 'visible', timeout: 120_000 });
-  await page.evaluate(({ key, registry }) => localStorage.setItem(key, JSON.stringify(registry)), { key: REGISTRY_KEY, registry: seededRegistry });
+  await page.evaluate(({ released, current, registry }) => {
+    localStorage.removeItem(current); localStorage.removeItem(`${released}:backup`); localStorage.setItem(released, JSON.stringify(registry));
+  }, { released: RELEASED_REGISTRY_KEY, current: REGISTRY_KEY, registry: seededRegistry });
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));
   page.on('console', message => { if (message.type() === 'error') evidence.browserErrors.push(`console: ${message.text()}`); });
   // Every request the window sends to a node, named by its node; the dev server forwards /graphql and /rest to alpha.
@@ -350,8 +354,10 @@ try {
       switch: await page.locator(`[data-testid="node-agents-switch-${beta.nodeId}"]`).getAttribute('aria-checked') };
     assert(keys.filter(key => key === beta.nodeId).length === 1 && !keys.includes('d:remote-beta-entry'), `beta once: ${keys}`);
     expect(betaRow.name === 'beta' && betaRow.url === `localhost:${beta.port}` && betaRow.switch === 'true', `beta's row: ${JSON.stringify(betaRow)}`);
-    expect(betaEntry?.serverInstanceId === beta.nodeId && betaEntry.name === `http://localhost:${beta.port}`, `beta's entry learned its node ID, name unchanged: ${JSON.stringify(betaEntry)}`);
-    expect(keys.includes(gammaEntryKey) && keys.includes(gamma.nodeId) && !gammaEntry?.serverInstanceId, `gamma's never-reached entry is its own row: ${keys}`);
+    expect(betaEntry?.nodeId === beta.nodeId && betaEntry.name === `http://localhost:${beta.port}`, `beta's entry learned its node ID, name unchanged: ${JSON.stringify(betaEntry)}`);
+    expect(keys.includes(gammaEntryKey) && keys.includes(gamma.nodeId) && !gammaEntry?.nodeId, `gamma's never-reached entry is its own row: ${keys}`);
+    const releasedLeft = await page.evaluate(key => localStorage.getItem(key), RELEASED_REGISTRY_KEY);
+    expect(releasedLeft === null && !stored.nodes.some(node => 'isSystem' in node), `autobyteus-290 SM-7 converted the released list: ${releasedLeft}`);
     expect(!keys.includes(alpha.nodeId) && !keys.includes('d:embedded-local'), `this node is not a row: ${keys}`);
     return { keys, names: await page.locator('[data-testid^="node-name-"]').allInnerTexts(), betaRow, betaEntry, gammaEntry };
   });
@@ -482,9 +488,9 @@ try {
     expect(ghostState.line === 'ⓘ Not reachable. Nothing answers at that address and port.' && ghostState.fix === 'Check again' && ghostState.dialog === 0 && ghostState.switchDisabled,
       `ghost: ${JSON.stringify(ghostState)}`);
     const stored = await registry();
-    const added = stored.nodes.filter(node => ['iota', 'kappa', 'ghost'].includes(node.name)).map(({ name, baseUrl, serverInstanceId }) => ({ name, baseUrl, serverInstanceId: serverInstanceId ?? null }));
-    expect(added.length === 3 && added.find(node => node.name === 'iota')?.serverInstanceId === iota.nodeId && added.find(node => node.name === 'kappa')?.serverInstanceId === kappa.nodeId
-      && added.find(node => node.name === 'ghost')?.serverInstanceId === null, `desktop list: ${JSON.stringify(added)}`);
+    const added = stored.nodes.filter(node => ['iota', 'kappa', 'ghost'].includes(node.name)).map(({ name, baseUrl, nodeId }) => ({ name, baseUrl, nodeId: nodeId ?? null }));
+    expect(added.length === 3 && added.find(node => node.name === 'iota')?.nodeId === iota.nodeId && added.find(node => node.name === 'kappa')?.nodeId === kappa.nodeId
+      && added.find(node => node.name === 'ghost')?.nodeId === null, `desktop list: ${JSON.stringify(added)}`);
     expect(!stored.nodes.some(node => ['beta again', 'gamma again'].includes(node.name)), 'duplicates not added');
     expect(JSON.stringify(await peersFile(alpha)) === JSON.stringify(before.alpha) && (await peersFile(iota)) === null, 'no peers.json changed by any add');
     await page.locator(`[data-testid="node-remove-d:${ghost.id}"]`).click();
@@ -592,11 +598,11 @@ try {
     await rename(kappa.nodeId, 'kappa lab');
     await waitFor('renamed', async () => (await text(page.locator(`[data-testid="node-name-${kappa.nodeId}"]`))) === 'kappa lab');
     const onAlpha = (await peersOf(alpha)).find(peer => peer.nodeId === kappa.nodeId);
-    const entry = (await registry()).nodes.find(node => node.serverInstanceId === kappa.nodeId);
+    const entry = (await registry()).nodes.find(node => node.nodeId === kappa.nodeId);
     expect(invalid === 'Use 1–64 letters, digits, spaces, _ . or - (start with a letter or digit).', `invalid: ${invalid}`);
     expect(taken === 'Another node is already named Beta.', `taken: ${taken}`);
     assert(onAlpha?.name === 'kappa lab' && entry?.name === 'kappa lab', `one name: ${JSON.stringify({ onAlpha, entry })}`);
-    return { invalid, taken, onAlpha, entry: { name: entry.name, serverInstanceId: entry.serverInstanceId }, kappaKnowsAlphaAs: (await peersOf(kappa))[0]?.name };
+    return { invalid, taken, onAlpha, entry: { name: entry.name, nodeId: entry.nodeId }, kappaKnowsAlphaAs: (await peersOf(kappa))[0]?.name };
   });
 
   await runCase('NP-09', async () => {
@@ -640,7 +646,7 @@ try {
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     const muAfter = { alphaHasMu: (await peersOf(alpha)).some(peer => peer.nodeId === mu.nodeId), muHasAlpha: (await peersOf(mu)).some(peer => peer.nodeId === alpha.nodeId),
-      listed: await row(mu.nodeId).count(), entry: (await registry()).nodes.some(node => node.serverInstanceId === mu.nodeId) };
+      listed: await row(mu.nodeId).count(), entry: (await registry()).nodes.some(node => node.nodeId === mu.nodeId) };
     expect(muSteps.map(entry => entry.text).join(' | ') === 'Remove mu from this node | Remove this node from mu | Remove mu from your list', `mu steps: ${JSON.stringify(muSteps)}`);
     expect(muText.includes('The node and its data are not touched.'), muText);
     assert(!muAfter.alphaHasMu && !muAfter.muHasAlpha && muAfter.listed === 0 && !muAfter.entry, `mu gone: ${JSON.stringify(muAfter)}`);

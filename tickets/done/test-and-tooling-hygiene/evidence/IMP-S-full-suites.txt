@@ -1,0 +1,30 @@
+IMP-S — full suites at commit af81b3d7d2 (autobyteus-253), macOS 10 cores, Node 22, 2026-10-24, no artificial load
+== pnpm -C autobyteus-server-ts typecheck
+typecheck rc=0
+== pnpm -C autobyteus-server-ts test:unit
+ Test Files  810 passed | 4 skipped (814)
+      Tests  6736 passed | 7 skipped (6743)
+unit rc=0
+== pnpm -C autobyteus-server-ts test:integration:prepare && test:integration
+prep rc=0
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+integ rc=0
+== pnpm -C autobyteus-web test:nuxt --run
+[ApplicationIframeHost] iframe loaded applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 src=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=file%3A%2F%2F
+ Test Files  681 passed | 2 skipped (683)
+      Tests  4858 passed | 5 skipped (4863)
+nuxt rc=0
+== pnpm -C autobyteus-web test:electron --run
+ Test Files  40 passed | 1 skipped (41)
+      Tests  237 passed | 1 skipped (238)
+electron rc=0
+== web guards
+guard:web-boundary rc=0
+guard:localization-boundary rc=0
+audit:localization-literals rc=0
+== node --test autobyteus-web/scripts/electron-e2e/__tests__/*.node-test.mjs
+# tests 15
+# pass 15
+# fail 0
+nodetest rc=0

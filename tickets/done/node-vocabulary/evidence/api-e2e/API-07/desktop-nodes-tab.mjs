@@ -1,0 +1,15 @@
+import { createRequire } from 'node:module';
+const require = createRequire(process.cwd() + '/package.json');
+const { chromium } = require('playwright-core');
+const [port, out, label] = process.argv.slice(2);
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
+const page = browser.contexts().flatMap(c => c.pages()).find(p => !p.url().startsWith('devtools'));
+await page.waitForFunction(() => document.querySelector('#__nuxt')?.__vue_app__, null, { timeout: 60000 });
+await page.evaluate(() => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$router.push('/nodes?nodeTab=manage'));
+await page.locator('[data-testid^="node-name-"]').first().waitFor({ state: 'visible', timeout: 60000 });
+await page.waitForTimeout(4000);
+const rows = await page.locator('[data-testid^="node-name-"]').evaluateAll(els => els.map(e => ({ key: e.getAttribute('data-testid').slice(10), name: e.innerText.trim() })));
+const lines = await page.locator('[data-testid^="node-line-"]').evaluateAll(els => els.map(e => ({ key: e.getAttribute('data-testid').slice(10), line: e.innerText.trim().replace(/\s+/g, ' ') })));
+await page.screenshot({ path: `${out}/${label}-nodes-tab.png` });
+console.log(JSON.stringify({ url: page.url(), rows, lines }, null, 2));
+await browser.close();

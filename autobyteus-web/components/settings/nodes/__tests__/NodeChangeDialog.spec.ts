@@ -10,7 +10,7 @@ import NodeChangeDialog from '../NodeChangeDialog.vue'
 
 /** one-nodes-tab UIS-004 (VIS-003, VIS-004, VIS-008, VIS-009, VIS-014, VIS-018, VIS-021): the one confirmation. */
 
-const target = { rowKey: 'srv_8003', name: '8003', nodeId: 'srv_8003', desktopIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
+const target = { rowKey: 'srv_8003', name: '8003', nodeId: 'srv_8003', entryIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
 const here = { name: 'Embedded Node', nodeId: 'srv_a', windowAddress: 'http://127.0.0.1:29695' }
 const plan = (overrides: Partial<NodeChangePlan>): NodeChangePlan => ({
   kind: 'connect', target, here, phase: 'confirm', candidates: { here: [], there: [] },

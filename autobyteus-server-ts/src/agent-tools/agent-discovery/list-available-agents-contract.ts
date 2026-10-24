@@ -1,7 +1,7 @@
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { MemberCollaborationContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import { findProcessRemoteDiscoveryChannel, type RemoteDiscoveryChannel } from "../../agent-collaboration/execution/remote/remote-discovery-channel.js";
+import { findProcessPeerDiscoveryChannel, type PeerDiscoveryChannel } from "../../agent-collaboration/execution/remote/peer-discovery-channel.js";
 import { isAgentDiscoveryRefusal, remoteCollaborationOff, requireDiscoveryContext, type AgentDiscoveryRefusal } from "./agent-discovery-refusal.js";
 
 export const LIST_AVAILABLE_AGENTS_TOOL_NAME = "list_available_agents";
@@ -21,13 +21,13 @@ export const buildListAvailableAgentsParameterSchema = (): ParameterSchema => ne
 
 /**
  * Without `node`, the sender's root answers (DS-001), as before. With `node` (autobyteus-261 DS-002), what that
- * peer offers for delegation, through `RemoteDiscoveryChannel`; a refusal has the same texts as `delegate_task`.
+ * peer offers for delegation, through `PeerDiscoveryChannel`; a refusal has the same texts as `delegate_task`.
  * The handler adds nothing and writes nothing.
  */
 export const listAvailableAgentsFor = async (
   collaboration: MemberCollaborationContext | null | undefined,
   args: Readonly<Record<string, unknown>> = {},
-  discovery: RemoteDiscoveryChannel | null = findProcessRemoteDiscoveryChannel(),
+  discovery: PeerDiscoveryChannel | null = findProcessPeerDiscoveryChannel(),
 ): Promise<ListAvailableAgentsResult | AgentDiscoveryRefusal> => {
   const lister = requireDiscoveryContext(collaboration, LIST_AVAILABLE_AGENTS_TOOL_NAME);
   if (args.node === undefined) {

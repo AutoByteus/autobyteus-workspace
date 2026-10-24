@@ -104,5 +104,5 @@ const cloneRuntimeExposure = (
   getHandoffRulesEnabled: exposure.getHandoffRulesEnabled,
   publishArtifactsEnabled: exposure.publishArtifactsEnabled,
   listAvailableAgentsEnabled: exposure.listAvailableAgentsEnabled,
-  listAvailableNodesEnabled: exposure.listAvailableNodesEnabled,
+  listPeerNodesEnabled: exposure.listPeerNodesEnabled,
 });

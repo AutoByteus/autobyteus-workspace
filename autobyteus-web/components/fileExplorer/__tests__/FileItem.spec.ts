@@ -211,7 +211,7 @@ describe('FileItem - Lazy Loading', () => {
     expect(requestContextMenu).toHaveBeenCalledWith({
       target: {
         kind: 'node',
-        nodeId: 'file-id',
+        treeNodeId: 'file-id',
         path: 'root/test-file.txt',
         name: 'test-file.txt',
         isFile: true,

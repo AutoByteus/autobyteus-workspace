@@ -7,7 +7,7 @@ import type {
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
 import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
-import type { RemotePeer } from "../execution/remote/remote-run-channel.js";
+import type { PeerNodeRef } from "../execution/remote/remote-run-channel.js";
 
 /** The index fact a root supplies for the own-Team delegation rule (CM-1, DEC-008). */
 export interface DelegationSourceIndexPort {
@@ -39,7 +39,7 @@ export type DelegationPlacement =
 export type RemoteAgentPlacement = Readonly<{
   kind: "remote_agent";
   address: AgentTeamAddress;
-  peer: RemotePeer;
+  peer: PeerNodeRef;
   description: string;
   launchNotes?: never;
 }>;

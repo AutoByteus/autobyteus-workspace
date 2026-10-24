@@ -1,5 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { isLoopbackPeerAddress } from "../../api/security/remote-access-local-trust.js";
+import { isLoopbackClientAddress } from "../../api/security/remote-access-local-trust.js";
 import type {
   ClientFacingUrlContext,
   ResolveRestResourceUrlInput,
@@ -47,8 +47,8 @@ export class DefaultClientFacingUrlResolver {
       return normalizeNodeBaseUrl(preferred);
     }
 
-    const peerAddress = context.request?.raw?.socket?.remoteAddress;
-    if (isLoopbackPeerAddress(peerAddress) || !peerAddress) {
+    const clientAddress = context.request?.raw?.socket?.remoteAddress;
+    if (isLoopbackClientAddress(clientAddress) || !clientAddress) {
       return normalizeNodeBaseUrl(context.localFallbackBaseUrl);
     }
 

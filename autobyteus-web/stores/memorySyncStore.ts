@@ -6,7 +6,7 @@ import { CREATE_MEMORY_HUB_SOURCE_CREDENTIAL, REGENERATE_MEMORY_HUB_SOURCE_CREDE
 export interface MemoryHubCredentialSummary {
   credentialId: string;
   label?: string | null;
-  boundSourceNodeId?: string | null;
+  boundMemorySyncSourceId?: string | null;
   createdAt: string;
   lastUsedAt?: string | null;
   revokedAt?: string | null;
@@ -14,7 +14,7 @@ export interface MemoryHubCredentialSummary {
 }
 
 export interface MemoryImportSummary {
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   displayName?: string | null;
   lastKnownEndpoint?: string | null;
   lastImportedAt?: string | null;
@@ -28,7 +28,7 @@ export interface MemorySyncStatus {
   hub: { enabled: boolean; advertisedHubBaseUrl?: string | null; updatedAt?: string | null };
   source: {
     enabled: boolean;
-    sourceNodeId?: string | null;
+    memorySyncSourceId?: string | null;
     displayName?: string | null;
     hubBaseUrl?: string | null;
     hubTokenConfigured: boolean;
@@ -57,14 +57,14 @@ export type ConnectionTestMode = 'saved' | 'draft';
 
 export type ConnectionTestRequest =
   | { mode: 'saved' }
-  | { mode: 'draft'; hubBaseUrl: string; sourceNodeId: string; token: string };
+  | { mode: 'draft'; hubBaseUrl: string; memorySyncSourceId: string; token: string };
 
 export interface ConnectionTestResult {
   ok: boolean;
   mode: ConnectionTestMode;
   testedAt: string;
   hubBaseUrl?: string | null;
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
   hubEnabled?: boolean | null;
   authenticated?: boolean | null;
   message?: string | null;
@@ -74,7 +74,7 @@ const emptyStatus = (): MemorySyncStatus => ({
   hub: { enabled: false, advertisedHubBaseUrl: null, updatedAt: null },
   source: {
     enabled: false,
-    sourceNodeId: null,
+    memorySyncSourceId: null,
     displayName: null,
     hubBaseUrl: null,
     hubTokenConfigured: false,
@@ -171,12 +171,12 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
       await this.mutateStatus(UPDATE_MEMORY_SYNC_SOURCE_CONFIG, { input });
     },
 
-    async createCredential(label?: string | null, boundSourceNodeId?: string | null) {
+    async createCredential(label?: string | null, boundMemorySyncSourceId?: string | null) {
       this.saving = true;
       try {
         const { data, errors } = await getApolloClient().mutate<any>({
           mutation: CREATE_MEMORY_HUB_SOURCE_CREDENTIAL,
-          variables: { input: { label, boundSourceNodeId } },
+          variables: { input: { label, boundMemorySyncSourceId } },
         });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         this.oneTimeToken = data?.createMemoryHubSourceCredential?.plaintextToken || null;
@@ -231,7 +231,7 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
           mode: input.mode,
           testedAt,
           hubBaseUrl: context.hubBaseUrl,
-          sourceNodeId: result?.sourceNodeId || context.sourceNodeId,
+          memorySyncSourceId: result?.memorySyncSourceId || context.memorySyncSourceId,
           hubEnabled: result?.hubEnabled ?? null,
           authenticated: result?.authenticated ?? null,
           message: result?.message || null,
@@ -243,7 +243,7 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
           mode: input.mode,
           testedAt,
           hubBaseUrl: context.hubBaseUrl,
-          sourceNodeId: context.sourceNodeId,
+          memorySyncSourceId: context.memorySyncSourceId,
           hubEnabled: null,
           authenticated: null,
           message: error?.message || null,
@@ -295,13 +295,13 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
       }
     },
 
-    connectionTestContext(input: ConnectionTestRequest): { hubBaseUrl?: string | null; sourceNodeId?: string | null } {
+    connectionTestContext(input: ConnectionTestRequest): { hubBaseUrl?: string | null; memorySyncSourceId?: string | null } {
       if (input.mode === 'draft') {
-        return { hubBaseUrl: input.hubBaseUrl, sourceNodeId: input.sourceNodeId };
+        return { hubBaseUrl: input.hubBaseUrl, memorySyncSourceId: input.memorySyncSourceId };
       }
       return {
         hubBaseUrl: this.status.source.hubBaseUrl,
-        sourceNodeId: this.status.source.sourceNodeId,
+        memorySyncSourceId: this.status.source.memorySyncSourceId,
       };
     },
 
@@ -310,7 +310,7 @@ export const useMemorySyncStore = defineStore('memorySyncStore', {
         return {
           mode: 'DRAFT',
           hubBaseUrl: input.hubBaseUrl,
-          sourceNodeId: input.sourceNodeId,
+          memorySyncSourceId: input.memorySyncSourceId,
           token: input.token,
         };
       }

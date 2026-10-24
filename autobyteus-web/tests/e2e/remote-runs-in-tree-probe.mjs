@@ -91,7 +91,7 @@ const serverAt = async (name, port) => {
       if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
       return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
     }, 120_000);
-    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
     evidence.servers[name] = { port, nodeId: node.nodeId };
   };
   node.stop = async () => {
@@ -377,7 +377,11 @@ try {
   const betaRunConversation = async runId => JSON.stringify((await beta.gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
   await textarea.fill('status? Marker OWNER-FROM-WINDOW');
   const send = page.locator('[data-test="workspace-center-pane"] button[aria-label="Send message"]:not([data-test="chat-primary-action"]):visible').last();
-  await waitFor('Send enabled', async () => (await send.count()) > 0 && await send.isEnabled(), 15_000);
+  // The composer can re-mount right after the view switches back, emptying the box; type again until Send is enabled.
+  await waitFor('Send enabled', async () => {
+    if (!(await textarea.inputValue().catch(() => ''))) await textarea.fill('status? Marker OWNER-FROM-WINDOW').catch(() => undefined);
+    return (await send.count()) > 0 && await send.isEnabled();
+  }, 15_000);
   await send.click();
   await waitFor('the owner message on beta', async () => (await betaRunConversation(remoteAgentRun)).includes('OWNER-FROM-WINDOW'), 30_000);
   await waitFor('the answer on beta', async () => { const text = await betaRunConversation(remoteAgentRun); return text.lastIndexOf('"OK"') > text.indexOf('OWNER-FROM-WINDOW'); }, 30_000);
@@ -493,7 +497,9 @@ try {
     // One red line on the row: the remote run's, not a second loading error (SR-008, CRR-006 F-006).
     && !entry.rowAtOpen?.text?.includes("Couldn't load")) ? 'Pass' : 'Fail', noticeRetry };
 
-  evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools/.test(line)).length === 0 ? 'Pass' : 'Fail';
+  // A cold `nuxt dev` re-optimizes its dependencies and reloads (TESTING.md § Browser probes): its 504 and the failed
+  // module load are the harness, not the product (baseline fix, autobyteus-290 API/E2E).
+  evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools|504 \(Outdated Optimize Dep\)|Failed to fetch dynamically imported module|error caught during app initialization/.test(line)).length === 0 ? 'Pass' : 'Fail';
   if (evidence.result !== 'Pass') process.exitCode = 1;
 } catch (error) {
   evidence.error = error instanceof Error ? error.stack ?? error.message : String(error);

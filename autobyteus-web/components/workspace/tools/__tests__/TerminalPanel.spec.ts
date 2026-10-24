@@ -24,7 +24,7 @@ vi.mock("~/stores/workspace", async () => {
 vi.mock("~/stores/windowNodeContextStore", async () => {
   const { reactive } = await import("vue");
   const windowNodeContext = reactive({
-    nodeId: "node-a",
+    entryId: "node-a",
     bindingRevision: 0,
     boundEndpoints: {
       terminalWs: "ws://node-a.example/ws/terminal",
@@ -69,12 +69,12 @@ const setActiveWorkspace = (
 };
 
 const setNodeScope = (params: {
-  nodeId?: string;
+  entryId?: string;
   terminalWs?: string;
   bumpRevision?: boolean;
 }) => {
-  if (params.nodeId !== undefined) {
-    storeHarness.windowNodeContext.nodeId = params.nodeId;
+  if (params.entryId !== undefined) {
+    storeHarness.windowNodeContext.entryId = params.entryId;
   }
   if (params.terminalWs !== undefined) {
     storeHarness.windowNodeContext.boundEndpoints = {
@@ -118,7 +118,7 @@ describe("TerminalPanel", () => {
     terminalUnmounted.mockClear();
     setActiveWorkspace(null);
     setNodeScope({
-      nodeId: "node-a",
+      entryId: "node-a",
       terminalWs: "ws://node-a.example/ws/terminal",
     });
     storeHarness.windowNodeContext.bindingRevision = 0;
@@ -259,7 +259,7 @@ describe("TerminalPanel", () => {
     terminalUnmounted.mockClear();
 
     setNodeScope({
-      nodeId: "node-b",
+      entryId: "node-b",
       terminalWs: "ws://node-b.example/ws/terminal",
     });
     await nextTick();

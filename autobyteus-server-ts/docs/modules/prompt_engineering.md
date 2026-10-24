@@ -2,12 +2,10 @@
 
 ## Scope
 
-This module covers two separate boundaries:
-
-1. persisted/versioned prompt lookup under `src/prompt-engineering`; and
-2. the platform-owned Carpenter composition used to construct the stable runtime
-   instructions for native AutoByteus, Codex App Server, and Claude Agent SDK
-   runs.
+This module covers the platform-owned Carpenter composition used to construct the
+stable runtime instructions for native AutoByteus, Codex App Server, and Claude
+Agent SDK runs. (The old persisted/versioned prompt lookup under
+`src/prompt-engineering` and its GraphQL prompt API no longer exist.)
 
 The Carpenter boundary supplies shared identity and team context to every
 runtime. Native AutoByteus additionally receives workspace facts and the
@@ -17,9 +15,6 @@ text.
 
 ## TS Source
 
-- `src/prompt-engineering`
-- `src/api/graphql/types/prompt.ts`
-- `src/agent-tools/prompt-engineering`
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
 - `src/agent-execution/prompt/markdown-heading-containment.ts`
@@ -30,12 +25,10 @@ text.
 
 ## Main Services
 
-- `src/prompt-engineering/services/prompt-service.ts`
 - `composeSharedCarpenterPrompt(...)`
 - `composeNativeAutoByteusPrompt(...)`
 
-The prompt service and cached provider are singleton-backed to avoid repeated
-cache initialization. Carpenter composition is pure and fail-fast. Shared
+Carpenter composition is pure and fail-fast. Shared
 composition accepts the selected agent definition and optional validated
 `MemberTeamContext`; native composition adds the exact absolute workspace.
 

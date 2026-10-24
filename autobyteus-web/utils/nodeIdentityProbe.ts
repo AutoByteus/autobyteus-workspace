@@ -1,15 +1,16 @@
-import { isServerInstanceId } from '~/types/node'
+import { isNodeId } from '~/types/node'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
 
 /**
  * Why a node did not answer as an AutoByteus node (one-nodes-tab REQ-707). `refused`, `timeout`, `not_found` and
- * `unreachable` mirror the server's transport reasons; `not_autobyteus` is something that answered without an identity.
+ * `unreachable` mirror the server's transport reasons; `not_autobyteus` is something that answered without an identity;
+ * `identity_pending` is a node whose identity is waiting for its data migration (autobyteus-290 N-910).
  */
 export type NodeTransportReason = 'refused' | 'timeout' | 'not_found' | 'unreachable'
-export type NodeProbeCause = NodeTransportReason | 'not_autobyteus'
+export type NodeProbeCause = NodeTransportReason | 'not_autobyteus' | 'identity_pending'
 
 export type NodeIdentityProbeResult =
-  | { ok: true; serverInstanceId: string }
+  | { ok: true; nodeId: string }
   | { ok: false; cause: NodeProbeCause }
 
 /** The window's own identity probe waits this long (design § Off-Spine Concerns: window, desktop-local). */
@@ -35,6 +36,13 @@ export const windowFailureReason = (error: unknown, baseUrl: string): NodeTransp
   return isLoopback(baseUrl) ? 'refused' : 'unreachable'
 }
 
+/** A node answers HTTP 503 with `NODE_IDENTITY_NOT_MIGRATED` while its identity waits for its data migration. */
+const isIdentityPending = async (response: Response): Promise<boolean> => {
+  if (response.status !== 503) return false
+  const answer = await response.json().catch(() => null) as { code?: unknown } | null
+  return answer?.code === 'NODE_IDENTITY_NOT_MIGRATED'
+}
+
 /**
  * Which node answers at `baseUrl` as this window reaches it: one GET of its public `/rest/remote-access/status`, which
  * also tells whether it is reachable now (one-nodes-tab DS-001, DS-002).
@@ -52,11 +60,11 @@ export async function probeNodeIdentity(
   } catch (error) {
     return { ok: false, cause: windowFailureReason(error, baseUrl) }
   }
-  if (!response.ok) return { ok: false, cause: 'not_autobyteus' }
+  if (!response.ok) return { ok: false, cause: await isIdentityPending(response) ? 'identity_pending' : 'not_autobyteus' }
   try {
-    const answer = await response.json() as { serverInstanceId?: unknown } | null
-    const id = answer?.serverInstanceId
-    return isServerInstanceId(id) ? { ok: true, serverInstanceId: id } : { ok: false, cause: 'not_autobyteus' }
+    const answer = await response.json() as { nodeId?: unknown } | null
+    const id = answer?.nodeId
+    return isNodeId(id) ? { ok: true, nodeId: id } : { ok: false, cause: 'not_autobyteus' }
   } catch (error) {
     return windowFailureReason(error, baseUrl) === 'timeout' ? { ok: false, cause: 'timeout' } : { ok: false, cause: 'not_autobyteus' }
   }

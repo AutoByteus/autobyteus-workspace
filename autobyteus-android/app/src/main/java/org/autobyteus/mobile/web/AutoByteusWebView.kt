@@ -17,11 +17,11 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
 class AutoByteusWebView(
     private val context: Context,
-    val profile: SavedNodeProfile,
+    val entry: SavedNodeEntry,
     private val fileChooserCoordinator: WebFileChooserCoordinator,
     private val onPageStarted: (String) -> Unit,
     private val onPageFinished: (String) -> Unit,
@@ -61,7 +61,7 @@ class AutoByteusWebView(
     }
 
     fun loadTrusted(url: String) {
-        when (TrustedNavigationPolicy.classify(url, profile).type) {
+        when (TrustedNavigationPolicy.classify(url, entry).type) {
             NavigationDecisionType.AllowInWebView -> webView.loadUrl(url)
             NavigationDecisionType.OpenExternal -> openExternal(url)
             NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
@@ -97,7 +97,7 @@ class AutoByteusWebView(
     private inner class Client : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             val url = request.url.toString()
-            val decision = TrustedNavigationPolicy.classify(url, profile)
+            val decision = TrustedNavigationPolicy.classify(url, entry)
             return when (decision.type) {
                 NavigationDecisionType.AllowInWebView -> false
                 NavigationDecisionType.OpenExternal -> {
@@ -113,7 +113,7 @@ class AutoByteusWebView(
 
         @Deprecated("Deprecated in Android framework")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            val decision = TrustedNavigationPolicy.classify(url, profile)
+            val decision = TrustedNavigationPolicy.classify(url, entry)
             return when (decision.type) {
                 NavigationDecisionType.AllowInWebView -> false
                 NavigationDecisionType.OpenExternal -> {

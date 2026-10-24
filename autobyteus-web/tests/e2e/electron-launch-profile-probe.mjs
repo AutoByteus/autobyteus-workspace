@@ -370,11 +370,11 @@ async function assertRootLayout(dataRoot) {
     assert(relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)), `Isolated path escaped root: ${directoryPath}`)
   }
   assert(
-    await pathExists(path.join(expected.userData, 'node-registry.v1.json')),
+    await pathExists(path.join(expected.userData, 'node-registry.json')),
     'Node registry was not persisted under isolated userData',
   )
   const registry = JSON.parse(await fs.readFile(
-    path.join(expected.userData, 'node-registry.v1.json'),
+    path.join(expected.userData, 'node-registry.json'),
     'utf8',
   ))
   return { expected, exists, registry }

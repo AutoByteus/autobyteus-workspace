@@ -47,7 +47,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
  *   261 (discovery): RC-26 an agent that selects the discovery tools lists exactly beta's offer (only name, kind, address
  *   and description; built-ins, Orgs, team-local and application-owned definitions left out), listing writes nothing,
- *   every listed address is accepted by delegate_task, an agent without the tools does not have them (its MCP tool list,
+ *   every listed address is accepted by delegate_task, an agent without the tools (or selecting only the former name
+ *   list_available_nodes, 290) does not have them (its MCP tool list,
  *   `LIST_TOOLS` in the scripted CLI) and the tool texts are as approved (AC-402/404/406, QR-402); RC-27 the node list
  *   with three more servers (gamma stopped, delta switched off, epsilon not knowing alpha) in registration order, each
  *   reason the same as delegate_task's, and a black-holed beta unavailable within the 20 s bound (AC-401, QR-401);
@@ -69,7 +70,7 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  * default `alt-model` covers it), Hollow Team (no default anywhere) and Codex Team (a Team default on unavailable Codex).
  * Beta's scripted CLI offers a second model (`AGY_FAKE_EXTRA_MODELS=alt-model`).
  * 261: beta also has a file-authored shared Agent with no description (Plain Helper) and loads the Brief Studio sample
- * application (an application-owned Agent Team); alpha's Scout selects list_available_nodes and list_available_agents.
+ * application (an application-owned Agent Team); alpha's Scout selects list_peer_nodes and list_available_agents.
  *
  * Prerequisites: a current build (`pnpm -C autobyteus-server-ts build`) and Brief Studio's importable package
  * (`pnpm -C autobyteus-server-ts test:integration:prepare`). About 5 minutes (RC-12 holds the Team with a 90 s background
@@ -99,12 +100,12 @@ const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/mes
 const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
 /** The agent-facing texts of autobyteus-261 (DEC-406), as an agent receives them over Agent Tools MCP. */
 const TEXT_261 = {
-  listNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
+  listPeerNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
   listAgents: "List the agents and agent teams you can work with, each with its name, kind (agent or agent_team), address and description (when it has one). With node, list what that peer node offers for delegation instead; use an address from that list as recipient_address in delegate_task with the same node. This tool is read-only.",
   listAgentsNode: "Optional: the name of a peer node registered on this node. Without it, this node's agents and agent teams are listed.",
   delegateNode: "Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.",
   delegateNodeLine: "With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there;",
-  unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.`,
+  unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.`,
   notFound: (node: string, address: string) => `Node "${node}" has no Agent or Agent Team at ${address} that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.`,
   blankNode: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
 } as const;
@@ -218,8 +219,8 @@ class NodeServer {
       await wait(300);
     }
     const status = await (await fetch(`${this.baseUrl}${PATHS.status}`)).json() as Rec;
-    if (this.nodeId && status.serverInstanceId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
-    this.nodeId = status.serverInstanceId as string;
+    if (this.nodeId && status.nodeId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
+    this.nodeId = status.nodeId as string;
   }
   async stop(): Promise<void> {
     const child = this.child;
@@ -606,7 +607,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.manager = await agentDefinition(alpha, "Remote Manager", ["list_projects", "list_project_tasks", "create_task", "update_task"]);
     defs.worker = await agentDefinition(alpha, "Remote Worker");
     // 261: the discovery tools are opt-in; Scout selects both, the Delegator neither.
-    defs.scout = await agentDefinition(alpha, "Scout", ["list_available_nodes", "list_available_agents"]);
+    defs.scout = await agentDefinition(alpha, "Scout", ["list_peer_nodes", "list_available_agents"]);
+    // 290 REQ-906: a definition that still selects the tool's former name (as a stored agent config may).
+    defs.oldNameScout = await agentDefinition(alpha, "Old Name Scout", ["list_available_nodes"]);
     defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
@@ -1703,7 +1706,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-24", { stopped, listed, relaunch: relaunches[0] });
   }, 180_000);
 
-  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them", async () => {
+  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)", async () => {
     const scout = await createStandalone(alpha, defs.scout, "alpha scout");
     ids.scout = scout.runId;
     const delegator = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1711,9 +1714,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const scoutTools = await toolsOf(scout);
     const delegatorTools = await toolsOf(delegator);
     const tool = (tools: Rec[], name: string) => tools.find((entry) => entry.name === name);
-    expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_available_nodes"]));
+    expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
     expect(delegatorTools.map((entry) => entry.name)).not.toContain("list_available_agents");
-    expect(tool(scoutTools, "list_available_nodes")?.description).toBe(TEXT_261.listNodes);
+    // 290 REQ-906 (the accepted exception): selecting only the former name `list_available_nodes` gives no discovery tool.
+    const oldNameScout = await createStandalone(alpha, defs.oldNameScout, "alpha old-name scout");
+    const oldNameTools = (await toolsOf(oldNameScout)).map((entry) => entry.name);
+    expect(oldNameTools, "the former name selects nothing").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
+    expect(oldNameTools).not.toContain("list_available_nodes");
+    expect(oldNameTools, "the agent still has its other tools").toContain("delegate_task");
+    expect(tool(scoutTools, "list_peer_nodes")?.description).toBe(TEXT_261.listPeerNodes);
     expect(tool(scoutTools, "list_available_agents")?.description).toBe(TEXT_261.listAgents);
     expect(tool(scoutTools, "list_available_agents")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.listAgentsNode);
     expect(tool(scoutTools, "list_available_agents")?.inputSchema?.required ?? [], "node is optional").not.toContain("node");
@@ -1788,7 +1797,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       betaCatalog, delegations, pageOffer });
   }, 300_000);
 
-  it("RC-27 261 AC-401/QR-401: list_available_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
+  it("RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
     const scout = standaloneActor(alpha, ids.scout, "alpha scout");
     const extra = { gamma: new NodeServer("gamma", root, await getFreePort()), delta: new NodeServer("delta", root, await getFreePort()),
       epsilon: new NodeServer("epsilon", root, await getFreePort()) };
@@ -1805,7 +1814,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: LABEL.alpha } });
       await extra.gamma.stop();
       await extra.delta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
-      const listed = await calls(scout, "list_available_nodes", {});
+      const listed = await calls(scout, "list_peer_nodes", {});
       expect(listed.nodes, JSON.stringify(listed)).toEqual([{ name: LABEL.beta, status: "available" }, { name: names.gamma, status: "unavailable" },
         { name: names.delta, status: "unavailable" }, { name: names.epsilon, status: "unavailable" }]);
       expect(listed.elapsedMs, "answered well within the 20 s bound").toBeLessThan(20_000);
@@ -1833,14 +1842,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       toBeta.mode = "blackhole";
       let heldPage: Rec & { elapsedMs: number };
       try {
-        held = await calls(scout, "list_available_nodes", {}, 90_000);
+        held = await calls(scout, "list_peer_nodes", {}, 90_000);
         heldPage = await peerNodeOffer(alpha, beta.nodeId);
       } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
       expect(heldPage.offer, "267: the page's query for a black-holed peer").toEqual({ entries: null, refusalCode: "PEER_UNREACHABLE" });
       expect(heldPage.elapsedMs, "267: within the 20 s bound").toBeLessThan(25_000);
       expect((held.nodes as Rec[])[0], JSON.stringify(held)).toEqual({ name: LABEL.beta, status: "unavailable" });
       expect(held.elapsedMs, "within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
-      const again = await calls(scout, "list_available_nodes", {});
+      const again = await calls(scout, "list_peer_nodes", {});
       expect((again.nodes as Rec[])[0], "beta is available again").toEqual({ name: LABEL.beta, status: "available" });
       record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes, pageCodes, heldPage });
     } finally {
@@ -1860,7 +1869,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
     let nodesOff: Rec, agentsOff: Rec;
     try {
-      nodesOff = await calls(scout, "list_available_nodes", {});
+      nodesOff = await calls(scout, "list_peer_nodes", {});
       agentsOff = await calls(scout, "list_available_agents", { node: LABEL.beta });
     } finally { await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
     expect(textOf(nodesOff)).toBe(off);

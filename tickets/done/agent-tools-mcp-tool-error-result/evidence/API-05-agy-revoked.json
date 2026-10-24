@@ -1,0 +1,37 @@
+{
+  "runtime": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "toolNamesSelected": [
+    "tok_auth_probe"
+  ],
+  "remoteRequests": [
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "rpcMethod": "initialize",
+      "toolName": null,
+      "auth": "other"
+    }
+  ],
+  "events": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "AGENT_INPUT_STATE",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "TURN_COMPLETED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE"
+  ],
+  "lastEvents": "CONNECTED:{\"agent_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\",\"session_id\":\"5f729644-9268-41d4-b1a9-fd2872e758e4\"} | AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"5c9df930-578b-47d3-b131-8d62901f313b\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null} | AGENT_STATUS:{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"5c9df930-578b-47d3-b131-8d62901f313b\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4d4f4e44-4a74-46cc-a400-406fc8ab0604\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4d4f4e44-4 | AGENT_COMMAND_ACK:{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\",\"message_id\":\"e2e-4d4f4e44-4a74-46cc-a400-406fc8ab0604\",\"dedupe_key\":\"agent_ | AGENT_STATUS:{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\"} | TURN_STARTED:{\"turn_id\":\"7a92017c-e3e1-495b-a6ab-6387eb9c7003\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"5c9df930-578b-47d3-b131-8d62901f313b\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4d4f4e44-4a74-46cc-a400-406fc8ab0604\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4d4f4e44-4 | AGENT_INPUT_STATE:{\"run_instance_id\":\"5c9df930-578b-47d3-b131-8d62901f313b\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4d4f4e44-4a74-46cc-a400-406fc8ab0604\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4d4f4e44-4 | SEGMENT_START:{\"id\":\"agy-text-7a92017c-e3e1-495b-a6ab-6387eb9c7003-10\",\"turn_id\":\"7a92017c-e3e1-495b-a6ab-6387eb9c7003\",\"segment_type\":\"text\",\"metadata\":null} | SEGMENT_CONTENT:{\"id\":\"agy-text-7a92017c-e3e1-495b-a6ab-6387eb9c7003-10\",\"turn_id\":\"7a92017c-e3e1-495b-a6ab-6387eb9c7003\",\"segment_type\":\"text\",\"delta\":\"CALLED_ALL:[{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"HTTP 40 | SEGMENT_END:{\"id\":\"agy-text-7a92017c-e3e1-495b-a6ab-6387eb9c7003-10\",\"turn_id\":\"7a92017c-e3e1-495b-a6ab-6387eb9c7003\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | TURN_COMPLETED:{\"turn_id\":\"7a92017c-e3e1-495b-a6ab-6387eb9c7003\",\"provider_status\":\"SUCCESS\"} | AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_agy_revoked_67c3b31b_1c60_4cbd_ae5_8409ba55e06f424a95cf675789e62999\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"5c9df930-578b-47d3-b131-8d62901f313b\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}",
+  "statusInToolResult": true,
+  "dummyValueOnAgentWire": false
+}

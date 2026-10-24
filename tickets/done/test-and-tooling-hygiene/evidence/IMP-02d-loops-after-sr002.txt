@@ -1,0 +1,8 @@
+IMP-02d — 40-run loops under load after SR-002 (autobyteus-253, W-02, AC-004)
+Commit: 1c73699156 (watcher source unchanged since except af81b3d7d2: timer guard calls isStillArmed() with identical conditions). Date: 2026-10-24. macOS, 10 cores, Node 22; load = 20 x 'yes' (2 x ncpu); host load average 220-270 from other work during the runs.
+integration: pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts --no-watch, 40 consecutive runs
+e2e: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts --no-watch, 40 consecutive runs
+/tmp/loop253c-integ.out:RESULT integ pass=40 fail=0 of 40 (load=1, ncpu=10)
+/tmp/loop253c-e2e.out:RESULT e2e pass=40 fail=0 of 40 (load=1, ncpu=10)
+
+Intermediate pass at c04cd7d92e (SR-002 before 1c73699156): integration 39/40 (run 36 AC-016 'expected [ agent:Planner ] to include agent:Fresh' at 637 ms: the repair deferred the re-read; fixed by 1c73699156); e2e 12/12 before the session that ran it ended (stopped, not failed).

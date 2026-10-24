@@ -1,0 +1,31 @@
+# IMP-02 related web specs: run settings utils/components, Team execution (nav rows, contexts), collaborators, Team composer, workspace config (AC-003)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run utils/runSettings services/teamExecution services/collaborators components/run-settings components/agentInput/__tests__/TeamComposerPublication.spec.ts components/workspace/config --run
+# commit: 5af1a03e11  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:51Z
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 121ms
+ ✓ components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (6 tests) 150ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 159ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (2 tests) 24ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 86ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 60ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 54ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (8 tests) 384ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 147ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (13 tests) 25ms
+ ✓ services/collaborators/__tests__/agentSourceSelectors.spec.ts (11 tests) 16ms
+ ✓ services/teamExecution/__tests__/teamExecutionContextFactory.spec.ts (3 tests) 19ms
+ ✓ utils/runSettings/__tests__/runMemberTree.spec.ts (5 tests) 18ms
+ ✓ utils/runSettings/__tests__/memberLaunchDefaults.spec.ts (6 tests) 7ms
+ ✓ utils/runSettings/__tests__/startModelDefaults.spec.ts (7 tests) 6ms
+ ✓ services/teamExecution/__tests__/teamExecutionRemoteRuns.spec.ts (3 tests) 41ms
+ ✓ utils/runSettings/__tests__/delegatedCopyChoices.spec.ts (5 tests) 8ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 16ms
+ ✓ utils/runSettings/__tests__/launchReadiness.spec.ts (5 tests) 3ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts (5 tests) 6ms
+ ✓ utils/runSettings/__tests__/modelOptions.spec.ts (5 tests) 4ms
+ ✓ services/collaborators/__tests__/collaboratorCandidatesService.spec.ts (3 tests) 3ms
+ ✓ services/teamExecution/__tests__/teamRemoteRunRegistry.spec.ts (4 tests) 4ms
+ ✓ services/collaborators/__tests__/collaboratorAddFailures.spec.ts (2 tests) 3ms
+ Test Files  24 passed (24)
+      Tests  140 passed (140)
+   Duration  16.12s (transform 5.28s, setup 108.41s, collect 8.76s, tests 1.36s, environment 7.98s, prepare 4.99s)

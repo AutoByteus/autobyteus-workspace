@@ -1,0 +1,5 @@
+remote-run-title probe: Fail
+Error: alpha: [{"message":"Variable \"$i\" got invalid value { baseUrl: \"http://127.0.0.1:57811\", name: \"beta-node\" }; Field \"nodeId\" of required type \"String!\" was not provided.","locations":[{"line":1,"column":10}]}]
+    at Object.gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:87:36)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:111:3

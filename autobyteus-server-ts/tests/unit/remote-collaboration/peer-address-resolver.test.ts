@@ -14,16 +14,16 @@ const unreachable = (url: string, reason: "refused" | "timeout" | "not_found" | 
   new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${url} could not be reached`, { reason, address: url });
 
 const resolver = (answers: Record<string, Answer>, options: { enabled?: boolean; inContainer?: boolean } = {}) => {
-  const fetchServerInstanceId = vi.fn((url: string) => new Promise<string>((resolve, reject) => {
+  const fetchNodeId = vi.fn((url: string) => new Promise<string>((resolve, reject) => {
     const answer = answers[url];
     if (!answer) { reject(unreachable(url, "refused")); return; }
     if ("never" in answer) return;
     setTimeout(() => ("id" in answer ? resolve(answer.id) : reject(answer.error)), answer.afterMs ?? 0);
   }));
   return {
-    fetchServerInstanceId,
+    fetchNodeId,
     resolver: new PeerAddressResolver({
-      probe: { fetchServerInstanceId },
+      probe: { fetchNodeId },
       capability: { isEnabled: () => options.enabled ?? true },
       ownNodeId: async () => SELF,
       runsInContainer: () => options.inContainer ?? false,
@@ -41,7 +41,7 @@ describe("PeerAddressResolver", () => {
     });
     await expect(f.resolver.resolve(B, ["127.0.0.1:29695", "http://172.17.0.4:8001", "http://host.docker.internal:29695/", "http://192.168.2.10:29695"]))
       .resolves.toBe("http://host.docker.internal:29695");
-    expect(f.fetchServerInstanceId).toHaveBeenCalledTimes(4); // asked at once
+    expect(f.fetchNodeId).toHaveBeenCalledTimes(4); // asked at once
   });
 
   it("answers as soon as every address before the match has settled; a black-holed address after it adds no wait", async () => {
@@ -52,7 +52,7 @@ describe("PeerAddressResolver", () => {
   it("waits for an earlier address that is still being asked, and dedupes repeated addresses", async () => {
     const f = resolver({ "http://slow:1": { id: B, afterMs: 30 }, "http://fast:1": { id: B } });
     await expect(f.resolver.resolve(B, ["http://slow:1", "HTTP://SLOW:1", "http://fast:1"])).resolves.toBe("http://slow:1");
-    expect(f.fetchServerInstanceId).toHaveBeenCalledTimes(2);
+    expect(f.fetchNodeId).toHaveBeenCalledTimes(2);
   });
 
   it("refuses with every attempt's classified outcome when no address answers as that node", async () => {
@@ -89,7 +89,7 @@ describe("PeerAddressResolver", () => {
     const on = resolver({ "http://a:1": { id: B } });
     await expect(on.resolver.resolve(SELF, ["http://a:1"])).rejects.toMatchObject({ code: "PEER_IS_THIS_NODE" });
     await expect(on.resolver.resolve(B, ["", "ftp://x"])).rejects.toMatchObject({ code: "PEER_URL_INVALID" });
-    expect(off.fetchServerInstanceId).not.toHaveBeenCalled();
-    expect(on.fetchServerInstanceId).not.toHaveBeenCalled();
+    expect(off.fetchNodeId).not.toHaveBeenCalled();
+    expect(on.fetchNodeId).not.toHaveBeenCalled();
   });
 });

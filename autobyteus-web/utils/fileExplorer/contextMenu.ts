@@ -2,7 +2,7 @@ import type { TreeNode } from '~/utils/fileExplorer/TreeNode'
 
 export type FileExplorerContextNodeTarget = {
   kind: 'node'
-  nodeId: string
+  treeNodeId: string
   path: string
   name: string
   isFile: boolean
@@ -42,7 +42,7 @@ export type RequestFileExplorerContextMenu = (request: FileExplorerContextReques
 
 export type FileExplorerRenameRequest = {
   requestId: number
-  nodeId: string
+  treeNodeId: string
   path: string
   name: string
 }
@@ -60,7 +60,7 @@ const NODE_ACTIONS: FileExplorerContextMenuItem[] = [
 
 export const createFileExplorerNodeContextTarget = (file: TreeNode): FileExplorerContextNodeTarget => ({
   kind: 'node',
-  nodeId: file.id,
+  treeNodeId: file.id,
   path: file.path,
   name: file.name,
   isFile: file.is_file,

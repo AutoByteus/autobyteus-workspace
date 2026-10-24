@@ -16,8 +16,7 @@ import type {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { teamAgentSourceOf, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
-import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import { readsAsDisplayName } from './teamExecutionTreeSelectors'
+import { teamMemberName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 
@@ -65,9 +64,7 @@ export const createTeamAgentContext = (input: {
   const source = teamAgentSourceOf(input.tree, input.agentRunId)
   if (!source) return null
   // F-03 / CR-002: a catalog copy (and its members) reads as a spaced name, as in its row.
-  const name = readsAsDisplayName(input.tree, source.address)
-    ? memberDisplayName(source.address)
-    : memberAddressBasename(source.address)
+  const name = teamMemberName(input.tree, source.address)
   const conversation = {
     id: input.agentRunId, messages: [], createdAt: input.tree.created_at, updatedAt: input.tree.created_at,
     agentDefinitionId: source.agent_definition_id,

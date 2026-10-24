@@ -49,7 +49,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const phoneAccessEnabled = computed(() => settings.value.phoneAccessEnabled);
   const isRemoteNodeWindow = computed(() => !windowNodeContextStore.isEmbeddedWindow);
   const managementBaseUrl = computed(() => normalizeNodeBaseUrl(windowNodeContextStore.nodeBaseUrl));
-  const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+  const currentNode = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
   const currentNodeName = computed(() => (
     isRemoteNodeWindow.value
       ? currentNode.value?.name || 'AutoByteus Remote Node'
@@ -173,8 +173,8 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
         apiService.get<RemoteAccessStatus>('/remote-access/status'),
         fetchRemoteAccessStatusFromBaseUrl(validation.normalizedBaseUrl),
       ]);
-      const managementId = managementResponse.data.serverInstanceId;
-      const advertisedId = advertisedStatus.serverInstanceId;
+      const managementId = managementResponse.data.nodeId;
+      const advertisedId = advertisedStatus.nodeId;
       if (!managementId || !advertisedId) {
         return 'Could not verify this URL because one status response does not include a server instance ID.';
       }

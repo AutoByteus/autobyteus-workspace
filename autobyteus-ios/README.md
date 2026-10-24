@@ -6,7 +6,7 @@ This project builds the native iOS wrapper for the existing AutoByteus `/mobile`
 
 - first-run scan/paste/manual node URL entry;
 - app-owned Phone Access QR scanning and iOS camera-permission recovery;
-- native persistence of saved node profile metadata only;
+- native persistence of saved node entry metadata only;
 - reachability checks against `/rest/remote-access/status`;
 - `WKWebView` containment for the saved AutoByteus origin;
 - Tailscale-oriented diagnostics and recovery actions;

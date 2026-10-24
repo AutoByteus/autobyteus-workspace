@@ -5,22 +5,22 @@ import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.PairingLinkParser
 import org.autobyteus.mobile.connection.ParsedPairingInput
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
 class ConnectionInputResolver {
     fun resolve(rawText: String, httpAcknowledged: Boolean): ConnectionInputResolution {
         val parsed = parseInput(rawText) ?: return ConnectionInputResolution.Failure(
             ConnectionDiagnosticMapper.invalidUrl("The URL or pairing payload could not be parsed."),
         )
-        val profile = parsed.profile.copy(
-            httpAcknowledged = parsed.profile.scheme == "https" || httpAcknowledged,
+        val entry = parsed.entry.copy(
+            httpAcknowledged = parsed.entry.scheme == "https" || httpAcknowledged,
         )
-        if (profile.isHttp && !profile.httpAcknowledged) {
+        if (entry.isHttp && !entry.httpAcknowledged) {
             return ConnectionInputResolution.Failure(
-                ConnectionDiagnosticMapper.httpNeedsAcknowledgement(profile.mobileUrl),
+                ConnectionDiagnosticMapper.httpNeedsAcknowledgement(entry.mobileUrl),
             )
         }
-        return ConnectionInputResolution.Success(profile, parsed.webViewUrl)
+        return ConnectionInputResolution.Success(entry, parsed.webViewUrl)
     }
 
     private fun parseInput(rawText: String): ParsedPairingInput? {
@@ -29,8 +29,8 @@ class ConnectionInputResolver {
         } catch (_: Exception) {
             try {
                 val normalized = NodeUrlNormalizer.normalize(rawText)
-                val profile = SavedNodeProfile.fromNormalized(normalized)
-                ParsedPairingInput(profile, normalized.mobileUrl, false)
+                val entry = SavedNodeEntry.fromNormalized(normalized)
+                ParsedPairingInput(entry, normalized.mobileUrl, false)
             } catch (_: Exception) {
                 null
             }
@@ -39,6 +39,6 @@ class ConnectionInputResolver {
 }
 
 sealed class ConnectionInputResolution {
-    data class Success(val profile: SavedNodeProfile, val webViewUrl: String) : ConnectionInputResolution()
+    data class Success(val entry: SavedNodeEntry, val webViewUrl: String) : ConnectionInputResolution()
     data class Failure(val diagnostic: ConnectionDiagnostic) : ConnectionInputResolution()
 }

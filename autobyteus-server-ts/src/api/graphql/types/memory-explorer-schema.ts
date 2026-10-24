@@ -43,7 +43,7 @@ export class MemoryExplorerSourceInput {
   type!: MemoryExplorerSourceType;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 }
 
 @ObjectType()
@@ -58,7 +58,7 @@ export class MemoryExplorerSourceOption {
   label!: string;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;

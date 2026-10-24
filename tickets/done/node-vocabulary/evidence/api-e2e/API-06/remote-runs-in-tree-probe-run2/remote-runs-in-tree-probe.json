@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-10-24T12:51:34.459Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58828,
+      "nodeId": "srv_t5oJlbqJ9I7ZxG3xq7cx_3sghsagCTkf"
+    },
+    "beta": {
+      "port": 58829,
+      "nodeId": "srv_uqS1iyoSdJjhx2bDjgq3QxVlhFOLc8JM"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_8dfafb72841d4a4dbcd952e2b11a5efa",
+    "remoteTeamRun": "studio_team_b46ffe74c36b4aff9d2cff2ce9d5918b",
+    "studioMembers": [
+      "publisher_748bc324656f4bf296293293defd7aa0",
+      "checker_f804627f99744473b7bee569ba501ccd"
+    ],
+    "team": "remote_squad_4dbae8a13e3947f39c5ea3fef911753e",
+    "leadRun": "delegator_c2bfabc076bb42eebd96eaba0ae0831a",
+    "localA": "helper_b598d37111d14c7ba929b9373d04f06b",
+    "remoteAgentRun": "publisher_ba1db72a2888492bb88f2069012926ab",
+    "localB": "helper_bdf6a0c126e54a0faab5877a9e7f8ece",
+    "org": "remote_org_a5580377fbb647d097eb9fb94278eb39",
+    "orgLead": "delegator_b18a8e1cf70d4dcc83236da32dbceaf0",
+    "orgRemoteRun": "publisher_15ddc948fd7c418a843df7a6f22b04c6",
+    "orgRemoteTeamRun": "studio_team_f60c54763aba496ab452badfd27dde56",
+    "orgTeamMembers": [
+      "publisher_d07b1a47a4494befb710b8b4272d8f22",
+      "checker_8c4b6d181da846389f95da14f76a7b7a"
+    ]
+  },
+  "cases": {
+    "RTP-01": {
+      "result": "Pass",
+      "remoteTeamRow": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.",
+      "memberRows": [
+        {
+          "member": "publisher_748bc324656f4bf296293293defd7aa0",
+          "present": true,
+          "chip": false
+        },
+        {
+          "member": "checker_f804627f99744473b7bee569ba501ccd",
+          "present": true,
+          "chip": false
+        }
+      ]
+    },
+    "RTP-02": {
+      "result": "Pass",
+      "indexes": [
+        3,
+        4,
+        5
+      ],
+      "remoteAgent": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      },
+      "localA": {
+        "chip": null,
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "H",
+        "ariaLabel": "Temporary task agent, helper, level 1, idle, Started by lead, /helper, Task: Local first. Marker LOCAL-A."
+      }
+    },
+    "RTP-03": {
+      "result": "Pass",
+      "orgRemote": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node"
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: Timed out waiting for Send enabled\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:61:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:380:3",
+  "finishedAt": "2026-10-24T12:53:00.081Z"
+}

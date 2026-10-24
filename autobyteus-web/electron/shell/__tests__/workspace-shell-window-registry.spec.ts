@@ -9,7 +9,7 @@ const createFrame = (destroyed = false): WebFrameMain => ({
 
 const createShell = (options: {
   shellId?: number;
-  nodeId?: string;
+  entryId?: string;
   mainFrame?: WebFrameMain;
   shellDestroyed?: boolean;
   webContentsDestroyed?: boolean;
@@ -17,7 +17,7 @@ const createShell = (options: {
   const shellId = options.shellId ?? 42;
   return {
     shellId,
-    nodeId: options.nodeId ?? `node-${shellId}`,
+    entryId: options.entryId ?? `node-${shellId}`,
     isDestroyed: vi.fn(() => options.shellDestroyed ?? false),
     browserWindow: {
       webContents: {

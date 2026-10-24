@@ -65,7 +65,7 @@
     </div>
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-slate-400">
-      <span v-if="row.serverInstanceId">{{ t(k('detail.nodeId')) }} <span class="font-mono">{{ row.serverInstanceId }}</span></span>
+      <span v-if="row.nodeId">{{ t(k('detail.nodeId')) }} <span class="font-mono">{{ row.nodeId }}</span></span>
       <span class="inline-flex items-center gap-1">
         <span v-if="checkedAt">{{ checkedAt }}</span>
         <button
