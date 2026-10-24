@@ -14,3 +14,13 @@
 - Finalization target origin/personal normal --no-ff; no release/version/tag/deployment. Actual finalization/secret/pipeline/cleanup receipts will finish this initial round before terminal.
 - Terminal: Not yet eligible; await actual finalization/cleanup gates. Next recipient chosen by fresh rules after completion. No duplicate review/implementation/PM dispatch.
 - Limits: renderer only; unrelated app API fixtures and controlled failure boundary; no installer/Electron/field/user qualification. Existing autobyteus-nfs-4 unchanged. No new finding/follow-up.
+
+## DR001 receipt reconciliation (historical result, no replay)
+The incoming remote snapshot above predates its actual completion. Read-only authoritative prior detached checkout6d90a825feae66f4c397924370562a271da722a0 / tickets/done/nfs-guide-install-commands/delivery-evidence/dr-001/finalization.json confirms **DR001 Delivery Completed**, ticketccc68b3b → --no-ff personalca1f09e5, no release, terminal handoff sent. Prior checkout and artifacts remain untouched; intake.json records its exact location/hash. No prior completion inferred merely from folder state.
+
+## DR002 — reopened two-link removal
+- Trigger: R2/SR003 Approved, SR004 Ready, IR002/API002 Pass95.71, direct Small/Low route. Prior authoritative result: DR001 Delivery Completed (above).
+- Current verification/docs: Pass. All AC001–006 proven from current raw evidence; no mandatory user repeat, field/backend/Electron claim. No new findings/follow-ups.
+- Fresh origin/personal8b34e8ae already ancestor; all product inputs equal API002 tested4e308b7. No extra integration rerun, source/test edit or duplicate review.
+- Own handoff-summary, docs-sync-report, release-deployment-report and release-notes now represent R2; long-lived guide already synchronized by IR002.
+- Initial finalization snapshot: pending actual archive/commit/secret-gated pushes/cleanup. No release. Completed receipt will finish this same round; terminal not yet eligible.

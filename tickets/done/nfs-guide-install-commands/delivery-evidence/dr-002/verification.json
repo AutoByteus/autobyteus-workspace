@@ -1,0 +1,42 @@
+{
+  "round": "DR002",
+  "result": "Sufficient",
+  "source": "3d95a5c4a16759060983489735e77820661cff53",
+  "apiTested": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "input": "04951598bf70cda1f77d5d961597fc370a63f26b",
+  "base": "8b34e8ae108a281b0c93c679c60883df28a30773",
+  "criteria": {
+    "AC001": "Proven: raw current IMP10 54tests/5files incl6 inert shell controls; unchanged helper; API002 independent expected2 installer strings/checksum/version compared in36copies; no live installer.",
+    "AC002": "Proven: seven exact installed commands, one exact README _blank/noopener noreferrer, role/admin/drain/wait prose in real current page.",
+    "AC003": "Proven: four views9 native clipboard comparisons each +Enter; current raw R03 pending/second exclusion/tab-unmount/late settle/denial/missing/manual selection true; no guide asset requests.",
+    "AC004": "Proven: current component13/helper24/parent10/Docker7, IMP11 actual null and partial controls/version assertions read in driver and Pass result; Docker current real before/after unchanged.",
+    "AC005": "Proven: en/zh-CN×1280/390 screenshots personally viewed;9unique accessible names/polite status/keyboard/code-local scroll, no document overflow; host safety/deferred notice preserved.",
+    "AC006": "Proven: all4 raw views exactly1 advanced link, both removed labels absent, coherent reminder, version present and existing17px install padding; current durable both-locale state assertions; actual layout inspected."
+  },
+  "apiConfidence": 95.71,
+  "scope": "Renderer/browser copy-only link removal, not whole-app/Electron/backend/installer/storage/physical/user qualification",
+  "rawHashes": {
+    "IMP-10-unit.log": "29955515c750df22da24b08cd32a092709a51a97a16150c2a64e980ec0fa42d8",
+    "IMP-10-typecheck.log": "18afb879d60ac1a42ee2a96df60d05ecdb6dce566cbb221d976e26268faf2dfc",
+    "IMP-10-guard-web-boundary.log": "e67c97fb00ffd5f571c6b4ea38d40f0f978ac0614effa6b4e20f1a68a77907a7",
+    "IMP-10-guard-localization-boundary.log": "e36551f6d94dd9ee37d7baf69de0d6aec290a91542289d406b4a00aa637813ba",
+    "IMP-10-audit-localization-literals.log": "f018ab188eeb292ff406b610c1204699c80b4c5175f07d19d6813225a340ebff",
+    "IMP-11-verified/result.json": "5c9d5e168e4e6f0b656620a24cc3f6c489b5b023e1afe7a1dfa2d9bf1cc67873",
+    "IMP-11-preview.mjs": "a4457e8fbc86c825c0a0661ca410684fa863666a508e53b4e5f902c3b54a6045",
+    "R02-02-attempt-2/result.json": "0a6e4b6e7eb547e73c4250a149f3db674398091a4dc39e1189d14b0582918579",
+    "R02-02-browser.mjs": "7f8dc0907b89341aa2e2509cb010e871d1f296587d21ceb62c8a5e9650e4b27a",
+    "R02-02-attempt-note.json": "6df96a63ee35940f2e1c7c1d5a837caa301b04d4ed6fae98cca75334e236bf23",
+    "C01-02-cleanup.json": "e4fa7c1548c8e01cf78bf4a26d79e68834a4c6bd1b35140afa001afce1e4126b"
+  },
+  "imagesViewed": [
+    "R02-02-attempt-2/en-1280-top.png",
+    "R02-02-attempt-2/zh-CN-390-install-end.png",
+    "R02-02-attempt-2/zh-CN-390-bottom.png"
+  ],
+  "currentCasesReusedWithoutRepeat": "R01 IMP10/11; R02/R03 API002 real current page; C01 own cleanup. No post-API executable drift.",
+  "historicalFailures": "API002 attempt1 missing current Manage read fixtures and implicit no-sandbox default retained Fail; attempt2 corrected exact read fixtures, sandbox=true and argv assertion, zero errors. IMP11 prior fixture failures retained. No product workaround.",
+  "mocks": "Unrelated initialization read APIs/health/feeds and remote peers/capability/identity; clipboard negative/pending boundaries. Success clipboard/actual page/locales real.",
+  "userCheckNeeded": false,
+  "fieldTask": "autobyteus-nfs-4 unchanged",
+  "newFindings": []
+}
