@@ -58,8 +58,11 @@ describe("Studio main and Agent Tools listener integration", () => {
       );
       expect(absentMainRoute.status).toBe(404);
 
+      // Address the wildcard host itself so the Host header is not loopback:
+      // Fastify 5's listen() resolves a wildcard bind to a 127.0.0.1 URL.
+      const wildcardMainUrl = new URL(`http://${mainAddress.address}:${mainAddress.port}`);
       const wildcardGateway = await mcpRequest(
-        new URL("/mcp/gateway", started.mainUrl).toString(),
+        new URL("/mcp/gateway", wildcardMainUrl).toString(),
         "ping",
         "gateway-wildcard-ping",
       );
