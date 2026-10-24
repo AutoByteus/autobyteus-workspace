@@ -137,7 +137,15 @@ asks the reloader to re-read the whole package once it has been quiet for
 removed (`reconcilePackageFolder`; one timer per package, constant
 `PACKAGE_CATCH_UP_DELAY_MS`). The reloader treats it like a package change
 except that it announces only the definitions that really changed: an
-unchanged package sends no `agent_packages` frame. A write that coincides with
+unchanged package sends no `agent_packages` frame. Before asking, the catch-up
+checks the watch itself: the package folder is still the same folder (the
+presence check, for a rename whose event was lost), and every allow-listed
+definition folder on disk is held by the watch (chokidar's `getWatched()`).
+A lost `addDir` leaves a new folder unwatched, so its later edits would never
+be reported; the watcher then re-arms its watch quietly (no `agent_packages`
+frame), once per set of unwatched folders, and logs
+`AGENT_PACKAGE_FOLDER_UNWATCHED` if they stay unwatched. It lists directory
+names only and never reads definition files. A write that coincides with
 watch churn caused by another component, with no definition event of its own,
 is still not caught; the Reload action covers it.
 

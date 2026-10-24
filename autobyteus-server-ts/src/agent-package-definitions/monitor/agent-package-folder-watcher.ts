@@ -292,9 +292,7 @@ export class AgentPackageFolderWatcher {
     const generation = entry.generation;
     const timer = setTimeout(() => {
       entry.catchUpTimer = null;
-      if (this.closed || generation !== entry.generation || entry.state !== "WATCHING") return;
-      if (this.entries.get(entry.root.rootPath) !== entry) return;
-      void this.serial(() => this.runCatchUp(entry, generation));
+      if (this.isStillArmed(entry, generation)) void this.serial(() => this.runCatchUp(entry, generation));
     }, this.catchUpDelayMs);
     timer.unref?.();
     entry.catchUpTimer = timer;

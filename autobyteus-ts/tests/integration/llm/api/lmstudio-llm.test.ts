@@ -8,11 +8,10 @@ import { LLMRuntime } from '../../../../src/llm/runtimes.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMConfig, TokenPricingConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { LMStudioLLM } from '../../../../src/llm/api/lmstudio-llm.js';
 import { LMStudioModelProvider } from '../../../../src/llm/lmstudio-provider.js';
-import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
-import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { OpenAiJsonSchemaFormatter } from '../../../../src/tools/usage/formatters/openai-json-schema-formatter.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
 
