@@ -375,7 +375,8 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     expect(watches).toHaveLength(2);
     expect(watches[0]!.close).toHaveBeenCalled();
     expect(recorded.roots).toEqual([]);
-    expect(recorded.reconciles).toEqual([]);
+    // The store is re-read at once; the repaired watch's catch-up re-reads again (quietly).
+    expect(recorded.reconciles).toEqual([rootPath]);
 
     // The new watch covers everything that exists: its catch-up only reconciles.
     watches[1]!.watched = watching(rootPath, "agents/scout", "agent-teams", "agent-teams/squad",
@@ -383,11 +384,11 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     watches[1]!.watched[path.join(rootPath, "agent-teams")] = [];
     await catchUp(watches[1]!);
     expect(watches).toHaveLength(2);
-    expect(recorded.reconciles).toEqual([rootPath]);
+    expect(recorded.reconciles).toEqual([rootPath, rootPath]);
     expect(recorded.roots).toEqual([]);
   });
 
-  it("repairs a folder that stays unwatched only once, warns, and still reconciles", async () => {
+  it("repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up", async () => {
     const rootPath = path.join(base, "pkg");
     await agentFolderOnDisk(rootPath, "stubborn");
     const warn = vi.fn();
@@ -408,7 +409,7 @@ describe("AgentPackageFolderWatcher catch-up request", () => {
     await catchUp(watches[1]!);
     expect(watches).toHaveLength(2);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("AGENT_PACKAGE_FOLDER_UNWATCHED"), [path.join(rootPath, "agents", "stubborn")]);
-    expect(recorded.reconciles).toEqual([rootPath, rootPath]);
+    expect(recorded.reconciles).toEqual([rootPath, rootPath, rootPath]);
   });
 
   it("allows another repair after a folder is added or removed", async () => {

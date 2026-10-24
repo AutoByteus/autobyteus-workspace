@@ -313,8 +313,9 @@ export class AgentPackageFolderWatcher {
     try {
       await this.checkPackageFolder(entry, null, "presence");
       if (!this.isStillArmed(entry, generation)) return;
-      if (await this.repairCoverage(entry)) return;
-      if (this.isStillArmed(entry, generation)) this.options.sink.reconcilePackageFolder(entry.root.rootPath);
+      // Re-read now even when the watch needs a repair: the store must not wait for the repaired watch's own catch-up.
+      this.options.sink.reconcilePackageFolder(entry.root.rootPath);
+      await this.repairCoverage(entry);
     } catch (error) {
       this.logger.warn(`AGENT_PACKAGE_FOLDER_CATCH_UP_FAILED:${entry.root.rootPath}`, error);
     }
@@ -323,21 +324,20 @@ export class AgentPackageFolderWatcher {
   /**
    * Re-arms the watch, without announcing anything, when a definition folder exists on disk that the watch does not
    * hold. One repair per set of unwatched folders: a folder that stays unwatched (for example an unreadable one) is
-   * logged and left alone. Returns whether the watch was re-armed; its new `ready` schedules the next catch-up.
+   * logged and left alone. The re-armed watch's `ready` schedules the next catch-up.
    */
-  private async repairCoverage(entry: PackageFolderEntry): Promise<boolean> {
+  private async repairCoverage(entry: PackageFolderEntry): Promise<void> {
     const watched = new Set(Object.keys(entry.watcher?.getWatched() ?? {}).map((directory) => path.resolve(directory)));
     const unwatched = (await listWatchedLayoutDirectories(entry.root)).filter((directory) => !watched.has(directory)).sort();
-    if (unwatched.length === 0) return false;
+    if (unwatched.length === 0) return;
     const key = unwatched.join("\n");
     if (entry.coverageRepairedFor === key) {
       this.logger.warn(`AGENT_PACKAGE_FOLDER_UNWATCHED:${entry.root.rootPath}`, unwatched);
-      return false;
+      return;
     }
     entry.coverageRepairedFor = key;
     this.closeWatcher(entry);
     await this.arm(entry);
-    return true;
   }
 
   private clearCatchUp(entry: PackageFolderEntry): void {
