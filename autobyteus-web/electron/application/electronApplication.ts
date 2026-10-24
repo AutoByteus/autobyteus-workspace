@@ -55,7 +55,8 @@ export class ElectronApplication {
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
-  private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close())
+  private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close(), 30000,
+    error => logger.error('Application shutdown incomplete', error))
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
 
   constructor({ profile }: ElectronApplicationOptions) {
@@ -346,7 +347,7 @@ export class ElectronApplication {
     app.on('will-quit', event => {
       this.shutdown.quit(event,
         () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
-        () => app.quit(), error => { logger.error('Application shutdown incomplete', error); app.exit(1) })
+        () => app.quit(), () => app.exit(1))
     })
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_NODE_ID)

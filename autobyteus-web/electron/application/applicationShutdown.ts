@@ -5,7 +5,7 @@ export class ApplicationShutdown {
   private resumed = false
   private prepared = false
   constructor(private readonly cleanup: () => Promise<void>, private readonly flush: () => void,
-    private readonly timeoutMs = 30000) {}
+    private readonly timeoutMs = 30000, private readonly report: (error: unknown) => void = () => {}) {}
   stop(): Promise<void> {
     return this.completion ??= (async () => {
       let timer: NodeJS.Timeout
@@ -14,7 +14,8 @@ export class ApplicationShutdown {
           timer = setTimeout(() => reject(new Error('Application shutdown deadline exceeded')), this.timeoutMs)
         })])
         this.prepared = true
-      } finally { clearTimeout(timer!); this.flush() }
+      } catch (error) { this.report(error); throw error }
+      finally { clearTimeout(timer!); this.flush() }
     })()
   }
   quit(event: { preventDefault(): void }, notify: () => void, resume: () => void, fail: (error: unknown) => void): void {

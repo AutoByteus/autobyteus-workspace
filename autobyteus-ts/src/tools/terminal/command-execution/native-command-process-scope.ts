@@ -67,7 +67,11 @@ export class NativeCommandProcessScope {
       if (!handle.startCommitted) {
         handle.cancelGate();
         try { await beforeDeadline(handle.exited, Math.min(deadline, Date.now() + 500)); }
-        catch { if (!handle.anchorExited) handle.child.kill('SIGKILL'); await beforeDeadline(handle.exited, deadline); }
+        catch {
+          if (!handle.anchorExited) handle.child.kill('SIGKILL');
+          await beforeDeadline(handle.exited, deadline);
+          if (handle.invocation.processTarget.kind === 'wsl') throw new Error('WSL gated anchor exit unconfirmed after bridge force');
+        }
         return { outcome: 'already-exited' };
       }
       const group = handle.group!;
