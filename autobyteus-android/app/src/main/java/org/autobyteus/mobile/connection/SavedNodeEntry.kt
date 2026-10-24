@@ -6,7 +6,7 @@ package org.autobyteus.mobile.connection
  * This is intentionally not a Phone Access credential. The existing /mobile web shell keeps the
  * paired credential in WebView-local web storage for the MVP.
  */
-data class SavedNodeProfile(
+data class SavedNodeEntry(
     val id: String,
     val displayName: String,
     val baseUrl: String,
@@ -27,10 +27,10 @@ data class SavedNodeProfile(
             displayName: String? = null,
             httpAcknowledged: Boolean = normalized.scheme == "https",
             nowEpochMillis: Long = System.currentTimeMillis(),
-            previous: SavedNodeProfile? = null,
-        ): SavedNodeProfile {
+            previous: SavedNodeEntry? = null,
+        ): SavedNodeEntry {
             val origin = buildOrigin(normalized.scheme, normalized.host, normalized.port)
-            return SavedNodeProfile(
+            return SavedNodeEntry(
                 id = origin,
                 displayName = displayName?.takeIf { it.isNotBlank() } ?: normalized.host,
                 baseUrl = normalized.baseUrl,

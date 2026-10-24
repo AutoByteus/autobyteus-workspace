@@ -6,7 +6,7 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 
 - first-run setup for scan/paste/manual node URL entry;
 - app-owned Phone Access QR scanning, Android camera permission handling, and scan cancel/denial diagnostics;
-- native persistence of a clean saved node profile, for example `https://desktop.tailnet-name.ts.net/mobile` or an acknowledged trusted private HTTP `/mobile` URL;
+- native persistence of a clean saved node entry, for example `https://desktop.tailnet-name.ts.net/mobile` or an acknowledged trusted private HTTP `/mobile` URL;
 - reachability checks against `/rest/remote-access/status`;
 - WebView containment for the saved AutoByteus origin;
 - Tailscale-oriented diagnostics and recovery actions.

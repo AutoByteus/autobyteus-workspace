@@ -6,7 +6,7 @@ import {
 } from "~/utils/workspaceMetadata";
 
 export interface TerminalTargetCacheScope {
-  nodeId: string;
+  entryId: string;
   terminalWs: string;
 }
 
@@ -43,10 +43,10 @@ export const terminalTargetFromWorkspaceMetadata = (
 const normalizeTerminalEndpoint = (value: string): string => value.trim().replace(/\/+$/, "");
 
 export const createTerminalTargetCacheScope = (params: {
-  nodeId: string;
+  entryId: string;
   terminalWs: string;
 }): TerminalTargetCacheScope => ({
-  nodeId: params.nodeId.trim(),
+  entryId: params.entryId.trim(),
   terminalWs: normalizeTerminalEndpoint(params.terminalWs),
 });
 
@@ -54,7 +54,7 @@ export const getTerminalEndpointScopeKey = (
   scope: TerminalTargetCacheScope,
 ): string =>
   JSON.stringify({
-    nodeId: scope.nodeId,
+    entryId: scope.entryId,
     terminalWs: scope.terminalWs,
   });
 

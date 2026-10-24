@@ -49,7 +49,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const phoneAccessEnabled = computed(() => settings.value.phoneAccessEnabled);
   const isRemoteNodeWindow = computed(() => !windowNodeContextStore.isEmbeddedWindow);
   const managementBaseUrl = computed(() => normalizeNodeBaseUrl(windowNodeContextStore.nodeBaseUrl));
-  const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+  const currentNode = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
   const currentNodeName = computed(() => (
     isRemoteNodeWindow.value
       ? currentNode.value?.name || 'AutoByteus Remote Node'

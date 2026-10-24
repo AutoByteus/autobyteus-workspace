@@ -4,7 +4,7 @@ import Foundation
 ///
 /// This model intentionally stores only node metadata. Phone Access credentials such as `mra_...`
 /// remain owned by the existing server-served `/mobile` web shell in WKWebView-local storage.
-public struct SavedNodeProfile: Codable, Equatable, Identifiable {
+public struct SavedNodeEntry: Codable, Equatable, Identifiable {
     public let id: String
     public let displayName: String
     public let baseURL: String
@@ -48,10 +48,10 @@ public struct SavedNodeProfile: Codable, Equatable, Identifiable {
         displayName: String? = nil,
         httpAcknowledged: Bool? = nil,
         nowEpochMilliseconds: Int64 = currentEpochMilliseconds(),
-        previous: SavedNodeProfile? = nil
-    ) -> SavedNodeProfile {
+        previous: SavedNodeEntry? = nil
+    ) -> SavedNodeEntry {
         let origin = buildOrigin(scheme: normalized.scheme, host: normalized.host, port: normalized.port)
-        return SavedNodeProfile(
+        return SavedNodeEntry(
             id: origin,
             displayName: displayName?.trimmedNonEmpty ?? normalized.host,
             baseURL: normalized.baseURL,
@@ -69,8 +69,8 @@ public struct SavedNodeProfile: Codable, Equatable, Identifiable {
         displayName: String? = nil,
         httpAcknowledged: Bool? = nil,
         nowEpochMilliseconds: Int64 = currentEpochMilliseconds()
-    ) -> SavedNodeProfile {
-        SavedNodeProfile(
+    ) -> SavedNodeEntry {
+        SavedNodeEntry(
             id: id,
             displayName: displayName?.trimmedNonEmpty ?? self.displayName,
             baseURL: baseURL,

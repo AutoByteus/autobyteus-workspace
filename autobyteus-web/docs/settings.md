@@ -223,8 +223,11 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   windows this desktop can open, addresses as the desktop reaches them) and this node's peers
   (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
   reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
-  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
-  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
   a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a

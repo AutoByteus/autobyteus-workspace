@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { deriveNodeEndpoints } from '~/utils/nodeEndpoints';
 import { getBrowserServerBaseUrl, isElectronEnvironment } from '~/utils/browserServerConfig';
-import { EMBEDDED_NODE_ID, type NodeEndpoints, type WindowNodeContext } from '~/types/node';
+import { EMBEDDED_ENTRY_ID, type NodeEndpoints, type WindowNodeContext } from '~/types/node';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -45,42 +45,42 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T
 
 export const useWindowNodeContextStore = defineStore('windowNodeContext', () => {
   const windowId = ref<number | null>(null);
-  const nodeId = ref<string>(EMBEDDED_NODE_ID);
+  const entryId = ref<string>(EMBEDDED_ENTRY_ID);
   const nodeBaseUrl = ref<string>(isElectronEnvironment() ? '' : getBrowserServerBaseUrl());
   const bindingRevision = ref(0);
   const initialized = ref(false);
   const lastReadyError = ref<string | null>(null);
   let electronHealthCheckPromise: Promise<unknown> | null = null;
 
-  const isEmbeddedWindow = computed(() => nodeId.value === EMBEDDED_NODE_ID);
+  const isEmbeddedWindow = computed(() => entryId.value === EMBEDDED_ENTRY_ID);
   const boundEndpoints = computed<NodeEndpoints>(() => deriveNodeEndpoints(nodeBaseUrl.value));
 
-  function bumpBindingRevisionIfChanged(nextNodeId: string, nextBaseUrl: string): void {
+  function bumpBindingRevisionIfChanged(nextEntryId: string, nextBaseUrl: string): void {
     const normalizedBaseUrl = nextBaseUrl.trim();
-    if (nodeId.value === nextNodeId && nodeBaseUrl.value === normalizedBaseUrl) {
+    if (entryId.value === nextEntryId && nodeBaseUrl.value === normalizedBaseUrl) {
       return;
     }
     bindingRevision.value += 1;
   }
 
   function initializeFromWindowContext(context: WindowNodeContext, baseUrl: string): void {
-    const resolvedNodeId = context.nodeId || EMBEDDED_NODE_ID;
+    const resolvedEntryId = context.entryId || EMBEDDED_ENTRY_ID;
     const resolvedBaseUrl = baseUrl.trim();
     if (!resolvedBaseUrl) {
       throw new Error('Window node context requires an explicit client base URL.');
     }
 
-    bumpBindingRevisionIfChanged(resolvedNodeId, resolvedBaseUrl);
+    bumpBindingRevisionIfChanged(resolvedEntryId, resolvedBaseUrl);
 
     windowId.value = context.windowId;
-    nodeId.value = resolvedNodeId;
+    entryId.value = resolvedEntryId;
     nodeBaseUrl.value = resolvedBaseUrl;
     initialized.value = true;
   }
 
-  function bindNodeContext(nextNodeId: string, nextBaseUrl: string): void {
-    bumpBindingRevisionIfChanged(nextNodeId, nextBaseUrl);
-    nodeId.value = nextNodeId;
+  function bindNodeContext(nextEntryId: string, nextBaseUrl: string): void {
+    bumpBindingRevisionIfChanged(nextEntryId, nextBaseUrl);
+    entryId.value = nextEntryId;
     nodeBaseUrl.value = nextBaseUrl.trim();
   }
 
@@ -109,7 +109,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
 
   async function probeBoundBackendReady(healthUrl: string, requestTimeoutMs: number): Promise<boolean> {
     if (
-      nodeId.value === EMBEDDED_NODE_ID &&
+      entryId.value === EMBEDDED_ENTRY_ID &&
       typeof window !== 'undefined' &&
       Object.prototype.hasOwnProperty.call(window, 'electronAPI')
     ) {
@@ -199,7 +199,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
 
   return {
     windowId,
-    nodeId,
+    entryId,
     nodeBaseUrl,
     bindingRevision,
     initialized,

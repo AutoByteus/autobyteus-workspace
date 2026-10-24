@@ -14,19 +14,19 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
 class ConnectionScreen(private val context: Context) {
     data class Callbacks(
-        val onOpenSaved: (SavedNodeProfile) -> Unit,
-        val onRemoveSaved: (SavedNodeProfile) -> Unit,
+        val onOpenSaved: (SavedNodeEntry) -> Unit,
+        val onRemoveSaved: (SavedNodeEntry) -> Unit,
         val onSubmitInput: (String, Boolean) -> Unit,
         val onScanQr: () -> Unit,
         val onOpenTailscale: () -> Unit,
     )
 
     fun render(
-        savedProfiles: List<SavedNodeProfile>,
+        savedEntries: List<SavedNodeEntry>,
         diagnostic: ConnectionDiagnostic? = null,
         isBusy: Boolean = false,
         initialInput: String = "",
@@ -51,10 +51,10 @@ class ConnectionScreen(private val context: Context) {
             root.addView(diagnosticCard(diagnostic))
         }
 
-        if (savedProfiles.isNotEmpty()) {
+        if (savedEntries.isNotEmpty()) {
             root.addView(sectionLabel("Saved nodes"))
-            savedProfiles.forEach { profile ->
-                root.addView(savedProfileRow(profile, callbacks))
+            savedEntries.forEach { entry ->
+                root.addView(savedEntryRow(entry, callbacks))
             }
         }
 
@@ -110,25 +110,25 @@ class ConnectionScreen(private val context: Context) {
         return scroll
     }
 
-    private fun savedProfileRow(profile: SavedNodeProfile, callbacks: Callbacks): View {
+    private fun savedEntryRow(entry: SavedNodeEntry, callbacks: Callbacks): View {
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(14), dp(12), dp(14), dp(12))
             setBackgroundColor(Color.WHITE)
         }
         root.addView(TextView(context).apply {
-            text = profile.displayName
+            text = entry.displayName
             textSize = 16f
             setTextColor(Color.rgb(15, 23, 42))
         })
         root.addView(TextView(context).apply {
-            text = profile.mobileUrl
+            text = entry.mobileUrl
             textSize = 12f
             setTextColor(Color.rgb(71, 85, 105))
         })
         val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
-        row.addView(primaryButton("Open") { callbacks.onOpenSaved(profile) }, LinearLayout.LayoutParams(0, wrap(), 1f).withEndMargin(8))
-        row.addView(secondaryButton("Remove") { callbacks.onRemoveSaved(profile) }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(8))
+        row.addView(primaryButton("Open") { callbacks.onOpenSaved(entry) }, LinearLayout.LayoutParams(0, wrap(), 1f).withEndMargin(8))
+        row.addView(secondaryButton("Remove") { callbacks.onRemoveSaved(entry) }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(8))
         root.addView(row, LinearLayout.LayoutParams(match(), wrap()).withTopMargin(10))
         return root.withBottomMargin(10)
     }

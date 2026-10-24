@@ -13,12 +13,12 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from '../nodeRegistryTypes'
-import { EMBEDDED_NODE_ID, isNodeId } from '../nodeRegistryTypes'
+import { EMBEDDED_ENTRY_ID, isNodeId } from '../nodeRegistryTypes'
 import { logger } from '../logger'
 import { attachRendererConsoleDiagnostics } from '../rendererConsoleDiagnostics'
 import {
   ensureEmbeddedNode,
-  getNodeProfileById,
+  getEntryById,
   loadNodeRegistrySnapshot,
   nowIsoString,
   identifyNodeEntry,
@@ -40,6 +40,7 @@ import { WorkspaceShellWindow } from '../shell/workspace-shell-window'
 import { WorkspaceShellWindowRegistry } from '../shell/workspace-shell-window-registry'
 import { validateReadableRegularFile } from '../localFileValidation'
 import { installLocalFileProtocol } from '../local-file-protocol/local-file-protocol'
+import { runElectronFileMigrations } from '../../client-data-migrations/electron-file-runner'
 
 type ElectronApplicationOptions = {
   profile: ElectronLaunchProfile
@@ -123,22 +124,22 @@ export class ElectronApplication {
   private getWindowContextByWebContentsId(webContentsId: number): WindowNodeContext {
     return {
       windowId: webContentsId,
-      nodeId: this.shellWindowRegistry.getNodeIdForShell(webContentsId) || EMBEDDED_NODE_ID,
+      entryId: this.shellWindowRegistry.getEntryIdForShell(webContentsId) || EMBEDDED_ENTRY_ID,
     }
   }
 
-  private createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
+  private createNodeBoundWindow(entryId: string): WorkspaceShellWindow {
     const startUrl = this.getStartUrl()
     const window = new WorkspaceShellWindow({
-      nodeId,
+      entryId,
       startUrl,
       preloadPath: path.join(__dirname, '..', 'preload.js'),
       iconPath: this.getWindowIcon(),
     })
     this.shellWindowRegistry.register(window)
     this.browserRuntime?.registerShell(window)
-    logger.info(`Creating node-bound window for nodeId=${nodeId}; url=${startUrl}`)
-    attachRendererConsoleDiagnostics(window.browserWindow.webContents, { logger, nodeId })
+    logger.info(`Creating node-bound window for entryId=${entryId}; url=${startUrl}`)
+    attachRendererConsoleDiagnostics(window.browserWindow.webContents, { logger, entryId })
     window.browserWindow.webContents.on('did-finish-load', () => {
       window.send('server-status', this.serverStatusManager.getStatus())
       window.send('node-registry-updated', this.nodeRegistrySnapshot)
@@ -147,7 +148,7 @@ export class ElectronApplication {
       'did-fail-load',
       (_event, errorCode, errorDescription, validatedURL) => {
         logger.error('Page failed to load:', {
-          nodeId,
+          entryId,
           errorCode,
           errorDescription,
           validatedURL,
@@ -162,21 +163,21 @@ export class ElectronApplication {
     return window
   }
 
-  private openNodeWindow(nodeId: string): { windowId: number; created: boolean } {
-    const existingWindow = this.shellWindowRegistry.getByNodeId(nodeId)
+  private openNodeWindow(entryId: string): { windowId: number; created: boolean } {
+    const existingWindow = this.shellWindowRegistry.getByEntryId(entryId)
     if (existingWindow && !existingWindow.isDestroyed()) {
       const focused = this.shellWindowRegistry.focusShell(existingWindow.shellId)
       if (focused) {
         return { windowId: existingWindow.shellId, created: false }
       }
     }
-    const createdWindow = this.createNodeBoundWindow(nodeId)
+    const createdWindow = this.createNodeBoundWindow(entryId)
     return { windowId: createdWindow.shellId, created: true }
   }
 
-  private ensureNodeExists(nodeId: string): void {
-    if (!getNodeProfileById(this.nodeRegistrySnapshot, nodeId)) {
-      throw new Error(`Node does not exist: ${nodeId}`)
+  private ensureNodeExists(entryId: string): void {
+    if (!getEntryById(this.nodeRegistrySnapshot, entryId)) {
+      throw new Error(`Node does not exist: ${entryId}`)
     }
   }
 
@@ -194,8 +195,8 @@ export class ElectronApplication {
       if (existingNodes.some((node) => node.id === candidate.id)) {
         throw new Error(`Node id already exists: ${candidate.id}`)
       }
-      if (candidate.serverInstanceId !== undefined && !isNodeId(candidate.serverInstanceId)) {
-        throw new Error(`Invalid server instance ID: ${candidate.serverInstanceId}`)
+      if (candidate.nodeId !== undefined && !isNodeId(candidate.nodeId)) {
+        throw new Error(`Invalid node ID: ${candidate.nodeId}`)
       }
       const normalizedBaseUrl = sanitizeBaseUrl(candidate.baseUrl)
       if (existingNodes.some(
@@ -206,24 +207,23 @@ export class ElectronApplication {
       existingNodes.push({
         ...candidate,
         baseUrl: normalizedBaseUrl,
-        isSystem: false,
         createdAt: candidate.createdAt || now,
         updatedAt: now,
       })
     } else if (change.type === 'remove') {
-      if (change.nodeId === EMBEDDED_NODE_ID) {
+      if (change.entryId === EMBEDDED_ENTRY_ID) {
         throw new Error('Embedded node cannot be removed')
       }
-      const removeIndex = existingNodes.findIndex((node) => node.id === change.nodeId)
+      const removeIndex = existingNodes.findIndex((node) => node.id === change.entryId)
       if (removeIndex === -1) {
-        throw new Error(`Node does not exist: ${change.nodeId}`)
+        throw new Error(`Node does not exist: ${change.entryId}`)
       }
-      this.shellWindowRegistry.closeNodeWindow(change.nodeId)
+      this.shellWindowRegistry.closeNodeWindow(change.entryId)
       existingNodes.splice(removeIndex, 1)
     } else if (change.type === 'rename') {
-      const target = existingNodes.find((node) => node.id === change.nodeId)
+      const target = existingNodes.find((node) => node.id === change.entryId)
       if (!target || !change.name.trim()) {
-        throw new Error(target ? 'Node name is required' : `Node does not exist: ${change.nodeId}`)
+        throw new Error(target ? 'Node name is required' : `Node does not exist: ${change.entryId}`)
       }
       target.name = change.name.trim()
       target.updatedAt = now
@@ -251,13 +251,13 @@ export class ElectronApplication {
       this.shutdownTimer = null
       app.quit()
     })
-    ipcMain.handle('open-node-window', async (_event, nodeId: string) => {
-      this.ensureNodeExists(nodeId)
-      return this.openNodeWindow(nodeId)
+    ipcMain.handle('open-node-window', async (_event, entryId: string) => {
+      this.ensureNodeExists(entryId)
+      return this.openNodeWindow(entryId)
     })
-    ipcMain.handle('focus-node-window', async (_event, nodeId: string) => {
-      this.ensureNodeExists(nodeId)
-      const existing = this.shellWindowRegistry.getByNodeId(nodeId)
+    ipcMain.handle('focus-node-window', async (_event, entryId: string) => {
+      this.ensureNodeExists(entryId)
+      const existing = this.shellWindowRegistry.getByEntryId(entryId)
       return existing
         ? { focused: this.shellWindowRegistry.focusShell(existing.shellId) }
         : { focused: false, reason: 'not-found' }
@@ -354,11 +354,13 @@ export class ElectronApplication {
       void this.stop()
     })
     app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_NODE_ID)
+      if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_ENTRY_ID)
     })
   }
 
   async start(): Promise<void> {
+    // autobyteus-290 SM-6: the stored node list's names follow the code before anything reads it.
+    runElectronFileMigrations(app.getPath('userData'), logger)
     this.nodeRegistrySnapshot = loadNodeRegistrySnapshot(
       app.getPath('userData'),
       this.activeEmbeddedBaseUrl,
@@ -391,13 +393,13 @@ export class ElectronApplication {
 
     if (this.profile.name === 'e2e') {
       await this.serverStatusManager.initializeServer()
-      this.openNodeWindow(EMBEDDED_NODE_ID)
+      this.openNodeWindow(EMBEDDED_ENTRY_ID)
       // Only with an explicit test update feed; the disabled updater schedules nothing.
       this.appUpdateController.startAutoCheck()
       return
     }
 
-    this.openNodeWindow(EMBEDDED_NODE_ID)
+    this.openNodeWindow(EMBEDDED_ENTRY_ID)
     this.appUpdateController.startAutoCheck()
     void this.serverStatusManager.initializeServer().catch((error) => {
       logger.error('Server initialization failed in background:', error)

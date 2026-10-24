@@ -8,16 +8,16 @@ class ConnectionValidator(
     private val connectTimeoutMs: Int = 5_000,
     private val readTimeoutMs: Int = 5_000,
 ) {
-    fun validate(profile: SavedNodeProfile): ConnectionValidationResult = validate(profile.baseUrl, profile)
+    fun validate(entry: SavedNodeEntry): ConnectionValidationResult = validate(entry.baseUrl, entry)
 
-    fun validate(baseUrl: String, existingProfile: SavedNodeProfile? = null): ConnectionValidationResult {
+    fun validate(baseUrl: String, existingEntry: SavedNodeEntry? = null): ConnectionValidationResult {
         val normalized = try {
             NodeUrlNormalizer.normalize(baseUrl)
         } catch (error: NodeUrlNormalizationException) {
             return ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.invalidUrl(error.message ?: "Invalid URL."))
         }
 
-        val profile = existingProfile ?: SavedNodeProfile.fromNormalized(normalized)
+        val entry = existingEntry ?: SavedNodeEntry.fromNormalized(normalized)
         return try {
             val connection = (URL(normalized.statusUrl).openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
@@ -34,7 +34,7 @@ class ConnectionValidator(
                 if (!status.phoneAccessEnabled) {
                     ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(status.serverName))
                 } else {
-                    ConnectionValidationResult.Reachable(profile, status)
+                    ConnectionValidationResult.Reachable(entry, status)
                 }
             }
         } catch (error: Throwable) {
@@ -61,6 +61,6 @@ data class RemoteAccessStatus(
 }
 
 sealed class ConnectionValidationResult {
-    data class Reachable(val profile: SavedNodeProfile, val status: RemoteAccessStatus) : ConnectionValidationResult()
+    data class Reachable(val entry: SavedNodeEntry, val status: RemoteAccessStatus) : ConnectionValidationResult()
     data class Failed(val diagnostic: ConnectionDiagnostic) : ConnectionValidationResult()
 }

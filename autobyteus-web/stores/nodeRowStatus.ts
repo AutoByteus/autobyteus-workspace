@@ -11,7 +11,7 @@ export interface NodeRow {
   key: string
   nodeId: string | null
   /** The desktop entries of this node, the first-created first (`[]` for a node only this node knows). */
-  desktopIds: string[]
+  entryIds: string[]
   /** Where this desktop opens the node (its first desktop entry). */
   windowAddress: string | null
   /** This node's registration of it, when it has one; `peer.baseUrl` is the address this node uses. */
@@ -104,7 +104,7 @@ const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: strin
   return { state: 'unreachable', cause: answer.reason ?? 'unreachable', host: hostOfAddress(viaIt), fromOther: true }
 }
 
-type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'desktopIds' | 'nodeId'>
+type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'entryIds' | 'nodeId'>
 
 /**
  * A row's dot, directions and its one line (UI/UX spec § State Behavior, by priority): a step not finished; not
@@ -121,7 +121,7 @@ export const rowViewOf = (input: {
   unfinishedStep: NodeChangeStep | null
 }): RowView => {
   const { row, switchOn, facts, offer } = input
-  const peerOnly = !row.desktopIds.length
+  const peerOnly = !row.entryIds.length
   const out = outOf(row, switchOn, offer)
   const factsOf: RowFacts = facts ?? { probe: null, remote: undefined, availability: undefined, checkedAt: null }
   const inState = inOf(row, switchOn, factsOf, input.thisNodeId, out)
@@ -147,7 +147,7 @@ const lineOf = (
     return { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error, ...(unfinished.name ? { stepName: unfinished.name } : {}) }
   }
   if (reachable === false) {
-    const cause = row.desktopIds.length && facts.probe && !facts.probe.ok
+    const cause = row.entryIds.length && facts.probe && !facts.probe.ok
       ? { cause: facts.probe.cause, host: hostOfAddress(row.windowAddress) }
       : out.state === 'unreachable' ? { cause: out.cause, host: out.host } : {}
     return { kind: 'unreachable', tone: 'info', fix: 'checkAgain', ...cause }

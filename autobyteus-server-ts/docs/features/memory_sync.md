@@ -35,7 +35,7 @@ For a source:
    together.
 5. Run **Sync now** or enable background sync.
 
-Frontend node names and `NodeProfile.id` values are navigation metadata only.
+Frontend node names and the desktop's entry IDs are navigation metadata only.
 They are not the durable import identity. `sourceNodeId` is the stable folder and
 catalog identity used by the hub.
 

@@ -50,9 +50,9 @@ export type RemoteAccessStatus = {
   serverName: string;
 };
 
+/** The phone's paired session, stored by `mobileCredentialStorage`. `entryId` is the window's entry for the paired node. */
 export type MobileNodeSession = {
-  version: 1;
-  nodeId: string;
+  entryId: string;
   serverBaseUrl: string;
   credential: string;
   device: PairedDeviceSummary;

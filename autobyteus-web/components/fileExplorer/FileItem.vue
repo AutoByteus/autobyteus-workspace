@@ -310,8 +310,8 @@ const onDrop = async (event: DragEvent) => {
 }
 
 const matchesRenameRequest = (request: FileExplorerRenameRequest): boolean => {
-  if (request.nodeId && props.file.id) {
-    return request.nodeId === props.file.id
+  if (request.treeNodeId && props.file.id) {
+    return request.treeNodeId === props.file.id
   }
   return request.path === props.file.path
 }
