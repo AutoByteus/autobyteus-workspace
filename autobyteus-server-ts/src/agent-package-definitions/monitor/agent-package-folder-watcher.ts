@@ -13,7 +13,16 @@ export type PackageFolderWatchStatus = Readonly<{ state: PackageFolderWatchState
 export type PackageFolderChangeSink = Readonly<{
   markFolderChanged(kind: AgentPackageDefinitionKind, folderId: string): void;
   markPackageFolderChanged(rootPath: string): void;
+  /** Ask for a quiet re-read of the package's definition folders; announces only what really changed. */
+  reconcilePackageFolder(rootPath: string): void;
 }>;
+
+/**
+ * How long a package folder must stay free of added or removed folders (and of a fresh arming) before the watcher
+ * asks the reloader for a catch-up re-read. The OS drops events while a directory watch starts (measured: up to
+ * ~60 ms after chokidar's `ready`) and while chokidar adds a watch for a new folder; 300 ms is five times that.
+ */
+export const PACKAGE_CATCH_UP_DELAY_MS = 300;
 
 export type PackageFolderWatch = {
   on(event: "all", listener: (eventName: string, filePath: string) => void): unknown;
@@ -54,6 +63,8 @@ type PackageFolderEntry = {
   identity: string | null;
   ready: Promise<void>;
   generation: number;
+  /** Pending catch-up request; restarted by every arming and every added or removed folder. */
+  catchUpTimer: NodeJS.Timeout | null;
 };
 
 /**
@@ -86,6 +97,7 @@ export class AgentPackageFolderWatcher {
   private readonly createWatcher: PackageFolderWatchFactory;
   private readonly createParentFolderWatch: ParentFolderWatchFactory;
   private readonly logger: Pick<Console, "warn">;
+  private readonly catchUpDelayMs: number;
   private chain: Promise<void> = Promise.resolve();
   private closed = false;
 
@@ -94,10 +106,13 @@ export class AgentPackageFolderWatcher {
     createWatcher?: PackageFolderWatchFactory;
     createParentFolderWatch?: ParentFolderWatchFactory;
     logger?: Pick<Console, "warn">;
+    /** Catch-up quiet period; tests shorten it. */
+    catchUpDelayMs?: number;
   }>) {
     this.createWatcher = options.createWatcher ?? defaultWatcherFactory;
     this.createParentFolderWatch = options.createParentFolderWatch ?? defaultParentFolderWatchFactory;
     this.logger = options.logger ?? console;
+    this.catchUpDelayMs = options.catchUpDelayMs ?? PACKAGE_CATCH_UP_DELAY_MS;
   }
 
   /** Starts watching new package folders, stops removed ones, re-arms failed or replaced ones. Never waits for watcher readiness. */
@@ -115,7 +130,7 @@ export class AgentPackageFolderWatcher {
         if (!entry) {
           const created: PackageFolderEntry = {
             root, state: "WATCHING", message: null, watcher: null, presenceWatch: null, identity: null,
-            ready: Promise.resolve(), generation: 0,
+            ready: Promise.resolve(), generation: 0, catchUpTimer: null,
           };
           this.entries.set(root.rootPath, created);
           await this.arm(created);
@@ -214,6 +229,10 @@ export class AgentPackageFolderWatcher {
       watcher.on("ready", () => resolve());
       watcher.on("error", () => resolve());
     });
+    // "ready" does not mean the OS watches are live: ask for a catch-up re-read once the watch has settled.
+    watcher.on("ready", () => {
+      if (generation === entry.generation && !this.closed) this.scheduleCatchUp(entry);
+    });
     watcher.on("all", (eventName, filePath) => {
       if (generation === entry.generation && !this.closed) this.handleEvent(entry, eventName, filePath);
     });
@@ -245,6 +264,8 @@ export class AgentPackageFolderWatcher {
     const { root } = entry;
     const resolved = path.resolve(filePath);
     const kindDirs = Object.values(root.kindDirs).map((dir) => path.resolve(dir));
+    // Adding or removing a folder rebuilds directory watches, the moment the OS drops other folders' events.
+    if (eventName === "addDir" || eventName === "unlinkDir") this.scheduleCatchUp(entry);
     if (eventName === "unlinkDir" && (resolved === path.resolve(root.rootPath) || kindDirs.includes(resolved))) {
       void this.serial(() => this.checkPackageFolder(entry, null));
       return;
@@ -255,6 +276,25 @@ export class AgentPackageFolderWatcher {
     }
     const folder = findDefinitionFolderForPath(root, filePath);
     if (folder) this.options.sink.markFolderChanged(folder.kind, folder.folderId);
+  }
+
+  /** Restarts the entry's catch-up timer; when it fires with the same watch still armed, the reloader is asked once. */
+  private scheduleCatchUp(entry: PackageFolderEntry): void {
+    this.clearCatchUp(entry);
+    const generation = entry.generation;
+    const timer = setTimeout(() => {
+      entry.catchUpTimer = null;
+      if (this.closed || generation !== entry.generation || entry.state !== "WATCHING") return;
+      if (this.entries.get(entry.root.rootPath) !== entry) return;
+      this.options.sink.reconcilePackageFolder(entry.root.rootPath);
+    }, this.catchUpDelayMs);
+    timer.unref?.();
+    entry.catchUpTimer = timer;
+  }
+
+  private clearCatchUp(entry: PackageFolderEntry): void {
+    if (entry.catchUpTimer) clearTimeout(entry.catchUpTimer);
+    entry.catchUpTimer = null;
   }
 
   /**
@@ -283,6 +323,7 @@ export class AgentPackageFolderWatcher {
   }
 
   private becomeUnavailable(entry: PackageFolderEntry, error: unknown): void {
+    this.clearCatchUp(entry);
     entry.state = "UNAVAILABLE";
     entry.message = `${errorText(error)}. Use Reload after changing this package.`;
     entry.ready = Promise.resolve();
@@ -333,6 +374,7 @@ export class AgentPackageFolderWatcher {
 
   private closeWatcher(entry: PackageFolderEntry): void {
     entry.generation += 1;
+    this.clearCatchUp(entry);
     const watcher = entry.watcher;
     entry.watcher = null;
     if (watcher) void watcher.close().catch((error) => this.logger.warn("AGENT_PACKAGE_FOLDER_WATCH_CLOSE_FAILED", error));

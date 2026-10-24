@@ -1,9 +1,10 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   AgentPackageFolderWatcher,
+  PACKAGE_CATCH_UP_DELAY_MS,
   type PackageFolderWatch,
 } from "../../../src/agent-package-definitions/monitor/agent-package-folder-watcher.js";
 import type { RegisteredPackageRoot } from "../../../src/agent-package-definitions/domain/agent-package-definition-types.js";
@@ -24,12 +25,15 @@ const rootAt = (rootPath: string): RegisteredPackageRoot => ({
 const recordingSink = () => {
   const folders: string[] = [];
   const roots: string[] = [];
+  const reconciles: string[] = [];
   return {
     folders,
     roots,
+    reconciles,
     sink: {
       markFolderChanged: (subject: string, folderId: string) => { folders.push(`${subject}:${folderId}`); },
       markPackageFolderChanged: (rootPath: string) => { roots.push(rootPath); },
+      reconcilePackageFolder: (rootPath: string) => { reconciles.push(rootPath); },
     },
   };
 };
@@ -48,6 +52,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
   await monitor?.close();
   monitor = null;
   await fs.rm(base, { recursive: true, force: true });
@@ -213,6 +218,148 @@ describe("AgentPackageFolderWatcher", () => {
     await fs.writeFile(path.join(rootPath, "agents", "a", "agent.md"), "x");
     await settleQuietly();
     expect(recorded.folders).toEqual([]);
+  });
+});
+
+describe("AgentPackageFolderWatcher catch-up request", () => {
+  /** A watch the test drives by hand: the OS gives no event for what it dropped, so none is emitted. */
+  class FakeWatch implements PackageFolderWatch {
+    private readonly listeners = new Map<string, Array<(...args: any[]) => void>>();
+    on(event: string, listener: (...args: any[]) => void): this {
+      this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]);
+      return this;
+    }
+    close = vi.fn(async () => undefined);
+    emit(event: string, ...args: unknown[]): void {
+      for (const listener of this.listeners.get(event) ?? []) listener(...args);
+    }
+  }
+
+  const armWith = async (rootPath: string, options: { catchUpDelayMs?: number } = {}) => {
+    const recorded = recordingSink();
+    const watches: FakeWatch[] = [];
+    monitor = new AgentPackageFolderWatcher({
+      sink: recorded.sink,
+      createWatcher: () => { const watch = new FakeWatch(); watches.push(watch); return watch; },
+      logger: { warn: () => undefined },
+      ...options,
+    });
+    await monitor.syncPackageFolders([rootAt(rootPath)]);
+    return { recorded, watches };
+  };
+  /** Lets pending file-system work finish while the timers stay fake. */
+  const untilIdle = async (done: () => boolean) => {
+    for (let turn = 0; turn < 200 && !done(); turn += 1) await new Promise((resolve) => setImmediate(resolve));
+    expect(done()).toBe(true);
+  };
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  });
+
+  it("asks once, after the delay, when a watch is armed (default 300 ms)", async () => {
+    expect(PACKAGE_CATCH_UP_DELAY_MS).toBe(300);
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+
+    watches[0]!.emit("ready");
+    await vi.advanceTimersByTimeAsync(PACKAGE_CATCH_UP_DELAY_MS - 1);
+    expect(recorded.reconciles).toEqual([]);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(recorded.reconciles).toEqual([rootPath]);
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.reconciles).toEqual([rootPath]);
+  });
+
+  it("asks once per quiet period after added or removed folders, however many there are", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath, { catchUpDelayMs: 100 });
+    const watch = watches[0]!;
+    watch.emit("ready");
+    await vi.advanceTimersByTimeAsync(100);
+    expect(recorded.reconciles).toHaveLength(1);
+
+    for (let index = 0; index < 25; index += 1) {
+      watch.emit("all", "addDir", path.join(rootPath, "agents", `a${index}`));
+      await vi.advanceTimersByTimeAsync(40);
+    }
+    watch.emit("all", "unlinkDir", path.join(rootPath, "agents", "a0"));
+    await vi.advanceTimersByTimeAsync(99);
+    expect(recorded.reconciles).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(recorded.reconciles).toHaveLength(2);
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(recorded.reconciles).toHaveLength(2);
+    expect(recorded.folders).toContain("agent:a1");
+  });
+
+  it("keeps file events on their own folder report and asks for nothing", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents", "a"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+
+    watches[0]!.emit("all", "change", path.join(rootPath, "agents", "a", "agent.md"));
+    watches[0]!.emit("all", "add", path.join(rootPath, "agents", "a", "agent-config.json"));
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.folders).toEqual(["agent:a", "agent:a"]);
+    expect(recorded.reconciles).toEqual([]);
+  });
+
+  it("asks for nothing after close()", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.emit("ready");
+    await monitor!.close();
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.reconciles).toEqual([]);
+  });
+
+  it("asks for nothing once the package folder is missing", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.emit("ready");
+    await fs.rm(rootPath, { recursive: true });
+    watches[0]!.emit("all", "unlinkDir", rootPath);
+    await untilIdle(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "FOLDER_MISSING");
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.reconciles).toEqual([]);
+  });
+
+  it("asks for nothing once the watch is UNAVAILABLE", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.emit("ready");
+    watches[0]!.emit("error", Object.assign(new Error("too many open files"), { code: "EMFILE" }));
+    await untilIdle(() => monitor!.getPackageFolderWatchStatus(rootPath)?.state === "UNAVAILABLE");
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.reconciles).toEqual([]);
+  });
+
+  it("drops the request of a watch that was re-armed and asks again for the new watch", async () => {
+    const rootPath = path.join(base, "pkg");
+    await fs.mkdir(path.join(rootPath, "agents"), { recursive: true });
+    const { recorded, watches } = await armWith(rootPath);
+    watches[0]!.emit("ready");
+
+    const staged = path.join(base, "staged");
+    await fs.mkdir(path.join(staged, "agents", "b"), { recursive: true });
+    await fs.rename(rootPath, path.join(base, "backup"));
+    await fs.rename(staged, rootPath);
+    await monitor!.syncPackageFolders([rootAt(rootPath)]);
+    expect(watches).toHaveLength(2);
+    expect(watches[0]!.close).toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(recorded.reconciles).toEqual([]);
+    watches[0]!.emit("ready");
+    watches[1]!.emit("ready");
+    await vi.advanceTimersByTimeAsync(PACKAGE_CATCH_UP_DELAY_MS);
+    expect(recorded.reconciles).toEqual([rootPath]);
   });
 });
 

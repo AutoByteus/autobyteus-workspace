@@ -107,8 +107,6 @@ const start = async (options: { createWatcher?: PackageFolderWatchFactory } = {}
   feed.hub.connect({ send: (data) => frames.push(JSON.parse(data) as Frame), close: () => undefined });
   await host.definitionAdmissionService.scan();
   await feed.watcher.whenReady();
-  // Directory watches on macOS start slightly after the watcher reports ready.
-  await sleep(300);
   frames.length = 0;
 };
 
@@ -268,7 +266,6 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect(feed!.watcher.getPackageFolderWatchStatus(second)).toEqual({ state: "WATCHING", message: null });
     expect(await listAvailable()).toContain("agent:Secret");
     await feed!.watcher.whenReady();
-    await sleep(300);
 
     await writeAgent(path.join(second, "agents", "another"), "Another");
     await waitFor(listAvailable, (names) => names.includes("agent:Another"));
@@ -307,7 +304,6 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     await waitFor(async () => feed!.watcher.getPackageFolderWatchStatus(packageRoot)?.state, (state) => state === "WATCHING");
     await waitFor(() => services().agentDefinitionService.getLoadIssue("planner"), (issue) => issue === null);
     await feed!.watcher.whenReady();
-    await sleep(300);
     await writeAgent(path.join(packageRoot, "agents", "planner"), "Planner", "Back again.");
     await waitFor(() => services().agentDefinitionService.getAgentDefinitionById("planner"), (definition) => definition?.instructions === "Back again.\n");
   });
