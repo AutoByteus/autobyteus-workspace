@@ -8,6 +8,7 @@ export class StartupCancelled extends Error {}
 /** One owner for signals/IPC, startup barrier and the current cleanup authority. */
 export class ServerProcessShutdown {
   requested = false;
+  private transportFailed = false;
   private cleanup: () => Promise<void> = async () => {};
   private cleanupPromise?: Promise<void>;
   private completion?: Promise<void>;
@@ -17,7 +18,7 @@ export class ServerProcessShutdown {
   private readonly message = (value: unknown) => { if (value === SHUTDOWN_WIRE.request) void this.request(); };
   constructor(private readonly runtime: NodeJS.Process = process) {
     runtime.on('SIGINT', this.signal); runtime.on('SIGTERM', this.signal); runtime.on('message', this.message);
-    if (runtime.send) void this.send(SHUTDOWN_WIRE.ready).catch(() => this.request());
+    if (runtime.send) void this.send(SHUTDOWN_WIRE.ready).catch(() => { this.transportFailed = true; return this.request(); });
   }
   setCleanup(cleanup: () => Promise<void>): void { this.cleanup = cleanup; }
   checkpoint(): void { if (this.requested) throw new StartupCancelled('Server startup cancelled by shutdown'); }
@@ -30,7 +31,7 @@ export class ServerProcessShutdown {
     this.requested = true;
     return this.completion ??= (async () => {
       await this.startupSettled;
-      let code = 0;
+      let code = this.transportFailed ? 1 : 0;
       try { await this.cleanupOnce(); }
       catch (error) { code = 1; console.error('Backend shutdown incomplete', error); }
       if (this.runtime.send) {

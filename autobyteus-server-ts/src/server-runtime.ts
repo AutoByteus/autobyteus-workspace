@@ -40,6 +40,11 @@ const fatal = (input: {
 
 export async function startConfiguredServer(options: ServerOptions): Promise<void> {
   const shutdown = new ServerProcessShutdown();
+  try { await initializeConfiguredServer(options, shutdown); }
+  finally { shutdown.settleStartup(); }
+}
+
+async function initializeConfiguredServer(options: ServerOptions, shutdown: ServerProcessShutdown): Promise<void> {
   // The server owns its vault: autobyteus-ts must never read AUTOBYTEUS_TEST_VAULT itself here.
   disableEnvironmentProviderApiKeySource();
   let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
@@ -221,5 +226,5 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
       code: "HTTP_SERVER_INITIALIZATION_FAILED" as const, summary: String(error),
     };
     fatal({ ...failure, summary: failure.summary + cleanupError, logPath: serverLogPath });
-  } finally { shutdown.settleStartup(); }
+  }
 }
