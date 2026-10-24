@@ -320,6 +320,7 @@ export abstract class BaseServerManager extends EventEmitter {
     if (!this.serverProcess) return
     const process = this.serverProcess
     const generation = this.startupGeneration
+    let httpStartupFailure: Error | undefined
     const capturePlatformFatal = (line: string): void => {
       if (
         generation !== this.startupGeneration
@@ -327,7 +328,11 @@ export abstract class BaseServerManager extends EventEmitter {
         || this.ready
       ) return
       const fatal = parseEmbeddedServerPlatformFatal(line)
-      if (fatal) this.settleStartupError(generation, platformFatalError(fatal))
+      if (fatal?.code === 'HTTP_SERVER_INITIALIZATION_FAILED') {
+        // Bind can race the preflight. Diagnose only after this captured child exits,
+        // otherwise its own partially initialized listener could look external.
+        httpStartupFailure = platformFatalError(fatal)
+      } else if (fatal) this.settleStartupError(generation, platformFatalError(fatal))
     }
     const stdoutForwarder = createServerProcessOutputForwarder(
       stdoutLogger,
@@ -369,7 +374,7 @@ export abstract class BaseServerManager extends EventEmitter {
       this.ready = false
       this.serverProcess = null
       if (closedBeforeHealth && !this.stopPromise) {
-        void this.diagnoseExitedStartup(generation, new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`))
+        void this.diagnoseExitedStartup(generation, httpStartupFailure ?? new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`))
       } else if (code !== 0 && code !== null) {
         this.emit('error', new Error(`Server process exited with code ${code}`))
       }

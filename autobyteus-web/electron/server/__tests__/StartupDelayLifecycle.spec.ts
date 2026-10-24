@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EventEmitter } from 'events'
 import { PassThrough } from 'stream'
 import type { ChildProcess } from 'child_process'
+import { assertBackendPortAvailable } from '../backendPortAvailability'
+import { inspectPortOwner } from '../portOwnerInspector'
 import { BaseServerManager } from '../baseServerManager'
 import { WindowsServerManager } from '../windowsServerManager'
 import { ServerStatusManager } from '../serverStatusManager'
@@ -15,6 +17,7 @@ const { get, spawn, portCheck, log } = vi.hoisted(() => {
   return { get: vi.fn(), spawn: vi.fn(), portCheck: vi.fn(), log }
 })
 vi.mock('../backendPortAvailability', async importOriginal => ({ ...await importOriginal<typeof import('../backendPortAvailability')>(), assertBackendPortAvailable: vi.fn().mockResolvedValue(undefined) }))
+vi.mock('../portOwnerInspector', () => ({ inspectPortOwner: vi.fn() }))
 vi.mock('axios', () => ({ default: { get } }))
 vi.mock('child_process', async (importOriginal) => {
   // Partial mock: modules on the import path use other child_process exports (and the default export).
@@ -213,3 +216,29 @@ it('ignores a stopped generation health result while its successor remains pendi
   get.mockResolvedValue(healthy)
   await vi.advanceTimersByTimeAsync(250); await next
 })
+
+it.each([true, false])('diagnoses post-preflight HTTP initialization failure after exit (conflict=%s)', async conflict => {
+  const manager = new BaseProbe(config); const errors = vi.fn(); manager.on('error', errors);
+  const start = manager.startServer();
+  const rejected = expect(start).rejects.toThrow(conflict ? 'port 29695 is in use' : 'original HTTP failure');
+  await vi.advanceTimersByTimeAsync(0);
+  const proc = manager.currentChild()!;
+  proc.stderr!.emit('data', JSON.stringify({ protocol: EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL,
+    code: 'HTTP_SERVER_INITIALIZATION_FAILED', summary: 'original HTTP failure', logPath: null }) + '\n');
+  expect(errors).not.toHaveBeenCalled();
+  if (conflict) vi.mocked(assertBackendPortAvailable).mockRejectedValueOnce(Object.assign(new Error('busy'), { code: 'EADDRINUSE' }));
+  vi.mocked(inspectPortOwner).mockResolvedValue({ kind: 'port-conflict', port: 29695, owners: [], inspection: 'unavailable', observedAt: 'now' });
+  proc.emit('exit', 1); await rejected; expect(errors).toHaveBeenCalledOnce();
+});
+it('discards delayed port diagnosis when a newer startup owns the status', async () => {
+  const manager = new BaseProbe(config); const errors = vi.fn(); manager.on('error', errors);
+  const lookup = deferred<any>(); vi.mocked(inspectPortOwner).mockReturnValueOnce(lookup.promise);
+  vi.mocked(assertBackendPortAvailable).mockRejectedValueOnce(Object.assign(new Error('busy'), { code: 'EADDRINUSE' }));
+  const initial = manager.startServer(); const cancelled = expect(initial).rejects.toThrow('startup stopped');
+  await vi.advanceTimersByTimeAsync(0); manager.currentChild()!.emit('exit', 1);
+  await vi.advanceTimersByTimeAsync(0); await manager.stopServer(); await cancelled;
+  get.mockResolvedValue(healthy); await manager.startServer();
+  lookup.resolve({ kind: 'port-conflict', port: 29695, owners: [], inspection: 'unavailable', observedAt: 'old' });
+  await vi.advanceTimersByTimeAsync(0);
+  expect(manager.isRunning()).toBe(true); expect(errors).not.toHaveBeenCalled();
+});
