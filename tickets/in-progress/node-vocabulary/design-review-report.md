@@ -201,6 +201,11 @@ Both suggestions were taken on trust, the Case 5 pattern, now corrected.
 
 ## Findings
 
+### After round 6 (verified, no new round)
+
+- The user chose `memorySyncSourceId` ("Memory Sync source ID", `boundMemorySyncSourceId`, `memory-sync-source.json`) over `syncSourceId`, at `8e3512429b`. Each name has 0 uses at the base, and no stale old name is left in the design, the requirements or `GLOSSARY.md`. Everything above that says `syncSourceId` now reads `memorySyncSourceId`.
+- N-912's disposition is accepted: the reset note is in implementation's handoff.
+
 ### Round-6 note (non-blocking; disposition expected)
 
 - N-912, machines that ran the unreleased variant: SM-2 … SM-5 change in place. A development or test data directory where the earlier variant already ran has a completed migration record and fields named `sourceId`, so the corrected migration will not re-run there, and Memory Sync would not find its names. State in the implementation handoff that such directories are reset by hand (or their migration record removed); no runtime handling. Released user data is unaffected.

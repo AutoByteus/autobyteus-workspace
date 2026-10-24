@@ -182,3 +182,10 @@ None.
 - Material classification changes: none (`Large` / `High`).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: RSK-901 (accepted).
+
+#### After ARCH-REV-006: the user's name for Memory Sync's identity (2026-10-24; no new review round)
+
+| Item | Change | Verified at | Evidence |
+| --- | --- | --- | --- |
+| Memory Sync identity name | `syncSourceId` → `memorySyncSourceId` ("Memory Sync source ID", `boundMemorySyncSourceId`, hub file `memory-sync-source.json`), the user's choice; name-only | `8e3512429b` | 0 uses at the base for each name (server, web, iOS, Android); no stale `syncSourceId`, `sync-source.json` or "Sync source ID" in the design, the requirements or `GLOSSARY.md` |
+| N-912 | Accepted: the dev and test data reset note goes in implementation's handoff | `1fee50708e` | The Solution Designer's disposition; to be confirmed at the code-review handoff |
