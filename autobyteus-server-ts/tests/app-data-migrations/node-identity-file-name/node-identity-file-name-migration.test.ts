@@ -44,8 +44,12 @@ describe("NodeIdentityFileNameMigration (SM-1)", () => {
     expect(result.summary).toMatchObject({ migratedCount: 1, failedCount: 0 });
     expect(JSON.parse(await fs.readFile(newFile(), "utf-8"))).toEqual({ nodeId: NODE_ID, createdAt: CREATED_AT });
     expect(await exists(oldFile())).toBe(false);
-    // Nothing else is left behind (no temporary file).
-    expect(await fs.readdir(folder())).toEqual(["node-identity.json"]);
+    // The released file is kept as a backup next to it, reported in the detail; no temporary file is left behind.
+    const files = (await fs.readdir(folder())).sort();
+    expect(files).toEqual(["node-identity.json", expect.stringMatching(/^server-instance\.json\.backup-/)]);
+    const backup = files.find((name) => name.startsWith("server-instance.json.backup-"))!;
+    expect(JSON.parse(await fs.readFile(path.join(folder(), backup), "utf-8"))).toEqual({ serverInstanceId: NODE_ID, createdAt: CREATED_AT });
+    expect(result.summary.details[0]?.backupPath).toBe(path.join(folder(), backup));
   });
 
   it("a fresh install, or a re-run after success, has nothing to do", async () => {
