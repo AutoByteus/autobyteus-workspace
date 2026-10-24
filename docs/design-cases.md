@@ -94,3 +94,13 @@ Principle 15.
 - **The fix:** autobyteus-290, under the new Principle 15 (autobyteus-agents-57): a glossary (node, remote, peer, embedded local, entry, source ID) and the renames, with the stored names migrated (`DESIGN.md` rule 10). This entry is completed with 290's final fixes when it is delivered.
 - **Why it mattered:** a word with two meanings makes readers and agents mix up IDs, which is a correctness risk, not only a readability one.
 - **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun.
+
+
+### Case 8: Process Exit Is Not Resource-Lifetime Completion (backend-port-conflict-20261024, E-003/E-008/E-009, P-003/P-005)
+
+Principles 1, 2 and 13.
+
+- **The existing design did:** native background command managers lived on agent contexts, but background commands outlived those agents. Shutdown omitted those managers. The stop mechanism escalated only while the original process lived, and desktop quit started asynchronous cleanup without awaiting it.
+- **The designed correction:** one application-owned native command scope, retained independently of agent contexts; verified process-group drain even after the leader exits; an awaited application quit boundary. The ticket's D1 records the proposed correction; implementation and verification remain pending.
+- **Why it mattered:** isolated probes left an HTTP listener alive after both successful native shutdown and a stopAll result reporting success. Signal delivery and parent exit are not proof that owned resources have gone.
+- **Notice it by:** a resource that outlives its registry owner, an asynchronous teardown invoked without an exit barrier, or a completion predicate that checks a parent rather than the resource set. Port-owner inspection is diagnostic evidence, never authority to kill unrelated processes.
