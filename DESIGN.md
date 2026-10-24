@@ -346,6 +346,10 @@ update it in the same change.
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**
   [Mandatory Processor Defaults](autobyteus-server-ts/docs/design/mandatory-processor-defaults.md).
+- **Design cases:** [docs/design-cases.md](docs/design-cases.md) records real
+  design mistakes from this project's reviews, with their tickets, findings and
+  fixes. The Solution Designer adds a case when it fixes a design mistake that
+  the design principles describe.
 - **Area contracts:**
   [Agent WebSocket Streaming Protocol](autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md),
   [Streaming Parsing Architecture](autobyteus-server-ts/docs/design/streaming_parsing_architecture.md),

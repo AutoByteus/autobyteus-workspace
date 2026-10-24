@@ -1,0 +1,8 @@
+# API-02 links in the changed files (GitHub heading slugs), head 1a17575fb2
+docs/design-cases.md #2-fragmented-coordinator-chain -> file docs/design-cases.md exists ANCHOR MISSING
+DESIGN.md docs/design-cases.md -> file docs/design-cases.md exists 
+
+package: the anchor's heading at 56daf38:
+1081:### 2. Fragmented Coordinator Chain
+this repository: headings matching 'Fragmented Coordinator' in tracked files:
+root DESIGN-*.md files (REQ-3): 0
