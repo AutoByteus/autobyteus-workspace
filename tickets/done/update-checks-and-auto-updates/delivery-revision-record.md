@@ -45,7 +45,13 @@ The latest release/deployment report remains authoritative.
   - `test:integration:prepare` exit 0;
   - DEL-11..17 pass: server typecheck, the 8 E2E files (86), server unit (6717), web unit (4858), Electron typecheck and the guards;
   - Electron tests 236 of 237: `managedExtensionService` timed out under load, then passed 3/3 alone. That is FU-002, added to `follow-ups.md`.
-- Verification and finalization state: verified from the evidence, with no user check. Finalization is recorded in the release/deployment report.
+- Verification and finalization state:
+  - verified from the evidence, with no user check;
+  - ticket branch `d3892fe74e` pushed;
+  - merged `--no-ff` into `personal` as `2d5722f4fc` and pushed (`bf087d3166..2d5722f4fc`);
+  - the Secret Gate passed at each push;
+  - no release;
+  - the worktree and local branches were removed after this record was pushed, and the remote ticket branch is kept.
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup
 - Terminal return message/reference: `Delivery Completed` through `get_handoff_rules`
 - Why this delivery revision was recorded: the DR-001 block was resolved and delivery completed
