@@ -1,0 +1,72 @@
+# API-08 server Docker image from a clean clone, full container check
+# Build: git clone --no-hardlinks <worktree> /tmp/ab-api/clone; checkout 4dcdceea11 (code 25a45ee5d3); docker build --progress=plain -f autobyteus-server-ts/docker/Dockerfile.monorepo -t ab-server-api:test .
+# Run: docker run -d --name ab-server-api-test -p 127.0.0.1:56701:8000 ab-server-api:test (test-owned, no volumes; the user's autobyteus-server-* containers untouched)
+# Host checks: node probes/api-04-live-http-probe.mjs <port> - ; curl uploads. Docker 29.0.1, macOS 26.5.2; date 2026-10-24T21:04:44Z
+# Case: API-08
+
+## build excerpt (full log: 515 lines, not committed)
+# build exit: 0
+#13 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#38 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#39 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#72 naming to docker.io/library/ab-server-api:test done
+
+## host -> published 127.0.0.1:56701 (inside the container the client is the Docker gateway address: non-loopback)
+loopback | GET /rest/health | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=message,status
+loopback | GET /rest/remote-access/status | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=nodeId,pairingAvailable,phoneAccessEnabled,serverName
+loopback | POST /graphql | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /graphql?query=%7B__typename%7D | status=404 | {"content-type":"application/json","vary":"Origin"} | {"error":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","code":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","message":"This route is not available to remote clients."}
+loopback | GET /graphiql | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /graphiql/main.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /graphiql/config.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | OPTIONS /graphql origin=file:// | status=204 | {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"} | empty
+loopback | POST /graphql origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /rest/media/does-not-exist.png | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /no-such-route | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | POST /mcp/gateway | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+loopback | POST /mcp/gateway origin=http://127.0.0.1:3000 | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+loopback | POST /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway origin=http://127.0.0.1:3000 | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"} | empty
+loopback | OPTIONS /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"} | empty
+loopback | GET /mcp/agent-tools/agtrun_not_on_main | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | WS /graphql graphql-transport-ws | protocol=graphql-transport-ws first=connection_ack
+loopback | WS /ws/projects | first type=connected keys=type
+
+## host: uploads (multipart, text/plain) small and LIMIT+1
+upload-file 1 KiB: {"fileUrl":"<url>"} status=200
+upload-file LIMIT+1: {"detail":"Uploaded file is too large."} status=413
+
+## inside the container (loopback client)
+GET /graphiql -> 404 {"message":"Route GET:/graphiql not found","error":"Not Found","statusCode":404}
+GET /graphiql/main.js -> 404 {"message":"Route GET:/graphiql/main.js not found","error":"Not Found","statusCo
+GET /graphql?query=%7B__typename%7D -> 200 {"data":{"__typename":"Query"}}
+GET /rest/health -> 200 {"status":"ok","message":"Server is running"}
+
+## in-container client address seen by the server (remote-access status route classifies; ip from container)
+default via 172.17.0.1 dev eth0 
+172.17.0.0/16 dev eth0 proto kernel scope link src 172.17.0.6 
+
+## versions in the image
+v22.23.3
+fastify@5.12.7 @fastify+cors@11.3.1 @fastify+multipart@10.1.6 @fastify+static@10.1.7 @fastify+websocket@11.3.4 mercurius@16.12.1_graphql@16.12.0 
+## host-side lines vs API-04 branch LAN-client lines
+IDENTICAL to API-04 branch LAN-client lines
+
+## container log: error-level (level 50) entries: 0
+
+## mobile web served by the container (host GET /mobile/) and the viewer sanitiser in its bundle
+GET /mobile/ -> 200
+bundle with sanitiser: /app/autobyteus-server-ts/mobile-web/_nuxt/CQZyMQY9.js
+sanitize(o,{ALLOWED_TAGS:["table","thead","tbody","tr","th","td","br"],ALLOWED_ATTR:["colspan","rowspan"],ALLOW_DATA_ATTR:!1}
+lockfile not in runtime image
+(literal-string search in every mobile-web/_nuxt/*.js chunk, node inside the container)
+literal "0.18.5" in mobile chunks: none
+literal "0.20.3" in mobile chunks: none
+(SheetJS drops its unused version export when tree-shaken, so the bundle has no version literal.) xlsx packages in the image's node_modules/.pnpm (docker run --rm --entrypoint sh ab-server-api:test -c 'ls /app/node_modules/.pnpm | grep -i xlsx'):
+xlsx@https+++cdn.sheetjs.com+xlsx-0.20.3+xlsx-0.20.3.tgz
+
+## cleanup
+ab-server-api-test
+image ab-server-api:test removed
+remaining ab-server-api-test containers: 0
