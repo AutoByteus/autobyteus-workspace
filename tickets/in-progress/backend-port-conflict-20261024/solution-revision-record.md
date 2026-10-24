@@ -22,3 +22,14 @@
 - Approval impact: none; no new product intent. Runtime-only command scope, bounded verified cleanup, awaited quit and structured diagnosis realize already-approved behavior. Normal agent/idle semantics and existing provider owners preserved.
 - Review/routing: no prior independent review or implementation. Configured Large/High rule selects /software_engineering_team/architecture_reviewer; full context in solution-handoff.md.
 - Remaining limits: historical Nuxt origin not proved; baseline reproductions not full-product validation; macOS-only runtime probes; no current fix/build/merge claim.
+
+
+## SR-003 — Windows graceful entry and review-completeness corrections
+- Phase: Design; trigger ARCH-REV-001, AR-001..003, reviewer commit f9617c7380a2cbe8aecd6d17aac07c9552ec0453.
+- Prior: R1 Approved/D1 Ready, review Fail — Design Impact. Current: R1 unchanged Approved/D2 Ready for re-review, Large/High retained.
+- AR-001: replace undefined Windows signal transition with captured-child Node IPC request into single backend shutdown owner; specify early control readiness, startup-cancellation barrier/ownership transfer, ack+exit confirmation and bounded force fallback. E-015/016, P-006 support decision; live Windows and actual Electron packaging not claimed.
+- AR-002: inventory both ambient status declarations and ServerMonitor/ServerSettingsManager derived consumers, explicit no-change decisions plus updated store conflict summary/tests (E-017).
+- AR-003: name dead native factory cache/accessor removal and reference evidence E-018; no fallback scope.
+- Affected IDs: BEH-001..004, SCN-001..005, REQ-001..005, AC-001..005; REQ-006/AC-006 constraints preserved. Canonical design, investigation, handoff and project design case updated. Reviewer-owned reports untouched.
+- Approval impact: none, technical completeness within R1. No new user product decision or narrowing supported Windows form. Review findings are proposed resolved by D2, not marked Pass by Solution Designer.
+- No prerequisite/follow-up; same workspace/base/finalization. No implementation or validation claim. Reapply Large/High review route after persistence.
