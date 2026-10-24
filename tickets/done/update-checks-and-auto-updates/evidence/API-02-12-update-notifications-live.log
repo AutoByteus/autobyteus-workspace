@@ -1,0 +1,53 @@
+# API-02..API-12, API-17, API-18 — revised tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (SR-005)
+# Code 985246c53b (HEAD 48fe98d65d) + this round's test changes; macOS 26.5.2, Node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR; 2026-10-24
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" UPDATE_NOTIFICATIONS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications/update-notifications-live.e2e.test.ts --no-watch
+
+## run 1
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 16460ms
+     ✓ API-02, API-12 (AC-001, AC-005, AC-022 node side, REQ-002): a due source is checked with one quota-free head read; nothing is updated; open windows are told  1310ms
+     ✓ API-03 (RUS-001, 209 REQ-010): read state survives a restart, and a restart inside the interval makes no automatic request  1179ms
+     ✓ API-04 (209 AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  1250ms
+     ✓ API-06 (AC-017, AC-005, 209 AC-015): Update checks off stops checks and automatic updates even with the switches on, also after a restart; manual checks still notify  4583ms
+     ✓ API-10 (AC-009, REQ-009): a failing automatic update leaves the package unchanged, is notified once per revision and retried at most once per interval  2438ms
+     ✓ API-11 (AC-002 server side, REQ-001): intervals outside 15 min..24 h are refused; a shorter interval applies to the next pass of its kind only  1209ms
+     ✓ API-07 (AC-004 server side, REQ-004, QR-003): GitHub's throttling of the head read stops the pass and every later request until its time, also after a restart; the card's wait time is reported  3586ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Duration  23.01s (transform 4.66s, setup 29ms, import 6.16s, tests 16.46s, environment 0ms)
+## run 2
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 16398ms
+     ✓ API-02, API-12 (AC-001, AC-005, AC-022 node side, REQ-002): a due source is checked with one quota-free head read; nothing is updated; open windows are told  1334ms
+     ✓ API-03 (RUS-001, 209 REQ-010): read state survives a restart, and a restart inside the interval makes no automatic request  1184ms
+     ✓ API-04 (209 AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  1243ms
+     ✓ API-06 (AC-017, AC-005, 209 AC-015): Update checks off stops checks and automatic updates even with the switches on, also after a restart; manual checks still notify  4614ms
+     ✓ API-10 (AC-009, REQ-009): a failing automatic update leaves the package unchanged, is notified once per revision and retried at most once per interval  2468ms
+     ✓ API-11 (AC-002 server side, REQ-001): intervals outside 15 min..24 h are refused; a shorter interval applies to the next pass of its kind only  1213ms
+     ✓ API-07 (AC-004 server side, REQ-004, QR-003): GitHub's throttling of the head read stops the pass and every later request until its time, also after a restart; the card's wait time is reported  3471ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Duration  23.02s (transform 4.71s, setup 29ms, import 6.23s, tests 16.40s, environment 0ms)
+## run 3
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 16556ms
+     ✓ API-02, API-12 (AC-001, AC-005, AC-022 node side, REQ-002): a due source is checked with one quota-free head read; nothing is updated; open windows are told  1365ms
+     ✓ API-03 (RUS-001, 209 REQ-010): read state survives a restart, and a restart inside the interval makes no automatic request  1181ms
+     ✓ API-04 (209 AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update  1256ms
+     ✓ API-06 (AC-017, AC-005, 209 AC-015): Update checks off stops checks and automatic updates even with the switches on, also after a restart; manual checks still notify  4595ms
+     ✓ API-10 (AC-009, REQ-009): a failing automatic update leaves the package unchanged, is notified once per revision and retried at most once per interval  2429ms
+     ✓ API-11 (AC-002 server side, REQ-001): intervals outside 15 min..24 h are refused; a shorter interval applies to the next pass of its kind only  1216ms
+     ✓ API-07 (AC-004 server side, REQ-004, QR-003): GitHub's throttling of the head read stops the pass and every later request until its time, also after a restart; the card's wait time is reported  3564ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Duration  23.44s (transform 4.88s, setup 32ms, import 6.46s, tests 16.56s, environment 0ms)
+
+## mutation control: UpdatePass with this.deps.settings.isAutomatic(kind) → true (applies updates with the switch off); restored after
+     × API-02, API-12 (AC-001, AC-005, AC-022 node side, REQ-002): a due source is checked with one quota-free head read; nothing is updated; open windows are told 1276ms
+     × API-03 (RUS-001, 209 REQ-010): read state survives a restart, and a restart inside the interval makes no automatic request 1121ms
+     × API-04 (209 AC-008, AC-012): a newer revision replaces the same notification as unread; an offline pass keeps it and the row's Update 61ms
+     × API-05 (209 AC-005, AC-009, AC-011): a manual Update marks the notification handled with no outcome; Clear removes only handled ones; both survive a restart 29ms
+     × API-06 (AC-017, AC-005, 209 AC-015): Update checks off stops checks and automatic updates even with the switches on, also after a restart; manual checks still notify 4575ms
+     × API-08 (AC-010, AC-006, REQ-008): switching packages on while an update waits applies it at the next tick through the pipeline, recorded as updated automatically 48ms
+     × API-09 (AC-007, AC-008b, DEC-019): with skill sources on, local edits and added files are replaced by GitHub's revision, without a confirmation 107ms
+     × API-11 (AC-002 server side, REQ-001): intervals outside 15 min..24 h are refused; a shorter interval applies to the next pass of its kind only 1165ms
+     × API-07 (AC-004 server side, REQ-004, QR-003): GitHub's throttling of the head read stops the pass and every later request until its time, also after a restart; the card's wait time is reported 3489ms
+     × API-17 (209 CR-001, QR-005): an unreadable skill-source registry at start leaves the server and the package notification working 85ms
+      Tests  10 failed | 2 passed (12)

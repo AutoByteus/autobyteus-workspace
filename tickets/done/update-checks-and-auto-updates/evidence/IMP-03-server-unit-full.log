@@ -1,0 +1,3 @@
+IMP-03 | pnpm -C autobyteus-server-ts test:unit (vitest run tests/unit) | working tree whose server src is 95a608c456 (after it only test files and docs changed: the GraphQL schema test, the status-service test imports; both in IMP-02) | macOS, Node v22.23.1 | 2026-10-23T19:2xZ
+ Test Files  800 passed | 4 skipped (804)
+      Tests  6577 passed | 7 skipped (6584)

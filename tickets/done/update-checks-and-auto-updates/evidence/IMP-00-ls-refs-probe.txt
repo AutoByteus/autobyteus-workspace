@@ -1,0 +1,17 @@
+IMP-00 premise probe: git protocol v2 ls-refs request built as in git-ls-refs.ts (agent=autobyteus) | curl POST https://github.com/<o>/<r>.git/git-upload-pack, headers Content-Type application/x-git-upload-pack-request, Git-Protocol version=2 | macOS | 2026-10-23 | Measured
+request (xxd):
+00000000: 3030 3134 636f 6d6d 616e 643d 6c73 2d72  0014command=ls-r
+00000010: 6566 730a 3030 3135 6167 656e 743d 6175  efs.0015agent=au
+00000020: 746f 6279 7465 7573 0a30 3031 376f 626a  tobyteus.0017obj
+00000030: 6563 742d 666f 726d 6174 3d73 6861 310a  ect-format=sha1.
+00000040: 3030 3031 3030 3063 7379 6d72 6566 730a  0001000csymrefs.
+00000050: 3030 3134 7265 662d 7072 6566 6978 2048  0014ref-prefix H
+00000060: 4541 440a 3030 3030                      EAD.0000
+AutoByteus/autobyteus-agents: HTTP/2 200 
+0050d705e9a367ff6b43f00c47335890b2866dd5f4c3 HEAD symref-target:refs/heads/main
+0000
+zeit/next.js (renamed to vercel/next.js): HTTP/2 200 
+00528b583887cee277dd7036bcfdfeafbd1d6e37fc59 HEAD symref-target:refs/heads/canary
+0000
+AutoByteus/does-not-exist-xyz: 401 (earlier request)
+Hand-written requests with wrong pkt-line lengths (0013 for a 21-byte line) answered 400; the code computes lengths.

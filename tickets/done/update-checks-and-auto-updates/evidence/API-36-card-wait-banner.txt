@@ -1,0 +1,9 @@
+# API-36 — Update checks card shows the node's GitHub wait (AC-004 UI, CR-001)
+# macOS 26.5.2 arm64; packaged build from 48fe98d65d (code 985246c53b), 1.5.9-beta.2, ad-hoc; instance A on own data root /private/tmp/a210/rootA; real public GitHub (unauthenticated); scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs) via the data root's .env; 2026-10-23
+# The instance stopped; its own <data-root>/server-data/github/rate-limit.json set to {api:null, web:+2 h}; started; card opened
+
+{"api": null, "web": "2026-10-23T23:30:24.000Z"}
+banner text: GitHub asked this node to wait until Sat 01:30 AM.How o
+['auto-update-agent_package-toggle=true', 'auto-update-skill_source-toggle=true', 'auto-update-agent_runtime-toggle=true']
+githubWaitUntil: 2026-10-23T23:30:24.000Z
+# A wait learned by a real GitHub 429/503 while a window stays connected (the CR-001 timing) cannot be induced safely; the read on open is covered by IMP-13, the learning by API-07 (server E2E).

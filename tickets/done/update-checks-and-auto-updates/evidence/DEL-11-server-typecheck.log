@@ -1,0 +1,5 @@
+# DEL-11-server-typecheck — server typecheck on the integrated state
+### pnpm -C autobyteus-server-ts typecheck
+# State: merge f72210da3e (ticket code 985246c53b + tests 5faba271f5 + origin/personal bf087d3166, includes autobyteus-282); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+exit 0

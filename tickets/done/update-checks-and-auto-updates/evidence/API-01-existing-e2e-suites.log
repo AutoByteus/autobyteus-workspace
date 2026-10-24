@@ -1,0 +1,26 @@
+# API-01a..f — existing server E2E suites whose GitHub/vendor stubs SR-005 made stale
+# Code 985246c53b (HEAD 48fe98d65d) + this round's test changes; macOS 26.5.2, Node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR; 2026-10-24
+
+## inventory before any change (read-only runs on 48fe98d65d)
+update-notifications-live:  Tests 8 failed (8)
+github-skill-sources-graphql:  Tests 25 failed | 4 passed (29)
+skill-name-catalog-graphql:  Tests 1 failed | 8 passed (9)
+agent-packages-graphql:  Tests 3 failed | 5 passed (8)
+agent-package-definitions-live-refresh:  Tests 1 failed | 7 passed | 2 skipped (10)
+agent-runtimes-graphql:  Tests 3 failed | 10 passed (13)
+agent-runtimes-running-agents:  Tests 4 skipped (4)
+agy-skill-update-notice-roots:  Tests 3 skipped (3)
+
+## after the stub updates (tests/e2e/helpers/github-head-read-stub.ts: head read + Codex release redirect; 40-hex fixture SHAs)
+API-01 github-skill-sources-graphql:  Tests 29 passed (29)
+API-01 skill-name-catalog-graphql:  Tests 9 passed (9)
+API-01 agent-packages-graphql:  Tests 8 passed (8)
+API-01 agent-package-definitions-live-refresh:  Tests 8 passed | 2 skipped (10)
+API-01e agent-runtimes-graphql:  Tests 13 passed (13)
+
+## API-01f agent-runtimes-running-agents (after test:integration:prepare)
+HEAD, stub updated only:  Tests 1 failed | 3 passed (4); repeats:  Tests 1 failed | 3 passed (4); Tests 4 passed (4); Tests 1 failed | 3 passed (4);
+BASE d2820672c3 (its own src and tests, temporarily checked out, then restored):  Tests 4 passed (4); Tests 1 failed | 3 passed (4); Tests 4 passed (4); Tests 1 failed | 3 passed (4); Tests 4 passed (4);
+failing assertion on both: 'Timed out waiting for Codex has an update again' (RA-04)
+cause (diagnostic trace, temporary): RA-03's successful update starts its own re-check (AR-006), which stays 'checking' until Codex's sign-in is read; RA-04's Check (checkAll) skips a checking row, so the re-check ends with the release it read before RA-04 set the newer one (vendor request count unchanged: req=2).
+baseline fix (own commit): RA-04 presses Check again until the newer release shows. After:  Tests 4 passed (4); Tests 4 passed (4); Tests 4 passed (4); Tests 4 passed (4); Tests 4 passed (4); Tests 4 passed (4);

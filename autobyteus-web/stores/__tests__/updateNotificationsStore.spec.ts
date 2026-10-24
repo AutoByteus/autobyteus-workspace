@@ -24,7 +24,7 @@ const B = 'b'.repeat(40)
 const node = (overrides: Partial<NodeUpdateNotification> = {}): NodeUpdateNotification => ({
   kind: 'AGENT_PACKAGE', sourceId: 'github:acme/agents', name: 'acme/agents', repositoryUrl: 'https://github.com/acme/agents',
   defaultBranch: 'main', installedRevision: A, latestRevision: B, foundAt: '2026-10-20T09:00:00.000Z', read: false,
-  state: 'WAITING', handledRevision: null, handledAt: null, ...overrides,
+  state: 'WAITING', handledRevision: null, handledAt: null, outcome: null, outcomeReason: null, outcomeAt: null, ...overrides,
 })
 const appRecord = (overrides: Record<string, unknown> = {}) => ({
   version: '1.5.7', fromVersion: '1.5.6', foundAt: '2026-10-20T10:00:00.000Z', read: false, state: 'waiting' as const,

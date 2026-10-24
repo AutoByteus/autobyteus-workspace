@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import type { AppUpdateChannel, AppUpdateState, AppUpdateStatus } from '~/shared/appUpdateTypes';
+import type { AppUpdateAutoCheck, AppUpdateChannel, AppUpdateState, AppUpdateStatus } from '~/shared/appUpdateTypes';
 import {
   buildAppUpdateErrorToastSignature,
   getAppUpdateErrorToastMessageKey,
-  isQuietStartupAppUpdateError,
+  isQuietBackgroundAppUpdateError,
 } from '~/utils/appUpdateErrorDisplay';
 
 type Cleanup = () => void;
@@ -40,6 +40,7 @@ const DEFAULT_STATE: AppUpdateStatePayload = {
   errorOperation: null,
   checkedAt: null,
   notification: null,
+  autoCheck: null,
 };
 
 export const useAppUpdateStore = defineStore('appUpdate', {
@@ -189,6 +190,20 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       }
     },
 
+    /**
+     * The app's own automatic checks: its switch and interval (Settings → Updates); the shell owns
+     * them. Returns whether the shell took the change (a refused interval leaves the old one).
+     */
+    async setAutoCheck(change: Partial<AppUpdateAutoCheck>): Promise<boolean> {
+      if (!this.autoCheck || !window.electronAPI?.setAppUpdateAutoCheck) {
+        return false;
+      }
+      const requested: AppUpdateAutoCheck = { ...this.autoCheck, ...change };
+      const state = await window.electronAPI.setAppUpdateAutoCheck(requested);
+      this.applyRemoteState(state);
+      return state.autoCheck?.enabled === requested.enabled && state.autoCheck.intervalMinutes === requested.intervalMinutes;
+    },
+
     /** The user saw the app update notification (the shell keeps its read state). */
     async markNotificationRead(): Promise<void> {
       if (!this.notification || this.notification.read || !window.electronAPI?.markAppUpdateNotificationRead) {
@@ -230,8 +245,9 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       }
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
       this.notification = payload.notification !== undefined ? payload.notification : this.notification;
+      this.autoCheck = payload.autoCheck !== undefined ? payload.autoCheck : this.autoCheck;
 
-      const isQuietError = isQuietStartupAppUpdateError(this);
+      const isQuietError = isQuietBackgroundAppUpdateError(this);
 
       if (this.status !== 'error') {
         this.lastErrorToastSignature = null;

@@ -1,0 +1,6 @@
+IMP-10 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/update-notifications/update-check-request-budget.test.ts --no-watch --reporter verbose | commit 62082fc36e | macOS, Node v22.23.1 | 2026-10-23T20:02Z
+100 GitHub packages through the real AgentPackageService, GitHubRepositoryClient, publicGitHubRequest and GitHubRateLimitGate; only fetch is a counting fake. 240 one-minute passes at the 15-minute interval.
+ ✓ tests/unit/update-notifications/update-check-request-budget.test.ts > automatic checks' GitHub request budget (AC-003, QR-001) > makes no REST request and at most one request per source per interval 22365ms
+ ✓ tests/unit/update-notifications/update-check-request-budget.test.ts > automatic checks' GitHub request budget (AC-003, QR-001) > a throttling answer stops the pass, and the node makes no request until GitHub's time 1980ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

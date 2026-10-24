@@ -63,6 +63,7 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
       AUTOBYTEUS_DATA_DIR: '/tmp/isolated-root/server-data',
       AUTOBYTEUS_SERVER_HOST: 'http://127.0.0.1:31041',
       ...runtimeOverrides,
+      AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '1',
     }
 
     const env = buildServerProcessEnv(input())
@@ -93,6 +94,17 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
     const env = buildServerProcessEnv(input({ runtimeOverrides: { AUTOBYTEUS_SERVER_HOST: 'http://override' } }))
     expect(env.AUTOBYTEUS_SERVER_HOST).toBe('http://override')
   })
+
+  it('marks the server as the desktop\'s own node; no inherited or override value changes it (AR-005)', () => {
+    for (const policy of ['inherit-caller', 'isolated-baseline'] as const) {
+      const env = buildServerProcessEnv(input({
+        policy,
+        callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '0' },
+        runtimeOverrides: { AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '' },
+      }))
+      expect(env.AUTOBYTEUS_DESKTOP_EMBEDDED_NODE).toBe('1')
+    }
+  })
 })
 
 describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
@@ -118,6 +130,7 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
       AUTOBYTEUS_SERVER_HOST: 'http://127.0.0.1:31041',
       AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token',
+      AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '1',
     })
   })
 

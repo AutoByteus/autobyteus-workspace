@@ -320,54 +320,108 @@ without a status badge (see Notification Center below).
 
 ## Notification Center (Update Notifications)
 
-The quiet place where waiting updates of the app, imported GitHub agent
-packages and imported GitHub skill sources are shown. Nothing opens by itself;
-nothing is updated without the user's Update.
+The quiet place where updates of the app, imported GitHub agent packages,
+imported GitHub skill sources and (in the desktop's own window) installed agent
+runtimes are shown. Nothing opens by itself. Nothing is updated without the
+user's Update, except a kind whose **Update automatically** switch the user
+turned on (packages, skill sources, runtimes; never the app).
 
 - **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
   ("3 updates") on the right of the sidebar's Settings row
   (`AppLeftPanel.vue`), or an icon with a count badge above the cog in the
   collapsed strip (`LeftSidebarStrip.vue`). The count is the number of waiting
-  (not handled) rows, the app included. Solid `sky-700` while any is unread,
-  soft `sky-100` once all are read, absent at 0. Hover or focus lists the kinds.
-  It shows where Settings does (`isFeatureAvailableInRuntime('desktopSettings')`):
-  desktop and browser windows, not the mobile client.
+  (not handled) rows, the app included. When nothing waits but an automatic
+  update is unread, the pill reads "N updated" (it stays while the panel is
+  open). Solid `sky-700` while any is unread, soft `sky-100` once all are read,
+  absent otherwise. Hover or focus lists the kinds and "N updated
+  automatically". It shows where Settings does
+  (`isFeatureAvailableInRuntime('desktopSettings')`): desktop and browser
+  windows, not the mobile client.
 - **Panel.** `components/notifications/NotificationCenter.vue` (mounted in
-  `app.vue`, teleported, `z-[90]`) with `NotificationSection.vue` and
-  `NotificationRow.vue`. One section per kind (Software update first, then by
-  newest waiting update), one row per update (waiting rows newest first, then
-  handled), first three rows then "Show N more". A row's name or change line
-  toggles its details: repository · branch and "See changes on GitHub" (the
-  compare page of the two revisions); for the app, the release notes and the
-  Release page. ✕, Esc or a click outside closes it; ✕ and Esc return focus to
-  the entry. Opening marks every waiting row read on the node and in the shell;
-  the "New" dots stay until the panel closes.
+  `app.vue`, teleported, `z-[90]`), fixed on the right side of the whole window
+  from the top (368 px, grey `slate-200` surface, a fixed title row with ✕),
+  from either entry. One white card per kind (`NotificationSection.vue`:
+  Software update first, then by newest waiting update), one row per update
+  (`NotificationRow.vue`: waiting rows newest first, then handled), first three
+  rows then "Show N more". A row's name or change line toggles its details:
+  repository · branch and "See changes on GitHub" (the compare page of the two
+  revisions); for the app, the release notes and the Release page; for a
+  runtime, that Update runs its own update as Settings → Agent Runtimes does.
+  ✕, Esc or a click outside closes it; ✕ and Esc return focus to the entry.
+  Opening marks every waiting row and every unread automatic update read on the
+  node and in the shell; the "New" dots stay until the panel closes.
+- **Automatic updates.** `components/notifications/AutoUpdateSwitch.vue` sits
+  under the header of the packages, skill sources and runtimes cards and in the
+  Update checks card: one node setting per kind, both places read and write the
+  same `stores/updateAutomationStore.ts`. Turning packages or skill sources on
+  first opens a danger confirmation (local changes are replaced without asking
+  and cannot be restored); runtimes turn on at once. Once on, the card says how
+  many waiting updates will be installed within about a minute; with Update
+  checks off it says it has no effect. Confirmations opened from the panel use
+  `ConfirmationModal`'s `layerClass="z-[100]"` so they sit above it, and the
+  panel leaves outside clicks and Esc to them.
+- **Outcomes** are rows of their kind: "Updated automatically to …" (green,
+  unread until seen, with the compare link, or "From <version>" for a runtime,
+  and Clear); an automatic failure keeps the row waiting with a red box "Automatic
+  update failed. Nothing was changed." and the reason, plus Update; a runtime
+  whose agents run shows Update at 50 % (`aria-disabled`) and "Update unavailable
+  while N agents are running." (with the switch on: "It will be updated
+  automatically once no agent is running.").
 - **Row actions** run the existing explicit update of their kind:
   `agentPackagesStore.updateAgentPackage`; for a skill source, the shared
   `components/skills/SkillSourceUpdateConfirmation.vue` (also used by the skill
-  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for the
-  app, Download (`appUpdateStore.downloadUpdate`) → progress → Install and
-  restart. A failure shows "Update failed. Nothing was changed." with the reason
-  and Try again; a handled row shows "Updated to …" and Clear. There is no
-  dismiss or skip.
+  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for a
+  runtime, `updateAgentRuntime` through `useAgentRuntimes`; for the app,
+  Download (`appUpdateStore.downloadUpdate`) → progress → Install and restart. A
+  failure shows "Update failed. Nothing was changed." with the reason (a
+  runtime: the vendor's output) and Try again; a handled row shows "Updated to
+  …" and Clear. There is no dismiss or skip.
+- **Agent runtimes** show only in the own window of the desktop's embedded node
+  (`utils/ownNodeWindow.ts`: the window is the embedded window, the rule
+  Settings → Agent Runtimes uses, and the node reports `desktopEmbeddedNode`).
+  While the panel shows runtime rows, `NotificationRuntimeReader.vue` reads the
+  runtimes with `useAgentRuntimes({ checkOnRebind: false })` (it never starts a
+  check) and lends the readings to the store: running agents, an update
+  running anywhere, and how the row's own update ended.
 - **Data.** `stores/updateNotificationsStore.ts` is the only place that combines
   the bound node's records (GraphQL `updateNotifications`,
   `markUpdateNotificationsRead`, `clearUpdateNotification(kind, sourceId)`) with
   the shell's app record (`AppUpdateState.notification`, IPC
-  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). It re-reads on
-  every `/ws/update-notifications` frame
+  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). The
+  `/ws/update-notifications` feed
   (`services/updateNotifications/updateNotificationChangeFeed.ts`, retained
-  app-wide by `useUpdateNotificationChangeFeed`) and drops the rows when the
-  window is bound to another node. A browser window has no app row.
-  `stores/notificationCenterStore.ts` owns open/closed, position and the "New"
-  dots.
-- **Setting.** Settings → Server Settings → Basics → **Update checks** (last
-  card): the node's switch for background checks, with the description of the
-  network calls (at most every 6 hours, `api.github.com`, no account or token,
-  nothing sent to AutoByteus; the desktop app also checks GitHub releases for
-  its own update at start). Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
-- The former self-opening app update card (`AppUpdateNotice`) is gone; Settings
-  → Updates keeps all app update controls.
+  app-wide by `useUpdateNotificationChangeFeed`) re-reads the records on
+  `update_notifications_changed`, the automation settings on
+  `update_settings_changed`, and both on `connected`. Both stores drop their
+  data when the window is bound to another node. A browser window has no app
+  row. `stores/notificationCenterStore.ts` owns open/closed, the "New" dots and
+  whether a confirmation opened from the panel is showing.
+- **Setting.** Settings → Server Settings → Basics → **Update checks**
+  (`UpdateChecksCard.vue`, last card, full width): the node's switch for
+  background checks with what it contacts (github.com for packages and skill
+  sources; for runtimes GitHub (Codex), downloads.claude.ai, Antigravity's
+  updater, xAI (Grok); GitHub downloads and each runtime's own update command
+  for automatic updates; no account or token; nothing sent to AutoByteus), an
+  amber banner while GitHub asks the node to wait (a wait changes no setting and
+  is announced by nothing, so the card re-reads the settings when it opens and
+  drops the banner when the time passes) or while checks are off, "How
+  often to check" (`UpdateIntervalField.vue`: a whole number and minutes or
+  hours, 15 minutes to 24 hours, saved on blur, Enter or a unit change, "Saved"
+  for about 2 s; 30 / 30 / 60 minutes by default) and "Automatic updates" (the
+  three switches). Runtime parts show only where the panel shows runtimes.
+  Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
+- **Settings → Updates** (`AboutSettingsManager.vue`) keeps all app update
+  controls (the former self-opening `AppUpdateNotice` is gone). It also holds
+  the app's own automatic check (`AppUpdateState.autoCheck`, owned by the
+  desktop shell, see `electron_packaging.md`): a switch (on by default) and an
+  interval (60 minutes by default, 15 minutes to 24 hours, the same
+  `UpdateIntervalField`), the line "Automatic checks: every …/off" under Last
+  Checked, the status "Check failed" after a failed check and "Automatic checks
+  are off" before any check while off. A failed periodic check is quiet (no
+  toast, `isQuietBackgroundAppUpdateError`) and adds "The last automatic check
+  failed. The next one runs at the interval." A found app update is only
+  announced; Download and Install stay the user's actions. Windows without the
+  shell's checks (browser windows, disabled updates) have no such section.
 
 ## Server Settings: Embedding
 

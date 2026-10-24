@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { CODEX_LATEST_RELEASE_URL, codexLatestReleaseResponse } from "./github-head-read-stub.js";
 
 /**
  * Shared pieces of the Settings → Agent Runtimes server E2E files (ticket runtime-lifecycle-review): the scripted
@@ -70,10 +71,12 @@ export const isProcessAlive = (pid: number | null): boolean => {
   try { process.kill(pid, 0); return true; } catch { return false; }
 };
 
-export const CODEX_RELEASES_URL = "https://api.github.com/repos/openai/codex/releases/latest";
+/** Codex's newest version comes from GitHub's latest-release redirect (quota-free, update-checks-and-auto-updates). */
+export const CODEX_RELEASES_URL = CODEX_LATEST_RELEASE_URL;
 export const CLAUDE_RELEASES_URL = "https://downloads.claude.ai/claude-code-releases/latest";
 export const ANTIGRAVITY_MANIFEST_PREFIX = "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/";
 
+/** For Codex, `body` is the release tag GitHub redirects to when `status` is 302; another status is answered as it is. */
 type SourceAnswer = { status: number; body: string };
 
 /**
@@ -84,7 +87,7 @@ type SourceAnswer = { status: number; body: string };
 export const installVendorSourceStub = () => {
   const realFetch = globalThis.fetch;
   const answers: Record<"codex" | "claude" | "antigravity", SourceAnswer> = {
-    codex: { status: 200, body: JSON.stringify({ tag_name: "rust-v0.163.0", name: "0.163.0", draft: false, prerelease: false }) },
+    codex: { status: 302, body: "rust-v0.163.0" },
     claude: { status: 200, body: "2.1.304\n" },
     antigravity: { status: 200, body: JSON.stringify({ version: "1.4.3", url: "https://example.invalid/agy.tar.gz", sha256: "0" }) },
   };
@@ -94,7 +97,10 @@ export const installVendorSourceStub = () => {
   const respond = (answer: SourceAnswer) => new Response(answer.body, { status: answer.status });
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    if (url === CODEX_RELEASES_URL) { requests.push(url); return respond(answers.codex); }
+    if (url === CODEX_RELEASES_URL) {
+      requests.push(url);
+      return answers.codex.status === 302 ? codexLatestReleaseResponse(answers.codex.body) : respond(answers.codex);
+    }
     if (url.startsWith("https://downloads.claude.ai/claude-code-releases/")) { requests.push(url); return respond(answers.claude); }
     if (url.startsWith(ANTIGRAVITY_MANIFEST_PREFIX)) {
       requests.push(url);

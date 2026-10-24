@@ -71,13 +71,13 @@ describe("AgentPackageService GitHub update state", () => {
     }
   }
 
-  const serviceFor = (setupResult: Awaited<ReturnType<typeof setup>>, fetchRepositoryRevisionMetadata: () => Promise<GitHubRepositoryRevisionMetadata>) =>
+  const serviceFor = (setupResult: Awaited<ReturnType<typeof setup>>, readHead: () => Promise<GitHubRepositoryRevisionMetadata>) =>
     new AgentPackageService({
       skillNames: { assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }) },
       rootSettingsStore: setupResult.rootSettingsStore,
       registryStore: setupResult.registryStore,
       installer: new StagingInstaller(),
-      githubClient: { fetchRepositoryRevisionMetadata },
+      githubClient: { fetchDefaultBranchHead: readHead },
       reloadAgentPackageDefinitions: async () => undefined,
     });
 

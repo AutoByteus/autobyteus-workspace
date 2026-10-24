@@ -1,4 +1,5 @@
 import type {
+  AppUpdateAutoCheck,
   AppUpdateChannel,
   AppUpdateChannelChangeResult,
   AppUpdateState,
@@ -66,6 +67,7 @@ declare global {
       setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
       markAppUpdateNotificationRead: () => Promise<AppUpdateState>;
       clearAppUpdateNotification: () => Promise<AppUpdateState>;
+      setAppUpdateAutoCheck: (settings: AppUpdateAutoCheck) => Promise<AppUpdateState>;
       onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
 
       getLogFilePath: () => Promise<string>;

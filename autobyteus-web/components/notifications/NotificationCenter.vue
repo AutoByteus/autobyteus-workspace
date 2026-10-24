@@ -1,34 +1,37 @@
 <template>
-  <!-- The Notification Center: opened only from the sidebar entry, it floats next to that entry over the current
-       page. One white panel, a section per kind, one row per update with its action in place. ✕, Esc, a click
-       outside or the entry again closes it. -->
+  <!-- The Notification Center: opened from the sidebar entry (pill or strip icon), it floats on the right side of the
+       whole window, from the top, over the current page. A grey surface with a fixed title row and one white card per
+       kind, one row per update with its action in place. ✕, Esc, a click outside or the entry again closes it. -->
   <Teleport to="body">
     <transition name="notification-center">
       <section
-        v-if="center.isOpen && center.anchor"
+        v-if="center.isOpen"
         ref="panel"
-        class="fixed z-[90] flex w-[360px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl border border-sky-200 bg-white shadow-xl outline-none"
-        :style="position"
+        class="fixed right-2 top-2 z-[90] flex max-h-[calc(100vh-16px)] w-[368px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl border border-slate-300 bg-slate-200 shadow-2xl ring-1 ring-black/5 outline-none"
         role="dialog"
         tabindex="-1"
         :aria-labelledby="headingId"
         data-testid="notification-center"
       >
-        <h2 :id="headingId" class="sr-only">{{ $t('settings.notifications.title') }}</h2>
-        <button
-          type="button"
-          class="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-gray-400 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
-          :aria-label="$t('settings.notifications.center.close')"
-          :title="$t('settings.notifications.center.close')"
-          data-testid="notification-center-close"
-          @click="close(true)"
-        ><Icon icon="heroicons:x-mark-20-solid" class="h-4 w-4" aria-hidden="true" /></button>
+        <!-- A fixed title row: the rows scroll under it, never under the close button. -->
+        <div class="flex h-11 flex-shrink-0 items-center justify-between border-b border-slate-300/60 pl-4 pr-2.5">
+          <h2 :id="headingId" class="text-sm font-semibold text-gray-900">{{ $t('settings.notifications.title') }}</h2>
+          <button
+            type="button"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+            :aria-label="$t('settings.notifications.center.close')"
+            :title="$t('settings.notifications.center.close')"
+            data-testid="notification-center-close"
+            @click="close(true)"
+          ><Icon icon="heroicons:x-mark-20-solid" class="h-4 w-4" aria-hidden="true" /></button>
+        </div>
 
+        <NotificationRuntimeReader v-if="showsRuntimeRows" />
         <div class="min-h-0 flex-1 overflow-y-auto">
-          <ul v-if="!notifications.isEmpty" class="divide-y divide-gray-100" :aria-label="$t('settings.notifications.listLabel')">
+          <ul v-if="!notifications.isEmpty" class="space-y-3 p-3" :aria-label="$t('settings.notifications.listLabel')">
             <NotificationSection v-for="section in notifications.sections" :key="section.kind" :section="section" @update="update" />
           </ul>
-          <div v-else class="px-4 py-6 text-center" role="status" data-testid="notification-center-empty">
+          <div v-else class="m-3 rounded-xl border border-slate-200 bg-white px-4 py-6 text-center shadow-sm" role="status" data-testid="notification-center-empty">
             <p class="text-sm font-medium text-gray-700">{{ $t('settings.notifications.empty.title') }}</p>
             <p class="mt-1 text-xs leading-5 text-gray-500">{{ $t(checksOff ? 'settings.notifications.empty.off' : 'settings.notifications.empty.on') }}</p>
           </div>
@@ -37,7 +40,7 @@
     </transition>
 
     <!-- A skill source's Update keeps its existing confirmation (local edits are replaced). -->
-    <SkillSourceUpdateConfirmation :show="!!confirming" :source="confirmingTarget" @confirm="confirmSkillUpdate" @cancel="confirming = null" />
+    <SkillSourceUpdateConfirmation layer-class="z-[100]" :show="!!confirming" :source="confirmingTarget" @confirm="confirmSkillUpdate" @cancel="confirming = null" />
   </Teleport>
 </template>
 
@@ -49,6 +52,7 @@ import { useNotificationCenterStore } from '~/stores/notificationCenterStore'
 import { useUpdateNotificationsStore, type NotificationRow, type SourceNotificationRow } from '~/stores/updateNotificationsStore'
 import { useUpdateChecksCapabilityStore } from '~/stores/capabilities/updateChecksCapabilityStore'
 import NotificationSection from './NotificationSection.vue'
+import NotificationRuntimeReader from './NotificationRuntimeReader.vue'
 
 /** The entries that toggle the panel; focus returns to the visible one. */
 const ENTRY_SELECTOR = '[data-test="sidebar-notifications-updates"]'
@@ -65,16 +69,13 @@ const confirmingTarget = computed<SkillSourceUpdateTarget | null>(() => confirmi
   name: confirming.value.name, repositoryUrl: confirming.value.repositoryUrl, branch: confirming.value.branch,
   installedRevision: confirming.value.installedRevision, latestRevision: confirming.value.latestRevision,
 })
-/** Above the Settings row (docked panel) or right of the strip icon; the body scrolls in short windows. */
-const position = computed(() => {
-  const anchor = center.anchor
-  if (!anchor) return {}
-  return { left: `${anchor.left}px`, bottom: `${anchor.bottom}px`, maxHeight: `min(72vh, calc(100vh - ${anchor.bottom + 16}px))` }
-})
+/** Runtime rows read their runtimes' state (running agents, a running update) only while the panel shows them. */
+const showsRuntimeRows = computed(() => notifications.sections.some((section) => section.kind === 'agent_runtime'))
 
 const update = (row: NotificationRow) => {
   if (row.kind === 'skill_source') confirming.value = row
   else if (row.kind === 'agent_package') void notifications.updateSource(row)
+  else if (row.kind === 'agent_runtime') void notifications.updateRuntime(row)
 }
 const confirmSkillUpdate = () => {
   const row = confirming.value
@@ -93,13 +94,13 @@ const close = (focusEntry: boolean) => {
 /** A click outside the panel and the entry closes it (not while the skill confirmation is open). */
 const onPointerDown = (event: PointerEvent) => {
   const target = event.target as HTMLElement | null
-  if (!center.isOpen || !target || confirming.value) return
+  if (!center.isOpen || !target || confirming.value || center.modalOpen) return
   if (panel.value?.contains(target) || target.closest(ENTRY_SELECTOR)) return
   close(false)
 }
 /** Esc closes it wherever focus is; with the skill confirmation open, Esc closes that first. */
 const onKeyDown = (event: KeyboardEvent) => {
-  if (event.key !== 'Escape' || !center.isOpen) return
+  if (event.key !== 'Escape' || !center.isOpen || center.modalOpen) return
   event.preventDefault()
   if (confirming.value) { confirming.value = null; return }
   close(true)
@@ -121,7 +122,7 @@ onBeforeUnmount(stopListening)
 
 <style scoped>
 .notification-center-enter-active, .notification-center-leave-active { transition: opacity 150ms ease, transform 150ms ease; }
-.notification-center-enter-from, .notification-center-leave-to { opacity: 0; transform: translateY(6px); }
+.notification-center-enter-from, .notification-center-leave-to { opacity: 0; transform: translateX(8px); }
 @media (prefers-reduced-motion: reduce) {
   .notification-center-enter-active, .notification-center-leave-active { transition: none; }
 }

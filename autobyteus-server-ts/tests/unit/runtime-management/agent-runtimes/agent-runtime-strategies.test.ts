@@ -136,13 +136,18 @@ describe("Codex sign-in (account/read, the rule application readiness has always
     expect(release).toHaveBeenCalledOnce();
   });
 
-  it("reads the newest version from the latest GitHub release tag", async () => {
-    const fetchMock = stubFetch(JSON.stringify({ tag_name: "rust-v0.164.0" }));
-    const { strategy } = codexWith(async () => ({}));
+  it("reads the newest version from the tag of the latest-release redirect (no REST quota, REQ-002)", async () => {
+    const fetchMock = stubFetch("must not be fetched");
+    const fetchLatestReleaseTag = vi.fn(async () => "rust-v0.164.0");
+    const strategy = createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire: vi.fn() } as never,
+      githubClient: { fetchLatestReleaseTag } });
     await expect(strategy.readLatestVersion("codex")).resolves.toBe("0.164.0");
-    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.github.com/repos/openai/codex/releases/latest");
-    stubFetch("rate limited", 403);
-    await expect(strategy.readLatestVersion("codex")).rejects.toThrow("HTTP 403");
+    expect(fetchLatestReleaseTag).toHaveBeenCalledExactlyOnceWith("openai", "codex");
+    expect(fetchMock).not.toHaveBeenCalled();
+    fetchLatestReleaseTag.mockResolvedValueOnce("nightly");
+    await expect(strategy.readLatestVersion("codex")).rejects.toThrow("Codex release has no version.");
+    fetchLatestReleaseTag.mockRejectedValueOnce(new Error("GitHub latest release request answered HTTP 503."));
+    await expect(strategy.readLatestVersion("codex")).rejects.toThrow("HTTP 503");
   });
 });
 

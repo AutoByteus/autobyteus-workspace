@@ -1,0 +1,106 @@
+{
+  "api20": {
+    "rows": [
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "codex_app_server",
+        "name": "codex_app_server",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "0.150.0",
+        "latestRevision": "0.163.0",
+        "foundAt": "2026-10-23T22:11:11.823Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "claude_agent_sdk",
+        "name": "claude_agent_sdk",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "2.1.200",
+        "latestRevision": "2.1.304",
+        "foundAt": "2026-10-23T22:11:11.843Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      }
+    ]
+  },
+  "api21": {
+    "codexRunId": "runtime_update_agent_7282697fca254b9198f63532f147165e"
+  },
+  "api22": {
+    "waiting": {
+      "kind": "AGENT_RUNTIME",
+      "sourceId": "codex_app_server",
+      "name": "codex_app_server",
+      "repositoryUrl": null,
+      "defaultBranch": null,
+      "installedRevision": "0.150.0",
+      "latestRevision": "0.163.0",
+      "foundAt": "2026-10-23T22:11:11.823Z",
+      "read": false,
+      "state": "WAITING",
+      "handledRevision": null,
+      "handledAt": null,
+      "outcome": "AUTO_WAITING",
+      "outcomeReason": "Update unavailable while 1 agent(s) are running.",
+      "outcomeAt": "2026-10-23T23:14:15.983Z"
+    },
+    "claudeFailed": {
+      "kind": "AGENT_RUNTIME",
+      "sourceId": "claude_agent_sdk",
+      "name": "claude_agent_sdk",
+      "repositoryUrl": null,
+      "defaultBranch": null,
+      "installedRevision": "2.1.200",
+      "latestRevision": "2.1.304",
+      "foundAt": "2026-10-23T22:11:11.843Z",
+      "read": false,
+      "state": "WAITING",
+      "handledRevision": null,
+      "handledAt": null,
+      "outcome": "AUTO_FAILED",
+      "outcomeReason": "Current version: 2.1.200\nChecking for updates to latest version...\nClaude is up to date!",
+      "outcomeAt": "2026-10-23T23:14:16.623Z"
+    },
+    "updated": {
+      "kind": "AGENT_RUNTIME",
+      "sourceId": "codex_app_server",
+      "name": "codex_app_server",
+      "repositoryUrl": null,
+      "defaultBranch": null,
+      "installedRevision": "0.150.0",
+      "latestRevision": "0.163.0",
+      "foundAt": "2026-10-23T22:11:11.823Z",
+      "read": false,
+      "state": "HANDLED",
+      "handledRevision": "0.163.0",
+      "handledAt": "2026-10-23T23:17:21.863Z",
+      "outcome": "AUTO_UPDATED",
+      "outcomeReason": null,
+      "outcomeAt": "2026-10-23T23:17:21.863Z"
+    }
+  },
+  "vendorRequests": [
+    "https://github.com/openai/codex/releases/latest",
+    "https://downloads.claude.ai/claude-code-releases/latest",
+    "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/darwin_arm64.json",
+    "https://github.com/openai/codex/releases/latest",
+    "https://downloads.claude.ai/claude-code-releases/latest",
+    "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/darwin_arm64.json",
+    "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/darwin_arm64.json",
+    "https://github.com/openai/codex/releases/latest"
+  ]
+}

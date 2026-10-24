@@ -1,0 +1,2 @@
+IMP-11 | the UI spec's exact-strings table (ui-ux-spec.md, design repo 5f5fb4c) compared with en and zh-CN catalogs | commit 62082fc36e | macOS | 2026-10-23T20:02Z
+79 spec rows x 2 languages checked; mismatches: 0

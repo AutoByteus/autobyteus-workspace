@@ -34,11 +34,14 @@ export function getAppUpdateErrorToastMessageKey(errorKind: AppUpdateErrorKind |
   return TOAST_MESSAGE_KEYS[resolveKind(errorKind)];
 }
 
-/** A check the user did not start never raises a toast (DEC-016); Settings → Updates shows its error. */
-export function isQuietStartupAppUpdateError(
+/**
+ * A check the user did not start (at launch or periodically) never raises a toast (DEC-016, REQ-025);
+ * Settings → Updates shows its error.
+ */
+export function isQuietBackgroundAppUpdateError(
   state: Pick<AppUpdateState, 'status' | 'errorOperation'>,
 ): boolean {
-  return state.status === 'error' && state.errorOperation === 'startup-check';
+  return state.status === 'error' && (state.errorOperation === 'startup-check' || state.errorOperation === 'periodic-check');
 }
 
 export function buildAppUpdateErrorToastSignature(

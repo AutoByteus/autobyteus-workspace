@@ -285,7 +285,6 @@ export const buildStudioServer = async (input: {
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });
-    updateNotifications = composeUpdateNotifications();
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,
@@ -351,6 +350,8 @@ export const buildStudioServer = async (input: {
       codexClientManager: getCodexAppServerClientManager(),
       applicationActiveAgentRuns: currentApplicationRuntime.hostManagement.activeAgentRuns,
     });
+    // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
+    updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
 
     const app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),

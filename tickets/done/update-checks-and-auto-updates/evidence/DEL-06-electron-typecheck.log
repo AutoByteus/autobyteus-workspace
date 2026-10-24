@@ -1,0 +1,5 @@
+# DEL-06-electron-typecheck — Electron typecheck on the integrated state
+### pnpm exec tsc -p electron/tsconfig.json --noEmit
+# State: merge 4c2b43a3d7 (ticket code 985246c53b + tests 5faba271f5 + origin/personal 1c9edce551); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+exit 0

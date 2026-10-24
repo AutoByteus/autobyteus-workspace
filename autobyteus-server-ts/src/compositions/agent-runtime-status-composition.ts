@@ -8,7 +8,7 @@ import {
 import type { AgentRuntimeKind } from "../runtime-management/agent-runtimes/agent-runtime-types.js";
 import { createAgentRuntimeStrategies } from "../runtime-management/agent-runtimes/strategies/create-agent-runtime-strategies.js";
 
-export type AgentRuntimeStatusHandle = Readonly<{ close(): Promise<void> }>;
+export type AgentRuntimeStatusHandle = Readonly<{ service: AgentRuntimeStatusService; close(): Promise<void> }>;
 
 /** Standalone, team and Org member agents of the process `AgentRunManager` running on `runtimeKind`. */
 const countProcessAgentRuns = (runtimeKind: AgentRuntimeKind): number => {
@@ -30,10 +30,12 @@ export const composeAgentRuntimeStatus = (input: Readonly<{
   applicationActiveAgentRuns: ApplicationPlatformHostManagementContracts["activeAgentRuns"];
 }>): AgentRuntimeStatusHandle => {
   const strategies = createAgentRuntimeStrategies({ codexClientManager: input.codexClientManager });
-  return configureAgentRuntimeStatusService(new AgentRuntimeStatusService({
+  const service = new AgentRuntimeStatusService({
     strategies,
     signInReader: new AgentRuntimeSignInReader(strategies),
     countRunningAgents: (runtimeKind) =>
       countProcessAgentRuns(runtimeKind) + input.applicationActiveAgentRuns.countByRuntimeKind(runtimeKind),
-  }));
+  });
+  const binding = configureAgentRuntimeStatusService(service);
+  return Object.freeze({ service, close: () => binding.close() });
 };

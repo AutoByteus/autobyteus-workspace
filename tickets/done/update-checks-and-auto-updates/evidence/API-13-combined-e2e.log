@@ -1,0 +1,15 @@
+# API-13 — every new or changed server E2E file in one run (interference check)
+# env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+# Code 985246c53b + this round's test changes; macOS 26.5.2, Node v22.23.1; 2026-10-24 00:12
+
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (13 tests) 16854ms
+ ✓ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts (12 tests) 16659ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 skipped) 15404ms
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11852ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8130ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 2934ms
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 262ms
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 233ms
+ Test Files  8 passed (8)
+      Tests  86 passed | 2 skipped (88)
+   Duration  89.30s (transform 5.13s, setup 88ms, import 15.86s, tests 72.33s, environment 0ms)

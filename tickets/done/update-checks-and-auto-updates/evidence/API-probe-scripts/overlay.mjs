@@ -1,0 +1,1 @@
+export default async (page) => page.evaluate(() => { const o = document.querySelector('[data-testid="node-change-overlay"]'); return o ? { text: o.textContent.replace(/\s+/g, ' ').trim().slice(0, 600), buttons: [...o.querySelectorAll('button')].map((b) => b.textContent.trim()) } : null; });

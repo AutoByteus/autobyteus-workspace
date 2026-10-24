@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
@@ -178,8 +179,10 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
   };
 
   const fixtureGitHubInstaller = (repo: string, getRevision: () => string, fixtures: Record<string, string>) => {
-    const fetchImpl: typeof fetch = async (resource) => {
+    const fetchImpl: typeof fetch = async (resource, init) => {
       const url = typeof resource === "string" ? resource : resource instanceof URL ? resource.toString() : resource.url;
+      // Checks and updates read the repository head through git (quota-free); imports keep the REST metadata.
+      if (headReadRepository(url, init) === `autobyteus/${repo}`.toLowerCase()) return headReadResponse(getRevision());
       const body = url.includes("/branches/")
         ? { commit: { sha: getRevision() } }
         : { default_branch: "main", html_url: `https://github.com/AutoByteus/${repo}`, private: false, name: repo, owner: { login: "AutoByteus" } };
@@ -345,8 +348,10 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
     writeAgent(dupRev, "gh-helper", { "desk-alpha": "GITHUB" });
 
     // Import of a repository whose current revision carries the duplicate.
-    let revision = "dup-sha";
-    useTestPackageService(fixtureGitHubInstaller("dup-repo", () => revision, { "dup-sha": dupRev }));
+    // Commit SHAs: the head read accepts only 40-hex heads, as GitHub sends.
+    const DUP_SHA = "d".repeat(40), CLEAN_SHA = "c".repeat(40);
+    let revision = DUP_SHA;
+    useTestPackageService(fixtureGitHubInstaller("dup-repo", () => revision, { [DUP_SHA]: dupRev }));
     const importConflicts = await expectConflict(IMPORT_PACKAGE,
       { input: { sourceKind: "GITHUB_REPOSITORY", source: "https://github.com/AutoByteus/dup-repo" } });
     expect(importConflicts).toHaveLength(1);
@@ -358,13 +363,13 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
 
     // Update: import a clean revision, then the remote gains the duplicate.
     AgentPackageService.resetInstance();
-    revision = "clean-sha";
+    revision = CLEAN_SHA;
     useTestPackageService(fixtureGitHubInstaller("upd-repo", () => revision,
-      { "clean-sha": cleanRev, "dup-sha": dupRev }));
+      { [CLEAN_SHA]: cleanRev, [DUP_SHA]: dupRev }));
     const imported = await exec<{ importAgentPackage: Array<{ packageId: string; path: string; sourceKind: string }> }>(
       IMPORT_PACKAGE, { input: { sourceKind: "GITHUB_REPOSITORY", source: "https://github.com/AutoByteus/upd-repo" } });
     const pkg = imported.importAgentPackage.find((entry) => entry.sourceKind === "GITHUB_REPOSITORY")!;
-    revision = "dup-sha";
+    revision = DUP_SHA;
     const checked = await exec<{ checkAgentPackageUpdates: Array<{ packageId: string; updateInfo: { status: string } }> }>(
       CHECK_UPDATES, { ids: [pkg.packageId] });
     expect(checked.checkAgentPackageUpdates.find((entry) => entry.packageId === pkg.packageId)?.updateInfo.status).toBe("UPDATE_AVAILABLE");
@@ -373,7 +378,7 @@ describe("Skill name catalog GraphQL e2e (D-19)", () => {
     expect(updateConflicts[0]).toMatchObject({ name: "desk-alpha", existingPath: existing });
     const after = await exec<{ checkAgentPackageUpdates: Array<{ packageId: string; updateInfo: { installedRevision: string } }> }>(
       CHECK_UPDATES, { ids: [pkg.packageId] });
-    expect(after.checkAgentPackageUpdates.find((entry) => entry.packageId === pkg.packageId)?.updateInfo.installedRevision).toBe("clean-sha");
+    expect(after.checkAgentPackageUpdates.find((entry) => entry.packageId === pkg.packageId)?.updateInfo.installedRevision).toBe(CLEAN_SHA);
     expect(fs.existsSync(path.join(pkg.path, "agents", "gh-helper", "skills", "desk-alpha"))).toBe(false);
     expect((await listSkills()).filter((skill) => skill.name === "desk-alpha")).toEqual([{ name: "desk-alpha", rootPath: existing }]);
     expect(await listIssues()).toEqual([]);

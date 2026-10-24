@@ -93,7 +93,7 @@ export class GitHubSkillRepository {
   private async download(metadata: GitHubRepositoryRevisionMetadata, destination: string): Promise<void> {
     const signal = AbortSignal.timeout(120_000);
     const response = await publicGitHubRequest(buildGitHubRepositoryArchiveUrlForRef(
-      metadata.owner, metadata.repo, metadata.latestRevision), this.options.fetchImpl, signal);
+      metadata.owner, metadata.repo, metadata.latestRevision), { fetchImpl: this.options.fetchImpl, signal });
     if (!response.ok || !response.body) throw new Error(`GitHub archive download failed (HTTP ${response.status}).`);
     await pipeline(Readable.fromWeb(response.body as Parameters<typeof Readable.fromWeb>[0]),
       fs.createWriteStream(destination, { flags: "wx", mode: 0o600 }), { signal });

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -198,6 +199,8 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const realFetch = globalThis.fetch;
     vi.stubGlobal("fetch", async (input: string | URL | Request, init?: RequestInit) => {
       const target = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+      // Checks and updates read the head through git (quota-free); imports keep the REST metadata.
+      if (headReadRepository(target, init) === "apar-e2e/agents") { githubRequests.push(target); return headReadResponse(githubRevision); }
       if (target.startsWith("https://api.github.com/") || target.startsWith("https://codeload.github.com/")) {
         githubRequests.push(target);
         if (target === "https://api.github.com/repos/apar-e2e/agents") {

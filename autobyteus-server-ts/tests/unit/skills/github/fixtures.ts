@@ -32,11 +32,16 @@ export function fixture() {
     downloads++;
     await create({ gzip: true, file: target, cwd: root, portable: true }, ["wrapper"]);
   } });
-  const client = { fetchRepositoryRevisionMetadata: async () => {
+  const metadata = async () => {
     if (metadataError) throw metadataError;
     return { owner: "acme", repo: "skills", canonicalUrl: "https://github.com/acme/skills",
       defaultBranch: "main", latestRevision: revision };
-  } };
+  };
+  const client = { fetchRepositoryRevisionMetadata: metadata,
+    fetchDefaultBranchHead: async (_owner: string, _repo: string) => {
+      const { defaultBranch, latestRevision } = await metadata();
+      return { defaultBranch, latestRevision };
+    } };
   const service = new SkillSourceService({ config, catalog, store, repository, client, invalidateWorkspaces: async () => {},
     updateSetting: (_key, value) => { localPaths = value.split(",").filter(Boolean); return [true, ""]; } });
   return { root, data, upstream, skills, config, store, catalog, service, repository, client,
