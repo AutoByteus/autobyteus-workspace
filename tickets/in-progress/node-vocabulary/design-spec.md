@@ -189,6 +189,7 @@ The iOS and Android saved records keep their fields (no node-ID field; `id` is t
   - `node-identity-file-name`: SM-1. Declares `holdsBackCapabilities: ["node_identity"]`, a new `AppDataCapability`.
   - `memory-sync-source-id-names`: SM-2 … SM-5. Declares `holdsBackCapabilities: ["memory_sync"]`.
   - They run before the services are built (`server-runtime.ts:183-206`: `runPending`, then `applyCapabilityReadiness`, then `buildStudioServer`).
+- **Phone apps, SM-9 and SM-10 (call sites, N-911):** the iOS step runs in `AutoByteusMobile/AppShellCoordinator.swift:18`, right before `SavedNodeStore(...)` is created. The Android step runs in `MainActivity.kt:39`, right before `SavedNodeStore(this)`. Each app adds a boundary check (a unit test) that only that call site references its migration folder.
 - **Phone apps, SM-9 and SM-10:** each app gets a sealed one-time step in its own migration folder (`autobyteus-ios/AutoByteusMobileCore/DataMigrations/`, `autobyteus-android/app/src/main/java/org/autobyteus/mobile/datamigrations/`). Each is called once at app start, before `SavedNodeStore` is first read. It follows the same order: write the new keys, then remove the old ones, keeping a backup key. Structural recognition: old key present and new absent. Current code knows only the new keys.
 - **Desktop and browser, SM-6 … SM-8:** a new sealed area, `autobyteus-web/client-data-migrations/`, with the same rules as the server's area (Guideline § 3, "Client-side stores … follow the same rule"):
   - `migrations/<name>/`: pure transforms with frozen released shapes, imported by no current code;
@@ -234,7 +235,10 @@ The iOS and Android saved records keep their fields (no node-ID field; `id` is t
 2. `NodeIdentityService` holds the readiness. While it is not ready, `getNodeId()` throws one explicit `NodeIdentityNotMigratedError` ("This node's identity is waiting for its data migration.") and **never creates or writes a file**. When ready, it behaves as today: it reads `node-identity.json`, and creates a new ID only when no identity file exists.
 3. **Fresh install:** no file under either name means SM-1 is already current. The capability is ready, and the service creates the ID as today.
 4. **Each consumer's answer while held back:**
-   - **`/rest/remote-access/status`** (`api/rest/remote-access.ts:31`): it answers without `nodeId` and with `phoneAccessEnabled` as configured. The desktop, phone and peer probes then treat the node as "not identified" (their existing missing-ID path), not as a different node.
+   - **`/rest/remote-access/status`** (`api/rest/remote-access.ts:31`): answers **HTTP 503 with `{code: "NODE_IDENTITY_NOT_MIGRATED", message}`** (N-910). The readers state that reason instead of calling the node "not AutoByteus":
+     - the web probe (`utils/nodeIdentityProbe.ts:55-59`) gains the cause `identity_pending`, shown as "This node's identity is waiting for its data migration";
+     - `PeerClient.fetchNodeId` (`peer-client.ts:232-235`) refuses with `NODE_IDENTITY_NOT_MIGRATED` and that text, not `PEER_NOT_AUTOBYTEUS`;
+     - the phone apps show their existing "server unavailable" state for a 503.
    - **Remote collaboration:** `ownNodeId` (`remote-collaboration-composition.ts:58`) is used by `PeerGateway` and `PeerClient`. Both answer with a refusal, `NODE_IDENTITY_NOT_MIGRATED` ("This node's identity is waiting for its data migration"), for inbound and outbound requests and the discovery tools. Delegation and messages to peers get it as a refusal text. Nothing is sent.
    - **Phone-access pairing:** it refuses to issue a pairing while held back (it embeds the node ID).
    - **GraphQL showing the node ID** (the Nodes tab): the field is null, and the tab shows "Node ID: waiting for its data migration".

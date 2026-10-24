@@ -71,3 +71,4 @@
 - N-906: SM-1 with different values fails and holds back; `createdAt` is kept. N-907: SM-6 copies records field by field and fails only on unreadable JSON. N-908: runner call sites cited. N-909: noted.
 - A design mistake of the kind design-examples Case 5 describes (a guarantee claimed without naming its owner and consumers) goes into the Case 7 material for the PTM.
 - Route: round 5 of the architecture review.
+- SR-007 addendum (ARCH-REV-005 Pass, 2026-10-24): N-910 decided as the status route answering 503 `NODE_IDENTITY_NOT_MIGRATED`, with the web probe (`identity_pending`), PeerClient and the phone apps stating the reason. N-911: the phone call sites and boundary checks cited. The reviewer's files committed.

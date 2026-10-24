@@ -5,16 +5,21 @@
 - Upstream Requirements Doc: `…/requirements-doc.md` (Approved, SR-002; REQ-909 and the extended REQ-901 / REQ-906 at SR-004, at the user's request)
 - Upstream Investigation Notes: `…/investigation-notes.md` (V-01 … V-10)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001 … SR-004)
-- Reviewed Design Spec: `…/design-spec.md` at commit `f92030a027` (SR-006; the project rule change `b3d9c758f2`)
+- Reviewed Design Spec: `…/design-spec.md` at commit `f75d537365` (SR-007)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001 pulled in as Step 1b; FU-002)
-- Relevant Solution Revision IDs: SR-001 … SR-006
+- Relevant Solution Revision IDs: SR-001 … SR-007
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: SR-006 widens the scope by the user's decision U-3, which reverses U-1. Stored names follow the code through sealed migrations SM-1 … SM-8 (server and client). The project rule changed: `DESIGN.md` rule 10 and Data Migration Guideline § 2 / § 3.
-- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, `Pass`)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: the Solution Designer's SR-007 (commit `f75d537365`), answering ARCH-REV-004 (AR-905, AR-906, N-906 … N-909)
+- Prior Review Round Reviewed: round 4 (`ARCH-REV-004`, `Fail`)
+- Latest Authoritative Round: 5
 - Review method: the shared principles as updated 2026-10-24, including Principle 15 "One Vocabulary" and the "Vocabulary drift" trigger (`autobyteus-agents` `b87a507`), and the updated design examples.
+- Round-5 evidence (at `f75d537365`):
+  - `startup/app-data-capability-readiness.ts:10-20` (`markCapabilitiesPending` and `applyCapabilityReadiness` exist; also called by `standalone-application-host/start-standalone-application-host.ts:142`);
+  - `autobyteus-web/utils/nodeIdentityProbe.ts:57-59` (a status answer without `nodeId` → `{ok: false, cause: 'not_autobyteus'}`);
+  - `remote-collaboration/channel/peer-client.ts:226-238` (`fetchNodeId`: no ID → `PEER_NOT_AUTOBYTEUS`, "… is not an AutoByteus node");
+  - iOS `ConnectionValidator.swift:32-40` (`nodeID` decoded with `decodeIfPresent`).
 - Round-4 evidence (at `f92030a027`):
   - `autobyteus-server-ts/src/server-runtime.ts:183-206` (`runPending` → `applyCapabilityReadiness` → `buildStudioServer`: confirmed);
   - `remote-access/services/node-identity-service.ts:23-50` (`getNodeId()` creates and writes a new ID when the file has none);
@@ -132,10 +137,10 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 | Stored Subject | Approved Decision | Evidence | Proportionate? | Migration Safety Complete? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| SM-1 identity file | Migration Required (U-3) | Pass | Pass | Fail | Fail | AR-905 (hold-back owner and consumers); N-906 |
-| SM-2 … SM-5 Memory Sync | Migration Required | Pass | Pass | Fail | Fail | AR-905 (`memory_sync` is a new capability without a consumer) |
+| SM-1 identity file | Migration Required (U-3) | Pass | Pass | Pass | Pass | Hold-back chain named (AR-905); N-906 done; N-910 |
+| SM-2 … SM-5 Memory Sync | Migration Required | Pass | Pass | Pass | Pass | `memory_sync` gates named |
 | SM-6 … SM-8 client stores | Migration Required | Pass | Pass | Pass | Pass | N-907, N-908; SM-7 scope confirmed (N-909) |
-| iOS / Android saved lists | No migration (claimed) | Fail | — | — | Fail | AR-906 |
+| SM-9 / SM-10 iOS and Android saved-entry keys | Migration Required (rule 10, AR-906 (a)) | Pass | Pass | Pass | Pass | Each app's sealed step; N-911 |
 
 ## Persisted-Data Transition Verdict (rounds 1 … 3, superseded by SR-006)
 
@@ -173,20 +178,25 @@ Each domain word the design uses or introduces keeps one meaning, and each conce
 
 ## Review Decision
 
-`Fail` (round 4; `Design Impact`, AR-905 and AR-906). The migration design is sound in shape:
-- server migrations in the existing sealed area, run before the services;
-- a client sealed area with two runners and a boundary spec;
-- recognition by structure, with no version field;
-- new name first, then the old one removed;
-- backups;
-- a checklist answered item by item;
-- the mapping owners removed, as rule 10 requires.
+`Pass` (round 5). AR-905 and AR-906 are resolved and verified; N-906 … N-909 are done.
 
-Two gaps remain: who applies the two hold-backs (and how `NodeIdentityService` refuses to create an ID), and the phone apps' stored keys under the new rule 10. AR-901 … AR-904 stay resolved.
+- AR-905, § Hold-back chains:
+  - `node_identity` and `memory_sync` are added to `AppDataCapability` and configured by `markCapabilitiesPending` and `applyCapabilityReadiness`;
+  - while held back, `NodeIdentityService.getNodeId()` throws `NodeIdentityNotMigratedError` and never creates or writes;
+  - a fresh install is ready at once;
+  - each consumer's answer is named (the status route, `PeerGateway` and `PeerClient`, pairing, GraphQL and the Nodes tab), as are Memory Sync's gates (the loop, "Sync now", ingestion, settings), each with unit cases.
+- AR-906: decided (a) under rule 10. SM-9 and SM-10 rename the phone keys "profile" → "entry" through each app's own sealed step; the record fields are unchanged and the word list is extended.
+
+Two non-blocking notes: N-910 (a cited claim about the probes) and N-911 (phone call sites). The design is ready for implementation.
 
 ## Findings
 
-### AR-905 — The hold-backs have no named consumers; REQ-913 depends on the identity service refusing
+### Round-5 notes (non-blocking)
+
+- N-910, the probes' answer to a held-back node: § Hold-back chains says that without `nodeId` "the desktop, phone and peer probes then treat the node as 'not identified' (their existing missing-ID path)". In the code, the web probe returns `cause: 'not_autobyteus'` (`nodeIdentityProbe.ts:57-59`), and `PeerClient.fetchNodeId` throws `PEER_NOT_AUTOBYTEUS`, "… is not an AutoByteus node" (`peer-client.ts:232-235`). REQ-913 still holds: no new ID is created, nothing is paired with a wrong ID. But a node waiting for its identity migration would be called "not an AutoByteus node". Either correct the sentence, or let the status route state the reason, for example an `identity: "waiting_for_migration"` field or a 503 with `NODE_IDENTITY_NOT_MIGRATED`, so the probes say "waiting for its data migration". The implementation chooses within REQ-913; the design text should match what is built.
+- N-911, phone call sites: SM-9 and SM-10 are "called once at app start, before `SavedNodeStore` is first read". Cite the two call sites when implementing: the iOS app's launch path, and the Android `Application` or launcher `onCreate` that first builds `SavedNodeStore`. Also cite their boundary checks (current code imports only the step's entry point), mirroring the web boundary spec.
+
+### AR-905 (resolved in ARCH-REV-005) — The hold-backs have no named consumers; REQ-913 depends on the identity service refusing
 
 - Type: Design Impact
 - Severity: Medium (blocking)
@@ -208,7 +218,7 @@ Two gaps remain: who applies the two hold-backs (and how `NodeIdentityService` r
 - Why proportionate: one configure call per capability plus one guard in the identity service, on the existing readiness mechanism.
 - Recommended recipient: Solution Designer
 
-### AR-906 — The phone apps' stored keys still say "profile"; under rule 10, decide
+### AR-906 (resolved in ARCH-REV-005) — The phone apps' stored keys still say "profile"; under rule 10, decide
 
 - Type: Design Impact
 - Severity: Low (blocking: the claim governs the AC-901 word list and the "no migration" for phones)
@@ -319,11 +329,11 @@ The round-1 text follows, kept for traceability (AR-901 … AR-903 resolved in A
 
 ## Classification
 
-`Design Impact` (AR-905, AR-906).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`). Implementation is holding the mapping owners and continuing the plain renames; that may go on.
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
@@ -332,6 +342,6 @@ Solution Designer (`/software_engineering_team/solution_designer`). Implementati
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (round 4; AR-905, AR-906)
+- Review Decision: `Pass` (round 5)
 - Material-Premise Gate: `Pass` (MP-901 handled by the user's decision: a stated REQ-906 exception plus the release note)
-- Notes: classification `Large` / `High`, now with migrations. Design at commit `f92030a027` (SR-006).
+- Notes: classification `Large` / `High`, with migrations SM-1 … SM-10. Design at commit `f75d537365` (SR-007).

@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative. This record holds the bas
 | ARCH-REV-002 | Round 2 / SR-005 answers ARCH-REV-001 | SR-005 | Fail | Fail | AR-901 … AR-903 resolved; AR-904 (new, text) |
 | ARCH-REV-003 | Round 3 / the AR-904 text fix | SR-005 | Fail | Pass | AR-904 resolved; N-905 |
 | ARCH-REV-004 | Round 4 / SR-006 (U-3: stored names migrate) | SR-006 | Pass | Fail | AR-905, AR-906 (new) |
+| ARCH-REV-005 | Round 5 / SR-007 answers ARCH-REV-004 | SR-007 | Fail | Pass | AR-905, AR-906 resolved; N-910, N-911 |
 
 ## Revision Entries
 
@@ -124,3 +125,27 @@ None.
 - Material classification changes: none (`Large` / `High`, now with persisted-data migrations).
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: RSK-901 (accepted). Migration fixtures are built from the released writers, since the user declined a real-data read; N-907 makes SM-6 tolerant of older records.
+
+### ARCH-REV-005 — Round 5: hold-back chains and phone keys; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/design-review-report.md`
+- Review round and trigger: round 5; the Solution Designer's SR-007 (commit `f75d537365`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff-architecture-review.md` § Round 5; AR-905, AR-906, N-906 … N-909.
+- Relevant solution revision IDs: SR-007
+- Prior authoritative decision: `Fail` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed in the review result: § Hold-back chains and SM-9 / SM-10 were verified. `markCapabilitiesPending` was confirmed (`app-data-capability-readiness.ts:10`). The claim about how probes treat a missing `nodeId` was opened: the web probe and `PeerClient` call it "not an AutoByteus node", not "not identified" (N-910, non-blocking: REQ-913 holds).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-905 | Open (Medium) | Resolved | SR-007; § Hold-back chains | Both capabilities added and configured; `getNodeId` throws and never writes while held back; every consumer's answer and Memory Sync's gates named, with unit cases |
+| AR-906 | Open (Low) | Resolved | SR-007; SM-9, SM-10; word list | (a) under rule 10: each app's sealed step renames the keys; record fields unchanged |
+| N-906 … N-909 | Notes | Done | SR-007 | Different values fail and hold back; `createdAt` kept; SM-6 copies field by field and fails only on unreadable JSON; call sites `electronApplication.ts:362` and `19.clientDataMigrations.client.ts`; SM-7 confirmed |
+| AR-901 … AR-904 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: none blocking. N-910 (the probes' message for a held-back node), N-911 (cite the phone call sites and boundary checks).
+- Material classification changes: none (`Large` / `High`, with migrations).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: RSK-901 (accepted). The fixtures come from the released writers (no real-data read, by the user's choice).
