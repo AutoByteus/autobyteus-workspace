@@ -14,7 +14,7 @@ export const localRefusalText = Object.freeze({
   /** autobyteus-290: this node's identity is held back (capability `node_identity`). */
   nodeIdentityPending: () => "This node's identity is waiting for its data migration, so nothing was sent to another node.",
   peerNotRegistered: (node: string) =>
-    `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.`,
+    `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.`,
 });
 
 /**

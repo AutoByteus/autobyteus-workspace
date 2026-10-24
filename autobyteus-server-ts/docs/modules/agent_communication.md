@@ -422,7 +422,7 @@ startup into ordinary, unowned delegated runs of the same root (migration
   exactly the host's own list, and the host's list never holds itself. Listing
   never writes, so a standalone run that only lists gets no `collaboration/`
   package. With `node`, the tool lists a peer node's offer instead, and the opt-in
-  `list_available_nodes` lists the peers with their status (autobyteus-261; see
+  `list_peer_nodes` lists the peers with their status (autobyteus-261; see
   [Remote Collaboration](./remote_collaboration.md#discovery)); neither goes through
   the sender's root.
 - **In the run.** Configured placements and a standalone run's host count as in the

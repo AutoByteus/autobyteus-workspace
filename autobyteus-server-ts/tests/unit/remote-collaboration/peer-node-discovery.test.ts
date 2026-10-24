@@ -91,7 +91,7 @@ describe("PeerNodeDiscovery.listAvailableAgents (DS-002)", () => {
   it("AC-404: an unregistered node and the switch off are refused here, with nothing sent", async () => {
     const f = setup();
     await expect(f.discovery.listAvailableAgents("nas")).resolves.toEqual({ accepted: false, code: "PEER_NOT_REGISTERED",
-      message: 'No peer node named "nas" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.' });
+      message: 'No peer node named "nas" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.' });
     const off = setup({ enabled: false });
     await expect(off.discovery.listAvailableAgents("beta")).resolves.toMatchObject({ accepted: false, code: "REMOTE_COLLABORATION_OFF" });
     expect(f.fetch).not.toHaveBeenCalled();

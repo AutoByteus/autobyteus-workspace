@@ -62,7 +62,7 @@ surface). A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`.
 Application-owned runs have no member context and keep their
 explicitly configured set. Browser, media, publishing, `list_available_agents`,
-`list_available_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
+`list_peer_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -146,13 +146,13 @@ the same strict shape.
 
 ## Server-Owned Agent Discovery Tools
 
-`list_available_agents` and `list_available_nodes` (`src/agent-tools/agent-discovery/`,
+`list_available_agents` and `list_peer_nodes` (`src/agent-tools/agent-discovery/`,
 registered together by `register-agent-discovery-tools.ts`) are **opt-in** tools
 (REQ-001; autobyteus-261 DEC-401): they are registered in the tool registry
 (category Agent Communication) so they appear in the tool picker, and an agent gets
 one only when its definition's `toolNames` select it. Neither is ever added
 automatically. `RuntimeAgentToolExposure.listAvailableAgentsEnabled` and
-`listAvailableNodesEnabled` record the selection. Both have the same availability:
+`listPeerNodesEnabled` record the selection. Both have the same availability:
 a sender whose member context can list (a run that can delegate).
 
 - `list_available_agents` takes an optional `node` and returns
@@ -179,7 +179,7 @@ a sender whose member context can list (a run that can delegate).
   `recipient_address` with the same `node`. It goes through the
   `PeerDiscoveryChannel` port (bound at composition), not through the roots; see
   [Remote Collaboration](remote_collaboration.md#discovery).
-- `list_available_nodes` takes no arguments and returns
+- `list_peer_nodes` takes no arguments and returns
   `{ nodes: [{ name, status: "available" | "unavailable" }] }`: this node's registered
   peers in registration order, each asked now. `available` means the peer answers and
   takes this node's requests; anything else is `unavailable`, and
@@ -224,7 +224,7 @@ the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`,
-`list_available_agents` and `list_available_nodes` tool families by delegating to their existing family manifests/services instead
+`list_available_agents` and `list_peer_nodes` tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the
@@ -318,7 +318,7 @@ sent. The success result is the local copy's shape plus `node`: for a Team,
 `{delegated: true, target_kind: "team", target_team_run_id,
 target_team_coordinator_agent_run_id, node}`. Follow-ups use `send_message_to` by the
 returned run ID (for a Team, the coordinator's or any member's run ID) as usual. An agent
-that has the discovery tools finds the node with `list_available_nodes` and the address
+that has the discovery tools finds the node with `list_peer_nodes` and the address
 with `list_available_agents` and that `node`. See [Remote Collaboration](remote_collaboration.md).
 
 The result is a strict union, also published as the MCP output schema

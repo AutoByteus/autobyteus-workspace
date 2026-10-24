@@ -68,7 +68,7 @@ on Task closure and peer authentication come in later slices.
   node's server does); the page words the
   refusal code itself. It takes at most about 20 s (the peer request bound). `peerNodeAvailability(nodeId)` answers
   `{available, refusalCode, unreachableReason}` through `PeerNodeDiscovery.checkAvailabilityOf(nodeId)`, the
-  availability question `list_available_nodes` asks, for one peer.
+  availability question `list_peer_nodes` asks, for one peer.
 
 ## Between nodes
 
@@ -146,7 +146,7 @@ each offers, then delegates with `delegate_task` without being told an address.
   tools use, owned by `agent-collaboration`, implemented by **`PeerNodeDiscovery`**
   (`discovery/peer-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
   go through the roots: a peer's offer does not depend on the asking run.
-- `listPeerNodes()` (`list_available_nodes`): with the switch on, the registered peers in registration order, all
+- `listPeerNodes()` (`list_peer_nodes`): with the switch on, the registered peers in registration order, all
   asked for *availability* at the same time, each within the 20 s bound, so the whole call takes at most about
   20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
   wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.

@@ -14,13 +14,13 @@ import {
   listAvailableAgentsFor,
 } from "../../../../src/agent-tools/agent-discovery/list-available-agents-contract.js";
 import {
-  LIST_AVAILABLE_NODES_TOOL_DESCRIPTION,
-  LIST_AVAILABLE_NODES_TOOL_NAME,
-  listAvailableNodesFor,
-} from "../../../../src/agent-tools/agent-discovery/list-available-nodes-contract.js";
+  LIST_PEER_NODES_TOOL_DESCRIPTION,
+  LIST_PEER_NODES_TOOL_NAME,
+  listPeerNodesFor,
+} from "../../../../src/agent-tools/agent-discovery/list-peer-nodes-contract.js";
 import { registerAgentDiscoveryTools } from "../../../../src/agent-tools/agent-discovery/register-agent-discovery-tools.js";
 import { ListAvailableAgentsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/list-available-agents-mcp-adapter-provider.js";
-import { ListAvailableNodesMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/list-available-nodes-mcp-adapter-provider.js";
+import { ListPeerNodesMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/list-peer-nodes-mcp-adapter-provider.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
 import { automaticCollaborationToolNames, buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js";
@@ -28,7 +28,7 @@ import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execut
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 /**
- * autobyteus-261 on the asking node's tool edge: `list_available_agents` with `node`, the opt-in `list_available_nodes`,
+ * autobyteus-261 on the asking node's tool edge: `list_available_agents` with `node`, the opt-in `list_peer_nodes`,
  * the one entry builder, and their exposure on every runtime (AutoByteus native, Agent Tools MCP, Claude).
  */
 
@@ -91,42 +91,42 @@ describe("list_available_agents with node (BEH-402)", () => {
   });
 });
 
-describe("list_available_nodes (BEH-401, DEC-401)", () => {
+describe("list_peer_nodes (BEH-401, DEC-401)", () => {
   it("lists the peers with their status; 'turned off' when nothing is composed; needs a run that can delegate", async () => {
     const d = discovery();
-    await expect(listAvailableNodesFor(withLister().collaboration, d)).resolves.toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
-    await expect(listAvailableNodesFor(withLister().collaboration, null)).resolves.toEqual(off);
+    await expect(listPeerNodesFor(withLister().collaboration, d)).resolves.toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
+    await expect(listPeerNodesFor(withLister().collaboration, null)).resolves.toEqual(off);
     d.listPeerNodes.mockResolvedValueOnce(off);
-    await expect(listAvailableNodesFor(withLister().collaboration, d)).resolves.toEqual(off);
-    await expect(listAvailableNodesFor(testMemberExecutionContext().collaboration, d)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
-    expect(LIST_AVAILABLE_NODES_TOOL_DESCRIPTION).toBe("List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.");
+    await expect(listPeerNodesFor(withLister().collaboration, d)).resolves.toEqual(off);
+    await expect(listPeerNodesFor(testMemberExecutionContext().collaboration, d)).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
+    expect(LIST_PEER_NODES_TOOL_DESCRIPTION).toBe("List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.");
   });
 
   it("is opt-in on every runtime: never automatic; native, MCP and Claude expose it only when selected and the run can delegate", async () => {
     const context = withLister();
     bind(discovery());
-    expect(automaticCollaborationToolNames(context)).not.toContain(LIST_AVAILABLE_NODES_TOOL_NAME);
-    expect(buildRuntimeAgentToolExposure(["list_available_agents"], context).listAvailableNodesEnabled).toBe(false);
-    const exposure = buildRuntimeAgentToolExposure([" list_available_nodes ", "list_available_agents"], context);
-    expect(exposure.listAvailableNodesEnabled).toBe(true);
+    expect(automaticCollaborationToolNames(context)).not.toContain(LIST_PEER_NODES_TOOL_NAME);
+    expect(buildRuntimeAgentToolExposure(["list_available_agents"], context).listPeerNodesEnabled).toBe(false);
+    const exposure = buildRuntimeAgentToolExposure([" list_peer_nodes ", "list_available_agents"], context);
+    expect(exposure.listPeerNodesEnabled).toBe(true);
 
     registerAgentDiscoveryTools();
-    expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_NODES_TOOL_NAME)?.description).toBe(LIST_AVAILABLE_NODES_TOOL_DESCRIPTION);
-    const resolved = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_available_nodes", "list_available_agents"] } as never,
+    expect(defaultToolRegistry.getToolDefinition(LIST_PEER_NODES_TOOL_NAME)?.description).toBe(LIST_PEER_NODES_TOOL_DESCRIPTION);
+    const resolved = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes", "list_available_agents"] } as never,
       runtimeToolExposure: exposure, senderRunId: "run-a", memberExecutionContext: context, logger: { warn: vi.fn(), error: vi.fn() } });
-    expect(resolved.actualToolNames).toEqual(expect.arrayContaining([LIST_AVAILABLE_NODES_TOOL_NAME, LIST_AVAILABLE_AGENTS_TOOL_NAME]));
+    expect(resolved.actualToolNames).toEqual(expect.arrayContaining([LIST_PEER_NODES_TOOL_NAME, LIST_AVAILABLE_AGENTS_TOOL_NAME]));
     const tool = (name: string) => resolved.tools.find((candidate) => (candidate.constructor as { getName?: () => string }).getName?.() === name)! as unknown as
       { _execute(context?: unknown, args?: Record<string, unknown>): Promise<string> };
-    expect(JSON.parse(await tool(LIST_AVAILABLE_NODES_TOOL_NAME)._execute())).toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
+    expect(JSON.parse(await tool(LIST_PEER_NODES_TOOL_NAME)._execute())).toEqual({ nodes: [{ name: "beta", status: "available" }, { name: "docker", status: "unavailable" }] });
     expect(JSON.parse(await tool(LIST_AVAILABLE_AGENTS_TOOL_NAME)._execute(null, { node: "beta" }))).toEqual({ agents: remote });
     // A refusal is the native tool's error, with its text.
     await expect(tool(LIST_AVAILABLE_AGENTS_TOOL_NAME)._execute(null, { node: "nas" })).rejects.toThrow(unknownNode.message);
-    const skipped = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_available_nodes"] } as never,
+    const skipped = resolveAutoByteusAgentTools({ agentDefinition: { name: "Assistant", toolNames: ["list_peer_nodes"] } as never,
       runtimeToolExposure: exposure, senderRunId: "run-a", memberExecutionContext: testMemberExecutionContext(), logger: { warn: vi.fn(), error: vi.fn() } });
-    expect(skipped.actualToolNames).not.toContain(LIST_AVAILABLE_NODES_TOOL_NAME);
+    expect(skipped.actualToolNames).not.toContain(LIST_PEER_NODES_TOOL_NAME);
 
-    expect(buildDefaultAgentToolMcpAdapterProviders().some((provider) => provider instanceof ListAvailableNodesMcpAdapterProvider)).toBe(true);
-    const [nodes] = new ListAvailableNodesMcpAdapterProvider().getAdapters();
+    expect(buildDefaultAgentToolMcpAdapterProviders().some((provider) => provider instanceof ListPeerNodesMcpAdapterProvider)).toBe(true);
+    const [nodes] = new ListPeerNodesMcpAdapterProvider().getAdapters();
     const [agents] = new ListAvailableAgentsMcpAdapterProvider().getAdapters();
     const availability = (memberExecutionContext: typeof context | null) => nodes!.isAvailable({ runtimeExposure: exposure,
       sender: memberExecutionContext ? { memberExecutionContext } as never : null, executionContext: {} as never, applicationAgentTools: null });
@@ -140,9 +140,9 @@ describe("list_available_nodes (BEH-401, DEC-401)", () => {
       result: { content: [{ type: "text", text: unknownNode.message }], isError: true } });
 
     const claude = resolveClaudeSessionToolingOptions({ runtimeToolExposure: exposure, hasMaterializedSkills: false, memberExecutionContext: context });
-    expect(claude.listAvailableNodesToolingEnabled).toBe(true);
-    expect(claude.agentToolsMcpEnabledToolNames).toContain(LIST_AVAILABLE_NODES_TOOL_NAME);
+    expect(claude.listPeerNodesToolingEnabled).toBe(true);
+    expect(claude.agentToolsMcpEnabledToolNames).toContain(LIST_PEER_NODES_TOOL_NAME);
     expect(resolveClaudeSessionToolingOptions({ runtimeToolExposure: exposure, hasMaterializedSkills: false, memberExecutionContext: testMemberExecutionContext() })
-      .listAvailableNodesToolingEnabled).toBe(false);
+      .listPeerNodesToolingEnabled).toBe(false);
   });
 });
