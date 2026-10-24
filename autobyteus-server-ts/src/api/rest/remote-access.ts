@@ -35,7 +35,6 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
     return {
       phoneAccessEnabled: settings.phoneAccessEnabled,
       pairingAvailable: settings.phoneAccessEnabled,
-      compatibilityVersion: 1,
       nodeId,
       serverName: "AutoByteus Desktop",
     };

@@ -45,10 +45,11 @@ const byItem = (result: Awaited<ReturnType<typeof migrate>>) =>
   Object.fromEntries(result.summary.details.map((detail) => [detail.itemId, `${detail.status} ${detail.message}`]));
 
 describe("20261020_remove_skill_improvement_data", () => {
-  it("is registered last, required on startup and startup-only", () => {
+  it("is registered after every run-tree migration (only the node identity file rename follows), required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
-    expect(definitions.at(-1)?.id).toBe(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID);
-    expect(definitions.at(-1)).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.at(-2)?.id).toBe(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID);
+    expect(definitions.at(-2)).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.at(-1)?.id).toBe("20261024_node_identity_file_name");
   });
 
   it("finds nothing on a fresh data folder", async () => {

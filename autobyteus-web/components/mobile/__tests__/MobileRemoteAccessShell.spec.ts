@@ -61,7 +61,6 @@ const initialState = {
     lastStatus: {
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     },
   },
@@ -637,7 +636,6 @@ ${activitySource}`).not.toContain(
       lastStatus: {
         phoneAccessEnabled: true,
         pairingAvailable: true,
-        compatibilityVersion: 1,
         serverName: "Desktop Node",
       },
       lastDiagnostic: null,
@@ -702,7 +700,6 @@ ${activitySource}`).not.toContain(
     vi.mocked(sessionStore.fetchStatus).mockResolvedValue({
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     });
     const unauthorized = new Error("Received status code 401");
@@ -789,7 +786,6 @@ ${activitySource}`).not.toContain(
     resolveStatus({
       phoneAccessEnabled: true,
       pairingAvailable: true,
-      compatibilityVersion: 1,
       serverName: "Desktop Node",
     });
     await flushPromises();

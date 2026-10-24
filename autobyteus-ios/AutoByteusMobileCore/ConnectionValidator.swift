@@ -3,20 +3,17 @@ import Foundation
 public struct RemoteAccessStatus: Codable, Equatable {
     public let phoneAccessEnabled: Bool
     public let pairingAvailable: Bool
-    public let compatibilityVersion: Int
     public let serverName: String
     public let nodeID: String?
 
     public init(
         phoneAccessEnabled: Bool,
         pairingAvailable: Bool,
-        compatibilityVersion: Int,
         serverName: String,
         nodeID: String? = nil
     ) {
         self.phoneAccessEnabled = phoneAccessEnabled
         self.pairingAvailable = pairingAvailable
-        self.compatibilityVersion = compatibilityVersion
         self.serverName = serverName
         self.nodeID = nodeID
     }
@@ -24,7 +21,6 @@ public struct RemoteAccessStatus: Codable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case phoneAccessEnabled
         case pairingAvailable
-        case compatibilityVersion
         case serverName
         case nodeID = "nodeId"
     }
@@ -35,7 +31,6 @@ public struct RemoteAccessStatus: Codable, Equatable {
         self.init(
             phoneAccessEnabled: try container.decodeIfPresent(Bool.self, forKey: .phoneAccessEnabled) ?? false,
             pairingAvailable: try container.decodeIfPresent(Bool.self, forKey: .pairingAvailable) ?? false,
-            compatibilityVersion: try container.decodeIfPresent(Int.self, forKey: .compatibilityVersion) ?? 0,
             serverName: decodedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "AutoByteus Desktop" : decodedName,
             nodeID: try container.decodeIfPresent(String.self, forKey: .nodeID)
         )
@@ -45,7 +40,6 @@ public struct RemoteAccessStatus: Codable, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(phoneAccessEnabled, forKey: .phoneAccessEnabled)
         try container.encode(pairingAvailable, forKey: .pairingAvailable)
-        try container.encode(compatibilityVersion, forKey: .compatibilityVersion)
         try container.encode(serverName, forKey: .serverName)
         try container.encodeIfPresent(nodeID, forKey: .nodeID)
     }
@@ -62,25 +56,17 @@ public enum ConnectionValidationResult: Equatable {
 
 public final class ConnectionValidator {
     private let session: URLSession
-    private let minimumCompatibilityVersion: Int
 
-    public convenience init(
-        timeoutSeconds: TimeInterval = 5,
-        minimumCompatibilityVersion: Int = 1
-    ) {
+    public convenience init(timeoutSeconds: TimeInterval = 5) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = timeoutSeconds
         configuration.timeoutIntervalForResource = timeoutSeconds
         configuration.waitsForConnectivity = false
-        self.init(
-            session: URLSession(configuration: configuration),
-            minimumCompatibilityVersion: minimumCompatibilityVersion
-        )
+        self.init(session: URLSession(configuration: configuration))
     }
 
-    public init(session: URLSession, minimumCompatibilityVersion: Int = 1) {
+    public init(session: URLSession) {
         self.session = session
-        self.minimumCompatibilityVersion = minimumCompatibilityVersion
     }
 
     public func validate(profile: SavedNodeProfile) async -> ConnectionValidationResult {
@@ -132,9 +118,6 @@ public final class ConnectionValidator {
         }
         do {
             let status = try RemoteAccessStatus.fromJSONData(data)
-            guard status.compatibilityVersion >= minimumCompatibilityVersion else {
-                return .failed(ConnectionDiagnosticMapper.incompatibleServer())
-            }
             guard status.phoneAccessEnabled else {
                 return .failed(ConnectionDiagnosticMapper.phoneAccessDisabled(serverName: status.serverName))
             }

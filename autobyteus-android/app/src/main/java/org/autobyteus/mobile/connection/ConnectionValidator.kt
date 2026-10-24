@@ -46,7 +46,6 @@ class ConnectionValidator(
 data class RemoteAccessStatus(
     val phoneAccessEnabled: Boolean,
     val pairingAvailable: Boolean,
-    val compatibilityVersion: Int,
     val serverName: String,
 ) {
     companion object {
@@ -55,7 +54,6 @@ data class RemoteAccessStatus(
             return RemoteAccessStatus(
                 phoneAccessEnabled = json.optBoolean("phoneAccessEnabled", false),
                 pairingAvailable = json.optBoolean("pairingAvailable", false),
-                compatibilityVersion = json.optInt("compatibilityVersion", 0),
                 serverName = json.optString("serverName", "AutoByteus Desktop"),
             )
         }

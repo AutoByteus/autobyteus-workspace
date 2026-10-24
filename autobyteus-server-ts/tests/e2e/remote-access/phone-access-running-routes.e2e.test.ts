@@ -33,7 +33,6 @@ type ProtectedProbeResponse = {
 type RemoteAccessStatusResponse = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
-  compatibilityVersion: number;
   nodeId: string;
   serverName: string;
 };

@@ -46,7 +46,6 @@ export type PairingExchangeResponse = {
 export type RemoteAccessStatus = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
-  compatibilityVersion: number;
   nodeId?: string;
   serverName: string;
 };
@@ -66,8 +65,7 @@ export type MobileConnectionFailureKind =
   | 'device_revoked'
   | 'phone_access_disabled'
   | 'websocket_blocked'
-  | 'unsupported_mobile_feature'
-  | 'server_version_incompatible';
+  | 'unsupported_mobile_feature';
 
 export type MobileConnectionDiagnostic = {
   kind: MobileConnectionFailureKind;
