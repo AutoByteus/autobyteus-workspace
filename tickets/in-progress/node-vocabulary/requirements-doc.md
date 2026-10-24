@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-001). U-1 and U-2 need the user.
+- Status: `Approved` (SR-002). The user, 2026-10-24, after asking for the Solution Designer's own suggestion: "I think that you have much better language skill and you also understand our system much better than me now." He left U-1 and U-2 to the recommendation: U-1 (a), U-2 (a).
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task autobyteus-290, with the user's correction in its comment.
 - Investigation (the audit): [investigation-notes.md](investigation-notes.md).
 
@@ -46,8 +46,8 @@ The words node, peer, remote and embedded, and the word `nodeId`, mean different
 
 | ID | Question | Options | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| U-1 | The stored names: the server's identity file (`serverInstanceId`), the desktop's node list file and its `localStorage` copy (`id`, `serverInstanceId`, `isSystem`) | (a) Keep them as stored. The one store that reads and writes each file maps them to the new code names; `isSystem` is no longer written, and an old file's field is ignored. (b) A sealed migration renames them on disk (`nodeId`, `entryId`), with a backup first. | DESIGN.md rule 8: "Renaming code never renames a file or value on disk." A migration means permanent migration code and a backup step, to rename two fields in two small files, with no behavior gained. The data model's meaning becomes clean in code either way. **Recommend (a).** | User | Needs user |
-| U-2 | The wire field of `/rest/remote-access/status` (`serverInstanceId`), read by the desktop, peers and the phone app | (a) Rename it to `nodeId` (a clean cut, rule 9: everything updates together). (b) Keep it. | (a) makes the vocabulary true everywhere. The cost: a phone app or desktop that hasn't updated can't identify an updated node until it updates, which rule 9 accepts. **Recommend (a).** | User | Needs user |
+| U-1 | The stored names: the server's identity file (`serverInstanceId`), the desktop's node list file and its `localStorage` copy (`id`, `serverInstanceId`, `isSystem`) | (a) Keep them as stored. The one store that reads and writes each file maps them to the new code names; `isSystem` is no longer written, and an old file's field is ignored. (b) A sealed migration renames them on disk (`nodeId`, `entryId`), with a backup first. | DESIGN.md rule 8: "Renaming code never renames a file or value on disk." A migration means permanent migration code and a backup step, to rename two fields in two small files, with no behavior gained. The data model's meaning becomes clean in code either way. **Recommend (a).** If the stored shape should change, the per-node record of 284 … 289 is the moment to do it once. | User | Decided (a), by the user's deferral |
+| U-2 | The wire field of `/rest/remote-access/status` (`serverInstanceId`), read by the desktop, peers and the phone app | (a) Rename it to `nodeId` (a clean cut, rule 9: everything updates together). (b) Keep it. | (a) makes the vocabulary true everywhere. The cost: a phone app or desktop that hasn't updated can't identify an updated node until it updates, which rule 9 accepts. **Recommend (a).** The readers are the desktop, peers, the web's phone access and the iOS app (`autobyteus-ios/AutoByteusMobileCore/ConnectionValidator.swift`), all renamed in this ticket. | User | Decided (a), by the user's deferral |
 | D-1 | The desktop record's name | — | **Entry** (`NodeEntry`, `entryId`): it is the desktop's record of a node, not the node. **Decided.** | Solution Designer | Decided |
 | D-2 | Other "peer" meanings | — | "Client address" for a network connection; "sibling" for task agents. **Decided.** | Solution Designer | Decided |
 
