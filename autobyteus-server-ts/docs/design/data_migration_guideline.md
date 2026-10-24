@@ -44,7 +44,8 @@ Record concise answers in the task design. Do not build a new framework to
 answer them.
 
 1. **Need:** is a migration needed at all? Can a tolerant reader absorb the
-   change (section 3)? Migrate only for a change of meaning or a new required
+   change (section 3)? Migrate only for a change of meaning, a stored name that carries a wrong or
+   second meaning (section 3, "Stored names follow the code"), or a new required
    fact that only old data can supply.
 2. **Availability:** can users open the application, create new work and reach
    recovery when all history is unavailable? Identify any real platform
@@ -102,6 +103,15 @@ that ordinary evolution is absorbed by the reader.
   - adding an optional field, provided its absence has a truthful meaning;
   - removing an obsolete field, which is ignored on read and dropped on the next
     ordinary save.
+- **Stored names follow the code** (`DESIGN.md` rule 10). When a rename
+  removes a wrong or second meaning, the stored field, file or key name is
+  renamed by a registered migration in the same change. Current code then reads
+  and writes only the new name; it never maps an old stored name to a new code
+  name. Stored values (IDs, folders named after an ID) keep their values. A
+  rename that changes no meaning is not applied to stored data. Client-side
+  stores (the desktop shell's files, the window's browser storage, the phone
+  apps) follow the same rule with their own sealed migration step, kept apart
+  from current code in the same way as `src/app-data-migrations/`.
 - **Never reuse a field name with a different meaning.** Add a new field instead.
   Two cases do justify a migration:
   - a change of meaning;
