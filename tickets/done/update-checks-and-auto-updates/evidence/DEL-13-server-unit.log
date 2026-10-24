@@ -1,0 +1,7 @@
+# DEL-13-server-unit — whole server unit suite on the integrated state (excerpt)
+### pnpm -C autobyteus-server-ts test:unit
+# State: merge f72210da3e (ticket code 985246c53b + tests 5faba271f5 + origin/personal bf087d3166, includes autobyteus-282); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+ Test Files  810 passed | 4 skipped (814)
+      Tests  6717 passed | 7 skipped (6724)
+exit 0
