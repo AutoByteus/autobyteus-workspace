@@ -1351,8 +1351,10 @@ The saved-run view uses the start surfaces' visual language:
   - These cards are locked while the copy runs and editable while it is stopped
     (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. Names follow Members: the role,
-    else the last address segment.
+    can hold several copies. A row is named as the sidebar names the copy: in a
+    Team run a catalog copy and its members by display name (`scribe 5083`), a
+    copy of a configured member by its address basename (`code_reviewer`)
+    (`teamMemberName`); in Org and Agent runs every copy by display name.
   - **Source labels:**
     - Agent default;
     - Team default;
@@ -1404,8 +1406,11 @@ The saved-run view uses the start surfaces' visual language:
     "Settings were saved, but could not be refreshed. Refresh before making more
     changes." It locks editing and offers **Refresh** rather than showing stale
     "Saved" or treating committed changes as unsaved. Refresh rereads the same
-    canonical snapshot without another Save or starting/resuming the run. Cancel
-    before Save writes nothing; repeated edits start from the accepted values.
+    canonical snapshot without another Save or starting/resuming the run. A
+    running Org's view reloading during the readback does not fail it: the Org
+    reads its settings again, up to three times (`agentOrgContextsStore.readRunConfig`);
+    only a closed Org, a switched node or a pending Org operation fails the readback.
+    Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is

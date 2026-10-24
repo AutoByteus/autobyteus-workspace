@@ -1,0 +1,5 @@
+# SD-01 base 1138e8fbef: scripted AGY, revoked token (temporary probe)
+ERROR:{"code":"AGY_TURN_ERROR","message":"Internal error","error_scope":"turn","error_effect":"terminal","turn_id":"c105407e-e4e8-4590-aec2-be9343563a47"}
+     × the agent reads the HTTP reason of the failed tool call 1149ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed (1)
