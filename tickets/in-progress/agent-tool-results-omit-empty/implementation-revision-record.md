@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are the authority. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer: `design-review-report.md` rounds 1–3 (ARCH-REV-001 on SR-007, ARCH-REV-002 on SR-008, ARCH-REV-003 on SR-010) | AR-001–AR-008 (non-blocking guidance) | `Initial Baseline` | SR-007, SR-008, SR-010; ARCH-REV-001–003; CRR `N/A`; API-REV `N/A`; DR `N/A` | Implemented; ready for code review |
+| IR-002 | Code reviewer: `code-review-report.md` round 2 (CRR-002, failure origin of API-REV-001), via architecture reviewer ARCH-REV-004 on SR-012 | CR-001, CR-002 | `Local Fix` (CR-002) and design-revision implementation (CR-001, SR-012) | SR-012; ARCH-REV-004; CRR-002; API-REV-001; DR `N/A` | Fixed; ready for code review |
 
 ## Revision Entries
 
@@ -29,3 +30,26 @@ The current code and `implementation-handoff.md` are the authority. This record 
 - Local validation and result: `implementation-handoff.md` Checks Run (all `Pass`).
 - Next recipient or routing: from `get_handoff_rules` (Large / High → code review).
 - Remaining limitations or risks: `implementation-handoff.md` Known Risks; E2E files listed there for API/E2E.
+
+### IR-002 — Titles migration after projects-per-folder-v1 only; the worker Task store keeps the title
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` round 2 (CRR-002, the failure-origin review of API/E2E round 1, API-REV-001: F-001 = API-03, F-002 = API-11c); CR-001 revised in SR-012 and passed in ARCH-REV-004 (`design-review-report.md`), which sent both findings here in one round.
+- Triggering finding IDs: CR-001, CR-002.
+- Classification: CR-001 `Design Impact` (resolved upstream in SR-012, implemented here); CR-002 `Local Fix`.
+- Prior authoritative result: IR-001, `Pass` in CRR-001, then `Fail` in API-REV-001.
+- Current authoritative result: both findings fixed on `codex/agent-tool-results-omit-empty` (`dfbd2621bb`, `52cbc28442`, plus the docs/ticket commit); `autobyteus-agents` unchanged.
+- Related solution revision IDs: SR-012.
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-002.
+- Related API/E2E revision IDs: API-REV-001.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation change is recorded: one Project that keys-v1 cannot key left titles `NOT_RUN` and hid every Project's Tasks (CR-001); the Workspaces tree crashed for a Project-Task worker because the store dropped `title` (CR-002).
+- Approved behavior or requirement IDs affected: QR-002, AC-004 (migration; MP-001), AC-005, SCN-003 (tree label); BEH-002.
+- Implementation delta:
+  - CR-001: `prerequisiteMigrationIds` is `["20261005_projects_per_folder_v1"]`; new frozen validator `released-task-file-before-titles.ts` (`taskKey` optional; IDs match folders; non-blank description; released status; non-blank timestamps) replaces the keyed frozen `readTaskFile` import; `SKIPPED_NO_TITLE_LINE_WARNING` removed (a blank description is not a released Task file); `titleFromFirstLine` takes a string and throws on a blank one. Frozen layer not pruned (keys-v1 still uses it). keys-v1 and admission unchanged.
+  - CR-002: `taskWorkerTaskStore.ts` maps each answer through `workerTaskOf`: Project Task with `title`, Temp task with `title: null`; a Project-Task answer without a title is refused.
+  - Docs: `autobyteus-server-ts/docs/modules/projects.md` (titles after `projects-per-folder-v1`, unkeyed Tasks titled too).
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/migrations/project-task-titles/{project-task-titles-app-data-migration,title-from-first-line,released-task-file-before-titles}.ts`; `tests/app-data-migrations/project-task-titles/project-task-titles-app-data-migration.test.ts`; `tests/e2e/projects/projects-startup-migration.e2e.test.ts`; `autobyteus-web/stores/taskWorkerTaskStore.ts`, `stores/__tests__/taskWorkerTaskStore.spec.ts`; `autobyteus-server-ts/docs/modules/projects.md`.
+- Local validation and result: IMP-11 (typecheck), IMP-12 (migrations + architecture, 612 pass), IMP-13 (startup E2E, 6 pass), IMP-14 (web store and readers, 1269 pass); all `Pass`.
+- Next recipient or routing: from `get_handoff_rules` (Large / High → code review).
+- Remaining limitations or risks: API-03 and API-11c to be rerun by API/E2E; the live Workspaces tree was not rerun here.

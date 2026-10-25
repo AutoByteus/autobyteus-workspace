@@ -118,8 +118,11 @@ The title is the Task's one-line name, given by its writer: trimmed, not blank,
 no length or line limit. The reader requires it; Tasks saved before titles got
 theirs once at startup from their description's first non-empty line, cut to
 200 characters with "…" (migration `project-task-titles`, after
-`project-task-keys-v1`; nothing else in the file changes). A Task file without
-a title that the migration could not convert stays unchanged and is not listed.
+`projects-per-folder-v1`; nothing else in the file changes). It titles keyed and
+unkeyed Task files alike, so a Project that `project-task-keys-v1` could not key
+is titled too and is listed with its titles once a later start keys it (keys-v1
+keeps the title). A Task file without a title that the migration could not
+convert stays unchanged and is not listed.
 
 Tasks with no Project live outside the Projects root, so no Project scan or the
 Projects migration gate ever sees them. `AdHocTasksLayout` owns

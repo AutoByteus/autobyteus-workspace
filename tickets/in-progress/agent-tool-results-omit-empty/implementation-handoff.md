@@ -2,36 +2,36 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: architecture review selected (Large / High) and passed: ARCH-REV-001 (SR-007), ARCH-REV-002 (SR-008), ARCH-REV-003 (SR-010). Next: `get_handoff_rules` (Large / High → code review).
+- Upstream review applicability and handoff-rule result: architecture review selected (Large / High) and passed: ARCH-REV-001 (SR-007), ARCH-REV-002 (SR-008), ARCH-REV-003 (SR-010), ARCH-REV-004 (SR-012). Next: `get_handoff_rules` (Large / High → code review).
 - Requirements doc: `requirements-doc.md` (approved; SR-010)
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (SR-001–SR-010)
-- Design spec: `design-spec.md` (SR-010, including "`get_project_task` (SR-010 addition)")
+- Solution revision record: `solution-revision-record.md` (SR-001–SR-012)
+- Design spec: `design-spec.md` (SR-012: Migration Plan, titles after `projects-per-folder-v1` only; SR-010 "`get_project_task` (SR-010 addition)")
 - Supplemental task artifacts: `evidence/SD-*` (before sizes, first-line lengths, Task shapes, Codex probe)
-- Design review report: `design-review-report.md` (rounds 1–3, AR-001–AR-008)
+- Design review report: `design-review-report.md` (rounds 1–4, AR-001–AR-008; ARCH-REV-004 on SR-012)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report: `N/A` (initial)
+- Triggering rework report: `code-review-report.md` round 2 (CRR-002, failure origin of API/E2E round 1, API-REV-001): CR-001 (Design Impact, fixed by SR-012) and CR-002 (Local Fix), one round
 - Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty/tickets/in-progress/agent-tool-results-omit-empty/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty`, branch `codex/agent-tool-results-omit-empty`, base `origin/personal@fc06a7355d`; finalization target `origin/personal`.
 - Second repository (REQ-012): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty-agents`, branch `codex/agent-tool-results-omit-empty`, base `origin/main@d8cf242`, commit `82b7bae`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (round 2)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-007, SR-008, SR-010
-- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003
-- Related code-review revision IDs: CRR-001 (`Pass`, no findings; `code-review-report.md`), recorded only
-- Related API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (AR-001–AR-008 applied as guidance; see below)
-- Commits (workspace): `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs), and the ticket/evidence commit named in the handoff message. (autobyteus-agents): `82b7bae`.
+- Current implementation revision ID: `IR-002` (baseline IR-001)
+- Related solution revision IDs: SR-007, SR-008, SR-010, SR-012
+- Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
+- Related code-review revision IDs: CRR-001 (`Pass`, recorded only), CRR-002 (CR-001, CR-002)
+- Related API/E2E / delivery revision IDs: API-REV-001 (`Fail`: F-001 = API-03, F-002 = API-11c); DR `N/A`
+- Triggering finding IDs: CR-001, CR-002 (IR-001: AR-001–AR-008 applied as guidance; see below)
+- Commits (workspace): IR-001 `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs). IR-002 `dfbd2621bb` (CR-001 migration + tests), `52cbc28442` (CR-002 web store + test), and the docs/ticket commit named in the handoff message. (autobyteus-agents): `82b7bae`, unchanged.
 
 Summary:
 1. **One result rule.** `autobyteus-ts/src/tools/tool-result-json.ts` (`omitEmptyToolResultFields` → `ToolResultJsonValue`, `toToolResultJson`): drops `null`/`undefined`/`""`/`[]`/`{}` at any depth (after pruning children), keeps `false`/`0`, keeps array positions, never removes the top level, compact JSON after `toJSON`. Every platform family's native tool and MCP provider calls it; `toAgentToolsMcpStructuredJsonResult(value)` builds text and `structuredContent` from one pruned value. `json-utils.ts` and the browser/delegation/media serializers are gone; pretty-printing is gone. `send_message_to` refusals have no `target_agent_run_id` (schema, LLM text, docs). Guard: `tests/architecture/agent-tool-result-boundaries.test.ts`.
-2. **Task title.** Stored, required, trimmed, not blank, no limit (`projects/domain/task-text.ts`); through store reader/writer, service (create, both update paths, ack, worker view), GraphQL (`title: String!` on Task and inputs, nullable on `TaskWorkerTaskView`), change feed, search exact tier. Startup migration `project-task-titles` (`20261025_project_task_titles`, after keys-v1) titles existing Tasks from the first non-empty line (≤200, "…", surrogate-safe), classified by the frozen pre-title `readTaskFile`.
+2. **Task title.** Stored, required, trimmed, not blank, no limit (`projects/domain/task-text.ts`); through store reader/writer, service (create, both update paths, ack, worker view), GraphQL (`title: String!` on Task and inputs, nullable on `TaskWorkerTaskView`), change feed, search exact tier. Startup migration `project-task-titles` (`20261025_project_task_titles`, after `projects-per-folder-v1` only; SR-012) titles existing Tasks, keyed or not, from the first non-empty line (≤200, "…", surrogate-safe), classified by its own frozen validator `released-task-file-before-titles.ts`.
 3. **Short lists and `get_project_task`.** `list_project_tasks` returns short entries only. `get_project_task(project_id, task_id)` returns one Task in full; a worker reads only the Task it works on (its copy's current Task through `MemberTaskCapability.ownedTaskOf` → the root's `ownerOf`), refused otherwise with `TASK_READ_OUT_OF_SCOPE`; it fails closed. A worker's first message for a saved Task names `Task: <key> in Project <projectId>` (new copy and existing copy). Context files in agent results are `{name, path}` (full Task and acks).
-4. **Web.** Required Title input above the description; titles in cards (with a description preview that skips a repeated first line), rows, pickers, marker, delete confirmation, Task page, Projects panel, Workspaces tree. `utils/projects/taskText.ts` replaces `taskSummary.ts`.
+4. **Web.** Required Title input above the description; titles in cards (with a description preview that skips a repeated first line), rows, pickers, marker, delete confirmation, Task page, Projects panel, Workspaces tree (the worker Task store carries `title`: CR-002). `utils/projects/taskText.ts` replaces `taskSummary.ts`.
 5. **Docs / skill.** `GLOSSARY.md` (Title, Summary), server and web docs; Project Task Manager skill sentences and `get_project_task` in its tool list.
 
 ## Routing Classification (Mandatory)
@@ -68,11 +68,16 @@ Summary:
 - **AR-006** — two-open-Tasks case tested (`get-project-task-tool.test.ts`: the copy's current Task B is readable, A refused "You work on B").
 - **AR-007** — one helper `taskIdentityLines` in `task-execution-input.ts`, used by `buildTaskWorkText` (when given `task`) and always by `buildExistingCopyTaskMessage`; `projectId` from `resolveAssignment`; the existing-copy header and its other-open-Tasks sentence kept.
 - **AR-008** — (1) `taskReadScopeOf` never maps an error to `any`; the scope is computed inside each adapter's `try`, and `projectTaskToolError` maps `TaskDelegationError` keeping its code (`TASK_AGENT_RESOURCES_UNAVAILABLE`). (2) The resolver's bound branch for `get_project_task` sits before the generic `createTool` fallthrough; `registerProjectTaskTools` registers only the bound definition (`ensureGetProjectTaskToolRegistered`), and an instance created without a caller refuses every call. (3) Tested on both routes including damaged data.
-- **Migration note** — classification uses the frozen `readTaskFile` in `app-data-migrations/frozen/server/projects/stores/project-store.ts` (identical to the pre-title reader at `project-store.ts:50-57`), so every Task listed before is titled. One input the pre-title reader accepts but the derivation cannot title: a description with no non-blank line (no writer produces it; `normalizeDescription` always trimmed and required content). It is recorded as `SKIPPED_NO_TITLE_LINE_WARNING` and left unchanged (DESIGN rule 7), not invented a title.
+- **Migration note (IR-001, replaced in IR-002)** — IR-001 classified with the keyed frozen `readTaskFile` and depended on keys-v1. Since SR-012 / CR-001 the migration has its own frozen validator `released-task-file-before-titles.ts`: `taskKey` optional; `taskId`/`projectId` match their folders; non-blank `description`; a released `status` (`TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`); non-blank `createdAt`/`updatedAt`. Every Task the keyed reader accepted is accepted, plus the unkeyed Tasks of a Project keys-v1 could not key. A blank description is not a released Task file, so `SKIPPED_NO_TITLE_LINE_WARNING` is gone; such a file is `SKIPPED_INVALID_TASK_WARNING`, and `titleFromFirstLine` throws if ever given one.
+
+### IR-002 fixes (CRR-002)
+
+- **CR-001** (SR-012, ARCH-REV-004) — `ProjectTaskTitlesAppDataMigration.prerequisiteMigrationIds = ["20261005_projects_per_folder_v1"]`; still registered right after keys-v1. Classification through `readReleasedTaskFileBeforeTitles` (above); the keyed frozen `readTaskFile` import is gone from titles. The frozen layer is not pruned: keys-v1 still imports `frozen/server/projects/stores/project-store.ts`. keys-v1 unchanged: it writes `{...raw, taskKey}`, so a title written first is kept (tested). Admission unchanged: the current reader requires `taskKey` and `title`, so only the unkeyable Project stays hidden. Tests: unkeyed per-folder fixture (titled, not listed until keyed, then listed with its title); keys-v1 `FAILED` for one Project → titles `SUCCEEDED`, the other Project listed with titles, after the fix and a rerun the blocked Project listed with its title; validator cases; startup E2E scenario (`projects-startup-migration.e2e.test.ts`, keys scenario) asserts titles `SUCCEEDED` on the first start with keys `FAILED`, the blocked file equals the original plus `title`, `project_main` and `project_agents` list titled Tasks, and after removing only the conflicting `taskKey` and restarting the blocked Project lists `[["task_blocked","Task task_blocked"]]`; the pre-folder start (per-folder → keys → titles) asserts keys and titles `SUCCEEDED*` and every Task's title equals its description's first non-empty line.
+- **CR-002** — `autobyteus-web/stores/taskWorkerTaskStore.ts`: the answer type has `title`; `workerTaskOf` builds a Temp task with `projectId: null, title: null` and a Project Task with its `title`; a Project-Task answer without a title is refused (an error caught by `flush`'s existing warning path; the worker shows no Task line) rather than shown with a guessed label. Tests: an agent worker with a Project Task and a team worker with a Temp task; a Project-Task answer without a title.
 
 ## Key Files Or Areas
 
-- New: `autobyteus-ts/src/tools/tool-result-json.ts`; `autobyteus-server-ts/src/projects/domain/task-text.ts`; `src/agent-tools/project-tasks/project-task-read-scope.ts`; `src/app-data-migrations/migrations/project-task-titles/{project-task-titles-app-data-migration,title-from-first-line}.ts`; `tests/architecture/agent-tool-result-boundaries.test.ts`; `autobyteus-web/utils/projects/taskText.ts`.
+- New: `autobyteus-ts/src/tools/tool-result-json.ts`; `autobyteus-server-ts/src/projects/domain/task-text.ts`; `src/agent-tools/project-tasks/project-task-read-scope.ts`; `src/app-data-migrations/migrations/project-task-titles/{project-task-titles-app-data-migration,title-from-first-line,released-task-file-before-titles}.ts`; `tests/architecture/agent-tool-result-boundaries.test.ts`; `autobyteus-web/utils/projects/taskText.ts`.
 - Renamed: `agent-collaboration/execution/task/member-task-command-capability.ts` → `member-task-capability.ts` (`MemberTaskCapability`, `requireMemberTaskCapability`; builder inputs `taskCommands` → `taskCapability`).
 - Removed: `src/agent-tools/json-utils.ts`; `toBrowserJsonString`, `toTaskDelegationJsonString`, `toMediaJsonString`; search `summaryOf`/`SUMMARY_MAX_CHARS`; service `normalizeDescription`; web `utils/projects/taskSummary.ts` (+ spec).
 - Main modified: `agent-tools/project-tasks/{project-task-tool-contract,project-task-tool-manifest,project-task-native-tools}.ts`; MCP providers; `agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts`; `agent-collaboration/execution/task/{task-execution-input,root-task-execution-lifecycle,task-execution-resource-port}.ts`; the three roots and four capability builders; `projects/**`; `api/graphql/types/project-tasks.ts`; `app-data-migration-registry.ts`; web components listed in the design.
@@ -113,8 +118,8 @@ Summary:
 
 - Approved decision: `Migration Required` (`design-spec.md` "Persisted Data / State Transition Decision", "Migration Plan").
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes` (current reader requires a non-blank `title`; no fallback).
-- Migration implementation and focused checks: `ProjectTaskTitlesAppDataMigration` (`requiredOnStartup`, `STARTUP_ONLY`, prerequisite `20261017_project_task_keys_v1`, registered right after it); per-file atomic replace (frozen `writeJsonFile`), re-read check (`isDeepStrictEqual` with the planned object), dispositions `MIGRATED` / `SKIPPED_ALREADY_CURRENT` / `SKIPPED_INVALID_TASK_WARNING` / `SKIPPED_NO_TITLE_LINE_WARNING` / `FAILED_OPERATION`; a failed Task does not stop others; retry skips titled files. Tests on synthesized fixtures of the four released shapes, an invalid file, a titled file, a long first line with a surrogate at the cut, a partial failure and retry, idempotent second start (`tests/app-data-migrations/project-task-titles/`); keys-v1 and per-folder-v1 tests now run titles after keys before reading with the current store.
-- Deviation from the reviewed transition decision: `None` (the extra warning disposition is described above).
+- Migration implementation and focused checks: `ProjectTaskTitlesAppDataMigration` (`requiredOnStartup`, `STARTUP_ONLY`, prerequisite `20261005_projects_per_folder_v1` only (SR-012, CR-001), registered right after keys-v1; own frozen validator `released-task-file-before-titles.ts`, keyed or unkeyed); per-file atomic replace (frozen `writeJsonFile`), re-read check (`isDeepStrictEqual` with the planned object), dispositions `MIGRATED` / `SKIPPED_ALREADY_CURRENT` / `SKIPPED_INVALID_TASK_WARNING` / `FAILED_OPERATION`; a failed Task does not stop others; retry skips titled files. Tests on synthesized fixtures of the four released shapes, an invalid file, a titled file, a long first line with a surrogate at the cut, a partial failure and retry, idempotent second start (`tests/app-data-migrations/project-task-titles/`); keys-v1 and per-folder-v1 tests now run titles after keys before reading with the current store. IR-002: an unkeyable Project is titled and lists once keyed; startup E2E with one unkeyable Project (IMP-13).
+- Deviation from the reviewed transition decision: `None` (SR-012 design followed; the IR-001 extra warning disposition is gone).
 
 ## Environment Or Dependency Notes
 
@@ -136,6 +141,12 @@ Implementation-scoped checks; not API/E2E sign-off. Evidence in `evidence/` (rel
 | IMP-09 | before/after sizes on synthesized data with the user's shapes (`IMP-09-after-sizes.measure.ts`; shapes from `IMP-09-shape-parameters.py`, read-only lengths and counts) | `17d631c704` | same, test-owned temp data root | `list_project_tasks`, `get_project_task`, `update_task`, `send_message_to`, the rule on a dom_snapshot shape | REQ-010, QR-001, AC-008 (input for delivery) | Pass (QR-001 8.5%) | `IMP-09-after-sizes-output.txt`, `IMP-09-shape-parameters-output.json` | `list_project_tasks (155 open Tasks) \| 386253 \| 33002 \| -91.5%`; `QR-001 list after/before: 8.5%` |
 | IMP-10 | isolated desktop instance of this worktree (`pnpm --silent isolated-app start --build`), driven with browser-automation; stopped afterwards | `17d631c704` | macOS arm64 Electron worktree build, own data root | New/Edit task Title, board cards, Task page, delete confirmation, GraphQL title refusal | REQ-004, REQ-006, AC-003, AC-005 | Pass | `IMP-10-isolated-desktop-observations.txt`, `IMP-10-*.png` | `"error":"Give the task a title."`, `"focused":"task-page-title"`; cards `"text":"Fix login","preview":"The session is lost after refresh."` |
 
+| IMP-11 | `pnpm -C autobyteus-server-ts typecheck` | `52cbc28442` | same | server `src` incl. the titles migration and its validator | QR-002, AC-004 | Pass | `IMP-11-server-typecheck.log` | `EXIT 0` |
+| IMP-12 | `pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations tests/architecture` | `52cbc28442` | same | titles, keys-v1, per-folder-v1 migrations; frozen-layer and tool-result boundary tests | QR-002, AC-004, CR-001 | Pass | `IMP-12-server-migrations-architecture.log` | `Tests  612 passed (612)`; `project-task-titles-app-data-migration.test.ts` |
+| IMP-13 | `pnpm -C autobyteus-server-ts build`, then `env -i PATH HOME=<temp> TMPDIR=<temp> pnpm exec vitest run tests/e2e/projects/projects-startup-migration.e2e.test.ts` | `52cbc28442` (dist built from the same migration source) | same, test-owned temp data roots | real server startup: pre-folder → per-folder → keys → titles; one unkeyable Project then a restart (API-03 scenario) | QR-002, AC-004, CR-001 | Pass | `IMP-13-startup-migration-e2e.log` | `Tests  6 passed (6)`; `released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden` |
+| IMP-14 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__ composables/projects/__tests__/useTaskWorkerTasks.spec.ts components/workspace/history services/projects` | `52cbc28442` | same | `taskWorkerTaskStore` and its readers (Workspaces tree hosts, change feed) | AC-005, SCN-003, CR-002 | Pass | `IMP-14-web-worker-task-store.log` | `Tests  1269 passed (1269)`; `taskWorkerTaskStore.spec.ts (9 tests)` |
+
+- IR-002 reruns: IMP-11–IMP-14 cover the code IR-002 changed; IMP-01, IMP-05, IMP-07, IMP-09, IMP-10 exercise unchanged code and stand. IMP-04 and IMP-06 stand except for the files rerun in IMP-12 and IMP-14.
 - Not run, and why: server E2E and web browser probes (owned by API/E2E; the files that need updating are listed under Known Risks); gated live-runtime suites; the right-panel Projects tab and the Workspaces-tree Task line were checked by component tests (IMP-06), not on the instance.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -146,6 +157,7 @@ Implementation-scoped checks; not API/E2E sign-off. Evidence in `evidence/` (rel
 - Surface used: isolated desktop instance of this worktree (TESTING.md), plus component tests.
 - States inspected: blank title on submit (error text, focus, invalid state), error cleared on typing, successful create (notice, board order), card title + preview (with the repeated first line skipped), Task page title section, delete confirmation by title, title edit and save.
 - Issues found and corrected: none on the instance; earlier, component tests showed the panel only treats keyed Tasks as Project Tasks (fixture corrected, not product code).
+- IR-002 (CR-002): the fix is in the store's mapping, not in a rendered component; checked with store and Workspaces-tree component tests (IMP-14). The live Workspaces tree with a Project-Task worker (API-11c) was not rerun here; that probe is API/E2E's.
 - Check IDs and limitations: IMP-10 (screenshots `IMP-10-board-titles.png`, `IMP-10-new-task-title-required.png`, `IMP-10-task-page-title-and-delete.png`), IMP-06. Not exercised on the instance: the right-panel Projects tab, the Workspaces tree with a live Task worker, narrow viewports, zh-CN.
 
 ## Downstream Coverage Hints / Suggested Scenarios
@@ -158,3 +170,4 @@ Implementation-scoped checks; not API/E2E sign-off. Evidence in `evidence/` (rel
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 - Update and run the E2E files listed under Known Risks; REQ-010/AC-008 before/after table for delivery (IMP-09 gives synthesized numbers); QR-001 on the measured list (IMP-09: 8.5%).
+- IR-002: rerun API-03 (startup with one unkeyable Project; IMP-13 covers the scenario in the existing startup E2E file) and API-11c (Workspaces tree with a live Project-Task worker and a Temp-task worker).
