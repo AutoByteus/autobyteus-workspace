@@ -67,4 +67,4 @@ If the writes show as 5m, that is the design's escalation trigger: a `Design Imp
 
 ## Release
 
-- Beta, at the user's request. Version, tag and pipelines are in `release-deployment-report.md`.
+- Beta `v1.5.9-beta.8` at the user's request: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.9-beta.8. All four release workflows succeeded, with 17 assets; Docker `autobyteus/autobyteus-server:1.5.9-beta.8`, and `:beta` points to it. Final `personal` is `84dc0b2156` (merge `410e593ab4`). Details are in `release-deployment-report.md`.

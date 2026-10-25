@@ -38,7 +38,7 @@ Finalize `codex/claude-prompt-cache-ttl` on `personal`, then cut a beta (`v1.5.9
   - Logs: `evidence/delivery/`.
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (checked again before the final merge; see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes` (checked again before the final merge and before the push: unchanged at `a0c7275db8`)
 
 ## Verification
 
@@ -57,7 +57,7 @@ Finalize `codex/claude-prompt-cache-ttl` on `personal`, then cut a beta (`v1.5.9
 - More evidence requested: `None`.
 - User check needed: `Yes`. API/E2E tried api-key mode through the product, the core client with the same key, and a recheck on 2026-10-25. Each was refused for the test-vault key's credit balance. No other API-billed account may be used for tests (TESTING.md rule 4); the only funded API billing is the user's own account. The user decided on 2026-10-25: "We let it pass and we release a new beta", checking on that beta.
 - User check reference: execution report, Acceptance-Criteria Proof, AC-001 row; `handoff-summary.md` "The User's Check". A 5m result is a `Design Impact` for the Solution Designer.
-- Re-verification after later re-integration: see Repository Finalization.
+- Re-verification after later re-integration: `Not needed` (the base did not move again).
 
 ## Release Decision
 
@@ -77,19 +77,51 @@ Finalize `codex/claude-prompt-cache-ttl` on `personal`, then cut a beta (`v1.5.9
 
 ## Version / Tag / Release Commit
 
-Pending at archive time; recorded after finalization in DR-001's delivery record commit on `personal`.
+- Version: `1.5.9-beta.8` (`python3 scripts/release_versions.py next-beta` after the remote tags were fetched; the previous tag was `v1.5.9-beta.7`).
+- Release commit: `84dc0b2156` `chore(release): bump workspace release version to 1.5.9-beta.8` (by `scripts/desktop-release.sh beta --branch finalize/claude-prompt-cache-ttl --no-push`; `autobyteus-web/package.json` → `1.5.9-beta.8`).
+- Tag: annotated `v1.5.9-beta.8` on `84dc0b2156`, pushed.
 
 ## Repository Finalization
 
-Pending at archive time; recorded after finalization in DR-001's delivery record commit on `personal`.
+- Bootstrap context source: `handoff-solution-designer.md` (base `origin/personal` @ `d8df12435c`, finalization target `personal`) and RELEASE.md "Finalization Target".
+- Ticket branch: `codex/claude-prompt-cache-ttl`
+- Ticket branch commit result: `Completed`. The final ticket commit is `13b19b1902` (archive), on top of the integration merge `69ef2596ca`.
+- Ticket branch push result: `Completed` (`origin/codex/claude-prompt-cache-ttl` @ `13b19b1902`).
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`origin/personal` was still `a0c7275db8` before the merge and again before the push).
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` (`git fetch origin personal`; `finalize/claude-prompt-cache-ttl` from `origin/personal` in the ticket worktree, per RELEASE.md).
+- Merge into target result: `Completed`. `git merge --no-ff codex/claude-prompt-cache-ttl` → `410e593ab4`, whose tree is identical to `13b19b1902`. Before tagging, on that state: `check_licensing.py` "Licensing is consistent." and `check_repository_artifact_hygiene.py` "passed".
+- Push target branch result: `Completed` (`a0c7275db8..84dc0b2156 HEAD -> personal`).
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-Pending at archive time; recorded after finalization in DR-001's delivery record commit on `personal`.
+- Applicable: `Yes`
+- Method: `Project Release Guide` (`scripts/desktop-release.sh beta … --no-push`, then pushing `personal` and the tag)
+- Method reference / command: RELEASE.md "Cutting The Release". Untracked `*/dist/` folders were deleted first.
+- Pipelines triggered and their results (all `success`, watched with `gh run watch --exit-status`):
+  - Desktop Release `40186940168`
+  - Android APK Release `40186940206`
+  - iOS App Store Connect Release `40186940167`
+  - Server Docker Release `40186940186`
+- Published artifacts checked against what the release should produce:
+  - The GitHub pre-release `v1.5.9-beta.8` (`isPrerelease: true`) has 17 assets, matching RELEASE.md: macOS arm64/x64 `.dmg`, `.zip` and blockmaps (8), Linux x64/arm64 AppImages (2), the Windows `.exe`, the Android APK and its `.sha256`, and `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.8` (amd64, arm64), with `:beta` on the same digest `sha256:28e8d833c599…`; `:latest` not moved.
+  - TestFlight upload: the iOS workflow succeeded.
+  - URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.9-beta.8
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (a beta uses GitHub generated notes)
 
 ## Post-Finalization Cleanup
 
-Pending at archive time; recorded after finalization in DR-001's delivery record commit on `personal`.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl`
+- Worktree cleanup result: `Completed`, removed after this record was pushed to `personal` (`git worktree remove`, from the main checkout).
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` (`codex/claude-prompt-cache-ttl` and `finalize/claude-prompt-cache-ttl` deleted; both are merged into `origin/personal`).
+- Remote branch cleanup result: `Not required`. `origin/codex/claude-prompt-cache-ttl` is kept as the pushed ticket history, as for earlier tickets.
 
 ## Release Notes Summary
 
@@ -120,4 +152,11 @@ None: this repository deploys no hosted service. The server rollout is the publi
 
 ## Final Status
 
-Pending at archive time; recorded after finalization in DR-001's delivery record commit on `personal`.
+- Verification complete: `Yes`, from the evidence. The user's own check of AC-001 on API billing follows on this beta, by his decision of 2026-10-25; it does not block completion.
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.9-beta.8`, all four workflows, 17 assets, Docker `1.5.9-beta.8` and `:beta`)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`
+- Terminal message/reference: `send_message_to` → `/software_engineering_team/solution_designer`, `Delivery Completed`, after this record was pushed.
