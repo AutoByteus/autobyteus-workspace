@@ -345,6 +345,7 @@ Explorer services scan persisted memory roots at request time, derive memory ava
 
 - `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
 - Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
+- Runs of an internal agent are left out while "Show internal agents" is off: no group, and not moved under `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
 

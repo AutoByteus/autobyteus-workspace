@@ -141,7 +141,7 @@ none reads the setting or the attribute itself:
 | `list_available_agents`, `@` candidates and `@` by ID, `delegate_task` catalog addresses, a peer node's available agents and delegation | `CollaboratorCandidatePolicy.isEligibleAgent` (the rule is injected through `createCollaboratorDefinitionCatalog`) |
 | Run history | `AgentRunHistoryService.listRunHistory` (rows of hidden definitions) |
 | Memory page | `AgentMemoryExplorerService` (the agent list and its runs) |
-| `list_agent_definitions` | the tool |
+| `list_agent_definitions` | the tool (the agent-management tools are currently registered on no node: `registerAgentManagementTools()` has no caller; follow-up FU-001 of autobyteus-308) |
 
 While hidden, `delegate_task` to an internal agent's address gets the usual
 "not the address of an available agent or agent team" refusal, which reveals
@@ -150,6 +150,15 @@ nothing. Hidden is not protected: opening a definition or a run by ID
 whatever the setting, and system-started runs of internal agents run and are
 recorded as usual. Internal Agent Teams are not a feature; built-in agents stay
 excluded from collaboration whatever the setting.
+
+Tests: unit `tests/unit/agent-definition/internal-agents.test.ts` and
+`tests/unit/agent-collaboration/collaborators/internal-agent-eligibility.test.ts`;
+E2E `tests/e2e/agent-definitions/internal-agents.e2e.test.ts` (IA-01…05: list,
+save, run history and Memory page with a real recorded run, `list_available_agents`,
+`@` and `delegate_task` over Agent Tools MCP with the scripted AGY CLI
+(`RUN_AGY_FAILURE_E2E=1`), the setting); RC-38 in
+`tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (a
+peer's offer and delegation).
 
 ## Built-In Agent Sync
 

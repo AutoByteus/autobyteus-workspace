@@ -426,7 +426,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
   inside its operation gate, before it is posted. Every mention is re-validated
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
-  built-in, not the port's `ownDefinition()`; it may already be in the run) and
+  built-in, not an internal agent while hidden, not the port's `ownDefinition()`;
+  it may already be in the run) and
   answered with its name, kind, address and `presence`, **decided for the agent the
   user is talking to** (the viewer; each root passes `mentionViewerRelation(index,
   focusedAgentRunId)`): `self` (the viewer's own placement, by identity, not by
@@ -501,7 +502,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the Daily Assistant), then
+  policy: shared Agents (minus built-ins such as the Daily Assistant, and
+  internal agents while hidden), then
   shared Agent Teams, in catalog order, **including** definitions already in the
   run; only the port's own definition is left out. That is a Team run's Team.
   For an Agent root, `focusedAgentRunId` is required (omitting it is an error),

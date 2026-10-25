@@ -241,6 +241,12 @@ Model Router (an agent definition with `"internal": true`).
   (`AgentCard.vue`).
 - Server rule and the surfaces it covers:
   [Agent Definition: Internal Agents](../../autobyteus-server-ts/docs/modules/agent_definition.md#internal-agents).
+- Tests: `components/settings/__tests__/ShowInternalAgentsCard.spec.ts`,
+  `components/agents/__tests__/AgentCard.spec.ts`;
+  `tests/e2e/internal-agents-probe.mjs` (`pnpm test:e2e:internal-agents`, after a
+  server build) drives the Agents page, featured picker, run history and the
+  switch in a real browser against a real node with a file-authored internal
+  agent.
 
 ## Nodes: Manage Nodes (one list)
 
