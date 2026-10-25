@@ -93,7 +93,7 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
   const appGraphql = (applicationId: string, query: string, variables: Record<string, unknown>) =>
     rest("POST", `/applications/${encodeURIComponent(applicationId)}/backend/graphql`, { requestContext: { applicationId }, request: { query, variables } });
   /** Processes this test's server spawned (it runs in this process), optionally only those whose command has `needle`. */
-  const childPids = (needle = ""): number[] => execFileSync("ps", ["-axo", "pid=,ppid=,command="], { encoding: "utf8" }).split("\n")
+  const childPids = (needle = ""): number[] => execFileSync("ps", ["-A", "-o", "pid=,ppid=,command="], { encoding: "utf8" }).split("\n")
     .map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/)).filter((m): m is RegExpMatchArray => Boolean(m))
     .filter((m) => Number(m[2]) === process.pid && m[3].includes(needle)).map((m) => Number(m[1]));
   /** The application's worker process. */
@@ -203,7 +203,7 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
       { input: { briefId } });
     expect(launched.body.result.data.launchDraftRun.status, brief(launched.body)).toBe("ATTACHED");
     const runId = launched.body.result.data.launchDraftRun.runId as string;
-    const readBrief = async () => (await appGraphql(applicationId, `query($briefId: String!) { brief(briefId: $briefId) { briefId } }`, { briefId })).body.result.data.brief;
+    const readBrief = async () => (await appGraphql(applicationId, `query($briefId: String!) { brief(briefId: $briefId) { briefId latestRunId latestBindingStatus lastErrorMessage } }`, { briefId })).body.result.data.brief;
     await until(readBrief, (value) => value?.latestRunId === runId && value?.latestBindingStatus === "ATTACHED", "the brief records the live run");
     // The drafting run's Codex runtime: the app-server process this server started for the run.
     const runtimePids = await until(async () => childPids("app-server").filter((pid) => !before.has(pid)), (pids) => pids.length === 1, "the run's runtime process");
