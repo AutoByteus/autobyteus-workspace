@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-002 | Code reviewer, `code-review-report.md` CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-005; CRR-001 | Unused `modelList` removed; commit `683b036be9`; back to code review (Targeted Delta Review) |
 | IR-001 | Architecture reviewer, `design-review-report.md` ARCH-REV-003 Pass (SR-003), updated by ARCH-REV-005 Pass (SR-005) during implementation | N/A | `Initial Baseline` | SR-003, SR-005; ARCH-REV-003, ARCH-REV-005; CRR N/A; API-REV N/A; DR N/A | Implemented; code commit `5135bb73dc`; routed to code review (Large / High) |
 
 ## Revision Entries
@@ -29,3 +30,23 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: server typecheck Pass; server unit suite 826 files / 6869 tests Pass; focused server suites 240 tests Pass; web tests 72 Pass; web guards Pass; live dev-stack read 4.79 s; rendered page inspected (IMP-07, IMP-08).
 - Next recipient or routing: code review (handoff rule for Large / High).
 - Remaining limitations or risks: `implementation-handoff.md` § Known Risks.
+
+### IR-002 — CR-001: remove the unused `modelList` helper
+
+- Triggering role, report path, and round: Code reviewer, `tickets/in-progress/available-agent-runtimes-tool/code-review-report.md`, CRR-001 (round 1, Fail).
+- Triggering finding IDs: CR-001 (Low, Principle 7 No Dead Code)
+- Classification: Local Fix
+- Prior authoritative result: IR-001 at `5135bb73dc`, CRR-001 Fail
+- Current authoritative result: `683b036be9`; the finding is resolved
+- Related solution revision IDs: SR-005
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: a code-review Local Fix.
+- Approved behavior or requirement IDs affected: none (nothing called it)
+- Implementation delta: deleted `modelList` and its doc comment from `autobyteus-web/components/settings/model-routing/availableAgentRuntimesPresentation.ts`. `UnknownText` and `AvailableModel` stay imported: `unknownReason` and `blockedCount` use them. `grep -rn "modelList\b"` over the web sources now finds nothing.
+- Changed files or areas: that one file.
+- Local validation and result: IMP-09. `pnpm -C autobyteus-web test:nuxt components/settings/model-routing --run` passes 8/8, and `guard:web-boundary` passes.
+- Next recipient or routing: code review (Targeted Delta Review of CR-001).
+- Remaining limitations or risks: unchanged from IR-001. The reviewer's optional point (resolve family coverage over all limits, not only exhausted ones) is not taken in this round: it is outside CR-001, and today's Antigravity families do not overlap.

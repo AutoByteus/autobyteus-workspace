@@ -12,17 +12,17 @@
 - Architecture review revision record: `tickets/in-progress/available-agent-runtimes-tool/architecture-review-revision-record.md`
 - Triggering rework report: N/A
 
-All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, base `origin/personal` `a2faf424d6`. Code commit: `5135bb73dc`; ticket documents and evidence are in the commit after it.
+All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, base `origin/personal` `a2faf424d6`. Code commits: `5135bb73dc` (IR-001) and `683b036be9` (IR-002, CR-001); ticket documents and evidence are committed after them.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, CRR-001 CR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (baseline IR-001)
 - Related solution revision IDs: `SR-003`, `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-005`
-- Related code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`; API-E2E / delivery: `N/A`
+- Triggering finding IDs: `CR-001` (removed the unused `modelList`; see IR-002)
 
 The opt-in tool `list_available_agent_runtimes` (AutoByteus local tool + Agent Tools MCP adapter) and the GraphQL query `availableAgentRuntimes` both return `AvailableAgentRuntimesService.read()`: every available agent runtime on the node with its models and its live usage limits, read with 0 tokens. Settings → Model Routing → "Agent runtimes now" renders the same object.
 
@@ -127,6 +127,9 @@ Evidence: `tickets/in-progress/available-agent-runtimes-tool/evidence/implementa
 | IMP-07 | `pnpm dev` (own data root, no provider keys) + `curl` GraphQL `{ availableAgentRuntimes }` | 5135bb73dc | this Mac's real codex 0.164.0 / claude / agy / grok, signed in | whole server path incl. real CLIs | REQ-010, AC-003/004/006 shapes live | Pass | `IMP-07-live-report.json` | `"elapsed": "real 4.79 s"`; Antigravity Claude/GPT models `blocked … "Claude and GPT models · weekly"`; Grok `limitsNote`; `"providers": []` |
 | IMP-08 | browser on `http://127.0.0.1:3000/settings?section=model-routing` (same dev stack): rows, opened model list, Check again, list narrowed to 420 px | 5135bb73dc | dev stack, 1280 px window | page, section, rows, model list | AC-010, UI required states | Pass | `IMP-08-model-routing-wide.png`, `IMP-08-model-routing-blocked-models-grok-autobyteus.png`, `IMP-08-model-routing-narrow.png` | 5 rows; "0% left" in red; "13 models · 7 blocked"; "Blocked until Oct 26, 11:22 AM (Claude and GPT models · weekly)"; Grok note; "No API provider has a key on this node."; stacked layout at 420 px |
 
+| IMP-09 | `pnpm -C autobyteus-web test:nuxt components/settings/model-routing --run`; `pnpm -C autobyteus-web guard:web-boundary` | 683b036be9 | local, jsdom | Model Routing views and presentation helper after CR-001 | AC-010 | Pass | `IMP-09-cr001-web.log` | `Tests  8 passed (8)`; `[guard:web-boundary] Passed.` |
+
+- IR-002 rerun plan: only `availableAgentRuntimesPresentation.ts` changed since IMP-01…IMP-08, and only by deleting an unused export. IMP-05 and IMP-06 cover it and were rerun in part as IMP-09 (the model-routing tests and the boundary guard). The server checks (IMP-01…IMP-04, IMP-07) are still valid because no server file changed. IMP-08 is still valid because nothing rendered changed.
 - Not run, and why: server integration and E2E suites (API/E2E owns them; the existing agent-runtimes E2E fake CLI does not answer `agy -p /usage`, which only makes Antigravity limits `unknown` there); provider readers against real keys (test vault, validation); repeated live Claude reads to show the 0-token property via utilization; Docker node (ASM-001, user verification); isolated desktop instance; zh-CN rendered view (catalog checked by tests only).
 
 ## Frontend Rendered-Result Check
