@@ -10,6 +10,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (CR-001 fix) | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-REV-001 | Pass | Fail (Local Fix + Design Impact) | CR-002, CR-003, CR-004 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (Full Re-Audit) / IR-003 | Fail (Local Fix + Design Impact) | Fail (Local Fix) | CR-002, CR-003, CR-004 (resolved); CR-005 (new) |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5 (Targeted Delta) / IR-004 | Fail (Local Fix) | Pass | CR-005 (resolved) |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 1 / API-REV-002 Pass | Pass (implementation review CRR-005) | Pass | None |
 
 ## Revision Entries
 
@@ -121,3 +123,55 @@ None
 - Material score or classification changes: first round under the 9.5 bar and single scale; category 5 at 9.3 (CR-005); all others ≥ 9.5.
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: FU-003, FU-005, RSK-001; the web probe was not run after its expectation edit (C-17).
+
+### CRR-005 — Targeted delta review of the CR-005 fix (IR-004)
+
+- Canonical review report updated: `tickets/in-progress/available-agent-runtimes-tool/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review`. The only source change is `7ece4e2069` (1 file, +6/−3, inside CR-005's file and behavior).
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004); CR-005
+- Relevant solution revision IDs: `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: CRR-004 Fail (CR-005, Local Fix)
+- Current authoritative result: Pass; score 9.5/10, every category ≥ 9.5. The bar is now 9.2 (template autobyteus-agents-64); round 4 was scored under 9.5.
+- What changed in the review result and why: CR-005 is resolved, so the reusable-structure and duplication checks pass, and category 5 rises from 9.3 to 9.5.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-005 | Open (Local Fix) | Resolved | IR-004, `7ece4e2069` | `unreadableText` is the one writer; `failureText` and `readDiscoveredModels` call it; no inline copy remains; output unchanged; IMP-18: typecheck exit 0, 38/38 tests with unchanged assertions |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: category 5 9.3 → 9.5; decision Fail → Pass.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`.
+- Remaining risks or uncertainty: FU-003, FU-005, RSK-001; C-17 (the web probe was not run after its expectation edit).
+
+### CRR-006 — Proportional test-code review after API/E2E round 2 (API-REV-002 Pass)
+
+- Canonical review report updated: `tickets/in-progress/available-agent-runtimes-tool/api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass, `cc789b7c84`); SCN-001…SCN-006
+- Relevant solution revision IDs: `SR-006`, `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: CRR-005 Pass (implementation review)
+- Current authoritative result: Pass. Five durable test paths were reviewed (rounds 1 and 2): no findings, and three optional comment/assertion notes.
+- What changed in the review result and why: the first test review, because API/E2E round 1 failed and round 2 passed.
+- Supported product scenario / material-premise basis changes: none. TESTING.md Rule 9 conflicts with the skill's Ticket Scope rule for FU-002; the skill is followed and the conflict is recorded.
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: user-only checks (AC-010 in the user's own windows, AC-006 / UNK-001, ASM-001); FU-003, FU-005, RSK-001.

@@ -1,6 +1,6 @@
 # Code Review Report — autobyteus-303 (`list_available_agent_runtimes`, Settings → Model Routing)
 
-This report holds the latest complete result (round 4). Rounds 1–3 (CRR-001…CRR-003) are in `code-review-revision-record.md` and in this file's history at commit `7c082d3612`.
+This report holds the latest complete result (round 5, a Targeted Delta Review on top of the round-4 Full Re-Audit). Rounds 1–3 (CRR-001…CRR-003) are in `code-review-revision-record.md` and in this file's history at commit `7c082d3612`.
 
 ## Review Round Meta
 
@@ -16,17 +16,18 @@ This report holds the latest complete result (round 4). Rounds 1–3 (CRR-001…
 - Relevant Architecture Review Revision IDs: `ARCH-REV-006`, `ARCH-REV-007`, `ARCH-REV-008`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-003)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-003`
+- Relevant Implementation Revision IDs: `IR-003`, `IR-004`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `4`
-- Review Scope: `Full Re-Audit`
-- Review Scope Evidence (round >1): `git diff 8de58e3ab3 c4fff3eb00` (48 files) touches the data-flow spine (single-flight `read()`, the Codex hold, the discovered-provider step). It changes shared interfaces and data shapes: the `AgentRuntimeStrategy.readUsageLimits` throw contract, `holdClient?`, `ProviderUsageReading`, `UsageLimitsReading`, the `runRuntimeCommand` bound, and the report's `AutoByteusProviderEntry.models`. It also moves the composer to `src/available-agent-runtimes/`. All structural checks and the full scorecard are rerun.
-- Trigger: implementation handoff IR-003 (CR-002, CR-003, CR-004 from CRR-003; SR-007 design feedback)
-- Prior Review Round Reviewed: `3` (CRR-003, failure-origin, Fail)
-- Latest Authoritative Round: `4`
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, commits `07c07cfc27` (SR-006) and `c4fff3eb00` (SR-007); ticket docs at `7c082d3612`
-- Scorecard bar: the updated template (autobyteus-agents-63): clean pass `>= 9.5` in every category, a single `/10` scale.
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: `5`
+- Review Scope: `Targeted Delta Review` (round 4 was a `Full Re-Audit`)
+- Round-5 scope evidence: the only source change since round 4 is `7ece4e2069` (`git show --stat`: 1 file, `available-agent-runtimes-service.ts`, +6/−3), inside CR-005's file and behavior. Round-4 evidence for every other check carries forward.
+- Round-4 scope evidence:  `git diff 8de58e3ab3 c4fff3eb00` (48 files) touches the data-flow spine (single-flight `read()`, the Codex hold, the discovered-provider step). It changes shared interfaces and data shapes: the `AgentRuntimeStrategy.readUsageLimits` throw contract, `holdClient?`, `ProviderUsageReading`, `UsageLimitsReading`, the `runRuntimeCommand` bound, and the report's `AutoByteusProviderEntry.models`. It also moves the composer to `src/available-agent-runtimes/`. All structural checks and the full scorecard are rerun.
+- Trigger: round 5, implementation handoff IR-004 (CR-005); round 4, implementation handoff IR-003 (CR-002, CR-003, CR-004 from CRR-003; SR-007 design feedback)
+- Prior Review Round Reviewed: `4` (CRR-004, Fail: CR-005)
+- Latest Authoritative Round: `5`
+- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, commits `07c07cfc27` (SR-006), `c4fff3eb00` (SR-007) and `7ece4e2069` (CR-005); ticket docs at `5a87647318`
+- Scorecard bar: the current template (autobyteus-agents-64): clean pass `>= 9.2` in every category, a single `/10` scale. Round 4 was scored under the 9.5 bar of autobyteus-agents-63.
 
 ## Routing Classification Review
 
@@ -75,7 +76,7 @@ This report holds the latest complete result (round 4). Rounds 1–3 (CRR-001…
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-12 | The "could not be read: <reason>" text is built outside `failureText` at `available-agent-runtimes-service.ts:326` and `:327` (discovered-provider failures) | SR-007 decision 2 ("the same rule words the models, sign-in and provider steps (one wording helper in the service)"); Principle 11 (one owner per derived fact) | — (engineering contract) | Two more writers of the same wording; a change to `failureText`'s format would silently miss them | Code read | Promote | This ticket | CR-005: route both through the one wording helper |
+| C-12 | (Resolved in round 5) The "could not be read: <reason>" text was built outside `failureText` at `available-agent-runtimes-service.ts:326` and `:327` (discovered-provider failures) | SR-007 decision 2 ("the same rule words the models, sign-in and provider steps (one wording helper in the service)"); Principle 11 (one owner per derived fact) | — (engineering contract) | Two more writers of the same wording; a change to `failureText`'s format would silently miss them | Code read | Promote | This ticket | CR-005: route both through the one wording helper |
 | C-13 | Single-flight keeps the read in progress until the Codex hold release settles, so a hanging release would keep serving the old answer | AC-013 | Codex app-server not exiting on close | The old answer is served while the release is pending | `codex-app-server-client.ts:97-120` (SIGTERM, then SIGKILL at 2 s, reject at 5 s); the manager waits at most 5 s for a pending startup | Reject | — | Bounded to about 10 s; this is the designed behavior (ARCH-REV-006 note 1) |
 | C-14 | A timed-out discovered-provider reload keeps running and could commit later | SR-006 CR-003 | Slow local or custom endpoint | A stale commit? | `dynamic-model-source-lifecycle.ts:52-80,124`: a forced reload bumps the generation, and a run that is no longer current does not commit | Reject | — | The lifecycle already guards it |
 | C-15 | `commandTimeout` kept as a wrapper of `commandBound` | Principle 8 | — | Used by `runtime-version.ts` and the Claude and Grok sign-in commands, where the time-out reason does not matter | grep: 3 callers | Reject | — | A helper with its own meaning, not a compatibility wrapper |
@@ -95,7 +96,7 @@ Earlier candidates C-01 (CR-001), C-05 (CR-004), C-10 (CR-003), C-11 (CR-002) an
 | Ownership boundary preservation and clarity | Pass | The service owns order, caps, single-flight, the hold's lifetime, the available rule, `blocked` and the failure wording; strategies and readers return a reading or throw | — |
 | Off-spine concern clarity | Pass | Matching, parsers and deadline helpers serve their owners | — |
 | Existing capability/subsystem reuse check | Pass | Reuses `reloadProviderModelCatalog` and the lifecycle's generation guard; the Codex hold reuses `beginAcquire` | — |
-| Reusable owned structures check | Fail | `failureText` owns the wording, but two discovered-provider texts are built inline (C-12) | CR-005 |
+| Reusable owned structures check | Pass | `unreadableText` (`:114`) is the one writer of "could not be read: <reason>"; `failureText` and `readDiscoveredModels` both call it (CR-005 resolved) | — |
 | Shared-structure/data-model tightness check | Pass | `unknown` states removed from `UsageLimitsReading` and `ProviderUsageReading`; the scope has three variants; `exhausted` is decided on raw values | — |
 | Repeated coordination ownership check | Pass | One `runStep`; one time-out rule (`isDeadlineExceeded`), plus the provider signal's `TimeoutError` inside `failureText`, because provider-usage may not import runtime-management | — |
 | Empty indirection check | Pass | — | — |
@@ -106,7 +107,7 @@ Earlier candidates C-01 (CR-001), C-05 (CR-004), C-10 (CR-003), C-11 (CR-002) an
 | Flat-vs-over-split layout judgment | Pass | — | — |
 | Interface/API/query/command/service-method boundary clarity | Pass | `readUsageLimits` returns or throws; `holdClient?(cwd)`; `commandBound` → `{timeoutMs, byDeadline}` | — |
 | Naming quality and one vocabulary | Pass | `DeadlineExceededError`, `byDeadline` and `wholeRemainingPercent` say what they do | — |
-| No unjustified duplication of code | Fail | C-12 | CR-005 |
+| No unjustified duplication of code | Pass | CR-005 resolved | — |
 | Patch-on-patch complexity control | Pass | SR-007 removed `readUsageLimitsSafely` instead of layering on it | — |
 | Dead code removed in the touched files and modules | Pass | `ReadDeadlineExceededError`, `readUsageLimitsSafely`, `unknownUsageLimits`, `UNEXPECTED_ANSWER`, `providerUsageFailure`, `clampPercent` and the old service, report and matching files: 0 references | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The 1 ms-left reproduction; the concurrency suite (one start and close, a shared answer, back-to-back reads, a slow release, a closing generation); command-runner bound tests; the dependency test | — |
@@ -164,7 +165,7 @@ New or reclassified premises: None.
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | One owner for order, caps, single-flight, the hold's lifetime, `blocked` and failure wording; strategies return or throw | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.5 | `commandBound` makes "who set the bound" explicit; the throw contract is stated on the interface | `runRuntimeCommand` takes two forms of bound (C-16, accepted) | — |
 | 4 | Separation of Concerns and File Placement | 9.6 | Composer above both subsystems, enforced by a test | — | — |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | Readings tightened; scope variants match their sources | The failure wording, one derived fact, has two extra writers (CR-005) | Route them through the wording helper |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Readings tightened; scope variants match their sources; one writer of the failure wording (CR-005 resolved in round 5; 9.3 in round 4) | — | — |
 | 6 | Naming Quality and Local Readability | 9.5 | Clear names; comments tie rules to REQ and CR IDs | — | — |
 | 7 | API/E2E Readiness | 9.5 | Reruns named; the scripted E2E passes against the real composition (IMP-17) | The web probe was not run after its expectation edit (C-17) | API/E2E reruns it |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | CR-002 (the 1 ms reproduction fails before and passes after), CR-003 (live LM Studio), CR-004 (concurrency suite and 3 × 4 live reads) | SR-007 was not rerun live (covered by IMP-17 against the real composition) | — |
@@ -180,13 +181,11 @@ Resolved this round (verified in code and evidence; see CRR-004):
 - **CR-004** (concurrent reads): single-flight `read()` plus the Codex hold. The concurrency suite covers one start and close, a shared answer, back-to-back reads and a slow release; IMP-13 ran 3 × 4 live reads.
 - **C-02** (coverage over all limits): `blockByLimits` passes all limits to `resolveLimitCoverage` (`:127`).
 
-Open:
+Resolved in round 5:
 
-### CR-005 — Failure wording built outside the one wording helper — `Local Fix`, implementation (Low)
+- **CR-005** (failure wording outside the one helper): `7ece4e2069` adds `unreadableText(subject, reason)` (`:114`); `failureText`'s unreadable-answer branch and both `readDiscoveredModels` texts call it; no inline copy remains (grep for "could not be read" finds only the helper, `failureText`'s plain form and comments). The output text is unchanged; IMP-18: typecheck clean, `tests/unit/available-agent-runtimes` and `tests/unit/agent-tools/agent-runtimes` 38/38 with unchanged assertions.
 
-- Where: `src/available-agent-runtimes/available-agent-runtimes-service.ts:326` (`unknown: ${subject} could not be read: ${failed.safeMessage ?? "discovery failed"}`) and `:327` (`… could not be read: the endpoint listed no models`).
-- Basis: SR-007 decision 2 ("the same rule words the models, sign-in and provider steps (one wording helper in the service)"); Principle 11; C-12. `failureText` (`:105-111`) already owns this exact format in its "unreadable answer" branch.
-- Required action: produce both texts through the one helper, for example by extracting the "<subject> could not be read: <reason>" form into one function that both `failureText` and `readDiscoveredModels` call. The output text must not change, and the existing tests should stay green unchanged.
+No open findings.
 
 ## Follow-ups
 
@@ -194,11 +193,11 @@ Open:
 
 ## Classification
 
-- CR-005: `Local Fix`, implementation-owned.
+N/A (Pass).
 
 ## Recommended Recipient
 
-- Implementation Engineer, `/software_engineering_team/implementation_engineer`. Then a Targeted Delta Review of CR-005, then API/E2E: reruns of API-03/03b, API-05/05b and API-08b, and confirmation of the edited AAR-01 and web-probe expectations (C-17).
+- API/E2E Engineer, `/software_engineering_team/api_e2e_engineer` (implementation review passes); informational notice to the Implementation Engineer. API/E2E reruns API-03/03b, API-05/05b and API-08b, and confirms the edited AAR-01 and web-probe expectations (C-17).
 
 ## Residual Risks
 
@@ -208,11 +207,11 @@ Open:
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (one Low `Local Fix`; everything else passes at the 9.5 bar)
-- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 5, Targeted Delta Review; round 4 Full Re-Audit)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.5/10; every category ≥ 9.5 except Shared-Structure / Reusable Owned Structures at 9.3 (CR-005)
+- Score Summary: 9.5/10; every category ≥ 9.5 (bar 9.2)
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer`
-- Notes: CR-002, CR-003, CR-004 and C-02 are resolved. The next round is a Targeted Delta Review of CR-005 only.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: CR-001…CR-005 are all resolved. The package is ready for the API/E2E reruns.
