@@ -268,6 +268,8 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
         model, event: done.type, toolName: done.payload.tool_name, toolMs,
         reportShape: report ? shape(report) : null, pageShape: shape(page), agentReplyTail: reply,
       });
+      // The data the agent received, in full (no secrets: the report never carries keys or identities, AC-009).
+      evidence(`${runtime.runtimeKind} LR-2 report`, report);
       expect(done.type, JSON.stringify(done.payload).slice(0, 800)).toBe("TOOL_EXECUTION_SUCCEEDED");
       expect(report, `the tool result carries the report: ${JSON.stringify(done.payload).slice(0, 800)}`).not.toBeNull();
       expect(Date.parse(report!.checkedAt)).not.toBeNaN();
