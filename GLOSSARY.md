@@ -69,3 +69,13 @@ delegated run, …) are defined in the
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.
+
+## Agent Definitions
+
+- **Internal agent:** an agent definition marked `"internal": true` in its
+  `agent-config.json`: the system's own helper, such as the Model Router. While
+  the server setting "Show internal agents" (`AUTOBYTEUS_SHOW_INTERNAL_AGENTS`)
+  is off, it is left out wherever the user or an agent browses, picks or
+  delegates; opened by ID it works. It is not the same as a **built-in agent**
+  (shipped and synced by AutoByteus, e.g. the Daily Assistant), which may or may
+  not be internal.

@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agents.components.agents.AgentCard.internalBadge': '内部',
+  'agents.components.agents.AgentCard.internalBadgeTitle': '系统自身的辅助智能体；因已开启“显示内部智能体”而显示。',
   'agents.components.agents.AgentCard.allInstalledSkills': '全部已安装技能',
   'agents.components.agents.AgentDetail.allInstalledSkills': '全部已安装',
   'agents.components.agents.AgentDetail.allInstalledSkillsDescription': '全部已安装技能。智能体会获得所有已启用的已安装技能，包括之后安装的技能。',

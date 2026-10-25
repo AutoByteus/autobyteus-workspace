@@ -325,6 +325,7 @@ const createHarness = async () => {
     instructions: "Read work", nodes: [new TeamMember({ memberName: "lead", ref: helper.id!, refScope: "shared" })], coordinatorMemberName: "lead", handoffs: [] });
   const helperAdmission = createCollaboratorAdmission({
     listAgentDefinitions: async () => [helper], listTeamDefinitions: async () => [helperTeam],
+    isAgentHidden: () => false,
     getAgentDefinition: async id => id === helper.id ? helper : null,
     getTeamDefinition: async id => id === helperTeam.id ? helperTeam : null,
   }, { validate: vi.fn(), validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "test", llmConfig: null } })) } as RunModelSelectionValidator);

@@ -18,6 +18,7 @@ const teams = [new AgentTeamDefinition({
 })];
 const catalog: CollaboratorDefinitionCatalog = {
   listAgentDefinitions: async () => agents,
+  isAgentHidden: () => false,
   listTeamDefinitions: async () => teams,
   getAgentDefinition: async (id) => agents.find((item) => item.id === id) ?? null,
   getTeamDefinition: async (id) => teams.find((item) => item.id === id) ?? null,

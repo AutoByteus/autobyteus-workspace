@@ -53,6 +53,7 @@ export const definitions = () => {
     teams,
     catalog: {
       listAgentDefinitions: async () => agents,
+      isAgentHidden: () => false,
       listTeamDefinitions: async () => teams,
       getAgentDefinition: async (id: string) => agents.find((agent) => agent.id === id) ?? null,
       getTeamDefinition: async (id: string) => teams.find((team) => team.id === id) ?? null,

@@ -152,6 +152,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     ownershipScope: "shared", nodes: ["lead", "writer"].map((name) => new TeamMember({ memberName: name, ref: name, refScope: "shared" })) } as never);
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => agents, listTeamDefinitions: async () => [team],
+    isAgentHidden: () => false,
     getAgentDefinition: async (id) => agents.find((item) => item.id === id) ?? null, getTeamDefinition: async (id) => id === "studio" ? team : null,
   }, { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: unknown }[]) => inputs.map(({ selection }) => ({ kind: "valid" as const, selection }))) } as never,
   { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });

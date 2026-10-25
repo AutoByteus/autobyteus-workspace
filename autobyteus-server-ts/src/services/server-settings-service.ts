@@ -35,6 +35,10 @@ import {
   normalizeTaskExecutionIdleShutdownGraceForPersistence,
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
+import {
+  normalizeShowInternalAgentsForPersistence,
+  SHOW_INTERNAL_AGENTS_SETTING_KEY,
+} from "../config/show-internal-agents-setting.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
   EMBEDDING_MODEL_SETTING_DESCRIPTION,
@@ -191,6 +195,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      SHOW_INTERNAL_AGENTS_SETTING_KEY,
+      "Show internal agents (the system's own helpers, such as the Model Router) in the Agents list, agent pickers, run history, the Memory page and to other agents (true/false). Default: false. Takes effect on the next list. Set in Server Settings → Basics.",
+      true,
+      {
+        normalizeForPersistence: normalizeShowInternalAgentsForPersistence,
       },
     );
 

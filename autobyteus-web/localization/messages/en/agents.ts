@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agents.components.agents.AgentCard.internalBadge': 'Internal',
+  'agents.components.agents.AgentCard.internalBadgeTitle': 'The system\'s own helper agent, shown because "Show internal agents" is on.',
   'agents.components.agents.AgentCard.allInstalledSkills': 'All installed skills',
   'agents.components.agents.AgentDetail.allInstalledSkills': 'All installed',
   'agents.components.agents.AgentDetail.allInstalledSkillsDescription': 'All installed skills. The agent receives every installed skill that is enabled, including skills installed later.',

@@ -52,7 +52,8 @@ on Task closure and peer authentication come in later slices.
   are unchanged.
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
   as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
-  Agent Orgs, team-local or application-owned definitions.
+  Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
+  ([Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 - How a remote run runs is decided in one place, `NodeCatalogPort`
   (`agent-collaboration/collaborators/node-catalog-port.ts`): each agent's own default runtime, model and
   model settings, and for a Team member without one the Team's default (no inherited layer; see

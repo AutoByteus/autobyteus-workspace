@@ -56,6 +56,7 @@ export const buildAgentDefinitionFromFiles = (input: {
     ownerPackageId: ownership.ownerPackageId ?? null,
     ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
     defaultLaunchConfig: config.defaultLaunchConfig,
+    internal: config.internal,
     sourceInfo: ownership.sourceInfo ?? { agentDirPath: path.dirname(input.mdPath) },
   });
 };
