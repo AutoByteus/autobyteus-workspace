@@ -12,11 +12,19 @@
  * is called as its UI does (Brief Studio's worker calls the host when it starts). The runtime CLIs are the scripted
  * `tests/fixtures/agent-runtimes-fake-cli.mjs`; no model, no account, no network.
  *
+ * Cases (in order; each uses the application the previous one left ACTIVE):
+ *   RE-01 package reload of an ACTIVE application; RE-02 repair of an ACTIVE application; RE-03 import while Codex is
+ *   signed out (quarantined with the reason), then sign-in and repair; RE-04 the application's worker crashes (the real
+ *   worker process is killed): a repair resets it to stopped and the application is usable again; RE-05 a run event
+ *   recorded while the application is quarantined (a signed-out package reload, then the drafting run's runtime process
+ *   dies) is dispatched once a repair makes it ACTIVE: the dispatch drain starts the worker and the brief shows the event.
+ *
  * Command (resolved temp HOME, TESTING.md):
  *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
  *     pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-reload-repair.e2e.test.ts --no-watch
  */
 import "reflect-metadata";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -80,6 +88,27 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
     expect(created.body.result.data.createBrief.briefId).toEqual(expect.any(String));
   };
 
+  const status = async (applicationId: string) =>
+    (await rest("GET", `/applications/${encodeURIComponent(applicationId)}/backend/status`)).body as { state: string; lastFailure: string | null };
+  const appGraphql = (applicationId: string, query: string, variables: Record<string, unknown>) =>
+    rest("POST", `/applications/${encodeURIComponent(applicationId)}/backend/graphql`, { requestContext: { applicationId }, request: { query, variables } });
+  /** Processes this test's server spawned (it runs in this process), optionally only those whose command has `needle`. */
+  const childPids = (needle = ""): number[] => execFileSync("ps", ["-axo", "pid=,ppid=,command="], { encoding: "utf8" }).split("\n")
+    .map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/)).filter((m): m is RegExpMatchArray => Boolean(m))
+    .filter((m) => Number(m[2]) === process.pid && m[3].includes(needle)).map((m) => Number(m[1]));
+  /** The application's worker process. */
+  const workerPids = () => childPids("application-worker-entry");
+  const until = async <T>(read: () => Promise<T>, done: (value: T) => boolean, label: string, timeoutMs = 30_000): Promise<T> => {
+    const deadline = Date.now() + timeoutMs;
+    let value = await read();
+    while (!done(value)) {
+      if (Date.now() > deadline) throw new Error(`${label}: last value ${JSON.stringify(value).slice(0, 400)}`);
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      value = await read();
+    }
+    return value;
+  };
+
   beforeAll(async () => {
     states.set("codex-account", "signedIn");
     states.set("codex-models", MODEL);
@@ -127,7 +156,8 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
   it("RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)", async () => {
     states.set("codex-account", "signedOut");
     try {
-      const { applicationId } = await importBriefStudio();
+      imported = await importBriefStudio();
+      const { applicationId } = imported;
       const quarantined = await rest("GET", `/applications/${encodeURIComponent(applicationId)}/execution-resource-configurations`);
       expect(quarantined.status, brief(quarantined.body)).toBe(503);
       expect(quarantined.body.availabilityState).toBe("QUARANTINED");
@@ -142,5 +172,62 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
     } finally {
       states.set("codex-account", "signedIn");
     }
+  }, 240_000);
+  it("RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)", async () => {
+    expect(imported, "RE-03 left the application ACTIVE").not.toBeNull();
+    const { applicationId } = imported!;
+    const ready = await rest("POST", `/applications/${encodeURIComponent(applicationId)}/backend/ensure-ready`);
+    expect(ready.body.state, brief(ready.body)).toBe("ready");
+    const pids = workerPids();
+    expect(pids, "exactly one worker process of this server").toHaveLength(1);
+    process.kill(pids[0]!, "SIGKILL");
+    const crashed = await until(() => status(applicationId), (value) => value.state === "failed", "worker reported failed");
+    expect(crashed.lastFailure).toContain("Application worker exited unexpectedly");
+
+    const repaired = await repair(applicationId);
+    expect(repaired.body, brief(repaired.body)).toMatchObject({ applicationId, state: "ACTIVE", detail: null });
+    expect((await status(applicationId)).state).toBe("stopped");
+    await expectUsable(applicationId, "after crash and repair");
+    expect(workerPids(), "a new worker process").toHaveLength(1);
+    expect(workerPids()[0]).not.toBe(pids[0]);
+  }, 240_000);
+
+  it("RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)", async () => {
+    expect(imported, "RE-04 left the application ACTIVE").not.toBeNull();
+    const { applicationId, packageId } = imported!;
+    const created = await appGraphql(applicationId, `mutation($input: CreateBriefInput!) { createBrief(input: $input) { briefId } }`,
+      { input: { title: "Pending event brief" } });
+    const briefId = created.body.result.data.createBrief.briefId as string;
+    const before = new Set(childPids());
+    const launched = await appGraphql(applicationId, `mutation($input: LaunchDraftRunInput!) { launchDraftRun(input: $input) { runId status } }`,
+      { input: { briefId } });
+    expect(launched.body.result.data.launchDraftRun.status, brief(launched.body)).toBe("ATTACHED");
+    const runId = launched.body.result.data.launchDraftRun.runId as string;
+    const readBrief = async () => (await appGraphql(applicationId, `query($briefId: String!) { brief(briefId: $briefId) { briefId } }`, { briefId })).body.result.data.brief;
+    await until(readBrief, (value) => value?.latestRunId === runId && value?.latestBindingStatus === "ATTACHED", "the brief records the live run");
+    // The drafting run's Codex runtime: the app-server process this server started for the run.
+    const runtimePids = await until(async () => childPids("app-server").filter((pid) => !before.has(pid)), (pids) => pids.length === 1, "the run's runtime process");
+
+    states.set("codex-account", "signedOut");
+    try {
+      // A package reload while Codex is signed out quarantines the application with its reason.
+      await gql(`mutation($packageId: String!) { reloadApplicationPackage(packageId: $packageId) { packageId } }`, { packageId });
+      const quarantined = await rest("GET", `/applications/${encodeURIComponent(applicationId)}/execution-resource-configurations`);
+      expect(quarantined.status, brief(quarantined.body)).toBe(503);
+      expect(String(quarantined.body.detail)).toContain("Codex authentication is unavailable");
+      // The run's runtime process dies while the application is quarantined: the run's event waits for dispatch.
+      process.kill(runtimePids[0]!, "SIGKILL");
+      await until(async () => childPids("app-server").includes(runtimePids[0]!), (alive) => !alive, "the runtime process is gone");
+    } finally {
+      states.set("codex-account", "signedIn");
+    }
+
+    const repaired = await repair(applicationId);
+    expect(repaired.body, brief(repaired.body)).toMatchObject({ applicationId, state: "ACTIVE", detail: null });
+    // No application call after the repair: only the resumed dispatch starts the worker.
+    await until(() => status(applicationId), (value) => value.state === "ready", "the dispatch drain started the worker");
+    const projected = await until(readBrief, (value) => value?.latestBindingStatus !== "ATTACHED", "the brief shows the run's end");
+    expect(projected, JSON.stringify(projected)).toMatchObject({ briefId, latestRunId: runId, latestBindingStatus: "FAILED" });
+    expect(String(projected.lastErrorMessage)).toContain("Codex app server process closed unexpectedly");
   }, 240_000);
 });
