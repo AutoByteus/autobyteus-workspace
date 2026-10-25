@@ -828,6 +828,10 @@ Settings > Token Statistics has two sibling views:
   run tables, Model diagnostic grouping, sorting, expansion, cost disclosure,
   first-observed fallback, retained loading/error/empty states, and
   history-migration guidance under `tokenUsageRunStatistics`.
+  Its cost breakdown shows 5-minute and 1-hour cache writes (tokens and cost)
+  in their own rows, as the live Token Meter does, using the aggregate's
+  `cacheCreation5m/1hInputTokens` and `estimatedApiCacheCreation5m/1hInputCost`;
+  writes without a split keep one "Cache writes" row.
 
 Task rows continue to render backend-provided `children`, `rootTeamRunId`,
 `runId`, display fields, models, totals, and cost statuses. The frontend must not

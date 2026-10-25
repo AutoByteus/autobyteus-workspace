@@ -1,0 +1,103 @@
+{
+  "startedAt": "2026-10-22T19:09:01.495Z",
+  "result": "Fail",
+  "model": "haiku",
+  "cases": {
+    "P-01": {
+      "title": "Run A, toggle never saved: spawned CLI has the variable; writes 1h",
+      "result": "Pass"
+    },
+    "P-02": {
+      "title": "Card switched off by a click: saved false, switch off",
+      "result": "Pass"
+    },
+    "P-03": {
+      "title": "Run B after the click, no restart: spawned CLI has no variable",
+      "result": "Fail",
+      "error": "spawned CLI [{\"pid\":36010,\"executable\":\"/Users/normy/.local/bin/claude\",\"oneHourVariable\":\"1\"},{\"pid\":36096,\"executable\":\"/Users/normy/.local/bin/claude\",\"oneHourVariable\":null}]"
+    }
+  },
+  "runs": {
+    "A": {
+      "runId": "cache_ttl_probe_a_default_on_0c4ca57848514d049c15e8f8dbf546af",
+      "definitionName": "cache-ttl-probe-a-default-on",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-A-Urr23e",
+      "projectSettings": null,
+      "calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input": 2,
+          "cacheRead": 0,
+          "cacheCreation": 14838,
+          "cacheCreation5m": 0,
+          "cacheCreation1h": 14838,
+          "output": 6
+        }
+      ],
+      "spawnedCli": [
+        {
+          "pid": 36010,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": "1"
+        }
+      ],
+      "written5m": 0,
+      "written1h": 14838,
+      "cacheRead": 0
+    },
+    "B": {
+      "runId": "cache_ttl_probe_b_card_off_5ced554d68b74b68bfe193e76b2a5ac7",
+      "definitionName": "cache-ttl-probe-b-card-off",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-B-z1PXPy",
+      "projectSettings": null,
+      "calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input": 2,
+          "cacheRead": 10832,
+          "cacheCreation": 7057,
+          "cacheCreation5m": 0,
+          "cacheCreation1h": 7057,
+          "output": 6
+        }
+      ],
+      "spawnedCli": [
+        {
+          "pid": 36010,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": "1"
+        },
+        {
+          "pid": 36096,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": null
+        }
+      ],
+      "written5m": 0,
+      "written1h": 7057,
+      "cacheRead": 10832
+    }
+  },
+  "breakdowns": {},
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:35825",
+    "backend": "terminated:35784",
+    "spawnedCliLeft": 0,
+    "tempRoot": "removed",
+    "workspaces": [
+      "removed",
+      "removed"
+    ]
+  },
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-88yAUv",
+    "backend": "http://127.0.0.1:64234",
+    "frontend": "http://127.0.0.1:64258",
+    "backendPid": 35784,
+    "authMode": "cli (subscription)"
+  },
+  "error": "Error: stop after P-03\n    at kase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/tickets/in-progress/claude-prompt-cache-ttl/evidence/scripts/claude-cache-ttl-live-probe.mjs:72:51)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/tickets/in-progress/claude-prompt-cache-ttl/evidence/scripts/claude-cache-ttl-live-probe.mjs:169:3",
+  "finishedAt": "2026-10-22T19:09:32.458Z"
+}

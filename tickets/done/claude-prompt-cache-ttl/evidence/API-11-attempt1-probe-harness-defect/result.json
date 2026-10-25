@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-22T19:07:41.602Z",
+  "result": "Fail",
+  "model": "haiku",
+  "cases": {
+    "P-01": {
+      "title": "Run A, toggle never saved: spawned CLI has the variable; writes 1h",
+      "result": "Fail",
+      "error": "run A: calls with split []"
+    }
+  },
+  "runs": {
+    "A": {
+      "runId": "cache_ttl_probe_a_default_on_5a0940d665c84a39bd6239a5615175ba",
+      "definitionName": "cache-ttl-probe-a-default-on",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-A-7xzRRn",
+      "projectSettings": null,
+      "calls": [],
+      "spawnedCli": [],
+      "written5m": 0,
+      "written1h": 0,
+      "cacheRead": 0
+    }
+  },
+  "breakdowns": {},
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:31905",
+    "backend": "terminated:31670",
+    "spawnedCliLeft": 0,
+    "tempRoot": "removed",
+    "workspaces": [
+      "removed"
+    ]
+  },
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-XMdhv2",
+    "backend": "http://127.0.0.1:64015",
+    "frontend": "http://127.0.0.1:64039",
+    "backendPid": 31670,
+    "authMode": "cli (subscription)"
+  },
+  "error": "Error: stop after P-01\n    at kase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/tickets/in-progress/claude-prompt-cache-ttl/evidence/scripts/claude-cache-ttl-live-probe.mjs:72:51)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/tickets/in-progress/claude-prompt-cache-ttl/evidence/scripts/claude-cache-ttl-live-probe.mjs:151:3",
+  "finishedAt": "2026-10-22T19:08:31.380Z"
+}

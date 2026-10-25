@@ -1,3 +1,5 @@
+import { applyClaudeOneHourPromptCacheDefault } from "../claude-prompt-cache-setting.js";
+
 const CLAUDE_AGENT_SDK_AUTH_MODE_ENV_KEY = "CLAUDE_AGENT_SDK_AUTH_MODE";
 const CLAUDE_OAUTH_TOKEN_ENV_KEYS = [
   "CLAUDE_CODE_OAUTH_TOKEN",
@@ -29,30 +31,38 @@ export const resolveClaudeSdkAuthMode = (
   return "cli";
 };
 
+const applyClaudeSdkAuthPolicy = (
+  spawnEnv: Record<string, string | undefined>,
+  mode: ClaudeSdkAuthMode,
+  apiKeyOverride: string | undefined,
+): void => {
+  if (mode === "api-key") {
+    if (apiKeyOverride !== undefined) {
+      spawnEnv.ANTHROPIC_API_KEY = apiKeyOverride;
+    }
+    return;
+  }
+
+  const hasOauthSignal = CLAUDE_OAUTH_TOKEN_ENV_KEYS.some(
+    (key) => Boolean(asNonEmptyRawString(spawnEnv[key])),
+  );
+  const shouldPreferCliAuth = mode === "cli" || (mode === "auto" && hasOauthSignal);
+  if (!shouldPreferCliAuth) {
+    return;
+  }
+
+  for (const key of CLAUDE_API_KEY_ENV_KEYS) {
+    delete spawnEnv[key];
+  }
+};
+
+/** Composes the Claude Code child environment: auth-mode policy, then the one-hour prompt cache default. */
 export const buildClaudeSdkSpawnEnvironment = (
   env: NodeJS.ProcessEnv = process.env,
   apiKeyOverride?: string,
 ): Record<string, string | undefined> => {
-  const resolvedMode = resolveClaudeSdkAuthMode(env);
-  const resolvedEnv: Record<string, string | undefined> = { ...env };
-
-  if (resolvedMode === "api-key") {
-    if (apiKeyOverride !== undefined) {
-      resolvedEnv.ANTHROPIC_API_KEY = apiKeyOverride;
-    }
-    return resolvedEnv;
-  }
-
-  const hasOauthSignal = CLAUDE_OAUTH_TOKEN_ENV_KEYS.some(
-    (key) => Boolean(asNonEmptyRawString(resolvedEnv[key])),
-  );
-  const shouldPreferCliAuth = resolvedMode === "cli" || (resolvedMode === "auto" && hasOauthSignal);
-  if (!shouldPreferCliAuth) {
-    return resolvedEnv;
-  }
-
-  for (const key of CLAUDE_API_KEY_ENV_KEYS) {
-    delete resolvedEnv[key];
-  }
-  return resolvedEnv;
+  const spawnEnv: Record<string, string | undefined> = { ...env };
+  applyClaudeSdkAuthPolicy(spawnEnv, resolveClaudeSdkAuthMode(env), apiKeyOverride);
+  applyClaudeOneHourPromptCacheDefault(spawnEnv);
+  return spawnEnv;
 };

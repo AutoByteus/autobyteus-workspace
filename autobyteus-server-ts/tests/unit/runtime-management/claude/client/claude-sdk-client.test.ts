@@ -5,7 +5,7 @@ import { ClaudeSdkInputChannel } from "../../../../../src/runtime-management/cla
 import {
   buildClaudeSdkSpawnEnvironment,
   resolveClaudeSdkAuthMode,
-} from "../../../../../src/runtime-management/claude/client/claude-sdk-auth-environment.js";
+} from "../../../../../src/runtime-management/claude/client/claude-sdk-spawn-environment.js";
 
 const createMockQuery = () => {
   const query = {
@@ -158,7 +158,7 @@ describe("ClaudeSdkClient", () => {
     }
   });
 
-  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
+  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY besides the one-hour cache default", async () => {
     const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
     const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(resolveApiKey);
@@ -187,6 +187,7 @@ describe("ClaudeSdkClient", () => {
     expect(call.options.env).toEqual({
       ...env,
       ANTHROPIC_API_KEY: "synthetic-vault-key",
+      ENABLE_PROMPT_CACHING_1H: "1",
     });
     expect(call.options).toEqual(expect.objectContaining({
       mcpServers: { demo: { transport: "mock" } },
@@ -229,6 +230,7 @@ describe("ClaudeSdkClient", () => {
       CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
       CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
       KEEP_ME: "preserved",
+      ENABLE_PROMPT_CACHING_1H: "1",
     });
   });
 
