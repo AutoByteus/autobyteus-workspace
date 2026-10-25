@@ -3,7 +3,7 @@
 ## Round
 
 - Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/tickets/in-progress/claude-prompt-cache-ttl/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002` (API-REV-001: Blocked; API-REV-002: the user's decision of 2026-10-25 makes the API-billed check a user-only check)
 - Test progress log: `api-e2e-test-progress.md`
 - Round and trigger: round 1, implementation handoff IR-001 (HEAD `62bfd7ed51`, direct Small/Low route)
 - Prior round reviewed: none
@@ -15,7 +15,7 @@
 - Task size: `Small`
 - Architectural risk: `Low`
 - Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (not reached this round: result `Blocked`)
+- Successful-output route: `Delivery`
 - Proportional test-code review decision: `Not Required — direct low-risk route`
 
 ## Tested Builds And Environments
@@ -51,40 +51,40 @@
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part: What You Tried And Why It Still Needs The User |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | Unit part: API-01 (cli/auto/api-key spawn env), API-06; the real CLI gets the variable: API-10, API-11 P-01. API-billed two-turn run: API-07 **Blocked** | Not Proven (the API-billed run is blocked; unit part proven) | Not a user-only check: it needs a dependency, Anthropic credits on the test-vault key. Tried: api-key mode through the product (key resolved, request refused for balance), the same key through the core client (same refusal), a recheck three days later (same). The Console-credits login path is not usable: the handoff forbids logging the user's CLI in or out |
+| AC-001 | Yes | Unit part: API-01 (cli/auto/api-key spawn env), API-06; the real CLI gets the variable: API-10, API-11 P-01; the api-key spawn reaches Anthropic with the vault key: API-07 (billing refusal, not an auth error). API-billed two-turn run: API-07 | Proven, except the API-billed bucket effect: Only The User Can Check | Tried: api-key mode through the product (key resolved and accepted, turns refused for the account's credit balance), the same key through the core client (same refusal), a recheck on 2026-10-25 (same). No other API-billed account may be used for tests: keys come only from the test vault (TESTING.md rule 4), and the only funded API billing is the user's own account, which his running app uses. User decision, 2026-10-25: "We let it pass and we release a new beta", checking after that beta. **User check:** on the beta, run a Claude-runtime agent on API billing (Console credits or `api-key` mode), leave the toggle on, send two messages more than 5 minutes apart, then open Settings -> Token Statistics -> Run details (end date tomorrow, FU-005) and expand the run's cost: expect "Cache write 1h" tokens and no "Cache write 5m" row, and "Cache hits" covering the first turn. If writes show as "Cache write 5m", it is the design's escalation trigger (`Design Impact`, Solution Designer). The same proof is automated: `-t "CPC-E2E-00[123]"` once the vault key has credits |
 | AC-002 | Yes | API-01 (user-set variable kept), API-14 (`promptCacheTtl: "5m"` beats the default through the AutoByteus spawn, variable present), API-11 P-04 | Proven | — |
 | AC-003 | Yes | API-10, API-13, API-11 P-01/P-03 | Proven | — |
 | AC-004 | No | API-03 (component), API-11 P-05 (rendered on real usage, tokens and costs) | Proven | — |
 | AC-005 | No | API-12 | Proven | — |
-| AC-006 | Yes | API-03 (card states, save, error/revert), API-06 (server accepts only the two values; next spawn follows), API-01 (off -> no variable), API-11 P-01..P-04 (absent = on; card click saves false and the next session gets no variable, without restart; back on), API-13, IMP-07 reused in API-03's package | Proven (on API billing, the off bucket effect awaits API-08) | — |
+| AC-006 | Yes | API-03 (card states, save, error/revert), API-06 (server accepts only the two values; next spawn follows), API-01 (off -> no variable), API-11 P-01..P-04 (absent = on; card click saves false and the next session gets no variable, without restart; back on), API-13, IMP-07 reused in API-03's package | Proven (the off path's bucket on API billing is part of the AC-001 user check: off = Claude Code's own 5m there) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 70% | 75% | API-01..06, API-10..14 | AC-001's API-billing effect unmeasured | API-07 with a funded key |
-| Changed-boundary execution directness | 75% | 85% | API-10, API-11, API-13, API-14 observe the variable in the real spawned CLI and the real buckets | Claude Code honouring the variable on API billing (escalation trigger) not observed | API-07 |
-| Cross-boundary integration realism and mock gap | 70% | 85% | Real Studio server, GraphQL, WS, Claude backend, SDK, CLI, Anthropic API (subscription); probe-owned real backend + UI | api-key path reached Anthropic but got no completion | API-07..09 |
-| Environment, configuration, identity, and fixture fidelity | 70% | 75% | Real subscription identity; vault key resolved through the product | API-billing identity unusable (no credits) | Funded vault key |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 92% | API-06 (invalid values), API-01 (user-set variable), API-11/API-13 (toggle change without restart), API-14 (precedence) | `FORCE_PROMPT_CACHING_5M`/bucket env var precedence relies on investigation T6/T4 (Claude Code's behavior, not re-run) | — |
+| Requirement and acceptance-criteria proof | 70% | 95% | API-01..06, API-10..14; AC-001's API-billed bucket effect is the user-only check (not scored, per the confidence rules) | none material within the provable scope | — |
+| Changed-boundary execution directness | 75% | 95% | API-10, API-11, API-13, API-14 read the variable in the real spawned CLI and the real buckets; API-06 the real GraphQL boundary | none material within the provable scope | — |
+| Cross-boundary integration realism and mock gap | 70% | 95% | Real Studio server, GraphQL, WS, Claude backend, SDK, CLI, Anthropic API (subscription); probe-owned real backend + UI; the api-key spawn reached Anthropic with the vault key | none material within the provable scope | — |
+| Environment, configuration, identity, and fixture fidelity | 70% | 95% | Real subscription identity; api-key mode resolved the vault key and Anthropic accepted it (refusal is for balance) | an api-key turn did not complete (no credits); its spawn env is unit-proven and reached Anthropic | the user check |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | API-06 (invalid values, unchanged on rejection), API-01 (user-set variable kept), API-11/API-13 (toggle change without restart), API-14 (`promptCacheTtl` precedence) | `FORCE_PROMPT_CACHING_5M` and bucket env var precedence are Claude Code's own (investigation T4/T6, CLI 2.1.307; this run used 2.1.308); AutoByteus never touches them (unit) | — |
 | User-surface, browser, and desktop-shell confidence | 90% | 95% | IMP-07 (via API-03), API-11 (card click, Run details breakdowns on real data); shell not changed | none material | — |
-| Durable regression coverage quality and relevance | 90% | 95% | Unit/component (API-01, API-03), GraphQL e2e (API-06), gated live suite CPC-E2E-001..006 | live suite needs credits for 001-003 | — |
+| Durable regression coverage quality and relevance | 90% | 95% | Unit/component (API-01, API-03), GraphQL e2e (API-06), gated live suite CPC-E2E-001..006 | CPC-E2E-001..003 skip until the vault key has credits | — |
 
 - Overall post-repository confidence: 79%
-- Overall final confidence: 86% ((75+85+85+75+92+95+95)/7)
+- Overall final confidence: 95% (scored over what can be proven without the user; the API-billed bucket effect is the user-only check)
 - Calculation method: simple average of applicable categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` — AC-001's API-billed run
-- Any final applicable category below `90%`: `Yes` — requirement proof 75%, directness 85%, integration realism 85%, environment/identity 75% (all from the blocked API-billed run)
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: whether Claude Code 2.1.308 raises API-billed writes from 5m to 1h when it sees `ENABLE_PROMPT_CACHING_1H=1` (documented by Claude Code, D4; rank proven by T3/T6 and API-14; not measured on API billing).
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: whether Claude Code raises API-billed writes from 5m to 1h when it sees `ENABLE_PROMPT_CACHING_1H=1` (documented by Claude Code, D4; not observed). If it does not, nothing breaks: API billing stays at Claude Code's 5m, as before this change. The user checks it on the next beta (AC-001 row).
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Blocked` (for the API-billed part; the rest ran)
+- Decision: `Required`, executed (API-06, API-10..14). The API-billed part was blocked by the vault key's balance and became a user-only check by the user's decision of 2026-10-25
 - Execution mode: `Live API` (in-process Studio server + real Claude Code) and `Browser` (probe-owned stack)
 - Confidence gap or residual risk it addresses, and the expected gain: API-07 proves the ticket's main claim on API billing and settles the design escalation trigger; expected to lift requirement proof, directness, realism and identity to 95%+.
 - Browser validation needed, and why or why not: yes for the split rows on real usage and the card's effect on the next session; done (API-11).
-- If `Blocked`: unavailable dependency is API credits for the Anthropic organization of the test-vault key `provider.anthropic.api-key`. Tried: api-key mode through the product (refused: "Credit balance is too low"), the core client with the same key (400 "Your credit balance is too low to access the Anthropic API"), and a recheck on 2026-10-25 (same). No other API-billed path is allowed: keys only from the test vault (TESTING.md rule 4), and the user's CLI must not be logged into Console.
+- Blocked part (now a user-only check): unavailable dependency is API credits for the Anthropic organization of the test-vault key `provider.anthropic.api-key`. Tried: api-key mode through the product (refused: "Credit balance is too low"), the core client with the same key (400 "Your credit balance is too low to access the Anthropic API"), and a recheck on 2026-10-25 (same). No other API-billed path is allowed: keys only from the test vault (TESTING.md rule 4), and the user's CLI must not be logged into Console.
 
 ## Desktop Application Validation (When Applicable)
 
@@ -144,8 +144,8 @@ N/A (result `Blocked`; no failure in this change was found).
 
 ## Latest Authoritative Result
 
-- Result: `Blocked`
-- Criteria not proven: AC-001's API-billed two-turn run (critical). The toggle-off bucket on API billing (API-08) and AC-002 on API billing (API-09) also wait on the same dependency; AC-002 and AC-006 are already proven by other cases.
+- Result: `Pass` (API-REV-002)
+- Criteria not proven, or parts only the user can check: AC-001's API-billed bucket effect (only the user can check; steps in the Acceptance-Criteria Proof). API-07, API-08, API-09 stay `Blocked` cases (vault key without credits); their scope is that user check.
 - Preliminary classification and recommended owner: N/A
-- Next recipient: user request (no handoff rule covers `Blocked`). Needed: credits for the Anthropic organization of the test-vault key, or a funded key put in the vault with `pnpm test-vault setup --replace --source <file>`. Resume: `cd autobyteus-server-ts && env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT="$HOME/.autobyteus-test/vault" AUTOBYTEUS_LIVE_STRICT=1 RUN_CLAUDE_PROMPT_CACHE_E2E=1 CLAUDE_PROMPT_CACHE_E2E_EVIDENCE_DIR=<evidence>/API-07-10-claude-cache-ttl-live ./node_modules/.bin/vitest run tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts --no-watch -t "CPC-E2E-00[123]"` (about 7 minutes, under 1 cent). If CPC-E2E-001's writes land in 5m with the variable present, this becomes `Design Impact` to the Solution Designer; if they pass, `Pass` to delivery.
-- Notes: follow-up FU-005 (Run details default range hides today's runs) recorded in `follow-ups.md`. Spend so far: 0 API credits (all API requests refused); 9 short Haiku turns on the subscription.
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer` (direct Small/Low pass)
+- Notes: user decision, 2026-10-25: "We let it pass and we release a new beta", checking the API-billed behavior after that beta. API-REV-001's result was `Blocked` for the same evidence. Follow-up FU-005 recorded. Spend: 0 API credits (all API requests refused); 9 short Haiku turns on the subscription.

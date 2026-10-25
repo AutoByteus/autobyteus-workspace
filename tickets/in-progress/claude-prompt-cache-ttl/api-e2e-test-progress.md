@@ -25,3 +25,4 @@
 | 2026-10-22 21:14 | API-15 | Completed | Pass | tsc on the two changed test files: 0 errors in them |
 | 2026-10-25 05:53 | API-07 | Checkpoint | — | Recheck after 3 days: vault key still refused, 400 'Your credit balance is too low' (appended to evidence/API-07-blocker-anthropic-key-check.log). Writing report; result Blocked |
 | 2026-10-25 05:55 | — | Checkpoint | — | Report and revision record written (result Blocked, 86%); committing |
+| 2026-10-25 11:41 | API-07 | Checkpoint | — | User decision 2026-10-25: let it pass, check API billing after the next beta. API-REV-002: AC-001's API-billed part is a user-only check; result Pass 95%. Committing and handing off to delivery |
