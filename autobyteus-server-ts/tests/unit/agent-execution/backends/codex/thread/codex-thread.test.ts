@@ -13,7 +13,7 @@ import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-ex
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -99,7 +99,7 @@ const createMemberExecutionContext = () =>
       agentRunId: "ping-run-1",
     },
     collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-    tasks: testMemberTaskCommandCapability("team-1"),
+    tasks: testMemberTaskCapability("team-1"),
   });
 
 const createSpeakApprovalParams = () => ({

@@ -15,7 +15,7 @@ import ProjectTaskRow from '../ProjectTaskRow.vue'
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 
 const task = (n: number, status: ProjectTaskStatus = 'TODO', dependsOnTaskIds: string[] = [], description = `Task ${n} summary`): ProjectTask => ({
-  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, description, status, dependsOnTaskIds,
+  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, title: description.split('\n')[0]!, description, status, dependsOnTaskIds,
   contextFiles: [], createdAt: '', updatedAt: '', root: null,
 })
 /** The badge's visible parts (label, key, +N), which the layout spaces with its gap. */

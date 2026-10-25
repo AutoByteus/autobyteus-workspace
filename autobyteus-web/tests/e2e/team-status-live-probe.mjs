@@ -157,7 +157,7 @@ const createTask = async (label, description) => {
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
     { input: { name: `Docs Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
   const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId, description } })).createProjectTask.taskId;
+    { input: { projectId, title: description.split('\n')[0], description } })).createProjectTask.taskId; // autobyteus-260: Tasks have a title
   return { projectId, taskId };
 };
 const createRoot = async (kind, ids) => {

@@ -142,7 +142,8 @@ out after 10000ms.". Grok and Antigravity application readiness are still
 (`src/agent-tools/agent-runtimes/`, AutoByteus local tool and Agent Tools MCP
 adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
 (`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
-same object the tool returns). The composition builds it from the same
+same report the tool returns, which the tool gives by the one tool result rule:
+its null values are left out). The composition builds it from the same
 strategies and sign-in reader as the status service and binds it until
 `close()`. The folder `src/available-agent-runtimes/` (service, report,
 `usage-limit-model-matching.ts`) sits above `runtime-management` and

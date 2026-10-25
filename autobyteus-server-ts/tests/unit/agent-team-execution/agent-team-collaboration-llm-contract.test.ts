@@ -39,7 +39,8 @@ describe("approved collaboration tool descriptions", () => {
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
       delegateNode: sha256(DELEGATE_TASK_NODE_DESCRIPTION),
     }).toEqual({
-      sendTool: "6ff131924d8cef4ed04f0702af3544484356ec6f1947197da2192455db6dc18f",
+      // autobyteus-260: a refused message leaves target_agent_run_id out (no "null").
+      sendTool: "147726f394b4442a4154a56de437dabfeca6f651234831b395fc2e4f5f225b1a",
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
       sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
       // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).

@@ -4,13 +4,13 @@ import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
-import type { BackgroundProcessInfo } from '../types.js';
+import { omitEmptyToolResultFields, type ToolResultJsonValue } from '../../tool-result-json.js';
 
 export async function getBackgroundProcesses(
   context: AgentContextLike | null
-): Promise<{ processes: BackgroundProcessInfo[] }> {
+): Promise<ToolResultJsonValue> {
   const manager = getBackgroundManager(context);
-  return { processes: await manager.listProcesses() };
+  return omitEmptyToolResultFields({ processes: await manager.listProcesses() });
 }
 
 const argumentSchema = new ParameterSchema();

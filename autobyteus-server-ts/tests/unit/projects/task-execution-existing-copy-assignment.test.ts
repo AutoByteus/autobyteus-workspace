@@ -40,8 +40,8 @@ describe("existing-copy assignment on the Task side", () => {
   const released = () => release.mock.calls.flatMap(([, executions]) => executions);
   /** Task A delegated by `manager` to the Team copy (started), then A DONE; Task B created. */
   const teamDidA = async () => {
-    const a = (await tasks.createTask({ projectId, description: "Lazy member activation" })).taskId;
-    const b = (await tasks.createTask({ projectId, description: "Follow-up cleanup" })).taskId;
+    const a = (await tasks.createTask({ projectId, title: "Lazy member activation", description: "Lazy member activation" })).taskId;
+    const b = (await tasks.createTask({ projectId, title: "Follow-up cleanup", description: "Follow-up cleanup" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: a, assignedBy: "manager", recipientAddress: "/review_team", hostRoot, execution: team, teamCoordinatorAgentRunId: "lead" });
     await tasks.markStarted(team);
     await setStatus(a, "DONE");
@@ -156,7 +156,7 @@ describe("existing-copy assignment on the Task side", () => {
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({
       code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("This task agent already has Task p-1. To continue it, set Task p-1 to TODO or IN_PROGRESS, then message the task agent's run id") });
     // A copy that never started (its only start failed) has no conversation to resume.
-    const c = (await tasks.createTask({ projectId, description: "C" })).taskId;
+    const c = (await tasks.createTask({ projectId, title: "C", description: "C" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: c, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await tasks.markFailed(worker, { code: "TASK_DISPATCH_FAILED", message: "start failed" });
     await setStatus(c, "CANCELLED");
@@ -174,7 +174,7 @@ describe("existing-copy assignment on the Task side", () => {
 
   it("refuses while any Task's data is unreadable (REQ-005, AR-004)", async () => {
     const { b } = await teamDidA();
-    const z = (await tasks.createTask({ projectId, description: "Z" })).taskId;
+    const z = (await tasks.createTask({ projectId, title: "Z", description: "Z" })).taskId;
     await fs.mkdir(path.dirname(layout.taskExecutionResourcesFile(projectId, z)), { recursive: true });
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, z), "{ truncated");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -229,8 +229,8 @@ describe("existing-copy assignment on the Task side", () => {
 
   it("a DONE of A and the assignment of B never leave two open entries, in either order (QR-001)", async () => {
     for (const order of ["done-first", "assign-first"] as const) {
-      const a = (await tasks.createTask({ projectId, description: `A ${order}` })).taskId;
-      const b = (await tasks.createTask({ projectId, description: `B ${order}` })).taskId;
+      const a = (await tasks.createTask({ projectId, title: `A ${order}`, description: `A ${order}` })).taskId;
+      const b = (await tasks.createTask({ projectId, title: `B ${order}`, description: `B ${order}` })).taskId;
       const copy = { agentRunId: `copy-${order}` };
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: a, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: copy });
       await tasks.markStarted(copy);

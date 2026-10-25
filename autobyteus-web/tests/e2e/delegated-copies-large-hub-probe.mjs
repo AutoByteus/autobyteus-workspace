@@ -226,7 +226,8 @@ const seed = async () => {
   const teamId = await team(TEAM); await team(LATE_TEAM);
   for (const rootPath of [workspace, archive]) await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath } });
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: 'Large Hub Project' } })).createProject.projectId;
-  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, description } })).createProjectTask.taskId;
+  // autobyteus-260: a Project Task has a title (here its description's first line).
+  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, title: description.split('\n')[0], description } })).createProjectTask.taskId;
   const host = async () => {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: managerId, ...config(workspace) } })).createAgentRun;
     assert(r.success, r.message); return r.runId;
@@ -520,7 +521,7 @@ const liveJourneys = async () => {
     await page.evaluate((id) => { window.__minMessages = Infinity; const tick = () => { const t = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('activeContext')?.activeWorkspaceTarget;
       if (t?.agentRunId === id) window.__minMessages = Math.min(window.__minMessages, t.context.state.conversation.messages.length); else window.__lostTarget = true; if (!window.__stopMin) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, marker.agentRunId);
     const start = requests.length, framesStart = frames.length;
-    const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, description: 'New live Engineering Task' } })).createProjectTask.taskId;
+    const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'New live Engineering Task', description: 'New live Engineering Task' } })).createProjectTask.taskId;
     send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
     await until('new Team row appears', async () => (await teamRowsOf().count()) === teamsBefore + 1, 180000);
     await until('opened copy reloaded once', async () => (memberOps(start, marker.agentRunId).GetAgentRunCollaborationMemberFileChanges ?? 0) >= 1, 60000).catch(() => {});

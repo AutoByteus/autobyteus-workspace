@@ -8,7 +8,7 @@ const buildContext = () => {
   const root = createTeamRootExecutionIdentity("root-team-run");
   const calls = {
     delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "worker-run" } })),
-    assignToExistingCopy: vi.fn(async () => ({ delegated: true as const,
+    ownedTaskOf: () => null, assignToExistingCopy: vi.fn(async () => ({ delegated: true as const,
       copy: { kind: "team" as const, teamRunId: "team-run", teamCoordinatorAgentRunId: "coordinator-of-team" } })),
   };
   const context: TaskDelegationToolContext = Object.freeze({

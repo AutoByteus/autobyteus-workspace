@@ -183,7 +183,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
-import { taskSummaryLabel } from '~/utils/projects/taskSummary';
+import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
@@ -196,7 +196,7 @@ const props = withDefaults(defineProps<{
   expanded?: boolean;
   continuingAncestorDepths?: number[];
   hasFollowingSibling?: boolean;
-  /** The Task worker's current Task: shown as a summary line under the name (delegated-copy-task-locator). */
+  /** The Task worker's current Task: shown as a one-line label under the name (delegated-copy-task-locator). */
   task?: TaskWorkerTask | null;
   /** The run this copy belongs to, when its rows offer the per-copy stop icon (SR-007). */
   stopRoot?: DelegatedRoot | null;
@@ -269,7 +269,7 @@ const accessibleLabel = computed(() => {
   });
   const withNode = remote.value ? `${label}, ${t('remote.row.accessible', { node: remote.value.nodeName })}` : label;
   return props.task
-    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
+    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskWorkerTaskLabel(props.task) })}`
     : withNode;
 });
 

@@ -20,7 +20,7 @@
               <span class="inline-flex flex-shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="taskStatusPillClass(item.status)" data-testid="task-dependency-status">
                 {{ t(TASK_STATUS_LABEL_KEYS[item.status]) }}<Icon v-if="item.status === 'DONE'" icon="heroicons:check-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
               </span>
-              <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskSummaryLabel(item.description) }}</span>
+              <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskTitleLabel(item.title) }}</span>
             </component>
           </li>
         </ul>
@@ -37,7 +37,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import type { ProjectTask } from '~/types/project'
 import { dependenciesOf, dependencyBadgeOf, requiredByOf } from '~/utils/projects/taskDependencies'
 import { TASK_STATUS_LABEL_KEYS, taskStatusPillClass } from '~/utils/projects/taskStatusPresentation'
-import { taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { taskTitleLabel } from '~/utils/projects/taskText'
 import TaskKey from './TaskKey.vue'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 

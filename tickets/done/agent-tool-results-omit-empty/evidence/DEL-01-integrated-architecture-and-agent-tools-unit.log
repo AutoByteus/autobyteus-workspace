@@ -1,0 +1,88 @@
+# DEL-01 post-integration check, ticket branch at 54cd6803f4 (merge of origin/personal@63a36d00d8)
+# cmd: npx vitest run tests/architecture tests/unit/agent-tools tests/unit/startup tests/unit/available-agent-runtimes
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > serializes no tool result with JSON.stringify outside the allow-list
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "agent-tools/agent-runtimes/list-available-agent-runtimes-tool.ts:30: return JSON.stringify(report);",
++   "agent-tools/mcp/providers/list-available-agent-runtimes-mcp-adapter-provider.ts:27: ? toAgentToolMcpToolResult({ content: [{ type: \"text\", text: JSON.stringify(report) }], structuredContent: report as unknown as Record<string, unknown> })",
++ ]
+
+ ❯ tests/architecture/agent-tool-result-boundaries.test.ts:66:72
+     64|
+     65|   it("serializes no tool result with JSON.stringify outside the allow-…
+     66|     expect(linesMatching(/JSON\.stringify\(/, JSON_STRINGIFY_ALLOWED))…
+       |                                                                        ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/architecture/agent-tool-result-boundaries.test.ts > agent tool result boundaries (one result rule) > builds structuredContent only in the MCP structured helper
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "agent-tools/mcp/providers/list-available-agent-runtimes-mcp-adapter-provider.ts:27: ? toAgentToolMcpToolResult({ content: [{ type: \"text\", text: JSON.stringify(report) }], structuredContent: report as unknown as Record<string, unknown> })",
++ ]
+
+ ❯ tests/architecture/agent-tool-result-boundaries.test.ts:70:83
+     68|
+     69|   it("builds structuredContent only in the MCP structured helper", () …
+     70|     expect(linesMatching(STRUCTURED_CONTENT_LITERAL, STRUCTURED_CONTEN…
+       |                                                                                   ^
+     71|   });
+     72|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner
+AssertionError: expected [ { key: 'core', …(3) }, …(9) ] to deeply equal [ { key: 'core', …(3) }, …(8) ]
+
+- Expected
++ Received
+
+@@ -34,10 +34,16 @@
+      "key": "agent_discovery",
+      "modulePath": "../agent-tools/agent-discovery/register-agent-discovery-tools.js",
+      "name": undefined,
+    },
+    {
++     "exportName": "registerAgentRuntimesTools",
++     "key": "agent_runtimes",
++     "modulePath": "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js",
++     "name": undefined,
++   },
++   {
+      "exportName": "registerPublishedArtifactTools",
+      "key": "published_artifact",
+      "modulePath": "../agent-tools/published-artifacts/register-published-artifact-tools.js",
+      "name": undefined,
+    },
+
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2113:41
+    2111|       "autobyteus-server-ts/src/startup/agent-tool-loader.ts",
+    2112|     );
+    2113|     expect(collectSpecs(readinessPath)).toEqual([
+       |                                         ^
+    2114|       { key: "core", name: undefined, modulePath: "autobyteus-ts/tools…
+    2115|       { key: "project_tasks", name: undefined, modulePath: "../agent-t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 65 passed (67)
+      Tests  3 failed | 537 passed (540)
+   Start at  11:37:10
+   Duration  63.25s (transform 7.31s, setup 777ms, import 33.82s, tests 22.08s, environment 3ms)
+
+# application-framework-boundaries.test.ts and src/startup/agent-tool-loader.ts are identical to origin/personal@63a36d00d8: that failure is on personal itself (FU-008)

@@ -1,0 +1,28 @@
+API-00b out-of-scope failures: the same files on this worktree and on the base fc06a7355d (scratch worktree /tmp/api-e2e-260/base-wt, pnpm install + server build, removed afterwards)
+Command (each): env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs> pnpm -C autobyteus-server-ts exec vitest run <file> --no-watch; macOS arm64; 2026-10-25
+
+== BASE fc06a7355d: delegated-launch-config-defaults
+AssertionError: expected [ …(3) ] to deeply equal []
++   "agent: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "team: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "org: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
+
+== BASE fc06a7355d: agy-native-image-multi-artifact-preview
+AssertionError: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-multi-image-home-sZQRo0/.gemini/antigravity-cli/brain/f11195f7-ad5f-4ac3-9a53-9f20e878af6c/image_1_1.png: {"detail":"File change not found"}: expected 404 to be 200 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+
+== THIS WORKTREE (17d631c704): delegated-launch-config-defaults
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+temporary diagnostic (removed): TEMP-DIAG memberSources agent -> lead: launch {runtimeKind: antigravity_cli, model: gemini-3.8-flash-low, ...} (the test expects launch: null for a member on the inherited launch)
+
+== THIS WORKTREE: agy-native-image-multi-artifact-preview
+AssertionError: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-multi-image-home-Mk9OhJ/.gemini/antigravity-cli/brain/1c53577b-5ea8-4d83-8439-43774773b025/image_1_1.png: {"detail":"File change not found"}: expected 404 to be 200 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+
+== THIS WORKTREE: agy-skill-update-notice-roots (cause read in code: src/integrations/github/github-repository-client.ts fetchDefaultBranchHead requests https://github.com/<owner>/<repo>.git/git-upload-pack since 95a608c456; the test's fetch stub handles only api.github.com and codeload.github.com, so the request reaches real GitHub: 404)
+Error: [{"message":"GitHub repository not found or not public: https://github.com/apar-sun-e2e/skills. For private repositories, clone locally and import the local path.","locations":[{"line":1,"column":23}],"path":["updateGitHubSkillSource"]}]
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)

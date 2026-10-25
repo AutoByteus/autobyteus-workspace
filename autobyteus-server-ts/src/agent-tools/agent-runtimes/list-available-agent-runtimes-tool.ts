@@ -3,6 +3,7 @@ import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import {
   LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_DESCRIPTION,
   LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME,
@@ -14,7 +15,8 @@ import {
 const OWNER = "server-owned-agent-runtimes";
 
 /**
- * The opt-in `list_available_agent_runtimes` tool on the AutoByteus runtime: this node's report as JSON text.
+ * The opt-in `list_available_agent_runtimes` tool on the AutoByteus runtime: this node's report as JSON text, by the
+ * one tool result rule (empty values left out).
  * Registered in the tool registry so it appears in the tool picker; an agent gets it only when its definition lists it.
  */
 export class AutoByteusListAvailableAgentRuntimesTool extends BaseTool<unknown, Record<string, unknown>, string> {
@@ -27,7 +29,7 @@ export class AutoByteusListAvailableAgentRuntimesTool extends BaseTool<unknown, 
   protected async _execute(): Promise<string> {
     const report = await listAvailableAgentRuntimes();
     if (!report) throw new Error(LIST_AVAILABLE_AGENT_RUNTIMES_UNAVAILABLE);
-    return JSON.stringify(report);
+    return toToolResultJson(report);
   }
 }
 

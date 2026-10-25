@@ -7,7 +7,7 @@ import {
 } from "../../src/agent-collaboration/domain/agent-team-address.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { MemberTaskCommandCapability } from "../../src/agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../src/agent-collaboration/execution/task/member-task-capability.js";
 import { TeamBackendKind } from "../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   TeamRunConfig,
@@ -139,7 +139,7 @@ export const testMemberExecutionContext = (input: {
   deliverInterAgentMessage?: (input: unknown) => Promise<{ accepted: boolean }>;
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
-  taskCommands?: MemberTaskCommandCapability;
+  taskCapability?: MemberTaskCapability;
   listAvailableAgents?: MemberCollaborationContext["listAvailableAgents"];
 } = {}): MemberExecutionContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
@@ -160,14 +160,14 @@ export const testMemberExecutionContext = (input: {
         : { accepted: true },
       listAvailableAgents: input.listAvailableAgents ?? null,
     }),
-    tasks: input.taskCommands ?? testMemberTaskCommandCapability(rootTeamRunId),
+    tasks: input.taskCapability ?? testMemberTaskCapability(rootTeamRunId),
   });
 };
 
-export const testMemberTaskCommandCapability = (
+export const testMemberTaskCapability = (
   rootTeamRunId = "root-team-run",
   root: RootTeamRun | null = null,
-): MemberTaskCommandCapability => Object.freeze({
+): MemberTaskCapability => Object.freeze({
   root: createTeamRootExecutionIdentity(rootTeamRunId),
   delegateToNewCopy: async (caller, input) => {
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
@@ -177,6 +177,7 @@ export const testMemberTaskCommandCapability = (
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
     return root.assignToExistingCopy({ identity: caller }, input);
   },
+  ownedTaskOf: (caller) => (root ? root.ownedTaskOf({ identity: caller }) : null),
 });
 
 export const address = (value: string): AgentTeamAddress => assertAgentTeamAddress(value);

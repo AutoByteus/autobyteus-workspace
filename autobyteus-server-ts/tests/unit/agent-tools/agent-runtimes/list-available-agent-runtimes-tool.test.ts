@@ -23,7 +23,23 @@ const REPORT: AvailableAgentRuntimesReport = {
   agentRuntimes: [
     { runtime: "grok_build", name: "Grok", limits: [{ name: "Billing period", remainingPercent: null, resetsAt: "2026-10-29T00:00:00.000Z" }],
       limitsNote: "Grok does not report how much of the period is used.", models: [{ id: "grok-4.7", name: "Grok 4.7", contextTokens: 256_000 }] },
-    { runtime: "autobyteus", name: "AutoByteus", providers: [{ provider: "OpenAI", limits: "not reported", models: [{ id: "gpt-6", name: "GPT-6" }] }] },
+    { runtime: "autobyteus", name: "AutoByteus", providers: [
+      { provider: "OpenAI", limits: "not reported", models: [{ id: "gpt-6", name: "GPT-6" }] },
+      { provider: "DeepSeek", balance: "0.00 USD", blocked: "Out of balance", models: [{ id: "deepseek-v5", name: "DeepSeek V5", blocked: { until: null, by: "Out of balance" } }] },
+    ] },
+  ],
+};
+
+/** The report as the tool gives it, by the one tool result rule (autobyteus-260): a null `remainingPercent` or `until` is left out. */
+const TOOL_RESULT = {
+  checkedAt: "2026-10-25T10:00:00.000Z",
+  agentRuntimes: [
+    { runtime: "grok_build", name: "Grok", limits: [{ name: "Billing period", resetsAt: "2026-10-29T00:00:00.000Z" }],
+      limitsNote: "Grok does not report how much of the period is used.", models: [{ id: "grok-4.7", name: "Grok 4.7", contextTokens: 256_000 }] },
+    { runtime: "autobyteus", name: "AutoByteus", providers: [
+      { provider: "OpenAI", limits: "not reported", models: [{ id: "gpt-6", name: "GPT-6" }] },
+      { provider: "DeepSeek", balance: "0.00 USD", blocked: "Out of balance", models: [{ id: "deepseek-v5", name: "DeepSeek V5", blocked: { by: "Out of balance" } }] },
+    ] },
   ],
 };
 
@@ -51,7 +67,7 @@ describe("list_available_agent_runtimes", () => {
     expect(resolved.actualToolNames).not.toContain(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME);
   });
 
-  it("on the AutoByteus runtime: registered in the tool picker, answers the node's report as JSON (AC-001)", async () => {
+  it("on the AutoByteus runtime: registered in the tool picker, answers the node's report as JSON by the one result rule (AC-001)", async () => {
     const read = bindService();
     registerAgentRuntimesTools();
     expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME)?.description)
@@ -62,11 +78,13 @@ describe("list_available_agent_runtimes", () => {
       memberExecutionContext: null, logger: { warn: vi.fn(), error: vi.fn() } });
     expect(resolved.actualToolNames).toEqual([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME]);
     const tool = resolved.tools[0] as unknown as { _execute(): Promise<string> };
-    expect(JSON.parse(await tool._execute())).toEqual(REPORT);
+    const text = await tool._execute();
+    expect(text).toBe(JSON.stringify(TOOL_RESULT));
+    expect(JSON.parse(text)).toEqual(TOOL_RESULT);
     expect(read).toHaveBeenCalledOnce();
   });
 
-  it("over Agent Tools MCP (Claude, Codex, Antigravity, Grok): the same report, when the definition lists it (AC-002)", async () => {
+  it("over Agent Tools MCP (Claude, Codex, Antigravity, Grok): the same report by the same rule, when the definition lists it (AC-002)", async () => {
     bindService();
     expect(buildDefaultAgentToolMcpAdapterProviders().some((provider) => provider instanceof ListAvailableAgentRuntimesMcpAdapterProvider)).toBe(true);
     expect(catalog().resolveConfiguredSupportedToolNames(mcpContext([LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME])))
@@ -74,7 +92,7 @@ describe("list_available_agent_runtimes", () => {
     const [adapter] = new ListAvailableAgentRuntimesMcpAdapterProvider().getAdapters();
     expect(adapter!.definition.description).toBe(LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_DESCRIPTION);
     await expect(adapter!.execute({ session: {} as never, rawArguments: {} })).resolves.toEqual({ kind: "mcp_tool_result",
-      result: { content: [{ type: "text", text: JSON.stringify(REPORT) }], structuredContent: REPORT } });
+      result: { content: [{ type: "text", text: JSON.stringify(TOOL_RESULT) }], structuredContent: TOOL_RESULT } });
   });
 
   it("on a server that does not compose it: the not-available text, as the tool's error", async () => {
@@ -88,7 +106,7 @@ describe("list_available_agent_runtimes", () => {
 });
 
 describe("GraphQL availableAgentRuntimes (AC-010)", () => {
-  it("returns the same report object the tool returns", async () => {
+  it("returns the service's report as it is (GraphQL keeps its nulls; only tool results follow the tool result rule)", async () => {
     bindService();
     await expect(new AvailableAgentRuntimesResolver().availableAgentRuntimes()).resolves.toEqual(REPORT);
   });

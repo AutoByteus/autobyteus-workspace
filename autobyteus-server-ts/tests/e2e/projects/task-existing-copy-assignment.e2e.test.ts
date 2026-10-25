@@ -32,7 +32,7 @@ const suite = enabled ? describe : describe.skip;
 type Frame = { type: string; payload: Record<string, any> };
 type Kind = "agent" | "team" | "org";
 type TaskNode = Record<string, any> & { startedAt: string };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"];
 const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
@@ -133,7 +133,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
   const keyOfTask = new Map<string, string>();
   const k = (taskId: string): string => keyOfTask.get(taskId)!;
   const createTask = async (projectId: string, description: string) => {
-    const created = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`, { input: { projectId, description } })).createProjectTask;
+    const created = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`, { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask;
     keyOfTask.set(created.taskId, created.taskKey);
     return created.taskId as string;
   };
@@ -595,16 +595,24 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect((await taskOf(projectId, taskB)).root).toMatchObject({ teamRunId: team, closed: false });
     record.repeatedCloseOfA = repeated;
 
-    // AC-013: list_project_tasks names every copy for what it is; Task A lists its copy under closedAssignments.
+    // AC-013: list_project_tasks names every copy for what it is (open assignments only, autobyteus-260 REQ-007);
+    // get_project_task lists Task A's copy under closedAssignments (REQ-014).
     const listed = await root.managerCalls(callTool("list_project_tasks", { project_id: projectId }));
+    const fullTask = async (taskId: string) => root.managerCalls(callTool("get_project_task", { project_id: projectId, task_id: k(taskId) }));
     // list_project_tasks names each Task by its key.
     const listedTask = (taskId: string) => (listed.tasks as any[]).find((task) => task.taskId === k(taskId));
     const teamView = { kind: "team", teamRunId: team, teamCoordinatorAgentRunId: coordinator, assignedBy: root.managerRunId, outcome: "accepted" };
     const workerView = { kind: "agent", agentRunId: worker, assignedBy: root.managerRunId, outcome: "accepted" };
-    expect(listedTask(taskA)).toMatchObject({ assignments: [], closedAssignments: [teamView] });
-    expect(listedTask(taskB)).toMatchObject({ assignments: [teamView], closedAssignments: [] });
-    expect(listedTask(taskC)).toMatchObject({ assignments: [workerView], closedAssignments: [] });
-    for (const view of [...listedTask(taskA).closedAssignments, ...listedTask(taskB).assignments]) expect(exactKeys(view)).toEqual(exactKeys(teamView));
+    for (const task of listed.tasks as any[]) expect(task).not.toHaveProperty("closedAssignments");
+    expect(listedTask(taskA)).not.toHaveProperty("assignments");
+    expect(listedTask(taskB)).toMatchObject({ assignments: [teamView] });
+    expect(listedTask(taskC)).toMatchObject({ assignments: [workerView] });
+    const fullA = await fullTask(taskA), fullB = await fullTask(taskB);
+    expect(fullA).toMatchObject({ taskId: k(taskA), closedAssignments: [teamView] });
+    expect(fullA).not.toHaveProperty("assignments");
+    expect(fullB).toMatchObject({ assignments: [teamView] });
+    expect(fullB).not.toHaveProperty("closedAssignments");
+    for (const view of [...fullA.closedAssignments, ...listedTask(taskB).assignments]) expect(exactKeys(view)).toEqual(exactKeys(teamView));
     expect(exactKeys(listedTask(taskC).assignments[0])).toEqual(exactKeys(workerView));
     expect(JSON.stringify(listed)).not.toMatch(/targetAgentRunId/);
     record.listed = { a: listedTask(taskA), b: listedTask(taskB), c: listedTask(taskC) };
@@ -660,7 +668,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(await taskOf(projectId, taskB)).toMatchObject({ status: "DONE", root: { teamRunId: team, closed: true, status: "offline" } });
     const listedAgain = await root.managerCalls(callTool("list_project_tasks", { project_id: projectId }));
     const aListed = (listedAgain.tasks as any[]).find((task) => task.taskId === k(taskA));
-    expect(aListed).toMatchObject({ assignments: [teamView], closedAssignments: [teamView] });
+    expect(aListed).toMatchObject({ assignments: [teamView] });
+    expect(await fullTask(taskA)).toMatchObject({ assignments: [teamView], closedAssignments: [teamView] });
     expect(await openEntriesAcross(projectId, teamKey)).toEqual([taskA]);
     record.backToA = { backToA, aEntries };
 
@@ -852,9 +861,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
 
     // B and D depend on A (set by the Manager's tools, by key in upper case): both are blocked while A is TODO.
     const depB = await root.managerCalls(callTool("update_task", { task_id: k(taskB).toUpperCase(), depends_on: [k(taskA).toUpperCase()] }));
-    expect(depB).toEqual({ task: { projectId, taskId: k(taskB), status: "TODO", dependsOn: [k(taskA)], partOf: null } });
+    expect(depB).toEqual({ task: { projectId, taskId: k(taskB), title: "Build the API on the schema.", status: "TODO", dependsOn: [k(taskA)] } });
     const depD = await root.managerCalls(callTool("update_task", { task_id: taskD, depends_on: [taskA] }));
-    expect(depD).toEqual({ task: { projectId, taskId: k(taskD), status: "TODO", dependsOn: [k(taskA)], partOf: null } });
+    expect(depD).toEqual({ task: { projectId, taskId: k(taskD), title: "Review the API.", status: "TODO", dependsOn: [k(taskA)] } });
     expect(await dependsOf(taskB)).toEqual([taskA]);
 
     // AC-022 / AC-027: the blocked Task B is delegated with recipient_address and its key in upper case.
@@ -877,7 +886,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const byKey = Object.fromEntries((listed.tasks as any[]).map((t) => [t.taskId, t]));
     expect(Object.keys(byKey).sort()).toEqual([taskA, taskB, taskC, taskD].map(k).sort());
     expect(byKey[k(taskB)]).toMatchObject({ dependsOn: [k(taskA)], assignments: [{ kind: "agent", agentRunId: worker }] });
-    expect(byKey[k(taskC)]).toMatchObject({ dependsOn: [], assignments: [{ kind: "agent", agentRunId: helper }] });
+    expect(byKey[k(taskC)]).toMatchObject({ assignments: [{ kind: "agent", agentRunId: helper }] });
+    expect(byKey[k(taskC)]).not.toHaveProperty("dependsOn");
     expect(JSON.stringify(listed.tasks.map(({ contextFiles: _files, ...task }: any) => task))).not.toMatch(/project_task_/);
 
     // AC-023 alternate, under task-agent-several-tasks: the user deletes Task B while its copy works on it; another Task for that
@@ -908,7 +918,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(helperConversation).not.toContain(`New Task assigned to you: ${taskD}`);
     // C DONE by key in mixed case: the helper keeps running with D.
     const doneC = await root.managerCalls(callTool("update_task", { task_id: k(taskC).replace(/^e/, "E"), status: "DONE" }));
-    expect(doneC).toEqual({ task: { projectId, taskId: k(taskC), status: "DONE", dependsOn: [], partOf: null } });
+    expect(doneC).toEqual({ task: { projectId, taskId: k(taskC), title: "Write the release notes.", status: "DONE" } });
     await sleep(2_000);
     expect(processLive(helper)).toBe(true);
     expect((await entriesOf(projectId, taskD, `agent:${helper}`)).map((e) => [e.role, e.closedAt])).toEqual([["assigned", null]]);
@@ -927,11 +937,11 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(temp).toMatchObject({ delegated: true, task_id: expect.stringMatching(/^ad_hoc_task_/) });
     const tempId = temp.task_id as string;
     const tempDone = await root.managerCalls(callTool("update_task", { task_id: tempId, status: "DONE" }));
-    expect(tempDone).toEqual({ task: { projectId: null, taskId: tempId, status: "DONE" } });
+    expect(tempDone).toEqual({ task: { taskId: tempId, status: "DONE" } }); // a Task with no Project has no projectId (REQ-001)
     const tempDeps = await root.managerCalls(callTool("update_task", { task_id: tempId, depends_on: [k(taskA)] }));
     expect(JSON.stringify(tempDeps)).toContain("TASK_DEPENDENCY_INVALID");
     files = await projectFiles(projectId);
-    const onTemp = await root.managerCalls(callTool("create_task", { project_id: projectId, description: "Never created.", depends_on: [tempId] }));
+    const onTemp = await root.managerCalls(callTool("create_task", { project_id: projectId, title: "Never created.", description: "Never created.", depends_on: [tempId] }));
     expect(JSON.stringify(onTemp)).toContain("TASK_DEPENDENCY_INVALID");
     expect(await projectFiles(projectId)).toEqual(files);
     const tempDelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: tempId }));

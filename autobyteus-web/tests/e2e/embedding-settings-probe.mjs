@@ -117,7 +117,8 @@ const gql = async (node, query, variables = {}) => {
   return body.data;
 };
 const createProject = async (node, name) => (await gql(node, 'mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}', { i: { name } })).createProject.projectId;
-const createTask = (node, projectId, description) => gql(node, 'mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}', { i: { projectId, description } });
+// autobyteus-260: every Project Task has a title; these one-line descriptions are their own titles.
+const createTask = (node, projectId, description) => gql(node, 'mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}', { i: { projectId, title: description, description } });
 const modelsDir = node => path.join(node.dataRoot, 'embeddings', 'models');
 const present = file => fs.stat(file).then(() => true, () => false);
 

@@ -94,7 +94,8 @@ it("E-008: separate built nodes accept the same local path but cannot patch remo
     const saved = await a.gql<{project: Record<string, unknown>}>(query, {id: projectId});
     expect(saved.project).toMatchObject({...created.structuredContent.project, workspaces: [{workspaceRootPath: rootPath, description: "Source", availability: "AVAILABLE"}]});
     expect(await b.gql(query, {id: projectId})).toEqual({project: null});
-    expect((await b.call("list_projects", {})).structuredContent).toEqual({projects: []});
+    // autobyteus-260 REQ-001: no Projects is an absent list.
+    expect((await b.call("list_projects", {})).structuredContent).toEqual({});
     const rejectedPatch = await b.call("update_project", {project_id: projectId, name: "No remote upsert"});
     expect(rejectedPatch).toMatchObject({isError: true, structuredContent: {error: {code: "PROJECT_NOT_FOUND"}}});
     // Equal absolute strings are references on the executing node, not remote registry identities.
@@ -107,7 +108,8 @@ it("E-008: separate built nodes accept the same local path but cannot patch remo
     expect(await fs.readFile(path.join(b.root, "workspaces.json"), "utf8").catch(e => {if (e.code === "ENOENT") return null; throw e;})).toBe(bRegistry);
     const missingPath = path.join(b.root, "not-created #?雪");
     const unregistered = await b.call("create_project", {name: "Absent local path", workspaces: [{workspace_path: missingPath}]});
-    expect(unregistered.structuredContent.project.workspaces).toEqual([{workspaceRootPath: missingPath, description: ""}]);
+    // The link's empty description is left out of the acknowledgement (REQ-001).
+    expect(unregistered.structuredContent.project.workspaces).toEqual([{workspaceRootPath: missingPath}]);
     await expect(fs.stat(missingPath)).rejects.toMatchObject({code: "ENOENT"});
     expect(await a.gql(query, {id: projectId})).toEqual(saved);
     const recordPath = path.join(a.root, "projects", projectId, "project.json");

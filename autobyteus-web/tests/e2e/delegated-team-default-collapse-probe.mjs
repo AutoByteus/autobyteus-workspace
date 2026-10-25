@@ -150,7 +150,8 @@ const seed = async () => {
   await fsp.mkdir(workspaceRoot, { recursive: true });
   await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: workspaceRoot } });
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: 'Collapse Regression Project' } })).createProject.projectId;
-  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, description } })).createProjectTask.taskId;
+  // autobyteus-260: a Project Task has a title (here its description's first line).
+  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, title: description.split('\n')[0], description } })).createProjectTask.taskId;
   const host = async () => {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: managerId, ...config() } })).createAgentRun;
     assert(r.success, r.message); return r.runId;
