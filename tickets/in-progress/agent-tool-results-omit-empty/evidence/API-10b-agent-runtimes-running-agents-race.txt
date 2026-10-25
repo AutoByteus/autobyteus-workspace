@@ -1,0 +1,4 @@
+API-10b agent-runtimes-running-agents alone (round 2): /tmp/api-e2e-260/run.sh r2-ra tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+Cause (read in code): AgentRuntimeStatusService.checkAll() (src/runtime-management/agent-runtimes/agent-runtime-status-service.ts:142-150) is the only path that clears a finished update operation; RA-04's loop calls it only while the Codex row is not yet UPDATE_AVAILABLE. When RA-03's own post-update re-check reads the 0.170.0 release RA-04 just set (suite load delays it), the row is already UPDATE_AVAILABLE, no checkAll runs, and RA-03's {kind: update, state: SUCCEEDED} operation is still there at line 222.

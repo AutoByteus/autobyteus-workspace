@@ -18,10 +18,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md) (created after the first completed result)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1`
-- Trigger: code review CRR-001 pass (Large / High), message from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: `N/A` (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2`
+- Trigger: round 2: code review CRR-004 pass after CR-001/CR-002/CR-003 (head `fccf1227a6`); round 1: CRR-001 pass
+- Prior Investigation Reviewed: round 1 (this file; Planned Cases unchanged, F-001/F-002 in Ambiguities resolved by SR-012 / CR-002)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis

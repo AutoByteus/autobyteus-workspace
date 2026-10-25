@@ -30,3 +30,16 @@ Read this first whenever the run is picked back up. Only add rows.
 | 2026-10-25 10:20 | API-11c | Completed | Fail | 13/25 fail, all Error 500 from taskWorkerTaskStore dropping title (F-002) |
 | 2026-10-25 10:21 | API-11d, API-12 | Completed | Not Tested | blocked by F-002; next round |
 | 2026-10-25 10:22 | API-13, API-14, API-15 | Completed | Pass | sizes table, AC-009 grep (docs note), AC-010 review |
+| 2026-10-25 (round 2) | — | Checkpoint | — | round 2 on fccf1227a6 (CR-001 dfbd2621bb, CR-002 52cbc28442, CR-003 56ceef568a); server rebuilt; API-05 fixture `task_invalid` made invalid by status (taskKey now optional, SR-012) |
+| 2026-10-25 (round 2) | API-05 | Started | — | titles startup E2E alone |
+| 2026-10-25 (round 2) | API-05 | Completed | Pass | after fixture/disposition update |
+| 2026-10-25 (round 2) | API-10 | Started | — | full gated regression on fccf1227a6 build (JSON /tmp/api-e2e-260/r2-regression-e2e.json) |
+| 2026-10-25 (round 2) | API-10 | Completed | Pass | 4 failed files: FU-002/003/004 + FU-007 (race, passes alone); F-001 resolved (projects-startup-migration 6/6) |
+| 2026-10-25 (round 2) | API-11c | Started | — | project-manager-ux probe rerun |
+| 2026-10-25 (round 2) | API-11c | Completed | Pass | 24/25 then PMU-024 rerun Pass after my probe fix (renames send the title) |
+| 2026-10-25 (round 2) | API-11d | Started | — | task-closure-tree, team-status-live, delegated-team-default-collapse (chained) |
+| 2026-10-25 (round 2) | API-11d | Checkpoint | Pass | closure-tree 16/16, team-status-live 7/7, default-collapse 7/7; next: large-hub seed + measure --live |
+| 2026-10-25 (round 2) | API-11d | Completed | Pass | large-hub seed (9 Teams, 20 unrelated) + measure --live Pass; rows show titles |
+| 2026-10-25 (round 2) | API-12 | Started | — | isolated-app start --build on a copy of the large-hub seed (/tmp/api-e2e-260/desktop-copy/server-data) |
+| 2026-10-25 (round 2) | API-12 | Completed | Pass | isolated desktop on the seed copy: tree titles, Projects tab, Task page, blank title refused, rename followed in tree and board, delete confirmation; instance stopped, copies removed |
+| 2026-10-25 (round 2) | — | Checkpoint | — | round 2 result Pass, 95%; reports updated; handoff to code reviewer for test-code review |
