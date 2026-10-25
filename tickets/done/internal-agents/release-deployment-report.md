@@ -107,3 +107,48 @@ Revert the merge on `personal`. An `"internal": true` key left in a file would t
 ## Repository Finalization
 
 Recorded after the merge in "Finalization Record" below.
+
+## Finalization Record
+
+- Bootstrap context source: the Solution Designer's `handoff-implementation.md` (branch `codex/internal-agents`, base and target `origin/personal` `651071758f`) and RELEASE.md
+- Ticket branch: `codex/internal-agents`
+- Ticket branch commit result: archive commit `ba01026b0a`. Code: `813f7208d2`. Tests: `17a6904e70`. Ticket documents: `692e884b77`, `1352168e67`.
+- Name check before the commit: `check_repository_artifact_hygiene.py` passed. The longest ticket path is 109 characters, with no Windows-hostile names.
+- Ticket branch push result: pushed `origin/codex/internal-agents` @ `ba01026b0a`, after the Secret Gate on `origin/personal..codex/internal-agents` passed
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification: `No` (`651071758f` at verification, at the merge and right before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/internal-agents` created from `origin/personal` @ `651071758f`
+- Merge into target result: `git merge --no-ff` → `e34321789d`. Checks on the merged state:
+  - Secret Gate PASS;
+  - `check_repository_artifact_hygiene.py` passed;
+  - `check_licensing.py`: "Licensing is consistent." (exit 0).
+- Push target branch result: `651071758f..e34321789d  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/internal-agents`
+- Worktree cleanup result: `Completed`.
+  - Its only uncommitted content was untracked build output (`*/dist/`).
+  - No process ran from it, and no container mounted it.
+  - It was removed with `git worktree remove --force`, and the path no longer exists.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/internal-agents` (`ba01026b0a`) and `finalize/internal-agents` (`e34321789d`) were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/internal-agents` is kept as the pushed ticket history.
+- Other:
+  - The stale analysis worktree `/Users/normy/autobyteus-worktrees/internal-agent-frontend-visibility` was not touched (Task constraint).
+  - The main checkout was not touched.
+  - This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ia-record`), which is removed after the push.
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence; no user check required, with the AC-005 wording flagged to the Solution Designer)
+- Repository finalization complete: `Yes` (`e34321789d` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed
