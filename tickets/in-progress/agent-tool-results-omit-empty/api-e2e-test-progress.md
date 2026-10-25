@@ -43,3 +43,9 @@ Read this first whenever the run is picked back up. Only add rows.
 | 2026-10-25 (round 2) | API-12 | Started | — | isolated-app start --build on a copy of the large-hub seed (/tmp/api-e2e-260/desktop-copy/server-data) |
 | 2026-10-25 (round 2) | API-12 | Completed | Pass | isolated desktop on the seed copy: tree titles, Projects tab, Task page, blank title refused, rename followed in tree and board, delete confirmation; instance stopped, copies removed |
 | 2026-10-25 (round 2) | — | Checkpoint | — | round 2 result Pass, 95%; reports updated; handoff to code reviewer for test-code review |
+| 2026-10-25 (round 3) | — | Checkpoint | — | delivery re-entry DR-001 (merge 54cd6803f4, fix 7c60cb4909); plan in the investigation's Round 3 Plan |
+| 2026-10-25 (round 3) | API-10 | Started | — | rebuild dist, then full gated regression (JSON /tmp/api-e2e-260/r3-regression-e2e.json) |
+| 2026-10-25 (round 3) | API-10 | Completed | Pass | 3 failed files = FU-002/003/004; runtimes E2E 6/6 incl. AAR-04 (MCP) |
+| 2026-10-25 (round 3) | API-R3W | Started | — | web localization guards + unit tests (projects, workspace, settings, utils/projects, stores) |
+| 2026-10-25 (round 3) | API-R3W | Completed | Pass | guards Passed; audit zero findings; 2044 web unit tests passed |
+| 2026-10-25 (round 3) | — | Checkpoint | — | round 3 result Pass, 95%; reports updated |
