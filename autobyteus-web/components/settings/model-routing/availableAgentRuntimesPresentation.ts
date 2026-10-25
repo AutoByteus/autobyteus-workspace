@@ -9,9 +9,6 @@ export const isAutoByteusEntry = (entry: AvailableAgentRuntimeEntry): entry is A
 export const unknownReason = (value: unknown): string | null =>
   typeof value === 'string' && value.startsWith('unknown: ') ? (value as UnknownText).slice('unknown: '.length) : null
 
-/** Models of a list value; empty for an unknown one. */
-export const modelList = (models: AvailableModel[] | UnknownText): AvailableModel[] => (Array.isArray(models) ? models : [])
-
 export const blockedCount = (models: AvailableModel[]): number => models.filter((model) => model.blocked).length
 
 /**
