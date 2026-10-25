@@ -1,9 +1,13 @@
 import { RuntimeKind } from "../../runtime-kind-enum.js";
-import { grokBuildCommand } from "../../grok/grok-build-launch-profile.js";
+import { grokBuildCommand, grokBuildLaunchProfile } from "../../grok/grok-build-launch-profile.js";
+import { runAcpExtensionRequest } from "../../acp/acp-discovery-handshake.js";
+import { commandTimeout } from "../../read-deadline.js";
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { runRuntimeCommand } from "../runtime-command-runner.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
+import { parseGrokUsageLimits } from "../usage-limits/grok-usage-limits.js";
+import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
 
 /** `grok models` and `grok update --check` ask xAI's servers, so they get longer than a local `--version`. */
 const NETWORK_COMMAND_TIMEOUT_MS = 15_000;
@@ -27,14 +31,17 @@ export const createGrokAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
     return version;
   },
   /** `grok models` prints "You are not authenticated." (exit 0) when signed out. */
-  async readSignIn(executable): Promise<SignInReading> {
-    const result = await runRuntimeCommand(executable, ["models"], NETWORK_COMMAND_TIMEOUT_MS);
+  async readSignIn(executable, _cwd, options = {}): Promise<SignInReading> {
+    const result = await runRuntimeCommand(executable, ["models"], commandTimeout(options.deadline, NETWORK_COMMAND_TIMEOUT_MS));
     if (`${result.stdout}\n${result.stderr}`.includes(SIGNED_OUT_ANSWER)) {
       return { state: "signedOut", detail: SIGNED_OUT_ANSWER };
     }
     if (result.exitCode === 0) return { state: "signedIn" };
     return { state: "unknown", detail: result.error?.message ?? `grok models exited with ${String(result.exitCode)}.` };
   },
+  /** Grok's ACP extension `_x.ai/billing` after `initialize` on a short process (no session, 0 tokens). */
+  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Grok", deadline, async () =>
+    parseGrokUsageLimits(await runAcpExtensionRequest(grokBuildLaunchProfile, "_x.ai/billing", { deadline }))),
   updateArgv: (executable) => [executable, "update"],
   signInArgv: (executable) => [executable, "login", "--oauth"],
 });

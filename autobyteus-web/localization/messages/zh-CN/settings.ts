@@ -12,6 +12,7 @@ const settingsMessages = {
   'settings.page.empty.description': '选择一个分类以配置设置。',
   'settings.page.sections.apiKeys': 'API 密钥',
   'settings.page.sections.agentRuntimes': '智能体运行时',
+  'settings.page.sections.modelRouting': '模型路由',
   'settings.page.sections.tokenUsage': 'Token 统计',
   'settings.page.sections.display': '显示',
   'settings.page.sections.language': '语言',

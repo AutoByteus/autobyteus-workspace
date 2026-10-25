@@ -550,6 +550,35 @@ versions, and starts the vendor's own update and login commands.
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
 
+## Settings: Model Routing
+
+Settings -> **Model Routing** (`?section=model-routing`, right after Agent
+Runtimes). Its first section, **Agent runtimes now**, shows what the node this
+window is bound to can run now: the same answer the opt-in agent tool
+`list_available_agent_runtimes` gives, read through the GraphQL query
+`availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
+
+- **When it reads.** When the section opens, on **Check again**, and when
+  another node is bound to the window. It never polls: each read starts short
+  runtime processes on the node (0 tokens). The header shows the node and the
+  time of the last check.
+- **Rows.** One row per available runtime (installed and not known to be
+  signed out): its limits (name, % left with a bar, reset time in local time),
+  the runtime's `limitsNote`, and its models (collapsed list; a blocked model
+  shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
+  checked", "Limits not reported", "Limits unknown: <reason>" and "Models
+  unknown: <reason>" show the server's states. AutoByteus has one sub-row per
+  provider with a key (or local provider with models): balance, the reason it
+  cannot run, and its models. No plan, tier or credit details.
+- **States.** Loading, a failed first read (Check again retries), a failed
+  later read (the last answer stays, with a note), and an empty node.
+- Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
+  `availableAgentRuntimesPresentation.ts`). Copy:
+  `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
+
 ## Settings: Agent Packages Auto-Refresh
 
 `components/settings/AgentPackagesManager.vue` shows each package row's

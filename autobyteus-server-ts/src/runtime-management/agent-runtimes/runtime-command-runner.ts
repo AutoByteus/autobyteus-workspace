@@ -20,6 +20,11 @@ export const runRuntimeCommand = (
   args: readonly string[],
   timeoutMs = SHORT_COMMAND_TIMEOUT_MS,
 ): Promise<RuntimeCommandResult> => new Promise((resolve) => {
+  // A read step whose deadline has passed starts nothing (`commandTimeout` gave 0).
+  if (timeoutMs <= 0) {
+    resolve({ exitCode: null, stdout: "", stderr: "", error: new Error("Command not started: the read's time is up.") });
+    return;
+  }
   let stdout = "";
   let stderr = "";
   let settled = false;

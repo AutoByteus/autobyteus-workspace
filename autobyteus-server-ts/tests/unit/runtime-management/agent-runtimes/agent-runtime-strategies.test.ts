@@ -6,7 +6,10 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { createClaudeAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/claude-agent-runtime-strategy.js";
 import { createCodexAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.js";
 import { createGrokAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/grok-agent-runtime-strategy.js";
-import { antigravityManifestUrl } from "../../../../src/runtime-management/agent-runtimes/strategies/antigravity-agent-runtime-strategy.js";
+import {
+  antigravityManifestUrl, createAntigravityAgentRuntimeStrategy,
+} from "../../../../src/runtime-management/agent-runtimes/strategies/antigravity-agent-runtime-strategy.js";
+import { createReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
 import { createAgentRuntimeStrategies } from "../../../../src/runtime-management/agent-runtimes/strategies/create-agent-runtime-strategies.js";
 
 /**
@@ -40,6 +43,10 @@ if (args === '--version') {
   if (mode === 'grok-out') out('You are not authenticated.\\n');
   else if (mode === 'grok-in') out('grok-4.7\\tGrok 4.7\\n');
   else process.exitCode = 2;
+} else if (args === '-p /usage --output-format json') {
+  if (mode === 'usage-hang') setInterval(() => {}, 1000);
+  else if (mode === 'usage-signed-out') { process.stderr.write('Please sign in token=abc\\n'); process.exitCode = 1; }
+  else out(require('node:fs').readFileSync(process.env.FAKE_USAGE_FILE, 'utf8'));
 } else if (args === 'update --check --json') {
   if (mode === 'grok-check-error') out(JSON.stringify({ latestVersion: null, error: 'offline' }));
   else out(JSON.stringify({ currentVersion: '1.0.62', latestVersion: '1.0.63', updateAvailable: true, error: null }));
@@ -247,5 +254,76 @@ else if (arg === 'models') {
       await expect(strategy.readLatestVersion(agy)).resolves.toBe("1.4.3");
       expect(fetchMock).toHaveBeenCalledOnce();
     }
+  });
+});
+
+const USAGE_FIXTURES = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../../../fixtures/usage-limits");
+const usageFixture = async (name: string) =>
+  JSON.parse(await (await import("node:fs/promises")).readFile(path.join(USAGE_FIXTURES, name), "utf8")) as unknown;
+
+describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", () => {
+  it("Codex: account/rateLimits/read on the home-folder app-server, lease released", async () => {
+    const answer = await usageFixture("codex-rate-limits-exhausted.json");
+    const request = vi.fn(async () => answer);
+    const release = vi.fn(async () => undefined);
+    const beginAcquire = vi.fn(() => ({ acquire: async () => ({ request }), release }));
+    const codex = createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never });
+    await expect(codex.readUsageLimits("codex", "/home/user", { deadline: createReadDeadline(5_000) })).resolves.toMatchObject({
+      state: "read", limits: [{ name: "Weekly", remainingPercent: 0, exhausted: true }],
+    });
+    expect(beginAcquire).toHaveBeenCalledExactlyOnceWith("/home/user");
+    expect(request).toHaveBeenCalledExactlyOnceWith("account/rateLimits/read", {});
+    expect(release).toHaveBeenCalledOnce();
+  });
+
+  it("Codex: a request that never answers ends at the deadline and releases the lease (AR-002)", async () => {
+    const release = vi.fn(async () => undefined);
+    const request = vi.fn(() => new Promise(() => undefined));
+    const beginAcquire = vi.fn(() => ({ acquire: async () => ({ request }), release }));
+    const codex = createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never });
+    const startedAt = Date.now();
+    await expect(codex.readUsageLimits("codex", "/home/user", { deadline: createReadDeadline(150) }))
+      .resolves.toEqual({ state: "unknown", reason: "Codex usage limits timed out" });
+    await expect(codex.readSignIn("codex", "/home/user", { deadline: createReadDeadline(150) }))
+      .resolves.toMatchObject({ state: "unknown" });
+    expect(Date.now() - startedAt).toBeLessThan(2_000);
+    expect(release).toHaveBeenCalledTimes(2);
+  });
+
+  it("Claude: the SDK usage answer through the client; a failure is classified, its text dropped", async () => {
+    const answer = await usageFixture("claude-get-usage.json");
+    const readUsage = vi.fn(async () => answer);
+    const deadline = createReadDeadline(5_000);
+    await expect(createClaudeAgentRuntimeStrategy({ claudeSdkClient: { readUsage } }).readUsageLimits("claude", "/w", { deadline }))
+      .resolves.toMatchObject({ state: "read", limits: [{ name: "5-hour", remainingPercent: 13 }, { name: "Weekly" }, { name: "Weekly · Fable" }] });
+    expect(readUsage).toHaveBeenCalledExactlyOnceWith({ deadline });
+    const failing = createClaudeAgentRuntimeStrategy({ claudeSdkClient: { readUsage: async () => { throw new Error("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE sk-ant"); } } });
+    await expect(failing.readUsageLimits("claude", "/w", { deadline }))
+      .resolves.toEqual({ state: "unknown", reason: "Claude usage limits could not be read" });
+  });
+
+  it("Antigravity: agy -p /usage --output-format json; a failed or hanging command ends as unknown", async () => {
+    vi.stubEnv("FAKE_USAGE_FILE", path.join(USAGE_FIXTURES, "antigravity-usage.json"));
+    vi.stubEnv("FAKE_RUNTIME_MODE", "");
+    const agy = createAntigravityAgentRuntimeStrategy();
+    await expect(agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(10_000) })).resolves.toMatchObject({
+      state: "read", limits: [{ name: "Gemini Models · weekly" }, { name: "Gemini Models · 5-hour" },
+        { name: "Claude and GPT models · weekly", exhausted: true }, { name: "Gemini 4 Argon · weekly" }],
+    });
+    vi.stubEnv("FAKE_RUNTIME_MODE", "usage-signed-out");
+    await expect(agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(10_000) }))
+      .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits could not be read" });
+    vi.stubEnv("FAKE_RUNTIME_MODE", "usage-hang");
+    const startedAt = Date.now();
+    await expect(agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(300) }))
+      .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits timed out" });
+    expect(Date.now() - startedAt).toBeLessThan(3_000);
+  });
+
+  it("a sign-in or version command under a passed deadline does not start", async () => {
+    useFake("GROK_BUILD_COMMAND", "grok-in");
+    const expired = { deadline: createReadDeadline(0) };
+    await expect(createGrokAgentRuntimeStrategy().readSignIn(fakeCli, "/w", expired)).resolves.toMatchObject({ state: "unknown" });
+    await expect(createGrokAgentRuntimeStrategy().readVersion(fakeCli, expired)).resolves.toBeNull();
   });
 });

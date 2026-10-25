@@ -8,6 +8,12 @@ It also starts the vendor's own update and login commands. This is the server
 side of Settings -> Agent Runtimes (see
 [Settings](../../../autobyteus-web/docs/settings.md#settings-agent-runtimes)).
 
+It also answers "what can run on this node now": every available agent
+runtime with its offered models and its live usage limits, read with 0 tokens
+(see [Available Agent Runtimes](#available-agent-runtimes)). That is the server
+side of the opt-in tool `list_available_agent_runtimes` and of Settings ->
+Model Routing -> "Agent runtimes now".
+
 Out of scope:
 
 - Installing runtimes. The user installs them; the page links to each vendor's
@@ -129,9 +135,59 @@ status read that times out now takes 10 s and gives the reason "Command timed
 out after 10000ms.". Grok and Antigravity application readiness are still
 `unsupported` (see [Grok Build Runtime](./grok_build_runtime.md#known-limits)).
 
+## Available Agent Runtimes
+
+`available-agent-runtimes-service.ts` — `AvailableAgentRuntimesService.read()`,
+the one boundary for the tool `list_available_agent_runtimes`
+(`src/agent-tools/agent-runtimes/`, AutoByteus local tool and Agent Tools MCP
+adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
+(`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
+same object the tool returns). The composition builds it from the same
+strategies and sign-in reader as the status service and binds it until
+`close()`. It holds no state: every call reads the runtimes again; nothing is
+cached, polled or stored.
+
+**Available** means installed (`strategy.readVersion(...) !== null`, the
+Agent Runtimes page's rule) and not known to be signed out. A runtime whose
+sign-in could not be read is listed with `signIn: "not checked"`. For
+AutoByteus, a provider is listed when its API key is configured, or, for
+Ollama and LM Studio, when it offers models.
+
+**Steps and caps.** All runtimes are read in parallel. Per runtime: install
+(4 s) → sign-in (6 s) → models ‖ limits (8 s each), at most 18 s; AutoByteus:
+provider list (4 s) → each provider's usage (8 s), in parallel. Each cap is a
+`ReadDeadline` (`src/runtime-management/read-deadline.ts`, an end time) that
+every command, probe, handshake and request inside the step shares: each gets
+its usual time-out cut to the time left, and nothing starts once it has
+passed, so the step's own processes stop. Codex requests race the deadline and
+release the app-server lease in `finally`. Callers without a deadline (this
+page, launch paths) keep their usual time-outs. A failed or timed-out step
+gives: install → left out; sign-in → `signIn: "not checked"`; models →
+`"unknown: <reason>"` (an empty model list is never "no models"); limits →
+`"unknown: <reason>"`.
+
+**Limits** (`AgentRuntimeStrategy.readUsageLimits`, parsers in
+`usage-limits/`; plans, tiers, credits, account data and vendor texts are
+dropped):
+
+| Runtime | Source (0 tokens) | Limits | A model is blocked when |
+| --- | --- | --- | --- |
+| Codex | app-server `account/rateLimits/read` (home-folder app-server) | each window: "5-hour", "Weekly" (a model-specific entry adds " · <model>"); remaining = 100 − used % | its window is used up and the account has no credits; with credits, `limitsNote` says Codex runs on paid credits |
+| Claude | Agent SDK `get_usage` control request on a query opened with an input that never yields (`claude/client/claude-sdk-control-query.ts`; model discovery uses the same query) | `rate_limits.limits[]`: "5-hour", "Weekly", "Weekly · <model>"; no plan limits (API key) → `not reported` | a covering limit is at 100 % |
+| Antigravity | `agy -p "/usage" --output-format json` | each enabled bucket: "<group> · weekly" / "<group> · 5-hour" | its group (by the model families the group lists, or the group name; most specific wins) has 0 % left |
+| Grok | ACP extension `_x.ai/billing` after `initialize` on a short process (`runAcpExtensionRequest`) | "Billing period", resets at the period end; remaining only when Grok reports `creditUsagePercent`, else null with a `limitsNote` | its remaining is 0 % |
+
+A limit that maps to no offered model covers the whole runtime. The service
+derives each model's `blocked: {until, by}` (until the latest reset of the
+used-up limits covering it). AutoByteus providers are read by
+`src/llm-management/provider-usage/` (see
+[LLM Management](llm_management.md#provider-usage)).
+
 ## Tests
 
-- Unit: `tests/unit/runtime-management/agent-runtimes/`,
+- Unit: `tests/unit/runtime-management/agent-runtimes/` (including
+  `available-agent-runtimes-service.test.ts` and `usage-limits/`, from the
+  recorded answers in `tests/fixtures/usage-limits/`),
   `tests/unit/api/graphql/agent-runtimes-resolver.test.ts`,
   `tests/unit/application-platform/`.
 - E2E on a real studio server with scripted CLIs

@@ -6,11 +6,9 @@ import { beginClaudeSdkSessionOpening, type ClaudeSdkSessionOpening } from "./cl
 import type { SecretValue } from "autobyteus-ts";
 import type { ModelInfoWithSelectionPresentation } from "../../../llm-management/domain/model-selection-presentation.js";
 import {
-  asObject,
   asString,
   CLAUDE_AGENT_SDK_MODULE_NAME,
   logger,
-  MODEL_DISCOVERY_PROBE_PROMPT,
   type ClaudeSdkPermissionMode,
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
 import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
@@ -19,16 +17,11 @@ import {
   resolveClaudeSdkAuthMode,
 } from "./claude-sdk-auth-environment.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
-import {
-  normalizeModelDescriptors,
-  toModelInfo,
-  type NormalizedModelDescriptor,
-} from "./claude-sdk-model-normalizer.js";
+import { normalizeModelDescriptors, toModelInfo } from "./claude-sdk-model-normalizer.js";
 import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
-import {
-  getClaudeCatalogSettingSources,
-  getClaudeRuntimeSettingSources,
-} from "./claude-sdk-setting-sources.js";
+import { getClaudeRuntimeSettingSources } from "./claude-sdk-setting-sources.js";
+import { withClaudeControlQuery } from "./claude-sdk-control-query.js";
+import type { ReadDeadline } from "../../read-deadline.js";
 import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
 import {
   ClaudeSdkInputChannel,
@@ -161,36 +154,6 @@ const runInClaudeSdkSessionSpawnCriticalSection = async <T>(
   }
 };
 
-const closeQueryControl = async (controlLike: Record<string, unknown> | null): Promise<void> => {
-  if (!controlLike) {
-    return;
-  }
-
-  const interruptFn =
-    typeof controlLike.interrupt === "function"
-      ? (controlLike.interrupt as (...args: unknown[]) => Promise<unknown>)
-      : null;
-  if (interruptFn) {
-    try {
-      await interruptFn.call(controlLike);
-    } catch {
-      // best-effort cleanup
-    }
-  }
-
-  const closeFn =
-    typeof controlLike.close === "function"
-      ? (controlLike.close as (...args: unknown[]) => unknown)
-      : null;
-  if (closeFn) {
-    try {
-      closeFn.call(controlLike);
-    } catch {
-      // best-effort cleanup
-    }
-  }
-};
-
 export class ClaudeSdkClient {
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
 
@@ -202,23 +165,48 @@ export class ClaudeSdkClient {
     this.cachedSdkModule = (module as ClaudeSdkModuleLike | null) ?? null;
   }
 
-  async listModels(): Promise<ModelInfoWithSelectionPresentation[]> {
-    const sdk = await this.loadModuleSafe();
+  /**
+   * The CLI's offered models, read on a control query that sends no message (C-15). `deadline`: the read's end time
+   * (the available-agent-runtimes read); without it, unbounded as before. Any failure gives an empty list.
+   */
+  async listModels(options: Readonly<{ deadline?: ReadDeadline }> = {}): Promise<ModelInfoWithSelectionPresentation[]> {
+    const queryFn = this.resolveFunction(await this.loadModuleSafe(), "query");
+    if (!queryFn) return [];
     let spawnEnvironment: Record<string, string | undefined>;
     try {
       spawnEnvironment = await this.resolveSpawnEnvironment();
     } catch {
       return [];
     }
-    const supportedRows = await this.tryGetSupportedModelsFromQueryControl(
-      sdk,
-      spawnEnvironment,
-    );
+    let supportedRows: ReturnType<typeof normalizeModelDescriptors> = [];
+    try {
+      supportedRows = await withClaudeControlQuery({ queryFn, env: spawnEnvironment, deadline: options.deadline }, async (control) =>
+        typeof control.supportedModels === "function"
+          ? normalizeModelDescriptors(await (control.supportedModels as () => Promise<unknown>).call(control))
+          : []);
+    } catch {
+      return [];
+    }
     const selectionPresentation = deriveClaudeModelSelectionPresentation(supportedRows);
     return supportedRows.map((row) => ({
       ...toModelInfo(row),
       selection_presentation: selectionPresentation.get(row.identifier) ?? null,
     }));
+  }
+
+  /**
+   * The account's usage answer (the SDK's experimental `get_usage` control request), read on a control query that
+   * sends no message, so it spends no tokens. Throws when it cannot be read; the caller keeps only what it needs.
+   */
+  async readUsage(options: Readonly<{ deadline: ReadDeadline }>): Promise<unknown> {
+    const queryFn = this.resolveFunction(await this.loadModuleSafe(), "query");
+    if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
+    const env = await this.resolveSpawnEnvironment();
+    return withClaudeControlQuery({ queryFn, env, deadline: options.deadline }, async (control) => {
+      const usage = control.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET;
+      if (typeof usage !== "function") throw new Error("Claude SDK usage request is unavailable.");
+      return (usage as (opts: { skipBehaviors: boolean }) => Promise<unknown>).call(control, { skipBehaviors: true });
+    });
   }
 
   async getSessionMessages(sessionId: string): Promise<unknown | null> {
@@ -375,57 +363,6 @@ export class ClaudeSdkClient {
       );
     } catch {
       throw new Error(CLAUDE_API_KEY_UNAVAILABLE);
-    }
-  }
-
-  private async tryGetSupportedModelsFromQueryControl(
-    sdk: ClaudeSdkModuleLike | null,
-    env?: Record<string, string | undefined>,
-  ): Promise<NormalizedModelDescriptor[]> {
-    const queryFn = this.resolveFunction(sdk, "query");
-    if (!queryFn) {
-      return [];
-    }
-
-    const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
-    const settingSources = getClaudeCatalogSettingSources();
-
-    let controlLike: Record<string, unknown> | null = null;
-    try {
-      const result = await queryFn({
-        prompt: MODEL_DISCOVERY_PROBE_PROMPT,
-        options: {
-          maxTurns: 0,
-          permissionMode: "plan",
-          cwd: process.cwd(),
-          pathToClaudeCodeExecutable,
-          settingSources,
-          ...(env ? { env } : {}),
-        },
-      });
-
-      controlLike = asObject(result);
-      if (!controlLike) {
-        return [];
-      }
-
-      const supportedModelsFn =
-        typeof controlLike.supportedModels === "function"
-          ? (controlLike.supportedModels as (...args: unknown[]) => Promise<unknown>)
-          : null;
-      if (supportedModelsFn) {
-        const rows = await supportedModelsFn.call(result);
-        const normalized = normalizeModelDescriptors(rows);
-        if (normalized.length > 0) {
-          return normalized;
-        }
-      }
-
-      return [];
-    } catch {
-      return [];
-    } finally {
-      await closeQueryControl(controlLike);
     }
   }
 }

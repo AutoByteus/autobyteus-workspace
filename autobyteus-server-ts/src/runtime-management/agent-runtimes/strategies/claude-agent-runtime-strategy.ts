@@ -3,11 +3,15 @@ import os from "node:os";
 import path from "node:path";
 import { RuntimeKind } from "../../runtime-kind-enum.js";
 import { resolveClaudeCodeExecutablePath } from "../../claude/client/claude-sdk-executable-path.js";
+import { getClaudeSdkClient, type ClaudeSdkClient } from "../../claude/client/claude-sdk-client.js";
+import { commandTimeout } from "../../read-deadline.js";
 import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
-import { runRuntimeCommand, type RuntimeCommandResult } from "../runtime-command-runner.js";
+import { runRuntimeCommand, SHORT_COMMAND_TIMEOUT_MS, type RuntimeCommandResult } from "../runtime-command-runner.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { fetchRuntimeSource } from "../runtime-source-fetch.js";
+import { parseClaudeUsageLimits } from "../usage-limits/claude-usage-limits.js";
+import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
 
 const RELEASES_URL = "https://downloads.claude.ai/claude-code-releases";
 
@@ -46,7 +50,10 @@ const readUpdateChannel = async (): Promise<"latest" | "stable"> => {
   }
 };
 
-export const createClaudeAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
+export const createClaudeAgentRuntimeStrategy = (dependencies: Readonly<{
+  /** The Agent SDK client whose control query reads usage; the process-wide client by default. */
+  claudeSdkClient?: Pick<ClaudeSdkClient, "readUsage">;
+}> = {}): AgentRuntimeStrategy => ({
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   // Anthropic does not allow third-party products to offer claude.ai login without approval (UD-006).
   signInRoute: "commandLine",
@@ -62,8 +69,9 @@ export const createClaudeAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
    * `claude auth status --json`. Signed out prints `{"loggedIn": false, …}` and exits 1, so the JSON is read whatever
    * the exit code. Without JSON, the plain-text "logged in" fallback application readiness has always accepted.
    */
-  async readSignIn(executable): Promise<SignInReading> {
-    const result = await runRuntimeCommand(executable, ["auth", "status", "--json"]);
+  async readSignIn(executable, _cwd, options = {}): Promise<SignInReading> {
+    const result = await runRuntimeCommand(
+      executable, ["auth", "status", "--json"], commandTimeout(options.deadline, SHORT_COMMAND_TIMEOUT_MS));
     const loggedIn = readLoggedIn(result.stdout);
     if (loggedIn === true) return { state: "signedIn" };
     if (loggedIn === false || (loggedIn === "absent" && result.exitCode === 0)) {
@@ -73,5 +81,8 @@ export const createClaudeAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
       ? { state: "signedIn" }
       : { state: "unknown", detail: describeFailure(result) };
   },
+  /** The Agent SDK's `get_usage` control request on a query that sends no message (0 tokens). */
+  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Claude", deadline, async () =>
+    parseClaudeUsageLimits(await (dependencies.claudeSdkClient ?? getClaudeSdkClient()).readUsage({ deadline }))),
   updateArgv: (executable) => [executable, "update"],
 });

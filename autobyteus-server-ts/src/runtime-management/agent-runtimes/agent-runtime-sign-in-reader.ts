@@ -1,3 +1,4 @@
+import type { ReadDeadline } from "../read-deadline.js";
 import type { AgentRuntimeStrategy } from "./agent-runtime-strategy.js";
 import type { AgentRuntimeKind } from "./agent-runtime-types.js";
 
@@ -24,10 +25,13 @@ export class AgentRuntimeSignInReader {
     this.strategies = new Map(strategies.map((strategy) => [strategy.runtimeKind, strategy]));
   }
 
-  /** `cwd`: the folder the runtime reads its project config from (Codex): a workspace, or the home folder. */
-  read(runtimeKind: AgentRuntimeKind, input: Readonly<{ cwd: string }>): Promise<SignInReading> {
+  /**
+   * `cwd`: the folder the runtime reads its project config from (Codex): a workspace, or the home folder.
+   * `deadline`: the end time of the read step (the available-agent-runtimes read); without it, the usual time-outs.
+   */
+  read(runtimeKind: AgentRuntimeKind, input: Readonly<{ cwd: string; deadline?: ReadDeadline }>): Promise<SignInReading> {
     const strategy = this.strategies.get(runtimeKind);
     if (!strategy) throw new Error(`No agent runtime strategy for '${runtimeKind}'.`);
-    return strategy.readSignIn(strategy.resolveExecutable(), input.cwd);
+    return strategy.readSignIn(strategy.resolveExecutable(), input.cwd, { deadline: input.deadline });
   }
 }
