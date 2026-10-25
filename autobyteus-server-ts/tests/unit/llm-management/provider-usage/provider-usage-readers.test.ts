@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { createProviderUsageReaders } from "../../../../src/llm-management/provider-usage/provider-usage-readers.js";
+import { ProviderUsageUnreadableError } from "../../../../src/llm-management/provider-usage/provider-usage-reader.js";
 import type { LlmProviderDescriptor } from "../../../../src/llm-management/llm-providers/domain/models.js";
 
 const KEY = "sk-test-secret-key";
@@ -17,7 +18,8 @@ const readersAnswering = (answers: Record<string, { status: number; body: unknow
     const answer = answers[String(url)];
     if (answer === "throw") throw new Error(`connect failed with key ${KEY}`);
     if (answer === "hang" || !answer) {
-      return new Promise<Response>((_, reject) => init.signal?.addEventListener("abort", () => reject(new Error("aborted"))));
+      // As the real fetch: the request rejects with the signal's reason (a TimeoutError for AbortSignal.timeout).
+      return new Promise<Response>((_, reject) => init.signal?.addEventListener("abort", () => reject(init.signal!.reason)));
     }
     return new Response(JSON.stringify(answer.body), { status: answer.status });
   });
@@ -68,21 +70,24 @@ describe("provider usage readers (AC-007, AC-009)", () => {
     await expect(read(readers, LLMProvider.GROK)).resolves.toEqual({ state: "read", balance: null, blockedReason: null });
   });
 
-  it("failures and time-outs are short classified reasons without the key or the error text", async () => {
+  it("a failure throws (SR-007): an unusable answer with a short classified reason, a time-out with the signal's reason", async () => {
     const { readers } = readersAnswering({
       "https://api.deepseek.com/user/balance": "throw",
       "https://api.moonshot.ai/v1/users/me/balance": "hang",
       "https://api.x.ai/v1/api-key": { status: 401, body: { error: `bad key ${KEY}` } },
+      "https://api.anthropic.com/v1/messages/count_tokens": { status: 500, body: { error: { message: "overloaded" } } },
     });
-    const readings = await Promise.all([
+    const [deepseek, kimi, xai, anthropic] = await Promise.allSettled([
       read(readers, LLMProvider.DEEPSEEK), read(readers, LLMProvider.KIMI, [], 100), read(readers, LLMProvider.GROK),
+      read(readers, LLMProvider.ANTHROPIC, [anthropicModel]),
     ]);
-    expect(readings).toEqual([
-      { state: "unknown", reason: "could not be read" },
-      { state: "unknown", reason: "timed out" },
-      { state: "unknown", reason: "the API key was not accepted" },
-    ]);
-    expect(JSON.stringify(readings)).not.toContain(KEY);
+    // A transport failure passes through; the service drops its text ("… could not be read").
+    expect(deepseek).toMatchObject({ status: "rejected" });
+    expect(kimi).toMatchObject({ status: "rejected", reason: { name: "TimeoutError" } });
+    expect(xai).toMatchObject({ status: "rejected", reason: new ProviderUsageUnreadableError("the API key was not accepted") });
+    expect((xai as PromiseRejectedResult).reason.reason).toBe("the API key was not accepted");
+    expect((anthropic as PromiseRejectedResult).reason.reason).toBe("unexpected answer (500)");
+    await expect(read(readers, LLMProvider.ANTHROPIC, [])).rejects.toMatchObject({ reason: "no model to check with" });
   });
 
   it("has readers only for DeepSeek, Kimi, Anthropic and xAI; other providers are not reported (REQ-005)", () => {

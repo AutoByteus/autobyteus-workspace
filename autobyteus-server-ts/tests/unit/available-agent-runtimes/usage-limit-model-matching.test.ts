@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   familyMatchStrength, resolveLimitCoverage,
-} from "../../../../../src/runtime-management/agent-runtimes/usage-limits/usage-limit-model-matching.js";
-import type { RuntimeUsageLimit } from "../../../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
+} from "../../../src/available-agent-runtimes/usage-limit-model-matching.js";
+import type { RuntimeUsageLimit } from "../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
 
 const AGY_MODELS = [
   { id: "gemini-4-argon-high", name: "Gemini 4 Argon (High)" },

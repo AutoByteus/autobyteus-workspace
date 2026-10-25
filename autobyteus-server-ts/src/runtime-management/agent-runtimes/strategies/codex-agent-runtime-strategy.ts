@@ -8,7 +8,6 @@ import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { GitHubRepositoryClient } from "../../../integrations/github/github-repository-client.js";
 import { parseCodexUsageLimits } from "../usage-limits/codex-usage-limits.js";
-import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
 
 type CodexClientLeases = Pick<CodexAppServerClientManager, "beginAcquire">;
 
@@ -61,9 +60,9 @@ export const createCodexAgentRuntimeStrategy = (dependencies: Readonly<{
     }
   },
   /** Codex's own `account/rateLimits/read` through the app-server (0 tokens). */
-  readUsageLimits: (_executable, cwd, { deadline }) => readUsageLimitsSafely("Codex", async () =>
+  readUsageLimits: async (_executable, cwd, { deadline }) =>
     parseCodexUsageLimits(await withCodexClient(dependencies.codexClientManager, cwd, deadline, (client) =>
-      client.request<unknown>("account/rateLimits/read", {})))),
+      client.request<unknown>("account/rateLimits/read", {}))),
   /**
    * A lease taken without `acquire()`: the app-server generation for `cwd` stays open while the steps' own leases come
    * and go, and closes when the hold is released. Null when that generation is closing now (`beginAcquire` refuses).

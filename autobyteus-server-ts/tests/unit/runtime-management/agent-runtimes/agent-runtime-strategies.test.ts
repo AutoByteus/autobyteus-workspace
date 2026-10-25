@@ -9,7 +9,10 @@ import { createGrokAgentRuntimeStrategy } from "../../../../src/runtime-manageme
 import {
   antigravityManifestUrl, createAntigravityAgentRuntimeStrategy,
 } from "../../../../src/runtime-management/agent-runtimes/strategies/antigravity-agent-runtime-strategy.js";
-import { createReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
+import { createReadDeadline, DeadlineExceededError, isDeadlineExceeded } from "../../../../src/runtime-management/read-deadline.js";
+
+/** A failure that is the step's own time-out (the service words it "timed out"), or any other failure. */
+const timedOutFailure = (error: unknown) => isDeadlineExceeded(error);
 import { createAgentRuntimeStrategies } from "../../../../src/runtime-management/agent-runtimes/strategies/create-agent-runtime-strategies.js";
 
 /**
@@ -283,14 +286,14 @@ describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", (
     const codex = createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never });
     const startedAt = Date.now();
     await expect(codex.readUsageLimits("codex", "/home/user", { deadline: createReadDeadline(150) }))
-      .resolves.toEqual({ state: "unknown", reason: "Codex usage limits timed out" });
+      .rejects.toBeInstanceOf(DeadlineExceededError);
     await expect(codex.readSignIn("codex", "/home/user", { deadline: createReadDeadline(150) }))
       .resolves.toMatchObject({ state: "unknown" });
     expect(Date.now() - startedAt).toBeLessThan(2_000);
     expect(release).toHaveBeenCalledTimes(2);
   });
 
-  it("Claude: the SDK usage answer through the client; a failure is classified, its text dropped", async () => {
+  it("Claude: the SDK usage answer through the client; a failure reaches the caller, which words it (SR-007)", async () => {
     const answer = await usageFixture("claude-get-usage.json");
     const readUsage = vi.fn(async () => answer);
     const deadline = createReadDeadline(5_000);
@@ -298,11 +301,10 @@ describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", (
       .resolves.toMatchObject({ state: "read", limits: [{ name: "5-hour", remainingPercent: 13 }, { name: "Weekly" }, { name: "Weekly · Fable" }] });
     expect(readUsage).toHaveBeenCalledExactlyOnceWith({ deadline });
     const failing = createClaudeAgentRuntimeStrategy({ claudeSdkClient: { readUsage: async () => { throw new Error("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE sk-ant"); } } });
-    await expect(failing.readUsageLimits("claude", "/w", { deadline }))
-      .resolves.toEqual({ state: "unknown", reason: "Claude usage limits could not be read" });
+    await expect(failing.readUsageLimits("claude", "/w", { deadline })).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
   });
 
-  it("Antigravity: agy -p /usage --output-format json; a failed or hanging command ends as unknown", async () => {
+  it("Antigravity: agy -p /usage --output-format json; a failed command throws, a hanging one throws the step's time-out", async () => {
     vi.stubEnv("FAKE_USAGE_FILE", path.join(USAGE_FIXTURES, "antigravity-usage.json"));
     vi.stubEnv("FAKE_RUNTIME_MODE", "");
     const agy = createAntigravityAgentRuntimeStrategy();
@@ -311,12 +313,13 @@ describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", (
         { name: "Claude and GPT models · weekly", exhausted: true }, { name: "Gemini 4 Argon · weekly" }],
     });
     vi.stubEnv("FAKE_RUNTIME_MODE", "usage-signed-out");
-    await expect(agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(10_000) }))
-      .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits could not be read" });
+    const failed = await agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(10_000) }).catch((error: unknown) => error);
+    expect(failed).toBeInstanceOf(Error);
+    expect(timedOutFailure(failed)).toBe(false);
     vi.stubEnv("FAKE_RUNTIME_MODE", "usage-hang");
     const startedAt = Date.now();
     await expect(agy.readUsageLimits(fakeCli, "/w", { deadline: createReadDeadline(300) }))
-      .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits timed out" });
+      .rejects.toBeInstanceOf(DeadlineExceededError);
     expect(Date.now() - startedAt).toBeLessThan(3_000);
   });
 
@@ -327,8 +330,9 @@ describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", (
     // Timers run on the monotonic clock; Date.now() can lag the deadline by a millisecond when the kill fires (API-03b).
     const clock = vi.spyOn(Date, "now").mockImplementation(() => Math.min(realNow(), deadline.endsAt - 1));
     try {
+      // The error itself says "the step's deadline", whatever the clock reads afterwards.
       await expect(createAntigravityAgentRuntimeStrategy().readUsageLimits(fakeCli, "/w", { deadline }))
-        .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits timed out" });
+        .rejects.toBeInstanceOf(DeadlineExceededError);
     } finally {
       clock.mockRestore();
     }

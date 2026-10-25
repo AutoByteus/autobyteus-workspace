@@ -11,7 +11,6 @@ import { runRuntimeCommand, SHORT_COMMAND_TIMEOUT_MS, type RuntimeCommandResult 
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { fetchRuntimeSource } from "../runtime-source-fetch.js";
 import { parseClaudeUsageLimits } from "../usage-limits/claude-usage-limits.js";
-import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
 
 const RELEASES_URL = "https://downloads.claude.ai/claude-code-releases";
 
@@ -82,7 +81,7 @@ export const createClaudeAgentRuntimeStrategy = (dependencies: Readonly<{
       : { state: "unknown", detail: describeFailure(result) };
   },
   /** The Agent SDK's `get_usage` control request on a query that sends no message (0 tokens). */
-  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Claude", async () =>
-    parseClaudeUsageLimits(await (dependencies.claudeSdkClient ?? getClaudeSdkClient()).readUsage({ deadline }))),
+  readUsageLimits: async (_executable, _cwd, { deadline }) =>
+    parseClaudeUsageLimits(await (dependencies.claudeSdkClient ?? getClaudeSdkClient()).readUsage({ deadline })),
   updateArgv: (executable) => [executable, "update"],
 });

@@ -396,7 +396,8 @@ try {
     assert(by[AGY].limitsUnknown === 'Limits unknown: Antigravity usage limits could not be read', `agy ${by[AGY].limitsUnknown}`);
     assert(by[GROK].modelsUnknown === 'Models unknown: Grok model list could not be read', `grok ${by[GROK].modelsUnknown}`);
     const deepseek = by.autobyteus.providers.find(p => p.provider === 'DeepSeek');
-    assert(deepseek.limitsUnknown === 'Limits unknown: unexpected answer (500)', `deepseek ${deepseek.limitsUnknown}`);
+    // SR-007: the service words every failure; a provider's unusable answer keeps its classified reason.
+    assert(deepseek.limitsUnknown === 'Limits unknown: DeepSeek usage could not be read: unexpected answer (500)', `deepseek ${deepseek.limitsUnknown}`);
     await shot('MRP-02b-failure-states-1440');
   });
 

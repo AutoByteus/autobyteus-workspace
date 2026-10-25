@@ -9,7 +9,7 @@ import type { AgentRuntimeKind } from "../runtime-management/agent-runtimes/agen
 import { createAgentRuntimeStrategies } from "../runtime-management/agent-runtimes/strategies/create-agent-runtime-strategies.js";
 import {
   AvailableAgentRuntimesService, configureAvailableAgentRuntimesService,
-} from "../runtime-management/agent-runtimes/available-agent-runtimes-service.js";
+} from "../available-agent-runtimes/available-agent-runtimes-service.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
 import { createProviderUsageReaders } from "../llm-management/provider-usage/provider-usage-readers.js";

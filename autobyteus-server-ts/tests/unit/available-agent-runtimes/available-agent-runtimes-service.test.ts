@@ -6,23 +6,26 @@ import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import {
   AVAILABLE_AGENT_RUNTIMES_STEP_CAPS, AvailableAgentRuntimesService, type AvailableAgentRuntimesStepCaps,
-} from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-service.js";
-import { AgentRuntimeSignInReader, type SignInReading } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
-import type { AgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-strategy.js";
-import type { AgentRuntimeKind } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-types.js";
-import type { ExternalAgentRuntimeEntry, AutoByteusEntry } from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-report.js";
-import { parseAntigravityUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/antigravity-usage-limits.js";
-import { parseClaudeUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/claude-usage-limits.js";
-import { parseCodexUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/codex-usage-limits.js";
-import { parseGrokUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/grok-usage-limits.js";
-import type { UsageLimitsReading } from "../../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
-import { DeadlineExceededError, type ReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
-import type { ProviderCredentialSetting } from "../../../../src/llm-management/llm-providers/domain/models.js";
-import type { LocalProviderModelCatalogSnapshot } from "../../../../src/llm-management/services/model-catalog-service.js";
-import type { ProviderUsageReader, ProviderUsageReading } from "../../../../src/llm-management/provider-usage/provider-usage-reader.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+} from "../../../src/available-agent-runtimes/available-agent-runtimes-service.js";
+import { AgentRuntimeSignInReader, type SignInReading } from "../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import type { AgentRuntimeStrategy } from "../../../src/runtime-management/agent-runtimes/agent-runtime-strategy.js";
+import type { AgentRuntimeKind } from "../../../src/runtime-management/agent-runtimes/agent-runtime-types.js";
+import type { ExternalAgentRuntimeEntry, AutoByteusEntry } from "../../../src/available-agent-runtimes/available-agent-runtimes-report.js";
+import { parseAntigravityUsageLimits } from "../../../src/runtime-management/agent-runtimes/usage-limits/antigravity-usage-limits.js";
+import { parseClaudeUsageLimits } from "../../../src/runtime-management/agent-runtimes/usage-limits/claude-usage-limits.js";
+import { parseCodexUsageLimits } from "../../../src/runtime-management/agent-runtimes/usage-limits/codex-usage-limits.js";
+import { parseGrokUsageLimits } from "../../../src/runtime-management/agent-runtimes/usage-limits/grok-usage-limits.js";
+import type { RuntimeUsageLimit, UsageLimitsReading } from "../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
+import { DeadlineExceededError, type ReadDeadline } from "../../../src/runtime-management/read-deadline.js";
+import type { ProviderCredentialSetting } from "../../../src/llm-management/llm-providers/domain/models.js";
+import type { LocalProviderModelCatalogSnapshot } from "../../../src/llm-management/services/model-catalog-service.js";
+import {
+  ProviderUsageUnreadableError, type ProviderUsageReader, type ProviderUsageReading,
+} from "../../../src/llm-management/provider-usage/provider-usage-reader.js";
+import { UsageLimitsUnreadableError } from "../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../fixtures/usage-limits");
+const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/usage-limits");
 const fixture = (name: string) => fs.readFileSync(path.join(FIXTURES, name), "utf8");
 
 const model = (id: string, name: string, providerId = "X", context: number | null = null): ModelInfo => ({
@@ -219,6 +222,21 @@ describe("AvailableAgentRuntimesService", () => {
     expect(grok.limitsNote).toBe("Grok does not report how much of the period is used.");
   });
 
+  it("the most specific family wins over all of a runtime's limits, before exhausted ones block (SR-007, C-02)", async () => {
+    const limit = (name: string, families: string[], exhausted: boolean): RuntimeUsageLimit =>
+      ({ name, remainingPercent: exhausted ? 0 : 40, resetsAt: "2026-10-26T10:22:39.000Z", exhausted, appliesTo: { kind: "modelFamilies", families } });
+    const agy = external((await service({ strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI, {
+      readUsageLimits: async () => ({ state: "read", limits: [
+        limit("Gemini · weekly", ["Gemini"], true),
+        limit("Gemini 4 Argon · weekly", ["Gemini 4 Argon"], false),
+      ] }),
+    })] }).read()).agentRuntimes as unknown[], "antigravity_cli")!;
+    const blocked = Object.fromEntries((agy.models as Array<{ id: string; blocked?: unknown }>).map((entry) => [entry.id, Boolean(entry.blocked)]));
+    // Argon belongs to its own group, which has quota left; Flash belongs only to the used-up "Gemini" group.
+    expect(blocked["gemini-4-argon-high"]).toBe(false);
+    expect(blocked["gemini-3.8-flash-high"]).toBe(true);
+  });
+
   it("a scoped Claude limit used up blocks only its model", async () => {
     const answer = JSON.parse(fixture("claude-get-usage.json"));
     answer.rate_limits.limits[2].percent = 100;
@@ -275,23 +293,36 @@ describe("AvailableAgentRuntimesService", () => {
       expect(external(empty.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: no models could be read");
     });
 
-    it("limits unknown or not reported → their texts; models stay unblocked", async () => {
-      const unknown = external((await failing({ readUsageLimits: async () => ({ state: "unknown", reason: "Antigravity usage limits timed out" }) })
+    it("limits that fail or are not reported → the service's one wording; models stay unblocked (SR-007)", async () => {
+      const limitsFailing = async (error: unknown) => external((await failing({ readUsageLimits: async () => { throw error; } })
         .read()).agentRuntimes as unknown[], "antigravity_cli")!;
-      expect(unknown.limits).toBe("unknown: Antigravity usage limits timed out");
-      expect((unknown.models as Array<{ blocked?: unknown }>).every((entry) => !entry.blocked)).toBe(true);
+      const timedOut = await limitsFailing(new Error("AGY_MODEL_DISCOVERY_TIMEOUT", { cause: new DeadlineExceededError() }));
+      expect(timedOut.limits).toBe("unknown: Antigravity usage limits timed out");
+      expect((timedOut.models as Array<{ blocked?: unknown }>).every((entry) => !entry.blocked)).toBe(true);
+      expect((await limitsFailing(new UsageLimitsUnreadableError("the answer was not in the expected form"))).limits)
+        .toBe("unknown: Antigravity usage limits could not be read: the answer was not in the expected form");
+      // Any other failure's own text (vendor output, paths, keys) is never shown.
+      expect((await limitsFailing(new Error("agy: token=abc /private/path"))).limits).toBe("unknown: Antigravity usage limits could not be read");
+      // An ordinary per-command time-out (not the step's deadline) is "could not be read" (SR-007 decision 3).
+      expect((await limitsFailing(new Error("Command timed out after 3000ms."))).limits).toBe("unknown: Antigravity usage limits could not be read");
       const notReported = external((await failing({ readUsageLimits: async () => ({ state: "not_reported" }) })
         .read()).agentRuntimes as unknown[], "antigravity_cli")!;
       expect(notReported.limits).toBe("not reported");
     });
 
-    it("a provider reader that fails → limits unknown for that provider only", async () => {
-      const providers = autobyteus((await service({ providerReader: async (provider) =>
-        provider.id === LLMProvider.KIMI ? { state: "unknown", reason: "timed out" } : PROVIDER_READINGS[provider.id]! })
-        .read()).agentRuntimes as unknown[]).providers;
-      expect(providers.find((provider) => provider.provider === "Kimi")).toEqual({
-        provider: "Kimi", limits: "unknown: timed out", models: [{ id: "kimi-k3", name: "Kimi K3" }],
+    it("a provider reader that fails → limits unknown for that provider only, in the service's wording", async () => {
+      const providersWith = async (failure: unknown) => autobyteus((await service({ providerReader: async (provider) => {
+        if (provider.id === LLMProvider.KIMI) throw failure;
+        return PROVIDER_READINGS[provider.id]!;
+      } }).read()).agentRuntimes as unknown[]).providers;
+      const timeout = Object.assign(new Error("The operation was aborted due to timeout"), { name: "TimeoutError" });
+      expect((await providersWith(timeout)).find((provider) => provider.provider === "Kimi")).toEqual({
+        provider: "Kimi", limits: "unknown: Kimi usage timed out", models: [{ id: "kimi-k3", name: "Kimi K3" }],
       });
+      expect((await providersWith(new ProviderUsageUnreadableError("unexpected answer (500)"))).find((provider) => provider.provider === "Kimi")!.limits)
+        .toBe("unknown: Kimi usage could not be read: unexpected answer (500)");
+      const providers = await providersWith(new Error("connect ECONNREFUSED sk-secret-key"));
+      expect(providers.find((provider) => provider.provider === "Kimi")!.limits).toBe("unknown: Kimi usage could not be read");
       expect(providers.find((provider) => provider.provider === "DeepSeek")!.balance).toBe("0.14 USD");
     });
   });
@@ -316,7 +347,7 @@ describe("AvailableAgentRuntimesService", () => {
       },
       providerReader: async (provider, _models, { signal }) => {
         if (provider.id !== LLMProvider.DEEPSEEK) return PROVIDER_READINGS[provider.id]!;
-        return new Promise((resolve) => signal.addEventListener("abort", () => resolve({ state: "unknown", reason: "timed out" })));
+        return new Promise((_, reject) => signal.addEventListener("abort", () => reject(signal.reason)));
       },
     }).read();
     const elapsed = Date.now() - startedAt;
@@ -333,7 +364,7 @@ describe("AvailableAgentRuntimesService", () => {
     });
     expect(external(report.agentRuntimes as unknown[], "grok_build")!.models).toHaveLength(1);
     expect(autobyteus(report.agentRuntimes as unknown[]).providers.find((p) => p.provider === "DeepSeek")!.limits)
-      .toBe("unknown: timed out");
+      .toBe("unknown: DeepSeek usage timed out");
   });
 
   describe("discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007)", () => {
@@ -375,12 +406,13 @@ describe("AvailableAgentRuntimesService", () => {
         stepCaps: { ...AVAILABLE_AGENT_RUNTIMES_STEP_CAPS, providerModelsMs: 150 },
         reload: async (id) => id === "custom-endpoint" ? answer() : snapshot([]),
       })).find((provider) => provider.provider === "My Endpoint")!.models;
-      expect(await endpoint(async () => snapshot([], "ERROR", "MODEL_DISCOVERY_UNAVAILABLE"))).toBe("unknown: MODEL_DISCOVERY_UNAVAILABLE");
+      expect(await endpoint(async () => snapshot([], "ERROR", "MODEL_DISCOVERY_UNAVAILABLE")))
+        .toBe("unknown: My Endpoint model list could not be read: MODEL_DISCOVERY_UNAVAILABLE");
       expect(await endpoint(async () => snapshot(DISCOVERED_MODELS["custom-endpoint"]!, "STALE_ERROR", "CUSTOM_PROVIDER_PROBE_FAILED")))
-        .toBe("unknown: CUSTOM_PROVIDER_PROBE_FAILED");
-      expect(await endpoint(() => neverSettles())).toBe("unknown: timed out");
-      expect(await endpoint(async () => { throw new Error("CUSTOM_PROVIDER_NOT_FOUND"); })).toBe("unknown: could not be read");
-      expect(await endpoint(async () => snapshot([]))).toBe("unknown: no models could be read");
+        .toBe("unknown: My Endpoint model list could not be read: CUSTOM_PROVIDER_PROBE_FAILED");
+      expect(await endpoint(() => neverSettles())).toBe("unknown: My Endpoint model list timed out");
+      expect(await endpoint(async () => { throw new Error("CUSTOM_PROVIDER_NOT_FOUND"); })).toBe("unknown: My Endpoint model list could not be read");
+      expect(await endpoint(async () => snapshot([]))).toBe("unknown: My Endpoint model list could not be read: the endpoint listed no models");
     });
 
     it("keeps static keyed providers on the catalog, without a reload", async () => {

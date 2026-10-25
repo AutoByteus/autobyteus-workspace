@@ -2,8 +2,8 @@ import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import {
   findAvailableAgentRuntimesService,
   type AvailableAgentRuntimesService,
-} from "../../runtime-management/agent-runtimes/available-agent-runtimes-service.js";
-import type { AvailableAgentRuntimesReport } from "../../runtime-management/agent-runtimes/available-agent-runtimes-report.js";
+} from "../../available-agent-runtimes/available-agent-runtimes-service.js";
+import type { AvailableAgentRuntimesReport } from "../../available-agent-runtimes/available-agent-runtimes-report.js";
 
 export const LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME = "list_available_agent_runtimes";
 

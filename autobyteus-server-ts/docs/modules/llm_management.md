@@ -303,8 +303,12 @@ provider, by provider ID (`provider-usage-readers.ts`):
 | xAI (Grok) | `GET /v1/api-key` | key blocked / disabled / team blocked → blocked |
 | Others, custom providers | — | "not reported" |
 
-A failure or time-out is a short reason (`timed out`, `could not be read`,
-`the API key was not accepted`); provider texts are not kept.
+A reader returns its reading or throws: an unusable answer throws
+`ProviderUsageUnreadableError` with a short reason (`the API key was not
+accepted`, `unexpected answer (<status>)`, `no model to check with`); a time-out
+is the request's abort. The available-agent-runtimes service words it
+("<Provider> usage timed out" / "… could not be read: <reason>" / "… could not
+be read"); provider texts are not kept.
 
 ### Claude Agent SDK Authentication
 

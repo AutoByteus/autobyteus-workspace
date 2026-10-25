@@ -3,21 +3,21 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import { CodexAppServerClientManager } from "../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import type { CodexAppServerClient } from "../../../../src/runtime-management/codex/client/codex-app-server-client.js";
-import { AgentRuntimeSignInReader } from "../../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
-import { AvailableAgentRuntimesService } from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-service.js";
-import type { ExternalAgentRuntimeEntry } from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-report.js";
-import { createCodexAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.js";
-import { CodexModelCatalog } from "../../../../src/llm-management/services/codex-model-catalog.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+import type { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
+import { AgentRuntimeSignInReader } from "../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import { AvailableAgentRuntimesService } from "../../../src/available-agent-runtimes/available-agent-runtimes-service.js";
+import type { ExternalAgentRuntimeEntry } from "../../../src/available-agent-runtimes/available-agent-runtimes-report.js";
+import { createCodexAgentRuntimeStrategy } from "../../../src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.js";
+import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 /**
  * SR-006 CR-004: one Codex client hold per read and single-flight reads, against the real
  * `CodexAppServerClientManager` (its refusal while a generation closes, `codex-app-server-client-manager.ts:30`) with a
  * scripted app-server client in place of the process. AC-013.
  */
-const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../fixtures/usage-limits");
+const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/usage-limits");
 const RATE_LIMITS = JSON.parse(fs.readFileSync(path.join(FIXTURES, "codex-rate-limits-exhausted.json"), "utf8")) as unknown;
 
 /** A scripted app-server: answers after `delayMs`, takes `closeMs` to close, counts starts and closes. */

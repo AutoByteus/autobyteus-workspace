@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createGrokAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/grok-agent-runtime-strategy.js";
 import { runAcpExtensionRequest } from "../../../../src/runtime-management/acp/acp-discovery-handshake.js";
 import { grokBuildLaunchProfile } from "../../../../src/runtime-management/grok/grok-build-launch-profile.js";
-import { createReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
+import { createReadDeadline, isDeadlineExceeded } from "../../../../src/runtime-management/read-deadline.js";
 import { FAKE_GROK_CLI, readFixture, writeCustomFixture, type FixtureRow } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
 
 /** Grok's `_x.ai/billing` over a short ACP process, against the fake ACP agent (no real Grok, no account). */
@@ -61,7 +61,8 @@ describe("Grok usage limits over ACP", () => {
     await expect(runAcpExtensionRequest(grokBuildLaunchProfile, "_x.ai/billing", { deadline: createReadDeadline(1_500) }))
       .rejects.toMatchObject({ kind: "timeout" });
     expect(Date.now() - started).toBeLessThan(4_000);
-    await expect(createGrokAgentRuntimeStrategy().readUsageLimits("grok", "/w", { deadline: createReadDeadline(1_000) }))
-      .resolves.toEqual({ state: "unknown", reason: "Grok usage limits timed out" });
+    const error = await createGrokAgentRuntimeStrategy().readUsageLimits("grok", "/w", { deadline: createReadDeadline(1_000) })
+      .catch((value: unknown) => value);
+    expect(isDeadlineExceeded(error)).toBe(true);
   }, 20_000);
 });

@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unexpectedUsageAnswer,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -22,10 +22,10 @@ export const parseAntigravityUsageLimits = (stdout: string): UsageLimitsReading 
   try {
     answer = JSON.parse(stdout);
   } catch {
-    return unknownUsageLimits(UNEXPECTED_ANSWER);
+    throw unexpectedUsageAnswer();
   }
   const groups = asRecord(asRecord(asRecord(answer)?.command)?.data)?.groups;
-  if (!Array.isArray(groups)) return unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!Array.isArray(groups)) throw unexpectedUsageAnswer();
   const limits: RuntimeUsageLimit[] = [];
   for (const rawGroup of groups) {
     const group = asRecord(rawGroup);
@@ -46,5 +46,6 @@ export const parseAntigravityUsageLimits = (stdout: string): UsageLimitsReading 
       });
     }
   }
-  return limits.length ? Object.freeze({ state: "read", limits }) : unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!limits.length) throw unexpectedUsageAnswer();
+  return Object.freeze({ state: "read", limits });
 };

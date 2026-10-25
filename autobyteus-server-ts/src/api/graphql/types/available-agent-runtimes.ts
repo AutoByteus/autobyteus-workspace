@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { Query, Resolver } from "type-graphql";
-import { findAvailableAgentRuntimesService } from "../../../runtime-management/agent-runtimes/available-agent-runtimes-service.js";
-import type { AvailableAgentRuntimesReport } from "../../../runtime-management/agent-runtimes/available-agent-runtimes-report.js";
+import { findAvailableAgentRuntimesService } from "../../../available-agent-runtimes/available-agent-runtimes-service.js";
+import type { AvailableAgentRuntimesReport } from "../../../available-agent-runtimes/available-agent-runtimes-report.js";
 
 /**
  * Settings → Model Routing → "Agent runtimes now": this node's report, the same object `list_available_agent_runtimes`

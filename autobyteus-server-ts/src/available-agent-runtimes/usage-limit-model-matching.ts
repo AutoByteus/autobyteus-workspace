@@ -1,4 +1,4 @@
-import type { RuntimeUsageLimit } from "./usage-limits-reading.js";
+import type { RuntimeUsageLimit } from "../runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
 
 export type LimitCoveredModel = Readonly<{ id: string; name: string }>;
 

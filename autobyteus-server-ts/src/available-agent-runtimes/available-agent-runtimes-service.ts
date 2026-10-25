@@ -1,24 +1,26 @@
 import os from "node:os";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import type {
-  LocalProviderModelCatalogSnapshot, ModelCatalogService,
-} from "../../llm-management/services/model-catalog-service.js";
-import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
-import type { ProviderCredentialSetting } from "../../llm-management/llm-providers/domain/models.js";
-import type { ProviderUsageReading } from "../../llm-management/provider-usage/provider-usage-reader.js";
-import type { ProviderUsageReaders } from "../../llm-management/provider-usage/provider-usage-readers.js";
-import { createReadDeadline, isDeadlineExceeded, raceDeadline, timeLeft, type ReadDeadline } from "../read-deadline.js";
-import { RuntimeKind } from "../runtime-kind-enum.js";
-import type { AgentRuntimeSignInReader } from "./agent-runtime-sign-in-reader.js";
-import type { AgentRuntimeStrategy, RuntimeClientHold } from "./agent-runtime-strategy.js";
-import type { AgentRuntimeKind } from "./agent-runtime-types.js";
+import type { ModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import type { LlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
+import type { ProviderCredentialSetting } from "../llm-management/llm-providers/domain/models.js";
+import { ProviderUsageUnreadableError, type ProviderUsageReading } from "../llm-management/provider-usage/provider-usage-reader.js";
+import type { ProviderUsageReaders } from "../llm-management/provider-usage/provider-usage-readers.js";
+import {
+  createReadDeadline, DeadlineExceededError, isDeadlineExceeded, raceDeadline, timeLeft, type ReadDeadline,
+} from "../runtime-management/read-deadline.js";
+import { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
+import type { AgentRuntimeSignInReader } from "../runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import type { AgentRuntimeStrategy, RuntimeClientHold } from "../runtime-management/agent-runtimes/agent-runtime-strategy.js";
+import type { AgentRuntimeKind } from "../runtime-management/agent-runtimes/agent-runtime-types.js";
 import type {
   AutoByteusEntry, AutoByteusProviderEntry, AvailableAgentRuntimeEntry, AvailableAgentRuntimesReport, AvailableModel,
   ExternalAgentRuntimeEntry, UnknownText, UsageLimitView,
 } from "./available-agent-runtimes-report.js";
-import { resolveLimitCoverage } from "./usage-limits/usage-limit-model-matching.js";
-import type { RuntimeUsageLimit, UsageLimitsReading } from "./usage-limits/usage-limits-reading.js";
+import { resolveLimitCoverage } from "./usage-limit-model-matching.js";
+import {
+  UsageLimitsUnreadableError, type RuntimeUsageLimit, type UsageLimitsReading,
+} from "../runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
 
 /**
  * Each runtime's steps run within fixed caps (REQ-010): install 4 s → sign-in 6 s → models ‖ limits 8 s each, 18 s
@@ -56,8 +58,8 @@ const LOCAL_PROVIDERS: ReadonlySet<string> = new Set([LLMProvider.OLLAMA, LLMPro
 /** A discovered source whose last discovery failed (`STALE_ERROR` keeps the previous rows): it did not answer now. */
 const FAILED_SOURCE_STATES: ReadonlySet<string> = new Set(["ERROR", "STALE_ERROR"]);
 
-/** One provider's models for this read: read now, or why not. */
-type ProviderModels = Readonly<{ state: "read"; models: readonly ModelInfo[] }> | Readonly<{ state: "unknown"; reason: string }>;
+/** One provider's models for this read: read now, or the REQ-007 text saying why not. */
+type ProviderModels = Readonly<{ state: "read"; models: readonly ModelInfo[] }> | Readonly<{ state: "unknown"; text: UnknownText }>;
 
 export type AvailableAgentRuntimesServiceDependencies = Readonly<{
   strategies: readonly AgentRuntimeStrategy[];
@@ -70,20 +72,20 @@ export type AvailableAgentRuntimesServiceDependencies = Readonly<{
   stepCaps?: AvailableAgentRuntimesStepCaps;
 }>;
 
-type StepOutcome<T> = Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; timedOut: boolean }>;
+type StepOutcome<T> = Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; error: unknown }>;
 
 /** Runs one step within its cap: the step gets the deadline (so its processes stop); a backstop ends it regardless. */
 const runStep = async <T>(capMs: number, work: (deadline: ReadDeadline) => Promise<T>): Promise<StepOutcome<T>> => {
   const deadline = createReadDeadline(capMs);
   let timer: ReturnType<typeof setTimeout> | undefined;
   const backstop = new Promise<StepOutcome<T>>((resolve) => {
-    timer = setTimeout(() => resolve({ ok: false, timedOut: true }), capMs + BACKSTOP_MS);
+    timer = setTimeout(() => resolve({ ok: false, error: new DeadlineExceededError() }), capMs + BACKSTOP_MS);
   });
   try {
     return await Promise.race([
       work(deadline).then(
         (value): StepOutcome<T> => ({ ok: true, value }),
-        (error: unknown): StepOutcome<T> => ({ ok: false, timedOut: isDeadlineExceeded(error) }),
+        (error: unknown): StepOutcome<T> => ({ ok: false, error }),
       ),
       backstop,
     ]);
@@ -92,17 +94,37 @@ const runStep = async <T>(capMs: number, work: (deadline: ReadDeadline) => Promi
   }
 };
 
+/** A provider reader's abort signal ended the request (`AbortSignal.timeout`). */
+const isAbortTimeout = (error: unknown): boolean => (error as { name?: unknown } | null)?.name === "TimeoutError";
+
+/**
+ * The one wording of a failed step (REQ-007, SR-007): "<subject> timed out" when the step's deadline (or a reader's
+ * time-out signal) ended it; "<subject> could not be read: <reason>" for an answer a reader classified as unusable;
+ * otherwise "<subject> could not be read". The error's own text (vendor output, a key, a path) is never kept.
+ */
+const failureText = (subject: string, error: unknown): UnknownText => {
+  if (isDeadlineExceeded(error) || isAbortTimeout(error)) return `unknown: ${subject} timed out`;
+  if (error instanceof UsageLimitsUnreadableError || error instanceof ProviderUsageUnreadableError) {
+    return `unknown: ${subject} could not be read: ${error.reason}`;
+  }
+  return `unknown: ${subject} could not be read`;
+};
+
 const toAvailableModel = (model: ModelInfo): AvailableModel => ({
   id: model.model_identifier,
   name: model.display_name,
   ...(typeof model.max_context_tokens === "number" && model.max_context_tokens > 0 ? { contextTokens: model.max_context_tokens } : {}),
 });
 
-/** A model is blocked by the exhausted limits covering it: until the latest reset (unknown → null), by that limit. */
+/**
+ * A model is blocked by the exhausted limits covering it: until the latest reset (unknown → null), by that limit.
+ * Coverage is resolved over all of the runtime's limits first (the most specific family wins among every limit, SR-007),
+ * and only then do the exhausted ones block.
+ */
 const blockByLimits = (models: readonly AvailableModel[], limits: readonly RuntimeUsageLimit[]): AvailableModel[] => {
   const exhausted = limits.filter((limit) => limit.exhausted);
   if (!exhausted.length) return [...models];
-  const coverage = resolveLimitCoverage(exhausted, models);
+  const coverage = resolveLimitCoverage(limits, models);
   return models.map((model) => {
     const blocking = exhausted.filter((limit) => coverage.get(limit)?.has(model.id));
     if (!blocking.length) return model;
@@ -206,16 +228,14 @@ export class AvailableAgentRuntimesService {
         this.dependencies.modelCatalog.runtimeModelSelectionCatalog(kind, this.homeDirectory, { deadline })),
       runStep(this.caps.limitsMs, (deadline) => strategy.readUsageLimits(executable, this.homeDirectory, { deadline })),
     ]);
-    const limitsReading: UsageLimitsReading = limits.ok
-      ? limits.value
-      : { state: "unknown", reason: `${name} usage limits ${limits.timedOut ? "timed out" : "could not be read"}` };
+    const limitsReading: UsageLimitsReading | null = limits.ok ? limits.value : null;
     return {
       runtime: kind,
       name,
       ...(signInUnknown ? { signIn: "not checked" as const } : {}),
-      limits: limitsReading.state === "read" ? toLimitViews(limitsReading.limits)
-        : limitsReading.state === "not_reported" ? "not reported" : `unknown: ${limitsReading.reason}`,
-      ...(limitsReading.state === "read" && limitsReading.note ? { limitsNote: limitsReading.note } : {}),
+      limits: !limits.ok ? failureText(`${name} usage limits`, limits.error)
+        : limits.value.state === "read" ? toLimitViews(limits.value.limits) : "not reported",
+      ...(limitsReading?.state === "read" && limitsReading.note ? { limitsNote: limitsReading.note } : {}),
       models: this.modelsEntry(name, models, limitsReading),
     };
   }
@@ -223,13 +243,13 @@ export class AvailableAgentRuntimesService {
   private modelsEntry(
     name: string,
     models: StepOutcome<Awaited<ReturnType<ModelCatalogService["runtimeModelSelectionCatalog"]>>>,
-    limits: UsageLimitsReading,
+    limits: UsageLimitsReading | null,
   ): ExternalAgentRuntimeEntry["models"] {
-    if (!models.ok) return `unknown: ${name} model list ${models.timedOut ? "timed out" : "could not be read"}`;
+    if (!models.ok) return failureText(`${name} model list`, models.error);
     // An available runtime always offers a model: an empty list is a failed read, not "no models".
     if (!models.value.offeredModels.length) return "unknown: no models could be read";
     const available = models.value.offeredModels.map(toAvailableModel);
-    return limits.state === "read" ? blockByLimits(available, limits.limits) : available;
+    return limits?.state === "read" ? blockByLimits(available, limits.limits) : available;
   }
 
   /**
@@ -242,7 +262,7 @@ export class AvailableAgentRuntimesService {
       this.dependencies.modelCatalog.runtimeModelSelectionCatalog(RuntimeKind.AUTOBYTEUS),
     ]));
     if (!listing.ok) {
-      console.warn(`Available agent runtimes: AutoByteus providers could not be listed (${listing.timedOut ? "timed out" : "failed"}).`);
+      console.warn(`Available agent runtimes: AutoByteus providers could not be listed (${isDeadlineExceeded(listing.error) ? "timed out" : "failed"}).`);
       return null;
     }
     const [settings, catalog] = listing.value;
@@ -271,7 +291,7 @@ export class AvailableAgentRuntimesService {
     const reader = this.dependencies.providerUsageReaders.readerFor(provider.id);
     const [modelsRead, usage] = await Promise.all([
       discovered
-        ? this.readDiscoveredModels(provider.id)
+        ? this.readDiscoveredModels(provider.name, provider.id)
         : Promise.resolve<ProviderModels>({ state: "read", models: catalogModels }),
       reader
         ? runStep(this.caps.providerUsageMs, (deadline) =>
@@ -280,50 +300,39 @@ export class AvailableAgentRuntimesService {
     ]);
     // A local server that does not answer with models now cannot run anything: left out, like a missing runtime.
     if (local && (modelsRead.state !== "read" || !modelsRead.models.length)) return null;
-    const reading: ProviderUsageReading = !usage ? { state: "not_reported" }
-      : usage.ok ? usage.value
-        : { state: "unknown", reason: usage.timedOut ? "timed out" : "could not be read" };
-    const blocked = reading.state === "read" ? reading.blockedReason : null;
+    const reading: ProviderUsageReading | null = !usage ? { state: "not_reported" } : usage.ok ? usage.value : null;
+    const blocked = reading?.state === "read" ? reading.blockedReason : null;
     return {
       provider: provider.name,
-      ...(reading.state === "read" && reading.balance ? { balance: `${reading.balance.amount} ${reading.balance.currency}` } : {}),
+      ...(reading?.state === "read" && reading.balance ? { balance: `${reading.balance.amount} ${reading.balance.currency}` } : {}),
       ...(blocked ? { blocked } : {}),
-      ...(reading.state === "not_reported" ? { limits: "not reported" as const }
-        : reading.state === "unknown" ? { limits: `unknown: ${reading.reason}` as const } : {}),
-      models: providerModelsEntry(modelsRead, discovered, blocked),
+      ...(usage && !usage.ok ? { limits: failureText(`${provider.name} usage`, usage.error) }
+        : reading?.state === "not_reported" ? { limits: "not reported" as const } : {}),
+      models: providerModelsEntry(modelsRead, blocked),
     };
   }
 
-  /** A discovered provider's models now, through the catalog's own reload (which also refreshes the shared catalog). */
-  private async readDiscoveredModels(providerId: string): Promise<ProviderModels> {
+  /**
+   * A discovered provider's models now, through the catalog's own reload (which also refreshes the shared catalog).
+   * A reload that failed now (source `ERROR` / `STALE_ERROR`) gives the source's safe message; one that answered with
+   * no model is a failed read, never "no models" (REQ-007).
+   */
+  private async readDiscoveredModels(providerName: string, providerId: string): Promise<ProviderModels> {
+    const subject = `${providerName} model list`;
     const reload = await runStep(this.caps.providerModelsMs, (deadline) => raceDeadline(
       this.dependencies.modelCatalog.reloadProviderModelCatalog(providerId, RuntimeKind.AUTOBYTEUS), deadline));
-    if (!reload.ok) return { state: "unknown", reason: reload.timedOut ? "timed out" : "could not be read" };
-    return discoveredModels(reload.value);
+    if (!reload.ok) return { state: "unknown", text: failureText(subject, reload.error) };
+    const failed = reload.value.sources.find((source) => FAILED_SOURCE_STATES.has(source.state));
+    if (failed) return { state: "unknown", text: `unknown: ${subject} could not be read: ${failed.safeMessage ?? "discovery failed"}` };
+    if (!reload.value.llmModels.length) return { state: "unknown", text: `unknown: ${subject} could not be read: the endpoint listed no models` };
+    return { state: "read", models: reload.value.llmModels };
   }
 }
 
-/** A reload that failed now (its source in `ERROR` / `STALE_ERROR`) says why, by the source's safe message. */
-const discoveredModels = (snapshot: LocalProviderModelCatalogSnapshot): ProviderModels => {
-  const failed = snapshot.sources.find((source) => FAILED_SOURCE_STATES.has(source.state));
-  return failed
-    ? { state: "unknown", reason: failed.safeMessage ?? "could not be read" }
-    : { state: "read", models: snapshot.llmModels };
-};
-
-/**
- * A provider entry's models: blocked with the provider's reason when it cannot run. A discovered provider answering
- * with no model is a failed read, not "no models" (REQ-007); a static provider's catalog is what it is.
- */
-const providerModelsEntry = (
-  read: ProviderModels,
-  discovered: boolean,
-  blocked: string | null,
-): AutoByteusProviderEntry["models"] => {
-  if (read.state === "unknown") return `unknown: ${read.reason}` as UnknownText;
-  if (discovered && !read.models.length) return "unknown: no models could be read";
-  return read.models.map(toAvailableModel).map((model) => blocked ? { ...model, blocked: { until: null, by: blocked } } : model);
-};
+/** A provider entry's models, blocked with the provider's reason when it cannot run. */
+const providerModelsEntry = (read: ProviderModels, blocked: string | null): AutoByteusProviderEntry["models"] =>
+  read.state === "unknown" ? read.text
+    : read.models.map(toAvailableModel).map((model) => blocked ? { ...model, blocked: { until: null, by: blocked } } : model);
 
 let configuredService: AvailableAgentRuntimesService | null = null;
 

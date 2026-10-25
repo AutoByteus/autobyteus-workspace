@@ -9,7 +9,6 @@ import { fetchRuntimeSource } from "../runtime-source-fetch.js";
 import { commandBound } from "../../read-deadline.js";
 import { runRuntimeCommand } from "../runtime-command-runner.js";
 import { parseAntigravityUsageLimits } from "../usage-limits/antigravity-usage-limits.js";
-import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
 
 const MANIFEST_BASE_URL = "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests";
 const MANIFEST_OS: Readonly<Partial<Record<NodeJS.Platform, string>>> = { darwin: "darwin", linux: "linux", win32: "windows" };
@@ -53,13 +52,13 @@ export const createAntigravityAgentRuntimeStrategy = (): AgentRuntimeStrategy =>
     }
   },
   /** `agy -p "/usage" --output-format json`: the CLI's own usage command, answered without a model turn (0 tokens). */
-  readUsageLimits: (executable, _cwd, { deadline }) => readUsageLimitsSafely("Antigravity", async () => {
+  async readUsageLimits(executable, _cwd, { deadline }) {
     const result = await runRuntimeCommand(
       executable, ["-p", "/usage", "--output-format", "json"], commandBound(deadline, USAGE_TIMEOUT_MS));
-    // A time-out set by the step's deadline is a DeadlineExceededError: the reading says "timed out".
+    // A time-out set by the step's deadline is a DeadlineExceededError, which the service words "timed out".
     if (result.error) throw result.error;
     if (result.exitCode !== 0) throw new Error("agy /usage failed.");
     return parseAntigravityUsageLimits(result.stdout);
-  }),
+  },
   updateArgv: (executable) => [executable, "update"],
 });

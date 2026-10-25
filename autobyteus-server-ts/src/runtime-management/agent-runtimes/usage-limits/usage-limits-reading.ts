@@ -1,12 +1,10 @@
-import { isDeadlineExceeded } from "../../read-deadline.js";
-
 /**
  * Which of a runtime's models one limit covers.
  * - `runtime`: every model of the runtime.
  * - `models`: these model identifiers (Codex names the model by its id).
  * - `modelFamilies`: models whose display name belongs to one of these families (Claude names its scoped limit by
  *   the model's display name, Antigravity its groups by model families). The limits are read in parallel with the
- *   model list, so the service resolves families against the models it read (`usage-limit-model-matching.ts`).
+ *   model list, so the service resolves families against the models it read (`available-agent-runtimes/usage-limit-model-matching.ts`).
  */
 export type UsageLimitScope =
   | Readonly<{ kind: "runtime" }>
@@ -27,34 +25,25 @@ export type RuntimeUsageLimit = Readonly<{
 }>;
 
 /**
- * A runtime's limits: read, not reported by this runtime or account, or unknown (failed, timed out, unexpected).
- * `note`: one short sentence from the strategy, only when a runtime-specific fact changes how to read its limits
- * (SR-004); never plans, account data or vendor texts.
+ * A runtime's limits: read, or not reported by this runtime or account. A read that fails throws (SR-007): the
+ * available-agent-runtimes service alone words failures. `note`: one short sentence from the strategy, only when a
+ * runtime-specific fact changes how to read its limits (SR-004); never plans, account data or vendor texts.
  */
 export type UsageLimitsReading =
   | Readonly<{ state: "read"; limits: readonly RuntimeUsageLimit[]; note?: string }>
-  | Readonly<{ state: "not_reported" }>
-  | Readonly<{ state: "unknown"; reason: string }>;
+  | Readonly<{ state: "not_reported" }>;
 
-export const UNEXPECTED_ANSWER = "usage answer was not in the expected form";
-
-export const unknownUsageLimits = (reason: string): UsageLimitsReading => Object.freeze({ state: "unknown", reason });
-
-/**
- * A strategy's `readUsageLimits` body, which never throws: an unknown reading or a failure becomes a short classified
- * reason naming the runtime ("Codex usage limits timed out"); the error's own text (vendor output) is never kept.
- */
-export const readUsageLimitsSafely = async (
-  runtimeName: string,
-  read: () => Promise<UsageLimitsReading>,
-): Promise<UsageLimitsReading> => {
-  try {
-    const reading = await read();
-    return reading.state === "unknown" ? unknownUsageLimits(`${runtimeName} ${reading.reason}`) : reading;
-  } catch (error) {
-    return unknownUsageLimits(`${runtimeName} usage limits ${isDeadlineExceeded(error) ? "timed out" : "could not be read"}`);
+/** An answer a parser cannot use. `reason`: short and classified, never vendor text (it is shown after "could not be read: "). */
+export class UsageLimitsUnreadableError extends Error {
+  constructor(readonly reason: string) {
+    super(reason);
+    this.name = "UsageLimitsUnreadableError";
   }
-};
+}
+
+/** The parsers' one reason for an answer they do not recognise. */
+export const unexpectedUsageAnswer = (): UsageLimitsUnreadableError =>
+  new UsageLimitsUnreadableError("the answer was not in the expected form");
 
 export const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;

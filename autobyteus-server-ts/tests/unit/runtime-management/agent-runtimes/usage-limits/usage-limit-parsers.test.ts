@@ -6,6 +6,10 @@ import { parseCodexUsageLimits } from "../../../../../src/runtime-management/age
 import { parseClaudeUsageLimits } from "../../../../../src/runtime-management/agent-runtimes/usage-limits/claude-usage-limits.js";
 import { parseAntigravityUsageLimits } from "../../../../../src/runtime-management/agent-runtimes/usage-limits/antigravity-usage-limits.js";
 import { parseGrokUsageLimits } from "../../../../../src/runtime-management/agent-runtimes/usage-limits/grok-usage-limits.js";
+import { UsageLimitsUnreadableError } from "../../../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
+
+/** An answer a parser cannot use throws, with one short classified reason (SR-007). */
+const UNREADABLE = new UsageLimitsUnreadableError("the answer was not in the expected form");
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../fixtures/usage-limits");
 const text = (name: string) => fs.readFileSync(path.join(FIXTURES, name), "utf8");
@@ -50,10 +54,10 @@ describe("usage-limit parsers (recorded answers)", () => {
     ] });
   });
 
-  it("Codex: an answer without windows is not reported; an unrecognised answer is unknown", () => {
+  it("Codex: an answer without windows is not reported; an unrecognised answer throws", () => {
     expect(parseCodexUsageLimits({ rateLimitsByLimitId: { codex: { primary: null, secondary: null } } }))
       .toEqual({ state: "not_reported" });
-    expect(parseCodexUsageLimits({ something: true })).toMatchObject({ state: "unknown" });
+    expect(() => parseCodexUsageLimits({ something: true })).toThrow(UNREADABLE);
   });
 
   it("Claude: session and weekly limits with reset times, the scoped weekly limit on its model; none blocks (AC-005)", () => {
@@ -68,7 +72,7 @@ describe("usage-limit parsers (recorded answers)", () => {
   it("Claude: API-key auth has no plan limits → not reported", () => {
     expect(parseClaudeUsageLimits({ subscription_type: null, rate_limits_available: false, rate_limits: null }))
       .toEqual({ state: "not_reported" });
-    expect(parseClaudeUsageLimits({ rate_limits_available: true, rate_limits: {} })).toMatchObject({ state: "unknown" });
+    expect(() => parseClaudeUsageLimits({ rate_limits_available: true, rate_limits: {} })).toThrow(UNREADABLE);
   });
 
   it("Antigravity: a limit per enabled bucket, named by group and window, scoped to the group's families (AC-004)", () => {
@@ -99,9 +103,9 @@ describe("usage-limit parsers (recorded answers)", () => {
     expect(grok(100)).toMatchObject({ limits: [{ remainingPercent: 0, exhausted: true }] });
   });
 
-  it("Antigravity: output that is not the usage JSON is unknown", () => {
-    expect(parseAntigravityUsageLimits("Please sign in")).toMatchObject({ state: "unknown" });
-    expect(parseAntigravityUsageLimits(JSON.stringify({ status: "SUCCESS" }))).toMatchObject({ state: "unknown" });
+  it("Antigravity: output that is not the usage JSON throws", () => {
+    expect(() => parseAntigravityUsageLimits("Please sign in")).toThrow(UNREADABLE);
+    expect(() => parseAntigravityUsageLimits(JSON.stringify({ status: "SUCCESS" }))).toThrow(UNREADABLE);
   });
 
   it("Grok: one billing-period limit with the period end; without creditUsagePercent, remaining null and a note (AC-006)", () => {
@@ -114,7 +118,7 @@ describe("usage-limit parsers (recorded answers)", () => {
     const reading = parseGrokUsageLimits(used);
     expect(reading).toMatchObject({ state: "read", limits: [{ remainingPercent: 0, exhausted: true }] });
     expect(reading).not.toHaveProperty("note");
-    expect(parseGrokUsageLimits({})).toMatchObject({ state: "unknown" });
+    expect(() => parseGrokUsageLimits({})).toThrow(UNREADABLE);
   });
 
   it("drops plans, credits, spend and vendor texts: only names, percentages, times and scopes remain (REQ-004)", () => {

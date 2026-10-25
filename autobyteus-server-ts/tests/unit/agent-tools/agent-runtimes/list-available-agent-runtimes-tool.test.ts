@@ -14,8 +14,8 @@ import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/bac
 import { AvailableAgentRuntimesResolver } from "../../../../src/api/graphql/types/available-agent-runtimes.js";
 import {
   configureAvailableAgentRuntimesService, type AvailableAgentRuntimesService,
-} from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-service.js";
-import type { AvailableAgentRuntimesReport } from "../../../../src/runtime-management/agent-runtimes/available-agent-runtimes-report.js";
+} from "../../../../src/available-agent-runtimes/available-agent-runtimes-service.js";
+import type { AvailableAgentRuntimesReport } from "../../../../src/available-agent-runtimes/available-agent-runtimes-report.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const REPORT: AvailableAgentRuntimesReport = {

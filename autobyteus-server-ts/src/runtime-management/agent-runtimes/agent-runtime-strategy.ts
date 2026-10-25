@@ -31,7 +31,8 @@ export interface AgentRuntimeStrategy {
   /** The runtime's own sign-in report; never reads credentials. */
   readSignIn(executable: string, cwd: string, options?: RuntimeReadOptions): Promise<SignInReading>;
   /**
-   * The runtime's own usage limits, read with 0 tokens, within the deadline; never throws (failure → `unknown`).
+   * The runtime's own usage limits, read with 0 tokens, within the deadline. Throws when they cannot be read (an
+   * unusable answer: `UsageLimitsUnreadableError`; the deadline: `DeadlineExceededError`); the caller words it.
    * Which models each limit covers and whether it is exhausted follow the runtime's own rules.
    */
   readUsageLimits(executable: string, cwd: string, options: Readonly<{ deadline: ReadDeadline }>): Promise<UsageLimitsReading>;

@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unexpectedUsageAnswer,
   type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -13,7 +13,7 @@ export const parseGrokUsageLimits = (answer: unknown): UsageLimitsReading => {
   const config = asRecord(root?.config);
   const period = asRecord(config?.currentPeriod);
   const resetsAt = toIsoTime(period?.end ?? config?.billingPeriodEnd);
-  if (!config || !resetsAt) return unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!config || !resetsAt) throw unexpectedUsageAnswer();
   const usedPercent = asFiniteNumber(config.creditUsagePercent ?? root?.creditUsagePercent);
   const remainingPercent = usedPercent === null ? null : wholeRemainingPercent(100 - usedPercent);
   return {

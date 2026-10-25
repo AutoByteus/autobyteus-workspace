@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unexpectedUsageAnswer,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -56,5 +56,6 @@ export const parseCodexUsageLimits = (answer: unknown): UsageLimitsReading => {
       : { state: "read", limits };
   }
   // Entries without any window: this account has no usage windows (e.g. an API-key provider).
-  return entries.some((entry) => asRecord(entry)) ? Object.freeze({ state: "not_reported" }) : unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!entries.some((entry) => asRecord(entry))) throw unexpectedUsageAnswer();
+  return Object.freeze({ state: "not_reported" });
 };

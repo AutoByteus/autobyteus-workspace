@@ -137,14 +137,16 @@ out after 10000ms.". Grok and Antigravity application readiness are still
 
 ## Available Agent Runtimes
 
-`available-agent-runtimes-service.ts` — `AvailableAgentRuntimesService.read()`,
-the one boundary for the tool `list_available_agent_runtimes`
+`src/available-agent-runtimes/available-agent-runtimes-service.ts` —
+`AvailableAgentRuntimesService.read()`, the one boundary for the tool `list_available_agent_runtimes`
 (`src/agent-tools/agent-runtimes/`, AutoByteus local tool and Agent Tools MCP
 adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
 (`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
 same object the tool returns). The composition builds it from the same
 strategies and sign-in reader as the status service and binds it until
-`close()`. Every call reads the runtimes again; nothing is cached, polled or
+`close()`. The folder `src/available-agent-runtimes/` (service, report,
+`usage-limit-model-matching.ts`) sits above `runtime-management` and
+`llm-management`, which it reads; neither imports it. Every call reads the runtimes again; nothing is cached, polled or
 stored. Reads are single-flight: callers that arrive while a read is in
 progress (several agents, the page) share it, so their runtime processes never
 overlap. The answer resolves as soon as it is complete; the read stays the one
@@ -159,7 +161,7 @@ AutoByteus, per provider kind:
 | --- | --- | --- |
 | Static, keyed (OpenAI, Anthropic, DeepSeek, …) | its key is configured | the AutoByteus catalog's models of that provider |
 | Discovered, local (Ollama, LM Studio) | it answers with at least one model now | the reload's models; not answering, an error or a time-out → left out |
-| Discovered, keyed (custom endpoint) | its key is configured | the reload's models; a failed reload (`ERROR` / `STALE_ERROR`) → `"unknown: <source's safe message>"`, a time-out → `"unknown: timed out"`, no model → `"unknown: no models could be read"` |
+| Discovered, keyed (custom endpoint) | its key is configured | the reload's models; a failed reload (`ERROR` / `STALE_ERROR`) → `"unknown: <name> model list could not be read: <source's safe message>"`, a time-out → `"unknown: <name> model list timed out"`, no model → `"unknown: <name> model list could not be read: the endpoint listed no models"` |
 
 Discovered providers are reloaded on every read through
 `ModelCatalogService.reloadProviderModelCatalog(id, "autobyteus")` (the
@@ -177,12 +179,23 @@ step's own processes stop. Codex requests race the deadline and release their
 lease in `finally`. Callers without a deadline (this page, launch paths) keep
 their usual time-outs.
 
+**Failures.** Strategies' `readUsageLimits`, catalogs and provider readers
+return their answer or throw; the service alone words a failed step (REQ-007):
+"<subject> timed out" when `isDeadlineExceeded(error)` (or a provider reader's
+time-out signal); "<subject> could not be read: <reason>" for an answer a
+parser or reader classified as unusable (`UsageLimitsUnreadableError`,
+`ProviderUsageUnreadableError`); otherwise "<subject> could not be read". The
+error's own text is never shown. Subjects: "<Runtime> usage limits",
+"<Runtime> model list", "<Provider> usage", "<Provider> model list".
+
 **Time-outs.** A step stopped by its own deadline surfaces a
 `DeadlineExceededError` (from `raceDeadline`, the command runner, or as the
-`cause` of a helper's own time-out diagnostic), and `isDeadlineExceeded(error)`
-is the one rule that makes its reason "timed out". It is never decided by
-reading the clock afterwards (timers and `Date.now()` can disagree by a
-millisecond).
+`cause` of a helper's own time-out diagnostic). A command's bound is
+`commandBound(deadline, usualMs)`: its usual time-out cut to the time left,
+`byDeadline` when the time left set it. Only then is its time-out the step's;
+an ordinary per-command time-out (e.g. Antigravity's 3 s `--help` probe) is an
+ordinary failure ("could not be read"). The rule is never decided by reading
+the clock afterwards (timers and `Date.now()` can disagree by a millisecond).
 
 **Codex client hold.** After the install step the service holds the runtime's
 shared client for the rest of the read (`AgentRuntimeStrategy.holdClient`, Codex
@@ -191,8 +204,8 @@ limits start the app-server once and no step meets another's close; the hold
 is released when the read is done. Another Codex user of the same folder
 closing it meanwhile still gives that step's reason (follow-up FU-003). A failed or timed-out step
 gives: install → left out; sign-in → `signIn: "not checked"`; models →
-`"unknown: <reason>"` (an empty model list is never "no models"); limits →
-`"unknown: <reason>"`.
+`"unknown: …"` (an empty model list is never "no models"); limits →
+`"unknown: …"`.
 
 **Limits** (`AgentRuntimeStrategy.readUsageLimits`, parsers in
 `usage-limits/`; plans, tiers, credits, account data and vendor texts are
@@ -207,7 +220,12 @@ dropped):
 
 Remaining percentages are whole numbers rounded down (99.7 → 99); a limit's
 exhaustion is decided on the unrounded value. A limit that maps to no offered
-model covers the whole runtime. The service
+model covers the whole runtime. A limit names what it covers in its source's
+terms (`appliesTo`): the whole runtime, model ids (Codex), or display-name
+families (Claude, Antigravity; a family covers a model when its words appear in
+the display name in order from the first word, and an id is never matched as
+a family). Each model is given to its most specific family across all of the
+runtime's limits; only then do the used-up limits block it. The service
 derives each model's `blocked: {until, by}` (until the latest reset of the
 used-up limits covering it). AutoByteus providers are read by
 `src/llm-management/provider-usage/` (see
@@ -216,8 +234,9 @@ used-up limits covering it). AutoByteus providers are read by
 ## Tests
 
 - Unit: `tests/unit/runtime-management/agent-runtimes/` (including
-  `available-agent-runtimes-service.test.ts` and `usage-limits/`, from the
-  recorded answers in `tests/fixtures/usage-limits/`),
+  `usage-limits/`, from the recorded answers in
+  `tests/fixtures/usage-limits/`), `tests/unit/available-agent-runtimes/`
+  (service, concurrency, matching, dependency direction),
   `tests/unit/api/graphql/agent-runtimes-resolver.test.ts`,
   `tests/unit/application-platform/`.
 - E2E on a real studio server with scripted CLIs

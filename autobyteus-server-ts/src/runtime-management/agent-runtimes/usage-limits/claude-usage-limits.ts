@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unexpectedUsageAnswer,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -16,12 +16,12 @@ const kindName = (kind: string): string =>
  */
 export const parseClaudeUsageLimits = (answer: unknown): UsageLimitsReading => {
   const root = asRecord(answer);
-  if (!root) return unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!root) throw unexpectedUsageAnswer();
   const rateLimits = asRecord(root.rate_limits);
   if (root.rate_limits_available === false || (root.rate_limits_available === true && root.rate_limits === null)) {
     return Object.freeze({ state: "not_reported" });
   }
-  if (!rateLimits || !Array.isArray(rateLimits.limits)) return unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!rateLimits || !Array.isArray(rateLimits.limits)) throw unexpectedUsageAnswer();
   const limits: RuntimeUsageLimit[] = [];
   for (const raw of rateLimits.limits) {
     const entry = asRecord(raw);
@@ -38,5 +38,6 @@ export const parseClaudeUsageLimits = (answer: unknown): UsageLimitsReading => {
       appliesTo: model ? { kind: "modelFamilies", families: [model] } : { kind: "runtime" },
     });
   }
-  return limits.length ? Object.freeze({ state: "read", limits }) : unknownUsageLimits(UNEXPECTED_ANSWER);
+  if (!limits.length) throw unexpectedUsageAnswer();
+  return Object.freeze({ state: "read", limits });
 };
