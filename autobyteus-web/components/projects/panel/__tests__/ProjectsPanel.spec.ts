@@ -18,7 +18,7 @@ import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-suppo
 
 const project = (projectId: string, name: string, updatedAt: string): Project => ({ projectId, name, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 1, taskCount: 1 })
-const projectTask = (taskId: string, description: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({ taskId, projectId: 'p1', description, status,
+const projectTask = (taskId: string, description: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({ taskId, projectId: 'p1', taskKey: `p1-${taskId}`, title: description.split('\n')[0]!, description, status, dependsOnTaskIds: [], partOfTaskId: null, comments: [],
   contextFiles: [], createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })
 const tempTask = (taskId: string, description: string): TaskWithoutProject => ({ taskId, description, status: 'TODO', referenceFiles: ['/work/brief.md'],
   createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })
@@ -83,8 +83,10 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     await card(wrapper, 't1').trigger('click')
 
     expect(wrapper.get('[data-testid="projects-panel-task-description"]').text()).toBe('Write the notes\nAll of them')
+    // A Project Task's view leads with its title (DEC-018 (2)).
+    expect(wrapper.get('[data-testid="projects-panel-task-title"]').text()).toBe('Write the notes')
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('To Do')
-    expect(wrapper.get('[data-testid="projects-panel-task-open-page"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/t1')
+    expect(wrapper.get('[data-testid="projects-panel-task-open-page"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/p1-t1')
     expect(wrapper.find('[data-testid="task-page-not-assigned"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="projects-panel-board"]').attributes('style')).toContain('display: none') // kept mounted, hidden
 
@@ -109,6 +111,8 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     const wrapper = await mountPanel()
     await card(wrapper, 'x1').trigger('click')
     expect(wrapper.get('[data-testid="projects-panel-task-reference-files"]').text()).toContain('/work/brief.md')
+    // A Temp task has no title.
+    expect(wrapper.find('[data-testid="projects-panel-task-title"]').exists()).toBe(false)
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Open')
     expect(wrapper.get('[data-testid="projects-panel-task-open-page"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/temp-tasks/tasks/x1')
     useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { ...tempTask('x1', 'Check links'), status: 'CANCELLED', updatedAt: '2026-10-06T00:00:00.000Z' } })
