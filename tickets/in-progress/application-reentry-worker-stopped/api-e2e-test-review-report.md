@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E `Pass` at API-REV-001; durable test changed in `ebb6c8ef88`
+- Review Round: 2
+- Trigger: API/E2E `Pass` at API-REV-002 after TR-001 fix (`16190e8c2a`); round 1 (CRR-002) failed on TR-001
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-001)
 - Investigation Notes Reviewed As Context: not reread (unchanged since CRR-001)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-002)
@@ -13,14 +13,14 @@
 - Implementation Revision Record Reviewed As Context: IR-001 (code unchanged: `git diff 6950a24e1b HEAD -- autobyteus-server-ts/src` is empty)
 - Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-003`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
 - Delivery Revision Record Reviewed As Context: N/A
-- API/E2E Result: Pass (`Tests 5 passed (5)`, `evidence/API-07-e2e-reload-repair-RE-01-05.log`)
+- API/E2E Result: Pass (`Tests 5 passed (5)`, `evidence/API-07-e2e-reload-repair-RE-01-05.log`; after the fix `evidence/API-07-r2-e2e-reload-repair-TR-001-fix.log`)
 - Final Validation Confidence: 97%
-- Prior unresolved test-review findings rechecked: none (first test review)
+- Prior unresolved test-review findings rechecked: TR-001, resolved (`git diff ebb6c8ef88 16190e8c2a`: RE-05 now selects `briefId latestRunId latestBindingStatus lastErrorMessage`)
 - Project testing guideline(s) applied: `TESTING.md` (clean `env -i` environment, test-owned data and processes, "stop what you started", assertions first). No conflicts. The test kills only processes its own in-process server spawned, filtered by `ppid === process.pid`
 - Supported Product Scenario Basis Confirmed: `Yes`. RE-04 covers MP-001: a worker crash, then a repair (ARCH-REV-002). RE-05 covers BEH-002/REQ-002: pending-event dispatch after reentry, triggered by a real run failure
 
@@ -28,7 +28,7 @@
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/runtime/application-reload-repair.e2e.test.ts` | Updated (+88/−1) | RE-04 → MP-001; RE-05 → BEH-002, REQ-002, AC-005; RE-03 now records `imported` | Reload/repair returning an application to service on the real server | RE-01…03 assertions unchanged |
+| `autobyteus-server-ts/tests/e2e/runtime/application-reload-repair.e2e.test.ts` | Updated (`ebb6c8ef88` +88/−1; `16190e8c2a` 2 lines) | RE-04 → MP-001; RE-05 → BEH-002, REQ-002, AC-005; RE-03 now records `imported` | Reload/repair returning an application to service on the real server | RE-01…03 assertions unchanged |
 
 - No durable test file changed: `No`
 
@@ -37,7 +37,7 @@
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
 | Scenario grouping and names make intent clear | Pass | Each case name states trigger and outcome. The header lists RE-01…05 and their order dependence |
-| Assertions prove approved requirements instead of incidental implementation details | **Fail** | TR-001: RE-05 reads `latestRunId`, `latestBindingStatus` and `lastErrorMessage` from a query that selects only `briefId`. Otherwise strong: RE-04 checks `failed` → repair `ACTIVE` → `stopped` → usable with a new worker pid. RE-05 checks the worker turns `ready` with no application call, so only the resumed drain can start it, and the projected `FAILED` with the runtime-close message. The mutations API-08a and API-08b each fail exactly the intended case |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | TR-001 resolved: RE-05's query now selects every field it reads, as the app's UI does. The assertions are strong: RE-04 checks `failed` → repair `ACTIVE` → `stopped` → usable with a new worker pid. RE-05 checks the worker turns `ready` with no application call, so only the resumed drain can start it, and the projected `FAILED` with the runtime-close message. The mutations API-08a and API-08b each fail exactly the intended case |
 | Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | `status`, `appGraphql`, `childPids`/`workerPids` and `until` are local and each used more than once. `appGraphql` could also serve `expectUsable`'s inline call (cosmetic, not a finding) |
 | Test isolation and determinism are appropriate for the exercised boundary | Pass | Polling with deadlines and last-value messages. Sign-in state is restored in `finally`. The order dependence is explicit and guarded (`expect(imported).not.toBeNull()`), matching the sibling import e2e. RE-04's immediate `stopped` read is deterministic, because no run or pending event exists at that point |
 | Large files remain coherent and navigable | Pass | 233 lines, one surface |
@@ -52,7 +52,7 @@
 | --- | --- | --- | --- | --- |
 | TR-001 | `application-reload-repair.e2e.test.ts`, RE-05 `readBrief` | The query is `query($briefId: String!) { brief(briefId: $briefId) { briefId } }`, but the waits and final assertion read `latestRunId`, `latestBindingStatus` and `lastErrorMessage`. It passes only because Brief Studio's GraphQL dispatches on the root field name and returns the whole object, ignoring the selection set (`applications/brief-studio/backend-src/graphql/index.ts:11-18,65-67`). That is an incidental detail of the sample app's executor, not the contract. Brief Studio's own UI selects these fields (`frontend-src/generated/graphql-client.js:8-9,21`). The file header says it calls the app "as its UI does". If the app ever honours selection sets, RE-05 times out with a misleading message, though it can never false-pass | Select the fields the test reads: `brief(briefId: $briefId) { briefId latestRunId latestBindingStatus lastErrorMessage }`. Rerun this file | `Local Fix` / `api_e2e_engineer` |
 
-Non-blocking suggestion while in the file (not required): the repository's existing process listing uses the portable `ps -A -o pid=,ppid=,…` (`tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts:54`). `childPids` uses `ps -axo`. Aligning with the repository's form avoids a BSD/procps option difference if this e2e runs on Linux. I have not verified that `-axo` fails there.
+TR-001 status: **Resolved** in round 2 (`16190e8c2a`); rerun 5/5. The optional suggestion was also applied: `childPids` now uses `ps -A -o pid=,ppid=,command=`, the repository's existing form.
 
 ## Follow-ups
 
@@ -60,8 +60,8 @@ Non-blocking suggestion while in the file (not required): the repository's exist
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
+- Result: `Pass`
 - Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/runtime/application-reload-repair.e2e.test.ts`
-- Unresolved finding IDs: TR-001
-- Recommended Recipient: `api_e2e_engineer` (Local Fix)
-- Notes: a one-line query correction, then a rerun of this e2e file and this proportional review again. The source is unaffected, and no other validation needs repeating.
+- Unresolved finding IDs: None (TR-001 resolved)
+- Recommended Recipient: `delivery_engineer`
+- Notes: source unchanged since CRR-001 (`git diff 6950a24e1b d41c86baf4 -- autobyteus-server-ts/src` is empty).

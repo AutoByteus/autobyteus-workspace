@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 | N/A | Pass (9.5/10) | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-001 | Pass (CRR-001, source review) | Fail: Local Fix → API/E2E | TR-001 |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-002 | Fail (CRR-002) | Pass | TR-001 (resolved) |
 
 ## Revision Entries
 
@@ -58,3 +59,30 @@ None
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E Engineer
 - Remaining risks or uncertainty: `ps -axo` portability on Linux is unverified (non-blocking suggestion)
+
+### CRR-003 — Test re-review: TR-001 resolved
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Proportional API/E2E Test Review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); TR-001
+- Relevant solution revision IDs: SR-002
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-002 Fail (TR-001)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `16190e8c2a` makes RE-05 select the fields it reads, and switches `childPids` to `ps -A -o` (optional suggestion). Whole-file rerun 5/5 (`evidence/API-07-r2-e2e-reload-repair-TR-001-fix.log`). Source unchanged.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open (CRR-002) | Resolved | API-REV-002, `16190e8c2a` | `git diff ebb6c8ef88 16190e8c2a`; rerun log `Tests 5 passed (5)` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: none new
