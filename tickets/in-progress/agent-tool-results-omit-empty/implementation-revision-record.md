@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are the authority. This record 
 | IR-001 | Architecture reviewer: `design-review-report.md` rounds 1–3 (ARCH-REV-001 on SR-007, ARCH-REV-002 on SR-008, ARCH-REV-003 on SR-010) | AR-001–AR-008 (non-blocking guidance) | `Initial Baseline` | SR-007, SR-008, SR-010; ARCH-REV-001–003; CRR `N/A`; API-REV `N/A`; DR `N/A` | Implemented; ready for code review |
 | IR-002 | Code reviewer: `code-review-report.md` round 2 (CRR-002, failure origin of API-REV-001), via architecture reviewer ARCH-REV-004 on SR-012 | CR-001, CR-002 | `Local Fix` (CR-002) and design-revision implementation (CR-001, SR-012) | SR-012; ARCH-REV-004; CRR-002; API-REV-001; DR `N/A` | Fixed; ready for code review |
 | IR-003 | Code reviewer: `code-review-report.md` round 3 (CRR-003, Targeted Delta) | CR-003 (Low) | `Local Fix` | SR-012; ARCH-REV-004; CRR-003; API-REV `N/A`; DR `N/A` | Fixed; ready for code review |
+| IR-004 | Delivery engineer: `delivery-revision-record.md` DR-001 (integration refresh with `origin/personal@63a36d00d8`) | DR-001 | `Local Fix` | SR `N/A`; ARCH-REV `N/A`; CRR-005; API-REV-002; DR-001 | Fixed; ready for code review |
 
 ## Revision Entries
 
@@ -74,3 +75,23 @@ The current code and `implementation-handoff.md` are the authority. This record 
 - Local validation and result: `pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations/project-task-titles tests/architecture`: 75 passed. IMP-11–IMP-14 stand.
 - Next recipient or routing: from `get_handoff_rules` (Local Fix, Large / High → code review).
 - Remaining limitations or risks: as IR-002 (API-03 and API-11c reruns by API/E2E).
+
+### IR-004 — `list_available_agent_runtimes` follows the one tool result rule
+
+- Triggering role, report path, and round: delivery engineer, `delivery-revision-record.md` DR-001 (after merging `origin/personal@63a36d00d8`, merge `54cd6803f4`; evidence `evidence/DEL-01-integrated-architecture-and-agent-tools-unit.log`).
+- Triggering finding IDs: DR-001.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-003, `Pass` in CRR-004/CRR-005 and API-REV-002; integrated state failed AC-002's guard.
+- Current authoritative result: fixed in `7c60cb4909`.
+- Related solution revision IDs: `N/A`.
+- Related architecture-review revision IDs: `N/A`.
+- Related code-review revision IDs: CRR-005.
+- Related API/E2E revision IDs: API-REV-002.
+- Related delivery revision IDs: DR-001.
+- Why this implementation change is recorded: autobyteus-303's new tool serialized its own result on both routes (`JSON.stringify`, a `structuredContent:` literal), outside the one rule.
+- Approved behavior or requirement IDs affected: REQ-001, REQ-002, AC-001, AC-002 (BEH-001).
+- Implementation delta: local tool `toToolResultJson(report)`; MCP adapter `toAgentToolsMcpStructuredJsonResult(report)`; tool description: limit values and `until` appear when known. Result shape: null `remainingPercent`, `resetsAt`, `blocked.until` are left out; GraphQL unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/agent-tools/agent-runtimes/{list-available-agent-runtimes-tool,list-available-agent-runtimes-contract}.ts`, `src/agent-tools/mcp/providers/list-available-agent-runtimes-mcp-adapter-provider.ts`; `tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts`, `tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts`; `docs/modules/{agent_tools,agent_runtimes}.md`.
+- Local validation and result: IMP-15 typecheck Pass; IMP-16 architecture + agent-tools + runtimes unit: 490 passed, the 1 failure is FU-008 (not this ticket's); IMP-17 runtimes E2E 6 passed after a build.
+- Next recipient or routing: from `get_handoff_rules` (delivery Local Fix, Large / High → code review).
+- Remaining limitations or risks: FU-008 stays open on `origin/personal`; `tests/unit/available-agent-runtimes` needed no change (it tests the service report, not the tool text).
