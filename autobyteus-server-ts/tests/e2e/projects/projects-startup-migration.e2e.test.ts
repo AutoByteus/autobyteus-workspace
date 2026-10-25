@@ -181,6 +181,16 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(await fs.readFile(historicalFile, "utf8")).toBe(historicalBytes);
     const tasks = (await first.gql(`query($id:String!){projectTasks(projectId:$id){taskId status contextFiles{storedFilename}}}`, { id: "project_ctx" })).projectTasks;
     expect(tasks.map((t: { taskId: string; status: string }) => [t.taskId, t.status]).sort()).toEqual([["project_task_ctx", "IN_PROGRESS"], ["project_task_done", "DONE"]]);
+    // autobyteus-260 (SR-012): the same start also keyed and titled them: per-folder → keys → titles in one start.
+    const ledger = (await first.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Array<{ migrationId: string; status: string }>;
+    for (const id of ["20261017_project_task_keys_v1", "20261025_project_task_titles"]) {
+      expect(ledger.find((m) => m.migrationId === id)?.status).toMatch(/^SUCCEEDED/);
+    }
+    for (const projectId of ["project_ctx", "cf622a33-4f56-4208-9baa-851813ba9570"]) {
+      const read = (await first.gql("query($id:String!){projectTasks(projectId:$id){taskKey title description}}", { id: projectId })).projectTasks as Array<{ taskKey: string; title: string; description: string }>;
+      expect(read.length).toBeGreaterThan(0);
+      for (const t of read) expect(t.title).toBe(t.description.split("\n").map((line) => line.trim()).find(Boolean)!.slice(0, 200));
+    }
     const saved = await fetch(`${first.origin}/rest/projects/project_ctx/tasks/project_task_ctx/context-files/ctx_0ad25cc6cad1__requirements.txt`);
     expect(saved.status).toBe(200); expect(await saved.text()).toBe("requirements");
     const draftFile = await fetch(`${first.origin}/rest/projects/project_ctx/task-context-drafts/${draft.draftId}/context-files/${draft.storedFilename}`);
@@ -337,26 +347,42 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     const keyed = async (app: Awaited<ReturnType<typeof studio>>, id: string) => (await app.gql(
       "query($id:String!){projectTasks(projectId:$id){taskId taskKey dependsOnTaskIds}}", { id })).projectTasks
       .map((t: { taskId: string; taskKey: string }) => [t.taskId, t.taskKey]).sort();
+    // autobyteus-260 (SR-012, CR-001): titles depends only on projects-per-folder-v1, so a keys-v1 failure hides only its Project.
+    const TITLES = "20261025_project_task_titles";
+    const titlesRecord = async (app: Awaited<ReturnType<typeof studio>>) => (await app.gql("{getAppDataMigrations{migrationId status attempts}}"))
+      .getAppDataMigrations.find((m: { migrationId: string }) => m.migrationId === TITLES);
+    const titled = async (app: Awaited<ReturnType<typeof studio>>, id: string) => (await app.gql(
+      "query($id:String!){projectTasks(projectId:$id){taskId title}}", { id })).projectTasks
+      .map((t: { taskId: string; title: string }) => [t.taskId, t.title]).sort();
 
     const first = await studio();
     expect(await keysRecord(first)).toMatchObject({ status: "FAILED", attempts: 1 });
-    // No lockout: other Projects and new work keep working; the unkeyable Project is hidden and its files untouched.
+    expect(await titlesRecord(first)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+    // No lockout: other Projects and new work keep working; the unkeyable Project is hidden and keeps its key state.
     expect((await first.gql("{projects{projectId}}")).projects.map((p: { projectId: string }) => p.projectId).sort()).toEqual(["project_agents", "project_main"]);
-    expect(await fs.readFile(blockedTask, "utf8")).toBe(blockedBytes);
+    // Its Task only gained a title (from its first line); nothing else changed.
+    expect(JSON.parse(await fs.readFile(blockedTask, "utf8"))).toEqual({ ...JSON.parse(blockedBytes), title: "Task task_blocked" });
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), "project_blocked/project.json"), "utf8"))).not.toHaveProperty("taskKeys");
     expect(await keyed(first, "project_main")).toEqual([["task_early", "autobyteus-1"], ["task_late", "autobyteus-2"]]);
     expect(await keyed(first, "project_agents")).toEqual([["task_agent", "autobyteus-agents-1"]]);
+    // The other Projects list their Tasks with titles.
+    expect(await titled(first, "project_main")).toEqual([["task_early", "Task task_early"], ["task_late", "Task task_late"]]);
+    expect(await titled(first, "project_agents")).toEqual([["task_agent", "Task task_agent"]]);
     const created = (await first.gql("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey dependsOnTaskIds}}",
       { i: { projectId: "project_main", title: "After the upgrade", description: "After the upgrade", dependsOnTaskIds: ["task_early"] } })).createProjectTask;
     expect(created).toMatchObject({ taskKey: "autobyteus-3", dependsOnTaskIds: ["task_early"] });
     expect((await fetch(`${first.origin}/rest/health`)).status).toBe(200);
     await stop(first.child);
 
-    // A restart retries only the unfinished Project.
-    await writeJson(blockedTask, task("project_blocked", "task_blocked", "2026-10-03T01:00:00.000Z"));
+    // The conflict is fixed (only the conflicting key removed); a restart retries only the unfinished Project.
+    const { taskKey: _conflicting, ...fixed } = JSON.parse(await fs.readFile(blockedTask, "utf8"));
+    await writeJson(blockedTask, fixed);
     const second = await studio();
     expect(await keysRecord(second)).toMatchObject({ status: "SUCCEEDED", attempts: 2 });
     expect(await keyed(second, "project_blocked")).toEqual([["task_blocked", "blocked-1"]]);
+    // Its Task lists with the title it got on the first start; titles is not run again.
+    expect(await titled(second, "project_blocked")).toEqual([["task_blocked", "Task task_blocked"]]);
+    expect(await titlesRecord(second)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     expect(await keyed(second, "project_main")).toEqual([[created.taskId, "autobyteus-3"], ["task_early", "autobyteus-1"], ["task_late", "autobyteus-2"]].sort());
     await stop(second.child);
 

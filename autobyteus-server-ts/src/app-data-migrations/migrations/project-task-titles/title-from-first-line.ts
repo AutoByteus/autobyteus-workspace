@@ -9,10 +9,10 @@ export const DERIVED_TITLE_MAX_CHARS = 200;
 
 const isHighSurrogate = (code: number): boolean => code >= 0xd800 && code <= 0xdbff;
 
-/** The derived title, or null when the description has no non-empty line. */
-export const titleFromFirstLine = (description: string): string | null => {
+/** The derived title of a released Task's description, which the frozen validator requires to be non-blank. */
+export const titleFromFirstLine = (description: string): string => {
   const line = description.split("\n").map((candidate) => candidate.trim()).find((candidate) => candidate.length > 0);
-  if (line === undefined) return null;
+  if (line === undefined) throw new Error("A released Task's description is not blank.");
   if (line.length <= DERIVED_TITLE_MAX_CHARS) return line;
   const cut = line.slice(0, DERIVED_TITLE_MAX_CHARS - 1);
   return `${isHighSurrogate(cut.charCodeAt(cut.length - 1)) ? cut.slice(0, -1) : cut}…`;

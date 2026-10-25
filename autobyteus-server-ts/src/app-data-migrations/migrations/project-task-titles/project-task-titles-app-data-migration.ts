@@ -4,16 +4,16 @@ import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { writeJsonFile } from "../../frozen/server/persistence/file/store-utils.js";
 import { ProjectsLayout } from "../../frozen/server/projects/stores/projects-layout.js";
-import { readTaskFile as readTaskFileBeforeTitles } from "../../frozen/server/projects/stores/project-store.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
   AppDataMigrationItemDetail,
   AppDataMigrationItemStatus,
 } from "../../domain/app-data-migration-types.js";
+import { readReleasedTaskFileBeforeTitles } from "./released-task-file-before-titles.js";
 import { titleFromFirstLine } from "./title-from-first-line.js";
 
-const PROJECT_TASK_KEYS_V1_MIGRATION_ID = "20261017_project_task_keys_v1";
+const PROJECTS_PER_FOLDER_V1_MIGRATION_ID = "20261005_projects_per_folder_v1";
 
 export const PROJECT_TASK_TITLES_MIGRATION_ID = "20261025_project_task_titles";
 
@@ -21,16 +21,14 @@ type Disposition =
   | "MIGRATED"
   | "SKIPPED_ALREADY_CURRENT"
   | "SKIPPED_INVALID_TASK_WARNING"
-  | "SKIPPED_NO_TITLE_LINE_WARNING"
   | "FAILED_OPERATION";
 const MESSAGES: Record<Disposition, string> = {
   MIGRATED: "Gave the Task its title from its description's first line.",
   SKIPPED_ALREADY_CURRENT: "The Task already has a title; left unchanged.",
   SKIPPED_INVALID_TASK_WARNING: "A task.json is not a valid Task; it was preserved unchanged (it is not shown by the app).",
-  SKIPPED_NO_TITLE_LINE_WARNING: "A Task's description has no non-empty line to take a title from; it was preserved unchanged (it is not shown by the app until it has a title).",
   FAILED_OPERATION: "A Task could not be given its title (a write or its validation failed); the other Tasks continue and a restart retries.",
 };
-const WARNING_DISPOSITIONS = new Set<Disposition>(["SKIPPED_INVALID_TASK_WARNING", "SKIPPED_NO_TITLE_LINE_WARNING"]);
+const WARNING_DISPOSITIONS = new Set<Disposition>(["SKIPPED_INVALID_TASK_WARNING"]);
 const MAX_EXAMPLES = 5;
 const status = (d: Disposition): AppDataMigrationItemStatus => d === "MIGRATED" ? "MIGRATED" : d === "FAILED_OPERATION" ? "FAILED" : "SKIPPED";
 
@@ -44,8 +42,13 @@ const hasTitle = (raw: RawRecord): boolean => typeof raw.title === "string" && r
  * the pre-title reader accepts and that has no title gets `title` from its description's first non-empty line
  * (`title-from-first-line.ts`); nothing else in the file changes. Each file is replaced atomically and re-read: the
  * planned title and every other key and value must be as before. A failed Task does not stop the others; a restart
- * retries and skips the Tasks already titled. Classification uses the frozen pre-title `readTaskFile`, so every Task
- * the app listed before this change is titled. Runs after `project-task-keys-v1`, so unkeyed Tasks are keyed first.
+ * retries and skips the Tasks already titled. Classification uses its own frozen validator of the released Task file
+ * (`released-task-file-before-titles.ts`), keyed or not: the title depends only on the description.
+ *
+ * It depends on `projects-per-folder-v1` only (the per-folder Task files must exist), not on `project-task-keys-v1`:
+ * keys-v1 fails per Project (an unkeyable Project stays hidden, the others are listed, a restart retries), and a
+ * whole-run prerequisite on it would leave every Project's Tasks untitled and hidden (SR-012, CR-001). A Task titled
+ * here before keys-v1 keys it keeps its title: keys-v1 writes `{...raw, taskKey}`.
  */
 export class ProjectTaskTitlesAppDataMigration implements AppDataMigrationDefinition {
   readonly id = PROJECT_TASK_TITLES_MIGRATION_ID;
@@ -53,7 +56,7 @@ export class ProjectTaskTitlesAppDataMigration implements AppDataMigrationDefini
   readonly description = "Gives every existing Project Task a title, taken from the first line of its description (at most 200 characters).";
   readonly requiredOnStartup = true;
   readonly executionPolicy = "STARTUP_ONLY" as const;
-  readonly prerequisiteMigrationIds = [PROJECT_TASK_KEYS_V1_MIGRATION_ID] as const;
+  readonly prerequisiteMigrationIds = [PROJECTS_PER_FOLDER_V1_MIGRATION_ID] as const;
 
   private readonly layout: ProjectsLayout;
   private readonly dispositions = new Map<Disposition, { count: number; examples: string[] }>();
@@ -83,10 +86,9 @@ export class ProjectTaskTitlesAppDataMigration implements AppDataMigrationDefini
   private async titleTask(file: string, projectId: string, taskId: string): Promise<Disposition> {
     const raw = await readRecord(file);
     if (raw && hasTitle(raw)) return "SKIPPED_ALREADY_CURRENT";
-    const task = raw && readTaskFileBeforeTitles(raw, projectId, taskId);
+    const task = raw && readReleasedTaskFileBeforeTitles(raw, projectId, taskId);
     if (!raw || !task) return "SKIPPED_INVALID_TASK_WARNING";
     const title = titleFromFirstLine(task.description);
-    if (title === null) return "SKIPPED_NO_TITLE_LINE_WARNING";
     const planned = { ...raw, title };
     await writeJsonFile(file, planned);
     if (!isDeepStrictEqual(await readRecord(file), planned)) throw new Error(`task.json for '${taskId}' does not validate after writing.`);
