@@ -1,0 +1,13 @@
+# DLV-04: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:nuxt components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts --run --reporter=verbose (merge 2b166a2f9f)
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders the loading state while the file is fetched 15ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file 31ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsx workbook from a URL with sheet tabs 16ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a biff8 workbook from a URL with sheet tabs 16ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsm workbook from a URL with sheet tabs 9ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a CSV file from a URL 4ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders streamed CSV content when there is no URL 3ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > prefers the URL over streamed content 4ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > keeps markup in cell text inert and renders only table structure 6ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows hyperlinked cells as their text without a link 7ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)

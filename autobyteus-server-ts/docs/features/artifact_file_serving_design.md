@@ -105,9 +105,11 @@ the next event writes. Reads never wait for the event queue.
    `memberAddress`, and nullable `taskAgentRunId`).
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
-4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
-   team events and persists one message-first projection at
-   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`.
+4. Team teammate delivery (`RootCommunicationEngine` with the `RootTeamRun`
+   port) saves one message-first record at
+   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl` before the
+   recipient may run the message (see
+   [Teammate Delivery Path](../modules/agent_communication.md#teammate-delivery-path)).
 5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
    hydration.
 6. Reference bytes are served by message-owned identity:

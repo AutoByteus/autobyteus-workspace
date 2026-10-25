@@ -56,7 +56,13 @@ flowchart TD
 | PDF       | `.pdf`                          | PdfViewer         |
 | Markdown  | `.md`, `.markdown`              | MarkdownPreviewer |
 | HTML      | `.html`, `.htm`                 | HtmlPreviewer     |
-| Excel     | `.xlsx`, `.xls`, `.csv`         | ExcelViewer       |
+| Excel     | `.xlsx`, `.xls`, `.xlsm`, `.csv` | ExcelViewer       |
+
+`ExcelViewer` parses spreadsheets with SheetJS CE (the `xlsx` package, installed
+from the integrity-pinned cdn.sheetjs.com tarball) and sanitises the generated
+sheet HTML with DOMPurify down to table structure (`table`, rows, cells, `br`,
+`colspan`/`rowspan`) before rendering. Hyperlinked cells show their text without
+a link.
 
 ## Shared Read-Only Viewer Surfaces
 

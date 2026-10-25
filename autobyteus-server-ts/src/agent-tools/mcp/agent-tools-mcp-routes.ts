@@ -44,7 +44,6 @@ export async function registerAgentToolsMcpRoutes(
 
     mcpApp.all<{ Params: AgentToolsMcpRouteParams; Body: unknown }>(
       MCP_ROUTE,
-      { config: { cors: false } },
       async (request, reply) => handleAgentToolsMcpRequest({ request, reply, registry, dispatcher }),
     );
   });

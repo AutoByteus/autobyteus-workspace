@@ -1,8 +1,6 @@
 import { acceptTaskSeed } from "../../../agent-collaboration/execution/task/task-execution-seed-admission.js";
-import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
-import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../domain/prepared-task-execution.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
@@ -222,12 +220,6 @@ export class TaskAgentExecutionRegistry {
     if (operation) return operation.release();
     const handle = this.active.get(agentRunId) ?? this.preparedHandles.get(agentRunId);
     return handle ? handle.releaseRuntime() : Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
-  }
-
-  reserveInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
-    const handle = this.active.get(agentRunId);
-    if (!handle) return Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Task AgentRun '${agentRunId}' is not active.` });
-    return handle.reserveInput(message, options);
   }
 
   async executeCommand(agentRunId: string, command: import("../../domain/team-member-execution-command.js").TeamMemberExecutionCommand): Promise<AgentOperationResult> {
