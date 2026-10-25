@@ -126,7 +126,7 @@ try {
     const results = await Promise.all([read(), read(), read(), read()]);
     results.forEach((r) => reports.push(r.text));
     out.steps[`parallel-${round}`] = { wallMs: Date.now() - started, calls: results.map((r) => { const e = byRuntime(r.report);
-      return { ms: r.ms, runtimes: r.report.agentRuntimes.map((x) => x.runtime), unknowns: Object.values(e).flatMap((x) => [x.limits, x.models].filter((v) => typeof v === 'string' && v.startsWith('unknown')).map((v) => `${x.runtime}: ${v}`)) }; }) };
+      return { ms: r.ms, checkedAt: r.report.checkedAt, codex: { limits: Array.isArray(e.codex_app_server?.limits) ? 'read' : e.codex_app_server?.limits, models: Array.isArray(e.codex_app_server?.models) ? 'read' : e.codex_app_server?.models }, runtimes: r.report.agentRuntimes.map((x) => x.runtime), unknowns: Object.values(e).flatMap((x) => [x.limits, x.models].filter((v) => typeof v === 'string' && v.startsWith('unknown')).map((v) => `${x.runtime}: ${v}`)) }; }) };
     await sleep(2000);
   }
   // 4. identity / key patterns in every answer and the server's log

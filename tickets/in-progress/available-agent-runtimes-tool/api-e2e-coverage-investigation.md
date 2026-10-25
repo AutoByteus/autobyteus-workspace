@@ -18,10 +18,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass (CRR-002) from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: none (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: code review pass CRR-005 (round-1 fixes CR-002…CR-005; SR-006, SR-007) from `/software_engineering_team/code_reviewer`
+- Prior Investigation Reviewed: round 1 (API-REV-001, Fail)
 - Latest Authoritative Investigation: this document
 
 All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool` (branch `codex/available-agent-runtimes-tool`; code at `683b036be9`, base `origin/personal` `a2faf424d6`).
@@ -187,6 +187,17 @@ None.
 | Grok `creditUsagePercent` meaning when present (UNK-001) | absent in today's live answer | Low | Yes (AC-006 says user verification) | — |
 | Isolated desktop instance | no shell change | Low | No | — |
 
+## Round 2 Rerun Plan (by impact)
+
+- Changed since round 1 (`git diff --name-only 8de58e3ab3 5a87647318 -- . ':!tickets'`): the service (moved to `src/available-agent-runtimes/`), its report and matching, every strategy, `read-deadline.ts`, `runtime-command-runner.ts`, Antigravity/Grok capability, ACP handshake, Claude client, provider readers, GraphQL/tool contract, composition, one web row and type, and two expectations in my tests.
+- Rerun (they exercise changed code): API-01…05, API-06, API-07, API-07b, API-08/08b/09/10/11, API-12; API-03b and API-05b first (round-1 failures).
+- New behavior: AC-013 (single-flight) → AAR-04 made strict (API-05); SR-006 discovered providers → new AAR-06 (API-13) and MRP-02 extension; SR-007 wording → covered by AAR-03/06 and MRP-02.
+- Reused: IMP-15, IMP-16, IMP-18, IMP-14, IMP-04 (API-00), still valid by their diffs (execution report).
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-13 | AC-007 (SR-006), REQ-002, REQ-007 | real studio server; LM Studio and a custom endpoint scripted over HTTP | Durable | AAR-06 in the server E2E file | discovered providers are read afresh on every read |
+
 ## Ambiguities Or Reroute Triggers
 
 | Issue | Classification | Evidence | Recommended Owner |
@@ -194,6 +205,7 @@ None.
 | F-1 timed-out step reported "could not be read" (wall-clock `timeLeft === 0` check) | `Local Fix` | `evidence/api-e2e/API-03b-timeout-reason-probe.log` | Implementation engineer (via failure-origin review) |
 | F-2 local provider with models not listed until its catalog is loaded | `Design Impact` | `evidence/api-e2e/API-08b-live-lmstudio-probe.json.log` | Solution Designer |
 | F-3 concurrent reads degrade Codex to unknown (shared home-folder lease close) | `Design Impact` | `evidence/api-e2e/API-05b-two-readers-probe.log`, API-01-05 logs | Solution Designer |
+| Round 2: F-1, F-2, F-3 resolved (API-03b, API-08b, API-05/09) | — | `evidence/api-e2e/*r2*` | — |
 | Agent Runtimes settings probe failing identically on base | Out of scope (pre-existing) | `evidence/api-e2e/API-07b-agent-runtimes-probe-vs-base.log` | FU-002 |
 
 ## Investigation Decision

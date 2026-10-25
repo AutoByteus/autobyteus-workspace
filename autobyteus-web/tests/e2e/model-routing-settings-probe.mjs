@@ -8,7 +8,8 @@
 // Cases: MRP-01 open from the Settings menu: every runtime row, limits with reset times, blocked models, the limits
 // note, provider sub-rows (balance, blocked, not reported), the same data as the node's GraphQL answer, no polling;
 // MRP-02 Check again (rows kept and the button busy while reading) into the failure states: sign-in not checked,
-// limits unknown, models unknown, a provider's limits unknown; MRP-03 narrow window; MRP-04 zh-CN; MRP-05 a remote node
+// limits unknown, models unknown, a provider's limits unknown, a keyed custom endpoint's models unknown, and LM Studio
+// appearing once it answers (discovered providers are asked on every read, SR-006); MRP-03 narrow window; MRP-04 zh-CN; MRP-05 a remote node
 // window shows that node (all CLIs signed out or missing, no key: AutoByteus without providers), and rebinding back;
 // MRP-06 a node that can't be read; MRP-07 no key, e-mail or account value anywhere. Every case records Pass/Fail in
 // <output-dir>/result.json with screenshots; owned processes and the temp root are always removed.
@@ -51,6 +52,11 @@ const CODEX = 'codex_app_server';
 const CLAUDE = 'claude_agent_sdk';
 const AGY = 'antigravity_cli';
 const GROK = 'grok_build';
+const LMSTUDIO_HOST = 'http://lmstudio.probe.test:1234';
+const LMSTUDIO_MODELS_URL = `${LMSTUDIO_HOST}/api/v1/models`;
+const CUSTOM_BASE_URL = 'https://gateway.probe.test/v1';
+const CUSTOM_MODELS_URL = `${CUSTOM_BASE_URL}/models`;
+const CUSTOM_KEY = 'FAKE-SECRET-probe-custom-gateway-key';
 const KEYS = {
   DEEPSEEK: 'FAKE-SECRET-probe-deepseek-key', KIMI: 'FAKE-SECRET-probe-kimi-key', ANTHROPIC: 'FAKE-SECRET-probe-anthropic-key',
   GROK: 'FAKE-SECRET-probe-xai-key', OPENAI: 'FAKE-SECRET-probe-openai-key',
@@ -145,8 +151,9 @@ const createNode = async (ownedRoot, fakes, { name, grokInstalled }) => {
     CODEX_APP_SERVER_COMMAND: path.join(fakes.binDir, 'codex'), CLAUDE_CODE_EXECUTABLE_PATH: path.join(fakes.binDir, 'claude'),
     ANTIGRAVITY_CLI_COMMAND: path.join(fakes.binDir, 'agy'), GROK_BUILD_COMMAND: grokInstalled ? path.join(fakes.binDir, 'grok') : path.join(ownedRoot, 'not-installed', 'grok'),
     FAKE_RUNTIME_STATE_DIR: fakes.stateDir, CLAUDE_CONFIG_DIR: path.join(fakes.stateDir, 'claude-config'), FAKE_PROVIDER_USAGE_FILE: fakes.providerFile,
-    // No local model server answers, so neither Ollama nor LM Studio is listed.
-    OLLAMA_HOSTS: 'http://127.0.0.1:9', LMSTUDIO_HOSTS: 'http://127.0.0.1:9',
+    // Ollama never answers; LM Studio only while the probe switches it on.
+    // LM Studio is answered by the provider stub only while the probe lists its URL (refused otherwise).
+    OLLAMA_HOSTS: 'http://127.0.0.1:9', LMSTUDIO_HOSTS: LMSTUDIO_HOST,
   };
   await fs.writeFile(path.join(dataRoot, '.env'), ['APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`].join('\n') + '\n');
   await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], root, env, path.join(outputDir, `${name}-migrate.log`));
@@ -216,6 +223,7 @@ const pageRows = () => page.evaluate(() => {
         balance: clean(provider.querySelector('[data-testid="available-provider-balance"]')) || null,
         blocked: clean(provider.querySelector('[data-testid="available-provider-blocked"]')) || null,
         limitsUnknown: clean(provider.querySelector('[data-testid="available-provider-limits-unknown"]')) || null,
+        modelsUnknown: clean(provider.querySelector('[data-testid="available-provider-models-unknown"]')) || null,
         text: clean(provider.querySelector('div')),
         models: models(provider.querySelector('[data-testid="available-provider-models"]')),
       })),
@@ -248,8 +256,13 @@ const assertPageMatches = (rows, report) => {
       assert(JSON.stringify(row.providers.map(p => p.provider)) === JSON.stringify(entry.providers.map(p => p.provider)), 'provider rows');
       for (const provider of entry.providers) {
         const shown = row.providers.find(p => p.provider === provider.provider);
-        assert(JSON.stringify(shown.models.map(m => m.id)) === JSON.stringify(provider.models.map(m => m.id)), `${provider.provider} models`);
-        assert(shown.models.filter(m => m.blocked).length === provider.models.filter(m => m.blocked).length, `${provider.provider} blocked models`);
+        if (typeof provider.models === 'string') {
+          assert(shown.modelsUnknown === `Models unknown: ${provider.models.slice(9)}`, `${provider.provider} models unknown "${shown.modelsUnknown}"`);
+          assert(shown.models.length === 0, `${provider.provider} shows no model list`);
+        } else {
+          assert(JSON.stringify(shown.models.map(m => m.id)) === JSON.stringify(provider.models.map(m => m.id)), `${provider.provider} models`);
+          assert(shown.models.filter(m => m.blocked).length === provider.models.filter(m => m.blocked).length, `${provider.provider} blocked models`);
+        }
         assert((shown.balance ?? null) === (provider.balance ? `Balance ${provider.balance}` : null), `${provider.provider} balance ${shown.balance}`);
         assert((shown.blocked ?? null) === (provider.blocked ? `Cannot run: ${provider.blocked}` : null), `${provider.provider} blocked ${shown.blocked}`);
         if (provider.limits === 'not reported') assert(shown.text.includes('Limits not reported'), `${provider.provider} not reported`);
@@ -373,6 +386,14 @@ try {
     await fakes.set('agy-usage', 'fail');             // Antigravity: limits unknown
     await fakes.set('grok-acp-models', '[]');         // Grok: an empty model catalog → models unknown
     fakes.answers['https://api.deepseek.com/user/balance'] = { status: 500, body: { error: 'internal' } };
+    // A keyed custom endpoint, created while it answers, then not answering; LM Studio starts answering.
+    fakes.answers[CUSTOM_MODELS_URL] = { status: 200, body: { object: 'list', data: [{ id: 'gateway-model-a', object: 'model' }] } };
+    await fakes.writeAnswers();
+    const created = await gql(node, 'mutation($input: CustomProviderInputObject!){ createCustomProvider(input:$input){ provider { name } apiKeyConfigured } }',
+      { input: { name: 'Probe Gateway', baseUrl: CUSTOM_BASE_URL, apiKey: CUSTOM_KEY } });
+    assert(created.createCustomProvider.apiKeyConfigured, 'custom provider key saved');
+    fakes.answers[CUSTOM_MODELS_URL] = { status: 503, body: { error: 'unavailable' } };
+    fakes.answers[LMSTUDIO_MODELS_URL] = { status: 200, body: { models: [{ key: 'qwen/qwen3.6-35b-a3b', type: 'llm', max_context_length: 262144 }] } };
     await fakes.writeAnswers();
     const reads = reportRequests.length;
     await click('agent-runtimes-now-check-again');
@@ -398,6 +419,13 @@ try {
     const deepseek = by.autobyteus.providers.find(p => p.provider === 'DeepSeek');
     // SR-007: the service words every failure; a provider's unusable answer keeps its classified reason.
     assert(deepseek.limitsUnknown === 'Limits unknown: DeepSeek usage could not be read: unexpected answer (500)', `deepseek ${deepseek.limitsUnknown}`);
+    const gateway = by.autobyteus.providers.find(p => p.provider === 'Probe Gateway');
+    assert(gateway && /^Models unknown: Probe Gateway model list /.test(gateway.modelsUnknown ?? ''), `custom endpoint ${JSON.stringify(gateway)}`);
+    const lmStudio = by.autobyteus.providers.find(p => p.provider === 'LM Studio');
+    assert(lmStudio && lmStudio.models.length === 1 && lmStudio.text.includes('Limits not reported'), `LM Studio ${JSON.stringify(lmStudio)}`);
+    evidence.cases['MRP-02-discovered'] = { gateway, lmStudio };
+    // The page scrolls inside its own container, so the AutoByteus row gets its own (scrolled-into-view) screenshot.
+    await locate('available-runtime-autobyteus').screenshot({ path: path.join(outputDir, 'MRP-02c-autobyteus-providers.png') });
     await shot('MRP-02b-failure-states-1440');
   });
 
@@ -471,7 +499,7 @@ try {
   });
 
   await kase('MRP-07', 'No key, e-mail or account value in the page, its GraphQL responses, the nodes\' output, logs or data files; providers asked only at their usage endpoints (REQ-008)', async () => {
-    const secrets = [...Object.values(KEYS), ...await fakes.secrets(), ...await remoteFakes.secrets(), 'FAKE-SECRET-probe-xai-user', 'FAKE-SECRET-probe-xai-team'];
+    const secrets = [...Object.values(KEYS), CUSTOM_KEY, ...await fakes.secrets(), ...await remoteFakes.secrets(), 'FAKE-SECRET-probe-xai-user', 'FAKE-SECRET-probe-xai-team'];
     const files = [];
     const walk = async dir => { for (const entry of await fs.readdir(dir, { withFileTypes: true })) { const full = path.join(dir, entry.name); if (entry.isDirectory()) await walk(full); else files.push(full); } };
     await walk(node.dataRoot);
@@ -484,7 +512,8 @@ try {
     evidence.cases['MRP-07-scan'] = { secrets: secrets.length, graphqlResponses: graphqlResponses.length, dataFiles: files.length, hits, providerRequests: [...new Set(providerRequests)] };
     assert(graphqlResponses.length > 5, 'responses captured');
     assert(hits.length === 0, `secrets found: ${hits.join('; ')}`);
-    assert(providerRequests.filter(line => !line.startsWith('REFUSED')).every(line => Object.keys(PROVIDER_ANSWERS).some(url => line.endsWith(url))), 'only usage endpoints');
+    // Answered: the four usage endpoints and the two discovered model lists (LM Studio, the custom endpoint).
+    assert(providerRequests.filter(line => !line.startsWith('REFUSED')).every(line => [...Object.keys(PROVIDER_ANSWERS), LMSTUDIO_MODELS_URL, CUSTOM_MODELS_URL].some(url => line.endsWith(url))), 'only usage endpoints and model lists');
     assert(!providerRequests.some(line => /completions|\/v1\/messages(?!\/count_tokens)|\/responses/.test(line)), 'no model request');
   });
 

@@ -11,14 +11,19 @@
  *   AAR-03 slow steps end at their deadlines, the answer arrives within 20 s and the hung processes are gone; the next
  *          read works again (AC-008, AC-011, REQ-010);
  *   AAR-04 a Codex run whose definition lists the tool gets it over Agent Tools MCP with the same report; one whose
- *          definition does not, does not (AC-002, AC-012), and several readers at once (RSK-002).
+ *          definition does not, does not (AC-002, AC-012); several readers at once share one read and all get Codex
+ *          (AC-013, SR-006);
+ *   AAR-06 discovered providers are asked on every read: LM Studio answering is listed with its models though nothing
+ *          loaded them before, LM Studio not answering is left out, a keyed custom endpoint not answering is listed with
+ *          its models unknown (AC-007, REQ-002, REQ-007; SR-006).
  * Every response, the server's log file, its stdout/stderr and its data files are scanned for the synthetic provider
  * keys and every secret-looking value the fake CLIs printed (REQ-008).
  *
  * Prerequisites: none. The runtime CLIs are `tests/fixtures/agent-runtimes-fake-cli.mjs` linked as codex/claude/agy/grok
  * (their limit answers are the recorded, redacted ones in `tests/fixtures/usage-limits/`). Provider HTTP (DeepSeek,
- * Kimi, Anthropic, xAI) is answered inside the test process; every other outside URL is refused, so the run is offline.
- * Local model servers are pointed at a closed port, so no local provider is listed.
+ * Kimi, Anthropic, xAI), LM Studio's model list (`LMSTUDIO_HOSTS` → a fake host) and a custom endpoint's model list are
+ * answered inside the test process; every other outside URL is refused, so the run is offline. Ollama is pointed at a
+ * closed port; LM Studio answers only while a test switches it on.
  *
  * Command (resolved temp HOME, TESTING.md):
  *   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
@@ -44,7 +49,7 @@ const fake = await vi.hoisted(async () => {
   // No local model server answers: Ollama and LM Studio offer no models, so neither is listed.
   const previous = { ollama: process.env.OLLAMA_HOSTS, lmstudio: process.env.LMSTUDIO_HOSTS };
   process.env.OLLAMA_HOSTS = "http://127.0.0.1:9";
-  process.env.LMSTUDIO_HOSTS = "http://127.0.0.1:9";
+  process.env.LMSTUDIO_HOSTS = "http://lmstudio.e2e.test:1234";
   return {
     ...prepared,
     dispose: () => {
@@ -75,6 +80,11 @@ const KEYS: Record<string, string> = {
   OPENAI: "FAKE-SECRET-openai-key-e620",
 };
 
+const LMSTUDIO_MODELS_URL = "http://lmstudio.e2e.test:1234/api/v1/models";
+const CUSTOM_BASE_URL = "https://gateway.e2e.test/v1";
+const CUSTOM_MODELS_URL = `${CUSTOM_BASE_URL}/models`;
+const CUSTOM_KEY = "FAKE-SECRET-custom-gateway-key-51aa";
+
 type ProviderRequest = { url: string; method: string; authorization: string | null; body: string | null };
 
 /** Provider usage endpoints answered in this process (the probed shapes, A-19); every other outside URL is refused. */
@@ -88,17 +98,28 @@ const installProviderStub = () => {
     "https://api.anthropic.com/v1/messages/count_tokens": { status: 400, body: { type: "error", error: { type: "invalid_request_error", message: "Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits." } } },
     "https://api.x.ai/v1/api-key": { status: 200, body: { redacted_api_key: "xai-…0d5e", user_id: "FAKE-SECRET-xai-user-id", team_id: "FAKE-SECRET-xai-team-id", api_key_blocked: false, api_key_disabled: false, team_blocked: false } },
   };
+  /** Discovered model servers (SR-006), each answering only while switched on. */
+  const discovered = { lmStudio: false, customEndpoint: false };
+  const discoveredAnswer = (url: string): { status: number; body: unknown } | null => {
+    if (url === LMSTUDIO_MODELS_URL) return discovered.lmStudio
+      ? { status: 200, body: { models: [{ key: "qwen/qwen3.6-35b-a3b", type: "llm", max_context_length: 262144 }, { key: "google/gemma-4-26b-a4b", type: "llm", max_context_length: 131072 }] } }
+      : { status: 503, body: { error: "not running" } };
+    if (url === CUSTOM_MODELS_URL) return discovered.customEndpoint
+      ? { status: 200, body: { object: "list", data: [{ id: "gateway-model-a", object: "model" }, { id: "gateway-model-b", object: "model" }] } }
+      : { status: 503, body: { error: "unavailable" } };
+    return null;
+  };
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     const host = new URL(url).hostname;
     if (host === "127.0.0.1" || host === "localhost") return realFetch(input, init);
     const headers = new Headers(init?.headers);
-    const answer = answers[url];
+    const answer = answers[url] ?? discoveredAnswer(url);
     if (!answer) { refused.push(url); return new Response("offline test", { status: 503 }); }
     requests.push({ url, method: init?.method ?? "GET", authorization: headers.get("authorization") ?? headers.get("x-api-key"), body: typeof init?.body === "string" ? init.body : null });
     return new Response(JSON.stringify(answer.body), { status: answer.status, headers: { "content-type": "application/json" } });
   }) as typeof fetch;
-  return { realFetch, requests, refused, restore: () => { globalThis.fetch = realFetch; } };
+  return { realFetch, requests, refused, discovered, restore: () => { globalThis.fetch = realFetch; } };
 };
 
 type Report = { checkedAt: string; agentRuntimes: Array<Record<string, any>> };
@@ -275,7 +296,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     // Each provider was asked once, at its usage endpoint only, with its own key; Anthropic's call is count_tokens (free).
     evidence("AAR-01 provider-requests", stub.requests.map(({ url, method }) => `${method} ${url}`));
     evidence("AAR-01 refused-outside-urls", [...new Set(stub.refused)]);
-    expect(stub.requests.map((request) => request.url).sort()).toEqual(Object.keys({
+    expect(stub.requests.map((request) => request.url).filter((url) => url !== LMSTUDIO_MODELS_URL).sort()).toEqual(Object.keys({
       "https://api.anthropic.com/v1/messages/count_tokens": 1, "https://api.deepseek.com/user/balance": 1,
       "https://api.moonshot.ai/v1/users/me/balance": 1, "https://api.x.ai/v1/api-key": 1,
     }).sort());
@@ -363,7 +384,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     expect(after[GROK]).toBeDefined();
   }, 90_000);
 
-  it("AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once (AC-002, AC-012, RSK-002)", async () => {
+  it("AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)", async () => {
     const defineAgent = async (name: string, toolNames: string[]) => (await post(
       `mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
       { input: { name, role: "assistant", description: "autobyteus-303 e2e", instructions: "Help.", toolNames } })).createAgentDefinition.id as string;
@@ -400,19 +421,37 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     expect(withoutTime(viaMcp), "the same answer as the page's GraphQL query").toEqual(withoutTime(viaGraphql));
     evidence("AAR-04 mcp-report-runtimes", viaMcp.agentRuntimes.map((entry) => entry.runtime));
 
-    // Several readers at the same moment: three page reads and the agent's tool call (SCN-A2).
+    // Several readers at the same moment: three page reads and the agent's tool call (SCN-A2) share one read (AC-013).
+    const appServersBefore = (states.read("codex-app-server.pids") ?? "").split("\n").filter(Boolean).length;
     const started = Date.now();
     const parallel = await Promise.all([
       read(), read(), read(),
       (async () => { const t0 = Date.now(); const result = await mcp(server!.url, "tools/call", { name: TOOL, arguments: {} }); return { report: result.body.result.structuredContent as Report, ms: Date.now() - t0 }; })(),
     ]);
-    const parallelFacts = parallel.map(({ report, ms }) => ({ ms, runtimes: report.agentRuntimes.map((entry) => entry.runtime),
-      codexLimits: Array.isArray(byRuntime(report)[CODEX]?.limits) ? "read" : byRuntime(report)[CODEX]?.limits }));
-    evidence("AAR-04 parallel", { wallMs: Date.now() - started, calls: parallelFacts });
+    const codexFacts = (report: Report) => { const codex = byRuntime(report)[CODEX];
+      return { limits: Array.isArray(codex?.limits) ? "read" : codex?.limits ?? "absent", models: Array.isArray(codex?.models) ? "read" : codex?.models ?? "absent" }; };
+    const parallelFacts = parallel.map(({ report, ms }) => ({ ms, checkedAt: report.checkedAt, runtimes: report.agentRuntimes.map((entry) => entry.runtime), codex: codexFacts(report) }));
+    const appServersStarted = (states.read("codex-app-server.pids") ?? "").split("\n").filter(Boolean).length - appServersBefore;
+    evidence("AAR-04 parallel", { wallMs: Date.now() - started, appServersStarted, calls: parallelFacts });
     for (const facts of parallelFacts) {
       expect(facts.ms, "each within 20 s").toBeLessThan(20_000);
       expect(facts.runtimes).toEqual([CODEX, CLAUDE, AGY, GROK, "autobyteus"]);
+      expect(facts.codex, "every caller gets Codex models and limits (AC-013)").toEqual({ limits: "read", models: "read" });
     }
+    expect(new Set(parallelFacts.map((facts) => facts.checkedAt)).size, "one shared read").toBe(1);
+    expect(appServersStarted, "the shared read starts Codex's app-server once").toBeLessThanOrEqual(1);
+    // Two readers at once, ten times (the page and an agent), then back-to-back single reads: Codex is always read.
+    const rounds: unknown[] = [];
+    for (let round = 0; round < 10; round += 1) {
+      const pair = await Promise.all([read(), read()]);
+      rounds.push(pair.map(({ report }) => codexFacts(report)));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    const sequential: unknown[] = [];
+    for (let index = 0; index < 3; index += 1) sequential.push(codexFacts((await read()).report));
+    evidence("AAR-04 two-reader-rounds", { rounds, sequential });
+    expect([...rounds.flat(), ...sequential].every((facts) => JSON.stringify(facts) === JSON.stringify({ limits: "read", models: "read" })),
+      `Codex read in every round: ${JSON.stringify({ rounds, sequential })}`).toBe(true);
     await terminate(withTool.runId);
 
     // Without it: the definition lists another Agent Tools MCP tool, so the run has a session, but not this tool.
@@ -429,10 +468,44 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
       expect(JSON.stringify(refused.body)).not.toContain("agentRuntimes");
     }
     await terminate(withoutTool.runId);
+  }, 180_000);
+
+  it("AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)", async () => {
+    // LM Studio starts answering; nothing has loaded its models before this read (no settings page, no reload).
+    stub.discovered.lmStudio = true;
+    const providersOf = (report: Report) => Object.fromEntries(((byRuntime(report).autobyteus?.providers ?? []) as any[]).map((provider) => [provider.provider, provider]));
+    const answering = providersOf((await read()).report);
+    evidence("AAR-06 lmstudio-answering", answering["LM Studio"] ?? null);
+    expect(answering["LM Studio"]).toMatchObject({ limits: "not reported" });
+    expect((answering["LM Studio"].models as any[]).map((model) => model.id).sort()).toEqual([
+      "google/gemma-4-26b-a4b:lmstudio@lmstudio.e2e.test:1234", "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.e2e.test:1234"]);
+    // LM Studio stops answering: it cannot run anything, so it is left out (its earlier models are not reused).
+    stub.discovered.lmStudio = false;
+    const stopped = providersOf((await read()).report);
+    expect(stopped["LM Studio"], "LM Studio not answering is left out").toBeUndefined();
+
+    // A keyed custom endpoint, created while it answers.
+    stub.discovered.customEndpoint = true;
+    const created = await post(`mutation($input: CustomProviderInputObject!){ createCustomProvider(input:$input){ provider { id name } apiKeyConfigured } }`,
+      { input: { name: "E2E Gateway", baseUrl: CUSTOM_BASE_URL, apiKey: CUSTOM_KEY } });
+    expect(created.createCustomProvider.apiKeyConfigured).toBe(true);
+    const name = created.createCustomProvider.provider.name as string;
+    const listed = providersOf((await read()).report)[name];
+    evidence("AAR-06 custom-answering", listed ?? null);
+    expect((listed?.models as any[] | undefined)?.map((model) => model.id).sort(), "the endpoint's models, read now").toEqual(
+      expect.arrayContaining([expect.stringContaining("gateway-model-a"), expect.stringContaining("gateway-model-b")]));
+    expect(listed).toMatchObject({ limits: "not reported" });
+    // The endpoint stops answering: still listed (it has a key), its models unknown with a reason, nothing guessed.
+    stub.discovered.customEndpoint = false;
+    const down = providersOf((await read()).report)[name];
+    evidence("AAR-06 custom-not-answering", down ?? null);
+    expect(down, "a keyed custom endpoint stays listed").toBeDefined();
+    expect(typeof down.models === "string" && down.models.startsWith(`unknown: ${name} model list `), `models unknown: ${JSON.stringify(down.models)}`).toBe(true);
+    expect(JSON.stringify(down)).not.toContain(CUSTOM_KEY);
   }, 120_000);
 
   it("AAR-05 no provider key or account value in any response, the server's log file, its output or its data files (REQ-008, QR-002)", () => {
-    const secrets = [...Object.values(KEYS), ...states.emittedSecrets(), "FAKE-SECRET-xai-user-id", "FAKE-SECRET-xai-team-id"];
+    const secrets = [...Object.values(KEYS), CUSTOM_KEY, ...states.emittedSecrets(), "FAKE-SECRET-xai-user-id", "FAKE-SECRET-xai-team-id"];
     expect(secrets.length).toBeGreaterThan(Object.keys(KEYS).length);
     const files: string[] = [];
     const walk = (dir: string) => {

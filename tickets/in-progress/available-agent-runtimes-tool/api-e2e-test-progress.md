@@ -25,3 +25,18 @@
 | 08:01 | API-11 | Completed | Pass | AutoByteus agent (LM Studio qwen) called the tool: success, same shape as GraphQL; model unloaded |
 | 08:03 | API-12 | Completed | Pass | Docker test node: CLIs signed out → absent; AutoByteus providers live from test vault; 0.8–0.9 s; container removed |
 | 08:05 | — | Completed | Fail | round result written: F-1 Local Fix, F-2/F-3 Design Impact; committing |
+| R2 08:30 | — | Checkpoint | — | Round 2 (CRR-005; source 07c07cfc27, c4fff3eb00, 7ece4e2069): rerun by impact = every service-driven case; AAR-04 made strict for AC-013, AAR-06 added (discovered providers) |
+| R2 | API-01…06(AAR) | Started | — | server E2E file at HEAD 5a87647318 |
+| R2 | API-07 | Started | — | probe (MRP-02 extended: custom endpoint models unknown, LM Studio appears) on dist built at 7ece4e2069 |
+| R2 | API-01…06(AAR) | Completed | Pass | 3 runs x 6/6; AC-013 strict (one shared read, 10 two-reader rounds all Codex read); AAR-06 discovered providers |
+| R2 | API-03b | Completed | Pass | 400/400 "timed out" through the real service |
+| R2 | API-06 | Completed | Pass | 19/19 |
+| R2 | API-07 | Completed | Pass | 7/7 (MRP-02 extended), no browser errors, cleanup removed |
+| R2 | API-07b | Completed | Fail (pre-existing) | same 4 cases and errors as base → FU-002 |
+| R2 | API-08…11 | Started | — | live node on round-2 dist |
+| R2 | API-08/09 | Completed | Pass | live: LM Studio listed on cold read; 2x4 parallel share one checkedAt, Codex read in all; product = direct |
+| R2 | API-08b | Completed | Pass | LM Studio listed before any ensure |
+| R2 | API-10 | Completed | Pass | 6 reads cost 0, utilization unchanged |
+| R2 | API-11 | Completed | Pass | AutoByteus agent tool call success; model unloaded |
+| R2 | API-12 | Completed | Pass | Docker test node; container removed |
+| R2 | — | Completed | Pass | round 2 result written (95%); committing |
