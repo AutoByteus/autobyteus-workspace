@@ -245,5 +245,10 @@ used-up limits covering it). AutoByteus providers are read by
   `ANTIGRAVITY_CLI_COMMAND`, `GROK_BUILD_COMMAND`):
   `tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts` and
   `tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts` (the latter
-  needs `pnpm test:integration:prepare` for Brief Studio). Run them with a
+  needs `pnpm test:integration:prepare` for Brief Studio), and
+  `tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts` (AAR-01…06:
+  the `availableAgentRuntimes` answer with 0 tokens, sign-in and install rules,
+  step time-outs, the tool over Agent Tools MCP and shared reads, no secrets
+  in any output, discovered providers; provider endpoints, LM Studio and a
+  custom endpoint are answered by an in-process stub). Run them with a
   clean environment and a temporary `HOME`, so no real account is read.

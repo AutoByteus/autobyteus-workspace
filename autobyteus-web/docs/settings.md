@@ -578,6 +578,12 @@ window is bound to can run now: the same answer the opt-in agent tool
   `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
   `availableAgentRuntimesPresentation.ts`). Copy:
   `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`;
+  `tests/e2e/model-routing-settings-probe.mjs`
+  (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
+  section in a real browser against two real nodes on fresh data roots, with
+  scripted runtime CLIs and provider endpoints answered inside each node
+  (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
 
