@@ -59,7 +59,7 @@ The change covers a new server read service, an opt-in agent tool, provider usag
 | AC-013 | AAR-04 `parallel` (one `checkedAt` for 4 callers, `appServersStarted: 1`), 10 two-reader rounds all `read`; live API-09 `wallMs 4710 / 4539`, one `checkedAt` per round | One shared read; Codex read for every caller | Proven |
 
 - More evidence requested: `None`
-- User check needed: `No`. Every critical criterion is proven by evidence. Three optional checks need the user's own windows or accounts; they do not gate this ticket (`handoff-summary.md`):
+- User check needed: **corrected to `Yes` in DR-002** (see "Receipt Correction (DR-002)"): the Task's "Done when" requires the user's check in the desktop app on the desktop node and a Docker node. The DR-001 text follows. `No`. Every critical criterion is proven by evidence. Three optional checks need the user's own windows or accounts; they do not gate this ticket (`handoff-summary.md`):
   - AC-010 in the user's own desktop and Docker-node windows: the same web bundle was proven on test-owned nodes, and the desktop shell is unchanged.
   - AC-006 used-% meaning: Grok reports none this period.
   - ASM-001 signed-in CLIs in Docker: if it fails, the result is a truthful "unknown"/"not checked", not a wrong answer.
@@ -67,8 +67,8 @@ The change covers a new server read service, an opt-in agent tool, provider usag
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the RELEASE.md default. Neither the request nor the ticket asks for a release. A beta or stable release is available whenever the user wants one.
+- Decision: `Beta` (`v1.5.9-beta.7`, DR-002). At DR-001 it was `No release`.
+- Decided by: the user, relayed by the API/E2E engineer on 2026-10-25 ("The user asks for a new beta release that includes autobyteus-303"). At DR-001: the RELEASE.md default. Neither the request nor the ticket asks for a release. A beta or stable release is available whenever the user wants one.
 
 ## Docs Sync Result
 
@@ -89,9 +89,9 @@ None.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` (no stable release)
+- Applicable: `Yes` (DR-002; `No` at DR-001)
+- Release/publication/deployment result: `Completed` (see "Beta Release (DR-002)")
+- Release notes handoff result: `Not required` (beta tags use GitHub generated notes)
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -146,6 +146,53 @@ Recorded after the merge in "Finalization Record" below.
 - Repository finalization complete: `Yes` (`eac8ee6dfc` on `personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (no release)
 - Applicable safe cleanup complete or not required: `Yes`
-- Unresolved blocker: `None`
-- Successful terminal package eligible for return: `Yes`
+- Unresolved blocker: `None` at DR-001. Since the receipt check: the user's desktop/Docker-node check is open (DR-002)
+- Successful terminal package eligible for return: `Yes` at DR-001; `No` until the user's check or waiver is recorded (DR-002)
 - Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed (confirmed in the delivery conversation)
+
+## Beta Release (DR-002)
+
+- Trigger: the user asked for a new beta that includes autobyteus-303. The request was relayed by `/software_engineering_team/api_e2e_engineer` (run `api_e2e_engineer_0c8dd85fb20a445bbae9f25e48b39c43`) on 2026-10-25, while the user was away.
+- Additional evidence that came with the request (API/E2E, after DR-001, on `c77f9af791`): API-14, the tool on live agents on all five runtimes with real models. An agent without the tool could not call it. The data the agent received matched each runtime's direct 0-token answer, value by value (`API-14b-tool-data-vs-direct.log`, all `MATCH`).
+  - This evidence and its gated test `available-agent-runtimes-live-agents.e2e.test.ts` are on the unpushed, unreviewed local branch `codex/available-agent-runtimes-live-agents` (`2245f1a427`, `6a3d942539`).
+  - They are not part of this release, and this record does not archive them.
+- Release source: `origin/personal` @ `c77f9af791`. It contains merge `eac8ee6dfc` and the DR-001 record.
+- Checks before tagging, on `c77f9af791`:
+  - `check_licensing.py`: "Licensing is consistent."
+  - `check_repository_artifact_hygiene.py`: passed.
+  - `scripts/check_secrets.sh v1.5.9-beta.6..HEAD`: PASS (50 commits).
+- Version: `python3 scripts/release_versions.py next-beta` gave `1.5.9-beta.7` (previous `v1.5.9-beta.6`, a pre-release published on 2026-10-24).
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/available-agent-runtimes-tool --no-push`, in a fresh, clean release worktree.
+  - It produced commit `48e8234774` (`chore(release): bump workspace release version to 1.5.9-beta.7`, `autobyteus-web/package.json` only) and the annotated tag `v1.5.9-beta.7`.
+  - The identity is the same as on `v1.5.9-beta.6` and the previous commits.
+- Push:
+  - `origin/personal` was confirmed still at `c77f9af791`.
+  - `c77f9af791..48e8234774  HEAD -> personal`.
+  - `[new tag] v1.5.9-beta.7`, at 09:52:43Z.
+- Pipelines (all started 09:52:44Z, each watched with `gh run watch --exit-status`):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 40182463980 | success (10:17:07Z) |
+| Android APK Release | 40182464007 | success (09:57:03Z) |
+| iOS App Store Connect Release | 40182463997 | success (10:09:32Z), TestFlight upload |
+| Server Docker Release | 40182464013 | success (10:31:07Z) |
+
+- Published artifacts:
+  - `gh release view v1.5.9-beta.7`: `isPrerelease: true`, 17 assets. These are macOS arm64 and x64 `.dmg`/`.zip` with blockmaps, Linux x64 and arm64 AppImages, the Windows `.exe`, `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml`, and the Android APK with its `.sha256`. This matches RELEASE.md.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.7` and `:beta` both point to `sha256:b66603777748a1183cee470be48428f4f32ee0975a435765fcb59a1bc8fcec2e` (linux/amd64 and linux/arm64). `:latest` is unchanged, as it should be for a beta.
+- Release result: `Completed` (not partial).
+- Release notes: GitHub generated notes (pre-release tag); no curated notes.
+- Rollout to users:
+  - Desktop installs with Settings → Updates → Receive beta updates on are offered 1.5.9-beta.7.
+  - Docker nodes upgrade with `autobyteus-docker upgrade --all --tag beta`.
+- Rollback: never move or delete the tag. Fix forward with the next beta, or revert the merge on `personal` and cut the next beta.
+- Cleanup: the release worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool-release` and the local `finalize/available-agent-runtimes-tool` branch are removed after this record is pushed.
+
+## Receipt Correction (DR-002, open)
+
+- The Solution Designer's receipt check (2026-10-25, `receipt-verification.md` in `/Users/normy/autobyteus_org/autobyteus-delivery-records/available-agent-runtimes-tool-receipt-20261025/`) blocked the DR-001 receipt with a Delivery Receipt Evidence Gap.
+  - The Task's "Done when" requires "the user has verified it in the desktop app (desktop node and a Docker node)", and AC-010's verification intent names it.
+  - DR-001 recorded that check as optional. That was a delivery misjudgement.
+- Status: **awaiting the user's check or explicit waiver.** The check is Settings → Model Routing → "Agent runtimes now" in the user's desktop window and in a Docker-node window. 1.5.9-beta.7 now makes the change available in both places.
+- Once the check is in, it will be recorded here and in `delivery-revision-record.md`, and the corrected receipt goes to the Solution Designer.
