@@ -105,3 +105,47 @@ Revert the merge on `personal`. The tool and the Model Routing page disappear, a
 ## Repository Finalization
 
 Recorded after the merge in "Finalization Record" below.
+
+## Finalization Record
+
+- Bootstrap context source: the code reviewer's handoff (branch `codex/available-agent-runtimes-tool`, base `origin/personal` `a2faf424d6`) and RELEASE.md
+- Ticket branch: `codex/available-agent-runtimes-tool`
+- Ticket branch commit result: archive commit `624a9d3285`, on top of checkpoint `e1450c9754`. Code: `5135bb73dc`, `683b036be9`, `07c07cfc27`, `c4fff3eb00`, `7ece4e2069`. API/E2E tests: `8de58e3ab3`, `cc789b7c84`.
+- Name check before the commit: `check_repository_artifact_hygiene.py` passed. The longest ticket path is 128 characters, with no Windows-hostile names.
+- Ticket branch push result: pushed `origin/codex/available-agent-runtimes-tool` @ `624a9d3285`, after the Secret Gate on `origin/personal..codex/available-agent-runtimes-tool` passed (13 commits)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification: `No` (`a2faf424d6` at verification, at the merge and right before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/available-agent-runtimes-tool` created from `origin/personal` @ `a2faf424d6`
+- Merge into target result: `git merge --no-ff` → `eac8ee6dfc`. Checks on the merged state:
+  - Secret Gate PASS (14 commits);
+  - `check_repository_artifact_hygiene.py` passed;
+  - `check_licensing.py`: "Licensing is consistent."
+- Push target branch result: `a2faf424d6..eac8ee6dfc  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`
+- Worktree cleanup result: `Completed`.
+  - Its only uncommitted content was untracked build output (`applications/brief-studio/dist/`, `autobyteus-application-*/dist/`).
+  - No process ran from it, and no container mounted it. The only open handle was Docker's VM file-share cache from the already-removed API-12 container.
+  - It was removed with `git worktree remove --force`, and the path no longer exists.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/available-agent-runtimes-tool` (`624a9d3285`) and `finalize/available-agent-runtimes-tool` (`eac8ee6dfc`) were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/available-agent-runtimes-tool` is kept as the pushed ticket history.
+- Other:
+  - The main checkout was not touched. No user data, running app or user node container was changed.
+  - This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab303-record`), which is removed after the push.
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence; no user check required)
+- Repository finalization complete: `Yes` (`eac8ee6dfc` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed (confirmed in the delivery conversation)

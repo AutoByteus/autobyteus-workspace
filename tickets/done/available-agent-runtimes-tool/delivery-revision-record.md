@@ -18,8 +18,8 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: base `a2faf424d6` not advanced (already current). Checkpoint commit `e1450c9754` holds the code reviewer's records. DEL-01 server E2E rerun passed 6/6.
-- Verification and finalization state: evidence judged sufficient for all 12 critical criteria; finalization in the report's Finalization Record.
-- Terminal return to the Solution Designer: recorded in the release/deployment report's Final Status.
+- Verification and finalization state: evidence judged sufficient for all 12 critical criteria; merged `eac8ee6dfc` into `personal` and pushed; worktree and local branches removed.
+- Terminal return to the Solution Designer: `Sent` after the finalization record was pushed (release/deployment report, Final Status).
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: the Solution Designer (`Delivery Completed`).
 - Remaining blockers, rollback concerns, or untested scope: none blocking. Optional user checks: AC-010 in the user's own windows, AC-006 meaning, ASM-001. Residual risk RSK-001. Follow-ups FU-001…FU-005.
