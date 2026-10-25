@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` (CRR-001 pass), round 1 | SR-011, ARCH-REV-003, IR-001, CRR-001 | N/A | Fail / 81% |
 | API-REV-002 | Code reviewer, `code-review-report.md` (CRR-004 pass), round 2 | SR-012, ARCH-REV-004, IR-002, IR-003, CRR-002–CRR-004 | Fail / 81% | Pass / 95% |
+| API-REV-003 | Code reviewer, `code-review-report.md` (CRR-006 pass), round 3 (delivery re-entry DR-001) | DR-001, IR-004, CRR-006 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -53,3 +54,24 @@ None.
 - New or remaining failure IDs: none in scope. Out of scope: FU-002 … FU-007.
 - Recommended owner: code reviewer (proportional test-code review), then delivery.
 - Remaining risks, blocked evidence, or untested scope: the gated Codex routing case stays unexecuted (FU-005).
+
+### API-REV-003 — Round 3: integrated branch and DR-001 (list_available_agent_runtimes under the one rule)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-006), delivery re-entry DR-001; head `d49d1fac16`.
+- Triggering finding or case IDs: DR-001 (`delivery-revision-record.md`); fix `7c60cb4909`; merge `54cd6803f4` of `origin/personal@63a36d00d8`.
+- Related revision IDs: DR-001, IR-004, CRR-006.
+- Why this revision was recorded: a merge of the base and a source fix after round 2's pass.
+- Coverage decisions or durable test paths changed: none by API/E2E (implementation's `available-agent-runtimes-graphql.e2e` change compares MCP with GraphQL after the rule).
+- Cases added, changed, removed, or rechecked: API-10 rerun on the integrated branch; new API-R3W (web guards and unit tests) and API-R3 (reused IMP-15/16); API-16 = DR-001 proven by AAR-04 inside API-10. Still valid: API-11a–d, API-12 (web surfaces and inputs unchanged by the merge), API-09, API-13–15.
+- Commands, environment, fixture, or broader-validation delta: server `dist/` rebuilt after the merge (ENV-6).
+
+#### Prior Failure Resolution
+
+None (round 2 passed).
+
+- Canonical artifacts and sections updated: coverage investigation ("Round 3 Plan"), execution report (Round, Environments, Cases, scorecard note, result), test progress log.
+- Prior result and confidence: `Pass`, 95%.
+- Current result and confidence: `Pass`, 95%.
+- New or remaining failure IDs: none in scope; out of scope FU-002 … FU-008 (FU-008 recorded by implementation).
+- Recommended owner: code reviewer (round 3 changed no test code), then delivery.
+- Remaining risks, blocked evidence, or untested scope: no real runtime CLI calls `list_available_agent_runtimes` this round (rationale in the Round 3 Plan); FU-005.
