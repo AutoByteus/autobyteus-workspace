@@ -122,23 +122,22 @@ includes the exact existing AgentRun that accepted the message:
 For a logical Agent address, `target_agent_run_id` is that mounted Agent's
 existing run. For a logical AgentTeam address, it is the mounted Team's existing
 configured coordinator run. For exact-run delivery, it confirms the selected
-active run. Rejection preserves the exact operation code/message and returns no
-successful receiver identity:
+active run. Rejection preserves the exact operation code/message and has no
+receiver identity: `target_agent_run_id` is left out, as every platform tool
+result leaves out a field with no value ([Tool Result Rule](agent_tools.md#tool-result-rule)):
 
 ```json
 {
   "accepted": false,
   "code": "COLLABORATION_TARGET_NOT_FOUND",
-  "message": "Target was not found.",
-  "target_agent_run_id": null
+  "message": "Target was not found."
 }
 ```
 
 The removed generic `result` field and generic communication-result mapper are
 not compatibility surfaces. Native JSON, MCP text JSON, MCP
 `structuredContent`, public types, and advertised post-2025-03 output schemas
-use the same flat field names and null rule. MCP `isError` is set only for
-rejected outcomes.
+use the same flat field names. MCP `isError` is set only for rejected outcomes.
 
 `get_handoff_rules` instead returns the read-only `{ handoffs }` object shown
 above. Its AutoByteus JSON result and MCP `content`/`structuredContent` represent

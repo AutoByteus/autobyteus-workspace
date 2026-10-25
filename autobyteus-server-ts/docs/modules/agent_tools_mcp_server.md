@@ -252,7 +252,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`,
+- `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,
   `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
@@ -325,12 +325,21 @@ category-wide native task exposure are not restored.
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-  A Task with comments also has `comments`: their texts, oldest first.
-- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match, commentCount?}],
-  meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
-  `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's key or `null`, `parts` the
-  parts' keys in key number order; `commentCount` only when the Task has comments (a comment's exact words also
-  find it). See [Project Task Search](./projects.md#project-task-search).
+  Each Task is a short entry `{taskId, title, status, dependsOn, partOf, parts, commentCount,
+  assignments | assignmentsUnavailable}`.
+- `get_project_task({project_id, task_id})` → one Project Task in full: `{projectId, taskId, title, status,
+  description, dependsOn, partOf, parts, comments, contextFiles: [{name, path}], assignments, closedAssignments}`.
+  `task_id` is a key (any letter case) or long ID of that Project; another Project's or an unknown Task fails with
+  `TASK_NOT_FOUND`. A caller that works on a Task (a task agent, a task team's members, the agents a worker delegated
+  to; its copy's current Task) reads only that Task: another fails with `TASK_READ_OUT_OF_SCOPE` and no data; when
+  that can't be told (damaged run data) the call fails with `TASK_AGENT_RESOURCES_UNAVAILABLE`. A caller on no Task
+  reads any. The provider asks the scope from `session.sender.memberExecutionContext`; the AutoByteus runtime gets
+  the tool only as an instance bound to its member. Exposed only when the agent definition lists it.
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, title, match, commentCount}],
+  meaningSearch?: {state, note}}`: the Project's best-matching Tasks first, by exact text (title, description or a
+  comment) and by meaning (at most `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's
+  key, `parts` the parts' keys in key number order; `meaningSearch` is present only when meaning search was not
+  (fully) used. See [Project Task Search](./projects.md#project-task-search).
 - `create_project({name, description?, workspaces?})` → `{project}`: creates with a
   required nonblank name; `project_id` is rejected as an unsupported argument.
 - `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
@@ -341,14 +350,15 @@ category-wide native task exposure are not restored.
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?, part_of?}`:
-  required nonempty description, **omit status** and `task_id` (new TODO with
+- `create_task` → `{task}`. `{project_id, title, description, context_files?, depends_on?, part_of?}`:
+  required nonblank title (no length limit) and description, **omit status** and `task_id` (new TODO with
   the Project's next key).
-- `update_task` → `{task}`. `{task_id, description?, status?,
+- `update_task` → `{task}`. `{task_id, title?, description?, status?,
   context_files?, depends_on?, part_of?, add_comment?}` with **no project_id**: the Task ID (a Project
   Task's key in any letter case or its long ID, or a Task with no Project's ID)
-  patches text, status, dependencies and/or parent of a Project Task, or text
-  and status of a Task with no Project (`projectId: null` in the result).
+  patches title, text, status, dependencies and/or parent of a Project Task, or text
+  and status of a Task with no Project (no `projectId` or `title` in the result; a
+  `title` for it fails with `TASK_TITLE_INVALID`).
   Unknown IDs fail, never upsert.
   `depends_on` lists same-Project Task references (`[]` clears, omitted keeps);
   an invalid list fails with `TASK_DEPENDENCY_INVALID` and writes nothing.
@@ -371,14 +381,16 @@ category-wide native task exposure are not restored.
   copies each file into the Task's saved context. A patch appends and never
   removes. The app's file types and 25 MiB limit apply, and any invalid entry
   fails the whole call with no change. When files were attached, the result's
-  `task` also lists them as `attachedContextFiles: [{storedFilename,
-  displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
+  `task` also lists them as `attachedContextFiles: [{name, path}]`. See
+  [Projects](projects.md#project-and-task-agent-tools).
 
-Task projections include projectId/taskId (a Project Task's key, see
-[Task keys](projects.md#task-keys-depends-on-and-part-of)), description/status,
-`dependsOn` keys, `partOf` (the parent's key or `null`) and, in lists, `parts` keys
-for Project Tasks, and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
-bytes are available), not timestamps. Missing bytes do not fabricate paths.
+Task projections include taskId (a Project Task's key, see
+[Task keys](projects.md#task-keys-depends-on-and-part-of)), title/status,
+`dependsOn` keys, `partOf` (the parent's key) and, in lists, `parts` keys
+for Project Tasks; full list entries add the description and saved context files as
+`{name, path}` (`path` only when the bytes are available; missing bytes do not fabricate paths),
+not timestamps. Every result follows the [Tool Result Rule](agent_tools.md#tool-result-rule): a field with
+no value is absent.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.
 DONE and CANCELLED are business metadata, not proof of accepted work or execution cleanup.
@@ -391,10 +403,11 @@ with the existing host/session boundary. See [Projects](projects.md#project-and-
 for exact masks/errors, persisted continuity and context-byte ownership.
 
 Server-owned structured-JSON adapters validate their operation result first,
-serialize it once, parse that serialization into object `structuredContent`, and
-return the same JSON in MCP text. `send_message_to` exposes
+then `toAgentToolsMcpStructuredJsonResult(value)` applies the
+[Tool Result Rule](agent_tools.md#tool-result-rule) once, returns that compact JSON in MCP
+text and its parse as object `structuredContent`. `send_message_to` exposes
 `{accepted,code,message,target_agent_run_id}`: success contains the exact
-existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
+existing AgentRun receiver, while rejection has no `target_agent_run_id` and
 sets `isError:true`. `delegate_task` exposes a strict `anyOf` union:
 `{delegated:true,target_kind:"agent",target_agent_run_id,task_id?}`,
 `{delegated:true,target_kind:"team",target_team_run_id,target_team_coordinator_agent_run_id,task_id?}`,

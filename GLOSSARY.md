@@ -41,3 +41,17 @@ delegated run, …) are defined in the
   keeps a source's imported memory under
   `memory/imports/<Memory Sync source ID>/`. It is not a node ID, and it is not
   the `sourceId` of a skill source, an update notification or a package source.
+
+## Project Tasks
+
+- **Title:** a Project Task's one-line name, given by its writer (an agent's
+  `create_task` / `update_task`, or the app's Title field) and stored with the
+  Task (`title`). It is shown wherever a Task is listed: board cards, rows,
+  pickers, the Workspaces tree, `list_project_tasks` and
+  `search_project_tasks`. A Task with no Project (a Temp task) has no title;
+  its one-line text is its description's first line, which is not called
+  title or summary.
+- **Summary:** a reduced view of something, for example
+  `listProjectSummaries` (a Project without its Tasks) or
+  `TaskWorkerTaskSummary` (a Task worker's Task under its name). A summary is
+  never a Task's one-line name: that is its title.

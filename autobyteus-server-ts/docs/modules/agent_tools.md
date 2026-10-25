@@ -35,6 +35,30 @@ Browser-tool support has two explicit source families:
   `dynamicTools` path and old Claude `autobyteus_browser` MCP server path are
   not retained for these migrated tools
 
+## Tool Result Rule
+
+Every platform tool result, success and refusal, on the native and the MCP
+route, follows one rule owned by `autobyteus-ts/src/tools/tool-result-json.ts`
+(autobyteus-260):
+
+- a field whose value is `null`, `""`, `[]` or `{}` (after the rule is applied
+  inside it) is left out, at any depth; an absent field means "none";
+- `false`, `0` and every other value stay; array elements keep their positions;
+- the result is compact JSON (no indentation); values pass through their
+  `toJSON` first, so a `Date` is its ISO string.
+
+`toToolResultJson(value)` turns a result into text; `omitEmptyToolResultFields(value)`
+returns the pruned JSON value for core tools whose runtime renders an object
+(`get_background_processes`, `get_process_output`, `start_background_process`,
+`stop_background_process`). Each family's native tool and MCP provider calls it
+after its manifest returns the result object; on MCP,
+`toAgentToolsMcpStructuredJsonResult(value)` builds the text copy and
+`structuredContent` from the one pruned value. No family keeps its own
+serializer; `tests/architecture/agent-tool-result-boundaries.test.ts` fails on
+any other `JSON.stringify` of a tool result in `src/agent-tools/**`. Configured
+third-party MCP tools and application-defined tools pass their results through
+unchanged.
+
 ## Runtime Exposure Resolution
 
 `src/agent-execution/shared/runtime-agent-tool-exposure.ts` is the common

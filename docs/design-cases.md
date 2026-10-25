@@ -77,7 +77,7 @@ Principle 1.
   - Earlier, in `delegated-team-member-lazy-activation`, an event was declared to have "no consumer" from a string search. Its consumer was an un-named fall-through branch that turned it into the member's error card. Fix: check consumers by type and exhaustiveness, and give the branch a name with an exhaustive check.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made.
 
-### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004)
+### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)
 
 Principle 13.
 
@@ -85,6 +85,7 @@ Principle 13.
 - **The fix:** one owner, `applyCapabilityReadiness(readiness)` with `markCapabilitiesPending()`, called by all three paths, the pending state set explicitly right after the schema check.
 - **Why it mattered:** three copies drift. The next capability added would land in one host and not the other, and the state before the answer depended on which default each consumer had.
 - **Notice it by:** "the same shape in each host" or "each caller configures …", and a state that exists only because nothing set it yet.
+- **Again in autobyteus-260 (design, 2026-10-25):** agent tool results were turned into text by each tool family on each route (about ten owners): pretty JSON in some, compact in others; empty fields kept in some, dropped by hand in others, and required as `null` by `send_message_to`. The fix: one rule (`autobyteus-ts/src/tools/tool-result-json.ts`) that every platform adapter calls on both routes, the family serializers removed, and an architecture test that fails on a tool result serialized another way. Notice it by: a helper per family that wraps the same library call with different options.
 
 
 ### Case 7: One Word, Two Meanings (autobyteus-191, autobyteus-261; autobyteus-290)
@@ -104,5 +105,6 @@ Principle 15.
   - Memory Sync's typed identity became `memorySyncSourceId`;
   - stored names were migrated by sealed migrations SM-1 … SM-10 on the server, desktop, browser and phone apps, with backups (`DESIGN.md` rule 10). A failed identity migration holds remote features back (`NODE_IDENTITY_NOT_MIGRATED`) and never mints a new node ID.
 - **Again in autobyteus-290 itself (CRR-001 F-001):** the design renamed Memory Sync's "source node id" to `sourceId`, judging the name only against Memory Sync's files. `sourceId` already named three other IDs (a skill source, an update notification's source, a package source; 145 uses). The code review caught it; the fix took the feature's full prefix, which the user chose, matching the feature's other types (`MemorySyncConfig`, `MemorySyncManifest`).
+- **Again in autobyteus-260 (design, 2026-10-25):** "summary" named a Task's one-liner derived from its description (`search_project_tasks` `summary`, the app's `taskSummary` helpers) and a reduced view (`listProjectSummaries`, `TaskWorkerTaskSummary`). With a stored title, the one-liner is **title** everywhere and "summary" keeps only the reduced-view meaning, both in `GLOSSARY.md`.
 - **Why it mattered:** a word with two meanings makes readers and agents mix up IDs, which is a correctness risk, not only a readability one.
 - **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun; a new name checked only against its own feature's files, especially a common word ("source", "status", "config") without the feature's prefix.
