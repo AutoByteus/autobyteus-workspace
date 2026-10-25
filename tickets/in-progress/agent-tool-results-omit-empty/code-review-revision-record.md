@@ -11,6 +11,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` is authori
 | CRR-003 | `code-review-report.md` | Implementation Review (Targeted Delta) / IR-002 | Fail (CRR-002) | Fail (Local Fix, Low) | CR-001, CR-002 resolved; CR-003 new |
 | CRR-004 | `code-review-report.md` | Implementation Review (Targeted Delta) / IR-003 | Fail (CRR-003) | Pass | CR-003 resolved |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional Test-Code Review / API-REV-002 | Pass (CRR-004, source) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review (delivery re-entry) / IR-004, DR-001 | Pass (CRR-005) | Pass | None |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional Test-Code Review / API-REV-003 (DR-001) | Pass (CRR-006) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -159,3 +161,53 @@ None.
   - FU-007 is a suite-load race with its cause recorded.
   - Docs "summary" wording at `autobyteus-web/docs/projects.md:694,696,706` for docs sync.
   - The documents listed in the report are uncommitted.
+
+### CRR-006 — Delivery re-entry DR-001: the merged runtimes tool follows the one result rule
+
+- Canonical review report updated: `code-review-report.md` (section "Round 5")
+- Review entry point and round: Implementation Review, round 5 (delivery re-entry)
+- Review scope: `Targeted Delta Review`. One tool pair from the integration merge; no spine node, shared interface or data shape of this ticket changed.
+- Triggering role, report path, and finding or scenario IDs: delivery engineer, `delivery-revision-record.md` DR-001; implementation engineer, `implementation-handoff.md` IR-004
+- Relevant solution revision IDs: `N/A`
+- Relevant architecture-review revision IDs: `N/A`
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-005)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `list_available_agent_runtimes` (autobyteus-303) now uses `toToolResultJson` and `toAgentToolsMcpStructuredJsonResult`. The shape changes by the rule only (null `remainingPercent`, `resetsAt` and `until` are left out). There is no output schema; GraphQL is unchanged; no skill depends on the nulls. Tests and docs were updated.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None. No findings were open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none (9.4 / 10)
+- Recommended recipient: API/E2E engineer; implementation engineer informed
+- Remaining risks or uncertainty: FU-008 (fails on `origin/personal`). The tool's result shape changed after autobyteus-303 shipped in beta `v1.5.9-beta.7`; the release notes should mention it with this ticket's other result changes.
+
+### CRR-007 — Test-code review after API/E2E round 3: no durable test changed
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (round 2)
+- Review entry point and round: Proportional test-code review, round 2 (delivery re-entry DR-001)
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003, 95%)
+- Relevant solution revision IDs: `N/A`
+- Relevant architecture-review revision IDs: `N/A`
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-006)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: API/E2E round 3 commits (`9434420df5`, `d7a2b9c1ef`) touch only `tickets/`. The DR-001 fix's test changes belong to implementation and were reviewed in CRR-006.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: `N/A`
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-002 to FU-008 (out of scope, recorded); the code-review documents are uncommitted.

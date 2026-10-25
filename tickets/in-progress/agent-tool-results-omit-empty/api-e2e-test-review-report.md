@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1 (proportional test-code review)
-- Trigger: API/E2E round 2 passed (API-REV-002, 95%)
+- Review Round: 2 (proportional test-code review, delivery re-entry DR-001). Round 1 (CRR-005, Pass) covered API/E2E rounds 1–2; its tables below stay as that round's result.
+- Trigger: API/E2E round 3 passed on the integrated branch (API-REV-003, 95%, delivery re-entry DR-001); round 1's trigger was API-REV-002
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (approved; unchanged by SR-012)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (by reference)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-012)
@@ -16,18 +16,29 @@
   - `evidence/API-13-before-after-sizes-table.md`
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md` (ARCH-REV-004)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-003)
-- Original Code Review Report: `code-review-report.md` (CRR-004, Pass)
+- Original Code Review Report: `code-review-report.md` (CRR-006, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-007`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
-- Delivery Revision Record Reviewed As Context: `N/A`
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002, API-REV-003)
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (DR-001)
 - API/E2E Result: Pass on tested source `fccf1227a6`. Test code is in `75ad3e4cb2` (round 1) and `fba908bff5` (round 2).
 - Final Validation Confidence: 95%
-- Prior unresolved test-review findings rechecked: None (first test review)
+- Prior unresolved test-review findings rechecked: None (CRR-005 had none)
 - Project testing guideline(s) applied: `TESTING.md` (repository root; the coverage investigation records no closer file). Rules checked: data and migration rules, clean environment, gates, rule 6 (assertions first) and rule 9 (cause before "pre-existing"). No conflicts.
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-001 to SCN-007, MP-001 and MP-003, as confirmed in CRR-003/CRR-004)
+
+## Round 2 Scope (API-REV-003)
+
+- API/E2E round 3 commits `9434420df5` and `d7a2b9c1ef` change only files under `tickets/` (`git diff --name-only 64fd0d913a d7a2b9c1ef`).
+- No durable test file was added, updated or removed by API/E2E this round.
+- The test changes in the DR-001 fix (`7c60cb4909`: `list-available-agent-runtimes-tool.test.ts`, `available-agent-runtimes-graphql.e2e.test.ts`) are implementation's. They were reviewed in source review CRR-006.
+- No durable test file changed (this round): `Yes`. Review result: `Not Applicable`.
+- Evidence read for context:
+  - `evidence/API-10-r3-regression-e2e-summary.txt`: 146 pass; the 3 failures are FU-002, FU-003 and FU-004, which also fail on base; AAR-04 (case API-16) proves DR-001 over a real MCP session.
+  - `evidence/API-R3W-web-guards-and-unit.txt`.
+- The rerun-by-impact choices in the coverage investigation's Round 3 Plan follow TESTING.md.
 
 ## Changed Durable Test Scope
 
@@ -67,11 +78,14 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the two added server E2E files, `project-task-boundaries`, about 24 updated server E2E files, and 8 web probe files (`75ad3e4cb2`, `fba908bff5`)
+- Result: `Not Applicable` (round 2: no durable test code changed during API/E2E round 3). Round 1 (CRR-005) was `Pass`.
+- Changed durable test paths reviewed: none this round. Round 1 reviewed `75ad3e4cb2` and `fba908bff5`.
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
 - Notes:
-  - For delivery: AC-008's before/after table is in `evidence/API-13-before-after-sizes-table.md`, to show the user.
-  - The "summary" wording in `autobyteus-web/docs/projects.md` lines 694, 696 and 706 needs docs sync (API-14).
-  - Uncommitted on disk: the Solution Designer's SR-012 documents and `docs/design-cases.md`, and the code-review documents (`code-review-report.md`, `code-review-revision-record.md`, this report).
+  - Delivery resumes from DR-001 on head `d7a2b9c1ef` (tested source `7c60cb4909`, merge `54cd6803f4`).
+  - Release notes:
+    - rolling back after the title migration is not supported;
+    - `list_available_agent_runtimes` (shipped in `v1.5.9-beta.7`) now leaves out null limit values;
+    - the "summary" wording in `autobyteus-web/docs/projects.md` lines 694, 696 and 706 still needs docs sync.
+  - The code-review documents updated after `269dbc209f` (CRR-006 and this round) are uncommitted.

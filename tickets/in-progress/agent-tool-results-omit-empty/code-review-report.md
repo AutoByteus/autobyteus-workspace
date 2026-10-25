@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4)
+- Review Entry Point: `Implementation Review` (round 5, delivery re-entry DR-001)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved; requirements unchanged by SR-012)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-012)
@@ -12,27 +12,31 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (round 4)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-004 (on ARCH-REV-001–003)
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-003)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-004)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-003 (on IR-002, IR-001)
+- Relevant Implementation Revision IDs: IR-004 (on IR-003, IR-002, IR-001)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `4`
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `5`
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): round 4 rechecks CR-003. IR-003 (`56ceef568a`) changes only the comment at `app-data-migration-registry.ts:133-134`; `fccf1227a6` touches only ticket documents. Round 3's evidence, kept here: the IR-002 source delta (`57e841b27b..0a28ad5e13`) stays within the files and behavior of CR-001 and CR-002:
+- Review Scope Evidence (round >1): round 5 reviews IR-004 (`7c60cb4909`), a bounded fix of one tool pair that came in with the integration merge `54cd6803f4` (`origin/personal@63a36d00d8`, autobyteus-303). It touches no spine node, shared interface or data shape of this ticket. The round-1 to round-4 results are carried forward. Earlier rounds: round 4 rechecked CR-003. IR-003 (`56ceef568a`) changes only the comment at `app-data-migration-registry.ts:133-134`; `fccf1227a6` touches only ticket documents. Round 3's evidence, kept here: the IR-002 source delta (`57e841b27b..0a28ad5e13`) stays within the files and behavior of CR-001 and CR-002:
   - the `project-task-titles` migration folder (prerequisite, a new frozen validator, the derivation);
   - `autobyteus-web/stores/taskWorkerTaskStore.ts`;
   - their tests, the startup E2E, and `docs/modules/projects.md`.
   - No shared interface, data shape or spine node outside them changed. The round-1 checks for unaffected areas are carried forward with their evidence.
-- Trigger: implementation handoff IR-003 (fix for CR-003 after CRR-003)
-- Prior Review Round Reviewed: `3` (CRR-003, Fail on CR-003)
-- Latest Authoritative Round: `4`
+- Trigger: implementation handoff IR-004, the Local Fix for delivery's DR-001 (`delivery-revision-record.md`)
+- Prior Review Round Reviewed: `4` (CRR-004, Pass); test-code review CRR-005 Pass
+- Latest Authoritative Round: `5`
+- Delivery Revision Record Reviewed: `delivery-revision-record.md` (DR-001: the integrated state fails `agent-tool-result-boundaries.test.ts` on `list_available_agent_runtimes`)
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty`, branch `codex/agent-tool-results-omit-empty`. Source commits:
   - `dfbd2621bb`: CR-001
   - `52cbc28442`: CR-002
   - `0a28ad5e13`: docs, handoff, evidence
   - `56ceef568a`: CR-003, comment only
   - `fccf1227a6`: ticket documents
+  - `54cd6803f4`: delivery's integration merge of `origin/personal@63a36d00d8`
+  - `7c60cb4909`: DR-001 fix
+  - `64fd0d913a`: handoff, revision record, IMP-15 to IMP-17
   - autobyteus-agents: unchanged at `82b7bae`.
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: read as context for the failures (API-REV-001)
 - Delivery Revision Record: `N/A`
@@ -63,6 +67,30 @@
 - Explicit exclusions:
   - The live API-03 and API-11c reruns, API-11d, and API-12 (owned by API/E2E).
   - Round-1 areas outside the delta (carried forward from CRR-001).
+
+## Round 5 (delivery re-entry DR-001)
+
+- **What came in:** autobyteus-303 added `list_available_agent_runtimes` on `personal` after this ticket's base. The tool serialized its own result on both routes:
+  - local tool: `JSON.stringify(report)`;
+  - MCP adapter: `JSON.stringify(report)` plus a `structuredContent:` literal.
+  - REQ-001/REQ-002 (every platform tool result, one rule, both routes) and AC-002 (no result serialized outside the one owner) apply to it once it is in this branch.
+- **The fix (`7c60cb4909`):**
+  - `list-available-agent-runtimes-tool.ts` returns `toToolResultJson(report)`.
+  - `list-available-agent-runtimes-mcp-adapter-provider.ts` returns `toAgentToolsMcpStructuredJsonResult(report)`.
+  - The "not available" refusal stays plain text, like the discovery tools' refusals.
+- **Verified:**
+  - Shape change by the rule only. A null `remainingPercent` or `resetsAt` (`UsageLimitView`, `available-agent-runtimes-report.ts:8`) or a null `blocked.until` (`ModelBlock`, `:11`) is left out.
+  - The adapter advertises no `outputSchema`, so no schema can reject the pruned value.
+  - GraphQL `availableAgentRuntimes` keeps its nulls; the web reads only GraphQL (`autobyteus-web/types/availableAgentRuntimes.ts`).
+  - No agent skill in autobyteus-agents names the tool.
+  - The tool text now says the values and `until` appear when known (AR-002).
+- **Tests:**
+  - Unit tests on both routes compare against an explicit expected result, with a null `remainingPercent` and a null `until` left out, and check that GraphQL keeps the nulls.
+  - The E2E compares MCP with GraphQL after applying the rule. The rule itself has its own unit tests, so this comparison is not circular for this tool's wiring.
+  - IMP-15 (typecheck), IMP-16 (490 passed; boundary test passes) and IMP-17 (runtimes E2E, 6 passed) all pass on `7c60cb4909`.
+- **Merge overlap:** this is the only new platform tool in the merged range (`git diff fc06a7355d 63a36d00d8` over `agent-tools/**` and `autobyteus-ts/src/tools`). Files changed by both sides: `GLOSSARY.md` (conflict resolved by delivery, both sections kept), `docs/modules/agent_tools.md` and `docs/design-cases.md`, all docs.
+- **Out of scope:** the IMP-16 failure `application-framework-boundaries.test.ts` fails identically on `origin/personal` (FU-008, recorded by delivery).
+- **Candidates:** C-15, whether the tool's description or a consumer relies on present nulls, is rejected (no output schema; GraphQL unchanged; no skill uses it). There are no new findings.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -216,10 +244,10 @@ None open. CR-001, CR-002 (CRR-003) and CR-003 (CRR-004) are resolved; see `code
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
+- Review Entry Point: `Implementation Review` (delivery re-entry DR-001)
+- Supported Product Scenario Gate: `Pass` (SCN-001 / REQ-001 applies to the merged tool)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 / 10; every category ≥ 9.2 (lowest 9.3)
+- Score Summary: 9.4 / 10, unchanged from CRR-004. The fix makes one more tool follow the rule and adds no structure.
 - Failure Origin (when applicable): `N/A`
-- Recommended Recipient (when applicable): API/E2E engineer
-- Notes: CRR-004 on IR-003 (`56ceef568a`). CR-001, CR-002 and CR-003 are resolved. The implementer reran the focused checks on the comment change (75 passed); IMP-11 to IMP-14 stand, since no code changed.
+- Recommended Recipient (when applicable): API/E2E engineer, for a proportionate rerun of the changed tool result. The implementer already ran the runtimes E2E (IMP-17).
+- Notes: CRR-006 on IR-004 (`7c60cb4909`). Earlier: CRR-004 Pass (source), CRR-005 Pass (test code).
