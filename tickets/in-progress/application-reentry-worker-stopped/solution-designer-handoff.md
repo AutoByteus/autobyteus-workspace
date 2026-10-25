@@ -43,6 +43,12 @@ A reload or repair of a previously ACTIVE application ends QUARANTINED when its 
 
 AC-001…004 (durable e2e on the real studio server with scripted CLIs), AC-005/006 (units), AC-007 (existing suites, including the 238 import→launch e2e and the architecture tests), AC-008 (docs).
 
+## SR-002 (2026-10-25): revision after architecture review ARCH-REV-001
+
+- AR-001 is accepted (confirmed in `application-engine-controller.ts:202-206`). Stopping a worker now ends in `stopped` also when the worker had crashed and is detached. So after a repair or reload, a crashed app's tools start the worker on demand, and reentry still starts nothing. The stop is renamed `stopEngine` and the architecture guard's anchor follows. A new invoker test covers a tool call after repairing a crashed app. E-08 is corrected.
+- AR-002 is accepted. Startup quarantines each selected application with a non-null `getSetupRequiredDetail`, and `getDiagnosticsByApplicationId` and its two test stubs are removed.
+- Requirements are unchanged; Medium / High is unchanged. Route: architecture re-review.
+
 ## Route
 
 Handoff rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer` (2026-10-24).
