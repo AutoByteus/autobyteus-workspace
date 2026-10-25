@@ -10,6 +10,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 /**
  * `list_available_agent_runtimes` used by a real agent on each real runtime (autobyteus-303, REQ-001, AC-001, AC-002,
@@ -24,11 +25,14 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
  * through the SDK's MCP servers and allowed tools; Antigravity through its MCP config file (`call_mcp_tool`); Grok
  * through the ACP session's MCP servers (`search_tool`/`use_tool`).
  *
- * Gates (each runtime independently): RUN_LMSTUDIO_E2E=1 (AutoByteus over LM Studio, local model), RUN_CODEX_E2E=1,
+ * With AUTOBYTEUS_TEST_VAULT set, the server reads provider keys from the test vault (read-only), so the report also lists
+ * the keyed AutoByteus providers with their balance or block (TESTING.md#test-vault).
+ * Gates (each runtime independently): RUN_LMSTUDIO_E2E=1 (AutoByteus over LM Studio, local model), RUN_DEEPSEEK_E2E=1
+ * (AutoByteus over DeepSeek; its key from the test vault, a missing key is reported as a skip), RUN_CODEX_E2E=1,
  * RUN_CLAUDE_E2E=1, RUN_AGY_E2E=1, RUN_GROK_E2E=1, plus the runtime's CLI on PATH, signed in. Live runs spend a little
  * of the account's usage (one short turn per case). The readers need the real HOME (and on macOS USER, LOGNAME) so the
  * signed-in CLIs answer; agy runs on the host login and adds its conversations to the host's agy history (TESTING.md).
- * Model overrides: LMSTUDIO_MODEL_ID, CODEX_E2E_TOOL_MODEL, CLAUDE_E2E_TOOL_MODEL, AGY_E2E_TOOL_MODEL, GROK_E2E_MODEL.
+ * Model overrides: LMSTUDIO_MODEL_ID, DEEPSEEK_E2E_MODEL, CODEX_E2E_TOOL_MODEL, CLAUDE_E2E_TOOL_MODEL, AGY_E2E_TOOL_MODEL, GROK_E2E_MODEL.
  * Per-step timeout: RUNTIMES_TOOL_E2E_STEP_TIMEOUT_MS (default 360000).
  *
  * Command (all five):
@@ -37,7 +41,13 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
  */
 
 type RuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "antigravity_cli" | "grok_build";
-type RuntimeCase = Readonly<{ runtimeKind: RuntimeKind; enabled: boolean; pickModel(models: string[]): string | null; toolHint?: string }>;
+type RuntimeCase = Readonly<{
+  id?: string; runtimeKind: RuntimeKind; enabled: boolean; pickModel(models: string[]): string | null; toolHint?: string;
+  /** AutoByteus provider whose catalog to load (LM Studio by default). */
+  provider?: string;
+  /** The provider key this case needs from the vault. */
+  requiredSecretId?: string;
+}>;
 type WsMessage = { type: string; payload: Record<string, unknown> };
 type Connection = { socket: WebSocket; messages: WsMessage[] };
 type Record_ = Record<string, unknown>;
@@ -57,6 +67,15 @@ const RUNTIMES: readonly RuntimeCase[] = [
     enabled: process.env.RUN_LMSTUDIO_E2E === "1",
     pickModel: (models) => preferred(process.env.LMSTUDIO_MODEL_ID, [], models)
       ?? models.find((model) => /qwen/i.test(model) && !/embed/i.test(model)) ?? null,
+  },
+  {
+    id: "autobyteus_deepseek",
+    runtimeKind: "autobyteus",
+    provider: "DEEPSEEK",
+    requiredSecretId: "provider.deepseek.api-key",
+    enabled: process.env.RUN_DEEPSEEK_E2E === "1",
+    pickModel: (models) => preferred(process.env.DEEPSEEK_E2E_MODEL, ["deepseek-v4-flash"], models)
+      ?? models.find((model) => /^deepseek/.test(model)) ?? null,
   },
   {
     runtimeKind: "codex_app_server",
@@ -85,6 +104,7 @@ const RUNTIMES: readonly RuntimeCase[] = [
   },
 ];
 
+const useVault = RUNTIMES.some((runtime) => runtime.enabled && runtime.requiredSecretId) || Boolean(process.env.AUTOBYTEUS_TEST_VAULT?.trim());
 const describeLive = RUNTIMES.some((runtime) => runtime.enabled) ? describe : describe.skip;
 const STEP_TIMEOUT_MS = Number(process.env.RUNTIMES_TOOL_E2E_STEP_TIMEOUT_MS ?? 360_000);
 const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
@@ -147,7 +167,7 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
       const result = await gql<{ ensureProviderModelCatalog: { llmModels: Array<{ modelIdentifier: string }> } }>(
         `mutation($providerId: String!, $runtimeKind: String) {
           ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) { llmModels { modelIdentifier } }
-        }`, { providerId: "LMSTUDIO", runtimeKind: "autobyteus" });
+        }`, { providerId: runtime.provider ?? "LMSTUDIO", runtimeKind: "autobyteus" });
       return result.ensureProviderModelCatalog.llmModels.map((model) => model.modelIdentifier);
     }
     const result = await gql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
@@ -211,6 +231,7 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
     dataDir = await mkdtemp(path.join(os.tmpdir(), "aar-live-appdata-"));
     await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
+    if (useVault) await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     mainUrl = started.mainUrl;
@@ -228,12 +249,14 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
   afterAll(async () => {
     await app?.close();
     app = null;
+    if (useVault) await closeLiveServerVault();
     for (const workspace of workspaces) await rm(workspace, { recursive: true, force: true });
     if (dataDir) await rm(dataDir, { recursive: true, force: true });
   }, 180_000);
 
   for (const runtime of RUNTIMES) {
-    it.runIf(runtime.enabled)(`${runtime.runtimeKind}: LR-1 without the tool it cannot be called; LR-2 a live agent with the tool calls it and gets the node's report`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LR-1 without the tool it cannot be called; LR-2 a live agent with the tool calls it and gets the node's report`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
       const available = await modelsFor(runtime);
       const model = runtime.pickModel(available);
       expect(model, `no model for ${runtime.runtimeKind} in ${JSON.stringify(available).slice(0, 400)}`).toBeTruthy();
@@ -248,7 +271,7 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
       const plainFrom = await sendTurn(plain, `Call the ${TOOL} tool exactly once now if you have it; if you do not have it, reply NO TOOL. Do not call any other tool.`);
       await waitIdle(plain, plainFrom, "plain run");
       const plainCalls = plain.messages.filter((message) => message.type === "TOOL_EXECUTION_SUCCEEDED" && isToolDone(message));
-      evidence(`${runtime.runtimeKind} LR-1`, { model, successfulCalls: plainCalls.length,
+      evidence(`${runtime.id ?? runtime.runtimeKind} LR-1`, { model, successfulCalls: plainCalls.length,
         toolEvents: plain.messages.filter((message) => message.type.startsWith("TOOL_")).map((message) => `${message.type}:${agentToolName(message.payload)}`) });
       expect(plainCalls, "no successful call without the tool").toEqual([]);
 
@@ -264,12 +287,12 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
       const report = reportIn(done.payload);
       const page = await pageRead();
       const reply = scout.messages.slice(from).filter((message) => message.type === "SEGMENT_CONTENT").map((message) => String(message.payload.delta ?? message.payload.content ?? "")).join("").slice(-400);
-      evidence(`${runtime.runtimeKind} LR-2`, {
+      evidence(`${runtime.id ?? runtime.runtimeKind} LR-2`, {
         model, event: done.type, toolName: done.payload.tool_name, toolMs,
         reportShape: report ? shape(report) : null, pageShape: shape(page), agentReplyTail: reply,
       });
       // The data the agent received, in full (no secrets: the report never carries keys or identities, AC-009).
-      evidence(`${runtime.runtimeKind} LR-2 report`, report);
+      evidence(`${runtime.id ?? runtime.runtimeKind} LR-2 report`, report);
       expect(done.type, JSON.stringify(done.payload).slice(0, 800)).toBe("TOOL_EXECUTION_SUCCEEDED");
       expect(report, `the tool result carries the report: ${JSON.stringify(done.payload).slice(0, 800)}`).not.toBeNull();
       expect(Date.parse(report!.checkedAt)).not.toBeNaN();
