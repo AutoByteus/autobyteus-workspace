@@ -6,7 +6,7 @@
 // (`autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`; no model, no account, no network).
 // Cases: IP-01 while hidden (the default) the Agents page, the agent store every picker reads, the featured-items picker
 // and the run history panel leave the internal agent out, normal agents unchanged; IP-02 its run opens by URL while
-// hidden and shows the agent's reply (REQ-008); IP-03 Settings → Server Settings → Basics "Internal agents" toggled on:
+// hidden and shows the agent's reply, and opening it does not add it to the list the pickers read (REQ-008); IP-03 Settings → Server Settings → Basics "Internal agents" toggled on:
 // the setting is saved, and without a reload the Agents page shows it with the "Internal" badge, the store and the
 // featured picker have it, the history panel lists its run; IP-04 toggled off again: all of it gone, without a reload;
 // IP-05 zh-CN card. Every case records Pass/Fail in <output-dir>/result.json with screenshots; owned processes and the
@@ -248,6 +248,8 @@ try {
     evidence.cases['IP-02-text'] = text.slice(0, 1500);
     assert(/\bOK\b/.test(text.replace('Internal helper run. Reply OK.', '')), 'the agent\'s reply is shown');
     await shot('IP-02-hidden-run-opened-by-url');
+    // Opening its run does not add it to the list the pickers read (the run-target switcher, team, Org, featured, @).
+    assert(!(await storeAgents()).some(agent => agent.id === INTERNAL_ID), 'the store still leaves it out after its run was opened');
   });
 
   await kase('IP-03', 'Basics "Internal agents" toggled on: saved; without a reload the Agents page shows it with the "Internal" badge, the store and featured picker have it, run history lists its run (AC-005, REQ-007)', async () => {
