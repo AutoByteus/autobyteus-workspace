@@ -9,7 +9,7 @@ export const LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME = "list_available_agent_run
 
 /** The same wording on every runtime (local tool and Agent Tools MCP). */
 export const LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_DESCRIPTION =
-  "List the agent runtimes available on this node now (Codex, Claude, Antigravity, Grok, and AutoByteus with each API provider that has a key), each with its models and its live usage limits: name, remaining percent and reset time. A model that cannot run now has blocked: {until, by}. \"unknown: <reason>\" means a value could not be read; \"not reported\" means the runtime or provider does not report it. Reading spends no tokens. This read-only tool takes no arguments.";
+  "List the agent runtimes available on this node now (Codex, Claude, Antigravity, Grok, and AutoByteus with each API provider that has a key), each with its models and its live usage limits: name, remaining percent and reset time (each when known). A model that cannot run now has blocked: {by, until}, until only when the reset time is known. \"unknown: <reason>\" means a value could not be read; \"not reported\" means the runtime or provider does not report it. Reading spends no tokens. This read-only tool takes no arguments.";
 
 export const LIST_AVAILABLE_AGENT_RUNTIMES_UNAVAILABLE = `${LIST_AVAILABLE_AGENT_RUNTIMES_TOOL_NAME} is not available on this server.`;
 

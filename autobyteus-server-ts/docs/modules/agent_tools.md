@@ -228,11 +228,13 @@ reaches only addresses already in its run.
 `register-agent-runtimes-tools.ts`, category System) is an **opt-in** tool: it is in the
 tool picker, and an agent gets it only when its definition's `toolNames` list it. It takes
 no arguments and needs no member context, so standalone agents can use it too. It returns
-this node's `AvailableAgentRuntimesReport` as JSON: every available agent runtime with its
+this node's `AvailableAgentRuntimesReport` as JSON by the one tool result rule (a null
+`remainingPercent`, `resetsAt` or `until` is left out): every available agent runtime with its
 models (`blocked: {until, by}` when a model cannot run now) and its usage limits, read live
 with 0 tokens (see [Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). AutoByteus
 runs a local tool instance; Codex, Claude, AGY and Grok receive it through the Agent Tools
-MCP adapter (`list-available-agent-runtimes-mcp-adapter-provider.ts`, structured content).
+MCP adapter (`list-available-agent-runtimes-mcp-adapter-provider.ts`,
+`toAgentToolsMcpStructuredJsonResult`).
 On a server that does not compose the service it answers "list_available_agent_runtimes is
 not available on this server." (on AutoByteus as the tool's error, over MCP as an error
 result).

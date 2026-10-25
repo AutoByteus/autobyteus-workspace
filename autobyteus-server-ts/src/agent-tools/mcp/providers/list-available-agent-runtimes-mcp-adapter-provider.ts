@@ -6,6 +6,7 @@ import {
   listAvailableAgentRuntimes,
 } from "../../agent-runtimes/list-available-agent-runtimes-contract.js";
 import { toAgentToolMcpToolResult, type AgentToolMcpAdapterProvider, type AgentToolMcpToolAdapter } from "../agent-tool-mcp-adapter.js";
+import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
 
 /**
  * `list_available_agent_runtimes` over Agent Tools MCP (Codex, Claude, Antigravity, Grok runtimes). Needs no member
@@ -24,7 +25,7 @@ export class ListAvailableAgentRuntimesMcpAdapterProvider implements AgentToolMc
       execute: async () => {
         const report = await listAvailableAgentRuntimes();
         return report
-          ? toAgentToolMcpToolResult({ content: [{ type: "text", text: JSON.stringify(report) }], structuredContent: report as unknown as Record<string, unknown> })
+          ? toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(report))
           : toAgentToolMcpToolResult({ content: [{ type: "text", text: LIST_AVAILABLE_AGENT_RUNTIMES_UNAVAILABLE }], isError: true });
       },
     }];

@@ -34,6 +34,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
+import { omitEmptyToolResultFields } from "autobyteus-ts/tools/tool-result-json.js";
 import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { initializeRuntimeLoggerBootstrap } from "../../../src/logging/runtime-logger-bootstrap.js";
@@ -418,7 +419,8 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     expect(JSON.parse(called.body.result.content[0].text), "text and structured content are the same report").toEqual(viaMcp);
     const viaGraphql = (await read()).report;
     const withoutTime = (report: Report) => ({ ...report, checkedAt: "<time>" });
-    expect(withoutTime(viaMcp), "the same answer as the page's GraphQL query").toEqual(withoutTime(viaGraphql));
+    expect(withoutTime(viaMcp), "the page's GraphQL answer by the one tool result rule (nulls left out)")
+      .toEqual(omitEmptyToolResultFields(withoutTime(viaGraphql)));
     evidence("AAR-04 mcp-report-runtimes", viaMcp.agentRuntimes.map((entry) => entry.runtime));
 
     // Several readers at the same moment: three page reads and the agent's tool call (SCN-A2) share one read (AC-013).
