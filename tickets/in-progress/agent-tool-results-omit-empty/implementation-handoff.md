@@ -22,7 +22,7 @@
 - Current implementation revision ID: `IR-004` (IR-003 CR-003; IR-002 CR-001/CR-002; baseline IR-001)
 - Related solution revision IDs: SR-007, SR-008, SR-010, SR-012
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
-- Related code-review revision IDs: CRR-001 (`Pass`, recorded only), CRR-002 (CR-001, CR-002), CRR-003 (CR-001/CR-002 resolved; CR-003 Low Local Fix), CRR-004 (`Pass`, no open findings; recorded only, the code reviewer routed to API/E2E)
+- Related code-review revision IDs: CRR-001 (`Pass`, recorded only), CRR-002 (CR-001, CR-002), CRR-003 (CR-001/CR-002 resolved; CR-003 Low Local Fix), CRR-004 (`Pass`, no open findings; recorded only, the code reviewer routed to API/E2E), CRR-006 (`Pass` on IR-004 / DR-001, no findings; recorded only, routed to API/E2E)
 - Related API/E2E / delivery revision IDs: API-REV-001 (`Fail`: F-001 = API-03, F-002 = API-11c), API-REV-002 (`Pass`); DR-001 (Local Fix, `delivery-revision-record.md`)
 - Triggering finding IDs: DR-001 (IR-004); CR-003 (IR-003); CR-001, CR-002 (IR-002) (IR-001: AR-001–AR-008 applied as guidance; see below)
 - Commits (workspace): IR-001 `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs). IR-002 `dfbd2621bb` (CR-001 migration + tests), `52cbc28442` (CR-002 web store + test), `0a28ad5e13` (docs, ticket, evidence). IR-003 `56ceef568a` (CR-003 registry comment), `fccf1227a6`. IR-004 (on the delivery engineer's integration merge `54cd6803f4` of `origin/personal@63a36d00d8`): `7c60cb4909` (DR-001) and the ticket commit named in the handoff message. (autobyteus-agents): `82b7bae`, unchanged.
