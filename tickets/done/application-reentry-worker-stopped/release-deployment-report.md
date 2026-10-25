@@ -98,3 +98,35 @@ Revert the merge on `personal`. Reload and repair of an ACTIVE application would
 ## Repository Finalization
 
 Recorded after the merge in "Finalization Record" below.
+
+## Finalization Record
+
+- Bootstrap context source: `solution-designer-handoff.md` and RELEASE.md
+- Ticket branch: `codex/application-reentry-worker-stopped`
+- Ticket branch commit result: archive commit `d21363100e` (code `6950a24e1b`, tests `ebb6c8ef88` and `16190e8c2a`, base merge `8ba58a1072`)
+- Ticket branch push result: pushed `origin/codex/application-reentry-worker-stopped` @ `d21363100e`; Secret Gate on `origin/personal..HEAD` passed first
+- Finalization target: `origin/personal`
+- Target advanced after verification: `No` (`fc06a7355d` at verification, at the merge and right before the push)
+- Re-integration before final merge result: `Not needed`
+- Merge into target result: `git merge --no-ff` → `abbc65e44d`. On the merged state: Secret Gate PASS, `check_repository_artifact_hygiene.py` exit 0, `check_licensing.py` "Licensing is consistent."
+- Push target branch result: `fc06a7355d..abbc65e44d  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-reentry-worker-stopped`
+- Worktree cleanup result: `Completed`. Its only uncommitted content was untracked build output (`applications/brief-studio/dist/`, `autobyteus-application-*/dist/`). No process ran from it. It was removed with `git worktree remove --force`, and the path no longer exists.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/application-reentry-worker-stopped` (`d21363100e`) and `finalize/application-reentry-worker-stopped` (`abbc65e44d`) were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required` (`origin/codex/application-reentry-worker-stopped` is kept as the pushed ticket history)
+- Other: the clean clone `/tmp/ab296-clone` and its logs were removed after the logs were copied into `evidence/`. The main checkout was not touched. No user data was changed. This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab296-record`), which is removed after the push.
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence, with the clean-clone proof)
+- Repository finalization complete: `Yes` (`abbc65e44d` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
