@@ -137,8 +137,8 @@ describe("released Project Tasks get titles at the actual startup (autobyteus-26
     for (const [taskId, task] of Object.entries(tasks)) await writeJson(taskFile("project_main", taskId), task);
     await fs.mkdir(path.join(projects, "project_main/tasks/task_s1/context"), { recursive: true });
     await fs.writeFile(path.join(projects, "project_main/tasks/task_s1/context/ctx_0a1b2c3d4e5f__notes.txt"), "saved bytes");
-    // A task.json the released reader already skipped (no taskKey): not a Task before, preserved unchanged now.
-    await writeJson(taskFile("project_main", "task_invalid"), { taskId: "task_invalid", projectId: "project_main", description: "No key", status: "TODO", createdAt: at(8), updatedAt: at(8) });
+    // A task.json the released reader already skipped (a status no release wrote): not a Task before, preserved unchanged now.
+    await writeJson(taskFile("project_main", "task_invalid"), { taskId: "task_invalid", projectId: "project_main", taskKey: "autobyteus-9", description: "Bad status", status: "OPEN", createdAt: at(8), updatedAt: at(8) });
     // A released per-folder Project from before Task keys.
     await writeJson(path.join(projects, "project_fresh/project.json"), { projectId: "project_fresh", name: "Fresh Board", description: "", createdAt: at(20), updatedAt: at(20), workspaces: [] });
     await writeJson(taskFile("project_fresh", "task_fresh"), { taskId: "task_fresh", projectId: "project_fresh", description: "Unkeyed Task\nbody", status: "TODO", createdAt: at(21), updatedAt: at(21), contextFiles: [] });
@@ -152,13 +152,12 @@ describe("released Project Tasks get titles at the actual startup (autobyteus-26
     const first = await studio();
     expect(await first.ledger(KEYS)).toMatchObject({ status: "SUCCEEDED" });
     const titles = await first.ledger(TITLES);
-    // The Task with no non-empty line is reported and left unchanged; the invalid file is already not a Task.
+    // The Task with a blank description and the invalid file are reported and left unchanged.
     expect(titles).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1, summary: "Scanned 9; migrated 7; skipped 2; failed 0." });
-    // The migration log names each disposition with its Tasks.
+    // The migration log names the skipped Tasks: the frozen validator refuses a blank description and an unknown status.
     const log = await fs.readFile(titles.logPath, "utf8");
-    expect(log).toContain("SKIPPED_NO_TITLE_LINE_WARNING");
-    expect(log).toContain("project_main/task_blank");
     expect(log).toContain("SKIPPED_INVALID_TASK_WARNING");
+    expect(log).toContain("project_main/task_blank");
     expect(log).toContain("project_main/task_invalid");
     const expectedTitles: Record<string, string> = { task_s1: "Fix the login redirect", task_s2: "Ship the release notes", task_s3: "Write the docs",
       task_s4: "Review the API", task_long: `${longLine.slice(0, 198)}…`, task_crlf: "Plan the beta" };
