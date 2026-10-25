@@ -130,7 +130,8 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new ProjectsPerFolderV1AppDataMigration(appDataDir),
     // Keys existing Project Tasks; needs the per-Project folders.
     new ProjectTaskKeysV1AppDataMigration(appDataDir),
-    // Titles existing Project Tasks from their descriptions' first lines; needs the Task keys.
+    // Titles existing Project Tasks from their descriptions' first lines; needs the per-Project folders, not the
+    // Task keys (SR-012): an unkeyable Project must not leave every Project untitled. keys-v1 keeps a title it finds.
     new ProjectTaskTitlesAppDataMigration(appDataDir),
     new RemoveBuiltInProjectTaskManagerMigration(
       path.join(config.getAgentsDir(), "autobyteus-project-task-manager"),
