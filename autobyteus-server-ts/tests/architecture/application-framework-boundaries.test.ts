@@ -3087,7 +3087,7 @@ describe("application framework architecture boundaries", () => {
     expect(controller.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     expect(launcher.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     const stopController = controller.slice(
-      controller.indexOf("  async stopAttachedEngine("),
+      controller.indexOf("  async stopEngine("),
       controller.indexOf("  clearListeners(): void"),
     );
     expect(stopController).toContain("APPLICATION_ENGINE_METHOD_STOP");

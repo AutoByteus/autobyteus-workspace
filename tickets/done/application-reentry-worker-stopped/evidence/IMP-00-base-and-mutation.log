@@ -1,0 +1,38 @@
+# IMP-00 base and mutation runs
+# (a) application-reload-repair.e2e.test.ts on base sources ddd6fdcdf6 (before any source change)
+# (b) controller unit + new invoker unit against base controller/launcher (stash) — fails on the rename only
+# (c) the same against the fix with only the handle-less status reset removed (mutation) — the two new cases fail
+# env: macOS (darwin)  date: 2026-10-25  (test-result lines)
+
+(a)
+     × RE-01 an ACTIVE application stays usable after a package reload (AC-001) 1073ms
+     × RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002) 369ms
+     × RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004) 307ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: after package reload: launch settings {"detail":"Application '<id>' is currently quarantined: Application '<id>: expected 503 to be 200 // Object.is equality
+AssertionError: {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>: expected { …(4) } to match object { …(3) }
+AssertionError: expected 'Application \'<id>…' to contain 'Application setup is required:'
+      Tests  3 failed (3)
+
+(b)
+     ✓ completion-couples every application-work method without a request deadline 3ms
+     ✓ owns the exact attached handle, status, invocation, and listener identity 2ms
+     × stops and detaches the exact handle idempotently 2ms
+     × resets a crashed, detached worker from failed to stopped (autobyteus-296) 0ms
+     × fails closed while the crashed worker is failed, and starts it on demand after a stop 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { applicationId: 'app-a', …(5) } to match object { Object (state, ready, ...) }
+TypeError: controller.stopEngine is not a function
+TypeError: controller.stopEngine is not a function
+      Tests  3 failed | 2 passed (5)
+
+(c)
+     ✓ completion-couples every application-work method without a request deadline 3ms
+     ✓ owns the exact attached handle, status, invocation, and listener identity 2ms
+     ✓ stops and detaches the exact handle idempotently 0ms
+     × resets a crashed, detached worker from failed to stopped (autobyteus-296) 4ms
+     × fails closed while the crashed worker is failed, and starts it on demand after a stop 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { applicationId: 'app-a', …(5) } to match object { Object (state, ready, ...) }
+AssertionError: expected { applicationId: 'app-1', …(5) } to deeply equal { applicationId: 'app-1', …(5) }
+      Tests  2 failed | 3 passed (5)

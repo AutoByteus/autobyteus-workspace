@@ -68,7 +68,7 @@ export class ApplicationEngineLauncher {
 
   async stop(applicationId: string): Promise<void> {
     await this.startupPromiseByApplicationId.get(applicationId)?.catch(() => undefined);
-    await this.dependencies.controller.stopAttachedEngine(applicationId);
+    await this.dependencies.controller.stopEngine(applicationId);
     this.dependencies.agentStreamingService.stopApplication(applicationId);
   }
 
