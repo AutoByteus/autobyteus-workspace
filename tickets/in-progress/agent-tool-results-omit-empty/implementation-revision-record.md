@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are the authority. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer: `design-review-report.md` rounds 1–3 (ARCH-REV-001 on SR-007, ARCH-REV-002 on SR-008, ARCH-REV-003 on SR-010) | AR-001–AR-008 (non-blocking guidance) | `Initial Baseline` | SR-007, SR-008, SR-010; ARCH-REV-001–003; CRR `N/A`; API-REV `N/A`; DR `N/A` | Implemented; ready for code review |
 | IR-002 | Code reviewer: `code-review-report.md` round 2 (CRR-002, failure origin of API-REV-001), via architecture reviewer ARCH-REV-004 on SR-012 | CR-001, CR-002 | `Local Fix` (CR-002) and design-revision implementation (CR-001, SR-012) | SR-012; ARCH-REV-004; CRR-002; API-REV-001; DR `N/A` | Fixed; ready for code review |
+| IR-003 | Code reviewer: `code-review-report.md` round 3 (CRR-003, Targeted Delta) | CR-003 (Low) | `Local Fix` | SR-012; ARCH-REV-004; CRR-003; API-REV `N/A`; DR `N/A` | Fixed; ready for code review |
 
 ## Revision Entries
 
@@ -53,3 +54,23 @@ The current code and `implementation-handoff.md` are the authority. This record 
 - Local validation and result: IMP-11 (typecheck), IMP-12 (migrations + architecture, 612 pass), IMP-13 (startup E2E, 6 pass), IMP-14 (web store and readers, 1269 pass); all `Pass`.
 - Next recipient or routing: from `get_handoff_rules` (Large / High → code review).
 - Remaining limitations or risks: API-03 and API-11c to be rerun by API/E2E; the live Workspaces tree was not rerun here.
+
+### IR-003 — The registry comment states the titles dependency correctly
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` round 3 (CRR-003, Targeted Delta of IR-002; CR-001 and CR-002 resolved).
+- Triggering finding IDs: CR-003 (Low).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002, `Fail` in CRR-003 on CR-003 only.
+- Current authoritative result: fixed in `56ceef568a`.
+- Related solution revision IDs: SR-012.
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-003.
+- Related API/E2E revision IDs: `N/A` (API/E2E has not started on IR-002).
+- Related delivery revision IDs: `N/A`.
+- Why this implementation change is recorded: the registry comment (added in IR-001) still said the titles migration needs the Task keys, the dependency SR-012 removed.
+- Approved behavior or requirement IDs affected: none (comment only); QR-002, AC-004 context.
+- Implementation delta: `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` comment above `ProjectTaskTitlesAppDataMigration`: needs the per-Project folders, not the Task keys (SR-012); keys-v1 keeps a title it finds.
+- Changed files or areas: that file only.
+- Local validation and result: `pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations/project-task-titles tests/architecture`: 75 passed. IMP-11–IMP-14 stand.
+- Next recipient or routing: from `get_handoff_rules` (Local Fix, Large / High → code review).
+- Remaining limitations or risks: as IR-002 (API-03 and API-11c reruns by API/E2E).

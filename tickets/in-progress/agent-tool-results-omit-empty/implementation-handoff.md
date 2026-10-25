@@ -17,15 +17,15 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (round 2)
+- Implementation cycle: `Rework` (round 3)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline IR-001)
+- Current implementation revision ID: `IR-003` (IR-002 for CR-001/CR-002; baseline IR-001)
 - Related solution revision IDs: SR-007, SR-008, SR-010, SR-012
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
-- Related code-review revision IDs: CRR-001 (`Pass`, recorded only), CRR-002 (CR-001, CR-002)
+- Related code-review revision IDs: CRR-001 (`Pass`, recorded only), CRR-002 (CR-001, CR-002), CRR-003 (CR-001/CR-002 resolved; CR-003 Low Local Fix)
 - Related API/E2E / delivery revision IDs: API-REV-001 (`Fail`: F-001 = API-03, F-002 = API-11c); DR `N/A`
-- Triggering finding IDs: CR-001, CR-002 (IR-001: AR-001–AR-008 applied as guidance; see below)
-- Commits (workspace): IR-001 `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs). IR-002 `dfbd2621bb` (CR-001 migration + tests), `52cbc28442` (CR-002 web store + test), and the docs/ticket commit named in the handoff message. (autobyteus-agents): `82b7bae`, unchanged.
+- Triggering finding IDs: CR-003 (IR-003); CR-001, CR-002 (IR-002) (IR-001: AR-001–AR-008 applied as guidance; see below)
+- Commits (workspace): IR-001 `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs). IR-002 `dfbd2621bb` (CR-001 migration + tests), `52cbc28442` (CR-002 web store + test), `0a28ad5e13` (docs, ticket, evidence). IR-003 `56ceef568a` (CR-003 registry comment) and the ticket commit named in the handoff message. (autobyteus-agents): `82b7bae`, unchanged.
 
 Summary:
 1. **One result rule.** `autobyteus-ts/src/tools/tool-result-json.ts` (`omitEmptyToolResultFields` → `ToolResultJsonValue`, `toToolResultJson`): drops `null`/`undefined`/`""`/`[]`/`{}` at any depth (after pruning children), keeps `false`/`0`, keeps array positions, never removes the top level, compact JSON after `toJSON`. Every platform family's native tool and MCP provider calls it; `toAgentToolsMcpStructuredJsonResult(value)` builds text and `structuredContent` from one pruned value. `json-utils.ts` and the browser/delegation/media serializers are gone; pretty-printing is gone. `send_message_to` refusals have no `target_agent_run_id` (schema, LLM text, docs). Guard: `tests/architecture/agent-tool-result-boundaries.test.ts`.
@@ -69,6 +69,10 @@ Summary:
 - **AR-007** — one helper `taskIdentityLines` in `task-execution-input.ts`, used by `buildTaskWorkText` (when given `task`) and always by `buildExistingCopyTaskMessage`; `projectId` from `resolveAssignment`; the existing-copy header and its other-open-Tasks sentence kept.
 - **AR-008** — (1) `taskReadScopeOf` never maps an error to `any`; the scope is computed inside each adapter's `try`, and `projectTaskToolError` maps `TaskDelegationError` keeping its code (`TASK_AGENT_RESOURCES_UNAVAILABLE`). (2) The resolver's bound branch for `get_project_task` sits before the generic `createTool` fallthrough; `registerProjectTaskTools` registers only the bound definition (`ensureGetProjectTaskToolRegistered`), and an instance created without a caller refuses every call. (3) Tested on both routes including damaged data.
 - **Migration note (IR-001, replaced in IR-002)** — IR-001 classified with the keyed frozen `readTaskFile` and depended on keys-v1. Since SR-012 / CR-001 the migration has its own frozen validator `released-task-file-before-titles.ts`: `taskKey` optional; `taskId`/`projectId` match their folders; non-blank `description`; a released `status` (`TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`); non-blank `createdAt`/`updatedAt`. Every Task the keyed reader accepted is accepted, plus the unkeyed Tasks of a Project keys-v1 could not key. A blank description is not a released Task file, so `SKIPPED_NO_TITLE_LINE_WARNING` is gone; such a file is `SKIPPED_INVALID_TASK_WARNING`, and `titleFromFirstLine` throws if ever given one.
+
+### IR-003 fix (CRR-003)
+
+- **CR-003** — `app-data-migration-registry.ts`: the comment above `ProjectTaskTitlesAppDataMigration` said it "needs the Task keys"; it now says it needs the per-Project folders, not the Task keys (SR-012), and that keys-v1 keeps a title it finds. Comment only; no other stale statement of the dependency found in `src` or `docs` (build copies under `autobyteus-web/resources` and `electron-dist` are untracked). Rechecked: `vitest run tests/app-data-migrations/project-task-titles tests/architecture` on `56ceef568a`: 75 passed; IMP-11–IMP-14 stand (no code change).
 
 ### IR-002 fixes (CRR-002)
 
