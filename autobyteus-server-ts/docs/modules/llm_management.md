@@ -322,6 +322,42 @@ This is credential substitution at the existing use point, not child-process
 isolation; baseline tools, MCP/session behavior, and external Codex behavior
 remain unchanged.
 
+### Claude Agent SDK Prompt Cache Lifetime
+
+Claude Code keeps prompt caches for 5 minutes when it is billed through API
+credits or an API key, and for 1 hour on a Claude subscription. AutoByteus
+agents often wait longer than 5 minutes between turns (for teammates or the
+user), so each resume would write the whole context again. AutoByteus therefore
+asks Claude Code for the one-hour cache by default.
+
+- `client/claude-sdk-spawn-environment.ts` (`buildClaudeSdkSpawnEnvironment`)
+  composes the Claude Code child environment for every spawn (agent sessions,
+  and the model-listing and usage reads that send no message): first the
+  auth-mode policy above, then the one-hour cache default, in every auth mode.
+- The default is `ENABLE_PROMPT_CACHING_1H=1`, added only when the server
+  setting `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` is not `false` (absent means
+  on) and the server environment does not already define
+  `ENABLE_PROMPT_CACHING_1H`. The key, its values and the rule live in
+  `runtime-management/claude/claude-prompt-cache-setting.ts`.
+- Claude Code ranks this variable below every explicit user choice: a
+  `promptCacheTtl` or `subagentPromptCacheTtl` in the user's Claude Code
+  settings, `CLAUDE_CODE_PROMPT_CACHE_TTL`,
+  `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL` and `FORCE_PROMPT_CACHING_5M` all
+  win. AutoByteus never sets `CLAUDE_CODE_PROMPT_CACHE_TTL`, because that
+  variable would override the user's `promptCacheTtl` setting. See
+  [Claude Code prompt caching](https://code.claude.com/docs/en/prompt-caching).
+- On a subscription the agent conversation keeps Claude Code's own 1-hour
+  cache; only Claude Code's background requests (such as compaction and titles)
+  move from 5 minutes to 1 hour.
+- Cost trade-off on API billing: writing a 1-hour cache costs 2x the input
+  price instead of 1.25x; reading it costs the same. A conversation resumed
+  5-60 minutes later reads its cache instead of writing it again, which saves
+  money for agents that wait between turns.
+- The user switches it in Settings -> Server Settings -> Basics -> **Claude
+  runtime** -> **One-hour prompt cache** (`true`/`false`; other values are
+  rejected). A change applies to Claude agent sessions started afterwards,
+  without a restart. Older Claude Code versions ignore the variable.
+
 ## Built-In vs. Custom Providers
 
 ### Built-In Providers

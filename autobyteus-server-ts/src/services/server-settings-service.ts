@@ -11,6 +11,10 @@ import {
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
 import {
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+} from "../runtime-management/claude/claude-prompt-cache-setting.js";
+import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
@@ -158,6 +162,16 @@ export class ServerSettingsService {
       true,
       {
         allowedValues: CODEX_SANDBOX_MODES,
+        trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+      "Claude runtime: request Claude Code's one-hour prompt cache for agent sessions started afterwards (true/false, default true). A promptCacheTtl in the user's Claude Code settings, CLAUDE_CODE_PROMPT_CACHE_TTL or FORCE_PROMPT_CACHING_5M take precedence.",
+      true,
+      {
+        allowedValues: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
         trimBeforePersist: true,
       },
     );
