@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -167,15 +168,22 @@ type RevisionBackedGitHubInput = {
   defaultBranch?: string;
 };
 
-/** The controlled GitHub API (repository metadata and branch head) shared by the installer and the service's revision client. */
+/**
+ * The controlled GitHub answers (repository metadata and branch head for imports; the git head read for checks and
+ * updates) shared by the installer and the service's revision client.
+ */
 const createRevisionBackedGitHubFetch = (input: RevisionBackedGitHubInput): typeof fetch => {
   const defaultBranch = input.defaultBranch ?? "main";
-  return (async (resource: string | URL | Request) => {
+  return (async (resource: string | URL | Request, init?: RequestInit) => {
     const requestUrl = typeof resource === "string"
       ? resource
       : resource instanceof URL
         ? resource.toString()
         : resource.url;
+
+    if (headReadRepository(requestUrl, init) === `${input.owner}/${input.repo}`.toLowerCase()) {
+      return headReadResponse(input.getRevision(), defaultBranch);
+    }
 
     if (requestUrl.includes("/branches/")) {
       return new Response(
@@ -811,8 +819,9 @@ describe("Agent packages GraphQL e2e", () => {
 
     const owner = "AutoByteus";
     const repo = `mock-agent-package-update-${unique}`;
-    const oldRevision = "old-sha";
-    const newRevision = "new-sha";
+    // Commit SHAs: the head read accepts only 40-hex heads, as GitHub sends.
+    const oldRevision = "a1".repeat(20);
+    const newRevision = "b2".repeat(20);
     const oldAgentId = `github-update-old-agent-${unique}`;
     const newAgentId = `github-update-new-agent-${unique}`;
     const extraNewAgentId = `github-update-extra-agent-${unique}`;
@@ -1026,7 +1035,7 @@ describe("Agent packages GraphQL e2e", () => {
     const repo = `legacy-agent-package-${unique}`;
     const normalizedSource = `${owner.toLowerCase()}/${repo.toLowerCase()}`;
     const sourceUrl = `https://github.com/${owner}/${repo}`;
-    const latestRevision = "latest-legacy-sha";
+    const latestRevision = "c3".repeat(20);
     const legacyInstallDir = path.join(dataRoot, "agent-packages", "github", "autobyteus__legacy-package");
     const latestFixtureRoot = path.join(dataRoot, "fixtures", "latest");
     const legacyAgentId = `legacy-installed-agent-${unique}`;
@@ -1181,8 +1190,8 @@ describe("Agent packages GraphQL e2e", () => {
     const newFixtureRoot = path.join(dataRoot, "fixtures", "new");
     const owner = "AutoByteus";
     const repo = `rollback-agent-package-${unique}`;
-    const oldRevision = "rollback-old-sha";
-    const newRevision = "rollback-new-sha";
+    const oldRevision = "d4".repeat(20);
+    const newRevision = "e5".repeat(20);
     const oldAgentId = `rollback-old-agent-${unique}`;
     const newAgentId = `rollback-new-agent-${unique}`;
     let remoteRevision = oldRevision;

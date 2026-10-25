@@ -23,6 +23,7 @@ import {
   buildAgentCollaborationMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
+import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -48,6 +49,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const childLoads = new WeakMap<AgentRunCollaborationContext, Map<string, Promise<void>>>()
   const binding = useWindowNodeContextStore()
   const activities = useAgentActivityStore()
+  const remoteRuns = useRemoteRunsStore()
   const assertNotTerminating = (id: string) => {
     if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
   }
@@ -65,6 +67,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
+    // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
+    context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)
     ensureChildHydrated(hostRunId, selection[hostRunId] ?? null)
   }
@@ -72,14 +76,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /**
    * Starts loading one child's stored details into the published context, unless it is loaded or
    * loading there already. A load whose context is no longer published ends without writing; a
-   * failed load leaves the child not loaded, so selecting it again retries.
+   * failed load leaves the child not loaded, so selecting it again retries. Answers whether a load is under way.
    */
-  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null) => {
+  const ensureChildHydrated = (hostRunId: string, agentRunId: string | null): boolean => {
     const context = contexts.value[hostRunId]
-    if (!agentRunId || !context?.getChild(agentRunId) || context.isChildHydrated(agentRunId)) return
+    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId)) || context.isChildHydrated(agentRunId)) return false
     const loads = childLoads.get(context) ?? new Map<string, Promise<void>>()
     childLoads.set(context, loads)
-    if (loads.has(agentRunId)) return
+    if (loads.has(agentRunId)) return true
     const load = hydrateAgentRunCollaborationChild({
       hostRunId, collaboration: context, agentRunId,
       isPublished: () => contexts.value[hostRunId] === context && !terminations.has(hostRunId),
@@ -88,6 +92,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       console.warn(`[agentRunCollaboration] Could not load '${agentRunId}' of '${hostRunId}'.`, cause)
     }).finally(() => loads.delete(agentRunId))
     loads.set(agentRunId, load)
+    return true
   }
 
   /** A selected child that left the listing (absent, or its Task is DONE) returns the view to the run's own agent. */
@@ -118,6 +123,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     service.connect()
     return service
   }
+
+  /** autobyteus-278 (SR-008): this root's mechanisms for the store's Retry rule; a remote child loads as any child. */
+  const remoteRetryAdapter = (hostRunId: string): RemoteRunRetryAdapter => Object.freeze({
+    refreshOnStream: () => services.get(hostRunId)?.refreshRemote() ?? false,
+    selectedAgent: () => selection[hostRunId] ?? null,
+    isLoaded: (agentRunId: string) => contexts.value[hostRunId]?.isChildHydrated(agentRunId) ?? false,
+    rereadAgent: (agentRunId: string) => ensureChildHydrated(hostRunId, agentRunId),
+  })
 
   const detach = (hostRunId: string) => {
     const service = services.get(hostRunId)
@@ -279,17 +292,20 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const childTargetFor = (hostRunId: string): ActiveAgentWorkspaceTarget | null => {
     const collaboration = contextFor(hostRunId)
     const agentRunId = selectedChild(hostRunId)
-    const child = agentRunId ? collaboration?.getChild(agentRunId) : null
+    const local = agentRunId ? collaboration?.getChild(agentRunId) : null
+    // autobyteus-278: a remote child is opened like a local copy; its node keeps its workspace.
+    const remote = agentRunId && !local ? collaboration?.getRemoteChild(agentRunId) : null
+    const child = local ?? remote
     const context = agentRunId ? collaboration?.getAgentContext(agentRunId) : null
     if (!collaboration || !child || !context) return null
     const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
     return Object.freeze({
-      kind: child.kind === 'task_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+      kind: child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
       host: Object.freeze({ hostRunId }),
       address: child.address,
       agentRunId: child.agentRunId,
       context,
-      workspaceRootPath: child.source.launchConfiguration.workspaceRootPath,
+      workspaceRootPath: local ? local.source.launchConfiguration.workspaceRootPath : null,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
       // A child is not a top-level run package: its pages come from the host's collaboration package.
       browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),

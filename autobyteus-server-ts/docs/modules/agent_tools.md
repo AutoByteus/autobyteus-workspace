@@ -62,7 +62,9 @@ surface). A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`.
 Application-owned runs have no member context and keep their
 explicitly configured set. Browser, media, publishing, `list_available_agents`,
-`list_available_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
+`list_peer_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
+`list_available_agent_runtimes` is explicitly selected too; it is always offered
+when selected (see [Agent Runtimes Tool](#agent-runtimes-tool)).
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -146,13 +148,13 @@ the same strict shape.
 
 ## Server-Owned Agent Discovery Tools
 
-`list_available_agents` and `list_available_nodes` (`src/agent-tools/agent-discovery/`,
+`list_available_agents` and `list_peer_nodes` (`src/agent-tools/agent-discovery/`,
 registered together by `register-agent-discovery-tools.ts`) are **opt-in** tools
 (REQ-001; autobyteus-261 DEC-401): they are registered in the tool registry
 (category Agent Communication) so they appear in the tool picker, and an agent gets
 one only when its definition's `toolNames` select it. Neither is ever added
 automatically. `RuntimeAgentToolExposure.listAvailableAgentsEnabled` and
-`listAvailableNodesEnabled` record the selection. Both have the same availability:
+`listPeerNodesEnabled` record the selection. Both have the same availability:
 a sender whose member context can list (a run that can delegate).
 
 - `list_available_agents` takes an optional `node` and returns
@@ -177,11 +179,13 @@ a sender whose member context can list (a run that can delegate).
   for delegation: exactly the shared Agents and Agent Teams a `delegate_task` with that
   `node` accepts, at the addresses it accepts. Each address works as
   `recipient_address` with the same `node`. It goes through the
-  `RemoteDiscoveryChannel` port (bound at composition), not through the roots; see
+  `PeerDiscoveryChannel` port (bound at composition), not through the roots; see
   [Remote Collaboration](remote_collaboration.md#discovery).
-- `list_available_nodes` takes no arguments and returns
+- `list_peer_nodes` takes no arguments and returns
   `{ nodes: [{ name, status: "available" | "unavailable" }] }`: this node's registered
-  peers in registration order, each asked now. `available` means the peer answers and
+  peers in registration order, each asked now. A *peer* is a remote node registered with
+  this node ([Glossary](../../../GLOSSARY.md#nodes)); a remote node that isn't registered
+  is not listed. `available` means the peer answers and
   takes this node's requests; anything else is `unavailable`, and
   `list_available_agents` with that node gives the reason.
 - Both need this node's remote collaboration switch on: with it off the agent gets
@@ -193,6 +197,21 @@ a sender whose member context can list (a run that can delegate).
 The tools control discovery only. Any agent may delegate to an available address
 with `delegate_task` whether or not it has the tool (REQ-006); `send_message_to`
 reaches only addresses already in its run.
+
+## Agent Runtimes Tool
+
+`list_available_agent_runtimes` (`src/agent-tools/agent-runtimes/`, registered by
+`register-agent-runtimes-tools.ts`, category System) is an **opt-in** tool: it is in the
+tool picker, and an agent gets it only when its definition's `toolNames` list it. It takes
+no arguments and needs no member context, so standalone agents can use it too. It returns
+this node's `AvailableAgentRuntimesReport` as JSON: every available agent runtime with its
+models (`blocked: {until, by}` when a model cannot run now) and its usage limits, read live
+with 0 tokens (see [Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). AutoByteus
+runs a local tool instance; Codex, Claude, AGY and Grok receive it through the Agent Tools
+MCP adapter (`list-available-agent-runtimes-mcp-adapter-provider.ts`, structured content).
+On a server that does not compose the service it answers "list_available_agent_runtimes is
+not available on this server." (on AutoByteus as the tool's error, over MCP as an error
+result).
 
 ## Server-Hosted Agent Tools MCP Server
 
@@ -224,7 +243,7 @@ the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`,
-`list_available_agents` and `list_available_nodes` tool families by delegating to their existing family manifests/services instead
+`list_available_agents`, `list_peer_nodes` and `list_available_agent_runtimes` tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the
@@ -295,7 +314,9 @@ constraints, done conditions, expected output, and reference guidance) and
 optional `reference_files`. Member targets start one task-agent instance; team
 targets start one task-scoped child team run whose coordinator receives the
 work packet. The work packet (delegator address and AgentRun ID, description,
-reference files) is the child's first message. Multiple independent pieces of
+reference files) is the child's first message. For a saved Project Task, the
+description is followed by the Task's comments as a "Comments:" block (see
+[Saved-ID Delegation](projects.md#saved-id-delegation-and-agent-run-resources)). Multiple independent pieces of
 work are delegated through additional `delegate_task` calls.
 
 `delegate_task` has three strict input modes: `{recipient_address, task_id}` and
@@ -316,7 +337,7 @@ sent. The success result is the local copy's shape plus `node`: for a Team,
 `{delegated: true, target_kind: "team", target_team_run_id,
 target_team_coordinator_agent_run_id, node}`. Follow-ups use `send_message_to` by the
 returned run ID (for a Team, the coordinator's or any member's run ID) as usual. An agent
-that has the discovery tools finds the node with `list_available_nodes` and the address
+that has the discovery tools finds the node with `list_peer_nodes` and the address
 with `list_available_agents` and that `node`. See [Remote Collaboration](remote_collaboration.md).
 
 The result is a strict union, also published as the MCP output schema

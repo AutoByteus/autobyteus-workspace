@@ -1,7 +1,7 @@
-import { getParentAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
-import type { LaunchConfigurationSource } from "../../../agent-collaboration/domain/launch-configuration-source.js";
-import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
+import { getParentAgentTeamAddress, type AgentTeamAddress } from "../../frozen/server/agent-collaboration/domain/agent-team-address.js";
+import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../frozen/server/agent-collaboration/domain/collaboration-handoff.js";
+import type { LaunchConfigurationSource } from "../../frozen/server/agent-collaboration/domain/launch-configuration-source.js";
+import type { AgentLaunchConfiguration } from "../../frozen/server/agent-team-execution/domain/team-run-config.js";
 import {
   canonicalNonRootAddress,
   isoTimestamp,
@@ -14,7 +14,7 @@ import {
   requiredString,
   parseOptionalLaunchFields,
   parseOptionalUserLaunchSelection,
-} from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+} from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 
 /**
  * Frozen knowledge of the released `collaborators[]` entry shape (last written by the release

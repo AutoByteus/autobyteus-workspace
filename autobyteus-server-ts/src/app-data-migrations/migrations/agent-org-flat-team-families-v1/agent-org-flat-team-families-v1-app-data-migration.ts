@@ -2,32 +2,31 @@ import { isDeepStrictEqual } from "node:util";
 import { AgentOrgHistoryCandidatePlanner, retiredTeamFiles, migrationPathExists, type HistoryCandidatePlan } from "./agent-org-history-candidate-plan.js";
 import { AgentOrgHistoryIndexTransition } from "./agent-org-history-index-transition.js";
 import { AgentOrgTokenAttributionTransition } from "./agent-org-token-attribution-transition.js";
-import { TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID } from "../token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { AppConfig } from "../../../config/app-config.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
+import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../team-run-execution-tree-v2-app-data-migration.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { getTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
-import { getAgentOrgTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
-import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "./released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
+import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { getTaskDelegationRecordsV1Path } from "../../frozen/released-run-package-shapes/team-task-delegation-records-v1-store.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../frozen/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
+import { getAgentOrgTaskDelegationRecordsV1Path } from "../../frozen/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
+import { validateAgentOrgTaskDelegationRecordsV1 } from "../../frozen/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
 import {
   getAgentOrgCommunicationMessagesPath,
   getTeamCommunicationMessagesPath,
   validateAgentOrgCommunicationMessages,
   validateTeamCommunicationMessagesPayload,
-} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
-import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
-import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
+} from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
+import { TeamRunHistoryIndexStore } from "../../frozen/server/run-history/store/team-run-history-index-store.js";
+import { AgentOrgRunHistoryIndexStore } from "../../frozen/server/run-history/store/agent-org-run-history-index-store.js";
 
-import { validateAgentOrgStatePackage } from "../../legacy/released-run-package-shapes/agent-org-state-package-v1-validator.js";
+import { validateAgentOrgStatePackage } from "./released-run-package-shapes/agent-org-state-package-v1-validator.js";
 import { AgentOrgContextFileLocatorTransition } from "./agent-org-context-file-locator-transition.js";
+const TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID = "20260819_token_usage_run_records_v1";
+const TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 
 export const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
 
@@ -55,7 +54,9 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
   private locatorTransition!: AgentOrgContextFileLocatorTransition;
   constructor(
     private readonly memoryDir: string,
-    private readonly config: AppConfig = appConfigProvider.config,
+    // The server's base URL as configured when a context-file locator is rewritten.
+    private readonly config: { getBaseUrl(): string },
+    private readonly catalogInvalidation: RunHistoryCatalogInvalidation,
     private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
     private readonly tokens = new AgentOrgTokenAttributionTransition(memoryDir),
   ) { this.layout = new AgentMemoryLayout(memoryDir); }
@@ -123,7 +124,7 @@ export class AgentOrgFlatTeamFamiliesV1AppDataMigration implements AppDataMigrat
     const complete = plans.filter((plan) => !failures.has(plan.id));
     try {
       const count = await new AgentOrgHistoryIndexTransition(selection,
-        new TeamRunHistoryIndexStore(this.memoryDir), new AgentOrgRunHistoryIndexStore(this.memoryDir)).commit(complete);
+        new TeamRunHistoryIndexStore(this.memoryDir), new AgentOrgRunHistoryIndexStore(this.memoryDir), this.catalogInvalidation).commit(complete);
       if (count) this.add("MIGRATED_ORG_HISTORY", selection.teamSnapshot.sourcePath);
     } catch (error) { this.add("FAILED_HISTORY", this.memoryDir, errorReason(error)); return this.result(); }
     for (const plan of complete) {

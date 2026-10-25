@@ -4,6 +4,8 @@ import {
   agentInputStateSchema,
   agentPresentationMessageSchema,
   nonEmptyStringSchema,
+  remoteTaskExecutionDtoSchema,
+  remoteTaskExecutionSummaryDtoSchema,
 } from "@autobyteus/agent-presentation-contracts";
 import {
   agentOrgAgentStatusDtoSchema,
@@ -49,6 +51,17 @@ export const agentRunCollaborationViewDtoSchema = z.object({
   communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
+  /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
+  remote_task_executions: z.array(remoteTaskExecutionDtoSchema),
+}).strict();
+
+/** A run this root delegated to another node was recorded (autobyteus-278). */
+export const remoteTaskExecutionStartedEventDtoSchema = z.object({
+  kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema,
+}).strict();
+/** What a remote run's node answered about it (autobyteus-278): title, statuses, or that it did not answer. */
+export const remoteTaskExecutionSummaryEventDtoSchema = remoteTaskExecutionSummaryDtoSchema.extend({
+  kind: z.literal("remote_task_execution_summary"),
 }).strict();
 
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
@@ -62,6 +75,8 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
   taskExecutionsClosedEventDtoSchema,
   taskExecutionsReopenedEventDtoSchema,
   delegatedLaunchSelectionsChangedEventDtoSchema,
+  remoteTaskExecutionStartedEventDtoSchema,
+  remoteTaskExecutionSummaryEventDtoSchema,
 ]);
 
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;

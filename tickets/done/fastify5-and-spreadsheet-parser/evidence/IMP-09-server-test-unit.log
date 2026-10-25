@@ -1,0 +1,12 @@
+# Server unit suite (tests/unit + tests/app-data-migrations) on Fastify 5
+# Check: IMP-09
+# Command: pnpm -C autobyteus-server-ts test:unit 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E '^ FAIL|×|Test Files|Tests |Errors|Error:' | grep -v '✓'
+# Commit: bbd88fd3ea
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:57:18Z
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  815 passed | 4 skipped (819)
+      Tests  6770 passed | 7 skipped (6777)
+
+# exit code: 0

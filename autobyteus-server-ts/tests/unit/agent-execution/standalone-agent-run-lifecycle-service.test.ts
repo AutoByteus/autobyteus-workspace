@@ -12,7 +12,7 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 
@@ -185,11 +185,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
   );
 
   it("rejects a pre-existing run before any provider candidate is constructed while history is degraded", async () => {
-    configureTokenUsageMigrationReadiness({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "FAILED",
-      logPath: "/tmp/token-migration.log",
-    });
+    configureTokenUsageCapability({ kind: "HISTORY_MIGRATION_PENDING" });
     try {
       const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
       const current = harness({ metadataStates: [{ kind: "present", metadata: started }] });
@@ -199,7 +195,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
       expect(current.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
     } finally {
-      configureTokenUsageMigrationReadiness({ kind: "READY" });
+      configureTokenUsageCapability({ kind: "READY" });
     }
   });
 

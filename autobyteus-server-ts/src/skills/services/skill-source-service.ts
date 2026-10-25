@@ -16,7 +16,7 @@ import { SkillService } from "./skill-service.js";
 
 type Options = {
   config?: SkillService["config"]; catalog?: SkillService; store?: GitHubSkillSourceStore;
-  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
+  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata" | "fetchDefaultBranchHead">;
   repository?: GitHubSkillRepository;
   invalidateWorkspaces?: () => Promise<void>;
   updateSetting?: (key: string, value: string) => [boolean, string];
@@ -160,7 +160,7 @@ export class SkillSourceService {
       const current = this.store.read().find((entry) => entry.id === record.id);
       if (!current || current.state !== "ACTIVE") return;
       try {
-        const metadata = await this.metadata(repositoryUrl(current.repository));
+        const metadata = await this.head(current.repository);
         this.replaceRecord(current.id, (latest) => ({ ...latest, lastCheck: this.observation(metadata) }));
       } catch (error) {
         this.replaceRecord(current.id, (latest) => ({ ...latest, lastCheck: {
@@ -180,7 +180,7 @@ export class SkillSourceService {
       let committed = false;
       let generation: string | undefined;
       try {
-        const metadata = await this.metadata(repositoryUrl(current.repository));
+        const metadata = await this.head(current.repository);
         if (metadata.latestRevision === current.installed.revision) {
           this.replaceRecord(id, (record) => ({ ...record, lastCheck: this.observation(metadata), lastUpdateError: null }));
           committed = true;
@@ -262,6 +262,13 @@ export class SkillSourceService {
   private observation(metadata: GitHubRepositoryRevisionMetadata): GitHubSkillSourceRecord["lastCheck"] {
     return { checkedAt: new Date().toISOString(), latestRevision: metadata.latestRevision, defaultBranch: metadata.defaultBranch, error: null };
   }
+  /** Check and update: the stored repository's default branch head, read without REST quota. */
+  private async head(repository: GitHubSkillSourceRecord["repository"]): Promise<GitHubRepositoryRevisionMetadata> {
+    const head = await this.client.fetchDefaultBranchHead(repository.owner, repository.repo);
+    if (!/^[a-f0-9]{40,64}$/i.test(head.latestRevision)) throw new Error("GitHub returned an invalid revision.");
+    return { owner: repository.owner, repo: repository.repo, canonicalUrl: repositoryUrl(repository), ...head };
+  }
+  /** Import: the REST metadata, for the repository's identity and visibility. */
   private async metadata(url: string): Promise<GitHubRepositoryRevisionMetadata> {
     const metadata = await this.client.fetchRepositoryRevisionMetadata(parseGitHubSkillRepository(url));
     parseGitHubSkillRepository(repositoryUrl(metadata));

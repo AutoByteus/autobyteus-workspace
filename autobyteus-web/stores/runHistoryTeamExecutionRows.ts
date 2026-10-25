@@ -1,4 +1,5 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
@@ -57,7 +58,7 @@ export const buildRunHistoryTeamExecutionRows = (
   const navigationByKey = new Map(navigationRows.map((row) => [row.key, row]));
   const descendantRows = navigationRows.filter((row) => row !== rootRow).map((row) => {
     const parent = row.parentKey ? navigationByKey.get(row.parentKey) : undefined;
-    // Only sidebar task-Agent leaves become peers. Shared navigation and real
+    // Only sidebar task-Agent leaves are lifted to their parent's level, as its siblings. Shared navigation and real
     // Team/task-Team containment remain authoritative everywhere else.
     if (row.kind === 'task_agent'
       && (parent?.kind === 'configured_agent' || parent?.kind === 'task_team_agent')) {
@@ -67,6 +68,7 @@ export const buildRunHistoryTeamExecutionRows = (
   });
   const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
   const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
+  const remoteRuns = useRemoteRunsStore();
   return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
     if (execution.depth < 1) {
       throw new Error(`Team history descendant '${execution.key}' is outside execution root '${rootTeamRunId}'.`);
@@ -91,6 +93,8 @@ export const buildRunHistoryTeamExecutionRows = (
       : execution.kind === 'task_team'
         ? 'task_team'
         : 'task_team_child';
+    // autobyteus-278: a run another node runs carries its node.
+    const remoteRun = execution.teamRunId ? remoteRuns.run(execution.teamRunId) : remoteRuns.runOfAgentRun(execution.agentRunId);
     const transient: RunHistoryTransientExecutionRow = {
       kind: 'transient_execution',
       transientKind,
@@ -105,6 +109,7 @@ export const buildRunHistoryTeamExecutionRows = (
       delegatedBy: execution.delegatedBy,
       depth,
       hasChildren,
+      remote: remoteRun ? Object.freeze({ runId: remoteRun.runId, nodeName: remoteRun.nodeName }) : null,
     };
     return [transient];
   });

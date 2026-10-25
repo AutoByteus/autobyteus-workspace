@@ -4,7 +4,7 @@ import { SqlTokenUsageAnalyticsRepository } from "../../../../src/token-usage/re
 import { SqlTokenUsageRunRepository } from "../../../../src/token-usage/repositories/sql/token-usage-run-repository.js";
 import { projectTokenUsageAnalyticsContribution } from "../../../../src/token-usage/projections/token-usage-analytics-contribution.js";
 import { TokenUsageRunAccumulator } from "../../../../src/token-usage/services/token-usage-run-accumulator.js";
-import { configureTokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import {
   buildCurrentTokenUsagePayload,
   passthroughTokenCostCalculator,
@@ -22,7 +22,7 @@ const cleanup = async () => {
 beforeAll(async () => {
   await shutdownPrisma();
   await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-  configureTokenUsageMigrationReadiness({ kind: "READY" });
+  configureTokenUsageCapability({ kind: "READY" });
   await cleanup();
 });
 

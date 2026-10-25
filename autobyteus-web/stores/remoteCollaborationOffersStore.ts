@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetPeerNodeOffer } from '~/graphql/queries/remoteCollaborationQueries'
+import type { NodeTransportReason } from '~/utils/nodeIdentityProbe'
 
 /** One Agent or Agent Team a peer offers, as the page shows it: a description only when it has one. */
 export interface PeerOfferEntry {
@@ -9,21 +10,27 @@ export interface PeerOfferEntry {
   description?: string
 }
 
-/** The four reasons the page words (UI/UX spec ST-03 … ST-06); any other refusal reads as not reachable. */
+/** The four refusals the page words (UI/UX spec ST-03 … ST-06); any other refusal reads as not reachable. */
 export const PEER_REFUSAL_CODES = ['REMOTE_COLLABORATION_OFF', 'PEER_NOT_REGISTERED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH'] as const
 export type PeerRefusalCode = (typeof PEER_REFUSAL_CODES)[number]
 
 export type PeerOffer =
   | { phase: 'checking' }
   | { phase: 'available'; entries: PeerOfferEntry[]; checkedAt: string }
-  | { phase: 'unavailable'; code: PeerRefusalCode }
+  /** `reason`: why an unreachable peer did not answer, when the transport said (one-nodes-tab REQ-707). */
+  | { phase: 'unavailable'; code: PeerRefusalCode; reason?: NodeTransportReason }
 
 type OfferAnswer = {
   peerNodeOffer?: {
     entries?: Array<{ name: string; kind: string; description?: string | null }> | null
     refusalCode?: string | null
+    unreachableReason?: string | null
   } | null
 }
+
+const REASONS: readonly string[] = ['refused', 'timeout', 'not_found', 'unreachable']
+const reasonOf = (reason: string | null | undefined): { reason?: NodeTransportReason } =>
+  reason && REASONS.includes(reason) ? { reason: reason as NodeTransportReason } : {}
 
 const KIND_ORDER: Record<PeerOfferEntry['kind'], number> = { agent: 0, agent_team: 1 }
 
@@ -40,7 +47,7 @@ const codeOf = (code: string | null | undefined): PeerRefusalCode =>
 let nextToken = 1
 
 /**
- * What the Remote Collaboration page knows about each peer's offer now (autobyteus-267 DS-002). One state per peer:
+ * What the Nodes page knows about each peer's offer now (autobyteus-267 DS-002; one-nodes-tab DS-004: "this node → it"). One state per peer:
  * checking, available (entries and the window's time the answer arrived) or unavailable (the refusal code). The node's
  * server asks the peer; the window never contacts it. Nothing is cached and nothing polls: peers are asked when the
  * tab opens, when the switch turns on, when one is added, and on Refresh. Each ask takes a token per peer; an answer
@@ -77,7 +84,7 @@ export const useRemoteCollaborationOffersStore = defineStore('remoteCollaboratio
         const answer = data?.peerNodeOffer
         offer = errors?.length || !answer ? { phase: 'unavailable', code: 'PEER_UNREACHABLE' }
           : answer.entries ? { phase: 'available', entries: entriesOf(answer.entries), checkedAt: new Date().toISOString() }
-            : { phase: 'unavailable', code: codeOf(answer.refusalCode) }
+            : { phase: 'unavailable', code: codeOf(answer.refusalCode), ...reasonOf(answer.unreachableReason) }
       } catch {
         // The query itself failed (this node's server, or the network): nothing retries.
         offer = { phase: 'unavailable', code: 'PEER_UNREACHABLE' }

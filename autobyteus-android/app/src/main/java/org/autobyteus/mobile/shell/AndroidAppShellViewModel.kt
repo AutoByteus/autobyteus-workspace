@@ -1,16 +1,16 @@
 package org.autobyteus.mobile.shell
 
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
 sealed class AndroidAppShellState {
     data object AwaitingInput : AndroidAppShellState()
-    data class ValidatingNode(val profile: SavedNodeProfile? = null) : AndroidAppShellState()
-    data class OpeningWebView(val profile: SavedNodeProfile, val initialUrl: String) : AndroidAppShellState()
-    data class WebViewActive(val profile: SavedNodeProfile) : AndroidAppShellState()
+    data class ValidatingNode(val entry: SavedNodeEntry? = null) : AndroidAppShellState()
+    data class OpeningWebView(val entry: SavedNodeEntry, val initialUrl: String) : AndroidAppShellState()
+    data class WebViewActive(val entry: SavedNodeEntry) : AndroidAppShellState()
     data class RecoverableError(
         val diagnostic: ConnectionDiagnostic,
-        val profile: SavedNodeProfile? = null,
+        val entry: SavedNodeEntry? = null,
     ) : AndroidAppShellState()
 }
 
@@ -20,19 +20,19 @@ class AndroidAppShellViewModel {
 
     fun awaitingInput(): AndroidAppShellState = set(AndroidAppShellState.AwaitingInput)
 
-    fun validating(profile: SavedNodeProfile? = null): AndroidAppShellState =
-        set(AndroidAppShellState.ValidatingNode(profile))
+    fun validating(entry: SavedNodeEntry? = null): AndroidAppShellState =
+        set(AndroidAppShellState.ValidatingNode(entry))
 
-    fun opening(profile: SavedNodeProfile, initialUrl: String): AndroidAppShellState =
-        set(AndroidAppShellState.OpeningWebView(profile, initialUrl))
+    fun opening(entry: SavedNodeEntry, initialUrl: String): AndroidAppShellState =
+        set(AndroidAppShellState.OpeningWebView(entry, initialUrl))
 
-    fun active(profile: SavedNodeProfile): AndroidAppShellState =
-        set(AndroidAppShellState.WebViewActive(profile))
+    fun active(entry: SavedNodeEntry): AndroidAppShellState =
+        set(AndroidAppShellState.WebViewActive(entry))
 
     fun recoverableError(
         diagnostic: ConnectionDiagnostic,
-        profile: SavedNodeProfile? = null,
-    ): AndroidAppShellState = set(AndroidAppShellState.RecoverableError(diagnostic, profile))
+        entry: SavedNodeEntry? = null,
+    ): AndroidAppShellState = set(AndroidAppShellState.RecoverableError(diagnostic, entry))
 
     private fun set(nextState: AndroidAppShellState): AndroidAppShellState {
         state = nextState

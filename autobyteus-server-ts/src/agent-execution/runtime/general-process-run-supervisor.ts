@@ -53,7 +53,7 @@ import {
   releaseProcessRunFileChangeService,
 } from "../../services/run-file-changes/run-file-change-service.js";
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
@@ -287,7 +287,7 @@ export class GeneralProcessRunSupervisor {
           workspaceManager,
         }),
       });
-      const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+      const tokenUsageReadiness = new TokenUsageCapability();
       const provisioningService = new AgentRunProvisioningService(memoryDir, {
         agentRunManager,
         metadataService,

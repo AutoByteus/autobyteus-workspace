@@ -5,7 +5,9 @@ import {
   APP_UPDATE_IPC_DOWNLOAD,
   APP_UPDATE_IPC_GET_STATE,
   APP_UPDATE_IPC_INSTALL,
+  APP_UPDATE_IPC_COMMAND_CHANNELS,
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
+  APP_UPDATE_IPC_SET_AUTO_CHECK,
   APP_UPDATE_IPC_SET_CHANNEL,
 } from '../appUpdateController'
 
@@ -51,7 +53,10 @@ describe('DisabledAppUpdater', () => {
       errorKind: null,
       checkedAt: null,
       notification: null,
+      autoCheck: null,
     })
+    expect(await invoke(APP_UPDATE_IPC_SET_AUTO_CHECK, { enabled: false, intervalMinutes: 60 }))
+      .toMatchObject({ status: 'disabled', autoCheck: null })
     expect(await invoke(APP_UPDATE_IPC_CHECK)).toMatchObject({ status: 'disabled' })
     expect(await invoke(APP_UPDATE_IPC_MARK_NOTIFICATION_READ)).toMatchObject({ status: 'disabled', notification: null })
     expect(await invoke(APP_UPDATE_IPC_CLEAR_NOTIFICATION)).toMatchObject({ status: 'disabled', notification: null })
@@ -74,6 +79,6 @@ describe('DisabledAppUpdater', () => {
     controller.initialize()
     controller.startAutoCheck()
 
-    expect(ipcMainMock.handle).toHaveBeenCalledTimes(7)
+    expect(ipcMainMock.handle).toHaveBeenCalledTimes(APP_UPDATE_IPC_COMMAND_CHANNELS.length)
   })
 })

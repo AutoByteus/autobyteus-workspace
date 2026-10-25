@@ -1,23 +1,28 @@
-export const EMBEDDED_NODE_ID = 'embedded-local';
-export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry.v1';
+/** The entry ID of the desktop's embedded local node. */
+export const EMBEDDED_ENTRY_ID = 'embedded-local';
+/** The window's node list in browser mode (no Electron API). */
+export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry';
 
 export type NodeType = 'embedded' | 'remote';
 
-export interface NodeCapabilities {
-  terminal: boolean;
-  fileExplorerStreaming: boolean;
+/** A node's ID (`srv_…`), as `/rest/remote-access/status` answers it. */
+export const NODE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
+
+export function isNodeId(value: unknown): value is string {
+  return typeof value === 'string' && NODE_ID_PATTERN.test(value);
 }
 
-export type CapabilityProbeState = 'unknown' | 'ready' | 'degraded';
-
-export interface NodeProfile {
+/**
+ * An entry: this desktop's record of a node it can open. `id` is the entry's own ID (other records refer to it as
+ * `entryId`); `nodeId` is the node's ID (`srv_…`), learned when this desktop reaches the node at `baseUrl` (absent:
+ * not learned yet). The Nodes page joins the entries with this node's peers by it (one-nodes-tab DEC-701).
+ */
+export interface NodeEntry {
   id: string;
   name: string;
   baseUrl: string;
   nodeType: NodeType;
-  capabilities?: NodeCapabilities;
-  capabilityProbeState?: CapabilityProbeState;
-  isSystem: boolean;
+  nodeId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,35 +48,43 @@ export interface NodeEndpoints {
 
 export interface WindowNodeContext {
   windowId: number;
-  nodeId: string;
+  /** The entry this window is bound to. */
+  entryId: string;
 }
 
 export interface NodeRegistrySnapshot {
   version: number;
-  nodes: NodeProfile[];
+  nodes: NodeEntry[];
 }
 
 export interface AddNodeRegistryChange {
   type: 'add';
-  node: NodeProfile;
+  node: NodeEntry;
 }
 
 export interface RemoveNodeRegistryChange {
   type: 'remove';
-  nodeId: string;
+  entryId: string;
 }
 
 export interface RenameNodeRegistryChange {
   type: 'rename';
-  nodeId: string;
+  entryId: string;
   name: string;
+}
+
+/**
+ * Sets or replaces an entry's `nodeId` with the node ID its own address answered (one-nodes-tab AR-003); a no-op
+ * when it is equal.
+ */
+export interface IdentifyNodeRegistryChange {
+  type: 'identify';
+  entryId: string;
+  nodeId: string;
 }
 
 export type NodeRegistryChange =
   | AddNodeRegistryChange
   | RemoveNodeRegistryChange
-  | RenameNodeRegistryChange;
-
-export function isEmbeddedNode(nodeId: string): boolean {
-  return nodeId === EMBEDDED_NODE_ID;
-}
+  | RenameNodeRegistryChange
+  | IdentifyNodeRegistryChange;

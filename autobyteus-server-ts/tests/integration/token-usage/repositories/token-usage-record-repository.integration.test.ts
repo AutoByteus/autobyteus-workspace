@@ -6,7 +6,7 @@ import {
   MAX_RECENT_IDEMPOTENCY_STATE_BYTES,
   MAX_SNAPSHOT_SERIES_STATE_BYTES,
 } from "../../../../src/token-usage/domain/token-usage-snapshot-checkpoint.js";
-import { configureTokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import {
   buildCurrentTokenUsagePayload,
   createCurrentTokenUsageTestHarness,
@@ -21,7 +21,7 @@ const remember = (runId: string): string => {
 beforeAll(async () => {
   await shutdownPrisma();
   await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-  configureTokenUsageMigrationReadiness({ kind: "READY" });
+  configureTokenUsageCapability({ kind: "READY" });
 });
 
 afterEach(async () => {

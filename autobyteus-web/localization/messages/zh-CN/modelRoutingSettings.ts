@@ -1,0 +1,42 @@
+import type { TranslationCatalog } from '../../runtime/types';
+
+/** 设置 → 模型路由；第一部分“当前可用的智能体运行时”（此节点现在能运行什么）。 */
+const modelRoutingSettingsMessages = {
+  "settings.modelRouting.title": "模型路由",
+  "settings.modelRouting.description": "智能体可以在此节点上的哪些运行时中运行，以及每个运行时的用量限额还剩多少。",
+  "settings.modelRouting.runtimesNow.title": "当前可用的智能体运行时",
+  "settings.modelRouting.runtimesNow.description": "此节点上可用的智能体运行时及其模型和用量限额，实时从各运行时读取。读取不消耗令牌。",
+  "settings.modelRouting.runtimesNow.node.own": "本机",
+  "settings.modelRouting.runtimesNow.node.remote": "远程节点",
+  "settings.modelRouting.runtimesNow.loading": "正在读取此节点上的运行时…",
+  "settings.modelRouting.runtimesNow.checkAgain": "重新检查",
+  "settings.modelRouting.runtimesNow.checking": "正在检查…",
+  "settings.modelRouting.runtimesNow.checkedAt": "检查于 {{time}}",
+  "settings.modelRouting.runtimesNow.loadError": "无法读取此节点上的智能体运行时。请使用“重新检查”重试。",
+  "settings.modelRouting.runtimesNow.checkFailed": "重新检查失败，显示的是上一次的结果。",
+  "settings.modelRouting.runtimesNow.empty": "此节点上没有可用的智能体运行时。请在“智能体运行时”中安装并登录一个运行时，或在“API 密钥”中添加 API 密钥。",
+  "settings.modelRouting.runtimesNow.listLabel": "此节点上可用的智能体运行时",
+  "settings.modelRouting.runtimesNow.announce.checked": "已检查智能体运行时。",
+  "settings.modelRouting.runtimesNow.signInNotChecked": "无法检查登录状态",
+  "settings.modelRouting.runtimesNow.limits.heading": "限额",
+  "settings.modelRouting.runtimesNow.limits.remaining": "剩余 {{percent}}%",
+  "settings.modelRouting.runtimesNow.limits.remainingNotReported": "未报告剩余量",
+  "settings.modelRouting.runtimesNow.limits.resets": "{{time}} 重置",
+  "settings.modelRouting.runtimesNow.limits.notReported": "未报告限额",
+  "settings.modelRouting.runtimesNow.limits.unknown": "限额未知：{{reason}}",
+  "settings.modelRouting.runtimesNow.models.heading": "模型",
+  "settings.modelRouting.runtimesNow.models.one": "1 个模型",
+  "settings.modelRouting.runtimesNow.models.count": "{{count}} 个模型",
+  "settings.modelRouting.runtimesNow.models.none": "未提供模型",
+  "settings.modelRouting.runtimesNow.models.blockedCount": "{{count}} 个不可用",
+  "settings.modelRouting.runtimesNow.models.context": "{{tokens}} 上下文",
+  "settings.modelRouting.runtimesNow.models.blockedUntil": "{{time}} 前不可用（{{by}}）",
+  "settings.modelRouting.runtimesNow.models.blocked": "不可用（{{by}}）",
+  "settings.modelRouting.runtimesNow.models.unknown": "模型未知：{{reason}}",
+  "settings.modelRouting.runtimesNow.providers.listLabel": "AutoByteus 提供商",
+  "settings.modelRouting.runtimesNow.providers.none": "此节点上没有配置了密钥的 API 提供商。",
+  "settings.modelRouting.runtimesNow.providers.balance": "余额 {{balance}}",
+  "settings.modelRouting.runtimesNow.providers.blocked": "无法运行：{{reason}}",
+} satisfies TranslationCatalog;
+
+export default modelRoutingSettingsMessages;

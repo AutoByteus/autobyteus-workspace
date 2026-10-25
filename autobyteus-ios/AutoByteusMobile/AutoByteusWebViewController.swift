@@ -3,7 +3,7 @@ import UIKit
 import WebKit
 
 final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
-    let profile: SavedNodeProfile
+    let entry: SavedNodeEntry
     private let onPageStarted: (String) -> Void
     private let onPageFinished: (String) -> Void
     private let onDiagnostic: (ConnectionDiagnostic) -> Void
@@ -13,14 +13,14 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
     private(set) var currentURL: String
 
     init(
-        profile: SavedNodeProfile,
+        entry: SavedNodeEntry,
         initialURL: String,
         onPageStarted: @escaping (String) -> Void,
         onPageFinished: @escaping (String) -> Void,
         onDiagnostic: @escaping (ConnectionDiagnostic) -> Void,
         onExternalURL: @escaping (URL) -> Void
     ) {
-        self.profile = profile
+        self.entry = entry
         self.currentURL = initialURL
         self.onPageStarted = onPageStarted
         self.onPageFinished = onPageFinished
@@ -52,7 +52,7 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
     }
 
     func loadTrusted(_ urlString: String) {
-        switch TrustedNavigationPolicy.classify(targetURL: urlString, profile: profile).type {
+        switch TrustedNavigationPolicy.classify(targetURL: urlString, entry: entry).type {
         case .allowInWebView:
             guard let url = URL(string: urlString) else {
                 onDiagnostic(ConnectionDiagnosticMapper.invalidURL("The mobile URL could not be built."))
@@ -97,7 +97,7 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
             decisionHandler(.cancel)
             return
         }
-        let decision = TrustedNavigationPolicy.classify(targetURL: url.absoluteString, profile: profile)
+        let decision = TrustedNavigationPolicy.classify(targetURL: url.absoluteString, entry: entry)
         switch decision.type {
         case .allowInWebView:
             decisionHandler(.allow)
@@ -132,7 +132,7 @@ final class AutoByteusWebViewController: UIViewController, WKNavigationDelegate,
         windowFeatures: WKWindowFeatures
     ) -> WKWebView? {
         if navigationAction.targetFrame == nil, let url = navigationAction.request.url {
-            let decision = TrustedNavigationPolicy.classify(targetURL: url.absoluteString, profile: profile)
+            let decision = TrustedNavigationPolicy.classify(targetURL: url.absoluteString, entry: entry)
             if decision.type == .allowInWebView {
                 webView.load(navigationAction.request)
             } else if decision.type == .openExternal {

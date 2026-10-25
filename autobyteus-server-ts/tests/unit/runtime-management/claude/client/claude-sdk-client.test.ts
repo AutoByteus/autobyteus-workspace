@@ -401,14 +401,16 @@ describe("ClaudeSdkClient", () => {
 
     expect(models[0]?.model_identifier).toBe("deepseek-v4-flash");
     expect(queryFn).toHaveBeenCalledWith({
-      prompt: expect.any(String),
+      prompt: expect.anything(),
       options: expect.objectContaining({
-        maxTurns: 0,
         permissionMode: "plan",
         settingSources: ["user"],
       }),
     });
-    const discoveryCall = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    const discoveryCall = queryFn.mock.calls[0]?.[0] as { prompt: unknown; options: Record<string, unknown> };
+    // A string prompt is written to the CLI as a user turn (C-15): discovery sends no message at all.
+    expect(typeof discoveryCall.prompt).not.toBe("string");
+    expect(discoveryCall.options).not.toHaveProperty("maxTurns");
     expect(discoveryCall.options).not.toHaveProperty("tools");
     expect(discoveryCall.options).not.toHaveProperty("disallowedTools");
   });

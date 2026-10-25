@@ -2,12 +2,12 @@ import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
 } from "../../domain/app-data-migration-types.js";
-import { TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID } from "../token-usage-custom-provider-model-value-backfill-migration.js";
-import { TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID } from "../token-usage-provider-name-snapshot-backfill-migration.js";
-import { TOKEN_USAGE_SOURCE_SHAPING_BATCH_SIZE } from "../token-usage-source-shaping-constants.js";
+import { TOKEN_USAGE_SOURCE_SHAPING_BATCH_SIZE } from "../../frozen/token-usage-source-shaping-constants.js";
 import { LegacyTokenUsageConsolidationRepository } from "./legacy-token-usage-consolidation-repository.js";
 import { LegacyTokenUsageRunFold } from "./legacy-token-usage-run-fold.js";
 import { legacyRowId } from "./legacy-token-usage-row.js";
+const TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID = "20260730_token_usage_custom_provider_model_value_backfill";
+const TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 
 export const TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID =
   "20260819_token_usage_run_records_v1";
@@ -30,6 +30,8 @@ export class TokenUsageRunRecordsV1AppDataMigration implements AppDataMigrationD
     TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID,
     TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,
   ] as const;
+  // Until the released ledger is consolidated, history reads and existing-run restore would conflict with it.
+  readonly holdsBackCapabilities = ["token_usage_history"] as const;
 
   constructor(
     private readonly repository = new LegacyTokenUsageConsolidationRepository(),

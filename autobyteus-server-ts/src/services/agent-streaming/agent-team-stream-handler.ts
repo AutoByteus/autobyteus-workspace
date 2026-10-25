@@ -20,6 +20,7 @@ import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from ".
 import { createSequencedStreamEgressControlComposition } from "./websocket-egress/agent-stream-egress-control-composition.js";
 import { teamStreamSequencedShape } from "./websocket-egress/team-stream-sequenced-shape.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 
 export type WebSocketConnection = { send(data: string): void; close(code?: number): void };
@@ -103,6 +104,9 @@ export class AgentTeamStreamHandler {
         await this.handleSendMessage(root, message.payload, sink);
       } else if (message.type === "INTERRUPT_GENERATION") {
         await handleTeamInterruptGenerationCommand({ teamRunId: root.teamRunId, payload: message.payload, sink, activeRun: root });
+      } else if (message.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
+        // Retry (autobyteus-278): the answers arrive as messages on this stream.
+        await root.remoteChildren.refresh();
       } else {
         await handleTeamToolApprovalCommand({
           teamRunId: root.teamRunId, payload: message.payload,
@@ -129,12 +133,13 @@ export class AgentTeamStreamHandler {
     if (this.subscribedRunsBySessionId.get(sessionId) === root) return;
     if (this.subscribedRunsBySessionId.has(sessionId)) egress.flush();
     this.unsubscribeSession(sessionId);
+    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.getExecutionTreeSnapshot().rootTeam.remoteTaskExecutions);
     const connection = await root.openPackageSnapshotConnection();
     try {
       egress.send(parseTeamStreamServerMessage({
         type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: root.teamRunId },
       }));
-      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection.snapshot, connection.baseChangeSequence));
+      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection.snapshot, connection.baseChangeSequence, remoteTaskExecutions));
       const unsubscribeEvents = connection.subscribe((event) => {
         try { egress.send(projectSequencedTeamRunEvent(root, event)); }
         catch (error) { console.error(`Error projecting TeamRun event: ${String(error)}`); }
@@ -143,7 +148,9 @@ export class AgentTeamStreamHandler {
       egress.send(parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: lifecycle.isActive } }));
       const unsubscribeLifecycle = this.teamRunManager.subscribeToLifecycle(root.teamRunId, (snapshot) =>
         egress.send(parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: snapshot.isActive } })));
-      this.eventUnsubscribers.set(sessionId, unsubscribeEvents);
+      // autobyteus-278: a viewer of the Team observes its remote children while bound to this root.
+      root.remoteChildren.viewerAttached();
+      this.eventUnsubscribers.set(sessionId, () => { unsubscribeEvents(); root.remoteChildren.viewerDetached(); });
       this.lifecycleUnsubscribers.set(sessionId, unsubscribeLifecycle);
       this.subscribedRunsBySessionId.set(sessionId, root);
     } catch (error) {

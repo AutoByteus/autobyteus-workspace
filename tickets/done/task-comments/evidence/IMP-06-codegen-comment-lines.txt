@@ -1,0 +1,12 @@
+# IMP-06 generated/graphql.ts comment hunks vs real codegen
+# Steps: pnpm -C autobyteus-server-ts build; node IMP-06-print-schema.mjs <worktree>/autobyteus-server-ts/dist/api/graphql/schema.js schema.graphql;
+#        BACKEND_GRAPHQL_BASE_URL=schema.graphql pnpm -C autobyteus-web codegen -> regenerated file (kept outside the repo);
+#        the committed file = the base file plus only the comment-related blocks of the regenerated one; then
+#        compare every line containing "omment" in the committed and the regenerated file, in order.
+# Source: e014c349b8 (server source 52035832a6); macOS; 2026-10-22
+comment lines identical: True 25
+# Committed diff: 65 insertions, 4 deletions (AddProjectTaskCommentInput, Mutation.addProjectTaskComment and its args,
+# ProjectTask.comments, ProjectTaskComment, the operation types with comments, AddProjectTaskComment mutation types,
+# document and composable, and the fragment's comments selection).
+# The full regeneration also produced unrelated drift (the checked-in file is stale; already follow-up FU-CR-002 of
+# task-part-of); not committed.

@@ -184,10 +184,16 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
 
   it("RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)", async () => {
     // A newer Codex is out again, so Update is offered.
-    sources.answers.codex = { status: 200, body: JSON.stringify({ tag_name: "rust-v0.170.0" }) };
+    sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
     states.set("codex-update-to", "0.170.0");
-    await client.mutate("checkAgentRuntimes");
-    await until(async () => (await row(CODEX)).updates.state === "UPDATE_AVAILABLE", "Codex has an update again");
+    // RA-03's update starts its own re-check (AR-006), which stays checking until Codex's sign-in is read; a check
+    // started meanwhile skips the row and the re-check ends with the release it read. Press Check again until the
+    // newer release shows, as a user would.
+    await until(async () => {
+      if ((await row(CODEX)).updates.state === "UPDATE_AVAILABLE") return true;
+      await client.mutate("checkAgentRuntimes");
+      return false;
+    }, "Codex has an update again");
     expect((await row(CODEX)).runningAgentCount).toBe(0);
 
     const brief = await appGraphql(`mutation($input: CreateBriefInput!) { createBrief(input: $input) { briefId } }`, { input: { title: "Runtime count brief" } });

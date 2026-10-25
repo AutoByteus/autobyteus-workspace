@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/deployment report remai
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Test-code review pass CRR-003 (code reviewer) | N/A | Delivery Completed: verified from the evidence, finalized into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/DEL-01..06` |
+| DR-002 | Solution Designer receipt check DG-001: the Task's done-when requires a beta and the user's check | Delivery Completed (DR-001), blocked at receipt | Delivery Completed: beta `v1.5.8-beta.3` published; the user's check accepted (relayed) | `release-deployment-report.md`, `handoff-summary.md` |
 
 ## Revision Entries
 
@@ -38,3 +39,21 @@ The latest docs sync report, handoff summary and release/deployment report remai
   - no blockers;
   - rollback is a revert of the merge, with no data migration;
   - untested are offline and rate-limit against the real network, emulated at `fetch`, and the signed install, which is the beta check.
+
+### DR-002 — Beta v1.5.8-beta.3 and the user's check (receipt gap DG-001)
+
+- Delivery round and trigger: round 2. The Solution Designer's receipt check of DR-001 found DG-001: the Task's done-when ("…merged; a beta and the user's check in the app") required a beta, but DR-001 recorded `No release`. Delivery had not read the Task's done-when in the investigation notes. The user also asked delivery directly: "lets release a new beta pelase".
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/delivery-receipts/settings-update-notifications-receipt-verification/receipt-verification.md`
+- Prior authoritative result: DR-001 `Delivery Completed`, blocked at receipt
+- Current authoritative result: `Delivery Completed`
+- Release: `v1.5.8-beta.3`
+  - release commit `3b2c86ca9e`;
+  - the checks before tagging passed (Secret Gate over 31 commits);
+  - Desktop, Android, iOS and Server Docker all succeeded;
+  - 17 assets on a pre-release;
+  - Docker `1.5.8-beta.3` = `:beta` at the time.
+- User check: accepted, relayed through the Project Task Manager and the Solution Designer on 2026-10-24. The user runs `v1.5.9-beta.3`, which contains this change, and counts that as his check of AC-003 (Release page link) and AC-007 (Install and restart). No item-level results were reported.
+- Terminal return to the Solution Designer: `Sent`
+- Why this delivery revision was recorded: to correct the release decision and record the beta and the user's check
+- Next recipient/action: none. The Solution Designer closes the receipt.
+- Remaining blockers: none

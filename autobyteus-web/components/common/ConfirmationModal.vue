@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4" :class="layerClass">
         <div class="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl" role="dialog" aria-modal="true" :aria-label="title || confirmButtonText" :aria-busy="pending">
           <h3 v-if="title" class="font-semibold" :class="[titleSizeClass, titleClass]">{{ title }}</h3>
           <div :class="title ? 'mt-2' : ''">
@@ -35,6 +35,8 @@ const props = withDefaults(defineProps<{
   confirmButtonText?: string;
   variant?: ModalVariant;
   typographySize?: TypographySize;
+  /** The stacking layer; above the Notification Center (z-90) for a dialog opened from it. */
+  layerClass?: string;
 }>(), {
   title: '',
   message: '',
@@ -42,6 +44,7 @@ const props = withDefaults(defineProps<{
   confirmButtonText: 'Confirm',
   variant: 'primary',
   typographySize: 'default',
+  layerClass: 'z-50',
 });
 
 defineEmits(['confirm', 'cancel']);

@@ -14,6 +14,9 @@ export const UPDATE_NOTIFICATION_FIELDS = gql`
     state
     handledRevision
     handledAt
+    outcome
+    outcomeReason
+    outcomeAt
   }
 `
 
@@ -62,4 +65,48 @@ export const SET_UPDATE_CHECKS_ENABLED = gql`
       source
     }
   }
+`
+
+export const UPDATE_AUTOMATION_SETTINGS_FIELDS = gql`
+  fragment UpdateAutomationSettingsFields on UpdateAutomationSettings {
+    intervals {
+      agentPackages
+      skillSources
+      agentRuntimes
+    }
+    automaticUpdates {
+      agentPackages
+      skillSources
+      agentRuntimes
+    }
+    githubWaitUntil
+    desktopEmbeddedNode
+  }
+`
+
+export const GET_UPDATE_AUTOMATION_SETTINGS = gql`
+  query GetUpdateAutomationSettings {
+    updateAutomationSettings {
+      ...UpdateAutomationSettingsFields
+    }
+  }
+  ${UPDATE_AUTOMATION_SETTINGS_FIELDS}
+`
+
+export const SET_UPDATE_CHECK_INTERVAL = gql`
+  mutation SetUpdateCheckInterval($kind: UpdateNotificationKind!, $minutes: Int!) {
+    setUpdateCheckInterval(kind: $kind, minutes: $minutes) {
+      ...UpdateAutomationSettingsFields
+    }
+  }
+  ${UPDATE_AUTOMATION_SETTINGS_FIELDS}
+`
+
+export const SET_AUTOMATIC_UPDATES = gql`
+  mutation SetAutomaticUpdates($kind: UpdateNotificationKind!, $enabled: Boolean!) {
+    setAutomaticUpdates(kind: $kind, enabled: $enabled) {
+      ...UpdateAutomationSettingsFields
+    }
+  }
+  ${UPDATE_AUTOMATION_SETTINGS_FIELDS}
 `

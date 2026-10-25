@@ -66,12 +66,18 @@ is required.
 ### Background checks and update notifications
 
 While the node's Update checks setting is on, the
-[update notifications](./update_notifications.md) checker runs the same
+[update notifications](./update_notifications.md) pass runs the same
 `checkGitHubSkillSourceUpdates([sourceId])` for each ACTIVE source not checked
-for 6 hours. Any check that finds a newer revision (also the check when Manage
-skill sources opens) becomes that source's notification; Update from the
-notification shows the same confirmation and runs `updateGitHubSkillSource`.
-Nothing is downloaded or replaced without that confirmed Update.
+within the skill sources' interval (default 30 minutes). A check and an update
+read the default branch and its head commit through git (`ls-refs`, one
+`github.com` request, no REST API quota); importing still reads the REST API
+for the repository's identity and visibility. Any check that finds a newer
+revision (also the check when Manage skill sources opens) becomes that source's
+notification; Update from the notification shows the same confirmation and runs
+`updateGitHubSkillSource`. With automatic updates for skill sources on (off by
+default; turning it on is confirmed once, because local edits are replaced
+without asking), the pass runs `updateGitHubSkillSource` itself; otherwise
+nothing is downloaded or replaced without that confirmed Update.
 
 - `listGitHubSourceUpdateStates()` projects every ACTIVE source's update facts
   (installed and latest known revision, default branch, last check time).

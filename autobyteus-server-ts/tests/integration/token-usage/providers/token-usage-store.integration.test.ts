@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
-import { configureTokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import {
   buildCurrentTokenUsagePayload,
   createCurrentTokenUsageTestHarness,
@@ -15,7 +15,7 @@ const remember = (runId: string): string => {
 beforeAll(async () => {
   await shutdownPrisma();
   await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-  configureTokenUsageMigrationReadiness({ kind: "READY" });
+  configureTokenUsageCapability({ kind: "READY" });
 });
 
 afterEach(async () => {

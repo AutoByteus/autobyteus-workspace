@@ -1,0 +1,7 @@
+# IMP-18 (IR-004, CR-005)
+# command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/available-agent-runtimes tests/unit/agent-tools/agent-runtimes --no-watch
+# date: 2026-10-25
+
+typecheck exit 0
+ Test Files  5 passed (5)
+      Tests  38 passed (38)

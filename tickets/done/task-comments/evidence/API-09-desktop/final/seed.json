@@ -1,0 +1,21 @@
+{
+  "projectId": "project_6522c731-1795-48d3-8a66-6d8e339a4a40",
+  "tasks": {
+    "notes": {
+      "taskId": "project_task_1d7b37c3-48a9-46d8-8f14-99b7a834a0df",
+      "taskKey": "autobyteus-1"
+    },
+    "sidebar": {
+      "taskId": "project_task_82f63bc5-677f-4e9e-b63d-a31ffb3a0d26",
+      "taskKey": "autobyteus-2"
+    },
+    "onboarding": {
+      "taskId": "project_task_dbff3a73-edca-4bed-991b-944bc9593c19",
+      "taskKey": "autobyteus-3"
+    },
+    "old": {
+      "taskId": "project_task_bfad14f1-cf36-449a-b384-5826f0c75c4b",
+      "taskKey": "autobyteus-4"
+    }
+  }
+}

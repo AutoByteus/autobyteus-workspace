@@ -1,0 +1,17 @@
+# DEL-02-server-e2e-combined — the 8 changed server E2E files on the integrated state: no file loads (missing frozen migration modules from the base)
+### env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+# State: merge 4c2b43a3d7 (ticket code 985246c53b + tests 5faba271f5 + origin/personal 1c9edce551); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts [ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts ]
+ FAIL  tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts [ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts ]
+ FAIL  tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts [ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts ]
+ FAIL  tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts [ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts [ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts [ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts ]
+ FAIL  tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts [ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts ]
+Error: Cannot find module '../../../autobyteus-ts/memory/store/run-memory-file-store.js' imported from /Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts
+ FAIL  tests/e2e/update-notifications/update-notifications-live.e2e.test.ts [ tests/e2e/update-notifications/update-notifications-live.e2e.test.ts ]
+Caused by: Error: Cannot find module '../../../autobyteus-ts/memory/store/run-memory-file-store.js' imported from /Users/normy/autobyteus_org/autobyteus-worktrees/update-checks-and-auto-updates/autobyteus-server-ts/src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts
+ Test Files  8 failed (8)
+      Tests  no tests
+exit 1

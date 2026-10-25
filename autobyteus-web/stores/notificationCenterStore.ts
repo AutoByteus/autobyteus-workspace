@@ -2,21 +2,19 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useUpdateNotificationsStore } from '~/stores/updateNotificationsStore'
 
-/** Where the panel floats: its left edge and its distance from the window's bottom. */
-export type NotificationCenterAnchor = { left: number; bottom: number }
-
 /**
- * The Notification Center panel: open or closed, where it floats, and which rows were unread when
- * it opened (they keep their "New" dot until it closes, although opening marks them read).
+ * The Notification Center panel: open or closed, and which rows were unread when it opened (they
+ * keep their "New" dot until it closes, although opening marks them read). It always opens on the
+ * right side of the whole window, from either entry.
  */
 export const useNotificationCenterStore = defineStore('notificationCenter', () => {
   const isOpen = ref(false)
-  const anchor = ref<NotificationCenterAnchor | null>(null)
   const newRowIds = ref<string[]>([])
+  /** A confirmation opened from the panel (turning on an automatic update) is showing: outside clicks and Esc belong to it. */
+  const modalOpen = ref(false)
 
-  function open(at: NotificationCenterAnchor): void {
+  function open(): void {
     const notifications = useUpdateNotificationsStore()
-    anchor.value = at
     newRowIds.value = notifications.rows.filter((row) => row.unread).map((row) => row.id)
     isOpen.value = true
     void notifications.markAllRead()
@@ -29,5 +27,5 @@ export const useNotificationCenterStore = defineStore('notificationCenter', () =
 
   const isNew = (rowId: string): boolean => newRowIds.value.includes(rowId)
 
-  return { isOpen, anchor, open, close, isNew }
+  return { isOpen, modalOpen, open, close, isNew }
 })

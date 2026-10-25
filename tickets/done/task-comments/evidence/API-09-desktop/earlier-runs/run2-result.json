@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "name": "J5-tab",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-right-tool-strip-surface\"] button[data-tab-name=\"projects\"]')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-comments/tickets/in-progress/task-comments/evidence/API-09-desktop/desktop-journey.mjs:119:112\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-comments/tickets/in-progress/task-comments/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-comments/tickets/in-progress/task-comments/evidence/API-09-desktop/desktop-journey.mjs:112:1"
+    },
+    {
+      "name": "J6-zh-CN",
+      "result": "Pass",
+      "obs": {
+        "title": "评论",
+        "placeholder": "添加评论",
+        "add": "添加评论",
+        "firstMeta": "#1 · 2分钟前",
+        "none": "暂无评论。"
+      }
+    }
+  ],
+  "errors": []
+}

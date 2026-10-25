@@ -1,0 +1,42 @@
+# API-34/35 — the app's periodic check, its switch and Settings → Updates (AC-012, AC-013, AC-015, REQ-014, net.isOnline)
+# macOS 26.5.2 arm64; packaged build from 48fe98d65d (code 985246c53b), 1.5.9-beta.2, ad-hoc; instance A on own data root /private/tmp/a210/rootA; real public GitHub (unauthenticated); scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs) via the data root's .env; 2026-10-23
+# Feed http://127.0.0.1:59808 (generic): first offering the running 1.5.9-beta.2; 1.6.0 published at 2026-10-23T21:17:14Z, after launch
+
+## Settings → Updates after launch
+{"status": "Up to date", "lastChecked": "23.10.2026, 23:14:37", "autoState": "Automatic checks: every 1 hour", "message": "You already have the latest version.", "autoFailedNote": null, "description": "Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced; you decide to download and install it.", "noEffect": null, "toggle": {"checked": "true", "disabled": false}, "interval": {"value": "1", "unit": "hours", "hint": null, "saved": ""}}
+## interval 14 min refused, 15 min saved
+{
+  "value": "14",
+  "unit": "minutes",
+  "hint": "Enter a whole number from 15 minutes to 24 hours.",
+  "saved": ""
+}
+{
+  "value": "15",
+  "unit": "minutes",
+  "hint": null,
+  "saved": "Saved"
+}
+app-update-checks.json: {enabled: true, intervalMinutes: 15}
+
+## feed request log (all requests of the run)
+{"at":"2026-10-23T21:13:50.984Z","method":"GET","url":"/latest-mac.yml?noCache=1k5l9pqk3","range":null,"ua":"electron-builder","status":200}
+{"at":"2026-10-23T21:14:37.456Z","method":"GET","url":"/latest-mac.yml?noCache=1k5l9r80d","range":null,"ua":"electron-builder","status":200}
+{"at":"2026-10-23T21:29:37.455Z","method":"GET","url":"/latest-mac.yml?noCache=1k5lammtd","range":null,"ua":"electron-builder","status":200}
+{"at":"2026-10-23T21:32:52.500Z","method":"GET","url":"/latest-mac.yml?noCache=1k5laslch","range":null,"ua":"electron-builder","status":200}
+# 21:14:37.456 launch check (A2); 21:29:37.455 periodic check, 15:00 later, found 1.6.0 → online per net.isOnline(); 21:32:52.500 the manual Check for Updates in A3 (checks off). No request at A3's launch (21:30:27).
+
+## after the periodic check
+{"status": "Update available", "lastChecked": "23.10.2026, 23:29:37", "autoState": "Automatic checks: every 15 minutes", "message": "Version 1.6.0 is available.", "autoFailedNote": null, "description": "Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced; you decide to download and install it.", "noEffect": null, "toggle": {"checked": "true", "disabled": false}, "interval": {"value": "15", "unit": "minutes", "hint": null, "saved": ""}}
+{'id': 'notification-section-app', 'title': 'Software update'} [{'id': 'app', 'state': 'waiting', 'text': 'New: AutoByteus1.5.9-beta.21.6.0·this minuteDownload', 'compare': None}]
+
+## switch off
+{"status": "Update available", "lastChecked": "23.10.2026, 23:29:37", "autoState": "Automatic checks: off", "message": "Version 1.6.0 is available.", "autoFailedNote": null, "description": "Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced; you decide to download and install it.", "noEffect": "Automatic checks are off. Check for Updates below still works.", "toggle": {"checked": "false", "disabled": false}, "interval": {"value": "15", "unit": "minutes", "hint": null, "saved": ""}}
+{'enabled': False, 'intervalMinutes': 15}
+## after stop + start (A3 iso-60666-dc1f, 21:30:27Z), 2 min later
+{"status": "Automatic checks are off", "lastChecked": "Never", "autoState": "Automatic checks: off", "message": "Check for updates manually at any time.", "autoFailedNote": null, "description": "Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced; you decide to download and install it.", "noEffect": "Automatic checks are off. Check for Updates below still works.", "toggle": {"checked": "false", "disabled": false}, "interval": {"value": "15", "unit": "minutes", "hint": null, "saved": ""}}
+{'status': 'idle', 'checkedAt': None, 'autoCheck': {'enabled': False, 'intervalMinutes': 15}, 'notification': {'version': '1.6.0', 'fromVersion': '1.5.9-beta.2', 'foundAt': '2026-10-23T21:29:37.457Z', 'read': True, 'state': 'waiting', 'handledVersion': None, 'releasePageUrl': None}}
+[updater] lines in A3's log: 0
+## Check for Updates pressed
+Update available | 23.10.2026, 23:32:52 | Automatic checks: off | Version 1.6.0 is available.
+{'status': 'available', 'checkedAt': '2026-10-23T21:32:52.503Z', 'availableVersion': '1.6.0'}

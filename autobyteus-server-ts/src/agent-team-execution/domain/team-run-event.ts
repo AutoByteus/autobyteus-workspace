@@ -3,6 +3,7 @@ import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
@@ -12,6 +13,8 @@ export enum TeamRunEventSourceType {
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
   DELEGATED_LAUNCH_SELECTIONS = "DELEGATED_LAUNCH_SELECTIONS",
+  /** autobyteus-278: a fact of a run this Team delegated to another node (read only by the stream projector). */
+  REMOTE = "REMOTE",
 }
 
 export type TeamRunTaskExecutionEvent = Readonly<{
@@ -67,7 +70,8 @@ export type TeamRunEvent =
       /** The user's model choices of these copies were committed on the live run (DS-001). */
       eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS;
       selections: readonly DelegatedLaunchSelectionRecord[];
-    }>;
+    }>
+  | Readonly<{ eventSourceType: TeamRunEventSourceType.REMOTE; event: RemoteRunRootEvent }>;
 
 export type TeamRunEventListener = (event: TeamRunEvent) => void;
 export type TeamRunEventUnsubscribe = () => void;

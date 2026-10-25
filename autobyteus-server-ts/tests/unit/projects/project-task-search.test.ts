@@ -70,6 +70,18 @@ describe("ProjectTaskSearchService", () => {
     expect(ids(await search.search(projectId, "docker", { limit: 1 }))).toHaveLength(1);
   });
 
+  it("finds a Task whose comment alone contains the query as an exact match; comments never change what meaning search indexes (task-comments AC-005, AC-016)", async () => {
+    const commented = await create("Release the desktop app");
+    await create("Sidebar collapse state is lost after restart");
+    await ready();
+    const before = await search.indexStatus();
+    await tasks.updateTaskById({ taskId: commented.taskId, addComment: "User decided: ship the ARM64 build first." });
+    expect(ids(await search.search(projectId, "arm64 BUILD"))).toEqual(["exact:Release the desktop app"]);
+    expect((await search.search(projectId, "arm64 build")).matches[0]!.task.comments.map((c) => c.text)).toEqual(["User decided: ship the ARM64 build first."]);
+    // Meaning items are descriptions only, so the comment leaves the index as it was (no reindex).
+    expect((await search.indexStatus()).map((p) => p.state)).toEqual(before.map((p) => p.state));
+  });
+
   it("orders exact matches by meaning score, then by latest update", async () => {
     await create("token docker");
     await create("docker docker container image");

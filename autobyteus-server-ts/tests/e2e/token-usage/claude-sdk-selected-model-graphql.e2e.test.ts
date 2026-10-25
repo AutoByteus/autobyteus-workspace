@@ -10,7 +10,7 @@ import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { ClaudeCallUsageTracker } from '../../../src/agent-execution/backends/claude/session/claude-call-usage-tracker.js';
 import { buildClaudeTokenUsageEvent } from '../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js';
 import { createTokenUsageUpdatedPayload, type TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
-import { configureTokenUsageMigrationReadiness } from '../../../src/token-usage/providers/token-usage-migration-readiness.js';
+import { configureTokenUsageCapability } from '../../../src/token-usage/providers/token-usage-capability.js';
 import { SqlTokenUsageRunRepository } from '../../../src/token-usage/repositories/sql/token-usage-run-repository.js';
 import { TokenUsageRunAccumulator } from '../../../src/token-usage/services/token-usage-run-accumulator.js';
 import {
@@ -52,7 +52,7 @@ describe('Claude SDK per-call usage and turn-end remainder to SQL and GraphQL', 
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: 'READY' });
+    configureTokenUsageCapability({ kind: 'READY' });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));

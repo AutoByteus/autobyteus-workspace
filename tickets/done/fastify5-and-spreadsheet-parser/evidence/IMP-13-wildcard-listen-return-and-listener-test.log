@@ -1,0 +1,20 @@
+# Cause of the IMP-11 integration failure: fastify.listen({host:'0.0.0.0'}) return value, Fastify 4.29.1 vs 5.12.7 (probes/listen-probe.mjs), then the fixed studio-agent-tools-listener test
+# Check: IMP-13
+# Command: P=tickets/in-progress/fastify5-and-spreadsheet-parser/probes/listen-probe.mjs; echo '## listen() return for a wildcard bind'; node $P $PWD/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify; node $P $PWD/node_modules/.pnpm/fastify@5.12.7/node_modules/fastify; echo '## production call sites that read the listen() return value (only the standalone host keeps it, as handle.url)'; grep -rn 'await app.listen\|await this.app.listen' autobyteus-server-ts/src autobyteus-message-gateway/src; echo '## fixed test'; pnpm -C autobyteus-server-ts exec vitest run tests/integration/application-backend/studio-agent-tools-listener.integration.test.ts --no-watch 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E 'Test Files|Tests |AssertionError'
+# Commit: 29aeb5d721
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T20:13:48Z
+
+## listen() return for a wildcard bind
+4.29.1 listen() -> http://0.0.0.0:53926 | request ip: 127.0.0.1 host header: 0.0.0.0:53926 | addresses(): ["0.0.0.0"]
+5.12.7 listen() -> http://127.0.0.1:53928 | request ip: 127.0.0.1 host header: 127.0.0.1:53928 | addresses(): ["0.0.0.0"]
+## production call sites that read the listen() return value (only the standalone host keeps it, as handle.url)
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-server.ts:70:      await this.app.listen({ host: "127.0.0.1", port: 0 });
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:287:    const url = await app.listen({ host: config.host, port: config.port });
+autobyteus-server-ts/src/server-runtime.ts:214:    await app.listen({ host: options.host, port: options.port });
+autobyteus-message-gateway/src/bootstrap/start-gateway.ts:37:    await app.listen({ port, host });
+## fixed test
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+
+# exit code: 0

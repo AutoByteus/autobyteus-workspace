@@ -7,11 +7,15 @@ import type { SkillService } from "../../skills/services/skill-service.js";
 import { ApplicationRuntimeDefinitionValidator } from "./application-runtime-definition-validator.js";
 import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
 
+/** The one "setup required" text, for the startup error and for each not-ready application's quarantine. */
+const setupRequiredDetail = (diagnostics: readonly string[]): string =>
+  `Application setup is required: ${diagnostics.join("; ")}`;
+
 export class ApplicationSetupRequiredError extends Error {
   readonly code = "APPLICATION_SETUP_REQUIRED";
 
   constructor(readonly diagnostics: string[]) {
-    super(`Application setup is required: ${diagnostics.join("; ")}`);
+    super(setupRequiredDetail(diagnostics));
     this.name = "ApplicationSetupRequiredError";
   }
 }
@@ -109,7 +113,9 @@ export class ApplicationDefinitionRuntimeReadiness {
     return !this.diagnosticsByApplicationId.has(applicationId);
   }
 
-  getDiagnosticsByApplicationId(): ReadonlyMap<string, readonly string[]> {
-    return new Map(this.diagnosticsByApplicationId);
+  /** Why the application is not ready, as its quarantine states it; `null` when it is ready. */
+  getSetupRequiredDetail(applicationId: string): string | null {
+    const diagnostics = this.diagnosticsByApplicationId.get(applicationId);
+    return diagnostics ? setupRequiredDetail(diagnostics) : null;
   }
 }

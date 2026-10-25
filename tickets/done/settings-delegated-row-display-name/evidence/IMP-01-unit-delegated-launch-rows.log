@@ -1,0 +1,12 @@
+# IMP-01 delegated rows spec incl. the row-name cases (AC-001, AC-002, AC-003)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run utils/runSettings/__tests__/delegatedLaunchRows.spec.ts --run --reporter=verbose
+# commit: 5af1a03e11  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:51Z
+
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts > delegated launch nodes (REQ-007, AC-010, SR-006) > Team root: one read-only row per open copy; a Team copy has its agents as child rows 2ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts > delegated launch nodes (REQ-007, AC-010, SR-006) > a Team-level fallback is noted once, on the Team row; a member's own fallback stays on the member 1ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts > delegated launch nodes (REQ-007, AC-010, SR-006) > Org and Agent roots (camelCase): the same rules, every value from the copy's own recorded source 1ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts > delegated row names follow the root's naming rule (autobyteus-208) > Team root: catalog copies (and a Team copy's members) by display name, a configured member's copy by basename, as the sidebar 1ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts > delegated row names follow the root's naming rule (autobyteus-208) > Org and Agent roots: every copy row by display name, as their sidebar and contexts 0ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Duration  7.27s (transform 3.64s, setup 6.47s, collect 96ms, tests 5ms, environment 245ms, prepare 172ms)

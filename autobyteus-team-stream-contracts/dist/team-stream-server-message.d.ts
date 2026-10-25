@@ -160,6 +160,72 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             }, z.core.$strict>>;
         }, z.core.$strict>;
     }, z.core.$strict>>;
+    remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+        kind: z.ZodLiteral<"agent">;
+        address: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"agent_team">;
+        address: z.ZodString;
+        team_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        coordinator_address: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>], "kind">>;
+}, z.core.$strict>;
+/** A run this Team delegated to another node was recorded (autobyteus-278). */
+export declare const teamRemoteTaskExecutionStartedPayloadSchema: z.ZodObject<{
+    execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+        kind: z.ZodLiteral<"agent">;
+        address: z.ZodString;
+        agent_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"agent_team">;
+        address: z.ZodString;
+        team_run_id: z.ZodString;
+        node_id: z.ZodString;
+        node_name: z.ZodString;
+        coordinator_address: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>>;
+        delegator_agent_run_id: z.ZodString;
+        started_at: z.ZodString;
+    }, z.core.$strict>], "kind">;
+    change_sequence: z.ZodNumber;
+}, z.core.$strict>;
+/** What a remote run's node answered about it (autobyteus-278). */
+export declare const teamRemoteTaskExecutionSummaryPayloadSchema: z.ZodObject<{
+    node_id: z.ZodString;
+    run_id: z.ZodString;
+    reachable: z.ZodBoolean;
+    title: z.ZodNullable<z.ZodString>;
+    statuses: z.ZodArray<z.ZodObject<{
+        agent_run_id: z.ZodString;
+        status: z.ZodEnum<{
+            error: "error";
+            offline: "offline";
+            initializing: "initializing";
+            idle: "idle";
+            running: "running";
+        }>;
+    }, z.core.$strict>>;
+    change_sequence: z.ZodNumber;
 }, z.core.$strict>;
 export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     type: z.ZodLiteral<"SYSTEM_INSTRUCTIONS_SUPPLIED">;
@@ -992,6 +1058,28 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 }, z.core.$strict>>;
             }, z.core.$strict>;
         }, z.core.$strict>>;
+        remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+        }, z.core.$strict>], "kind">>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"AGENT_COMMAND_ACK">;
@@ -1154,6 +1242,52 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         parent_communication_message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"REMOTE_TASK_EXECUTION_STARTED">;
+    payload: z.ZodObject<{
+        execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+        }, z.core.$strict>], "kind">;
+        change_sequence: z.ZodNumber;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"REMOTE_TASK_EXECUTION_SUMMARY">;
+    payload: z.ZodObject<{
+        node_id: z.ZodString;
+        run_id: z.ZodString;
+        reachable: z.ZodBoolean;
+        title: z.ZodNullable<z.ZodString>;
+        statuses: z.ZodArray<z.ZodObject<{
+            agent_run_id: z.ZodString;
+            status: z.ZodEnum<{
+                error: "error";
+                offline: "offline";
+                initializing: "initializing";
+                idle: "idle";
+                running: "running";
+            }>;
+        }, z.core.$strict>>;
+        change_sequence: z.ZodNumber;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"ERROR">;
     payload: z.ZodUnion<readonly [z.ZodObject<{
         error_scope: z.ZodNull;
@@ -1238,6 +1372,12 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
 }> | Readonly<{
     type: "MEMBER_INPUT_MESSAGE";
     payload: z.infer<typeof teamMemberInputMessagePayloadSchema>;
+}> | Readonly<{
+    type: "REMOTE_TASK_EXECUTION_STARTED";
+    payload: z.infer<typeof teamRemoteTaskExecutionStartedPayloadSchema>;
+}> | Readonly<{
+    type: "REMOTE_TASK_EXECUTION_SUMMARY";
+    payload: z.infer<typeof teamRemoteTaskExecutionSummaryPayloadSchema>;
 }> | Readonly<{
     type: "ERROR";
     payload: z.infer<typeof teamAgentErrorPayloadSchema>;

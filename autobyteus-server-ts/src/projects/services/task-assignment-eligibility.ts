@@ -20,7 +20,7 @@ export class TaskAssignmentEligibility {
   constructor(
     private readonly store: () => Pick<ProjectStore, "readTask">,
     private readonly adHocTasks: Pick<AdHocTaskStore, "read">,
-    private readonly resources: Pick<TaskExecutionResourceService, "earlierTaskLocationsOf" | "historyOf" | "locationOfTask">,
+    private readonly resources: Pick<TaskExecutionResourceService, "earlierTaskLocationsOf" | "historyOf" | "locationOfTask" | "openTaskIdsOf">,
   ) {}
 
   /**
@@ -60,11 +60,20 @@ export class TaskAssignmentEligibility {
     return task;
   }
   /** The copy-side rules of an existing-copy assignment, on the copy's history across Tasks; texts name Tasks by key. */
-  async assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>, task: ProjectTask): Promise<void> {
-    const history = this.resources.historyOf(input.execution);
-    const currentLocation = history && history.current.closedAt === null ? this.resources.locationOfTask(history.currentTaskId) : null;
-    const currentTask = currentLocation ? await this.readTaskAt(currentLocation) : null;
-    assertTaskExecutionAssignable(history, { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey,
-      currentTaskReference: currentTask?.reference ?? null, ...(currentTask ? { currentTaskStatus: currentTask.status } : {}) });
+  assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>, task: ProjectTask): void {
+    assertTaskExecutionAssignable(this.resources.historyOf(input.execution), { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey });
+  }
+  /**
+   * The agent-facing references (a Project Task's key, a Temp task's ID) of the copy's open Tasks other than
+   * `exceptTaskId`, oldest first; a Task deleted meanwhile is left out. For the given-Task message.
+   */
+  async openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> {
+    const references: string[] = [];
+    for (const taskId of this.resources.openTaskIdsOf(execution).filter((id) => id !== exceptTaskId)) {
+      const location = this.resources.locationOfTask(taskId);
+      const task = location && await this.readTaskAt(location);
+      if (task) references.push(task.reference);
+    }
+    return references;
   }
 }

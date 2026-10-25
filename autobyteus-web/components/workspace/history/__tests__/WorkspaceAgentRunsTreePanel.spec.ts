@@ -2251,7 +2251,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     let opened = false;
     const inspected = {
       orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
-      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>() },
+      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>(),
+        addressOf: (agentRunId: string) => agentRunId === 'agent-task-lead' ? '/team/lead' : null },
     };
     const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });
     vi.spyOn(orgContexts, 'contextFor').mockImplementation(((id: string) => opened && id === 'org-run' ? inspected : null) as never);

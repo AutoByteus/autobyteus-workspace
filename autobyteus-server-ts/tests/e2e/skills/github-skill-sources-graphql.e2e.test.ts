@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import { runtimeFixture } from "./github-skill-runtime-harness.js";
 import fs from "node:fs";
 import os from "node:os";
@@ -58,9 +59,11 @@ describe("GitHub skill sources through production GraphQL documents", () => {
     SkillService.resetInstance(); SkillSourceService.resetInstance();
     writeSkill(upstream, "api-writer");
     revision = a; offline = false; requests = [];
-    vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request) => {
+    vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       const target = String(input); requests.push(target);
       if (offline) throw new Error("controlled GitHub offline");
+      // Checks and updates read the head through git (quota-free); imports keep the REST metadata.
+      if (headReadRepository(target, init) === "api-e2e/skills") return headReadResponse(revision);
       if (target === "https://api.github.com/repos/api-e2e/skills") {
         return Response.json({ owner: { login: "api-e2e" }, name: "skills", private: false, default_branch: "main" });
       }

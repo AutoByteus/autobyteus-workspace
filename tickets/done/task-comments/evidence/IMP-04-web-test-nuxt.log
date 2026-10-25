@@ -1,0 +1,8 @@
+# IMP-04-web-test-nuxt (excerpt; full log: IMP-04-web-test-nuxt.full.log.gz)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: e014c349b8 (server source 52035832a6); macOS darwin, corepack pnpm 10.28.2; worktree install; 2026-10-22
+ ✓ stores/__tests__/projectTaskStore.spec.ts (17 tests) 348ms
+ ✓ components/projects/__tests__/TaskCommentsSection.spec.ts (6 tests) 96ms
+ Test Files  649 passed | 2 skipped (651)
+      Tests  4633 passed | 5 skipped (4638)
+exit=0

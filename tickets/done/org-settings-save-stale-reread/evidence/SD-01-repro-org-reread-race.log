@@ -1,0 +1,25 @@
+
+   × probe: live Org re-read while the stream republishes the view > reads the canonical settings although a checkpoint snapshot replaced the view mid-read 62ms
+     → promise rejected "Error: Org configuration read is stale; r…" instead of resolving
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/zz-probe-org-reread-race.spec.ts > probe: live Org re-read while the stream republishes the view > reads the canonical settings although a checkpoint snapshot replaced the view mid-read
+AssertionError: promise rejected "Error: Org configuration read is stale; r…" instead of resolving
+     34|     const second = await live(); second.adoptLocalContexts(first); sto…
+     35|     resolve({ orgRunId: 'org-run', executionTree: first.executionTree,…
+     36|     await expect(pending).resolves.toMatchObject({ orgRunId: 'org-run'…
+       |                         ^
+     37|   })
+     38| })
+
+Caused by: Error: Org configuration read is stale; refresh required.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  12:17:51
+   Duration  17.40s (transform 9.60s, setup 15.77s, collect 360ms, tests 63ms, environment 379ms, prepare 320ms)
+

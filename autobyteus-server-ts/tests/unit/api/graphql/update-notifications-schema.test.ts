@@ -12,6 +12,7 @@ import { SkillSourceService } from "../../../../src/skills/services/skill-source
 import { SkillService } from "../../../../src/skills/services/skill-service.js";
 import { UpdateNotificationService } from "../../../../src/update-notifications/services/update-notification-service.js";
 import { UpdateChecksCapabilityService } from "../../../../src/update-notifications/services/update-checks-capability-service.js";
+import { UpdateAutomationSettingsService } from "../../../../src/update-notifications/services/update-automation-settings-service.js";
 
 // The renderer's actual documents (gql template text, fragments inlined), run against the real
 // schema, resolver and notification service over a test-owned app data directory.
@@ -19,7 +20,7 @@ const documentSource = fs.readFileSync(new URL("../../../../../autobyteus-web/gr
 const templates = Object.fromEntries([...documentSource.matchAll(/export const (\w+) = gql`([\s\S]*?)`/g)]
   .map((match) => [match[1]!, match[2]!]));
 const documents = Object.fromEntries(Object.entries(templates).map(([key, body]) =>
-  [key, body.replaceAll("${UPDATE_NOTIFICATION_FIELDS}", templates.UPDATE_NOTIFICATION_FIELDS!)]));
+  [key, body.replace(/\$\{(\w+)\}/g, (_match, fragment: string) => templates[fragment]!)]));
 
 const A = "a".repeat(40);
 const B = "b".repeat(40);
@@ -47,7 +48,8 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
     fs.writeFileSync(path.join(data, ".env"), "");
     appConfigProvider.resetForTests();
     appConfigProvider.config.setCustomAppDataDir(data);
-    for (const owner of [AgentPackageService, SkillSourceService, SkillService, UpdateNotificationService, UpdateChecksCapabilityService]) {
+    for (const owner of [AgentPackageService, SkillSourceService, SkillService, UpdateNotificationService, UpdateChecksCapabilityService,
+      UpdateAutomationSettingsService]) {
       owner.resetInstance();
     }
     const installDir = path.join(data, "agent-packages", "managed", "acme__agents");
@@ -72,6 +74,7 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
     expect(listed.updateNotifications).toEqual([expect.objectContaining({
       kind: "AGENT_PACKAGE", sourceId: "github:acme/agents", name: "acme/agents", repositoryUrl: "https://github.com/acme/agents",
       defaultBranch: "main", installedRevision: A, latestRevision: B, read: false, state: "WAITING", handledRevision: null,
+      outcome: null, outcomeReason: null, outcomeAt: null,
     })]);
 
     const read = await run(documents.MARK_UPDATE_NOTIFICATIONS_READ!);
@@ -83,6 +86,18 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
 
     const stored = JSON.parse(fs.readFileSync(path.join(data, "update-notifications", "notifications.json"), "utf8"));
     expect(stored).toEqual([expect.objectContaining({ kind: "AGENT_PACKAGE", latestRevision: B, fromRevision: A, read: true })]);
+  });
+
+  it("serves multi-argument mutations correctly from a second schema built in the same process", async () => {
+    // type-graphql 2.0.0-rc.3 appended every `@Arg` to its params cache again on each build, so the second build
+    // handed `clearUpdateNotification` its arguments shifted; 2.0.0-rc.4 rebuilds the cache from scratch.
+    const secondSchema = await buildGraphqlSchema();
+    const clear = vi.spyOn(UpdateNotificationService.prototype, "clear").mockResolvedValue([]);
+    const result = await graphql({ schema: secondSchema, source: documents.CLEAR_UPDATE_NOTIFICATION!,
+      variableValues: { kind: "AGENT_PACKAGE", sourceId: "github:acme/agents" } });
+    expect(result.errors).toBeUndefined();
+    expect(clear).toHaveBeenCalledExactlyOnceWith("AGENT_PACKAGE", "github:acme/agents");
+    clear.mockRestore();
   });
 
   it("lists package notifications while the skill source registry is unreadable (CR-001)", async () => {
@@ -105,5 +120,23 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
     expect((await run(documents.SET_UPDATE_CHECKS_ENABLED!, { enabled: false })).setUpdateChecksEnabled)
       .toEqual({ enabled: false, settingKey: "ENABLE_UPDATE_CHECKS", source: "SERVER_SETTING" });
     expect((await run(documents.GET_UPDATE_CHECKS_CAPABILITY!)).updateChecksCapability.enabled).toBe(false);
+  });
+
+  it("reads the automation settings (defaults) and stores an interval and a switch; refuses an interval out of range", async () => {
+    expect((await run(documents.GET_UPDATE_AUTOMATION_SETTINGS!)).updateAutomationSettings).toEqual({
+      intervals: { agentPackages: 30, skillSources: 30, agentRuntimes: 60 },
+      automaticUpdates: { agentPackages: false, skillSources: false, agentRuntimes: false },
+      githubWaitUntil: null,
+      desktopEmbeddedNode: false,
+    });
+    expect((await run(documents.SET_UPDATE_CHECK_INTERVAL!, { kind: "SKILL_SOURCE", minutes: 15 })).setUpdateCheckInterval.intervals)
+      .toEqual({ agentPackages: 30, skillSources: 15, agentRuntimes: 60 });
+    expect((await run(documents.SET_AUTOMATIC_UPDATES!, { kind: "AGENT_PACKAGE", enabled: true })).setAutomaticUpdates.automaticUpdates)
+      .toEqual({ agentPackages: true, skillSources: false, agentRuntimes: false });
+
+    const refused = await graphql({ schema, source: documents.SET_UPDATE_CHECK_INTERVAL!, variableValues: { kind: "AGENT_PACKAGE", minutes: 14 } });
+    expect(refused.errors?.[0]?.message).toBe("Enter a whole number from 15 minutes to 24 hours.");
+    expect(refused.errors?.[0]?.extensions?.code).toBe("UPDATE_CHECK_INTERVAL_OUT_OF_RANGE");
+    expect((await run(documents.GET_UPDATE_AUTOMATION_SETTINGS!)).updateAutomationSettings.intervals.agentPackages).toBe(30);
   });
 });

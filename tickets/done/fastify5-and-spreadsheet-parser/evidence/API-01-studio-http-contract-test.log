@@ -1,0 +1,35 @@
+# API-01 durable test autobyteus-server-ts/tests/integration/api/studio-server-http-contract.integration.test.ts
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/studio-server-http-contract.integration.test.ts --no-watch [--reporter=verbose]
+# Runs: (1) base clone /tmp/ab-api/base (ddd6fdcdf6, fastify 4.29.1) with the new file copied in; (2) branch worktree (4dcdceea11 + the new file); (3) mutation: branch with '{ config: { cors: false } }' temporarily re-added to src/mcp-gateway/mcp-gateway-routes.ts (restored afterwards; git status clean for src)
+# macOS 26.5.2, node v22.23.1; date 2026-10-24T21:11:20Z. Case: API-01
+
+## (1) BASE — expected: GraphiQL cases fail (base serves GraphiQL), MCP CORS cases pass (contract unchanged)
+     × serves GraphQL at POST /graphql and no GraphiQL page 28ms
+     × lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page 11ms
+     ✓ answers MCP gateway preflights from its access gate and rejects foreign origins 13ms
+     ✓ adds the studio CORS plugin's headers to MCP gateway requests 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { path: '/graphiql', status: 200 } to deeply equal { path: '/graphiql', status: 404 }
+ ❯ tests/integration/api/studio-server-http-contract.integration.test.ts:85:63
+AssertionError: expected 200 to be 404 // Object.is equality
+ ❯ tests/integration/api/studio-server-http-contract.integration.test.ts:114:33
+      Tests  2 failed | 2 passed (4)
+
+## (2) BRANCH
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > serves GraphQL at POST /graphql and no GraphiQL page 24ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page 6ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > answers MCP gateway preflights from its access gate and rejects foreign origins 8ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > adds the studio CORS plugin's headers to MCP gateway requests 7ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+## (3) MUTATION — expected: the plugin-header case fails
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > serves GraphQL at POST /graphql and no GraphiQL page 22ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page 6ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > answers MCP gateway preflights from its access gate and rejects foreign origins 6ms
+ × tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > adds the studio CORS plugin's headers to MCP gateway requests 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { vary: 'Origin' } to deeply equal { …(2) }
+ ❯ tests/integration/api/studio-server-http-contract.integration.test.ts:151:39
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)

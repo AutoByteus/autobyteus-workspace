@@ -1,0 +1,5 @@
+# IMP-02 AC-2: the DESIGN.md link resolves from a clean clone | cmd: git clone --branch codex/design-cases --single-branch <worktree> /tmp/dc293/clone; grep design-cases DESIGN.md; test -f docs/design-cases.md | commit: 2107bbc71e | env: macOS | date: 2026-10-24
+349:- **Design cases:** [docs/design-cases.md](docs/design-cases.md) records real
+docs/design-cases.md exists in the clean clone
+root DESIGN-*.md files (REQ-3): 0
+Case 7 cited commits: e15408025f=commit 3024a61dce=commit

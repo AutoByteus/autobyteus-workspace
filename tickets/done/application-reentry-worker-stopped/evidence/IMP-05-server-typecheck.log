@@ -1,0 +1,8 @@
+# IMP-05 server typecheck (AC-007)
+# cmd: pnpm -C autobyteus-server-ts typecheck
+# commit: 6950a24e1b  env: macOS (darwin), Node v22.23.1  date: 2026-10-25T03:49Z
+# Note: tsconfig.build.json covers src only; no project tsconfig typechecks tests (tsconfig.json has rootDir src: TS6059 for every test file).
+
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

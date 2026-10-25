@@ -3,12 +3,19 @@ import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { writeAtomicJsonSync } from "../../persistence/file/atomic-json-sync.js";
 
-/** A 429 without GitHub's reset or retry headers (a secondary limit) waits this long. */
-const SECONDARY_LIMIT_WAIT_MS = 60_000;
+/**
+ * GitHub's hosts by how they limit this node: `api` is the REST API (`api.github.com`, the
+ * 60-per-hour quota); `web` is github.com's git service and release pages and the codeload
+ * archives (no REST quota, undocumented throttling).
+ */
+export type GitHubGateFamily = "api" | "web";
+
+/** A limiting answer without GitHub's reset or retry time waits this long. */
+const DEFAULT_WAIT_MS = 60_000;
 
 const formatClockTime = (time: Date): string => time.toTimeString().slice(0, 5);
 
-/** An `api.github.com` request refused, or answered, while GitHub limits this node. */
+/** A GitHub request refused, or answered, while GitHub limits this node. */
 export class GitHubRateLimitError extends Error {
   constructor(readonly resetAt: Date) {
     super(`GitHub rate limit reached; try again after ${formatClockTime(resetAt)}.`);
@@ -16,91 +23,111 @@ export class GitHubRateLimitError extends Error {
   }
 }
 
+type BlockedTimes = Record<GitHubGateFamily, number | null>;
+
+const parseTime = (value: unknown): number | null => {
+  const time = typeof value === "string" ? Date.parse(value) : Number.NaN;
+  return Number.isFinite(time) ? time : null;
+};
+
 /**
- * The node's "GitHub API blocked until" time, learned from GitHub's own answers. The time is
- * kept in `<app-data>/github/rate-limit.json`, so the stop survives a restart. A missing,
- * unreadable or past time means not blocked.
+ * The node's "GitHub blocked until" time per family, learned from GitHub's own answers and taken
+ * as sent. Kept in `<app-data>/github/rate-limit.json` (`{ api, web }`), so a stop survives a
+ * restart. A missing, unreadable or past time, or a file of another shape, means not blocked.
  */
 export class GitHubRateLimitGate {
-  private blockedUntil: number | null = null;
+  private times: BlockedTimes = { api: null, web: null };
   private loaded = false;
 
   constructor(private readonly resolveFilePath: () => string) {}
 
-  isBlocked(now: Date = new Date()): boolean {
-    const blockedUntil = this.currentBlockedUntil();
-    return blockedUntil !== null && blockedUntil > now.getTime();
+  isBlocked(family: GitHubGateFamily, now: Date = new Date()): boolean {
+    const until = this.current()[family];
+    return until !== null && until > now.getTime();
+  }
+
+  /** The time GitHub allows requests of this family again; null when not blocked. */
+  blockedUntil(family: GitHubGateFamily, now: Date = new Date()): Date | null {
+    return this.isBlocked(family, now) ? new Date(this.current()[family]!) : null;
   }
 
   /** Throws `GitHubRateLimitError` before a request GitHub has asked this node not to make yet. */
-  assertOpen(now: Date = new Date()): void {
-    const blockedUntil = this.currentBlockedUntil();
-    if (blockedUntil !== null && blockedUntil > now.getTime()) {
-      throw new GitHubRateLimitError(new Date(blockedUntil));
-    }
+  assertOpen(family: GitHubGateFamily, now: Date = new Date()): void {
+    const until = this.blockedUntil(family, now);
+    if (until) throw new GitHubRateLimitError(until);
   }
 
-  /** Learns the reset time from a 403/429 answer; returns it when the answer is a rate limit. */
-  learnFrom(response: Pick<Response, "status" | "headers">, now: Date = new Date()): Date | null {
-    const resetAt = rateLimitResetTime(response, now);
+  /** Learns the family's reset time from a limiting answer; returns it when the answer is one. */
+  learnFrom(family: GitHubGateFamily, response: Pick<Response, "status" | "headers">, now: Date = new Date()): Date | null {
+    const resetAt = family === "api" ? apiResetTime(response, now) : webResetTime(response, now);
     if (!resetAt) return null;
-    const current = this.currentBlockedUntil();
+    const current = this.current()[family];
     if (current === null || resetAt.getTime() > current) {
-      this.blockedUntil = resetAt.getTime();
-      this.persist(resetAt);
+      this.times = { ...this.times, [family]: resetAt.getTime() };
+      this.persist();
     }
     return resetAt;
   }
 
-  private currentBlockedUntil(): number | null {
+  private current(): BlockedTimes {
     if (!this.loaded) {
       this.loaded = true;
-      this.blockedUntil = this.load();
+      this.times = this.load();
     }
-    return this.blockedUntil;
+    return this.times;
   }
 
-  private load(): number | null {
+  private load(): BlockedTimes {
     const filePath = this.resolveFilePath();
     try {
-      const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as { blockedUntil?: unknown };
-      const time = typeof parsed?.blockedUntil === "string" ? Date.parse(parsed.blockedUntil) : Number.NaN;
-      return Number.isFinite(time) ? time : null;
+      const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown> | null;
+      return { api: parseTime(parsed?.api), web: parseTime(parsed?.web) };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
         console.warn(`GITHUB_RATE_LIMIT_FILE_UNREADABLE:${filePath}`, error);
       }
-      return null;
+      return { api: null, web: null };
     }
   }
 
-  private persist(resetAt: Date): void {
+  private persist(): void {
     const filePath = this.resolveFilePath();
+    const iso = (time: number | null) => time === null ? null : new Date(time).toISOString();
     try {
       fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      writeAtomicJsonSync(filePath, { blockedUntil: resetAt.toISOString() });
+      writeAtomicJsonSync(filePath, { api: iso(this.times.api), web: iso(this.times.web) });
     } catch (error) {
       console.warn(`GITHUB_RATE_LIMIT_FILE_WRITE_FAILED:${filePath}`, error);
     }
   }
 }
 
-/** GitHub's own reset time for a rate-limited answer, as sent; `null` when it is not a rate limit. */
-const rateLimitResetTime = (response: Pick<Response, "status" | "headers">, now: Date): Date | null => {
+const retryAfter = (response: Pick<Response, "headers">, now: Date): Date | null => {
+  const raw = response.headers.get("retry-after");
+  const seconds = Number(raw);
+  return raw !== null && Number.isFinite(seconds) ? new Date(now.getTime() + seconds * 1000) : null;
+};
+
+/** The REST API's reset time for a rate-limited answer, as sent; `null` when it is not a rate limit. */
+const apiResetTime = (response: Pick<Response, "status" | "headers">, now: Date): Date | null => {
   if (response.status !== 403 && response.status !== 429) return null;
-  const retryAfter = Number(response.headers.get("retry-after"));
-  if (response.headers.get("retry-after") !== null && Number.isFinite(retryAfter)) {
-    return new Date(now.getTime() + retryAfter * 1000);
-  }
+  const retry = retryAfter(response, now);
+  if (retry) return retry;
   if (response.headers.get("x-ratelimit-remaining") === "0") {
     const reset = Number(response.headers.get("x-ratelimit-reset"));
     if (Number.isFinite(reset) && reset > 0) return new Date(reset * 1000);
   }
-  return response.status === 429 ? new Date(now.getTime() + SECONDARY_LIMIT_WAIT_MS) : null;
+  return response.status === 429 ? new Date(now.getTime() + DEFAULT_WAIT_MS) : null;
+};
+
+/** github.com's and codeload's throttling: 429 or 503, with `retry-after` when sent. */
+const webResetTime = (response: Pick<Response, "status" | "headers">, now: Date): Date | null => {
+  if (response.status !== 429 && response.status !== 503) return null;
+  return retryAfter(response, now) ?? new Date(now.getTime() + DEFAULT_WAIT_MS);
 };
 
 let singleton: GitHubRateLimitGate | null = null;
-/** The node's process gate for `api.github.com`. */
+/** The node's process gate for GitHub's hosts. */
 export const getGitHubRateLimitGate = (): GitHubRateLimitGate =>
   singleton ??= new GitHubRateLimitGate(() => path.join(appConfigProvider.config.getAppDataDir(), "github", "rate-limit.json"));
 export const setGitHubRateLimitGateForTests = (gate: GitHubRateLimitGate | null): void => { singleton = gate; };

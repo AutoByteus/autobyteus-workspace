@@ -1,0 +1,12 @@
+# IMP-03b tracked-import check on the committed tree (AC-003 pass side)
+# Command: python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports; python3 scripts/check_repository_artifact_hygiene.py
+# Commit: 204025a459
+# Date: 2026-10-23T23:26Z
+
+Tracked-import check passed. Tracked files scanned: 77231
+exit=0
+Repository artifact hygiene check passed.
+Tracked files scanned: 77231
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0

@@ -1,4 +1,5 @@
 import type {
+  AppUpdateAutoCheck,
   AppUpdateChannel,
   AppUpdateChannelChangeResult,
   AppUpdateState,
@@ -30,9 +31,9 @@ interface Window {
     onServerStatus: (callback: (status: ServerStatusSnapshot) => void) => Cleanup;
     checkServerHealth: () => Promise<ServerHealthResult>;
 
-    openNodeWindow: (nodeId: string) => Promise<{ windowId: number; created: boolean }>;
-    focusNodeWindow: (nodeId: string) => Promise<{ focused: boolean; reason?: string }>;
-    listNodeWindows: () => Promise<Array<{ windowId: number; nodeId: string }>>;
+    openNodeWindow: (entryId: string) => Promise<{ windowId: number; created: boolean }>;
+    focusNodeWindow: (entryId: string) => Promise<{ focused: boolean; reason?: string }>;
+    listNodeWindows: () => Promise<Array<{ windowId: number; entryId: string }>>;
     getWindowContext: () => Promise<WindowNodeContext>;
     upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
     getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
@@ -56,6 +57,7 @@ interface Window {
     setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
     markAppUpdateNotificationRead: () => Promise<AppUpdateState>;
     clearAppUpdateNotification: () => Promise<AppUpdateState>;
+    setAppUpdateAutoCheck: (settings: AppUpdateAutoCheck) => Promise<AppUpdateState>;
     onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
 
     getLogFilePath: () => Promise<string>;

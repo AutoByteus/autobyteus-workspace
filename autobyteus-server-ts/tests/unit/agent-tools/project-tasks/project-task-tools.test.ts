@@ -115,7 +115,7 @@ describe("Project data tools — actual native preparation/execute and selected 
   it("documents one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)", async () => {
     for (const [Tool, name, keys, required] of [
       [CreateTaskTool, "create_task", ["project_id", "description", "context_files", "depends_on", "part_of"], ["project_id", "description"]],
-      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of"], ["task_id"]],
+      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of", "add_comment"], ["task_id"]],
     ] as const) {
       const native = Tool.getArgumentSchema().toJsonSchema() as {properties: Record<string, any>, required?: string[]};
       expect(native).toEqual(buildProjectTaskToolSchema(name).toJsonSchema());
@@ -325,7 +325,7 @@ describe("Project data tools — actual native preparation/execute and selected 
       const schema = buildProjectTaskToolSchema(name).toJsonSchema() as {properties: Record<string, any>};
       expect(schema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
     }
-    expect(UpdateTaskTool.getDescription()).toMatch(/status \(TODO, IN_PROGRESS, DONE, CANCELLED\).*CANCELLED means the Task was dropped as not needed \(not finished\)\. Both stop the task agents whose current Task this is.*first set the Task to TODO or IN_PROGRESS/s);
+    expect(UpdateTaskTool.getDescription()).toMatch(/status \(TODO, IN_PROGRESS, DONE, CANCELLED\).*CANCELLED means the Task was dropped as not needed \(not finished\)\. Both end this Task's work for its task agents; a task agent is stopped when this was its last open Task.*first set the Task to TODO or IN_PROGRESS.*To give a task agent another Task, also while its other Tasks are open, use delegate_task/s);
     expect(ListProjectTasksTool.getDescription()).toMatch(/TODO, IN_PROGRESS, DONE or CANCELLED status \(CANCELLED = dropped as not needed\)/);
     const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: "unneeded"}));
     const kept = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: "kept"}));

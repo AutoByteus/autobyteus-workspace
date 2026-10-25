@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
-import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { extractSummaryFromRawTraces } from "../../../run-history/services/run-history-service-helpers.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../frozen/autobyteus-ts/memory/store/memory-file-names.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { extractSummaryFromRawTraces } from "../../frozen/server/run-history/services/run-history-service-helpers.js";
 import { projectTeamRunHistoryIndexRow } from "./team-run-history-index-v1-row-projector.js";
-import type { TeamRunIndexFileRecord, TeamRunIndexRowRecord } from "../../../run-history/store/team-run-history-index-record-types.js";
-import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
+import type { TeamRunIndexFileRecord, TeamRunIndexRowRecord } from "../../frozen/server/run-history/store/team-run-history-index-record-types.js";
+import { TeamRunHistoryIndexStore } from "../../frozen/server/run-history/store/team-run-history-index-store.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "./team-run-execution-tree-v1-constants.js";
 
 export type TeamRunHistoryIndexReconciliationResult = Readonly<{

@@ -1,0 +1,45 @@
+# IMP-04 assertion preservation of moved and changed tests
+# Command: python3 /tmp/ab280/assertions.py 27f2d2f72d (script reproduced below)
+# Commit: 8b091176bf against base 27f2d2f72d
+# Date: 2026-10-23T16:52Z
+# Reads: every expect(...); statement, whitespace-normalized; lists removed ones in full and counts added ones.
+
+== autobyteus-server-ts/tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts -> autobyteus-server-ts/tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts: 0 removed, 11 added
+== autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts -> autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts: 2 removed, 3 added
+   - expect(source, migration).toMatch(/\bFile(?:Agent|AgentTeam)DefinitionProvider\b/);
+   - expect(source, migration).not.toMatch(/DefinitionService\.getInstance\s*\(/);
+== autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts -> autobyteus-server-ts/tests/unit/api/graphql/types/app-data-migrations.test.ts: 0 removed, 9 added
+== autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts -> autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts: 0 removed, 5 added
+== autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts -> autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts: 2 removed, 8 added
+   - expect(mocks.lifecycle.prepareBeforeListen).not.toHaveBeenCalled();
+   - expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining( `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`, ));
+== autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts -> autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts: 6 removed, 9 added
+   - expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenNthCalledWith(1, { kind: "CURRENT_SCHEMA_DEGRADED", migrationStatus: "NOT_RUN", logPath: null, });
+   - expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenNthCalledWith(2, { kind: "READY", });
+   - expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenCalledWith(expect.objectContaining({ kind: "CRITICAL_CURRENT_SCHEMA_FAILURE", reason: expect.stringContaining("missing current table"), })
+   - expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenLastCalledWith({ kind: "CURRENT_SCHEMA_DEGRADED", migrationStatus: "FAILED", logPath: "/tmp/token.log", });
+   - expect(mocks.loggerWarn).toHaveBeenCalledWith(expect.stringContaining( "startup continues with strict current-package admission", ));
+   - expect(startStandaloneApplicationHost(input)).rejects.toThrow( `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`, );
+94 changed or moved test files compared with 27f2d2f72d
+
+# script:
+"""Compares every assertion statement (expect...;) of each test file changed or moved since BASE with its BASE version."""
+import subprocess,re,sys
+base=sys.argv[1]
+out=subprocess.run(['git','diff','-M','--name-status',base,'HEAD','--','autobyteus-server-ts/tests','autobyteus-ts/tests'],capture_output=True,text=True).stdout
+pairs=[]
+for line in out.splitlines():
+    p=line.split('\t')
+    if p[0].startswith('R'): pairs.append((p[1],p[2]))
+    elif p[0]=='M': pairs.append((p[1],p[1]))
+ex=lambda t:[re.sub(r'\s+',' ',s) for s in re.findall(r'expect(?:\.\w+)?\((?:[^;]|\n)*?;',t)]
+n=0
+for old,new in pairs:
+    if not new.endswith('.test.ts'): continue
+    n+=1
+    a=ex(subprocess.run(['git','show',f'{base}:{old}'],capture_output=True,text=True).stdout); b=ex(open(new).read())
+    rem=[x for x in a if x not in b]; add=[x for x in b if x not in a]
+    if rem or add:
+        print(f'== {old} -> {new}: {len(rem)} removed, {len(add)} added')
+        for x in rem: print('   -',x[:200])
+print(f'{n} changed or moved test files compared with {base}')

@@ -1,0 +1,4 @@
+# TEMPORARY PROBE (not committed): same IR-01 steps, but the package is present at STARTUP (AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS), Codex signed out -> startup quarantine with the runtime folder prepared by startup; then sign in and repair. Shows whether the repair failure depends on this ticket's change. commit 8ab3a2129a (fix), 2026-10-24T17:26:46Z
+     × IR-01 is quarantined on a signed-out import and becomes runnable after sign-in through repair and package Reload, without a restart 838ms
+AssertionError: {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T17:26:59.542Z"}: expected 'QUARANTINED' to be 'ACTIVE' // Object.is equality
+exit=1

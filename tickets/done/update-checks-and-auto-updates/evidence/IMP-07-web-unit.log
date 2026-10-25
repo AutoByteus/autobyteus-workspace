@@ -1,0 +1,34 @@
+IMP-07 | NUXT_TEST=true pnpm -C autobyteus-web exec vitest run (whole web unit/component suite) | three runs below | macOS, Node v22.23.1 | 2026-10-23
+
+Run 1 (working tree before the catalog split, ~19:43Z):
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 668 passed | 2 skipped (671)
+      Tests  1 failed | 4809 passed | 5 skipped (4815)
+nuxt exit=1
+ FAIL  tests/integration/app-font-size-fixed-px-audit.integration.test.ts > app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "components/settings/UpdateChecksCard.vue -> Tailwind arbitrary text-[Npx] @ line 35: <ul class=\"mt-1 space-y-0.5 text-[13px] leading-5 text-gray-600\">",[39m
+[31m+ ][39m
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts:125:22
+-> fixed: text-[13px] -> text-[0.8125rem] in UpdateChecksCard.vue and AutoUpdateSwitch.vue (the settings perimeter's rem form); audit + card spec rerun: pass.
+
+Run 2 (working tree = 25609abdf7 web, started 19:55Z):
+ Test Files  2 failed | 667 passed | 2 skipped (671)
+      Tests  4805 passed | 5 skipped (4810)
+nuxt exit=1
+ FAIL  tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts [ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts ]
+ FAIL  components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts [ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts ]
+Error: Failed to resolve import "autobyteus-ts/agent/message/context-file-type.js" from "../autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts". Does the file exist?
+Error: Failed to resolve import "autobyteus-ts/agent/message/context-file.js" from "../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts". Does the file exist?
+-> cause: IMP-01 ran 'pnpm -C autobyteus-server-ts typecheck' at 19:55Z; its pretypecheck rebuilds autobyteus-ts/dist (dist timestamp 21:55 local), so two suites importing server fixtures could not resolve autobyteus-ts while it was rebuilt. Neither suite touches this change.
+
+Run 3 (the two suites alone, after the rebuild, commit 25609abdf7):
+ Test Files  2 passed (2)
+      Tests  5 passed (5)

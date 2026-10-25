@@ -9,7 +9,7 @@ import {
 import { resolveMessageRecipient } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
+import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import {
   buildDeliveryEndpointForParticipant,
   type InterAgentMessageDeliveryIntent,
@@ -47,7 +47,7 @@ export class TeamRunMessageDelivery {
     rootTeamRunId: string;
     getIndex(): TeamExecutionIndex;
     collaborators: TeamRunCollaborators;
-    communication: TeamCommunicationService;
+    communication: RootCommunicationEngine;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
     isLiveAgent(agentRunId: string): boolean;
     /** Target lease that records the receiver's first accepted message. */
@@ -110,7 +110,7 @@ export class TeamRunMessageDelivery {
       senderAgentRunId: sender.agentRunId,
       address: this.recipients.requireNonRootAddress(intent.recipientAddress),
     }).receiver;
-    return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
+    return this.options.withLiveLease(target.agentRunId, () => this.deliverIntent({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
@@ -126,7 +126,7 @@ export class TeamRunMessageDelivery {
       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
     }
     const receiver = this.identityFor(execution.address, execution.agentRunId);
-    return this.options.withLiveLease(execution.agentRunId, () => this.options.communication.deliver({
+    return this.options.withLiveLease(execution.agentRunId, () => this.deliverIntent({
       intent: {
         rootTeamRunId: this.options.rootTeamRunId,
         sender: buildDeliveryEndpointForParticipant(input.sender),
@@ -157,6 +157,26 @@ export class TeamRunMessageDelivery {
   listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
     this.options.authorizeIdentity(sender);
     return this.options.collaborators.listAvailable();
+  }
+
+  /** One Team delivery intent, as the engine's same-root `deliver` takes it. */
+  private deliverIntent(input: Readonly<{
+    intent: InterAgentMessageDeliveryIntent;
+    receiverIdentity: CollaborationMemberExecutionIdentity;
+    receiverDisplayName: string;
+    /** The sender's address as the receiver can use it (design T-5); null otherwise. */
+    senderAddress: string | null;
+  }>): Promise<AgentOperationResult> {
+    return this.options.communication.deliver({
+      senderIdentity: input.intent.sender.participant.identity,
+      senderDisplayName: input.intent.sender.participant.displayName,
+      senderAddress: input.senderAddress,
+      receiverIdentity: input.receiverIdentity,
+      receiverDisplayName: input.receiverDisplayName,
+      content: input.intent.content,
+      messageType: input.intent.messageType,
+      referenceFiles: input.intent.referenceFiles,
+    });
   }
 
   private identityFor(memberAddress: CollaborationMemberExecutionIdentity["memberAddress"], agentRunId: string) {

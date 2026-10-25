@@ -1,7 +1,8 @@
+import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 
 /** A registered peer as roots see it: its pinned server ID and this owner's label for it. */
-export type RemotePeer = Readonly<{ nodeId: string; name: string }>;
+export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
 
 /** A refusal by this node's channel or by the peer; `message` is the text the agent reads. */
 export type RemoteChannelRefusal = Readonly<{ accepted: false; code: string; message: string }>;
@@ -32,6 +33,43 @@ export type RemoteMessageTransmission = Readonly<{
   createdAt: string;
 }>;
 
+/** A run this node's delegation started on a peer (autobyteus-278): an Agent run, or a Team run. */
+export type RemoteStartedRunRef = Readonly<{ kind: "agent" | "agent_team"; runId: string }>;
+
+/** What the peer answered about one such run: its stored title and the live statuses of its own agents. */
+export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
+  title: string | null;
+  /** Only the run's live agents (an Agent's host, a Team's members); an agent without one is offline. */
+  statuses: readonly Readonly<{ agentRunId: string; status: RemoteAgentStatus }>[];
+}>;
+export type RemoteRunSummaries = Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | RemoteChannelRefusal;
+
+/** One agent's stored conversation on the peer, as that node's own window reads it (the run-view projection). */
+export type RemoteAgentProjection = Readonly<{
+  agentRunId: string;
+  conversation: readonly unknown[];
+  activities: readonly unknown[];
+  summary: string | null;
+  lastActivityAt: string | null;
+  hasEarlierActiveTraceEvents: boolean;
+}>;
+export type RemoteAgentProjectionAnswer = Readonly<{ accepted: true; projection: RemoteAgentProjection }> | RemoteChannelRefusal;
+
+/** A command from this node's owner for an agent of a run its delegation started (DEC-803, DEC-804). */
+export type RemoteOwnerCommand =
+  | Readonly<{ kind: "post_message"; content: string; messageId: string; dedupeKey: string }>
+  | Readonly<{ kind: "interrupt" }>
+  /** Ends the whole remote run (the Agent run, or the Team run), keeping its history. */
+  | Readonly<{ kind: "terminate" }>;
+
+/** Receives an observed run's live output: one presentation message of one of its own agents at a time. */
+export type RemoteRunObserver = Readonly<{
+  onFrame(agentRunId: string, message: AgentPresentationMessage): void;
+  /** The stream ended without `close()` (the peer closed it, the connection failed, or it was refused). Called once. */
+  onEnd(): void;
+}>;
+export type RemoteRunObservationStream = Readonly<{ close(): void }>;
+
 /**
  * The outbound channel to peer nodes, as collaboration roots use it (owned here, implemented by
  * `remote-collaboration`'s `PeerClient`). Roots reach it only through `RemoteRunLinks` and `RemoteDelegation`; it never
@@ -40,7 +78,7 @@ export type RemoteMessageTransmission = Readonly<{
  */
 export interface RemoteRunChannel {
   /** The registered peer with this name (DEC-111: the `node` of `delegate_task`), or a refusal. */
-  findPeer(name: string): Promise<RemotePeer | RemoteChannelRefusal>;
+  findPeer(name: string): Promise<PeerNodeRef | RemoteChannelRefusal>;
   /** This owner's label for a peer, for headers and texts; the node ID itself when it is no longer registered. */
   peerName(nodeId: string): Promise<string>;
   startDelegatedRun(input: Readonly<{
@@ -51,6 +89,14 @@ export interface RemoteRunChannel {
     coordinatingRun: TaskAgentCoordinatingRun;
   }>): Promise<RemoteStartedRun>;
   deliverMessage(input: RemoteMessageTransmission): Promise<RemoteDeliveryReceipt>;
+  /** autobyteus-278: the titles and statuses of these runs on that node (one request per node). */
+  runSummaries(nodeId: string, runs: readonly RemoteStartedRunRef[]): Promise<RemoteRunSummaries>;
+  /** autobyteus-278: one agent's stored conversation in a run this node's delegation started. */
+  agentProjection(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string): Promise<RemoteAgentProjectionAnswer>;
+  /** autobyteus-278: a command of this node's owner for one agent of such a run. */
+  ownerCommand(nodeId: string, targetRoot: RemoteTargetRoot, agentRunId: string, command: RemoteOwnerCommand): Promise<RemoteDeliveryReceipt>;
+  /** autobyteus-278: the run's live output while the stream is open; it never reconnects (DEC-807). */
+  observeRun(nodeId: string, targetRoot: RemoteTargetRoot, observer: RemoteRunObserver): RemoteRunObservationStream;
 }
 
 let processChannel: RemoteRunChannel | null = null;

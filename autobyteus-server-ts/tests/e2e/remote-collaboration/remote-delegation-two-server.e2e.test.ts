@@ -47,7 +47,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
  *   261 (discovery): RC-26 an agent that selects the discovery tools lists exactly beta's offer (only name, kind, address
  *   and description; built-ins, Orgs, team-local and application-owned definitions left out), listing writes nothing,
- *   every listed address is accepted by delegate_task, an agent without the tools does not have them (its MCP tool list,
+ *   every listed address is accepted by delegate_task, an agent without the tools (or selecting only the former name
+ *   list_available_nodes, 290) does not have them (its MCP tool list,
  *   `LIST_TOOLS` in the scripted CLI) and the tool texts are as approved (AC-402/404/406, QR-402); RC-27 the node list
  *   with three more servers (gamma stopped, delta switched off, epsilon not knowing alpha) in registration order, each
  *   reason the same as delegate_task's, and a black-holed beta unavailable within the 20 s bound (AC-401, QR-401);
@@ -69,7 +70,7 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  * default `alt-model` covers it), Hollow Team (no default anywhere) and Codex Team (a Team default on unavailable Codex).
  * Beta's scripted CLI offers a second model (`AGY_FAKE_EXTRA_MODELS=alt-model`).
  * 261: beta also has a file-authored shared Agent with no description (Plain Helper) and loads the Brief Studio sample
- * application (an application-owned Agent Team); alpha's Scout selects list_available_nodes and list_available_agents.
+ * application (an application-owned Agent Team); alpha's Scout selects list_peer_nodes and list_available_agents.
  *
  * Prerequisites: a current build (`pnpm -C autobyteus-server-ts build`) and Brief Studio's importable package
  * (`pnpm -C autobyteus-server-ts test:integration:prepare`). About 5 minutes (RC-12 holds the Team with a 90 s background
@@ -91,18 +92,20 @@ const GRACE_MS = 60_000;
 const MODEL = "gemini-3.8-flash-low";
 const LABEL = { alpha: "alpha-node", beta: "beta-node" } as const;
 const PATHS = { runs: "/rest/remote/delegated-runs", messages: "/rest/remote/messages", status: "/rest/remote-access/status",
-  availability: "/rest/remote/availability", availableAgents: "/rest/remote/available-agents" } as const;
+  availability: "/rest/remote/availability", availableAgents: "/rest/remote/available-agents",
+  runSummaries: "/rest/remote/run-summaries", agentProjection: "/rest/remote/agent-projection", ownerCommands: "/rest/remote/owner-commands",
+  runObservations: "/rest/remote/run-observations" } as const;
 /** The Brief Studio sample application's importable package (`pnpm -C autobyteus-server-ts test:integration:prepare`):
  * beta loads it, so beta has an application-owned Agent Team that discovery must not list (261 AC-402). */
 const BRIEF_STUDIO_PACKAGE = path.resolve(import.meta.dirname, "../../../../applications/brief-studio/dist/importable-package");
 /** The agent-facing texts of autobyteus-261 (DEC-406), as an agent receives them over Agent Tools MCP. */
 const TEXT_261 = {
-  listNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
+  listPeerNodes: "List the peer nodes registered on this node, each with its name and status: available (it takes work from this node now) or unavailable. Use the name as node in list_available_agents and delegate_task; for an unavailable node, list_available_agents with that node says why. This read-only tool takes no arguments.",
   listAgents: "List the agents and agent teams you can work with, each with its name, kind (agent or agent_team), address and description (when it has one). With node, list what that peer node offers for delegation instead; use an address from that list as recipient_address in delegate_task with the same node. This tool is read-only.",
   listAgentsNode: "Optional: the name of a peer node registered on this node. Without it, this node's agents and agent teams are listed.",
   delegateNode: "Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.",
   delegateNodeLine: "With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there;",
-  unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_available_nodes, it lists them.`,
+  unknownNode: (node: string) => `No peer node named "${node}" is registered on this node, so nothing was sent. Use a node name the user gave you; if you have list_peer_nodes, it lists them.`,
   notFound: (node: string, address: string) => `Node "${node}" has no Agent or Agent Team at ${address} that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.`,
   blankNode: "node must be the name of a peer node registered on this node; leave it out to list this node's agents and agent teams.",
 } as const;
@@ -216,8 +219,8 @@ class NodeServer {
       await wait(300);
     }
     const status = await (await fetch(`${this.baseUrl}${PATHS.status}`)).json() as Rec;
-    if (this.nodeId && status.serverInstanceId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
-    this.nodeId = status.serverInstanceId as string;
+    if (this.nodeId && status.nodeId !== this.nodeId) throw new Error(`${this.name} changed its identity on restart`);
+    this.nodeId = status.nodeId as string;
   }
   async stop(): Promise<void> {
     const child = this.child;
@@ -246,7 +249,9 @@ class NodeServer {
   }
 }
 
-type Captured = { seq: number; at: number; via: "toBeta" | "toAlpha"; method: string; path: string; headers: Rec; body: unknown; status?: number; answer?: unknown; outcome?: string };
+type Captured = { seq: number; at: number; via: "toBeta" | "toAlpha"; method: string; path: string; headers: Rec; body: unknown; status?: number; answer?: unknown; outcome?: string;
+  /** 278: a WebSocket upgrade (the run-observation stream); its frames are not decoded. */
+  upgrade?: boolean };
 
 /** The link from one node to the other: forwards to the target node and records every request. */
 class CapturingProxy {
@@ -256,6 +261,7 @@ class CapturingProxy {
   targetPort: number;
   private server: http.Server | null = null;
   private readonly held = new Set<http.ServerResponse>();
+  private readonly upgraded = new Set<net.Socket>();
   constructor(readonly via: Captured["via"], readonly port: number, targetPort: number, readonly captured: Captured[]) { this.targetPort = targetPort; }
   get url() { return `http://127.0.0.1:${this.port}`; }
   async open(): Promise<void> {
@@ -285,19 +291,50 @@ class CapturingProxy {
         upstream.end(raw);
       });
     });
+    // 278: WebSocket upgrades (the run-observation stream between the nodes) are forwarded as raw TCP after the
+    // upgrade request, which is recorded like any request (its frames are not decoded).
+    server.on("upgrade", (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
+      const entry: Captured = { seq: this.captured.length + 1, at: Date.now(), via: this.via, method: req.method ?? "", path: req.url ?? "",
+        headers: { ...req.headers }, body: null, upgrade: true };
+      this.captured.push(entry);
+      socket.on("error", () => undefined);
+      this.upgraded.add(socket);
+      socket.once("close", () => this.upgraded.delete(socket));
+      if (this.mode === "blackhole") { entry.outcome = "held"; return; }
+      if (this.drop?.(entry)) { entry.outcome = "dropped by the test"; socket.destroy(); return; }
+      const upstream = net.connect(this.targetPort, "127.0.0.1", () => {
+        const headerLines = Object.entries({ ...req.headers, host: `127.0.0.1:${this.targetPort}` })
+          .flatMap(([name, value]) => (Array.isArray(value) ? value : [value]).filter((item) => item !== undefined).map((item) => `${name}: ${item}`));
+        upstream.write(`${req.method} ${req.url} HTTP/1.1\r\n${headerLines.join("\r\n")}\r\n\r\n`);
+        if (head.length) upstream.write(head);
+        entry.outcome = "forwarded";
+        upstream.once("data", (chunk: Buffer) => { entry.status = Number(String(chunk).split(" ")[1]) || undefined; entry.answer = String(chunk).slice(0, 400); });
+        upstream.pipe(socket); socket.pipe(upstream);
+      });
+      upstream.on("error", (error) => { entry.outcome = `upstream error: ${error.message}`; socket.destroy(); });
+      this.upgraded.add(upstream);
+      upstream.once("close", () => { this.upgraded.delete(upstream); socket.destroy(); });
+      socket.once("close", () => upstream.destroy());
+    });
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(this.port, "127.0.0.1", () => resolve()); });
     this.server = server;
   }
   /** Releases held requests (their callers already gave up) and stops listening: the address refuses connections. */
   async close(): Promise<void> {
     this.releaseHeld();
+    this.dropUpgraded();
     const server = this.server;
     this.server = null;
     if (!server) return;
     server.closeAllConnections();
     await new Promise<void>((resolve) => server.close(() => resolve()));
   }
-  releaseHeld(): void { for (const res of this.held) res.socket?.destroy(); this.held.clear(); }
+  releaseHeld(): void {
+    for (const res of this.held) res.socket?.destroy();
+    this.held.clear();
+  }
+  /** 278: ends every forwarded WebSocket (as a broken link would). */
+  dropUpgraded(): void { for (const socket of this.upgraded) socket.destroy(); this.upgraded.clear(); }
 }
 
 /** The web's check of a root view stream: every sequenced frame continues the snapshot's sequence contiguously. */
@@ -327,6 +364,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const ids: Rec = {};
   const record = (caseId: string, value: Rec) => { evidence.cases[caseId] = { ...(evidence.cases[caseId] ?? {}), ...value }; };
   const remoteRequests = (since = 0) => captured.filter((entry) => entry.seq > since && entry.path.startsWith("/rest/remote/"));
+  /** Requests that send work or a message (starts, packets, messages, owner commands); since autobyteus-278 an open
+   * root view also reads its remote runs' summaries, which a "nothing was sent" check does not count. */
+  const sentRequests = (since = 0) => remoteRequests(since).filter((entry) => entry.path === PATHS.runs || entry.path === PATHS.messages || entry.path === PATHS.ownerCommands);
 
   const connect = async (node: NodeServer, route: string, id: string, ready: (frames: Frame[]) => boolean) => {
     const socket = new WebSocket(`ws://127.0.0.1:${node.port}/ws/${route}/${id}`);
@@ -401,6 +441,33 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       .catch((error) => { throw new Error(`${error}; last title ${JSON.stringify(title)}`); });
     return title!;
   };
+  /** 278: the events of a standalone or Org root view (`ROOT_EXECUTION_EVENT`). */
+  const rootEventsOf = (frames: Frame[]) => frames.filter((frame) => frame.type === "ROOT_EXECUTION_EVENT").map((frame) => (frame.payload as Rec).event as Rec);
+  /** 278: a remote run's summaries in a root view (standalone and Org: events; Team: `REMOTE_TASK_EXECUTION_SUMMARY`). */
+  const remoteSummariesIn = (frames: Frame[], runId: string): Rec[] => [
+    ...rootEventsOf(frames).filter((event) => event.kind === "remote_task_execution_summary"),
+    ...frames.filter((frame) => frame.type === "REMOTE_TASK_EXECUTION_SUMMARY").map((frame) => frame.payload as Rec),
+  ].filter((summary) => summary.run_id === runId);
+  /** 278: whether a root view carried live output mentioning `marker` (the window's live view of a remote agent). */
+  const liveIn = (frames: Frame[], since: number, marker: string) => frames.slice(since)
+    .some((frame) => frame.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT" && frame.type !== "TEAM_EXECUTION_VIEW_SNAPSHOT" && JSON.stringify(frame).includes(marker));
+  /** 278: a root view's command from the window (standalone and Org roots). */
+  const rootCommand = (view: { socket: WebSocket }, root: { kind: "agent" | "agent_org"; runId: string }, type: string, target: string, extra: Rec = {}) => {
+    const commandId = randomUUID();
+    view.socket.send(JSON.stringify({ type, payload: { root_subject_kind: root.kind, root_run_id: root.runId, target_agent_run_id: target, command_id: commandId, ...extra } }));
+    return commandId;
+  };
+  const ownerText = (content: string) => ({ content, context_file_paths: [], image_urls: [], message_id: randomUUID(), dedupe_key: randomUUID() });
+  const ackOf = async (view: { frames: Frame[] }, commandId: string) => {
+    let ack: Rec | undefined;
+    await until(() => (ack = view.frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && (frame.payload as Rec).command_id === commandId)?.payload as Rec | undefined) !== undefined,
+      `ack of ${commandId}`, 30_000);
+    return ack!;
+  };
+  /** 278: beta's own stored conversation of one of its runs (its window's read). */
+  const betaConversation = async (runId: string) => JSON.stringify((await beta.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: runId })).getRunProjection?.conversation ?? []);
+  /** 278: a forged request to beta's peer routes as another registered node would send it. */
+  const asPeerTo = (node: NodeServer, route: string, body: Rec) => node.post(route, body);
   /** 267: the window's query for one peer's offer (GraphQL on this node's own server), as the Nodes page sends it. */
   const peerNodeOffer = async (node: NodeServer, nodeId: string) => {
     const started = Date.now();
@@ -540,7 +607,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     defs.manager = await agentDefinition(alpha, "Remote Manager", ["list_projects", "list_project_tasks", "create_task", "update_task"]);
     defs.worker = await agentDefinition(alpha, "Remote Worker");
     // 261: the discovery tools are opt-in; Scout selects both, the Delegator neither.
-    defs.scout = await agentDefinition(alpha, "Scout", ["list_available_nodes", "list_available_agents"]);
+    defs.scout = await agentDefinition(alpha, "Scout", ["list_peer_nodes", "list_available_agents"]);
+    // 290 REQ-906: a definition that still selects the tool's former name (as a stored agent config may).
+    defs.oldNameScout = await agentDefinition(alpha, "Old Name Scout", ["list_available_nodes"]);
     defs.team = (await alpha.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: "Remote Squad", description: "Team delegator", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: defs.delegator, refScope: "SHARED" }, { memberName: "mate", ref: defs.delegator, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
@@ -611,7 +680,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const start = await beta.post(PATHS.runs, inboundStart(alpha.nodeId, beta.nodeId));
     const message = await beta.post(PATHS.messages, inboundMessage(alpha.nodeId, beta.nodeId, "collabmsg_off"));
     for (const answer of [start, message]) expect(answer).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_COLLABORATION_OFF", message: "Remote collaboration is turned off on this node." } });
-    const addWhileOff = await alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: toBeta.url, name: LABEL.beta } });
+    const addWhileOff = await alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } });
     expect(addWhileOff.errors?.[0]?.message, JSON.stringify(addWhileOff)).toBeTruthy();
     expect(captured, "nothing contacted the peer").toEqual([]);
     expect(fs.existsSync(path.join(alpha.dataDir, "remote-collaboration", "peers.json")) ? (await readJson(path.join(alpha.dataDir, "remote-collaboration", "peers.json"))).peers : [], "nothing recorded").toEqual([]);
@@ -639,10 +708,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(unregisteredCaller).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_NOT_REGISTERED", message: "The calling node is not a registered peer of this node." } });
     const statusBefore = captured.length;
     const added = (await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { baseUrl: toBeta.url, name: LABEL.beta } })).addPeerNode;
+      { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } })).addPeerNode;
     expect(added).toMatchObject({ nodeId: beta.nodeId, name: LABEL.beta, baseUrl: toBeta.url });
     const addedOnBeta = (await beta.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { baseUrl: toAlpha.url, name: LABEL.alpha } })).addPeerNode;
+      { input: { nodeId: alpha.nodeId, baseUrl: toAlpha.url, name: LABEL.alpha } })).addPeerNode;
     expect(addedOnBeta).toMatchObject({ nodeId: alpha.nodeId, name: LABEL.alpha, baseUrl: toAlpha.url });
     expect(captured.slice(statusBefore).map((entry) => `${entry.via} ${entry.method} ${entry.path}`)).toEqual([`toBeta GET ${PATHS.status}`, `toAlpha GET ${PATHS.status}`]);
 
@@ -654,7 +723,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     });
     const foreignPort = await getFreePort();
     await new Promise<void>((resolve) => foreign.listen(foreignPort, "127.0.0.1", () => resolve()));
-    const addPeer = (baseUrl: string, name: string) => alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl, name } });
+    const addPeer = (baseUrl: string, name: string) => alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`,
+      { input: { nodeId: "srv_expected_peer_000000000000000000000", baseUrl, name } });
     const notAutobyteus = await addPeer(`http://127.0.0.1:${foreignPort}`, "router");
     const notFound = await addPeer(`http://127.0.0.1:${foreignPort}/missing`, "web");
     await new Promise<void>((resolve) => foreign.close(() => resolve()));
@@ -859,11 +929,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await until(() => view.frames.some((frame) => frame.type === "TEAM_COMMUNICATION_MESSAGE" && JSON.stringify(frame.payload).includes("LOCAL-AFTER-REMOTE-TEAM")), "local message on the Team view", 20_000);
 
     // Same root, not the delegator: refused by the pair rule; nothing sent.
-    const sentBefore = remoteRequests().length;
+    const sentBefore = captured.length;
     const notPermitted = await calls(mate, "send_message_to", { target_agent_run_id: r2, content: "MATE-TO-REMOTE" });
     expect(notPermitted.accepted, JSON.stringify(notPermitted)).toBe(false);
     expect(textOf(notPermitted)).toBe("That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.");
-    expect(remoteRequests().length).toBe(sentBefore);
+    expect(sentRequests(sentBefore), "nothing sent").toEqual([]);
     await neverReceives(remote, "MATE-TO-REMOTE", 2_000);
 
     const tree = await readJson(path.join(alpha.memory, "agent_teams", teamRunId, "team_run_execution_tree.json"));
@@ -921,19 +991,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   it("RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing", async () => {
     const other = await createStandalone(alpha, defs.delegator, "alpha other root");
     ids.other = other.runId;
-    const sentBefore = remoteRequests().length;
+    const sentBefore = captured.length;
     const otherRoot = await calls(other, "send_message_to", { target_agent_run_id: ids.r1, content: "OTHER-ROOT-TO-REMOTE" });
     expect(otherRoot.accepted, JSON.stringify(otherRoot)).toBe(false);
     // Today's live-only refusal (design § Ownership Boundaries: a run ID that is neither local nor linked keeps it).
     expect(textOf(otherRoot)).toBe(liveOnlyRefusal(ids.r1));
-    expect(remoteRequests().length, "the live-only path never reaches a peer").toBe(sentBefore);
+    expect(sentRequests(sentBefore), "the live-only path never reaches a peer").toEqual([]);
 
     const bystander = await createStandalone(beta, defs.bystander, "beta bystander");
     ids.bystander = bystander.runId;
     const fromBystander = await calls(bystander, "send_message_to", { target_agent_run_id: ids.solo, content: "BYSTANDER-TO-ALPHA" });
     expect(fromBystander.accepted, JSON.stringify(fromBystander)).toBe(false);
     expect(textOf(fromBystander)).toBe(liveOnlyRefusal(ids.solo));
-    expect(remoteRequests().length).toBe(sentBefore);
+    expect(sentRequests(sentBefore)).toEqual([]);
 
     // Requests a peer could send for runs that are not linked: refused at the receiving root, nothing written.
     // Every message names the root that receives it (247 contract): a standalone run is its own root.
@@ -963,7 +1033,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await fsp.writeFile(file, "draft");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-09 project" } })).createProject.projectId as string;
     const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description: "Saved work." } })).createProjectTask.taskId as string;
-    const sentBefore = remoteRequests().length;
+    const sentBefore = captured.length;
     const runsBefore = await remoteRunDirs();
     const withFiles = await delegateRemote(solo, "With a file.", { reference_files: [file] });
     const savedTask = await calls(solo, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", task_id: taskId });
@@ -975,7 +1045,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(existingCopy)).toBe("A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.");
     for (const result of [withFiles, savedTask, existingCopy]) expect(result.delegated, JSON.stringify(result)).toBe(false);
     expect(followUpFiles.accepted).toBe(false);
-    expect(remoteRequests().length, "nothing sent").toBe(sentBefore);
+    expect(sentRequests(sentBefore), "nothing sent").toEqual([]);
     expect(await remoteRunDirs(), "nothing started").toEqual(runsBefore);
     await neverReceives(composeOnBeta(ids.r1), "WITH-FILE", 1_000);
     const task = ((await alpha.gql(`query($id:String!){projectTasks(projectId:$id){taskId status}}`, { id: projectId })).projectTasks as Rec[]).find((entry) => entry.taskId === taskId);
@@ -1040,11 +1110,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const done = await calls(solo, "update_task", { task_id: delegated.task_id, status: "DONE" });
     expect(done, JSON.stringify(done)).toMatchObject({ task: { taskId: delegated.task_id, status: "DONE" } });
     expect(JSON.stringify(done), "nothing says the remote run was stopped (AR-007)").not.toMatch(/stopped/i);
-    const sentBefore = remoteRequests().length;
+    const sentBefore = captured.length;
     const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: r4, content: "AFTER-DONE-TO-REMOTE" });
     expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
     expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
-    expect(remoteRequests().length, "nothing sent to a closed remote run").toBe(sentBefore);
+    expect(sentRequests(sentBefore), "nothing sent to a closed remote run").toEqual([]);
     const fromRemote = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-REMOTE" });
     expect(fromRemote.accepted, JSON.stringify(fromRemote)).toBe(false);
     await neverReceives(solo, "AFTER-DONE-FROM-REMOTE", 3_000);
@@ -1143,7 +1213,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(fromMate)).toBe("That run is on another node and is not linked with you: only the agent that delegated to it, and the run itself, can message each other. The message was not sent.");
     const fromOther = await calls(other, "send_message_to", { target_agent_run_id: ids.studio.checker, content: "OTHER-TO-STUDIO" });
     expect(textOf(fromOther)).toBe(liveOnlyRefusal(ids.studio.checker));
-    expect(remoteRequests(sentBefore), "none of the refused messages was sent").toEqual([]);
+    expect(sentRequests(sentBefore), "none of the refused messages was sent").toEqual([]);
     await neverReceives(coordinator, "MATE-TO-STUDIO", 1_000);
     await neverReceives(checker, "OTHER-TO-STUDIO", 0);
     // The delegating Team's view stayed open and contiguous while remote Team messages flowed (CR-001).
@@ -1188,7 +1258,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const toRemote = await calls(solo, "send_message_to", { target_agent_run_id: coord, content: "AFTER-DONE-TO-STUDIO" });
     expect(toRemote.accepted, JSON.stringify(toRemote)).toBe(false);
     expect(textOf(toRemote)).toMatch(/DONE or CANCELLED|closed/i);
-    expect(remoteRequests(sentBefore), "nothing was sent for the saved Task or to the fenced Team").toEqual([]);
+    expect(sentRequests(sentBefore), "nothing was sent for the saved Task or to the fenced Team").toEqual([]);
     const fromRemote = await calls(coordinator, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-DONE-FROM-STUDIO" });
     expect(fromRemote.accepted, JSON.stringify(fromRemote)).toBe(false);
     expect(textOf(fromRemote)).toMatch(/DONE or CANCELLED|closed/i);
@@ -1233,6 +1303,239 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-25", { result, text: textOf(result), unused, sent, alphaLinks: linked, alphaTaskRecords: taskRecords });
   }, 120_000);
 
+  it("RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window", async () => {
+    const delegator = await createStandalone(alpha, defs.delegator, "alpha tree delegator");
+    ids.treeDelegator = delegator.runId;
+    const delegated = await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Tree work. Marker TREE-PACKET." });
+    expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, target_kind: "agent" });
+    const r9 = delegated.target_agent_run_id as string;
+    await receives(composeOnBeta(r9), "TREE-PACKET");
+    // A second remote run of the same delegator that stays quiet: RC-36 finds it shut down after the idle grace.
+    const idle = await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Idle work. Marker IDLE-PACKET." });
+    ids.idleRemote = idle.target_agent_run_id;
+    await receives(composeOnBeta(ids.idleRemote as string), "IDLE-PACKET");
+    const root = { kind: "agent" as const, runId: delegator.runId };
+
+    // AC-801: the row (snapshot) and its summary from beta: title, status.
+    const view = await connect(alpha, "agent-collaboration", delegator.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const snapshot = view.frames.find((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as Rec;
+    const rows = objectsIn(snapshot).find((record) => Array.isArray(record.remote_task_executions))?.remote_task_executions as Rec[];
+    expect(rows.find((row) => row.agent_run_id === r9), JSON.stringify(rows)).toEqual({ kind: "agent", address: "/publisher", agent_run_id: r9, node_id: beta.nodeId,
+      node_name: LABEL.beta, delegator_agent_run_id: delegator.runId, started_at: expect.any(String) });
+    await until(() => remoteSummariesIn(view.frames, r9).length > 0, "r9's summary", 25_000);
+    const firstSummary = remoteSummariesIn(view.frames, r9)[0]!;
+    expect(firstSummary).toMatchObject({ node_id: beta.nodeId, run_id: r9, reachable: true, title: "Tree work. Marker TREE-PACKET." });
+    expect((firstSummary.statuses as Rec[]).map((entry) => entry.agent_run_id)).toEqual([r9]);
+
+    // AC-802: live output while viewing (beta's owner writes to the run on beta).
+    const beforeLive = view.frames.length;
+    await composeOnBeta(r9).send("LIVE-FROM-BETA-OWNER");
+    await receives(composeOnBeta(r9), "LIVE-FROM-BETA-OWNER");
+    await until(() => liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-OWNER"), "live output in alpha's view", 15_000).catch(() => undefined);
+    const liveSeen = liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-OWNER");
+    expect(liveSeen, "AC-802: the remote run's live output reaches alpha's view").toBe(true);
+
+    // DS-003: the stored conversation of the remote agent, read through alpha.
+    const projected = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
+    expect(projected).toContain("TREE-PACKET");
+    expect(projected).toContain("LIVE-FROM-BETA-OWNER");
+
+    // AC-803: the owner's message from alpha's window reaches the run on beta as its input; its answer follows.
+    const logsBefore = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
+    const beforeOwner = view.frames.length;
+    const sent = await ackOf(view, rootCommand(view, root, "SEND_MESSAGE", r9, ownerText("status? Marker OWNER-FROM-ALPHA")));
+    expect(sent, JSON.stringify(sent)).toMatchObject({ command_type: "SEND_MESSAGE", target_agent_run_id: r9, state: "accepted" });
+    await receives(composeOnBeta(r9), "OWNER-FROM-ALPHA");
+    await until(async () => { const text = await betaConversation(r9); return text.indexOf("OWNER-FROM-ALPHA") >= 0 && text.lastIndexOf("\"OK\"") > text.indexOf("OWNER-FROM-ALPHA"); },
+      "the answer after the owner's message on beta", 20_000);
+    // DS-004a (SR-006): the run's input names the owner's node, as beta knows it; one user message (N-405).
+    const ownerEntries = (JSON.parse(await betaConversation(r9)) as Rec[]).filter((entry) => String(entry.content ?? "").includes("OWNER-FROM-ALPHA"));
+    expect(ownerEntries, "one user message of the run on beta").toEqual([expect.objectContaining({ kind: "message", role: "user",
+      content: `From the owner of node "${LABEL.alpha}":\n\nstatus? Marker OWNER-FROM-ALPHA` })]);
+    const ownerEntry = ownerEntries[0];
+    await until(() => liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), "the owner's message live in alpha's view", 10_000).catch(() => undefined);
+    expect(liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), "AC-803: the message and its answer show live in alpha's view").toBe(true);
+    const reread = JSON.stringify((await alpha.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+      { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollaborationMemberProjection?.conversation ?? null);
+    expect(reread, "alpha's view of the run's conversation has the message").toContain("OWNER-FROM-ALPHA");
+    expect(reread.split("OWNER-FROM-ALPHA").length - 1, "N-405: one user message in alpha's view of it").toBe(1);
+    const logsAfter = await Promise.all([alpha, beta].map(async (node) => (await walkFiles(node.memory)).filter((file) => /communication_messages.*\.jsonl$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("\n")));
+    expect(logsAfter.map((text, index) => text.split("OWNER-FROM-ALPHA").length - logsBefore[index]!.split("OWNER-FROM-ALPHA").length), "not a message-log line on either node (REQ-803)").toEqual([0, 0]);
+
+    // Interrupt: a held turn, then INTERRUPT_GENERATION; Retry (REFRESH) reads the status from beta each time.
+    const refreshAndRead = async () => {
+      const before = remoteSummariesIn(view.frames, r9).length;
+      view.socket.send(JSON.stringify({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: delegator.runId } }));
+      await until(() => remoteSummariesIn(view.frames, r9).length > before, "a refreshed summary", 25_000);
+      return remoteSummariesIn(view.frames, r9).at(-1)!;
+    };
+    const held = await ackOf(view, rootCommand(view, root, "SEND_MESSAGE", r9, ownerText("HOLD_TURN Marker HOLD-FROM-ALPHA")));
+    expect(held.state).toBe("accepted");
+    await until(async () => (await betaConversation(r9)).includes("HOLD-FROM-ALPHA"), "the held turn on beta", 20_000);
+    const whileHeld = await refreshAndRead();
+    const interrupted = await ackOf(view, rootCommand(view, root, "INTERRUPT_GENERATION", r9));
+    expect(interrupted, JSON.stringify(interrupted)).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
+    let afterInterrupt: Rec = {};
+    await until(async () => ((afterInterrupt = await refreshAndRead()).statuses as Rec[]).every((entry) => entry.status !== "running"), "not running after the interrupt", 30_000);
+    expect((whileHeld.statuses as Rec[])[0]?.status, "running while the turn is held").toBe("running");
+
+    // DEC-804 Stop: through alpha; beta stops the run; the view's last summary reads it offline.
+    const beforeStop = view.frames.length;
+    const stopped = (await alpha.gql(`mutation($i:DelegatedExecutionTargetInput!){stopDelegatedExecution(input:$i){success outcome message}}`,
+      { i: { rootKind: "AGENT", rootRunId: delegator.runId, agentRunId: r9 } })).stopDelegatedExecution;
+    expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true, outcome: "STOPPED" });
+    await until(async () => !(await processLive(r9)), "r9's CLI gone", 20_000);
+    await until(() => remoteSummariesIn(view.frames.slice(beforeStop), r9).some((summary) => (summary.statuses as Rec[]).length === 0), "a final summary (offline)", 15_000).catch(() => undefined);
+    const finalSummary = remoteSummariesIn(view.frames.slice(beforeStop), r9).at(-1) ?? null;
+    expect(finalSummary?.statuses, "after Stop the view's summary reads offline (the observation ended)").toEqual([]);
+    ids.treeRun = r9;
+    record("RC-31", { r9, row: rows.find((row) => row.agent_run_id === r9), firstSummary, liveSeen, sent, ownerEntry, whileHeld, afterInterrupt, stopped, finalSummary,
+      framesTypes: [...new Set(view.frames.map((frame) => frame.type === "ROOT_EXECUTION_EVENT" ? `event:${((frame.payload as Rec).event as Rec).kind}` : frame.type))] });
+  }, 300_000);
+
+  it("RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline", async () => {
+    const delegator = standaloneActor(alpha, ids.treeDelegator as string, "alpha tree delegator");
+    const delegated = await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Stopped there. Marker C2-PACKET." });
+    const r10 = delegated.target_agent_run_id as string;
+    await receives(composeOnBeta(r10), "C2-PACKET");
+    const view = await connect(alpha, "agent-collaboration", delegator.runId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    await until(() => remoteSummariesIn(view.frames, r10).some((summary) => (summary.statuses as Rec[]).length > 0), "r10 live in alpha's view", 25_000);
+    const beforeOwnerStop = view.frames.length;
+    const terminated = (await beta.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: r10 })).terminateAgentRun;
+    expect(terminated.success, terminated.message).toBe(true);
+    await until(async () => !(await processLive(r10)), "r10's CLI gone", 20_000);
+    await until(() => remoteSummariesIn(view.frames.slice(beforeOwnerStop), r10).some((summary) => (summary.statuses as Rec[]).length === 0), "alpha's view ends offline", 15_000).catch(() => undefined);
+    const after = remoteSummariesIn(view.frames.slice(beforeOwnerStop), r10);
+    const refreshed = await (async () => {
+      const before = remoteSummariesIn(view.frames, r10).length;
+      view.socket.send(JSON.stringify({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: delegator.runId } }));
+      await until(() => remoteSummariesIn(view.frames, r10).length > before, "a refreshed summary", 25_000);
+      return remoteSummariesIn(view.frames, r10).at(-1)!;
+    })();
+    expect(refreshed.statuses, "beta reports it offline").toEqual([]);
+    expect(after.some((summary) => (summary.statuses as Rec[]).length === 0), "without a refresh, alpha's view ends offline when beta's owner stops the run (DS-006)").toBe(true);
+    record("RC-32", { r10, terminated, summariesAfterOwnerStop: after, refreshed });
+  }, 180_000);
+
+  it("RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member", async () => {
+    const view = await connect(alpha, "agent-team", ids.team.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
+    const snapshot = view.frames.find((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")!.payload as Rec;
+    const rows = objectsIn(snapshot).find((record) => Array.isArray(record.remote_task_executions))?.remote_task_executions as Rec[];
+    const agentRow = rows.find((row) => row.agent_run_id === ids.team.r2);
+    const teamRow = rows.find((row) => row.team_run_id === ids.studio.teamRunId);
+    expect(agentRow, JSON.stringify(rows)).toMatchObject({ kind: "agent", address: "/publisher", node_id: beta.nodeId, node_name: LABEL.beta });
+    expect(teamRow, JSON.stringify(rows)).toMatchObject({ kind: "agent_team", address: "/studio_team", node_name: LABEL.beta, coordinator_address: "/studio_team/lead" });
+    expect((teamRow!.members as Rec[]).map((member) => member.agent_run_id).sort()).toEqual([ids.studio.coord, ids.studio.checker].sort());
+    await until(() => remoteSummariesIn(view.frames, ids.studio.teamRunId).length > 0 && remoteSummariesIn(view.frames, ids.team.r2).length > 0, "both summaries", 25_000);
+    const studioSummary = remoteSummariesIn(view.frames, ids.studio.teamRunId)[0]!;
+    expect(studioSummary).toMatchObject({ reachable: true, title: ids.studioTitle ?? "Studio work. Marker STUDIO-PACKET." });
+    // Live: beta's owner writes to the remote Team's coordinator.
+    const beforeLive = view.frames.length;
+    await teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator").send("LIVE-TEAM-COORDINATOR");
+    await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.coord, "beta studio coordinator"), "LIVE-TEAM-COORDINATOR");
+    await until(() => liveIn(view.frames, beforeLive, "LIVE-TEAM-COORDINATOR"), "live output in alpha's Team view", 15_000).catch(() => undefined);
+    const liveSeen = liveIn(view.frames, beforeLive, "LIVE-TEAM-COORDINATOR");
+    expect(liveSeen, "AC-802: a remote Team member's live output reaches the Team delegator's view").toBe(true);
+    // A member's stored conversation through alpha.
+    const checkerProjection = JSON.stringify((await alpha.gql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
+      { id: ids.team.teamRunId, a: ids.studio.checker })).getTeamMemberRunProjection?.conversation ?? null);
+    expect(checkerProjection, "the remote member's conversation, read through alpha").toContain("TO-CHECKER-1");
+    // The owner messages the checker (a member) from the Team delegator's window.
+    view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { ...buildE2eClientCommandIds(), context_file_paths: [], image_urls: [], agent_run_id: ids.studio.checker,
+      content: "Owner of alpha here. Marker OWNER-TO-CHECKER." } }));
+    const atChecker = await receives(teamActor(beta, ids.studio.teamRunId, ids.studio.checker, "beta studio checker"), "OWNER-TO-CHECKER");
+    // The remote Agent's projection through the Team delegator.
+    const agentProjection = JSON.stringify((await alpha.gql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
+      { id: ids.team.teamRunId, a: ids.team.r2 })).getTeamMemberRunProjection?.conversation ?? null);
+    expect(agentProjection).toContain("TEAM-PACKET");
+    record("RC-33", { agentRow, teamRow, studioSummary, liveSeen, atChecker: atChecker.slice(0, 300), types: [...new Set(view.frames.map((frame) => frame.type))] });
+  }, 180_000);
+
+  it("RC-34 278 AC-801/803/806: an Org delegator's tree has its remote Agent with title and status; its projection; the owner messages it from the Org view", async () => {
+    const view = await connect(alpha, "agent-org", ids.org.orgRunId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    const snapshot = view.frames.find((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as Rec;
+    const rows = objectsIn(snapshot).find((record) => Array.isArray(record.remote_task_executions))?.remote_task_executions as Rec[];
+    const row = rows.find((entry) => entry.agent_run_id === ids.org.r5);
+    expect(row, JSON.stringify(rows)).toMatchObject({ kind: "agent", node_id: beta.nodeId, node_name: LABEL.beta, delegator_agent_run_id: ids.org.lead });
+    await until(() => remoteSummariesIn(view.frames, ids.org.r5).length > 0, "r5's summary", 25_000);
+    const summary = remoteSummariesIn(view.frames, ids.org.r5)[0]!;
+    expect(summary).toMatchObject({ reachable: true, title: expect.stringContaining("ORG-PACKET") });
+    const projection = JSON.stringify((await alpha.gql(`query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}`,
+      { id: ids.org.orgRunId, a: ids.org.r5, m: row!.address })).getAgentOrgMemberRunProjection?.conversation ?? null);
+    expect(projection).toContain("ORG-PACKET");
+    const beforeOwner = view.frames.length;
+    const ack = await ackOf(view, rootCommand(view, { kind: "agent_org", runId: ids.org.orgRunId }, "SEND_MESSAGE", ids.org.r5, ownerText("Owner of alpha here. Marker OWNER-TO-ORG-REMOTE.")));
+    expect(ack, JSON.stringify(ack)).toMatchObject({ state: "accepted" });
+    await receives(composeOnBeta(ids.org.r5), "OWNER-TO-ORG-REMOTE");
+    await until(() => liveIn(view.frames, beforeOwner, "OWNER-TO-ORG-REMOTE"), "live in alpha's Org view", 10_000).catch(() => undefined);
+    const liveSeen = liveIn(view.frames, beforeOwner, "OWNER-TO-ORG-REMOTE");
+    expect(liveSeen, "AC-802: the remote run's live output reaches the Org view").toBe(true);
+    record("RC-34", { row, summary, ack, liveSeen });
+  }, 180_000);
+
+  it("RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start", async () => {
+    const r9 = ids.treeRun as string;
+    const gamma = new NodeServer("gamma", root, await getFreePort());
+    try {
+      await gamma.start();
+      await gamma.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+      await beta.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: gamma.nodeId, baseUrl: gamma.baseUrl, name: "gamma-node" } });
+      const beltaLocal = await createStandalone(beta, defs.publisher, "beta's own run");
+      await beltaLocal.send("Beta's own work. Marker BETA-LOCAL.");
+      await receives(beltaLocal, "BETA-LOCAL");
+      const envelopeOf = (node: NodeServer) => ({ fromNodeId: node.nodeId, toNodeId: beta.nodeId });
+      const root9 = { kind: "agent", runId: r9 };
+      // gamma (registered on beta) asks about alpha's run.
+      const fromGamma = {
+        summaries: await asPeerTo(beta, PATHS.runSummaries, { ...envelopeOf(gamma), runs: [{ kind: "agent", runId: r9 }] }),
+        projection: await asPeerTo(beta, PATHS.agentProjection, { ...envelopeOf(gamma), targetRoot: root9, agentRunId: r9 }),
+        command: await asPeerTo(beta, PATHS.ownerCommands, { ...envelopeOf(gamma), targetRoot: root9, agentRunId: r9, command: { kind: "interrupt" } }),
+      };
+      const observationAnswer = async (from: NodeServer, targetRoot: Rec) => {
+        const socket = new WebSocket(`ws://127.0.0.1:${beta.port}${PATHS.runObservations}`);
+        sockets.push(socket);
+        const frames: unknown[] = [];
+        let closedCode: number | null = null;
+        socket.on("message", (raw: unknown) => frames.push(JSON.parse(String(raw))));
+        socket.on("close", (code: number) => { closedCode = code; });
+        await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+        socket.send(JSON.stringify({ ...envelopeOf(from), targetRoot }));
+        await until(() => closedCode !== null || frames.length > 0, "the observation's first answer", 10_000);
+        await wait(500);
+        return { first: frames[0] ?? null, closedCode, frames: frames.length };
+      };
+      const observationFromGamma = await observationAnswer(gamma, root9);
+      expect(fromGamma.summaries.answer, JSON.stringify(fromGamma.summaries)).toMatchObject({ accepted: true, runs: [] });
+      for (const answer of [fromGamma.projection.answer, fromGamma.command.answer, observationFromGamma.first as Rec]) {
+        expect(answer, JSON.stringify(answer)).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
+      }
+      // alpha asks about beta's own run (not started by alpha), and names an agent outside its own run.
+      const betaRoot = { kind: "agent", runId: beltaLocal.runId };
+      const fromAlpha = {
+        summaries: await asPeerTo(beta, PATHS.runSummaries, { ...envelopeOf(alpha), runs: [{ kind: "agent", runId: r9 }, { kind: "agent", runId: beltaLocal.runId }] }),
+        projection: await asPeerTo(beta, PATHS.agentProjection, { ...envelopeOf(alpha), targetRoot: betaRoot, agentRunId: beltaLocal.runId }),
+        command: await asPeerTo(beta, PATHS.ownerCommands, { ...envelopeOf(alpha), targetRoot: betaRoot, agentRunId: beltaLocal.runId,
+          command: { kind: "post_message", content: "INTRUDER", messageId: randomUUID(), dedupeKey: randomUUID() } }),
+        unpairedProjection: await asPeerTo(beta, PATHS.agentProjection, { ...envelopeOf(alpha), targetRoot: root9, agentRunId: beltaLocal.runId }),
+        unpairedCommand: await asPeerTo(beta, PATHS.ownerCommands, { ...envelopeOf(alpha), targetRoot: root9, agentRunId: beltaLocal.runId, command: { kind: "interrupt" } }),
+      };
+      const observationOfBetaRun = await observationAnswer(alpha, betaRoot);
+      expect((fromAlpha.summaries.answer.runs as Rec[]).map((run) => run.runId), "only the run alpha started").toEqual([r9]);
+      for (const answer of [fromAlpha.projection.answer, fromAlpha.command.answer, observationOfBetaRun.first as Rec]) {
+        expect(answer, JSON.stringify(answer)).toMatchObject({ accepted: false, code: "REMOTE_TARGET_NOT_PERMITTED" });
+      }
+      for (const answer of [fromAlpha.unpairedProjection.answer, fromAlpha.unpairedCommand.answer]) expect(answer, JSON.stringify(answer)).toMatchObject({ accepted: false });
+      expect(await betaConversation(beltaLocal.runId), "nothing reached beta's own run").not.toContain("INTRUDER");
+      record("RC-35", { fromGamma: { summaries: fromGamma.summaries.answer, projection: fromGamma.projection.answer, command: fromGamma.command.answer, observation: observationFromGamma },
+        fromAlpha: { summaries: fromAlpha.summaries.answer, projection: fromAlpha.projection.answer, command: fromAlpha.command.answer, unpairedProjection: fromAlpha.unpairedProjection.answer,
+          unpairedCommand: fromAlpha.unpairedCommand.answer, observation: observationOfBetaRun } });
+    } finally {
+      await beta.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: gamma.nodeId }).catch(() => undefined);
+      await gamma.stop();
+    }
+  }, 180_000);
+
   it("RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
     const lead = teamActor(alpha, ids.team.teamRunId, ids.team.lead, "alpha team lead");
@@ -1276,6 +1579,22 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect((await beta.launches()).slice(teamLaunchesBefore).filter((launch) => launch.cwd.includes(ids.studio.checker)), "only the addressed member restarts").toEqual([]);
     record("RC-12", { liveAtStart, shutDownAfterMs, relaunch: relaunches[0], heldAfterGrace, teamShutDownAfterMs, studioListedWhenStopped: studioListed, unusedListed, teamRelaunch: teamRelaunches[0] });
   }, 480_000);
+
+  it("RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation", async () => {
+    const idleRun = ids.idleRemote as string;
+    await until(async () => !(await processLive(idleRun)), "the quiet remote run shut down", GRACE_MS + 60_000);
+    const view = await connect(alpha, "agent-collaboration", ids.treeDelegator as string, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+    await until(() => remoteSummariesIn(view.frames, idleRun).length > 0, "its summary", 25_000);
+    const offline = remoteSummariesIn(view.frames, idleRun)[0]!;
+    expect(offline, "shut down, not gone: listed with its title and no live status").toMatchObject({ reachable: true, title: "Idle work. Marker IDLE-PACKET.", statuses: [] });
+    const launchesBefore = (await beta.launches()).length;
+    const ack = await ackOf(view, rootCommand(view, { kind: "agent", runId: ids.treeDelegator as string }, "SEND_MESSAGE", idleRun, ownerText("Wake up. Marker WAKE-FROM-ALPHA.")));
+    expect(ack.state).toBe("accepted");
+    await receives(composeOnBeta(idleRun), "WAKE-FROM-ALPHA");
+    const relaunches = (await beta.launches()).slice(launchesBefore).filter((launch) => launch.cwd.includes(idleRun));
+    expect(relaunches.filter((launch) => launch.argv.includes("--conversation")), "restored with its conversation").toHaveLength(1);
+    record("RC-36", { offline, ack, relaunch: relaunches[0] });
+  }, 240_000);
 
   it("RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1387,7 +1706,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-24", { stopped, listed, relaunch: relaunches[0] });
   }, 180_000);
 
-  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them", async () => {
+  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)", async () => {
     const scout = await createStandalone(alpha, defs.scout, "alpha scout");
     ids.scout = scout.runId;
     const delegator = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1395,9 +1714,15 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const scoutTools = await toolsOf(scout);
     const delegatorTools = await toolsOf(delegator);
     const tool = (tools: Rec[], name: string) => tools.find((entry) => entry.name === name);
-    expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_available_nodes"]));
+    expect(delegatorTools.map((entry) => entry.name), "without the selection, no discovery tool").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
     expect(delegatorTools.map((entry) => entry.name)).not.toContain("list_available_agents");
-    expect(tool(scoutTools, "list_available_nodes")?.description).toBe(TEXT_261.listNodes);
+    // 290 REQ-906 (the accepted exception): selecting only the former name `list_available_nodes` gives no discovery tool.
+    const oldNameScout = await createStandalone(alpha, defs.oldNameScout, "alpha old-name scout");
+    const oldNameTools = (await toolsOf(oldNameScout)).map((entry) => entry.name);
+    expect(oldNameTools, "the former name selects nothing").not.toEqual(expect.arrayContaining(["list_peer_nodes"]));
+    expect(oldNameTools).not.toContain("list_available_nodes");
+    expect(oldNameTools, "the agent still has its other tools").toContain("delegate_task");
+    expect(tool(scoutTools, "list_peer_nodes")?.description).toBe(TEXT_261.listPeerNodes);
     expect(tool(scoutTools, "list_available_agents")?.description).toBe(TEXT_261.listAgents);
     expect(tool(scoutTools, "list_available_agents")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.listAgentsNode);
     expect(tool(scoutTools, "list_available_agents")?.inputSchema?.required ?? [], "node is optional").not.toContain("node");
@@ -1472,7 +1797,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       betaCatalog, delegations, pageOffer });
   }, 300_000);
 
-  it("RC-27 261 AC-401/QR-401: list_available_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
+  it("RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
     const scout = standaloneActor(alpha, ids.scout, "alpha scout");
     const extra = { gamma: new NodeServer("gamma", root, await getFreePort()), delta: new NodeServer("delta", root, await getFreePort()),
       epsilon: new NodeServer("epsilon", root, await getFreePort()) };
@@ -1482,14 +1807,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       await Promise.all(Object.values(extra).map((node) => node.start()));
       for (const node of Object.values(extra)) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
       for (const key of ["gamma", "delta", "epsilon"] as const) {
-        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: extra[key].baseUrl, name: names[key] } });
+        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: extra[key].nodeId, baseUrl: extra[key].baseUrl, name: names[key] } });
         added.push(extra[key].nodeId);
       }
       // gamma and delta know alpha; then gamma stops and delta turns its switch off. epsilon never registers alpha.
-      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { baseUrl: alpha.baseUrl, name: LABEL.alpha } });
+      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: LABEL.alpha } });
       await extra.gamma.stop();
       await extra.delta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
-      const listed = await calls(scout, "list_available_nodes", {});
+      const listed = await calls(scout, "list_peer_nodes", {});
       expect(listed.nodes, JSON.stringify(listed)).toEqual([{ name: LABEL.beta, status: "available" }, { name: names.gamma, status: "unavailable" },
         { name: names.delta, status: "unavailable" }, { name: names.epsilon, status: "unavailable" }]);
       expect(listed.elapsedMs, "answered well within the 20 s bound").toBeLessThan(20_000);
@@ -1517,14 +1842,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       toBeta.mode = "blackhole";
       let heldPage: Rec & { elapsedMs: number };
       try {
-        held = await calls(scout, "list_available_nodes", {}, 90_000);
+        held = await calls(scout, "list_peer_nodes", {}, 90_000);
         heldPage = await peerNodeOffer(alpha, beta.nodeId);
       } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
       expect(heldPage.offer, "267: the page's query for a black-holed peer").toEqual({ entries: null, refusalCode: "PEER_UNREACHABLE" });
       expect(heldPage.elapsedMs, "267: within the 20 s bound").toBeLessThan(25_000);
       expect((held.nodes as Rec[])[0], JSON.stringify(held)).toEqual({ name: LABEL.beta, status: "unavailable" });
       expect(held.elapsedMs, "within the 20 s peer bound (plus the agent's turn)").toBeLessThan(30_000);
-      const again = await calls(scout, "list_available_nodes", {});
+      const again = await calls(scout, "list_peer_nodes", {});
       expect((again.nodes as Rec[])[0], "beta is available again").toEqual({ name: LABEL.beta, status: "available" });
       record("RC-27", { listed: { nodes: listed.nodes, elapsedMs: listed.elapsedMs }, reasons, heldElapsedMs: held.elapsedMs, held: held.nodes, pageCodes, heldPage });
     } finally {
@@ -1544,7 +1869,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
     let nodesOff: Rec, agentsOff: Rec;
     try {
-      nodesOff = await calls(scout, "list_available_nodes", {});
+      nodesOff = await calls(scout, "list_peer_nodes", {});
       agentsOff = await calls(scout, "list_available_agents", { node: LABEL.beta });
     } finally { await alpha.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`); }
     expect(textOf(nodesOff)).toBe(off);
@@ -1603,6 +1928,39 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     record("RC-30", { descriptionLength: description.length, agentTitle, teamTitle });
   }, 180_000);
+
+  it("RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again", async () => {
+    const delegatorId = ids.treeDelegator as string;
+    const r9 = ids.treeRun as string;
+    await beta.stop();
+    let retried: Rec | null = null;
+    let started = 0, unreachableAfterMs = 0, projectionError: unknown = null, ownConversation = false;
+    try {
+      started = Date.now();
+      const view = await connect(alpha, "agent-collaboration", delegatorId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
+      await until(() => remoteSummariesIn(view.frames, r9).length > 0, "r9's summary", 30_000);
+      unreachableAfterMs = Date.now() - started;
+      expect(remoteSummariesIn(view.frames, r9)[0]).toMatchObject({ reachable: false, title: null, statuses: [] });
+      const projectionStarted = Date.now();
+      const read = await alpha.gqlRaw(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
+        { h: delegatorId, a: "/publisher", r: r9 });
+      projectionError = { errors: read.errors?.map((error) => error.message), data: read.data, elapsedMs: Date.now() - projectionStarted };
+      expect(Date.now() - projectionStarted, "the read answers within the bound").toBeLessThan(25_000);
+      expect(Boolean(read.errors?.length) || read.data?.agentRunCollaborationMemberProjection === null, JSON.stringify(read)).toBe(true);
+      // The rest of the tree works: the delegator's own conversation reads.
+      ownConversation = JSON.stringify(await standaloneActor(alpha, delegatorId, "alpha tree delegator").conversation()).includes("TREE-PACKET");
+      expect(ownConversation).toBe(true);
+      await beta.start();
+      const before = remoteSummariesIn(view.frames, r9).length;
+      view.socket.send(JSON.stringify({ type: "REFRESH_REMOTE_TASK_EXECUTIONS", payload: { root_subject_kind: "agent", root_run_id: delegatorId } }));
+      await until(() => remoteSummariesIn(view.frames, r9).length > before, "the retried summary", 30_000);
+      retried = remoteSummariesIn(view.frames, r9).at(-1)!;
+      expect(retried).toMatchObject({ reachable: true, title: "Tree work. Marker TREE-PACKET." });
+    } finally {
+      if (!beta.child || beta.child.exitCode !== null) await beta.start();
+    }
+    record("RC-37", { unreachableAfterMs, projectionError, ownConversation, retried });
+  }, 240_000);
 
   it("RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'", async () => {
     const solo = standaloneActor(alpha, ids.solo, "alpha standalone delegator");
@@ -1734,13 +2092,18 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   }, 240_000);
 
   it("RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields", () => {
-    const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents]);
+    const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents,
+      PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
       [PATHS.runs]: ["address", "coordinatingRun", "delegator", "fromNodeId", "toNodeId"],
       // 261: the discovery requests are the envelope only.
       [PATHS.availability]: ["fromNodeId", "toNodeId"],
       [PATHS.availableAgents]: ["fromNodeId", "toNodeId"],
+      // 278: the run-tree requests.
+      [PATHS.runSummaries]: ["fromNodeId", "runs", "toNodeId"],
+      [PATHS.agentProjection]: ["agentRunId", "fromNodeId", "targetRoot", "toNodeId"],
+      [PATHS.ownerCommands]: ["agentRunId", "command", "fromNodeId", "targetRoot", "toNodeId"],
       work_packet: ["content", "createdAt", "fromNodeId", "kind", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toBeta: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
       toAlpha: ["content", "createdAt", "fromNodeId", "kind", "messageId", "messageType", "sender", "target", "targetRoot", "toNodeId"],
@@ -1754,11 +2117,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     for (const entry of captured) {
       const text = JSON.stringify({ headers: entry.headers, body: entry.body });
       expect(text.includes(CANARY.alpha) || text.includes(CANARY.beta), `canary key in request ${entry.seq}`).toBe(false);
-      expect(Object.keys(entry.headers).filter((name) => /auth|cookie|key|token|secret/i.test(name)), `credential header in request ${entry.seq}`).toEqual([]);
+      // `sec-websocket-key` is the WebSocket handshake nonce (278's observation stream), not a credential.
+      expect(Object.keys(entry.headers).filter((name) => /auth|cookie|key|token|secret/i.test(name) && name !== "sec-websocket-key"), `credential header in request ${entry.seq}`).toEqual([]);
       if (entry.path === PATHS.status) { expect(entry.method).toBe("GET"); counts.status = (counts.status ?? 0) + 1; continue; }
+      // 278: the observation stream's upgrade (its frames are not decoded here; RC-35 reads the route directly).
+      if (entry.upgrade) { expect(entry.path).toBe(PATHS.runObservations); expect(entry.method).toBe("GET"); counts.observation = (counts.observation ?? 0) + 1; continue; }
       const body = entry.body as Rec;
       expect(secretLike(JSON.stringify(body)), `secret-like text in request ${entry.seq}: ${JSON.stringify(body).slice(0, 300)}`).toBe(false);
-      const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents].includes(entry.path as never) ? entry.path
+      const kind = [PATHS.runs, PATHS.availability, PATHS.availableAgents, PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands].includes(entry.path as never) ? entry.path
         : body.kind === "work_packet" ? "work_packet" : entry.via;
       // 261 REQ-403: an accepted discovery answer carries only the contract's fields.
       const answer = entry.answer as Rec | undefined;

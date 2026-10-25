@@ -1,6 +1,6 @@
 import { isIP } from "node:net";
 
-export type NormalizedPeerAddress = {
+export type NormalizedClientAddress = {
   raw: string;
   normalized: string;
   family: "ipv4" | "ipv6";
@@ -20,7 +20,7 @@ const normalizeIpv4MappedAddress = (value: string): string | null => {
   return value.slice(prefix.length);
 };
 
-export const normalizePeerAddress = (address: string | undefined): NormalizedPeerAddress | null => {
+export const normalizeClientAddress = (address: string | undefined): NormalizedClientAddress | null => {
   const trimmed = String(address ?? "").trim();
   if (!trimmed) {
     return null;
@@ -42,8 +42,8 @@ export const normalizePeerAddress = (address: string | undefined): NormalizedPee
   return null;
 };
 
-export const isLoopbackPeerAddress = (address: string | undefined): boolean => {
-  const normalized = normalizePeerAddress(address);
+export const isLoopbackClientAddress = (address: string | undefined): boolean => {
+  const normalized = normalizeClientAddress(address);
   if (!normalized) {
     return false;
   }

@@ -1,0 +1,7 @@
+# API-00 server build | commit 4abf57451a | 2026-10-23T13:33:03Z | 26.5.2, node v22.23.1
+(node:42677) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+applications/brief-studio/dist/importable-package/applications/brief-studio/application.json

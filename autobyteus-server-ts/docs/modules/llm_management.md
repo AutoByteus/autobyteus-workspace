@@ -281,6 +281,35 @@ raw SDK no longer reports a saved ID, the ID remains visible but no valid schema
 or successful Save is invented. Frontend display must not perform alias folding
 or rewrite the stored ID merely because it rendered a recommended sibling.
 
+Claude model discovery (`ClaudeSdkClient.listModels`) opens the CLI with an
+input stream that never yields a message (`withClaudeControlQuery`,
+`claude-sdk-control-query.ts`) and closes it after `supportedModels()`, so no
+user turn is sent and no tokens are spent. A string prompt would be sent as a
+user turn (the SDK drops `maxTurns: 0`).
+
+### Provider Usage
+
+`src/llm-management/provider-usage/` reads one AutoByteus provider's usage
+with its API key (from the server's secret resolver; never logged or returned)
+and no completion request, for the available-agent-runtimes read (see
+[Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). One reader per
+provider, by provider ID (`provider-usage-readers.ts`):
+
+| Provider | Call | Result |
+| --- | --- | --- |
+| DeepSeek | `GET /user/balance` | balance; `is_available` false → blocked "no balance left" |
+| Kimi | `GET /v1/users/me/balance` (api.moonshot.ai) | `available_balance` (USD); ≤ 0 → blocked "no balance left" |
+| Anthropic | free `POST /v1/messages/count_tokens` on the provider's first model | 400 "credit balance" → blocked "credit balance too low" |
+| xAI (Grok) | `GET /v1/api-key` | key blocked / disabled / team blocked → blocked |
+| Others, custom providers | — | "not reported" |
+
+A reader returns its reading or throws: an unusable answer throws
+`ProviderUsageUnreadableError` with a short reason (`the API key was not
+accepted`, `unexpected answer (<status>)`, `no model to check with`); a time-out
+is the request's abort. The available-agent-runtimes service words it
+("<Provider> usage timed out" / "… could not be read: <reason>" / "… could not
+be read"); provider texts are not kept.
+
 ### Claude Agent SDK Authentication
 
 `CLAUDE_AGENT_SDK_AUTH_MODE` preserves the existing `auto|cli|api-key`
@@ -422,6 +451,19 @@ mode fallback.
   `deleteCustomProvider(providerId)`; built-ins remain non-deletable.
 - The public API does **not** expose a separate top-level
   `openaiCompatibleEndpoints` subject anymore.
+- **Held back while their migration is pending.** Until
+  `20260803_custom_provider_readable_identity` has succeeded, the provider file
+  may still be in a released shape. The migration declares the
+  `custom_llm_providers` capability, and `src/startup/app-data-capability-readiness.ts`
+  sets it from the migration runner's answer at startup and after a successful
+  Settings retry (state in `stores/custom-llm-provider-availability.ts`).
+  While it is pending, `CustomLlmProviderStore` is the single gate: every read
+  and write throws `CUSTOM_PROVIDERS_MIGRATION_PENDING`. The server still
+  starts. Model catalog listing shows built-in providers only; a run or model
+  resolution with a custom model is refused with the code; Settings create and
+  delete are refused with it; token-usage display lookups fall back to the raw
+  model id. Custom-provider source preparation is reached only through the
+  store, so it never runs while pending.
 
 ## Persistence
 

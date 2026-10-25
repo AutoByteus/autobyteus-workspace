@@ -1,0 +1,53 @@
+# Case: API-06
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: 6170227e3b (code 9b013fcc09)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2; clean env (env -i PATH HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.zp51tmm98Q TMPDIR)
+# Date: 2026-10-23T19:59:11Z
+
+# Excerpt of API-06-server-integration.log (summary lines). Full log (939222 bytes): /tmp/ab280e2e/API-06-server-integration.log
+
+2:# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+8:> autobyteus-server-ts@0.1.1 test:integration:prepare /Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder/autobyteus-server-ts
+9:> node ./scripts/integration-test-prerequisites.mjs prepare
+15:> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+18:> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder/autobyteus-server-ts
+177:Agent 'recovery_tester_2756': LLM instance 'Parent' and 0 tools prepared and stored in state.
+487:Agent 'recovery_tester_7949': LLM instance 'Parent' and 0 tools prepared and stored in state.
+786:Agent 'recovery_tester_8808': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1088:Agent 'recovery_tester_4492': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1387:Agent 'recovery_tester_7432': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1545:Agent 'recovery_tester_4104': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1776:Agent 'recovery_tester_3834': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2023:Agent 'recovery_tester_7142': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2181:Agent 'recovery_tester_6073': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2412:Agent 'recovery_tester_5032': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2673:Agent 'recovery_tester_7978': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2912:Agent 'recovery_tester_4358': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3143:Agent 'recovery_tester_8781': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3374:Agent 'recovery_tester_2803': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3605:Agent 'recovery_tester_7730': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3836:Agent 'recovery_tester_9346': LLM instance 'Parent' and 0 tools prepared and stored in state.
+4915:Agent 'recovery_tester_7706': LLM instance 'Parent' and 0 tools prepared and stored in state.
+5081:Agent 'recovery_tester_8721': LLM instance 'Parent' and 0 tools prepared and stored in state.
+5239:Agent 'recovery_tester_1734': LLM instance 'Parent' and 0 tools prepared and stored in state.
+5397:Agent 'recovery_tester_1440': LLM instance 'Parent' and 0 tools prepared and stored in state.
+5555:Agent 'recovery_tester_3626': LLM instance 'Parent' and 0 tools prepared and stored in state.
+5924:Agent 'autobyteus_backend_agent_11111111111111111111111111111111': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+6054:Agent 'preferred_autobyteus_run_4242': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+6181:Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+6297:Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+6405:stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > rejects fresh create when the standalone run is not fully prepared
+6634:Agent 'real_memory_layout_agent_00000000000000000000000000000001': LLM instance 'DummyLLM' and 2 tools prepared and stored in state.
+6753:Agent 'real_memory_layout_agent_00000000000000000000000000000001': LLM instance 'DummyLLM' and 2 tools prepared and stored in state.
+6886:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+6890:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+6893:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+6906:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+6910:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+6913:stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+6917:stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+6918:SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+7945: Test Files  78 passed | 20 skipped (98)
+7946:      Tests  421 passed | 69 skipped (490)
+7948:   Duration  201.46s (transform 7.09s, setup 995ms, import 64.40s, tests 127.12s, environment 5ms)
+7950:# Exit code: 0

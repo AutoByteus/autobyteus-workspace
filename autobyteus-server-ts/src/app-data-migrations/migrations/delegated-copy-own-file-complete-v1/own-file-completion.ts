@@ -1,11 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
-import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
-import type { LaunchConfigurationSource } from "../../../agent-collaboration/domain/launch-configuration-source.js";
-import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
-import type { TaskAgentTeamTreeFile } from "../../../agent-team-execution/domain/task-agent-team-tree.js";
-import type { TaskAgentRunMetadata } from "../../../run-history/store/agent-run-metadata-types.js";
-import { parseTaskAgentRunMetadata } from "../../../run-history/store/task-agent-own-file-schema.js";
-import { validateTaskAgentTeamTreePayload } from "../../../run-history/store/task-agent-team-tree-schema.js";
+import { normalizeCollaborationHandoffs, type CollaborationHandoff } from "../../frozen/server/agent-collaboration/domain/collaboration-handoff.js";
+import type { LaunchConfigurationSource } from "../../frozen/server/agent-collaboration/domain/launch-configuration-source.js";
+import type { AgentLaunchConfiguration } from "../../frozen/server/agent-team-execution/domain/team-run-config.js";
+import type { TaskAgentTeamTreeFile } from "../../frozen/server/agent-team-execution/domain/task-agent-team-tree.js";
+import type { TaskAgentRunMetadata } from "../../frozen/server/run-history/store/agent-run-metadata-types.js";
+import { parseTaskAgentRunMetadata } from "../../frozen/server/run-history/store/task-agent-own-file-schema.js";
+import { validateTaskAgentTeamTreePayload } from "../../frozen/server/run-history/store/task-agent-team-tree-schema.js";
 import {
   parseReleasedTaskAgentRunMetadata,
   releasedTaskAgentStartedLaunch,
@@ -14,8 +14,8 @@ import {
   type ReleasedTaskAgentRunMetadata,
   type ReleasedTaskAgentSection,
   type ReleasedTaskAgentTeamTreeFile,
-} from "../../legacy/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
-import { parseLaunchConfiguration } from "../../legacy/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
+} from "../../frozen/released-run-package-shapes/released-task-agent-own-files-with-origin.js";
+import { parseLaunchConfiguration } from "../../frozen/released-run-package-shapes/released-trees-before-task-agent-own-run.js";
 
 /**
  * The per-file conversion of `20261019_delegated_copy_own_file_complete_v1` (design Migration Plan M1–M4),

@@ -4,14 +4,14 @@ import {
   type ConfiguredMemberExecution,
   type ConfiguredTeamExecution,
   type TeamRunExecutionTreeSnapshot,
-} from "./team-run-execution-tree-v1-types.js";
+} from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
 import type {
   ReleasedTeamRunAgentNode,
   ReleasedTeamRunAgentTeamNode,
   ReleasedTeamRunConfig,
   ReleasedTeamRunNode,
-} from "../../legacy/released-team-run-config.js";
-import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
+} from "../../frozen/released-team-run-config.js";
+import { validateTeamRunExecutionTreePayload } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 
 const toAgent = (node: ReleasedTeamRunAgentNode): ConfiguredAgentExecution => ({
   address: node.address,

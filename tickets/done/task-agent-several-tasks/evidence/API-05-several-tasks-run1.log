@@ -1,0 +1,19 @@
+# Case: API-05 run 1 (SEV-E2E-003 failed on my test step; see report)
+# Command: TASK_AGENT_SEVERAL_TASKS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-agent-several-tasks.e2e.test.ts --no-watch
+# Commit: code cd8c289b67 (HEAD e421b2896d) + this round's test edits (committed with this evidence)
+# Environment: macOS darwin arm64; corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR; RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs
+# Date: 2026-10-23
+
+ ❯ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests | 1 failed) 75532ms
+     ✓ SEV-E2E-001: a parent and two of its parts given to one Team copy (each message names the other open Tasks); the parent's CANCELLED closes all three and stops the copy once, after the last (AC-002, AC-005)  5904ms
+     ✓ SEV-E2E-002: sub-work started under the newest open Task belongs to it; closing that Task stops the sub-work while the copy runs on (AC-006, AC-003)  6120ms
+     × SEV-E2E-003: a closed Task given back while another is open; the copy is stopped once, after its last open Task closes (AC-007, AC-004) 68ms
+     ✓ SEV-E2E-004: a copy shut down while idle, holding an open Task, is given a second Task: the delivery wakes it with its conversation  62206ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/task-agent-several-tasks.e2e.test.ts > A task agent with several Tasks: parts on one copy, sub-work ownership, give-back, wake (real HTTP/WS/scoped MCP, scripted AGY) > SEV-E2E-003: a closed Task given back while another is open; the copy is stopped once, after its last open Task closes (AC-007, AC-004)
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: true, …(2) }
++   "message": "The Task is DONE; set it to TODO or IN_PROGRESS before you delegate it.",
+ ❯ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts:287:18
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+exit=1

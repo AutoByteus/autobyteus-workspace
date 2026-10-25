@@ -20,7 +20,7 @@ import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/l
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
@@ -59,7 +59,7 @@ export const admission = (runnable = true) => {
 };
 
 export const buildOrg = async (options: { runnable?: boolean } = {}) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
+  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity("org-collaborators");
   // A real memory root: task agents' own files live beside the org's folder (contract L1).
@@ -72,8 +72,10 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   ] });
   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
+  // The coordinator's fail-stop callback, observable by tests (the Org root reads its latch on the next write).
+  const enterPersistenceFailStop = vi.fn();
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
+    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();
@@ -108,5 +110,5 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     taskExecutionResources: resources,
   });
   run.activate();
-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
+  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources, enterPersistenceFailStop };
 };

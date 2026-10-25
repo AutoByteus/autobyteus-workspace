@@ -1,5 +1,6 @@
 import { computed, type ComputedRef } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import { resolveRunMentionScope, type RunMentionScope } from '~/composables/agentInput/runMentionScope';
@@ -53,6 +54,7 @@ const resolveDraftOwner = (
 export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
   const activeContextStore = useActiveContextStore();
 
+  const remoteRuns = useRemoteRunsStore();
   return computed<ComposerTarget | null>(() => {
     const target = activeContextStore.activeWorkspaceTarget;
     if (!target) {
@@ -63,7 +65,8 @@ export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
       context: target.context,
       draftOwner: resolveDraftOwner(target),
       access: target.access === 'read_only' ? 'read_only' : 'live',
-      mentionScope: resolveRunMentionScope(target),
+      // autobyteus-278: `@` brings units into a run on this node; a run another node runs takes no `@`.
+      mentionScope: remoteRuns.runOfAgentRun(target.context.state.runId) ? null : resolveRunMentionScope(target),
       send: () => activeContextStore.send(),
       interrupt: () => activeContextStore.interruptGeneration(),
     });

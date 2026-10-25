@@ -20,6 +20,9 @@ vi.mock('../../logger', () => {
   return { logger }
 })
 
+// These cases spawn real worker processes (install, start, probe): 1.5 s alone, 3.5 s under load, against the 5 s default.
+vi.setConfig({ testTimeout: 30_000 })
+
 async function createWorkerArchive(targetPath: string): Promise<void> {
   const stagingDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-worker-'))
   const binDir = path.join(stagingDir, 'bin')

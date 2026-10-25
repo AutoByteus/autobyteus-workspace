@@ -50,12 +50,20 @@ const announcementsBetween = (before: AgentRuntime[], after: AgentRuntime[]): Ag
   return done
 }
 
+export type UseAgentRuntimesOptions = {
+  /**
+   * Whether binding another node starts a check (the page). `false`: only reads, never starts a check (the Notification
+   * Center, which must not start the runtimes' version and sign-in reads).
+   */
+  checkOnRebind?: boolean
+}
+
 /**
- * The Agent Runtimes section's data: `open()` asks the node to check its runtimes, then one read-only request is polled
- * every 2 s while anything runs and every 10 s otherwise, until the caller's scope ends; the latest request wins. A
- * running update or sign-in keeps running on the node while the page is closed.
+ * The Agent Runtimes section's data: `check()` asks the node to check its runtimes (`refresh()` only reads), then one
+ * read-only request is polled every 2 s while anything runs and every 10 s otherwise, until the caller's scope ends; the
+ * latest request wins. A running update or sign-in keeps running on the node while the page is closed.
  */
-export const useAgentRuntimes = () => {
+export const useAgentRuntimes = (options: UseAgentRuntimesOptions = {}) => {
   const node = useWindowNodeContextStore()
   const runtimes = shallowRef<AgentRuntime[] | null>(null)
   const loadStatus = ref<'loading' | 'error' | 'ready'>('loading')
@@ -141,7 +149,7 @@ export const useAgentRuntimes = () => {
     runtimes.value = null
     signInBrowserAvailable.value = false
     announcements.value = []
-    void check()
+    void (options.checkOnRebind === false ? refresh() : check())
   })
   onScopeDispose(() => { disposed = true; latest++; clearTimer() })
 
@@ -153,6 +161,8 @@ export const useAgentRuntimes = () => {
     /** What the latest reading finished (for the polite live region). */
     announcements,
     check,
+    /** Reads the rows (and keeps polling) without starting a check. */
+    refresh,
     update: (runtimeKind: string) => act(UpdateAgentRuntime, runtimeKind),
     signIn: (runtimeKind: string) => act(StartAgentRuntimeSignIn, runtimeKind),
     cancelSignIn: (runtimeKind: string) => act(CancelAgentRuntimeSignIn, runtimeKind),

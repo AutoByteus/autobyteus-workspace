@@ -11,7 +11,7 @@ import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { createCurrentTokenUsageTestHarness } from '../../helpers/token-usage-run-record-fixtures.js';
-import { configureTokenUsageMigrationReadiness } from '../../../src/token-usage/providers/token-usage-migration-readiness.js';
+import { configureTokenUsageCapability } from '../../../src/token-usage/providers/token-usage-capability.js';
 import { TokenUsageRunRecordsV1AppDataMigration } from '../../../src/app-data-migrations/migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js';
 import { LegacyTokenUsageConsolidationRepository } from '../../../src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
@@ -111,7 +111,7 @@ describe('token usage ledger GraphQL provider semantics', () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: 'READY' });
+    configureTokenUsageCapability({ kind: 'READY' });
     appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-token-usage-graphql-'));
     fs.writeFileSync(
       path.join(appDataDir, '.env'),

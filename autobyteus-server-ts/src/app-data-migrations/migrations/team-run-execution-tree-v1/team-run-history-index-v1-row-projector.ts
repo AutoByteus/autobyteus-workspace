@@ -1,8 +1,8 @@
 import path from "node:path";
-import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
-import type { TeamRunIndexRowRecord } from "../../../run-history/store/team-run-history-index-record-types.js";
-import { canonicalizeWorkspaceRootPath } from "../../../run-history/utils/workspace-path-normalizer.js";
-import { compactSummary } from "../../../run-history/services/run-history-service-helpers.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
+import type { TeamRunIndexRowRecord } from "../../frozen/server/run-history/store/team-run-history-index-record-types.js";
+import { canonicalizeWorkspaceRootPath } from "../../frozen/server/run-history/utils/workspace-path-normalizer.js";
+import { compactSummary } from "../../frozen/server/run-history/services/run-history-service-helpers.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();

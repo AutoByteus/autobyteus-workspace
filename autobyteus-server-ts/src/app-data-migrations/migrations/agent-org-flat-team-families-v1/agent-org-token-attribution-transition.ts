@@ -1,7 +1,7 @@
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../legacy/released-run-package-shapes/agent-org-execution-index-v1.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { AgentOrgExecutionIndex } from "./released-run-package-shapes/agent-org-execution-index-v1.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
+import { validateAgentOrgRunExecutionTreePayload } from "./released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
 import { assertMigrationRootId, migrationPathExists, readMigrationJson, type HistoryCandidatePlan } from "./agent-org-history-candidate-plan.js";
 import {
   AgentOrgTokenAttributionDataRejection,

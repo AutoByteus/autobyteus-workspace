@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import { collaborationDelegatedLaunchNodes, teamDelegatedLaunchNodes } from '../delegatedLaunchRows'
 import { countRunMemberNotes, type RunMemberNode } from '../runMemberTree'
+import { projectNavigationRows } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
 const deps = { schemaFor: () => null, sameWorkspace: () => true }
 const flat = (nodes: readonly RunMemberNode[], depth = 0): Array<[string, number, string | undefined, string | undefined, string, string]> =>
@@ -104,6 +105,65 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
       ['/se@team-extra', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],
       ['/se/lead@l2', 1, undefined, 'configured', 'claude_agent_sdk', 'opus'],
       ['/se/qa@q2', 1, undefined, 'configured', 'claude_agent_sdk', 'sonnet'],
+    ])
+  })
+})
+
+describe('delegated row names follow the root\'s naming rule (autobyteus-208)', () => {
+  const names = (nodes: readonly RunMemberNode[]): Array<[string, string]> =>
+    nodes.flatMap((node) => [[node.key, node.name] as [string, string], ...names(node.children)])
+  const namingTree = (): TeamRunExecutionTreeDto => ({
+    created_at: created, archived_at: null, application_binding: null, handoffs: [],
+    root_team: {
+      address: '/', team_definition_id: 'pm', team_definition_name: 'PM', team_run_id: 'root', coordinator_address: '/code_reviewer',
+      default_launch_configuration: claude,
+      members: [{ kind: 'configured_agent', address: '/code_reviewer', agent_definition_id: 'cr', role: null, description: null, agent_run_id: 'cr-run', platform_agent_run_id: null, launch_configuration: claude }],
+      task_executions: [
+        // A catalog copy (not at a configured member): the sidebar and its conversation read "scribe 5083".
+        { kind: 'task_agent', address: '/scribe_5083', agent_run_id: 'scribe-run', platform_agent_run_id: null, delegator_agent_run_id: 'cr-run', started_at: created,
+          source: { kind: 'agent', agent_definition_id: 'scribe', launch_configuration: claude } },
+        // A catalog Team copy and its members read by display name too.
+        { kind: 'task_team', address: '/product_team', team_run_id: 'pt-run', delegator_agent_run_id: 'cr-run', started_at: created, task_executions: [],
+          members: [{ kind: 'task_team_agent', address: '/product_team/tech_lead', agent_run_id: 'tl-run', platform_agent_run_id: null }],
+          source: { kind: 'agent_team', team_definition_id: 'pt', coordinator_address: '/product_team/tech_lead', handoffs: [],
+            default_launch_configuration: claude,
+            members: [{ address: '/product_team/tech_lead', agent_definition_id: 'tl', launch_configuration: claude, follows_team: true }] } },
+        // A copy of the configured member keeps its address basename.
+        { kind: 'task_agent', address: '/code_reviewer', agent_run_id: 'cr-copy', platform_agent_run_id: null, delegator_agent_run_id: 'cr-run', started_at: created,
+          source: { kind: 'agent', agent_definition_id: 'cr', launch_configuration: claude, launch_source: { origin: 'configured', fallbacks: [] } } },
+      ],
+    },
+  })
+
+  it('Team root: catalog copies (and a Team copy\'s members) by display name, a configured member\'s copy by basename, as the sidebar', () => {
+    const rows = names(teamDelegatedLaunchNodes(namingTree(), [], deps))
+    expect(rows).toEqual([
+      ['/scribe_5083@scribe-run', 'scribe 5083'],
+      ['/product_team@pt-run', 'product team'],
+      ['/product_team/tech_lead@tl-run', 'tech lead'],
+      ['/code_reviewer@cr-copy', 'code_reviewer'],
+    ])
+    // The same names as the sidebar rows of those runs.
+    const sidebar = new Map(projectNavigationRows({ tree: namingTree(), contexts: new Map() })
+      .map((row) => [row.agentRunId ?? row.teamRunId, row.displayName]))
+    expect(rows.map(([key, name]) => [sidebar.get(key.split('@')[1]!), name])).toEqual(rows.map(([, name]) => [name, name]))
+  })
+
+  it('Org and Agent roots: every copy row by display name, as their sidebar and contexts', () => {
+    const camel = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
+    const nodes = collaborationDelegatedLaunchNodes({ taskExecutions: [
+      { address: '/scribe_5083', agentRunId: 'scribe-run', platformAgentRunId: null, startedAt: created,
+        source: { kind: 'agent', agentDefinitionId: 'scribe', launchConfiguration: camel } },
+      { address: '/product_team', teamRunId: 'pt-run', taskExecutions: [], startedAt: created,
+        members: [{ address: '/product_team/tech_lead', agentRunId: 'tl-run', platformAgentRunId: null }],
+        source: { kind: 'agent_team', teamDefinitionId: 'pt', coordinatorAddress: '/product_team/tech_lead', handoffs: [],
+          defaultLaunchConfiguration: camel,
+          members: [{ address: '/product_team/tech_lead', agentDefinitionId: 'tl', launchConfiguration: camel, followsTeam: true }] } },
+    ] }, deps)
+    expect(names(nodes)).toEqual([
+      ['/scribe_5083@scribe-run', 'scribe 5083'],
+      ['/product_team@pt-run', 'product team'],
+      ['/product_team/tech_lead@tl-run', 'tech lead'],
     ])
   })
 })

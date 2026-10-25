@@ -1,0 +1,12 @@
+# IMP-01 server typecheck (IR-002 rerun)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 9b013fcc09
+# Environment: macOS darwin arm64, Node 22.23.1
+# Date: 2026-10-23T19:14Z
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/seal-migrations-per-folder/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+exit=0
+error TS count: 0
+$ grep -rn '@autobyteus/' autobyteus-server-ts/src/app-data-migrations
+(no match)

@@ -233,6 +233,46 @@ describe('FileExplorerStreamingService', () => {
       expect(service.state).toBe('disconnected');
     });
 
+    it('does not log an error when the socket is closed by disconnect while it is still connecting', () => {
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const onError = vi.fn();
+      const service = new FileExplorerStreamingService(WS_ENDPOINT, { onError });
+
+      service.connect('workspace-1');
+      const connecting = mockWs;
+      expect(connecting.readyState).toBe(MockWebSocket.CONNECTING);
+      service.disconnect();
+      // What a real socket reports after being closed before it opened.
+      connecting.simulateError();
+      connecting.simulateClose(1006, '');
+
+      expect(consoleError).not.toHaveBeenCalled();
+      expect(onError).not.toHaveBeenCalled();
+      expect(service.state).toBe('disconnected');
+      expect(sockets).toHaveLength(1);
+      consoleError.mockRestore();
+    });
+
+    it('leaves a newer connection alone when the old socket reports its close late', () => {
+      const service = new FileExplorerStreamingService(WS_ENDPOINT);
+
+      service.connect('workspace-1');
+      const old = mockWs;
+      service.disconnect();
+      service.connect('workspace-2');
+      const fresh = mockWs;
+      expect(fresh).not.toBe(old);
+
+      old.simulateClose(1006, '');
+      expect(service.state).toBe('connecting');
+      expect(sockets).toHaveLength(2);
+
+      fresh.simulateOpen();
+      fresh.simulateMessage({ type: 'CONNECTED', payload: { workspace_id: 'workspace-2', session_id: 'sess-2' } });
+      expect(service.state).toBe('connected');
+      expect(service.currentSessionId).toBe('sess-2');
+    });
+
     it('calls onDisconnect callback when connection closes', () => {
       const onDisconnect = vi.fn();
       const service = new FileExplorerStreamingService(WS_ENDPOINT, { onDisconnect });

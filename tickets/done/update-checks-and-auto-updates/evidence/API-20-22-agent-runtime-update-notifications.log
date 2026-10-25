@@ -1,0 +1,47 @@
+# API-20..API-22 — new tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts
+# Code 985246c53b (HEAD 48fe98d65d) + this round's test changes; macOS 26.5.2, Node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR; 2026-10-24
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" UPDATE_NOTIFICATIONS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts --no-watch
+
+## development: runs with the first tick advanced by 120 s failed intermittently (1 of 3): the vendor commands' 10 s timeouts share the fake clock and fired in the rest of the advance ('AGENT_RUNTIME_NOT_INSTALLED'); fixed in the test: random part 0 during server start, advance exactly to the tick
+## run 1
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11954ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1785ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2929ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6554ms
+      Tests  3 passed (3)
+## run 2
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11885ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1790ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2883ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6528ms
+      Tests  3 passed (3)
+## run 3
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11938ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1796ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2879ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6589ms
+      Tests  3 passed (3)
+## run 4
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11879ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1799ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2826ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6568ms
+      Tests  3 passed (3)
+## run 5
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11781ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1778ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2788ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6524ms
+      Tests  3 passed (3)
+## run 6
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11914ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1815ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2817ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6593ms
+      Tests  3 passed (3)
+
+## mutation control: AgentRuntimeStatusService refusal 'AGENTS_RUNNING' disabled; restored after
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1868ms
+     × API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification 175ms
+     × API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once 22190ms
+      Tests  2 failed | 1 passed (3)

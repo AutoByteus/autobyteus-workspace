@@ -1,0 +1,7 @@
+# Case: API-07 round 2 build | Command: pnpm -C autobyteus-web build:electron:mac; grep -rl over electron-dist/mac-arm64/AutoByteus.app/Contents/Resources for the new and the old help sentence | Commit: 1fa3a1d87e (HEAD fc2a7c84ac) | Env: macOS | Date: 2026-10-23
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0
+new sentence 'its last open Task is Done or Cancelled' found in: app.asar, server/mobile-web/_nuxt/Bo-Xy5VY.js
+old sentence 'When the Task is Done, this agent or team stops' found in: (none)

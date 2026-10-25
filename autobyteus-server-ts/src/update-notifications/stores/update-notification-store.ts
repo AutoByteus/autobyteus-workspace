@@ -2,12 +2,20 @@ import path from "node:path";
 import { readJsonArrayFile, writeJsonArrayFile } from "../../persistence/file/store-utils.js";
 import {
   UPDATE_NOTIFICATION_KINDS,
+  UPDATE_OUTCOMES,
   type UpdateNotificationKind,
   type UpdateNotificationRecord,
+  type UpdateOutcome,
 } from "../domain/update-notification.js";
 
 const nonEmptyString = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 const nullableString = (value: unknown): value is string | null => value === null || nonEmptyString(value);
+
+/** An outcome that is absent or not one of the current ones reads as none (rows written before outcomes existed). */
+const toOutcome = (value: Record<string, unknown>): Pick<UpdateNotificationRecord, "outcome" | "outcomeReason" | "outcomeAt"> =>
+  UPDATE_OUTCOMES.includes(value.outcome as UpdateOutcome) && nonEmptyString(value.outcomeAt)
+    ? { outcome: value.outcome as UpdateOutcome, outcomeReason: nonEmptyString(value.outcomeReason) ? value.outcomeReason : null, outcomeAt: value.outcomeAt }
+    : { outcome: null, outcomeReason: null, outcomeAt: null };
 
 /** Keeps a stored row only when it has the current shape; unknown fields are dropped. */
 const toRecord = (row: unknown): UpdateNotificationRecord | null => {
@@ -28,6 +36,7 @@ const toRecord = (row: unknown): UpdateNotificationRecord | null => {
     read: value.read,
     handledRevision: value.handledRevision,
     handledAt: value.handledAt,
+    ...toOutcome(value),
   };
 };
 
@@ -67,6 +76,9 @@ export class UpdateNotificationStore {
       read: record.read,
       handledRevision: record.handledRevision,
       handledAt: record.handledAt,
+      outcome: record.outcome,
+      outcomeReason: record.outcomeReason,
+      outcomeAt: record.outcomeAt,
     })));
   }
 }

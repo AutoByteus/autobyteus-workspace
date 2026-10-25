@@ -1,0 +1,10 @@
+# DEL-15-electron — Electron main tests on the integrated state (excerpt)
+### pnpm test:electron --run (in autobyteus-web)
+# State: merge f72210da3e (ticket code 985246c53b + tests 5faba271f5 + origin/personal bf087d3166, includes autobyteus-282); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+ FAIL  extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+Error: Test timed out in 5000ms.
+ Test Files  1 failed | 39 passed | 1 skipped (41)
+      Tests  1 failed | 236 passed | 1 skipped (238)
+exit 1
+# rerun alone, 3 times: vitest run --config ./electron/vitest.config.ts extensions/__tests__/managedExtensionService.spec.ts -> Tests 3 passed (3), each run. Timing flake under full-suite load (5 s test timeout); no extension file is touched by this ticket; it passed in DEL-05. FU-002.

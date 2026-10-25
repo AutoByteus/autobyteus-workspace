@@ -223,53 +223,86 @@ billed through API credits or an API key.
 - Server behavior, precedence and the Claude Code variable are described in
   [LLM Management: Claude Agent SDK Prompt Cache Lifetime](../../autobyteus-server-ts/docs/modules/llm_management.md#claude-agent-sdk-prompt-cache-lifetime).
 
-## Nodes: Remote Collaboration
+## Nodes: Manage Nodes (one list)
 
-Nodes -> Remote Collaboration (`components/settings/RemoteCollaborationCard.vue`) sets up
-cross-node delegation for the bound node: the switch (`ENABLE_REMOTE_COLLABORATION`,
-off by default, through `remoteCollaborationCapabilityStore`, a
-`createBoundNodeCapabilityStore` capability) and the peer nodes (add by URL and name,
-rename, remove; adding needs the switch on). `stores/remoteCollaborationStore.ts` loads and
-changes the peers through GraphQL; a refused change shows the server's reason next to the
-section that failed. The server side is described in the server's
-`docs/modules/remote_collaboration.md`.
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
 
-Each peer shows its state now and, when it is available, its Agents and Agent Teams
-(autobyteus-267; the approved UI/UX spec is the design repository's
-`tickets/done/remote-nodes-page/ui-ux-spec.md`):
+Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
+Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
+once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
+approved UI/UX spec is the design repository's `tickets/done/one-nodes-tab/ui-ux-spec.md`).
+There is no Remote Collaboration tab; `?nodeTab=remoteCollaboration` opens Manage Nodes. The
+server side is described in the server's `docs/modules/remote_collaboration.md`.
 
-- **Where the answers come from.** `stores/remoteCollaborationOffersStore.ts` asks this
-  node's server for one peer at a time (GraphQL `peerNodeOffer(nodeId)`, network-only); the
-  server asks the peer through the same discovery the agent tools use. The window never
-  contacts a peer. The answer is the entries (`name`, `kind`, a `description` only when it
-  has one; no address) or the refusal code, which the page words itself.
-- **States.** Per peer: Checking… (with "Waiting for {name}… up to 20 seconds."), Available
-  (the offer, or "{name} shares no Agents or Agent Teams."), or one of four unavailable
-  states with a sentence: Off there, Not registered there (amber: the owner can act there),
-  Not reachable (also an older build, or any other refusal or a failed query), Different
-  server (red).
-- **When peers are asked.** Every peer at once when the tab opens with the switch on and
-  when the switch turns on; one peer when it is added and on its Refresh icon. Turning the
-  switch off, or leaving the tab, drops every state and asks nobody; the card shows "Remote
-  Collaboration is off, so peers are not asked. …". Nothing polls and nothing is cached.
-  Each ask takes a token per peer, so an answer that arrives after the peer was removed or
-  asked again, the switch turned off or the tab was left is ignored. Every ask is a new
-  request, even while an earlier ask for that peer is still open: the query turns off
-  Apollo's in-flight deduplication (`context: { queryDeduplication: false }`), which would
-  otherwise join the identical open query and leave the new token unanswered. Each peer
-  settles at its own pace (the server's 20 s bound); the page stays usable meanwhile.
+- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node, its
+  remote collaboration switch (`ENABLE_REMOTE_COLLABORATION`, off by default, through
+  `remoteCollaborationCapabilityStore`, a `createBoundNodeCapabilityStore` capability), its
+  explanation and the collapsed "How remote collaboration works" rules (any shared Agent or
+  Agent Team; each agent's own default runtime and model, a team member without one uses its
+  team's default; this node's temp workspace with tool calls auto-approved; a local login
+  such as Codex or Claude used for every registered node; no default runtime and model is
+  refused).
+- **One list** (`stores/nodeListStore.ts`, `components/settings/nodes/NodeList.vue`,
+  `NodeRow.vue`). Two stored lists keep their owners: the desktop's list (`nodeStore`, the
+  windows this desktop can open, addresses as the desktop reaches them) and this node's peers
+  (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
+  reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
+  reached is its own row until it is reached. A row's name is the peer name when the node is
+  a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
+  are rows too; their Open appears once this window reaches them, and the first Open adds a
+  desktop entry. Two desktop entries of one node join into one row.
+- **A row**: a dot (reachable now, not reachable, a different node, checking), the name
+  (click to rename; the embedded node's is not editable), the address, the collaboration
+  switch with its icon, Open and Remove icons, and at most one line with one fixing button
+  (`stores/nodeRowStatus.ts`, by priority: a step not finished [Try again]; not reachable
+  with its cause [Check again]; a different node [Change address]; registered only by the
+  other node [Turn on]; not collaborating [Turn on]; off there [Turn on there]; not
+  registered there [Register this node there]). With this node's switch off, rows show no
+  warnings. Once collaboration is on, the 267 summary line under the row opens the offer
+  list and the connection details (`NodeConnectionDetails.vue`): both directions with the
+  address each side uses, Change address, the node ID and Check again.
+- **When nodes are asked.** Every row once when the tab opens, whatever this node's switch
+  says; a row when it is added and on Check again; every row when the switch changes.
+  Nothing polls. "This node → it" is this node's server asking the peer
+  (`remoteCollaborationOffersStore`, `peerNodeOffer`, with the unreachable reason); the
+  window reads the other node's switch and peers through its own settings API
+  (`services/nodeCollaboration/nodeCollaborationApi.ts` over `directNodeApolloClient.ts`),
+  and asks it `peerNodeAvailability(this node)` for "it → this node". Each ask takes a token
+  per row; a stale answer is ignored.
+- **Add** (`AddNodePanel.vue`): Address, Name, the collaboration switch (on by default), Add
+  node. An address already in the list, whatever its node's state, or another address of a
+  listed node (by node ID) is not added again: "This is X, already in your list." Adding
+  does not open the node's window. With the switch on and the node reachable, the
+  confirmation opens; an unreachable node is added and its row shows the cause.
+- **Every change on another node is confirmed once** (`NodeChangeDialog.vue`,
+  `stores/nodeChangeDialogStore.ts`). `services/nodeCollaboration/nodeCollaborationConnector.ts`
+  plans only the needed steps (turn on here, register it here, turn on there, register this
+  node there; or remove here, remove there, remove from the list) and runs them: this node
+  through its own stores, the other node through its settings API, the desktop's list through
+  `nodeStore`. Each registering server finds the address that works for itself from the
+  other node's window address and advertised candidates (`resolvePeerAddress`); a side whose
+  switch is off finds it once it is on. Names follow the peer name rule and get " 2", " 3"
+  when taken there. Turning on stops at the first failure and keeps what was done (Try again
+  runs what is left); turning off and Remove carry on and say what could not be removed.
+  Rename (no dialog) renames the peer, then the desktop entry, and stops on a refused name.
+- **Causes and the Docker hint** (`utils/nodeConnectionErrorText.ts`): refused, timed out,
+  name not found (from here or from the other node), not an AutoByteus node, a different
+  node; "fetch failed" is never shown. When a node in a container cannot find an address and
+  the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
+  Use this and a link to the Docker Guide tab. The add form never shows it.
 - **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
-  names cut by the line's width) and opens into `RemoteCollaborationOfferList.vue`: Agents
-  and Agent Teams side by side from `md` up, each sorted by name, with a "Checked HH:MM"
-  footer. When either kind has more than 6 entries, a search box narrows both by name
-  ("n of m", "No match.", and a sentence with Clear search when nothing matches). Closing
-  it, or a Refresh, clears the search.
-- **How peers' runs work.** The rules for runs peers start on this node are one collapsed
-  line at the bottom of the Peer nodes card: any shared Agent or Agent Team; each agent's
-  own default runtime and model (a team member without one uses its team's default); this
-  node's temp workspace with tool calls auto-approved for every agent of the run; a local
-  login (Codex, Claude) used for every registered peer; no default runtime and model is
-  refused. There is no separate card for this node's own Agents and Agent Teams.
+  names cut by the line's width, or a label such as "Connection details") and opens into
+  `RemoteCollaborationOfferList.vue` (Agents and Agent Teams side by side from `md` up; a
+  search box when either kind has more than 6) with the connection details below it.
 
 ## Server Settings: Feature Capability Toggles
 
@@ -318,54 +351,108 @@ without a status badge (see Notification Center below).
 
 ## Notification Center (Update Notifications)
 
-The quiet place where waiting updates of the app, imported GitHub agent
-packages and imported GitHub skill sources are shown. Nothing opens by itself;
-nothing is updated without the user's Update.
+The quiet place where updates of the app, imported GitHub agent packages,
+imported GitHub skill sources and (in the desktop's own window) installed agent
+runtimes are shown. Nothing opens by itself. Nothing is updated without the
+user's Update, except a kind whose **Update automatically** switch the user
+turned on (packages, skill sources, runtimes; never the app).
 
 - **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
   ("3 updates") on the right of the sidebar's Settings row
   (`AppLeftPanel.vue`), or an icon with a count badge above the cog in the
   collapsed strip (`LeftSidebarStrip.vue`). The count is the number of waiting
-  (not handled) rows, the app included. Solid `sky-700` while any is unread,
-  soft `sky-100` once all are read, absent at 0. Hover or focus lists the kinds.
-  It shows where Settings does (`isFeatureAvailableInRuntime('desktopSettings')`):
-  desktop and browser windows, not the mobile client.
+  (not handled) rows, the app included. When nothing waits but an automatic
+  update is unread, the pill reads "N updated" (it stays while the panel is
+  open). Solid `sky-700` while any is unread, soft `sky-100` once all are read,
+  absent otherwise. Hover or focus lists the kinds and "N updated
+  automatically". It shows where Settings does
+  (`isFeatureAvailableInRuntime('desktopSettings')`): desktop and browser
+  windows, not the mobile client.
 - **Panel.** `components/notifications/NotificationCenter.vue` (mounted in
-  `app.vue`, teleported, `z-[90]`) with `NotificationSection.vue` and
-  `NotificationRow.vue`. One section per kind (Software update first, then by
-  newest waiting update), one row per update (waiting rows newest first, then
-  handled), first three rows then "Show N more". A row's name or change line
-  toggles its details: repository · branch and "See changes on GitHub" (the
-  compare page of the two revisions); for the app, the release notes and the
-  Release page. ✕, Esc or a click outside closes it; ✕ and Esc return focus to
-  the entry. Opening marks every waiting row read on the node and in the shell;
-  the "New" dots stay until the panel closes.
+  `app.vue`, teleported, `z-[90]`), fixed on the right side of the whole window
+  from the top (368 px, grey `slate-200` surface, a fixed title row with ✕),
+  from either entry. One white card per kind (`NotificationSection.vue`:
+  Software update first, then by newest waiting update), one row per update
+  (`NotificationRow.vue`: waiting rows newest first, then handled), first three
+  rows then "Show N more". A row's name or change line toggles its details:
+  repository · branch and "See changes on GitHub" (the compare page of the two
+  revisions); for the app, the release notes and the Release page; for a
+  runtime, that Update runs its own update as Settings → Agent Runtimes does.
+  ✕, Esc or a click outside closes it; ✕ and Esc return focus to the entry.
+  Opening marks every waiting row and every unread automatic update read on the
+  node and in the shell; the "New" dots stay until the panel closes.
+- **Automatic updates.** `components/notifications/AutoUpdateSwitch.vue` sits
+  under the header of the packages, skill sources and runtimes cards and in the
+  Update checks card: one node setting per kind, both places read and write the
+  same `stores/updateAutomationStore.ts`. Turning packages or skill sources on
+  first opens a danger confirmation (local changes are replaced without asking
+  and cannot be restored); runtimes turn on at once. Once on, the card says how
+  many waiting updates will be installed within about a minute; with Update
+  checks off it says it has no effect. Confirmations opened from the panel use
+  `ConfirmationModal`'s `layerClass="z-[100]"` so they sit above it, and the
+  panel leaves outside clicks and Esc to them.
+- **Outcomes** are rows of their kind: "Updated automatically to …" (green,
+  unread until seen, with the compare link, or "From <version>" for a runtime,
+  and Clear); an automatic failure keeps the row waiting with a red box "Automatic
+  update failed. Nothing was changed." and the reason, plus Update; a runtime
+  whose agents run shows Update at 50 % (`aria-disabled`) and "Update unavailable
+  while N agents are running." (with the switch on: "It will be updated
+  automatically once no agent is running.").
 - **Row actions** run the existing explicit update of their kind:
   `agentPackagesStore.updateAgentPackage`; for a skill source, the shared
   `components/skills/SkillSourceUpdateConfirmation.vue` (also used by the skill
-  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for the
-  app, Download (`appUpdateStore.downloadUpdate`) → progress → Install and
-  restart. A failure shows "Update failed. Nothing was changed." with the reason
-  and Try again; a handled row shows "Updated to …" and Clear. There is no
-  dismiss or skip.
+  sources dialog) and then `skillSourcesStore.githubOperation('update')`; for a
+  runtime, `updateAgentRuntime` through `useAgentRuntimes`; for the app,
+  Download (`appUpdateStore.downloadUpdate`) → progress → Install and restart. A
+  failure shows "Update failed. Nothing was changed." with the reason (a
+  runtime: the vendor's output) and Try again; a handled row shows "Updated to
+  …" and Clear. There is no dismiss or skip.
+- **Agent runtimes** show only in the own window of the desktop's embedded node
+  (`utils/ownNodeWindow.ts`: the window is the embedded window, the rule
+  Settings → Agent Runtimes uses, and the node reports `desktopEmbeddedNode`).
+  While the panel shows runtime rows, `NotificationRuntimeReader.vue` reads the
+  runtimes with `useAgentRuntimes({ checkOnRebind: false })` (it never starts a
+  check) and lends the readings to the store: running agents, an update
+  running anywhere, and how the row's own update ended.
 - **Data.** `stores/updateNotificationsStore.ts` is the only place that combines
   the bound node's records (GraphQL `updateNotifications`,
   `markUpdateNotificationsRead`, `clearUpdateNotification(kind, sourceId)`) with
   the shell's app record (`AppUpdateState.notification`, IPC
-  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). It re-reads on
-  every `/ws/update-notifications` frame
+  `markAppUpdateNotificationRead` / `clearAppUpdateNotification`). The
+  `/ws/update-notifications` feed
   (`services/updateNotifications/updateNotificationChangeFeed.ts`, retained
-  app-wide by `useUpdateNotificationChangeFeed`) and drops the rows when the
-  window is bound to another node. A browser window has no app row.
-  `stores/notificationCenterStore.ts` owns open/closed, position and the "New"
-  dots.
-- **Setting.** Settings → Server Settings → Basics → **Update checks** (last
-  card): the node's switch for background checks, with the description of the
-  network calls (at most every 6 hours, `api.github.com`, no account or token,
-  nothing sent to AutoByteus; the desktop app also checks GitHub releases for
-  its own update at start). Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
-- The former self-opening app update card (`AppUpdateNotice`) is gone; Settings
-  → Updates keeps all app update controls.
+  app-wide by `useUpdateNotificationChangeFeed`) re-reads the records on
+  `update_notifications_changed`, the automation settings on
+  `update_settings_changed`, and both on `connected`. Both stores drop their
+  data when the window is bound to another node. A browser window has no app
+  row. `stores/notificationCenterStore.ts` owns open/closed, the "New" dots and
+  whether a confirmation opened from the panel is showing.
+- **Setting.** Settings → Server Settings → Basics → **Update checks**
+  (`UpdateChecksCard.vue`, last card, full width): the node's switch for
+  background checks with what it contacts (github.com for packages and skill
+  sources; for runtimes GitHub (Codex), downloads.claude.ai, Antigravity's
+  updater, xAI (Grok); GitHub downloads and each runtime's own update command
+  for automatic updates; no account or token; nothing sent to AutoByteus), an
+  amber banner while GitHub asks the node to wait (a wait changes no setting and
+  is announced by nothing, so the card re-reads the settings when it opens and
+  drops the banner when the time passes) or while checks are off, "How
+  often to check" (`UpdateIntervalField.vue`: a whole number and minutes or
+  hours, 15 minutes to 24 hours, saved on blur, Enter or a unit change, "Saved"
+  for about 2 s; 30 / 30 / 60 minutes by default) and "Automatic updates" (the
+  three switches). Runtime parts show only where the panel shows runtimes.
+  Server behavior: `autobyteus-server-ts/docs/modules/update_notifications.md`.
+- **Settings → Updates** (`AboutSettingsManager.vue`) keeps all app update
+  controls (the former self-opening `AppUpdateNotice` is gone). It also holds
+  the app's own automatic check (`AppUpdateState.autoCheck`, owned by the
+  desktop shell, see `electron_packaging.md`): a switch (on by default) and an
+  interval (60 minutes by default, 15 minutes to 24 hours, the same
+  `UpdateIntervalField`), the line "Automatic checks: every …/off" under Last
+  Checked, the status "Check failed" after a failed check and "Automatic checks
+  are off" before any check while off. A failed periodic check is quiet (no
+  toast, `isQuietBackgroundAppUpdateError`) and adds "The last automatic check
+  failed. The next one runs at the interval." A found app update is only
+  announced; Download and Install stay the user's actions. Windows without the
+  shell's checks (browser windows, disabled updates) have no such section.
 
 ## Server Settings: Embedding
 
@@ -484,6 +571,43 @@ versions, and starts the vendor's own update and login commands.
   CLIs and vendor sources (`tests/e2e/fixtures/agent-runtimes-vendor-sources.mjs`).
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
+
+## Settings: Model Routing
+
+Settings -> **Model Routing** (`?section=model-routing`, right after Agent
+Runtimes). Its first section, **Agent runtimes now**, shows what the node this
+window is bound to can run now: the same answer the opt-in agent tool
+`list_available_agent_runtimes` gives, read through the GraphQL query
+`availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
+
+- **When it reads.** When the section opens, on **Check again**, and when
+  another node is bound to the window. It never polls: each read starts short
+  runtime processes on the node (0 tokens). The header shows the node and the
+  time of the last check.
+- **Rows.** One row per available runtime (installed and not known to be
+  signed out): its limits (name, % left with a bar, reset time in local time),
+  the runtime's `limitsNote`, and its models (collapsed list; a blocked model
+  shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
+  checked", "Limits not reported", "Limits unknown: <reason>" and "Models
+  unknown: <reason>" show the server's states. AutoByteus has one sub-row per
+  provider with a key, and per local model server (Ollama, LM Studio) that
+  answers with models now: balance, the reason it cannot run, and its models
+  ("Models unknown: <reason>" for a custom endpoint that cannot be read now).
+  No plan, tier or credit details.
+- **States.** Loading, a failed first read (Check again retries), a failed
+  later read (the last answer stays, with a note), and an empty node.
+- Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
+  `availableAgentRuntimesPresentation.ts`). Copy:
+  `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`;
+  `tests/e2e/model-routing-settings-probe.mjs`
+  (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
+  section in a real browser against two real nodes on fresh data roots, with
+  scripted runtime CLIs and provider endpoints answered inside each node
+  (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
 
 ## Settings: Agent Packages Auto-Refresh
 
@@ -1286,8 +1410,10 @@ The saved-run view uses the start surfaces' visual language:
   - These cards are locked while the copy runs and editable while it is stopped
     (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. Names follow Members: the role,
-    else the last address segment.
+    can hold several copies. A row is named as the sidebar names the copy: in a
+    Team run a catalog copy and its members by display name (`scribe 5083`), a
+    copy of a configured member by its address basename (`code_reviewer`)
+    (`teamMemberName`); in Org and Agent runs every copy by display name.
   - **Source labels:**
     - Agent default;
     - Team default;
@@ -1339,8 +1465,11 @@ The saved-run view uses the start surfaces' visual language:
     "Settings were saved, but could not be refreshed. Refresh before making more
     changes." It locks editing and offers **Refresh** rather than showing stale
     "Saved" or treating committed changes as unsaved. Refresh rereads the same
-    canonical snapshot without another Save or starting/resuming the run. Cancel
-    before Save writes nothing; repeated edits start from the accepted values.
+    canonical snapshot without another Save or starting/resuming the run. A
+    running Org's view reloading during the readback does not fail it: the Org
+    reads its settings again, up to three times (`agentOrgContextsStore.readRunConfig`);
+    only a closed Org, a switched node or a pending Org operation fails the readback.
+    Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is

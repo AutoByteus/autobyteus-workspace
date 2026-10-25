@@ -181,7 +181,7 @@ cache; and the gateway logs. A missing root is skipped. A root that cannot be
 removed records `FAILED` without blocking startup, and the migration retries on
 the next start. Nothing outside those four roots is touched. The exact roots are
 defined in
-`src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts`
+`src/app-data-migrations/migrations/remove-external-messaging-data/remove-external-messaging-data-migration.ts`
 and its registry entry. Prisma migration
 `20260924120000_remove_external_channel_tables` drops the two orphan receipt
 and delivery-event tables. Run history started from chat bindings stays
@@ -306,10 +306,10 @@ Runtime memory stays in the existing local roots:
 
 Hub imports are stored separately as read-only corpus data:
 
-- `memory/imports/<sourceNodeId>/agents/`
-- `memory/imports/<sourceNodeId>/agent_teams/`
-- `memory/imports/<sourceNodeId>/source-node.json`
-- `memory/imports/<sourceNodeId>/sync-manifest.json`
+- `memory/imports/<memorySyncSourceId>/agents/`
+- `memory/imports/<memorySyncSourceId>/agent_teams/`
+- `memory/imports/<memorySyncSourceId>/memory-sync-source.json`
+- `memory/imports/<memorySyncSourceId>/sync-manifest.json`
 
 Hub setup uses a user-confirmed advertised hub base URL. Candidate URLs are
 suggestions only; Docker, Kubernetes, LAN, VPN, and tailnet deployments must use

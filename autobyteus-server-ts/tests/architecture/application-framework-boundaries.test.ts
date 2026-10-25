@@ -2975,16 +2975,13 @@ describe("application framework architecture boundaries", () => {
       "applicationRunOwnership: currentApplicationRuntime.hostManagement.runOwnership",
     );
 
-    for (const migration of [
-      "app-data-migrations/migrations/run-history-index-v2-migration.ts",
-      "app-data-migrations/migrations/team-run-history-index-v2-migration.ts",
-    ]) {
-      const source = readServerSource(migration);
-      // Migrations read definitions straight from their files (the file providers that replaced the persistence
-      // providers in 9777af682c), never through the cached definition services.
-      expect(source, migration).toMatch(/\bFile(?:Agent|AgentTeam)DefinitionProvider\b/);
-      expect(source, migration).not.toMatch(/DefinitionService\.getInstance\s*\(/);
-    }
+    // Migrations read definition names through the registry's definition-name port, which reads definitions
+    // straight from their files (the file providers that replaced the persistence providers in 9777af682c), never
+    // through the cached definition services (autobyteus-280 SR-003).
+    const migrationRegistry = readServerSource("app-data-migrations/app-data-migration-registry.ts");
+    expect(migrationRegistry).toMatch(/\bFileAgentDefinitionProvider\b/);
+    expect(migrationRegistry).toMatch(/\bFileAgentTeamDefinitionProvider\b/);
+    expect(migrationRegistry).not.toMatch(/DefinitionService\.getInstance\s*\(/);
     const cachePreloader = readServerSource("startup/cache-preloader.ts");
     expect(cachePreloader).not.toContain("AgentDefinitionService");
     expect(cachePreloader).not.toContain("AgentTeamDefinitionService");
@@ -3002,6 +2999,8 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      // Default factory of the injectable agent-definition lookup port (3e3a7b08cc); the service itself takes the port.
+      "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
@@ -3088,7 +3087,7 @@ describe("application framework architecture boundaries", () => {
     expect(controller.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     expect(launcher.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     const stopController = controller.slice(
-      controller.indexOf("  async stopAttachedEngine("),
+      controller.indexOf("  async stopEngine("),
       controller.indexOf("  clearListeners(): void"),
     );
     expect(stopController).toContain("APPLICATION_ENGINE_METHOD_STOP");

@@ -21,10 +21,34 @@ export type AppUpdateErrorKind =
 
 export type AppUpdateOperation =
   | 'startup-check'
+  /** A check of the app's own update schedule after the launch check (REQ-012). */
+  | 'periodic-check'
   | 'manual-check'
   | 'download'
   | 'install'
   | 'updater-event';
+
+/** The app's own automatic update checks: at launch and then every interval (REQ-012, REQ-013). */
+export interface AppUpdateAutoCheck {
+  enabled: boolean;
+  /** Whole minutes from 15 to 1440. */
+  intervalMinutes: number;
+}
+
+export const APP_UPDATE_CHECK_INTERVAL_MIN_MINUTES = 15;
+export const APP_UPDATE_CHECK_INTERVAL_MAX_MINUTES = 1440;
+export const DEFAULT_APP_UPDATE_AUTO_CHECK: Readonly<AppUpdateAutoCheck> = Object.freeze({ enabled: true, intervalMinutes: 60 });
+
+export function isValidAppUpdateCheckInterval(minutes: unknown): minutes is number {
+  return typeof minutes === 'number' && Number.isInteger(minutes)
+    && minutes >= APP_UPDATE_CHECK_INTERVAL_MIN_MINUTES && minutes <= APP_UPDATE_CHECK_INTERVAL_MAX_MINUTES;
+}
+
+export function isAppUpdateAutoCheck(value: unknown): value is AppUpdateAutoCheck {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Record<string, unknown>;
+  return typeof candidate.enabled === 'boolean' && isValidAppUpdateCheckInterval(candidate.intervalMinutes);
+}
 
 /** Desktop update channel: `beta` also receives pre-releases (vX.Y.Z-beta.N). */
 export type AppUpdateChannel = 'stable' | 'beta';
@@ -65,8 +89,11 @@ export interface AppUpdateState {
   message: string;
   errorKind: AppUpdateErrorKind | null;
   errorOperation: AppUpdateOperation | null;
+  /** When the last check finished (any source); null before the first one. */
   checkedAt: string | null;
   notification: AppUpdateNotification | null;
+  /** The app's automatic checks; null when this launch never checks (disabled updates). */
+  autoCheck: AppUpdateAutoCheck | null;
 }
 
 /**

@@ -5,7 +5,8 @@ import { stripCredentialEnvironment } from "../../../test-support/test-vault/cre
 import { captureTestVaultSelection } from "../../../test-support/test-vault/test-vault-selection.js";
 
 /**
- * Unit and integration test files run with a reduced environment.
+ * Unit and integration test files, and the per-migration test folders (unit and integration), run with a
+ * reduced environment.
  *
  * Agent shells spawned by the AutoByteus app inherit the live app's variables
  * (data, memory and database paths, package/skill roots, settings, provider
@@ -106,6 +107,7 @@ const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 
 const ISOLATED_TEST_ROOTS = [
   path.join(PACKAGE_ROOT, "tests", "unit") + path.sep,
   path.join(PACKAGE_ROOT, "tests", "integration") + path.sep,
+  path.join(PACKAGE_ROOT, "tests", "app-data-migrations") + path.sep,
 ];
 
 export const isAllowedTestEnvironmentVariable = (name: string): boolean =>

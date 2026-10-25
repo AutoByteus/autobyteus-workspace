@@ -112,8 +112,8 @@ key allocation state:
 `projectId, name, description, createdAt, updatedAt, workspaces[], taskKeys{prefix, lastNumber}`.
 
 `task.json` holds the released Task fields plus `projectId`, its key, its
-dependencies and its parent:
-`taskId, projectId, taskKey, description, status, dependsOnTaskIds[], partOfTaskId, createdAt, updatedAt, contextFiles[]`.
+dependencies, its parent and its comments:
+`taskId, projectId, taskKey, description, status, dependsOnTaskIds[], partOfTaskId, createdAt, updatedAt, contextFiles[], comments[]`.
 
 Tasks with no Project live outside the Projects root, so no Project scan or the
 Projects migration gate ever sees them. `AdHocTasksLayout` owns
@@ -140,7 +140,10 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
   data); an absent `dependsOnTaskIds` means no dependencies, and an absent
   `partOfTaskId` (every file written before "part of") means no parent. The
   writer always writes `partOfTaskId` (`null` when none), so an existing file
-  gains it at its next ordinary save; nothing is migrated.
+  gains it at its next ordinary save; nothing is migrated. An absent `comments`
+  means none; only well-formed comments (a positive integer `id`, non-empty
+  `createdAt` and `text`) are kept, in ID order. The writer always writes
+  `comments` (`[]` when none).
 - **Writing is exact and one file at a time.** Writes use the existing per-file
   lock and atomic temp-file-plus-rename. Project create, update and delete
   serialize on one catalog lock, so name uniqueness is checked against the
@@ -150,6 +153,22 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
   releasing its lock fails afterwards, the committed Task is returned with a
   warning. This is bounded in-memory commit proof. It is not a durable journal,
   an fsync or power-loss promise, or a rollback protocol.
+
+### Task comments
+
+A Project Task has a comment thread, `comments: [{id, createdAt, text}]` in its
+`task.json`: `id` is the comment's number within the Task (1, 2, 3, …; the
+highest + 1, never reused), `createdAt` the server time it was added, `text`
+trimmed and non-empty (else `TASK_COMMENT_INVALID`). Comments are only added (no
+edit, no delete, no author). They are appended through `ProjectTaskService`'s
+shared update body, inside the Task's locked write (`domain/task-comments.ts`
+sets the number and time; no input may), so concurrent comments are all kept and
+a comment combined with other fields in one `update_task` is one write. A comment
+never changes the description; it bumps `updatedAt`. Temp tasks have none
+(`TASK_COMMENT_INVALID`). Agents add one with `update_task add_comment`, the app
+with the GraphQL mutation `addProjectTaskComment`. Agents read the texts only
+(`list_project_tasks` `comments`, delegated work); the app reads the whole thread.
+Nothing is sent to any run when a comment is added.
 
 ### Task keys, "depends on" and "part of"
 
@@ -210,8 +229,8 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
   its parts that is TODO or IN_PROGRESS to the same status through its own
   update (closing and releasing their agent runs as for any such change), one at
   a time in key order (`TaskPartClosure`). A part that fails is logged as
-  `TASK_PART_CLOSE_FAILED` (project, parent and part IDs) and skipped; the
-  parent's result never fails because of a part. A same-status write, a reopen
+  `TASK_PART_CLOSE_FAILED` (project, parent and part IDs), skipped and reported
+  as not closed; the parent's result never fails because of a part. A same-status write, a reopen
   and a part's own close never cascade; a part attached to a closed parent keeps
   its status.
 - **The agent-facing Task ID.** For a Project Task, agents see and use the key:
@@ -481,11 +500,11 @@ is selected per agent definition; none is added automatically.
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
-| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, summary, match}], meaningSearch: {state, note?}}` |
+| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, summary, match, commentCount?}], meaningSearch: {state, note?}}` |
 | `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
 | `create_task` | `{project_id, description, context_files?, depends_on?, part_of?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
-| `update_task` | `{task_id, description?, status?, context_files?, depends_on?, part_of?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
+| `update_task` | `{task_id, description?, status?, context_files?, depends_on?, part_of?, add_comment?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
 `update_project` preserves omitted fields. A blank Project
 description clears it; unknown IDs never create. `create_project` rejects
@@ -509,7 +528,8 @@ availability or a work assessment.
 an optional `status` filter. Each Task has `projectId`, `taskId` (its key), the
 full `description`, `status`, `dependsOn` (the keys of the Tasks it depends on
 that still exist), `partOf` (its parent's key, or `null`), `parts` (the keys of
-its parts, in key number order) and `contextFiles`, plus **one** of:
+its parts, in key number order), `contextFiles` and, only when it has any,
+`comments` (their texts, oldest first; no numbers or times), plus **one** of:
 - `assignments` and `closedAssignments`: the Task's open `role: assigned`
   entries (`closedAt: null`), from any Manager, and every closed one (one per
   earlier assignment period, in link order). Each names the copy for what it
@@ -535,7 +555,16 @@ copy](#follow-up-task-to-an-existing-copy)).
 or `partOf`). When the call attached context files, `task` also has
 `attachedContextFiles: [{storedFilename, displayName}]`: exactly the files this call attached,
 in argument order. When an `update_task` that set a parent to DONE or CANCELLED also closed
-its open parts, `task` has `closedParts`: the keys of the parts it closed (absent when none).
+its open parts, `task` has `closedParts`: the keys of the parts it closed (absent when none),
+and `partsNotClosed`: the keys of the parts it could not close (absent when none). An added
+comment adds nothing to the result: a successful call means the comment was added.
+
+`add_comment` (update only, Project Tasks only) is the text of one new comment,
+appended at the end of the Task's comments; the description is not changed, and
+each call adds one comment. An `add_comment`-only patch is valid. Blank text, a
+Task with no Project or a non-string fails (`TASK_COMMENT_INVALID`, or
+`PROJECT_TOOL_ARGUMENT_INVALID` for a non-string) and nothing in the call is
+written, including a status in the same call.
 
 `depends_on` (create and update) is an array of Task references (keys or long
 IDs) of the same Project; on update it replaces the saved list (`[]` clears,
@@ -639,19 +668,21 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
 the Project's current Tasks from `ProjectTaskService` on every search, so deleted Tasks never appear and statuses are
 current, and returns matches best-first in two tiers:
 
-1. **Exact:** every Task whose description contains the trimmed query, case-insensitively (the board's earlier rule).
+1. **Exact:** every Task whose description or one of whose comments contains the trimmed query, case-insensitively.
    They are ordered by meaning score when meaning search is ready, then latest update first.
 2. **Meaning:** the Tasks the [embedding layer](./embeddings.md) finds nearly as relevant as the best one (at most 20,
    and none when even the best one is not clearly relevant), over all of the Project's Tasks, Cancelled ones included.
 
-Only the description is indexed (open Tasks first, then the most recently updated). The first search of a Project, or
+Only the description is indexed (open Tasks first, then the most recently updated); comments are found by exact text
+only, and adding one changes nothing in the index. The first search of a Project, or
 the first after a model change, indexes its Tasks in the background; meanwhile, and whenever meaning search is
 unavailable, the exact tier still answers. Once the model is on disk, a created or edited Task's Project is also
 indexed in the background about 3 s after the write, with no search (see [embeddings.md](./embeddings.md)). An edited Task is found by its new text at once by exact match and by
 meaning when it is indexed again (a second or two for the default model); it is never matched by its old text.
 
 The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `summary` the
-description's first line (at most 160 characters) and `match` `exact` or `meaning`. On first use it waits up to 30 s for
+description's first line (at most 160 characters), `match` `exact` or `meaning`, and `commentCount` when the Task has
+comments. On first use it waits up to 30 s for
 meaning search to be ready. `meaningSearch` is `{state: "ready"}`, or `preparing`/`unavailable` with a `note` saying
 why and which results are exact text matches only. A blank `query`, unknown arguments and a `limit` outside 1–30 fail
 with `PROJECT_TOOL_ARGUMENT_INVALID`; an unknown Project fails with `PROJECT_NOT_FOUND`.
@@ -684,7 +715,9 @@ The result names the copy for what it is (DEC-008, no alias):
 
 Linked dispatch resolves the unique current node-local Task and copies its saved
 description and the paths of its saved context files into the ordinary work
-packet (the files themselves are not copied). Later Task
+packet (the files themselves are not copied), with the Task's comments after the
+description as a "Comments:" block of their texts, oldest first, as `- ` bullets
+(no block when there are none; the same for an existing copy). Later Task
 edits do not rewrite work that was already delivered. Each call allocates a
 fresh copy. The TeamRun identity and the coordinator's ingress AgentRun
 identity remain distinct, and the result names both. Messages go to an agent
@@ -841,22 +874,26 @@ delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent co
   → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
 ```
 
-**Rule.** A copy has one current Task at a time. It can be given Task B only
-by the run that made its most recent assignment, and only when its current
-Task is DONE or CANCELLED. The copy is hosted in the delegator's root and is
-named by its own ID: a Team copy by its team run ID, an Agent copy by its agent
-run ID.
+**Rule.** A copy may hold several open Tasks (task-agent-several-tasks). It can
+be given Task B only by the run that made its most recent assignment, also while
+its earlier Tasks are open. Its current Task is its newest open one (sub-work it
+starts belongs there); when none is open, its latest one. It is stopped only when
+its last open Task is DONE or CANCELLED. The copy is hosted in the delegator's
+root and is named by its own ID: a Team copy by its team run ID, an Agent copy by
+its agent run ID.
 
 **Path** (`RootTaskExecutionLifecycle.assignToExistingCopy`, all three roots):
 1. The root's adapter finds the copy in its tree (`taskExecutionTargetOf`).
 2. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
    this order of concern: all Task resource data readable; Task B exists, is
-   unique and is not DONE or CANCELLED; the copy's current entry is a closed
+   unique and is not DONE or CANCELLED; the copy's current entry is an
    `assigned` entry made by the sender; some entry of the copy ever started;
-   B is not already the copy's current Task.
+   B is not the copy's closed current Task (a Task it already holds open is
+   refused by the commit: "already works on this Task"). The copy's other open
+   Tasks are read for the message (`openTaskReferencesOf`, keys, oldest first).
 3. The shared resume step (the one reactivation uses) settles the copy's
    previous stop, drops its released authority and checks its saved
-   conversation can be restored.
+   conversation can be restored. A copy that is still open skips it.
 4. The commit (`assignExistingTaskExecution`) re-checks every condition under
    the copy's and then B's serialization (lock order: copy, then Task; DONE
    takes only the Task's) and **appends** B's `starting` `assigned` entry, with
@@ -865,15 +902,22 @@ run ID.
 6. The root's exact delivery (the `send_message_to` path) wakes or restores the
    copy with its conversation and delivers B's description and context files
    to its ingress (the Agent, or the Team's coordinator) as a message from the
-   delegator (`messageType: "task_assignment"`). The entry becomes `started`.
+   delegator (`messageType: "task_assignment"`). The message starts "New Task
+   assigned to you: B." and then, when the copy holds other open Tasks, "Your
+   Task A is still open; name the Task key in each report." (otherwise "Your
+   previous Task is closed; this is the work to do now."). The entry becomes
+   `started`.
 
-**Effect.** B's board root is the copy with its live status; A stays DONE with
-the copy shown closed. Closing A again never stops or hides the copy; closing B
-stops it like any DONE. `list_project_tasks` shows the copy under A's
+**Effect.** B's board root is the copy with its live status; A keeps its own
+status (an open A also shows the copy open). Closing one of the copy's Tasks
+never stops or hides it while another is open; closing its last open Task stops
+it like any DONE (`releasableByHostRoot`: copies with an entry in this Task and
+no open entry left; a repeated DONE re-requests the stop). `list_project_tasks` shows the copy under A's
 `closedAssignments` and B's `assignments`.
 
-**Back to an earlier Task (A → B → A).** After B is DONE and A is reopened, the
-same assigner can give A to the copy again with `delegate_task`. A's file then
+**Back to an earlier Task (A → B → A).** Once A is reopened (TODO or IN_PROGRESS),
+the same assigner can give A to the copy again with `delegate_task`, whether B is
+DONE or still open. A's file then
 holds the copy's earlier, closed period and a new open one; nothing is
 rewritten. Messaging the copy instead is refused with a hint naming its current
 Task (see the reactivation table).
@@ -883,7 +927,7 @@ Task (see the reactivation table).
 
 | Case | Message says |
 | --- | --- |
-| The copy's current Task is still open | It still works on Task A (status); mark it DONE or CANCELLED first, or delegate Task B to a new copy with `recipient_address` |
+| B is already one of the copy's open Tasks | It already works on this Task |
 | The sender did not make the copy's most recent assignment | Only that run can give it a new Task |
 | A sub-work or helper copy | Only an assigned copy can be given a new Task |
 | A Team coordinator passed as `target_agent_run_id` | It is the coordinator of task agent team X; use `target_team_run_id` "X" |
@@ -1092,7 +1136,7 @@ Project queries and mutations keep their names; there is no Projects capability 
 `workspaces`.
 
 - `projectTasks(projectId)` returns full ProjectTask records with
-  `taskKey`, `dependsOnTaskIds`, `partOfTaskId` (nullable), `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
+  `taskKey`, `dependsOnTaskIds`, `partOfTaskId` (nullable), `comments` (`[{id, createdAt, text}]`), `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
   do not list the other assignments.
 - `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
   change first: `taskId, description, status, referenceFiles, createdAt,
@@ -1111,6 +1155,8 @@ Project queries and mutations keep their names; there is no Projects capability 
   (an ID = replace, `null` = clear, omitted = keep), preserving status.
   Invalid dependencies fail with `TASK_DEPENDENCY_INVALID`, an invalid parent with `TASK_PARENT_INVALID`. **There is no GraphQL or manual UI
   status mutation.**
+- `addProjectTaskComment({projectId, taskId, text})` adds one comment (the server sets its number and time) and
+  returns the Task; blank text fails with `TASK_COMMENT_INVALID`.
 - `deleteProjectTask({projectId, taskId})` returns a Boolean.
 - `searchProjectTasks(projectId, query)` returns `{matches: [{taskId, match: EXACT | MEANING}],
   meaningSearch: {state: READY | PREPARING | UNAVAILABLE, phase: DOWNLOADING | LOADING | INDEXING, done, total,
@@ -1157,7 +1203,7 @@ Coverage:
   schema, including `taskWorkerTasks`.
 - `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
   status of task executions in actual Agent, Team and Org roots.
-- `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
+- `tests/app-data-migrations/projects-per-folder-v1/` and `tests/app-data-migrations/project-task-keys-v1/`
 - `tests/unit/agent-tools/project-tasks` (including `search_project_tasks`)
 - `tests/unit/projects/project-task-search.test.ts` and `tests/e2e/projects/project-task-search.e2e.test.ts`: Task search,
   its delete cleanup and its GraphQL/MCP transports, with a deterministic stand-in model.

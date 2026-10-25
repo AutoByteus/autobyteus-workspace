@@ -1,0 +1,76 @@
+# API-33 — agent runtimes in the panel: blocked, manual Update, automatic waiting and update (AC-018..AC-020, REQ-021, REQ-022)
+# macOS 26.5.2 arm64; packaged build from 48fe98d65d (code 985246c53b), 1.5.9-beta.2, ad-hoc; instance A on own data root /private/tmp/a210/rootA; real public GitHub (unauthenticated); scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs) via the data root's .env; 2026-10-23
+
+## running Codex agent (scripted app-server keeps the turn)
+{"data":{"createAgentRun":{"success":true,"message":"Agent run created successfully.","runId":"api_e2e_210_codex_agent_ee5b8e7b6bdd444dbf03fcd5313b47a1"}}}
+running codex agents: 1
+## Codex row while the agent runs
+agent_runtime:grok_build waiting | Grok1.0.621.0.70·4 min. agoUpdate
+agent_runtime:antigravity_cli waiting | Antigravity1.4.31.4.6·4 min. agoUpdate
+agent_runtime:claude_agent_sdk waiting | Claude2.1.2002.1.309·4 min. agoUpdate
+agent_runtime:codex_app_server waiting | Codex0.150.00.164.0·4 min. agoUpdateUpdate unavailable while 1 agent is running.
+{
+  "attrs": {
+    "ariaDisabled": "true",
+    "opacity": "0.5",
+    "describedBy": "Update unavailable while 1 agent is running."
+  },
+  "stateAfterPress": "waiting"
+}
+after a forced click: no codex-update.pid, codex still 0.150.0
+
+## manual Antigravity Update (agy-update=succeed)
+{
+  "transitions": [
+    {
+      "atMs": 5,
+      "key": "waiting | Antigravity1.4.31.4.6·4 min. agoUpdate"
+    },
+    {
+      "atMs": 521,
+      "key": "updating | Antigravity1.4.31.4.6·4 min. agoUpdating…"
+    },
+    {
+      "atMs": 2188,
+      "key": "handled | AntigravityUpdated to 1.5.0Clear"
+    }
+  ]
+}
+## manual Grok Update (scripted failure)
+{
+  "transitions": [
+    {
+      "atMs": 5,
+      "key": "waiting | Grok1.0.621.0.70·4 min. agoUpdate"
+    },
+    {
+      "atMs": 527,
+      "key": "updating | Grok1.0.621.0.70·4 min. agoUpdating…"
+    },
+    {
+      "atMs": 2488,
+      "key": "failed | Grok1.0.621.0.70·4 min. agoTry againUpdate failed. Nothing was changed. agent-runtimes-fake-cli: unsupported grok update"
+    }
+  ]
+}
+
+## runtime switch on at 2026-10-23T21:21:14Z (no confirmation for runtimes)
+[{'id': 'auto-update-agent_runtime-toggle', 'checked': 'true', 'disabled': False, 'explanation': 'Updates on its own when no agent of that runtime is running. Switch off to update by hand.', 'applying': '1 waiting update will be installed within about a minute.'}]
+## outcomes after the next tick
+{'kind': 'AGENT_RUNTIME', 'sourceId': 'codex_app_server', 'name': 'codex_app_server', 'repositoryUrl': None, 'defaultBranch': None, 'installedRevision': '0.150.0', 'latestRevision': '0.164.0', 'foundAt': '2026-10-23T21:15:58.466Z', 'read': False, 'state': 'WAITING', 'handledRevision': None, 'handledAt': None, 'outcome': 'AUTO_WAITING', 'outcomeReason': 'Update unavailable while 1 agent(s) are running.', 'outcomeAt': '2026-10-23T21:22:01.058Z'}
+{'kind': 'AGENT_RUNTIME', 'sourceId': 'claude_agent_sdk', 'name': 'claude_agent_sdk', 'repositoryUrl': None, 'defaultBranch': None, 'installedRevision': '2.1.200', 'latestRevision': '2.1.309', 'foundAt': '2026-10-23T21:15:58.712Z', 'read': False, 'state': 'WAITING', 'handledRevision': None, 'handledAt': None, 'outcome': 'AUTO_FAILED', 'outcomeReason': 'Current version: 2.1.200\nChecking for updates to latest version...\nClaude is up to date!', 'outcomeAt': '2026-10-23T21:22:01.753Z'}
+{'kind': 'AGENT_RUNTIME', 'sourceId': 'antigravity_cli', 'name': 'antigravity_cli', 'repositoryUrl': None, 'defaultBranch': None, 'installedRevision': '1.4.3', 'latestRevision': '1.4.6', 'foundAt': '2026-10-23T21:15:58.950Z', 'read': True, 'state': 'HANDLED', 'handledRevision': '1.5.0', 'handledAt': '2026-10-23T21:20:06.104Z', 'outcome': None, 'outcomeReason': None, 'outcomeAt': None}
+{'kind': 'AGENT_RUNTIME', 'sourceId': 'grok_build', 'name': 'grok_build', 'repositoryUrl': None, 'defaultBranch': None, 'installedRevision': '1.0.62', 'latestRevision': '1.0.70', 'foundAt': '2026-10-23T21:15:59.018Z', 'read': False, 'state': 'WAITING', 'handledRevision': None, 'handledAt': None, 'outcome': 'AUTO_FAILED', 'outcomeReason': 'agent-runtimes-fake-cli: unsupported grok update', 'outcomeAt': '2026-10-23T21:22:01.856Z'}
+agent_runtime:grok_build failed | New: Grok1.0.621.0.70·6 min. agoTry againUpdate failed. Nothing was changed. agent-runtimes-fake-cli: unsupported grok update
+agent_runtime:claude_agent_sdk waiting | New: Claude2.1.2002.1.309·6 min. agoUpdateAutomatic update failed. Nothing was changed. Current version: 2.1.200 Checking for updates to latest version... Claude is up to date!
+agent_runtime:codex_app_server waiting | New: Codex0.150.00.164.0·6 min. agoUpdateUpdate unavailable while 1 agent is running. It will be updated automatically once no agent is running.
+agent_runtime:antigravity_cli handled | AntigravityUpdated to 1.5.0Clear
+## after opening the panel (read) and 75 s more: codex read True, outcomeAt unchanged 21:22:01.058Z; claude AUTO_FAILED not retried (outcomeAt 21:22:01.753Z)
+
+## agent terminated at 2026-10-23T21:23:51Z
+{'kind': 'AGENT_RUNTIME', 'sourceId': 'codex_app_server', 'name': 'codex_app_server', 'repositoryUrl': None, 'defaultBranch': None, 'installedRevision': '0.150.0', 'latestRevision': '0.164.0', 'foundAt': '2026-10-23T21:15:58.466Z', 'read': False, 'state': 'HANDLED', 'handledRevision': '0.164.0', 'handledAt': '2026-10-23T21:24:04.050Z', 'outcome': 'AUTO_UPDATED', 'outcomeReason': None, 'outcomeAt': '2026-10-23T21:24:04.071Z'}
+fake codex-version: 0.164.0
+agent_runtime:grok_build failed | New: Grok1.0.621.0.70·8 min. agoTry againUpdate failed. Nothing was changed. agent-runtimes-fake-cli: unsupported grok update
+agent_runtime:claude_agent_sdk waiting | New: Claude2.1.2002.1.309·8 min. agoUpdateAutomatic update failed. Nothing was changed. Current version: 2.1.200 Checking for updates to latest version... Claude is up to date!
+agent_runtime:antigravity_cli handled | AntigravityUpdated to 1.5.0Clear
+agent_runtime:codex_app_server handled | New: CodexUpdated automatically to 0.164.0Clear3 min. ago·From 0.150.0

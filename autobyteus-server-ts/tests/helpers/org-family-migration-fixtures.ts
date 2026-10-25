@@ -1,3 +1,4 @@
+import { liveRunHistoryCatalogs } from "../../src/app-data-migrations/app-data-migration-registry.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -6,7 +7,7 @@ import type { AppConfig } from "../../src/config/app-config.js";
 import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { AgentOrgTokenAttributionRepository } from "../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.js";
 import { AgentOrgTokenAttributionTransition } from "../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
-import { AtomicRunPackageFileCommitWriter } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
+import { AtomicRunPackageFileCommitWriter } from "../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 import { createCurrentTokenUsageTestHarness } from "./token-usage-run-record-fixtures.js";
 import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../fixtures/current-team-run-fixtures.js";
 import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../fixtures/released-run-tree-fixtures.js";
@@ -46,7 +47,7 @@ export const createOrgMigrationFixture = async () => {
   const config = { getBaseUrl: () => "http://127.0.0.1:43151" } as AppConfig;
   return {
     root, memory, client, attributionRepository: repository, tokens, ...harness,
-    migrate: (writer = new AtomicRunPackageFileCommitWriter()) => new AgentOrgFlatTeamFamiliesV1AppDataMigration(memory, config, writer, tokens).execute(),
+    migrate: (writer = new AtomicRunPackageFileCommitWriter()) => new AgentOrgFlatTeamFamiliesV1AppDataMigration(memory, config, liveRunHistoryCatalogs, writer, tokens).execute(),
     close: async () => { await client.$disconnect(); await fs.rm(root, { recursive: true, force: true }); },
   };
 };

@@ -86,6 +86,13 @@ export class AgentOrgExecutionTreeLocationService {
     return output;
   }
 
+  /** One admitted Org root's tree: the active root's, else the stored one (autobyteus-278: its remote children). */
+  async readTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
+    await this.packageCatalog.awaitReady();
+    if (!this.packageCatalog.isAdmitted(orgRunId)) return null;
+    return this.manager.getActive(orgRunId)?.getExecutionTreeSnapshot() ?? this.readStoredTree(orgRunId);
+  }
+
   /** Active and admitted stored Org root run IDs, sorted. */
   async listRootRunIds(): Promise<string[]> {
     await this.packageCatalog.awaitReady();

@@ -1,0 +1,10 @@
+# Viewer trial (scratch worktree): xlsx 0.20.3 tarball + sheet_to_html({header:'',footer:''}) + DOMPurify.sanitize (table tags; colspan/rowspan), 2026-10-24
+## diff: probes/excel-viewer-trial.diff; spec: probes/ExcelViewerTrial.spec.ts.txt (generated workbooks only)
+## pnpm test:nuxt components/fileExplorer/viewers/__tests__/ --run
+ ✓ ExcelViewerTrial.spec.ts (5 tests): xlsx, biff8 (.xls), xlsm with two sheets + tab switch; CSV content; injection cells (quote+onmouseover, <img onerror>, <script>) -> no img/script element, no on* attribute, text shown literally
+ ✓ existing ExcelViewer.spec.ts (3, mocked) and the other viewer specs: Test Files 5 passed, Tests 19 passed
+
+## The same spec on BASE (task worktree, xlsx 0.18.5, unsanitised viewer), 2026-10-24
+ ✓ renders xlsx / biff8 / xlsm with tabs; ✓ renders CSV content
+ × keeps cell text inert: AssertionError: expected true to be false (an on* attribute from cell text exists in the rendered viewer DOM)
+ Tests 1 failed | 4 passed (5)   => injection Reproduced in the real component on base; the spec file was removed from the task worktree afterwards

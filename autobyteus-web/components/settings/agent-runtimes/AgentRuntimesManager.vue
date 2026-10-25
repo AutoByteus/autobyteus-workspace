@@ -84,6 +84,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { isRowChecking, useAgentRuntimes, type AgentRuntimeAnnouncement } from '~/composables/settings/useAgentRuntimes'
 import AgentRuntimeRow from './AgentRuntimeRow.vue'
 import { runtimeName, type AgentRuntimeNodeAccess } from './agentRuntimesPresentation'
+import { isOwnNodeWindow } from '~/utils/ownNodeWindow'
 
 const { t } = useLocalization()
 const nodeStore = useNodeStore()
@@ -96,10 +97,10 @@ const secondaryButton = 'inline-flex min-h-9 items-center whitespace-nowrap roun
 // The own node does everything. A remote node signs in when its server can open a browser on its own desktop (the user
 // finishes there, in the VNC Viewer); otherwise it is status only.
 const nodeAccess = computed<AgentRuntimeNodeAccess>(() => {
-  if (windowNodeContextStore.isEmbeddedWindow) return 'own'
+  if (isOwnNodeWindow(windowNodeContextStore)) return 'own'
   return signInBrowserAvailable.value ? 'remoteDesktop' : 'remoteStatusOnly'
 })
-const nodeName = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId)?.name
+const nodeName = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId)?.name
   || t('settings.components.settings.NodeManager.currentNodeUnknown'))
 const isChecking = computed(() => state.requestingCheck.value || (runtimes.value ?? []).some(isRowChecking))
 

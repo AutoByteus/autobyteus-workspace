@@ -1,0 +1,9 @@
+# IMP-01 AC-1: Cases 1-6 match the package | cmd: diff of autobyteus-agents 56daf38 agent-teams/software-engineering-team/shared/design-examples.md (from '### Case 1:' to the end) against docs/design-cases.md (Case 1 up to Case 7), blank lines and trailing spaces ignored | commit: 2107bbc71e | env: macOS | date: 2026-10-24
+57,62d56
+< ## How To Use These Examples
+< - Start from the example whose shape is closest to the current task.
+< - Read the cases from our own reviews when a design touches the same shape: several kinds or entry forms, a sequence across components, derived data, a decision by absence, or a claim about existing code.
+< - Reuse the reasoning style, not the exact names.
+< - The rules these examples illustrate live in [design-principles.md](design-principles.md): spine-first design (Principles 2 and 14), explicit ownership and named facades (3), off-spine concerns (4), singular interfaces (10), reachable premises (6), persisted-data decisions (5), and file placement after the design story (12).
+< - Judge a finding outside a ticket's scope with [ticket-scope.md](ticket-scope.md#common-situations).
+exit: 1 (the only difference: the package's closing 'How To Use These Examples' section, package guidance, not a case)

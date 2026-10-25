@@ -1,0 +1,9 @@
+# Check: DEL-02 server test:unit on integrated state 96625b9ba5 (merge of origin/personal d8df12435c)
+# Date: 2026-10-23T03:02:18Z
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Excerpt; full log: DEL-02-server-test-unit-parallel-load.full.log.gz
+ FAIL  tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AssertionError: expected [ 'failed', 'started', 'stopped' ] to deeply equal [ 'started', 'stopped' ]
+ Test Files  1 failed | 790 passed | 4 skipped (795)
+      Tests  1 failed | 6493 passed | 7 skipped (6501)
+exit=1

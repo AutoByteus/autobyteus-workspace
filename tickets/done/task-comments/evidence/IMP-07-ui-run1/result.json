@@ -1,0 +1,79 @@
+{
+  "results": [
+    {
+      "name": "task-page-thread",
+      "result": "Pass",
+      "obs": {
+        "thread": [
+          {
+            "meta": "#1 · 1 min. ago",
+            "title": "10/22/2026, 8:07:42 PM",
+            "text": "Mention the quokka migration."
+          },
+          {
+            "meta": "#2 · 1 min. ago",
+            "title": "10/22/2026, 8:07:40 PM",
+            "text": "User decided:\n- ship the relay on the beta channel first\n- keep the old bridge until 1.6"
+          },
+          {
+            "meta": "#3 · 1 min. ago",
+            "title": "10/22/2026, 8:07:41 PM",
+            "text": "A much longer comment to check wrapping: the relay needs a heartbeat every thirty seconds, the peers keep a list of the links they trust, and a link that misses three heartbeats is shown as offline in the Nodes page until it reconnects on its own."
+          }
+        ],
+        "order": [
+          "task-comments",
+          "task-parts",
+          "task-dependencies",
+          "task-page-assigned"
+        ],
+        "gapAbove": 16,
+        "longTextHeight": 48
+      }
+    },
+    {
+      "name": "add-comment-live",
+      "result": "Pass",
+      "obs": {
+        "live": {
+          "meta": "#4 · this minute",
+          "title": "10/22/2026, 8:08:35 PM",
+          "text": "Looks good from the app.\nSecond line."
+        },
+        "focused": "task-comment-input"
+      }
+    },
+    {
+      "name": "empty-and-refused",
+      "result": "Pass",
+      "obs": {
+        "none": 0,
+        "autobyteus2": [
+          "Dispatched with this direction."
+        ]
+      }
+    },
+    {
+      "name": "board-search-comment",
+      "result": "Pass",
+      "obs": {
+        "before": [
+          "Release notes for 1.5.6",
+          "Sidebar collapse state is lost",
+          "Cross-node collaboration"
+        ],
+        "after": [
+          "Release notes for 1.5.6"
+        ]
+      }
+    },
+    {
+      "name": "narrow-760",
+      "result": "Pass",
+      "obs": {
+        "overflowing": 0
+      }
+    }
+  ],
+  "errors": []
+}

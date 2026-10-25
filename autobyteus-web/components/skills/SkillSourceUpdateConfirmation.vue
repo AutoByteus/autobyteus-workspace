@@ -2,7 +2,7 @@
   <!-- The existing "Update entire skill source?" confirmation (local edits are replaced), shared by the
        skill sources dialog and the Notification Center (DEC-012). -->
   <ConfirmationModal :show="show" :pending="pending" :title="t('skills.sources.updateTitle')"
-    :confirm-button-text="t('skills.sources.update')" variant="danger" @confirm="emit('confirm')" @cancel="emit('cancel')">
+    :confirm-button-text="t('skills.sources.update')" variant="danger" :layer-class="layerClass" @confirm="emit('confirm')" @cancel="emit('cancel')">
     <p class="confirm-copy text-sm leading-6 text-slate-600">{{ t('skills.sources.updateWarning') }}</p>
     <div v-if="source" class="confirm-source mt-3 flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
       <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-slate-600 ring-1 ring-slate-200" aria-hidden="true">
@@ -35,7 +35,7 @@ export interface SkillSourceUpdateTarget {
   latestRevision: string | null
 }
 
-defineProps<{ show: boolean; pending?: boolean; source: SkillSourceUpdateTarget | null }>()
+withDefaults(defineProps<{ show: boolean; pending?: boolean; source: SkillSourceUpdateTarget | null; layerClass?: string }>(), { layerClass: 'z-50' })
 const emit = defineEmits<{ (event: 'confirm'): void; (event: 'cancel'): void }>()
 const { t } = useLocalization()
 </script>

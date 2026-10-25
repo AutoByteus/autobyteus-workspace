@@ -1,0 +1,217 @@
+# API-30 — first tick in the packaged instance: packages, skill sources, agent runtimes (AC-001, AC-005, AC-018, REQ-002, REQ-003)
+# macOS 26.5.2 arm64; packaged build from 48fe98d65d (code 985246c53b), 1.5.9-beta.2, ad-hoc; instance A on own data root /private/tmp/a210/rootA; real public GitHub (unauthenticated); scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs) via the data root's .env; 2026-10-23
+# Steps: A1 start → import AutoByteus/autobyteus-agents and blader/humanizer (renderer GraphQL) → stop → own registries: older installed revision (a8a09f3e…, 6be1fa4…) and last check 40 min ago (interval 30 + max spread 5) → .env runtime overrides → start A2 (iso-59908-394c) 21:14:29Z
+
+## shaped registries
+[
+  {
+    "packageId": "github:autobyteus/autobyteus-agents",
+    "rootPath": "/private/tmp/a210/rootA/server-data/agent-packages/github/autobyteus__autobyteus-agents",
+    "sourceKind": "GITHUB_REPOSITORY",
+    "source": "https://github.com/AutoByteus/autobyteus-agents",
+    "normalizedSource": "autobyteus/autobyteus-agents",
+    "managedInstallPath": "/private/tmp/a210/rootA/server-data/agent-packages/github/autobyteus__autobyteus-agents",
+    "sourceMetadata": {
+      "github": {
+        "defaultBranch": "main",
+        "installedRevision": "a8a09f3e6b677a874b00940b40da3adb17404fea",
+        "latestRevision": "a8a09f3e6b677a874b00940b40da3adb17404fea",
+        "latestCheckedAt": "2026-10-23T20:34:11.000Z",
+        "updateStatus": "UP_TO_DATE",
+        "lastError": null
+      }
+    },
+    "createdAt": "2026-10-23T21:13:52.776Z",
+    "updatedAt": "2026-10-23T21:13:52.776Z"
+  }
+][
+  {
+    "id": "a57ce8c9-b185-4366-8b2b-cb42bc18ced5",
+    "repository": {
+      "owner": "blader",
+      "repo": "humanizer"
+    },
+    "state": "ACTIVE",
+    "installed": {
+      "generation": "a6aab3ef-c345-4c28-8aed-8234cdafd5b1",
+      "revision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+      "defaultBranch": "main"
+    },
+    "lastCheck": {
+      "checkedAt": "2026-10-23T20:34:11.000Z",
+      "latestRevision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+      "defaultBranch": "main",
+      "error": null
+    },
+    "lastUpdateError": null
+  }
+]## instance .env
+APP_ENV=production
+LOG_LEVEL=INFO
+DB_TYPE=sqlite
+DATABASE_URL=file:/private/tmp/a210/rootA/server-data/db/production.db
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:59810
+ENABLE_APPLICATIONS=false
+AUTOBYTEUS_AGENT_PACKAGE_ROOTS=/private/tmp/a210/rootA/server-data/agent-packages/github/autobyteus__autobyteus-agents
+CODEX_APP_SERVER_COMMAND=/private/tmp/a210/fake/bin/codex
+CLAUDE_CODE_EXECUTABLE_PATH=/private/tmp/a210/fake/bin/claude
+ANTIGRAVITY_CLI_COMMAND=/private/tmp/a210/fake/bin/agy
+GROK_BUILD_COMMAND=/private/tmp/a210/fake/bin/grok
+FAKE_RUNTIME_STATE_DIR=/private/tmp/a210/fake/state
+CLAUDE_CONFIG_DIR=/private/tmp/a210/fake/state/claude-config
+
+## settings at start (defaults, embedded node)
+{
+  "data": {
+    "updateAutomationSettings": {
+      "intervals": {
+        "agentPackages": 30,
+        "skillSources": 30,
+        "agentRuntimes": 60
+      },
+      "automaticUpdates": {
+        "agentPackages": false,
+        "skillSources": false,
+        "agentRuntimes": false
+      },
+      "githubWaitUntil": null,
+      "desktopEmbeddedNode": true
+    }
+  }
+}
+
+## notifications after the first tick (no click, no page opened)
+{
+  "data": {
+    "updateNotifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:autobyteus/autobyteus-agents",
+        "name": "AutoByteus/autobyteus-agents",
+        "repositoryUrl": "https://github.com/AutoByteus/autobyteus-agents",
+        "defaultBranch": "main",
+        "installedRevision": "a8a09f3e6b677a874b00940b40da3adb17404fea",
+        "latestRevision": "d705e9a367ff6b43f00c47335890b2866dd5f4c3",
+        "foundAt": "2026-10-23T21:15:58.035Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "a57ce8c9-b185-4366-8b2b-cb42bc18ced5",
+        "name": "blader/humanizer",
+        "repositoryUrl": "https://github.com/blader/humanizer",
+        "defaultBranch": "main",
+        "installedRevision": "6be1fa4e0c768202b126f8bc5c9bf67ead9162bc",
+        "latestRevision": "8c307f367c91bd974002f10f2be2965d642c13df",
+        "foundAt": "2026-10-23T21:15:58.216Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "codex_app_server",
+        "name": "codex_app_server",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "0.150.0",
+        "latestRevision": "0.164.0",
+        "foundAt": "2026-10-23T21:15:58.466Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "claude_agent_sdk",
+        "name": "claude_agent_sdk",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "2.1.200",
+        "latestRevision": "2.1.309",
+        "foundAt": "2026-10-23T21:15:58.712Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "antigravity_cli",
+        "name": "antigravity_cli",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "1.4.3",
+        "latestRevision": "1.4.6",
+        "foundAt": "2026-10-23T21:15:58.950Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_RUNTIME",
+        "sourceId": "grok_build",
+        "name": "grok_build",
+        "repositoryUrl": null,
+        "defaultBranch": null,
+        "installedRevision": "1.0.62",
+        "latestRevision": "1.0.70",
+        "foundAt": "2026-10-23T21:15:59.018Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      }
+    ]
+  }
+}
+
+## scripted versions confirmed before any runtime update (agentRuntimes)
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","installed":true,"installedVersion":"0.150.0","updates":{"state":"UPDATE_AVAILABLE","latestVersion":"0.164.0"},"runningAgentCount":0,"operation":null},{"runtimeKind":"claude_agent_sdk","installed":true,"installedVersion":"2.1.200","updates":{"state":"UPDATE_AVAILABLE","latestVersion":"2.1.309"},"runningAgentCount":0,"operation":null},{"runtimeKind":"antigravity_cli","installed":true,"installedVersion":"1.4.3","updates":{"state":"UPDATE_AVAILABLE","latestVersion":"1.4.6"},"runningAgentCount":0,"operation":null},{"runtimeKind":"grok_build","installed":true,"installedVersion":"1.0.62","updates":{"state":"UPDATE_AVAILABLE","latestVersion":"1.0.70"},"runningAgentCount":0,"operation":null}]}}
+
+## REST quota after the run so far (GitHub's own counter): used 4 = the two imports (2 REST each); the pass used none
+core {'limit': 60, 'remaining': 56, 'used': 4}
+dig github.com api.github.com: 140.82.121.3 140.82.121.5
+## non-loopback connections of the server (pid 13956) at the first tick
+{"at":"2026-10-23T21:15:58.027Z","pid":"13956","local":"192.168.2.158:60018","remote":"140.82.121.3:443","state":"ESTABLISHED"}
+{"at":"2026-10-23T21:15:58.778Z","pid":"13956","local":"192.168.2.158:60020","remote":"35.190.46.17:443","state":"ESTABLISHED"}
+{"at":"2026-10-23T21:15:58.778Z","pid":"13956","local":"[2003:ca:5706:4820:799e:2389:81e:5548]:60021","remote":"[2600:1901:81d5:200::]:443","state":"ESTABLISHED"}
+140.82.121.3 = github.com (one socket for both head reads and the Codex release redirect); 35.190.46.17 / 2600:1901:… = Google-hosted vendor version sources (Claude downloads, Antigravity updater)
+## fake-CLI state after the tick (no update pid files)
+agy-update
+agy-update.pid
+agy-version
+app-server-requests.log
+claude-config
+claude-update.pid
+codex-account
+codex-models
+codex-update-to
+codex-update.pid
+codex-version
+emitted-secrets.log
+grok-latest

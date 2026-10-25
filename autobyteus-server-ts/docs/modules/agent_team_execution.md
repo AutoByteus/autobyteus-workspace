@@ -530,7 +530,9 @@ the work packet through that Team's exact configured coordinator ingress; only
 the coordinator starts, and the other members start when work reaches them (see
 [Root And Agent Lifecycle](#root-and-agent-lifecycle)). The
 work packet is the child's first message: the delegator's address and AgentRun
-ID, the description, and any reference files. The result is a strict union:
+ID, the description (for a saved Project Task, followed by its comments; see
+[Saved-ID Delegation](projects.md#saved-id-delegation-and-agent-run-resources)),
+and any reference files. The result is a strict union:
 
 ```text
 { delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>" }            // an Agent copy
@@ -601,8 +603,9 @@ carries no Task information.** Which copies, Team members and helpers belong to
 a Project Task is recorded only on the Task side, in that Task's
 `agent_run_resources.json`. The in-memory view loaded from it is reached
 through `TaskExecutionResourcePort`. That Task record, not the physical subtree or
-the definition/address, decides what DONE stops: a copy has one current Task,
-and DONE stops only copies whose current Task it is. The Manager, borrowed unowned
+the definition/address, decides what DONE stops: a copy may hold several open
+Tasks (its current one is the newest open), and DONE stops only copies that have
+an entry in that Task and no open Task left. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
 The idle/wake rules below apply to unowned children and to Task-owned children
@@ -715,9 +718,14 @@ root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
 receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
 structured metadata and natural message prose is not scanned for paths.
-An accepted delivery is projected once when the target AgentRun owns the input;
-later provider forwarding or terminal observation does not publish a duplicate
-Team Communication or member-input record.
+The message is saved to the Team's log before the target AgentRun may run it,
+through the one [teammate delivery path](./agent_communication.md#teammate-delivery-path):
+`RootTeamRun` builds its `RootCommunicationPort` (`team-communication-port.ts`:
+the Team recipient builder, `TEAM_*` codes, `COMMUNICATION` then `MEMBER_INPUT`
+events) and `TeamRunPersistenceCoordinator.commitMessageAppend` does the locked
+write. An accepted delivery is projected once, when the saved message is
+committed to the target AgentRun; later provider forwarding or terminal
+observation does not publish a duplicate Team Communication or member-input record.
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.
@@ -902,9 +910,10 @@ fails and remains retry-visible.
 These released migrations keep their released behavior on skip-version
 installs. Where they classify shapes ("already current" versus "old") or read
 released task-records files, they import frozen strict copies from
-`src/app-data-migrations/legacy/released-run-package-shapes/` (Team tree V2,
+`src/app-data-migrations/frozen/released-run-package-shapes/` (Team tree V2,
 Org tree V1, task-records V1, Org state-package V1), never the current tolerant
-readers. Current runtime code never imports that module. The delegated-child
+readers. Current runtime code never imports the migration area
+(`tests/architecture/app-data-migration-boundaries.test.ts`). The delegated-child
 resource lifecycle added no migration of its own.
 
 The V1-to-V2 coordinator-derived Team default is a historical migration rule
@@ -951,7 +960,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/config/task-execution-idle-shutdown-setting.ts`
 - `src/run-history/store/run-execution-tree-shared-record-schemas.ts`
 - `src/run-history/store/team-run-execution-tree-schema.ts`
-- `src/app-data-migrations/legacy/released-run-package-shapes`
+- `src/app-data-migrations/frozen/released-run-package-shapes`
 - `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`

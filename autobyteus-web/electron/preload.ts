@@ -42,8 +42,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return registerIpcListener('server-status', callback)
   },
 
-  openNodeWindow: (nodeId: string) => ipcRenderer.invoke('open-node-window', nodeId),
-  focusNodeWindow: (nodeId: string) => ipcRenderer.invoke('focus-node-window', nodeId),
+  openNodeWindow: (entryId: string) => ipcRenderer.invoke('open-node-window', entryId),
+  focusNodeWindow: (entryId: string) => ipcRenderer.invoke('focus-node-window', entryId),
   listNodeWindows: () => ipcRenderer.invoke('list-node-windows'),
   getWindowContext: () => ipcRenderer.invoke('get-window-context'),
   upsertNodeRegistry: (change: NodeRegistryChange) => ipcRenderer.invoke('upsert-node-registry', change),
@@ -81,6 +81,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setAppUpdateChannel: (channel: string) => ipcRenderer.invoke('app-update:set-channel', channel),
   markAppUpdateNotificationRead: () => ipcRenderer.invoke('app-update:mark-notification-read'),
   clearAppUpdateNotification: () => ipcRenderer.invoke('app-update:clear-notification'),
+  setAppUpdateAutoCheck: (settings: { enabled: boolean; intervalMinutes: number }) =>
+    ipcRenderer.invoke('app-update:set-auto-check', settings),
   onAppUpdateState: (callback: (updateState: any) => void) => {
     return registerIpcListener('app-update-state', callback)
   },

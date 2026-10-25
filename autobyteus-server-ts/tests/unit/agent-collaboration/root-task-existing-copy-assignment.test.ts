@@ -27,8 +27,6 @@ const unchanged = (f: Fixture) => {
 
 type Fixture = ReturnType<typeof fixture>;
 const refusalCases: Array<[string, (f: Fixture) => Promise<void>, string, string]> = [
-  ["the copy's current Task is still open (AC-006)", async (f: Fixture) => { f.resources.setTaskOpen("task-A"); f.resources.entry(worker)!.open = true; },
-      "This task agent still works on Task task-A. Set it to DONE or CANCELLED first, or delegate Task task-B to a new task agent with recipient_address.", "manager"],
   ["the sender did not make its most recent assignment (AC-007, QR-002)", async () => undefined, "Only the agent that gave this task agent its most recent Task can give it a new one", "intruder"],
   ["Task B is DONE (AC-009)", async (f: Fixture) => { f.resources.tasks.get("task-B")!.done = true; }, "Task is DONE", "manager"],
   ["Task B is unknown (AC-009)", async (f: Fixture) => { f.resources.tasks.delete("task-B"); }, "Task 'task-B' was not found.", "manager"],
@@ -255,14 +253,59 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
     expect(f.authority.get("agent:worker")).toBe("fenced");
   });
 
-  it("the assignment checks before A's closure commits: refused, and A's later DONE stops the copy as usual", async () => {
+});
+
+describe("a task agent with other open Tasks (task-agent-several-tasks REQ-001, REQ-002, REQ-004)", () => {
+  /** The copy works on Task A (assigned and started, still open); Task B is saved and open. */
+  const workingOnA = async () => {
     const f = fixture();
     await f.assign(worker);
-    f.resources.addTask("task-B");
-    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: expect.stringContaining("This task agent still works on Task task-A") });
-    await f.done();
+    f.resources.addTask("task-B", "Follow-up cleanup proposed by the reviewer");
+    f.log.length = 0;
+    return f;
+  };
+
+  it("gives B while A is open: no stop, no restore; the message names A as still open and asks for Task keys in reports (AC-001)", async () => {
+    const f = await workingOnA();
+    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "worker" } });
+    // An open copy is neither released nor restored; it is told about B by the ordinary delivery (its lease checks the chain).
+    expect(f.log).toEqual(["reopened:agent:worker", "restorable:worker", "deliver:worker"]);
+    expect(f.resources.assignments).toEqual([{ hostRoot: root, execution: worker, taskId: "task-B", assignedBy: "manager" }]);
+    expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-B", open: true, start: "started", otherOpenTaskIds: ["task-A"] });
+    expect(f.delivered[0]!.content).toBe([
+      "New Task assigned to you: task-B. Your Task task-A is still open; name the Task key in each report.",
+      "",
+      "Description:",
+      "Follow-up cleanup proposed by the reviewer",
+    ].join("\n"));
+  });
+
+  it("names every other open Task, oldest first", async () => {
+    const f = await workingOnA();
+    await f.assignTo(worker, "task-B");
+    f.resources.addTask("task-C", "Third");
+    await f.assignTo(worker, "task-C");
+    expect(f.delivered[1]!.content.split("\n")[0]).toBe("New Task assigned to you: task-C. Your Tasks task-A, task-B are still open; name the Task key in each report.");
+  });
+
+  it("still refuses another assigner and a Task the copy already holds open (AC-001 alternates)", async () => {
+    const f = await workingOnA();
+    expect(await f.assignTo(worker, "task-B", "intruder")).toEqual({ delegated: false,
+      message: expect.stringContaining("Only the agent that gave this task agent its most recent Task") });
+    expect(await f.assignTo(worker, "task-A")).toEqual({ delegated: false, message: "This task agent already works on this Task." });
+    await f.assignTo(worker, "task-B");
+    expect(await f.assignTo(worker, "task-A")).toEqual({ delegated: false, message: "This task agent already works on this Task." });
+  });
+
+  it("closing one of its Tasks stops nothing; closing the last stops it as usual (AC-003, AC-004)", async () => {
+    const f = await workingOnA();
+    await f.assignTo(worker, "task-B");
+    await f.done("task-B");
+    expect(f.authority.get("agent:worker")).not.toBe("fenced");
+    expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-A", open: true });
+    await f.done("task-A");
     expect(f.authority.get("agent:worker")).toBe("fenced");
-    expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-A", open: false });
+    expect(f.resources.entry(worker)).toMatchObject({ open: false });
   });
 });
 
@@ -272,5 +315,29 @@ describe("send_message_to guidance for a team run ID", () => {
     expect(f.lifecycle.teamCoordinatorOf("review-team")).toBe("lead");
     expect(f.lifecycle.teamCoordinatorOf("worker")).toBeNull();
     expect(f.lifecycle.teamCoordinatorOf("unknown")).toBeNull();
+  });
+});
+
+describe("a saved Task's comments in the delegated work (task-comments REQ-012, AC-010)", () => {
+  it("an existing copy receives the comment texts after the description, oldest first, as bullets", async () => {
+    const f = await afterTaskADone(["worker"]);
+    f.resources.tasks.get("task-B")!.comments = ["Dispatched with this direction.", "User decided: keep it small."];
+    expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "worker" } });
+    expect(f.delivered[0]!.content).toBe([
+      "New Task assigned to you: task-B. Your previous Task is closed; this is the work to do now.",
+      "",
+      "Description:",
+      "Follow-up cleanup proposed by the reviewer",
+      "",
+      "Comments:",
+      "- Dispatched with this direction.",
+      "- User decided: keep it small.",
+    ].join("\n"));
+  });
+
+  it("a Task without comments gets no Comments block", async () => {
+    const f = await afterTaskADone(["worker"]);
+    await f.assignTo(worker, "task-B");
+    expect(f.delivered[0]!.content).not.toContain("Comments:");
   });
 });

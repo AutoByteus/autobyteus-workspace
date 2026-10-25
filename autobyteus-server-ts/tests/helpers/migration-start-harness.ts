@@ -10,14 +10,14 @@ import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../../src/app-data
 import { AGENT_ORG_HISTORY_FIRST_MESSAGE_SUMMARY_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
-import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../../src/app-data-migrations/migrations/raw-trace-active-file-name-migration.js";
-import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
+import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../../src/app-data-migrations/migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.js";
+import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../../src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration.js";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
-import { TEAM_COMMUNICATION_PROJECTION_ADDRESS_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-communication-projection-address-migration.js";
+import { TEAM_COMMUNICATION_PROJECTION_ADDRESS_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-communication-projection-address/team-communication-projection-address-migration.js";
 import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID } from "../../src/app-data-migrations/migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
+import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.js";
 
 /**
  * Starts of the real runner over the message-log-relevant part of the production registry, in its

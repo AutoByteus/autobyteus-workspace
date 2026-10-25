@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import {
-  EMBEDDED_NODE_ID,
+  EMBEDDED_ENTRY_ID,
   NODE_REGISTRY_STORAGE_KEY,
-  type NodeProfile,
+  isNodeId,
+  type NodeEntry,
   type NodeRegistryChange,
   type NodeRegistrySnapshot,
 } from '~/types/node';
@@ -14,19 +15,13 @@ function nowIsoString(): string {
   return new Date().toISOString();
 }
 
-function createEmbeddedNode(baseUrl: string): NodeProfile {
+function createEmbeddedEntry(baseUrl: string): NodeEntry {
   const now = nowIsoString();
   return {
-    id: EMBEDDED_NODE_ID,
+    id: EMBEDDED_ENTRY_ID,
     name: 'Embedded Node',
     baseUrl,
     nodeType: 'embedded',
-    capabilities: {
-      terminal: true,
-      fileExplorerStreaming: true,
-    },
-    capabilityProbeState: 'ready',
-    isSystem: true,
     createdAt: now,
     updatedAt: now,
   };
@@ -35,11 +30,11 @@ function createEmbeddedNode(baseUrl: string): NodeProfile {
 function createDefaultSnapshot(baseUrl: string): NodeRegistrySnapshot {
   return {
     version: 1,
-    nodes: [createEmbeddedNode(baseUrl)],
+    nodes: [createEmbeddedEntry(baseUrl)],
   };
 }
 
-function generateRemoteNodeId(): string {
+function generateRemoteEntryId(): string {
   const randomId = globalThis.crypto?.randomUUID?.();
   return randomId ? `remote-${randomId}` : `remote-${Date.now()}`;
 }
@@ -70,13 +65,13 @@ function readLocalRegistrySnapshot(): NodeRegistrySnapshot | null {
 
 export const useNodeStore = defineStore('nodeStore', () => {
   const registryVersion = ref<number>(0);
-  const nodes = ref<NodeProfile[]>([]);
+  const nodes = ref<NodeEntry[]>([]);
   const listenerCleanup = ref<(() => void) | null>(null);
   const initialized = ref(false);
   const lastError = ref<string | null>(null);
 
-  const nodeMap = computed(() => {
-    const map = new Map<string, NodeProfile>();
+  const entryMap = computed(() => {
+    const map = new Map<string, NodeEntry>();
     for (const node of nodes.value) {
       map.set(node.id, node);
     }
@@ -125,10 +120,10 @@ export const useNodeStore = defineStore('nodeStore', () => {
 
   function ensureBrowserEmbeddedNodePresent(): void {
     const desiredBaseUrl = getBrowserServerBaseUrl();
-    const existingEmbeddedIndex = nodes.value.findIndex((node) => node.id === EMBEDDED_NODE_ID);
+    const existingEmbeddedIndex = nodes.value.findIndex((node) => node.id === EMBEDDED_ENTRY_ID);
 
     if (existingEmbeddedIndex === -1) {
-      const embedded = createEmbeddedNode(desiredBaseUrl);
+      const embedded = createEmbeddedEntry(desiredBaseUrl);
       nodes.value = [embedded, ...nodes.value];
       registryVersion.value += 1;
       if (!window.electronAPI?.getNodeRegistrySnapshot) {
@@ -139,7 +134,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
 
     const existingEmbedded = nodes.value[existingEmbeddedIndex];
     if (normalizeNodeBaseUrl(existingEmbedded.baseUrl) !== desiredBaseUrl) {
-      const updatedEmbedded: NodeProfile = {
+      const updatedEmbedded: NodeEntry = {
         ...existingEmbedded,
         baseUrl: desiredBaseUrl,
         updatedAt: nowIsoString(),
@@ -173,7 +168,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
     try {
       const snapshot = await window.electronAPI.getNodeRegistrySnapshot();
       replaceSnapshot(snapshot);
-      const embeddedNode = nodeMap.value.get(EMBEDDED_NODE_ID);
+      const embeddedNode = entryMap.value.get(EMBEDDED_ENTRY_ID);
       if (!embeddedNode?.baseUrl?.trim()) {
         throw new Error('Electron node registry did not provide an embedded client base URL.');
       }
@@ -190,12 +185,12 @@ export const useNodeStore = defineStore('nodeStore', () => {
     }
   }
 
-  function getNodeById(nodeId: string): NodeProfile | null {
-    return nodeMap.value.get(nodeId) || null;
+  function getEntryById(entryId: string): NodeEntry | null {
+    return entryMap.value.get(entryId) || null;
   }
 
-  function getNodeBaseUrl(nodeId: string): string | null {
-    return getNodeById(nodeId)?.baseUrl || null;
+  function getEntryBaseUrl(entryId: string): string | null {
+    return getEntryById(entryId)?.baseUrl || null;
   }
 
   async function upsertRegistry(change: NodeRegistryChange): Promise<NodeRegistrySnapshot> {
@@ -207,12 +202,15 @@ export const useNodeStore = defineStore('nodeStore', () => {
     return snapshot;
   }
 
+  /**
+   * Adds a node to this desktop's list, with its node ID when this window has reached it. Adding does not open the
+   * node's window (one-nodes-tab SR-006); Open does.
+   */
   async function addRemoteNode(input: {
     name: string;
     baseUrl: string;
-    capabilities?: NodeProfile['capabilities'];
-    capabilityProbeState?: NodeProfile['capabilityProbeState'];
-  }): Promise<NodeProfile> {
+    nodeId?: string;
+  }): Promise<NodeEntry> {
     const trimmedName = input.name.trim();
     if (!trimmedName) {
       throw new Error('Node name is required');
@@ -228,22 +226,19 @@ export const useNodeStore = defineStore('nodeStore', () => {
     }
 
     const now = nowIsoString();
-    const node: NodeProfile = {
-      id: generateRemoteNodeId(),
+    const node: NodeEntry = {
+      id: generateRemoteEntryId(),
       name: trimmedName,
       baseUrl: normalizedBaseUrl,
       nodeType: 'remote',
-      isSystem: false,
       createdAt: now,
       updatedAt: now,
-      capabilityProbeState: input.capabilityProbeState ?? 'unknown',
-      capabilities: input.capabilities,
+      ...(isNodeId(input.nodeId) ? { nodeId: input.nodeId } : {}),
     };
 
     if (window.electronAPI) {
       await upsertRegistry({ type: 'add', node });
-      await window.electronAPI.openNodeWindow?.(node.id);
-      return getNodeById(node.id) || node;
+      return getEntryById(node.id) || node;
     }
 
     nodes.value = [...nodes.value, node];
@@ -252,25 +247,25 @@ export const useNodeStore = defineStore('nodeStore', () => {
     return node;
   }
 
-  async function removeRemoteNode(nodeId: string): Promise<void> {
-    if (nodeId === EMBEDDED_NODE_ID) {
+  async function removeRemoteNode(entryId: string): Promise<void> {
+    if (entryId === EMBEDDED_ENTRY_ID) {
       throw new Error('Embedded node cannot be removed');
     }
 
     if (window.electronAPI) {
       await upsertRegistry({
         type: 'remove',
-        nodeId,
+        entryId,
       });
       return;
     }
 
-    nodes.value = nodes.value.filter((node) => node.id !== nodeId);
+    nodes.value = nodes.value.filter((node) => node.id !== entryId);
     registryVersion.value += 1;
     persistCurrentSnapshotToLocalStorage();
   }
 
-  async function renameNode(nodeId: string, nextName: string): Promise<void> {
+  async function renameNode(entryId: string, nextName: string): Promise<void> {
     const trimmedName = nextName.trim();
     if (!trimmedName) {
       throw new Error('Node name is required');
@@ -279,14 +274,14 @@ export const useNodeStore = defineStore('nodeStore', () => {
     if (window.electronAPI) {
       await upsertRegistry({
         type: 'rename',
-        nodeId,
+        entryId,
         name: trimmedName,
       });
       return;
     }
 
     nodes.value = nodes.value.map((node) => {
-      if (node.id !== nodeId) {
+      if (node.id !== entryId) {
         return node;
       }
       return {
@@ -295,6 +290,28 @@ export const useNodeStore = defineStore('nodeStore', () => {
         updatedAt: nowIsoString(),
       };
     });
+    registryVersion.value += 1;
+    persistCurrentSnapshotToLocalStorage();
+  }
+
+  /**
+   * Stores the node ID that the entry's own address answered (one-nodes-tab AR-003): set, or replaced when it
+   * differs; nothing is written when it is the same.
+   */
+  async function identifyNode(entryId: string, nodeId: string): Promise<void> {
+    const entry = getEntryById(entryId);
+    if (!entry || entry.nodeId === nodeId || !isNodeId(nodeId)) {
+      return;
+    }
+
+    if (window.electronAPI) {
+      await upsertRegistry({ type: 'identify', entryId, nodeId });
+      return;
+    }
+
+    nodes.value = nodes.value.map((candidate) => (
+      candidate.id === entryId ? { ...candidate, nodeId, updatedAt: nowIsoString() } : candidate
+    ));
     registryVersion.value += 1;
     persistCurrentSnapshotToLocalStorage();
   }
@@ -312,11 +329,12 @@ export const useNodeStore = defineStore('nodeStore', () => {
     remoteNodes,
     applyRegistrySnapshot,
     initializeRegistry,
-    getNodeById,
-    getNodeBaseUrl,
+    getEntryById,
+    getEntryBaseUrl,
     addRemoteNode,
     removeRemoteNode,
     renameNode,
+    identifyNode,
     teardownRegistryListener,
   };
 });

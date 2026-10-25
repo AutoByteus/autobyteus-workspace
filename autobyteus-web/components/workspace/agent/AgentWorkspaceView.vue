@@ -62,7 +62,8 @@ const skillTagging = computed<SkillTaggingCapability | null>(() => {
 /** F-04: a delegated copy view names its agent in the box, like the Org's delegated-Agent view. */
 const childPlaceholder = computed(() => {
   const config = target.value?.context.config
-  return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
+  if (!config || isHost.value) return null
+  return t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' })
 })
 
 /**

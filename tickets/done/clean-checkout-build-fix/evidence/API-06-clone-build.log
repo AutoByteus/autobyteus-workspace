@@ -1,0 +1,255 @@
+# Case: API-06
+# Command: pnpm install --frozen-lockfile && pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts build && pnpm -C autobyteus-server-ts test:integration:prepare
+# Commit: 828c88b2a (clone of branch codex/clean-checkout-build-fix through git transport: git clone --no-local file://<common git dir>)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2, Python 3.9.6; clone /tmp/ab282e2e/clone; clean env (env -i PATH HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.9VbVovySjz TMPDIR) for tests
+# Date: 2026-10-23T23:32:05Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1669
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.2 → 12.15.0.      │
+   │     Changelog: https://pnpm.io/v/12.15.0      │
+   │   To update, run: corepack use pnpm@12.15.0   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+Progress: resolved 1669, reused 0, downloaded 57, added 57
+Progress: resolved 1669, reused 0, downloaded 151, added 152
+ WARN  Tarball download average speed 13 KiB/s (size 26 KiB) is below 50 KiB/s: https://registry.npmjs.org/expect-type/-/expect-type-1.3.0.tgz (GET)
+Progress: resolved 1669, reused 0, downloaded 260, added 229
+Progress: resolved 1669, reused 0, downloaded 359, added 298
+Progress: resolved 1669, reused 0, downloaded 420, added 401
+Progress: resolved 1669, reused 0, downloaded 504, added 492
+Progress: resolved 1669, reused 0, downloaded 561, added 551
+Progress: resolved 1669, reused 0, downloaded 614, added 601
+Progress: resolved 1669, reused 0, downloaded 660, added 624
+Progress: resolved 1669, reused 0, downloaded 719, added 638
+Progress: resolved 1669, reused 0, downloaded 769, added 658
+Progress: resolved 1669, reused 0, downloaded 845, added 718
+Progress: resolved 1669, reused 0, downloaded 931, added 829
+Progress: resolved 1669, reused 0, downloaded 1016, added 983
+Progress: resolved 1669, reused 0, downloaded 1079, added 1082
+Progress: resolved 1669, reused 0, downloaded 1176, added 1180
+Progress: resolved 1669, reused 0, downloaded 1239, added 1242
+Progress: resolved 1669, reused 0, downloaded 1304, added 1307
+Progress: resolved 1669, reused 0, downloaded 1380, added 1384
+Progress: resolved 1669, reused 0, downloaded 1432, added 1433
+Progress: resolved 1669, reused 0, downloaded 1491, added 1494
+Progress: resolved 1669, reused 0, downloaded 1569, added 1573
+Progress: resolved 1669, reused 0, downloaded 1640, added 1644
+Progress: resolved 1669, reused 0, downloaded 1652, added 1656
+Progress: resolved 1669, reused 0, downloaded 1657, added 1660
+Progress: resolved 1669, reused 0, downloaded 1660, added 1664
+Progress: resolved 1669, reused 0, downloaded 1661, added 1665
+Progress: resolved 1669, reused 0, downloaded 1662, added 1665
+Progress: resolved 1669, reused 0, downloaded 1663, added 1667
+Progress: resolved 1669, reused 0, downloaded 1664, added 1667
+Progress: resolved 1669, reused 0, downloaded 1664, added 1668
+Progress: resolved 1669, reused 0, downloaded 1665, added 1669, done
+.../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+.../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+.../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+.../node_modules/@parcel/watcher install: Done
+.../node-pty@1.1.0/node_modules/node-pty install: Done
+.../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+.../node_modules/protobufjs postinstall: Done
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+.../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+.../node_modules/vue-demi postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+.../node_modules/@prisma/engines postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+.../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+.../prisma@5.22.0/node_modules/prisma preinstall: Done
+.../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+.../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+.../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+.../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+.../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+.../node_modules/@prisma/client postinstall: Done
+ WARN  Failed to create bin at /private/tmp/ab282e2e/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab282e2e/clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ab282e2e/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab282e2e/clone/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/ab282e2e/clone/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/tmp/ab282e2e/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab282e2e/clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ab282e2e/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab282e2e/clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 39.9s using pnpm v10.28.2
+
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 118ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 pretypecheck /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 97ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:65896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+> autobyteus-server-ts@0.1.1 test:integration:prepare /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs prepare
+
+
+[integration prerequisites] server build (with shared packages)
+
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 89ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+> autobyteus-server-ts@0.1.1 build /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /private/tmp/ab282e2e/clone/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:66238) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+[integration prerequisites] application frontend SDK
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /private/tmp/ab282e2e/clone/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+
+[integration prerequisites] application devkit
+
+> @autobyteus/application-devkit@0.1.0 build /private/tmp/ab282e2e/clone/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+
+[integration prerequisites] Brief Studio importable package
+AgentFactory (Singleton) initialized.
+(node:66359) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Generated importable package at /private/tmp/ab282e2e/clone/applications/brief-studio/dist/importable-package
+Generated application root at /private/tmp/ab282e2e/clone/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+# Exit code: 0

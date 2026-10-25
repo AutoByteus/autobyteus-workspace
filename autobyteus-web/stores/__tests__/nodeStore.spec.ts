@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { EMBEDDED_NODE_ID, NODE_REGISTRY_STORAGE_KEY, type NodeRegistrySnapshot } from '~/types/node';
+import { EMBEDDED_ENTRY_ID, NODE_REGISTRY_STORAGE_KEY, type NodeRegistrySnapshot } from '~/types/node';
 import { useNodeStore } from '../nodeStore';
 
 const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
+const SRV_DOCKER = 'srv_ibJioK7nAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
 function setElectronApiMock(mock: Partial<Window['electronAPI']> | null): void {
   Object.defineProperty(window, 'electronAPI', {
@@ -73,7 +74,7 @@ async function resolveCurrentEmbeddedBaseUrl(): Promise<string> {
   setActivePinia(createPinia());
   const store = useNodeStore();
   await store.initializeRegistry();
-  return store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl || 'http://localhost:8000';
+  return store.getEntryById(EMBEDDED_ENTRY_ID)?.baseUrl || 'http://localhost:8000';
 }
 
 describe('nodeStore', () => {
@@ -95,7 +96,7 @@ describe('nodeStore', () => {
 
     expect(store.initialized).toBe(true);
     expect(store.nodes).toHaveLength(1);
-    expect(store.nodes[0].id).toBe(EMBEDDED_NODE_ID);
+    expect(store.nodes[0].id).toBe(EMBEDDED_ENTRY_ID);
     expect(store.nodes[0].nodeType).toBe('embedded');
   });
 
@@ -108,26 +109,20 @@ describe('nodeStore', () => {
       version: 3,
       nodes: [
         {
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: currentEmbeddedBaseUrl,
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-02-08T00:00:00.000Z',
           updatedAt: '2026-02-08T00:00:00.000Z',
-          capabilityProbeState: 'ready',
-          capabilities: { terminal: true, fileExplorerStreaming: true },
         },
         {
           id: 'remote-1',
           name: 'Remote One',
           baseUrl: 'http://localhost:8001',
           nodeType: 'remote',
-          isSystem: false,
           createdAt: '2026-02-08T00:00:00.000Z',
           updatedAt: '2026-02-08T00:00:00.000Z',
-          capabilityProbeState: 'ready',
-          capabilities: { terminal: true, fileExplorerStreaming: true },
         },
       ],
     };
@@ -138,7 +133,7 @@ describe('nodeStore', () => {
 
     expect(store.registryVersion).toBe(3);
     expect(store.nodes).toHaveLength(2);
-    expect(store.getNodeById('remote-1')?.name).toBe('Remote One');
+    expect(store.getEntryById('remote-1')?.name).toBe('Remote One');
   });
 
   it('refreshes embedded node base URL from the current default when localStorage is stale', async () => {
@@ -155,15 +150,12 @@ describe('nodeStore', () => {
       version: 2,
       nodes: [
         {
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: staleBaseUrl,
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-02-08T00:00:00.000Z',
           updatedAt: '2026-02-08T00:00:00.000Z',
-          capabilityProbeState: 'ready',
-          capabilities: { terminal: true, fileExplorerStreaming: true },
         },
       ],
     };
@@ -172,7 +164,7 @@ describe('nodeStore', () => {
     const store = useNodeStore();
     await store.initializeRegistry();
 
-    expect(store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl).toBe(currentEmbeddedBaseUrl);
+    expect(store.getEntryById(EMBEDDED_ENTRY_ID)?.baseUrl).toBe(currentEmbeddedBaseUrl);
     expect(store.registryVersion).toBe(3);
     const persisted = JSON.parse(window.localStorage.getItem(NODE_REGISTRY_STORAGE_KEY) || '{}');
     expect(persisted.nodes[0].baseUrl).toBe(currentEmbeddedBaseUrl);
@@ -185,15 +177,12 @@ describe('nodeStore', () => {
       version: 5,
       nodes: [
         {
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: EMBEDDED_SERVER_BASE_URL,
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-02-08T00:00:00.000Z',
           updatedAt: '2026-02-08T00:00:00.000Z',
-          capabilityProbeState: 'ready',
-          capabilities: { terminal: true, fileExplorerStreaming: true },
         },
       ],
     };
@@ -212,15 +201,12 @@ describe('nodeStore', () => {
         version: 9,
         nodes: [
           {
-            id: EMBEDDED_NODE_ID,
+            id: EMBEDDED_ENTRY_ID,
             name: 'Embedded Node',
             baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
-            isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
             updatedAt: '2026-02-08T00:00:00.000Z',
-            capabilityProbeState: 'ready',
-            capabilities: { terminal: true, fileExplorerStreaming: true },
           },
         ],
       });
@@ -232,15 +218,12 @@ describe('nodeStore', () => {
         version: 3,
         nodes: [
           {
-            id: EMBEDDED_NODE_ID,
+            id: EMBEDDED_ENTRY_ID,
             name: 'Embedded Node',
             baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
-            isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
             updatedAt: '2026-02-08T00:00:00.000Z',
-            capabilityProbeState: 'ready',
-            capabilities: { terminal: true, fileExplorerStreaming: true },
           },
         ],
       }),
@@ -260,11 +243,10 @@ describe('nodeStore', () => {
       getNodeRegistrySnapshot: vi.fn().mockResolvedValue({
         version: 1,
         nodes: [{
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: isolatedBaseUrl,
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-08-20T00:00:00.000Z',
           updatedAt: '2026-08-20T00:00:00.000Z',
         }],
@@ -275,7 +257,7 @@ describe('nodeStore', () => {
     const store = useNodeStore();
     await store.initializeRegistry();
 
-    expect(store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl).toBe(isolatedBaseUrl);
+    expect(store.getEntryById(EMBEDDED_ENTRY_ID)?.baseUrl).toBe(isolatedBaseUrl);
   });
 
   it('fails Electron bootstrap instead of synthesizing an embedded default', async () => {
@@ -289,21 +271,18 @@ describe('nodeStore', () => {
     expect(store.nodes).toHaveLength(0);
   });
 
-  it('adds remote node through electron upsert and opens node window', async () => {
+  it('one-nodes-tab SR-006: adds a remote node through electron upsert with its node ID, without opening its window', async () => {
     const upsertNodeRegistry = vi.fn().mockImplementation(async (change) => {
       return {
         version: 2,
         nodes: [
           {
-            id: EMBEDDED_NODE_ID,
+            id: EMBEDDED_ENTRY_ID,
             name: 'Embedded Node',
             baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
-            isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
             updatedAt: '2026-02-08T00:00:00.000Z',
-            capabilityProbeState: 'ready',
-            capabilities: { terminal: true, fileExplorerStreaming: true },
           },
           change.node,
         ],
@@ -316,15 +295,12 @@ describe('nodeStore', () => {
         version: 1,
         nodes: [
           {
-            id: EMBEDDED_NODE_ID,
+            id: EMBEDDED_ENTRY_ID,
             name: 'Embedded Node',
             baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
-            isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
             updatedAt: '2026-02-08T00:00:00.000Z',
-            capabilityProbeState: 'ready',
-            capabilities: { terminal: true, fileExplorerStreaming: true },
           },
         ],
       }),
@@ -336,31 +312,59 @@ describe('nodeStore', () => {
     const store = useNodeStore();
     await store.initializeRegistry();
 
-    const added = await store.addRemoteNode({
-      name: 'Docker Node',
-      baseUrl: 'http://localhost:8000',
-      capabilities: {
-        terminal: false,
-        fileExplorerStreaming: false,
-      },
-      capabilityProbeState: 'degraded',
-    });
+    const added = await store.addRemoteNode({ name: 'Docker Node', baseUrl: 'http://localhost:8000', nodeId: SRV_DOCKER });
 
-    expect(added.nodeType).toBe('remote');
-    expect(added.capabilities).toEqual({
-      terminal: false,
-      fileExplorerStreaming: false,
-    });
-    expect(added.capabilityProbeState).toBe('degraded');
+    expect(added).toMatchObject({ nodeType: 'remote', name: 'Docker Node', baseUrl: 'http://localhost:8000', nodeId: SRV_DOCKER });
+    expect(added).not.toHaveProperty('capabilities');
+    expect(added).not.toHaveProperty('capabilityProbeState');
     expect(upsertNodeRegistry).toHaveBeenCalledTimes(1);
-    expect(openNodeWindow).toHaveBeenCalledWith(added.id);
+    expect(openNodeWindow).not.toHaveBeenCalled();
+  });
+
+  it('one-nodes-tab AR-003: identifyNode sends the identify change, and nothing when the ID is already stored', async () => {
+    const snapshot = (nodeId?: string, version = 1): NodeRegistrySnapshot => ({
+      version,
+      nodes: [
+        { id: EMBEDDED_ENTRY_ID, name: 'Embedded Node', baseUrl: EMBEDDED_SERVER_BASE_URL, nodeType: 'embedded',
+          createdAt: '2026-02-08T00:00:00.000Z', updatedAt: '2026-02-08T00:00:00.000Z' },
+        { id: 'remote-1', name: 'http://localhost:8001', baseUrl: 'http://localhost:8001', nodeType: 'remote',
+          createdAt: '2026-02-08T00:00:00.000Z', updatedAt: '2026-02-08T00:00:00.000Z', ...(nodeId ? { nodeId } : {}) },
+      ],
+    });
+    const upsertNodeRegistry = vi.fn().mockImplementation(async (change) => snapshot(change.nodeId, 2));
+    setElectronApiMock({
+      getNodeRegistrySnapshot: vi.fn().mockResolvedValue(snapshot()),
+      onNodeRegistryUpdated: vi.fn().mockReturnValue(vi.fn()),
+      upsertNodeRegistry,
+    });
+    const store = useNodeStore();
+    await store.initializeRegistry();
+
+    await store.identifyNode('remote-1', SRV_DOCKER);
+    expect(upsertNodeRegistry).toHaveBeenCalledExactlyOnceWith({ type: 'identify', entryId: 'remote-1', nodeId: SRV_DOCKER });
+    expect(store.getEntryById('remote-1')?.nodeId).toBe(SRV_DOCKER);
+    await store.identifyNode('remote-1', SRV_DOCKER);
+    await store.identifyNode('remote-1', 'not-an-id');
+    await store.identifyNode('missing', SRV_DOCKER);
+    expect(upsertNodeRegistry).toHaveBeenCalledTimes(1);
+  });
+
+  it('one-nodes-tab: identifyNode in the browser updates the local list', async () => {
+    const store = useNodeStore();
+    await store.initializeRegistry();
+    const added = await store.addRemoteNode({ name: 'docker', baseUrl: 'http://localhost:8001' });
+    expect(added).not.toHaveProperty('nodeId');
+    await store.identifyNode(added.id, SRV_DOCKER);
+    expect(store.getEntryById(added.id)?.nodeId).toBe(SRV_DOCKER);
+    const persisted = JSON.parse(window.localStorage.getItem(NODE_REGISTRY_STORAGE_KEY) ?? '{}') as NodeRegistrySnapshot;
+    expect(persisted.nodes.find((node) => node.id === added.id)?.nodeId).toBe(SRV_DOCKER);
   });
 
   it('rejects removing embedded node', async () => {
     const store = useNodeStore();
     await store.initializeRegistry();
 
-    await expect(store.removeRemoteNode(EMBEDDED_NODE_ID)).rejects.toThrow(
+    await expect(store.removeRemoteNode(EMBEDDED_ENTRY_ID)).rejects.toThrow(
       'Embedded node cannot be removed',
     );
   });

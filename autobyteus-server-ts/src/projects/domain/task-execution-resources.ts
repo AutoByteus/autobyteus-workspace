@@ -150,17 +150,14 @@ export const reopenTaskExecution = (file: TaskExecutionResourceFile, execution: 
 export type TaskExecutionHistory = Readonly<{ currentTaskId: string; current: TaskExecutionResource; everStarted: boolean }>;
 const copyIdField = (execution: TaskExecutionReference): string => "agentRunId" in execution
   ? `target_agent_run_id "${execution.agentRunId}"` : `target_team_run_id "${execution.teamRunId}"`;
-const newCopyHint = (taskReference: string) => `or delegate Task ${taskReference} to a new task agent with recipient_address.`;
-/** A Task as named in agent-facing text: by its reference (a Project Task's key), or "a deleted Task" when it no longer exists. */
-const namedTask = (taskReference: string | null): string => taskReference === null ? "a deleted Task" : `Task ${taskReference}`;
 /**
- * Assign-existing eligibility on the copy's history (items 3-6 of the design's list; Task readability
- * and status are the caller's). Only an `assigned` copy, by its most recent assigner, whose current
- * Task is closed, that ever started, and not to the Task it already has. `taskId` is compared; texts name
- * Tasks by their agent-facing references (`currentTaskReference` null: the current Task was deleted).
+ * Assign-existing eligibility on the copy's history (Task readability and status are the caller's). Only an
+ * `assigned` copy, by its most recent assigner, that ever started; it may hold other open Tasks. Its closed
+ * current Task is not given again this way (it is continued by a reopen); a Task it already holds open is
+ * refused by `linkExistingTaskExecution`. `taskId` is compared; texts name Tasks by their agent-facing references.
  */
 export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | null,
-  input: Readonly<{ requestedBy: string; taskId: string; taskReference: string; currentTaskReference?: string | null; currentTaskStatus?: string }>): void => {
+  input: Readonly<{ requestedBy: string; taskId: string; taskReference: string }>): void => {
   const requested = input.taskReference;
   if (!history) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent has no Task; delegate Task ${requested} with recipient_address instead.`);
   const { current, currentTaskId } = history;
@@ -172,11 +169,7 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one. "
       + `Delegate Task ${requested} to a new task agent with recipient_address instead.`);
   }
-  if (current.closedAt === null) {
-    throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent still works on ${namedTask(input.currentTaskReference ?? null)}`
-      + `${input.currentTaskStatus ? ` (${input.currentTaskStatus})` : ""}. Set it to DONE or CANCELLED first, ${newCopyHint(requested)}`);
-  }
-  if (currentTaskId === input.taskId) {
+  if (current.closedAt !== null && currentTaskId === input.taskId) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${requested}. To continue it, `
       + `set Task ${requested} to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).`);
   }

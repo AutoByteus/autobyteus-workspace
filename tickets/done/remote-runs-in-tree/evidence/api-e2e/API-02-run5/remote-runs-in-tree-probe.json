@@ -1,0 +1,40 @@
+{
+  "startedAt": "2026-10-23T14:10:09.195Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 57729,
+      "nodeId": "srv_hpKCo5gAEteaNW3BpTWLwvG0Up7vP2U6"
+    },
+    "alpha": {
+      "port": 57728,
+      "nodeId": "srv_Lt_7IvJjDvxvyW75muPXDK09pa3mEBDq"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_50eb7c555f2644929d1c66e8e29f7c7a",
+    "remoteTeamRun": "studio_team_af70ee37f9ce47c3bb07cde866dce671",
+    "studioMembers": [
+      "publisher_c744e918bc76454494a0fcf5588218eb",
+      "checker_7799c4c074d84381979a03058ef6a513"
+    ],
+    "team": "remote_squad_5c54e3a9602b4ee0ba52473551d4e136",
+    "leadRun": "delegator_58e4ced0063b4c11b6defc3464e2012d",
+    "localA": "helper_a70d994a77704046a28064255f2dc309",
+    "remoteAgentRun": "publisher_62d6e38e2d86479c90c449120fb52911",
+    "localB": "helper_3b63b41b89ea48ee81ca6cd7eeb6e7a6",
+    "org": "remote_org_f57fe7f6ba6a4acd97ec7e22d83b999f",
+    "orgLead": "delegator_5775cbe3759b4676a0357563dcec34cf",
+    "orgRemoteRun": "publisher_3109ce5c62f34e10a9a208c732aa86e8"
+  },
+  "cases": {},
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "page.evaluate: TypeError: node?.querySelector(...)?.click is not a function\n    at eval (eval at evaluate (:290:30), <anonymous>:4:79)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at openTree (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:261:20)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:279:3",
+  "finishedAt": "2026-10-23T14:12:00.587Z"
+}

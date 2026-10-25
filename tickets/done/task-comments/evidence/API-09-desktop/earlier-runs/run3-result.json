@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "name": "J5-tab",
+      "result": "Pass",
+      "obs": {
+        "reachable": true,
+        "before": 5,
+        "after": 6,
+        "last": {
+          "id": "task-comment-6",
+          "meta": "#6 · this minute",
+          "text": "Added from the tab in the desktop app."
+        }
+      }
+    }
+  ],
+  "errors": []
+}

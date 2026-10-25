@@ -1,9 +1,9 @@
-import { assertContainedContextFile } from "../../../context-files/services/context-file-path-validation.js";
+import { assertContainedContextFile } from "../../frozen/server/context-files/services/context-file-path-validation.js";
 import path from "node:path";
-import { assertStoredFilename, buildFinalContextFileLocator, parseFinalContextFileOwnerDescriptor } from "../../../context-files/domain/context-file-owner-types.js";
-import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../../context-files/services/context-file-record-locators.js";
+import { assertStoredFilename, buildFinalContextFileLocator, parseFinalContextFileOwnerDescriptor } from "../../frozen/server/context-files/domain/context-file-owner-types.js";
+import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../frozen/server/context-files/services/context-file-record-locators.js";
 
-import { ReleasedRootRunPackageValidator, type CurrentRunPackage, type RootRunPackageReadinessDiagnostic } from "../../legacy/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
+import { ReleasedRootRunPackageValidator, type CurrentRunPackage, type RootRunPackageReadinessDiagnostic } from "../../frozen/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
 import { ContextFileCurrentLocatorValidator, ContextFileReferenceUnavailableError, localContextFileRoute } from "./context-file-current-locator-validator.js";
 type Owner = { teamRunId: string; agentRunId: string; address: string; directory: string; groupKey: string };
 export type TransitionGroup = { current: CurrentRunPackage; sources: ContextFileRecordSource[] };

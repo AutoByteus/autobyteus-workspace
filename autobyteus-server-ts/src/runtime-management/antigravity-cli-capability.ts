@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "./read-deadline.js";
 
 const COMMAND = process.env.ANTIGRAVITY_CLI_COMMAND?.trim() || "agy";
 const REQUIRED_FLAGS = ["--agent", "--new-project", "--add-dir", "--conversation", "--input-format", "--output-format", "--dangerously-skip-permissions"];
@@ -28,9 +29,10 @@ const DIAGNOSTICS: Readonly<Record<AgyDiscoveryDiagnosticCode, AgyDiscoveryDiagn
 
 export class AgyDiscoveryError extends Error {
   readonly diagnostic: AgyDiscoveryDiagnostic;
-  constructor(code: AgyDiscoveryDiagnosticCode) {
+  /** `cause`: a `DeadlineExceededError` when a read step's deadline ended the command. */
+  constructor(code: AgyDiscoveryDiagnosticCode, options?: { cause: Error }) {
     const diagnostic = DIAGNOSTICS[code];
-    super(diagnostic.message);
+    super(diagnostic.message, options);
     this.name = "AgyDiscoveryError";
     this.diagnostic = diagnostic;
   }
@@ -54,8 +56,11 @@ const AGY_SIGN_IN_PATTERN = /\b(?:please (?:sign|log) ?in|not (?:signed|logged) 
  * Child I/O is bounded and nonblocking; provider output never becomes a user-facing error.
  * A failed command's bounded output only selects a fixed diagnostic code.
  */
-const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: number): Promise<CommandOutput> =>
+const runCommand = (args: readonly string[], bound: CommandBound, outputLimit: number): Promise<CommandOutput> =>
   new Promise((resolve, reject) => {
+    const timedOut = () => new AgyDiscoveryError("AGY_MODEL_DISCOVERY_TIMEOUT", deadlineCause(bound));
+    // The step's deadline has passed: nothing starts.
+    if (bound.timeoutMs <= 0) { reject(timedOut()); return; }
     let child: ReturnType<typeof spawn>;
     try { child = spawn(COMMAND, [...args], { shell: false, stdio: ["ignore", "pipe", "pipe"] }); }
     catch { reject(new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED")); return; }
@@ -71,7 +76,7 @@ const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: num
         reject(error);
       } else resolve(output!);
     };
-    const timer = setTimeout(() => finish(undefined, new AgyDiscoveryError("AGY_MODEL_DISCOVERY_TIMEOUT")), timeoutMs);
+    const timer = setTimeout(() => finish(undefined, timedOut()), bound.timeoutMs);
     child.stdout!.on("data", (chunk: Buffer) => {
       if (settled) return;
       if (stdout.length + chunk.length > outputLimit) return finish(undefined, new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED"));
@@ -92,11 +97,17 @@ const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: num
     });
   });
 
-export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> => {
-  const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+/**
+ * `agy --help` (required options), then `agy models`. `deadline`: the end time of the whole read step; both commands
+ * share it (each gets its usual bound cut to the time left). Without it, the usual bounds.
+ */
+export const listAntigravityModels = async (
+  options: Readonly<{ deadline?: ReadDeadline }> = {},
+): Promise<{ id: string; name: string }[]> => {
+  const help = await runCommand(["--help"], commandBound(options.deadline, SHORT_PROBE_TIMEOUT_MS), SHORT_OUTPUT_LIMIT);
   if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
     throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
-  const result = await runCommand(["models"], MODELS_TIMEOUT_MS, MODELS_OUTPUT_LIMIT);
+  const result = await runCommand(["models"], commandBound(options.deadline, MODELS_TIMEOUT_MS), MODELS_OUTPUT_LIMIT);
   const models = result.stdout.split(/\r?\n/).map((line) => {
     const [id, name] = line.split("\t", 2);
     return id && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(id) && name ? { id, name } : null;
@@ -132,7 +143,7 @@ let cachedVersion: string | null = null;
 export const readAntigravityCliVersion = async (): Promise<string | null> => {
   if (cachedVersion) return cachedVersion;
   try {
-    const output = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+    const output = await runCommand(["--version"], commandBound(undefined, SHORT_PROBE_TIMEOUT_MS), SHORT_OUTPUT_LIMIT);
     cachedVersion = output.stdout.trim() || null;
   } catch {
     return null;

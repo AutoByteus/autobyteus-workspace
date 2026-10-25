@@ -1,0 +1,12 @@
+IMP-08b — packaged Electron harness on macOS (autobyteus-253, W-06, AC-008)
+Command: pnpm -C autobyteus-web test:e2e:electron --adapter direct; commit af81b3d7d2; macOS arm64; 2026-10-24
+Look for: '> autobyteus@1.5.9-beta.3 build:electron:mac', the electron-e2e-ready line, 'harness rc=0'. Full log: /tmp/h253-electron-harness.log (811 lines, not kept).
+> autobyteus@1.5.9-beta.3 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.3.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.3.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.3.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.3.zip'
+]
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":60556,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-ZLAAjo","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:60556","healthUrl":"http://127.0.0.1:60556/rest/health"}
+harness rc=0

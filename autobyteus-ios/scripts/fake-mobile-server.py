@@ -17,9 +17,8 @@ class Handler(BaseHTTPRequestHandler):
             body = json.dumps({
                 "phoneAccessEnabled": self.server.phone_access_enabled,
                 "pairingAvailable": True,
-                "compatibilityVersion": 1,
                 "serverName": "Fake AutoByteus Node",
-                "serverInstanceId": "fake-ios-smoke-node",
+                "nodeId": "fake-ios-smoke-node",
             }).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

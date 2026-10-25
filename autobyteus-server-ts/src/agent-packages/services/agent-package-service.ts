@@ -76,7 +76,7 @@ export class AgentPackageService {
     rootSettingsStore?: AgentPackageRootSettingsStore;
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
-    githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
+    githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">;
     reloadAgentPackageDefinitions?: ReloadAgentPackageDefinitionsFn;
     packageFolderWatchStatus?: PackageFolderWatchStatusFn;
     skillNames?: SkillNameGuard;

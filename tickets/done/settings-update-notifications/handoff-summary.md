@@ -74,7 +74,8 @@
 
 ## Release
 
-- `No release`. The user did not ask for one, and `RELEASE.md` defaults to finalize only. A beta can be cut on request. The two beta checks above apply to the first release that contains this change.
+- Beta `v1.5.8-beta.3` (DR-002) was published completely. The Task's done-when asked for a beta and the user's check; DR-001 had missed that.
+- The change is also in later betas. The user's check was accepted on `v1.5.9-beta.3`, relayed, with no item-level results (`release-deployment-report.md`, Verification).
 
 ## Residual Risks, Open Questions And Follow-ups
 

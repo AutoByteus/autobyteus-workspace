@@ -1,0 +1,28 @@
+# Case: API-05
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 6170227e3b (code 9b013fcc09)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2; clean env (env -i PATH HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.zp51tmm98Q TMPDIR)
+# Date: 2026-10-23T19:42:50Z
+
+# Excerpt of API-05-server-unit.log (summary lines). Full log (1372998 bytes): /tmp/ab280e2e/API-05-server-unit.log
+
+123:Agent 'recovery_tester_8913': LLM instance 'Parent' and 0 tools prepared and stored in state.
+427:Agent 'recovery_tester_4517': LLM instance 'Parent' and 0 tools prepared and stored in state.
+653:Agent 'recovery_tester_6990': LLM instance 'Parent' and 0 tools prepared and stored in state.
+973:Agent 'recovery_tester_9793': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1370:Agent 'recovery_tester_7872': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1671:Agent 'recovery_tester_4805': LLM instance 'Parent' and 0 tools prepared and stored in state.
+1917:Agent 'recovery_tester_6344': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2263:Agent 'recovery_tester_8896': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2564:Agent 'recovery_tester_7118': LLM instance 'Parent' and 0 tools prepared and stored in state.
+2901:Agent 'recovery_tester_3665': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3141:Agent 'recovery_tester_5558': LLM instance 'Parent' and 0 tools prepared and stored in state.
+3454:Agent 'recovery_tester_4245': LLM instance 'Parent' and 0 tools prepared and stored in state.
+4139:Agent 'recovery_tester_5317': LLM instance 'Parent' and 0 tools prepared and stored in state.
+6925:stdout | tests/unit/projects/project-task-search.test.ts > ProjectTaskSearchService > returns exact matches at once while meaning search prepares, then exact matches first and meaning matches after
+8450:stderr | tests/unit/embeddings/embedding-model-management.test.ts > EmbeddingIndex model management > shows an unavailable model with its reason, and Retry prepares it again at once (AC-012)
+9514:stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+13507: Test Files  797 passed | 4 skipped (801)
+13508:      Tests  6625 passed | 7 skipped (6632)
+13510:   Duration  719.19s (transform 17.38s, setup 8.99s, import 376.61s, tests 259.09s, environment 933ms)
+13512:# Exit code: 0

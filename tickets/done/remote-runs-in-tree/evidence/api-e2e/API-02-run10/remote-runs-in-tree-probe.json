@@ -1,0 +1,186 @@
+{
+  "startedAt": "2026-10-23T15:36:45.006Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 62476,
+      "nodeId": "srv_P1JNiFRvWQjiwG1pwLVOyjeklZe2Ui42"
+    },
+    "beta": {
+      "port": 62477,
+      "nodeId": "srv_6riMaSnO0qa9_qW_Rt2BV0opDCF2LJyc"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_343683375c8e458885402b639be5063c",
+    "remoteTeamRun": "studio_team_6b9fefa2d8c241d18a31dd909b5fd43a",
+    "studioMembers": [
+      "publisher_08526a66344345e4afdb8ccde4e6ccf4",
+      "checker_9edc605eb41047fd80b44b4131e24e5f"
+    ],
+    "team": "remote_squad_4086cb43b157466da03eb586b518e78f",
+    "leadRun": "delegator_af61f7a0ca9c442087a136e7f1de4bfa",
+    "localA": "helper_32be072f69f2401cbcb6dacea7dc9ada",
+    "remoteAgentRun": "publisher_abb479dfba6a41349809a4f2861e73b6",
+    "localB": "helper_7565d9e04084476b8ef24a47030fdece",
+    "org": "remote_org_6e1b39efa2c64d22bf4c66b1a53136b1",
+    "orgLead": "delegator_0116624c5cc04d52bbd32baa5e4fa09b",
+    "orgRemoteRun": "publisher_59ccedaf560b43a58a62dfe8c69f3053"
+  },
+  "cases": {
+    "RTP-01": {
+      "result": "Pass",
+      "remoteTeamRow": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.",
+      "memberRows": [
+        {
+          "member": "publisher_08526a66344345e4afdb8ccde4e6ccf4",
+          "present": true,
+          "chip": false
+        },
+        {
+          "member": "checker_9edc605eb41047fd80b44b4131e24e5f",
+          "present": true,
+          "chip": false
+        }
+      ]
+    },
+    "RTP-02": {
+      "result": "Pass",
+      "indexes": [
+        3,
+        4,
+        5
+      ],
+      "remoteAgent": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      },
+      "localA": {
+        "chip": null,
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "H",
+        "ariaLabel": "Temporary task agent, helper, level 1, idle, Started by lead, /helper, Task: Local first. Marker LOCAL-A."
+      }
+    },
+    "RTP-03": {
+      "result": "Pass",
+      "orgRemote": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node"
+      }
+    },
+    "RTP-04": {
+      "result": "Pass",
+      "affordances": {
+        "standaloneTeamMember": true,
+        "orgAgent": true,
+        "teamAgent": true
+      },
+      "views": {
+        "standaloneTeamMember": {
+          "headerTitle": "lead",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message lead on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "orgAgent": {
+          "headerTitle": "publisher - 3053",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "teamAgent": {
+          "headerTitle": null,
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        }
+      },
+      "liveAnswer": true,
+      "ownerMessageCount": 1,
+      "ownerHeadingShown": true,
+      "liveNote": null
+    },
+    "RTP-05": {
+      "result": "Pass",
+      "stopVisible": true,
+      "stoppedOnBeta": true,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    },
+    "RTP-06": {
+      "result": "Pass",
+      "unreachable": {
+        "chip": "beta-node",
+        "title": null,
+        "error": "Couldn't reach beta-node.\nRetry",
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node"
+      },
+      "retryVisible": true,
+      "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+      "localStillListed": true,
+      "afterRetry": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node"
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-10-23T15:40:04.867Z"
+}

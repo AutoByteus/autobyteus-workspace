@@ -1,0 +1,26 @@
+# Check: DLV-03 server unit on merge 8904a45087 (env -i HOME=<temp>): pnpm -C autobyteus-server-ts test:unit
+# Full log stays at /tmp/ab280dlv/DLV-03-merged-server-unit.log (size); excerpt:
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 803 passed | 4 skipped (808)
+      Tests  1 failed | 6656 passed | 7 skipped (6664)
+# Exit code: 1
+
+Only failure:
+ FAIL  tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > is available for a supported CLI with ACP agent mode (AC-001)
+AssertionError: expected { available: false, …(1) } to deeply equal { available: true, diagnostic: null }
+
+- Expected
++ Received
+
+  {
+-   "available": true,
+-   "diagnostic": null,
++   "available": false,
++   "diagnostic": {
++     "code": "GROK_CLI_UNSUPPORTED",
++     "message": "Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.",
++   },
+  }
+
+# Rerun alone, 3 times: vitest run tests/unit/runtime-management/grok/grok-build-capability.test.ts
+Tests  5 passed (5)  (x3)

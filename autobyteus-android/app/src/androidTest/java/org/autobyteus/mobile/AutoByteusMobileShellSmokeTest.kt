@@ -14,7 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionFailureKind
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 import org.autobyteus.mobile.shell.QrScanCoordinator
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.autobyteus.mobile.web.AutoByteusWebView
@@ -129,7 +129,7 @@ class AutoByteusMobileShellSmokeTest {
     fun webViewSettingsPermitUserSelectedContentUrisButNotFilePaths() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val profile = SavedNodeProfile.fromNormalized(
+        val entry = SavedNodeEntry.fromNormalized(
             NodeUrlNormalizer.normalize("https://desktop.tailnet-name.ts.net/mobile"),
         )
         instrumentation.runOnMainSync {
@@ -138,14 +138,14 @@ class AutoByteusMobileShellSmokeTest {
             // depending on MainActivity launch-idle state.
             val webHost = AutoByteusWebView(
                 context = context,
-                profile = profile,
+                entry = entry,
                 fileChooserCoordinator = WebFileChooserCoordinator(Activity()) {},
                 onPageStarted = {},
                 onPageFinished = {},
                 onDiagnostic = {},
                 onExternalUrl = {},
             )
-            val webView = webHost.create(profile.mobileUrl)
+            val webView = webHost.create(entry.mobileUrl)
             assertTrue(webView.settings.allowContentAccess)
             assertFalse(webView.settings.allowFileAccess)
             webHost.destroy()

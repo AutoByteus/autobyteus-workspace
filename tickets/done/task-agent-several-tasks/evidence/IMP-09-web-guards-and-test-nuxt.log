@@ -1,0 +1,33 @@
+# Check: IMP-09
+# Command: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals; test:nuxt --run
+# Commit tested: 1fa3a1d87e (branch codex/task-agent-several-tasks)
+# Environment: macOS 26.5.2 (darwin), Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-23 15:57 CEST
+# Excerpt: guard results and the web suite summary. Full web log: IMP-09-web-guards-and-test-nuxt.full.log.gz
+
+## guard:web-boundary
+
+[guard:web-boundary] Passed.
+exit=0
+
+## guard:localization-boundary
+
+[guard:localization-boundary] Passed.
+exit=0
+
+## audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:29439) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-several-tasks/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+exit=0
+
+## test:nuxt: lines with ' FAIL '
+# (none)
+
+## test:nuxt summary
+
+ Test Files  661 passed | 2 skipped (663)
+      Tests  4759 passed | 3 skipped (4762)
+   Start at  15:51:00
+   Duration  253.82s (transform 28.13s, setup 1688.54s, collect 144.92s, tests 87.14s, environment 147.46s, prepare 88.97s)
+
+exit=0

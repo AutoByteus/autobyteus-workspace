@@ -33,9 +33,9 @@ Memory files live under the configured memory root:
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
 - Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own message log (`communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files; see [Run History](./run_history.md), Message logs)
 - Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and its own message log (`team_communication_messages_*.jsonl`); their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
-- Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
-  `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
-  `source-node.json` and sync state in `sync-manifest.json`.
+- Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
+  `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
+  `memory-sync-source.json` and sync state in `sync-manifest.json`.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
 a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
@@ -178,7 +178,7 @@ names the Agent or Team, its coordinator for a Team, and what to do:
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
-content is an explicit read-only corpus under `memory/imports/<sourceNodeId>` and
+content is an explicit read-only corpus under `memory/imports/<memorySyncSourceId>` and
 must not be treated as runnable local run history, restore state, or a fallback
 runtime memory provider.
 
@@ -233,7 +233,7 @@ native rows for loaded contexts; it is not durable native cold replay. See
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
-2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
+2. User messages are observed only when the `AgentRun` forwards an admitted input to the runtime, whether it entered through `postUserMessage(...)` or a committed `reserveUserMessage(...)` slot (teammate delivery). Both keep the raw-trace `sourceEvent: "AgentRun.postUserMessage"` literal.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
 4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
 
@@ -406,7 +406,7 @@ different memory root; raw-trace readback depends on that root consistency.
 
 `MemoryExplorerSourceService` owns the Memory UI source boundary. Missing or
 null source input resolves to local memory. Imported source input validates the
-`sourceNodeId`, verifies that `memory/imports/<sourceNodeId>` exists, and roots
+`memorySyncSourceId`, verifies that `memory/imports/<memorySyncSourceId>` exists, and roots
 all agent/team/org explorer and view readers under that import root.
 
 Imported source reads are marked read-only. The backend must not silently fall
@@ -440,8 +440,8 @@ and org queries are additive; existing query names and arguments are unchanged.
 The `source` argument is a `MemoryExplorerSourceInput`:
 
 - `{ type: LOCAL }` reads `memory/agents`, `memory/agent_teams`, and `memory/agent_orgs`.
-- `{ type: IMPORTED, sourceNodeId }` reads the selected
-  `memory/imports/<sourceNodeId>` corpus.
+- `{ type: IMPORTED, memorySyncSourceId }` reads the selected
+  `memory/imports/<memorySyncSourceId>` corpus.
 
 The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemorySnapshots`) were replaced by these explorer queries for the Memory UI.
 

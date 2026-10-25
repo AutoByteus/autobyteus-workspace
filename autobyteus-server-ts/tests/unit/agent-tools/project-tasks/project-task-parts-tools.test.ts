@@ -92,7 +92,7 @@ describe("part_of through the tools (AC-014)", () => {
       expect(buildProjectTaskToolSchema(name).parameters.find((p) => p.name === "part_of")).toMatchObject({ required: false });
       expect(PROJECT_TASK_TOOL_DESCRIPTIONS[name]).toContain("one level only (a part can't have parts)");
     }
-    expect(PROJECT_TASK_TOOL_DESCRIPTIONS.update_task).toContain("Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (stopping their task agents); closedParts lists them.");
+    expect(PROJECT_TASK_TOOL_DESCRIPTIONS.update_task).toContain("Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them.");
     expect(PROJECT_TASK_TOOL_DESCRIPTIONS.update_task).toContain('"" clears it');
     for (const name of ["list_project_tasks", "search_project_tasks"] as const) expect(PROJECT_TASK_TOOL_DESCRIPTIONS[name]).toMatch(/partOf.*parts/);
   });

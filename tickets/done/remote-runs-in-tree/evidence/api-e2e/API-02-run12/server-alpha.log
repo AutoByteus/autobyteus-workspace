@@ -1,0 +1,135 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63305
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63305
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:5222) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agents/delegator_16136704551d4db881564aa1bb388c1d/raw_traces_active.jsonl
+{"level":40,"time":1792770302816,"pid":5222,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_ELvqg2tlbhxjwbEnL2k-XcFWaM5h4vEhLI7wcIPHwMM","statusCode":405,"elapsedMs":0.2742919921875,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_teams/remote_squad_2313a9139f1e4f0b92965b6615394413/delegator_87fc50686f27430d8dfe0a5b505400cd/raw_traces_active.jsonl
+{"level":40,"time":1792770304323,"pid":5222,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun__JyLjOMs3DuYpMWrF50fIJsUYYp981fXd7pVYHUdnQ8","statusCode":405,"elapsedMs":0.1261659860610962,"msg":"http request completed"}
+{"level":40,"time":1792770305403,"pid":5222,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun__JyLjOMs3DuYpMWrF50fIJsUYYp981fXd7pVYHUdnQ8","statusCode":405,"elapsedMs":0.2932090163230896,"msg":"http request completed"}
+{"level":40,"time":1792770306711,"pid":5222,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun__JyLjOMs3DuYpMWrF50fIJsUYYp981fXd7pVYHUdnQ8","statusCode":405,"elapsedMs":0.1359589695930481,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_0742d84ca37642babf4429526235c0d5/raw_traces_active.jsonl
+{"level":40,"time":1792770308400,"pid":5222,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_QP9L5sUd6G6-fUl6UQqmPMBWPh-1m6UXZn6RbVExRKI","statusCode":405,"elapsedMs":0.10162496566772461,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_teams/remote_squad_2313a9139f1e4f0b92965b6615394413/delegator_c857d2124611428889cf3298e8822a6b/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_teams/remote_squad_2313a9139f1e4f0b92965b6615394413/delegator_c857d2124611428889cf3298e8822a6b/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-runs-in-tree-DLXfJX/alpha/data/memory/agent_orgs/remote_org_c87c568fa73f41efa9f061d228bce52e/delegator_fbe06c3cfe1c4e08abfd27f346345ba7/raw_traces_active.jsonl

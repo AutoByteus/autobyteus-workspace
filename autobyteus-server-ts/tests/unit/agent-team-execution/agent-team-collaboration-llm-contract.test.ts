@@ -43,7 +43,8 @@ describe("approved collaboration tool descriptions", () => {
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
       sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
       // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).
-      delegateTool: "9c31105bb11c6a9aa3a82282a8f548a8eeba949c90d5480f41cd730dbb1ef677",
+      // task-agent-several-tasks (autobyteus-275): mode (3) also while the task agent holds other open Tasks.
+      delegateTool: "78be9b1ac468f3ba11bef98bafe645204af8338877caad02299784a8f5a2a404",
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
       delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
       delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
@@ -67,6 +68,9 @@ describe("approved collaboration tool descriptions", () => {
     expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Every call with an address creates another task agent or task agent team.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your run id");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("If you are a task agent yourself");
+    // task-agent-several-tasks: a task agent may hold several Tasks; it is freed when its last one closes.
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("This works only when you made its most recent assignment; its other open Tasks stay open, and it is freed when its last Task is closed.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).not.toContain("its current Task is DONE or CANCELLED");
   });
 
   it("names the IDs a delegation returns for what they are", () => {

@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization of `codex/settings-update-notifications` into `origin/personal`. No release (see Release Decision) and no deployment: the repository deploys no hosted service.
+Repository finalization of `codex/settings-update-notifications` into `origin/personal` (DR-001), then the beta `v1.5.8-beta.3` (DR-002). There is no deployment: the repository deploys no hosted service.
 
 ## Project Release Guide
 
@@ -58,13 +58,14 @@ Repository finalization of `codex/settings-update-notifications` into `origin/pe
   - the link builder is covered by `appReleasePage.spec.ts`;
   - Install calls the existing `appUpdateStore.installUpdateAndRestart()`, which the Settings → Updates button also uses;
   - the real download and staging are proven by API-14.
-- User check reference: the beta check on the first release containing this change (AC-003 real-feed link, AC-007 install on press)
+- User check reference: the Task's done-when requires the user's check in the app, on `v1.5.8-beta.3` (DR-002). Its two parts are AC-003, the Release page link with the real GitHub feed, and AC-007, install on "Install and restart". Result: the user's check is accepted, on `v1.5.9-beta.3`, which also contains this change. Relayed, not observed by delivery. On 2026-10-24 the Project Task Manager relayed, through the Solution Designer, that the user runs the latest version, `v1.5.9-beta.3`, and counts that as his in-app check for autobyteus-210 and for autobyteus-209's two open points. The user asked that neither Task be held open. No item-level results were reported, so this records the user's acceptance on the beta, not separate observations of each item. Source: `/Users/normy/autobyteus_org/delivery-receipts/update-checks-and-auto-updates-receipt-verification/receipt-verification.md` (Beta section).
 - Re-verification after later re-integration: see Repository Finalization
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the release guide's default. No release was requested in the ticket or later. A beta can be cut when the user asks.
+- Decision: `Beta` (`v1.5.8-beta.3`)
+- Decided by: the user. The Task's done-when, in `investigation-notes.md` (Initial Request), reads "…tests; merged; a beta; the user's check in the app". The user confirmed it on 2026-10-20: "lets release a new beta pelase" to delivery, and "we will release a new beta please" to the Solution Designer.
+- Correction (DR-002): DR-001 recorded `No release`, which missed the Task's done-when. The Solution Designer's receipt check found it as DG-001 (`/Users/normy/autobyteus_org/delivery-receipts/settings-update-notifications-receipt-verification/receipt-verification.md`).
 
 ## Docs Sync Result
 
@@ -83,7 +84,8 @@ Repository finalization of `codex/settings-update-notifications` into `origin/pe
 
 ## Version / Tag / Release Commit
 
-None. No release.
+- Release commit `3b2c86ca9e` `chore(release): bump workspace release version to 1.5.8-beta.3`. It changes only `autobyteus-web/package.json`, from `1.5.8-beta.2` to `1.5.8-beta.3`, and sits on `personal` `37da26836a`, which contains this ticket's merge `36da7e2e56`.
+- Annotated tag `v1.5.8-beta.3` on `3b2c86ca9e`. The number is the next unused beta after `v1.5.8-beta.2` (`release_versions.py next-beta`).
 
 ## Repository Finalization
 
@@ -104,13 +106,37 @@ None. No release.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A
-- Method reference / command: N/A
-- Pipelines triggered and their results: none (no tag)
-- Published artifacts checked against what the release should produce: N/A
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Applicable: `Yes`
+- Method: `Project Release Guide`
+- Method reference / command, run in a fresh worktree `finalize/beta-release-settings-update-notifications` from `origin/personal` `37da26836a`:
+  - checks before tagging:
+    - `python3 scripts/check_licensing.py`: exit 0;
+    - `python3 scripts/check_repository_artifact_hygiene.py`: exit 0;
+    - `scripts/check_secrets.sh v1.5.8-beta.2..HEAD`: PASS, 31 commits;
+  - `bash scripts/desktop-release.sh beta --branch finalize/beta-release-settings-update-notifications --no-push`;
+  - `git fetch origin personal`: unmoved at `37da26836a`;
+  - `git push origin HEAD:personal`: `37da26836a..3b2c86ca9e`;
+  - `git push origin v1.5.8-beta.3`, at 2026-10-20T14:37:41Z.
+- Pipelines triggered and their results, each watched with `gh run watch --exit-status`:
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 39440961012 | success, 15:09:08Z |
+| Android APK Release | 39440960899 | success, 14:42:24Z |
+| iOS App Store Connect Release | 39440961092 | success, 15:05:55Z (TestFlight upload) |
+| Server Docker Release | 39440960902 | success, 15:21:29Z |
+
+- Published artifacts checked against what the release should produce:
+  - `gh release view v1.5.8-beta.3`: `isPrerelease: true` with 17 assets, the complete set:
+    - macOS arm64 and x64: `.dmg`, `.zip` and their blockmaps;
+    - Linux x64 and arm64 AppImages;
+    - Windows `.exe`;
+    - Android APK and `.sha256`;
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.8-beta.3` and `:beta` both point to `sha256:f5a10da3b2a0…`. `:latest` is not moved by a pre-release.
+  - Release page: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.8-beta.3
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. A pre-release uses GitHub generated notes.
 - Blocker: None
 
 ## Post-Finalization Cleanup
@@ -124,13 +150,13 @@ None. No release.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `Not required` (no release). A later stable release writes curated notes; the user-facing summary is in `handoff-summary.md`, What Changed.
+- Release notes artifact created before verification / acceptance: `Not required`. A beta uses GitHub generated notes (`RELEASE.md`). A later stable release writes curated notes; the user-facing summary is in `handoff-summary.md`, What Changed.
 - Archived release notes artifact used for release/publication: N/A
 - Release notes status: `Not required`
 
 ## Deployment Steps
 
-None. The repository deploys no hosted service. The change reaches users with the next desktop release and Docker image.
+None. The repository deploys no hosted service. Beta users receive `1.5.8-beta.3` through the desktop auto-updater, with **Receive beta updates** on, or with `autobyteus-docker upgrade --all --tag beta`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -152,11 +178,11 @@ None. The repository deploys no hosted service. The change reaches users with th
 
 ## Final Status
 
-- Verification complete: `Yes` (from the evidence)
+- Verification complete: `Yes`, from the evidence plus the user's relayed acceptance on the beta
 - Repository finalization complete: `Yes`
-- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.8-beta.3`, complete in all four workflows)
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
-- Terminal package sent to the Solution Designer: see `delivery-revision-record.md` DR-001
+- Terminal package sent to the Solution Designer: DR-001, which the receipt check blocked on DG-001, then DR-002 (see `delivery-revision-record.md`)
 - Terminal message/reference: `Delivery Completed` to the Solution Designer

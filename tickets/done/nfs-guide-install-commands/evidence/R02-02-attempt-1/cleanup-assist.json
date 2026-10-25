@@ -1,0 +1,12 @@
+{
+  "case": "C01",
+  "date": "2026-10-24T04:14:28.552532+00:00",
+  "step": "Stop exact orphaned owned Chrome network helper holding browser.close after failed fixture; never global process kill",
+  "pid": 50147,
+  "ownedProfile": "playwright_chromiumdev_profile-WZ8FiK",
+  "ownershipVerified": true,
+  "signal": "SIGTERM",
+  "observation": [
+    "50147     1 49486 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/156.0.8078.47/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --no-sandbox --mute-audio --noerrdialogs --user-data-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/playwright_chromiumdev_profile-WZ8FiK --shared-files --field-trial-handle=1718379636,r,6230670137599835492,1748555830406085811,262144 --enable-features=CDPScreenshotNewSurface --disable-features=AutoDeElevate,AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,OptimizationHints,PaintHolding,RenderDocument,ThirdPartyStoragePartitioning,Translate --variations-seed-version --pseudonymization-salt-handle=1935764596,r,12740184870227693219,5314814212435569988,4 --trace-process-track-uuid=3190708989122997041"
+  ]
+}

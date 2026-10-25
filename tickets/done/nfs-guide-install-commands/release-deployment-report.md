@@ -1,34 +1,34 @@
-# Delivery / release / deployment — DR001
+# Delivery / release / deployment — DR002
 
-## Scope / guide / decision
-nfs-guide-install-commands / autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3. **Small/Low/Direct**; R1/SR001 Approved, SR002 Ready, IR001/API001 Pass96.43%. Architecture/source review N/A—not selected; test review Not Required. Root RELEASE.md at2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb read and followed, applicable web AGENTS also read. No deviations/proposed guide changes; only approved NFS subsection was changed by Implementation, not Delivery.
+Task **autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**; reopened **nfs-guide-install-commands**, R2/SR003 Approved / SR004 Ready / IR002 / API002 Pass95.71%. **Small / Low / Direct Low-Risk** unchanged; architecture/source review N/A—not selected, test review Not Required. No release.
 
-**No release**, explicit task direction/default. No version bump/tag/desktop or NFS publication, build-only release dispatch, deployment or storage/migration. Existing NFS v0.1.0 is a pinned display contract, not a release being executed by this task. release-notes.md is a functional future-release summary only.
+## Guide and decision
+Root RELEASE.md revision **83e8e12125a9fa32aebb3c6025b00eb8caf70d63** read with root/web AGENTS and TESTING. Deviations/proposed fixes: None. **No release**, explicit approved scope and guide default. No version/tag/publication/manual dispatch/deployment or NFS repository action. Release notes are future-release functional notes only.
 
-## Initial integration / impact plan
-Fetched origin/personal33171e13855b4bcbcb8a9d650f2403cacb03d965 before edits; already ancestor of clean ticket96941cbfacbfe6423dbb979340b611b742238c83. No checkpoint/integration conflict/base delta. Compared all non-ticket inputs with API-tested66b00b8c654c82f0fe8abd44a7094bf9b2799cc4: empty diff. No shared-foundation/dependency/harness/config change. All R01/R02/R03/C01 still valid; no runtime rerun justified. Delivery navigation-only docs correction does not invalidate renderer/clipboard execution. Fresh-target guard repeats before final merge/push; any actual advancement requires new impact analysis, not silent reuse.
+## Initial integration and impact
+Fresh fetch origin/personal **8b34e8ae108a281b0c93c679c60883df28a30773**; incoming **04951598bf70cda1f77d5d961597fc370a63f26b** tracked clean. Already current (5 ticket-only/source commits ahead,0 behind); merge returned Already up to date. Checkpoint Not needed, no base commits integrated/conflicts. All non-ticket files equal API-tested **4e308b716cf70ed5bc914ab780984e59df30af7f** and product **3d95a5c4a16759060983489735e77820661cff53**. R01/R02/R03/C01 **Still valid**: no tested-input change. No new foundation since API002, unlike old API001→R2 shared-foundation gap already addressed upstream. No redundant suite/typecheck/build/browser rerun for independence. Delivery edits start after integration check, are ticket-docs only. A later target advance must stop finalization for impact analysis.
 
-## Verification from evidence
-**Sufficient**. Checked raw current logs/driver/result and personally viewed en-desktop, zh-narrow, denial screenshots. Verification record delivery-evidence/dr-001/verification.json contains selected raw hashes and direct judgments, not just API score.
+## Verify from evidence — Sufficient
+Read current implementation Checks Run, API Cases/AC proof, actual raw logs, browser/negative-state drivers, raw result and screenshot files. Current54tests/5files (13component/24helper/10parent/7Docker; six inert shell controls included, not additive), helper tsc/three guards passed. Broader Required/executed current sandboxed Chrome156 on actual Nodes route; four views/36 nativecopies+Enter, current lifecycle/negative/safety proof. No duplicate executable run.
 
-| AC | What was seen | Judgment |
-|---|---|---|
-| AC001 | Exact pinned URL/hash; two OS checkers and `&&`/version-only invocation. IMP03 six inert shell controls; raw browser displayed+actual clipboard matches. Retained script digest verified. | Proven |
-| AC002 | Seven public no-args/create/connect/status/reconnect/detach/version commands, explicit installed path and role/approval/drain/wait descriptions in both locales. | Proven |
-| AC003 |36 native clipboard comparisons plus Enter/reset; controlled pending excludes second request, late resolve after unmount does not alter replacement; denied/missing clipboard manual selection. No host execution. | Proven |
-| AC004 | Current attributed null/invalid/partial tests, disabled install/links; Docker seven controls plus real adjacent rendering/copy before/after unchanged. | Proven |
-| AC005 | Both locales×two widths, nine unique names, polite status/tab-panel relation, code-local scroll/no document overflow; warnings/deferred limits visible, errors/unexpected queries0. | Proven |
+| Criterion | Direct judgment |
+|---|---|
+| AC001 | Proven: raw current IMP10 54tests/5files incl6 inert shell controls; unchanged helper; API002 independent expected2 installer strings/checksum/version compared in36copies; no live installer. |
+| AC002 | Proven: seven exact installed commands, one exact README _blank/noopener noreferrer, role/admin/drain/wait prose in real current page. |
+| AC003 | Proven: four views9 native clipboard comparisons each +Enter; current raw R03 pending/second exclusion/tab-unmount/late settle/denial/missing/manual selection true; no guide asset requests. |
+| AC004 | Proven: current component13/helper24/parent10/Docker7, IMP11 actual null and partial controls/version assertions read in driver and Pass result; Docker current real before/after unchanged. |
+| AC005 | Proven: en/zh-CN×1280/390 screenshots personally viewed;9unique accessible names/polite status/keyboard/code-local scroll, no document overflow; host safety/deferred notice preserved. |
+| AC006 | Proven: all4 raw views exactly1 advanced link, both removed labels absent, coherent reminder, version present and existing17px install padding; current durable both-locale state assertions; actual layout inspected. |
 
-API96.43% remains bounded renderer confidence, not whole-app/OS certification. Unrelated APIs/feeds and clipboard failures are explicitly emulated; actual success clipboard/router/components/catalogs real. No backend/Electron/installer/field/provider/user proof claimed. Earlier failed harness/setup attempts retained. User check Not required: direct evidence settles approved renderer behavior; no inaccessible account/node boundary.
+API confidence95.71 is appropriate for bounded renderer scope, not storage/full product acceptance. Unrelated APIs/health/feeds/current peer/capability/identity are fixture responses; negative clipboard states controlled. Real success clipboard/router/locales/components are current. Initial API002 attempt1 missing fixtures/implicit no-sandbox is retained failed history; current attempt2 fixes harness only, sandbox verified and errors0. Own close needed bounded recorded process-group cleanup; C01 proves absence. Prior IMP11 fixture corrections attributed, not erased. More evidence requested None; **user check Not needed**, no executed-user claim. Field task autobyteus-nfs-4 unaffected.
 
-## Docs / archive / gates
-Docs sync Pass: autobyteus-web/docs/nfs_guide.md now says Nodes → NFS Guide. Root NFS subsection/guide contract otherwise already accurate. Own summary/reports/history/notes created. Other owners' authorities/reports and raw evidence stay byte-identical during archive move. No new follow-up; existing autobyteus-nfs-4 unchanged.
+## Docs and ticket state
+Docs sync Pass. Implementation already updated autobyteus-web/docs/nfs_guide.md; no extra long-lived edit needed. Own handoff/docs/report/revision/functional notes synchronized. After verification archive current ticket to tickets/done/nfs-guide-install-commands; preserve upstream raw evidence/history and old detached receipt. Data Not Affected; no migration/reset.
 
-Input licensing/hygiene/secret gate all exit0 (five incoming commits secret-scanned). Final staged archive names must pass repository max200/Windows-path hygiene. Ticket and merged secret gates run again over actual committed ranges before pushes. Finalization order: archive → explicit-path ticket commit → secret gate → ticketpush → fresh personal --no-ff merge → mergedsecretgate/target guard → personalpush. Actual output receipts recorded after each effect; no canonical checkout operation.
+## Finalization plan and actual-result boundary
+Branch codex/nfs-guide-install-commands-r2 → freshly checked origin/personal using --no-ff, never canonical checkout. Explicit paths only. Before commit run artifact hygiene (max200/Windows/import tracking); before ticket push scan new commits; after merge repeat secret/hygiene/licensing, fetch+check target immediately before personal push. Record exact commits/tree equality/remotes in delivery-evidence/dr-002/finalization.json. No release workflow expected from branch push; read-only exact-SHA inventory after push, not a CI pass claim.
 
-## Cleanup / recovery / current status
-API's owned browser/process-group/port/HOME/TMP cleanup proven; Delivery starts no runtime. Preexisting ignored worktree dependencies/.nuxt remain outside its ownership and are not deleted speculatively. Final branch retirement/retained detached evidence checkout decision follows safe ancestry checks. No global prune or other-worktree cleanup.
+Initial snapshot: verification/docs Pass; repository finalization and safe cleanup **not yet performed**. No successful terminal claim until actual receipt. Source rollback if needed uses reviewed forward revert; no existing NFS release/tag manipulation or data transition.
 
-No persisted-data transition; no live storage. If a source rollback is necessary, use reviewed forward revert under guide; never alter existing published NFS artifacts/tags. No release pipeline expected from branch push (current four workflows tag/manual only); verify actual run inventory after finalization.
-
-Verification complete **Yes**; source finalization/push and safe cleanup **Pending actual receipt**, not Delivery Completed yet. No user-verification claim, TaskDone or terminal sent. Successful handoff only after required gates are Completed or truthfully Not required.
+## Cleanup and terminal plan
+Delivery creates no runtime. Check API-owned roots absent; preserve inherited ignored dependencies/.nuxt. Safely retire own local ticket/finalize branches after target ancestry proof; retain detached current authoritative receipt checkout and merged remote provenance (removal Not required while needed for terminal verification). No global prune, prior task/canonical/PM/live-node/NFS changes. Final completion section will explicitly distinguish remote source commit from local post-push receipt. Only fresh selected Solution Designer route receives authoritative terminal package after gates; no TaskDone operation.
