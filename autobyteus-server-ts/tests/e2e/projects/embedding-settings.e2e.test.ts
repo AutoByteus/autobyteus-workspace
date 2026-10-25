@@ -65,7 +65,7 @@ describe("Embedding settings over the production GraphQL boundary", () => {
     throw new Error("state never reached");
   };
   const indexOf = (current: Status, id: string) => current.projectTaskIndexes.find((project) => project.projectId === id)!;
-  const createTask = (description: string) => ok("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId, description } });
+  const createTask = (description: string) => ok("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId, title: description, description } });
 
   beforeAll(async () => {
     flags = Object.fromEntries(Object.entries(process.env).filter(([k, v]) => (k.startsWith("ENABLE_") || k.startsWith("AUTOBYTEUS_")) && v !== undefined)) as Record<string, string>;
@@ -195,10 +195,10 @@ describe("Embedding settings over the production GraphQL boundary", () => {
     const search = vi.spyOn(fake.index, "search");
     const started = Date.now();
     const created = (await ok<{ createProjectTask: { taskId: string } }>("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}",
-      { i: { projectId: fresh, description: "Invoice PDF export fails for long names" } })).createProjectTask;
+      { i: { projectId: fresh, title: "Invoice PDF export fails for long names", description: "Invoice PDF export fails for long names" } })).createProjectTask;
     await ok("mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){taskId}}",
-      { i: { projectId: fresh, taskId: created.taskId, description: "Invoice PDF export fails for long customer names" } });
-    await ok("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId: fresh, description: "Refund flow for annual plans" } });
+      { i: { projectId: fresh, taskId: created.taskId, title: "Invoice PDF export fails for long customer names", description: "Invoice PDF export fails for long customer names" } });
+    await ok("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId: fresh, title: "Refund flow for annual plans", description: "Refund flow for annual plans" } });
     expect(Date.now() - started).toBeLessThan(1_000);
     expect(indexOf(await status(), fresh).state).toBe("NOT_INDEXED");
     for (const deadline = Date.now() + 10_000; Date.now() < deadline && indexOf(await status(), fresh).state !== "READY";) {

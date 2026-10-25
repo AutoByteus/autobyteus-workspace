@@ -1032,7 +1032,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const file = path.join(alpha.workspace, "draft.txt");
     await fsp.writeFile(file, "draft");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-09 project" } })).createProject.projectId as string;
-    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description: "Saved work." } })).createProjectTask.taskId as string;
+    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved work.", description: "Saved work." } })).createProjectTask.taskId as string;
     const sentBefore = captured.length;
     const runsBefore = await remoteRunDirs();
     const withFiles = await delegateRemote(solo, "With a file.", { reference_files: [file] });
@@ -1056,7 +1056,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   it("RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered", async () => {
     const manager = await createStandalone(alpha, defs.manager, "alpha manager");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-10 project" } })).createProject.projectId as string;
-    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId,
+    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Delegate the project work to beta",
       description: callTool("delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Project work. Marker PROJECT-PACKET." }) } })).createProjectTask.taskId as string;
     const assigned = await calls(manager, "delegate_task", { recipient_address: "/remote_worker", task_id: taskId });
     expect(assigned, JSON.stringify(assigned)).toMatchObject({ delegated: true });
@@ -1239,7 +1239,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(coordinator, "CLOSURE-PACKET");
     // A saved Project Task, to the running remote Team copy and to a new remote Team: refused, nothing sent or started.
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-23 project" } })).createProject.projectId as string;
-    const savedTaskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description: "Saved Team work." } })).createProjectTask.taskId as string;
+    const savedTaskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved Team work.", description: "Saved Team work." } })).createProjectTask.taskId as string;
     const sentBefore = captured.length;
     const teamRunsBefore = await betaTeamRunDirs();
     const savedTaskRefusal = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.";

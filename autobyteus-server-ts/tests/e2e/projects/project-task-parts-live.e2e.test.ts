@@ -182,12 +182,20 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
   }, 120000);
 
   it("POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)", async () => {
+    // autobyteus-260: each Task is created with a title (here its one-line description); acknowledgements name it and
+    // leave out empty fields (no dependsOn, no partOf without a parent).
+    const titles: Record<string, string> = {};
     const ack = (taskId: string, status: string, partOf: string | null, extra: Record<string, unknown> = {}) =>
-      ({ task: { projectId, taskId, status, dependsOn: [], partOf, ...extra } });
+      ({ task: { projectId, taskId, title: titles[taskId], status, ...(partOf ? { partOf } : {}), ...extra } });
+    const create = async (description: string, extra: Record<string, unknown> = {}) => {
+      const created = (await manager.calls(callTool("create_task", { project_id: projectId, title: description, description, ...extra }))).task;
+      titles[created.taskId] = created.title;
+      expect(created.title).toBe(description);
+      return created.taskId as string;
+    };
     // The Manager creates the bigger Task and its parts through its own tools (by key, in another letter case).
-    const parent = (await manager.calls(callTool("create_task", { project_id: projectId, description: "P: cross-node collaboration" }))).task;
-    const P = parent.taskId as string;
-    const make = async (description: string, partOf: string) => (await manager.calls(callTool("create_task", { project_id: projectId, description, part_of: partOf }))).task.taskId as string;
+    const P = await create("P: cross-node collaboration");
+    const make = async (description: string, partOf: string) => create(description, { part_of: partOf });
     const A = await make("A: transport (delegated)", P.toUpperCase());
     const B = await make("B: protocol notes", P);
     const C = await make("C: discovery (done)", P);
@@ -234,7 +242,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(liveAgyCwds().some((cwd) => cwd.includes(workerA))).toBe(false);
 
     // AC-018 (DONE) on a second parent: its running part's task agent stops and its To Do part is DONE as well.
-    const Q = (await manager.calls(callTool("create_task", { project_id: projectId, description: "Q: release the bigger Task" }))).task.taskId as string;
+    const Q = await create("Q: release the bigger Task");
     const E = await make("E: build (delegated)", Q);
     const F = await make("F: notes", Q);
     const workerE = await delegateRunning(E, "PRE-CASCADE-E");
@@ -251,7 +259,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     evidence.done = { parent: Q, parts: { E, F }, workerE, done };
 
     // AC-006: a part's own close never changes its parent (R stays TODO; no closedParts).
-    const R = (await manager.calls(callTool("create_task", { project_id: projectId, description: "R: still open" }))).task.taskId as string;
+    const R = await create("R: still open");
     const H = await make("H: last slice", R);
     expect(await manager.calls(callTool("update_task", { task_id: H, status: "DONE" }))).toEqual(ack(H, "DONE", R));
     expect((await task(R)).status).toBe("TODO");
@@ -272,7 +280,9 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
       expect(upserts(id, feedFrom).at(-1)).toMatchObject({ partOfTaskId: null, updatedAt: partsBefore[id].updatedAt });
     }
     const listed = await manager.calls(callTool("list_project_tasks", { project_id: projectId }));
-    const byKey = Object.fromEntries((listed.tasks as any[]).map((t) => [t.taskId, { status: t.status, partOf: t.partOf, parts: t.parts }]));
+    // Absent partOf / parts read as none (REQ-001).
+    expect((listed.tasks as any[]).every((t) => t.partOf !== null && !(Array.isArray(t.parts) && t.parts.length === 0))).toBe(true);
+    const byKey = Object.fromEntries((listed.tasks as any[]).map((t) => [t.taskId, { status: t.status, partOf: t.partOf ?? null, parts: t.parts ?? [] }]));
     expect(byKey[P]).toEqual({ status: "TODO", partOf: null, parts: [A, C, D] });
     expect(byKey[E]).toEqual({ status: "DONE", partOf: null, parts: [] });
     expect(byKey[R]).toEqual({ status: "TODO", partOf: null, parts: [H] });
@@ -293,7 +303,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(onTemp).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID", message: "Only Project Tasks have a parent; this Task has no Project." } });
     const clearOnTemp = await manager.calls(callTool("update_task", { task_id: adHocTaskId, part_of: "" }));
     expect(clearOnTemp).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID" } });
-    const createUnder = await manager.calls(callTool("create_task", { project_id: projectId, description: "never created", part_of: adHocTaskId }));
+    const createUnder = await manager.calls(callTool("create_task", { project_id: projectId, title: "never created", description: "never created", part_of: adHocTaskId }));
     expect(createUnder).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID", message: `Task '${adHocTaskId}' is not a current Task of this Project.` } });
     const moveUnder = await manager.calls(callTool("update_task", { task_id: someTask, part_of: adHocTaskId }));
     expect(moveUnder).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID" } });
@@ -301,7 +311,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(await adHocEntries()).toEqual(["agent_run_resources.json", "task.json"]);
     expect(await tasks()).toEqual(projectTasksBefore);
     // A text patch on the Temp task still works and its result has no Project fields.
-    expect(await manager.calls(callTool("update_task", { task_id: adHocTaskId, description: "Patched text" }))).toEqual({ task: { projectId: null, taskId: adHocTaskId, status: expect.any(String) } });
+    expect(await manager.calls(callTool("update_task", { task_id: adHocTaskId, description: "Patched text" }))).toEqual({ task: { taskId: adHocTaskId, status: expect.any(String) } }); // a Task with no Project has no projectId (REQ-001)
     evidence.temp = { adHocTaskId, onTemp, clearOnTemp, createUnder, moveUnder };
   }, 300000);
 

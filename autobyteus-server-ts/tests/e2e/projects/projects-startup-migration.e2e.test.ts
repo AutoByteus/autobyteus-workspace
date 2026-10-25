@@ -186,7 +186,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     const draftFile = await fetch(`${first.origin}/rest/projects/project_ctx/task-context-drafts/${draft.draftId}/context-files/${draft.storedFilename}`);
     expect(draftFile.status).toBe(200); expect(await draftFile.text()).toBe("draft bytes before upgrade");
     const created = (await first.gql("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId contextFiles{storedFilename}}}",
-      { i: { projectId: "project_ctx", description: "Saved from a pre-upgrade draft", contextDraft: { draftId: draft.draftId, storedFilenames: [draft.storedFilename] } } })).createProjectTask;
+      { i: { projectId: "project_ctx", title: "Saved from a pre-upgrade draft", description: "Saved from a pre-upgrade draft", contextDraft: { draftId: draft.draftId, storedFilenames: [draft.storedFilename] } } })).createProjectTask;
     // Saving a draft gives the Task file its own stored name (normal save behavior); the bytes are the draft's.
     expect(created.contextFiles).toHaveLength(1);
     expect(created.contextFiles[0].storedFilename).toMatch(/^ctx_[0-9a-f]{12}__draft-notes\.txt$/);
@@ -294,7 +294,9 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), pid, "tasks", tid, "task.json"), "utf8")))
       .toEqual({ taskId: tid, projectId: pid, description: "Saved task from HEAD writer", status: "TODO",
-        createdAt: "2026-10-02T00:00:00.000Z", updatedAt: "2026-10-02T00:00:00.000Z", contextFiles: [], taskKey: "released-array-witness-1" });
+        createdAt: "2026-10-02T00:00:00.000Z", updatedAt: "2026-10-02T00:00:00.000Z", contextFiles: [], taskKey: "released-array-witness-1",
+        // autobyteus-260: the next startup migration titles the Task from its first line.
+        title: "Saved task from HEAD writer" });
     expect(await fs.readFile(path.join(projectsDir(), pid, "drafts", draft.draftId, draft.storedFilename), "utf8")).toBe("standalone draft");
     expect(await exists(path.join(projectsDir(), "task_context_drafts"))).toBe(false);
 
@@ -305,7 +307,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     const read = await app.gql(`query($id:String!){projects{projectId name taskCount} projectTasks(projectId:$id){taskId description status}}`, { id: pid });
     expect(read.projects).toEqual([{ projectId: pid, name: "Released array witness", taskCount: 1 }]);
     expect(read.projectTasks).toEqual([{ taskId: tid, description: "Saved task from HEAD writer", status: "TODO" }]);
-    await app.gql(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){taskId}}`, { i: { projectId: pid, taskId: tid, description: "Ordinary first metadata write" } });
+    await app.gql(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){taskId}}`, { i: { projectId: pid, taskId: tid, title: "Saved task from HEAD writer", description: "Ordinary first metadata write" } });
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), pid, "tasks", tid, "task.json"), "utf8")).description).toBe("Ordinary first metadata write");
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
   }, 180_000);
@@ -345,7 +347,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(await keyed(first, "project_main")).toEqual([["task_early", "autobyteus-1"], ["task_late", "autobyteus-2"]]);
     expect(await keyed(first, "project_agents")).toEqual([["task_agent", "autobyteus-agents-1"]]);
     const created = (await first.gql("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey dependsOnTaskIds}}",
-      { i: { projectId: "project_main", description: "After the upgrade", dependsOnTaskIds: ["task_early"] } })).createProjectTask;
+      { i: { projectId: "project_main", title: "After the upgrade", description: "After the upgrade", dependsOnTaskIds: ["task_early"] } })).createProjectTask;
     expect(created).toMatchObject({ taskKey: "autobyteus-3", dependsOnTaskIds: ["task_early"] });
     expect((await fetch(`${first.origin}/rest/health`)).status).toBe(200);
     await stop(first.child);

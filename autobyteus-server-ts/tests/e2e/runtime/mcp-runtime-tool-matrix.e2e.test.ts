@@ -222,7 +222,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     const { socket, messages, turn } = await openSocket(runId);
     const description = `MCP matrix agy ${randomUUID().slice(0, 8)}`;
     const httpMark = httpServer.toolCalls().length;
-    await turn(`CALL_TOOL:${JSON.stringify({ name: "create_task", arguments: { project_id: projectId, description } })}`);
+    await turn(`CALL_TOOL:${JSON.stringify({ name: "create_task", arguments: { project_id: projectId, title: description, description } })}`);
     const created = await taskByDescription(description);
     expect(created?.status).toBe("TODO");
     await turn(`CALL_TOOLS:${JSON.stringify([
@@ -244,7 +244,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
       const description = `MCP matrix ${runtime} ${randomUUID().slice(0, 8)}`;
       const httpMark = httpServer.toolCalls().length;
       await turn([
-        `1. Call create_task with project_id "${projectId}" and description "${description}".`,
+        `1. Call create_task with project_id "${projectId}", title "${description}" and description "${description}".`,
         "2. Call update_task with the task_id that step 1 returned and status \"DONE\".",
         `3. Call ${STDIO_TOOL} with name "MATRIX_ENV".`,
         `4. Call ${HTTP_TOOL} with no arguments.`,
@@ -276,7 +276,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     const text = (r: CallResponse) => (r.content ?? []).map((c) => c.text ?? "").join("");
     const description = `MCP matrix codex-mcp ${randomUUID().slice(0, 8)}`;
     const httpMark = httpServer.toolCalls().length;
-    const created = await call("create_task", { project_id: projectId, description });
+    const created = await call("create_task", { project_id: projectId, title: description, description });
     const taskId = (JSON.parse(text(created)) as { task: { taskId: string } }).task.taskId;
     const responses = [created, await call("update_task", { task_id: taskId, status: "DONE" }),
       await call(STDIO_TOOL, { name: "MATRIX_ENV" }), await call(HTTP_TOOL, {})];

@@ -304,7 +304,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `Task reactivation ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const task = async (description: string) => (await graphql(
-      `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description } })).createProjectTask.taskId as string;
+      `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask.taskId as string;
     // A Team-root member is not delegable by its own Team (collaboration-model-contract): the Team root delegates by catalog address, as the Agent root does; an Org keeps its sibling units.
     const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
     const helperAddress = kind !== "org" ? `/${segment(names.helper)}` : "/helper";
@@ -542,7 +542,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `Task cancelled ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const createdC = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`,
-      { input: { projectId, description: "Draft the migration guide." } })).createProjectTask;
+      { input: { projectId, title: "Draft the migration guide.", description: "Draft the migration guide." } })).createProjectTask;
     // Tool results name the Project Task by its key; the stored long ID stays its identity (files, feed).
     const taskC = createdC.taskId as string, taskCKey = createdC.taskKey as string;
     const cDir = projectTaskDir(projectId, taskC);
@@ -659,7 +659,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     await root.waitForNodes("Temp task copy", (nodes) => nodes.some((node) => node.agentRunId === plain));
     view = root.state.view; from = view.frames.length; feedFrom = feedFrames.length;
     const adHocAck = await root.managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "CANCELLED" }));
-    expect(adHocAck).toMatchObject({ task: { projectId: null, taskId: adHocTaskId, status: "CANCELLED" } });
+    expect(adHocAck).toEqual({ task: { taskId: adHocTaskId, status: "CANCELLED" } }); // a Task with no Project has no projectId (REQ-001)
     await until(() => view.frames.slice(from).some(root.closedFrame), "live closure of the Temp task copy", 60_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.closedFrame)!))).toEqual([`agent:${plain}`]);
     expect(JSON.parse(await readBytes(path.join(adHocTaskDir(adHocTaskId), "task.json"))).status).toBe("CANCELLED");
@@ -713,7 +713,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `Task reactivation race ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const taskId = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-      { input: { projectId, description: "Write the release notes." } })).createProjectTask.taskId as string;
+      { input: { projectId, title: "Write the release notes.", description: "Write the release notes." } })).createProjectTask.taskId as string;
     const root = await startRoot("agent");
     const other = await startRoot("agent");
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker)}`, task_id: taskId }));
@@ -765,7 +765,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       { input: { name: `Task reactivation live ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const codeword = `PELICAN-${Math.floor(1000 + Math.random() * 9000)}`;
     const taskId = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-      { input: { projectId, description: `Remember this codeword for later: ${codeword}. Do not use any tools. Reply with only the word READY.` } })).createProjectTask.taskId as string;
+      { input: { projectId, title: "Remember a codeword", description: `Remember this codeword for later: ${codeword}. Do not use any tools. Reply with only the word READY.` } })).createProjectTask.taskId as string;
     // The scripted Manager drives the tools; the worker member runs on a real Claude model.
     const root = await startRoot("org", ids.claudeOrg, [{ address: "/worker", configuration: {
       workspaceRootPath: workspace, llmModelIdentifier: "haiku", llmConfig: null, autoExecuteTools: true, runtimeKind: "claude_agent_sdk" } }]);
