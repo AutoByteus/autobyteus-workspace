@@ -691,9 +691,10 @@ live pages with scripted AGY agents calling the actual tools.
 **PMU-013** covers compact cards with real-length fixtures (a ~10,000-word
 paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 1440 and 1024 px:
-- each summary and preview renders within 2 lines, and the card height is bounded;
+- each main line (the title, or a Temp task's first line) and preview renders
+  within 2 lines, and the card height is bounded;
 - accessible names are short, and the delete confirmation uses the shortened
-  summary;
+  main line;
 - short text is unchanged;
 - search finds words beyond the visible lines;
 - both Task pages show the full description.
@@ -703,7 +704,7 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - CJK text is hard-cut at 300 characters;
 - a 5,000-character unbroken token wraps without horizontal overflow;
 - a long Task keeps its context-file line and worker line visible;
-- a short summary appears in full in the delete confirmation.
+- a short main line appears in full in the delete confirmation.
 
 **PMU-015–016** cover the right-panel Projects tab:
 - it is the first tab, with a live board beside the chat;

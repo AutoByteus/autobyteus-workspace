@@ -7,6 +7,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer delivery handoff (CRR-005 Pass, API-REV-002 Pass) | N/A | Blocked: Local Fix to implementation | `delivery-revision-record.md`, `follow-ups.md` (FU-008), `evidence/DEL-01-…` |
+| DR-002 | Code reviewer handoff after the DR-001 fix (CRR-006 Pass, API-REV-003 Pass 95%, CRR-007 N/A) | DR-001 Blocked | Delivered: verified, finalized on `personal`, beta requested by the user | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `evidence/DEL-02-…`, `autobyteus-web/docs/projects.md` |
 
 ## Revision Entries
 
@@ -43,3 +44,20 @@
 - Remaining blockers, rollback concerns, or untested scope:
   - Release note to carry: rolling back after the title migration is not supported (design spec, Migration Plan).
   - REQ-012 agents repo (`codex/agent-tool-results-omit-empty` @ `82b7bae`) is still to be finalized.
+
+### DR-002 — Verified, finalized and released as a beta
+
+- Delivery round and trigger: second round. The code reviewer's handoff reported DR-001 cleared: fix `7c60cb4909`, CRR-006 Pass, API-REV-003 Pass (95%), CRR-007 Not Applicable.
+- Prior authoritative result: DR-001 `Blocked` (Local Fix). Resolved by `7c60cb4909`.
+- Current authoritative result: `Delivery Completed`, once the release outcome in `release-deployment-report.md` is recorded.
+- Docs sync report: `docs-sync-report.md` (Updated: `autobyteus-web/docs/projects.md`, AC-009 wording)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification:
+  - `origin/personal` had advanced again, to `84dc0b2156` (autobyteus-273, beta.8). Checkpoint `1bb590bdae`, then merge `3531463a04` (clean).
+  - DEL-02 on the merged code: server typecheck exit 0; 1774 of 1775 server unit and architecture tests passed, and the one failure is FU-008 (already on `personal`); web guards passed; web tests 2056 of 2056.
+- Verification and finalization state: verified from the evidence; no user check needed. Every critical AC is directly proven at 95%.
+- Release decision: Beta (the user, 2026-10-25).
+- Companion repo: autobyteus-agents PR #124 merged as `004d509ff4`.
+- Why recorded: the delivery round completed.
+- Next recipient/action: Solution Designer (terminal receipt).
