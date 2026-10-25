@@ -105,10 +105,13 @@ const isAbortTimeout = (error: unknown): boolean => (error as { name?: unknown }
 const failureText = (subject: string, error: unknown): UnknownText => {
   if (isDeadlineExceeded(error) || isAbortTimeout(error)) return `unknown: ${subject} timed out`;
   if (error instanceof UsageLimitsUnreadableError || error instanceof ProviderUsageUnreadableError) {
-    return `unknown: ${subject} could not be read: ${error.reason}`;
+    return unreadableText(subject, error.reason);
   }
   return `unknown: ${subject} could not be read`;
 };
+
+/** "<subject> could not be read: <reason>", for a classified reason (a reader's, or a discovered source's state). */
+const unreadableText = (subject: string, reason: string): UnknownText => `unknown: ${subject} could not be read: ${reason}`;
 
 const toAvailableModel = (model: ModelInfo): AvailableModel => ({
   id: model.model_identifier,
@@ -323,8 +326,8 @@ export class AvailableAgentRuntimesService {
       this.dependencies.modelCatalog.reloadProviderModelCatalog(providerId, RuntimeKind.AUTOBYTEUS), deadline));
     if (!reload.ok) return { state: "unknown", text: failureText(subject, reload.error) };
     const failed = reload.value.sources.find((source) => FAILED_SOURCE_STATES.has(source.state));
-    if (failed) return { state: "unknown", text: `unknown: ${subject} could not be read: ${failed.safeMessage ?? "discovery failed"}` };
-    if (!reload.value.llmModels.length) return { state: "unknown", text: `unknown: ${subject} could not be read: the endpoint listed no models` };
+    if (failed) return { state: "unknown", text: unreadableText(subject, failed.safeMessage ?? "discovery failed") };
+    if (!reload.value.llmModels.length) return { state: "unknown", text: unreadableText(subject, "the endpoint listed no models") };
     return { state: "read", models: reload.value.llmModels };
   }
 }
