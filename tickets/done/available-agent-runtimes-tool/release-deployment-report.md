@@ -146,9 +146,9 @@ Recorded after the merge in "Finalization Record" below.
 - Repository finalization complete: `Yes` (`eac8ee6dfc` on `personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (no release)
 - Applicable safe cleanup complete or not required: `Yes`
-- Unresolved blocker: `None` at DR-001. Since the receipt check: the user's desktop/Docker-node check is open (DR-002)
-- Successful terminal package eligible for return: `Yes` at DR-001; `No` until the user's check or waiver is recorded (DR-002)
-- Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed (confirmed in the delivery conversation)
+- Unresolved blocker: `None`. The user's desktop/Docker-node check, reopened in DR-002, was waived by the user in DR-003
+- Successful terminal package eligible for return: `Yes` (DR-003: user waiver recorded)
+- Terminal package sent to the Solution Designer: corrected receipt (DR-003) sent with `send_message_to` to the Solution Designer right after the DR-003 record was pushed. DR-001's receipt was also sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed (confirmed in the delivery conversation)
 
 ## Beta Release (DR-002)
 
@@ -196,3 +196,18 @@ Recorded after the merge in "Finalization Record" below.
   - DR-001 recorded that check as optional. That was a delivery misjudgement.
 - Status: **awaiting the user's check or explicit waiver.** The check is Settings → Model Routing → "Agent runtimes now" in the user's desktop window and in a Docker-node window. 1.5.9-beta.7 now makes the change available in both places.
 - Once the check is in, it will be recorded here and in `delivery-revision-record.md`, and the corrected receipt goes to the Solution Designer.
+
+## User Waiver Of The Desktop / Docker-Node Check (DR-003)
+
+- After the beta was released, the delivery engineer asked the user to check Settings → Model Routing → "Agent runtimes now" on 1.5.9-beta.7, in their desktop window and in a Docker-node window, or to waive the check.
+- The user's reply in the delivery conversation on 2026-10-25, verbatim: "task done then".
+- Recorded as: **the user's explicit decision to close the Task without performing that check (waiver).** It is not recorded as a passed check: the user reported no observation of the page.
+- Verification basis that therefore stands:
+  - DR-001's evidence judgement: all 12 critical acceptance criteria proven, including AC-010 on a real stack with a remote-node window (MRP-01…07).
+  - API/E2E's API-14 after DR-001: live agents on all five runtimes; the data received matched each runtime's direct answer value for value.
+  - The beta's successful rollout (DR-002).
+- What remains unobserved, by the user's decision:
+  - the page in the user's own desktop and Docker-node windows;
+  - ASM-001: signed-in CLIs inside a Docker node;
+  - AC-006: what Grok's used % means (UNK-001).
+- The "Receipt Correction (DR-002, open)" above is resolved by this waiver.
