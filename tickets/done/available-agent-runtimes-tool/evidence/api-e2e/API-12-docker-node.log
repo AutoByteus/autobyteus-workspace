@@ -1,0 +1,62 @@
+# API-12 — test-owned Docker node (ASM-001)
+# docker run -d --name aar303-api12-test -p 127.0.0.1:52681:8000 -v <worktree>/autobyteus-server-ts/dist:/app/autobyteus-server-ts/dist:ro -v ~/.autobyteus-test/vault:/test-vault:ro -e AUTOBYTEUS_TEST_VAULT=/test-vault autobyteus/autobyteus-server:beta
+# Image created 2026-10-24T20:06Z (codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70); no user volume, so every CLI is installed and signed out. dist built from 683b036be9.
+# dist check: image vs worktree .js files: 0 only in image; 21 only in worktree (all this ticket's new files); 30 differ = this ticket's changed files + 9 files changed on base after the image was built (application-engine-controller/launcher, application-catalog-transition-service, application-reentry-service, application-definition-runtime-readiness, application-platform-lifecycle, agent-tools-mcp-routes, mcp-gateway-routes, api/graphql/index). No dependency change in this ticket. Deviation from TESTING.md's 'differs only in the files you changed', recorded; server started healthy.
+# Server log: [2026-10-25T08:02:14.573Z] [INFO] [secret-management.vault] Secret vault: test vault /test-vault (read-only)
+
+## read 1: real 0.93
+## read 2: real 0.77
+## read 3: real 0.89
+
+## availableAgentRuntimes (read 3):
+{
+ "checkedAt": "2026-10-25T08:02:29.138Z",
+ "agentRuntimes": [
+  {
+   "runtime": "autobyteus",
+   "name": "AutoByteus",
+   "providers": [
+    {
+     "provider": "Anthropic",
+     "blocked": "credit balance too low",
+     "models": "10 models, 10 blocked"
+    },
+    {
+     "provider": "DeepSeek",
+     "balance": "0.14 USD",
+     "models": "2 models, 0 blocked"
+    },
+    {
+     "provider": "Gemini",
+     "limits": "not reported",
+     "models": "2 models, 0 blocked"
+    },
+    {
+     "provider": "GLM",
+     "limits": "not reported",
+     "models": "1 models, 0 blocked"
+    },
+    {
+     "provider": "Grok",
+     "models": "1 models, 0 blocked"
+    },
+    {
+     "provider": "Kimi",
+     "balance": "0 USD",
+     "blocked": "no balance left",
+     "models": "1 models, 1 blocked"
+    },
+    {
+     "provider": "OpenAI",
+     "limits": "not reported",
+     "models": "9 models, 0 blocked"
+    }
+   ]
+  }
+ ]
+}
+
+## agentRuntimes (Agent Runtimes page) after checkAgentRuntimes:
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","installed":true,"installedVersion":"0.164.0","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"claude_agent_sdk","installed":true,"installedVersion":"2.1.310","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"antigravity_cli","installed":true,"installedVersion":"1.4.7","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"grok_build","installed":true,"installedVersion":"1.0.70","account":{"state":"SIGNED_OUT"}}]}}
+
+## identity/key pattern scan (email, sk-, xai-, Bearer) of 3 answers, server.log, container output: 0 hits each

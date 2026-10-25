@@ -25,7 +25,7 @@ Principles 2 and 13.
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
 - **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
-### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002)
+### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003)
 
 Principle 1.
 
@@ -35,6 +35,8 @@ Principle 1.
 - **Again in autobyteus-278 (AR-401):** following a remote run's live output read "the run's root publisher" for both kinds of peer-started run. That holds for a Team root. A remote Agent's output, commands and readiness live on its host AgentRun: the standalone root's publisher carries only its children, and idle shutdown replaces the host while the root stays registered. The fix gave each root kind its own `observePairedAgents` / `executeOwnerCommand` behind one interface (Agent: the host via `onHostReady`; Team: the publisher and the directory listener).
 - **Again in autobyteus-280 (AR-002):** the design narrowed a startup block to "custom providers unavailable" and traced only provider listing; run start and model resolution, runtime sync, Settings CRUD and token-usage display lookups also read the store, and the owner was written "the store and its callers". The fix: one gate in the store and a table giving each entry form's outcome while pending.
 - **Again in agent-input-delivery-simplification (C-1, Project Task `project_task_17bfe0fe`):** the design gave the shared delivery engine one "not accepting messages" rejection per root and used it for every entry form. The Team returns `TEAM_RUN_NOT_ACCEPTING_MESSAGES` only for same-root `deliver`, through its service's pre-check. `acceptFromRemote` and `prepareRemoteSend` skip the service and return the generic `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES`. The designer's self-validation found it before review. Fix: a `deliverNotAccepting` rejection used by `deliver` only, and an entry-form table in the design with each form's checks, publish and present rules.
+- **Again in autobyteus-303 (AR-003):** the design reused `RuntimeAvailabilityService` for "installed" across four agent runtimes. It checks something different for each: `which`/`--version` via `spawnSync` for Codex and Claude, `agy --help` + `agy models` for Antigravity (so a signed-out Antigravity was left out and the "sign-in could not be checked" rule could never apply), a version + help probe for Grok. Fix: one rule for all, the Agent Runtimes page's `strategy.readVersion(...) !== null`.
+- **Again in autobyteus-303 (CR-003, found by API/E2E):** AutoByteus models were taken from the factory's loaded list, traced for static providers only. Discovered providers (Ollama, LM Studio, custom endpoints) are loaded once per configuration by another path and not retried, so a local server serving 4 models was missing. Fix: the read reloads discovered providers through the catalog's own refresh, with a rule per provider kind.
 - **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several.
 
 ### Case 3: A Reader Of Derived Data Left Out (autobyteus-191, F-002; autobyteus-275, CR-002; autobyteus-269, F-001; autobyteus-278, F-005; autobyteus-280, AR-003)
@@ -60,7 +62,7 @@ Principle 13.
 - **Why it mattered:** a behavior reached through a failed lookup works by accident and breaks silently when the lookup changes.
 - **Notice it by:** "finds no X, so …", "counts as".
 
-### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1)
+### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007)
 
 Principle 1.
 
@@ -75,6 +77,8 @@ Principle 1.
 - **Again in agent-input-delivery-simplification (ARCH-REV-003 AR3-NB-002; prerequisite ticket DI-001):**
   - The design said package creation on the first message happens in the "standalone/Org" coordinators; only the standalone coordinator does it. Fix: the claim was corrected against `standalone-root-persistence-coordinator.ts`.
   - Earlier, in `delegated-team-member-lazy-activation`, an event was declared to have "no consumer" from a string search. Its consumer was an un-named fall-through branch that turned it into the member's error card. Fix: check consumers by type and exhaustiveness, and give the branch a name with an exhaustive check.
+- **Again in autobyteus-303 (AR-001):** the design reused Claude's model-discovery control query "unchanged" for a zero-token usage read. The SDK writes a string prompt to the CLI as a user turn and drops `maxTurns: 0` (only truthy values are passed), so the "zero-token" query actually sent "Enumerate supported models only." on every catalog read. The probe had used an idle input stream; the design copied the production call instead. Fix: one control query with an input that never yields, used by model discovery and usage alike.
+- **Again in autobyteus-303 (SR-007, code reviewer):** the design dropped the `models(modelIds)` limit scope because "no parser can fill it", while the Codex parser fills it from `normalModelSlug` (`codex-usage-limits.ts:49`), covered by a test. Without it, a Codex id would have been matched as a display-name family. Fix: keep the variant; check every producer of a type before removing a variant.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made.
 
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)

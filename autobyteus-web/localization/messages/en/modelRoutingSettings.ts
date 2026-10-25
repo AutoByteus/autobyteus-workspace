@@ -1,0 +1,42 @@
+import type { TranslationCatalog } from '../../runtime/types';
+
+/** Settings → Model Routing; its first section, "Agent runtimes now" (what the node can run now). */
+const modelRoutingSettingsMessages = {
+  "settings.modelRouting.title": "Model Routing",
+  "settings.modelRouting.description": "Where agents can run on this node, and how much of each runtime's limits is left.",
+  "settings.modelRouting.runtimesNow.title": "Agent runtimes now",
+  "settings.modelRouting.runtimesNow.description": "The agent runtimes available on this node, with their models and usage limits, read live from each runtime. Reading spends no tokens.",
+  "settings.modelRouting.runtimesNow.node.own": "This computer",
+  "settings.modelRouting.runtimesNow.node.remote": "Remote node",
+  "settings.modelRouting.runtimesNow.loading": "Reading the runtimes on this node…",
+  "settings.modelRouting.runtimesNow.checkAgain": "Check again",
+  "settings.modelRouting.runtimesNow.checking": "Checking…",
+  "settings.modelRouting.runtimesNow.checkedAt": "Checked {{time}}",
+  "settings.modelRouting.runtimesNow.loadError": "Couldn't read the agent runtimes on this node. Use Check again to retry.",
+  "settings.modelRouting.runtimesNow.checkFailed": "Couldn't check again. Showing the last answer.",
+  "settings.modelRouting.runtimesNow.empty": "No agent runtime is available on this node. Install and sign in to one under Agent Runtimes, or add an API key under API Keys.",
+  "settings.modelRouting.runtimesNow.listLabel": "Agent runtimes available on this node",
+  "settings.modelRouting.runtimesNow.announce.checked": "Agent runtimes checked.",
+  "settings.modelRouting.runtimesNow.signInNotChecked": "Sign-in could not be checked",
+  "settings.modelRouting.runtimesNow.limits.heading": "Limits",
+  "settings.modelRouting.runtimesNow.limits.remaining": "{{percent}}% left",
+  "settings.modelRouting.runtimesNow.limits.remainingNotReported": "remaining not reported",
+  "settings.modelRouting.runtimesNow.limits.resets": "resets {{time}}",
+  "settings.modelRouting.runtimesNow.limits.notReported": "Limits not reported",
+  "settings.modelRouting.runtimesNow.limits.unknown": "Limits unknown: {{reason}}",
+  "settings.modelRouting.runtimesNow.models.heading": "Models",
+  "settings.modelRouting.runtimesNow.models.one": "1 model",
+  "settings.modelRouting.runtimesNow.models.count": "{{count}} models",
+  "settings.modelRouting.runtimesNow.models.none": "No models offered",
+  "settings.modelRouting.runtimesNow.models.blockedCount": "{{count}} blocked",
+  "settings.modelRouting.runtimesNow.models.context": "{{tokens}} context",
+  "settings.modelRouting.runtimesNow.models.blockedUntil": "Blocked until {{time}} ({{by}})",
+  "settings.modelRouting.runtimesNow.models.blocked": "Blocked ({{by}})",
+  "settings.modelRouting.runtimesNow.models.unknown": "Models unknown: {{reason}}",
+  "settings.modelRouting.runtimesNow.providers.listLabel": "AutoByteus providers",
+  "settings.modelRouting.runtimesNow.providers.none": "No API provider has a key on this node.",
+  "settings.modelRouting.runtimesNow.providers.balance": "Balance {{balance}}",
+  "settings.modelRouting.runtimesNow.providers.blocked": "Cannot run: {{reason}}",
+} satisfies TranslationCatalog;
+
+export default modelRoutingSettingsMessages;

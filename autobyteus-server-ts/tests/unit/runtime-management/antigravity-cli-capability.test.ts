@@ -15,6 +15,7 @@ const { appendFileSync } = require('node:fs');
 const mode = process.env.AGY_FAKE_MODE;
 const arg = process.argv[2];
 appendFileSync(process.env.AGY_FAKE_COMMAND_LOG, arg + '\\n');
+if (process.env.AGY_FAKE_PID_LOG) appendFileSync(process.env.AGY_FAKE_PID_LOG, arg + ' ' + process.pid + '\\n');
 if (arg === '--version') {
   // Only the compaction-detection probe reads the version; admission (help + models) never does.
   if (process.env.AGY_FAKE_VERSION_OUTPUT === undefined) throw new Error('Version probing must not be used for admission');
@@ -165,6 +166,30 @@ describe("bounded AGY CLI discovery", () => {
     expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
     expect(Date.now() - started).toBeLessThan(limit);
   }, 20_000);
+
+  it("shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002)", async () => {
+    const { listAntigravityModels } = await capability("hang-models");
+    const { createReadDeadline } = await import("../../../src/runtime-management/read-deadline.js");
+    const pidLog = path.join(directory, "pids.log");
+    await writeFile(pidLog, "");
+    vi.stubEnv("AGY_FAKE_PID_LOG", pidLog);
+    const started = Date.now();
+    const error = await listAntigravityModels({ deadline: createReadDeadline(1_500) }).catch((value: unknown) => value);
+    expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
+    // Without the deadline `models` alone may run 15 s; with it the whole step ends at 1.5 s.
+    expect(Date.now() - started).toBeLessThan(3_000);
+    const modelsPid = Number((await readFile(pidLog, "utf8")).split("\n").find((line) => line.startsWith("models "))?.split(" ")[1]);
+    expect(modelsPid).toBeGreaterThan(0);
+    await vi.waitFor(() => expect(() => process.kill(modelsPid, 0)).toThrow(), { timeout: 2_000 });
+  }, 10_000);
+
+  it("starts no command once the step deadline has passed", async () => {
+    const { listAntigravityModels } = await capability("ready");
+    const { createReadDeadline } = await import("../../../src/runtime-management/read-deadline.js");
+    const error = await listAntigravityModels({ deadline: createReadDeadline(0) }).catch((value: unknown) => value);
+    expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
+    expect(await readFile(path.join(directory, "commands.log"), "utf8")).toBe("");
+  });
 
   it("keeps a concurrent health request responsive while model discovery waits", async () => {
     const { listAntigravityModels } = await capability("slow-models");

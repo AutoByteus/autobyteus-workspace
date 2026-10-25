@@ -55,3 +55,17 @@ delegated run, …) are defined in the
   `listProjectSummaries` (a Project without its Tasks) or
   `TaskWorkerTaskSummary` (a Task worker's Task under its name). A summary is
   never a Task's one-line name: that is its title.
+
+## Agent Runtimes
+
+- **Agent runtime:** what runs an agent (`RuntimeKind`): AutoByteus, the
+  Claude Agent SDK, Codex, Antigravity or Grok (Settings → Agent Runtimes,
+  `list_available_agent_runtimes`). It is not the LLM runtime (`LLMRuntime`,
+  `ModelInfo.runtime`: how AutoByteus calls a model, e.g. API or Ollama);
+  always say "agent runtime" for the first.
+- **Available agent runtime:** an agent runtime installed on the node and not
+  known to be signed out; for AutoByteus, a provider with an API key, or a
+  local provider (Ollama, LM Studio) that offers models.
+- **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
+  weekly window, a billing period, a money balance), read from the runtime or
+  provider. It is not the launch check of whether a runtime is usable.

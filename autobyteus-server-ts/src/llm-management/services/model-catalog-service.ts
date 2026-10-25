@@ -19,6 +19,7 @@ import {
   RuntimeKind,
   runtimeKindFromString,
 } from '../../runtime-management/runtime-kind-enum.js';
+import type { ReadDeadline } from '../../runtime-management/read-deadline.js';
 import {
   getBuiltInLlmProviderCatalog,
   type BuiltInLlmProviderCatalog,
@@ -156,15 +157,23 @@ export class ModelCatalogService {
     return (await this.runtimeModelSelectionCatalog(runtimeKind, workspaceRootPath)).findExactCurrent(identifier);
   }
 
-  async runtimeModelSelectionCatalog(runtimeKind?: string | null, workspaceRootPath?: string): Promise<RuntimeModelSelectionCatalog> {
+  /**
+   * The runtime's offered models. `deadline`: the end time of the read step (the available-agent-runtimes read), passed
+   * to the external runtime's catalog; without it, each catalog's usual time-outs.
+   */
+  async runtimeModelSelectionCatalog(
+    runtimeKind?: string | null,
+    workspaceRootPath?: string,
+    options: Readonly<{ deadline?: ReadDeadline }> = {},
+  ): Promise<RuntimeModelSelectionCatalog> {
     const runtime = normalizeRuntime(runtimeKind);
-    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog();
+    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog(options);
     const models = runtime === RuntimeKind.CODEX_APP_SERVER
-      ? await this.codexModelCatalog.listModels(workspaceRootPath)
+      ? await this.codexModelCatalog.listModels(workspaceRootPath, options)
       : runtime === RuntimeKind.ANTIGRAVITY_CLI
-        ? await this.antigravityModelCatalog.listModels()
+        ? await this.antigravityModelCatalog.listModels(options)
         : runtime === RuntimeKind.GROK_BUILD
-          ? await this.grokBuildModelCatalog.listModels()
+          ? await this.grokBuildModelCatalog.listModels(options)
           : runtime === RuntimeKind.AUTOBYTEUS
             ? await LLMFactory.listAvailableModels()
             : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();
