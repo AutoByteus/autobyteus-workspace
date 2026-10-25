@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, clampPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -32,7 +32,7 @@ export const parseClaudeUsageLimits = (answer: unknown): UsageLimitsReading => {
     const model = typeof scopedModel === "string" && scopedModel.trim() ? scopedModel.trim() : null;
     limits.push({
       name: model ? `${kindName(kind)} · ${model}` : kindName(kind),
-      remainingPercent: percent === null ? null : clampPercent(100 - percent),
+      remainingPercent: percent === null ? null : wholeRemainingPercent(100 - percent),
       resetsAt: toIsoTime(entry.resets_at),
       exhausted: percent !== null && percent >= 100,
       appliesTo: model ? { kind: "modelFamilies", families: [model] } : { kind: "runtime" },

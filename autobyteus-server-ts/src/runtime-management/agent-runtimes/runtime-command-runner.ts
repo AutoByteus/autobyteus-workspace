@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { DeadlineExceededError, type CommandBound } from "../read-deadline.js";
 
 export const SHORT_COMMAND_TIMEOUT_MS = 10_000;
 const OUTPUT_LIMIT = 1024 * 1024;
@@ -7,7 +8,10 @@ export type RuntimeCommandResult = Readonly<{
   exitCode: number | null;
   stdout: string;
   stderr: string;
-  /** Spawn failure (for example ENOENT) or the time-out; null when the command ran to its exit. */
+  /**
+   * Spawn failure (for example ENOENT) or the time-out; null when the command ran to its exit. A time-out set by a
+   * read step's deadline is a `DeadlineExceededError`.
+   */
   error: (Error & { code?: string }) | null;
 }>;
 
@@ -18,11 +22,13 @@ export type RuntimeCommandResult = Readonly<{
 export const runRuntimeCommand = (
   command: string,
   args: readonly string[],
-  timeoutMs = SHORT_COMMAND_TIMEOUT_MS,
+  timeout: number | CommandBound = SHORT_COMMAND_TIMEOUT_MS,
 ): Promise<RuntimeCommandResult> => new Promise((resolve) => {
-  // A read step whose deadline has passed starts nothing (`commandTimeout` gave 0).
+  const { timeoutMs, byDeadline } = typeof timeout === "number" ? { timeoutMs: timeout, byDeadline: false } : timeout;
+  const timedOut = (): Error => byDeadline ? new DeadlineExceededError() : new Error(`Command timed out after ${timeoutMs}ms.`);
+  // A read step whose deadline has passed starts nothing (its bound is 0).
   if (timeoutMs <= 0) {
-    resolve({ exitCode: null, stdout: "", stderr: "", error: new Error("Command not started: the read's time is up.") });
+    resolve({ exitCode: null, stdout: "", stderr: "", error: timedOut() });
     return;
   }
   let stdout = "";
@@ -37,7 +43,7 @@ export const runRuntimeCommand = (
   };
   const timer = setTimeout(() => {
     child?.kill("SIGKILL");
-    finish({ exitCode: null, stdout, stderr, error: new Error(`Command timed out after ${timeoutMs}ms.`) });
+    finish({ exitCode: null, stdout, stderr, error: timedOut() });
   }, timeoutMs);
   try {
     child = spawn(command, [...args], { env: process.env, shell: false, stdio: ["ignore", "pipe", "pipe"] });

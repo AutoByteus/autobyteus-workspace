@@ -21,7 +21,7 @@ import { normalizeModelDescriptors, toModelInfo } from "./claude-sdk-model-norma
 import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
 import { getClaudeRuntimeSettingSources } from "./claude-sdk-setting-sources.js";
 import { withClaudeControlQuery } from "./claude-sdk-control-query.js";
-import type { ReadDeadline } from "../../read-deadline.js";
+import { isDeadlineExceeded, type ReadDeadline } from "../../read-deadline.js";
 import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
 import {
   ClaudeSdkInputChannel,
@@ -167,7 +167,8 @@ export class ClaudeSdkClient {
 
   /**
    * The CLI's offered models, read on a control query that sends no message (C-15). `deadline`: the read's end time
-   * (the available-agent-runtimes read); without it, unbounded as before. Any failure gives an empty list.
+   * (the available-agent-runtimes read); without it, unbounded as before. Any failure gives an empty list, except the
+   * deadline's own time-out, which reaches the caller so the read can say "timed out" (CR-002).
    */
   async listModels(options: Readonly<{ deadline?: ReadDeadline }> = {}): Promise<ModelInfoWithSelectionPresentation[]> {
     const queryFn = this.resolveFunction(await this.loadModuleSafe(), "query");
@@ -184,7 +185,8 @@ export class ClaudeSdkClient {
         typeof control.supportedModels === "function"
           ? normalizeModelDescriptors(await (control.supportedModels as () => Promise<unknown>).call(control))
           : []);
-    } catch {
+    } catch (error) {
+      if (options.deadline && isDeadlineExceeded(error)) throw error;
       return [];
     }
     const selectionPresentation = deriveClaudeModelSelectionPresentation(supportedRows);

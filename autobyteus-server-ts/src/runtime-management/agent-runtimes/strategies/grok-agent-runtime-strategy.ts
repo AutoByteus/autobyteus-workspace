@@ -40,7 +40,7 @@ export const createGrokAgentRuntimeStrategy = (): AgentRuntimeStrategy => ({
     return { state: "unknown", detail: result.error?.message ?? `grok models exited with ${String(result.exitCode)}.` };
   },
   /** Grok's ACP extension `_x.ai/billing` after `initialize` on a short process (no session, 0 tokens). */
-  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Grok", deadline, async () =>
+  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Grok", async () =>
     parseGrokUsageLimits(await runAcpExtensionRequest(grokBuildLaunchProfile, "_x.ai/billing", { deadline }))),
   updateArgv: (executable) => [executable, "update"],
   signInArgv: (executable) => [executable, "login", "--oauth"],

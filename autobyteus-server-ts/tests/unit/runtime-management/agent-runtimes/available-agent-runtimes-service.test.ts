@@ -16,8 +16,9 @@ import { parseClaudeUsageLimits } from "../../../../src/runtime-management/agent
 import { parseCodexUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/codex-usage-limits.js";
 import { parseGrokUsageLimits } from "../../../../src/runtime-management/agent-runtimes/usage-limits/grok-usage-limits.js";
 import type { UsageLimitsReading } from "../../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
-import type { ReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
+import { DeadlineExceededError, type ReadDeadline } from "../../../../src/runtime-management/read-deadline.js";
 import type { ProviderCredentialSetting } from "../../../../src/llm-management/llm-providers/domain/models.js";
+import type { LocalProviderModelCatalogSnapshot } from "../../../../src/llm-management/services/model-catalog-service.js";
 import type { ProviderUsageReader, ProviderUsageReading } from "../../../../src/llm-management/provider-usage/provider-usage-reader.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -47,7 +48,6 @@ const MODELS: Record<string, ModelInfo[]> = {
     model("claude-sonnet-5-5", "Claude Sonnet 5.5", LLMProvider.ANTHROPIC),
     model("gpt-6", "GPT-6", LLMProvider.OPENAI),
     model("mistral-large", "Mistral Large", LLMProvider.MISTRAL),
-    model("qwen3:8b", "qwen3:8b", LLMProvider.OLLAMA),
   ],
 };
 
@@ -77,10 +77,23 @@ const KINDS: AgentRuntimeKind[] = [
   RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK, RuntimeKind.ANTIGRAVITY_CLI, RuntimeKind.GROK_BUILD,
 ];
 
+const DISCOVERED_IDS = new Set<string>([LLMProvider.OLLAMA, LLMProvider.LMSTUDIO, "custom-endpoint"]);
 const settings = (entries: Array<[string, string, boolean]>): ProviderCredentialSetting[] => entries.map(([id, name, key]) => ({
-  provider: { id, name, providerType: id as LLMProvider, isCustom: false, baseUrl: null, catalogMode: "STATIC" },
+  provider: { id, name, providerType: (id === "custom-endpoint" ? LLMProvider.OPENAI_COMPATIBLE : id) as LLMProvider,
+    isCustom: id === "custom-endpoint", baseUrl: null, catalogMode: DISCOVERED_IDS.has(id) ? "DISCOVERED" : "STATIC" },
   apiKeyConfigured: key,
 }));
+
+/** A discovered source's reload answer: its models now and its source state. */
+const snapshot = (models: ModelInfo[], state = "READY", safeMessage: string | null = null): LocalProviderModelCatalogSnapshot => ({
+  runtimeKind: "autobyteus", ownerProvider: {} as never, audioModels: [], imageModels: [], videoModels: [], llmModels: models,
+  sources: [{ modelKind: "LLM", state: state as never, modelCount: models.length, successfulUnitCount: 1, failedUnitCount: 0, safeMessage }],
+});
+const DISCOVERED_MODELS: Record<string, ModelInfo[]> = {
+  [LLMProvider.OLLAMA]: [model("qwen3:8b", "qwen3:8b", LLMProvider.OLLAMA)],
+  [LLMProvider.LMSTUDIO]: [model("qwen/qwen3.6-35b-a3b", "Qwen 3.6 35B", LLMProvider.LMSTUDIO, 32_768)],
+  "custom-endpoint": [model("my-model", "My Model", "custom-endpoint")],
+};
 
 const PROVIDER_SETTINGS = settings([
   [LLMProvider.ANTHROPIC, "Anthropic", true],
@@ -100,6 +113,8 @@ const PROVIDER_READINGS: Record<string, ProviderUsageReading> = {
 type ServiceOptions = Readonly<{
   strategies?: AgentRuntimeStrategy[];
   catalog?: (kind: string, options: { deadline?: ReadDeadline }) => Promise<ModelInfo[]>;
+  reload?: (providerId: string) => Promise<LocalProviderModelCatalogSnapshot>;
+  providerSettings?: ProviderCredentialSetting[];
   providerReader?: ProviderUsageReader["read"];
   stepCaps?: AvailableAgentRuntimesStepCaps;
 }>;
@@ -116,8 +131,10 @@ const service = (options: ServiceOptions = {}) => {
         const offeredModels = await (options.catalog ?? (async (k: string) => MODELS[k]!))(String(kind), catalogOptions);
         return { offeredModels, findExactCurrent: () => null };
       },
+      reloadProviderModelCatalog: async (providerId) =>
+        (options.reload ?? (async (id: string) => snapshot(DISCOVERED_MODELS[id] ?? [])))(providerId),
     },
-    providerCredentials: { listProviderCredentialSettings: async () => PROVIDER_SETTINGS },
+    providerCredentials: { listProviderCredentialSettings: async () => options.providerSettings ?? PROVIDER_SETTINGS },
     providerUsageReaders: {
       readerFor: (id) => (PROVIDER_READINGS[id] ? { read: providerReader } : null),
     },
@@ -177,8 +194,8 @@ describe("AvailableAgentRuntimesService", () => {
   it("Antigravity: Claude and GPT models blocked by their group, Gemini models not (AC-004)", async () => {
     const agy = external((await service().read()).agentRuntimes as unknown[], "antigravity_cli")!;
     expect(agy.limits).toEqual([
-      { name: "Gemini Models · weekly", remainingPercent: 100, resetsAt: "2026-10-31T04:59:08.000Z" },
-      { name: "Gemini Models · 5-hour", remainingPercent: 99, resetsAt: "2026-10-24T21:45:12.000Z" },
+      { name: "Gemini Models · weekly", remainingPercent: 99, resetsAt: "2026-10-31T04:59:08.000Z" },
+      { name: "Gemini Models · 5-hour", remainingPercent: 98, resetsAt: "2026-10-24T21:45:12.000Z" },
       { name: "Claude and GPT models · weekly", remainingPercent: 0, resetsAt: "2026-10-26T10:22:39.000Z" },
       { name: "Gemini 4 Argon · weekly", remainingPercent: 40, resetsAt: "2026-10-26T12:35:29.000Z" },
     ]);
@@ -280,7 +297,7 @@ describe("AvailableAgentRuntimesService", () => {
   });
 
   it("slow steps end at their caps, each step getting its own cap as a deadline; the answer still arrives (AC-011)", async () => {
-    const caps = { installMs: 200, signInMs: 300, modelsMs: 400, limitsMs: 400, providerListMs: 200, providerUsageMs: 300 };
+    const caps = { installMs: 200, signInMs: 300, modelsMs: 400, limitsMs: 400, providerListMs: 200, providerModelsMs: 300, providerUsageMs: 300 };
     const received: Record<string, number> = {};
     const remember = (step: string, deadline: ReadDeadline | undefined) => { received[step] = deadline!.endsAt - Date.now(); };
     const slow = strategy(RuntimeKind.ANTIGRAVITY_CLI, {
@@ -319,11 +336,89 @@ describe("AvailableAgentRuntimesService", () => {
       .toBe("unknown: timed out");
   });
 
+  describe("discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007)", () => {
+    const withDiscovered = settings([
+      [LLMProvider.LMSTUDIO, "LM Studio", false],
+      [LLMProvider.OLLAMA, "Ollama", false],
+      ["custom-endpoint", "My Endpoint", true],
+      ["custom-keyless", "Keyless Endpoint", false],
+    ]);
+    const providersOf = async (options: ServiceOptions) =>
+      autobyteus((await service({ strategies: [], providerSettings: withDiscovered, ...options }).read()).agentRuntimes as unknown[]).providers;
+
+    it("lists a local server that answers with models now, with them, even when nothing loaded it before", async () => {
+      const reload = vi.fn(async (id: string) => snapshot(DISCOVERED_MODELS[id] ?? []));
+      expect(await providersOf({ reload })).toEqual([
+        { provider: "LM Studio", limits: "not reported", models: [{ id: "qwen/qwen3.6-35b-a3b", name: "Qwen 3.6 35B", contextTokens: 32_768 }] },
+        { provider: "Ollama", limits: "not reported", models: [{ id: "qwen3:8b", name: "qwen3:8b" }] },
+        { provider: "My Endpoint", limits: "not reported", models: [{ id: "my-model", name: "My Model" }] },
+      ]);
+      // Every discovered provider it considers is reloaded; a custom endpoint without a key is not considered.
+      expect(reload.mock.calls.map(([id]) => id).sort()).toEqual(["LMSTUDIO", "OLLAMA", "custom-endpoint"]);
+    });
+
+    it("leaves out a local server that does not answer, fails, offers no model or times out", async () => {
+      const providers = await providersOf({
+        stepCaps: { ...AVAILABLE_AGENT_RUNTIMES_STEP_CAPS, providerModelsMs: 150 },
+        reload: async (id) => id === LLMProvider.LMSTUDIO ? snapshot([], "ERROR", "LMSTUDIO_MODEL_DISCOVERY_UNAVAILABLE")
+          : id === LLMProvider.OLLAMA ? neverSettles() : snapshot(DISCOVERED_MODELS[id]!),
+      });
+      expect(providers.map((provider) => provider.provider)).toEqual(["My Endpoint"]);
+      const stale = await providersOf({ reload: async (id) => id === LLMProvider.LMSTUDIO
+        ? snapshot(DISCOVERED_MODELS[id]!, "STALE_ERROR", "MODEL_DISCOVERY_UNAVAILABLE")
+        : id === LLMProvider.OLLAMA ? snapshot([]) : snapshot(DISCOVERED_MODELS[id]!) });
+      expect(stale.map((provider) => provider.provider)).toEqual(["My Endpoint"]);
+    });
+
+    it("lists a keyed custom endpoint that cannot be read now with models unknown and the reason (REQ-007)", async () => {
+      const endpoint = async (answer: () => Promise<LocalProviderModelCatalogSnapshot>) => (await providersOf({
+        stepCaps: { ...AVAILABLE_AGENT_RUNTIMES_STEP_CAPS, providerModelsMs: 150 },
+        reload: async (id) => id === "custom-endpoint" ? answer() : snapshot([]),
+      })).find((provider) => provider.provider === "My Endpoint")!.models;
+      expect(await endpoint(async () => snapshot([], "ERROR", "MODEL_DISCOVERY_UNAVAILABLE"))).toBe("unknown: MODEL_DISCOVERY_UNAVAILABLE");
+      expect(await endpoint(async () => snapshot(DISCOVERED_MODELS["custom-endpoint"]!, "STALE_ERROR", "CUSTOM_PROVIDER_PROBE_FAILED")))
+        .toBe("unknown: CUSTOM_PROVIDER_PROBE_FAILED");
+      expect(await endpoint(() => neverSettles())).toBe("unknown: timed out");
+      expect(await endpoint(async () => { throw new Error("CUSTOM_PROVIDER_NOT_FOUND"); })).toBe("unknown: could not be read");
+      expect(await endpoint(async () => snapshot([]))).toBe("unknown: no models could be read");
+    });
+
+    it("keeps static keyed providers on the catalog, without a reload", async () => {
+      const reload = vi.fn(async () => snapshot([]));
+      const providers = autobyteus((await service({ strategies: [], reload, providerSettings: settings([[LLMProvider.OPENAI, "OpenAI", true]]) })
+        .read()).agentRuntimes as unknown[]).providers;
+      expect(providers).toEqual([{ provider: "OpenAI", limits: "not reported", models: [{ id: "gpt-6", name: "GPT-6" }] }]);
+      expect(reload).not.toHaveBeenCalled();
+    });
+  });
+
+  it("a step stopped by its own deadline is 'timed out' even with 1 ms still left on the wall clock (CR-002)", async () => {
+    const realNow = Date.now.bind(Date);
+    let pinned: number | null = null;
+    const clock = vi.spyOn(Date, "now").mockImplementation(() => pinned ?? realNow());
+    try {
+      const report = await service({
+        strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI)],
+        stepCaps: { ...AVAILABLE_AGENT_RUNTIMES_STEP_CAPS, modelsMs: 100 },
+        catalog: async (kind, options) => {
+          if (kind !== RuntimeKind.ANTIGRAVITY_CLI) return MODELS[kind]!;
+          // The deadline's own kill fires while Date.now() still reads 1 ms before the end (API-03b).
+          await new Promise((done) => setTimeout(done, 100));
+          pinned = options.deadline!.endsAt - 1;
+          throw new Error("AGY_MODEL_DISCOVERY_TIMEOUT", { cause: new DeadlineExceededError() });
+        },
+      }).read();
+      expect(external(report.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity model list timed out");
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
   it("the default caps keep the whole answer within 20 s (REQ-010)", () => {
     const caps = AVAILABLE_AGENT_RUNTIMES_STEP_CAPS;
     const backstops = 3 * 500;
     expect(caps.installMs + caps.signInMs + Math.max(caps.modelsMs, caps.limitsMs) + backstops).toBeLessThanOrEqual(20_000);
-    expect(caps.providerListMs + caps.providerUsageMs + 2 * 500).toBeLessThanOrEqual(20_000);
+    expect(caps.providerListMs + Math.max(caps.providerModelsMs, caps.providerUsageMs) + 2 * 500).toBeLessThanOrEqual(20_000);
   });
 
   it("the answer carries no keys, emails or account identities (AC-009)", async () => {

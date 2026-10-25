@@ -320,6 +320,20 @@ describe("usage limits (readUsageLimits, 0 tokens, within the step deadline)", (
     expect(Date.now() - startedAt).toBeLessThan(3_000);
   });
 
+  it("a step stopped by its own deadline is 'timed out' even when the wall clock still shows 1 ms left (CR-002)", async () => {
+    vi.stubEnv("FAKE_RUNTIME_MODE", "usage-hang");
+    const deadline = createReadDeadline(200);
+    const realNow = Date.now.bind(Date);
+    // Timers run on the monotonic clock; Date.now() can lag the deadline by a millisecond when the kill fires (API-03b).
+    const clock = vi.spyOn(Date, "now").mockImplementation(() => Math.min(realNow(), deadline.endsAt - 1));
+    try {
+      await expect(createAntigravityAgentRuntimeStrategy().readUsageLimits(fakeCli, "/w", { deadline }))
+        .resolves.toEqual({ state: "unknown", reason: "Antigravity usage limits timed out" });
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
   it("a sign-in or version command under a passed deadline does not start", async () => {
     useFake("GROK_BUILD_COMMAND", "grok-in");
     const expired = { deadline: createReadDeadline(0) };

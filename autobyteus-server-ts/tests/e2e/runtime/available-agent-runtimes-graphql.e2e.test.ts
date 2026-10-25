@@ -230,9 +230,10 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     expect(frames.filter((frame) => !frame.startsWith("control_request") && !frame.startsWith("control_response")), "only control frames").toEqual([]);
 
     // AC-004: Antigravity groups by family and window; the Claude/GPT group is used up → its models blocked, Gemini not.
+    // Remaining percent rounds down (SR-006 O-1): 99.7 → 99, 98.9 → 98.
     expect(entries[AGY]!.limits).toEqual([
-      { name: "Gemini Models · weekly", remainingPercent: 100, resetsAt: "2026-10-31T04:59:08.000Z" },
-      { name: "Gemini Models · 5-hour", remainingPercent: 99, resetsAt: "2026-10-24T21:45:12.000Z" },
+      { name: "Gemini Models · weekly", remainingPercent: 99, resetsAt: "2026-10-31T04:59:08.000Z" },
+      { name: "Gemini Models · 5-hour", remainingPercent: 98, resetsAt: "2026-10-24T21:45:12.000Z" },
       { name: "Claude and GPT models · weekly", remainingPercent: 0, resetsAt: "2026-10-26T10:22:39.000Z" },
       { name: "Gemini 4 Argon · weekly", remainingPercent: 40, resetsAt: "2026-10-26T12:35:29.000Z" },
     ]);

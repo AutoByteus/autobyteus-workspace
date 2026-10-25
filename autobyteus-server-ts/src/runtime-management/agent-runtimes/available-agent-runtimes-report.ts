@@ -47,7 +47,8 @@ export type AutoByteusProviderEntry = Readonly<{
   /** Why the provider cannot run now; its models carry the same block. */
   blocked?: string;
   limits?: "not reported" | UnknownText;
-  models: readonly AvailableModel[];
+  /** `unknown: <reason>`: a keyed discovered provider (custom endpoint) whose models could not be read now. */
+  models: readonly AvailableModel[] | UnknownText;
 }>;
 
 export type AutoByteusEntry = Readonly<{

@@ -37,6 +37,7 @@ const toolAnswer = (): AvailableAgentRuntimesReport => ({
       { provider: 'DeepSeek', balance: '0.14 USD', models: [{ id: 'deepseek-v4', name: 'DeepSeek V4' }] },
       { provider: 'Kimi', limits: 'unknown: timed out', models: [] },
       { provider: 'OpenAI', limits: 'not reported', models: [{ id: 'gpt-6', name: 'GPT-6' }] },
+      { provider: 'My Endpoint', limits: 'not reported', models: 'unknown: MODEL_DISCOVERY_UNAVAILABLE' },
     ] },
   ],
 })
@@ -116,13 +117,14 @@ describe('ModelRoutingManager → Agent runtimes now', () => {
   it('shows AutoByteus providers with balance, block and limit texts', async () => {
     await mountPage()
     const providers = all('available-runtime-autobyteus-provider')
-    expect(providers.map((row) => row.attributes('data-provider'))).toEqual(['Anthropic', 'DeepSeek', 'Kimi', 'OpenAI'])
+    expect(providers.map((row) => row.attributes('data-provider'))).toEqual(['Anthropic', 'DeepSeek', 'Kimi', 'OpenAI', 'My Endpoint'])
     expect(textOf(providers[0]!)).toContain('Cannot run: credit balance too low')
     expect(textOf(providers[0]!)).toContain('Blocked (credit balance too low)')
     expect(textOf(providers[1]!.get('[data-testid="available-provider-balance"]'))).toBe('Balance 0.14 USD')
     expect(textOf(providers[2]!)).toContain('Limits unknown: timed out')
     expect(textOf(providers[2]!)).toContain('No models offered')
     expect(textOf(providers[3]!)).toContain('Limits not reported')
+    expect(textOf(providers[4]!.get('[data-testid="available-provider-models-unknown"]'))).toBe('Models unknown: MODEL_DISCOVERY_UNAVAILABLE')
   })
 
   it('keeps models collapsed until opened', async () => {

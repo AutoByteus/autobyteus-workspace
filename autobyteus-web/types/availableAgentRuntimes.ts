@@ -41,7 +41,8 @@ export interface AutoByteusProviderEntry {
   balance?: string
   blocked?: string
   limits?: 'not reported' | UnknownText
-  models: AvailableModel[]
+  /** `unknown: <reason>`: a custom endpoint whose models could not be read now. */
+  models: AvailableModel[] | UnknownText
 }
 
 export interface AutoByteusEntry {

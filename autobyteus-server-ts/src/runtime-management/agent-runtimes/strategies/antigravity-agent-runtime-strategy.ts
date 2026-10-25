@@ -6,7 +6,7 @@ import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { fetchRuntimeSource } from "../runtime-source-fetch.js";
-import { commandTimeout } from "../../read-deadline.js";
+import { commandBound } from "../../read-deadline.js";
 import { runRuntimeCommand } from "../runtime-command-runner.js";
 import { parseAntigravityUsageLimits } from "../usage-limits/antigravity-usage-limits.js";
 import { readUsageLimitsSafely } from "../usage-limits/usage-limits-reading.js";
@@ -53,10 +53,12 @@ export const createAntigravityAgentRuntimeStrategy = (): AgentRuntimeStrategy =>
     }
   },
   /** `agy -p "/usage" --output-format json`: the CLI's own usage command, answered without a model turn (0 tokens). */
-  readUsageLimits: (executable, _cwd, { deadline }) => readUsageLimitsSafely("Antigravity", deadline, async () => {
+  readUsageLimits: (executable, _cwd, { deadline }) => readUsageLimitsSafely("Antigravity", async () => {
     const result = await runRuntimeCommand(
-      executable, ["-p", "/usage", "--output-format", "json"], commandTimeout(deadline, USAGE_TIMEOUT_MS));
-    if (result.error || result.exitCode !== 0) throw new Error("agy /usage failed.");
+      executable, ["-p", "/usage", "--output-format", "json"], commandBound(deadline, USAGE_TIMEOUT_MS));
+    // A time-out set by the step's deadline is a DeadlineExceededError: the reading says "timed out".
+    if (result.error) throw result.error;
+    if (result.exitCode !== 0) throw new Error("agy /usage failed.");
     return parseAntigravityUsageLimits(result.stdout);
   }),
   updateArgv: (executable) => [executable, "update"],

@@ -568,8 +568,10 @@ window is bound to can run now: the same answer the opt-in agent tool
   shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
   checked", "Limits not reported", "Limits unknown: <reason>" and "Models
   unknown: <reason>" show the server's states. AutoByteus has one sub-row per
-  provider with a key (or local provider with models): balance, the reason it
-  cannot run, and its models. No plan, tier or credit details.
+  provider with a key, and per local model server (Ollama, LM Studio) that
+  answers with models now: balance, the reason it cannot run, and its models
+  ("Models unknown: <reason>" for a custom endpoint that cannot be read now).
+  No plan, tier or credit details.
 - **States.** Loading, a failed first read (Check again retries), a failed
   later read (the last answer stays, with a note), and an empty node.
 - Views: `components/settings/model-routing/` (`ModelRoutingManager`,

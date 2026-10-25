@@ -60,7 +60,8 @@
             <p v-if="provider.limits === 'not reported'" class="text-gray-500">{{ t('settings.modelRouting.runtimesNow.limits.notReported') }}</p>
             <p v-else-if="provider.limits" class="text-gray-500" data-testid="available-provider-limits-unknown">{{ t('settings.modelRouting.runtimesNow.limits.unknown', { reason: unknownReason(provider.limits) ?? '' }) }}</p>
           </div>
-          <AvailableModelList :models="provider.models" :testid="`available-provider-models`" />
+          <AvailableModelList v-if="Array.isArray(provider.models)" :models="provider.models" testid="available-provider-models" />
+          <p v-else class="text-sm text-gray-500" data-testid="available-provider-models-unknown">{{ t('settings.modelRouting.runtimesNow.models.unknown', { reason: unknownReason(provider.models) ?? '' }) }}</p>
         </li>
       </ul>
     </template>

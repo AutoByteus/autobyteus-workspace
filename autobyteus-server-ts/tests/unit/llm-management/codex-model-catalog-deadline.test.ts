@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
-import { createReadDeadline, ReadDeadlineExceededError } from "../../../src/runtime-management/read-deadline.js";
+import { createReadDeadline, DeadlineExceededError } from "../../../src/runtime-management/read-deadline.js";
 
 describe("CodexModelCatalog with a step deadline", () => {
   it("abandons a model/list request that never answers at the deadline and releases the lease (AR-002)", async () => {
@@ -9,7 +9,7 @@ describe("CodexModelCatalog with a step deadline", () => {
     const beginAcquire = vi.fn(() => ({ acquire: async () => ({ request }), release }));
     const catalog = new CodexModelCatalog({ beginAcquire } as never);
     const started = Date.now();
-    await expect(catalog.listModels("/home/user", { deadline: createReadDeadline(150) })).rejects.toBeInstanceOf(ReadDeadlineExceededError);
+    await expect(catalog.listModels("/home/user", { deadline: createReadDeadline(150) })).rejects.toBeInstanceOf(DeadlineExceededError);
     expect(Date.now() - started).toBeLessThan(2_000);
     expect(beginAcquire).toHaveBeenCalledExactlyOnceWith("/home/user");
     expect(release).toHaveBeenCalledOnce();

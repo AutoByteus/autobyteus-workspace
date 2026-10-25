@@ -9,6 +9,9 @@ import type { UsageLimitsReading } from "./usage-limits/usage-limits-reading.js"
  */
 export type RuntimeReadOptions = Readonly<{ deadline?: ReadDeadline }>;
 
+/** A runtime's shared client kept open for one read; released (awaited) when the read is done. */
+export type RuntimeClientHold = Readonly<{ release(): Promise<void> }>;
+
 /**
  * What one runtime's commands and sources are. Stateless; the status service and the sign-in
  * reader select one by `runtimeKind`. `executable` is always what `resolveExecutable()` returned,
@@ -32,6 +35,11 @@ export interface AgentRuntimeStrategy {
    * Which models each limit covers and whether it is exhausted follow the runtime's own rules.
    */
   readUsageLimits(executable: string, cwd: string, options: Readonly<{ deadline: ReadDeadline }>): Promise<UsageLimitsReading>;
+  /**
+   * Keeps the runtime's shared client for `cwd` open across one read's steps, so they start it once and no step meets
+   * another's close. Only runtimes with a shared client implement it (Codex). Null when it cannot be held now.
+   */
+  holdClient?(cwd: string): RuntimeClientHold | null;
   /** The vendor's own update command (DEC-001). */
   updateArgv(executable: string): readonly string[];
   /** The vendor's own browser login; present only for the BROWSER route (Codex, Grok). */

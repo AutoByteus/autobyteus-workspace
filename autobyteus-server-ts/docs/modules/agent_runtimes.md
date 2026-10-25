@@ -144,24 +144,52 @@ adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
 (`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
 same object the tool returns). The composition builds it from the same
 strategies and sign-in reader as the status service and binds it until
-`close()`. It holds no state: every call reads the runtimes again; nothing is
-cached, polled or stored.
+`close()`. Every call reads the runtimes again; nothing is cached, polled or
+stored. Reads are single-flight: callers that arrive while a read is in
+progress (several agents, the page) share it, so their runtime processes never
+overlap. The answer resolves as soon as it is complete; the read stays the one
+in progress until its client holds are released.
 
 **Available** means installed (`strategy.readVersion(...) !== null`, the
 Agent Runtimes page's rule) and not known to be signed out. A runtime whose
 sign-in could not be read is listed with `signIn: "not checked"`. For
-AutoByteus, a provider is listed when its API key is configured, or, for
-Ollama and LM Studio, when it offers models.
+AutoByteus, per provider kind:
+
+| Provider kind | Listed when | Models |
+| --- | --- | --- |
+| Static, keyed (OpenAI, Anthropic, DeepSeek, …) | its key is configured | the AutoByteus catalog's models of that provider |
+| Discovered, local (Ollama, LM Studio) | it answers with at least one model now | the reload's models; not answering, an error or a time-out → left out |
+| Discovered, keyed (custom endpoint) | its key is configured | the reload's models; a failed reload (`ERROR` / `STALE_ERROR`) → `"unknown: <source's safe message>"`, a time-out → `"unknown: timed out"`, no model → `"unknown: no models could be read"` |
+
+Discovered providers are reloaded on every read through
+`ModelCatalogService.reloadProviderModelCatalog(id, "autobyteus")` (the
+settings' own reload; it refreshes the shared catalog, and a failed reload
+keeps the previous rows for launch lists).
 
 **Steps and caps.** All runtimes are read in parallel. Per runtime: install
 (4 s) → sign-in (6 s) → models ‖ limits (8 s each), at most 18 s; AutoByteus:
-provider list (4 s) → each provider's usage (8 s), in parallel. Each cap is a
-`ReadDeadline` (`src/runtime-management/read-deadline.ts`, an end time) that
-every command, probe, handshake and request inside the step shares: each gets
-its usual time-out cut to the time left, and nothing starts once it has
-passed, so the step's own processes stop. Codex requests race the deadline and
-release the app-server lease in `finally`. Callers without a deadline (this
-page, launch paths) keep their usual time-outs. A failed or timed-out step
+provider list (4 s) → per provider its discovered models ‖ its usage (8 s
+each), all providers in parallel. Each cap is a `ReadDeadline`
+(`src/runtime-management/read-deadline.ts`, an end time) that every command,
+probe, handshake and request inside the step shares: each gets its usual
+time-out cut to the time left, and nothing starts once it has passed, so the
+step's own processes stop. Codex requests race the deadline and release their
+lease in `finally`. Callers without a deadline (this page, launch paths) keep
+their usual time-outs.
+
+**Time-outs.** A step stopped by its own deadline surfaces a
+`DeadlineExceededError` (from `raceDeadline`, the command runner, or as the
+`cause` of a helper's own time-out diagnostic), and `isDeadlineExceeded(error)`
+is the one rule that makes its reason "timed out". It is never decided by
+reading the clock afterwards (timers and `Date.now()` can disagree by a
+millisecond).
+
+**Codex client hold.** After the install step the service holds the runtime's
+shared client for the rest of the read (`AgentRuntimeStrategy.holdClient`, Codex
+only: a home-folder lease taken without `acquire()`), so sign-in, models and
+limits start the app-server once and no step meets another's close; the hold
+is released when the read is done. Another Codex user of the same folder
+closing it meanwhile still gives that step's reason (follow-up FU-003). A failed or timed-out step
 gives: install → left out; sign-in → `signIn: "not checked"`; models →
 `"unknown: <reason>"` (an empty model list is never "no models"); limits →
 `"unknown: <reason>"`.
@@ -177,7 +205,9 @@ dropped):
 | Antigravity | `agy -p "/usage" --output-format json` | each enabled bucket: "<group> · weekly" / "<group> · 5-hour" | its group (by the model families the group lists, or the group name; most specific wins) has 0 % left |
 | Grok | ACP extension `_x.ai/billing` after `initialize` on a short process (`runAcpExtensionRequest`) | "Billing period", resets at the period end; remaining only when Grok reports `creditUsagePercent`, else null with a `limitsNote` | its remaining is 0 % |
 
-A limit that maps to no offered model covers the whole runtime. The service
+Remaining percentages are whole numbers rounded down (99.7 → 99); a limit's
+exhaustion is decided on the unrounded value. A limit that maps to no offered
+model covers the whole runtime. The service
 derives each model's `blocked: {until, by}` (until the latest reset of the
 used-up limits covering it). AutoByteus providers are read by
 `src/llm-management/provider-usage/` (see

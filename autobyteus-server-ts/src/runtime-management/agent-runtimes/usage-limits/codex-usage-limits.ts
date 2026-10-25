@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, clampPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -43,7 +43,7 @@ export const parseCodexUsageLimits = (answer: unknown): UsageLimitsReading => {
       if (usedUp && credits) runningOnCredits ??= scopeLabel ? `${name} · ${scopeLabel}` : name;
       limits.push({
         name: scopeLabel ? `${name} · ${scopeLabel}` : name,
-        remainingPercent: usedPercent === null ? null : clampPercent(100 - usedPercent),
+        remainingPercent: usedPercent === null ? null : wholeRemainingPercent(100 - usedPercent),
         resetsAt: toIsoTime(window.resetsAt),
         exhausted: usedUp && !credits,
         appliesTo: modelSlug ? { kind: "models", modelIds: [modelSlug] } : { kind: "runtime" },

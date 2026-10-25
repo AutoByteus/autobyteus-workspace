@@ -44,7 +44,7 @@ describe("usage-limit parsers (recorded answers)", () => {
     } });
     expect(reading).toEqual({ state: "read", limits: [
       expect.objectContaining({ name: "5-hour", remainingPercent: 60, exhausted: false, appliesTo: { kind: "runtime" } }),
-      expect.objectContaining({ name: "Weekly", remainingPercent: 88, exhausted: false }),
+      expect.objectContaining({ name: "Weekly", remainingPercent: 87, exhausted: false }),
       expect.objectContaining({ name: "Weekly · gpt-5.6-spark", remainingPercent: 0, resetsAt: null, exhausted: true,
         appliesTo: { kind: "models", modelIds: ["gpt-5.6-spark"] } }),
     ] });
@@ -74,15 +74,29 @@ describe("usage-limit parsers (recorded answers)", () => {
   it("Antigravity: a limit per enabled bucket, named by group and window, scoped to the group's families (AC-004)", () => {
     const reading = parseAntigravityUsageLimits(text("antigravity-usage.json"));
     expect(reading).toEqual({ state: "read", limits: [
-      { name: "Gemini Models · weekly", remainingPercent: 100, resetsAt: "2026-10-31T04:59:08.000Z", exhausted: false,
+      { name: "Gemini Models · weekly", remainingPercent: 99, resetsAt: "2026-10-31T04:59:08.000Z", exhausted: false,
         appliesTo: { kind: "modelFamilies", families: ["Gemini Flash", "Gemini Pro", "Gemini Models"] } },
-      { name: "Gemini Models · 5-hour", remainingPercent: 99, resetsAt: "2026-10-24T21:45:12.000Z", exhausted: false,
+      { name: "Gemini Models · 5-hour", remainingPercent: 98, resetsAt: "2026-10-24T21:45:12.000Z", exhausted: false,
         appliesTo: { kind: "modelFamilies", families: ["Gemini Flash", "Gemini Pro", "Gemini Models"] } },
       { name: "Claude and GPT models · weekly", remainingPercent: 0, resetsAt: "2026-10-26T10:22:39.000Z", exhausted: true,
         appliesTo: { kind: "modelFamilies", families: ["Claude Opus", "Claude Sonnet", "GPT-OSS", "Claude and GPT models"] } },
       { name: "Gemini 4 Argon · weekly", remainingPercent: 40, resetsAt: "2026-10-26T12:35:29.000Z", exhausted: false,
         appliesTo: { kind: "modelFamilies", families: ["Gemini 4 Argon"] } },
     ] });
+  });
+
+  it("rounds remaining percent down, never showing more than is left; exhaustion uses the raw value (O-1)", () => {
+    const agy = (fraction: number) => parseAntigravityUsageLimits(JSON.stringify({ command: { data: { groups: [{
+      name: "G", buckets: [{ window: "weekly", remaining_fraction: fraction, reset_time: null }] }] } } }));
+    expect(agy(0.9968)).toMatchObject({ limits: [{ remainingPercent: 99, exhausted: false }] });
+    expect(agy(0.29)).toMatchObject({ limits: [{ remainingPercent: 29 }] });
+    expect(agy(0.004)).toMatchObject({ limits: [{ remainingPercent: 0, exhausted: false }] });
+    expect(agy(0)).toMatchObject({ limits: [{ remainingPercent: 0, exhausted: true }] });
+    expect(parseClaudeUsageLimits({ rate_limits_available: true, rate_limits: { limits: [{ kind: "session", percent: 99.6 }] } }))
+      .toMatchObject({ limits: [{ remainingPercent: 0, exhausted: false }] });
+    const grok = (used: number) => parseGrokUsageLimits({ config: { currentPeriod: { end: "2026-10-29T00:00:00Z" }, creditUsagePercent: used } });
+    expect(grok(99.5)).toMatchObject({ limits: [{ remainingPercent: 0, exhausted: false }] });
+    expect(grok(100)).toMatchObject({ limits: [{ remainingPercent: 0, exhausted: true }] });
   });
 
   it("Antigravity: output that is not the usage JSON is unknown", () => {

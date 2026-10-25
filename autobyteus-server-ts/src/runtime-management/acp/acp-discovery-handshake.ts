@@ -1,6 +1,6 @@
 import os from "node:os";
 import type { InitializeResponse } from "@agentclientprotocol/sdk";
-import { commandTimeout, type ReadDeadline } from "../read-deadline.js";
+import { commandBound, deadlineCause, type ReadDeadline } from "../read-deadline.js";
 import type { AcpAgentLaunchProfile } from "./acp-agent-launch-profile.js";
 import { AcpAgentProcess } from "./acp-agent-process.js";
 import { AcpClientConnection } from "./acp-client-connection.js";
@@ -11,8 +11,9 @@ export type AcpDiscoveryFailureKind = "unavailable" | "timeout" | "failed";
 
 /** Classified discovery failure; carries no provider output, paths or credentials. */
 export class AcpDiscoveryError extends Error {
-  constructor(readonly kind: AcpDiscoveryFailureKind, agentLabel: string) {
-    super(`ACP_DISCOVERY_${kind.toUpperCase()}: ${agentLabel} discovery ${kind === "timeout" ? "timed out" : kind === "unavailable" ? "could not start the agent" : "failed"}.`);
+  /** `cause`: a `DeadlineExceededError` when a read step's deadline ended the process. */
+  constructor(readonly kind: AcpDiscoveryFailureKind, agentLabel: string, options?: { cause: Error }) {
+    super(`ACP_DISCOVERY_${kind.toUpperCase()}: ${agentLabel} discovery ${kind === "timeout" ? "timed out" : kind === "unavailable" ? "could not start the agent" : "failed"}.`, options);
     this.name = "AcpDiscoveryError";
   }
 }
@@ -29,8 +30,9 @@ const withShortAcpProcess = async <T>(
   options: AcpShortProcessOptions,
   use: (connection: AcpClientConnection) => Promise<T>,
 ): Promise<T> => {
-  const timeoutMs = commandTimeout(options.deadline, DISCOVERY_TIMEOUT_MS);
-  if (timeoutMs <= 0) throw new AcpDiscoveryError("timeout", profile.agentLabel);
+  const bound = commandBound(options.deadline, DISCOVERY_TIMEOUT_MS);
+  const timedOut = () => new AcpDiscoveryError("timeout", profile.agentLabel, deadlineCause(bound));
+  if (bound.timeoutMs <= 0) throw timedOut();
   const process = AcpAgentProcess.spawn({
     command: profile.command(),
     args: profile.args({ model: null, reasoningEffort: null }),
@@ -43,7 +45,7 @@ const withShortAcpProcess = async <T>(
     const closed = new Promise<never>((_, reject) => connection.onClose((close) => reject(
       new AcpDiscoveryError(close.exit?.spawnErrorCode === "ENOENT" ? "unavailable" : "failed", profile.agentLabel))));
     const timeout = new Promise<never>((_, reject) => {
-      timer = setTimeout(() => reject(new AcpDiscoveryError("timeout", profile.agentLabel)), timeoutMs);
+      timer = setTimeout(() => reject(timedOut()), bound.timeoutMs);
     });
     return await Promise.race([use(connection), closed, timeout]);
   } catch (error) {

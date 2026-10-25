@@ -1,4 +1,4 @@
-import { ReadDeadlineExceededError, timeLeft, type ReadDeadline } from "../../read-deadline.js";
+import { isDeadlineExceeded } from "../../read-deadline.js";
 
 /**
  * Which of a runtime's models one limit covers.
@@ -46,15 +46,13 @@ export const unknownUsageLimits = (reason: string): UsageLimitsReading => Object
  */
 export const readUsageLimitsSafely = async (
   runtimeName: string,
-  deadline: ReadDeadline,
   read: () => Promise<UsageLimitsReading>,
 ): Promise<UsageLimitsReading> => {
   try {
     const reading = await read();
     return reading.state === "unknown" ? unknownUsageLimits(`${runtimeName} ${reading.reason}`) : reading;
   } catch (error) {
-    const timedOut = error instanceof ReadDeadlineExceededError || timeLeft(deadline) === 0;
-    return unknownUsageLimits(`${runtimeName} usage limits ${timedOut ? "timed out" : "could not be read"}`);
+    return unknownUsageLimits(`${runtimeName} usage limits ${isDeadlineExceeded(error) ? "timed out" : "could not be read"}`);
   }
 };
 
@@ -73,5 +71,8 @@ export const toIsoTime = (value: unknown): string | null => {
   return Number.isFinite(time) ? new Date(time).toISOString() : null;
 };
 
-/** A percentage rounded to a whole number and kept within 0–100. */
-export const clampPercent = (value: number): number => Math.min(100, Math.max(0, Math.round(value)));
+/**
+ * A remaining percentage as a whole number rounded down (99.68 → 99), kept within 0–100: it never shows 1 % when less
+ * is left. The tiny epsilon only absorbs float noise (100 × 0.29 = 28.999…96). Exhaustion is decided on the raw value.
+ */
+export const wholeRemainingPercent = (value: number): number => Math.min(100, Math.max(0, Math.floor(value + 1e-9)));

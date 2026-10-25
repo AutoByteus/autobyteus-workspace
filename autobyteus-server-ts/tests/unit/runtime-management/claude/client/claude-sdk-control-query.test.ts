@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { withClaudeControlQuery } from "../../../../../src/runtime-management/claude/client/claude-sdk-control-query.js";
 import { ClaudeSdkClient } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import { createReadDeadline, ReadDeadlineExceededError } from "../../../../../src/runtime-management/read-deadline.js";
+import { createReadDeadline, DeadlineExceededError } from "../../../../../src/runtime-management/read-deadline.js";
 
 /** A fake SDK `query()` that records what it was opened with and offers the given control requests. */
 const fakeSdk = (control: Record<string, unknown>) => {
@@ -47,7 +47,7 @@ describe("withClaudeControlQuery", () => {
     const sdk = fakeSdk({ usage: () => new Promise(() => undefined) });
     const startedAt = Date.now();
     await expect(withClaudeControlQuery({ queryFn: sdk.queryFn, deadline: createReadDeadline(100) }, async (control) =>
-      (control.usage as () => Promise<unknown>)())).rejects.toBeInstanceOf(ReadDeadlineExceededError);
+      (control.usage as () => Promise<unknown>)())).rejects.toBeInstanceOf(DeadlineExceededError);
     expect(Date.now() - startedAt).toBeLessThan(2_000);
     expect(sdk.close).toHaveBeenCalledOnce();
   });
@@ -56,8 +56,21 @@ describe("withClaudeControlQuery", () => {
     const close = vi.fn();
     const queryFn = () => new Promise((resolve) => setTimeout(() => resolve({ close }), 150));
     await expect(withClaudeControlQuery({ queryFn, deadline: createReadDeadline(30) }, async () => "never"))
-      .rejects.toBeInstanceOf(ReadDeadlineExceededError);
+      .rejects.toBeInstanceOf(DeadlineExceededError);
     await vi.waitFor(() => expect(close).toHaveBeenCalledOnce());
+  });
+});
+
+describe("ClaudeSdkClient.listModels with a deadline (CR-002)", () => {
+  it("lets the deadline's time-out through, so the read says 'timed out'; without a deadline it gives [] as before", async () => {
+    const sdk = fakeSdk({ supportedModels: () => new Promise(() => undefined) });
+    const client = new ClaudeSdkClient();
+    client.setCachedModuleForTesting({ query: sdk.queryFn });
+    await expect(client.listModels({ deadline: createReadDeadline(80) })).rejects.toBeInstanceOf(DeadlineExceededError);
+    const failing = fakeSdk({ supportedModels: async () => { throw new Error("cli exited"); } });
+    client.setCachedModuleForTesting({ query: failing.queryFn });
+    await expect(client.listModels({ deadline: createReadDeadline(5_000) })).resolves.toEqual([]);
+    await expect(client.listModels()).resolves.toEqual([]);
   });
 });
 

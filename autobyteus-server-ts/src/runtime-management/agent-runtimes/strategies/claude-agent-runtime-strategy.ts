@@ -82,7 +82,7 @@ export const createClaudeAgentRuntimeStrategy = (dependencies: Readonly<{
       : { state: "unknown", detail: describeFailure(result) };
   },
   /** The Agent SDK's `get_usage` control request on a query that sends no message (0 tokens). */
-  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Claude", deadline, async () =>
+  readUsageLimits: (_executable, _cwd, { deadline }) => readUsageLimitsSafely("Claude", async () =>
     parseClaudeUsageLimits(await (dependencies.claudeSdkClient ?? getClaudeSdkClient()).readUsage({ deadline }))),
   updateArgv: (executable) => [executable, "update"],
 });

@@ -61,9 +61,21 @@ export const createCodexAgentRuntimeStrategy = (dependencies: Readonly<{
     }
   },
   /** Codex's own `account/rateLimits/read` through the app-server (0 tokens). */
-  readUsageLimits: (_executable, cwd, { deadline }) => readUsageLimitsSafely("Codex", deadline, async () =>
+  readUsageLimits: (_executable, cwd, { deadline }) => readUsageLimitsSafely("Codex", async () =>
     parseCodexUsageLimits(await withCodexClient(dependencies.codexClientManager, cwd, deadline, (client) =>
       client.request<unknown>("account/rateLimits/read", {})))),
+  /**
+   * A lease taken without `acquire()`: the app-server generation for `cwd` stays open while the steps' own leases come
+   * and go, and closes when the hold is released. Null when that generation is closing now (`beginAcquire` refuses).
+   */
+  holdClient(cwd) {
+    try {
+      const lease = dependencies.codexClientManager.beginAcquire(cwd);
+      return { release: () => lease.release() };
+    } catch {
+      return null;
+    }
+  },
   updateArgv: (executable) => [executable, "update"],
   signInArgv: (executable) => [executable, "login"],
 });

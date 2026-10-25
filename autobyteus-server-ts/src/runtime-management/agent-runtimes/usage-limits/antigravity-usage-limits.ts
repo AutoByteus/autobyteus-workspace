@@ -1,5 +1,5 @@
 import {
-  asFiniteNumber, asRecord, clampPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
+  asFiniteNumber, asRecord, wholeRemainingPercent, toIsoTime, unknownUsageLimits, UNEXPECTED_ANSWER,
   type RuntimeUsageLimit, type UsageLimitsReading,
 } from "./usage-limits-reading.js";
 
@@ -39,7 +39,7 @@ export const parseAntigravityUsageLimits = (stdout: string): UsageLimitsReading 
       const window = typeof bucket.window === "string" ? WINDOW_NAMES[bucket.window] ?? bucket.window : null;
       limits.push({
         name: window ? `${groupName} · ${window}` : groupName,
-        remainingPercent: fraction === null ? null : clampPercent(fraction * 100),
+        remainingPercent: fraction === null ? null : wholeRemainingPercent(fraction * 100),
         resetsAt: toIsoTime(bucket.reset_time),
         exhausted: fraction !== null && fraction <= 0,
         appliesTo: { kind: "modelFamilies", families },
