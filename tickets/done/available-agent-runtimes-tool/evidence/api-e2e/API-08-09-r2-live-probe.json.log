@@ -1,0 +1,759 @@
+# API-08/API-09 round 2 — live probe (script API-08-live-probe.mjs.txt, this round's version records checkedAt and Codex state per parallel call)
+# Node: built dist at source 7ece4e2069 (HEAD 5a87647318), own data root, 127.0.0.1:<free>, real HOME/USER/LOGNAME (codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70), read-only test vault; LM Studio on localhost:1234; macOS darwin 25.5; 2026-10-25
+
+{
+  "startedAt": "2026-10-25T09:25:28.426Z",
+  "worktreeHead": "5a87647318",
+  "steps": {
+    "startupMs": 1786,
+    "read-cold": {
+      "ms": 4994,
+      "summary": [
+        {
+          "runtime": "codex_app_server",
+          "limits": [
+            {
+              "name": "Weekly",
+              "remainingPercent": 100,
+              "resetsAt": "2026-11-01T06:31:15.000Z"
+            }
+          ],
+          "models": "7 models, 0 blocked: "
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "limits": [
+            {
+              "name": "5-hour",
+              "remainingPercent": 48,
+              "resetsAt": "2026-10-25T12:10:00.206Z"
+            },
+            {
+              "name": "Weekly",
+              "remainingPercent": 40,
+              "resetsAt": "2026-10-31T16:00:00.206Z"
+            },
+            {
+              "name": "Weekly · Fable",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-31T16:00:00.000Z"
+            }
+          ],
+          "models": "12 models, 0 blocked: "
+        },
+        {
+          "runtime": "antigravity_cli",
+          "limits": [
+            {
+              "name": "Gemini Models · weekly",
+              "remainingPercent": 90,
+              "resetsAt": "2026-10-31T04:59:08.000Z"
+            },
+            {
+              "name": "Gemini Models · 5-hour",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-25T14:25:35.000Z"
+            },
+            {
+              "name": "Claude and GPT models · weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-26T10:22:39.000Z"
+            },
+            {
+              "name": "Gemini 4 Argon · weekly",
+              "remainingPercent": 36,
+              "resetsAt": "2026-10-26T12:35:29.000Z"
+            }
+          ],
+          "models": "13 models, 7 blocked: claude-opus-5-5-low (Claude and GPT models · weekly), claude-opus-5-5-medium (Claude and GPT models · weekly), claude-opus-5-5-high (Claude and GPT models · weekly), claude-sonnet-5-5-low (Claude and GPT models · weekly), claude-sonnet-5-5-medium (Claude and GPT models · weekly), claude-sonnet-5-5-high (Claude and GPT models · weekly), gpt-oss-120b-medium (Claude and GPT models · weekly)"
+        },
+        {
+          "runtime": "grok_build",
+          "limits": [
+            {
+              "name": "Billing period",
+              "remainingPercent": null,
+              "resetsAt": "2026-10-29T00:00:00.000Z"
+            }
+          ],
+          "limitsNote": "Grok does not report how much of the period is used.",
+          "models": "1 models, 0 blocked: "
+        },
+        {
+          "runtime": "autobyteus",
+          "providers": [
+            {
+              "provider": "Anthropic",
+              "blocked": "credit balance too low",
+              "models": 10,
+              "blockedModels": 10
+            },
+            {
+              "provider": "DeepSeek",
+              "balance": "0.14 USD",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Gemini",
+              "limits": "not reported",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "GLM",
+              "limits": "not reported",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Grok",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Kimi",
+              "balance": "0 USD",
+              "blocked": "no balance left",
+              "models": 1,
+              "blockedModels": 1
+            },
+            {
+              "provider": "LM Studio",
+              "limits": "not reported",
+              "models": 4,
+              "blockedModels": 0
+            },
+            {
+              "provider": "OpenAI",
+              "limits": "not reported",
+              "models": 9,
+              "blockedModels": 0
+            }
+          ]
+        }
+      ]
+    },
+    "read-second": {
+      "ms": 4963,
+      "summary": [
+        {
+          "runtime": "codex_app_server",
+          "limits": [
+            {
+              "name": "Weekly",
+              "remainingPercent": 100,
+              "resetsAt": "2026-11-01T06:31:15.000Z"
+            }
+          ],
+          "models": "7 models, 0 blocked: "
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "limits": [
+            {
+              "name": "5-hour",
+              "remainingPercent": 48,
+              "resetsAt": "2026-10-25T12:10:00.206Z"
+            },
+            {
+              "name": "Weekly",
+              "remainingPercent": 40,
+              "resetsAt": "2026-10-31T16:00:00.206Z"
+            },
+            {
+              "name": "Weekly · Fable",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-31T16:00:00.000Z"
+            }
+          ],
+          "models": "12 models, 0 blocked: "
+        },
+        {
+          "runtime": "antigravity_cli",
+          "limits": [
+            {
+              "name": "Gemini Models · weekly",
+              "remainingPercent": 90,
+              "resetsAt": "2026-10-31T04:59:08.000Z"
+            },
+            {
+              "name": "Gemini Models · 5-hour",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-25T14:25:40.000Z"
+            },
+            {
+              "name": "Claude and GPT models · weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-26T10:22:39.000Z"
+            },
+            {
+              "name": "Gemini 4 Argon · weekly",
+              "remainingPercent": 36,
+              "resetsAt": "2026-10-26T12:35:29.000Z"
+            }
+          ],
+          "models": "13 models, 7 blocked: claude-opus-5-5-low (Claude and GPT models · weekly), claude-opus-5-5-medium (Claude and GPT models · weekly), claude-opus-5-5-high (Claude and GPT models · weekly), claude-sonnet-5-5-low (Claude and GPT models · weekly), claude-sonnet-5-5-medium (Claude and GPT models · weekly), claude-sonnet-5-5-high (Claude and GPT models · weekly), gpt-oss-120b-medium (Claude and GPT models · weekly)"
+        },
+        {
+          "runtime": "grok_build",
+          "limits": [
+            {
+              "name": "Billing period",
+              "remainingPercent": null,
+              "resetsAt": "2026-10-29T00:00:00.000Z"
+            }
+          ],
+          "limitsNote": "Grok does not report how much of the period is used.",
+          "models": "1 models, 0 blocked: "
+        },
+        {
+          "runtime": "autobyteus",
+          "providers": [
+            {
+              "provider": "Anthropic",
+              "blocked": "credit balance too low",
+              "models": 10,
+              "blockedModels": 10
+            },
+            {
+              "provider": "DeepSeek",
+              "balance": "0.14 USD",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Gemini",
+              "limits": "not reported",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "GLM",
+              "limits": "not reported",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Grok",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Kimi",
+              "balance": "0 USD",
+              "blocked": "no balance left",
+              "models": 1,
+              "blockedModels": 1
+            },
+            {
+              "provider": "LM Studio",
+              "limits": "not reported",
+              "models": 4,
+              "blockedModels": 0
+            },
+            {
+              "provider": "OpenAI",
+              "limits": "not reported",
+              "models": 9,
+              "blockedModels": 0
+            }
+          ]
+        }
+      ]
+    },
+    "read-third": {
+      "ms": 5295,
+      "summary": [
+        {
+          "runtime": "codex_app_server",
+          "limits": [
+            {
+              "name": "Weekly",
+              "remainingPercent": 100,
+              "resetsAt": "2026-11-01T06:31:15.000Z"
+            }
+          ],
+          "models": "7 models, 0 blocked: "
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "limits": [
+            {
+              "name": "5-hour",
+              "remainingPercent": 48,
+              "resetsAt": "2026-10-25T12:10:00.206Z"
+            },
+            {
+              "name": "Weekly",
+              "remainingPercent": 40,
+              "resetsAt": "2026-10-31T16:00:00.206Z"
+            },
+            {
+              "name": "Weekly · Fable",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-31T16:00:00.000Z"
+            }
+          ],
+          "models": "12 models, 0 blocked: "
+        },
+        {
+          "runtime": "antigravity_cli",
+          "limits": [
+            {
+              "name": "Gemini Models · weekly",
+              "remainingPercent": 90,
+              "resetsAt": "2026-10-31T04:59:08.000Z"
+            },
+            {
+              "name": "Gemini Models · 5-hour",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-25T14:25:45.000Z"
+            },
+            {
+              "name": "Claude and GPT models · weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-26T10:22:39.000Z"
+            },
+            {
+              "name": "Gemini 4 Argon · weekly",
+              "remainingPercent": 36,
+              "resetsAt": "2026-10-26T12:35:29.000Z"
+            }
+          ],
+          "models": "13 models, 7 blocked: claude-opus-5-5-low (Claude and GPT models · weekly), claude-opus-5-5-medium (Claude and GPT models · weekly), claude-opus-5-5-high (Claude and GPT models · weekly), claude-sonnet-5-5-low (Claude and GPT models · weekly), claude-sonnet-5-5-medium (Claude and GPT models · weekly), claude-sonnet-5-5-high (Claude and GPT models · weekly), gpt-oss-120b-medium (Claude and GPT models · weekly)"
+        },
+        {
+          "runtime": "grok_build",
+          "limits": [
+            {
+              "name": "Billing period",
+              "remainingPercent": null,
+              "resetsAt": "2026-10-29T00:00:00.000Z"
+            }
+          ],
+          "limitsNote": "Grok does not report how much of the period is used.",
+          "models": "1 models, 0 blocked: "
+        },
+        {
+          "runtime": "autobyteus",
+          "providers": [
+            {
+              "provider": "Anthropic",
+              "blocked": "credit balance too low",
+              "models": 10,
+              "blockedModels": 10
+            },
+            {
+              "provider": "DeepSeek",
+              "balance": "0.14 USD",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Gemini",
+              "limits": "not reported",
+              "models": 2,
+              "blockedModels": 0
+            },
+            {
+              "provider": "GLM",
+              "limits": "not reported",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Grok",
+              "models": 1,
+              "blockedModels": 0
+            },
+            {
+              "provider": "Kimi",
+              "balance": "0 USD",
+              "blocked": "no balance left",
+              "models": 1,
+              "blockedModels": 1
+            },
+            {
+              "provider": "LM Studio",
+              "limits": "not reported",
+              "models": 4,
+              "blockedModels": 0
+            },
+            {
+              "provider": "OpenAI",
+              "limits": "not reported",
+              "models": 9,
+              "blockedModels": 0
+            }
+          ]
+        }
+      ]
+    },
+    "direct": {
+      "codex": [
+        {
+          "windowMins": 10080,
+          "remainingPercent": 100,
+          "resetsAt": "2026-11-01T06:31:15.000Z",
+          "reached": null,
+          "hasCredits": false,
+          "slug": null
+        }
+      ],
+      "claude": [
+        {
+          "kind": "session",
+          "remainingPercent": 48,
+          "resetsAt": "2026-10-25T12:10:00.206845+00:00",
+          "scope": null
+        },
+        {
+          "kind": "weekly_all",
+          "remainingPercent": 40,
+          "resetsAt": "2026-10-31T16:00:00.206866+00:00",
+          "scope": null
+        },
+        {
+          "kind": "weekly_scoped",
+          "remainingPercent": 100,
+          "resetsAt": "2026-10-31T16:00:00+00:00",
+          "scope": "Fable"
+        }
+      ],
+      "antigravity": [
+        {
+          "group": "Gemini Models",
+          "window": "weekly",
+          "remainingPercent": 90.2,
+          "resetsAt": "2026-10-31T04:59:08Z"
+        },
+        {
+          "group": "Gemini Models",
+          "window": "5h",
+          "remainingPercent": 100,
+          "resetsAt": "2026-10-25T14:25:49Z"
+        },
+        {
+          "group": "Claude and GPT models",
+          "window": "weekly",
+          "remainingPercent": 0,
+          "resetsAt": "2026-10-26T10:22:39Z"
+        },
+        {
+          "group": "Gemini 4 Argon",
+          "window": "weekly",
+          "remainingPercent": 36.5,
+          "resetsAt": "2026-10-26T12:35:29Z"
+        }
+      ],
+      "antigravityTokens": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 0
+      },
+      "grok": {
+        "periodEnd": "2026-10-29T00:00:00+00:00",
+        "creditUsagePercent": null
+      },
+      "providers": [
+        "== deepseek balance 200 349ms",
+        "== kimi balance 200 226ms",
+        "== xai api-key info 200 220ms",
+        "== glm coding quota 200 267ms",
+        "== openai models (headers?) 200 1288ms",
+        "== anthropic count_tokens (headers?) 400 179ms"
+      ],
+      "providerFacts": {
+        "deepseek": {
+          "is_available": true,
+          "total": "0.14",
+          "currency": "USD"
+        },
+        "kimi": {
+          "available_balance": 0
+        },
+        "xai": {
+          "api_key_blocked": false,
+          "api_key_disabled": false,
+          "team_blocked": false
+        },
+        "anthropicCreditMessage": true
+      }
+    },
+    "product": {
+      "codex": {
+        "limits": [
+          {
+            "name": "Weekly",
+            "remainingPercent": 100,
+            "resetsAt": "2026-11-01T06:31:15.000Z"
+          }
+        ],
+        "blocked": 0
+      },
+      "claude": [
+        {
+          "name": "5-hour",
+          "remainingPercent": 48,
+          "resetsAt": "2026-10-25T12:10:00.206Z"
+        },
+        {
+          "name": "Weekly",
+          "remainingPercent": 40,
+          "resetsAt": "2026-10-31T16:00:00.206Z"
+        },
+        {
+          "name": "Weekly · Fable",
+          "remainingPercent": 100,
+          "resetsAt": "2026-10-31T16:00:00.000Z"
+        }
+      ],
+      "antigravity": [
+        {
+          "name": "Gemini Models · weekly",
+          "remainingPercent": 90,
+          "resetsAt": "2026-10-31T04:59:08.000Z"
+        },
+        {
+          "name": "Gemini Models · 5-hour",
+          "remainingPercent": 100,
+          "resetsAt": "2026-10-25T14:25:45.000Z"
+        },
+        {
+          "name": "Claude and GPT models · weekly",
+          "remainingPercent": 0,
+          "resetsAt": "2026-10-26T10:22:39.000Z"
+        },
+        {
+          "name": "Gemini 4 Argon · weekly",
+          "remainingPercent": 36,
+          "resetsAt": "2026-10-26T12:35:29.000Z"
+        }
+      ],
+      "grok": {
+        "limits": [
+          {
+            "name": "Billing period",
+            "remainingPercent": null,
+            "resetsAt": "2026-10-29T00:00:00.000Z"
+          }
+        ],
+        "note": "Grok does not report how much of the period is used."
+      },
+      "providers": [
+        {
+          "provider": "Anthropic",
+          "blocked": "credit balance too low"
+        },
+        {
+          "provider": "DeepSeek",
+          "balance": "0.14 USD"
+        },
+        {
+          "provider": "Gemini",
+          "limits": "not reported"
+        },
+        {
+          "provider": "GLM",
+          "limits": "not reported"
+        },
+        {
+          "provider": "Grok"
+        },
+        {
+          "provider": "Kimi",
+          "balance": "0 USD",
+          "blocked": "no balance left"
+        },
+        {
+          "provider": "LM Studio",
+          "limits": "not reported"
+        },
+        {
+          "provider": "OpenAI",
+          "limits": "not reported"
+        }
+      ]
+    },
+    "parallel-1": {
+      "wallMs": 4710,
+      "calls": [
+        {
+          "ms": 4709,
+          "checkedAt": "2026-10-25T09:25:53.081Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4709,
+          "checkedAt": "2026-10-25T09:25:53.081Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4709,
+          "checkedAt": "2026-10-25T09:25:53.081Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4709,
+          "checkedAt": "2026-10-25T09:25:53.081Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        }
+      ]
+    },
+    "parallel-2": {
+      "wallMs": 4539,
+      "calls": [
+        {
+          "ms": 4536,
+          "checkedAt": "2026-10-25T09:25:59.793Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4537,
+          "checkedAt": "2026-10-25T09:25:59.793Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4537,
+          "checkedAt": "2026-10-25T09:25:59.793Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        },
+        {
+          "ms": 4538,
+          "checkedAt": "2026-10-25T09:25:59.793Z",
+          "codex": {
+            "limits": "read",
+            "models": "read"
+          },
+          "runtimes": [
+            "codex_app_server",
+            "claude_agent_sdk",
+            "antigravity_cli",
+            "grok_build",
+            "autobyteus"
+          ],
+          "unknowns": []
+        }
+      ]
+    },
+    "scan": {
+      "answers": {
+        "bytes": 77659,
+        "hits": {
+          "email": 0,
+          "openaiKey": 0,
+          "xaiKey": 0,
+          "bearer": 0,
+          "accountFields": 0
+        }
+      },
+      "serverOutput": {
+        "bytes": 11339,
+        "hits": {
+          "email": 0,
+          "openaiKey": 0,
+          "xaiKey": 0,
+          "bearer": 0,
+          "accountFields": 0
+        }
+      },
+      "serverLogFile": {
+        "bytes": 8112,
+        "hits": {
+          "email": 0,
+          "openaiKey": 0,
+          "xaiKey": 0,
+          "bearer": 0,
+          "accountFields": 0
+        }
+      }
+    },
+    "serverLogWarnings": []
+  },
+  "cleanup": {
+    "serverPid": 84194,
+    "serverExited": true,
+    "tempRoot": "removed"
+  },
+  "finishedAt": "2026-10-25T09:26:09.340Z"
+}

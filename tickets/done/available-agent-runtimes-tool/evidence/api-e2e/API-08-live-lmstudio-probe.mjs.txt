@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+// autobyteus-303 API-08/API-09 live probe (temporary; a copy is kept in the ticket's evidence).
+// Starts this worktree's built server (dist/app.js) on a fresh data root and a free port, with the real HOME/USER/LOGNAME
+// (the host's signed-in codex, claude, agy, grok) and the standing read-only test vault (AUTOBYTEUS_TEST_VAULT), then:
+//   1. the first read on the cold server, and two more reads, timed;
+//   2. each runtime's and provider's own direct answer (the design's 0-token limit probes), compared with the product's;
+//   3. two rounds of 4 reads at once (RSK-002);
+//   4. a scan of every answer and the server's log for identity or key patterns.
+// Writes only comparisons and facts (never raw vendor output) to <out>/live-probe.json. Stops and removes what it started.
+// Usage: node live-probe.mjs <worktree> <out-dir>
+import { spawn, execFileSync } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+const [worktree, outDir] = process.argv.slice(2);
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const probes = path.join(worktree, 'tickets/in-progress/available-agent-runtimes-tool/evidence/limit-probes');
+const sdk = path.join(serverDir, 'node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs');
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const out = { startedAt: new Date().toISOString(), worktreeHead: execFileSync('git', ['-C', worktree, 'rev-parse', '--short', 'HEAD']).toString().trim(), steps: {} };
+await fs.mkdir(outDir, { recursive: true });
+const port = await new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'aar-live-')));
+const dataRoot = path.join(root, 'node');
+const db = path.join(dataRoot, 'db', 'node.db');
+await fs.mkdir(path.dirname(db), { recursive: true });
+for (const folder of ['logs', 'memory', 'temp_workspace']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+const url = `http://127.0.0.1:${port}`;
+const env = {
+  ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('AUTOBYTEUS_') && !key.startsWith('ENABLE_') && !/_API_KEY$/.test(key))),
+  APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: pathToFileURL(db).href, AUTOBYTEUS_SERVER_HOST: url,
+  AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'), AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
+  AUTOBYTEUS_TEST_VAULT: path.join(os.homedir(), '.autobyteus-test/vault'),
+};
+await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${env.DATABASE_URL}\nAUTOBYTEUS_SERVER_HOST=${url}\n`);
+execFileSync('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { env, stdio: 'ignore' });
+const logPath = path.join(root, 'server-output.log');
+const log = createWriteStream(logPath);
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+server.stdout.pipe(log); server.stderr.pipe(log);
+const read = async () => {
+  const t0 = Date.now();
+  const response = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ availableAgentRuntimes }' }) });
+  const text = await response.text();
+  const body = JSON.parse(text);
+  if (body.errors) throw new Error(JSON.stringify(body.errors));
+  return { ms: Date.now() - t0, report: body.data.availableAgentRuntimes, text };
+};
+const byRuntime = (report) => Object.fromEntries(report.agentRuntimes.map((e) => [e.runtime, e]));
+const summarize = (report) => report.agentRuntimes.map((e) => e.runtime === 'autobyteus'
+  ? { runtime: e.runtime, providers: e.providers.map((p) => ({ provider: p.provider, balance: p.balance, blocked: p.blocked, limits: p.limits, models: p.models.length, blockedModels: p.models.filter((m) => m.blocked).length })) }
+  : { runtime: e.runtime, signIn: e.signIn, limits: e.limits, limitsNote: e.limitsNote,
+    models: Array.isArray(e.models) ? `${e.models.length} models, ${e.models.filter((m) => m.blocked).length} blocked: ${e.models.filter((m) => m.blocked).map((m) => `${m.id} (${m.blocked.by})`).join(', ')}` : e.models });
+const run = (cmd, args, cwd = '/tmp/routing-probes') => new Promise((resolve) => {
+  const child = spawn(cmd, args, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
+  let stdout = ''; child.stdout.on('data', (c) => { stdout += c; });
+  const timer = setTimeout(() => child.kill('SIGKILL'), 30000);
+  child.on('close', () => { clearTimeout(timer); resolve(stdout); });
+});
+const reports = [];
+try {
+  const t0 = Date.now();
+  while (!(await fetch(`${url}/rest/health`).then((r) => r.ok).catch(() => false))) { if (server.exitCode !== null) throw new Error('server exited'); await sleep(250); }
+  out.steps.startupMs = Date.now() - t0;
+  // LM Studio (running on this Mac with models) before and after its catalog is loaded through the public API.
+  const lmstudio = (r) => r.report.agentRuntimes.find((e) => e.runtime === 'autobyteus')?.providers.find((p) => p.provider === 'LM Studio' || /lm ?studio/i.test(p.provider)) ?? null;
+  const before = await read();
+  out.steps.lmStudioDirect = JSON.parse(execFileSync('curl', ['-s', '-m', '3', 'http://localhost:1234/v1/models']).toString()).data.map((m) => m.id);
+  out.steps.beforeEnsure = { ms: before.ms, providers: before.report.agentRuntimes.find((e) => e.runtime === 'autobyteus')?.providers.map((p) => p.provider), lmStudio: lmstudio(before) };
+  const credentials = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ providerCredentialSettings(runtimeKind: "autobyteus") { provider { id name } apiKeyConfigured } }' }) }).then((r) => r.json());
+  out.steps.lmStudioCredentialSetting = credentials.data?.providerCredentialSettings?.find((s) => s.provider.id === 'LMSTUDIO') ?? credentials;
+  const ensured = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: 'mutation { ensureProviderModelCatalog(providerId: "LMSTUDIO", runtimeKind: "autobyteus") { __typename } }' }) }).then((r) => r.json());
+  out.steps.ensure = ensured.errors ? ensured.errors : 'ok';
+  const after = await read();
+  out.steps.afterEnsure = { ms: after.ms, providers: after.report.agentRuntimes.find((e) => e.runtime === 'autobyteus')?.providers.map((p) => p.provider), lmStudio: lmstudio(after) && { ...lmstudio(after), models: lmstudio(after).models.map((m) => m.id) } };
+} catch (error) {
+  out.error = error.stack || String(error);
+} finally {
+  try { process.kill(-server.pid, 'SIGTERM'); } catch {}
+  await sleep(3000);
+  try { process.kill(-server.pid, 'SIGKILL'); } catch {}
+  out.cleanup = { serverPid: server.pid, serverExited: server.exitCode !== null || server.signalCode !== null };
+  await fs.rm(root, { recursive: true, force: true });
+  out.cleanup.tempRoot = 'removed';
+  out.finishedAt = new Date().toISOString();
+  await fs.writeFile(path.join(outDir, 'live-lmstudio-probe.json'), JSON.stringify(out, null, 2));
+  console.log(JSON.stringify(out, null, 1).slice(0, 200));
+}
