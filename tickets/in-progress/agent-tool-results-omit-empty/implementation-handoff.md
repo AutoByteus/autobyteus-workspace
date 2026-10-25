@@ -22,7 +22,8 @@
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: SR-007, SR-008, SR-010
 - Related architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003
-- Related code-review / API/E2E / delivery revision IDs: `N/A`
+- Related code-review revision IDs: CRR-001 (`Pass`, no findings; `code-review-report.md`), recorded only
+- Related API/E2E / delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A` (AR-001–AR-008 applied as guidance; see below)
 - Commits (workspace): `010e4eb2ab` (rule in autobyteus-ts), `2d7ab606e3` (server), `24fee53dc9` (web), `17d631c704` (docs), and the ticket/evidence commit named in the handoff message. (autobyteus-agents): `82b7bae`.
 
