@@ -1,0 +1,265 @@
+# API-01…05 — server E2E tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (AAR-01…AAR-05)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: source 683b036be9 + this round's test/fixture changes (uncommitted at run time); macOS darwin 25.5, Node v22.23.1; 2026-10-25T07:38Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:65746) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts > list_available_agent_runtimes / availableAgentRuntimes e2e (real studio server, scripted runtime CLIs)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/memory
+============================================================
+
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-25T07:38:40.821Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 26 predefined settings
+(node:65746) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:65746) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts > list_available_agent_runtimes / availableAgentRuntimes e2e (real studio server, scripted runtime CLIs)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+(node:65746) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:65746) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792913920984,"pid":65746,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64846"}
+{"level":30,"time":1792913921008,"pid":65746,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64847"}
+{"level":30,"time":1792913921293,"pid":65746,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":274.39729200000056,"msg":"http request completed"}
+AAR-EVIDENCE AAR-01 cold-read {"ms":287,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]}
+{"level":30,"time":1792913921303,"pid":65746,"hostname":"MacBookPro","reqId":"req-2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.9646670000001905,"msg":"http request completed"}
+{"level":30,"time":1792913921309,"pid":65746,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5188749999997526,"msg":"http request completed"}
+{"level":30,"time":1792913921313,"pid":65746,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2029160000001866,"msg":"http request completed"}
+{"level":30,"time":1792913921318,"pid":65746,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5160830000004353,"msg":"http request completed"}
+{"level":30,"time":1792913921323,"pid":65746,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.2271250000012515,"msg":"http request completed"}
+{"level":30,"time":1792913921514,"pid":65746,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":188.13845799999945,"msg":"http request completed"}
+AAR-EVIDENCE AAR-01 report {"checkedAt":"2026-10-25T07:38:41.326Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":[{"name":"Weekly","remainingPercent":0,"resetsAt":"2026-10-30T19:57:53.000Z"}],"models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)","blocked":{"until":"2026-10-30T19:57:53.000Z","by":"Weekly"}}]},{"runtime":"claude_agent_sdk","name":"Claude","limits":[{"name":"5-hour","remainingPercent":13,"resetsAt":"2026-10-24T21:10:00.354Z"},{"name":"Weekly","remainingPercent":78,"resetsAt":"2026-10-31T16:00:00.354Z"},{"name":"Weekly · Fable","remainingPercent":100,"resetsAt":"2026-10-31T16:00:00.000Z"}],"models":[{"id":"claude-fake-sonnet","name":"Claude Fake Sonnet"}]},{"runtime":"antigravity_cli","name":"Antigravity","limits":[{"name":"Gemini Models · weekly","remainingPercent":100,"resetsAt":"2026-10-31T04:59:08.000Z"},{"name":"Gemini Models · 5-hour","remainingPercent":99,"resetsAt":"2026-10-24T21:45:12.000Z"},{"name":"Claude and GPT models · weekly","remainingPercent":0,"resetsAt":"2026-10-26T10:22:39.000Z"},{"name":"Gemini 4 Argon · weekly","remainingPercent":40,"resetsAt":"2026-10-26T12:35:29.000Z"}],"models":[{"id":"claude-sonnet-5-5-medium","name":"Claude Sonnet 5.5 (Medium)","blocked":{"until":"2026-10-26T10:22:39.000Z","by":"Claude and GPT models · weekly"}},{"id":"gemini-3.8-flash-high","name":"Gemini 3.8 Flash (High)"}]},{"runtime":"grok_build","name":"Grok","limits":[{"name":"Billing period","remainingPercent":null,"resetsAt":"2026-10-29T00:00:00.000Z"}],"limitsNote":"Grok does not report how much of the period is used.","models":[{"id":"grok-4.7","name":"Grok 4.7","contextTokens":256000}]},{"runtime":"autobyteus","name":"AutoByteus","providers":[{"provider":"Anthropic","blocked":"credit balance too low","models":[{"id":"claude-fable-5","name":"claude-fable-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-fable-5-1","name":"claude-fable-5-1","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-haiku-5-5","name":"claude-haiku-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.7","name":"claude-opus-4.7","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.8","name":"claude-opus-4.8","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5","name":"claude-opus-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5-5","name":"claude-opus-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-4.6","name":"claude-sonnet-4.6","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5","name":"claude-sonnet-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5-5","name":"claude-sonnet-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}}]},{"provider":"DeepSeek","balance":"0.14 USD","models":[{"id":"deepseek-v4-flash","name":"deepseek-v4-flash","contextTokens":1000000},{"id":"deepseek-v4-pro","name":"deepseek-v4-pro","contextTokens":1000000}]},{"provider":"Grok","models":[{"id":"grok-4.7","name":"grok-4.7","contextTokens":500000}]},{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":[{"id":"kimi-k3","name":"kimi-k3","contextTokens":1000000,"blocked":{"until":null,"by":"no balance left"}}]},{"provider":"OpenAI","limits":"not reported","models":[{"id":"gpt-5.4","name":"gpt-5.4","contextTokens":1000000},{"id":"gpt-5.4-mini","name":"gpt-5.4-mini","contextTokens":400000},{"id":"gpt-5.5","name":"gpt-5.5","contextTokens":1050000},{"id":"gpt-5.6-luna","name":"gpt-5.6-luna","contextTokens":1050000},{"id":"gpt-5.6-sol","name":"gpt-5.6-sol","contextTokens":1050000},{"id":"gpt-5.6-terra","name":"gpt-5.6-terra","contextTokens":1050000},{"id":"gpt-6-astra","name":"gpt-6-astra","contextTokens":1050000},{"id":"gpt-6-luna","name":"gpt-6-luna","contextTokens":1050000},{"id":"gpt-6-sol","name":"gpt-6-sol","contextTokens":1050000}]}]}]}
+AAR-EVIDENCE AAR-01 elapsed-ms 191
+AAR-EVIDENCE AAR-01 claude-stdin-frames ["control_request initialize","control_request get_usage"]
+AAR-EVIDENCE AAR-01 providers {"Anthropic":{"provider":"Anthropic","blocked":"credit balance too low","models":"10 models, 10 blocked"},"DeepSeek":{"provider":"DeepSeek","balance":"0.14 USD","models":"2 models, 0 blocked"},"Grok":{"provider":"Grok","models":"1 models, 0 blocked"},"Kimi":{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":"1 models, 1 blocked"},"OpenAI":{"provider":"OpenAI","limits":"not reported","models":"9 models, 0 blocked"}}
+AAR-EVIDENCE AAR-01 provider-requests ["POST https://api.anthropic.com/v1/messages/count_tokens","GET https://api.deepseek.com/user/balance","GET https://api.x.ai/v1/api-key","GET https://api.moonshot.ai/v1/users/me/balance"]
+AAR-EVIDENCE AAR-01 refused-outside-urls []
+{"level":30,"time":1792913921710,"pid":65746,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":190.51391599999988,"msg":"http request completed"}
+AAR-EVIDENCE AAR-02 signed-out-missing-unchecked [{"runtime":"codex_app_server","signIn":"not checked"},{"runtime":"antigravity_cli"},{"runtime":"autobyteus"}]
+{"level":30,"time":1792913921904,"pid":65746,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":190.20824999999968,"msg":"http request completed"}
+{"level":30,"time":1792913922090,"pid":65746,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":182.59850000000006,"msg":"http request completed"}
+{"level":30,"time":1792913936136,"pid":65746,"hostname":"MacBookPro","reqId":"req-b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14042.409792,"msg":"http request completed"}
+AAR-EVIDENCE AAR-03 elapsed-ms 14045
+AAR-EVIDENCE AAR-03 report {"checkedAt":"2026-10-25T07:38:42.094Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":"unknown: Codex usage limits timed out","models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)"}]},{"runtime":"claude_agent_sdk","name":"Claude","limits":[{"name":"5-hour","remainingPercent":13,"resetsAt":"2026-10-24T21:10:00.354Z"},{"name":"Weekly","remainingPercent":78,"resetsAt":"2026-10-31T16:00:00.354Z"},{"name":"Weekly · Fable","remainingPercent":100,"resetsAt":"2026-10-31T16:00:00.000Z"}],"models":[{"id":"claude-fake-sonnet","name":"Claude Fake Sonnet"}]},{"runtime":"antigravity_cli","name":"Antigravity","signIn":"not checked","limits":"unknown: Antigravity usage limits timed out","models":"unknown: Antigravity model list timed out"},{"runtime":"autobyteus","name":"AutoByteus","providers":[{"provider":"Anthropic","blocked":"credit balance too low","models":[{"id":"claude-fable-5","name":"claude-fable-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-fable-5-1","name":"claude-fable-5-1","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-haiku-5-5","name":"claude-haiku-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.7","name":"claude-opus-4.7","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.8","name":"claude-opus-4.8","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5","name":"claude-opus-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5-5","name":"claude-opus-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-4.6","name":"claude-sonnet-4.6","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5","name":"claude-sonnet-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5-5","name":"claude-sonnet-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}}]},{"provider":"DeepSeek","balance":"0.14 USD","models":[{"id":"deepseek-v4-flash","name":"deepseek-v4-flash","contextTokens":1000000},{"id":"deepseek-v4-pro","name":"deepseek-v4-pro","contextTokens":1000000}]},{"provider":"Grok","models":[{"id":"grok-4.7","name":"grok-4.7","contextTokens":500000}]},{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":[{"id":"kimi-k3","name":"kimi-k3","contextTokens":1000000,"blocked":{"until":null,"by":"no balance left"}}]},{"provider":"OpenAI","limits":"not reported","models":[{"id":"gpt-5.4","name":"gpt-5.4","contextTokens":1000000},{"id":"gpt-5.4-mini","name":"gpt-5.4-mini","contextTokens":400000},{"id":"gpt-5.5","name":"gpt-5.5","contextTokens":1050000},{"id":"gpt-5.6-luna","name":"gpt-5.6-luna","contextTokens":1050000},{"id":"gpt-5.6-sol","name":"gpt-5.6-sol","contextTokens":1050000},{"id":"gpt-5.6-terra","name":"gpt-5.6-terra","contextTokens":1050000},{"id":"gpt-6-astra","name":"gpt-6-astra","contextTokens":1050000},{"id":"gpt-6-luna","name":"gpt-6-luna","contextTokens":1050000},{"id":"gpt-6-sol","name":"gpt-6-sol","contextTokens":1050000}]}]}]}
+AAR-EVIDENCE AAR-03 hung [{"runtime":"grok","step":"version","pid":66355},{"runtime":"agy","step":"models","pid":66359},{"runtime":"codex","step":"rateLimits","pid":66362},{"runtime":"agy","step":"usage","pid":66488},{"runtime":"agy","step":"models","pid":66489}]
+AAR-EVIDENCE AAR-03 cli-calls ["1792913921976 66346 agy --help","1792913922013 66348 agy models","1792913922049 66349 agy --help","1792913922050 66350 agy -p /usage --output-format json","1792913922085 66351 agy models","1792913922127 66354 agy --version","1792913922128 66355 grok --version","1792913922163 66356 agy --help","1792913922200 66359 agy models","1792913928164 66487 agy --help","1792913928166 66488 agy -p /usage --output-format json","1792913928201 66489 agy models"]
+{"level":30,"time":1792913936388,"pid":65746,"hostname":"MacBookPro","reqId":"req-c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":194.2741249999999,"msg":"http request completed"}
+Agent Definition created successfully with ID: router-agent
+{"level":30,"time":1792913936408,"pid":65746,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":16.307542000002286,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace.
+Created and registered workspace ID: agent_ws_10dab7e4cb99e24419c2c6fd83d0ec48b57b9d735ecbfbcba8eb0701b728e677
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace.
+Reusing registered workspace ID: agent_ws_10dab7e4cb99e24419c2c6fd83d0ec48b57b9d735ecbfbcba8eb0701b728e677
+{"level":30,"time":1792913936517,"pid":65746,"hostname":"MacBookPro","reqId":"req-e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":107.62616699999853,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 with-tool enabled_tools ["list_available_agent_runtimes","send_message_to","delegate_task"]
+{"level":30,"time":1792913936524,"pid":65746,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_8L4WPARGw-7-KGpKFDHThOUadT1AbUN4O77_UwCS8Sc","statusCode":200,"elapsedMs":1.0705830000006245,"msg":"http request completed"}
+{"level":30,"time":1792913936716,"pid":65746,"hostname":"MacBookPro","reqId":"req-2","method":"POST","url":"/mcp/agent-tools/agtrun_8L4WPARGw-7-KGpKFDHThOUadT1AbUN4O77_UwCS8Sc","statusCode":200,"elapsedMs":191.71912499999962,"msg":"http request completed"}
+{"level":30,"time":1792913936911,"pid":65746,"hostname":"MacBookPro","reqId":"req-f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":192.5901249999988,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 mcp-report-runtimes ["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]
+{"level":30,"time":1792913937238,"pid":65746,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":325.1202919999996,"msg":"http request completed"}
+{"level":30,"time":1792913937257,"pid":65746,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":340.8582920000008,"msg":"http request completed"}
+{"level":30,"time":1792913937276,"pid":65746,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_8L4WPARGw-7-KGpKFDHThOUadT1AbUN4O77_UwCS8Sc","statusCode":200,"elapsedMs":357.82487500000207,"msg":"http request completed"}
+{"level":30,"time":1792913937315,"pid":65746,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":394.33341700000165,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 parallel {"wallMs":404,"calls":[{"ms":346,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"unknown: Codex usage limits could not be read"},{"ms":327,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"read"},{"ms":404,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"unknown: Codex usage limits could not be read"},{"ms":364,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"unknown: Codex usage limits could not be read"}]}
+{"level":30,"time":1792913937334,"pid":65746,"hostname":"MacBookPro","reqId":"req-j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.567749999998341,"msg":"http request completed"}
+Agent Definition created successfully with ID: plain-agent
+{"level":30,"time":1792913937350,"pid":65746,"hostname":"MacBookPro","reqId":"req-k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.286624999997002,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace.
+Reusing registered workspace ID: agent_ws_10dab7e4cb99e24419c2c6fd83d0ec48b57b9d735ecbfbcba8eb0701b728e677
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-OUTKKM/data/workspace.
+Reusing registered workspace ID: agent_ws_10dab7e4cb99e24419c2c6fd83d0ec48b57b9d735ecbfbcba8eb0701b728e677
+{"level":30,"time":1792913937429,"pid":65746,"hostname":"MacBookPro","reqId":"req-l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":77.34775000000081,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 without-tool enabled_tools ["list_available_agents","send_message_to","delegate_task"]
+{"level":30,"time":1792913937434,"pid":65746,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_fqKdpSSKt-qOvOPgXIjojiapJD-4pk-l5jO4AZ6sX04","statusCode":200,"elapsedMs":0.4744170000012673,"msg":"http request completed"}
+{"level":30,"time":1792913937438,"pid":65746,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_fqKdpSSKt-qOvOPgXIjojiapJD-4pk-l5jO4AZ6sX04","statusCode":200,"elapsedMs":0.49404100000174367,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 without-tool call {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Tool is not enabled for this session"}}
+{"level":30,"time":1792913937456,"pid":65746,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14.910542000001442,"msg":"http request completed"}
+AAR-EVIDENCE AAR-05 scanned {"responses":27,"outputChunks":123,"files":[".env","agents/autobyteus-daily-assistant/agent-config.json","agents/autobyteus-daily-assistant/agent.md","agents/plain-agent/agent-config.json","agents/plain-agent/agent.md","agents/router-agent/agent-config.json","agents/router-agent/agent.md","application-packages/platform/applications/.gitkeep","logs/server.log","memory/agents/plain_agent_8b3cfd2afdf2469a8a82d32e8cdc9504/raw_traces_active.jsonl","memory/agents/plain_agent_8b3cfd2afdf2469a8a82d32e8cdc9504/run_metadata.json","memory/agents/plain_agent_8b3cfd2afdf2469a8a82d32e8cdc9504/seen_skill_versions.json","memory/agents/router_agent_ff816332c8cb4598b7b16c23bb8926a0/raw_traces_active.jsonl","memory/agents/router_agent_ff816332c8cb4598b7b16c23bb8926a0/run_metadata.json","memory/agents/router_agent_ff816332c8cb4598b7b16c23bb8926a0/seen_skill_versions.json","memory/run_history_index.json","workspaces.json"],"secrets":10}
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (5 tests) 17185ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  508ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  574ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14298ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once (AC-002, AC-012, RSK-002)  1067ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  08:38:32
+   Duration  25.44s (transform 5.91s, setup 34ms, import 7.77s, tests 17.18s, environment 0ms)
+

@@ -1,0 +1,151 @@
+#!/usr/bin/env node
+// autobyteus-303 API-08/API-09 live probe (temporary; a copy is kept in the ticket's evidence).
+// Starts this worktree's built server (dist/app.js) on a fresh data root and a free port, with the real HOME/USER/LOGNAME
+// (the host's signed-in codex, claude, agy, grok) and the standing read-only test vault (AUTOBYTEUS_TEST_VAULT), then:
+//   1. the first read on the cold server, and two more reads, timed;
+//   2. each runtime's and provider's own direct answer (the design's 0-token limit probes), compared with the product's;
+//   3. two rounds of 4 reads at once (RSK-002);
+//   4. a scan of every answer and the server's log for identity or key patterns.
+// Writes only comparisons and facts (never raw vendor output) to <out>/live-probe.json. Stops and removes what it started.
+// Usage: node live-probe.mjs <worktree> <out-dir>
+import { spawn, execFileSync } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+const [worktree, outDir] = process.argv.slice(2);
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const probes = path.join(worktree, 'tickets/in-progress/available-agent-runtimes-tool/evidence/limit-probes');
+const sdk = path.join(serverDir, 'node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs');
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const out = { startedAt: new Date().toISOString(), worktreeHead: execFileSync('git', ['-C', worktree, 'rev-parse', '--short', 'HEAD']).toString().trim(), steps: {} };
+await fs.mkdir(outDir, { recursive: true });
+const port = await new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'aar-live-')));
+const dataRoot = path.join(root, 'node');
+const db = path.join(dataRoot, 'db', 'node.db');
+await fs.mkdir(path.dirname(db), { recursive: true });
+for (const folder of ['logs', 'memory', 'temp_workspace']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+const url = `http://127.0.0.1:${port}`;
+const env = {
+  ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('AUTOBYTEUS_') && !key.startsWith('ENABLE_') && !/_API_KEY$/.test(key))),
+  APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: pathToFileURL(db).href, AUTOBYTEUS_SERVER_HOST: url,
+  AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'), AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
+  AUTOBYTEUS_TEST_VAULT: path.join(os.homedir(), '.autobyteus-test/vault'),
+};
+await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${env.DATABASE_URL}\nAUTOBYTEUS_SERVER_HOST=${url}\n`);
+execFileSync('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { env, stdio: 'ignore' });
+const logPath = path.join(root, 'server-output.log');
+const log = createWriteStream(logPath);
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+server.stdout.pipe(log); server.stderr.pipe(log);
+const read = async () => {
+  const t0 = Date.now();
+  const response = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ availableAgentRuntimes }' }) });
+  const text = await response.text();
+  const body = JSON.parse(text);
+  if (body.errors) throw new Error(JSON.stringify(body.errors));
+  return { ms: Date.now() - t0, report: body.data.availableAgentRuntimes, text };
+};
+const byRuntime = (report) => Object.fromEntries(report.agentRuntimes.map((e) => [e.runtime, e]));
+const summarize = (report) => report.agentRuntimes.map((e) => e.runtime === 'autobyteus'
+  ? { runtime: e.runtime, providers: e.providers.map((p) => ({ provider: p.provider, balance: p.balance, blocked: p.blocked, limits: p.limits, models: p.models.length, blockedModels: p.models.filter((m) => m.blocked).length })) }
+  : { runtime: e.runtime, signIn: e.signIn, limits: e.limits, limitsNote: e.limitsNote,
+    models: Array.isArray(e.models) ? `${e.models.length} models, ${e.models.filter((m) => m.blocked).length} blocked: ${e.models.filter((m) => m.blocked).map((m) => `${m.id} (${m.blocked.by})`).join(', ')}` : e.models });
+const run = (cmd, args, cwd = '/tmp/routing-probes') => new Promise((resolve) => {
+  const child = spawn(cmd, args, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
+  let stdout = ''; child.stdout.on('data', (c) => { stdout += c; });
+  const timer = setTimeout(() => child.kill('SIGKILL'), 30000);
+  child.on('close', () => { clearTimeout(timer); resolve(stdout); });
+});
+const reports = [];
+try {
+  const t0 = Date.now();
+  while (!(await fetch(`${url}/rest/health`).then((r) => r.ok).catch(() => false))) { if (server.exitCode !== null) throw new Error('server exited'); await sleep(250); }
+  out.steps.startupMs = Date.now() - t0;
+  // 1. cold read, then two more
+  for (const label of ['cold', 'second', 'third']) {
+    const r = await read(); reports.push(r.text);
+    out.steps[`read-${label}`] = { ms: r.ms, summary: summarize(r.report) };
+  }
+  const product = byRuntime(JSON.parse(reports.at(-1)).data.availableAgentRuntimes);
+  // 2. each runtime's own direct answer (0-token probes), compared
+  await fs.mkdir('/tmp/routing-probes', { recursive: true });
+  const direct = {};
+  {
+    const text = await run('node', [path.join(probes, 'codex-limits.mjs')]);
+    const json = JSON.parse(text.slice(text.indexOf('{')));
+    direct.codex = Object.values(json.rateLimitsByLimitId ?? { x: json.rateLimits }).flatMap((entry) => ['primary', 'secondary'].map((k) => entry[k]).filter(Boolean)
+      .map((w) => ({ windowMins: w.windowDurationMins, remainingPercent: 100 - w.usedPercent, resetsAt: new Date(w.resetsAt * 1000).toISOString(), reached: entry.rateLimitReachedType ?? null, hasCredits: entry.credits?.hasCredits ?? null, slug: entry.normalModelSlug ?? null })));
+  }
+  {
+    const text = await run('node', [path.join(probes, 'claude-usage.mjs'), sdk]);
+    const json = JSON.parse(text.slice(text.indexOf('{')));
+    direct.claude = (json.rate_limits?.limits ?? []).map((l) => ({ kind: l.kind, remainingPercent: 100 - l.percent, resetsAt: l.resets_at, scope: l.scope?.model?.display_name ?? null }));
+  }
+  {
+    const text = await run('agy', ['-p', '/usage', '--output-format', 'json'], os.tmpdir());
+    const json = JSON.parse(text);
+    direct.antigravity = json.command.data.groups.flatMap((g) => g.buckets.filter((b) => !b.disabled).map((b) => ({ group: g.name, window: b.window, remainingPercent: Math.round(b.remaining_fraction * 1000) / 10, resetsAt: b.reset_time })));
+    direct.antigravityTokens = json.usage;
+  }
+  {
+    const text = await run('node', [path.join(probes, 'grok-billing.mjs')]);
+    const body = text.slice(text.indexOf('{', text.indexOf('== _x.ai/billing')));
+    const json = JSON.parse(body);
+    direct.grok = { periodEnd: json.config?.currentPeriod?.end, creditUsagePercent: json.config?.creditUsagePercent ?? null };
+  }
+  {
+    const text = await run('node', [path.join(probes, 'api-limits.mjs'), worktree], worktree);
+    direct.providers = text.split('\n').filter((line) => line.startsWith('== ')).map((line) => line.replace(/headers=.*/, '').trim());
+    const deepseek = text.split('== deepseek balance')[1]?.split('\n')[1] ?? '';
+    const kimi = text.split('== kimi balance')[1]?.split('\n')[1] ?? '';
+    const xai = text.split('== xai api-key info')[1]?.split('\n')[1] ?? '';
+    const anthropic = text.split('== anthropic count_tokens')[1]?.split('\n')[1] ?? '';
+    direct.providerFacts = {
+      deepseek: (() => { try { const j = JSON.parse(deepseek); return { is_available: j.is_available, total: j.balance_infos?.[0]?.total_balance, currency: j.balance_infos?.[0]?.currency }; } catch { return 'unparsed'; } })(),
+      kimi: (() => { try { const j = JSON.parse(kimi); return { available_balance: j.data?.available_balance }; } catch { return 'unparsed'; } })(),
+      xai: (() => { try { const j = JSON.parse(xai); return { api_key_blocked: j.api_key_blocked, api_key_disabled: j.api_key_disabled, team_blocked: j.team_blocked }; } catch { return 'unparsed'; } })(),
+      anthropicCreditMessage: /credit balance/i.test(anthropic),
+    };
+  }
+  out.steps.direct = direct;
+  out.steps.product = {
+    codex: product.codex_app_server ? { limits: product.codex_app_server.limits, limitsNote: product.codex_app_server.limitsNote, blocked: Array.isArray(product.codex_app_server.models) ? product.codex_app_server.models.filter((m) => m.blocked).length : product.codex_app_server.models } : 'absent',
+    claude: product.claude_agent_sdk?.limits ?? 'absent',
+    antigravity: product.antigravity_cli?.limits ?? 'absent',
+    grok: product.grok_build ? { limits: product.grok_build.limits, note: product.grok_build.limitsNote } : 'absent',
+    providers: product.autobyteus?.providers.map((p) => ({ provider: p.provider, balance: p.balance, blocked: p.blocked, limits: p.limits })),
+  };
+  // 3. parallel reads
+  for (const round of [1, 2]) {
+    const started = Date.now();
+    const results = await Promise.all([read(), read(), read(), read()]);
+    results.forEach((r) => reports.push(r.text));
+    out.steps[`parallel-${round}`] = { wallMs: Date.now() - started, calls: results.map((r) => { const e = byRuntime(r.report);
+      return { ms: r.ms, runtimes: r.report.agentRuntimes.map((x) => x.runtime), unknowns: Object.values(e).flatMap((x) => [x.limits, x.models].filter((v) => typeof v === 'string' && v.startsWith('unknown')).map((v) => `${x.runtime}: ${v}`)) }; }) };
+    await sleep(2000);
+  }
+  // 4. identity / key patterns in every answer and the server's log
+  const serverLog = await fs.readFile(logPath, 'utf8').catch(() => '');
+  const fileLogs = await fs.readFile(path.join(dataRoot, 'logs', 'server.log'), 'utf8').catch(() => '');
+  const patterns = { email: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, openaiKey: /sk-[A-Za-z0-9_-]{16,}/g, xaiKey: /xai-[A-Za-z0-9]{16,}/g, bearer: /Bearer\s+[A-Za-z0-9._-]{12,}/g, accountFields: /"(email|accountId|account_id|userId|user_id|teamId|team_id|orgId|organization_uuid)"/g };
+  out.steps.scan = Object.fromEntries(Object.entries({ answers: reports.join('\n'), serverOutput: serverLog, serverLogFile: fileLogs }).map(([where, text]) =>
+    [where, { bytes: text.length, hits: Object.fromEntries(Object.entries(patterns).map(([name, re]) => [name, [...new Set(text.match(re) ?? [])].length])) }]));
+  out.steps.serverLogWarnings = [...new Set((serverLog + fileLogs).split('\n').filter((l) => /Available agent runtimes|availableAgentRuntimes|usage limits/i.test(l)).map((l) => l.slice(0, 300)))].slice(0, 20);
+} catch (error) {
+  out.error = error.stack || String(error);
+} finally {
+  try { process.kill(-server.pid, 'SIGTERM'); } catch {}
+  await sleep(3000);
+  try { process.kill(-server.pid, 'SIGKILL'); } catch {}
+  out.cleanup = { serverPid: server.pid, serverExited: server.exitCode !== null || server.signalCode !== null };
+  await fs.rm(root, { recursive: true, force: true });
+  out.cleanup.tempRoot = 'removed';
+  out.finishedAt = new Date().toISOString();
+  await fs.writeFile(path.join(outDir, 'live-probe.json'), JSON.stringify(out, null, 2));
+  console.log(JSON.stringify(out, null, 1).slice(0, 200));
+}

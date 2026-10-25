@@ -73,6 +73,7 @@
     "test:e2e:projects-navigation": "node tests/e2e/projects-primary-navigation-probe.mjs",
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",
+    "test:e2e:model-routing-settings": "node tests/e2e/model-routing-settings-probe.mjs",
     "test:e2e:agent-runtimes-settings": "node tests/e2e/agent-runtimes-settings-probe.mjs",
     "test:e2e:project-manager-ux": "node tests/e2e/project-manager-ux-probe.mjs",
     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
