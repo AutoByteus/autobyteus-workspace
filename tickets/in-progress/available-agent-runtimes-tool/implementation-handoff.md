@@ -12,16 +12,16 @@
 - Architecture review revision record: `tickets/in-progress/available-agent-runtimes-tool/architecture-review-revision-record.md`
 - Triggering rework report: `code-review-report.md` § API/E2E Failure-Origin Review (CRR-003: CR-002 Local Fix, CR-003 and CR-004 Design Impact), answered by SR-006, then SR-007. API/E2E round 1: `api-e2e-execution-coverage-report.md` (API-REV-001).
 
-All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, base `origin/personal` `a2faf424d6`. Code commits: `5135bb73dc` (IR-001), `683b036be9` (IR-002), `07c07cfc27` and `c4fff3eb00` (IR-003: SR-006, then SR-007). Ticket documents and evidence are committed after them.
+All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, branch `codex/available-agent-runtimes-tool`, base `origin/personal` `a2faf424d6`. Code commits: `5135bb73dc` (IR-001), `683b036be9` (IR-002), `07c07cfc27` and `c4fff3eb00` (IR-003: SR-006, then SR-007), `7ece4e2069` (IR-004, CR-005). Ticket documents and evidence are committed after them.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-003)
+- Implementation cycle: `Rework` (IR-004, CRR-004 CR-005; the round's substance is IR-003)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 CR-001)
+- Current implementation revision ID: `IR-004` (IR-001 baseline, IR-002 CR-001, IR-003 SR-006/SR-007)
 - Related solution revision IDs: `SR-006`, `SR-007`
 - Related architecture-review revision IDs: `ARCH-REV-006`, `ARCH-REV-008`
-- Related code-review revision IDs: `CRR-003` (failure-origin review); `CRR-001`/`CRR-002` earlier
+- Related code-review revision IDs: `CRR-004` (CR-005), `CRR-003` (failure-origin review); `CRR-001`/`CRR-002` earlier
 - Related API/E2E revision IDs: `API-REV-001` (round 1, Fail)
 - Triggering finding IDs: `CR-002`, `CR-003`, `CR-004`, `O-1`, plus SR-007 decisions 1–5
 
@@ -66,7 +66,7 @@ The opt-in tool `list_available_agent_runtimes` (AutoByteus local tool + Agent T
 - **O-1:** `wholeRemainingPercent` = floor (with a 1e-9 float guard); `exhausted` is decided on raw values (Grok's now on `usedPercent ≥ 100`).
 - **SR-007 decision 1:** `blockByLimits` resolves coverage over all limits, then applies only the exhausted ones. A model's most specific family wins across every limit. Ids are never matched as families. A limit that covers no model covers all of them, for every variant.
 - **SR-007 decision 2:** `UsageLimitsReading` and `ProviderUsageReading` lose their `unknown` state. Parsers and readers throw `UsageLimitsUnreadableError(reason)` / `ProviderUsageUnreadableError(reason)`. `readUsageLimitsSafely`, `unknownUsageLimits`, `UNEXPECTED_ANSWER` and `providerUsageFailure` are removed.
-  - The service's `failureText(subject, error)` is the one wording. Subjects: "<Runtime> usage limits", "<Runtime> model list", "<Provider> usage", "<Provider> model list".
+  - The service's `failureText(subject, error)` is the one wording; its "could not be read: <reason>" form is `unreadableText`, which `readDiscoveredModels` also uses (CR-005, IR-004). Subjects: "<Runtime> usage limits", "<Runtime> model list", "<Provider> usage", "<Provider> model list".
   - A reader's abort time-out (`name === "TimeoutError"`) counts as timed out. Error texts are never shown.
 - **SR-007 decision 5:** `src/available-agent-runtimes/{available-agent-runtimes-service,available-agent-runtimes-report,usage-limit-model-matching}.ts`. A unit test checks that nothing in `runtime-management` or `llm-management` imports it.
 
@@ -142,6 +142,9 @@ Evidence: `tickets/in-progress/available-agent-runtimes-tool/evidence/implementa
 | IMP-16 | focused suites: `tests/unit/available-agent-runtimes`, `runtime-management`, provider-usage, codex catalog deadline, tool surfaces (verbose) | c4fff3eb00 | local | SR-006 + SR-007 | AC-003…009, 011, 013 | Pass | `IMP-16-sr006-sr007-focused.log` | `Tests  273 passed (273)`; "the most specific family wins over all of a runtime's limits…", "a step stopped by its own deadline is 'timed out' even with 1 ms still left…" |
 | IMP-17 | `available-agent-runtimes-graphql.e2e.test.ts` (regression run) | c4fff3eb00 | env -i, temp HOME | moved composer in `buildStudioServer`, scripted CLIs | AC-001…012 | Pass | `IMP-17-e2e-regression-sr007.log` | `Tests  5 passed (5)`; AAR-03 strict "timed out" |
 
+| IMP-18 | typecheck; `vitest run tests/unit/available-agent-runtimes tests/unit/agent-tools/agent-runtimes` | 7ece4e2069 | local | the service's failure wording after CR-005 | AC-007, AC-008 | Pass | `IMP-18-cr005.log` | `typecheck exit 0`; `Tests  38 passed (38)` |
+
+- IR-004 rerun plan: only `available-agent-runtimes-service.ts` changed: the inline "could not be read: <reason>" texts now come from one helper, with identical output. IMP-18 reran the tests that drive the service and its texts. IMP-15…17 stay valid because no output, behavior or other file changed.
 - Rerun plan for IR-003:
   - IMP-01…03 and IMP-05…07, IMP-09 are superseded by IMP-10…17: the server code and the provider-row view changed.
   - IMP-04 stays valid (the Claude discovery prompt path is unchanged).

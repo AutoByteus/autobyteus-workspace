@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (CR-001 fix) | Fail (Local Fix) | Pass | CR-001 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-REV-001 | Pass | Fail (Local Fix + Design Impact) | CR-002, CR-003, CR-004 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (Full Re-Audit) / IR-003 | Fail (Local Fix + Design Impact) | Fail (Local Fix) | CR-002, CR-003, CR-004 (resolved); CR-005 (new) |
 
 ## Revision Entries
 
@@ -90,3 +91,33 @@ None
 - Material score or classification changes: category 8 (Runtime Correctness) revised below 9.0; decision Pass → Fail.
 - Recommended recipient: `/software_engineering_team/solution_designer` (CR-002 included for the next implementation round)
 - Remaining risks or uncertainty: whether keyed custom providers also lack models (F-2, not tested); RSK-001 unchanged.
+
+### CRR-004 — Full re-audit of IR-003 (SR-006 + SR-007)
+
+- Canonical review report updated: `tickets/in-progress/available-agent-runtimes-tool/code-review-report.md` (rewritten to the round-4 result; rounds 1–3 in this record and in the report at `7c082d3612`)
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit`. The diff `8de58e3ab3..c4fff3eb00` touches the spine (single-flight, hold, discovered providers), shared interfaces and data shapes (throw contract, `holdClient?`, readings, command bound, provider `models`) and moves the composer.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-003); CR-002, CR-003, CR-004; SCN-005, SCN-006
+- Relevant solution revision IDs: `SR-006`, `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`, `ARCH-REV-007`, `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: CRR-003 Fail (CR-002 Local Fix; CR-003, CR-004 Design Impact)
+- Current authoritative result: Fail. One Low `Local Fix` (CR-005); score 9.5/10 under the new 9.5 bar and single `/10` scale (template autobyteus-agents-63).
+- What changed in the review result and why: the three failures are fixed and verified, and C-02 is applied. One small deviation from SR-007's "one wording helper" remains.
+- Supported product scenario / material-premise basis changes: SCN-005 (AC-013) and SCN-006 (REQ-002 discovered providers) were added. C-12 was promoted; C-13…C-17 were rejected with evidence.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (Local Fix) | Resolved | IR-003, `07c07cfc27`, `c4fff3eb00` | `isDeadlineExceeded` (error or `cause`) in `runStep` and its backstop; `commandBound.byDeadline` in the runner, agy, Grok and ACP; Claude `listModels` rethrows with a deadline; 1 ms-left reproduction (IMP-11/16) |
+| CR-003 | Open (Design Impact) | Resolved | SR-006, IR-003 | `readDiscoveredModels` → `reloadProviderModelCatalog`; local listed only with models now; custom → models or `unknown`; IMP-13 live LM Studio |
+| CR-004 | Open (Design Impact) | Resolved | SR-006, IR-003 | single-flight `read()`; Codex `holdClient`; concurrency suite; IMP-13 3 × 4 live reads |
+| CR-001 | Resolved | Resolved | IR-002 | unchanged |
+
+- New or remaining finding IDs: CR-005
+- Material score or classification changes: first round under the 9.5 bar and single scale; category 5 at 9.3 (CR-005); all others ≥ 9.5.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: FU-003, FU-005, RSK-001; the web probe was not run after its expectation edit (C-17).

@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-004 | Code reviewer, `code-review-report.md` CRR-004 (round 4, Fail) | CR-005 | `Local Fix` | SR-007; ARCH-REV-008; CRR-004 | "could not be read: <reason>" worded by one helper; commit `7ece4e2069`; back to code review (Targeted Delta Review) |
 | IR-003 | Architecture reviewer: ARCH-REV-006 Pass (SR-006, answering CRR-003's failure-origin review of API-REV-001), then ARCH-REV-008 Pass (SR-007) mid-round | CR-002, CR-003, CR-004, O-1; SR-007 decisions 1–5 | `Local Fix` (CR-002) + `Design Impact` (CR-003, CR-004, SR-007) | SR-006, SR-007; ARCH-REV-006, ARCH-REV-008; CRR-003; API-REV-001 | Implemented; commits `07c07cfc27` (SR-006), `c4fff3eb00` (SR-007); back to code review |
 | IR-002 | Code reviewer, `code-review-report.md` CRR-001 (round 1, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-005; CRR-001 | Unused `modelList` removed; commit `683b036be9`; back to code review (Targeted Delta Review) |
 | IR-001 | Architecture reviewer, `design-review-report.md` ARCH-REV-003 Pass (SR-003), updated by ARCH-REV-005 Pass (SR-005) during implementation | N/A | `Initial Baseline` | SR-003, SR-005; ARCH-REV-003, ARCH-REV-005; CRR N/A; API-REV N/A; DR N/A | Implemented; code commit `5135bb73dc`; routed to code review (Large / High) |
@@ -88,3 +89,23 @@ The current code and `implementation-handoff.md` remain authoritative.
   - IMP-15…17 on `c4fff3eb00`: unit suite 829 files / 6887 tests; focused tests 273; E2E file 5/5.
 - Next recipient or routing: code review (Large / High), then API/E2E reruns API-03/03b, API-05/05b, API-08b.
 - Remaining limitations or risks: FU-003 residual (another Codex user closing the home-folder generation); the hold-release window after the answer; the web probe not run here; no live run on `c4fff3eb00` itself (its paths are covered by IMP-17 on the real composition).
+
+### IR-004 — CR-005: one helper for "could not be read: <reason>"
+
+- Triggering role, report path, and round: Code reviewer, `code-review-report.md`, CRR-004 (round 4, Fail).
+- Triggering finding IDs: CR-005 (Low; SR-007 decision 2, one wording helper)
+- Classification: Local Fix
+- Prior authoritative result: IR-003 at `c4fff3eb00`, CRR-004 Fail
+- Current authoritative result: `7ece4e2069`; the finding is resolved
+- Related solution revision IDs: SR-007
+- Related architecture-review revision IDs: ARCH-REV-008
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: a code-review Local Fix.
+- Approved behavior or requirement IDs affected: none (output text unchanged)
+- Implementation delta: `unreadableText(subject, reason)` in `src/available-agent-runtimes/available-agent-runtimes-service.ts` builds "unknown: <subject> could not be read: <reason>". `failureText` and `readDiscoveredModels` both call it, and no inline copy remains.
+- Changed files or areas: that one file.
+- Local validation and result (IMP-18): typecheck clean. `tests/unit/available-agent-runtimes` and `tests/unit/agent-tools/agent-runtimes` pass 38/38, with the tests unchanged (they assert the same texts).
+- Next recipient or routing: code review (Targeted Delta Review of CR-005), then API/E2E.
+- Remaining limitations or risks: unchanged from IR-003.
