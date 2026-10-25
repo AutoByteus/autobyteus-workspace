@@ -35,6 +35,7 @@ const definitions = {
 };
 const catalog: CollaboratorDefinitionCatalog = {
   listAgentDefinitions: async () => definitions.agents,
+  isAgentHidden: () => false,
   listTeamDefinitions: async () => definitions.teams,
   getAgentDefinition: async (id) => definitions.agents.find((item) => item.id === id) ?? null,
   getTeamDefinition: async (id) => definitions.teams.find((item) => item.id === id) ?? null,

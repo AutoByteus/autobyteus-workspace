@@ -80,6 +80,7 @@ import {
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
@@ -177,6 +178,7 @@ export class GeneralProcessRunSupervisor {
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
       teams: input.agentTeamDefinitionService,
+      visibility: getInternalAgentVisibility(),
     }), input.modelSelectionValidator, getRuntimeAvailabilityService());
     let collaboratorAdmissionBound = false;
     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.

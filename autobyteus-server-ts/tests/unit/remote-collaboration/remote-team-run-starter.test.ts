@@ -37,6 +37,7 @@ const setup = () => {
   const definitions = new Map<string, AgentTeamDefinition>([["studio", team]]);
   const catalog: CollaboratorDefinitionCatalog = {
     listAgentDefinitions: async () => agents, listTeamDefinitions: async () => [...definitions.values()],
+    isAgentHidden: () => false,
     getAgentDefinition: async (id) => agents.find((item) => item.id === id) ?? null, getTeamDefinition: async (id) => definitions.get(id) ?? null,
   };
   const validator = { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>

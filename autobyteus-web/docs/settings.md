@@ -223,6 +223,25 @@ billed through API credits or an API key.
 - Server behavior, precedence and the Claude Code variable are described in
   [LLM Management: Claude Agent SDK Prompt Cache Lifetime](../../autobyteus-server-ts/docs/modules/llm_management.md#claude-agent-sdk-prompt-cache-lifetime).
 
+## Server Settings: Internal Agents
+
+Settings -> Server Settings -> Basics contains an **Internal agents** card
+(`components/settings/ShowInternalAgentsCard.vue`) with one switch, **Show
+internal agents**. Internal agents are the system's own helpers, such as the
+Model Router (an agent definition with `"internal": true`).
+
+- The switch reads `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` from the server-settings
+  store; never saved (absent) shows it off, matching the server default.
+- Toggling saves `true` or `false` at once, then reloads the agent definitions
+  (`agentDefinitionStore.reloadAllAgentDefinitions`) and the run history
+  (`runHistoryStore.refreshTreeQuietly`), because the server applies the setting
+  on the next read. On failure the switch returns to its previous state and
+  shows the error.
+- While on, the Agents page marks internal agents with an **Internal** badge
+  (`AgentCard.vue`).
+- Server rule and the surfaces it covers:
+  [Agent Definition: Internal Agents](../../autobyteus-server-ts/docs/modules/agent_definition.md#internal-agents).
+
 ## Nodes: Manage Nodes (one list)
 
 Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID

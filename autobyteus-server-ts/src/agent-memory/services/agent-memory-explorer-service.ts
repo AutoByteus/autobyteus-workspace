@@ -11,6 +11,10 @@ import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadat
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import { TaskAgentLinkChecker } from "../../run-history/store/task-agent-link-check.js";
+import {
+  getInternalAgentVisibility,
+  type InternalAgentVisibility,
+} from "../../agent-definition/services/internal-agent-visibility.js";
 import type { RunHistoryIndexRow } from "../../run-history/domain/agent-run-history-index-types.js";
 import {
   MemoryRunSummaryBuilder,
@@ -67,6 +71,7 @@ export class AgentMemoryExplorerService {
   private readonly catalogService: AgentRunHistoryCatalogService;
   private readonly summaryBuilder: MemoryRunSummaryBuilder;
   private readonly agentDefinitions: AgentDefinitionLookup;
+  private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
   private readonly memoryDir: string;
 
   constructor(
@@ -77,6 +82,7 @@ export class AgentMemoryExplorerService {
       catalogService?: AgentRunHistoryCatalogService;
       summaryBuilder?: MemoryRunSummaryBuilder;
       agentDefinitions?: AgentDefinitionLookup; // default: the process agent definition service
+      visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">; // default: the process internal-agent rule
     } = {},
   ) {
     this.memoryDir = memoryDir;
@@ -84,6 +90,7 @@ export class AgentMemoryExplorerService {
     this.catalogService = dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.summaryBuilder = dependencies.summaryBuilder ?? new MemoryRunSummaryBuilder(store);
     this.agentDefinitions = dependencies.agentDefinitions ?? PROCESS_AGENT_DEFINITIONS;
+    this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
   }
 
   async listAgentsWithMemory(
@@ -123,8 +130,9 @@ export class AgentMemoryExplorerService {
     return pageMemoryExplorerEntries(runs, page, pageSize);
   }
 
+  /** Agents and their runs with memory; an internal agent's group is left out while it is hidden (autobyteus-308). */
   private async buildGroups(): Promise<AgentGroup[]> {
-    const catalogRows = await this.readCatalogRowsByRunId();
+    const [catalogRows, hidden] = await Promise.all([this.readCatalogRowsByRunId(), this.visibility.hiddenDefinitionIds()]);
     const groups = new Map<string, AgentGroup>();
     const links = new TaskAgentLinkChecker(this.memoryDir);
 
@@ -140,6 +148,7 @@ export class AgentMemoryExplorerService {
       const catalogRow = catalogRows.get(runId) ?? null;
       const run: AgentRunRecord = { runId, metadata, taskAgent, catalogRow, memory };
       const agentDefinitionId = definitionOf(run);
+      if (agentDefinitionId && hidden.has(agentDefinitionId)) continue;
       const key = agentDefinitionId ? `definition:${agentDefinitionId}` : UNATTRIBUTED_STABLE_ID;
       let group = groups.get(key);
       if (!group) {

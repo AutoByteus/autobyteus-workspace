@@ -44,6 +44,7 @@ const setup = (codexEnabled = true) => {
   const state = definitions();
   const catalog: CollaboratorDefinitionCatalog = {
     listAgentDefinitions: async () => state.agents,
+    isAgentHidden: () => false,
     listTeamDefinitions: async () => state.teams,
     getAgentDefinition: async (id) => state.agents.find((item) => item.id === id) ?? null,
     getTeamDefinition: async (id) => state.teams.find((item) => item.id === id) ?? null,

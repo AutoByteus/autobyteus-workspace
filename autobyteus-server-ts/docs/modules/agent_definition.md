@@ -114,6 +114,43 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 `normalizeAgentSkillScope` in `src/agent-definition/domain/models.ts` is the single normalization point. Effective skill resolution for either scope is owned by `SkillService` (see `skills.md`); runtime factories never branch on the scope themselves.
 
+## Internal Agents
+
+An agent definition may carry `"internal": true` in its `agent-config.json`
+(shared, team-local and application-package definitions read it the same way;
+absent or anything but `true` is a normal agent). An internal agent is the
+system's own helper, such as the Model Router. `AgentDefinition.internal` holds
+it, `normalizeAgentConfigRecord` reads it, and `buildAgentConfigRecord` writes it
+only for an internal agent, so a save keeps it and a normal agent's file gains
+no key. GraphQL exposes it as `AgentDefinition.internal` (the Agents page's
+"Internal" badge).
+
+The server setting **Show internal agents** (`AUTOBYTEUS_SHOW_INTERNAL_AGENTS`,
+`true`/`false`, default off; `src/config/show-internal-agents-setting.ts`) is
+read on every call, so a change applies to the next list without a restart. It
+can be set in Settings → Server Settings → Basics or as an environment variable.
+
+`InternalAgentVisibility` (`src/agent-definition/services/internal-agent-visibility.ts`)
+is the one rule: a definition is hidden when it is internal and the setting is
+off. Every place where the user or an agent browses, picks or delegates asks it;
+none reads the setting or the attribute itself:
+
+| Surface | Owner that asks the rule |
+| --- | --- |
+| Agents page, every agent picker (new run, team members, Org placement, featured items), mobile apps, application resources | `AgentDefinitionService.getVisibleAgentDefinitions` (GraphQL `agentDefinitions`) |
+| `list_available_agents`, `@` candidates and `@` by ID, `delegate_task` catalog addresses, a peer node's available agents and delegation | `CollaboratorCandidatePolicy.isEligibleAgent` (the rule is injected through `createCollaboratorDefinitionCatalog`) |
+| Run history | `AgentRunHistoryService.listRunHistory` (rows of hidden definitions) |
+| Memory page | `AgentMemoryExplorerService` (the agent list and its runs) |
+| `list_agent_definitions` | the tool |
+
+While hidden, `delegate_task` to an internal agent's address gets the usual
+"not the address of an available agent or agent team" refusal, which reveals
+nothing. Hidden is not protected: opening a definition or a run by ID
+(`agentDefinition(id)`, `get_agent_definition`, the run projection) works
+whatever the setting, and system-started runs of internal agents run and are
+recorded as usual. Internal Agent Teams are not a feature; built-in agents stay
+excluded from collaboration whatever the setting.
+
 ## Built-In Agent Sync
 
 Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, and resolves them through `AgentDefinitionService`.
