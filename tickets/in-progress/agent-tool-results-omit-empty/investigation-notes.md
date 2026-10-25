@@ -8,7 +8,7 @@
 - Base: `origin/personal` @ `fc06a7355d1c4d76a55c812011e3718709c035d6`, fetched 2026-10-25; finalization target `origin/personal`
 - Second repository touched by REQ-012: `/Users/normy/autobyteus_org/autobyteus-agents` (`origin/main` @ `d8cf242`); its worktree is created at implementation time.
 - Bootstrap: worktree created; no blocker.
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-012`
 - Authorities read (2026-10-25): `references/requirements-engineering.md`, `references/ticket-scope.md`, `references/finding-the-cause.md`; `DESIGN.md` (mandatory rules, project-specific documents), `design-principles.md` § 15, `GLOSSARY.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §§ 1–4.
 
 ## Initial Request And Clarifications
@@ -94,5 +94,16 @@ Preliminary (2026-10-25, asked by the user before approval; the design spec foll
 | `agent-discovery-mcp-result.ts:9`, `agent-discovery-refusal.ts:36-39` | A discovery refusal is plain error text on both routes (MCP `isError` text; native throws `Error(message)`); only successes are JSON. Correction (2026-10-25): an earlier reading in this conversation said native sends JSON; it does not | Read |
 | `grep` count | 53 lines in `src/agent-tools` and `src/agent-communication/services` call or define a result serializer | Measured |
 | `autobyteus-server-ts/` | No ESLint/Biome config; a guard would be a test | Read |
+
+SR-012 (2026-10-25, code review CRR-002 CR-001, failure-origin of API-03):
+
+| Source | Finding | How |
+| --- | --- | --- |
+| `evidence/API-03-startup-migration-keys-failed-titles-not-run.txt` | keys-v1 `FAILED` for one Project → titles `NOT_RUN` (0 attempts) → no Project lists any Task; base `fc06a7355d` passes the same E2E (`projects-startup-migration.e2e.test.ts:345`) | Reproduced (API/E2E) |
+| `app-data-migration-runner.ts:145-157` | A prerequisite must be `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS`, else the migration does not run | Read |
+| `migrations/project-task-titles/project-task-titles-app-data-migration.ts:7,56,86` | prerequisite keys-v1; source validator = frozen keyed `readTaskFile` (`frozen/server/projects/stores/project-store.ts:39-46`, requires `taskKey`) | Read |
+| `migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.ts` (`keyProject`, `MESSAGES.FAILED_OPERATION`) | per-Project failure, marker not written, restart retries; writes `{...raw, taskKey}` (keeps other fields) | Read |
+| `migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts:185-190`; `projects/stores/project-store.ts` `assertMigrated` | the released `projects.json` is retired only at the end; while it exists every Project is held (`PROJECTS_MIGRATION_PENDING`) | Read |
+| `migrations/project-task-keys-v1/released-project-files-v2.ts:1-5` | the per-folder Task shape before keys has no `taskKey` | Read |
 
 Preliminary design-health reading: root cause `Duplicated Policy Or Coordination` (one serialization policy in ~10 owners with three different rules); refactor needed now: yes, bounded to the serialization step (manifests and routes keep their shape).

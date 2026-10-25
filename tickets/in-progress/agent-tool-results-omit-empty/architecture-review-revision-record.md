@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative. This record is its concis
 | ARCH-REV-001 | Round 1 / Solution Designer `Architecture Design Complete` (Large / High) | SR-006, SR-007 | N/A | Pass | AR-001, AR-002, AR-003, AR-004 (non-blocking) |
 | ARCH-REV-002 | Round 2 / SR-008 delta (ARCH-REV-001 residual taken into the ticket) | SR-008 | Pass | Pass | AR-005 (new, non-blocking); AR-002 extended |
 | ARCH-REV-003 | Round 3 / SR-009–SR-010 delta (`get_project_task`, worker scope, first-message Task line, no `task_ids`) | SR-009, SR-010 | Pass | Pass | AR-006, AR-007, AR-008 (new, non-blocking); AR-004 partly obsolete |
+| ARCH-REV-004 | Round 4 / SR-012 design revision after CRR-002 (CR-001, failure origin of API-REV-001) | SR-012 | Pass | Pass | MP-001 reclassified (Reachable, resolved); no new finding |
 
 ## Revision Entries
 
@@ -95,3 +96,28 @@ None.
 - Material classification changes: none (Large / High).
 - Recommended recipient: implementation engineer (primary); Solution Designer informed and asked to record AR-006.
 - Remaining risks or uncertainty: as before, plus MP-002 and the unscoped short reads through list/search (approved).
+
+### ARCH-REV-004 — SR-012: title migration gated narrowly (CR-001)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty/tickets/in-progress/agent-tool-results-omit-empty/design-review-report.md`
+- Review round and trigger: round 4; Solution Designer SR-012 after code review CRR-002 (`code-review-report.md`, CR-001 Design Impact, CR-002 Local Fix), following API/E2E API-REV-001 (API-03, API-11c).
+- Triggering role, report path, and finding IDs: Code reviewer → Solution Designer; `code-review-report.md` CR-001, CR-002; API-03 evidence `evidence/API-03-startup-migration-keys-failed-titles-not-run.txt`.
+- Relevant solution revision IDs: SR-012 (requirements unchanged).
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Own miss acknowledged: MP-001 was classified `Not Reachable` in ARCH-REV-001. The released keys-v1 contract (preserve and hide only an unkeyable Project, asserted by `projects-startup-migration.e2e.test.ts:312-358`) made the state supported, and I did not open that test. Reclassified `Reachable`; the round-1 text is kept for history.
+  - SR-012 verified against the code. Prerequisite on `projects-per-folder-v1` only: needed for file existence, and no new hold. The titles migration's own validator has `taskKey` optional. keys-v1's tolerant classifier and its `{...raw, taskKey}` write keep the title on a later retry. Admission unchanged, so only an unkeyable Project stays hidden. The tests and startup E2E in step 4 cover the lifecycle.
+  - No new finding. CR-002 is implementation-owned, not reviewed here, and is forwarded with CR-001.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| MP-001 (premise) | Not Reachable (round 1) | Reachable; resolved by SR-012 | CRR-002 CR-001, SR-012 | Lifecycle trace in the report's "Round 4 — SR-012" section |
+| AR-001–AR-008 | Open guidance (AR-004 partly obsolete) | Unchanged by SR-012 | — | Implementation has handled them through CRR-001; not re-reviewed here |
+
+- New or remaining finding IDs: none new.
+- Material classification changes: none (Large / High).
+- Recommended recipient: implementation engineer (CR-001 and CR-002 in one round); Solution Designer informed.
+- Remaining risks or uncertainty: as before, minus MP-001.

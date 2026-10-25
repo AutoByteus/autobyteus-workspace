@@ -15,6 +15,7 @@
 | SR-009 | Requirements | PM + user, Task comment #6 and PM message (2026-10-25): a read-one-Task tool in the same contract change | N/A | Approved (SR-008) | Ready for Approval (addition) | UC-007, BEH-006, REQ-007 (changed), REQ-014–REQ-016, AC-006 (changed), AC-012–AC-014, DEC-020–DEC-023 | Asked the user (DEC-021, DEC-022); design of the addition after approval |
 | SR-010 | Requirements | The user's answers, 2026-10-25 (this conversation) | N/A | Ready for Approval | Approved | REQ-007, REQ-012, REQ-014–REQ-017, AC-006, AC-012–AC-015, BEH-003, BEH-006, UC-007, SCN-004, SCN-007, DEC-008, DEC-018, DEC-020–DEC-024 | Design of the addition; then architecture review |
 | SR-011 | Clarification | ARCH-REV-003 Pass on SR-009/SR-010, AR-006 | AR-006, AR-007 | Approved / Design Ready | Approved / Design Ready | REQ-015, DEC-022 (wording), design-spec first-message bullet | Stated; no re-review, no renewed approval |
+| SR-012 | Design | Code review CRR-002 (failure-origin of API-REV-001): CR-001 Design Impact | CR-001 (CR-002 implementation-owned) | Design Ready | Design Ready (revised) | QR-002, AC-004; design-spec Migration Plan | Delta to architecture review; then implementation with CR-001 and CR-002 in one round |
 
 ## Revision Entries
 
@@ -86,3 +87,17 @@
 - Trigger: ARCH-REV-003 (`design-review-report.md`), `Pass` on SR-009/SR-010; AR-007 and AR-008 went to implementation as guidance; AR-006 asked to state what a copy holding several open Tasks may read.
 - Statement: it reads only its current Task (the latest given to it), which is the `ownerOf` answer the approved rule already uses and the user's "one task at a time" (2026-10-25). REQ-015 and DEC-022 now say so; the design spec names `buildExistingCopyTaskMessage` for the existing-copy path (AR-007).
 - Impact: evidence/wording clarification of approved intent; no renewed approval, no re-review; the user is informed.
+
+### SR-012 — Title migration must not widen a keys-v1 failure (CR-001)
+
+- Trigger: `/software_engineering_team/code_reviewer`, CRR-002 (`code-review-report.md`): API-03 showed that when `project-task-keys-v1` fails for one Project, `project-task-titles` stays `NOT_RUN` (whole-run prerequisite) and, since the current reader requires `title`, no Project lists any Task until the data is fixed by hand. This breaks QR-002 and the released keys-v1 rule (one unkeyable Project hidden, the rest listed). MP-001 reclassified Reachable (a supported explicit edge).
+- Cause (design): the plan made titles depend on keys-v1 and validated sources with the keyed frozen reader, although a title needs only the description.
+- Revision: prerequisite `projects-per-folder-v1` only (its failure already holds all Projects; it guarantees the per-folder files); own frozen validator with `taskKey` optional; keys-v1 later keeps titles (`{...raw, taskKey}`); admission unchanged (key and title). Tests and E2E scenario added to the change sequence.
+- Approval impact: none (restores the approved QR-002 / AC-004; no behavior change).
+- Design case: `docs/design-cases.md` Case 8 added.
+- CR-002 (`taskWorkerTaskStore.ts:63-64` drops `title`) is implementation-owned; it goes into the same implementation round.
+- Route: revised Large/High package → architecture review → implementation (CR-001 + CR-002), then source review and API/E2E reruns (API-03, API-11c) and first runs (API-11d, API-12).
+
+### Note (no new round) — ARCH-REV-004, 2026-10-25
+
+- The SR-012 revision passed architecture review (ARCH-REV-004, `design-review-report.md`), with no new findings; the reviewer recorded its own round-1 miss on MP-001 and forwarded CR-001 and CR-002 together to implementation. Recorded; no re-forwarding.

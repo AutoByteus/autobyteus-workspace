@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-011`
+- Current solution revision ID: `SR-012`
 - Approved requirements: [requirements-doc.md](requirements-doc.md) at SR-006, approved by the user on 2026-10-25 in the Solution Designer's conversation ("you know the best I think, you understand the code more than me, I trust your design"), with DEC-009 (a), DEC-013 (existing style), DEC-016 (yes).
 - Behavior-defining supplements: `evidence/SD-measure-sizes-output-20261025.txt`, `evidence/SD-measure-summary-output-20261025.txt`, `evidence/SD-first-line-lengths-output-20261025.txt` (in the approval basis).
 - Design status: `Ready`
@@ -23,7 +23,7 @@
 - Size rationale (SR-010 adds `get_project_task`, its caller scope on both routes and the first-message line): three packages (`autobyteus-ts`, `autobyteus-server-ts`, `autobyteus-web`) plus one skill in `autobyteus-agents`; ~10 tool families on two routes (≈30 source files), the Project Task model through store, service, GraphQL, change feed, search and app (≈25 files), one new app-data migration.
 - Architectural risk: `High`
 - Risk rationale: a new tool with a caller-based access rule; changes every platform tool's result contract on both routes (advertised MCP output schemas included), a persisted-data migration of every Project Task file, a new required field on the GraphQL and change-feed Task contracts.
-- Escalation trigger: a consumer found that relies on an empty field being present; a released `task.json` shape outside the inventory; a runtime (AGY, Grok) found to show the model both MCP copies with a material cost; any file of the change crossing 500 lines.
+- Escalation trigger (SR-012: migration ordering corrected after CR-001): a consumer found that relies on an empty field being present; a released `task.json` shape outside the inventory; a runtime (AGY, Grok) found to show the model both MCP copies with a material cost; any file of the change crossing 500 lines.
 
 ## Architecture Investigation Evidence
 
@@ -138,11 +138,11 @@
 ### Migration Plan
 
 - Current canonical shape: `task.json` with `title`.
-- Older shapes: the four inventoried shapes (with or without `dependsOnTaskIds`, `partOfTaskId`, `comments`); all carry `taskKey` after `project-task-keys-v1`.
-- Trigger: `Startup`, `requiredOnStartup: true`, `executionPolicy: "STARTUP_ONLY"`, `prerequisiteMigrationIds: ["20261017_project_task_keys_v1"]`.
+- Older shapes: the four inventoried keyed shapes (with or without `dependsOnTaskIds`, `partOfTaskId`, `comments`), and the released per-folder shape **without `taskKey`** (written by `projects-per-folder-v1`, still present for a Project that `project-task-keys-v1` could not key: its released rule is to preserve and hide only that Project). The title depends only on the description, so both are titled (SR-012, CR-001).
+- Trigger: `Startup`, `requiredOnStartup: true`, `executionPolicy: "STARTUP_ONLY"`, `prerequisiteMigrationIds: ["20261005_projects_per_folder_v1"]` (SR-012). Not `project-task-keys-v1`: its failure is per Project (one unkeyable Project hidden, the others listed, a restart retries), and a whole-run prerequisite on it would leave every Project's Tasks untitled, so hidden, until the data is fixed by hand (CR-001). `projects-per-folder-v1`'s failure already holds every Project (`PROJECTS_MIGRATION_PENDING` while `projects.json` remains, `project-store.ts` `assertMigrated`; the file is retired only at its end, `projects-per-folder-v1-app-data-migration.ts:185-190`), so depending on it adds no new hold, and it guarantees the per-folder `task.json` files exist before titles runs.
 - Owner and location: `ProjectTaskTitlesAppDataMigration`, id `20261025_project_task_titles`, folder `src/app-data-migrations/migrations/project-task-titles/`, registered right after `ProjectTaskKeysV1AppDataMigration` (registry line 131).
 - Current runtime: current-shape only; `readTaskFile` requires `title`.
-- Historical shapes: a frozen strict validator of the released Task file (the pre-title reader) and the derivation, inside the migration folder; no current code imported (`tests/architecture/app-data-migration-boundaries.test.ts`).
+- Historical shapes: a frozen strict validator of the released Task file before titles, **in the migration folder** (`released-task-file-before-titles.ts`): `taskId` / `projectId` match their folders, non-blank `description`, a released status, non-blank `createdAt` / `updatedAt`; `taskKey` optional (it is not used). Replaces the import of the keyed `frozen/server/projects/stores/project-store.ts` `readTaskFile`, which skips unkeyed Tasks. Derivation stays `title-from-first-line.ts`. No current code imported.
 - Derivation: the description's first non-empty line, trimmed; longer than 200 characters → its first 199 characters (never ending on half a surrogate pair) plus "…".
 - Completion: the runner ledger; per Task, a file with a non-blank string `title` is current.
 - Restart safety: per-file atomic replace (frozen `writeJsonFile`); retry skips titled files.
@@ -153,11 +153,12 @@
 
 | Step | Source | Target | Owner | Validation | Failure |
 | --- | --- | --- | --- | --- | --- |
-| Each Project folder, each Task folder with `task.json` | released Task file (frozen validator) | same object plus `title` | migration | re-read: title + unchanged keys | `FAILED_OPERATION` for that Task, others continue; restart retries |
+| Each Project folder, each Task folder with `task.json` | released Task file, keyed or not (frozen validator) | same object plus `title` | migration | re-read: equal to the planned object | `FAILED_OPERATION` for that Task, others continue; restart retries |
+| Interaction with `project-task-keys-v1` retried later | a titled, unkeyed Task | keys-v1 writes `{...raw, taskKey}` (`project-task-keys-v1-app-data-migration.ts`, `keyProject`), so the title is kept; its frozen validator ignores `title` | keys-v1 | its own re-read | unchanged |
 | Task already titled | current | — | migration | non-blank string `title` | `SKIPPED_ALREADY_CURRENT` |
 | Not a valid released Task file | — | unchanged | migration | — | `SKIPPED_INVALID_TASK_WARNING` (already not listed today) |
 
-Aggregate: `FAILED` if any `FAILED_OPERATION`; else `SUCCEEDED_WITH_WARNINGS` if any warning; else `SUCCEEDED`. Startup and other Projects' work are never blocked; an unconverted Task is the only thing not listed.
+Aggregate: `FAILED` if any `FAILED_OPERATION`; else `SUCCEEDED_WITH_WARNINGS` if any warning; else `SUCCEEDED`. Admission stays the current reader's: a Task is listed when it has both `taskKey` and `title`. So a `project-task-keys-v1` failure hides only its unkeyable Project, as released; every other Project lists its titled Tasks; once keys-v1 succeeds on a later start, that Project's Tasks list with the titles they already have. A `projects-per-folder-v1` failure holds Projects as it does today. Startup and new work are never blocked.
 
 ## Data-Flow Spine Inventory
 
@@ -429,6 +430,7 @@ N/A.
 2. Server results: MCP helper signature; every family adapter; `send_message_to` schema/text; remove old serializers; guard test; per-family tests updated (both routes).
 3. Server Tasks: `task-text.ts` + errors; model; store reader/writer; service; views/feed/GraphQL/search; tool contract (`title`, `get_project_task`) and manifest (entries, get, search, acks).
 4. Migration folder, frozen validator, registry line, tests with fixtures for the four shapes plus an invalid file, a titled file, a long first line (> 200, surrogate at the cut), retry after partial write.
+   SR-012 (CR-001): prerequisite `projects-per-folder-v1` only; own frozen validator without required `taskKey`; tests add the unkeyed per-folder shape, and the startup E2E (`projects-startup-migration.e2e.test.ts:312-358` scenario): keys-v1 `FAILED` for one Project → titles runs, every other Project lists its titled Tasks, the unkeyable Project stays hidden; after the conflict is fixed and a restart, keys-v1 succeeds and that Project lists its Tasks with their titles. Plus an upgrade start from the pre-folder shape (per-folder → keys → titles in one start).
 5. Web: codegen, types, store, draft, editor, `taskText.ts` and its users, Task page / panel title, i18n, error keys; web unit tests; localization guards.
 5b. `get_project_task`: error code, read scope, capability query (+ rename), service read, contract, manifest, native bound tool and resolver, MCP provider; first-message line; tests (scope: task agent, task team member, delegated agent, Temp-task worker, non-worker; refusal has no data; exposure opt-in on both routes).
 6. Docs, glossary, design case additions; `autobyteus-agents` skill sentences on its own branch.

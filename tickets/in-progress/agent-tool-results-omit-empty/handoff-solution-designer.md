@@ -60,3 +60,11 @@ Architecture review of the design against the approved requirements. On Pass, th
 - Implementation: stopped by the user while this was decided; resumes from the reviewed package.
 - Route: `/software_engineering_team/architecture_reviewer` (Large / High).
 - 2026-10-25: ARCH-REV-003 `Pass` on SR-009/SR-010 (AR-007, AR-008 guidance to implementation; reviewer routed to implementation). AR-006 stated in SR-011 (a copy with several open Tasks reads only its current one). Recorded only.
+
+## SR-012 delta (2026-10-25): CR-001
+
+- From `/software_engineering_team/code_reviewer` (CRR-002, failure-origin of API-REV-001): CR-001 Design Impact (title migration's prerequisite on keys-v1 widens a one-Project keys failure into every Project's Tasks hidden); CR-002 implementation-owned (`autobyteus-web/stores/taskWorkerTaskStore.ts:63-64` drops `title`, crashing the Workspaces tree).
+- Design revision: `design-spec.md` Migration Plan (prerequisite `projects-per-folder-v1`; own frozen validator, `taskKey` optional; interaction with keys-v1; admission) and change-sequence step 4 (tests + E2E).
+- Requirements unchanged (restores QR-002 / AC-004).
+- Route: `/software_engineering_team/architecture_reviewer` (revised Large/High); implementation then fixes CR-001 and CR-002 in one round, as the code reviewer asked.
+- 2026-10-25: ARCH-REV-004 `Pass` on SR-012; the reviewer forwarded CR-001 + CR-002 to implementation in one round. Recorded only.

@@ -9,8 +9,10 @@
 - Supplemental Task Artifacts Reviewed: `evidence/SD-measure-sizes-*`, `evidence/SD-measure-summary-*`, `evidence/SD-first-line-lengths-*`, `evidence/SD-task-file-shape-inventory-*`, `evidence/SD-codex-0.164-mcp-result-to-model.txt`, `evidence/first-team-*` (historical)
 - Relevant Solution Revision IDs: SR-006 (requirements approval), SR-007 (design), SR-008 (DEC-019 / REQ-013 / AC-011: context files named `{name, path}` in acknowledgements)
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Round 4 trigger and scope: SR-012, the Solution Designer's design revision after code review CRR-002 (failure origin of API-REV-001), finding CR-001 (Design Impact). Reviewed: design-spec Migration Plan (older shapes, trigger/prerequisite, own frozen validator, keys-v1 interaction row, admission/aggregate text) and change-sequence step 4 (SR-012 tests and startup E2E). Requirements unchanged (the revision restores QR-002 / AC-004). CR-002 is implementation-owned and outside this review; it is forwarded with the result. Opened for round 4: `migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.ts:100-130`, `migrations/project-task-keys-v1/released-project-files-v2.ts` (`readReleasedTaskFileV2`), `migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts:18,60,185-190`, `app-data-migration-runner.ts:80-100,140-157`, `code-review-report.md` (CR-001, CR-002, MP-001 reclassification), and the implemented `migrations/project-task-titles/`.
+- Earlier round: 3
 - Trigger: round 1, the Solution Designer's handoff (Large / High, 2026-10-25); round 2, the SR-008 delta taking the ARCH-REV-001 residual into this ticket (2026-10-25); round 3, the SR-009/SR-010 delta adding `get_project_task`, worker read scope, the first-message Task line, and dropping `task_ids` (2026-10-25)
 - Prior Review Round Reviewed: 2 (ARCH-REV-002, Pass)
 - Latest Authoritative Round: 3
@@ -227,6 +229,23 @@ Each domain word keeps one meaning (Principle 15): `Pass`. "title" and "summary"
 | --- | --- | --- | --- | --- | --- | --- |
 | `projects/<id>/tasks/<id>/task.json` gains required `title` | `Migration Required` | Pass (4-shape inventory, 376 files, reader/writer read) | Pass (guideline § 3: a new required fact only old data can supply; user chose DEC-009 a) | Pass: startup-only, prerequisite keys-v1, per-file atomic replace, re-read validation, per-Task dispositions, retry skips titled files, frozen classifier, no current-code import, rollback handled by release note (guideline § 4) | Pass | Implementation note: the frozen classifier must accept exactly what the pre-title `readTaskFile` (`project-store.ts:50-57`) accepts. A stricter one would hide Tasks the app lists today. |
 
+### Round 4 — SR-012 (CR-001): title migration gating
+
+| Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `task.json` `title`, including the released per-folder shape without `taskKey` | `Migration Required` (unchanged) | Pass | Pass | Pass | Pass | Traced below |
+
+The revised lifecycle, traced for each state:
+- **Prerequisite `20261005_projects_per_folder_v1` only** (id confirmed at `projects-per-folder-v1-app-data-migration.ts:18`). This prerequisite is needed. If titles ran while per-folder were incomplete, a later per-folder retry would move in Task files that a terminal titles run never titles. It also adds no new hold: while `projects.json` remains, every store operation already rejects `PROJECTS_MIGRATION_PENDING`, and the source is retired only at the end (`:185-190`).
+- **keys-v1 `FAILED` for one Project.** Titles still runs (it is registered after keys-v1 and no longer depends on it). Its own frozen validator accepts the unkeyed released shape (taskKey optional) and titles every valid Task. Admission is unchanged (`readTaskFile` requires `taskKey` and `title`), so only the unkeyable Project stays hidden, as released. QR-002 / AC-004 are restored.
+- **keys-v1 retried on a later start (conflict fixed).** keys-v1 classifies with `readReleasedTaskFileV2`, which requires only the released fields and ignores extra keys, so `title` does not make a Task invalid (`released-project-files-v2.ts`, `readReleasedTaskFileV2`). It writes `{...task.raw, taskKey}`, so the title is kept (`project-task-keys-v1-app-data-migration.ts:120`). It validates with the frozen keyed reader, which ignores `title` (`:121`). Its conflict check reads only `taskKey` (`:114`). The Project then lists its Tasks with the titles they already have. Nothing depends on titles being re-run, so its terminal status is correct.
+- **One start from the pre-folder shape:** per-folder → keys → titles in registry order. Covered by the added E2E.
+- **Validator equivalence.** The titles validator equals the released reader minus `taskKey`. A Task it skips as invalid is one that no released reader lists, so the `SKIPPED_INVALID_TASK_WARNING` disposition stays truthful.
+- **Sealed boundary.** The validator lives in the migration folder and replaces the import of the keyed frozen `readTaskFile`; no current code is imported. If no other migration still uses that frozen member, run `scripts/prune-frozen-layer.mjs` as the guideline requires.
+- **Tests (step 4):** the unkeyed shape fixture; the startup E2E (one Project unkeyable → others list titled Tasks, that Project hidden; conflict fixed + restart → listed with titles); an upgrade from the pre-folder shape. These match guideline § 9 acceptance items 1, 3 and 4.
+
+No new finding. CR-001 is resolved in the design; implementation still has to make the change.
+
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
@@ -245,6 +264,8 @@ Each domain word keeps one meaning (Principle 15): `Pass`. "title" and "summary"
 ## Material Premise Validation (Only When Needed)
 
 ### `MP-001` — A `project-task-keys-v1` failure holds the title migration back for every Project
+
+**Round 4 correction.** My round-1 classification below (`Not Reachable`) was wrong. I treated the keys-v1 failure as an infrastructure failure. In fact, keys-v1's released contract supports it as a per-Project state: "an unkeyable Project is preserved and hidden", and the other Projects keep working. Its E2E asserts that (`tests/e2e/projects/projects-startup-migration.e2e.test.ts:312-358`, passing on base), and guideline § 1 governs it. I did not open that test. Code review CRR-002 reclassified the premise as `Reachable`, `Supported Explicit Edge Scenario` (CR-001), and API-03 reproduced it. **Current status: `Reachable`, resolved by SR-012** (see "Round 4 — SR-012" below). The round-1 text is kept for history.
 
 - Related approved requirement or established contract: QR-002, AC-004; data migration guideline § 1 ("gate narrowly").
 - Relevant behavior ID(s): BEH-002 (SCN-005).
@@ -285,7 +306,7 @@ None.
 
 ## Review Decision
 
-`Pass` (round 3, SR-010). The behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery depends on an unsupported premise. AR-001–AR-008 are non-blocking (AR-004's `task_ids: []` item is obsolete). Each follows directly from an approved requirement and is carried to implementation as guidance.
+`Pass` (round 4, SR-012: CR-001's design revision is sound; CR-002 is implementation-owned and goes with it). Round 3 (SR-010): The behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery depends on an unsupported premise. AR-001–AR-008 are non-blocking (AR-004's `task_ids: []` item is obsolete). Each follows directly from an approved requirement and is carried to implementation as guidance.
 
 ## Findings
 
@@ -385,7 +406,7 @@ Implementation engineer (primary pass rule); Solution Designer informed.
 
 - ASM-001, a hidden consumer of an empty field. Mitigated by per-family tests on both routes. Verified here: the web `open_tab` handler (`browserToolExecutionSucceededHandler.ts`) reads a non-empty `tab_id`, and the file-change processor prefers arguments over the media result object.
 - AGY/Grok handling of the two MCP copies is unknown; this design leaves it unchanged.
-- MP-001 (Not Reachable): a keys-v1 failure on a pre-key upgrade holds titles back for every Project until a restart succeeds.
+- (Round 4) MP-001 was misclassified in round 1. It is reachable, and SR-012 resolves it: only an unkeyable Project stays hidden, as released.
 - Rollback after the migration hides Tasks that an older build saves (it drops `title`). The release notes must say rolling back is not supported (guideline § 4).
 - MP-002 (round 3): a worker's sub-work agent on a peer node is on no Task there, so it reads that node's Tasks like any non-worker. Accepted; the scope is a focus rule (DEC-022).
 - A worker can still see every Task's short entry through `list_project_tasks` / `search_project_tasks` when its definition lists them. `get_project_task`'s scope limits full reads only, as approved.
@@ -396,5 +417,5 @@ Implementation engineer (primary pass rule); Solution Designer informed.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 Not Reachable; MP-002 Reachable, low consequence, no machinery; MP-003 Reachable, handled by fail-closed ordering, AR-008)
-- Notes: ARCH-REV-003 on SR-010 (on top of ARCH-REV-001 / -002). Non-blocking AR-001–AR-008 go to implementation as guidance; AR-006 also to the Solution Designer to record.
+- Material-Premise Gate: `Pass` (MP-001 reclassified Reachable and resolved by SR-012; MP-002 Reachable, low consequence, no machinery; MP-003 Reachable, handled by fail-closed ordering, AR-008)
+- Notes: ARCH-REV-004 on SR-012 (on top of ARCH-REV-001–003). CR-001 (design fix) and CR-002 (implementation-owned) go to implementation in one round, as the code reviewer asked. Earlier: Non-blocking AR-001–AR-008 go to implementation as guidance; AR-006 also to the Solution Designer to record.

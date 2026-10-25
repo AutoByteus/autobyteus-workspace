@@ -108,3 +108,14 @@ Principle 15.
 - **Again in autobyteus-260 (design, 2026-10-25):** "summary" named a Task's one-liner derived from its description (`search_project_tasks` `summary`, the app's `taskSummary` helpers) and a reduced view (`listProjectSummaries`, `TaskWorkerTaskSummary`). With a stored title, the one-liner is **title** everywhere and "summary" keeps only the reduced-view meaning, both in `GLOSSARY.md`.
 - **Why it mattered:** a word with two meanings makes readers and agents mix up IDs, which is a correctness risk, not only a readability one.
 - **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun; a new name checked only against its own feature's files, especially a common word ("source", "status", "config") without the feature's prefix.
+
+
+### Case 8: A Whole-Run Prerequisite Widens A Narrow Failure (autobyteus-260, CR-001)
+
+Principle 5; Data Migration Guideline § 1 ("Gate narrowly").
+
+- **The design said:** the new `project-task-titles` migration runs after `project-task-keys-v1` (`prerequisiteMigrationIds`), and reads sources with the keyed frozen reader. The current reader requires both `taskKey` and `title`.
+- **What happened:** keys-v1 fails per Project by design (an unkeyable Project is preserved and hidden; the others are listed; a restart retries). The runner runs a migration only when its prerequisites succeeded, so one unkeyable Project left titles `NOT_RUN`, and then no Project listed any Task, on every start, until the data was fixed by hand. The API/E2E startup test caught it; design, architecture review and the first code review had not.
+- **The fix:** titles depends only on what it needs: the per-folder files (`projects-per-folder-v1`, whose failure already holds all Projects), and accepts Task files with or without a key, because a title comes only from the description. keys-v1 keeps the title when it keys a Task later.
+- **Why it mattered:** a whole-run prerequisite turns a predecessor's narrow, contained failure into a global one.
+- **Notice it by:** a prerequisite on a migration that can fail for one item while others succeed; a source validator that requires a field the migration does not use.
