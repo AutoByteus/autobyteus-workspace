@@ -4,14 +4,15 @@ import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
+import { omitEmptyToolResultFields, type ToolResultJsonValue } from '../../tool-result-json.js';
 
 export async function stopBackgroundProcess(
   context: AgentContextLike | null,
   pid: number
-): Promise<{ status: string; pid: number }> {
+): Promise<ToolResultJsonValue> {
   const manager = getBackgroundManager(context);
   const success = await manager.stopProcess(pid);
-  return { status: success ? 'stopped' : 'not_found', pid };
+  return omitEmptyToolResultFields({ status: success ? 'stopped' : 'not_found', pid });
 }
 
 const argumentSchema = new ParameterSchema();

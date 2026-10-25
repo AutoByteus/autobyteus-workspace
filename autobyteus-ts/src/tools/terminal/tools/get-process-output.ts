@@ -4,30 +4,31 @@ import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
+import { omitEmptyToolResultFields, type ToolResultJsonValue } from '../../tool-result-json.js';
 
 export async function getProcessOutput(
   context: AgentContextLike | null,
   pid: number,
   lines: number = 100
-): Promise<{ output: string; isRunning: boolean; pid: number; status?: string; error?: string }> {
+): Promise<ToolResultJsonValue> {
   const manager = getBackgroundManager(context);
 
   try {
     const result = await manager.getOutput(pid, lines);
-    return {
+    return omitEmptyToolResultFields({
       output: result.output,
       isRunning: result.isRunning,
       pid: result.pid,
       status: result.status
-    };
+    });
   } catch {
-    return {
+    return omitEmptyToolResultFields({
       output: '',
       isRunning: false,
       pid,
       status: 'exited',
       error: `Process '${pid}' not found. It may have already stopped or never existed.`
-    };
+    });
   }
 }
 
