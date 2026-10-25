@@ -13,9 +13,9 @@ import {
   type CollaborationMemberExecutionIdentity,
 } from "./root-execution-identity.js";
 import {
-  requireMemberTaskCommandCapability,
-  type MemberTaskCommandCapability,
-} from "../task/member-task-command-capability.js";
+  requireMemberTaskCapability,
+  type MemberTaskCapability,
+} from "../task/member-task-capability.js";
 import type { AvailableCollaborator } from "../../collaborators/collaborator-candidate-policy.js";
 import type { MemberCollaborationRole } from "./member-instance-scope.js";
 
@@ -66,7 +66,7 @@ export class MemberExecutionContext {
   readonly collaborationRole: MemberCollaborationRole;
   readonly authoredEnclosingScopeInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
-  readonly tasks: MemberTaskCommandCapability;
+  readonly tasks: MemberTaskCapability;
 
   constructor(input: {
     identity: CollaborationMemberExecutionIdentity;
@@ -74,7 +74,7 @@ export class MemberExecutionContext {
     collaborationRole: MemberCollaborationRole;
     authoredEnclosingScopeInstruction?: string | null;
     collaboration: MemberCollaborationContext;
-    tasks: MemberTaskCommandCapability;
+    tasks: MemberTaskCapability;
   }) {
     if (typeof input.teamScoped !== "boolean") throw new Error("teamScoped is required.");
     this.identity = cloneCollaborationMemberExecutionIdentity(input.identity);
@@ -83,7 +83,7 @@ export class MemberExecutionContext {
     this.collaborationRole = input.collaborationRole;
     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);
     this.collaboration = new MemberCollaborationContext(input.collaboration);
-    this.tasks = requireMemberTaskCommandCapability(input.tasks);
+    this.tasks = requireMemberTaskCapability(input.tasks);
     if (!sameRootExecutionIdentity(this.identity.root, this.tasks.root)) {
       throw new Error("Member identity and task commands must belong to the same root.");
     }

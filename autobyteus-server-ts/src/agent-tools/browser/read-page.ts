@@ -6,7 +6,8 @@ import {
 } from "./browser-tool-contract.js";
 import { getBrowserToolManifestEntry } from "./browser-tool-manifest.js";
 import { buildReadPageParameterSchema } from "./browser-tool-parameter-schemas.js";
-import { toBrowserToolErrorPayload, toBrowserJsonString } from "./browser-tool-serialization.js";
+import { toBrowserToolErrorPayload } from "./browser-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { getBrowserToolService } from "./browser-tool-service.js";
 
 const DESCRIPTION = getBrowserToolManifestEntry(READ_PAGE_TOOL_NAME).description;
@@ -35,13 +36,13 @@ export async function readPage(
       tab_id,
       cleaning_mode: cleaning_mode ?? "thorough",
     });
-    return toBrowserJsonString(result);
+    return toToolResultJson(result);
   } catch (error) {
     const payload = toBrowserToolErrorPayload(error);
     logger.error(
       `read_page failed for agent run ${agentRunId}: ${payload.error.message}`,
     );
-    throw new Error(toBrowserJsonString(payload));
+    throw new Error(toToolResultJson(payload));
   }
 }
 

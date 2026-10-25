@@ -23,7 +23,7 @@ describe("a task agent with several open Tasks", () => {
   let root: string, layout: ProjectsLayout, store: ProjectStore, projectId: string, tasks: ProjectTaskService, resources: TaskExecutionResourceService;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   const team = { teamRunId: "team-1" };
-  const create = async (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
+  const create = async (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, title: description, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
   const setStatus = (taskId: string, status: "DONE" | "CANCELLED" | "TODO") => tasks.updateTaskById({ taskId, status });
   const released = () => release.mock.calls.map(([, runs]) => runs);
   /** The first Task: a new copy linked and started, as delegation does. */

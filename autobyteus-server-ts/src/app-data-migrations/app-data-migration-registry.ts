@@ -33,6 +33,7 @@ import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migratio
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data/remove-external-messaging-data-migration.js";
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import { ProjectTaskKeysV1AppDataMigration } from "./migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
+import { ProjectTaskTitlesAppDataMigration } from "./migrations/project-task-titles/project-task-titles-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-migration.js";
 import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
@@ -129,6 +130,8 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new ProjectsPerFolderV1AppDataMigration(appDataDir),
     // Keys existing Project Tasks; needs the per-Project folders.
     new ProjectTaskKeysV1AppDataMigration(appDataDir),
+    // Titles existing Project Tasks from their descriptions' first lines; needs the Task keys.
+    new ProjectTaskTitlesAppDataMigration(appDataDir),
     new RemoveBuiltInProjectTaskManagerMigration(
       path.join(config.getAgentsDir(), "autobyteus-project-task-manager"),
     ),

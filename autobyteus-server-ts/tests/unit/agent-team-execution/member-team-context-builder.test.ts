@@ -13,7 +13,7 @@ import {
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import {
   testAgentNode,
-  testMemberTaskCommandCapability,
+  testMemberTaskCapability,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -60,14 +60,14 @@ describe("MemberExecutionContextBuilder", () => {
       children: [coordinator, reviewer],
       handoffs,
     });
-    const taskCommands = testMemberTaskCommandCapability("team-1");
+    const taskCapability = testMemberTaskCapability("team-1");
     const result = await buildBuilder({
       "team-def-1": { name: "Product Team", instructions: "Coordinate carefully." },
     }).build({
       teamContext: buildContext(config, [coordinator, reviewer]),
       agentNode: coordinator,
       deliverInterAgentMessage: acceptedDelivery,
-      taskCommands,
+      taskCapability,
     });
 
     expect(result.authoredEnclosingScopeInstruction).toBe("Coordinate carefully.");
@@ -96,7 +96,7 @@ describe("MemberExecutionContextBuilder", () => {
       teamContext: buildContext(config, [coordinator, reviewer]),
       agentNode: coordinator,
       deliverInterAgentMessage: deliver,
-      taskCommands: testMemberTaskCommandCapability("team-1"),
+      taskCapability: testMemberTaskCapability("team-1"),
     });
 
     await expect(result.collaboration.deliverLogicalMessage({
@@ -132,7 +132,7 @@ describe("MemberExecutionContextBuilder", () => {
       teamContext: buildContext(config, [solo]),
       agentNode: solo,
       deliverInterAgentMessage: deliver,
-      taskCommands: testMemberTaskCommandCapability("team-solo"),
+      taskCapability: testMemberTaskCapability("team-solo"),
     });
 
     expect(result.collaboration.outgoingHandoffs).toEqual([]);
@@ -153,11 +153,11 @@ describe("MemberExecutionContextBuilder", () => {
       deliverInterAgentMessage: acceptedDelivery,
     };
 
-    await expect(buildBuilder().build({ ...input, taskCommands: undefined as never }))
-      .rejects.toThrow("MemberTaskCommandCapability is required");
+    await expect(buildBuilder().build({ ...input, taskCapability: undefined as never }))
+      .rejects.toThrow("MemberTaskCapability is required");
     await expect(buildBuilder().build({
       ...input,
-      taskCommands: testMemberTaskCommandCapability("other-team"),
+      taskCapability: testMemberTaskCapability("other-team"),
     })).rejects.toThrow("same root");
   });
 });

@@ -9,7 +9,7 @@ import {
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import {
   buildDeliveryEndpointForParticipant,
   type InterAgentMessageDeliveryHandler,
@@ -36,7 +36,7 @@ export class MemberExecutionContextBuilder {
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
     /** The root's `list_available_agents` for this member; absent in application-owned runs. */
     listAvailableAgents?: ((identity: CollaborationMemberExecutionIdentity) => Promise<readonly AvailableCollaborator[]>) | null;
-    taskCommands: MemberTaskCommandCapability;
+    taskCapability: MemberTaskCapability;
     /** The TeamRun hosting the Agent (a Team copy); absent for the root TeamRun's own members. */
     hostTeam?: MemberHostTeam | null;
   }): Promise<MemberExecutionContext> {
@@ -86,7 +86,7 @@ export class MemberExecutionContextBuilder {
       collaborationRole: scope.role,
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
-      tasks: input.taskCommands,
+      tasks: input.taskCapability,
     });
   }
 

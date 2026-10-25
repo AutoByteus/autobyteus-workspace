@@ -76,28 +76,30 @@ describe("search_project_tasks tool", () => {
     expect(unknown.structuredContent).toMatchObject({ error: { code: "PROJECT_NOT_FOUND" } });
   });
 
-  it("returns a compact best-first list with keys, statuses, one-line summaries and match kinds (native and MCP alike)", async () => {
+  it("returns a compact best-first list with keys, statuses, stored titles and match kinds (native and MCP alike)", async () => {
     const tasks = getProjectTaskService();
-    const long = `${"Docker image fails on ARM servers ".repeat(8)}\nSecond line is not part of the summary.`;
-    const first = await tasks.createTask({ projectId, description: long });
-    await tasks.createTask({ projectId, description: "Publish the container image to the registry" });
-    await tasks.createTask({ projectId, description: "Sidebar collapse state is lost" });
+    // A long title is kept whole (REQ-003): no cut on titles a writer gave.
+    const longTitle = "Docker image fails on ARM servers ".repeat(8).trim();
+    const first = await tasks.createTask({ projectId, title: longTitle, description: "The image build stops on arm64.\nSecond line." });
+    await tasks.createTask({ projectId, title: "Publish the container image to the registry", description: "Publish the container image to the registry" });
+    await tasks.createTask({ projectId, title: "Sidebar collapse state is lost", description: "Sidebar collapse state is lost" });
     const result = await native({ project_id: projectId, query: "docker" });
+    // The exact tier also matches the title (DEC-018 (1)); meaning search was used, so meaningSearch is absent (REQ-008).
     expect(result).toEqual({
       projectId,
       tasks: [
-        { taskId: first.taskKey, status: "TODO", partOf: null, parts: [], summary: `${long.split("\n")[0]!.trim().slice(0, 159)}…`, match: "exact" },
-        { taskId: expect.stringMatching(/-\d+$/), status: "TODO", partOf: null, parts: [], summary: "Publish the container image to the registry", match: "meaning" },
+        { taskId: first.taskKey, status: "TODO", title: longTitle, match: "exact" },
+        { taskId: expect.stringMatching(/-\d+$/), status: "TODO", title: "Publish the container image to the registry", match: "meaning" },
       ],
-      meaningSearch: { state: "ready" },
     });
-    expect(result.tasks[0].summary).toHaveLength(160);
+    expect(result.tasks[0].title).toHaveLength(longTitle.length);
+    expect(JSON.stringify(result)).not.toMatch(/summary|meaningSearch|null|\[\]/);
     expect((await mcp({ project_id: projectId, query: "docker" })).structuredContent).toEqual(result);
     expect((await native({ project_id: projectId, query: "docker", limit: 1 })).tasks).toHaveLength(1);
   });
 
   it("states why meaning search was not used and still returns exact matches", async () => {
-    await getProjectTaskService().createTask({ projectId, description: "Docker image fails on ARM servers" });
+    await getProjectTaskService().createTask({ projectId, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     vi.spyOn(fake.index, "search").mockResolvedValue({ matches: [], scores: {}, readiness: { state: "unavailable", reason: "Could not reach huggingface.co" } });
     const result = await native({ project_id: projectId, query: "docker" });
     expect(result.tasks).toHaveLength(1);

@@ -35,7 +35,7 @@ describe("Task agent run resource reactivation", () => {
   const taskJson = (taskId: string) => fs.readFile(layout.taskFile(projectId, taskId), "utf8");
   /** A started assignment of `agentRun` by `manager`, with a started helper under it. */
   const assignedWithHelper = async () => {
-    const task = await tasks.createTask({ projectId, description: "Design the feature" });
+    const task = await tasks.createTask({ projectId, title: "Design the feature", description: "Design the feature" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await tasks.linkNewTaskExecution({ role: "delegated", creator: worker, hostRoot, execution: helper });

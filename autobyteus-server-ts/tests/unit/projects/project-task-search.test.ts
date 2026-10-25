@@ -19,7 +19,7 @@ const ids = (result: { matches: Array<{ task: { description: string }; match: st
 
 describe("ProjectTaskSearchService", () => {
   let root: string, projectId: string, tasks: ProjectTaskService, fake: Awaited<ReturnType<typeof createFakeEmbeddingIndex>>, search: ProjectTaskSearchService;
-  const create = (description: string) => tasks.createTask({ projectId, description });
+  const create = (description: string) => tasks.createTask({ projectId, title: description, description });
   const ready = async () => {
     for (let i = 0; i < 200; i++) {
       if ((await search.search(projectId, "docker")).meaningSearch.state === "ready") return;
@@ -158,7 +158,7 @@ describe("ProjectTaskSearchService", () => {
 
   it("indexes every Project that is not indexed or needs an update, and rebuilds one Project from scratch", async () => {
     const second = (await getProjectService().createProject({ name: "Alpha" })).projectId;
-    await tasks.createTask({ projectId: second, description: "Price of the cloud plan" });
+    await tasks.createTask({ projectId: second, title: "Price of the cloud plan", description: "Price of the cloud plan" });
     await create("Docker image fails on ARM servers");
     await search.indexProject(projectId);
     await ready();

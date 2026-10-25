@@ -1,5 +1,6 @@
 import { tool, ParameterSchema, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 
@@ -45,7 +46,7 @@ export async function listAgentDefinitions(context: AgentContextLike): Promise<s
       return "[]";
     }
 
-    return JSON.stringify(definitions.map(serializeDefinition), null, 2);
+    return toToolResultJson(definitions.map(serializeDefinition));
   } catch (error) {
     logger.error(`An unexpected error occurred while listing agent definitions: ${String(error)}`);
     throw error;

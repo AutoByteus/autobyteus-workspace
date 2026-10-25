@@ -172,7 +172,6 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: false,
       code: "COLLABORATION_TARGET_NOT_FOUND",
       message: "Collaboration target '/missing' was not found.",
-      target_agent_run_id: null,
     });
   });
 
@@ -193,7 +192,6 @@ describe("AutoByteus server-owned send_message_to", () => {
     }))).toMatchObject({
       accepted: false,
       code: "COLLABORATION_CONTEXT_REQUIRED",
-      target_agent_run_id: null,
     });
   });
 
@@ -252,7 +250,6 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: false,
       code: "COLLABORATION_ADDRESS_INVALID",
       message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.",
-      target_agent_run_id: null,
     };
     const nativeText = await createBoundAutoByteusSendMessageToTool(sender, dispatcher).execute({}, input);
     expect(parseEnvelope(nativeText)).toEqual(expected);

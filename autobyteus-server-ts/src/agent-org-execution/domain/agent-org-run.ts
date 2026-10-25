@@ -285,6 +285,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
   /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
   teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
+  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
+  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
 
   async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.operationGate.run(async () => {

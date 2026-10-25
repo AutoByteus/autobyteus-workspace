@@ -7,6 +7,7 @@ import { PROJECTS_PER_FOLDER_V1_MIGRATION_ID } from "../../../src/app-data-migra
 import {
   PROJECT_TASK_KEYS_V1_MIGRATION_ID, ProjectTaskKeysV1AppDataMigration,
 } from "../../../src/app-data-migrations/migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
+import { ProjectTaskTitlesAppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-titles/project-task-titles-app-data-migration.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
@@ -97,13 +98,14 @@ describe("project-task-keys-v1 migration (AC-006)", () => {
       expect(rest).toEqual(JSON.parse(bytes));
     }
 
-    // The current runtime admits everything, and the next create continues after the highest number.
+    // After the next startup migration (titles), the current runtime admits everything, and the next create continues after the highest number.
+    expect(await new ProjectTaskTitlesAppDataMigration(appData).execute()).toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 5 } });
     const store = new ProjectStore(layout);
     expect((await store.listProjects()).map((p) => p.projectId).sort()).toEqual(["project_a", "project_b", "project_c"]);
     expect((await store.listTasks("project_a")).map((t) => t.dependsOnTaskIds)).toEqual([[], [], [], []]);
-    const created = await new ProjectTaskService({ store }).createTask({ projectId: "project_a", description: "New" });
+    const created = await new ProjectTaskService({ store }).createTask({ projectId: "project_a", title: "New", description: "New" });
     expect(created.taskKey).toBe("autobyteus-5");
-    expect((await new ProjectTaskService({ store }).createTask({ projectId: "project_c", description: "New" })).taskKey).toBe("autobyteus-2-1");
+    expect((await new ProjectTaskService({ store }).createTask({ projectId: "project_c", title: "New", description: "New" })).taskKey).toBe("autobyteus-2-1");
   });
 
   it("a second start changes nothing", async () => {
@@ -153,7 +155,7 @@ describe("project-task-keys-v1 migration (AC-006)", () => {
     // Other Projects and new work keep working; the unkeyed Project is preserved but not shown.
     const store = new ProjectStore(layout);
     expect((await store.listProjects()).map((p) => p.projectId).sort()).toEqual(["project_b", "project_c"]);
-    expect((await new ProjectTaskService({ store }).createTask({ projectId: "project_b", description: "New work" })).taskKey).toBe("autobyteus-agents-2");
+    expect((await new ProjectTaskService({ store }).createTask({ projectId: "project_b", title: "New work", description: "New work" })).taskKey).toBe("autobyteus-agents-2");
 
     vi.restoreAllMocks();
     const retry = await new ProjectTaskKeysV1AppDataMigration(appData).execute();

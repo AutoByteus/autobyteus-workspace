@@ -275,6 +275,8 @@ describe("a task agent with other open Tasks (task-agent-several-tasks REQ-001, 
     expect(f.delivered[0]!.content).toBe([
       "New Task assigned to you: task-B. Your Task task-A is still open; name the Task key in each report.",
       "",
+      "Task: task-B in Project project_fixture",
+      "If you have get_project_task, it reads this Task again, including comments added later.",
       "Description:",
       "Follow-up cleanup proposed by the reviewer",
     ].join("\n"));
@@ -326,6 +328,8 @@ describe("a saved Task's comments in the delegated work (task-comments REQ-012, 
     expect(f.delivered[0]!.content).toBe([
       "New Task assigned to you: task-B. Your previous Task is closed; this is the work to do now.",
       "",
+      "Task: task-B in Project project_fixture",
+      "If you have get_project_task, it reads this Task again, including comments added later.",
       "Description:",
       "Follow-up cleanup proposed by the reviewer",
       "",
