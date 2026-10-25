@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-001 (Pass), round 1 | SR-001, SR-002, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 97% |
+| API-REV-002 | Code Reviewer, `api-e2e-test-review-report.md` CRR-002 (Fail: TR-001, Local Fix), round 2 | CRR-002 | Pass / 97% | Pass / 97% |
 
 ## Revision Entries
 
@@ -30,3 +31,26 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: Code Reviewer (proportional test-code review of the e2e change)
 - Remaining risks, blocked evidence, or untested scope: the accepted residuals; FU-006 (application-owned runs cannot be ended through the public terminate)
+
+### API-REV-002: Round 2. TR-001 fixed (RE-05 selects the fields it reads)
+
+- Triggering role, report path, and round: Code Reviewer, `api-e2e-test-review-report.md` (CRR-002, TR-001), round 2
+- Triggering finding or case IDs: TR-001
+- Related revision IDs: CRR-002
+- Why this revision was recorded: a Local Fix in the durable test
+- Coverage decisions or durable test paths changed: `autobyteus-server-ts/tests/e2e/runtime/application-reload-repair.e2e.test.ts`. RE-05 `readBrief` now selects `briefId latestRunId latestBindingStatus lastErrorMessage`; `childPids` uses `ps -A -o pid=,ppid=,command=` (optional note)
+- Cases added, changed, removed, or rechecked: API-07 rerun (the whole file: the cases run in order)
+- Commands, environment, fixture, or broader-validation delta: none
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| TR-001 (RE-05 relied on Brief Studio ignoring selection sets) | Local Fix (API/E2E) | The query selects the fields read; rerun passes | API-07 (round 2) |
+
+- Canonical artifacts and sections updated: execution report (Round, environments, Cases)
+- Prior result and confidence: Pass, 97%
+- Current result and confidence: Pass, 97%
+- New or remaining failure IDs: none
+- Recommended owner: Code Reviewer (test re-review)
+- Remaining risks, blocked evidence, or untested scope: unchanged

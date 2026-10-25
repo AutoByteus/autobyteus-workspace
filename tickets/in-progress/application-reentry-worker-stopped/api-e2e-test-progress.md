@@ -13,3 +13,5 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-10-25T04:04:00Z | API-07 | Completed | Pass | run 2: Tests 5 passed (5) (RE-01..05) |
 | 2026-10-25T04:05:22Z | API-08 | Completed | Pass | (a) dispatch resume removed -> only RE-05 fails ("the dispatch drain started the worker"); (b) handle-less reset removed -> only RE-04 fails ("expected 'failed' to be 'stopped'"); sources restored, diff empty |
 | 2026-10-25T04:05:22Z | API-06 | Completed | Pass | docs match code and observed RE-05 behavior |
+| 2026-10-25T04:09:25Z | API-07 | Started | | round 2 (CRR-002 TR-001 Local Fix): readBrief selects latestRunId latestBindingStatus lastErrorMessage; ps -A -o (portable); rerun the file; log /tmp/ab296e2e/API-07-r2.log |
+| 2026-10-25T04:10:07Z | API-07 | Completed | Pass | round 2: Tests 5 passed (5) |
