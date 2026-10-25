@@ -1,0 +1,7 @@
+# Follow-ups — agent-tool-results-omit-empty (autobyteus-260)
+
+Found while working on this ticket and outside its scope (the team's ticket-scope rule). The Solution Designer sends them when the ticket leaves the team.
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Implementation engineer, `implementation-handoff.md` (IR-001) | `autobyteus-web/generated/graphql.ts` is far behind the server schema: a full `pnpm codegen` against the current schema (base `fc06a7355d`) adds about 1,650 lines of types and documents unrelated to Project Tasks (agent runtimes, peer nodes, update notifications, …). | Codegen against the schema emitted from `buildGraphqlSchema()` at this branch: `generated/graphql.ts` 1,657 insertions / 38 deletions before the Task-title subset was applied by hand (only the 12 title lines were kept in this ticket). | The drift predates this ticket and touches none of its behavior; this ticket applied only the generated lines for `title`. | No | Regenerate `autobyteus-web/generated/graphql.ts` from the current server schema (there is no running-server-free path today: emit the schema with `emitSchemaDefinitionFile(buildGraphqlSchema())` and point `BACKEND_GRAPHQL_BASE_URL` at the file) and check that the web app still type-checks; consider a script so the file stays current. | |
