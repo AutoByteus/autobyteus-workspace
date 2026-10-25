@@ -2,14 +2,65 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (earlier designs in `history/`; SR-004 added the per-runtime limits note, SR-005 separates it from the sign-in mark, see § SR-004 Addition)
-- Approved requirements baseline: `requirements-doc.md` SR-005 (SR-005: separate `signIn` and `limitsNote` fields; SR-004: optional per-runtime note, decided by the Solution Designer at the user's request to allow runtime-specific output); SR-003 (text aligned for ARCH-REV-002 AR-006), approved by the Solution Designer within the direction the user set (2026-10-24/25), user informed. SR-002 applies the user's "only useful information" (2026-10-25) and clarifies failure states for ARCH-REV-001.
+- Current solution revision ID: `SR-007`, text-corrected for ARCH-REV-007 AR-008 (earlier designs in `history/`; SR-006 answers the failure-origin review CRR-003; SR-007 answers the code reviewer's design feedback of 2026-10-25, see § SR-007 Revision)
+- Approved requirements baseline: `requirements-doc.md` SR-006 (SR-006: discovered AutoByteus providers, concurrent reads, step time-out classification; SR-005: separate `signIn` and `limitsNote` fields; SR-004: optional per-runtime note, decided by the Solution Designer at the user's request to allow runtime-specific output); SR-003 (text aligned for ARCH-REV-002 AR-006), approved by the Solution Designer within the direction the user set (2026-10-24/25), user informed. SR-002 applies the user's "only useful information" (2026-10-25) and clarifies failure states for ARCH-REV-001.
 - Behavior-defining supplements: none.
 - Design status: `Ready`
 - Review basis: ARCH-REV-001 findings AR-001…AR-005 and ARCH-REV-002 findings AR-002 (narrowed) and AR-006 are resolved below (§ Review Findings Resolution).
 - Canonical investigation-notes path: `tickets/in-progress/available-agent-runtimes-tool/investigation-notes.md`
 - Authorities read (2026-10-24/25): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `docs/design-cases.md` (Cases 1–7), `GLOSSARY.md`, `TESTING.md`.
 - Project design-principle conflicts or discrepancies: none.
+
+## SR-007 Revision — answers to the code reviewer's design feedback (2026-10-25)
+
+The code reviewer sent five caveats at the user's request (not a review round). Decisions:
+
+1. **Spec matches the code (limit-to-model mapping).** Limits are read in parallel with the model list, so a parser names what a limit covers in its source's own terms and the service resolves it against the models it read. `appliesTo` has three variants; each parser uses the one that matches what its source names: `{ kind: "runtime" }`; `{ kind: "models"; modelIds: string[] }` for a source that names the model by its id (Codex: a `rateLimitsByLimitId` entry's `normalModelSlug`, `codex-usage-limits.ts:37,49`); `{ kind: "modelFamilies"; families: string[] }` for sources that name display-name families (Claude, Antigravity). An id is never matched as a family (Principle 15). (Corrected 2026-10-25 after the code reviewer's note: an earlier SR-007 text wrongly dropped the `models` variant.) Family rule, owned by `available-agent-runtimes/usage-limit-model-matching.ts`: a family covers a model when the family's words appear in the model's display name in order, starting at the name's first word (case-insensitive): "Gemini Flash" covers "Gemini 3.8 Flash (High)"; "Fable" covers "Fable 5.1". **Most specific wins over all of a runtime's `modelFamilies` limits**: each model is assigned the covering family with the most words among every such limit of the runtime; only then are the exhausted limits applied to block it. A `models` limit covers exactly its ids; no runtime reports both `models` and `modelFamilies` limits today, so no precedence between them is defined (C-02: the code's one-line change from "among exhausted limits only"). A limit that covers none of the listed models (no listed id, or no family match) applies to the whole runtime (DEC-003), for every variant (`usage-limit-model-matching.ts:45,50`).
+2. **One owner of step failures.** `AgentRuntimeStrategy.readUsageLimits` returns `{ state: "read" } | { state: "not_reported" }` or **throws**; a parser that cannot use an answer throws `UsageLimitsUnreadableError(reason)` (a short classified reason, no vendor text). The service alone turns a thrown error into the REQ-007 text: `isDeadlineExceeded` → "<Runtime> usage limits timed out"; `UsageLimitsUnreadableError` → "<Runtime> usage limits could not be read: <reason>"; anything else → "<Runtime> usage limits could not be read". `readUsageLimitsSafely` and the parsers' `unknown` state are removed; the same rule words the models, sign-in and provider steps (one wording helper in the service). Provider readers follow the same contract (AR-008): they return `read` | `not_reported` or throw (`ProviderUsageUnreadableError(reason)` for an unusable answer); the service words a provider failure as "<Provider> usage timed out" (its abort signal's time-out, or `isDeadlineExceeded`), "<Provider> usage could not be read: <reason>" or "<Provider> usage could not be read", shown as `limits: "unknown: …"` on the provider entry.
+3. **Command time-outs inside a step.** `read-deadline.ts` `commandBound(deadline, usualMs)` returns `{ timeoutMs, byDeadline }`: `byDeadline` is true when the time left, not the command's usual bound, set the limit. The command runner (and the ACP/agy helpers) raise `DeadlineExceededError` (or carry it as `cause`) only when `byDeadline`; an ordinary per-command time-out (e.g. Antigravity's 3 s `--help` probe) is an ordinary failure and reports "could not be read" for that step.
+4. **Repeated work in a read — deferred, explicitly (FU-005).** Antigravity runs `agy --help` + `agy models` for sign-in and again for models (~1.8 s of a typical 5 s read); Grok runs `grok models` for sign-in and a discovery for models; Claude starts its CLI twice (models, usage). Deriving sign-in from the model list, or one Claude query for both, would cut 1–2 s but splits the sign-in reader's single rule and the catalog's ownership. Within the 18 s budget, with single-flight reads, the cost does not justify that now; FU-005 revisits it if the Model Router's latency (autobyteus-32) shows it matters.
+5. **No subsystem cycle.** The composer reads both `runtime-management` and `llm-management`, and `llm-management`'s catalogs import `runtime-management`. The composer and its report therefore move above both into **`src/available-agent-runtimes/`**: `available-agent-runtimes-service.ts`, `available-agent-runtimes-report.ts`, `usage-limit-model-matching.ts`. Dependency direction: tools, GraphQL, composition → `available-agent-runtimes` → `runtime-management`, `llm-management`; nothing in those two imports it.
+
+## SR-006 Revision — answers to the failure-origin review CRR-003 (API-REV-001)
+
+Evidence: `code-review-report.md` § API/E2E Failure-Origin Review; `evidence/api-e2e/API-08b-live-lmstudio-probe.json.log`, `API-05b-two-readers-probe.log`, `API-03b-timeout-reason-probe.log`; code read C-20…C-22 (investigation notes).
+
+### CR-003 (F-2) — discovered AutoByteus providers
+
+Cause (C-21): AutoByteus models came from `LLMFactory.listAvailableModels()`, which holds static models plus only the discovered sources something already loaded; a discovered source is loaded once per configuration and not retried (`dynamic-model-source-lifecycle.ts:64-66`).
+
+Decision: the AutoByteus step reloads every discovered provider it considers, through the catalog's own refresh operation `ModelCatalogService.reloadProviderModelCatalog(providerId, "autobyteus")` (the same operation as the settings' reload), in parallel with each other and with the provider usage readers, each raced against its own deadline (`providerModelsMs` = 8 s; the AutoByteus step stays ≤ 12 s: list 4 s, then models ‖ usage 8 s).
+
+| Provider kind (`catalogMode`) | Considered when | Listed? | Models |
+| --- | --- | --- | --- |
+| Static, keyed (OpenAI, Anthropic, DeepSeek, …) | key configured | Yes | from `runtimeModelSelectionCatalog("autobyteus")` by `provider_id` (unchanged) |
+| Discovered, local (Ollama, LM Studio) | always (no key needed) | Only when the reload returns ≥ 1 model now; unreachable, error or time-out → left out (it cannot run now, like a runtime that is not installed) | the reload's models |
+| Discovered, keyed (custom OpenAI-compatible endpoints) | key configured | Yes | the reload's models; reload state `ERROR` / `STALE_ERROR`, time-out, or 0 models → `models: "unknown: <reason>"` (the source's `safeMessage`, "timed out", or "the endpoint listed no models"); an empty list is never shown as "no models" (ARCH-REV-006 note) |
+
+The reload refreshes the shared catalog, which is what it is for; a failed reload keeps the previous rows (`STALE_ERROR`, `dynamic-model-source-lifecycle.ts:142`), so launch lists are never emptied by a read. `AutoByteusProviderEntry.models` becomes `AvailableModel[]` or `"unknown: <reason>"`.
+
+### CR-004 (F-3) — concurrent reads and the Codex lease
+
+Cause (C-20): `CodexAppServerClientManager.beginAcquire` refuses a folder whose client generation is closing (`codex-app-server-client-manager.ts:30`), and the last holder's `release` closes it. Each read took and released the home-folder lease three times (sign-in, models, limits), starting the app-server up to three times, and overlapping reads hit a closing generation.
+
+Decision, two parts, both owned by `AvailableAgentRuntimesService`:
+
+1. **One client hold per read.** `AgentRuntimeStrategy` gets an optional `holdClient(cwd): RuntimeClientHold | null` (`{ release(): Promise<void> }`). Codex implements it as `beginAcquire(cwd)` without `acquire()`: the generation stays open while the step leases come and go, and the first step starts the app-server once. The service takes the hold after the install step. Callers get the answer as soon as it is ready (≤ 20 s); the hold's release runs after that, and the single-flight slot (part 2) stays occupied until the release has settled, so a later read never meets this read's close (ARCH-REV-006 note). If taking the hold fails (another user's generation is closing), the read continues without it and a failing Codex step reports its reason (REQ-007). Strategies without a shared client do not implement it.
+2. **Single-flight reads.** `read()` returns the read already in progress when there is one; the in-progress promise is cleared when it settles. Concurrent tool calls and page reads share one fresh answer (≤ 18 s old) and never overlap each other's processes. This is the demonstrated concurrency problem of API-05/05b, not speculative machinery (RSK-002 is closed by it).
+
+Residual (follow-up FU-003): another Codex user of the same folder (the Agent Runtimes page's sign-in check, a Codex agent run in the home folder) can still close a generation while a read begins; the manager's refusal-while-closing is pre-existing behavior of shared functionality.
+
+### CR-002 (F-1) — one rule for "this step timed out" (implementation Local Fix, confirmed)
+
+> Superseded in part by SR-007 decision 2: `readUsageLimitsSafely` is removed; strategies and provider readers return or throw, and the service alone classifies and words failures. The time-out rule below stands.
+
+`read-deadline.ts` owns `DeadlineExceededError` and `isDeadlineExceeded(error)`. Every deadline-bound helper surfaces this error type when its deadline-derived time-out fires (`raceDeadline`, the command runner's deadline kill, ACP and Claude closes). `runStep` and `readUsageLimitsSafely` classify "timed out" by `isDeadlineExceeded(error)`, never by `timeLeft(deadline) === 0`. `ClaudeSdkClient.listModels`: with a deadline it lets `DeadlineExceededError` through; without one it keeps returning `[]` (launch callers unchanged). Tests: the 1 ms-left case; AAR-03's strict "timed out" assertion stays.
+
+### Observations O-1…O-3
+
+- O-1 rounding: `remainingPercent` is a whole number rounded down (99.68 → 99; never shows 1% when less is left); `exhausted` is decided on the unrounded value.
+- O-2 English answer texts on the zh-CN page: limit names, notes and reasons come from the server in English; the tool answer is for agents. Accepted for this ticket; localizing them on the page is follow-up FU-004.
+- O-3 empty state reachable only on a listing failure: correct as designed (AutoByteus is always installed); no change.
 
 ## SR-004 Addition — optional per-runtime `note`
 
@@ -186,10 +237,10 @@ then in parallel:
   models  catalog.runtimeModelSelectionCatalog(kind, cwd, {deadline: in 8 s})
                                                               throw / time-out / [] → models "unknown: <reason>"
   limits  strategy.readUsageLimits(exe, cwd, {deadline: in 8 s})
-                                                              unknown → limits "unknown: <reason>"; not_reported → "not reported"
+                                                              throw / time-out → limits "unknown: <the service's wording>" (SR-007); not_reported → "not reported"
 ```
 
-AutoByteus: `listProviderCredentialSettings("autobyteus")` and `runtimeModelSelectionCatalog("autobyteus")` (local list), then every keyed provider's reader in parallel with `AbortSignal.timeout(8000)`.
+AutoByteus: `listProviderCredentialSettings("autobyteus")` and `runtimeModelSelectionCatalog("autobyteus")` (≤ 4 s), then per considered provider in parallel: discovered providers `reloadProviderModelCatalog(id, "autobyteus")` raced against 8 s, and the provider's usage reader with `AbortSignal.timeout(8000)` (SR-006 table). The whole read is single-flight, and Codex's client is held for the whole read (SR-006).
 
 The service also races each step against its cap + 500 ms as a backstop and records "timed out"; the deadline passed into the step is what stops its child processes (`runRuntimeCommand` kill, ACP `close`, Claude query `close`; Codex: the request is abandoned and the shared app-server lease released).
 
@@ -201,7 +252,9 @@ The service also races each step against its cap + 500 ms as a backstop and reco
 type ReadDeadline = Readonly<{ endsAt: number }>;            // epoch ms
 createReadDeadline(ms: number): ReadDeadline;
 timeLeft(deadline): number;                                  // ≥ 0
-commandTimeout(deadline, usualMs): number;                   // min(usualMs, timeLeft); 0 → do not start, report time-out
+commandBound(deadline, usualMs): { timeoutMs: number; byDeadline: boolean };  // timeoutMs = min(usualMs, timeLeft); byDeadline = the time left set it (SR-007);
+                                                             // timeoutMs 0 → do not start, DeadlineExceededError; byDeadline false → an ordinary command time-out ("could not be read")
+DeadlineExceededError; isDeadlineExceeded(error): boolean;   // the one time-out rule (CR-002)
 raceDeadline<T>(work: Promise<T>, deadline): Promise<T>;    // rejects with a time-out at endsAt (for calls without a process, e.g. Codex requests)
 ```
 
@@ -233,7 +286,7 @@ raceDeadline<T>(work: Promise<T>, deadline): Promise<T>;    // rejects with a ti
 ## Dependency Rules
 
 - `agent-tools/agent-runtimes` → the service only.
-- Service → `runtime-management` (strategies, sign-in reader), `llm-management` (catalog, provider service, `provider-usage`).
+- `available-agent-runtimes` (the composer, SR-007) → `runtime-management` (strategies, sign-in reader, read deadline), `llm-management` (catalog, provider service, `provider-usage`). Nothing in `runtime-management` or `llm-management` imports `available-agent-runtimes`.
 - `llm-management/provider-usage` → `secret-management` resolver; never → `runtime-management`.
 - Strategies → their runtime's client modules only.
 
@@ -243,11 +296,13 @@ raceDeadline<T>(work: Promise<T>, deadline): Promise<T>;    // rejects with a ti
 | --- | --- | --- | --- |
 | `AgentRuntimeStrategy.readVersion(exe, options?: {deadline})` | runtime | installed version | Default = today |
 | `AgentRuntimeStrategy.readSignIn(exe, cwd, options?: {deadline})` | runtime | sign-in | Default = today; `AgentRuntimeSignInReader.read(kind, {cwd, deadline?})` passes it |
-| `AgentRuntimeStrategy.readUsageLimits(exe, cwd, {deadline}): Promise<UsageLimitsReading>` | runtime | its limits | Never throws |
+| `AgentRuntimeStrategy.readUsageLimits(exe, cwd, {deadline}): Promise<UsageLimitsReading>` | runtime | its limits | Returns a reading or throws; the service words failures (SR-007) |
 | `ModelCatalogService.runtimeModelSelectionCatalog(runtime, workspace?, options?: {deadline})` → each catalog's `listModels(…, options?)` | runtime | offered models | Default = today |
 | `withClaudeControlQuery(input: {deadline, env?}, use)` | one short Claude CLI | control calls | Idle input; closes in `finally` and at time-out |
 | `ProviderUsageReader.read(provider, models, {signal})` (in `llm-management/provider-usage/provider-usage-reader.ts`) | one provider | usage | Registry by `LLMProvider` |
-| `AvailableAgentRuntimesService.read(): Promise<AvailableAgentRuntimesReport>` | this node | the report | — |
+| `AvailableAgentRuntimesService.read(): Promise<AvailableAgentRuntimesReport>` | this node | the report | Single-flight (SR-006) |
+| `AgentRuntimeStrategy.holdClient?(cwd): RuntimeClientHold \| null` | runtime | keeps the runtime's shared client open across one read | Codex only (SR-006) |
+| `ModelCatalogService.reloadProviderModelCatalog(providerId, "autobyteus")` (existing) | discovered provider | fresh models | Raced against the provider deadline (SR-006) |
 | Tool `list_available_agent_runtimes()`; GraphQL `availableAgentRuntimes` | this node | the report | Tool returns JSON text |
 
 `cwd`: Codex sign-in, catalog and limits get the home folder (as `agent-runtime-sign-in-reader.ts:27` documents); Claude's control query keeps `process.cwd()` as today's discovery; Antigravity commands run as today's commands; Grok's ACP process uses `os.tmpdir()` as the discovery handshake does.
@@ -260,24 +315,24 @@ type RuntimeUsageLimit = {
   remainingPercent: number | null; // null = not reported for this limit
   resetsAt: string | null;         // ISO-8601
   exhausted: boolean;              // cannot run now under this limit (runtime's own rules, e.g. Codex credits)
-  appliesTo: { kind: "runtime" } | { kind: "models"; modelIds: string[] };
+  appliesTo: { kind: "runtime" } | { kind: "models"; modelIds: string[] } | { kind: "modelFamilies"; families: string[] };   // SR-007: families resolved by the service
 };
-type UsageLimitsReading =
+type UsageLimitsReading =                                          // SR-007: a parser returns this or throws
   | { state: "read"; limits: RuntimeUsageLimit[]; note?: string } // note: one short sentence, only when a runtime-specific fact changes how to read its limits
-  | { state: "not_reported" }
-  | { state: "unknown"; reason: string };
+  | { state: "not_reported" };
+class UsageLimitsUnreadableError extends Error { constructor(readonly reason: string) }   // short classified reason
 ```
 
 Provider usage (`llm-management/provider-usage/provider-usage-reader.ts`), one blocked form (AR-005):
 
 ```ts
-type ProviderUsageReading =
+type ProviderUsageReading =                                         // SR-007 (AR-008): a reader returns this or throws
   | { state: "read"; balance: { amount: string; currency: string } | null; blockedReason: string | null }
-  | { state: "not_reported" }
-  | { state: "unknown"; reason: string };
+  | { state: "not_reported" };
+class ProviderUsageUnreadableError extends Error { constructor(readonly reason: string) }  // short classified reason
 ```
 
-Report, the lean answer (`runtime-management/agent-runtimes/available-agent-runtimes-report.ts`):
+Report, the lean answer (`available-agent-runtimes/available-agent-runtimes-report.ts`, SR-007):
 
 ```ts
 type UsageLimitView = { name: string; remainingPercent: number | null; resetsAt: string | null };
@@ -296,7 +351,7 @@ type AutoByteusProviderEntry = {
   balance?: string;                                       // "0.14 USD"
   blocked?: string;                                       // reason
   limits?: "not reported" | `unknown: ${string}`;
-  models: AvailableModel[];
+  models: AvailableModel[] | `unknown: ${string}`;   // SR-006: discovered keyed provider whose reload failed
 };
 type AutoByteusEntry = { runtime: "autobyteus"; name: "AutoByteus"; providers: AutoByteusProviderEntry[] };
 type AvailableAgentRuntimesReport = { checkedAt: string; agentRuntimes: (ExternalAgentRuntimeEntry | AutoByteusEntry)[] };
@@ -309,8 +364,8 @@ Reader rules (each in its parser; vendor texts, plans, credits, account data dro
 | Runtime / provider | Limits | Applies to | Exhausted |
 | --- | --- | --- | --- |
 | Codex (note: credits case above) | each window of each `rateLimitsByLimitId` entry: name from `windowDurationMins` ("5-hour", "Weekly", else "<n>-minute"); remaining = 100 − `usedPercent`; `resetsAt` from Unix seconds | `normalModelSlug` → that model; else runtime | used ≥ 100 or `rateLimitReachedType` set, **and** no credits (`credits.hasCredits` false and not `unlimited`) (DEC-007) |
-| Claude | `limits[]`: session → "5-hour", weekly_all → "Weekly", weekly_scoped → "Weekly · <model>"; remaining = 100 − percent; `rate_limits_available` false → `not_reported` | scoped → model whose display name matches `scope.model.display_name`, else runtime | percent ≥ 100 |
-| Antigravity | each non-`disabled` bucket: "<group> · weekly" / "<group> · 5-hour"; remaining = 100 × `remaining_fraction` | models whose display name starts with a family listed in the group description, or with the group name; most specific match wins; unmatched → runtime | remaining ≤ 0 |
+| Claude | `limits[]`: session → "5-hour", weekly_all → "Weekly", weekly_scoped → "Weekly · <model>"; remaining = 100 − percent; `rate_limits_available` false → `not_reported` | scoped → family `scope.model.display_name` (e.g. "Fable" covers "Fable 5.1"; SR-007 family rule), else runtime | percent ≥ 100 |
+| Antigravity | each non-`disabled` bucket: "<group> · weekly" / "<group> · 5-hour"; remaining = 100 × `remaining_fraction` | families = the group description's families ("Models within this group: Gemini Flash, Gemini Pro"), else the group name; matched by the SR-007 family rule; most specific wins over all limits; unmatched → runtime | remaining ≤ 0 |
 | Grok (note: used % absent) | "Billing period": `resetsAt` = `currentPeriod.end`; remaining = 100 − `creditUsagePercent` when present, else null | runtime | remaining ≤ 0 |
 | DeepSeek | balance from `balance_infos[0]` | provider | `is_available` false → `blockedReason` "no balance left" |
 | Kimi | `available_balance` (currency from response, else CNY/USD per host) | provider | ≤ 0 → "no balance left" |
@@ -391,8 +446,9 @@ Folded into the final mapping.
 | `.../agent-runtimes/runtime-version.ts` | Modify | Optional `deadline` |
 | `server/src/runtime-management/read-deadline.ts` | New | `ReadDeadline` and its helpers |
 | `.../agent-runtimes/usage-limits/{usage-limits-reading,codex-usage-limits,claude-usage-limits,antigravity-usage-limits,grok-usage-limits}.ts` | New | Types, parsers |
-| `.../agent-runtimes/available-agent-runtimes-report.ts` | New | Lean output types |
-| `.../agent-runtimes/available-agent-runtimes-service.ts` | New | Composer (caps, rules, derivation) |
+| `server/src/available-agent-runtimes/available-agent-runtimes-report.ts` (moved, SR-007) | New | Lean output types |
+| `server/src/available-agent-runtimes/available-agent-runtimes-service.ts` (moved, SR-007) | New | Composer (caps, rules, derivation, the one failure wording) |
+| `server/src/available-agent-runtimes/usage-limit-model-matching.ts` (moved, SR-007) | New | Family rule; most specific over all limits |
 | `server/src/runtime-management/claude/client/claude-sdk-control-query.ts` | New | Idle-input control query |
 | `.../claude/client/claude-sdk-client.ts` | Modify | `listModels` via control query (+ time-out); `readUsage()` |
 | `server/src/agent-execution/backends/claude/claude-runtime-shared.ts` | Modify | Remove `MODEL_DISCOVERY_PROBE_PROMPT` |
@@ -423,6 +479,7 @@ As above.
 | Folder | Depth | Clear? | Risk |
 | --- | --- | --- | --- |
 | `agent-runtimes/usage-limits` | Off-spine parsers + types | Yes | Low |
+| `available-agent-runtimes` (SR-007) | Main-line composer above runtime-management and llm-management | Yes | Low |
 | `llm-management/provider-usage` | Off-spine readers + types | Yes | Low |
 | `agent-tools/agent-runtimes` | Transport | Yes | Low |
 | `web/components/settings/model-routing` | UI | Yes | Low |

@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/tickets/in-progress/available-agent-runtimes-tool/requirements-doc.md` (SR-005, Approved)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/tickets/in-progress/available-agent-runtimes-tool/requirements-doc.md` (SR-006, Approved)
 - Upstream Investigation Notes: `.../available-agent-runtimes-tool/investigation-notes.md` (C-15…C-19)
 - Upstream Solution Revision Record: `.../available-agent-runtimes-tool/solution-revision-record.md`
-- Reviewed Design Spec: `.../available-agent-runtimes-tool/design-spec.md` (SR-005, `Ready`; earlier designs in `history/`, SR-004 in `history/design-spec-sr004.md`)
+- Reviewed Design Spec: `.../available-agent-runtimes-tool/design-spec.md` (SR-007 text-corrected for AR-008, `Ready`, § SR-007 Revision; earlier designs in `history/`, the uncorrected SR-007 text in `history/design-spec-sr007.md`)
 - Supplemental Task Artifacts Reviewed: `evidence/limit-probes/`; `docs/design-cases.md` diff (Cases 2 and 5)
-- Relevant Solution Revision IDs: `SR-001`…`SR-005`
+- Relevant Solution Revision IDs: `SR-001`…`SR-007`
 - Architecture Review Revision Record: `.../available-agent-runtimes-tool/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: `5`
-- Trigger: SR-005 for ARCH-REV-004 AR-007, from the Solution Designer (2026-10-25)
-- Prior Review Round Reviewed: `4` (ARCH-REV-004, Fail: AR-007)
-- Latest Authoritative Round: `5`
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, base `a2faf424d6`. Sources from rounds 1–2 are still valid; the code is unchanged (only the ticket docs and `docs/design-cases.md` differ). Opened this round: `codex/client/codex-app-server-client-manager.ts:17-70` (lease release semantics). The SR-002 → SR-003 and SR-003 → SR-004 design diffs were reviewed in full. Rounds 4–5 check only the SR-004/SR-005 note delta (SR-004 → SR-005 diff reviewed in full); every other verdict from round 3 stands unchanged.
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: `8`
+- Trigger: SR-007 text corrections for ARCH-REV-007 AR-008, from the Solution Designer (2026-10-25). Requirements unchanged at SR-006
+- Prior Review Round Reviewed: `7` (ARCH-REV-007, Fail: AR-008)
+- Latest Authoritative Round: `8`
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool`, base `a2faf424d6`. Sources from rounds 1–2 are still valid; the code is unchanged (only the ticket docs and `docs/design-cases.md` differ). Opened this round: `codex/client/codex-app-server-client-manager.ts:17-70` (lease release semantics). The SR-002 → SR-003 and SR-003 → SR-004 design diffs were reviewed in full. Rounds 4–5 checked only the SR-004/SR-005 note delta. Round 6 reviews the SR-006 delta against `code-review-report.md` § API/E2E Failure-Origin Review and the code at `8de58e3ab3`. Opened this round: `llm-management/services/model-catalog-service.ts:97-134,205-276`, `dynamic-model-source-lifecycle.ts:52-146`, `llm-providers/services/custom-llm-provider-runtime-sync-service.ts:40-60`, `codex/client/codex-app-server-client-manager.ts:27-114`, `codex/client/codex-app-server-client.ts:89-120`, `compositions/build-studio-server.ts:60,191,350`, `codex-model-catalog.ts:55-58`. Round 7 reviews the SR-006 → SR-007 delta and reads the current code at `runtime-management/agent-runtimes/available-agent-runtimes-service.ts:1-12` and the llm-management → runtime-management imports. Every verdict not touched by SR-007 stands unchanged.
 
 ## Routing Classification Review
 
@@ -183,13 +183,51 @@ One vocabulary: `Pass`. `signIn` and `limitsNote` each name one concept, and `bl
 
 None.
 
+## SR-006 Delta Review (Round 6)
+
+Requirements SR-006 (REQ-002, REQ-007, AC-007, new AC-013) are approved within the direction. They state the supported scenarios the failure-origin review established: a local provider that serves models (Supported Normal), and several concurrent readers (Supported Explicit Edge, from RSK-002). These close a gap my round-1 review should have found. I did not trace how the discovered-provider kind gets its models (Principle 1: trace each kind).
+
+| Item | Verdict | Evidence |
+| --- | --- | --- |
+| CR-003: discovered providers reloaded per read through `reloadProviderModelCatalog(id, "autobyteus")` | Pass | Reuses the catalog's own forced refresh, the same operation as the settings' reload (`model-catalog-service.ts:107-115`), so there is no second discovery path. Correctness under overlap is the lifecycle's: a forced reload opens a new generation, and a stale result is discarded (`dynamic-model-source-lifecycle.ts:58-79,124`). A failed refresh keeps rows (`:142`), so launch lists are never emptied. The reload is in memory only (`LLMFactory.replaceSourceModels`), so persistence stays `Not Affected`. The per-kind table (static keyed / discovered local / discovered keyed) traces each kind. The AutoByteus step is ≤ 12 s (list 4 s, then models ‖ usage 8 s), within REQ-010 |
+| CR-004.1: one client hold per read (`holdClient?` = Codex `beginAcquire` without `acquire`) | Pass | The hold keeps `holders > 0`, so step releases never close the generation (`codex-app-server-client-manager.ts:44-50`). The strategy and the catalog use the same singleton manager (`build-studio-server.ts:350`, `codex-model-catalog.ts:55-58` → `getCodexAppServerClientManager`) and the same home-folder key, so one hold covers sign-in, models and limits. A hold whose client never started closes immediately (`:72-84`). If taking the hold fails, the read continues without it (REQ-007). One owner, the service, takes and releases the hold in order |
+| CR-004.2: single-flight `read()` | Pass | Owned by the service. It is the demonstrated concurrency problem (API-05/05b), not speculative. "Check again" during a read joins an answer at most ~18 s old, which still meets AC-010's re-read. AC-013 is testable (API-05/05b rerun) |
+| CR-002: one time-out rule (`DeadlineExceededError` / `isDeadlineExceeded` in `read-deadline.ts`) | Pass | One owner for "timed out", used by `runStep` and `readUsageLimitsSafely` instead of two clock comparisons. Claude `listModels` lets the deadline error through; without a deadline that error cannot arise, so launch callers keep `[]` |
+| O-1 floor rounding; O-2 → FU-004; O-3 no change | Pass | `exhausted` is decided on the unrounded value. FU-004 is a correct follow-up (texts for agents; page works). O-3 is consistent with AutoByteus always installed |
+| FU-003 (manager refuses leases while closing) | Pass as follow-up | Shared functionality used by agent runs. This ticket's reads no longer meet their own closes. The remaining case (another Codex user of the home folder) yields a truthful step reason (AC-013 alternate) |
+| Spine / ownership / vocabulary | Pass | DS-003 gains the hold (service-owned) and the AutoByteus discovered-provider step. `holdClient` and `RuntimeClientHold` each have one meaning, optional on the strategy, Codex only |
+
+Material premise check: none new. Both scenarios are established by the approved requirements and measured evidence (C-22).
+
+## SR-007 Delta Review (Round 7)
+
+SR-007 answers the code reviewer's design feedback (five caveats, sent at the user's request). Requirements are unchanged (SR-006).
+
+| Item | Verdict | Evidence |
+| --- | --- | --- |
+| 1. `appliesTo` = runtime \| `models(modelIds)` (Codex `normalModelSlug`) \| `modelFamilies` (Claude, Antigravity), resolved by the service; word-order family rule; most specific among `modelFamilies` limits before exhausted limits block (as corrected 2026-10-25) | Pass | Verified against the code: `usage-limits-reading.ts:12-14` has three variants; Codex fills `models` (`codex-usage-limits.ts:37,49`); `usage-limit-model-matching.ts:23-50` matches ids exactly, families by word order, picks the strongest family across all limits, and uses `allIds` when a limit covers nothing (DEC-003). An id is never matched as a family. Choosing the most specific family across all limits corrects CRR-001 C-02. One owner of derived data (the service). Two small text leftovers are in AR-008 |
+| 2. One owner of step failures: `readUsageLimits` returns read \| not_reported or throws (`UsageLimitsUnreadableError(reason)`); the service alone words REQ-007 texts | Pass in intent; spec not consistent (AR-008) | Removes the parsers' second wording path (Principle 13: a behavior is decided by one explicit rule). The provider step is left ambiguous: `ProviderUsageReading` still has `unknown` (AR-008) |
+| 3. `commandBound(deadline, usual)` → `{timeoutMs, byDeadline}`; `DeadlineExceededError` only when `byDeadline` | Pass in intent; spec not consistent (AR-008) | It stops a short probe's own time-out (Antigravity's 3 s `--help`) from being reported as "timed out", which keeps "timed out" meaning one thing. § Read deadline still shows `commandTimeout(…): number` |
+| 4. Repeated work deferred as FU-005 | Pass | Within the 18 s budget with single-flight reads. Removing it would split the sign-in reader's single rule and the catalog's ownership. Recorded with a trigger (Model Router latency). DESIGN.md best practice 6 is respected: the work is named, and its removal is weighed rather than masked |
+| 5. Composer, report and matching move to `src/available-agent-runtimes/` | Pass | Today `runtime-management/agent-runtimes/available-agent-runtimes-service.ts:6-10` imports `llm-management`, while `llm-management/services/*-model-catalog.ts` import `runtime-management`. The move puts the composer above both, so the dependency rule (`tools/GraphQL/composition → available-agent-runtimes → runtime-management, llm-management`) holds. Note: `runtime-management/claude/client/claude-sdk-client.ts:7` already imports type-only from `llm-management/domain`. That is pre-existing, not introduced here, and not a reason to block |
+
+## AR-008 Recheck (Round 8)
+
+| AR-008 item | Status | Evidence (diff `history/design-spec-sr007.md` → `design-spec.md`) |
+| --- | --- | --- |
+| 1. `commandTimeout` → `commandBound` | Resolved | § Read deadline declares `commandBound(deadline, usualMs) → { timeoutMs, byDeadline }`, `DeadlineExceededError` and `isDeadlineExceeded` |
+| 2. DS-003 limits line | Resolved | "throw / time-out → limits "unknown: <the service's wording>"; not_reported → "not reported"" |
+| 3. Provider-step failure form | Resolved | Decision: provider readers return `read` \| `not_reported` or throw `ProviderUsageUnreadableError(reason)`; `unknown` is removed from `ProviderUsageReading`. The service words "<Provider> usage timed out" (abort-signal time-out, which comes from the step deadline, or `isDeadlineExceeded`), "could not be read: <reason>" and "could not be read", shown as `limits: "unknown: …"` on the provider entry. Strategies and providers now share one failure contract with one wording owner |
+| 4. SR-006 CR-002 text | Resolved | Marked "superseded in part by SR-007 decision 2"; the time-out rule stands |
+| 5. Decision 1 wording | Resolved | The opening now says parsers name coverage in their source's terms. The DEC-003 fallback covers every variant (`usage-limit-model-matching.ts:45,50`) |
+
 ## Review Decision
 
 - `Pass`: the behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery depends on an unsupported premise.
 
 ## Findings
 
-None open. AR-001…AR-007 are all resolved (see `architecture-review-revision-record.md`, ARCH-REV-005).
+None open. AR-001…AR-008 are all resolved.
 
 ## Classification
 
@@ -201,7 +239,12 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`); 
 
 ## Residual Risks
 
-Implementation notes (non-blocking):
+Implementation notes for SR-006 (non-blocking):
+- **Release awaited inside the 20 s budget:** awaiting the Codex hold release normally takes milliseconds (SIGTERM). Its bound is SIGKILL at 2 s and give-up at 5 s (`codex-app-server-client.ts:107-117`), plus up to 5 s waiting for a pending start (`codex-app-server-client-manager.ts:74-79`). After 18 s of capped steps, that could push one answer past 20 s. Prefer resolving callers with the answer and keeping the single-flight slot held until the release settles. A later read still never meets this read's close, and the answer stays ≤ 20 s.
+- **Keyed custom endpoint with 0 models:** a reload that succeeds with 0 models should follow REQ-007's rule (an empty list is never "no models"), the same as the external runtimes.
+- **Catalog side effect:** a read now refreshes discovered providers in the shared catalog, as the settings' reload does. The preserved-behavior line "model catalogs: unchanged" holds for catalog rules and launch behavior. The Solution Designer may add that clarification to the requirements; it is not required.
+
+Implementation notes from round 3 (non-blocking):
 - **Codex leases:** the Codex sign-in, models and limits steps each acquire the home-folder lease. If the sign-in lease's close is still running when models or limits call `beginAcquire`, it throws "unresolved cleanup" (`codex-app-server-client-manager.ts:30`). REQ-007 then gives models or limits "unknown". This is acceptable, but await the sign-in release before starting models ‖ limits, as the strategy's `finally` already does.
 - **GraphQL encoding:** the report's mixed-type fields (`limits` / `models` as an array or a string) need one GraphQL encoding, which the page reads the same way the tool shows it (AC-010).
 - RSK-001 (external formats), RSK-002 (concurrent short processes), RSK-003 / UNK-001 (Grok used %), RSK-004 (late Codex answers ignored) and UNK-002 (Docker parity, user verification) are as recorded. FU-001 is in `follow-ups.md`.
@@ -210,4 +253,4 @@ Implementation notes (non-blocking):
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: SR-005 is ready for implementation. Against the SR-003 implementation already under way, the delta is the optional `limitsNote` (Codex credits case, Grok used % absent) and `signIn: "not checked"` in place of a sign-in note string. Classification stays Large / High, so the downstream code review is still required.
+- Notes: SR-007, as corrected, is ready for implementation. The round in progress (CR-002…CR-004 from SR-006) takes SR-007 too: the three `appliesTo` variants with most-specific among families; return-or-throw for strategies and provider readers with service-owned wording; `commandBound`/`byDeadline`; the composer, report and matching in `src/available-agent-runtimes/`. Classification stays Large / High.

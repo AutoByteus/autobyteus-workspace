@@ -68,3 +68,34 @@
 ### Review note — ARCH-REV-005 Pass (2026-10-25)
 
 - Architecture review Pass on SR-005 (AR-007 resolved); classification Large / High. The reviewer sent the SR-005 delta to `/software_engineering_team/implementation_engineer`. Informational; no Solution Designer handoff repeated.
+
+### SR-006 — Failure-origin review CRR-003 (API-REV-001)
+
+- Phase and classification: Mixed (Design Impact CR-003, CR-004; confirmed implementation Local Fix CR-002; requirement refinement within the direction)
+- Trigger: `code-review-report.md` CRR-003 (API/E2E round 1 failure-origin), evidence API-08b, API-05/05b, API-03b.
+- Design: discovered AutoByteus providers reloaded per read (local: listed only when answering; keyed custom: models unknown on failure); one Codex client hold per read via `AgentRuntimeStrategy.holdClient` + single-flight `read()`; `DeadlineExceededError` / `isDeadlineExceeded` as the one time-out rule (Claude `listModels` with a deadline lets it through); O-1 floor rounding; O-2 → FU-004; O-3 no change. Previous design `history/design-spec-sr005.md`.
+- Requirements SR-006: REQ-002, REQ-007, AC-007 refined; AC-013 added (concurrent callers). Approval: Solution Designer within the direction (no change of intent: "available", "nothing is guessed", "never fails as a whole"); user informed.
+- Evidence: C-20…C-22. Follow-ups: FU-003 (Codex manager refusal while closing), FU-004 (page localization).
+- Classification unchanged: Large / High.
+- Next action: architecture review of SR-006, then implementation (CR-002, CR-003, CR-004), source review, API/E2E reruns API-03/03b, API-05/05b, API-08b.
+
+### Review note — ARCH-REV-006 Pass (2026-10-25)
+
+- Architecture review Pass on SR-006; the reviewer routed it to `/software_engineering_team/implementation_engineer`. Its three non-blocking notes were adopted into the documents without changing intent: answer returned before the Codex hold release settles (single-flight slot held until then); a keyed custom endpoint with 0 models → models "unknown: the endpoint listed no models"; preserved-behavior clarification of the catalog refresh. No handoff repeated.
+
+### SR-007 — Code reviewer's design feedback (2026-10-25, at the user's request)
+
+- Phase and classification: Design (Design Impact on spec accuracy, ownership and dependency direction; no requirement change)
+- Trigger: the code reviewer's five caveats on SR-006 (message of 2026-10-25), sent at the user's request.
+- Decisions: (1) spec aligned with the code's `modelFamilies` scope and the word-order family rule; most specific wins over all limits, then exhausted ones block (C-02); (2) strategies return a reading or throw (`UsageLimitsUnreadableError`), the service alone words failures; `readUsageLimitsSafely` and parsers' `unknown` removed; (3) `commandBound {timeoutMs, byDeadline}` named; an ordinary per-command time-out is "could not be read"; (4) repeated work deferred explicitly → FU-005; (5) composer, report and matching moved to `src/available-agent-runtimes/`, removing the type-level subsystem cycle. Previous design `history/design-spec-sr006.md`.
+- Requirements: unchanged (SR-006).
+- Classification unchanged: Large / High.
+- Next action: architecture review of SR-007; the implementation round in progress takes SR-007 with CR-002…CR-004.
+
+- SR-007 factual correction (2026-10-25, code reviewer's note): `appliesTo` keeps three variants (`runtime`, `models` for Codex's `normalModelSlug` ids, `modelFamilies` for Claude/Antigravity); "most specific wins" applies among `modelFamilies` limits. Spec text only; the code already has this shape (`codex-usage-limits.ts:37,49`).
+
+- SR-007 text correction for ARCH-REV-007 AR-008 (2026-10-25): § Read deadline declares `commandBound → {timeoutMs, byDeadline}`; DS-003 limits line uses throw → service wording; provider readers return `read` | `not_reported` or throw `ProviderUsageUnreadableError` (decision: same contract as strategies; `unknown` removed) and the service words provider failures; CR-002 section marked superseded in part; decision 1 opening and the DEC-003 fallback cover every `appliesTo` variant. Previous text `history/design-spec-sr007.md`.
+
+### Review note — ARCH-REV-008 Pass (2026-10-25)
+
+- Architecture review Pass on SR-007 (corrected); AR-008 resolved; no open findings; classification Large / High. The reviewer routed it to `/software_engineering_team/implementation_engineer`. Informational; no handoff repeated.

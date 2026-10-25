@@ -70,3 +70,14 @@ Small addition after ARCH-REV-003 Pass: an optional per-runtime `note` (design �
 
 For ARCH-REV-004 AR-007: `signIn?: "not checked"` and `limitsNote?: string` as separate fields; requirements UI states, REQ-004, REQ-007, AC-003, AC-006 aligned.
 - 2026-10-25: sent to `/software_engineering_team/architecture_reviewer`.
+
+## Revision SR-006 (2026-10-25) — answers to CRR-003 (API/E2E round 1 failure origin)
+
+Design § SR-006 Revision: CR-003 discovered AutoByteus providers reloaded per read; CR-004 one Codex client hold per read + single-flight `read()`; CR-002 one time-out rule in `read-deadline.ts` (implementation Local Fix carried in the same revision); O-1…O-3 judged. Requirements SR-006 (REQ-002, REQ-007, AC-007, new AC-013). Evidence C-20…C-22; follow-ups FU-003, FU-004. After review: implementation, source review (code reviewer), API/E2E reruns API-03/03b, API-05/05b, API-08b.
+- 2026-10-25: sent to `/software_engineering_team/architecture_reviewer` (handoff rule: Architecture Design Complete, Large/High).
+
+## Revision SR-007 (2026-10-25) — answers to the code reviewer's design feedback
+
+Design § SR-007 Revision: spec aligned with `modelFamilies` and the family rule (most specific over all limits, C-02); one owner of step-failure wording (strategies return or throw, `UsageLimitsUnreadableError`); `commandBound` named; FU-005 for repeated work; composer moved to `src/available-agent-runtimes/` (no subsystem cycle). Requirements unchanged.
+- 2026-10-25: sent to `/software_engineering_team/architecture_reviewer`.
+- 2026-10-25: AR-008 text correction sent to `/software_engineering_team/architecture_reviewer`.

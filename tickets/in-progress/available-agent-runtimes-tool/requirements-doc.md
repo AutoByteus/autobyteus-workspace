@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-005`
+- Current solution revision ID: `SR-006`
 - Package identifier: `available-agent-runtimes-tool`
 - Request / ticket: Project Task **autobyteus-303**, part of **autobyteus-32** (model routing), which depends on it
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -58,7 +58,7 @@
 
 ### Preserved Behavior Boundary
 
-- Agent Runtimes page, sign-in reading, model catalogs, agent runs: unchanged.
+- Agent Runtimes page, sign-in reading, model catalogs, agent runs: unchanged. **(SR-006 clarification)** Catalog rules and launch behavior are unchanged; a read refreshes discovered providers (Ollama, LM Studio, custom endpoints) in the shared catalog, as the settings' reload does, and a failed refresh keeps the previous models.
 - No tool is added to any agent automatically.
 
 ### Prerequisites
@@ -81,12 +81,12 @@ None.
 | Requirement ID | Requirement | Related Behavior IDs | Priority | Rationale | Source / Decision |
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | An agent tool `list_available_agent_runtimes` (no parameters) returns the agent runtimes available on the node the calling agent runs on. It works the same on every runtime an agent runs on and is opt-in: an agent has it only when its definition lists it. | BEH-001 | Must | User direction; Task | DEC-001 |
-| REQ-002 | **Available** means: the runtime is installed on the node and not known to be signed out (signed in, sign-in not required, or sign-in could not be checked, which the answer says). For AutoByteus, per provider: its API key is configured, or it is a local provider (Ollama, LM Studio) with models found. Not installed or signed-out runtimes and providers without a key are left out. | BEH-001 | Must | User: "provider doesn't have API key … obviously not usable" | DEC-002 |
+| REQ-002 | **Available** means: the runtime is installed on the node and not known to be signed out (signed in, sign-in not required, or sign-in could not be checked, which the answer says). For AutoByteus, per provider: its API key is configured, or it is a local provider (Ollama, LM Studio) that answers with at least one model at the time of the read **(SR-006: local and custom discovered providers are asked afresh on every read; a local provider that does not answer is left out)**. Not installed or signed-out runtimes and providers without a key are left out. | BEH-001 | Must | User: "provider doesn't have API key … obviously not usable" | DEC-002 |
 | REQ-003 | Each listed runtime (and each AutoByteus provider) carries its offered models (identifier, name, context size where known). | BEH-001 | Must | User direction | — |
 | REQ-004 | **(SR-002)** The answer carries only what is useful for choosing. Per runtime: its limits, each with a name (what it covers and its window, e.g. "Weekly", "Claude and GPT models · weekly"), remaining percent and reset time. Per model: id, name, context size where known, and `blocked: {until, by}` only when the model cannot run now (`until` = the reset time, or null when unknown; `by` = the limit's name, or the provider's reason). An AutoByteus provider's money balance is shown, since it is that provider's limit. Runtime plans, tiers, credit details, billing-period data, account data and vendor texts are not included; such facts are used only to decide whether a model is blocked. **(SR-004)** A runtime may add one short `limitsNote` next to its limits when a runtime-specific fact changes how to read its limits (e.g. "Weekly limit used up; running on paid credits."). | BEH-001, BEH-003 | Must | User 2026-10-25: "we only care about useful information" | DEC-003, DEC-007 |
 | REQ-005 | Limits are read per runtime by its own reader: Codex `account/rateLimits/read`; Claude the Agent SDK `get_usage` request; Antigravity `agy -p "/usage" --output-format json`; Grok ACP `_x.ai/billing`. AutoByteus per provider: DeepSeek balance, Kimi balance, Anthropic API credit check, xAI key status. Every other provider: "limits not reported". | BEH-003 | Must | Probes A-15…A-19 | DEC-004 |
 | REQ-006 | **Removed (SR-002).** No runtime-specific details part; the user asked for only useful information. | — | — | — | SR-002 |
-| REQ-007 | When a step for a runtime fails or times out, nothing is guessed and the rest of the answer still arrives: limits → `"unknown: <reason>"`; models → `"unknown: <reason>"` (an empty model list is never shown as "no models"); sign-in → the runtime is listed with `signIn: "not checked"` (shown as "sign-in could not be checked"); install check → the runtime is treated as not installed (the Agent Runtimes page's rule). A provider whose limits are not readable says `"not reported"`. | BEH-001 | Must | Task; ARCH-REV-001 AR-002 | DEC-002 |
+| REQ-007 | When a step for a runtime fails or times out, nothing is guessed and the rest of the answer still arrives: limits → `"unknown: <reason>"`; models → `"unknown: <reason>"` (an empty model list is never shown as "no models"); sign-in → the runtime is listed with `signIn: "not checked"` (shown as "sign-in could not be checked"); install check → the runtime is treated as not installed (the Agent Runtimes page's rule). A provider whose limits are not readable says `"not reported"`. **(SR-006)** A keyed discovered provider (custom endpoint) whose models cannot be read now is listed with models `"unknown: <reason>"`; a timed-out step always says "timed out". | BEH-001 | Must | Task; ARCH-REV-001 AR-002 | DEC-002 |
 | REQ-008 | Reading never sends a model request or spends tokens, never returns, logs or stores credentials, and never returns account identities (email, account, user or team IDs). | BEH-003 | Must | Task constraints | — |
 | REQ-009 | Settings gets a **Model Routing** page whose first section, **Agent runtimes now**, shows the same data as the tool for the node the window is bound to, read when the page opens and when the user presses "Check again". | BEH-002 | Must | User direction; Task | DEC-005 |
 | REQ-010 | The whole answer arrives within 20 seconds; runtimes are read in parallel, each reader bounded by its own time-out. | BEH-001 | Must | Usable by an agent mid-task | QR-001 |
@@ -101,12 +101,13 @@ None.
 | AC-004 | REQ-004, REQ-005 | SCN-001 | Antigravity `/usage` fixture: Claude and GPT group 0% left, Gemini 99% | Claude/GPT models have `blocked: {until: <reset>, by: "Claude and GPT models · weekly"}`; Gemini models have no `blocked`; limits named by group and window | A group that maps to no model applies to every model of the runtime | Unit test from fixture |
 | AC-005 | REQ-004, REQ-005, REQ-008 | SCN-001 | Claude `get_usage` fixture (session 87%, weekly 22%) | Limits "5-hour" 13% and "Weekly" 78% with reset times; no model blocked; the Claude CLI was opened with an input that never yields a message | API-key auth (no plan limits) → `"not reported"` | Unit test from fixture + test that no prompt is written |
 | AC-006 | REQ-005 | SCN-001 | Grok `_x.ai/billing` fixture | One limit "Billing period" with reset time = period end; remaining percent when `creditUsagePercent` is present, else null and `limitsNote` says Grok does not report how much is used | — | Unit test; user verification of the used-% field |
-| AC-007 | REQ-002, REQ-005 | SCN-001 | AutoByteus: DeepSeek balance 0.14 USD; Kimi 0 available; Anthropic "credit balance too low"; OpenAI key set | DeepSeek listed with balance "0.14 USD"; Kimi and Anthropic listed with `blocked` and the reason, their models blocked; OpenAI listed "not reported"; providers without keys absent | — | Unit tests from fixtures |
+| AC-007 | REQ-002, REQ-005 | SCN-001 | AutoByteus: DeepSeek balance 0.14 USD; Kimi 0 available; Anthropic "credit balance too low"; OpenAI key set | DeepSeek listed with balance "0.14 USD"; Kimi and Anthropic listed with `blocked` and the reason, their models blocked; OpenAI listed "not reported"; providers without keys absent; **(SR-006)** LM Studio serving models is listed with them even when nothing loaded them before; LM Studio not answering is absent; a custom endpoint not answering is listed with models `"unknown: …"` | — | Unit tests from fixtures |
 | AC-008 | REQ-007 | SCN-001 | A step (install, sign-in, models, limits, provider) throws or times out | The entry follows REQ-007 for that step; others complete | — | Unit tests with failing/slow fakes per step |
 | AC-009 | REQ-008 | SCN-001 | Any answer | Contains no key, token, email, account/user/team ID; no completion request was sent | — | Unit test on output; reader tests assert endpoints called |
 | AC-010 | REQ-009 | SCN-003 | User opens Settings → Model Routing | "Agent runtimes now" shows the same runtimes, models, limits and reset times as the tool; "Check again" re-reads | Remote-node window shows that node's data | Web component test; user verification on desktop and Docker node |
 | AC-011 | REQ-010 | SCN-001 | Slow fakes on every step of one runtime | Answer within 20 s; the slow steps end at their own time-out and their child processes are stopped | — | Unit test with slow fakes; live check |
 | AC-012 | REQ-001 | — | An agent definition without the tool | The agent does not have the tool | — | Existing exposure tests |
+| AC-013 | REQ-007, REQ-010 | SCN-001 | **(SR-006)** Several agents call the tool at the same time (and the page reads meanwhile) | Every caller gets Codex models and limits (one shared read); no "could not be read" caused by the overlap | Another Codex user closing the home-folder client meanwhile → that step's reason (FU-003) | API-05/05b rerun |
 
 ## Relevant Scenarios And Journeys
 
@@ -178,7 +179,7 @@ None.
 | REQ-003 | UC-001 | BEH-001 | AC-001 | SCN-001 |
 | REQ-004 | UC-001 | BEH-001, BEH-003 | AC-003..AC-006 | SCN-001 |
 | REQ-005 | UC-001 | BEH-003 | AC-003..AC-007 | SCN-001 |
-| REQ-007 | UC-001 | BEH-001 | AC-008 | SCN-001 |
+| REQ-007 | UC-001 | BEH-001 | AC-008, AC-013 | SCN-001 |
 | REQ-008 | UC-001, UC-002 | BEH-003 | AC-009 | SCN-001 |
 | REQ-009 | UC-002 | BEH-002 | AC-010 | SCN-003 |
 | REQ-010 | UC-001 | BEH-001 | AC-011 | SCN-001 |

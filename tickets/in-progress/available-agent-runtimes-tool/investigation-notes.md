@@ -52,6 +52,9 @@
 | C-17 | `runtime-version.ts:19-22`, `grok-agent-runtime-strategy.ts:9,31`, `antigravity-cli-capability.ts:5-6,95`, `acp-discovery-handshake.ts:7,23-26`, `codex-model-catalog.ts:18-26`, `claude-model-catalog.ts:24` | Each step has its own fixed time-out (3–15 s), applied in sequence | Pass a cap down each step (AR-002) |
 | C-18 | `compositions/build-studio-server.ts:75,349`, `index.ts`, `startup/agent-tool-loader.ts:69` | One server builder for desktop and Docker nodes; tool registration loader | Composition and registration points |
 | C-19 | `antigravity-cli-capability.ts:95-99`; `grok-build-capability.ts:12,80-86`; `codex-model-catalog.ts:18-45` (Read, verified 2026-10-25 after ARCH-REV-002) | Several steps run more than one command; Grok's `timeoutMs` bounds each probe; Codex releases its lease only after an untimed request settles | Step deadline shared by every command; Codex race |
+| C-20 | `runtime-management/codex/client/codex-app-server-client-manager.ts:27-50` (Read 2026-10-25, CRR-003) | `beginAcquire` throws "unresolved cleanup" while a folder's generation is closing; the last holder's `release` closes it. Callers: Codex strategy, Codex model catalog, thread bootstrapper/manager, history reader | One client hold per read; single-flight; FU-003 for the manager |
+| C-21 | `llm-management/services/model-catalog-service.ts:96-112,206-258`; `dynamic-model-source-lifecycle.ts:52-66,142` (Read) | Discovered providers (Ollama, LM Studio, custom) load through `ensureLlmSource`; non-forced `ensure` tries once per fingerprint; `reloadProviderModelCatalog` forces; a failed refresh keeps rows (`STALE_ERROR`) | Reload discovered providers per read |
+| C-22 | `evidence/api-e2e/API-08b`, `API-05b`, `API-03b` (Measured by API/E2E round 1) | LM Studio's 4 models missing until loaded; 1–4 of 10 overlapping rounds lost Codex data; 9 of 400 Antigravity time-outs reported as "could not be read" | SR-006 |
 
 ## Persisted Data And State Facts
 

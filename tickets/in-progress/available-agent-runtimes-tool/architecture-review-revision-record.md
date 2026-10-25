@@ -11,6 +11,9 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-003 | Round 3 — SR-003 re-review, 2026-10-25 | SR-003 | Fail | Pass | AR-002, AR-006 resolved; none open |
 | ARCH-REV-004 | Round 4 — SR-004 addition (optional runtime note), 2026-10-25 | SR-004 | Pass | Fail (Design Impact) | AR-007 (new) |
 | ARCH-REV-005 | Round 5 — SR-005 re-review, 2026-10-25 | SR-005 | Fail | Pass | AR-007 resolved; none open |
+| ARCH-REV-006 | Round 6 — SR-006 (answers CRR-003), 2026-10-25 | SR-006 | Pass | Pass | none (CR-002/003/004 design answers verified) |
+| ARCH-REV-007 | Round 7 — SR-007 (code reviewer's design feedback), 2026-10-25 | SR-007 | Pass | Fail (Design Impact) | AR-008 (new) |
+| ARCH-REV-008 | Round 8 — SR-007 text corrections, 2026-10-25 | SR-007 | Fail | Pass | AR-008 resolved; none open |
 
 ## Revision Entries
 
@@ -130,3 +133,74 @@ None
 - Material classification changes: none (Large/High)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: as in ARCH-REV-003 (report § Residual Risks).
+
+### ARCH-REV-006 — SR-006: discovered providers, Codex hold, single-flight, one time-out rule
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/tickets/in-progress/available-agent-runtimes-tool/design-review-report.md`
+- Review round and trigger: Round 6. SR-006 from the Solution Designer, answering the code reviewer's failure-origin review CRR-003 (`code-review-report.md`): CR-002, CR-003, CR-004, O-1…O-3.
+- Triggering role, report path, and finding IDs: Code reviewer via the Solution Designer; `code-review-report.md` § API/E2E Failure-Origin Review; CR-002, CR-003, CR-004
+- Relevant solution revision IDs: `SR-006`
+- Prior authoritative decision: `Pass` (ARCH-REV-005)
+- Current authoritative decision: `Pass`
+- What changed:
+  - The SR-006 delta is verified against the code (report § SR-006 Delta Review).
+  - Review gap acknowledged: the round-1 review did not trace how discovered AutoByteus providers get their models (Principle 1). It also accepted RSK-002 without the Codex lease-close path. CRR-003 found both.
+  - Three non-blocking implementation notes were added: the hold release inside the 20 s budget, the keyed custom endpoint with 0 models, and the catalog side-effect wording.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-007 | Resolved | Resolved, unaffected by SR-006 | SR-006 diff | SR-006 changes the AutoByteus step, the Codex hold, `read()` single-flight and time-out classification only |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large/High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: FU-003 (shared Codex manager), FU-004 (page localization), report § Residual Risks.
+
+### ARCH-REV-007 — SR-007: decisions sound, spec detail not yet aligned
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/tickets/in-progress/available-agent-runtimes-tool/design-review-report.md`
+- Review round and trigger: Round 7. SR-007 from the Solution Designer (the code reviewer's five design caveats on SR-006).
+- Triggering role, report path, and finding IDs: Solution Designer; `design-spec.md` § SR-007 Revision; N/A
+- Relevant solution revision IDs: `SR-007`
+- Prior authoritative decision: `Pass` (ARCH-REV-006)
+- Current authoritative decision: `Fail`, classification `Design Impact`
+- What changed: the five SR-007 decisions pass (report § SR-007 Delta Review). New AR-008: the spec's detail sections still carry SR-006 shapes:
+  - `commandTimeout` in § Read deadline;
+  - the DS-003 limits `unknown` line;
+  - `ProviderUsageReading.unknown` against "one wording rule for provider steps";
+  - `readUsageLimitsSafely` named as current in § SR-006.
+  - Also folded in: the 2026-10-25 correction (the `models(modelIds)` variant restored). It is verified against `usage-limits-reading.ts:12-14`, `codex-usage-limits.ts:37,49` and `usage-limit-model-matching.ts:23-50`. Two text leftovers go into AR-008: decision 1's opening sentence, and the DEC-003 fallback wording for ids.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-007 | Resolved | Resolved, unaffected by SR-007 | SR-007 diff | SR-007 refines mapping, failure wording, command bounds and folder placement only |
+
+- New or remaining finding IDs: AR-008 (Low)
+- Material classification changes: none (Large/High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: FU-003, FU-004, FU-005; report § Residual Risks.
+
+### ARCH-REV-008 — SR-007 corrected: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/tickets/in-progress/available-agent-runtimes-tool/design-review-report.md`
+- Review round and trigger: Round 8. SR-007 text corrections for AR-008.
+- Triggering role, report path, and finding IDs: Solution Designer; `design-spec.md` (diff against `history/design-spec-sr007.md`); AR-008
+- Relevant solution revision IDs: `SR-007`
+- Prior authoritative decision: `Fail` (ARCH-REV-007)
+- Current authoritative decision: `Pass`
+- What changed: all five AR-008 items are verified in the diff. The provider-step decision gives strategies and provider readers one return-or-throw contract, and the service owns the wording.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-008 | Open (Low) | Resolved | SR-007 corrected | `commandBound` declared; DS-003 limits line; `ProviderUsageReading` = read \| not_reported + `ProviderUsageUnreadableError`; CR-002 marked superseded in part; decision 1 opening and DEC-003 for every variant |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large/High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: FU-003, FU-004, FU-005; report § Residual Risks.
