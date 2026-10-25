@@ -1,0 +1,17 @@
+# TEMPORARY PROBE (not committed): runtime process killed while the app is quarantined; commit 1103e38619 + uncommitted e2e; 2026-10-25T04:02:14Z
+[AB296-PROBE] C launched {"briefId":"brief-7f9f00fc-6834-4de0-a690-745965cbc452","bindingId":"0a04fc32-d3d2-49ad-a78a-07f0ae97a570","runId":"brief_studio_team_1010860d6c314d9194f02469ee5be670","status":"ATTACHED"}
+[AB296-PROBE] new processes ["84731 84459 node <tmp> app-server -c agents.enabled=false","84732     1 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared","84733     1 /System/Library/Frameworks/CoreServ
+[AB296-PROBE] C brief before {"briefId":"brief-7f9f00fc-6834-4de0-a690-745965cbc452","title":"probe C","status":"not_started","latestBindingId":"0a04fc32-d3d2-49ad-a78a-07f0ae97a570","latestRunId":"brief_studio_team_1010860d6c314d9194f02469ee5be670","latestBindingStatus":"ATTACHED","lastErrorMessage":null,"createdAt":"2026-10-25T04:02:29.050Z","updatedAt":"2026-10-25T04:02:29.404Z","approvedAt":null,"rejectedAt":null
+[AB296-PROBE] C view after reload 503
+[AB296-PROBE] killing runtime pids [84731]
+[AB296-PROBE] C repair {"applicationId":"<id>","state":"ACTIVE","detail":null,"updatedAt":"2026-10-25T04:02:35.137Z"}
+[AB296-PROBE] C status 0 preparing_storage
+[AB296-PROBE] C status 1 ready
+[AB296-PROBE] C brief after repair {"briefId":"brief-7f9f00fc-6834-4de0-a690-745965cbc452","title":"probe C","status":"blocked","latestBindingId":"0a04fc32-d3d2-49ad-a78a-07f0ae97a570","latestRunId":"brief_studio_team_1010860d6c314d9194f02469ee5be670","latestBindingStatus":"FAILED","lastErrorMessage":"Codex app server process closed unexpectedly (SIGKILL).","createdAt":"2026-10-25T04:02:29.050Z","updatedAt":"2026-10-
+ ✓ tests/e2e/runtime/zz-probe-ab296-re05b.e2e.test.ts (5 tests) 11476ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1394ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  676ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  954ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1073ms
+     ✓ TEMPORARY PROBE RE-05b runtime process dies while quarantined  6658ms
+exit=0
