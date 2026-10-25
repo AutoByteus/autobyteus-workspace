@@ -49,7 +49,7 @@
 
 - Delivery round and trigger: second round. The code reviewer's handoff reported DR-001 cleared: fix `7c60cb4909`, CRR-006 Pass, API-REV-003 Pass (95%), CRR-007 Not Applicable.
 - Prior authoritative result: DR-001 `Blocked` (Local Fix). Resolved by `7c60cb4909`.
-- Current authoritative result: `Delivery Completed`, once the release outcome in `release-deployment-report.md` is recorded.
+- Current authoritative result: `Delivery Completed`. `personal` @ `800791c114`; beta `v1.5.9-beta.9` published by all 4 pipelines (17 release assets; Docker `1.5.9-beta.9` and `:beta`).
 - Docs sync report: `docs-sync-report.md` (Updated: `autobyteus-web/docs/projects.md`, AC-009 wording)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
@@ -60,4 +60,5 @@
 - Release decision: Beta (the user, 2026-10-25).
 - Companion repo: autobyteus-agents PR #124 merged as `004d509ff4`.
 - Why recorded: the delivery round completed.
+- Terminal return to the Solution Designer: `Sent`, after this record was pushed.
 - Next recipient/action: Solution Designer (terminal receipt).

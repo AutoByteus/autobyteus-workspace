@@ -92,3 +92,67 @@
 - Approved persisted-data decision: `Migration Required` (`project-task-titles`, after `projects-per-folder-v1`, SR-012)
 - Delivery action required: none beyond shipping; the migration runs at startup.
 - Result and evidence: API-05 (released shapes, second start no-op, unconvertible files untouched), API-03 (keys-v1 FAILED: titles still run).
+
+## Version / Tag / Release Commit
+
+- `bash scripts/desktop-release.sh beta --branch finalize/agent-tool-results-omit-empty --no-push` → release commit `800791c114` (`chore(release): bump workspace release version to 1.5.9-beta.9`), annotated tag `v1.5.9-beta.9`.
+
+## Repository Finalization
+
+- Bootstrap context source: the ticket's bootstrap (base `origin/personal@fc06a7355d`) and `RELEASE.md` (target `origin/personal`).
+- Ticket branch: `codex/agent-tool-results-omit-empty`.
+- Ticket branch commit result: `Completed` (`fbdc49b1da`, the archive commit).
+- Ticket branch push result: `Completed`. Secret Gate over `origin/personal..codex/agent-tool-results-omit-empty`: 27 commits, PASS.
+- Finalization target: `origin` / `personal`.
+- Target advanced after verification: `Yes`, by one commit (`1c31d98f56`, autobyteus-273 delivery records only, no code). No rerun was needed: the merge differs from the verified ticket branch only in those 3 ticket files.
+- Merge into target result: `Completed`, `git merge --no-ff` on `finalize/agent-tool-results-omit-empty` from `origin/personal` → `dd0439ac44`. Secret Gate on the merged state: PASS.
+- Push target branch result: `Completed`, `1c31d98f56..800791c114 HEAD -> personal`. `origin/personal` was refetched and unchanged before the push.
+- Repository finalization status: `Completed`.
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes` (Beta, the user's decision).
+- Method: `Project Release Guide` (`RELEASE.md`, Cutting The Release).
+- Checks before tagging, on the merged state: `check_licensing.py` exit 0; `check_repository_artifact_hygiene.py` exit 0; `check_secrets.sh v1.5.9-beta.8..HEAD` PASS. The untracked SDK `dist/` folders were removed first; they are regenerable build output.
+- Pipelines triggered and their results (tag push `v1.5.9-beta.9`):
+  - Desktop Release `40189944707`: success
+  - Android APK Release `40189944520`: success
+  - iOS App Store Connect Release `40189944646`: success (TestFlight upload)
+  - Server Docker Release `40189944567`: success
+- Published artifacts checked:
+  - GitHub release `v1.5.9-beta.9`: `isPrerelease: true`, 17 assets. They are the macOS arm64/x64 dmg+zip with their blockmaps, the Linux x64/arm64 AppImages, the Windows exe, the Android APK and its sha256, and `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`. That matches the guide's complete set.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.9` (`sha256:6d52877c3685…`), and `:beta` was moved to the same digest. `:latest` was not moved, which is correct for a pre-release.
+- Release/publication/deployment result: `Completed`.
+- Release notes handoff result: `Not required` for the tag. A beta publishes GitHub-generated notes; `release-notes.md` is kept for the next stable release.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktrees: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty-agents`.
+- Worktree cleanup result: `Completed`, done after this record was pushed. Both are merged (`personal` contains the ticket branch; autobyteus-agents `main` contains `82b7bae` via PR #124).
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` (`codex/agent-tool-results-omit-empty` and `finalize/agent-tool-results-omit-empty` in the superrepo; `codex/agent-tool-results-omit-empty` in autobyteus-agents).
+- Remote branch cleanup result: `Not required`. The pushed ticket branches stay, as for earlier tickets.
+
+## Release Notes Summary
+
+- Release notes artifact created before verification: `tickets/done/agent-tool-results-omit-empty/release-notes.md` (written before finalization)
+- Archived release notes artifact used for release/publication: not used by the beta (generated notes); kept for the stable release.
+- Release notes status: `Updated`
+
+## Deployment Steps
+
+- No hosted service. Server users upgrade with `autobyteus-docker upgrade --all --tag beta`. Desktop installs with **Receive beta updates** on are offered `v1.5.9-beta.9`.
+
+## Verification Checks
+
+- After publishing, all 4 workflows succeeded, the GitHub release has 17 assets, and the Docker tags were checked (above).
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence; no user check needed)
+- Repository finalization complete: `Yes` (superrepo `personal` @ `800791c114`; autobyteus-agents `main` @ `004d509ff4`)
+- Applicable release complete: `Yes` (`v1.5.9-beta.9`, all 4 pipelines)
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record was pushed
