@@ -63,6 +63,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   black-holed within the bound, identity mismatch);
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
+ * 308: beta also has a file-authored internal agent (Hidden Helper, `"internal": true`): RC-26's exact offer leaves it out
+ *   while beta hides it (the default); RC-38 shows it on beta (no restart), delegates it, and hides it again.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -579,6 +581,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await fsp.mkdir(path.join(beta.dataDir, "agents", "plain-helper"), { recursive: true });
     await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent.md"), ["---", "name: Plain Helper", "role: assistant", "---", "", "Help."].join("\n"));
     await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent-config.json"), JSON.stringify({ toolNames: [], skillNames: [] }, null, 2));
+    // 308: a file-authored internal agent (`"internal": true`) with a complete default, so only its visibility can refuse it.
+    await fsp.mkdir(path.join(beta.dataDir, "agents", "hidden-helper"), { recursive: true });
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "hidden-helper", "agent.md"), ["---", "name: Hidden Helper", "description: Beta's own helper (internal agents E2E)", "role: assistant", "---", "", "Help."].join("\n"));
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "hidden-helper", "agent-config.json"), JSON.stringify({ internal: true, toolNames: [], skillNames: [],
+      defaultLaunchConfig: { runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL, llmConfig: null } }, null, 2));
     // Before beta starts: a file-authored Team with a team-local Agent (a complete default, so only eligibility can refuse
     // it), and a published-agents.json left from slice 1 whose entries would change the results if it were read (245 AC-207).
     const fieldTeam = path.join(beta.dataDir, "agent-teams", "field-team");
@@ -1795,6 +1802,39 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(delegations["/studio_team"]).toEqual({ delegated: true, kind: "team" });
     record("RC-26", { scoutTools: scoutTools.map((entry) => entry.name), delegatorTools: delegatorTools.map((entry) => entry.name), offer, wire: { body: wire[0]!.body, answer: wire[0]!.answer },
       betaCatalog, delegations, pageOffer });
+  }, 300_000);
+
+  it("RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, refused again", async () => {
+    const scout = await createStandalone(alpha, defs.scout, "alpha scout (308)");
+    const hidden = { name: "Hidden Helper", kind: "agent", address: "/hidden_helper", description: "Beta's own helper (internal agents E2E)" };
+    const SETTING = "AUTOBYTEUS_SHOW_INTERNAL_AGENTS";
+    const setShown = (value: string) => beta.gql(`mutation($k:String!,$v:String!){ updateServerSetting(key:$k, value:$v) }`, { k: SETTING, v: value });
+    const offerNames = async () => ((await calls(scout, "list_available_agents", { node: LABEL.beta })).agents as Rec[]);
+    const pageNames = async () => ((await peerNodeOffer(alpha, beta.nodeId)).offer.entries as Rec[]).map((entry) => entry.name as string);
+    const delegate = () => calls(scout, "delegate_task", { node: LABEL.beta, recipient_address: hidden.address, description: "Internal helper work. Marker HIDDEN." });
+    // It exists on beta (by ID), but beta's setting is off (the default).
+    expect((await beta.gql(`{ agentDefinition(id: "hidden-helper") { id internal } }`)).agentDefinition).toEqual({ id: "hidden-helper", internal: true });
+    const hiddenOffer = await offerNames();
+    expect(hiddenOffer.map((entry) => entry.name), "not offered while hidden").not.toContain(hidden.name);
+    expect(await pageNames(), "nor on alpha's Nodes page").not.toContain(hidden.name);
+    const refused = await delegate();
+    expect(refused.delegated, JSON.stringify(refused)).not.toBe(true);
+    expect(textOf(refused), "today's not-found text: nothing says it is internal").toBe(TEXT_261.notFound(LABEL.beta, hidden.address));
+
+    // Beta's owner shows internal agents: the next listing and delegation follow, without a restart.
+    await setShown("true");
+    const shownOffer = await offerNames();
+    expect(shownOffer.find((entry) => entry.name === hidden.name), JSON.stringify(shownOffer)).toEqual(hidden);
+    expect(shownOffer.length).toBe(hiddenOffer.length + 1);
+    expect(await pageNames()).toContain(hidden.name);
+    const accepted = await delegate();
+    expect(accepted, JSON.stringify(accepted)).toMatchObject({ delegated: true, target_kind: "agent" });
+
+    // Hidden again: refused again, with the same text.
+    await setShown("false");
+    expect((await offerNames()).map((entry) => entry.name)).not.toContain(hidden.name);
+    expect(textOf(await delegate())).toBe(TEXT_261.notFound(LABEL.beta, hidden.address));
+    record("RC-38", { hiddenOffer, shownOffer, refused: textOf(refused), accepted: { delegated: accepted.delegated, target_kind: accepted.target_kind } });
   }, 300_000);
 
   it("RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {

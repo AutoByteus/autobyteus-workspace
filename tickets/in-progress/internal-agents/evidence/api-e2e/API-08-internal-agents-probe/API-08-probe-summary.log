@@ -1,0 +1,13 @@
+# API-08 — node autobyteus-web/tests/e2e/internal-agents-probe.mjs --skip-server-build --output-dir=/tmp/ia-probe3
+# Server dist built from 692e884b77 (code 813f7208d2); Nuxt dev; headless Chrome 1440x1000; scripted AGY CLI for the two recorded runs; macOS darwin 25.5; 2026-10-25
+# Runs 1 and 2 failed on probe harness issues (cold dev-server route compile; the workspace history folder collapsed), fixed before run 3
+Pass IP-01 While hidden: Agents page, the agent store (every picker), the featured-items picker and run history leave the internal agent out; normal agents unchanged (AC-001, REQ-003, REQ-004)
+Pass IP-02 While hidden, its run opens by URL and shows the agent's reply (REQ-008, SCN-A1)
+Pass IP-03 Basics "Internal agents" toggled on: saved; without a reload the Agents page shows it with the "Internal" badge, the store and featured picker have it, run history lists its run (AC-005, REQ-007)
+Pass IP-04 Toggled off again: gone from the Agents page, store, featured picker and run history, without a reload
+Pass IP-05 zh-CN: the card in Chinese
+IP-01-store: {"count": 2, "internal": []}
+IP-01-featured: ["Select an agent", "Daily Assistant", "Probe Normal d83f"]
+IP-03-badge: [{"text": "Internal", "title": "The system's own helper agent, shown because \"Show internal agents\" is on."}]
+IP-05-card: "内部智能体\n\n内部智能体是系统自身的辅助智能体，例如模型路由器。\n\n显示内部智能体\n在智能体列表、选择器和历史记录中显示它们，便于调试。关闭时，它们也不会提供给其他智能体或对等节点。\n显示内部智能体"
+Result: Pass browserErrors: [] cleanup: {'browser': 'closed', 'frontend': 'terminated:52938', 'backend': 'terminated:52909', 'tempRoot': 'removed'}
