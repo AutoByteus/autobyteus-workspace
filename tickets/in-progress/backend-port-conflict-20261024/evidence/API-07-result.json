@@ -1,0 +1,103 @@
+{
+  "case": "API-07",
+  "commit": "a201abe848cdff500948dfbd40dcd71d97926e26",
+  "own": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-dcpQpX",
+  "date": "2026-10-26T09:10:51.702Z",
+  "cases": [
+    {
+      "mode": "startup-cancel",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T09:10:52.818Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:complete",
+          "at": "2026-10-26T09:10:53.207Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T09:10:51.704Z",
+      "pid": 85657,
+      "exit": 0,
+      "signal": null,
+      "elapsedMs": 407,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "complete",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T09:10:54.367Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:complete",
+          "at": "2026-10-26T09:10:55.227Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T09:10:53.238Z",
+      "pid": 85664,
+      "url": "http://127.0.0.1:56211",
+      "exit": 0,
+      "signal": null,
+      "elapsedMs": 52,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "cleanup-unconfirmed",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T09:10:56.291Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:failed",
+          "at": "2026-10-26T09:10:57.118Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T09:10:55.265Z",
+      "pid": 85672,
+      "url": "http://127.0.0.1:56218",
+      "exit": 1,
+      "signal": null,
+      "elapsedMs": 50,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "transport-unconfirmed",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T09:10:58.246Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T09:10:57.156Z",
+      "pid": 85679,
+      "url": "http://127.0.0.1:56223",
+      "exit": 1,
+      "signal": null,
+      "elapsedMs": 52,
+      "data": "unchanged",
+      "result": "Pass"
+    }
+  ],
+  "result": "Pass",
+  "rootRemoved": true,
+  "validationProvenance": {
+    "source": "9bd72c20893dedb8c7dc99aacfcb0b732d092d6c",
+    "reviewHead": "a201abe848cdff500948dfbd40dcd71d97926e26",
+    "commandKey": "C + API-07-packaged-ipc.mjs",
+    "environment": "macOS arm64; isolated roots and deterministic local inference where used; no paid provider",
+    "note": "New durable tests uncommitted at execution; final hashes in API-validation-provenance.json"
+  }
+}
