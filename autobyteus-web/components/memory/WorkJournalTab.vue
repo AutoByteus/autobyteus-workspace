@@ -89,10 +89,10 @@
             <div v-for="line in store.lines" :key="line.n" :data-line="line.n" class="flex" :class="isMatched(line.n) ? 'bg-amber-50' : ''">
               <span class="sticky left-0 w-14 flex-shrink-0 select-none border-r px-2 text-right" :class="isMatched(line.n) ? 'border-amber-300 bg-amber-100 text-amber-800' : 'border-gray-100 bg-gray-50 text-gray-400'">{{ line.n }}</span>
               <span v-if="kind(line.text) === 'day'" class="flex-1 bg-gray-100 px-3 font-semibold text-gray-700">{{ line.text }}</span>
-              <span v-else-if="kind(line.text) === 'entry'" class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-800"><span class="text-gray-400">{{ parts(line.text).time }}</span> <span class="font-semibold">{{ parts(line.text).action }}</span>{{ parts(line.text).rest }}</span>
+              <span v-else-if="kind(line.text) === 'entry'" class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-800"><span class="text-gray-400">{{ parts(line.text).time }}</span> <span class="font-semibold">{{ parts(line.text).action }}</span>{{ withoutLink(parts(line.text).rest) }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
               <span v-else-if="kind(line.text) === 'link'" class="min-w-0 flex-1 whitespace-pre-wrap break-all px-3 text-gray-300">{{ line.text }}</span>
               <span v-else-if="kind(line.text) === 'header'" class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 font-semibold text-gray-900">{{ line.text }}</span>
-              <span v-else class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-500">{{ line.text || ' ' }}</span>
+              <span v-else class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-500">{{ withoutLink(line.text) || ' ' }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
             </div>
             <button v-if="store.to < store.current.lines" type="button" class="sticky left-0 block w-full border-t border-gray-100 bg-gray-50 px-3 py-2 text-left font-sans text-xs font-semibold text-blue-600 hover:bg-blue-50" data-test="work-journal-later" @click="store.loadLater()">
               ↓ {{ $t('memory.journal.later', { count: Math.min(JOURNAL_WINDOW, store.current.lines - store.to) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.current.lines - store.to).toLocaleString() }) }})</span>
@@ -169,6 +169,10 @@ const kind = (text: string): 'day' | 'entry' | 'link' | 'header' | 'detail' => {
   if (text.startsWith('# ')) return 'header';
   return 'detail';
 };
+/** The raw-trace link an entry's last line ends with: machine detail, shown de-emphasised like a link line. */
+const TRAILING_LINK = / \[↗\]\([^)]*\)$/;
+const trailingLink = (text: string) => TRAILING_LINK.exec(text)?.[0] ?? '';
+const withoutLink = (text: string) => text.replace(TRAILING_LINK, '');
 const parts = (text: string) => {
   const match = /^(\[(?:\d{2}:\d{2}:\d{2}|--:--:--)\]) ([^:]+:)(.*)$/.exec(text);
   return match ? { time: match[1], action: match[2], rest: match[3] } : { time: '', action: '', rest: text };

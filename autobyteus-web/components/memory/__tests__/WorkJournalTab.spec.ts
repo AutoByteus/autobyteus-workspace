@@ -63,6 +63,9 @@ describe('WorkJournalTab', () => {
     // `[--:--:--]` entries read as entries (time, then the bold action).
     expect(wrapper.get('[data-line="813"]').find('.font-semibold').text()).toBe('Command:');
     expect(wrapper.get('[data-line="814"]').find('.text-gray-300').exists()).toBe(true);
+    // A trailing raw-trace link is split off and de-emphasised.
+    expect(wrapper.get('[data-line="812"] [data-test="work-journal-raw-link"]').text()).toBe('[↗](../raw_traces_active.jsonl#rt_1)');
+    expect(wrapper.get('[data-line="812"]').text()).toContain('User: set up DDNS');
     expect(wrapper.find('[data-test="work-journal-file-marker"]').exists()).toBe(true);
     const buttons = wrapper.findAll('[data-test="work-journal-match"]');
     expect(buttons).toHaveLength(2);

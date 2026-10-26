@@ -82,7 +82,9 @@ const fetchOk = async (url) => { try { return (await fetch(url, { signal: AbortS
 let counter = 0;
 const turnsToRecords = (turns) => turns.flatMap((turn, index) => {
   const base = Date.parse(`${turn.day}T09:00:00Z`) / 1000 + index * 30;
-  const record = (offset, fields) => { counter += 1; return { id: `pr_${String(counter).padStart(7, '0')}`, seq: counter, ts: base + offset, turn_id: `turn_${counter}`, ...fields }; };
+  // One turn ID for the turn's records, so the journal pairs each call with its result.
+  const turnId = `turn_${counter + 1}`;
+  const record = (offset, fields) => { counter += 1; return { id: `pr_${String(counter).padStart(7, '0')}`, seq: counter, ts: base + offset, turn_id: turnId, ...fields }; };
   const callId = `call_${counter + 2}`;
   return [
     record(0, { trace_type: 'user', content: turn.user }),
@@ -201,6 +203,9 @@ try {
   const done = await page.locator('[data-step]').evaluateAll((items) => items.map((item) => item.getAttribute('data-state')));
   check('MS-PROBE-013', done.join() === 'done,done,done,done', 'All four steps done', done);
   check('MS-PROBE-014', /4 runs/.test(await text('[data-test="memory-index-detail"]')), 'The ready headline counts the 4 runs');
+  const bars = await page.locator('[role="progressbar"]').evaluateAll((items) => items.map((item) => item.getAttribute('aria-valuenow')));
+  check('MS-PROBE-015', bars.join() === '100,100,100,100', 'Every step bar is full when up to date', bars);
+  await sleep(500); // the bars' 300 ms width transition
   await shot(page, 'VIS-014-index-ready-1440x900');
 
   // Search: results one per run, the matches with lines, kind and strength; the DDNS run first.
@@ -256,11 +261,11 @@ try {
   await page.locator('[data-test="work-journal-lines"]').waitFor();
   await page.locator('[data-test="work-journal-line"]').fill('4000');
   await page.locator('[data-test="work-journal-line"]').press('Enter');
-  await waitFor('the window around line 4000', async () => (await text('[data-test="work-journal-range"]')).startsWith('Lines 3,851–4,150'));
+  await waitFor('the window around line 4000', async () => (await text('[data-test="work-journal-range"]')).startsWith('Lines 3,850–4,149'));
   check('MS-PROBE-040', (await page.locator('text=Large file: lines load in parts.').count()) === 1, 'The large-file note shows');
   await shot(page, 'VIS-018-work-journal-large-file-1440x900');
   await page.locator('[data-test="work-journal-later"]').click();
-  await waitFor('300 later lines', async () => (await text('[data-test="work-journal-range"]')).startsWith('Lines 3,851–4,450'));
+  await waitFor('300 later lines', async () => (await text('[data-test="work-journal-range"]')).startsWith('Lines 3,850–4,449'));
 
   // A run known only by its folder opens on its Work Journal.
   await goto('?view=home&section=search&q=cloudflare%20tunnel%20notes');
