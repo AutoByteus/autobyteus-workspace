@@ -1,65 +1,54 @@
 # API/E2E Test Review Report — backend-port-conflict-20261024
 
 ## Review Meta
-- Review round: **1**, proportional successful-test review; cumulative history **CRR-004**, 2026-10-26.
-- Trigger: API/E2E **API-REV-001 Pass**, commit **d16a07657**. This is not failure-origin review or a reopened implementation audit.
-- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`; integration base `origin/personal@034bfe51ab697817773ff545d369e1cfc03a79c5` remains Delivery-owned.
-- Requirements/design context: `requirements-doc.md` **R2 Approved**, `design-spec.md` **D4.1**, investigation and `solution-revision-record.md` **SR-001..008**; original SCN-003/004 and AC-004/005 host ownership/preserved ordinary-agent lifetime obligations are the durable test's basis.
-- Supplements: Codex investigation and same-ticket visibility approval remain applicable; `validation-pause-clarification.md` records resumed validation. No new behavior or authority introduced by test fixtures.
-- Architecture history: **ARCH-REV-004**; implementation history **IR-004**; original source report `code-review-report.md` **CRR-003 Pass** for source9bd72c208. Production source is unchanged by this API/E2E commit.
-- Coverage investigation/report/history: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` **API-REV-001**. Delivery revision: **N/A**.
-- API/E2E result: **Pass — executable-validation stage**; Broader Validation Required and completed. Final confidence **95.3%**, as assessed by API/E2E, not a new reviewer confidence score or measured code coverage.
-- Prior unresolved test-review findings: **None**; this is the first proportional test-review result. CR-001/002 remain resolved in the unchanged implementation-source review history.
-- Project guidelines: root `TESTING.md`, server `AGENTS.md`, and coverage investigation's isolated-app execution guidance. Apply gated real runtime tests, current worktree builds, clean environments, test-owned resources, retained failure evidence and rerun-by-impact. No applicable conflict/discrepancy found.
-- Supported Product Scenario Basis Confirmed: **Yes**. Application operator starts agent work through the public application command/SDK, ends the first initiator while previews remain, keeps the second run published with live work, then closes the standalone host. The expected drain and unrelated/data preservation come from approved requirements, not from the fixture itself.
+- Proportional successful-test review round **2 / CRR-006**, 2026-10-26. Trigger **API-REV-002 Pass**, commit `5f46d5ccf5838680d851dd6258989baf557feed6`; not failure-origin or source review.
+- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`.
+- Approved requirements **R2**, design **D4.1**, solution **SR-001..008**, architecture **ARCH-REV-004**, implementation **IR-005**, delivery trigger **DR-001** unchanged. Requirements/investigation/design context and read-only visibility supplements remain the CRR-005 basis; no behavior revision this round.
+- Source `2c47bcd646ccd371a180dbc510fd1e30aee9144f`, integrated base `67994daba0adf6eb8c6bc05827b5fab6b2975aa4`; source report **CRR-005 Pass**, review commit `f4e7eb4eb`. That separate source report is untouched.
+- Coverage investigation, execution coverage report and API revision record reviewed at **API-REV-002**. API-owned result **Pass**, Broader Validation Required/completed; confidence **95.3%** independently recomputed by API/E2E, not measured coverage or a reviewer rescore.
+- Prior unresolved test findings: **None**. CRR-004 reviewed the two added standalone durable files; both remain unchanged. CR-001/002 source findings remain resolved, not reopened.
+- Guidelines: root `TESTING.md`, server `AGENTS.md`, coverage investigation's isolated-app instructions. Rerun by impact, current builds, serial execution, clean environments/test-owned resources and one run per case apply. No applicable conflict/discrepancy found.
+- Supported scenario basis: **Confirmed** from retained R2 SCN-001..008/AC-001..010: ordinary conflict/retry, ended/retained agent work and host shutdown, selected read-only Codex task visibility and uncertain inspection. Fixtures are evidence, not authority for new scenarios.
+- **Large / High unchanged.**
 
 ## Changed Durable Test Scope
-`git diff --name-only a201abe84 HEAD` outside tickets contains exactly these two added files; no product source, existing tests, shared harness, dependencies or build configuration changed.
+**No durable test file changed: Yes. Result: Not Applicable.**
 
-| Durable test path | Change | Scenario / requirement | Responsibility / notes |
-|---|---|---|---|
-| `autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts` | Added | SCN-003/004, AC-004/005; data preservation supports API-owned AC-006 | Opt-in runner starts isolated fixture, requires successful execution and four absent command/anchor pairs plus root cleanup; reports stdout/stderr on failure |
-| `autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs` | Added | Same host-lifetime scenario | Real standalone host/public HTTP application command→worker/RPC→SDK→native runtime/tools; local scripted inference only; actual listener/TERM/absence and sentinel assertions |
+`git diff f4e7eb4eb HEAD -- ':!tickets'` is empty. No production, durable suite, shared harness, dependency or build changes occurred during renewed API validation. Read-only SHA256 comparisons match all nine provenance entries, including both unchanged standalone files:
+- `autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs`
 
-No durable test file changed: **No**. Temporary desktop scripts, screenshots, logs and JSON receipts were read as execution evidence, not added to the durable test-code review scope. No source-file size limits, forced splits or full source-review scorecard applied.
+Six ticket-only temporary probes add only a `TEST_API_EVIDENCE_DIR` output override; assertions are unchanged. The new ticket sequential runner is execution evidence, not a durable suite addition: it records progress, checks exit0 plus result Pass, refuses an existing case receipt and stops on nonpass. Prior receipts remain separate. These files are not reviewed as production source; no source-size thresholds or forced splits apply.
 
 ## Proportional Test-Code Checks
 | Check | Result | Evidence / notes |
 |---|---|---|
-| Scenario grouping and names make intent clear | Pass | One named full-host ownership regression; header documents gate, builds, command, local inference and platform scope. Two turns intentionally distinguish ended initiator from retained run |
-| Assertions prove requirements rather than incidental implementation details | Pass | Fixture awaits public host.close completion/exit0; independently checks command PID, anchor and HTTP listener absence; TERM handler receipts prove resistant work encountered; ordinary end retains previews, unrelated listener remains200 and data sentinel unchanged. Failure cannot become Pass through fallback cleanup |
-| Meaningful fixture/helper reuse | Pass | Shared command builder produces both native tool forms, shared bounded polling/public call/status helpers and one private application fixture; no duplicate Studio system fixture when API-06B already proves that boundary |
-| Isolation/determinism appropriate to boundary | Pass | Gate excludes Windows; credential-free local inference, private resolved HOME/data/workspace/TMPDIR and ephemeral ports. Child gets clean explicit environment. Execution budget and outer process timeout; finally closes owned host/model/sentinel, discovers only generated receipt paths, identity-checks any fallback child kill and removes only private root |
-| Files coherent/navigable | Pass | Runner owns gate/process assertions; fixture is a sequential setup→launch→ordinary-end→host-close→verify→cleanup scenario. No unrelated feature testing mixed in |
-| No stale/duplicated/unjustifiably disabled or compatibility-only tests | Pass | New gate justified by real multi-process/build prerequisites; skipped default is not claimed a pass. Actual gate-enabled result recorded. No existing coverage removed or assertions weakened |
-| Coverage agrees with investigation and evidence | Pass | API-03 fills full standalone gap rather than direct-scope/helper-only test. API-02 resolves via current Studio API-06B, not a fictitious extra run. Recorded final hashes match both committed durable files |
-| Fixtures confirm independently supported scenario | Pass | R1 retained in R2 explicitly requires host cleanup after agent end, active work and unrelated/data preservation; fixture drives those public operations rather than manufacturing private scope/registry state |
-| Real trigger/actor steps, no impossible setup | Pass | Disposable valid application bundle is supported standalone input; commands call public application agentExecution start/send/subscribe/terminate. Actual native tools create shell work; no direct lease injection. IPC close is fixture control invoking the exported public host.close, not private cleanup interception |
+| Scenario organization, names and file coherence | N/A | No durable delta; prior CRR-004 review retained |
+| Requirement-aligned assertions and real scenario entry | N/A | No assertion changes or new durable callers |
+| Meaningful fixture/helper reuse | N/A | Same standalone runner/fixture hashes |
+| Isolation and determinism | N/A | No durable setup changes |
+| Stale/duplicate/disabled/compatibility-only coverage | N/A | No suite changes/removals; no historical04/06 duplicate execution |
+| Coverage disposition agrees with investigation | Pass | Repository diff confirms no durable edits; seven current equivalent runners recorded Pass, Studio API02 represented once by06B |
 
-“Active run” here means a retained runtime with live command work after its assistant turn, not ongoing model inference. API/E2E explicitly records this boundary. The fixture replaces model text generation only; tool execution, application worker/SDK, host composition and cleanup remain real.
-
-## Evidence Cross-check / No Rerun
-- **API-03-test.log**: final gated test passes1/1. `API-03-result.json` records first binding TERMINATED, previews still live, second binding retained, then close receipt and exit;855ms close, four command/anchor pairs absent, both resistant commands observed TERM, unrelated/data sentinels preserved, children absent and private root removed. No successful-result fallback kill used.
-- SHA256 computed read-only from both current durable paths equals `API-validation-provenance.json`. Earlier model-field fixture failure and pre-safety success remain labelled separately; final helper revision has its own successful execution, not an old result attributed to new test code.
-- API-05/06B/07/09/09B/10 result files and compact summary agree with the report's current conflict/recovery, Studio cleanup, actual IPC, Codex query/panel, natural0/nonzero7, selection/reload and timeout/recovery claims. API-10 records actual bounded unavailable5005ms and same-task recovery with model calls unchanged; API-09B records actual backend restart1590ms and desktop quit203ms with owned listeners absent. These are API-owner evidence, not reviewer reruns.
-- Original API-04/06 stay historical d0338db0b receipts; current follow-ons identify their source impact. Reused300 R2 cases and unaffected native/desktop controls are not newly executed counts.
-- `API-final-cleanup.json` audits49 exact recorded PIDs absent and12 private roots absent. Successful cleanup and forced cleanup of failed setup attempts remain distinguished.
-- No changed assertion needed a new executable check. Reviewer ran only source/history/evidence reads, hash comparisons and report bookkeeping; no tests, builds, fixture/app launches or provider calls.
+## Bounded Evidence Cross-check / No Rerun
+- Reviewed canonical Cases/AC proof/limits, current provenance, build identity and cleanup receipts. All seven current result JSON files record Pass without error; nine file hashes independently match provenance. No durable changes since CRR-004 and no production changes since CRR-005.
+- API-03 records renewed real standalone host close836ms and absent command/anchor pairs after ended/retained initiators. API-05/06B/07 cover actual conflict recovery, Studio native cleanup and packaged IPC/fault behavior; API-09/09B/10 cover actual Codex conversation/query/panel, lifecycle and bounded provider unavailability/recovery. These are API-owned execution results, not reviewer reruns.
+- Current build identity ties three compiled/packaged files to IMP-56. Current854 foundation cases are reused, not re-executed by this reviewer. Historical API confidence/receipts are not substituted for integrated results.
+- Cleanup receipt reports35 exact test PIDs and7 private roots absent. Current normal desktop cleanup is distinguished from historical IMP-57 forced CLI teardown and IMP-59 no-work quit. No claim of new live process audit by reviewer.
+- No changed assertion needs an executable check. Reviewer performed only file/diff/hash/evidence reads and report bookkeeping; no tests, builds, apps, providers or cleanup operations.
 
 ## Findings
-**None.** No actionable durable test-code quality/correctness issue established. No Local Fix, source defect, Design Impact or requirement gap promoted. No existing source findings reopened.
+**None.** No actionable changed durable test defect, weakened assertion or source defect established. No failure classification or new follow-up.
 
 ## Follow-ups
-Added this review: **None**. FU-001 remains existing out-of-scope test-tree typing debt; FU-002 is already incorporated into R2. No source score deduction or new task.
+Added: **None**. FU-001 remains unrelated typing debt; FU-002 incorporated into R2.
 
-## Delivery Limits Preserved
-- **IMP-44 overall DMG build failed at hdiutil resize35.** Tested current unpacked .app/ZIP availability is not distribution/packaging success. Delivery must resolve and verify the packaging gate before any distribution-ready claim.
-- **AC-006 integrated-base/finalization evidence remains Delivery-owned and outstanding.** API's stage Pass does not assert that merge/integration occurred. Plan reruns by actual integration impact and rebuild affected outputs per TESTING.md.
-- Actual Windows/WSL and standalone strict vue-tsc remain unrun; deterministic Windows/force/updater controls are not platform certification. No updater installation, paid inference, installed-app/user-data operation, merge, release or install is authorized by this review.
-- No claim that the historical Nuxt/Codex incident itself was reproduced or conclusively fixed. Current supported journeys have their own scoped evidence.
+## Delivery Limits
+- IMP-56 current unsigned full macOS build/DMG VALID succeeds; IMP-44 failure remains historical, not a current packaging blocker. Delivery independently verifies raw evidence and artifact provenance.
+- AC-006 finalization, fresh-base check and documentation synchronization remain Delivery-owned; design cases retain pending-implementation wording to update. Any new integration impact follows TESTING.md; do not blindly repeat current successful runs.
+- Actual Windows/WSL, strict standalone vue-tsc, paid inference and historical Nuxt incident reproduction remain unrun. Deterministic platform controls are not certification. No release/install, updater installation, installed-app/user-data interaction or target push authorization is added by this review.
 
 ## Latest Authoritative Result
-- **Pass — proportional successful API/E2E test-code review, round1 / CRR-004.**
-- Both added durable paths reviewed; unresolved findings: **None**.
-- Recommended recipient: **`/software_engineering_team/delivery_engineer`**, returned successful-test-review rule, for integration/docs/verification and packaging disposition — not automatic release.
-- **Large/High unchanged.** Source report remains CRR-003; API confidence remains API-REV-001's95.3%. This separate review neither repeats that score nor upgrades stage acceptance into final ticket/release acceptance.
+- **Not Applicable — no durable test changes; review gate satisfied**, proportional round2 / **CRR-006**.
+- Unresolved findings: **None**. Existing durable CRR-004 Pass retained; source CRR-005 and API-REV-002 results remain distinct authorities.
+- Recommended recipient: **`/software_engineering_team/delivery_engineer`** for resumed delivery verification/docs/finalization, not automatic release.

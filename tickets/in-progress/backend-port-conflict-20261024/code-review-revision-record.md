@@ -8,6 +8,7 @@
 | CRR-003 | code-review-report.md | Implementation Review / IR-004 R2 visibility | Pass for D3.1 only | Pass for R2 API/E2E | None open; CR-001/002 remain resolved |
 | CRR-004 | api-e2e-test-review-report.md | Proportional successful-test review / API-REV-001 | No prior test-review result | Pass for Delivery | None |
 | CRR-005 | code-review-report.md | Implementation Review / IR-005 DR-001 integration | CRR-003 source Pass, CRR-004 test Pass on prior source | Pass for integrated API/E2E | None; CR-001/002 retained resolved |
+| CRR-006 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-002 | CRR-004 durable Pass; CRR-005 integrated source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -106,3 +107,13 @@ None.
 - IMP-56 full build/DMG verify now Pass; IMP-44 old failure retained. IMP-57 forced=true CLI cleanup is not quit proof; IMP-59 actual preload no-work quit221ms/no force is scoped separately. No integrated active-work/provider acceptance inferred.
 - Route: returned source-pass rule to `/software_engineering_team/api_e2e_engineer` only. Renew current API-03/05/06B/07/09/09B/10 equivalents; preserve historical04/06 and prior95.3%, no duplicates. Following validation/test review, Delivery retains fresh-base/raw-evidence/docs/AC-006 finalization gates.
 - No target merge/push/release/install, user-data/installed-app operation, paid inference or Windows/WSL certification. Reviewer changed only source report/history and audit receipt; prior test-review report, Delivery records and two SDK dist prerequisites preserved.
+
+
+### CRR-006 — Renewed integrated successful API/E2E test-review gate
+- Canonical `api-e2e-test-review-report.md`, proportional round2. Trigger API-REV-002 Pass at5f46d5ccf5838680d851dd6258989baf557feed6; confidence95.3% is API-owned, not reviewer rescoring. Broader validation Required/completed. Large/High unchanged.
+- R2/D4.1/SR-001..008/ARCH-REV-004/IR-005/DR-001/CRR-005; source2c47bcd646ccd371a180dbc510fd1e30aee9144f, integrated base67994daba0adf6eb8c6bc05827b5fab6b2975aa4. No source changes after reviewf4e7eb4eb.
+- **Not Applicable: no durable test file changed.** Diff outside tickets empty; both standalone paths retain CRR-004 hashes. Six temporary probes only change output directory selection; sequential ticket runner and receipts are execution artifacts, not production/durable source scope. No threshold/full scorecard applied.
+- Bounded evidence review confirms seven current result files Pass/no errors, nine current provenance hashes match. Current854 foundation checks reused; no reviewer rerun. Existing supported scenarios unchanged; no assertion weakening, product finding, unresolved test finding or new follow-up.
+- Current source-specific standalone/Studio/native/Codex/query/panel/recovery/IPC results replace the missing integrated journey evidence, not historical04/06. Cleanup receipt35 exact PIDs/7 roots absent. IMP-56 current full build succeeds; IMP-44 historical failure retained. Forced IMP-57 and no-work IMP-59 not used as active-work proof.
+- Next recipient `/software_engineering_team/delivery_engineer`, successful post-API review route with N/A gate satisfied. Delivery retains fresh-base/raw-proof/docs synchronization/AC-006 finalization. No automatic target push/release/install or platform certification.
+- Reviewer modified only separate test report/history. Source report, API/Delivery evidence and SDK dist prerequisites untouched; no test/build/app/provider execution.
