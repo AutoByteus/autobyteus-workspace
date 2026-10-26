@@ -9,6 +9,7 @@ import { ListAvailableAgentsMcpAdapterProvider } from "./list-available-agents-m
 import { ListPeerNodesMcpAdapterProvider } from "./list-peer-nodes-mcp-adapter-provider.js";
 
 import { ProjectTaskToolsMcpAdapterProvider } from "./project-task-tools-mcp-adapter-provider.js";
+import { MemoryToolsMcpAdapterProvider } from "./memory-tools-mcp-adapter-provider.js";
 
 export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterProvider[] => [
   new SendMessageToMcpAdapterProvider(),
@@ -20,4 +21,5 @@ export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterP
   new ListAvailableAgentsMcpAdapterProvider(),
   new ListPeerNodesMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),
+  new MemoryToolsMcpAdapterProvider(),
 ];
