@@ -1,6 +1,8 @@
 import { type Event as ElectronEvent, type WebContentsView } from 'electron'
 import {
   type BrowserReadyState,
+  type BrowserHistoryDirection,
+  type BrowserHistoryState,
   type BrowserTabRecord,
   BrowserTabError,
 } from './browser-tab-types'
@@ -9,6 +11,20 @@ const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'file:'])
 const POPUP_ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'file:', 'about:'])
 
 export class BrowserTabNavigation {
+  getHistoryState(session: BrowserTabRecord): BrowserHistoryState {
+    const history = session.view.webContents.navigationHistory
+    return { canGoBack: history.canGoBack(), canGoForward: history.canGoForward() }
+  }
+
+  navigateHistory(session: BrowserTabRecord, direction: BrowserHistoryDirection): void {
+    const history = session.view.webContents.navigationHistory
+    if (direction === 'back') {
+      if (history.canGoBack()) history.goBack()
+    } else if (history.canGoForward()) {
+      history.goForward()
+    }
+  }
+
   normalizeUrl(value: string): string {
     const normalizedValue = typeof value === 'string' ? value.trim() : ''
     if (!normalizedValue) {

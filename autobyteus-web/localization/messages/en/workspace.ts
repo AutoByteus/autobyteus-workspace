@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "Back",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "Forward",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",

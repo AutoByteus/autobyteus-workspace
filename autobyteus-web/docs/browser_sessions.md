@@ -82,6 +82,24 @@ The current settlement rules are:
 
 This keeps navigation lifecycle policy in one place and prevents Browser session calls from hanging when the URL changes without a full reload or when Electron reports a provisional failure path.
 
+### Desktop Back / Forward
+
+The Browser toolbar has localized, keyboard-focusable Back and Forward buttons.
+Each is enabled only when the active tab's native history can traverse in that direction.
+Chromium owns document, hash and History API entries (including same-URL entries),
+forward-branch truncation after new navigation, and page/unload restrictions.
+Histories remain independent per live tab; switching or maximizing does not recreate them.
+No history restoration or new agent-facing tool is provided.
+
+The shell-only `navigateBrowserHistory({ tabId, direction: 'back' | 'forward' })`
+bridge uses `browser-shell:navigate-history`. Main checks the actual IPC sender,
+attachment, lease and active tab synchronously before dispatch. An inactive request
+is inert; malformed/unattached/foreign requests reject. Unavailable directions do nothing.
+The response is a current snapshot, **not load completion**. Native navigation and
+stop-loading events publish updated `canGoBack` / `canGoForward` flags even if the
+URL does not change. Capability-only updates preserve unfinished address edits.
+Existing address/reload readiness semantics and persistent Browser partition are unchanged.
+
 ### Server browser boundary
 
 The server owns:

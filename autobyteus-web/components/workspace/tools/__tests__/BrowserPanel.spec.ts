@@ -40,6 +40,8 @@ describe('BrowserPanel', () => {
     store.sessions = [
       {
         tab_id: 'abc123',
+        canGoBack: false,
+        canGoForward: false,
         title: 'Google Browser Test',
         url: 'https://www.google.com/',
       },
@@ -81,6 +83,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -92,6 +96,8 @@ describe('BrowserPanel', () => {
             sessions: [
               {
                 tab_id: 'tab-1',
+                canGoBack: false,
+                canGoForward: false,
                 title: 'Example',
                 url: 'https://example.com/',
                 deviceEmulation: { mode: 'desktop', profile: null },
@@ -103,6 +109,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -140,6 +148,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Google',
               url: 'https://www.google.com/',
             },
@@ -150,6 +160,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Google',
               url: 'https://www.google.com/',
             },
@@ -183,6 +195,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -194,6 +208,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -204,6 +220,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -235,6 +253,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
               deviceEmulation: { mode: 'desktop', profile: null },
@@ -247,6 +267,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
               deviceEmulation: {
@@ -265,6 +287,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
               deviceEmulation: { mode: 'desktop', profile: null },
@@ -297,6 +321,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -312,6 +338,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -342,6 +370,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -353,6 +383,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Example',
               url: 'https://example.com/',
             },
@@ -384,6 +416,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-7',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Retained Browser Tab',
               url: 'https://example.com/retained',
             },
@@ -395,6 +429,8 @@ describe('BrowserPanel', () => {
           sessions: [
             {
               tab_id: 'tab-7',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Retained Browser Tab',
               url: 'https://example.com/retained',
             },
@@ -421,4 +457,46 @@ describe('BrowserPanel', () => {
     expect(store.activeSession?.url).toBe('https://example.com/retained')
     expect(document.body.textContent ?? '').toContain('Retained Browser Tab')
   })
+  it('labels and disables history controls with no tab', async () => {
+    const wrapper = mount(BrowserPanel)
+    await flushPromises()
+    for (const label of ['Back', 'Forward']) {
+      const button = wrapper.get(`button[aria-label="${label}"]`)
+      expect(button.attributes('title')).toBe(label)
+      expect(button.attributes('disabled')).toBeDefined()
+      expect(button.attributes('type')).toBe('button')
+    }
+    wrapper.unmount()
+  })
+
+  it('preserves typed addresses on capability-only updates and captures active history intent', async () => {
+    const store = useBrowserShellStore()
+    store.initialized = true
+    store.browserAvailable = true
+    store.activeTabId = 't1'
+    const first = { tab_id: 't1', title: 'Same', url: 'http://localhost/same', canGoBack: true, canGoForward: false }
+    store.sessions = [first]
+    vi.spyOn(store, 'updateHostBounds').mockResolvedValue()
+    const navigate = vi.spyOn(store, 'navigateHistory').mockResolvedValue()
+    const wrapper = mount(BrowserPanel)
+    await flushPromises()
+    await wrapper.get('input').setValue('unfinished.example/pat')
+    store.sessions = [{ ...first, canGoForward: true }]
+    await nextTick()
+    expect((wrapper.get('input').element as HTMLInputElement).value).toBe('unfinished.example/pat')
+    expect(wrapper.get('button[aria-label="Forward"]').attributes('disabled')).toBeUndefined()
+    await wrapper.get('button[aria-label="Back"]').trigger('click')
+    expect(navigate).toHaveBeenCalledWith({ tabId: 't1', direction: 'back' })
+    store.sessions = [{ ...first, url: 'http://localhost/earlier' }]
+    await nextTick()
+    expect((wrapper.get('input').element as HTMLInputElement).value).toBe('http://localhost/earlier')
+    await wrapper.get('input').setValue('another edit')
+    store.sessions = [{ ...first, tab_id: 't2', url: 'http://localhost/earlier' }]
+    store.activeTabId = 't2'
+    await nextTick()
+    expect((wrapper.get('input').element as HTMLInputElement).value).toBe('http://localhost/earlier')
+    expect(wrapper.get('button[aria-label="Forward"]').attributes('disabled')).toBeDefined()
+    wrapper.unmount()
+  })
+
 })
