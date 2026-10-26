@@ -1,6 +1,7 @@
 import type { Client, SdkHttpError } from '@modelcontextprotocol/client';
 import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
 import type { StreamableHttpMcpServerConfig } from '../types.js';
+import { resolveMcpValue, resolveMcpValues } from '../mcp-secret-resolver.js';
 
 export class HttpManagedMcpServer extends BaseManagedMcpServer {
   protected async createClientSession(): Promise<Client> {
@@ -11,8 +12,15 @@ export class HttpManagedMcpServer extends BaseManagedMcpServer {
     // The SDK sends requestInit.headers on every POST and on the SSE GET. Its defaults are kept:
     // redirects are followed only within the configured URL's origin (redirectPolicy 'same-origin'),
     // and connect() runs the 2025 initialize handshake (versionNegotiation 'legacy').
+    // Secret references become values only here, for this transport's request headers.
+    const resolved = {
+      headers: await resolveMcpValues(config.headers, 'header', config.server_id, this.secretResolver),
+      token: config.token === null
+        ? null
+        : await resolveMcpValue(config.token, { serverId: config.server_id, field: 'token' }, this.secretResolver),
+    };
     const transport = new StreamableHTTPClientTransport(new URL(config.url), {
-      requestInit: { headers: config.requestHeaders() }
+      requestInit: { headers: config.requestHeaders(resolved) }
     });
     this.registerCleanup(() => transport.close());
 

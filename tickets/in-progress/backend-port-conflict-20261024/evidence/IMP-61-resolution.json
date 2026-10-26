@@ -1,0 +1,18 @@
+{
+  "priorCandidate": "b16beba9e1b60ffb949853a8bb861ccf5c189bd5",
+  "checkpoint": "b7ab9e3a4",
+  "base": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "lockfileChanged": false,
+  "foundation": "core MCP types/config/instance/resolver/transports changed",
+  "resolutions": {
+    "generatedGraphql": "Fully generated from integrated compiled schema/operations; storedSecrets/needsSecret plus prior background view contract preserved",
+    "designCases": "Retained ticket observational lookup and incoming MCP dead-caller lesson plus expanded Notice; case9/10 numbering preserved"
+  },
+  "runtimeAudit": [
+    "server-runtime keeps shutdown.stage vault initialization before incoming synchronous installRuntimeMcpSecretResolver, then existing staged migrations/checkpoint/cleanup transfer. Installer stores resolver only, no connection/spawn/async teardown authority.",
+    "Actual chain: server startup installer -> McpServerInstanceManager.useSecretResolver -> create managed stdio/http instance -> resolveMcpValue(s) on connection -> runtime requireService -> vault resolveForUse(mcpServer). No secret value added to view/state.",
+    "MCP instance active map and cleanup ownership remain with existing manager; removed workspace provider had no caller, per incoming approved lesson. Native scope/anchors, backend single shutdown owner, desktop awaited quit and observation-only peek unchanged.",
+    "Compiled schema and repository operations supply generated selection, no arbitrary conflict choice. Both ambient shared status imports/derived monitor preserved."
+  ],
+  "sourceGenerationSha256": "492a35feed1770344df45239a89bc08c24722c6c876a641de917b419758b94d3"
+}

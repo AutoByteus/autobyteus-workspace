@@ -1436,10 +1436,69 @@ export type ImportMcpServerConfigsResult = {
   failures: Array<ImportMcpServerConfigFailure>;
   importedCount: Scalars['Int']['output'];
   message: Scalars['String']['output'];
+  needsSecret: Array<McpServerField>;
+  storedSecrets: Array<McpServerField>;
   success: Scalars['Boolean']['output'];
 };
 
+export type McpConfigEntry = {
+  __typename?: 'McpConfigEntry';
+  name: Scalars['String']['output'];
+  state: McpSecretState;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+export type McpConfigEntryInput = {
+  name: Scalars['String']['input'];
+  secret: Scalars['Boolean']['input'];
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum McpSecretMatch {
+  AlwaysSecret = 'ALWAYS_SECRET',
+  Name = 'NAME',
+  ValuePrefix = 'VALUE_PREFIX'
+}
+
+export type McpSecretMoveCandidate = {
+  __typename?: 'McpSecretMoveCandidate';
+  field: Scalars['String']['output'];
+  matchedBy: McpSecretMatch;
+  serverId: Scalars['String']['output'];
+};
+
+export enum McpSecretState {
+  Configured = 'CONFIGURED',
+  Missing = 'MISSING',
+  Plain = 'PLAIN',
+  VaultUnavailable = 'VAULT_UNAVAILABLE'
+}
+
+export type McpSecretSuggestionRule = {
+  __typename?: 'McpSecretSuggestionRule';
+  alwaysSecretFields: Array<Scalars['String']['output']>;
+  nameKeywords: Array<Scalars['String']['output']>;
+  valuePrefixes: Array<Scalars['String']['output']>;
+};
+
 export type McpServerConfigUnion = StdioMcpServerConfig | StreamableHttpMcpServerConfig;
+
+export type McpServerFailure = {
+  __typename?: 'McpServerFailure';
+  reason: Scalars['String']['output'];
+  serverId: Scalars['String']['output'];
+};
+
+export type McpServerField = {
+  __typename?: 'McpServerField';
+  field: Scalars['String']['output'];
+  serverId: Scalars['String']['output'];
+};
+
+export type McpServerFieldInput = {
+  field: Scalars['String']['input'];
+  serverId: Scalars['String']['input'];
+};
 
 export type McpServerInput = {
   enabled?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1448,6 +1507,11 @@ export type McpServerInput = {
   streamableHttpConfig?: InputMaybe<StreamableHttpMcpServerConfigInput>;
   toolNamePrefix?: InputMaybe<Scalars['String']['input']>;
   transportType: McpTransportTypeEnum;
+};
+
+export type McpTokenInput = {
+  keep?: InputMaybe<Scalars['Boolean']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum McpTransportTypeEnum {
@@ -1692,6 +1756,14 @@ export type ModelSourceStatusObject = {
   successfulUnitCount: Scalars['Int']['output'];
 };
 
+export type MoveMcpSecretsToVaultResult = {
+  __typename?: 'MoveMcpSecretsToVaultResult';
+  backupPath?: Maybe<Scalars['String']['output']>;
+  moved: Array<McpServerField>;
+  serversFailingAfterMove: Array<McpServerFailure>;
+  skipped: Array<McpServerField>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPeerNode: PeerNodeGql;
@@ -1752,6 +1824,7 @@ export type Mutation = {
   indexProjectTasks: Scalars['Boolean']['output'];
   markUpdateNotificationsRead: Array<UpdateNotification>;
   moveFileOrFolder: Scalars['String']['output'];
+  moveMcpSecretsToVault: MoveMcpSecretsToVaultResult;
   prepareAgentRun: PrepareAgentRunResult;
   probeCustomProvider: CustomProviderProbeResultObject;
   rebuildProjectTaskIndex: Scalars['Boolean']['output'];
@@ -2102,6 +2175,11 @@ export type MutationMoveFileOrFolderArgs = {
   destinationPath: Scalars['String']['input'];
   sourcePath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type MutationMoveMcpSecretsToVaultArgs = {
+  selection: Array<McpServerFieldInput>;
 };
 
 
@@ -2686,6 +2764,8 @@ export type Query = {
   listMemoryHubUrlCandidates: Array<ServerAddressCandidateGql>;
   listMemoryImports: Array<MemoryImportSummaryGql>;
   listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
+  mcpSecretMoveCandidates: Array<McpSecretMoveCandidate>;
+  mcpSecretSuggestionRule: McpSecretSuggestionRule;
   mcpServers: Array<McpServerConfigUnion>;
   peerAddressCandidates: Array<Scalars['String']['output']>;
   peerNodeAvailability: PeerNodeAvailabilityGql;
@@ -3490,7 +3570,7 @@ export type StdioMcpServerConfig = {
   command: Scalars['String']['output'];
   cwd?: Maybe<Scalars['String']['output']>;
   enabled: Scalars['Boolean']['output'];
-  env?: Maybe<Scalars['JSON']['output']>;
+  env: Array<McpConfigEntry>;
   serverId: Scalars['String']['output'];
   toolNamePrefix?: Maybe<Scalars['String']['output']>;
   transportType: McpTransportTypeEnum;
@@ -3500,7 +3580,7 @@ export type StdioMcpServerConfigInput = {
   args?: InputMaybe<Array<Scalars['String']['input']>>;
   command: Scalars['String']['input'];
   cwd?: InputMaybe<Scalars['String']['input']>;
-  env?: InputMaybe<Scalars['JSON']['input']>;
+  env?: InputMaybe<Array<McpConfigEntryInput>>;
 };
 
 export type StopDelegatedExecutionResult = {
@@ -3514,17 +3594,17 @@ export type StopDelegatedExecutionResult = {
 export type StreamableHttpMcpServerConfig = {
   __typename?: 'StreamableHttpMcpServerConfig';
   enabled: Scalars['Boolean']['output'];
-  headers?: Maybe<Scalars['JSON']['output']>;
+  headers: Array<McpConfigEntry>;
   serverId: Scalars['String']['output'];
-  token?: Maybe<Scalars['String']['output']>;
+  tokenState?: Maybe<McpSecretState>;
   toolNamePrefix?: Maybe<Scalars['String']['output']>;
   transportType: McpTransportTypeEnum;
   url: Scalars['String']['output'];
 };
 
 export type StreamableHttpMcpServerConfigInput = {
-  headers?: InputMaybe<Scalars['JSON']['input']>;
-  token?: InputMaybe<Scalars['String']['input']>;
+  headers?: InputMaybe<Array<McpConfigEntryInput>>;
+  token?: InputMaybe<McpTokenInput>;
   url: Scalars['String']['input'];
 };
 
@@ -4771,7 +4851,7 @@ export type ConfigureMcpServerMutationVariables = Exact<{
 }>;
 
 
-export type ConfigureMcpServerMutation = { __typename?: 'Mutation', configureMcpServer: { __typename?: 'ConfigureMcpServerResult', savedConfig: { __typename: 'StdioMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, command: string, args?: Array<string> | null, env?: any | null, cwd?: string | null } | { __typename: 'StreamableHttpMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, url: string, token?: string | null, headers?: any | null } } };
+export type ConfigureMcpServerMutation = { __typename?: 'Mutation', configureMcpServer: { __typename?: 'ConfigureMcpServerResult', savedConfig: { __typename: 'StdioMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, command: string, args?: Array<string> | null, cwd?: string | null, env: Array<{ __typename?: 'McpConfigEntry', name: string, value?: string | null, state: McpSecretState }> } | { __typename: 'StreamableHttpMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, url: string, tokenState?: McpSecretState | null, headers: Array<{ __typename?: 'McpConfigEntry', name: string, value?: string | null, state: McpSecretState }> } } };
 
 export type DeleteMcpServerMutationVariables = Exact<{
   serverId: Scalars['String']['input'];
@@ -4792,7 +4872,14 @@ export type ImportMcpServerConfigsMutationVariables = Exact<{
 }>;
 
 
-export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }> } };
+export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }>, storedSecrets: Array<{ __typename: 'McpServerField', serverId: string, field: string }>, needsSecret: Array<{ __typename: 'McpServerField', serverId: string, field: string }> } };
+
+export type MoveMcpSecretsToVaultMutationVariables = Exact<{
+  selection: Array<McpServerFieldInput> | McpServerFieldInput;
+}>;
+
+
+export type MoveMcpSecretsToVaultMutation = { __typename?: 'Mutation', moveMcpSecretsToVault: { __typename: 'MoveMcpSecretsToVaultResult', backupPath?: string | null, moved: Array<{ __typename: 'McpServerField', serverId: string, field: string }>, skipped: Array<{ __typename: 'McpServerField', serverId: string, field: string }>, serversFailingAfterMove: Array<{ __typename: 'McpServerFailure', serverId: string, reason: string }> } };
 
 export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
 
@@ -5239,7 +5326,7 @@ export type GetQwenSetupStatusQuery = { __typename?: 'Query', qwenSetupStatus: {
 export type GetMcpServersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMcpServersQuery = { __typename?: 'Query', mcpServers: Array<{ __typename: 'StdioMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, command: string, args?: Array<string> | null, env?: any | null, cwd?: string | null } | { __typename: 'StreamableHttpMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, url: string, token?: string | null, headers?: any | null }> };
+export type GetMcpServersQuery = { __typename?: 'Query', mcpServers: Array<{ __typename: 'StdioMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, command: string, args?: Array<string> | null, cwd?: string | null, env: Array<{ __typename?: 'McpConfigEntry', name: string, value?: string | null, state: McpSecretState }> } | { __typename: 'StreamableHttpMcpServerConfig', serverId: string, transportType: McpTransportTypeEnum, enabled: boolean, toolNamePrefix?: string | null, url: string, tokenState?: McpSecretState | null, headers: Array<{ __typename?: 'McpConfigEntry', name: string, value?: string | null, state: McpSecretState }> }> };
 
 export type PreviewMcpServerToolsQueryVariables = Exact<{
   input: McpServerInput;
@@ -5247,6 +5334,16 @@ export type PreviewMcpServerToolsQueryVariables = Exact<{
 
 
 export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServerTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string }> };
+
+export type GetMcpSecretSuggestionRuleQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMcpSecretSuggestionRuleQuery = { __typename?: 'Query', mcpSecretSuggestionRule: { __typename: 'McpSecretSuggestionRule', nameKeywords: Array<string>, valuePrefixes: Array<string>, alwaysSecretFields: Array<string> } };
+
+export type GetMcpSecretMoveCandidatesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMcpSecretMoveCandidatesQuery = { __typename?: 'Query', mcpSecretMoveCandidates: Array<{ __typename: 'McpSecretMoveCandidate', serverId: string, field: string, matchedBy: McpSecretMatch }> };
 
 export type ListMemoryExplorerSourcesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8798,7 +8895,11 @@ export const ConfigureMcpServerDocument = gql`
         toolNamePrefix
         command
         args
-        env
+        env {
+          name
+          value
+          state
+        }
         cwd
       }
       ... on StreamableHttpMcpServerConfig {
@@ -8807,8 +8908,12 @@ export const ConfigureMcpServerDocument = gql`
         enabled
         toolNamePrefix
         url
-        token
-        headers
+        tokenState
+        headers {
+          name
+          value
+          state
+        }
       }
     }
   }
@@ -8931,6 +9036,16 @@ export const ImportMcpServerConfigsDocument = gql`
       serverId
       reason
     }
+    storedSecrets {
+      __typename
+      serverId
+      field
+    }
+    needsSecret {
+      __typename
+      serverId
+      field
+    }
   }
 }
     `;
@@ -8956,6 +9071,51 @@ export function useImportMcpServerConfigsMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>(ImportMcpServerConfigsDocument, options);
 }
 export type ImportMcpServerConfigsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>;
+export const MoveMcpSecretsToVaultDocument = gql`
+    mutation MoveMcpSecretsToVault($selection: [McpServerFieldInput!]!) {
+  moveMcpSecretsToVault(selection: $selection) {
+    __typename
+    backupPath
+    moved {
+      __typename
+      serverId
+      field
+    }
+    skipped {
+      __typename
+      serverId
+      field
+    }
+    serversFailingAfterMove {
+      __typename
+      serverId
+      reason
+    }
+  }
+}
+    `;
+
+/**
+ * __useMoveMcpSecretsToVaultMutation__
+ *
+ * To run a mutation, you first call `useMoveMcpSecretsToVaultMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useMoveMcpSecretsToVaultMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useMoveMcpSecretsToVaultMutation({
+ *   variables: {
+ *     selection: // value for 'selection'
+ *   },
+ * });
+ */
+export function useMoveMcpSecretsToVaultMutation(options: VueApolloComposable.UseMutationOptions<MoveMcpSecretsToVaultMutation, MoveMcpSecretsToVaultMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<MoveMcpSecretsToVaultMutation, MoveMcpSecretsToVaultMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<MoveMcpSecretsToVaultMutation, MoveMcpSecretsToVaultMutationVariables>(MoveMcpSecretsToVaultDocument, options);
+}
+export type MoveMcpSecretsToVaultMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<MoveMcpSecretsToVaultMutation, MoveMcpSecretsToVaultMutationVariables>;
 export const UpdateMemoryHubConfigDocument = gql`
     mutation UpdateMemoryHubConfig($input: UpdateMemoryHubConfigInput!) {
   updateMemoryHubConfig(input: $input) {
@@ -11205,7 +11365,11 @@ export const GetMcpServersDocument = gql`
       toolNamePrefix
       command
       args
-      env
+      env {
+        name
+        value
+        state
+      }
       cwd
     }
     ... on StreamableHttpMcpServerConfig {
@@ -11214,8 +11378,12 @@ export const GetMcpServersDocument = gql`
       enabled
       toolNamePrefix
       url
-      token
-      headers
+      tokenState
+      headers {
+        name
+        value
+        state
+      }
     }
   }
 }
@@ -11272,6 +11440,66 @@ export function usePreviewMcpServerToolsLazyQuery(variables?: PreviewMcpServerTo
   return VueApolloComposable.useLazyQuery<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>(PreviewMcpServerToolsDocument, variables, options);
 }
 export type PreviewMcpServerToolsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>;
+export const GetMcpSecretSuggestionRuleDocument = gql`
+    query GetMcpSecretSuggestionRule {
+  mcpSecretSuggestionRule {
+    __typename
+    nameKeywords
+    valuePrefixes
+    alwaysSecretFields
+  }
+}
+    `;
+
+/**
+ * __useGetMcpSecretSuggestionRuleQuery__
+ *
+ * To run a query within a Vue component, call `useGetMcpSecretSuggestionRuleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMcpSecretSuggestionRuleQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetMcpSecretSuggestionRuleQuery();
+ */
+export function useGetMcpSecretSuggestionRuleQuery(options: VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>(GetMcpSecretSuggestionRuleDocument, {}, options);
+}
+export function useGetMcpSecretSuggestionRuleLazyQuery(options: VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>(GetMcpSecretSuggestionRuleDocument, {}, options);
+}
+export type GetMcpSecretSuggestionRuleQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetMcpSecretSuggestionRuleQuery, GetMcpSecretSuggestionRuleQueryVariables>;
+export const GetMcpSecretMoveCandidatesDocument = gql`
+    query GetMcpSecretMoveCandidates {
+  mcpSecretMoveCandidates {
+    __typename
+    serverId
+    field
+    matchedBy
+  }
+}
+    `;
+
+/**
+ * __useGetMcpSecretMoveCandidatesQuery__
+ *
+ * To run a query within a Vue component, call `useGetMcpSecretMoveCandidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMcpSecretMoveCandidatesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetMcpSecretMoveCandidatesQuery();
+ */
+export function useGetMcpSecretMoveCandidatesQuery(options: VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>(GetMcpSecretMoveCandidatesDocument, {}, options);
+}
+export function useGetMcpSecretMoveCandidatesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>(GetMcpSecretMoveCandidatesDocument, {}, options);
+}
+export type GetMcpSecretMoveCandidatesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetMcpSecretMoveCandidatesQuery, GetMcpSecretMoveCandidatesQueryVariables>;
 export const ListMemoryExplorerSourcesDocument = gql`
     query ListMemoryExplorerSources {
   listMemoryExplorerSources {

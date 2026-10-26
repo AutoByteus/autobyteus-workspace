@@ -1,0 +1,6 @@
+Auto-merging autobyteus-server-ts/src/server-runtime.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+CONFLICT (content): Merge conflict in autobyteus-web/generated/graphql.ts
+Auto-merging docs/design-cases.md
+CONFLICT (content): Merge conflict in docs/design-cases.md
+Automatic merge failed; fix conflicts and then commit the result.

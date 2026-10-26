@@ -13,6 +13,7 @@ import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import type { ServerOptions } from "./app.js";
 import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
+import { installRuntimeMcpSecretResolver } from "./secret-management/resolution/mcp-secret-resolver.js";
 import {
   selectedTestVaultPaths,
   selectSecretVaultSource,
@@ -164,6 +165,8 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
       summary: `Failed to initialize secret vault: ${String(error)}`,
     });
   }
+  // Every managed MCP server resolves its secret references through the vault runtime, from here on.
+  installRuntimeMcpSecretResolver();
 
   try {
     const runner = getAppDataMigrationRunner();

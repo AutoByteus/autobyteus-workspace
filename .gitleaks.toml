@@ -61,6 +61,10 @@ regexes = [
   '''^[0-9a-f]{7,64}$''',
   '''^[0-9a-f]{7,40}\.\.\.?[0-9a-f]{7,40}$''',
   '''^([A-Za-z0-9]+[_-])*[0-9a-fA-F]{8}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{4}[-_][0-9a-fA-F]{12}$''',
+  # Vault secret IDs of MCP secrets (autobyteus-244): `mcp.<uuid>` names a
+  # vault entry (GLOSSARY.md "Vault secret ID"); it is not the secret's value.
+  # They appear as `{"vaultSecretId": "mcp.<uuid>"}` in tests and evidence.
+  '''^mcp\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$''',
 ]
 
 # Words, slugs, file names and ticket case IDs that follow words like "api" or
@@ -122,6 +126,17 @@ regexTarget = "secret"
 regexes = [
   '''(?i)(synthetic|canary|placeholder|replace_with|dummy|fake)''',
   '''^(sk-)?1234567890abcdefghijklmnop$''',
+]
+
+# autobyteus-244 probe: `probes/agent-shell.sh` plays an agent shell and sends
+# a deliberately forged, word-like `Authorization: Bearer` value to prove the
+# credential proxy replaces it. It is not a token. Scoped to this one rule and
+# file (the ticket's in-progress and archived paths).
+[[allowlists]]
+description = "Forged bearer value in the autobyteus-244 credential-proxy probe"
+targetRules = ["curl-auth-header"]
+paths = [
+  '''^tickets/(in-progress|done)/secrets-and-integrations-design/probes/agent-shell\.sh$''',
 ]
 
 # Vendored third-party bundles.

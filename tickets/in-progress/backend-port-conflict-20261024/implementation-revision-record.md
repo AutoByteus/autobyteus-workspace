@@ -52,3 +52,8 @@
 - Foundation rerun: frozen dependency refresh, current compilers/SDK outputs/schema/codegen and854 unique scoped tests pass (146 core,503 server,156 Electron,49 web). Full unsigned desktop build including DMG/ZIP passes; hdiutil DMG checksum VALID. SHA256 and packaged source identity in IMP-56. Prior packaging failure remains historical, not overwritten.
 - IMP-57 current controlled-state rendered inspection passes; CLI group cleanup forced=true is explicit, NOT graceful proof. Separate IMP-59 actual no-work preload app quit passes221ms without force. Both private sentinels retained before exact roots disposed. No active-work cleanup acceptance claimed.61 cumulative authored production files max497 lines.
 - Required next route Large/High Local Fix → Code Reviewer → independent current API/E2E/test review → Delivery. DR-001 current journey equivalents rerun, no duplicate historical API-04/06. Existing confidence/receipts stay exact-source. No target finalization/push, release/install, paid inference, installed app or user-data effects.
+
+## IR-006 — DR-002 integration Local Fix (in progress)
+- Trigger DR-002 after CRR-006, candidateb16beba9e, prior integrated source2c47/base67994. New MCP/vault base0fd9ca4b,21 incoming commits. Delivery records checkpointedb7ab9e3a4.
+- R2/D4.1/SR-001..008/ARCH-REV-004; Large/High unchanged. BEH-001..006 preservation; no new behavior authority. Regenerate integrated GraphQL, preserve both design lessons, audit runtime resolver/cancellation/cleanup composition.
+- Shared core MCP change requires renewed unique foundation854 controls, types/build/generation and narrow new MCP controls. No old packaging-failure reopening: IMP56 was accepted for prior source; new outputs need new provenance. No integrated pass yet.

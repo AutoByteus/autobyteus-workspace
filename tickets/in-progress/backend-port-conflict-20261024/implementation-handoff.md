@@ -1,3 +1,8 @@
+# IR-006 — DR-002 integration Local Fix in progress
+New base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e adds21 commits/MCP vault work. Prior IR-005/CRR-005/API-REV-002/CRR-006 remain exact-source successes at2c47/base67994. Delivery checkpoint preservedb7ab9e3a4; no renewed integrated-ready claim yet. R2/D4.1/SR-001..008/ARCH-REV-004, Large/High unchanged.
+
+---
+# Historical IR-005 handoff
 # Implementation Handoff — IR-005
 
 ## Current outcome: Ready for independent source re-review

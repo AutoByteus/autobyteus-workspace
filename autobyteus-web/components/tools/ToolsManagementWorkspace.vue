@@ -79,6 +79,7 @@
             @bulk-import="showBulkImportView"
             @discover-tools="discoverTools"
             @view-tools="viewToolsForServer"
+            @show-toast="handleShowToast"
           />
         </div>
         <div
@@ -149,7 +150,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
-import type { McpServer, Tool, ToolCategoryGroup } from '~/stores/toolManagementStore';
+import type { Tool, ToolCategoryGroup } from '~/stores/toolManagementStore';
+import type { McpServer } from '~/types/mcpServer';
 import { useToasts, type ToastType } from '~/composables/useToasts';
 import ToolList from '~/components/tools/ToolList.vue';
 import ToolDetailsModal from '~/components/tools/ToolDetailsModal.vue';
