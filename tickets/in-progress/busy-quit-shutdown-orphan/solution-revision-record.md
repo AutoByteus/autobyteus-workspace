@@ -61,3 +61,26 @@
   status is Ready for Approval for this delta; REQ-001 to REQ-005 remain approved (SR-002).
 - Classification: Large / High (unchanged). Routing: held for the user's DEC-005 decision, then
   `/architecture_reviewer`.
+
+## SR-005 — 2026-10-26 — Rebase on current personal and re-check against today's code (autobyteus-284)
+- Trigger: Task `autobyteus-284` from `/project_task_manager` (run
+  `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`): finish and ship this branch; rebase, re-check the design,
+  ask the user DEC-005.
+- Prior status: requirements Ready for Approval (DEC-005), design SR-004 Ready pending DEC-005. Current status: the same,
+  plus DEC-006 resolved by the Solution Designer.
+- Workspace: the five docs-only commits rebased cleanly onto `origin/personal` @ `d74f75a51a` (from `02d6ddf05`).
+- Evidence added: E-A13 to E-A24 (all `Read`), unknowns U-A1 (several busy Claude runs and the 10 s bound) and U-A2
+  (CLI versions; the Claude EOF behavior).
+- Result of the re-check: D1, D2 and D3 stand. Factual deltas: refreshed line numbers; today's AGY helper names and its
+  EPERM contract; the server now owns the Claude CLI process (`ClaudeSdkProcessOwner`); application workers are covered
+  by the sweep; the `start-shutdown` IPC, `restart-server` and `reset-server-data` entries listed under D3.
+- Requirements changes within the direction (DEC-006, Solution Designer): BEH-007 preserved (shutdown never records
+  `terminatedAt`; autobyteus-283 step 1 relies on it), AC-009 (relaunch after quit gives one server; the Task's
+  "Done when"), AC-010. DEC-004 unchanged (force-killed app: follow-up).
+- Design spec: Change Scope section added; SR-005 re-check section; file mapping adds the AGY test move, the AGY test
+  mock and the AGY doc line; validation guidance adds AC-009, AC-010, U-A1, U-A2 and clean-clone proof with isolated data.
+- Follow-ups: `follow-ups.md` created (FU-001 to FU-003 carried from the 2026-10-05 candidates; FU-004 the stop grace
+  value for autobyteus-283 FU-002).
+- Approval: DEC-005 asked of the user again (2026-10-26). REQ-001 to REQ-005 remain approved (SR-002).
+- Classification: Large / High (unchanged). Routing after DEC-005: `/architecture_reviewer` (ARCH-REV-002 of SR-004 +
+  SR-005).

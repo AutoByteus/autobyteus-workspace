@@ -1,18 +1,76 @@
 # Design Spec — busy-quit-shutdown-orphan
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-004`. It revises SR-003 for ARCH-REV-001 (Fail: AR-001 to AR-003).
+- Current solution revision ID: `SR-005` (2026-10-26, autobyteus-284): the SR-004 design re-checked against
+  `origin/personal` @ `d74f75a51a` after a clean rebase. SR-004 revised SR-003 for ARCH-REV-001 (Fail: AR-001 to AR-003).
+- Authorities read (SR-005): the solution-designer skill gates (`requirements-engineering.md`, `architecture-design.md`,
+  `design-principles.md`, `ticket-scope.md`, `finding-the-cause.md`, `handoff.md`); project `DESIGN.md` and
+  `GLOSSARY.md` (§ Nodes). No conflict found. Persisted data is not affected, so the Data Migration Guideline does not
+  apply.
 - Approved requirements: `requirements-doc.md`, Approved in SR-002. DEC-001 is "cancel queued input", DEC-002 is
   "10 s / 15 s", and DEC-003 and DEC-004 are not in this ticket.
 - **Pending requirement delta: DEC-005** (application-initiated terminate also interrupts; AR-001). Proposed and
   awaiting user approval. The D1 shape does not change either way; only the disposition of the application callers
   depends on it.
+- Added in SR-005 within the direction (DEC-006): BEH-007 preserved (shutdown never records `terminatedAt`), AC-009
+  (relaunch gives one server), AC-010.
 - Design status: `Ready` (pending DEC-005 approval).
 - Investigation notes: `investigation-notes.md` (E1–E9, RC-1 to RC-5, E-A1 to E-A12).
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan`.
   - Branch `codex/busy-quit-shutdown-orphan`.
-  - Base `origin/personal` @ `02d6ddf05`. Target `personal`.
+  - Base `origin/personal` @ `d74f75a51a` (rebased 2026-10-26 from `02d6ddf05`). Target `personal`.
+
+## SR-005 Re-check Against Today's Code (2026-10-26)
+Evidence: investigation notes E-A13 to E-A24 (all `Read`). Result: **D1, D2 and D3 stand unchanged in shape.** The
+deltas are factual and small:
+- **D1:** same owners, same callers (E-A13, E-A14; line numbers refreshed below). The new `forceTerminate` (Task-scoped
+  force release) and the idle-shutdown background-task check are not stop-now entry points and are left alone.
+  `stopAllAgentRuns` and the supervisor must keep **not** calling `recordRunTerminated` (BEH-007, E-A15): the fence is
+  added inside `AgentRunManager`, which never writes history, so this holds by construction; AC-010 tests it.
+- **D2:** `server-runtime.ts` shutdown is unchanged in shape (E-A16). The move to `src/utils/process-tree.ts` takes
+  today's AGY functions (E-A18): `parseProcessTable`, the selection (generalized from
+  `selectAgyBackgroundProcessGroups(rows, agyPid, serverPid)` to
+  `selectDescendantProcessGroups(rows, rootPid, excludedPgids)`), `signalProcessGroups`, `processGroupsInactive`, plus
+  the new `selectDescendantPidsInGroup` and `signalPids`. `signalProcessGroups` keeps its current error contract
+  (ESRCH skipped; other errors thrown together); the server sweep catches, logs and continues, so step 5 below reads
+  "skip ESRCH; log EPERM and other errors and continue". AGY's `listAgyBackgroundProcessGroups(agyPid)` becomes a call
+  of `readProcessTable()` + `selectDescendantProcessGroups(rows, agyPid, [agyPgid, serverPgid])` inside
+  `agy-stream-process.ts`. Doc `docs/modules/antigravity_cli_runtime.md:317` is updated.
+- **Claude (E-A17):** the server now owns the Claude CLI process (`ClaudeSdkProcessOwner`: EOF → 2 s → SIGTERM → 5 s →
+  SIGKILL). The graceful path therefore ends Claude itself; the sweep remains the net for a forced or wedged exit and
+  for tool commands in other groups. No change to the Claude owner. Because the finish loop is sequential, U-A1 is
+  measured in validation (several busy Claude runs); the bound holds either way.
+- **Application workers and runtime probes (E-A19):** server descendants in the server's group, covered by sweep target
+  (a). No change.
+- **D3:** the desktop code is unchanged in shape (E-A21). Every quit entry goes through the one memoized `stop()`:
+  Cmd+Q / menu Quit, OS SIGTERM, the 8 s `before-quit` timer, the renderer's `start-shutdown` IPC (`app.quit()`), the
+  updater's `quitAndInstall`, and `main.ts`'s startup-failure cleanup (which calls `stop()` and then `app.exit(1)`;
+  awaiting the memoized stop keeps it correct). `restart-server` and `reset-server-data` call `stopServer` directly and
+  get the 15 s bound and sweep with no quit involved.
+- **Relaunch (E-A22, AC-009):** the desktop already refuses to start while the old server still listens. After D2/D3 no
+  closing server outlives a quit, so a relaunch starts one server. A force-killed or crashed app stays DEC-004 (FU-2).
+- **Bound for operators (E-A23):** the server's own worst-case exit is about 11.5 s (10 s + one `ps` + 1.5 s grace).
+  The Docker and supervisord stop grace (10 s today) is the autobyteus-283 follow-up FU-002; this ticket records the
+  value (about 15 s) in `follow-ups.md` and does not change Docker files (Change Scope).
+
+## Change Scope (Mandatory)
+- In scope: UC-001 to UC-004. Areas: the stop-now methods of `AgentRunManager` (D1); the server process's shutdown
+  handler and a new process-tree utility moved out of AGY (D2); the desktop's server stop and quit sequencing,
+  macOS/Linux and Windows managers (D3); their tests and docs.
+- Derived consumers: the moved AGY process-table helper feeds `agy-stream-process.ts` (re-pointed, same behavior) and
+  its tests (moved or re-mocked). No stored structure changes; `N/A` otherwise.
+- Deliberately left alone:
+  - `AgentRunTermination.prepare` / `tryPrepareIfQuiescent` / `forceTerminate` and the Team, Org, task-copy and
+    Mixed-Team drain-and-cancel flows (E-A2, E-A14);
+  - root-hosted child fencing (already interrupts);
+  - the run history writers (`recordRunTerminated`), so BEH-007 holds;
+  - the Claude process owner's own release sequence (E-A17);
+  - composer Stop (DEC-003), a data-root guard (DEC-004), native background processes on run Terminate (FU-003);
+  - Docker, supervisord and launcher stop timeouts (autobyteus-283 FU-002) and Windows graceful stop verification
+    (autobyteus-283 FU-001).
+- Follow-ups: `follow-ups.md` FU-001 (DEC-003), FU-002 (DEC-004), FU-003 (native background processes on Terminate),
+  FU-004 (the stop grace value for autobyteus-283 FU-002).
 
 ## SR-004 Changes Against SR-003 (ARCH-REV-001)
 - **AR-001:** the application callers are mapped (DS-001b, DS-002). The application-scope `stopAllAgentRuns` is part
@@ -102,7 +160,7 @@
      3. if there are no targets, return immediately (an idle shutdown stays at ~0.3–0.4 s);
      4. otherwise send SIGTERM to the (a) pids and (b) groups, poll up to `PROCESS_TREE_GRACE_MS = 1500` until the
         recorded targets are gone, then SIGKILL the survivors among the **recorded** targets;
-     5. skip ESRCH/EPERM per target.
+     5. skip ESRCH per target; log EPERM and any other signal error and continue with the rest (SR-005).
   3. `process.exit(0)` after a clean close, otherwise `process.exit(1)`.
   - Owner: the process-table parsing and selection move from
     `agent-execution/backends/antigravity/stream/agy-background-process-groups.ts` to
@@ -307,7 +365,10 @@ All boundaries are singular, with explicit identity. Low risk.
 | `autobyteus-server-ts/src/server-runtime.ts` | Modify | Use D2 |
 | `autobyteus-server-ts/src/utils/process-tree.ts` | Add (moved) | Process table and selection |
 | `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-background-process-groups.ts` | Remove | Moved |
-| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts` | Modify | Import the utility |
+| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts` | Modify | Import the utility (replaces `listAgyBackgroundProcessGroups`) |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts` | Move | To `tests/unit/utils/process-tree.test.ts`, generalized |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts` | Modify | Mock the moved utility |
+| `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md` | Modify | Name the moved helper (line 317) |
 | `autobyteus-web/electron/server/baseServerManager.ts` | Modify | 15 s plus sweep |
 | `autobyteus-web/electron/server/serverProcessTree.ts` | Add | Desktop copy of the selection |
 | `autobyteus-web/electron/server/windowsServerManager.ts` | Modify | 15 s |
@@ -382,4 +443,9 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by two owner
   SIGTERM only once (D3), so N-4 holds.
 - D3: re-entry tests are mandatory (AR-002). `stopServer` signals SIGTERM once.
 - Validation must include process-tree snapshots (PID/PPID/PGID) for Codex, Claude and native, showing zero survivors.
+- SR-005 additions for validation: AC-009 (relaunch after quit: one server process for the data folder, by process
+  check), AC-010 (shutdown leaves `terminatedAt` empty), U-A1 (shutdown time with two or more busy Claude runs), U-A2
+  (record Codex and Claude CLI versions; re-check that the Claude CLI still survives EOF). Prove from a clean clone of
+  the final branch, with isolated app data (the desktop `e2e` profile or a temporary data root); never the user's
+  installed app or data.
 - Record any surviving process class as a Design Impact.

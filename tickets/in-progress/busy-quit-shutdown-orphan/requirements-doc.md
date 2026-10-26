@@ -1,10 +1,14 @@
 # Requirements Document — busy-quit-shutdown-orphan
 
 ## Document Status
-- Status: **Ready for Approval** (delta DEC-005, SR-004, 2026-10-05). The SR-002 approval still covers REQ-001 to REQ-005 for user Terminate, server shutdown and desktop quit.
-- Current solution revision ID: `SR-002` (approval of SR-001).
+- Status: **Ready for Approval** for the delta DEC-005 (SR-004, 2026-10-05; re-presented in SR-005, 2026-10-26). The SR-002 approval still covers REQ-001 to REQ-005 for user Terminate, server shutdown and desktop quit. SR-005 adds BEH-007 (preserved) and AC-009 within the direction (DEC-006, decided by the Solution Designer).
+- Current solution revision ID: `SR-005` (rebase and re-check; the last approval is SR-002).
 - Package: `busy-quit-shutdown-orphan`.
-- Request: `/api_e2e_engineer`, 2026-10-05, at the user's direction. The user asked to "first do enough experiments to
+- Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
+  `autobyteus-284` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`, 2026-10-26: "finish and ship the existing
+  branch busy-quit-shutdown-orphan (bounded, awaited shutdown)". It is step 0 (prerequisite) of restart-and-resume
+  (autobyteus-283).
+- Original request: `/api_e2e_engineer`, 2026-10-05, at the user's direction. The user asked to "first do enough experiments to
   find out exactly why it happens and how it should be fixed, before designing." Experiments E1–E9 are in
   `investigation-notes.md`.
 - Requirements owner: Solution Designer.
@@ -16,7 +20,7 @@
 - Workspace:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan`.
   - Branch `codex/busy-quit-shutdown-orphan`.
-  - Base `origin/personal` @ `02d6ddf05`. Target `personal`.
+  - Base `origin/personal` @ `d74f75a51a` (rebased 2026-10-26; originally `02d6ddf05`). Target `personal`.
 
 ## Problem And Desired Outcome
 - **Problem.** Stopping a run that is in the middle of a turn waits for that turn to finish on its own, without a time
@@ -46,6 +50,7 @@
 | BEH-004 | User | SCN-003 | Desktop quit sends SIGTERM and exits at once; the SIGKILL escalation never runs; a hung server is orphaned (E6; RC-3) | Quit waits for the server's shutdown up to a bound, then force-stops it; no server outlives the app (REQ-004) | Normal quit with an idle app stays quick |
 | BEH-005 | User | SCN-004 | After a busy quit, relaunch continues every conversation (predecessor T-08c) | Same | **Preserved** |
 | BEH-006 | User | SCN-005 | Composer **Stop** (interrupt): Codex ends the turn but its tool command keeps running until the run ends (E2); Claude kills it (E5) | Unchanged in this ticket (DEC-003) | As today |
+| BEH-007 | Operational | SCN-002, SCN-004 | Server shutdown does not mark runs as terminated: only an explicit Terminate, delete or archive records `terminatedAt` (E-A15). Restart-and-resume (autobyteus-283 step 1) relies on this to tell "stopped on purpose" from "stopped by the restart" | Same (DEC-006) | **Preserved** |
 
 ## Stakeholders, Actors, And Outcomes
 | Actor | Goal | Required outcome | Constraint |
@@ -78,7 +83,7 @@
 - No new user setting for the timeouts.
 
 ### Preserved Behavior Boundary
-- BEH-005; idle shutdown and quit speed; conversation and history persistence and restore; the Stop and Terminate
+- BEH-005; BEH-007; idle shutdown and quit speed; conversation and history persistence and restore; the Stop and Terminate
   results seen by the UI (only their timing changes).
 
 ### Review Authority
@@ -104,6 +109,8 @@
 | AC-005 | REQ-004 | Desktop app idle quit | Quits as quickly as today | Slower | Isolated app |
 | AC-006 | REQ-005 | Relaunch after AC-004 | Every conversation is present and continues (agent, Team, Org) | Missing or broken | Isolated app |
 | AC-007 | all | Existing suites | No new failures against the base (by test name and message) | — | Unit/integration |
+| AC-009 | REQ-004, REQ-005 | Relaunch right after AC-004 (a) and (b), and after an app-update restart where it can be exercised | Exactly one server process serves the data folder; no process of the earlier session remains | Two servers on one data folder, or a start error because the old server is still alive | Isolated desktop app journey with a process check (DEC-006) |
+| AC-010 | BEH-007 | Server shutdown with busy runs (AC-002), then relaunch | Runs that were stopped by the shutdown are not recorded as terminated (`terminatedAt` stays empty); a run the user terminated keeps its `terminatedAt` | Shutdown records `terminatedAt` | Unit/integration (DEC-006) |
 | AC-008 (proposed, DEC-005) | REQ-001 | An application terminates a run busy in a long command | Returns within 10 s; turn interrupted; queued input cancelled | Waits for the turn | Unit (fence-first at the shared entry point) plus a live probe if feasible |
 
 ## Relevant Scenarios And Journeys
@@ -155,6 +162,7 @@
 | DEC-002 | Bounds | Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server. | **Resolved as recommended** (SR-002) |
 | DEC-003 | Codex composer Stop leaves the tool command running until the run ends (E2) | Out of scope; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
 | DEC-004 | Guard against a second server on the same data root (for example after a force-killed app) | Defer; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
+| DEC-006 | (SR-005) The Task's "Done when" says "relaunch never gives two servers on one data folder", and autobyteus-283 relies on shutdown not marking runs as terminated. Should this ticket prove both? | **Decided (Solution Designer, within the direction):** add AC-009 (relaunch after quit gives one server) and preserve BEH-007 with AC-010. Both are outcomes of REQ-004/REQ-005 and of today's behavior; neither adds product behavior. A force-killed or crashed app stays DEC-004 (follow-up), as the user decided on 2026-10-05: with this ticket an old server still listening blocks a second one (E-A22), and a closing server exits by itself within about 12 s. | **Resolved** (SR-005) |
 | DEC-005 | (SR-004, from ARCH-REV-001 AR-001) When an **application** (SDK `terminateAgentRun`, or orchestration ending a run binding) terminates a busy run, should it also interrupt the turn and cancel unstarted queued input, like user Terminate? Today it waits for the turn to finish (the same code path, E-A8) | **Recommended: yes.** "Terminate" means stop now everywhere. Otherwise the application path keeps the unbounded wait this ticket removes. | **Open: awaiting user approval** |
 
 ## Traceability
@@ -163,8 +171,8 @@
 | REQ-001 | UC-001, UC-002 | BEH-001, BEH-002 | AC-001, AC-002 | SCN-001, SCN-002 |
 | REQ-002 | UC-002 | BEH-002 | AC-002, AC-003 | SCN-002 |
 | REQ-003 | UC-002 | BEH-003 | AC-002, AC-003 | SCN-002 |
-| REQ-004 | UC-003 | BEH-004 | AC-004, AC-005 | SCN-003 |
-| REQ-005 | UC-004 | BEH-005 | AC-006 | SCN-004 |
+| REQ-004 | UC-003 | BEH-004 | AC-004, AC-005, AC-009 | SCN-003 |
+| REQ-005 | UC-004 | BEH-005, BEH-007 | AC-006, AC-009, AC-010 | SCN-004 |
 | (all) | — | — | AC-007 | — |
 
 ## Architecture Phase Input
@@ -184,4 +192,7 @@
 ### Content Ready For Approval
 - All items Yes. Open decisions DEC-001 to DEC-004 have recommendations. Content ready for user approval: **Yes**.
 ### Approved Basis Ready For Design
-- User approval received: **Yes** for SR-002; **pending** for DEC-005 (SR-004).
+- User approval received: **Yes** for SR-002; **pending** for DEC-005 (SR-004, asked again in SR-005 on 2026-10-26).
+
+## Prerequisites
+- None found in the SR-005 re-check.
