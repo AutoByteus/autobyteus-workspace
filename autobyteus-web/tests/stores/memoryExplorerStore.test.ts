@@ -15,7 +15,7 @@ describe('memoryExplorerStore', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         listAgentsWithMemory: {
-          entries: [{ attribution: 'DEFINITION', agentDefinitionId: 'codex', displayName: 'Codex', stableId: 'codex', runCount: 2, latestMemoryAt: '2026-01-01T00:00:00Z', memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
+          entries: [{ attribution: 'DEFINITION', agentDefinitionId: 'codex', displayName: 'Codex', stableId: 'codex', runCount: 2, latestMemoryAt: '2026-01-01T00:00:00Z', memory: { hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } }],
           total: 1,
           page: 1,
           pageSize: 25,
@@ -66,7 +66,7 @@ describe('memoryExplorerStore', () => {
       .mockResolvedValueOnce({
         data: {
           listAgentsWithMemory: {
-            entries: [{ attribution: 'DEFINITION', agentDefinitionId: 'finance-agent', displayName: 'Finance Agent', stableId: 'finance-agent', runCount: 1, latestMemoryAt: '2026-06-23T00:00:00Z', memory: { hasWorkingContext: false, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
+            entries: [{ attribution: 'DEFINITION', agentDefinitionId: 'finance-agent', displayName: 'Finance Agent', stableId: 'finance-agent', runCount: 1, latestMemoryAt: '2026-06-23T00:00:00Z', memory: { hasWorkJournal: false, hasRawTraces: true, hasRawArchive: false } }],
             total: 1,
             page: 1,
             pageSize: 25,
@@ -98,7 +98,7 @@ describe('memoryExplorerStore', () => {
 
   it('route agent selection fetches runs for the selected agent selector', async () => {
     const queryMock = vi.fn().mockResolvedValue({
-      data: { listAgentRunsWithMemory: { entries: [{ runId: 'run-1', memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }], total: 1, page: 1, pageSize: 25, totalPages: 1 } },
+      data: { listAgentRunsWithMemory: { entries: [{ runId: 'run-1', memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false } }], total: 1, page: 1, pageSize: 25, totalPages: 1 } },
     });
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
 
@@ -158,7 +158,7 @@ describe('memoryExplorerStore', () => {
     let resolveFirst!: (value: unknown) => void;
     const queryMock = vi.fn()
       .mockReturnValueOnce(new Promise((resolve) => { resolveFirst = resolve; }))
-      .mockResolvedValueOnce({ data: { listAgentTeamRunsWithMemory: { entries: [{ teamRunId: 'team-b-run', teamDefinitionId: 'team-b', teamDefinitionName: 'Team B', memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false }, memberTargets: [] }], total: 1, page: 1, pageSize: 25, totalPages: 1 } } });
+      .mockResolvedValueOnce({ data: { listAgentTeamRunsWithMemory: { entries: [{ teamRunId: 'team-b-run', teamDefinitionId: 'team-b', teamDefinitionName: 'Team B', memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false }, memberTargets: [] }], total: 1, page: 1, pageSize: 25, totalPages: 1 } } });
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
     const store = useMemoryExplorerStore();
 
@@ -174,7 +174,7 @@ describe('memoryExplorerStore', () => {
   });
 
   it('fetches Agent Orgs and one org definition\'s runs with the selected source', async () => {
-    const memory = { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+    const memory = { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
     const queryMock = vi.fn()
       .mockResolvedValueOnce({ data: { listAgentOrgsWithMemory: { entries: [{ orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', orgRunCount: 2, memberMemoryCount: 3, memory }], total: 1, page: 1, pageSize: 25, totalPages: 1 } } })
       .mockResolvedValueOnce({ data: { listAgentOrgRunsWithMemory: { entries: [{ orgRunId: 'org-run-1', orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', memory, memberTargets: [{ memberAddress: '/ceo', displayName: 'ceo', agentRunId: 'ceo-run', memory }] }], total: 1, page: 1, pageSize: 25, totalPages: 1 } } })
