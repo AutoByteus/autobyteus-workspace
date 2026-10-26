@@ -95,7 +95,16 @@ describe('StdioMcpServerConfig', () => {
         command: 'bash',
         env: { A: 1 as any }
       })
-    ).toThrowError("StdioMcpServerConfig 'stdio-5' 'env' must be a Dict[str, str].");
+    ).toThrowError("StdioMcpServerConfig 'stdio-5' 'env' must map names to strings or secret references.");
+  });
+
+  it('keeps a secret reference in env beside plain values', () => {
+    const config = new StdioMcpServerConfig({
+      server_id: 'stdio-ref',
+      command: 'bash',
+      env: { API_KEY: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000003' } as any, MODE: 'fast' }
+    });
+    expect(config.env).toEqual({ API_KEY: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000003' }, MODE: 'fast' });
   });
 
   it('validates cwd type', () => {
@@ -133,7 +142,9 @@ describe('StreamableHttpMcpServerConfig', () => {
         url: 'http://localhost',
         token: 123 as any
       })
-    ).toThrowError("StreamableHttpMcpServerConfig 'http-3' 'token' must be a string if provided.");
+    ).toThrowError(
+      "StreamableHttpMcpServerConfig 'http-3' 'token' must be a string or a secret reference if provided."
+    );
   });
 
   it('validates headers map', () => {
@@ -143,7 +154,9 @@ describe('StreamableHttpMcpServerConfig', () => {
         url: 'http://localhost',
         headers: { X: 2 as any }
       })
-    ).toThrowError("StreamableHttpMcpServerConfig 'http-4' 'headers' must be a Dict[str, str].");
+    ).toThrowError(
+      "StreamableHttpMcpServerConfig 'http-4' 'headers' must map names to strings or secret references."
+    );
   });
 
   it('trims the token and treats a blank token as no token', () => {
@@ -157,29 +170,51 @@ describe('StreamableHttpMcpServerConfig', () => {
     for (const blank of ['', '   ', null, undefined]) {
       const config = new StreamableHttpMcpServerConfig({ server_id: 'http-6', url: 'http://localhost', token: blank });
       expect(config.token).toBeNull();
-      expect(config.requestHeaders()).toEqual({});
     }
   });
 
-  it('derives the request headers from the headers and the token', () => {
-    const headersOnly = new StreamableHttpMcpServerConfig({
-      server_id: 'http-7',
-      url: 'http://localhost',
-      headers: { Authorization: 'Basic test-dummy', 'X-Test': 'value' }
-    });
-    expect(headersOnly.requestHeaders()).toEqual({ Authorization: 'Basic test-dummy', 'X-Test': 'value' });
+  it('derives the request headers from the resolved headers and token', () => {
+    const config = new StreamableHttpMcpServerConfig({ server_id: 'http-7', url: 'http://localhost' });
+    expect(config.requestHeaders({ headers: { Authorization: 'Basic test-dummy', 'X-Test': 'value' }, token: null }))
+      .toEqual({ Authorization: 'Basic test-dummy', 'X-Test': 'value' });
+    const resolved = { headers: { 'X-Test': 'value' }, token: 'test-dummy' };
+    expect(config.requestHeaders(resolved)).toEqual({ 'X-Test': 'value', Authorization: 'Bearer test-dummy' });
+    expect(resolved.headers).toEqual({ 'X-Test': 'value' });
+  });
 
-    const withToken = new StreamableHttpMcpServerConfig({
-      server_id: 'http-8',
+  it('keeps secret references for headers and token, and plain strings as they are', () => {
+    const config = new StreamableHttpMcpServerConfig({
+      server_id: 'http-ref',
       url: 'http://localhost',
-      token: 'test-dummy',
-      headers: { 'X-Test': 'value' }
+      token: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' } as any,
+      headers: { 'X-Api-Key': { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' } as any, 'X-Plain': 'value' }
     });
-    expect(withToken.requestHeaders()).toEqual({ 'X-Test': 'value', Authorization: 'Bearer test-dummy' });
-    expect(withToken.headers).toEqual({ 'X-Test': 'value' });
+    expect(config.token).toEqual({ vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' });
+    expect(config.headers).toEqual({
+      'X-Api-Key': { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' },
+      'X-Plain': 'value'
+    });
+  });
 
-    withToken.requestHeaders().Extra = 'mutated';
-    expect(withToken.requestHeaders()).not.toHaveProperty('Extra');
+  it.each([
+    ['a malformed vault secret ID', { vaultSecretId: 'Not A Valid Id' }],
+    ['extra keys', { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001', value: 'test-dummy' }],
+    ['a non-string ID', { vaultSecretId: 7 }]
+  ])('rejects a header reference with %s', (_label, value) => {
+    expect(() =>
+      new StreamableHttpMcpServerConfig({ server_id: 'http-bad', url: 'http://localhost', headers: { X: value as any } })
+    ).toThrowError("StreamableHttpMcpServerConfig 'http-bad' 'headers' must map names to strings or secret references.");
+  });
+
+  it('rejects a token reference together with an Authorization header', () => {
+    expect(() =>
+      new StreamableHttpMcpServerConfig({
+        server_id: 'http-both',
+        url: 'http://localhost',
+        token: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' } as any,
+        headers: { Authorization: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' } as any }
+      })
+    ).toThrowError("Streamable HTTP MCP server 'http-both' sets both 'token' and an 'Authorization' header; use one of them.");
   });
 
   it.each(['Authorization', 'authorization', 'AUTHORIZATION'])(
@@ -211,6 +246,7 @@ describe('StreamableHttpMcpServerConfig', () => {
       token: ' ',
       headers: { authorization: 'Basic test-dummy' }
     });
-    expect(config.requestHeaders()).toEqual({ authorization: 'Basic test-dummy' });
+    expect(config.token).toBeNull();
+    expect(config.headers).toEqual({ authorization: 'Basic test-dummy' });
   });
 });
