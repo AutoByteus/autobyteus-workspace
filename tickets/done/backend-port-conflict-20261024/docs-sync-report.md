@@ -1,4 +1,4 @@
-# Docs Sync Report — DR-003
+# Docs Sync Report — DR-004
 
 ## Scope
 backend-port-conflict-20261024; CRR008/APIREV003 resumption. Large/High independent route unchanged. Base b5f302a335014ff6d03d6acab7794edb4254475f integrated by53423ca028831a943c8d30a31287fec73234527c. Docs-only upstream delta. Six production typechecks and9 source-native smoke cases pass (`evidence/DR-003-checks.json`).
@@ -17,4 +17,4 @@ Sources checked: integrated NativeCommandShutdown, native scope test/implementat
 Per-agent background registry is no longer the only native cleanup owner; host scope survives agent end. Parent signal/exit is not clean-resource proof. Codex new view is observational, not a lifecycle getter, stop control, OS inventory or persistent history. No data migration or lifetime-policy change.
 
 ## Continuation
-Docs result **Updated**; uncommitted edits preserved for continuation. Delivery overall **Blocked** solely on AC002 missing direct failure-injection proof (release-deployment-report). No No-impact claim. No source change; no docs-driven broad rerun needed. On new evidence, correct any affected truth before finalization.
+Docs synchronization **Pass / Updated**, committed in52a3434f5 and unchanged on CRR009 return. DR003 AC002 evidence gap cleared by direct APIREV004 proof; no docs/source correction needed. Fresh base unchanged b5f302a33. Finalization and archive now authorized by approved scope/guide; no release/install. All long-lived docs updates remain confined to this ticket. See release-deployment-report and DR004 verification.
