@@ -11,6 +11,7 @@
 | CRR-006 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-002 | CRR-004 durable Pass; CRR-005 integrated source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
 | CRR-007 | code-review-report.md | Implementation Review / IR-006 DR-002 integration | CRR-005 source Pass / CRR-006 test gate on2c47 | Pass for renewed API/E2E | None; CR-001/002 remain resolved |
 | CRR-008 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-003 | CRR-006 N/A; CRR-007 source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
+| CRR-009 | api-e2e-test-review-report.md | Proportional durable-test review / API-REV-004 DR-003 AC002 repair | CRR-008 N/A; DR003 evidence hold | Pass for Delivery raw-proof verification | None |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -145,3 +146,12 @@ None.
 - Seven current result files Pass/no errors, exact current provenance. API independently reassesses95.3% (Broader Required/completed), not reviewer score.1110 foundation checks reused once; original storage-host failures/correction retained. Current five-file build identity and35 absent PID/7 absent root receipt reviewed. No reviewer tests/build/apps/providers or new cleanup audit.
 - Next `/software_engineering_team/delivery_engineer` for fresh-base/raw-evidence/docs/AC006 finalization. IMP72 current package succeeds; IMP73 fixture/no-work quit remains limited. Actual Windows/WSL/live vault/GitHub/paid inference/strict vue-tsc/historical incident unclaimed. No release/install/target push authorization added.
 - Reviewer changes only canonical test report/history; source/API/Delivery artifacts and two SDK dist prerequisites untouched.
+
+
+### CRR-009 — AC-002 durable evidence repair review
+- Canonical test report round4; API-REV-004 commit489694e09844cf39b6d26ac37cfbae1c9bbbe848, DR003 coverage/report correction. R2/D4.1/SR001..008/ARCHREV004/IR006/CRR007; Large/High unchanged. Effective production9b10, docs-only merge53423ca/baseb5f302; Delivery checkpoint52a3434f5 preserved.
+- Reviewed full added PortOwnerInspectorFaults.spec.ts and BackendPortBindFaults.spec.ts, production inspector/availability boundaries, direct verbose logs and matching hashes.11 actual subprocess cases +5 injected-bind cases pass first run. Requirements AC002 explicitly prescribe these fault boundaries, not a manufactured product workflow.
+- **Pass**, no findings/follow-ups. Proper isolation/cleanup/sentinels, original error identity/no retries/diagnosis, positive EADDRINUSE control, bounded timeout and no stale partial ownership. process.kill guard scoped honestly; Node may stop its own diagnostic child. No production/durable test fixes or reviewer execution.
+- Delivery correctly rejected old IMP68-only AC002 mapping; prior bounded reviewer summaries were not independent direct-fault proof. Current report explicitly acknowledges and supersedes that overclaim without rewriting historical results. No product defect established. API11/12 repair missing coverage;1110 existing cases and seven actual-system receipts retained for their real assertions at unchanged source.
+- Next Delivery successful-test-review route to verify raw receipts/clear DR003 hold and complete fresh-base/docs/AC006 finalization. No new platform/provider/packaging result or target push/release/install authority.
+- Reviewer changed only test report/history; source report and Delivery/API artifacts plus SDK prerequisites preserved.
