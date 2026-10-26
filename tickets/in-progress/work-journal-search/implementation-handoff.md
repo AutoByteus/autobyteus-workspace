@@ -12,7 +12,7 @@ Branch `codex/work-journal-search` (base `ddd6fdcdf6`), worktree `/Users/normy/a
 - Supplemental task artifacts: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (VIS-001 … VIS-024); `memory-search-evaluation-report.md`; `probes/`; `follow-ups.md`; `product-design-request.md`
 - Design review report: `design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial). The Solution Designer's clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, with the user for confirmation) and R-7 (newest first) are implemented as written.
+- Triggering rework report, revision record, or evidence, when applicable: N/A (initial). The Solution Designer's clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, decided as UD-018 in SR-004) and R-7 (newest first) are implemented as written.
 
 ## Current Implementation Summary
 
@@ -110,7 +110,7 @@ Decisions inside the design's room, for the reviewer to check:
 - **Web: the Meaning index embedding after a build** (server state Ready, meaning done < total) shows as `building` with the Meaning step running, as the spec's VIS-013.
 - **Web: reduced motion** swaps the spinners for a still ring (`MemorySpinner`; the SVG animation cannot be paused by CSS) and stops the bar transition.
 - **The evaluation command** accepts run-ID prefixes in `accept` (the probes' rule), waits until a search answers by meaning before measuring, and has `--asking-run` (IMP-07).
-- **R-6 copy** is implemented as written ("No Work Journal yet." + "Index your memory to create it." linking to the Index tab; imported: "No Work Journal"); the Solution Designer will say if the user changes it.
+- **R-6 copy (UD-018, SR-004):** "No Work Journal yet." + "Index your memory to create it." linking to the Index tab; imported: "No Work Journal".
 
 ## Known Risks
 
@@ -203,7 +203,6 @@ All evidence files are in `evidence/`. The server source has not changed since `
 - Check IDs with the supporting evidence, and remaining unverified states or limitations:
   - IMP-12 (screenshots by VIS ID, 21 checks), IMP-09, IMP-10.
   - Not rendered: VIS-002/003/004 with real task teams and agent metadata (the fixture has no run metadata; names come from folders); VIS-008/009/013/015/016 (component specs only); VIS-020 team member; zh-CN rendering (strings and guards checked).
-  - The R-6 copy awaits the user's confirmation.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

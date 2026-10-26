@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
+| IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004 | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; **`Design Impact` raised** on AC-007 (extended) | SR-004, CRR-001 | In progress: the fixes are committed and pass; the off-topic gate fails for N01 and N03 under the decided rule; returned to the Solution Designer for a decision |
 
 ## Revision Entries
 
@@ -35,3 +36,31 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: see `implementation-handoff.md` § Checks Run (IMP-01 … IMP-12).
 - Next recipient or routing: Code Reviewer (Large, High risk).
 - Remaining limitations or risks: see `implementation-handoff.md` § Known Risks (the question file's authoring run; word-share strength on off-topic cues; latency measured under load).
+
+### IR-002 — Rework after CRR-001 (SR-004); Design Impact on the off-topic gate
+
+- Triggering role, report path, and round: Solution Designer (SR-004) after code review CRR-001 (`code-review-report.md`), round 1.
+- Triggering finding IDs: CR-001, CR-002, CR-003 (resolved as UD-018), UD-019, C-06.
+- Classification: `Local Fix` for CR-001, CR-002 and C-06; UD-019 implemented as decided; `Design Impact` raised on AC-007 (extended by UD-019).
+- Prior authoritative result: IR-001 (`02ea886678` … `c66708b44b`).
+- Current authoritative result: IR-001 plus `0ca22eaa1c` (CR-001, CR-002) and `8529960b80` (UD-019, C-06, evaluation off-topic check).
+- Related solution revision IDs: SR-004
+- Related code-review revision IDs: CRR-001
+- Implementation delta:
+  - **CR-001:** only the Journals step's own `ensureCurrent` notifications are dropped (`ownJournalCalls`, held while that call is in flight); every other journal change is queued, also during a pass or the first build. A queued change waits for the running pass; with no build and none running, nothing is indexed.
+  - **CR-002:** only `full`, `rebuild` and `catchUp` show as `building` with their own steps. `runs` and `meaningSync` work on their own step records, so the status reports the settled index. A failure in them changes nothing reported. `meaningSync` is requested only when the Meaning step would embed (`canSyncMeaning`), and it no longer moves `updatedAt`. Only the build's own meaning embedding counts as meaning progress, not a live update's few cards; the facade's coverage note says the same.
+  - **UD-018:** the copy was already as built; the handoff's "awaits confirmation" notes were removed.
+  - **UD-019:**
+    - `chunk_vocab` (`fts5vocab` over `chunk_text`) and `MemorySearchStore.tokenChunkCounts`;
+    - `termTokens` in the normalizer;
+    - `MemorySearchService.termWeights` (BM25 IDF, floor 1e-6; a multi-token term counts as its rarest token) and the weighted `textStrength`;
+    - the evaluation takes off-topic questions (`accept: []`) and reports `offTopic {questions, passed, failed}`.
+  - **C-06:** each snippet line is masked, then cut to 200 characters.
+  - **Docs:** `memory_search.md` (pass kinds and status, live changes during a pass, strength, snippet); `scripts/evaluate-memory-search.md`.
+- Local validation and result:
+  - IMP-13: focused server tests 215 passed; typecheck 0. Six new tests; the CR-001, CR-002, UD-019 and C-06 ones fail on the previous code.
+  - IMP-14: build passes.
+  - IMP-15: gates 1 and 2 unchanged (31/31 within three searches; top 3 26/31; p90 789 ms, max 900 ms under load 25–35). **Off-topic 1 of 3 (N01, N03 fail).**
+- Next recipient or routing: Solution Designer (`Design Impact`: AC-007 extended is not met under UD-019 as decided); then targeted code review.
+- Remaining limitations or risks: see IMP-15 (the threshold calibration options and their false notes on answerable questions).
+

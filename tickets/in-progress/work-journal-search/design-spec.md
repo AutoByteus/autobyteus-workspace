@@ -505,7 +505,7 @@ Each file stays under 500 lines (repository rule).
 
 - **Rules:**
   - **Strength: three levels, `strong` / `fair` / `weak`** (UD-017):
-    - text: by the share of the query's distinct terms in the matched chunk, ≥ 2/3 strong, ≥ 1/3 fair, else weak;
+    - text (SR-004, UD-019): by the **weighted share** of the query's distinct terms found in the matched chunk. Each term weighs its inverse document frequency in the text index: FTS5 document counts, read through an `fts5vocab` table of the same index. Rare terms count more, so common words alone stay weak. ≥ 2/3 strong, ≥ 1/3 fair, else weak; the thresholds are checked with the evaluation;
     - meaning: `relevant` → strong, `aboveFloor` → fair, `below` → weak (from `nearest`).
     - Thresholds are calibrated with the R-016 evaluation; the rule lives in `MemorySearchService` only.
   - **`note`** appears only when every match is weak.
@@ -516,6 +516,8 @@ Each file stays under 500 lines (repository rule).
     - **Ordering within a run (review R-7, R-010):** a run's matches, from either tier, are listed newest first by their day, then by line. The run's position in the result list still comes from its best match.
     - **Store data this needs:** each card row keeps its parts: `[{kind: request|reply|action, lineStart, lineEnd, day, offset, length}]`, where offset and length locate the part's text inside the card text. No journal text is copied beyond the card.
     - **Evaluation (R-016, step 2 of the check):** every meaning-only match must point inside its file, with a non-empty snippet. The report shows how many meaning matches each rule resolved.
+    - **Evaluation (UD-019):** the off-topic questions (N01–N03 categories) must end with the only-weak `note`. This is part of the gate report.
+    - **Snippet masking order:** secrets are masked **before** a snippet line is cut to its display length, so a cut never leaves a partial secret (code review C-06).
   - **`coverage`** appears only while a step is incomplete or the index was never built ("Memory index not built yet: ask the user to start it on the Memory page"). In that last case `results` is empty, which is an explicit state, not absence.
 - **Exposure:** opt-in per agent definition (session-owned selection, AE-08). The asking run is excluded from its own results.
 

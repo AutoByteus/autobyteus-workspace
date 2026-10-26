@@ -7,6 +7,7 @@
 | SR-001 | Mixed (Requirements, then Design round 1) | Initial coherent baseline after investigation and experiments (2026-10-21 → 2026-10-26) | N/A | N/A | Approved; refined in place the same day (UD-016) | BEH-001 to BEH-005; R-001 to R-016; AC-001 to AC-013; UD-001 to UD-015; DEC-001, DEC-002 | Requirements approved by the user; Product Design requested for the Memory page (R-014); architecture design started |
 | SR-002 | Mixed (Product design integrated; requirements refinement; Design round 2) | Product Team: Design Completed, approved by the user 2026-10-26 | N/A | SR-001 Approved | Approved | R-002, R-009, R-013, R-014; UD-017; design § Product Design Integration, Change Scope, Removal Plan, Interfaces, Tool Contract | The complete package goes to architecture review |
 | SR-003 | Design | Architecture review ARCH-REV-001: Fail, Design Impact | AR-001, AR-002, AR-003 | SR-002 Approved (requirements); design Needs Revision | Requirements Approved (unchanged); design Ready for re-review | DS-001, DS-003, DS-006, § Meaning Step Rules, § Tool Contract, § Removal Plan | Corrections made; back to the architecture reviewer |
+| SR-004 | Mixed (requirements decision; design rule) | Code review CRR-001: CR-003 Requirement Gap; reviewer judgement notes | CR-003 | Requirements Ready for Approval (UD-018 proposed) | Approved (Solution Designer under the user's delegation) | UD-018, UD-019; AC-007; design § Tool Contract (strength, masking order) | Rework round to implementation with CR-001 and CR-002 |
 
 ## Revision Entries
 
@@ -112,3 +113,15 @@
   - R-5: an explicit `collection: "notSynced"` result from `nearest`;
   - R-7: matches newest first within a run.
 - **R-6 (Work Journal empty-state copy):** to be recorded as a requirements decision with the user's confirmation before code review.
+
+### SR-004 — Code Review Requirement Gap Resolved (2026-10-26)
+
+- **Trigger:** `code-review-report.md` CRR-001 (code reviewer run `code_reviewer_cbd4eb1d7fd64728ac4114c14a22416d`): CR-003 Requirement Gap (the Work Journal empty-state copy); CR-001 and CR-002 are Local Fixes owned by implementation.
+- **The user's delegation (2026-10-26):** "you can decide… You don't have to come to me… you propose your recommendations". The Solution Designer decided:
+  - **UD-018:** the empty-state copy as built;
+  - **UD-019:** the text-match strength is weighted by term rarity, and the off-topic questions must come out only-weak (AC-007 extended). This answers the reviewer's judgement note on off-topic cues.
+  - **Design text:** § Tool Contract, the strength rule and the masking order (C-06).
+- **Not changed (judgement):** self-references. With the asking run excluded, as the tool does, #1 rises from 11 to 18 and both gates pass either way. Marking self-references stays a later R-016 candidate.
+- **Architecture review:** not repeated. No boundary, ownership, contract or persistence changed; the strength rule is internal to `MemorySearchService`, and the targeted code review covers it.
+- **Classification:** unchanged, Large/High.
+- **Handoff:** the rework round (CR-001, CR-002, UD-018 confirmed, UD-019, C-06) → `/software_engineering_team/implementation_engineer`, then targeted code review.

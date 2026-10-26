@@ -3,7 +3,7 @@
 ## Document Status
 
 - **Package:** `work-journal-search` (Project Task `autobyteus-185`, "Agent search over Work Journals across all agents"; the first step of `autobyteus-233`).
-- **Status:** `Approved` (SR-001, 2026-10-26; refined by SR-002 with the user's Product design decisions, 2026-10-26). The user, after reviewing the consolidated text and its later additions (R-013 pipeline, R-016 quality check, UD-013 to UD-015): "do you think we're ready for the design? … If you were ready for the design, please".
+- **Status:** `Approved` (SR-004, 2026-10-26: UD-018 decided by the Solution Designer under the user's delegation; SR-001 and SR-002 approvals stand). The user, after reviewing the consolidated text and its later additions (R-013 pipeline, R-016 quality check, UD-013 to UD-015): "do you think we're ready for the design? … If you were ready for the design, please".
 - **Evidence:**
   - [investigation-notes.md](investigation-notes.md);
   - [memory-search-evaluation-report.md](memory-search-evaluation-report.md): 31 known-answer questions, the two gates, statistics, and baselines without an index;
@@ -133,7 +133,7 @@ Scope that follows:
 | AC-004 | Chinese questions pass gate 1 | 5 of 5 |
 | AC-005 | No secret pattern appears in any result over the known-answer set | To measure |
 | AC-006 | No result comes from `memory/imports/`; an agent's own run never appears in its results | — |
-| AC-007 | Weak matches are reported as weak, with a suggestion; never "nothing in memory" (R-009) | — |
+| AC-007 | Weak matches are reported as weak, with a suggestion; never "nothing in memory" (R-009). The off-topic questions of the known-answer check end with the only-weak note (UD-019) | — |
 | AC-008 | **First build on the reference machine** (M1 Max, about 3,700 runs, 1.7 GB of journals): journals ≤ 5 min, text ≤ 10 min (search by text works after this), meaning ≤ 2 h in the background; progress visible on the Memory page | Measured 104 s / 70–182 s / ≈ 1 h |
 | AC-009 | A turn's journal change is findable by text within about a minute | — |
 | AC-010 | Runs of retired or renamed agents, task-team members and runs without metadata are found, named as recorded or by folder | Known-answer set includes such runs |
@@ -174,6 +174,8 @@ Scope that follows:
 | UD-013 | The default number of results is a server setting (`AUTOBYTEUS_MEMORY_SEARCH_DEFAULT_LIMIT`, default 10); a call's `limit` overrides it | User, 2026-10-26 |
 | UD-014 | Indexing is a pipeline of steps, shown step by step on the Memory page; search only reads its result. Start simple: clean steps with fingerprints, no general pipeline framework; generalize when a third consumer (for example summaries, facts) needs the same mechanism | User, 2026-10-26 |
 | UD-015 | Transformations (cleaning, normalization, enrichment, de-duplication) are pipeline steps decided by measurement against the known-answer check | User, 2026-10-26 |
+| UD-018 | **Work Journal before the run has a journal** (a state the approved UI spec does not define; code review CR-003, architecture review R-6): a local run shows "No Work Journal yet." and "Index your memory to create it." with a link to the Index tab; an imported run (read-only) shows "No Work Journal". Opening a run never generates its journal; only the user's Index now does (R-013) | Decided by the Solution Designer 2026-10-26 under the user's explicit delegation ("you can decide… you propose your recommendations") |
+| UD-019 | **Strength reflects how informative the matched words are:** a text match's level is the share of the query's word weight (rarer words weigh more, the same weighting the text index ranks by) found in the chunk, so common words alone do not make an off-topic match Fair or Strong. The known-answer check includes off-topic questions, which must end with the "only weak matches" note (AC-007) | Solution Designer 2026-10-26 under the user's delegation (code review: "Off-topic cues can rate fair or strong by word share") |
 | UD-017 | The Memory page experience as specified and approved in the Product design (four review rounds), including the removal of Working Context, three strength levels, and search enabled once the Text index has content | User, 2026-10-26 (Product review: "Oh, I think that the UI is correct now. I feel it's good.") |
 | UD-016 | Memory Compactor runs are indexed like any other run; no special exclusion (replaces the Solution Designer's earlier DEC-001). The agent is retired (last run 2026-08-15); excluding them moved one question from #3 to #1, and gate 1 passes either way | User, 2026-10-26 ("we're just building the episode memory… whatever happened… I don't think it's a big deal") |
 | DEC-002 | Text plus meaning cards; entry-aligned chunks ≤ 2,000 characters | Solution Designer (measured, report § 5–6) |
