@@ -35,7 +35,15 @@ export type EvaluationReport = Readonly<{
   perQuestion: readonly EvaluationQuestionResult[];
 }>;
 
-type Search = { search(query: string, options: { limit?: number | null }): Promise<MemorySearchResult> };
+type Search = { search(query: string, options: { limit?: number | null; askingRunId?: string | null }): Promise<MemorySearchResult> };
+
+export type EvaluationOptions = Readonly<{
+  /**
+   * Search as this run, which leaves its own results out (as for an agent searching). Use the run that wrote the
+   * question file: its journal quotes every question and would otherwise answer them all by its own words.
+   */
+  askingRunId?: string | null;
+}>;
 
 /** A question file: a JSON array of `{id, q, accept: [runId or run ID prefix, …], rephrasings?: [text, …], note?}`. */
 export const readEvaluationQuestions = (filePath: string): EvaluationQuestion[] => {
@@ -65,7 +73,7 @@ const percentile = (values: readonly number[], share: number): number => {
  * questions that pass gate 1), and the meaning-pointer check (every meaning match points into its file with a
  * snippet; how many each rule resolved), and that no snippet shows a secret pattern.
  */
-export const evaluateMemorySearch = async (memory: Search, questions: readonly EvaluationQuestion[]): Promise<EvaluationReport> => {
+export const evaluateMemorySearch = async (memory: Search, questions: readonly EvaluationQuestion[], options: EvaluationOptions = {}): Promise<EvaluationReport> => {
   const perQuestion: EvaluationQuestionResult[] = [];
   const pointers = { total: 0, textChunk: 0, cardPart: 0, firstRequest: 0, emptySnippet: 0 };
   let unmaskedSecrets = 0;
@@ -77,7 +85,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
     const searches = [question.q, ...(question.rephrasings ?? [])].slice(0, 3);
     for (const [index, text] of searches.entries()) {
       const started = performance.now();
-      const result = await memory.search(text, { limit: 10 });
+      const result = await memory.search(text, { limit: 10, askingRunId: options.askingRunId ?? null });
       if (index === 0) ms = performance.now() - started;
       for (const match of result.results.flatMap((run) => run.matches)) {
         if (maskSecrets(match.snippet) !== match.snippet) unmaskedSecrets++;

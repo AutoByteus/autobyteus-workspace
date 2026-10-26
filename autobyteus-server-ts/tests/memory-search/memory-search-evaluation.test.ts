@@ -34,14 +34,16 @@ describe("memory search evaluation", () => {
       rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
       never: result([]),
     };
-    const memory = { search: async (query: string) => answers[query] ?? result([]) };
+    const askedAs: Array<string | null | undefined> = [];
+    const memory = { search: async (query: string, options: { askingRunId?: string | null }) => { askedAs.push(options.askingRunId); return answers[query] ?? result([]); } };
     const report = await evaluateMemorySearch(memory, [
       { id: "Q1", q: "first", accept: ["r1"] },
       // A prefix of a run ID accepts the run (question files may hold shortened IDs).
       { id: "Q2", q: "second", accept: ["r2"] },
       { id: "Q3", q: "miss", accept: ["r3"], rephrasings: ["rephrased"] },
       { id: "Q4", q: "never", accept: ["r4"], rephrasings: ["never", "never"] },
-    ]);
+    ], { askingRunId: "author_run" });
+    expect(new Set(askedAs)).toEqual(new Set(["author_run"]));
     expect(report.perQuestion.map(({ id, rank, foundAtSearch }) => ({ id, rank, foundAtSearch }))).toEqual([
       { id: "Q1", rank: 1, foundAtSearch: 1 }, { id: "Q2", rank: 3, foundAtSearch: 1 },
       { id: "Q3", rank: null, foundAtSearch: 2 }, { id: "Q4", rank: null, foundAtSearch: null },

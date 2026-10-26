@@ -10,7 +10,7 @@ import { DEFAULT_EMBEDDING_MODEL_ID, getEmbeddingModelDefinition } from "../dist
 import { evaluateMemorySearch, readEvaluationQuestions } from "../dist/memory-search/evaluation/memory-search-evaluation.js";
 import { MemorySearch } from "../dist/memory-search/memory-search.js";
 
-const usage = "Usage: node scripts/evaluate-memory-search.mjs --memory-dir <isolated copy> --index-dir <folder> --questions <file.json> [--model <id>] [--build] [--out <report.json>]";
+const usage = "Usage: node scripts/evaluate-memory-search.mjs --memory-dir <isolated copy> --index-dir <folder> --questions <file.json> [--model <id>] [--build] [--asking-run <run id>] [--out <report.json>]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) { console.log(usage); process.exit(0); }
 const value = (name) => {
@@ -63,8 +63,9 @@ for (let i = 0; i < 120; i++) {
   if (!warm.coverage) break;
   await new Promise((resolve) => setTimeout(resolve, 1000));
 }
-const report = await evaluateMemorySearch(memory, readEvaluationQuestions(questionsFile));
-const output = { model: model.id, status: status(), report };
+const askingRunId = value("--asking-run");
+const report = await evaluateMemorySearch(memory, readEvaluationQuestions(questionsFile), { askingRunId });
+const output = { model: model.id, askingRunId, status: status(), report };
 const out = value("--out");
 if (out) fs.writeFileSync(out, `${JSON.stringify(output, null, 2)}\n`);
 console.log(JSON.stringify({ gate1: report.gate1, gate2: report.gate2, meaningPointers: report.meaningPointers, unmaskedSecrets: report.unmaskedSecrets, questions: report.questions }, null, 2));

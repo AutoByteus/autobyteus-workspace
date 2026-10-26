@@ -29,4 +29,7 @@ node autobyteus-server-ts/scripts/evaluate-memory-search.mjs \
   Any accepted run answers the question; an accepted entry may be a prefix of the run ID.
 - Before measuring, the command waits until a search answers by meaning too (after a start the first search
   loads the Meaning index's job).
+- `--asking-run <run id>` searches as that run, which leaves its own results out, as for an agent searching.
+  Use it for the run that wrote the question file: its journal quotes every question, so it would otherwise be
+  the top text match for all of them.
 - A user's own question file stays private; the repository keeps only this format.
