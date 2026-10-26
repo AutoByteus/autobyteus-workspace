@@ -2,11 +2,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { WorkJournalService } from "../../src/agent-work-journal/services/work-journal-service.js";
-import { MemorySearch, MEMORY_INDEX_NOT_BUILT } from "../../src/memory-search/memory-search.js";
-import { MemoryRunDiscovery } from "../../src/memory-search/runs/memory-run-discovery.js";
-import { createFakeEmbeddingIndex } from "../helpers/fake-embedding-model.js";
-import { appendTurns, writeRun } from "./memory-search-fixtures.js";
+import { WorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
+import { MemorySearch, MEMORY_INDEX_NOT_BUILT } from "../../../src/memory-search/memory-search.js";
+import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { appendTurns, writeRun } from "../../helpers/memory-search-fixtures.js";
 
 const until = async (check: () => boolean | Promise<boolean>, ms = 5_000): Promise<void> => {
   for (const deadline = Date.now() + ms; Date.now() < deadline;) {

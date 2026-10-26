@@ -2,8 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { MemorySearchMatch, MemorySearchResult } from "../../src/memory-search/domain/memory-search-models.js";
-import { evaluateMemorySearch, readEvaluationQuestions } from "../../src/memory-search/evaluation/memory-search-evaluation.js";
+import type { MemorySearchMatch, MemorySearchResult } from "../../../src/memory-search/domain/memory-search-models.js";
+import { evaluateMemorySearch, readEvaluationQuestions } from "../../../src/memory-search/evaluation/memory-search-evaluation.js";
 
 const match = (matchedBy: "text" | "meaning", pointer: MemorySearchMatch["pointer"], snippet = "User: something"): MemorySearchMatch => ({
   journalFile: "/m/agents/r/work_journal/work_journal_active.md", lineStart: 4, lineEnd: 6, day: "2026-08-25", snippet, matchedBy, strength: "fair", pointer,

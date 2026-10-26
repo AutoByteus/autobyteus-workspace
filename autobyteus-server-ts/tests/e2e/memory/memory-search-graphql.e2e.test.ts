@@ -10,7 +10,7 @@ import { WorkJournalService } from "../../../src/agent-work-journal/services/wor
 import { MemorySearch, resetMemorySearchForTests } from "../../../src/memory-search/memory-search.js";
 import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
-import { writeRun } from "../../memory-search/memory-search-fixtures.js";
+import { writeRun } from "../../helpers/memory-search-fixtures.js";
 
 // The Memory page's memory search API over the real schema, with a memory search over test-owned folders (the
 // embedding model is the deterministic stand-in; nothing is downloaded).

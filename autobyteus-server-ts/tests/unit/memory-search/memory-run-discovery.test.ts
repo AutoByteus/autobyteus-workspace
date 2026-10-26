@@ -2,12 +2,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { TaskTeamRootMemorySource } from "../../src/agent-memory/services/task-team-root-memory-source.js";
-import { MemoryRunDiscovery } from "../../src/memory-search/runs/memory-run-discovery.js";
-import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
-import { getStandaloneRootTreePath } from "../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
-import { getTeamRunExecutionTreePath } from "../../src/run-history/store/team-run-execution-tree-path.js";
-import { writeRun } from "./memory-search-fixtures.js";
+import { TaskTeamRootMemorySource } from "../../../src/agent-memory/services/task-team-root-memory-source.js";
+import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
+import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
+import { writeRun } from "../../helpers/memory-search-fixtures.js";
 
 const turn = [{ day: "2026-08-25", user: "hello", agent: "hi" }];
 const launch = (runtimeKind: RuntimeKind, workspaceRootPath: string | null) =>

@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { readJournalEntries } from "../../src/agent-work-journal/reading/journal-entry-reader.js";
-import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../src/memory-search/index/journal-card-builder.js";
-import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../src/memory-search/index/journal-chunker.js";
-import { queryTerms, toFtsQuery, toIndexText } from "../../src/memory-search/index/memory-text-normalizer.js";
-import { maskSecrets } from "../../src/memory-search/search/secret-masker.js";
+import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
+import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-card-builder.js";
+import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-chunker.js";
+import { queryTerms, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { maskSecrets } from "../../../src/memory-search/search/secret-masker.js";
 import {
   normalizeMemorySearchDefaultLimitForPersistence,
   resolveMemorySearchDefaultLimit,
-} from "../../src/memory-search/settings/memory-search-settings.js";
+} from "../../../src/memory-search/settings/memory-search-settings.js";
 
 const journal = (entries: string[]): string => [
   "# Work Journal — run r1",

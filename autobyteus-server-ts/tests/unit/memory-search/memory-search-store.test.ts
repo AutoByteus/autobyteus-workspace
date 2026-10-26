@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { queryTerms, toFtsQuery } from "../../src/memory-search/index/memory-text-normalizer.js";
-import { MemorySearchStore } from "../../src/memory-search/store/memory-search-store.js";
+import { queryTerms, toFtsQuery } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { MemorySearchStore } from "../../../src/memory-search/store/memory-search-store.js";
 
 const run = (runKey: string) => ({ runKey, runId: runKey.split("/").at(-1)!, memoryDir: `/m/${runKey}`, agentName: "Codex", teamName: null, memberName: null,
   orgName: null, workspace: null, runtimeKind: null, subject: { kind: "RUN_FOLDER" as const, runKey } });
