@@ -20,8 +20,6 @@ export type AgentRunMetadata = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
   /** Present only on a run a peer node delegated to this node (CM-10): its back-link; absent means none. */
   delegatedFrom?: DelegatedFrom;
-  /** autobyteus-32: the run's file and shell tools are confined to its workspace where the runtime allows it; absent means none. */
-  toolConfinement?: AgentRunToolConfinement;
   /**
    * autobyteus-32: the server service that created and owns this run (a system-owned run); absent means an ordinary run.
    * A system-owned run is never a collaboration member.
@@ -29,8 +27,6 @@ export type AgentRunMetadata = {
   systemRunOwner?: SystemRunOwner;
 };
 
-/** Where a confined run's file and shell tools may act: its own workspace. */
-export type AgentRunToolConfinement = "workspace";
 /** The services that own system runs: the Model Router agent's. */
 export type SystemRunOwner = "model_router";
 

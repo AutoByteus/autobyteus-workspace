@@ -81,31 +81,24 @@ skipped default becomes a launch note ("opus is blocked until …").
   `<appData>/model-routing/model-router-agent.json` with the launch it was made
   with (a changed launch makes a new run). It runs in
   `<appData>/internal-workspaces/<id>`, auto-approved, with
-  `systemRunOwner: "model_router"` and `toolConfinement: "workspace"`; both are
-  kept in run metadata and on restore. `systemRunOwner` keeps it out of the
-  standalone-run eligibility, and its internal workspace is not listed while
-  internal agents are hidden. `openModelRouterAgent` opens its run for the user.
+  `systemRunOwner: "model_router"`, kept in run metadata and on restore. That
+  marker keeps it out of the standalone-run eligibility (no collaboration tools),
+  and its internal workspace is not listed while internal agents are hidden.
+  The run is reused through the platform's command-ready path
+  (`resolveCommandReadyAgentRun`), which also restores a run whose runtime
+  stopped, for example after a failed turn; the queue counts such a run as free,
+  and each request takes the run, restored if needed, when it is sent. When the
+  run cannot be restored, a new one starts. `openModelRouterAgent` opens its run
+  for the user.
 
-## Confinement of the router's run
+## Tools of the router's run
 
 The router's tools are its template list (runtimes, `submit_launch_choices`,
-`search_web`, `read_url`, `read_file`, `write_file`, `edit_file`) plus the
-file tools the runtime brings. Writes and commands must stay in its workspace:
-
-- **Codex**: the thread starts with the `workspace-write` sandbox whatever its
-  auto-approve (`resolveEffectiveCodexSandboxModeForRunConfig`). Codex also lets
-  `workspace-write` write its temp roots (`$TMPDIR`, `/tmp`). Thread parameters
-  take precedence over Codex config files, including a `.codex/config.toml` the
-  agent could write into its own workspace.
-- **Claude Agent SDK** (`backends/claude/session/claude-workspace-confinement.ts`):
-  setting sources `["user"]` only (the workspace's `.claude/settings*.json` is
-  ignored, since the agent could write it); `Bash`, `BashOutput` and `KillShell`
-  are disallowed; a `PreToolUse` hook denies `Write`, `Edit`, `MultiEdit` and
-  `NotebookEdit` on a path outside the workspace (symbolic links resolved), even
-  when a user-level rule allows the tool.
-- **AutoByteus**: limited by its tool list (no `run_bash`).
-- **Antigravity, Grok**: cannot be confined from our side; they run the router
-  with their usual tools under auto-approve (FU-005).
+`search_web`, `read_url`, `read_file`, `write_file`, `edit_file`), with no
+collaboration tools (it is system-owned), plus the tools its runtime brings.
+It runs like any auto-approved agent on that runtime, with no router-specific
+sandbox (SR-018, the user's decision); its instructions keep its files in its
+workspace. On AutoByteus it has only the listed tools (no `run_bash`).
 
 ## Decision records
 
@@ -154,6 +147,6 @@ them on shutdown.
 
 ## Tests
 
-`tests/unit/model-routing/` (queue, sessions, router, agent, log, confinement,
+`tests/unit/model-routing/` (queue, sessions, router, agent, log, tools,
 submit tool and records), `tests/unit/agent-collaboration/collaborator-launch-resolver-model-routing.test.ts`,
 and the remote collaboration tests for `task`, `launches` and `modelRouting`.

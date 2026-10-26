@@ -7,7 +7,6 @@ import type { ClaudeProcessDiagnostics } from "./claude-process-diagnostics.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
 import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
-import { buildClaudeWorkspaceConfinement } from "./claude-workspace-confinement.js";
 
 /** The SDK query options for one CLI process generation of a Claude run session. */
 export const resolveClaudeSessionQueryOptions = async (input: {
@@ -36,11 +35,6 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
   });
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
-  // autobyteus-32 REQ-003: a run confined to its workspace loads only the user's settings, has no shell tool, and a hook
-  // denies file writes outside its workspace.
-  const confinement = runContext.config.toolConfinement === "workspace"
-    ? buildClaudeWorkspaceConfinement(sessionConfig.workingDirectory)
-    : null;
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
     sessionBinding: input.binding,
@@ -53,10 +47,5 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     stderr: (data: string) => input.diagnostics.append(data),
     canUseTool: (toolName, toolInput, toolOptions) =>
       input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions),
-    ...(confinement ? {
-      settingSources: confinement.settingSources,
-      extraDisallowedTools: confinement.disallowedTools,
-      hooks: confinement.hooks,
-    } : {}),
   };
 };

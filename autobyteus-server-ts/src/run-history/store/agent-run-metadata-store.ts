@@ -61,7 +61,6 @@ const normalizeMetadata = (
     metadata.applicationExecutionContext,
   ),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
-  ...optionalMarker("toolConfinement", metadata.toolConfinement, ["workspace"] as const),
   ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),
 });
 

@@ -8,6 +8,9 @@ import { MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in
 import type { ModelRouterLaunch } from "../model-routing-settings.js";
 import type { KnowledgeText } from "./routing-request-text.js";
 
+/** Statuses in which the agent's run is busy with a turn (or starting one). */
+const BUSY_STATUSES: ReadonlySet<string> = new Set(["running", "initializing"]);
+
 /** The router's own durable memory in its workspace (REQ-007). */
 export const KNOWLEDGE_FILE_NAME = "knowledge.md";
 /** A routing request carries at most this much of the knowledge file (RSK-008). */
@@ -23,7 +26,7 @@ export type ModelRouterRunIdleState = Readonly<{
 }>;
 
 export type ModelRouterAgentDependencies = Readonly<{
-  agentRuns: Pick<AgentRunService, "createAgentRun" | "getAgentRun" | "resolveAgentRun">;
+  agentRuns: Pick<AgentRunService, "createAgentRun" | "getAgentRun" | "resolveCommandReadyAgentRun">;
   internalWorkspaces?: Pick<InternalWorkspaces, "pathFor">;
   /** `<appData>/model-routing/`. */
   stateDir: string;
@@ -33,11 +36,12 @@ const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException |
 
 /**
  * The node's one Model Router agent (REQ-004, design § Ownership Map): one long-lived run of the built-in internal
- * agent in its own internal workspace, auto-approved, confined to that workspace (`toolConfinement`) and marked
- * system-owned (`systemRunOwner`, never a collaboration member). It is the only creator of that run. A run is reused
- * while its recorded runtime and model equal the settings and it restores; otherwise a new run starts with the current
+ * agent in its own internal workspace, auto-approved with its runtime's normal tools (SR-018), and marked system-owned
+ * (`systemRunOwner`, never a collaboration member). It is the only creator of that run. A run is reused while its
+ * recorded runtime and model equal the settings and it restores through the platform's command-ready path (which also
+ * restores a run whose runtime stopped, e.g. after a failed turn: CR-005); otherwise a new run starts with the current
  * settings (the old one stays in history; `knowledge.md` stays in the workspace). It also tells the routing queue when
- * the run is idle (SR-016).
+ * the run is free for the next request (SR-016).
  */
 export class ModelRouterAgent implements ModelRouterRunIdleState {
   private ensuring: Promise<AgentRun> | null = null;
@@ -56,7 +60,7 @@ export class ModelRouterAgent implements ModelRouterRunIdleState {
     return this.internalWorkspaces.pathFor(MODEL_ROUTER_AGENT_DEFINITION_ID);
   }
 
-  /** The agent's run for `launch`: restored, or created (single-flight). */
+  /** The agent's run for `launch`, ready to take input: live, restored, or created (single-flight). */
   ensureRun(launch: ModelRouterLaunch): Promise<AgentRun> {
     if (!this.ensuring) {
       this.ensuring = this.ensureOnce(launch).finally(() => { this.ensuring = null; });
@@ -83,8 +87,13 @@ export class ModelRouterAgent implements ModelRouterRunIdleState {
     return text ? Object.freeze({ text, truncated }) : null;
   }
 
+  /**
+   * Free for the next routing request: no input waiting and no turn running. A run whose runtime stopped (a failed turn
+   * can leave it so, CR-005) runs nothing either; the next request restores it before it is posted (`ensureRun`).
+   */
   isIdle(): boolean {
-    return this.watched !== null && this.watched.run.isActive() && this.status === "idle" && this.pendingInputs === 0;
+    if (this.watched === null || this.pendingInputs > 0) return false;
+    return !this.watched.run.isActive() || !BUSY_STATUSES.has(this.status);
   }
 
   onIdleChange(listener: () => void): () => void {
@@ -95,7 +104,10 @@ export class ModelRouterAgent implements ModelRouterRunIdleState {
   private async ensureOnce(launch: ModelRouterLaunch): Promise<AgentRun> {
     const stored = await this.readState();
     if (stored && stored.runtimeKind === launch.runtimeKind && stored.llmModelIdentifier === launch.llmModelIdentifier) {
-      const restored = this.dependencies.agentRuns.getAgentRun(stored.runId) ?? await this.dependencies.agentRuns.resolveAgentRun(stored.runId);
+      const restored = await this.dependencies.agentRuns.resolveCommandReadyAgentRun(stored.runId).catch((error: unknown) => {
+        console.warn(`Model Routing: the Model Router agent's run ${stored.runId} could not be restored; a new run starts (${error instanceof Error ? error.message : String(error)}).`);
+        return null;
+      });
       if (restored) return this.watch(restored);
     }
     const workspace = this.workspacePath();
@@ -106,11 +118,10 @@ export class ModelRouterAgent implements ModelRouterRunIdleState {
       llmModelIdentifier: launch.llmModelIdentifier,
       runtimeKind: launch.runtimeKind,
       autoExecuteTools: true,
-      toolConfinement: "workspace",
       systemRunOwner: "model_router",
     });
     await this.writeState({ runId, runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier });
-    const run = this.dependencies.agentRuns.getAgentRun(runId) ?? await this.dependencies.agentRuns.resolveAgentRun(runId);
+    const run = this.dependencies.agentRuns.getAgentRun(runId) ?? await this.dependencies.agentRuns.resolveCommandReadyAgentRun(runId);
     if (!run) throw new Error(`The Model Router agent's run ${runId} did not start.`);
     return this.watch(run);
   }

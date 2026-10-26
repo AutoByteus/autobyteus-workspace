@@ -3,7 +3,6 @@ import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
-  type AgentRunToolConfinement,
   type DelegatedFrom,
   type AgentRunMetadata,
   type SystemRunOwner,
@@ -41,8 +40,6 @@ export interface CreateAgentRunInput {
   } | null;
   /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
   delegatedFrom?: DelegatedFrom;
-  /** autobyteus-32: confine its file and shell tools to its workspace where the runtime allows it. */
-  toolConfinement?: AgentRunToolConfinement;
   /** autobyteus-32: the server service that owns the run (never a collaboration member). */
   systemRunOwner?: SystemRunOwner;
 }

@@ -157,3 +157,70 @@ describe("ModelRouter (DS-003)", () => {
     expect(posted).toHaveLength(1);
   });
 });
+
+describe("ModelRouter with the real ModelRouterAgent: a failed router turn (CRR-003 CR-005, MR-09)", () => {
+  afterEach(() => { vi.unstubAllEnvs(); });
+
+  it("the turn fails and the runtime stops; the next routing is posted to the restored run and answered (not 'busy')", async () => {
+    turnOn();
+    const fs = await import("node:fs/promises");
+    const os = await import("node:os");
+    const path = await import("node:path");
+    const { ModelRouterAgent: RealAgent } = await import("../../../src/model-routing/services/model-router-agent.js");
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "router-failed-turn-"));
+    try {
+      const sessions = new ModelRoutingSessions((() => { let n = 0; return () => `req_${++n}`; })());
+      /** One run object per activation: the first fails its turn and stops (as Antigravity after a CLI error); a restored one answers. */
+      let activations = 0;
+      const posted: string[] = [];
+      const makeRun = (runId: string) => {
+        const attempt = ++activations;
+        let active = true;
+        const listeners = new Set<(event: unknown) => void>();
+        const emit = (event: unknown) => listeners.forEach((listener) => listener(event));
+        return {
+          runId, isActive: () => active, getStatusSnapshot: () => ({ status: "idle" }),
+          subscribeToEvents: (listener: (event: unknown) => void) => { listeners.add(listener); return () => listeners.delete(listener); },
+          publishEvent: vi.fn(async () => undefined),
+          postUserMessage: vi.fn(async (message: { content: string }, options: { lifecycleObserver?: AgentRunInputLifecycleObserver }) => {
+            const requestId = /^Routing request (\S+)\./.exec(message.content)![1]!;
+            posted.push(`${attempt}:${requestId}`);
+            queueMicrotask(() => {
+              emit({ eventType: "AGENT_STATUS", payload: { status: "running" } });
+              options.lifecycleObserver?.({ kind: "forwarded", dispatchKind: "start_turn", turnId: `turn_${attempt}` });
+              if (attempt === 1) {
+                emit({ eventType: "AGENT_STATUS", payload: { status: "error" } });
+                active = false;
+                options.lifecycleObserver?.({ kind: "failed", code: "AGY_PROCESS_ERROR", message: "Antigravity runtime stopped unexpectedly.", turnId: `turn_${attempt}` });
+              } else {
+                sessions.submit(requestId, validChoices());
+                options.lifecycleObserver?.({ kind: "completed", turnId: `turn_${attempt}` });
+                emit({ eventType: "AGENT_STATUS", payload: { status: "idle" } });
+              }
+            });
+            return { accepted: true, turnId: null };
+          }),
+        };
+      };
+      let current: ReturnType<typeof makeRun> | null = null;
+      const agentRuns = {
+        createAgentRun: vi.fn(async () => { current = makeRun("router_run_1"); return { runId: "router_run_1" }; }),
+        getAgentRun: vi.fn(() => (current && current.isActive() ? current : null) as never),
+        resolveCommandReadyAgentRun: vi.fn(async () => { if (!current!.isActive()) current = makeRun("router_run_1"); return current as never; }),
+      };
+      const agent = new RealAgent({ agentRuns, stateDir: path.join(root, "model-routing"),
+        internalWorkspaces: { pathFor: (id: string) => path.join(root, "internal-workspaces", id) } });
+      const router = new ModelRouter({ agent, sessions, statistics: { taskKindsInUse: async () => [] }, readNodeRuntimes: async () => nodeFacts() });
+
+      await expect((await router.openDelegation())!.route(routingRequest())).resolves.toEqual({ kind: "failed", reason: "the Model Router's turn failed (Antigravity runtime stopped unexpectedly.)" });
+      const startedAt = Date.now();
+      await expect((await router.openDelegation())!.route(routingRequest())).resolves.toMatchObject({ kind: "chosen" });
+      expect(Date.now() - startedAt).toBeLessThan(2_000);
+      expect(posted).toEqual(["1:req_1", "2:req_2"]);
+      expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(1);
+      expect(agentRuns.resolveCommandReadyAgentRun).toHaveBeenCalled();
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+});

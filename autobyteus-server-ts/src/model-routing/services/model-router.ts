@@ -151,14 +151,16 @@ export class ModelRouter implements ModelRouterPort {
 
   /**
    * One routing request: the agent's run, a session holding the report it is decided against, then the queue posts it
-   * when the agent is idle. The budget, the carrying turn ending without a decision, or the wait running out ends it.
+   * when the agent is free, to the agent's run made ready again at that moment (a run whose runtime stopped after a
+   * failed turn is restored first, CR-005). The budget, the carrying turn ending without a decision, or the wait running
+   * out ends it.
    */
   private async route(request: RoutingRequest, launch: ModelRouterLaunch, facts: NodeRuntimesReading, deadlineAt: number): Promise<ModelRoutingOutcome> {
-    let run: AgentRun;
+    const startFailure = (error: unknown) => `the Model Router agent could not start (${error instanceof Error ? error.message : String(error)})`;
     try {
-      run = await this.dependencies.agent.ensureRun(launch);
+      await this.dependencies.agent.ensureRun(launch);
     } catch (error) {
-      return { kind: "failed", reason: `the Model Router agent could not start (${error instanceof Error ? error.message : String(error)})` };
+      return { kind: "failed", reason: startFailure(error) };
     }
     const session = this.dependencies.sessions.openSession(request, facts);
     // A request still waiting when its budget ends was never sent: the router was busy, whichever timer fires first.
@@ -169,8 +171,15 @@ export class ModelRouter implements ModelRouterPort {
     this.queue.enqueue({
       deadlineAt,
       expire: () => session.fail("the Model Router was busy"),
-      send: () => {
+      send: async () => {
         sent = true;
+        let run: AgentRun;
+        try {
+          run = await this.dependencies.agent.ensureRun(launch);
+        } catch (error) {
+          session.fail(startFailure(error));
+          throw error;
+        }
         return this.send(run, session.requestId, request, (reason) => session.fail(reason));
       },
     });

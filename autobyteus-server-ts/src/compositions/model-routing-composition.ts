@@ -27,7 +27,7 @@ export const composeModelRouting = (input: Readonly<{ appDataDir: string }>): Re
     agentRuns: {
       createAgentRun: (runInput) => getAgentRunService().createAgentRun(runInput),
       getAgentRun: (runId) => getAgentRunService().getAgentRun(runId),
-      resolveAgentRun: (runId) => getAgentRunService().resolveAgentRun(runId),
+      resolveCommandReadyAgentRun: (runId) => getAgentRunService().resolveCommandReadyAgentRun(runId),
     },
   });
   const router = new ModelRouter({

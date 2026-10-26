@@ -98,7 +98,6 @@ export class AgentRunProvisioningService {
       startedAt: null,
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
-      ...(input.toolConfinement ? { toolConfinement: input.toolConfinement } : {}),
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
     };
 

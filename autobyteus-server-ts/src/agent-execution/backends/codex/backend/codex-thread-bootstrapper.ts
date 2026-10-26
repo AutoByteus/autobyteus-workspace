@@ -172,18 +172,10 @@ export const resolveEffectiveCodexSandboxMode = (
 ): CodexSandboxMode =>
   autoExecuteTools ? AUTO_APPROVED_CODEX_SANDBOX_MODE : normalizeSandboxMode();
 
-/**
- * The sandbox a run's thread starts with. A run confined to its workspace (autobyteus-32 REQ-003: the Model Router
- * agent) gets `workspace-write` whatever its auto-approve: its writes and commands stay inside the workspace (Codex also
- * lets `workspace-write` write its temp roots, such as `$TMPDIR` and `/tmp`). Thread parameters take precedence over
- * Codex config files, including a `.codex/config.toml` the agent could write into its own workspace.
- */
 export const resolveEffectiveCodexSandboxModeForRunConfig = (
-  config: Pick<AgentRunConfig, "autoExecuteTools" | "toolConfinement">,
+  config: Pick<AgentRunConfig, "autoExecuteTools">,
 ): CodexSandboxMode =>
-  config.toolConfinement === "workspace" ? CONFINED_CODEX_SANDBOX_MODE : resolveEffectiveCodexSandboxMode(config.autoExecuteTools);
-
-const CONFINED_CODEX_SANDBOX_MODE: CodexSandboxMode = "workspace-write";
+  resolveEffectiveCodexSandboxMode(config.autoExecuteTools);
 
 export const resolveDefaultModel = (): string | null => {
   const model = process.env.CODEX_APP_SERVER_MODEL;

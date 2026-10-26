@@ -19,7 +19,7 @@ import {
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import { normalizeModelDescriptors, toModelInfo } from "./claude-sdk-model-normalizer.js";
 import { deriveClaudeModelSelectionPresentation } from "./claude-sdk-model-selection-presentation.js";
-import { getClaudeRuntimeSettingSources, type ClaudeSdkSettingSource } from "./claude-sdk-setting-sources.js";
+import { getClaudeRuntimeSettingSources } from "./claude-sdk-setting-sources.js";
 import { withClaudeControlQuery } from "./claude-sdk-control-query.js";
 import { isDeadlineExceeded, type ReadDeadline } from "../../read-deadline.js";
 import type { ClaudeSdkSessionBinding } from "./claude-sdk-session-binding.js";
@@ -68,12 +68,6 @@ export type ClaudeSdkStreamingSessionOptions = {
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   debugFile?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
-  /** The settings sources to load; the runtime's (`user`, `project`, `local`) when absent. */
-  settingSources?: readonly ClaudeSdkSettingSource[];
-  /** Tools removed from the session besides AutoByteus's own list. */
-  extraDisallowedTools?: readonly string[];
-  /** Programmatic SDK hooks (`hooks` of the SDK options). */
-  hooks?: Readonly<Record<string, unknown>>;
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
@@ -321,7 +315,7 @@ export class ClaudeSdkClient {
     spawnEnvironment: Record<string, string | undefined>,
   ): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
-    const settingSources = options.settingSources ? [...options.settingSources] : getClaudeRuntimeSettingSources();
+    const settingSources = getClaudeRuntimeSettingSources();
     const allowedTools = new Set<string>();
     for (const toolName of options.allowedTools ?? []) {
       const normalizedToolName = asString(toolName)?.trim();
@@ -339,8 +333,7 @@ export class ClaudeSdkClient {
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
       env: spawnEnvironment,
       tools: [...CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS],
-      disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS, ...(options.extraDisallowedTools ?? [])],
-      ...(options.hooks ? { hooks: options.hooks } : {}),
+      disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionBinding.kind === "create"
         ? { sessionId: options.sessionBinding.sessionId }

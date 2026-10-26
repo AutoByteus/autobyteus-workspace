@@ -1,7 +1,6 @@
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import type { AgentRunToolConfinement } from "../../run-history/store/agent-run-metadata-types.js";
 
 export class AgentRunConfig {
   readonly agentDefinitionId: string;
@@ -13,8 +12,6 @@ export class AgentRunConfig {
   readonly runtimeKind: RuntimeKind;
   readonly memberExecutionContext: MemberExecutionContext | null;
   readonly applicationExecutionContext: ApplicationExecutionContext | null;
-  /** autobyteus-32: confine the run's file and shell tools to its workspace (Codex and Claude honour it). */
-  readonly toolConfinement: AgentRunToolConfinement | null;
 
   constructor(input: {
     agentDefinitionId: string;
@@ -26,7 +23,6 @@ export class AgentRunConfig {
     runtimeKind: RuntimeKind;
     memberExecutionContext?: MemberExecutionContext | null;
     applicationExecutionContext?: ApplicationExecutionContext | null;
-    toolConfinement?: AgentRunToolConfinement | null;
   }) {
     this.agentDefinitionId = input.agentDefinitionId;
     this.llmModelIdentifier = input.llmModelIdentifier;
@@ -37,6 +33,5 @@ export class AgentRunConfig {
     this.runtimeKind = input.runtimeKind;
     this.memberExecutionContext = input.memberExecutionContext ?? null;
     this.applicationExecutionContext = input.applicationExecutionContext ?? null;
-    this.toolConfinement = input.toolConfinement ?? null;
   }
 }
