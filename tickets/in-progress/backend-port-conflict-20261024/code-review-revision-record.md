@@ -7,6 +7,7 @@
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 correction | Fail — Local Fix | Pass for API/E2E | CR-001, CR-002 resolved |
 | CRR-003 | code-review-report.md | Implementation Review / IR-004 R2 visibility | Pass for D3.1 only | Pass for R2 API/E2E | None open; CR-001/002 remain resolved |
 | CRR-004 | api-e2e-test-review-report.md | Proportional successful-test review / API-REV-001 | No prior test-review result | Pass for Delivery | None |
+| CRR-005 | code-review-report.md | Implementation Review / IR-005 DR-001 integration | CRR-003 source Pass, CRR-004 test Pass on prior source | Pass for integrated API/E2E | None; CR-001/002 retained resolved |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -84,3 +85,24 @@ None.
 - Selected returned recipient: `/software_engineering_team/delivery_engineer`, successful post-API/E2E test-code-review rule. No duplicate forwarding.
 - Mandatory remaining delivery gates: IMP-44 overall DMG resize35 packaging failure; AC-006 integrated-base/finalization evidence; impact-based reruns/rebuild/docs verification. Actual Windows/WSL and strict standalone vue-tsc unrun, no platform certification. No overall release acceptance/historical incident-fix claim or merge/release/install authorization.
 - Reviewer changes only separate test report and this history. Existing source report, API artifacts and SDK dist prerequisites untouched.
+
+
+### CRR-005 — Integrated cumulative source re-review after DR-001
+- Canonical `code-review-report.md`; Implementation Review source round4, **Full Re-Audit** (cumulative result5). Trigger DR-001 implementation-owned integration Local Fix → IR-005. Prior source CRR-003 and successful-test CRR-004 remain exact-source history.
+- Reviewed source2c47bcd646ccd371a180dbc510fd1e30aee9144f, evidenceHEADd278f3e89; merge parents72476797a (preserved Delivery records) and fetched origin/personal67994daba0adf6eb8c6bc05827b5fab6b2975aa4. Bootstrap034bfe51 historical. R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-005 / API-REV-001 historical / DR-001. Large/High unchanged.
+- Full re-audit justified by incoming dependency/core serialization, identity/startup/shared contract boundaries, not a two-file conflict-only diff.61 authored ticket files compared:57 unchanged,4 schema/Electron/locale integration changes; relevant adjacent incoming owners reviewed for ticket impact. All structural checks/full scorecard current.
+- Resolution verified against both merge parents and remerge diff: authoritative current SDL/operations regenerate GraphQL; background union, memorySyncSourceId, incoming runtime/internal-agent fields preserved, failures located on ImportMcpServerConfigsResult. Design cases retain both histories, upstream8 and ticket9/10. Awaited quit/updater survives entry renaming/migration ordering; bindingRevision still fences selected endpoint; native tool serializers retain false/zero; reserve/root-shutdown admission and scope ownership remain intact.
+
+#### Prior Finding Resolution
+| Finding / concern | Prior | Current | Verification |
+|---|---|---|---|
+| CR-001 | Resolved | Remains resolved | Native scope unchanged from reviewed correction; operation discriminator/retirement queue preserved, current core tests pass |
+| CR-002 | Resolved | Remains resolved | Capture manager/executor unchanged; unconsumed listener release/history contract retained, current core tests pass |
+| DR-001 conflicts (no CR finding ID) | Integration blocked | Resolved at source boundary | Merge parents/remerge diff, current generated SHA256 and SDL, preserved design histories and incoming integration owners |
+
+- Supported BEH-001..006/SCN-001..008 and MP-001..004 confirmed. CR-C10 integration mechanism satisfied; CR-C11 rejects forced-fixture-cleanup equivalence to app quit. No held/unclear candidate, new product behavior or new follow-up.
+- Current result **Pass for renewed API/E2E**, score **9.5/10** all categories>=9.2. No source/test fixes by reviewer, no repeated tests/build/apps/providers. Current implementation foundation854 unique tests and full unsigned build reviewed; static audit/hash comparisons are reviewer evidence.
+- `evidence/CR-05-integrated-source-audit.json`: all61<=500, max497, relative to current integrated base; generated/tests excluded. Incoming GLOSSARY.md now applies; previous absence statements are historical.
+- IMP-56 full build/DMG verify now Pass; IMP-44 old failure retained. IMP-57 forced=true CLI cleanup is not quit proof; IMP-59 actual preload no-work quit221ms/no force is scoped separately. No integrated active-work/provider acceptance inferred.
+- Route: returned source-pass rule to `/software_engineering_team/api_e2e_engineer` only. Renew current API-03/05/06B/07/09/09B/10 equivalents; preserve historical04/06 and prior95.3%, no duplicates. Following validation/test review, Delivery retains fresh-base/raw-evidence/docs/AC-006 finalization gates.
+- No target merge/push/release/install, user-data/installed-app operation, paid inference or Windows/WSL certification. Reviewer changed only source report/history and audit receipt; prior test-review report, Delivery records and two SDK dist prerequisites preserved.
