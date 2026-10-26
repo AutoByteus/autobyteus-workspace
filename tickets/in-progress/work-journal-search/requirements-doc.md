@@ -133,7 +133,7 @@ Scope that follows:
 | AC-004 | Chinese questions pass gate 1 | 5 of 5 |
 | AC-005 | No secret pattern appears in any result over the known-answer set | To measure |
 | AC-006 | No result comes from `memory/imports/`; an agent's own run never appears in its results | — |
-| AC-007 | Weak matches are reported as weak, with a suggestion; never "nothing in memory" (R-009). The off-topic questions of the known-answer check end with the only-weak note (UD-019) | — |
+| AC-007 | Weak matches are reported as weak, with a suggestion; never "nothing in memory" (R-009). The known-answer check's **off-topic** questions (cues whose key words occur in no run, verified by count) end with the only-weak note, and no answerable question gets a false only-weak note (UD-019, as refined in SR-004b). Partial-match questions (key words that do occur in past runs) are outside this check | IMP-15: N02 passes; N01 and N03 reclassified as partial |
 | AC-008 | **First build on the reference machine** (M1 Max, about 3,700 runs, 1.7 GB of journals): journals ≤ 5 min, text ≤ 10 min (search by text works after this), meaning ≤ 2 h in the background; progress visible on the Memory page | Measured 104 s / 70–182 s / ≈ 1 h |
 | AC-009 | A turn's journal change is findable by text within about a minute | — |
 | AC-010 | Runs of retired or renamed agents, task-team members and runs without metadata are found, named as recorded or by folder | Known-answer set includes such runs |

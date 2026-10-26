@@ -275,7 +275,7 @@
  },
  {
   "id": "N01",
-  "category": "off-topic (infrastructure never done)",
+  "category": "partial match (key words occur in past runs; outside the gates)",
   "language": "en",
   "accepted_runs": []
  },
@@ -287,7 +287,19 @@
  },
  {
   "id": "N03",
-  "category": "off-topic (Chinese)",
+  "category": "partial match (key words occur in past runs; outside the gates)",
+  "language": "zh",
+  "accepted_runs": []
+ },
+ {
+  "id": "N04",
+  "category": "off-topic (words verified absent)",
+  "language": "en",
+  "accepted_runs": []
+ },
+ {
+  "id": "N05",
+  "category": "off-topic (words verified absent)",
   "language": "zh",
   "accepted_runs": []
  }

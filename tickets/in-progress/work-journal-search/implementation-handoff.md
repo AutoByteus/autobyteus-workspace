@@ -12,19 +12,19 @@ Branch `codex/work-journal-search` (base `ddd6fdcdf6`), worktree `/Users/normy/a
 - Supplemental task artifacts: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (VIS-001 … VIS-024); `memory-search-evaluation-report.md`; `probes/`; `follow-ups.md`; `product-design-request.md`
 - Design review report: `design-review-report.md` (ARCH-REV-002 Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial). The Solution Designer's clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, decided as UD-018 in SR-004) and R-7 (newest first) are implemented as written.
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` (CRR-001: CR-001, CR-002, CR-003, note C-06); the Solution Designer's SR-004 (UD-018, UD-019, AC-007 extended) and SR-004b (the Design Impact on AC-007 resolved: option (a), corrected off-topic set). The earlier clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, now UD-018) and R-7 (newest first) are implemented as written.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-001, SR-003
+- Current implementation revision ID: `IR-002` (on the IR-001 baseline)
+- Related solution revision IDs: SR-001, SR-003, SR-004, SR-004b
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001, CR-002, CR-003 (UD-018), C-06; UD-019; SR-004b
 
 Stage 1 (server) and Stage 2 (web), Change Sequence steps 1–9:
 
@@ -47,7 +47,7 @@ Stage 1 (server) and Stage 2 (web), Change Sequence steps 1–9:
 - Evidence and rationale for confirmation or change: a new server subsystem with a persistent derived store, a new agent tool in two entry forms, GraphQL additions and removals, a startup task, and a rebuilt web page; 140 files outside the ticket folder, about 9,000 lines added (including the regenerated GraphQL types).
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. Two observations for the Solution Designer are under Known Risks (the question file's authoring run; word-share strength on off-topic cues).
+- New design impact or escalation trigger: one in IR-002, resolved. The extended AC-007 was not met under UD-019 (IMP-15). The Solution Designer decided option (a) in SR-004b: keep the rule and correct the off-topic set. IMP-17 now passes.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -94,6 +94,16 @@ Docs: `GLOSSARY.md`; `autobyteus-server-ts/docs/modules/{memory_search,agent_mem
 
 ## Important Assumptions
 
+IR-002 decisions:
+- **Own notifications (CR-001)** are recognized by the run folder being made current by the Journals step's own `ensureCurrent` at that moment (`ownJournalCalls`). An agent's change caught in that window is still indexed: this same pass's Text step reads the run afterwards.
+- **Before any build**, queued changes index nothing; while the first build runs, they follow it.
+- **Quiet passes (CR-002):** a failed `runs` or `meaningSync` pass is logged and leaves the reported state unchanged; the next change or start retries it. `meaningSync` no longer moves `updatedAt`.
+- **Meaning progress** counts the build's own embedding (a `full` or `rebuild` pass, or the deferred `meaningSync` after a start), not a live update's re-embedded card. The coverage note says nothing about those few cards.
+- **Term weights (UD-019):** BM25's IDF, `log((N − n + 0.5)/(n + 0.5))`, floored at 1e-6. `N` is the chunk count; `n` comes from `chunk_vocab` (`fts5vocab`, created on open, so existing stores need no rebuild). A term of several tokens uses its rarest token's count, and a term no chunk holds weighs the most.
+- **Evaluation kinds (SR-004b):** a false note is counted on an answerable question's first search. Partial questions are reported only.
+
+IR-001 decisions:
+
 Decisions inside the design's room, for the reviewer to check:
 
 - **Chunks split at day changes** as well as at 2,000 characters, so a chunk's day is exact (found while testing a day boundary).
@@ -114,8 +124,9 @@ Decisions inside the design's room, for the reviewer to check:
 
 ## Known Risks
 
-- **The question file's authoring run answers every question by its own words.** This ticket's Solution Designer run quotes all 31 questions; without `--asking-run` it is the text tier's #1 for 15 of them and #1 overall falls from 18 to 11 (gates still pass). Real agents asking about past work are not affected the same way, but any run that discusses a topic at length (reviews, designs) competes with the run that did the work. R-016 lists "self-references" as a later candidate transformation; for the Solution Designer's judgement.
-- **Word-share strength on off-topic cues.** The approved text-strength rule rates a chunk containing most of a cue's words fair or strong even when it is unrelated; for the three off-topic questions the weak-only note did not appear (IMP-11). R-009 is met (never "nothing in memory"; weak matches labelled weak), but "Only weak matches" shows only when every match is weak by that rule.
+- **The question file's authoring run answers every question by its own words.** This ticket's Solution Designer run quotes all the questions. Without `--asking-run` it is the text tier's #1 for 15 of them, and #1 overall falls from 18 to 11; the gates still pass either way. Any run that discusses a topic at length (reviews, designs) competes with the run that did the work. The Solution Designer kept this as is (SR-004); "self-references" stays a later R-016 candidate.
+- **Partial cues rate fair, by design (UD-019, SR-004b).** A cue that describes real work in most of its words gets fair matches, even when one word is new; N01 and N03 are reported as `partial`, not gated. The only-weak note shows for cues whose key words occur nowhere (N02, N04, N05).
+- **Chinese terms weigh against the whole index.** Chinese chunks are a small share of the index, so overlapping two-character terms all look rare (IMP-15). The optional Chinese-only weighting was not added: N05 already ends only-weak, and no answerable Chinese question gets a false note (IMP-17). If a future off-topic Chinese cue fails, that weighting is the measured next step (the Solution Designer's follow-up).
 - **Gate 2 latency was measured on a busy shared machine** (load averages 30–40): p90 575 ms, max 964 ms. Idle numbers should be lower; the probe report measured 0.2–0.9 s idle.
 - **The first build wrote Work Journals into the isolated copy**, as building does on a user's memory (R-005, approved); building on the user's own data needs the user's go and a backup first (TESTING.md; nothing here touched `~/.autobyteus`).
 - **`listJournalFiles` reads every journal file of a run** to count lines and days on each Work Journal read; for runs with many MB of journals a window read costs that read. Acceptable for the page's use; a cache keyed by `content_sha256` would remove it if needed.
@@ -157,7 +168,20 @@ Decisions inside the design's room, for the reviewer to check:
 
 ## Checks Run
 
-All evidence files are in `evidence/`. The server source has not changed since `ecbf5a57bd`, except `src/memory-search/evaluation/` up to `9dcb4910f8`. The web was last changed at `c66708b44b`.
+All evidence files are in `evidence/`.
+
+**Rerun plan for IR-002 (TESTING.md, rerun by impact).**
+- Baseline: IR-001 validated through `c66708b44b`.
+- `git diff --name-only c66708b44b HEAD -- autobyteus-server-ts/src autobyteus-web` lists only `autobyteus-server-ts/src/memory-search/**`: the pipeline, facade, search service, store, normalizer and evaluation.
+- **Rerun:**
+  - IMP-02 and IMP-04 (memory-search code) → IMP-13 and IMP-16;
+  - IMP-05 → IMP-14;
+  - IMP-07 and IMP-11 → IMP-15 and IMP-17;
+  - IMP-01 → typecheck in IMP-16.
+- **Still valid (nothing they exercise changed):**
+  - IMP-06: build timings; the pipeline's steps and indexing are unchanged, and only status reporting and notification filtering changed;
+  - IMP-08, IMP-09, IMP-10, IMP-12: no web change;
+  - IMP-03's other suites: outside `src/memory-search`; the memory-search unit tests are rerun in IMP-16.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result (`Pass`/`Fail`) | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -173,6 +197,11 @@ All evidence files are in `evidence/`. The server source has not changed since `
 | IMP-10 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `c66708b44b` | same | web boundary and localization rules | R-015 | Pass | `IMP-10-web-guards.log` | `[audit:localization-literals] Passed with zero unresolved findings.` |
 | IMP-11 | off-topic questions N01–N03 as the authoring run on the built index | `9dcb4910f8` | same | weak/none notes | AC-007, R-009 | Pass (observation in Known Risks) | `IMP-11-off-topic.log` | `"saysNothingInMemory": false` ×3; `"note": null` |
 | IMP-12 | `node autobyteus-web/tests/e2e/memory-search-probe.mjs …` (probe-owned real stack) | `c66708b44b` (web), dist `ecbf5a57bd` | headless Chrome, clean env | the Memory page end to end against the real server | R-013, R-014, AC-004, AC-011, DS-001, DS-002, DS-004, DS-005, VIS-* | Pass | `IMP-12-memory-page-probe/` | `"result": "Pass"`, 21 checks, `pageErrors: []`; screenshots named by VIS ID |
+| IMP-13 | focused server tests + typecheck (as IMP-02) | `5c566766b1` | same | CR-001, CR-002, UD-019, C-06 code and tests | CR-001, CR-002, UD-019, C-06 | Pass | `IMP-13-server-focused-tests.log` | `Tests  215 passed \| 2 skipped (217)`; `typecheck exit 0` |
+| IMP-14 | `pnpm -C autobyteus-server-ts build` | `8529960b80` | same | build and bootstrap smoke | — | Pass | `IMP-14-server-build.log` | `exit 0` |
+| IMP-15 | evaluation with weighted strength and N01–N03 off-topic (pre-SR-004b set) | `8529960b80` | isolated copy; load 25–35 | strength rule, off-topic note | UD-019, AC-007 (extended) | Fail → Design Impact (resolved by SR-004b) | `IMP-15-evaluation-gates-weighted-strength.log` | `"offTopic": … "failed": ["N01", "N03"]`; calibration simulation |
+| IMP-16 | impacted server tests (+ `tests/unit/api`), memory e2e (clean env), typecheck | `41501c5a41` | same | memory-search, GraphQL types, tools, startup, journals, embeddings | CR-001, CR-002, UD-019, C-06, DS-001…DS-006 | Pass | `IMP-16-server-tests-ir002.log` | `Test Files  58 passed \| 1 skipped (59)`; `Tests  369 passed`; e2e `Tests  20 passed \| 3 skipped (23)`; typecheck `exit 0` |
+| IMP-17 | evaluation on the SR-004b set (kinds), as the authoring run | `41501c5a41` | isolated copy; load 18–20 | search, strength, notes, masking, latency | AC-001…AC-005, AC-007 (refined), R-016 | Pass | `IMP-17-evaluation-gates-sr004b.log` | `"passed": 31`, `"oneSearchTop10": 30`, `"top3": 26`, `"p90Ms": 556`, `"maxMs": 879`, `"offTopic": {"questions": 3, "passed": 3, "failed": []}`, `"falseOnlyWeak": []`, `"unmaskedSecrets": 0` |
 
 - Not run, and why:
   - AC-012 and AC-013 (real agents; tool selection): API/E2E (UD-007).

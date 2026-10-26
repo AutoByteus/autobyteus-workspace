@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
-| IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004 | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; **`Design Impact` raised** on AC-007 (extended) | SR-004, CRR-001 | In progress: the fixes are committed and pass; the off-topic gate fails for N01 and N03 under the decided rule; returned to the Solution Designer for a decision |
+| IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
 
 ## Revision Entries
 
@@ -43,8 +43,8 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Triggering finding IDs: CR-001, CR-002, CR-003 (resolved as UD-018), UD-019, C-06.
 - Classification: `Local Fix` for CR-001, CR-002 and C-06; UD-019 implemented as decided; `Design Impact` raised on AC-007 (extended by UD-019).
 - Prior authoritative result: IR-001 (`02ea886678` … `c66708b44b`).
-- Current authoritative result: IR-001 plus `0ca22eaa1c` (CR-001, CR-002) and `8529960b80` (UD-019, C-06, evaluation off-topic check).
-- Related solution revision IDs: SR-004
+- Current authoritative result: IR-001 plus `0ca22eaa1c` (CR-001, CR-002), `8529960b80` (UD-019, C-06, the evaluation's off-topic check) and `41501c5a41` (evaluation question kinds, SR-004b).
+- Related solution revision IDs: SR-004, SR-004b
 - Related code-review revision IDs: CRR-001
 - Implementation delta:
   - **CR-001:** only the Journals step's own `ensureCurrent` notifications are dropped (`ownJournalCalls`, held while that call is in flight); every other journal change is queued, also during a pass or the first build. A queued change waits for the running pass; with no build and none running, nothing is indexed.
@@ -60,7 +60,11 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result:
   - IMP-13: focused server tests 215 passed; typecheck 0. Six new tests; the CR-001, CR-002, UD-019 and C-06 ones fail on the previous code.
   - IMP-14: build passes.
-  - IMP-15: gates 1 and 2 unchanged (31/31 within three searches; top 3 26/31; p90 789 ms, max 900 ms under load 25–35). **Off-topic 1 of 3 (N01, N03 fail).**
-- Next recipient or routing: Solution Designer (`Design Impact`: AC-007 extended is not met under UD-019 as decided); then targeted code review.
-- Remaining limitations or risks: see IMP-15 (the threshold calibration options and their false notes on answerable questions).
+  - IMP-15: gates 1 and 2 unchanged. Off-topic 1 of 3 (N01, N03 failed), so a Design Impact went to the Solution Designer. SR-004b decided option (a): keep UD-019 and correct the off-topic set; N01 and N03 become `partial`, and N04 and N05 are added.
+  - `41501c5a41`: the evaluation reads question kinds and reports `falseOnlyWeak` and `partial`.
+  - IMP-16: impacted server tests, memory e2e and typecheck pass.
+  - IMP-17: gate 1 31/31; top 3 26/31; off-topic 3/3 (N02, N04, N05); `falseOnlyWeak` []; 0 unmasked.
+  - The optional CJK weighting was not added: N05 already passes.
+- Next recipient or routing: Code Reviewer (targeted review of IR-002; Large/High).
+- Remaining limitations or risks: see `implementation-handoff.md` § Known Risks.
 

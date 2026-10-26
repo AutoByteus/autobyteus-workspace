@@ -125,3 +125,18 @@
 - **Architecture review:** not repeated. No boundary, ownership, contract or persistence changed; the strength rule is internal to `MemorySearchService`, and the targeted code review covers it.
 - **Classification:** unchanged, Large/High.
 - **Handoff:** the rework round (CR-001, CR-002, UD-018 confirmed, UD-019, C-06) → `/software_engineering_team/implementation_engineer`, then targeted code review.
+
+### SR-004b — Off-Topic Check Refined (2026-10-26)
+
+- **Trigger:** the implementation engineer's Design Impact on the extended AC-007 (`evidence/IMP-15-evaluation-gates-weighted-strength.log`): N01 and N03 failed the off-topic check under UD-019.
+- **Finding:** my off-topic questions were not off-topic. "kubernetes" occurs in 301 runs and "打印机" in 9 (counts on the isolated copy, 2026-10-26). Their fair ratings are honest. Raising the fair threshold to 0.5 or 0.6 would give false only-weak notes on Q12, Q29 and Q31 (and Q06).
+- **Decision (Solution Designer, under the user's delegation): option (a).**
+  - UD-019 stays at 2/3 and 1/3.
+  - N01 and N03 are reclassified as partial matches, outside the check.
+  - New off-topic questions with key words verified absent: N04 (English, aquarium) and N05 (Chinese, 鱼缸 / 加热棒).
+  - AC-007 is refined to off-topic cues verified absent, plus no false only-weak note on answerable questions.
+- **CJK weighting:** the implementer may compute term weights for CJK bigrams over Chinese chunks only. Keep it only if N05 then ends only-weak **and** none of the 5 answerable Chinese questions gets a false note; otherwise the gate covers English off-topic only, and CJK weighting becomes a follow-up.
+- **Files:**
+  - private question file updated; a copy of the previous version is in `queries.before-SR-004b.json` in the private folder;
+  - `probes/questions-public.json` updated.
+- **Lesson:** a known-answer set's "absent" cases are verified by count before use, like its answers.
