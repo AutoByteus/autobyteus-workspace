@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / SR-006 design handed for independent review | SR-004, SR-005, SR-006 | N/A | Fail (Design Impact) | AR-001…AR-010 |
 | ARCH-REV-002 | Round 2 / SR-007 revision after ARCH-REV-001 | SR-005, SR-006, SR-007 | Fail (Design Impact) | Pass | AR-001…AR-010 resolved; AR-011…AR-014 new (non-blocking) |
+| ARCH-REV-003 | Round 3 (focused) / SR-008 after code review CRR-001 | SR-008 | Pass | Pass | AR-015 new (impl note), AR-016 new (recommendation); AR-011…AR-014 still in force |
 
 ## Revision Entries
 
@@ -67,3 +68,32 @@ None.
 - Material classification changes: None (Large / High).
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
 - Remaining risks or uncertainty: the service write lock must stay a small mutex; rule matching is coded twice (shared vectors); the plain backup; the live-check token expires 2026-11-25.
+
+### ARCH-REV-003 — Focused round on SR-008 (after code review CRR-001): Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/tickets/in-progress/secrets-and-integrations-design/design-review-report.md` (section "SR-008 Focused Round")
+- Review round and trigger: Round 3. SR-008 answers `code-review-report.md` CRR-001 (CR-001…CR-004; implementation reviewed at `90c21a7cdb`).
+- Triggering role, report path, and finding IDs: Solution Designer, `handoff.md` (SR-008); code reviewer CR-001…CR-004.
+- Relevant solution revision IDs: SR-008 (on SR-007)
+- Prior authoritative decision: Pass (ARCH-REV-002)
+- Current authoritative decision: Pass
+- What changed:
+  - Reviewed the "SR-008 Revision" section and the lines it changed.
+  - CR-001: only the move writes backups.
+  - CR-002 / MDEC-006: unreviewed-only banner, with a per-device review state that has one owner.
+  - CR-003 / MDEC-007: an imported reference becomes `keep` or `missingSecret`, never adopted.
+  - CR-004: dead JS twins removed.
+  - All four are coherent with SR-007 and the approved basis. MDEC-006/007 are accepted as the Solution Designer's decisions within the standing direction.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-011…AR-014 | Open (non-blocking, implementation) | Still in force | ARCH-REV-002 | SR-008 does not touch them. The implementation handoff should record how each was applied |
+
+- New or remaining finding IDs:
+  - AR-015: key the review state by `entryId`, not `nodeBaseUrl` (implementation, Low).
+  - AR-016: recommendation to the Solution Designer to keep this server's existing reference when an imported field holds any reference, so a stale own file does not drop a working secret (non-blocking).
+- Material classification changes: None (Large / High).
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer.
+- Remaining risks or uncertainty: AR-016's stale-file case (the user is told through `needsSecret`); the risks from ARCH-REV-002 remain.

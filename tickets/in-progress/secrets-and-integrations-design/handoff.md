@@ -1,57 +1,47 @@
-# Handoff — autobyteus-244: MCP server secrets in the vault (round 2)
+# Handoff — autobyteus-244: MCP server secrets in the vault (SR-008, after code review CRR-001)
 
 - From: Solution Designer (run `solution_designer_9a83b5676cdb4488a7e25094626f527c`)
-- To: Architecture Reviewer
+- To: Architecture Reviewer, for a focused round on SR-008
 - Date: 2026-10-26
-- Task: `autobyteus-244` (part of `autobyteus-195`), Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
+- Task: `autobyteus-244`, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design`
-- Branch: `codex/secrets-and-integrations-design`
-- Base: `origin/personal` @ `a2faf424d6dc69a1d5160cb55acefc2f5a4f6bd5`. The review found the drift to `d74f75a5` touches no designed file.
+- Branch: `codex/secrets-and-integrations-design`. Implementation was reviewed at `90c21a7cdb`; the review artifacts are in `dba930bb54`.
 - Ticket folder: `tickets/in-progress/secrets-and-integrations-design/`
 
 ## What is asked
 
-Please re-review `design-spec.md` at **SR-007**. It is the revision after ARCH-REV-001 and addresses AR-001…AR-010.
-- Classification is unchanged: **Large / High**.
-- Requirements are unchanged (approved at SR-005).
-- Two points were decided within the approved MDEC-001/MDEC-002 direction, and the user is informed:
-  - **AR-006:** always-secret fields never return a value, even while stored plain.
-  - **AR-007:** header rows are added to the form.
+Review the SR-008 revision of `design-spec.md`: section "SR-008 Revision" and the lines it changed.
+- It answers code review CRR-001: CR-001 and CR-002 (Design Impact) and CR-003 (Requirement Gap). CR-004 is an implementation Local Fix.
+- Classification is unchanged: Large / High.
+- Everything else in SR-007 (ARCH-REV-002 Pass) and the implementation the code reviewer confirmed as sound stays as it is.
 
-## How each finding is resolved (details in `solution-revision-record.md` SR-007)
+## Decisions (made by the Solution Designer under the user's standing direction, 2026-10-26; the user is informed)
 
-| Finding | Resolution | Where in the design |
+| Finding | Decision | Changed design lines |
 | --- | --- | --- |
-| AR-001 | `McpConfigService.moveSecretsToVault` drives the move under a service write lock. The steps: vault saves → `provider.replaceWithReferences` (backup, then an atomic rewrite under the file lock, then a cache update) → compensation if it fails → core `addConfig` + `registerServer`. Only the provider writes `mcps.json` and its backup | DS-004; Dependency Rules; Interface (provider); file mapping |
-| AR-002 | `McpServerSecretFields.statesOf` returns `McpSecretState` (`PLAIN/CONFIGURED/MISSING/VAULT_UNAVAILABLE`) and never throws. The converter maps a `McpServerView`, and `configureMcpServer` returns the same view. The card derives "needs secret" from the states | DS-003; output example |
-| AR-003 | `McpServerDraft` (`plain/newSecret/keep`) is shared by configure, preview and import, with `McpConfigService` signatures. Secret fields work in store and preview modes. `field` = `env:<NAME>`/`header:<Name>`/`token`. `McpTokenInput` takes `{value}` or `{keep}`. Keep markers are written in the JSON tab. The old input builders are removed | Interfaces; DS-001; DS-006; Terminology; Removal plan; input example |
-| AR-004 | `readLiveTestSecret` reads `test.github.token` from the test vault, read-only. The suite stores it through `configureMcpServer` in its own application vault. `test.github.token` is a test-only known ID: no consumer is authorized for it, and only `test-vault setup` accepts its alias | DS-005; Interfaces |
-| AR-005 | `useSecretResolver` is called in `server-runtime.ts` after vault initialization (L175), before listen (L214) | Interfaces |
-| AR-006 | Always-secret fields (`token`, `Authorization`) never return a value, even while stored plain. Other plain values are settings, shown with a "Looks like a secret" hint. Candidates always include plain always-secret fields. `tokenState` is null when there is no token | "Decisions Made Within The Approved Direction"; output example |
-| AR-007 | Header rows are added, sharing a rows component with env (`McpConfigRows.vue`), each with a lock toggle. No Product Design round | Decisions; Derived Consumers |
-| AR-008 | Vault saves come before the file write; removals come after the commit; new entries are removed if the write fails | DS-001 narrative |
-| AR-009 | A paragraph on how the record shape meets MREQ-004 | "How The Record Shape Meets MREQ-004" |
-| AR-010 | Stale status lines refreshed in the requirements, the investigation notes and the SR index | — |
-
-Also adopted from the review's residual risks:
-- the backup is written with mode 0600, and the user is told its path and that it holds plain values;
-- a shared test vector keeps the rule's server and web matching the same.
+| CR-001 | Only the move writes backups, and its result already reports `backupPath`. `provider.update` writes none. In the form, an unchanged stored plain row offers "Move to vault" (the per-row move) instead of a lock toggle. A new or changed value can still be locked (`newSecret`, which replaces the old value like any edit, so no backup) | Decisions ("Plain → reference via the form"); DS-001 step 4; Provider interface row |
+| CR-002 (MDEC-006) | The banner shows only unreviewed candidates. Reviewed means unticked in the dialog, "Keep as they are", or unlocked-and-saved in the form. The per-row hint stays. State: a per-device web preference `autobyteus.mcp.secretReview.<node key>` with one owner, `mcpSecretReviewState`. No migration; if it is lost, the banner shows once more | SR-008 section; Interface row "Web review state" |
+| CR-003 (MDEC-007) | An imported reference is `keep` when the same server holds the same reference at the same field. Otherwise it becomes `missingSecret`: a fresh empty reference, state MISSING, "needs secret", listed in `needsSecret`. A foreign reference is never adopted, so no entry is ever shared | DS-001 import; `DraftValue`; Import result row |
+| CR-004 | Delete the three uncollected `*.test.js` twins (implementation) | — |
 
 ## Documents
 
-| File | Role |
-| --- | --- |
-| `requirements-doc.md` | Approved requirements (SR-005; status lines refreshed at SR-007) |
-| `investigation-notes.md` | Evidence: "Architecture Investigation" and "Architecture Investigation, round 2" |
-| `design-spec.md` | The design under review (SR-007) |
-| `solution-revision-record.md` | SR-001…SR-007 |
-| `design-review-report.md`, `architecture-review-revision-record.md` | ARCH-REV-001 (yours) |
-| `follow-ups.md` | FU-001…FU-004 |
+- `design-spec.md` (SR-008)
+- `requirements-doc.md` (MDEC-006 and MDEC-007 added; MREQ unchanged)
+- `solution-revision-record.md` (SR-008)
+- `code-review-report.md` and `code-review-revision-record.md` (CRR-001)
+- `design-review-report.md` (ARCH-REV-002)
+- `implementation-handoff.md`
+- `follow-ups.md` (FU-001…FU-006)
 
-## Constraints that stay in force
+## After review
 
-- Dummy values only in tests and evidence.
-- The real GitHub test token is used only by the gated live check, through the test vault. It is stored in `/Users/normy/.autobyteus-test/secrets/github-mcp-test.env` (mode 600, expires 2026-11-25) and gives read-only access to the private repo `ryan-zheng-teki/autobyteus-mcp-test`. Never print it.
+If it passes, implementation applies CR-001…CR-004, then the work returns through code review and API/E2E.
+
+## Constraints in force
+
+- Dummy values only.
+- The real GitHub test token is used only through the test vault, in the gated live check. Never print it.
 - Never touch the user's `~/.autobyteus` data or the running app.
-- No change to the user's plain `mcps.json` values without his explicit approval and a backup.
+- No change to the user's plain `mcps.json` values without his approval and a backup.
 - No release unless the user asks.

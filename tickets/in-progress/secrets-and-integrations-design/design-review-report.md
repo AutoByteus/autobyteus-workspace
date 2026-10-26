@@ -7,13 +7,13 @@
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-007)
 - Reviewed Design Spec: `…/design-spec.md` (SR-007)
 - Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…FU-004); `solution-validation.md`, `options-report.md`, `probes/` (long-term context only)
-- Relevant Solution Revision IDs: SR-005, SR-006, SR-007
+- Relevant Solution Revision IDs: SR-005, SR-006, SR-007, SR-008
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: SR-007, the revision addressing ARCH-REV-001 (AR-001…AR-010)
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail)
-- Latest Authoritative Round: `2`
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3` (focused on SR-008)
+- Trigger: SR-008, the revision after code review CRR-001 (CR-001…CR-004; `code-review-report.md`, implementation reviewed at `90c21a7cdb`)
+- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
+- Latest Authoritative Round: `3`. The SR-007 verdicts below still hold except where the "SR-008 Focused Round" section revises them.
 - Current-State Evidence Basis:
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design`, branch `codex/secrets-and-integrations-design` at `a2faf424`. The drift to `origin/personal` `d74f75a5` touches no file the design changes (round 1).
   - Round-1 evidence still holds.
@@ -23,6 +23,21 @@
     - `autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts` L1-45;
     - `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` L19-73;
     - `file-provider.ts` L99-110.
+
+## SR-008 Focused Round (ARCH-REV-003)
+
+Scope: the design-spec section "SR-008 Revision" and the lines it changed: Decisions "Plain → reference via the form"; DS-001 step 4 and import; the `DraftValue`, Provider, Import result and Web review state rows. Also requirements MDEC-006 and MDEC-007, and `code-review-report.md` CRR-001.
+
+**Approval authority.** MDEC-006 and MDEC-007 were decided by the Solution Designer under the user's standing direction, and the user is informed (requirements L135-136; SR-008). Under the team's route, intended behavior is the Solution Designer's call, so this review takes the decisions as the basis. MREQ-001…MREQ-008 are unchanged.
+
+| Change | Protects | Check | Verdict |
+| --- | --- | --- | --- |
+| CR-001: only the move writes backups. An unchanged stored plain row offers "Move to vault" instead of a lock; a new or changed value may still be locked (`newSecret`) | MREQ-005, R-4 | There is now one path from plain to vault. The backup is announced every time (`backupPath` in the move result). A `newSecret` over a plain value is an edit, not a move of an existing value, so MREQ-005 does not apply; this matches today's edits, which keep no copy. With no lock on unchanged plain rows, the "pre-locked row" in CR-002 can only be a new or changed value; consistent. JSON tab: `{"stored":"plain"}` keeps the value, and an unchanged string stays `plain`; consistent | Pass |
+| CR-002 (MDEC-006): the banner shows unreviewed candidates only; one owner, `mcpSecretReviewState` (per-device web preference) | MDEC-002 "one-time" banner, MDEC-001 (false hits corrected by hand) | One owner, used by the banner, the dialog and the form. Three explicit review triggers. Moved values drop out of the candidates by themselves. Absent or lost state shows the banner once more (no migration, harmless). Follows the existing `utils/chat/chatLastModelPreference.ts` pattern (try/catch storage, one key). Node key: see AR-015 | Pass |
+| CR-003 (MDEC-007): an imported reference is `keep` (same server, same reference, same field) or `missingSecret` (a fresh empty reference, MISSING, listed in `needsSecret`) | MDEC-007, MREQ-001, MREQ-007, autobyteus-190 SCN-002 (entries import) | No foreign ID is ever adopted, so no entry is shared and deletes stay per server. `missingSecret` comes from import only, and GraphQL input cannot express it. Store mode writes the reference with no vault entry → `MISSING` → "needs secret" (rule 7: only that field). Replacing it later goes through `newSecret`, and the obsolete empty ID is removed with a no-op `deleteMany` (`secret-entry-repository.ts` `removeEntry`). Import already overwrites a server with the same ID (`importConfigsFromJson` → `configureMcpServer`), so a stale reference replacing a working one is consistent with how plain values are overwritten. See AR-016 (recommendation) | Pass |
+| CR-004: delete three uncollected `*.test.js` twins | Principle 7 | Dead tests in touched modules (vitest `include` covers `tests/**/*.test.ts` only, per CRR-001) | Pass |
+
+Persisted data: the new browser key `autobyteus.mcp.secretReview.<node key>` is `Not Affected` for existing data (new key; absent = nothing reviewed). `mcps.json` and the vault are unchanged by SR-008, apart from the dropped form-path backup.
 
 ## Routing Classification Review
 
@@ -260,7 +275,7 @@ None.
 
 ## Review Decision
 
-`Pass`. The behavior basis is confirmed and the design is ready for implementation. No in-scope machinery depends on an unsupported premise. The four new findings below are non-blocking clarifications for the implementation engineer to apply within the design.
+`Pass` (ARCH-REV-003). SR-008 is coherent with SR-007 and with MDEC-006/MDEC-007. Implementation may apply CR-001…CR-004. AR-011…AR-014 (round 2) stay in force as implementation clarifications. AR-015 is a new implementation note; AR-016 is a non-blocking recommendation to the Solution Designer.
 
 ## Findings
 
@@ -307,6 +322,21 @@ None.
 - Required update (implementation): in that catch, log a warning with the server ID and the error message. The core errors name fields, never values.
 - Recipient: Implementation Engineer.
 
+### AR-015 — Key the review state by the window's stable node `entryId`, not its base URL
+
+- Type: Design Impact (clarification). Severity: Low. Non-blocking.
+- Protects: MDEC-006 (the banner shows once, not again on every launch).
+- Evidence: `windowNodeContextStore` holds both `entryId` (the embedded node is the constant `EMBEDDED_ENTRY_ID = 'embedded-local'`, `types/node.ts` L2; a remote node has its entry ID) and `nodeBaseUrl` (`windowNodeContextStore.ts` L46-80). A URL key resets the review state whenever the bound URL changes (host or port), and the banner would return.
+- Required update (implementation): use `entryId` as `<node key>`, and record the choice in the implementation handoff.
+- Recipient: Implementation Engineer.
+
+### AR-016 — Recommendation: keep this server's own reference when an imported field holds any reference
+
+- Type: Recommendation (non-blocking). Severity: Low. Scope: Within Approved Scope; adopting it would change MDEC-007's wording, so it is the Solution Designer's decision.
+- Evidence: MDEC-007 keeps a reference only when the IDs are equal. Each replacement creates a new ID (SR-007), so re-importing an older copy of your own file gives `missingSecret` for a field that holds a working secret. Store mode then removes this server's working entry as `obsolete` after the commit. The user re-enters the value and is told through `needsSecret`. An imported reference carries no value, so its ID tells this node nothing except "a secret is here". The rule "same server and the field currently holds a reference → keep it" is equally safe (no adoption across servers) and avoids that loss.
+- Required update: none for this round. If the Solution Designer adopts it, update MDEC-007 and the `keep` condition. Otherwise the current rule stands.
+- Recipient: Solution Designer (informational).
+
 ## Classification
 
 N/A (Pass). The non-blocking findings are implementation clarifications within the design.
@@ -328,4 +358,8 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`). 
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: AR-001…AR-010 are resolved (see ARCH-REV-002). AR-011…AR-014 are non-blocking implementation clarifications.
+- Notes:
+  - ARCH-REV-003 (SR-008 focused round): Pass.
+  - AR-001…AR-010 are resolved (ARCH-REV-002).
+  - AR-011…AR-015 are non-blocking implementation clarifications.
+  - AR-016 is a non-blocking recommendation to the Solution Designer.

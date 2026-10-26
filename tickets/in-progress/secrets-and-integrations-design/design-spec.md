@@ -2,7 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007` (revises SR-006 after architecture review ARCH-REV-001: AR-001…AR-010)
+- Current solution revision ID: `SR-008`.
+  - SR-008 revises SR-007 after code review CRR-001 (CR-001…CR-003); see "SR-008 Revision".
+  - SR-007 revised SR-006 after architecture review ARCH-REV-001 (AR-001…AR-010).
 - Approved requirements: `requirements-doc.md`, section "MCP Secrets In The Vault (this ticket)", MREQ-001…MREQ-008 and MDEC-001…MDEC-005.
   - Approved by the **User** in the Solution Designer conversation on 2026-10-26; quotes are in the requirements and in SR-005.
   - SR-007 changes no intended behavior. The AR-006 and AR-007 resolutions are decided within MDEC-001/MDEC-002 (see "Decisions made within the approved direction") and the user is informed.
@@ -110,7 +112,33 @@ Follow-ups: FU-001…FU-004. Design adds no new follow-up.
   - Other plain env values and header values are **settings** until the user locks them. They are returned as today. When the rule matches one, the row shows "Looks like a secret · Move to vault", because MDEC-001 makes the rule a suggestion only (for example `TOKEN_LIMIT=4096`).
   - Move candidates always include plain `token` and `Authorization` values, and any plain value the rule matches.
 - **AR-007: header rows.** The form gains header rows, using the same row component as env rows, each with its lock toggle (MDEC-001: "a lock toggle per row" for env values and other headers). No new visual language is introduced (it reuses the env-row pattern), so no Product Design round is needed.
-- **Plain → reference via the form.** Locking a row whose stored value is plain and saving it replaces a stored plain value. So it gets the same backup as the move (MREQ-005), written by the provider (see DS-004).
+- **Plain → reference via the form** (revised in SR-008, CR-001): a stored plain value becomes a vault entry **only through the move**. In the form, a saved row whose value is unchanged and plain offers "Move to vault", which runs the per-row move at once and shows its notice with the backup path, instead of a lock toggle. A row with a new or changed value keeps its lock toggle, and saving it locked is a `newSecret`. That replaces the old value the way any edit does, so no backup is written.
+
+## SR-008 Revision (code review CRR-001; decided by the Solution Designer under the user's standing direction, user informed)
+
+- **CR-001: only the move writes backups.**
+  - `provider.update` no longer writes a backup.
+  - Every backup comes from `moveSecretsToVault`. Its result carries `backupPath`, and the web shows it with the note that the file holds plain values (the existing `move_done` notice).
+  - `configureMcpServer` keeps returning the view only.
+  - Why: one path from plain to vault, one announced backup per move, and no silent plain copies.
+- **CR-002: what "one-time" means for the banner.**
+  - The banner shows only candidates the user has **not reviewed**. A candidate counts as reviewed when the user:
+    - unticks it in the review dialog and confirms;
+    - clicks the banner's "Keep as they are", which marks every candidate shown;
+    - unlocks a pre-locked row in the form and saves.
+  - Moved values stop being candidates by themselves.
+  - The per-row "Looks like a secret · Move to vault" hint stays on every candidate, so the user can still change their mind by hand.
+  - State: a web-only preference, `utils/mcp/mcpSecretReviewState.ts`. It stores the localStorage key `autobyteus.mcp.secretReview.<node key>` with a list of `"<serverId>|<field>"`. The node key is the identity of the node the window is bound to (`windowNodeContextStore`); the implementation confirms the exact field.
+  - Its one owner, with `read` and `markReviewed`, is used by the dialog, the banner and the form. When it writes, it drops fields of servers that no longer exist.
+  - Persisted-data decision: a new browser preference key. Absent means nothing has been reviewed; there is no migration. If it is lost, the banner shows once more, which is harmless.
+  - Why web-side: it is a display preference with no effect on the server or the vault. On another device the banner may appear once.
+- **CR-003: import of entries that hold a secret reference** (requirements MDEC-007; this narrows autobyteus-190 SCN-002 for those values only). The entry imports and never fails because of a reference:
+  - If a server with the same ID exists here and **already holds a reference at that field**, the value is `keep`: the server keeps its own current secret. This covers re-importing your own file, including an older copy made before a Replace (AR-016, adopted in SR-008).
+  - Any other reference becomes a new `DraftValue` `{kind: "missingSecret"}`. Store mode gives it a fresh `mcp.<uuid>` reference with no vault entry, so its state is `MISSING` and the server shows "needs secret" until the user uses Replace.
+  - A foreign reference is never adopted, so two servers never share an entry, and deleting one never removes the other's.
+  - The import result adds `needsSecret: [{serverId, field}]` beside `storedSecrets`, and the import view lists those values.
+  - `missingSecret` is produced only by import; the GraphQL input cannot express it.
+- **CR-004** (implementation Local Fix): delete the three uncollected `*.test.js` twins named in the review.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -217,11 +245,11 @@ Consequence: an entry that no file references any more (for example after a hand
   1. GraphQL `configureMcpServer(input)` → `McpServerInputMapper.toDraft` (shape only, no vault).
   2. `McpConfigService.configureMcpServer(draft)` takes the service write lock, then reads the saved config from the provider.
   3. `McpServerSecretFields.store(draft, saved)` saves each `newSecret` value with `saveForConsumer({kind:"mcpServer", vaultSecretId: new mcp.<uuid>})`. It maps `keep` to the saved field's value (a reference or a plain string) and returns `{config, created: SecretId[], obsolete: SecretId[]}`.
-  4. `provider.create` or `provider.update(config)` writes the file and the cache. The backup is written first when a stored plain value becomes a reference.
+  4. `provider.create` or `provider.update(config)` writes the file and the cache. No backup is written here (SR-008); backups come only from the move.
   5. Once the write has committed, the `obsolete` entries are removed (replaced, unlocked or removed fields). If the write throws, the `created` entries are removed.
   6. The core config service's `addConfig`, then registration.
   7. The result is a `McpServerView` (DS-003).
-  - **Import:** `importMcpServerConfigs(json)` → `McpSecretSuggestionRule` builds a draft per server (always-secret fields and rule matches become `newSecret`) → the same store path for each server → result `{…, storedSecrets: [{serverId, field}]}`.
+  - **Import:** `importMcpServerConfigs(json)` → `McpSecretSuggestionRule` builds a draft per server (always-secret fields and rule matches become `newSecret`; a reference becomes `keep` (this server already holds a reference at that field) or `missingSecret`, see SR-008 CR-003) → the same store path for each server → result `{…, storedSecrets: [{serverId, field}], needsSecret: [{serverId, field}]}`.
   - **Delete:** lock → unregister → `provider.deleteByServerId` → once committed, remove the referenced entries.
 - **DS-002 (use):**
   1. A run's tool call or discovery → `McpServerInstanceManager` creates the managed server with its `McpSecretResolver`.
@@ -313,14 +341,15 @@ Consequence: an entry that no file references any more (for example after a hand
 | `McpServerInstanceManager.useSecretResolver(resolver)` | Called once in `server-runtime.ts`, right after `getSecretVaultRuntime().initialize(vaultSource)` (L175) and before `app.listen` (L214) (AR-005). The server resolver binds the vault runtime lazily, like `runtime-provider-api-key-resolvers.ts` L6. Without a resolver, a config with references fails with `McpSecretUnavailableError {reason: "VAULT_UNAVAILABLE"}` |
 | Server `SecretConsumerIdentity` | Adds `{ kind: "mcpServer"; vaultSecretId: SecretId }`. `catalog.resolve` accepts only `^mcp\.[0-9a-f-]{36}$`, and `isKnownSecretId` accepts that pattern too |
 | Test-only secret ID | `test.github.token`. Known to `isKnownSecretId` and `listFixedSecretIds` (test-vault status). Never returned by `resolve` for any consumer. The alias `AUTOBYTEUS_TEST_GITHUB_TOKEN` is accepted only by `test-vault setup`; `secrets:import` into an application vault rejects it |
-| `McpServerDraft` (`mcp-server-management/domain/mcp-server-draft.ts`) | Common: `serverId`, `enabled`, `toolNamePrefix` (as today). stdio: `command`, `args`, `cwd`, `env: DraftEntry[]`. HTTP: `url`, `headers: DraftEntry[]`, `token: DraftValue \| null` (`null` = no token). `DraftEntry = {name, value: DraftValue}`; `DraftValue = {kind:"plain", value} \| {kind:"newSecret", value: SecretValue} \| {kind:"keep"}`. `keep` is valid only when the saved server has that field. An always-secret field cannot be `plain` unless it is `keep` of a stored plain value |
+| `McpServerDraft` (`mcp-server-management/domain/mcp-server-draft.ts`) | Common: `serverId`, `enabled`, `toolNamePrefix` (as today). stdio: `command`, `args`, `cwd`, `env: DraftEntry[]`. HTTP: `url`, `headers: DraftEntry[]`, `token: DraftValue \| null` (`null` = no token). `DraftEntry = {name, value: DraftValue}`; `DraftValue = {kind:"plain", value} \| {kind:"newSecret", value: SecretValue} \| {kind:"keep"} \| {kind:"missingSecret"}` (`missingSecret` from import only, SR-008). `keep` is valid only when the saved server has that field. An always-secret field cannot be `plain` unless it is `keep` of a stored plain value |
 | `McpConfigService` | `configureMcpServer(draft): Promise<McpServerView>`; `previewMcpServerTools(draft): Promise<ToolDefinition[]>`; `importMcpServerConfigs(json): Promise<ImportResult>`; `deleteMcpServer(serverId): Promise<boolean>`; `listMcpServerViews(): Promise<McpServerView[]>`; `listSecretMoveCandidates(): Promise<MoveCandidate[]>`; `moveSecretsToVault(selection: {serverId, field}[]): Promise<MoveResult>`. `McpServerView = {config, states: Map<McpSecretField, McpSecretState>}` |
-| Provider (cached + file + `persistence-provider.ts` interface) | Adds `replaceWithReferences(changes: {serverId, field, reference}[]): Promise<{backupPath}>`. `update` writes the backup first when a stored plain value becomes a reference |
+| Provider (cached + file + `persistence-provider.ts` interface) | Adds `replaceWithReferences(changes: {serverId, field, reference}[]): Promise<{backupPath}>`. `update` writes no backup (SR-008) |
 | GraphQL output | `McpConfigEntry {name, value: String, state: McpSecretState!}`, where `value` is set only when `state = PLAIN` and the field is not always-secret. stdio `env: [McpConfigEntry!]!`; HTTP `headers: [McpConfigEntry!]!`, `tokenState: McpSecretState` (null = no token) |
 | GraphQL input | `McpConfigEntryInput {name: String!, secret: Boolean!, value: String}`. `secret` with a `value` = `newSecret`; `secret` with no `value` = `keep`; not `secret` = `plain` (a `value` is required). The server forces `secret` for always-secret fields. `token: McpTokenInput`: `{value}` = replace, `{keep: true}` = keep, field absent = no token. Both, or neither, gives a validation error |
 | GraphQL `mcpSecretSuggestionRule` | `{nameKeywords, valuePrefixes, alwaysSecretFields}` |
 | GraphQL move | `mcpSecretMoveCandidates: [{serverId, field, matchedBy: ALWAYS_SECRET \| NAME \| VALUE_PREFIX}]` (no value or part of one); `moveMcpSecretsToVault(selection: [{serverId, field}])` → `MoveResult` |
-| Import result | Adds `storedSecrets: [{serverId, field}]` next to `failures` (autobyteus-190) |
+| Import result | Adds `storedSecrets: [{serverId, field}]` and `needsSecret: [{serverId, field}]` (SR-008) next to `failures` (autobyteus-190) |
+| Web review state (SR-008) | `mcpSecretReviewState`: `read(nodeKey): Set<"serverId\|field">`, `markReviewed(nodeKey, fields, existingServerIds)`. The banner and dialog show only unreviewed candidates |
 
 Configure input example (an HTTP server: kept `Authorization`, a new secret header, a plain header, a kept token):
 ```graphql

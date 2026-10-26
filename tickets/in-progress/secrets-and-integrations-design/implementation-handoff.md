@@ -2,7 +2,9 @@
 
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design`, branch `codex/secrets-and-integrations-design`, base `origin/personal` @ `a2faf424d6`. origin/personal has since moved to `d74f75a5`; none of the files this ticket touches changed there.
 
-Implementation commits: `5ec97f1aba`, `3ed397318d`, `bdac653cb6`, `7250e64c05`, `ff58750ff7`, `5b27a997f4`, `c100661947`, `bd1ed1a232`. The ticket artifacts and evidence are in the commit that adds this file.
+Implementation commits:
+- round 1 (IR-001): `5ec97f1aba`, `3ed397318d`, `bdac653cb6`, `7250e64c05`, `ff58750ff7`, `5b27a997f4`, `c100661947`, `bd1ed1a232`; ticket artifacts `90c21a7cdb`;
+- round 2 (IR-002, SR-008): `4505158d77` (server), `fc6032999e` (web), `98eeac9f31` (docs). The ticket artifacts and evidence are in the commit that updates this file.
 
 ## Upstream Artifact Package
 
@@ -14,14 +16,20 @@ Implementation commits: `5ec97f1aba`, `3ed397318d`, `bdac653cb6`, `7250e64c05`, 
 - Supplemental task artifacts: `…/options-report.md`, `…/solution-validation.md`, `…/follow-ups.md`, `…/probes/`.
 - Design review report: `…/design-review-report.md` (ARCH-REV-002, pass).
 - Architecture review revision record: `…/architecture-review-revision-record.md`.
-- Triggering rework report: N/A (initial round).
+- Triggering rework report: `…/code-review-report.md` (CRR-001, CR-001…CR-004). Design SR-008 answers it ("SR-008 Revision" in `design-spec.md`), and ARCH-REV-003 passed it (`design-review-report.md`, with AR-015). The Solution Designer then adopted AR-016 into MDEC-007.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
-- Implementation revision record: `…/implementation-revision-record.md`; current revision `IR-001`.
-- Related revision IDs: solution SR-005 and SR-007; architecture review ARCH-REV-002. Code review, API/E2E and delivery: N/A.
-- Triggering finding IDs: N/A. The reviewer's non-blocking clarifications AR-011…AR-014 are applied:
+- Implementation cycle: `Rework`.
+- Implementation revision record: `…/implementation-revision-record.md`; current revision `IR-002` (IR-001 is the baseline).
+- Related revision IDs: solution SR-005, SR-007 and SR-008; architecture review ARCH-REV-002 and ARCH-REV-003; code review CRR-001. API/E2E and delivery: N/A.
+- Triggering finding IDs: CR-001…CR-004, AR-015, AR-016. Each is applied:
+  - **CR-001 (only the move writes backups).** `FileMcpServerConfigProvider.update` writes no backup (`replacesPlainValue` removed); every backup comes from `replaceWithReferences`, the move, whose result carries `backupPath`. In the form, an unchanged saved plain row (`offersMove` in `utils/mcp/mcpConfigRows.ts`) shows "Move to vault" in place of its lock toggle; it runs the per-row move and its notice with the backup path. Such a row is always sent plain. Changing the value brings the lock toggle back, and saving it locked is a `newSecret` (no backup). `configureMcpServer` still returns the view only.
+  - **CR-002 (MDEC-006, reviewed-once banner).** The one owner is `utils/mcp/mcpSecretReviewState.ts` (`read`, `markReviewed`), stored in localStorage under `autobyteus.mcp.secretReview.<node key>` as `"<serverId>|<field>"` strings. Writes drop the keys of servers that no longer exist. The banner shows only unreviewed candidates and adds "Keep as they are" (marks all shown). The dialog marks the rows the user unticked when they confirm; with nothing ticked, its button reads "Keep as they are" and closes without a move. The form marks rows the rule pre-locked that the user unlocked and saved (`unlockedSuggestions`).
+  - **AR-015 (node key).** `<node key>` is `windowNodeContextStore.entryId` (the embedded node is `embedded-local`), not `nodeBaseUrl`, so the review state survives a URL or port change. The rendered check stored `autobyteus.mcp.secretReview.embedded-local=["remote-api|token"]`.
+  - **CR-003 (MDEC-007) with AR-016.** New draft value `missingSecret`. Import maps a secret reference to `keep` when the server with that ID already holds a reference at that field: the server keeps its own, whatever ID the import carries. Any other reference becomes `missingSecret`. In store mode that is a fresh `mcp.<uuid>` with no vault entry, so the state is `MISSING` and the card says "needs secret". The import result adds `needs_secret` / GraphQL `needsSecret`; the import view lists them, and a full import's toast names them. `missingSecret` comes only from import; the GraphQL input has no way to express it. A foreign ID is never adopted. The Solution Designer's requested test is the integration case "keeps the server's own working secret when an older copy of its file carries another reference (AR-016)": after a Replace, re-importing the older file keeps the current reference, which still resolves and stays `CONFIGURED`.
+  - **CR-004.** Deleted the three uncollected twins: `tests/unit/mcp-server-management/services/mcp-config-service.test.js`, `tests/integration/mcp-server-management/mcp-config-service.integration.test.js` and `tests/unit/mcp-server-management/cached-provider.test.js`. The other 62 tracked `*.test.js` twins are FU-006, outside the touched modules.
+- The clarifications from ARCH-REV-002 stay in force, as applied in round 1:
   - **AR-011.** The gated GitHub live check runs on `startBuiltTestServer` without `testVaultSetting`. The spawned server uses its own application vault and its normal startup (`installRuntimeMcpSecretResolver` in `server-runtime.ts`). `readLiveTestSecret` runs in the test process, and the token goes to the server only through `configureMcpServer`. The dummy-secret e2e (`mcp-secrets-in-vault.e2e.test.ts`) runs the same way, with the autobyteus-189 Node test server. No test-only resolver wiring was added.
     - One related decision, flagged for review. Two existing in-process suites were already gated and save the token or an `Authorization` header: `mcp-runtime-tool-matrix` and `mcp-http-auth-agent-tool-call`. Their server is in-process and never ran server startup, so they could not keep working unchanged. They now open the run database's application vault themselves, the established in-process pattern (`getSecretVaultRuntime().initialize({kind:"application", …})`, as the llm-management e2e suites do). They then call the same production `installRuntimeMcpSecretResolver()` that `server-runtime.ts` calls. That startup step had been two inline lines in `server-runtime.ts`; it is now one exported function. Converting those suites to built servers would rewrite them; I judged that out of proportion.
   - **AR-012.** `catalog.resolve` accepts `{kind:"mcpServer"}` only for `^mcp\.[0-9a-f-]{36}$`. `isKnownSecretId` is **not** widened to `mcp.*`; no caller needed it (batch import and test-vault status handle fixed IDs only). A test asserts both.
@@ -36,7 +44,7 @@ Implementation commits: `5ec97f1aba`, `3ed397318d`, `bdac653cb6`, `7250e64c05`, 
 - Design classification section: `design-spec.md` § "Task Size And Architectural Risk".
 - Classification confirmed or changed: `Confirmed`.
 - Evidence and rationale: security-sensitive persisted data (`mcps.json` and vault entries), a GraphQL contract clean cut, changes across all three packages, and a service write lock plus a provider batch write. The implementation matches that.
-- Selected route: `Code Review`.
+- Selected route: `Code Review` (round 2 also on Large/High).
 - Lightweight implementation self-review for the direct route: `Not Applicable` (Large/High).
 - New design impact or escalation trigger: `None`. The decisions made within the design's latitude are listed under Important Assumptions, for the reviewer.
 
@@ -44,12 +52,13 @@ Implementation commits: `5ec97f1aba`, `3ed397318d`, `bdac653cb6`, `7250e64c05`, 
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 (store) / DS-001 | A secret value is a vault entry; `mcps.json` holds `{vaultSecretId}` | GraphQL `configureMcpServer` → `McpServerInputMapper.toDraft` → `McpConfigService.configureMcpServer` (write lock) → `McpServerSecretFields.store` (new `mcp.<uuid>` saves) → provider `create`/`update` (backup when a plain value becomes a reference) → remove `obsolete` after commit, or `created` on failure | Done. IMP-05 (integration: keep, replace, unlock, form-lock backup), IMP-07 |
+| BEH-001 (store) / DS-001 | A secret value is a vault entry; `mcps.json` holds `{vaultSecretId}`; a save writes no backup (SR-008) | GraphQL `configureMcpServer` → `McpServerInputMapper.toDraft` → `McpConfigService.configureMcpServer` (write lock) → `McpServerSecretFields.store` (new `mcp.<uuid>` saves) → provider `create`/`update` (no backup) → remove `obsolete` after commit, or `created` on failure | Done. IMP-18 (integration: keep, replace, unlock, "writes no backup when a form save locks a stored plain value"), IMP-19 |
 | BEH-001 (use) / DS-002, DS-007 | Resolved at connect only; no plain fallback | `Stdio/HttpManagedMcpServer.createClientSession` → `resolveMcpValues` → `McpSecretResolver` (`SecretManagementMcpSecretResolver` → `resolveForUse({kind:"mcpServer"})`), installed by `installRuntimeMcpSecretResolver` | Done. Core integration (189 servers, fake resolver), server integration and e2e (gateway calls after restart), live check |
 | BEH-005 / DS-003 | No secret value is returned; states instead | `McpConfigService.listMcpServerViews` → `McpServerSecretFields.statesOf` (VAULT_UNAVAILABLE on a vault that is not READY, never a throw) → `McpServerConverter.toGraphql` | Done. An always-secret field stored plain returns `value: null, state: PLAIN` (AR-006) |
 | Preview / DS-006 | Stores nothing | `previewMcpServerTools(draft)` → `toPreviewConfig` (new values in memory, kept values as references) → `listRemoteTools` | Done. Integration: no vault entry and no file after preview |
 | UC-006 move / DS-004 | User-triggered; backup 0600; compensation; re-register after the lock | `mcpSecretMoveCandidates` / `moveMcpSecretsToVault` → `McpConfigService.moveSecretsToVault` → `storePlainAsSecret` → `provider.replaceWithReferences` (one locked write: check still plain, backup, rewrite; cache updated) → on failure remove new entries → after the lock: `addConfig` + `registerServer` | Done. Integration (backup, cache, compensation), e2e (plain file → move → gateway), rendered |
-| Import (MREQ-006, MDEC-004) | Rule matches and always-secret values go to the vault; result lists them | `importMcpServerConfigs` → core parse → `importedDraft` (rule) → `configureMcpServer` → `stored_secrets` → GraphQL `storedSecrets` | Done. Import refuses an entry holding a secret reference (see Important Assumptions) |
+| Import (MREQ-006, MDEC-004, MDEC-007) | Rule matches and always-secret values go to the vault; a reference is kept (same server holds one at that field) or needs a secret | `importMcpServerConfigs` → core parse → `importedDraft(parsed, provider.getByServerId)` (rule; `keep` / `missingSecret`) → `configureMcpServer` → `stored_secrets`, `needs_secret` → GraphQL `storedSecrets`, `needsSecret` | Done. IMP-17 (unit), IMP-18 (integration: foreign reference → fresh `MISSING`; AR-016 older file keeps the working secret), IMP-19 (e2e: re-import keeps; after delete → `needsSecret`, `tokenState MISSING`) |
+| Banner review (MDEC-006) | The banner shows only unreviewed candidates | `McpSecretMoveBanner.vue` → `mcpSecretReviewState.read(entryId)`; "Keep as they are", unticked dialog rows, and `McpServerFormModal` → `unlockedSuggestions` → `markReviewed` | Done. IMP-21 (specs), IMP-16 (rendered: persisted across a reload) |
 | Delete (MREQ-001) | Removes the entries | `deleteMcpServer` (lock) → unregister → provider delete → remove the referenced entries | Done. Integration |
 | Live check / DS-005 (MREQ-008, MDEC-005) | GitHub remote MCP with its token in the vault | `tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts`; `test-support/test-vault/live-test-secret.ts` | **Pass**, strict mode (IMP-09). Issue #1 of `ryan-zheng-teki/autobyteus-mcp-test` read through `/mcp/gateway`; token in no response, output or file |
 | Test-only ID and alias | `test.github.token` known and listed, resolved for no consumer; alias accepted only by `test-vault setup` | catalog `TEST_ONLY_SECRET_IDS`, `testVaultOnlyCredentialAliases`, `LocalEnvironmentSourceReader(aliasScope)` | Done. Token imported (IMP-10, IDs only) |
@@ -110,22 +119,25 @@ These are decisions within the design's latitude, listed for the reviewer:
 
 1. **Value parsing has one owner.** The core config constructors (`parseMcpConfigValueRecord` in core `types.ts`) parse values. There is no separate provider parser; the provider's `asRecordStringString` is gone. A malformed value fails that entry only.
 2. **Core checks the reference's shape only:** exactly `{vaultSecretId: <non-empty string>}`. The vault and catalog own the ID format, so an unknown or ill-formed ID shows as `MISSING` (design rule 8). This also keeps core free of a static vault import (the module-graph guard, `3ed397318d`).
-3. **Import takes values, never secret references.** An imported entry holding `{vaultSecretId}` fails with `MCP server '<id>' <field>: import takes values, not secret references.`. A reference belongs to one server's field on one node; a shared reference would let one server's delete or replace remove another's entry. Consequence: re-importing the app's own `mcps.json` (autobyteus-190 AC-002) still works for plain entries, but an entry that holds a secret is reported as failed. The e2e asserts this.
+3. **Import of references is decided before the write lock.** (Superseded the round-1 refusal; now MDEC-007 with AR-016.) The `keep` / `missingSecret` decision reads the saved server through the provider before `configureMcpServer` takes its write lock. If a concurrent write changes that field in between, the store's own check still refuses a `keep` with nothing stored ("no stored value … to keep"), so nothing is shared or lost. Writes are rare and user-driven.
 4. **Blank values.** A plain value that is blank is not a move candidate, and import keeps a blank value plain (the vault refuses an empty `SecretValue`). A `newSecret` needs a non-empty value; an empty secret row with a stored value means `keep`.
 5. **Duplicate names in a draft** are refused: `MCP server '<id>' lists env:X more than once.`.
-6. **The form-save backup is logged, not returned.** When a form save turns a stored plain value into a reference, the provider writes the same 0600 backup as the move and logs its path (a path, not a value). `configureMcpServer` returns the view as the design specifies, without a backup path.
+6. **Only the move writes backups (SR-008, CR-001).** The round-1 form-save backup is gone. In preview, a `missingSecret` value (import only, so it never arrives in practice) is a fresh unresolvable reference, so the preview fails naming the field, as at connect.
 7. **Interface addition.** The provider's `replaceWithReferences` returns `{backupPath, configs}`, not only `{backupPath}`: the cache and the service's re-registration need the changed configs as saved.
 8. **JSON View review step.** When the JSON adds a new value the rule matches, Save switches to the Form View with the row locked and saves on the next click (design entry-form table). Preview from the JSON View needs no review, because it stores nothing.
 9. **Web icons are inline SVG.** `McpConfigRows` draws its lock and remove icons as inline heroicons SVG. The app's `i-heroicons-*` classes have no provider and render nothing (FU-005), and an invisible lock toggle would hide the main affordance.
 10. **The generated types fix a mis-merge.** `generated/graphql.ts` carries only the MCP hunks. Three of them fix a mis-merge from autobyteus-190 in `ImportMcpServerConfigsResult` / `ImportMcpServerConfigFailure` and the import document (IMP-13).
+11. **"Keep as they are" inside the dialog.** When the user unticks every row, the dialog's button reads "Keep as they are": it marks them reviewed and closes without a move, so the dialog can always record the user's decision.
+12. **The candidate hint.** On an unchanged plain row, "Move to vault" now sits in the lock toggle's place, so the rule's hint reads "Looks like a secret." without a second link. An always-secret field stored plain keeps its "Stored as plain text … Move to vault" note link.
 
 ## Known Risks
 
 - **R-1, secrets in errors.** Errors name the server and field only. Tests assert no dummy value in results, logs (the integration suite fails on any console line containing one), server output or files.
 - **R-2, orphan entries after a failed removal or a hand edit.** Harmless. A removal failure is logged with the ID and error code only.
 - **R-3, the stdio environment limit.** A stdio server receives its secrets in its own environment. This is stated in the UI (`env_secret_hint`) and the docs.
-- **R-4, the backup holds plain values.** It is mode 0600, written with `wx` (never overwritten). The move result and the dialog name its path and say it holds the plain values.
+- **R-4, the backup holds plain values.** Only the move writes one. It is mode 0600, written with `wx` (never overwritten). The move result, the dialog and the per-row move notice name its path and say it holds the plain values.
 - **R-5, the live token expires 2026-11-25.** After that the live check fails with GitHub's status; renew the token.
+- **The review state is per device and node.** On another device, or after clearing site data, the banner shows its candidates once more (MDEC-006 accepts this).
 - **The two gated in-process suites** open the run database's application vault (see AR-011 above). If an earlier test leaves the shared test database's vault under another root key, they would fail with a vault state error. They passed with the scripted AGY gate (IMP-08).
 
 ## Task Design Health Assessment Implementation Check
@@ -145,19 +157,21 @@ These are decisions within the design's latitude, listed for the reviewer:
   - `createDomainConfigFromInput` and `toStringRecord`;
   - `asRecordStringString`;
   - the old locale keys `McpServerFormModal.key`, `.value` and `.add_variable`.
-- Dead code found elsewhere, added to `follow-ups.md`: FU-005 (dead `i-heroicons-*` classes across the web app).
+- Dead code found elsewhere, added to `follow-ups.md`: FU-005 (dead `i-heroicons-*` classes across the web app). The code reviewer added FU-006 (62 other `*.test.js` twins).
+- Round 2 removed: the three uncollected `*.test.js` twins in the touched modules (CR-004); `replacesPlainValue` and the update backup; the provider's unused info logger.
 - Shared structures remain tight: `Yes`. The draft has stdio and HTTP variants, and the view is a separate type.
 - Canonical shared design guidance reapplied: `Yes`.
 - Size guardrails: `Yes`.
   - `McpServerFormModal.vue` was exactly 500 effective lines before; this change took it to 586, so it was split (`utils/mcp/mcpServerFormState.ts`) and is now 438.
   - `toolManagementStore.ts` went 408 → 515, so it was split (`types/mcpServer.ts`) and is now 479.
   - Changed-line deltas over 220: `mcp-config-service.ts` (265; 319 lines) is the designed owner of the new sequences and stays one owner; `McpServerFormModal.vue` is split as above.
-- Notes: `cached-provider.test.js` (a JS twin of a TS test) predates this ticket; untouched.
+- Notes: round 2 sizes: `McpServerFormModal.vue` 450, `mcpConfigRows.ts` 203, `mcp-config-service.ts` 337, `file-provider.ts` 222 effective lines (all under 500).
 
 ## Persisted Data Transition Check
 
 - Approved decision: `Directly Usable — No Migration` (design "Persisted Data / State Transition Decision").
 - No migration was added, and there is no version-specific runtime fallback: `Yes`.
+- New browser preference (SR-008): `autobyteus.mcp.secretReview.<entryId>` in localStorage. A new key; absent means nothing reviewed; no migration.
 - Direct-use evidence: an existing plain `mcps.json` loads and works unchanged (e2e "loads the plain file…"; existing HTTP auth e2e restart). References load and resolve. The move is a user-triggered maintenance action with a backup (MDEC-002). The user's own `~/.autobyteus` and `mcps.json` were never touched.
 - Deviation: `None`.
 
@@ -197,6 +211,18 @@ All on macOS Darwin 25.5.0 with Node v22.23.1. The server and core runs used a c
 | IMP-14 | rendered check (Playwright on `nuxt dev` + seeded built server) | 5b27a997f4 | Chromium headless, 1400×1000 | list, banner, card, form rows, token, keep markers, dialog, move | MDEC-001/002, AR-006/007 | Pass | rendered/IMP-14-*.png | see Frontend section |
 | IMP-15 | web `tsc` on `.nuxt/tsconfig.json`, filtered to touched files | bd1ed1a232 | — | store, utils, types, generated | — | Pass (no new error kinds) | IMP-15-web-tsc-filtered.log | only the pre-existing unresolved-Apollo TS2307 and the same implicit-any pattern as existing store lines |
 
+**Round 2 (IR-002).** The rows above are round 1. IMP-01, IMP-02 (core unchanged), IMP-06, IMP-08, IMP-09 and IMP-10 are reused unchanged: round 2 touched none of the code they exercise. The live check configures a new server through `create`, which never wrote a backup, and its connect path is unchanged.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-16 | rendered check, round 2 (Playwright on `nuxt dev` + seeded built server) | working tree = fc6032999e | Chromium headless, 1400×1000 | banner "Keep as they are", "Move to vault" in place of the lock, lock back on change, dialog with one unticked, review persisted across a reload, import `needsSecret` | CR-001, MDEC-006, AR-015, MDEC-007 | Pass | rendered/IMP-16-*.png | notes: `after edit: lock=1 move=0`; `banner after reload: (no banner)`; `autobyteus.mcp.secretReview.embedded-local=["remote-api|token"]` |
+| IMP-17 | `pnpm -C autobyteus-server-ts typecheck && test:unit` | working tree = 4505158d77 | clean env | server unit incl. import keep/missingSecret, provider no-backup update | CR-001, CR-003 | Pass | IMP-17-server-unit-r2.log | `Tests  6866 passed \| 7 skipped (6873)` |
+| IMP-18 | `pnpm -C autobyteus-server-ts test:integration` | working tree = 4505158d77 | clean env | full server integration incl. `mcp-secrets-in-vault` (13 cases: no form backup, foreign reference, AR-016 older file) | CR-001, CR-003, AR-016 | Pass | IMP-18-server-integration-r2.log | `Tests  438 passed \| 69 skipped (507)` |
+| IMP-19 | built-server MCP e2e (6 files) | working tree = 4505158d77, dist rebuilt | clean env | bulk import (re-import keeps; after delete `needsSecret`, `tokenState MISSING`), move, restart | MDEC-007, DS-001…DS-004 | Pass | IMP-19-e2e-mcp-built-server-r2.log | `Tests  14 passed (14)` |
+| IMP-20 | full web suite + web guards + literal audit | working tree = fc6032999e | Nuxt test env | whole web app | — | Pass | IMP-20-web-full-suite-r2.log | `Tests  4953 passed \| 5 skipped (4958)` |
+| IMP-21 | web MCP specs | 98eeac9f31 | Nuxt test env | rows, form (move instead of lock, review mark), banner (review filter, keep, unticked), import (`needsSecret`), review state, row model | CR-001, CR-002, CR-003, AR-015 | Pass | IMP-21-web-mcp-specs-r2.log | `Tests  78 passed (78)` |
+| IMP-22 | codegen against the rebuilt server | 4505158d77 → fc6032999e | — | generated types | CR-003 | Pass | IMP-22-codegen-needs-secret.md | 3 `needsSecret` hunks; no other MCP hunk differs |
+
 - **Not run, and why:**
   - the gated runtime suites for Codex, Claude, LM Studio and Grok: they need live CLIs or models, and the AGY scripted gate covers the wiring;
   - an isolated Electron instance: left to API/E2E;
@@ -224,6 +250,12 @@ All on macOS Darwin 25.5.0 with Node v22.23.1. The server and core runs used a c
 - **Issues found and corrected:**
   1. The lock and remove buttons were invisible, because `i-heroicons-*` renders nothing in this app. They are now inline SVG, re-rendered and verified (FU-005 covers the app-wide issue).
   2. The dead decorative icon spans were removed from the new banner and card.
+- **Round 2 (IMP-16):**
+  - the banner with "Keep as they are" and "Review and move to vault";
+  - unchanged plain rows show "Move to vault" in place of the lock (the candidate also reads "Looks like a secret."); editing the value brings the lock back;
+  - the dialog with one row unticked, then the move: the banner is gone, and stays gone after a reload (review state persisted);
+  - bulk import of a foreign reference: the amber "These values were secrets on another node; enter them again here" list.
+  - No visual defects were found in this round.
 - **Evidence and limitations:** IMP-14 screenshots. Keyboard focus was not exercised beyond the native buttons and inputs. The dark theme was not inspected. The bulk import result and the review step are covered by specs, not screenshots. After the size split (`bd1ed1a232`), the form behavior was rechecked by its 17 specs, not re-rendered.
 
 ## Downstream Coverage Hints / Suggested Scenarios
@@ -236,7 +268,8 @@ All on macOS Darwin 25.5.0 with Node v22.23.1. The server and core runs used a c
 - **The move from the banner**, on a copy of a realistic multi-server `mcps.json` (dummy values). Unticking a row leaves it plain; delete the backup afterwards.
 - **The vault locked or unavailable:** the list still loads, rows read "Needs secret: the vault is unavailable", and connect fails naming the field.
 - **Token states:** keep, replace and remove the token; switch Form ↔ JSON with keep markers; send an invalid keep marker.
-- **Import:** a mixed file reports `storedSecrets`; an entry carrying a reference is refused.
+- **Import:** a mixed file reports `storedSecrets`; re-importing your own file keeps the secrets; an older copy (taken before a Replace) keeps the working secret; a file from another node lists `needsSecret`, and those servers show "Needs secret" until the user enters the values.
+- **The banner's review state:** "Keep as they are", untick and confirm, unlock a pre-locked row and save; then restart the app (and change the embedded server's port, if possible) and check that the banner stays away.
 - **The zh-CN locale** on the new strings.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required

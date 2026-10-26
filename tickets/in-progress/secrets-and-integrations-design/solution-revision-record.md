@@ -11,6 +11,7 @@
 | SR-005 | Requirements (approval) | The user, 2026-10-26: UI approved; env delivery to stdio approved | — | Ready for Approval | **Approved** (MCP-secrets scope) | MREQ-001…008, MDEC-001…005 | Design next |
 | SR-006 | Design | Requirements approved (SR-005) | — | N/A | Design Ready (Large/High) | DS-001…DS-005 | `design-spec.md`; sent to architecture review |
 | SR-007 | Design (revision) | ARCH-REV-001 Fail (Design Impact) | AR-001…AR-010 | Design Ready | Design Ready (Large/High) | DS-001…DS-007, interfaces, file mapping | Move through the provider; states owner; server draft; live-check path; header rows; token states. Requirements unchanged |
+| SR-008 | Requirements + Design (revision) | CRR-001 Fail: CR-001/CR-002 Design Impact, CR-003 Requirement Gap | CR-001…CR-004 | Design Ready | Design Ready (Large/High) | MDEC-006, MDEC-007; DS-001, the import path, the provider interface, web review state | Backups only from the move; the banner shows unreviewed candidates only; import keeps its own references and turns foreign ones into "needs secret" |
 
 ## Revision Entries
 
@@ -118,3 +119,14 @@
   - The user approved the overall UI with "i like your suggestion. thats good."
   - My message "you said these are always secret" therefore misattributed the rule to him.
   - The rule stays, as a Solution Designer decision under the standing direction above: these two fields carry nothing but credentials, so hiding them has no cost for settings.
+
+### SR-008 — Revision after code review CRR-001
+
+- Trigger: `code-review-report.md` CRR-001 (reviewed at `90c21a7cdb`; artifacts in `dba930bb54`). CR-001 and CR-002 are Design Impact, CR-003 a Requirement Gap, CR-004 a Local Fix. Evidence re-read: the review's import code (`mcp-config-service.ts` L40-80, L329-361), the web preference pattern (`utils/chat/chatLastModelPreference.ts`), `windowNodeContextStore`.
+- Decisions, made by the Solution Designer under the user's standing direction (2026-10-26); the user is informed:
+  - **CR-001:** only the move writes backups. `provider.update` writes none. In the form, an unchanged stored plain row offers "Move to vault" (the per-row move, with its backup notice) instead of a lock toggle. A changed or new value can still be locked (`newSecret`).
+  - **CR-002 (MDEC-006):** the banner shows only unreviewed candidates. Reviewing means unticking in the dialog, "Keep as they are", or unlocking a pre-locked row and saving. The state is a per-device web preference, `autobyteus.mcp.secretReview.<node key>`; there is no migration, and if it is lost the banner shows once more.
+  - **CR-003 (MDEC-007):** an imported reference is `keep` when the same server holds the same reference at the same field. Otherwise it becomes `missingSecret`: a fresh empty reference, state MISSING, "needs secret". It is listed in the new import-result field `needsSecret`. This narrows autobyteus-190 SCN-002 only for secret values.
+  - **CR-004:** the implementation deletes the three twins.
+- Classification is unchanged: Large / High. The changes are bounded: one draft kind, one result field, one provider branch removed, and one web preference module. Per the configured route, a revised Large/High package goes to architecture review (a focused round on SR-008), then to implementation (CR-001…CR-004), then back to code review.
+- ARCH-REV-003 (2026-10-26): Pass. AR-015 (key the review state by the node `entryId`) goes to implementation. **AR-016 adopted** by the Solution Designer: on import, if a server with the same ID here already holds a reference at that field, it keeps its own reference (`keep`), whatever the imported reference is. Without this, re-importing an older copy of your own file (made before a Replace) would remove the working secret. It is just as safe, because a foreign ID is never adopted. MDEC-007 and the design's CR-003 bullet are reworded. This is the reviewer's own pre-reviewed recommendation, so it goes straight to implementation with no further review round.
