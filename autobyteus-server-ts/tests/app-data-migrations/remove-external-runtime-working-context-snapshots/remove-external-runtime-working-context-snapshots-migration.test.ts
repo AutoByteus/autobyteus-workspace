@@ -334,7 +334,7 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
     ]));
   });
 
-  it("reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry", async () => {
+  it("reports a failed unlink, retains the stale snapshot with independent raws, and removes it on retry", async () => {
     const failedRunId = "codex-unlink-failure";
     const successfulRunId = "claude-success-control";
     const nativeRunId = "native-control";
@@ -381,14 +381,8 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
       sourceEvent: "test-after-failed-cleanup",
     });
     expect(await fs.readFile(failedSnapshot, "utf-8")).toBe(snapshotBefore);
-    const failedView = new AgentMemoryService(new MemoryFileStore(memoryDir)).getRunMemoryView(failedRunId, {
-      includeRawTraces: true,
-      includeEpisodic: false,
-      includeSemantic: false,
-    });
-    expect(failedView.workingContext).toEqual([
-      expect.objectContaining({ role: "user", content: `${failedRunId} stale snapshot` }),
-    ]);
+    // The memory view no longer shows snapshots; the stale file stays on disk until the retry removes it.
+    const failedView = new AgentMemoryService(new MemoryFileStore(memoryDir)).getRunMemoryView(failedRunId, { includeRawTraces: true });
     expect(failedView.rawTraces).toEqual([
       expect.objectContaining({ traceType: "assistant", content: "current raw evidence" }),
     ]);
@@ -399,12 +393,7 @@ describe("RemoveExternalRuntimeWorkingContextSnapshotsMigration", () => {
     expect(retried.summary.migratedCount).toBe(1);
     expect(retried.summary.failedCount).toBe(0);
     expect(await exists(failedSnapshot)).toBe(false);
-    const retriedView = new AgentMemoryService(new MemoryFileStore(memoryDir)).getRunMemoryView(failedRunId, {
-      includeRawTraces: true,
-      includeEpisodic: false,
-      includeSemantic: false,
-    });
-    expect(retriedView.workingContext).toBeNull();
+    const retriedView = new AgentMemoryService(new MemoryFileStore(memoryDir)).getRunMemoryView(failedRunId, { includeRawTraces: true });
     expect(retriedView.rawTraces).toEqual([
       expect.objectContaining({ traceType: "assistant", content: "current raw evidence" }),
     ]);

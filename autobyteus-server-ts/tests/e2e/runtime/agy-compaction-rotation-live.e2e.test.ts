@@ -50,8 +50,7 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
     return body.data;
   };
   const memoryView = async (includeArchive: boolean): Promise<MemoryView> => (await graphql<{ getAgentRunMemoryView: MemoryView }>(
-    `query($runId: String!, $includeArchive: Boolean!) { getAgentRunMemoryView(runId: $runId, includeWorkingContext: false,
-      includeEpisodic: false, includeSemantic: false, includeRawTraces: true, includeRawTraceFiles: true,
+    `query($runId: String!, $includeArchive: Boolean!) { getAgentRunMemoryView(runId: $runId, includeRawTraces: true, includeRawTraceFiles: true,
       includeArchive: $includeArchive) { rawTraces { traceType content toolResult } rawTraceFiles { fileName kind } } }`,
     { runId, includeArchive })).getAgentRunMemoryView;
 
