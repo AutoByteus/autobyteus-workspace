@@ -27,12 +27,31 @@ caller.
   - `evidenceHash`: sha256 over the files' content hashes, in order.
 - `memoryDir` is the run's own memory folder; `runtimeKind` is the **live run's** runtime and
   selects the built-in tool translation. A runtime without a translation uses the generic rule
-  for every tool.
-- Errors reach the caller. Callers never use the store or the renderer directly.
+  for every tool. It is `null` for a run whose runtime is not recorded (an old folder no record
+  attributes): every tool then uses the generic rule, and the manifest's `runtime_kind` is `null`.
+- `onJournalChanged(listener)` is called after `ensureCurrent` wrote or removed a journal file
+  (never when nothing changed), with the run's `memoryDir`. A listener's error is logged
+  (`WORK_JOURNAL_CHANGE_LISTENER_FAILED`) and never fails `ensureCurrent`. Returns the unsubscribe.
+- Reading (no generation; a run without a journal answers empty or `null`):
+  - `journalFileVersions(memoryDir)`: each file's name, state and `content_sha256` from the
+    manifest, without reading the files;
+  - `listJournalFiles(memoryDir)`: each file's size, line count and days (`[YYYY-MM-DD]` lines);
+  - `readJournalFile(memoryDir, file)` and `readJournalLines(memoryDir, file, {start, end})` (at
+    most 400 lines, `MAX_JOURNAL_LINES_PER_READ`): only files the manifest names;
+  - `journalFilePath(memoryDir, file)`: where the file is, for a file tool.
+- `reading/journal-entry-reader.ts` (`readJournalEntries`) splits a journal file into entries
+  (request, reply, action, notice, note) with line ranges and days. It reads the format; it does
+  not render it.
+- Errors reach the caller. Callers never use the store or the renderer directly, and nothing but
+  this service reads raw traces to make a journal.
 
 Consumers today:
 
 - `WorkJournalRunUpdater` (below) keeps every live run's journal current.
+- Memory search ([memory_search.md](memory_search.md)) makes every run's journal current in its
+  Journals step, follows `onJournalChanged`, and reads journal files to index and to show snippets.
+- The Memory page reads a run's Work Journal through the memory view (`workJournal` window of 300
+  lines, `api/graphql/types/work-journal-view.ts`).
 
 ## Keeping It Current
 
@@ -47,7 +66,8 @@ assistant segment it flushes on `TURN_COMPLETED`).
 - Errors are logged (`[WorkJournalRunUpdater] journal update failed …`) and never reach the run
   or touch its raw traces.
 - A run without a memory folder is not followed. A run restored later, or an old run, gets its
-  missing files the first time its journal is needed; there is no startup scan.
+  missing files the first time its journal is needed (for example memory search's Journals step,
+  when the user builds the memory index); there is no startup scan.
 
 ## Output Layout
 

@@ -34,6 +34,38 @@ delegated run, …) are defined in the
   (for example a task agent's run lifted beside its parent's other children).
   It is not a peer.
 
+## Memory
+
+- **Memory** (of a run): what a run keeps in its own folder: raw traces,
+  snapshots, file changes, context files and its Work Journal
+  ([Collaboration Model § 3](autobyteus-server-ts/docs/design/collaboration_model.md)).
+  It is not a global knowledge base.
+- **Work Journal:** a run's readable Markdown record, rendered from its raw
+  traces by the journal service; one file per raw-trace segment
+  (`work_journal/`).
+- **Memory search:** finding past work in the memory of every run on this
+  node, today through their Work Journals: the tool `search_memory` and the
+  Memory page's Search. It points to where the work is; it does not answer from
+  memory, and it does not search other nodes.
+- **Memory index:** the derived index memory search reads: the text index and
+  the meaning index, built by the indexing pipeline from Work Journals
+  (`memory-search/`). It is not a copy of the journals.
+- **Indexing pipeline:** the ordered steps that build and update the memory
+  index: Find runs, Journals, Text index, Meaning index. It is not a general
+  workflow engine.
+- **Journal chunk:** a part of one journal file: whole entries of at most
+  2,000 characters (a longer entry split by lines), with its file, line range
+  and day. The text index holds chunks.
+- **Journal card:** the short text that represents one journal file in the
+  meaning index (agent, first requests, first reply openings, distinct
+  actions), with the line ranges of its parts. It is not a summary written by a
+  model.
+- **Words / Meaning:** the match labels on the Memory page: a match found by
+  the text index (Words) or by the meaning index (Meaning). The tool and the
+  API call them `text` and `meaning`.
+- **Memory run:** one run folder known to the memory index, with its recorded
+  names and runtime (`MemoryRun`). It is not a live run.
+
 ## Memory Sync
 
 - **Memory Sync source ID:** a Memory Sync source's own import identity
