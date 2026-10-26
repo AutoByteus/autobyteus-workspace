@@ -26,8 +26,9 @@ const questionsFile = value("--questions");
 if (!memoryDir || !indexDir || !questionsFile) throw new Error(usage);
 const resolvedMemory = fs.realpathSync(path.resolve(memoryDir));
 // Never a user's own memory folder: the build writes journals into it (TESTING.md; requirements § Data Continuity).
-const userData = path.join(os.homedir(), ".autobyteus");
-if (resolvedMemory === userData || resolvedMemory.startsWith(`${userData}${path.sep}`)) {
+// Both the account's home and HOME: a clean environment (TESTING.md) points HOME elsewhere.
+const userDataDirs = [...new Set([os.userInfo().homedir, os.homedir()])].map((home) => path.join(home, ".autobyteus"));
+if (userDataDirs.some((dir) => resolvedMemory === dir || resolvedMemory.startsWith(`${dir}${path.sep}`))) {
   throw new Error(`Refusing ${resolvedMemory}: evaluate an isolated copy of a memory folder, never ~/.autobyteus.`);
 }
 const model = getEmbeddingModelDefinition(value("--model") ?? DEFAULT_EMBEDDING_MODEL_ID);
