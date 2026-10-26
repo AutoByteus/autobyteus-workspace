@@ -1,0 +1,132 @@
+// R02/R03/C01 API-REV003; current reopened /nodes route; unrelated read services doubled.
+// Source1f2b346c, HEADccc0c56d; macOS Chrome/privateHOME; 2026-10-26. No installer/CLI/real backend or Electron execution.
+// From worktree: node tickets/in-progress/nfs-guide-install-commands/evidence/R02-03-browser.mjs <fresh-attempt-name>
+import fs from 'node:fs/promises';
+import { createWriteStream } from 'node:fs';
+import { createRequire } from 'node:module';
+import { spawn, execFileSync } from 'node:child_process';
+import path from 'node:path';
+import net from 'node:net';
+import os from 'node:os';
+const N=process.cwd(), web=path.join(N,'autobyteus-web'), T=path.join(N,'tickets/in-progress/nfs-guide-install-commands'), E=path.join(T,'evidence');
+const name=process.argv[2]; if(!/^R02-03-attempt-\d+$/.test(name||''))throw Error('fresh attempt required');
+const out=path.join(E,name);await fs.mkdir(out);
+const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'nfs-guide-api003-')));
+await fs.mkdir(path.join(root,'home'));await fs.mkdir(path.join(root,'tmp'));
+const env={PATH:process.env.PATH,HOME:path.join(root,'home'),TMPDIR:path.join(root,'tmp'),NUXT_TELEMETRY_DISABLED:'1',BACKEND_NODE_BASE_URL:'http://127.0.0.1:1'};
+const commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+const {chromium}=createRequire(path.join(web,'package.json'))('playwright-core');
+const port=await new Promise(resolve=>{const s=net.createServer();s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>resolve(p));});});
+const base=`http://127.0.0.1:${port}`,sleep=ms=>new Promise(r=>setTimeout(r,ms));
+env.BACKEND_NODE_BASE_URL=base; // Fixture-only same-origin backend: no live service or unsafe sentinel port.
+const result={case:'R02/R03/C01',date:new Date().toISOString(),commit,command:`node ${path.relative(N,new URL(import.meta.url).pathname)} ${name}`,environment:{platform:os.platform(),arch:os.arch(),node:process.version,base,root},scenarios:[],requests:[],requestCounts:{},errors:[],cleanup:{},result:'Not Tested'};
+const save=()=>fs.writeFile(path.join(out,'result.json'),JSON.stringify(result,null,2)+'\n');
+const progress=async(cid,event,status,note)=>{await fs.appendFile(path.join(T,'api-e2e-test-progress.md'),`| ${new Date().toISOString()} | ${cid} | ${event} | ${status} | ${note} |\n`);};
+const finish=async(cid,note)=>{await progress(cid,'Completed','Pass',note);const p=path.join(T,'api-e2e-execution-coverage-report.md');let s=await fs.readFile(p,'utf8');s=s.replace(new RegExp(`\\| ${cid} \\|Not Tested\\|[^\\n]*`),`| ${cid} |Pass|evidence/${name}/result.json: ${note}|`);await fs.writeFile(p,s);};
+const assert=(c,m)=>{if(!c)throw Error(m);};
+const log=createWriteStream(path.join(out,'nuxt.log'));log.write(`# R02/R03 command pnpm exec nuxt dev; ${commit}; privateHOME+TMP/macOS; ${result.date}\n`);
+const server=spawn('pnpm',['exec','nuxt','dev','--host','127.0.0.1','--port',String(port)],{cwd:web,env,detached:true,stdio:['ignore','pipe','pipe']});server.stdout.pipe(log);server.stderr.pipe(log);
+result.environment.serverPid=server.pid;await save();
+let browser,page,context,active='R02';
+const url='https://github.com/AutoByteus/autobyteus-nfs/releases/download/v0.1.0/autobyteus-nfs-install.sh',digest='65769690ada27db304d2e0e4bcd6716e6403f86650ca8f1905e26ebde86d25fa';
+const install=checker=>`curl --fail --location --proto '=https' --tlsv1.2 \\\n  '${url}' \\\n  -o autobyteus-nfs-install.sh &&\nprintf '%s  %s\\n' '${digest}' 'autobyteus-nfs-install.sh' | ${checker} &&\nbash autobyteus-nfs-install.sh version`;
+const expected={macos:install('shasum -a 256 -c -'),linux:install('sha256sum -c -'),create:'~/.local/bin/autobyteus-nfs create',connect:'~/.local/bin/autobyteus-nfs connect',interactive:'~/.local/bin/autobyteus-nfs',status:'~/.local/bin/autobyteus-nfs status',reconnect:'~/.local/bin/autobyteus-nfs reconnect',detach:'~/.local/bin/autobyteus-nfs detach',version:'~/.local/bin/autobyteus-nfs version'};
+try {
+ await progress('R02','Started','Not Tested',`${name}: actual Nodes page, fresh owned environment; unrelated feed/health fixtures only`);
+ let ready=false;for(let i=0;i<150;i++){assert(server.exitCode===null,'Nuxt exited');try{if((await fetch(base+'/nodes')).ok){ready=true;break;}}catch{}await sleep(1000);}assert(ready,'frontend ready');
+ browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,chromiumSandbox:true,env});result.environment.chrome=browser.version();
+ const browserRows=execFileSync('ps',['-axo','pid,ppid,pgid,command'],{encoding:'utf8'}).split('\n').map(l=>l.trim().split(/\s+/)).filter(a=>a[1]===String(process.pid)&&a.slice(3).join(' ').includes('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'));
+ assert(browserRows.length===1,'one owned Chrome process');result.environment.browserPid=Number(browserRows[0][0]);result.environment.browserPgid=Number(browserRows[0][2]);result.environment.chromiumSandbox=true;
+ assert(!browserRows[0].includes('--no-sandbox'),'Chrome sandbox not disabled');
+ context=await browser.newContext({viewport:{width:1280,height:1000},permissions:['clipboard-read','clipboard-write'],locale:'en-US'});
+ await context.routeWebSocket(/\/ws\/(agent-package-definitions|update-notifications)(\?|$)/,ws=>ws.send(JSON.stringify({type:'connected'})));
+ await context.route('**/rest/health',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'ok',version:'guide-test-fixture'})}));
+ await context.route('**/rest/remote-access/status',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({phoneAccessEnabled:false,pairingAvailable:false,compatibilityVersion:1,serverInstanceId:'11111111-1111-4111-8111-111111111111',serverName:'API003 isolated fixture'})}));
+ await context.route('**/graphql',r=>{
+  const q=r.request().postDataJSON();result.requests.push({kind:'fixture-graphql',operation:q.operationName,query:q.query});
+  const fixtures={GetRemoteCollaborationSettings:{peerNodes:[]},GetRemoteCollaborationCapability:{remoteCollaborationCapability:{__typename:'RemoteCollaborationCapabilityGql',enabled:false,settingKey:'ENABLE_REMOTE_COLLABORATION',source:'DEFAULT_DISABLED'}},GetUpdateAutomationSettings:{updateAutomationSettings:{__typename:'UpdateAutomationSettings',intervals:{__typename:'UpdateCheckIntervals',agentPackages:60,skillSources:60,agentRuntimes:60},automaticUpdates:{__typename:'AutomaticUpdates',agentPackages:false,skillSources:false,agentRuntimes:false},githubWaitUntil:null,desktopEmbeddedNode:false}},GetUpdateNotifications:{updateNotifications:[]},GetProviderModelCatalogSnapshots:{providerModelCatalogSnapshots:[]},GetProviderCredentialSettings:{providerCredentialSettings:[]},GetApplicationsCapability:{applicationsCapability:{__typename:'ApplicationsCapability',enabled:false,scope:'ALL',settingKey:'applications_enabled',source:'fixture'}},GetAllWorkspaces:{workspaces:[]},ListWorkspaceRunHistory:{listWorkspaceRunHistory:[]},ListCollaborationRootHistory:{listCollaborationRootHistory:[]},GetAgentDefinitions:{agentDefinitions:[]},GetAgentTeamDefinitions:{agentTeamDefinitions:[]},GetAgentOrgDefinitions:{agentOrgDefinitions:[]}};
+  if(fixtures[q.operationName])return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({data:fixtures[q.operationName]})});
+  result.errors.push({type:'unexpected-graphql',operation:q.operationName});return r.fulfill({status:200,contentType:'application/json',body:'{"data":{}}'});
+ });
+ page=await context.newPage();page.on('pageerror',e=>result.errors.push({type:'pageerror',text:e.message}));page.on('console',m=>{if(m.type()==='error')result.errors.push({type:'console',text:m.text()});});
+ page.on('request',r=>{const kind=r.resourceType();result.requestCounts[kind]=(result.requestCounts[kind]||0)+1;if(['fetch','xhr','document'].includes(kind)||!r.url().startsWith(base))result.requests.push({method:r.method(),url:r.url(),resource:kind});});
+ const tab=id=>page.getByTestId('node-manager-tab-'+id);const card=()=>page.getByTestId('nfs-guide-card');
+ const setLanguage=async locale=>{await page.setViewportSize({width:1280,height:1000});await page.goto(base+'/settings?section=language');await page.getByTestId('settings-language-select').selectOption(locale);await page.waitForFunction(v=>localStorage.getItem('autobyteus.localization.preference-mode')===v,locale);};
+ for(const locale of ['en','zh-CN']){
+  await setLanguage(locale);await page.goto(base+'/nodes?nodeTab=manage');await tab('manage').waitFor();await page.waitForTimeout(1500);
+  // Actual owner and keyboard tab navigation, not a stand-alone guide fixture.
+  await tab('dockerGuide').click();await page.getByTestId('docker-node-start-guide-card').waitFor();
+  const dockerBefore=await page.locator('[data-testid="docker-node-start-guide-card"] code').allTextContents();assert(dockerBefore.length>0,'Docker renders');
+  const dockerButton=page.locator('[data-testid^="copy-docker-launcher-command-"]').first();const dockerValue=await dockerButton.evaluate(b=>b.closest('[data-testid^="docker-launcher-command-"]').querySelector('code').textContent);await dockerButton.click();assert(await page.evaluate(()=>navigator.clipboard.readText())===dockerValue,'Docker clipboard');
+  await tab('dockerGuide').focus();await page.keyboard.press('End');await card().waitFor();assert(await tab('nfsGuide').getAttribute('aria-selected')==='true','selected accessible tab');
+  assert(await page.getByTestId('node-manager-panel-nfsGuide').getAttribute('aria-labelledby')==='node-manager-tab-nfsGuide','panel correlation');
+  for(const width of [1280,390]){
+   await page.setViewportSize({width,height:1000});await page.waitForTimeout(100);
+   const text=await card().innerText();assert(!text.includes('settings.components'),'no unresolved keys');
+   const needles=locale==='en'?['v0.1.0','macOS 26','Ubuntu 24.04','APFS','ext4','unencrypted','administrator']:['v0.1.0','macOS 26','Ubuntu 24.04','APFS','ext4','不加密','管理员'];
+   for(const x of needles)assert(text.includes(x),'localized required text '+x);
+   const names=await card().locator('button').evaluateAll(bs=>bs.map(b=>b.getAttribute('aria-label')));assert(names.every(Boolean)&&new Set(names).size===9,'unique9 aria names');
+   assert(await card().locator('[role="status"]').getAttribute('aria-live')==='polite','polite status');
+   assert(await card().locator('code').count()===9,'nine commands');
+   const links=await card().locator('a').evaluateAll(as=>as.map(a=>({href:a.href,target:a.target,rel:a.rel})));
+   assert(links.length===0,'no standalone guide anchors');
+   const footer=await card().evaluate(c=>{const tip=c.querySelector('[data-testid="nfs-folder-tip"]'),note=c.querySelector('[data-testid="nfs-safety-note"]');return {tip:tip.textContent.trim(),note:[...note.querySelectorAll('p')].map(p=>p.textContent.trim()),tipBackground:getComputedStyle(tip).backgroundColor,tipBorder:getComputedStyle(tip).borderWidth,tipFont:getComputedStyle(tip).fontSize,tipGap:tip.getBoundingClientRect().top-tip.previousElementSibling.getBoundingClientRect().bottom,noteGap:note.getBoundingClientRect().top-tip.getBoundingClientRect().bottom,noteIsNext:tip.nextElementSibling===note,following:note.nextElementSibling?.tagName??null};});
+   const footerExpected=locale==='en'?['Use the printed mount path as a normal folder.','Use only on a trusted private network','NFS is unencrypted—do not expose it to the internet.','If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying.']:['将输出的挂载路径用作普通文件夹。','仅用于受信任的私有网络','NFS 流量不加密，请勿将服务暴露到公共互联网。','存储或网络离线时，文件操作及其他工作可能停滞。请恢复连接后重试。'];
+   assert(JSON.stringify([footer.tip,...footer.note])===JSON.stringify(footerExpected),'exact approved localized short footer');
+   footer.words=locale==='en'?[footer.tip,...footer.note].join(' ').split(/\s+/).length:null;
+   assert(locale!=='en'||footer.words<=60,'English footer cap60');
+   assert(footer.tipBackground==='rgba(0, 0, 0, 0)'&&footer.tipBorder==='0px'&&Number.parseFloat(footer.tipFont)>=14,'unboxed readable tip');
+   assert(footer.noteIsNext&&footer.following===null&&footer.tipGap===20&&footer.noteGap===16,'no blank link space or trailing prose');
+   for(const old of ['physical-host','testing remains deferred','Checksums do not replace','独立客户端','仍待进行','Public CLI documentation and advanced flags','公开命令行文档和高级参数'])assert(!text.includes(old),'old footer absent '+old);
+   for(const label of ['View release downloads','Review the pinned installer script','查看版本下载','查看固定版本的安装脚本'])assert(!text.includes(label),'removed label absent '+label);
+   assert(text.includes(locale==='en'?'URL shown in the command':'命令中网址对应的安装脚本'),'coherent review reminder');
+   assert(text.includes(locale==='en'?'Published installer: v0.1.0':'已发布安装器：v0.1.0'),'valid version notice');
+   const installGap=await page.getByTestId('copy-nfs-macos').evaluate(b=>{const grid=b.parentElement.parentElement.parentElement;return grid.parentElement.getBoundingClientRect().bottom-grid.getBoundingClientRect().bottom;});
+   assert(installGap<=18,'no reserved link area, only section border/padding');
+   const copied=[];
+   for(const [id,value] of Object.entries(expected)){
+    const button=page.getByTestId('copy-nfs-'+id);assert(await button.evaluate(b=>b.parentElement.parentElement.querySelector('code').textContent)===value,'independent expected displayed bytes '+id);
+    await button.click();await page.waitForFunction(({id,label})=>document.querySelector(`[data-testid="copy-nfs-${id}"]`).textContent.trim()===label,{id,label:locale==='en'?'Copied':'已复制'});
+    assert(await page.evaluate(()=>navigator.clipboard.readText())===value,'actual clipboard '+id);copied.push({id,value});
+   }
+   const dimensions=await card().evaluate(c=>({document:{scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth},cardWidth:c.getBoundingClientRect().width,codes:[...c.querySelectorAll('pre')].map(p=>({client:p.clientWidth,scroll:p.scrollWidth,overflow:getComputedStyle(p).overflowX}))}));assert(dimensions.document.scroll<=dimensions.document.client,'no document overflow');assert(dimensions.codes.every(p=>p.overflow==='auto'),'code scroll local');
+   await page.getByTestId('copy-nfs-macos').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,`${locale}-${width}-top.png`)});
+   await page.getByTestId('nfs-safety-note').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,`${locale}-${width}-bottom.png`)});
+   await page.getByTestId('copy-nfs-linux').evaluate(b=>b.parentElement.parentElement.scrollIntoView({block:'end'}));await page.screenshot({path:path.join(out,`${locale}-${width}-install-end.png`)});
+   await fs.writeFile(path.join(out,`${locale}-${width}-text.txt`),`# R02 actual /nodes; ${commit}; Chrome/${locale}/${width}; ${new Date().toISOString()}\n${text}\n`);
+   result.scenarios.push({case:'R02',locale,width,copied,links,names,dimensions,installGap,footer,removedLabelsAbsent:true,reviewReminder:true,versionNotice:true});await save();
+  }
+  await tab('dockerGuide').click();assert(JSON.stringify(await page.locator('[data-testid="docker-node-start-guide-card"] code').allTextContents())===JSON.stringify(dockerBefore),'Docker commands unchanged after NFS');
+ }
+ assert(result.errors.length===0,JSON.stringify(result.errors));
+ assert(!result.requests.some(r=>r.url?.includes('github.com/AutoByteus/autobyteus-nfs')),'no installer/release request from guide');
+ await finish('R02','Actual /nodes+language settings, en/zh×1280/390,9exact actual clipboard values each, zeroanchors, exact43wordshortfooter/bilingual safety/no reservedgap/review reminder/accessibility/layout and Docker preserved');
+ active='R03';await progress('R03','Started','Not Tested','Actual tab lifetime + controlled clipboard boundary; no host command');
+ await setLanguage('en');await page.goto(base+'/nodes?nodeTab=nfsGuide');await card().waitFor();
+ await page.getByTestId('copy-nfs-create').focus();await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('[data-testid="copy-nfs-create"]').textContent.trim()==='Copied');
+ assert(await page.evaluate(()=>navigator.clipboard.readText())===expected.create,'Enter exactcopy');await page.waitForTimeout(2200);assert(await page.getByTestId('nfs-copy-feedback').innerText()==='','reset2seconds');
+ await page.evaluate(()=>{window.__nativeWrite=navigator.clipboard.writeText.bind(navigator.clipboard);window.__writes=[];navigator.clipboard.writeText=t=>{window.__writes.push(t);return new Promise(r=>window.__resolveCopy=r);};});
+ await page.getByTestId('copy-nfs-connect').click();assert(await card().locator('button:disabled').count()===9,'all9disabled pending');assert(await page.getByTestId('nfs-copy-feedback').innerText()==='','no pending false success');
+ await page.getByTestId('copy-nfs-status').evaluate(b=>b.click());assert(await page.evaluate(()=>window.__writes.length)===1,'pending excludes second');
+ await tab('dockerGuide').click();await page.evaluate(()=>window.__resolveCopy());await tab('nfsGuide').click();assert(await page.getByTestId('nfs-copy-feedback').innerText()==='','late completion not new component feedback');assert(await card().locator('button:disabled').count()===0,'new lifetime idle');
+ await page.evaluate(()=>navigator.clipboard.writeText=async()=>{throw new DOMException('Test permission denial','NotAllowedError');});await page.getByTestId('copy-nfs-status').click();assert((await page.getByTestId('nfs-copy-feedback').innerText()).includes('Select and copy'),'manual denial');
+ await page.getByTestId('copy-nfs-status').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,'denied.png')});
+ const selected=await page.getByTestId('nfs-command-status').locator('code').evaluate(c=>{const r=document.createRange();r.selectNodeContents(c);const s=window.getSelection();s.removeAllRanges();s.addRange(r);return s.toString();});assert(selected===expected.status,'manual selection exact');
+ await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:undefined}));await page.getByTestId('copy-nfs-version').click();assert((await page.getByTestId('nfs-copy-feedback').innerText()).includes('Could not copy'),'missing clipboard no false success');
+ assert(result.errors.length===0,JSON.stringify(result.errors));result.scenarios.push({case:'R03',keyboard:'Enter',timerReset:true,pendingAll9Disabled:true,secondRequestExcluded:true,unmountLateResolve:true,denialManualSelection:true,missingClipboard:true});
+ await finish('R03','Enter/nativeclipboard/reset; controlled pending excludes second, leave/late resolve/reenter; denial/missing/manual selection, no browser errors');result.result='Pass';
+} catch(error){result.result='Fail';result.failure={case:active,message:error.stack};if(page){await page.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});await fs.writeFile(path.join(out,'failure-body.txt'),`# R02/R03 failure; ${commit}; ${new Date().toISOString()}\n`+await page.locator('body').innerText().catch(()=>''));}await progress(active,'Checkpoint','Not Tested',`${name} stopped: ${error.message.replaceAll('|','/').slice(0,300)}`);process.exitCode=1;await save();}
+finally{
+ await progress('C01','Started','Not Tested','Close only owned Chrome/Nuxt process group/temp root');
+ if(browser){
+  const closed=browser.close().then(()=>true);const graceful=await Promise.race([closed,sleep(5000).then(()=>false)]);
+  if(!graceful){assert(result.environment.browserPgid!==process.pid,'only owned browser group');try{process.kill(-result.environment.browserPgid,'SIGTERM');result.cleanup.browserGroupTermination=true;}catch(e){if(e.code!=='ESRCH')throw e;}await Promise.race([closed,sleep(10000)]);}
+  result.cleanup.browserClosed=!browser.isConnected();
+ }
+ try{process.kill(-server.pid,'SIGTERM');}catch{}for(let i=0;i<50&&server.exitCode===null&&server.signalCode===null;i++)await sleep(100);
+ if(server.exitCode===null&&server.signalCode===null){try{process.kill(-server.pid,'SIGKILL');}catch{}}
+ await sleep(300);result.cleanup.nuxtExit=server.exitCode;result.cleanup.nuxtSignal=server.signalCode;
+ await fs.rm(root,{recursive:true,force:true});result.cleanup.ownedRootRemoved=true;result.cleanup.productSourceChanges=execFileSync('git',['diff','--name-only','--',':!tickets'],{encoding:'utf8'});log.end();await save();
+ await progress('C01','Checkpoint',result.cleanup.productSourceChanges?'Not Tested':'Pass',`${name}: own browser/server/root removed; product source unchanged; final evidence audit pending`);
+}
+console.log(JSON.stringify({result:result.result,failure:result.failure,scenarios:result.scenarios.length,cleanup:result.cleanup}));
