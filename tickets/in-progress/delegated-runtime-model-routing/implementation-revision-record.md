@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-002 Pass, ARCH-REV-003 Pass), round 1 | N/A | `Initial Baseline` | SR-015, SR-016, ARCH-REV-002, ARCH-REV-003 | Implemented; handed to Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-001 (Fail), round 1; Solution Designer SR-017 | CR-001, CR-002; C-03 → SR-017 | `Local Fix` | CRR-001, SR-017 | Fixed; returned to Code Review |
+| IR-003 | Architecture Reviewer, ARCH-REV-004 (SR-018 with SR-017); Code Reviewer CRR-003 (failure origin of API/E2E round 1) | CR-005; CR-003/CR-004 resolved by SR-018 | `Local Fix` + design revision SR-018 | SR-018, ARCH-REV-004, CRR-003, API-E2E round 1 | Confinement removed; CR-005 fixed; to Code Review |
 
 ## Revision Entries
 
@@ -82,3 +83,42 @@ The current code and `implementation-handoff.md` remain authoritative.
   IMP-10 also surfaced a pre-existing failing spec this branch does not touch (FU-006).
 - Next recipient or routing: `code_reviewer` (Targeted Delta Review of CR-001, CR-002; the package stays Large/High).
 - Remaining limitations or risks: unchanged from IR-001; the new signed-out string should be reported to Product.
+
+### IR-003 — No router confinement (SR-018); a failed router turn no longer leaves routing "busy" (CR-005)
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` ARCH-REV-004 (Pass on SR-018 with SR-017); Code Reviewer, `code-review-report.md` CRR-003 (failure-origin review of API/E2E round 1, commit `64e5b57932`: L-01, L-02, MR-09); investigation A-34.
+- Triggering finding IDs: CR-005 (F-3, MR-09); CR-003 and CR-004 (L-02, L-01) no longer apply after SR-018.
+- Classification: `Local Fix` (CR-005) with the design revision SR-018 applied.
+- Prior authoritative result: IR-002 (CRR-002 Pass); API/E2E round 1 Fail (router confinement, MR-09).
+- Current authoritative result: confinement removed as a clean cut; CR-005 fixed; IMP-11 rerun.
+- Related solution revision IDs: SR-018 (SR-017 already applied in IR-002)
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API/E2E round 1 (`64e5b57932`)
+- Related delivery revision IDs: N/A
+- Why this revision is recorded: the user removed the router's confinement (SR-018) and the failed-turn defect (CR-005).
+- Approved behavior or requirement IDs affected: REQ-003 / AC-011 (router tools, no sandbox), DS-003 / SR-012 point 4 (failed router turns).
+- Implementation delta:
+  - SR-018: `AgentRunConfig.toolConfinement`, `CreateAgentRunInput.toolConfinement`, the run-metadata
+    `toolConfinement` marker and `AgentRunToolConfinement` removed; `codex-thread-bootstrapper.ts`,
+    `agent-run-config.ts`, `claude-session-query-options.ts`, `claude-sdk-client.ts` and its unit test restored to base
+    `d74f75a51a`; `claude-workspace-confinement.ts` deleted; `ModelRouterAgent` no longer passes `toolConfinement`.
+    `systemRunOwner`, the eligibility rule, internal workspaces and the one-request queue are unchanged.
+  - CR-005: `ModelRouterAgent.ensureRun` reuses the stored run through `resolveCommandReadyAgentRun` (the live run, or
+    its restore when its runtime stopped); if that fails it logs and creates a new run (DS-003 "otherwise create").
+    `isIdle()` is true when no input waits and either the run's runtime stopped or its status is not `running` /
+    `initializing` (so `error` and `offline` are free). `ModelRouter.route` still ensures the run up front (fast
+    "could not start"), and the queue's `send` takes the run again when the request is sent (a failure there fails that
+    routing with "the Model Router agent could not start (…)"). No new status code.
+  - Docs: `docs/modules/model_routing.md` (agent paragraph; "Tools of the router's run" replaces the confinement section).
+- Changed files or areas: `model-routing/services/{model-router-agent,model-router}.ts`,
+  `compositions/model-routing-composition.ts`, `agent-execution/services/{agent-run-service,agent-run-provisioning-service,standalone-agent-run-lifecycle-service}.ts`,
+  `run-history/store/{agent-run-metadata-types,agent-run-metadata-store}.ts`, the four files restored to base, the deleted
+  Claude module; tests `model-router-agent.test.ts` (command-ready path; CR-005 cases), `model-router.test.ts` (real
+  agent: failed turn, then the next routing answered from the restored run within 2 s), `model-router-confinement.test.ts`
+  → `model-router-tools.test.ts` (confinement cases removed), `claude-sdk-client.test.ts` restored to base.
+- Local validation and result: typecheck; affected suites (model-routing, agent-execution, runtime-management claude
+  and codex, run-history, remote-collaboration, agent-collaboration): 280 files, 2713 tests pass; IMP-11 full unit.
+- Next recipient or routing: `code_reviewer` (Large/High), then API/E2E reruns (MR-09; normal live routing).
+- Remaining limitations or risks: the router is unconfined by design (RSK-006); a router run that cannot be restored is
+  replaced (context starts over, `knowledge.md` stays).

@@ -29,15 +29,25 @@ record, `evidence/implementation/`).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, after code review CRR-001)
+- Implementation cycle: `Rework` (IR-003, after API/E2E round 1, code review CRR-003 and SR-018 / ARCH-REV-004)
 - Implementation revision record: `tickets/in-progress/delegated-runtime-model-routing/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline `IR-001`)
-- Related solution revision IDs: SR-001..SR-017 (built against SR-015 + SR-016; SR-017 applied in IR-002)
-- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
-- Related code-review revision IDs: CRR-001 (Fail, two Low Local Fixes)
+- Current implementation revision ID: `IR-003` (earlier: `IR-001` baseline, `IR-002`)
+- Related solution revision IDs: SR-001..SR-018 (built against SR-015 + SR-016; SR-017 in IR-002; SR-018 in IR-003)
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004 (SR-018 with SR-017)
+- Related code-review revision IDs: CRR-001 (Fail), CRR-002 (Pass), CRR-003 (failure-origin review of API/E2E round 1)
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001, CR-002 (CRR-001); SR-017 (design decision on review candidate C-03)
+- Triggering finding IDs: IR-003: CR-005 (CRR-003, F-3 / MR-09) and SR-018 (CR-003/CR-004 resolved by removing
+  confinement). IR-002: CR-001, CR-002 (CRR-001); SR-017.
+
+IR-003 delta (commit `424e9bdd62`): the router's workspace confinement is removed as a clean cut (SR-018, the user's
+decision): no `toolConfinement` option or metadata marker; the Codex bootstrapper, Claude session query options and
+Claude SDK client are back to base; the Claude confinement module is deleted. The Model Router agent runs with its
+runtime's normal auto-approved setup; its instructions keep its files in its workspace. `systemRunOwner`, the
+eligibility rule, the internal workspace and one-request-at-a-time stay. CR-005: a failed router turn no longer leaves
+routing "busy": the agent's run is reused through `resolveCommandReadyAgentRun` (which restores a run whose runtime
+stopped; a run that cannot be restored is replaced, DS-003), the queue counts a stopped or errored run as free, and
+each request takes the run, restored if needed, when it is sent. No new status code (ARCH-REV-004).
 
 IR-002 delta (commits `161d136c1b`, `03d9860e82`): `delegatingAgentName` is nullable and B writes null for a copy
 started for a peer (CR-001, option 1 as the Solution Designer confirmed; no start-request change); `SIGNED_OUT` has its
@@ -54,7 +64,7 @@ end of this document).
 - Design classification section / evidence reference: design-spec.md § Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: about 60 source files across server, three contract packages and web, as the design
-  estimated; new persisted stores, a changed peer contract and a confined, auto-approved system-owned agent run, as
+  estimated; new persisted stores, a changed peer contract and an auto-approved system-owned agent run, as
   the risk rationale says. No escalation trigger was hit: a router failure never starts an agent on an unusable or
   blocked launch (it falls through to the next layer or refuses); the root gate is unchanged; no data migration.
 - Selected route: `Code Review`
@@ -73,7 +83,8 @@ end of this document).
 | DS-006 | Recorded launch sources → notes and run Settings rows; remote rows from peer launches | `collaborators/launch-configuration-notes.ts`, `domain/launch-configuration-source.ts`, DTO projections; web `utils/runSettings/{runMemberTree,delegatedLaunchRows}.ts`, `components/run-settings/RunMemberRow.vue`, `components/workspace/config/ExistingRunConfigEditor.vue`, `stores/remoteRunsStore.ts` | Done (VIS-016/017). |
 | DS-007 | Router's `knowledge.md`, first 16 KB in each request | `ModelRouterAgent.readKnowledge`, template `built-in-agents/templates/model-router/agent.md` | Done; the agent writes it with its own file tools. |
 | DS-008 | Internal workspaces hidden while internal agents are hidden | `workspaces/internal-workspaces.ts`, `workspace-manager.ts` `listVisibleWorkspaces` | Done. |
-| REQ-003 / AC-011 | Router tools = template list + runtime file tools; confinement (review point 1–3) | `systemRunOwner` only from `ModelRouterAgent`, kept in metadata and on restore, excluded by `standalone-agent-run-eligibility.ts`; Codex `workspace-write` (`codex-thread-bootstrapper.ts`); Claude `claude-workspace-confinement.ts` (setting sources `["user"]`, `Bash`/`BashOutput`/`KillShell` disallowed, `PreToolUse` write hook) | Done; unit-tested per runtime. Live confinement checks are left to API/E2E (below). |
+| REQ-003 / AC-011 | Router tools = template list + its runtime's normal tools; no collaboration tools; no router-specific sandbox (SR-018) | `systemRunOwner` only from `ModelRouterAgent`, kept in metadata and on restore, excluded by `standalone-agent-run-eligibility.ts`; template `built-in-agents/templates/model-router/` | Done; `tests/unit/model-routing/model-router-tools.test.ts` (template list, AR-001, per-runtime exposure). IR-003 removed the SR-015 confinement (clean cut). |
+| DS-003 / SR-012 point 4 (CR-005) | A failed router turn fails that routing; later routings work | `ModelRouterAgent.ensureRun` → `resolveCommandReadyAgentRun` (restore) else create; `isIdle()` free when the run stopped or errored; `ModelRouter` takes the run at send time | Done (IR-003); `model-router-agent.test.ts` (CR-005 cases), `model-router.test.ts` (real agent: failed turn, then the next routing answered from the restored run). Live: MR-09 (API/E2E). |
 | REQ-012 | Records only while Model Routing is on, by the resolving node | `routing-decision-draft.ts` (draft only while on), `stores/routing-decision-log.ts`, `services/routing-statistics.ts` | Done. IR-002: no stored `notes` (SR-017); peer-started records carry `fromNode` with null delegating run and name (CR-001). |
 | REQ-014 | CM-12, GLOSSARY, module docs | `autobyteus-server-ts/docs/design/collaboration_model.md`, `GLOSSARY.md`, `autobyteus-server-ts/docs/modules/model_routing.md` (new), `docs/modules/README.md`, `autobyteus-web/docs/settings.md` | Done. |
 
@@ -92,9 +103,9 @@ Server (`autobyteus-server-ts/src/`):
   `task-execution-resource-port.ts` (`describeTask`), `projects/services/task-identity-reader.ts`.
 - Remote: `execution/remote/remote-delegation.ts`, `remote-run-channel.ts`, `remote-refusal-codes.ts`;
   `remote-collaboration/` (client, gateway, requests, refusals, receiver, starters, `peer-started-run-decisions.ts`).
-- Run config and confinement: `agent-execution/domain/agent-run-config.ts`, run metadata types/store,
-  `standalone-agent-run-eligibility.ts`, Codex bootstrapper, `backends/claude/session/claude-workspace-confinement.ts`,
-  `claude-session-query-options.ts`, `runtime-management/claude/client/claude-sdk-client.ts`.
+- System-owned run: run metadata types/store (`systemRunOwner`), `agent-run-service.ts` / provisioning (create
+  input), `standalone-agent-run-eligibility.ts`. (IR-003: the SR-015 confinement in `agent-run-config.ts`, the Codex
+  bootstrapper and the Claude session/client files is removed; those files equal base.)
 - Built-in agent `built-in-agents/templates/model-router/`; tool `agent-tools/model-routing/`; the build's bootstrap
   smoke `autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs` now expects it (commit `0cdaa0d480`; the
   build failed without it).
@@ -139,9 +150,10 @@ Design gaps closed during implementation (none changes approved behavior; review
 
 - **Tool-call time-outs on Claude SDK, Antigravity and Grok** for a routed delegation of ~45 s are unverified (review
   point 4). If a runtime cuts earlier, that is a Design Impact for the Solution Designer.
-- **Claude confinement against a user-level `Write` allow rule** relies on hooks being evaluated before allow rules
-  (SDK documentation); unit-tested with the hook alone, not yet live.
-- **Antigravity/Grok** routers are not confined (FU-005, accepted DEC-023).
+- **The router is not confined** (SR-018, the user's decision): it runs with auto-approve and its runtime's normal
+  tools, like any auto-approved agent (RSK-006); its instructions keep its files in its workspace.
+- **A router run that cannot be restored** is replaced by a new run (DS-003): its conversation context starts over,
+  `knowledge.md` stays.
 - **Burst latency:** with one request at a time, a later request in a burst can wait past 40 s and fall back as
   "the Model Router was busy" (accepted trade-off, SR-016).
 - `root-team-run.ts` sits at 499 non-empty lines (was 497 at base); the remote copy steps moved into
@@ -162,7 +174,8 @@ Design gaps closed during implementation (none changes approved behavior; review
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
 - Dead code in the touched files and modules removed: `Yes` (`delegateToNewCopy`, the resolver's `check`, the
-  section's unused `ownNode`, the remote callbacks in three roots)
+  section's unused `ownNode`, the remote callbacks in three roots; IR-003: the whole SR-015 confinement — option,
+  metadata marker, Codex mapping, Claude module and client options — with no unused option left)
 - Dead code found elsewhere, added to `follow-ups.md`: None. A pre-existing broken spec found in IR-002 is FU-006
   (`stores/__tests__/definitionMutationCache.spec.ts`, from autobyteus-308).
 - Shared structures remain tight: `Yes` (launch source is a discriminated union; the router origin carries
@@ -176,7 +189,7 @@ Design gaps closed during implementation (none changes approved behavior; review
 ## Persisted Data Transition Check
 
 - Approved decision: `Directly Usable — No Migration` for run-history sources, remote links, run metadata
-  (`toolConfinement`, `systemRunOwner`); new files for the decision log, the agent state file and the internal
+  (`systemRunOwner`; IR-003 removed `toolConfinement`, which no released build wrote); new files for the decision log, the agent state file and the internal
   workspace; new settings keys.
 - Design-spec decision reference: § Persisted Data / State Transition Decision
 - Follows the decision without migration or version-specific fallback: `Yes`
@@ -215,11 +228,14 @@ presentation spec), and the Runtimes tab is unchanged. Evidence folder: `tickets
   delegation files because I changed `RemoteDelegation.delegate` while it ran; the rerun on the commit is the record.
 | IMP-09 | `pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts test:unit` | `03d9860e82` | macOS 26.5.2, node v22.23.1 | all server source and unit suites | CR-001, SR-017 (records, log, receiver) | Pass | `IMP-09-server-typecheck-unit-ir002.log` | `typecheck exit=0`; `Test Files  844 passed \| 4 skipped (848)`, `Tests  7015 passed \| 7 skipped (7022)` |
 | IMP-10 | `(autobyteus-web) NUXT_TEST=true npx vitest run components/settings components/run-settings components/workspace/config utils/runSettings stores localization`; the three web guards | `03d9860e82` | same | page, presentation, rows, stores, copy | CR-002, CR-001 (web types), SR-017 | Pass for every file this branch touches; 1 file fails that this branch does not touch (FU-006) | `IMP-10-web-specs-and-guards-ir002.log` | `Test Files  1 failed \| 194 passed (195)`; the failing file `stores/__tests__/definitionMutationCache.spec.ts` ("Unconfigured GraphQL fixture field: internal", see the note at the end); `guard:localization-boundary exit=0` |
+| IMP-11 | `pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts test:unit` | `424e9bdd62` | macOS 26.5.2, node v22.23.1 | all server source and unit suites | SR-018 (confinement removed), CR-005 (restore after a failed turn), AC-011 | Pass | `IMP-11-server-typecheck-unit-ir003.log` | `typecheck exit=0`; `Test Files  844 passed \| 4 skipped (848)`, `Tests  7015 passed \| 7 skipped (7022)` |
+
+- IR-003 changes no web file, so IMP-05/06/07/08/10 stand.
 
 - Not run, and why:
   - Live provider runs (`RUN_CLAUDE_E2E`, `RUN_CODEX_E2E`, live-agents suite): need test-vault keys and real runtime
     sessions; left to API/E2E with the 303 live-agents fold (below).
-  - Live confinement on Codex and Claude, the ~45 s routed delegation per runtime, the Docker-peer contract: API/E2E.
+  - The ~45 s routed delegation per runtime, live routing per runtime, MR-09 live, the Docker-peer contract: API/E2E.
   - The full server integration suite (`test:integration`): its prerequisites (application SDK/devkit/Brief Studio
     builds) are unrelated to this change; the related files ran in IMP-04.
   - The desktop app (isolated Electron build): the Done-when asks the user to verify it there.
@@ -268,10 +284,11 @@ presentation spec), and the Runtimes tab is unchanged. Evidence folder: `tickets
 - **Fold the 303 live-agents branch** `codex/available-agent-runtimes-live-agents` into this ticket's API/E2E
   coverage (do not delete the branch), extended with a routed delegation of ~45 s from an agent on each of Claude SDK,
   Antigravity and Grok that must complete as a tool result (review point 4).
-- **Live confinement** (review points 2–3): on Claude, a confined router run cannot write outside its workspace even
-  with a user-level `Write` allow rule and a workspace `.claude/settings.json` allowing it; shell tools absent. On
-  Codex, writes outside the workspace (other than the temp roots) are refused, and a workspace `.codex/config.toml`
-  asking for `danger-full-access` does not widen the sandbox.
+- **Normal testing only (SR-018, the user's decision):** live routing with a real router on each runtime;
+  `knowledge.md` updated when the router is taught; the router has no collaboration tools. No adversarial, escape or
+  confinement probes (L-01/L-02 no longer apply).
+- **MR-09 rerun** (CR-005): after a router turn fails (e.g. an Antigravity CLI error), the next routing is answered,
+  not "busy" after 40 s.
 - **Peer contract live** across a Docker peer (50 s start bound, `launches`, `modelRouting` refusal state,
   `MODEL_ROUTER_FAILED`).
 - **Desktop app**: the Done-when needs the user to verify it in the desktop app (isolated worktree build).
