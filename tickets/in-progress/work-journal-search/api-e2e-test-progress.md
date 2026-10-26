@@ -51,3 +51,4 @@
 | 10-26 21:05 | API-L10 | Completed | Pass | MODEL_CHANGED shown, words only; Rebuild → LEAF-IR meaning complete 20:04 |
 | 10-26 21:05 | F-001 | Checkpoint | — | also under LEAF-IR: meaning STRONG on C1, C2, C4, T1, T3 |
 | 10-26 21:10 | (process) | Checkpoint | — | cleanup done; private screenshots moved; next: commit, API-R05, handoff |
+| 10-26 21:10 | API-R05 | Completed | Pass | licensing + hygiene after c7a2f3b972 |
