@@ -38,7 +38,7 @@
             </div>
             <p v-if="task.delegations.length === 1" class="flex flex-shrink-0 items-baseline gap-4 text-sm">
               <span class="whitespace-nowrap text-gray-400">{{ decisionTime(task.delegations[0]!.recordedAt, locale, t) }}</span>
-              <button v-if="task.delegations[0]!.delegatingRunId" type="button" class="inline-flex items-center gap-1 whitespace-nowrap font-medium text-blue-700 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1" data-testid="model-routing-decision-open-run" :title="t('settings.modelRouting.decisions.openRunTitle', { delegator: task.delegations[0]!.delegatingAgentName })" @click="openRun(task.delegations[0]!.delegatingRunId!)">
+              <button v-if="task.delegations[0]!.delegatingRunId" type="button" class="inline-flex items-center gap-1 whitespace-nowrap font-medium text-blue-700 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1" data-testid="model-routing-decision-open-run" :title="t('settings.modelRouting.decisions.openRunTitle', { delegator: task.delegations[0]!.delegatingAgentName ?? '' })" @click="openRun(task.delegations[0]!.delegatingRunId!)">
                 {{ t('settings.modelRouting.decisions.openRun') }}<Icon icon="heroicons:arrow-top-right-on-square" class="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </p>
@@ -66,7 +66,7 @@
               </component>
               <p v-if="task.delegations.length > 1" class="flex flex-shrink-0 items-baseline gap-4 text-sm">
                 <span class="whitespace-nowrap text-gray-400">{{ decisionTime(item.recordedAt, locale, t) }}</span>
-                <button v-if="item.delegatingRunId" type="button" class="inline-flex items-center gap-1 whitespace-nowrap font-medium text-blue-700 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1" data-testid="model-routing-decision-open-run" :title="t('settings.modelRouting.decisions.openRunTitle', { delegator: item.delegatingAgentName })" @click="openRun(item.delegatingRunId)">
+                <button v-if="item.delegatingRunId" type="button" class="inline-flex items-center gap-1 whitespace-nowrap font-medium text-blue-700 hover:text-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1" data-testid="model-routing-decision-open-run" :title="t('settings.modelRouting.decisions.openRunTitle', { delegator: item.delegatingAgentName ?? '' })" @click="openRun(item.delegatingRunId)">
                   {{ t('settings.modelRouting.decisions.openRun') }}<Icon icon="heroicons:arrow-top-right-on-square" class="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               </p>

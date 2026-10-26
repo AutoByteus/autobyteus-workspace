@@ -82,7 +82,7 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
     const hold = (runId: string) => {
       if (resolved.routingDecision) this.dependencies.decisions.hold(runId, decisionRecordsOf(resolved.routingDecision, {
         recordedAt: new Date().toISOString(), task: work.task, delegatingRunId: null,
-        delegatingAgentName: request.delegator.agentRunId, fromNode: from.name,
+        delegatingAgentName: null, fromNode: from.name,
       }));
     };
     if (source.kind === "agent_team") {

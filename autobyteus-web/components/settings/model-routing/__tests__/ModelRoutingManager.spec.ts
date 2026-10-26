@@ -36,7 +36,7 @@ const record = (overrides: Partial<RoutingDecisionRecord>): RoutingDecisionRecor
   delegatingRunId: 'pm_run', delegatingAgentName: 'project_task_manager', fromNode: null, copyAddress: '/software_engineering_team',
   copyKind: 'agent_team', agentAddress: '/software_engineering_team/implementation_engineer', runtimeKind: 'codex_app_server',
   llmModelIdentifier: 'gpt-sol', source: 'model_router', taskKind: 'implementation', choiceReason: 'Codex fits a server change.',
-  routerFailure: null, skipped: [], notes: [], ...overrides,
+  routerFailure: null, skipped: [], ...overrides,
 })
 const teamDelegation = (records: RoutingDecisionRecord[]) => ({
   recordedAt: records[0]!.recordedAt, delegatingRunId: 'pm_run', delegatingAgentName: 'project_task_manager', fromNode: null,

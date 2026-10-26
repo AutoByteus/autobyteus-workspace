@@ -112,12 +112,15 @@ file tools the runtime brings. Writes and commands must stay in its workspace:
 While Model Routing is on, each started copy writes one record per agent: its
 launch, the source (`agent_default`, `team_default`, `model_router`,
 `inherited`), the task kind and reason when the router chose, the router's
-failure, the skipped layers and the launch notes. The node that resolved the
-copy writes them, on dispatch success (`RoutingDecisionRecorder`, bound per
-process). For a copy started on a peer node B, B writes them when A's work
-packet arrives (`remote-collaboration/inbound/peer-started-run-decisions.ts`);
-an ad-hoc Task has no Task ID yet at that point, so its records group by
-delegation.
+failure and the skipped defaults with why. These structured fields are the only
+stored form; no rendered sentence is stored (SR-017; a `notes` field in an older
+line is ignored). The node that resolved the copy writes them, on dispatch
+success (`RoutingDecisionRecorder`, bound per process), with the delegating
+run and agent name. For a copy started on a peer node B, B writes them when A's
+work packet arrives (`remote-collaboration/inbound/peer-started-run-decisions.ts`)
+with `fromNode` naming A and no delegating run or agent name (B knows none of
+A's agents); an ad-hoc Task has no Task ID yet at that point, so its records
+group by delegation.
 
 `RoutingDecisionLog` (`stores/routing-decision-log.ts`) appends JSON lines to
 `<appData>/model-routing/decisions_active.jsonl` and seals it as

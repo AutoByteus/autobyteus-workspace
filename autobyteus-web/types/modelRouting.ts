@@ -24,7 +24,7 @@ export type RoutingDecisionRecord = Readonly<{
   projectId: string | null
   taskTitle: string
   delegatingRunId: string | null
-  delegatingAgentName: string
+  delegatingAgentName: string | null
   fromNode: string | null
   copyAddress: string
   copyKind: 'agent' | 'agent_team'
@@ -36,13 +36,12 @@ export type RoutingDecisionRecord = Readonly<{
   choiceReason: string | null
   routerFailure: string | null
   skipped: readonly Readonly<{ layer: 'agent_default' | 'team_default'; runtimeKind: string | null; llmModelIdentifier: string | null; detail: string }>[]
-  notes: readonly string[]
 }>
 
 export type RoutingDecisionDelegation = Readonly<{
   recordedAt: string
   delegatingRunId: string | null
-  delegatingAgentName: string
+  delegatingAgentName: string | null
   fromNode: string | null
   copyAddress: string
   copyKind: 'agent' | 'agent_team'

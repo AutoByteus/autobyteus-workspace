@@ -102,4 +102,5 @@ delegated run, …) are defined in the
 - **Task kind:** the Model Router's short free-text label for a choice (1–40 characters, grouped ignoring letter case),
   such as "implementation"; nothing for the user to manage.
 - **Decision record:** one line of a node's decision log per agent of a fresh delegated copy resolved on that node
-  while Model Routing was on: the Task it serves, the delegation, the launch, its source, task kind, reason and notes.
+  while Model Routing was on: the Task it serves, the delegation, the launch, its source, task kind, reason, router
+  failure and skipped defaults.

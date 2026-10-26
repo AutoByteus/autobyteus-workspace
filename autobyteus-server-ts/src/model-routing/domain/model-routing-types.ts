@@ -110,7 +110,8 @@ export type DecisionLaunchSource = "agent_default" | "team_default" | "model_rou
 
 /**
  * One decision record: one agent of a fresh delegated copy resolved on this node while Model Routing was on (REQ-012).
- * `delegatingRunId` is null and `fromNode` set for a copy started for a peer node.
+ * `delegatingRunId` and `delegatingAgentName` are null and `fromNode` set for a copy started for a peer node (this node
+ * knows only the node that delegated, not its agents).
  */
 export type RoutingDecisionRecord = Readonly<{
   recordedAt: string;
@@ -120,7 +121,8 @@ export type RoutingDecisionRecord = Readonly<{
   projectId: string | null;
   taskTitle: string;
   delegatingRunId: string | null;
-  delegatingAgentName: string;
+  /** The delegating agent's name (its address basename) on this node; null for a copy started for a peer. */
+  delegatingAgentName: string | null;
   fromNode: string | null;
   copyAddress: string;
   copyKind: "agent" | "agent_team";
@@ -132,9 +134,8 @@ export type RoutingDecisionRecord = Readonly<{
   choiceReason: string | null;
   /** Why the Model Router could not choose for this agent (it then runs on the delegating run's launch); null otherwise. */
   routerFailure: string | null;
-  /** The configured defaults skipped before this launch (Decisions shows them; the notes word them in English). */
+  /** The configured defaults skipped before this launch, with why (Decisions shows them). */
   skipped: readonly RoutingSkippedLayer[];
-  notes: readonly string[];
 }>;
 
 /** The port dispatch success points record through (design § Dependency Rules). */
@@ -145,7 +146,7 @@ export interface RoutingDecisionRecorder {
 /** One agent of a decision record, as launch resolution knows it. */
 export type RoutingDecisionAgent = Pick<
   RoutingDecisionRecord,
-  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "routerFailure" | "skipped" | "notes"
+  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "routerFailure" | "skipped"
 >;
 
 /**
@@ -163,7 +164,7 @@ export const decisionRecordsOf = (draft: RoutingDecisionDraft, started: Readonly
   recordedAt: string;
   task: DelegationTaskIdentity;
   delegatingRunId: string | null;
-  delegatingAgentName: string;
+  delegatingAgentName: string | null;
   fromNode: string | null;
 }>): RoutingDecisionRecord[] => draft.agents.map((agent) => Object.freeze({
   recordedAt: started.recordedAt,

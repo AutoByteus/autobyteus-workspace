@@ -30,7 +30,7 @@ describe("submit_launch_choices (DS-004)", () => {
 describe("decision records (REQ-012, DS-002)", () => {
   afterEach(() => { vi.useRealTimers(); });
 
-  it("a routed Team copy's draft lists every member with its source, task kind, reason, router failure and notes", () => {
+  it("a routed Team copy's draft lists every member with its source, task kind, reason, router failure and skipped defaults; no rendered notes (SR-017)", () => {
     const launch = (runtimeKind: string, llmModelIdentifier: string) =>
       ({ runtimeKind, llmModelIdentifier, llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/work" }) as never;
     const draft = routingDecisionDraftOf({
@@ -41,7 +41,8 @@ describe("decision records (REQ-012, DS-002)", () => {
         { address: "/set/sd" as never, agentDefinitionId: "sd", launchConfiguration: launch("claude_agent_sdk", "sonnet"), followsTeam: false,
           launchSource: { origin: "agent_default", fallbacks: [] } },
         { address: "/set/ie" as never, agentDefinitionId: "ie", launchConfiguration: launch("codex_app_server", "gpt-sol"), followsTeam: false,
-          launchSource: { origin: "model_router", fallbacks: [], choiceReason: "Codex fits.", taskKind: "implementation" } },
+          launchSource: { origin: "model_router", choiceReason: "Codex fits.", taskKind: "implementation",
+            fallbacks: [{ layer: "agent_default", runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", reason: "blocked", detail: "opus is blocked." }] } },
         { address: "/set/cr" as never, agentDefinitionId: "cr", launchConfiguration: launch("claude_agent_sdk", "sonnet"), followsTeam: true,
           launchSource: { origin: "inherited", fallbacks: [{ layer: "model_router", runtimeKind: null, llmModelIdentifier: null, reason: "router_failed", detail: "the Model Router was busy" }] } },
       ],
@@ -51,7 +52,9 @@ describe("decision records (REQ-012, DS-002)", () => {
       ["/set/ie", "model_router", "implementation", null],
       ["/set/cr", "inherited", null, "the Model Router was busy"],
     ]);
-    expect(draft.agents[1]!.notes).toEqual(["ie: runs on codex_app_server / gpt-sol, chosen by the Model Router (implementation): Codex fits."]);
+    expect(draft.agents[1]!.skipped).toEqual([{ layer: "agent_default", runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", detail: "opus is blocked." }]);
+    expect(draft.agents[2]!.skipped).toEqual([]);
+    expect(draft.agents.every((agent) => !("notes" in agent))).toBe(true);
     const records = decisionRecordsOf(draft, { recordedAt: "2026-10-26T09:00:00.000Z",
       task: { taskId: "task-1", taskKey: "autobyteus-1", projectId: "p", title: "T" }, delegatingRunId: "pm", delegatingAgentName: "pm", fromNode: null });
     expect(records).toHaveLength(3);

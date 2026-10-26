@@ -20,7 +20,7 @@ export type DecisionSourceFilter = "router" | "not_router";
 export type RoutingDecisionDelegation = Readonly<{
   recordedAt: string;
   delegatingRunId: string | null;
-  delegatingAgentName: string;
+  delegatingAgentName: string | null;
   fromNode: string | null;
   copyAddress: string;
   copyKind: "agent" | "agent_team";
@@ -58,26 +58,25 @@ const parseSkipped = (value: unknown): RoutingDecisionRecord["skipped"] | null =
 const parseRecord = (value: unknown): RoutingDecisionRecord | string => {
   const record = value as Record<string, unknown> | null;
   if (!record || typeof record !== "object") return "not an object";
-  for (const key of ["recordedAt", "taskTitle", "delegatingAgentName", "copyAddress", "agentAddress", "runtimeKind", "llmModelIdentifier"]) {
+  for (const key of ["recordedAt", "taskTitle", "copyAddress", "agentAddress", "runtimeKind", "llmModelIdentifier"]) {
     if (typeof record[key] !== "string") return `${key} is not text`;
   }
-  for (const key of ["taskId", "taskKey", "projectId", "delegatingRunId", "fromNode", "taskKind", "choiceReason", "routerFailure"]) {
+  for (const key of ["taskId", "taskKey", "projectId", "delegatingRunId", "delegatingAgentName", "fromNode", "taskKind", "choiceReason", "routerFailure"]) {
     if (!nullableString(record[key])) return `${key} is not text or null`;
   }
   if (record.copyKind !== "agent" && record.copyKind !== "agent_team") return "copyKind is unknown";
   if (!SOURCES.has(record.source as DecisionLaunchSource)) return "source is unknown";
-  if (!Array.isArray(record.notes) || record.notes.some((note) => typeof note !== "string")) return "notes are not texts";
   const skipped = parseSkipped(record.skipped);
   if (!skipped) return "skipped is not a list of skipped defaults";
   return Object.freeze({
     recordedAt: record.recordedAt as string, taskId: record.taskId as string | null, taskKey: record.taskKey as string | null,
     projectId: record.projectId as string | null, taskTitle: record.taskTitle as string,
-    delegatingRunId: record.delegatingRunId as string | null, delegatingAgentName: record.delegatingAgentName as string,
+    delegatingRunId: record.delegatingRunId as string | null, delegatingAgentName: record.delegatingAgentName as string | null,
     fromNode: record.fromNode as string | null, copyAddress: record.copyAddress as string, copyKind: record.copyKind,
     agentAddress: record.agentAddress as string, runtimeKind: record.runtimeKind as string,
     llmModelIdentifier: record.llmModelIdentifier as string, source: record.source as DecisionLaunchSource,
     taskKind: record.taskKind as string | null, choiceReason: record.choiceReason as string | null,
-    routerFailure: record.routerFailure as string | null, skipped, notes: Object.freeze([...(record.notes as string[])]),
+    routerFailure: record.routerFailure as string | null, skipped,
   });
 };
 

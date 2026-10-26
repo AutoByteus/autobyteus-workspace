@@ -114,7 +114,7 @@ const recordRoutingDecision = async (draft: RoutingDecisionDraft, context: TaskD
   try {
     await recorder.record(decisionRecordsOf(draft, {
       recordedAt: new Date().toISOString(), task, delegatingRunId: identity.agentRunId,
-      delegatingAgentName: getAgentTeamAddressBasename(identity.memberAddress) ?? identity.agentRunId, fromNode: null,
+      delegatingAgentName: getAgentTeamAddressBasename(identity.memberAddress), fromNode: null,
     }));
   } catch (error) {
     console.warn(`Model Routing: the decisions of copy ${draft.copyAddress} could not be recorded: ${errorMessage(error)}`);

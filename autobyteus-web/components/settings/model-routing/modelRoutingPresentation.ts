@@ -53,8 +53,8 @@ export const routerProblem = (status: ModelRoutingStatus | null, t: T, locale: s
       ? t('settings.modelRouting.problem.blockedUntil', { runtime, model, time: shortDate(Date.parse(params.until), locale), by: params.limit ?? '' })
       : t('settings.modelRouting.problem.blocked', { runtime, model, by: params.limit ?? '' })
     case 'MODEL_NOT_OFFERED': return t('settings.modelRouting.problem.modelMissing', { runtime, model })
-    case 'RUNTIME_UNAVAILABLE':
-    case 'SIGNED_OUT': return t('settings.modelRouting.problem.runtimeMissing', { runtime })
+    case 'RUNTIME_UNAVAILABLE': return t('settings.modelRouting.problem.runtimeMissing', { runtime })
+    case 'SIGNED_OUT': return t('settings.modelRouting.problem.signedOut', { runtime })
     case 'REPORT_UNREADABLE': return t('settings.modelRouting.problem.unknown', { runtime, reason: status.reasonText ?? '' })
     default: return ''
   }

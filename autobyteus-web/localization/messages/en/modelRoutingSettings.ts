@@ -54,6 +54,7 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.problem.blocked": "{{runtime}} · {{model}} is blocked ({{by}}).",
   "settings.modelRouting.problem.modelMissing": "{{runtime}} no longer offers {{model}}.",
   "settings.modelRouting.problem.runtimeMissing": "{{runtime}} is not available on this node.",
+  "settings.modelRouting.problem.signedOut": "{{runtime}} is signed out. Sign in under Agent Runtimes.",
   "settings.modelRouting.problem.unknown": "{{runtime}} could not be read: {{reason}}",
   "settings.modelRouting.time.today": "Today, {{time}}",
   "settings.modelRouting.time.yesterday": "Yesterday, {{time}}",

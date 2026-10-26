@@ -54,6 +54,7 @@ const modelRoutingSettingsMessages = {
   "settings.modelRouting.problem.blocked": "{{runtime}} · {{model}} 已被限制（{{by}}）。",
   "settings.modelRouting.problem.modelMissing": "{{runtime}} 已不再提供 {{model}}。",
   "settings.modelRouting.problem.runtimeMissing": "此节点上没有可用的 {{runtime}}。",
+  "settings.modelRouting.problem.signedOut": "{{runtime}} 已退出登录。请在“智能体运行时”中登录。",
   "settings.modelRouting.problem.unknown": "无法读取 {{runtime}}：{{reason}}",
   "settings.modelRouting.time.today": "今天 {{time}}",
   "settings.modelRouting.time.yesterday": "昨天 {{time}}",

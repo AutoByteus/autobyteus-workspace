@@ -16,7 +16,7 @@ const record = (overrides: Partial<RoutingDecisionRecord>): RoutingDecisionRecor
   delegatingRunId: "pm_run", delegatingAgentName: "project_task_manager", fromNode: null,
   copyAddress: "/set", copyKind: "agent_team", agentAddress: "/set/implementation_engineer",
   runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", source: "model_router", taskKind: "implementation",
-  choiceReason: "Codex fits.", routerFailure: null, skipped: [], notes: [],
+  choiceReason: "Codex fits.", routerFailure: null, skipped: [],
   ...overrides,
 });
 
@@ -32,6 +32,18 @@ describe("RoutingDecisionLog (REQ-012, D1, D2)", () => {
     // The unfinished last line is cut off by the next append; the new record reads.
     await log.record([record({ recordedAt: "2026-10-26T10:00:00.000Z" })]);
     expect(await log.readAll()).toHaveLength(3);
+  });
+
+  it("SR-017 / CR-001: no notes are stored, an older line's notes are ignored; a peer-started record has no delegating run or agent name", async () => {
+    const dir = await tempDir();
+    const log = new RoutingDecisionLog({ dir });
+    await log.record([record({ delegatingRunId: null, delegatingAgentName: null, fromNode: "desktop" })]);
+    expect(await fs.readFile(path.join(dir, "decisions_active.jsonl"), "utf8")).not.toContain("notes");
+    await fs.appendFile(path.join(dir, "decisions_active.jsonl"), `${JSON.stringify({ ...record({ agentAddress: "/set/older" }), notes: ["older text"] })}\n`);
+    const read = await log.readAll();
+    expect(read.map((entry) => [entry.agentAddress, entry.fromNode, entry.delegatingAgentName])).toEqual([
+      ["/set/implementation_engineer", "desktop", null], ["/set/older", null, "project_task_manager"]]);
+    expect(read.every((entry) => !("notes" in entry))).toBe(true);
   });
 
   it("groups by Task, newest delegation first; the source filter is applied before paging; `before` continues", async () => {
