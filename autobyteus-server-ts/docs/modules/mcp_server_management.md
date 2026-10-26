@@ -86,12 +86,12 @@ they are settings until the user locks or moves them.
 - **Saving (configure, the JSON tab, import).** GraphQL input rows
   (`McpConfigEntryInput {name, secret, value}`, `McpTokenInput {value | keep}`)
   become a server draft: `plain`, `newSecret` (a value to store) or `keep` (what
-  is stored for that field). A new secret is saved under a new `mcp.<uuid>`
-  before the file is written; the entries the server no longer references
-  (replaced, unlocked or removed fields) are removed after the write commits; if
-  the write fails, the new entries are removed instead. When a save turns a
-  stored plain value into a reference, the provider first writes the backup
-  (below).
+  is stored for that field); import can also produce `missingSecret` (below),
+  which the GraphQL input cannot express. A new secret is saved under a new
+  `mcp.<uuid>` before the file is written; the entries the server no longer
+  references (replaced, unlocked or removed fields) are removed after the write
+  commits; if the write fails, the new entries are removed instead. A save
+  writes no backup: only the move does.
 - **Showing.** `mcpServers` and the configure result return each env or header
   row as `McpConfigEntry {name, value, state}` and the token as `tokenState`.
   `value` is set only for a plain value of a field that is not always secret.
@@ -122,9 +122,13 @@ they are settings until the user locks or moves them.
   names the backup path, the moved and skipped fields, and servers whose tools
   could not be registered again.
 - **Import** stores always-secret values and values the rule matches as MCP
-  secrets and lists them in `storedSecrets`. It takes values only: an entry
-  holding a secret reference is refused with its reason (a reference belongs to
-  one server's field on one node).
+  secrets and lists them in `storedSecrets`. An entry holding a secret reference
+  always imports (MDEC-007): when the server with that ID already holds a
+  reference at that field, it keeps its own (so re-importing an older copy of
+  its file never removes a working secret); any other reference becomes
+  `missingSecret`, a fresh `mcp.<uuid>` with no vault entry (state `MISSING`,
+  "needs secret"), listed in `needsSecret`. A foreign vault ID is never adopted,
+  so no two servers share an entry.
 
 ### Redirects
 
@@ -163,7 +167,8 @@ Any other `transport_type`, such as `websocket`, is rejected with
 Bulk import (`importMcpServerConfigs`) imports each entry on its own. The
 result keeps `success`, `message`, `importedCount` and `failedCount`, and adds
 `failures`: one `{ serverId, reason }` per entry that was not imported, and
-`storedSecrets`: one `{ serverId, field }` per value stored as an MCP secret.
+`storedSecrets`: one `{ serverId, field }` per value stored as an MCP secret, and
+`needsSecret`: one per imported secret reference this node does not hold.
 Reasons name fields and never contain env, header or token values. A
 whole-input error (invalid JSON, no top-level `mcpServers`) returns
 `success: false` with its message and empty lists. At startup, a stored entry

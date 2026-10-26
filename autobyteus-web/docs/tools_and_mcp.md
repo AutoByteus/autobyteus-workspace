@@ -294,10 +294,14 @@ Full-featured MCP server configuration:
   locked. A stored secret is never shown: its row starts empty, reads "Stored in
   the vault", keeps the stored value when left empty and replaces it when a new
   value is typed. The row says "Needs secret" when the entry is missing or the
-  vault is unavailable. A stored plain value the rule matches reads "Looks like a
-  secret · Move to vault", and an always-secret field stored plain reads
-  "Stored as plain text · … Move to vault"; the per-row move uses the same move
-  as the banner (backup first). A stored token can be kept, replaced or removed.
+  vault is unavailable. A saved plain value the user has not changed offers
+  "Move to vault" in place of its lock toggle: only the move (with its backup)
+  turns a stored plain value into a vault entry. Changing the value brings the
+  lock back, and saving it locked stores the new value as a secret. A candidate
+  the rule matches also reads "Looks like a secret.", and an always-secret field
+  stored plain reads "Stored as plain text … Move to vault". A stored token can
+  be kept, replaced or removed. When the user unlocks a row the rule pre-locked
+  and saves, that value counts as reviewed for the banner.
   The env hint states that a stdio server still receives its secrets in its
   environment.
 - Server preview before saving
@@ -364,14 +368,22 @@ Import multiple MCP servers from JSON:
 - The server list refreshes when at least one entry was imported; the view returns to the list only when all entries
   were imported. The toast tells full, partial and no import apart.
 - Values the secret rule matches (and the token or an `Authorization` header) are stored in the vault; the result
-  lists them ("These values were stored in the vault"), and a full import's toast names them. Import takes values: an
-  entry holding a secret reference is reported as failed.
+  lists them ("These values were stored in the vault"), and a full import's toast names them. An entry holding a
+  secret reference imports: a server that already holds a reference at that field keeps its own; any other reference
+  is listed under "These values were secrets on another node; enter them again here", and the server shows "Needs
+  secret" until the user enters them.
 
 ### McpSecretMoveBanner.vue
 
-Shown above the server list while plain values look like secrets ("N values look like secrets but are stored as
-plain text → Review and move to vault"). The dialog lists each candidate by server, field and why it matched (no
-value), the user unticks rows, and "Move to vault" moves the rest. The result names the backup of the previous
+Shown above the server list while plain values that look like secrets have not been reviewed ("N values look like
+secrets but are stored as plain text → Keep as they are · Review and move to vault"). The dialog lists each candidate
+by server, field and why it matched (no value), the user unticks rows, and "Move to vault" moves the rest.
+
+Reviewed candidates stay out of the banner (MDEC-006): the rows the user unticked and confirmed, everything shown when
+the user chose "Keep as they are", and rows the user unlocked in the form after the rule pre-locked them. The one
+owner of that state is `utils/mcp/mcpSecretReviewState.ts` (`read`, `markReviewed`). It is a per-device preference
+in localStorage under `autobyteus.mcp.secretReview.<entryId>`, keyed by the window's node entry ID (the embedded
+node is `embedded-local`), so it survives a change of the node's URL or port. Losing it shows the banner once more. The result names the backup of the previous
 `mcps.json` (it holds the plain values; the user can delete it), any values that were skipped, and servers whose
 tools could not be registered after the move. Nothing moves without the user.
 

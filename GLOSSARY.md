@@ -66,10 +66,15 @@ delegated run, …) are defined in the
   reference with no entry), `VAULT_UNAVAILABLE` (a reference while the vault is
   not READY). It is not the vault's health.
 - **Server draft (`McpServerDraft`):** an MCP server's settings as the user
-  sent them; each value is `plain`, `newSecret` or `keep`. It is not a core
-  config: only `McpServerSecretFields` turns a draft into one.
+  sent them; each value is `plain`, `newSecret`, `keep`, or (from import only)
+  `missingSecret`, a secret this node does not hold. It is not a core config:
+  only `McpServerSecretFields` turns a draft into one.
 - **Keep marker (JSON tab):** `{"stored": "vault"}` or `{"stored": "plain"}`:
   "keep what is stored for this field". It is not a secret reference.
 - **Secret suggestion rule:** the name keywords and value prefixes that
   pre-lock form rows and select move candidates (`McpSecretSuggestionRule`;
   the web reads it, never defines it). It is not secret scanning.
+- **Reviewed (move candidate):** a candidate the user decided about (unticked
+  in the review dialog, "Keep as they are", or unlocked after the rule
+  pre-locked it). The move banner leaves it out; the per-row hint still offers
+  the move. Kept per device and node (`mcpSecretReviewState`).
