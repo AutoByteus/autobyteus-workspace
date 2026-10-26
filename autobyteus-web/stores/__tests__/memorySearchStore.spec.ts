@@ -74,13 +74,17 @@ describe('memorySearchStore', () => {
 
   it('searches with the server default limit and records coverage and weak-only results', async () => {
     const { query } = client({ status: () => status({ state: 'BUILDING', steps: [step('FIND_RUNS', 'DONE', 3, 3), step('JOURNALS', 'DONE', 3, 3), step('TEXT_INDEX', 'RUNNING', 1, 4), step('MEANING_INDEX', 'WAITING', 0, 0)] }),
-      search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'TEXT', strength: 'WEAK' }] })] }) });
+      search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'TEXT', strength: 'WEAK' }] })], note: 'Only weak matches; try other words.' }) });
     const store = useMemorySearchStore();
     await store.runSearch('  purple elephant ');
     expect(store.query).toBe('purple elephant');
     expect(store.status).toBe('ready');
     expect(store.outcome).toMatchObject({ cue: 'purple elephant', weakOnly: true });
     expect(store.coverage).toEqual({ textPct: 25, meaningPct: 0 });
+    // Weak only comes from the server's note: while the index is incomplete the server holds the note back (R-10).
+    client({ search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'TEXT', strength: 'WEAK' }] })], note: null, coverage: 'The meaning index covers 3 of 9 journal files.' }) });
+    await store.runSearch('purple elephant');
+    expect(store.outcome?.weakOnly).toBe(false);
     const searchCall = query.mock.calls.find(([options]) => (options as { variables?: unknown }).variables);
     expect((searchCall![0] as { variables: unknown }).variables).toEqual({ query: 'purple elephant' });
   });

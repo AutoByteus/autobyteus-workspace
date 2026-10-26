@@ -71,10 +71,13 @@ export class MemorySearch {
       void this.pipeline.request({ kind: "meaningSync" }).catch(() => undefined);
     }
     const matches = outcome.results.flatMap((result) => result.matches);
+    const coverage = this.coverage(status, outcome);
+    // While the index is incomplete, weak may only mean missing cards: the coverage note says so instead (R-10).
+    const weakOnly = !coverage && matches.every((match) => match.strength === "weak");
     return {
       results: outcome.results,
-      coverage: this.coverage(status, outcome),
-      note: !outcome.results.length ? NO_MATCHES : matches.every((match) => match.strength === "weak") ? WEAK_ONLY : null,
+      coverage,
+      note: !outcome.results.length ? NO_MATCHES : weakOnly ? WEAK_ONLY : null,
     };
   }
 

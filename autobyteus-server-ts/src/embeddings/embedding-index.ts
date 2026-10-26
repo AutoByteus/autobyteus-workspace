@@ -46,11 +46,8 @@ export type ItemFingerprints = { readonly [OPAQUE]: "ItemFingerprints" };
 type FingerprintSet = { modelId: string; entries: ReadonlyMap<string, string> };
 const fingerprintSet = (fingerprints: ItemFingerprints): FingerprintSet => fingerprints as unknown as FingerprintSet;
 
-/**
- * A nearest item and where it stands against the model's relevance rule: `relevant` (inside the rule),
- * `aboveFloor` (at least the model's clear-match floor), or `below`.
- */
-export type NearestMatch = { id: string; score: number; relevance: "relevant" | "aboveFloor" | "below" };
+/** A nearest item and its similarity to the query; the caller judges what a score means for its collection. */
+export type NearestMatch = { id: string; score: number };
 
 /**
  * `nearest`'s answer. `collection` is `notSynced` when the collection has no job in this process (nothing
@@ -127,8 +124,8 @@ export class EmbeddingIndex {
   }
 
   /**
-   * The `limit` items nearest to the query among the collection's vectors for their current text, each with its
-   * relevance. It never creates a job, never prepares or downloads a model, and never syncs: with no job it answers
+   * The `limit` items nearest to the query among the collection's vectors for their current text, best first, each
+   * with its score. It never creates a job, never prepares or downloads a model, and never syncs: with no job it answers
    * `notSynced`; while the model is not ready it answers its readiness with no matches. A worker stopped while idle
    * restarts from disk to embed the query.
    */
@@ -150,13 +147,8 @@ export class EmbeddingIndex {
       if (this.model === model && model.phase.kind === "ready") this.failModel(model, error);
       return { matches: [], collection: "synced", readiness: unavailable(reasonOf(error)) };
     }
-    const scored = fresh.map(({ id, vector }) => ({ id, score: dot(queryVector, vector) }));
-    const { relevance } = model.definition;
-    const relevant = new Set(selectRelevant(scored, relevance, scored.length).map((item) => item.id));
-    const matches = [...scored].sort((a, b) => b.score - a.score || a.id.localeCompare(b.id)).slice(0, Math.max(0, options.limit))
-      .map(({ id, score }): NearestMatch => ({
-        id, score, relevance: relevant.has(id) ? "relevant" : score >= relevance.clearMatchFloor ? "aboveFloor" : "below",
-      }));
+    const matches: NearestMatch[] = fresh.map(({ id, vector }) => ({ id, score: dot(queryVector, vector) }))
+      .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id)).slice(0, Math.max(0, options.limit));
     return { matches, collection: "synced", readiness };
   }
 

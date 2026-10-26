@@ -40,11 +40,11 @@ const result = await index.search("project-tasks/<projectId>", items /* complete
 // result.scores: {id: score} for the requested scoreIds
 // result.readiness: {state: "ready"} | {state: "preparing", phase, done, total} | {state: "unavailable", reason}
 index.sync(collection, items);       // complete current items; embeds what changed in the background, never waits
-// The nearest items among the vectors the collection has for its current text, each with its relevance
-// ("relevant" | "aboveFloor" | "below"). It never creates a job, never syncs, never prepares or downloads a model:
+// The nearest items among the vectors the collection has for its current text, best first, each with its score
+// only (the caller judges what a score means for its items). It never creates a job, never syncs, never prepares or downloads a model:
 // with no job in this process it answers collection "notSynced" (the caller syncs first); while the model is not
 // ready it answers its readiness with no matches.
-await index.nearest(collection, "query text", { limit: 300 }); // {matches: [{id, score, relevance}], collection, readiness}
+await index.nearest(collection, "query text", { limit: 300 }); // {matches: [{id, score}], collection, readiness}
 index.removeItems(collection, ids);  // never waits for indexing
 index.dropCollection(collection);
 index.retryModel();                  // clears "unavailable"; the next search (or prepareActiveModel()) tries again

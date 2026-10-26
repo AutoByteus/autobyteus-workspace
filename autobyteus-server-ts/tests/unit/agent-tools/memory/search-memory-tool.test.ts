@@ -67,5 +67,7 @@ describe("search_memory", () => {
     expect(SearchMemoryTool.getName()).toBe(SEARCH_MEMORY_TOOL_MANIFEST.name);
     expect(SearchMemoryTool.getDescription()).toBe(SEARCH_MEMORY_TOOL_MANIFEST.description);
     expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toContain("Results are pointers, not facts");
+    // When to use it (API/E2E O-1): agents reach for it when the user refers to earlier work.
+    expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toMatch(/do you remember.*last time.*earlier we/);
   });
 });

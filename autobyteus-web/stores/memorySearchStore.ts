@@ -202,7 +202,7 @@ export const useMemorySearchStore = defineStore('memorySearchStore', {
       this.error = null;
       try {
         if (!this.index) await this.loadIndexStatus();
-        const { data, errors } = await getApolloClient().query<{ memorySearch: { results: ServerSearchResult[] } }>({
+        const { data, errors } = await getApolloClient().query<{ memorySearch: { results: ServerSearchResult[]; note?: string | null } }>({
           query: MEMORY_SEARCH,
           variables: { query },
           fetchPolicy: 'network-only',
@@ -210,8 +210,8 @@ export const useMemorySearchStore = defineStore('memorySearchStore', {
         if (requestId !== this.requestId) return;
         if (errors?.length) throw new Error(errors.map(e => e.message).join(', '));
         const results = data.memorySearch.results.map(toSearchResult);
-        const matches = results.flatMap(result => result.matches);
-        this.outcome = { cue: query, results, weakOnly: matches.length > 0 && matches.every(match => match.strength === 'weak') };
+        // The server's note says "only weak matches" (and holds it back while the index is incomplete, R-10).
+        this.outcome = { cue: query, results, weakOnly: results.length > 0 && !!data.memorySearch.note };
         this.coverage = { textPct: this.textPct, meaningPct: this.meaningPct };
         this.status = 'ready';
       } catch {

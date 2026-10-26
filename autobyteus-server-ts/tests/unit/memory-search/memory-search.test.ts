@@ -130,6 +130,23 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     expect(offTopic.note).toBe("Only weak matches; try other words.");
   });
 
+  it("while the meaning index is incomplete, weak matches carry the coverage note, not the only-weak note (R-10)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    expect((await memory.search("updater saxophone")).note).toBe("Only weak matches; try other words.");
+    // Rebuild with the embedding held: the cards wait, so the Meaning step stays incomplete after the pass.
+    fake.runner().holdDocuments();
+    expect(memory.rebuild()).toBe(true);
+    await until(() => memory.indexStatus().textIndexHasContent && memory.indexStatus().steps[3]!.done < memory.indexStatus().steps[3]!.total);
+    const partial = await memory.search("updater saxophone");
+    expect(partial.results.length).toBeGreaterThan(0);
+    expect(partial.results.every((run) => run.matches.every((match) => match.strength === "weak"))).toBe(true);
+    expect(partial.note).toBeNull();
+    expect(partial.coverage).toMatch(/meaning index covers \d+ of \d+ journal files/);
+    fake.runner().release();
+    await until(async () => (await memory.search("updater saxophone")).note === "Only weak matches; try other words.");
+  });
+
   it("masks a secret before cutting a snippet line, so a cut never leaves part of it (C-06)", async () => {
     // "[12:00:00] User: " (17) + "Rotate the deploy key " (22) + 145 + " ": the key starts at character 185 of the
     // journal line. Cut to 200 first, "sk-" and 12 more characters would show, too short for the mask pattern.

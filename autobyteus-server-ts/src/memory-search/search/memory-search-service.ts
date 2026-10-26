@@ -40,7 +40,42 @@ type Pointer = {
   meaningStrength?: MemoryMatchStrength; rule?: MemorySearchMatch["pointer"];
 };
 
-const MEANING_STRENGTH: Record<NearestMatch["relevance"], MemoryMatchStrength> = { relevant: "strong", aboveFloor: "fair", below: "weak" };
+/**
+ * Meaning strength (SR-005, § Meaning Strength): how far a card stands out from the query's own score distribution.
+ * The baseline is the score at rank `MEANING_BASELINE_RANK` among all `nearest` candidates (the last candidate when
+ * there are fewer); lift = score − baseline. Calibrated with the R-016 evaluation on the isolated copy (SR-005b,
+ * IMP-18/IMP-19): off-topic cues' largest lift 0.0420 and the smallest best lift of an answerable question that
+ * relies on meaning 0.0535 at rank 200, so Fair at 0.0477 has a margin of ±0.0057; Strong at 0.0567 is the
+ * answerable questions' 75th percentile of best lifts.
+ */
+export const MEANING_BASELINE_RANK = 200;
+export const MEANING_FAIR_LIFT = 0.0477;
+export const MEANING_STRONG_LIFT = 0.0567;
+
+/** A run's best card among the meaning candidates, and its strength. */
+export type MeaningMatch = Readonly<{ journalFile: string; strength: MemoryMatchStrength }>;
+
+/**
+ * Each kept run's best card with its strength. The baseline comes from **all** candidates, before unknown or the
+ * asking run's cards are left out (R-11), so one query rates the same for an agent and on the page. A card with no
+ * positive similarity is not a match at all.
+ */
+export const rateMeaningCandidates = (candidates: readonly NearestMatch[], keep: (runKey: string) => boolean): Map<string, MeaningMatch> => {
+  const byRun = new Map<string, MeaningMatch>();
+  if (!candidates.length) return byRun;
+  const baseline = candidates[Math.min(MEANING_BASELINE_RANK, candidates.length) - 1]!.score;
+  for (const match of candidates) {
+    if (match.score <= 0) continue;
+    const card = parseCardId(match.id);
+    if (!card || !keep(card.runKey) || byRun.has(card.runKey)) continue;
+    const lift = match.score - baseline;
+    byRun.set(card.runKey, {
+      journalFile: card.journalFile,
+      strength: lift >= MEANING_STRONG_LIFT ? "strong" : lift >= MEANING_FAIR_LIFT ? "fair" : "weak",
+    });
+  }
+  return byRun;
+};
 const RAW_LINK = / ?\[↗\]\([^)]*\)/g;
 
 /** A term's weight: its inverse document frequency in the text index, as BM25 ranks by (never below a tiny floor). */
@@ -92,14 +127,7 @@ export class MemorySearchService {
     }
 
     const nearest = await this.deps.embeddings().nearest(MEMORY_CARD_COLLECTION, query, { limit: MEANING_CANDIDATES });
-    const meaningByRun = new Map<string, { journalFile: string; strength: MemoryMatchStrength }>();
-    for (const match of nearest.matches) {
-      // Nothing in common with the query (no positive similarity) is not a match at all.
-      if (match.score <= 0) continue;
-      const card = parseCardId(match.id);
-      if (!card || !runs.has(card.runKey) || isAsking(card.runKey) || meaningByRun.has(card.runKey)) continue;
-      meaningByRun.set(card.runKey, { journalFile: card.journalFile, strength: MEANING_STRENGTH[match.relevance] });
-    }
+    const meaningByRun = rateMeaningCandidates(nearest.matches, (runKey) => runs.has(runKey) && !isAsking(runKey));
 
     const results: MemorySearchRunResult[] = [];
     for (const runKey of this.interleave([...textByRun.keys()], [...meaningByRun.keys()], options.limit)) {

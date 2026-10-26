@@ -5,6 +5,7 @@ export const SEARCH_MEMORY_TOOL_NAME = "search_memory";
 
 export const SEARCH_MEMORY_TOOL_DESCRIPTION = [
   "Search the memory of all agent runs on this node (their Work Journals: what each run did, with dates) by words and by meaning, in any language.",
+  "Use it whenever the user or the task refers to earlier work: \"do you remember\", \"last time\", \"earlier we\", \"before\", \"where is the … we set up\", or a decision, setup or file made in a past conversation.",
   `Returns up to limit runs (1 to ${MEMORY_SEARCH_MAX_LIMIT}; default from the server setting, normally 10), best first.`,
   "Each result names who (agent, and team or org with member when there is one), runId, workspace, the first and latest day mentioned, a source line to cite,",
   "and its matches: journalFile (an absolute path), lines, day, a short snippet, matchedBy (text: by words; meaning: related by meaning) and strength (strong, fair, weak).",

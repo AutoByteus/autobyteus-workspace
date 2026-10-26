@@ -51,7 +51,8 @@ memory.runFolderMemoryDir(runKey); // the folder of a RUN_FOLDER run, or null
 - `coverage`: why the answer may be partial (index not built, building, meaning index loading or not current).
   Before the first build: `Memory index not built yet: ask the user to start it on the Memory page.`
 - `note`: `No matches; try other words.` or `Only weak matches; try other words.` Memory search never says that
-  nothing is in memory.
+  nothing is in memory. While `coverage` says the index is incomplete, weak matches carry the coverage note and
+  not the only-weak note: weakness may only mean cards not embedded yet (R-10).
 
 ## Indexing Pipeline
 
@@ -127,8 +128,11 @@ is deleted and recreated):
    else weak). Each word weighs its rarity among the chunks, as BM25 ranks: `log((N − n + 0.5) / (n + 0.5))`
    with `n` from the index's own vocabulary (`chunk_vocab`, an `fts5vocab` table) and a tiny floor, so common
    words alone stay weak and a word no chunk holds weighs the most. A word of several tokens (`home.example.org`,
-   a two-ideograph phrase) counts as its rarest token. Meaning by the embedding layer's relevance (relevant
-   strong, above the floor fair, else weak).
+   a two-ideograph phrase) counts as its rarest token. Meaning by how far the run's best card stands out from
+   the query's own scores (SR-005): baseline = the score at rank 200 among all `nearest` candidates (the last
+   one when there are fewer), taken before the asking run's cards are left out, so an agent and the page rate a
+   query the same; lift = score − baseline; Strong at ≥ 0.0567, Fair at ≥ 0.0477, else Weak
+   (`MEANING_BASELINE_RANK`, `MEANING_STRONG_LIFT`, `MEANING_FAIR_LIFT`, calibrated with the evaluation).
 6. **Snippet:** 2–3 lines from the first line holding a query word; each line has its secrets masked, then is
    cut to 200 characters, so a cut never leaves part of a secret.
 

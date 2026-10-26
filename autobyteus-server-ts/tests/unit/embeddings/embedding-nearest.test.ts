@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { afterEach, describe, expect, it } from "vitest";
 import { createFakeEmbeddingIndex, settle } from "../../helpers/fake-embedding-model.js";
 
-// The fake model's vectors count words of concept groups; its relevance: floor 0.5, near-best margin 0.15.
+// The fake model's vectors count words of concept groups.
 const CARDS = [
   { id: "ddns", text: "docker container image on arm raspberry" },
   { id: "near", text: "docker container image, sidebar panel" },
@@ -29,14 +29,16 @@ describe("EmbeddingIndex.nearest", () => {
     expect(runners).toEqual([]);
   });
 
-  it("ranks every fresh vector by similarity with its relevance, without the relevance cut", async () => {
+  it("ranks every fresh vector by similarity, best first, with its score only (no relevance rule)", async () => {
     const { index } = await make();
     await settle(index, "cards", CARDS);
     const result = await index.nearest("cards", "docker container on arm raspberry", { limit: 3 });
     expect(result.collection).toBe("synced");
     expect(result.readiness).toEqual({ state: "ready" });
-    expect(result.matches.map((match) => [match.id, match.relevance])).toEqual([["ddns", "relevant"], ["near", "aboveFloor"], ["weak", "below"]]);
+    expect(result.matches.map((match) => match.id)).toEqual(["ddns", "near", "weak"]);
+    expect(result.matches.every((match) => Object.keys(match).sort().join() === "id,score")).toBe(true);
     expect(result.matches[0]!.score).toBeGreaterThan(result.matches[1]!.score);
+    expect(result.matches[1]!.score).toBeGreaterThan(result.matches[2]!.score);
     expect((await index.nearest("cards", "docker container on arm raspberry", { limit: 10 })).matches).toHaveLength(4);
   });
 

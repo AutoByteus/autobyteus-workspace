@@ -191,9 +191,9 @@ with results; it is disabled until the text index has content (`Index your memor
 - One card per run, best first: agent (`team / member` for members), run ID, workspace, first and latest day, and
   1–2 matches newest first, each with its journal file, lines, day, a 2–3 line snippet (secrets masked by the
   server), `Words`/`Meaning` and `Strong`/`Fair`/`Weak`. A line says results are pointers, not facts.
-- Honest states: `Only weak matches` (amber, the results still listed), `No matches` with a suggestion (never
-  "nothing in memory"), a blue coverage note while the Text or Meaning index is incomplete, and an error with
-  `Retry`.
+- Honest states: `Only weak matches` (amber, the results still listed; from the server's `note`, which it holds
+  back while the index is incomplete), `No matches` with a suggestion (never "nothing in memory"), a blue
+  coverage note while the Text or Meaning index is incomplete, and an error with `Retry`.
 - Opening a match (or a card header, for its first match) opens the run detail at the matched lines, addressed by
   the result's `subject`: `agent-inspector`, `team-inspector`, `org-inspector`, or `folder-inspector` (a run no
   record names, read with `runFolderWorkJournal(runKey)`; it has a Work Journal tab only). The cue stays in the
