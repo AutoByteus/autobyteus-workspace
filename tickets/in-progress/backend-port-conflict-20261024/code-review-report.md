@@ -1,212 +1,221 @@
 # Code Review Report — backend-port-conflict-20261024
 
 ## Review Round Meta
-- Review entry point: **Implementation Review**, round **2**, **CRR-002**, 2026-10-26.
-- Review scope: **Targeted Delta Review**. Latest authoritative result: **Pass for API/E2E**, not overall acceptance.
-- Reviewed HEAD: `9a0e0892d5ad73bbc9732dc063ff15b2183e33c8`; implementation source/check/build commit `d0338db0b`; implementation evidence commit `9679954db`; HEAD adds only the coordinator's resumption note.
-- Worktree: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`; recorded integration base `origin/personal@034bfe51ab697817773ff545d369e1cfc03a79c5` (Delivery owns integration).
-- Prior result: CRR-001 **Fail**, report/history at `ffac4611d`; prior findings **CR-001/002 independently verified resolved** below. No result inferred from handoff status or test totals.
-- Requirements/design basis: `requirements-doc.md` **R1 Approved**, `design-spec.md` **D3.1**, `solution-revision-record.md` **SR-001..006**, `investigation-notes.md`; approved scope and relevant lifetime/stop contracts carried forward and rechecked. No normative supplements.
-- Architecture context: `design-review-report.md` and `architecture-review-revision-record.md`, **ARCH-REV-003 Pass**. MP-001/002 remain confirmed.
-- Trigger/rework context: `implementation-handoff.md`, `implementation-revision-record.md` **IR-003**, `implementation-check-ledger.md`, prior `code-review-report.md` and `code-review-revision-record.md` CRR-001; `resumption-2026-10-26.md` is coordination-only, not a new design/review result.
-- Supplemental evidence: unchanged reviewer probe, IMP-22..32 logs, both new durable regression files; SR-006 `codex-background-investigation.md` limits and previous rendered evidence remain applicable only at their recorded boundaries/commits.
-- Coverage reports, API-REV and DR: **N/A**, independent API/E2E and delivery not yet performed.
-- Updated skill `references/design-principles.md` and `templates/code-review-report-template.md` reread. Apply current **/10-only score summary, >=9.2 per-category clean-pass target**, and current stored-name/migration guidance. No persistence rename occurs. Original CRR-001 score/history is not retroactively rewritten.
-- Repository DESIGN/TESTING/AGENTS and applicable server/web instructions remain the governing project policies used in CRR-001; no closer DESIGN document or authority conflict established.
+- Entry point: **Implementation Review**, round **3 / CRR-003**, 2026-10-26. Latest result: **Pass for independent API/E2E**, not overall acceptance.
+- Review scope: **Full Re-Audit**. R2 adds DS-005 across provider observation, shared backend capability, public run boundary, GraphQL schema/generated types and selected frontend view. This is not a targeted correction of CR-001/002. All mandatory structural checks and all ten scores were reconsidered; unchanged executable evidence is reused by impact, not claimed rerun.
+- Reviewed source: **9bd72c20893dedb8c7dc99aacfcb0b732d092d6c**. Reviewed HEAD/evidence: **e50cd6b4e**. Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`; base `origin/personal@034bfe51ab697817773ff545d369e1cfc03a79c5`. Delivery owns integration.
+- Requirements: `requirements-doc.md` **R2 Approved**, `background-visibility-scope-approval.md`; original R1 criteria retained. Design: `design-spec.md` **D4.1**, investigation E-024..026/P-011/012 and `codex-background-investigation.md`; history `solution-revision-record.md` **SR-001..008**.
+- Architecture: `design-review-report.md`, `architecture-review-revision-record.md`, **ARCH-REV-004 Pass**. Implementation: `implementation-handoff.md`, `implementation-revision-record.md` **IR-004**, `implementation-check-ledger.md` IMP-33..46. Prior source review: **CRR-002 Pass**, D3.1-only, report/history at5fd30310e.
+- API context: incomplete checkpointc88a6224c, API-04/06 scoped receipts and current progress; no completed API-REV, no post-success test-code review. DR: N/A. No API failure-origin entry point in this round.
+- Authorization: `validation-pause-clarification.md`, user resume8fd57560d/coordinator3a3fba3a4 supersede the historical pause. API/E2E awaits this current source pass; this report does not restart an old review or duplicate the earlier handoff.
+- Authorities: updated code-reviewer skill, design principles and report template reread; Example7 consulted for lifecycle/selection reasoning. Root DESIGN.md and applicable server/web instructions, protocol contracts and existing testing policy applied. No closer applicable DESIGN document or project glossary found; D4 terminology is explicit. No policy conflict established.
 
 ## Routing Classification Review
-**task_size=Large / architectural_risk=High**, unchanged. Cross-package process authority, lifecycle, private IPC and diagnostic contract require independent source review. This bounded correction does not downgrade the cumulative ticket. Pass route returned by `get_handoff_rules`: `/software_engineering_team/api_e2e_engineer`.
+**task_size=Large / architectural_risk=High**, unchanged. Cumulative host/desktop process ownership plus new concurrent provider/read/API/UI contracts justify classification independently of generated-file volume. Primary returned pass recipient: `/software_engineering_team/api_e2e_engineer`.
 
-## Review Scope And Delta Evidence
-`git diff --name-only ffac4611d HEAD` shows only3 production files,2 new test files, and ticket evidence/docs. The3 source changes are inside CR-001/002's previously identified scope, manager and executor; no new top-level owner, runtime spine, persisted/wire/shared domain contract, platform implementation, provider, renderer or build-configuration change. `ScopeOperation` and `OutputCapture` are private local shapes; `releaseUnusedCapture` is a narrowly owned record/output lifetime operation, not a new shared data contract. Thus **Targeted Delta Review**, not a full re-audit. All mandatory structural checks and the full scorecard remain explicit; unaffected evidence from CRR-001 is carried forward, not claimed freshly executed.
+## Review Scope
+Reviewed all20 authored production files in the R2 delta, their relevant callers/consumers, generated-query changes, new/changed durable assertions and recorded checks. Rechecked cumulative scope/manager cleanup, host shutdown and desktop ordering boundaries; git confirms native/core, desktop, composition and shutdown source unchanged since CRR-002. Previous41-file source evidence remains applicable, with a new cumulative61-file count in `evidence/CR-03-source-audit.json`.
 
-Rechecked the entire changed scope/manager/executor paths and new tests, including original-deadline queueing, duplicate stop, retirement/stop map ownership, already-releasing anchor, close aggregation, detach/retention and both command-start forms. Requirements/design and reviewer probe have no diff since CRR-001. No production/test fix or test/build/app execution by this reviewer in round2; existing conclusive checks were not rerun merely for confirmation.
+Forward traces include selected standalone and concrete Team/Org agent context; current window-bound Apollo client; first-entry/reselected retained stream rows; snapshot success/error/selection replacement; provider start/turn/terminal observations; exact published active run; disposal and pending RPC completion. No new process control, provider input, idle/background event, transcript admission change, persistent history or data migration found.
+
+Exclusions: independent actual conversation→query→panel acceptance, full current integrated lifecycle coverage, actual Windows/WSL execution and delivery/distribution validation. Existing API-04/06 and IMP-20 are exact-source scoped observations, not silently relabelled R2 acceptance. No production/test fix, test/build/provider/app execution by this reviewer; green checks were not rerun merely for reassurance.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
-Approved basis **Confirmed**, no new intended behavior or ambiguity. R1 Scope Guardrail and D3.1 Change Scope preserved.
+**Confirmed**. R2 expressly incorporates the user's read-only visibility request in this ticket; FU-002's separate-task proposal is historical. D4.1 corrects the initial mutating lookup and first-entry stream omission. No new behavior or material ambiguity discovered.
 
-| Behavior | Current status | Production path/lifecycle evidence | Current conclusion |
-|---|---|---|---|
-| BEH-001 | Confirmed, carried forward | desktop start/bind or post-exit check → read-only inspector → typed snapshot → store/loading/monitor | No delta; no port-to-kill authority |
-| BEH-002 | Confirmed, carried forward | Restart → managed backend stop → fresh port check/start → fresh diagnostic | No delta; external listener/data preservation unchanged |
-| BEH-003 | Confirmed, affected paths rechecked | native tool → executor/manager → host scope → retained anchor → verified stop; scope also receives host close independently of run lifetime | Stop waits inspection then performs real drain; command result and cleanup remain distinct |
-| BEH-004 | Confirmed, affected paths rechecked | runtime scope reference and exact handles; manager capture lifecycle; bounded observer and close; provider-specific owners preserved | No raw PID/port reclamation, data rewrite or ordinary agent/idle policy change |
+| Behavior | Status | Current implementation / lifecycle evidence |
+|---|---|---|
+| BEH-001/002 | Confirmed | Unchanged desktop availability/diagnosis → typed status → server store/loading/monitor → fresh retry. Advisory listener identity never authorizes termination; data/reset restrictions preserved |
+| BEH-003/004 | Confirmed | Native tool/executor/record manager → retained host scope/anchor → verified bounded drain; shared host adapter → startup shutdown owner → captured desktop child/awaited application continuation. CR-001/002 fixes remain intact; Codex retains its own existing cleanup owner |
+| BEH-005 | Confirmed | Panel expansion/selection → composable query → resolver → manager/registry exact-map peek → active AgentRun inspection → explicit backend capability → CodexThread bounded list → pure view reconciliation → typed response → selected snapshot rows. Start/terminal/turn observations feed only the view |
+| BEH-006 | Confirmed | Map-only lookup and pre/post-await exact active-instance checks; no getActiveRun/getStatusSnapshot side effects. Completion side observation precedes unchanged segment gate. Existing event-stream store remains authority for Claude/AGY; snapshot rows expose safe label/local ID/time/numeric exit, command=null |
 
 ## Supported Product Scenario And Reachability Gate
-| Scenario/contract | Initiator / supported event | Forward path and lifecycle / expected outcome | Independent basis | Validity/use |
+| Scenario / contract | Initiator / coherent goal / supported entry | Shape and forward lifecycle | Expected outcome / independent basis | Validity / use |
 |---|---|---|---|---|
-| SCN-001/005 | User launch with occupied endpoint; unavailable inspection | bind check → advisory identity/unknown → visible safe guidance | R1 REQ-001/002/004, AC-001/002 | Supported Explicit Edge Scenario / Use; unchanged |
-| SCN-002 | User resolves external conflict and retries | Restart → managed stop → fresh launch; no unrelated termination | R1 AC-003 and existing Restart surface | Supported Normal Scenario / Use; unchanged |
-| SCN-003/004 | App/backend shutdown after command or agent ends | host scope retains native lease → early drain → remaining provider cleanup → backend exit → desktop continuation | User approval, R1 REQ-003/004 AC-004/005, D3.1 | Supported Normal / Explicit Edge Scenarios respectively / Use |
-| D3.1 explicit-stop preservation | Agent/user stops ordinary preview while autonomous maintenance observes its completed shell | stop-background-process → manager.stopProcess → scope.stop; inspection cannot substitute for drain | R1 REQ-005 and D3.1 shared stop/maintenance contract; production tool and timer | Supported Normal Scenario / Use, CR-C01 |
-| D3.1 output lifetime | Agent executes ordinary foreground commands or supported command launch fails | runBash → capture → result/failure → no background consumer → release; adopted/history records retain output | R1 preserved command behavior; D3.1 record/retirement ownership; CRR-001 | Supported Normal / Explicit Edge Scenarios / Use, CR-C02 |
-| MP-001/002 | Windows orderly shutdown; short-lived shell survivor and expected force | captured request/signal → cleanup barrier/drain → result+exit; retained anchor until absence | Approved D3.1 and architecture review | Supported contracts / Use; unchanged |
+| SCN-001/005 | User launches with occupied backend endpoint; diagnostic inspection unavailable | Explicit edge: launch/bind → safe conflict or unknown diagnostic | No unrelated termination/data reset; R1 REQ-001/002/004 and AC-001/002 | Supported Explicit Edge / Use, unchanged |
+| SCN-002 | User resolves conflict then uses Restart | Normal: managed stop → fresh availability/start → fresh UI status | Recovery without stale conflict; R1 AC-003 | Supported Normal / Use, unchanged |
+| SCN-003/004 | User/app shutdown after active work or initiating agent ends | Normal/explicit edge: retained native/provider authority → bounded cleanup → backend/desktop continuation | Actual cleanup or explicit failure; R1 AC-004/005, D3.1 | Supported Normal / Explicit Edge / Use |
+| SCN-006 | User asks Codex for a long-running command, then inspects Background Tasks | Normal: actual command start → originating turn ends → list/terminal observation → panel | Beyond-turn work visible, foreground excluded, real terminal facts settle outcome; R2 AC-007, P-011/012 | Supported Normal / Use |
+| SCN-007 | User selects another concrete agent, reopens panel or reloads same live backend | Normal: selected run/node → fresh query → generation check → exclusive current snapshot | No prior-selection overwrite, no activation to recover history; R2 AC-008, activeContextStore and window-bound client | Supported Normal / Use |
+| SCN-008 / MP-003 | Selected runtime stops or inspection fails while view is open | Explicit edge: exact map capture → bounded read → active identity recheck → unavailable/last-known | No cleanup from reading, no false empty or fabricated completion; R2 AC-009/010, E-025 | Supported Explicit Edge / Use |
+| MP-004 | User first opens/reselects a run whose Claude/AGY events remain after ordinary runtime stop | Normal: existing event handler/store → selected panel before capability result | Preserve recorded rows with unconfirmed running count, not provider guessing; R2 AC-010, E-026 | Supported Normal / Use |
+| D3.1 stop/output contracts | Explicit preview stop overlaps automatic retirement; ordinary foreground command completes | Stop → scope operation; result → manager capture release | Real stop not inspection; output retained only for record consumers; CRR-001/002 witnesses | Supported Normal / Use, unchanged |
 
 ### Candidate Finding And Mechanism Gate
-| Candidate | Observation / mechanism | Independent trigger and forward consequence | Evidence | Disposition / scope / proportionate response |
+| Candidate | Observation / mechanism | Scenario / independent trigger | Forward path / consequence / evidence | Disposition / scope / response |
 |---|---|---|---|---|
-| CR-C01 | Previously promoted inspection-as-stop defect; now local sequencing correction | Explicit preview stop overlaps automatic inspection; wait for inspection, recheck retirement, drain within original budget | scope `:53-73,110-145`; IMP-24 stopped/empty; new stop-retirement tests | **Promote retained historical basis / This ticket / Resolved CR-001**; no further mechanism required |
-| CR-C02 | Previously promoted unused foreground capture retention; now owned release | Normal/failed command returns without record consumer; detach exact append listener and delete capture while preserving record-owned output | manager `:22-49,77-95`, executor `:48-51`; IMP-24 zero captures; output-lifetime tests | **Promote retained historical basis / This ticket / Resolved CR-002**; no further change required |
-| CR-C03 | Previously hypothesized late platform spawn | Current platform launchers are synchronous after final preflight cancellation check; unchanged | CRR-001 source trace plus no platform diff | **Reject**, unchanged; no extra generation machinery |
-| CR-C04 | Native anchors interpreted as Codex ownership proof | Codex internal conversation commands use existing provider owner, not native scope | SR-006; no provider diff | **Reject as source-defect/fix inference**, unchanged; retain downstream composed validation |
+| CR-C01/02 | Prior stop/capture defects and corrections | D3.1 ordinary preview stop/foreground command | Current scope operation discriminant/queue and manager release remain byte-identical to accepted correction; IMP-24 and durable regression evidence | Promote historical finding basis; this ticket, **resolved**, no further correction |
+| CR-C05 | Bounded shared read and provisional page/terminal merging | SCN-006, provider command completes independently of visible panel's read | Thread5s/100-page walk; per-page eligibility; exact item/process/turn facts; complete-page reconciliation; view/thread tests and P-012 membership evidence | Promote mechanism justification; this ticket, implemented without a new defect |
+| CR-C06 | Observational lookup and exact active-instance recheck | SCN-008/MP-003, ordinary provider shutdown during an inspection | Resolver uses only peek/isActive; registry peek only activeRuns.get; success and error both fenced; registry/query assertions | Promote mechanism justification; this ticket, D4.1 correction satisfied |
+| CR-C07 | Retained stream rows on first entry and exclusive snapshot authority | MP-004, reopen ordinary idle-stopped Claude/AGY run | Composable reads reactive existing store before successful capability; unavailable labels last-known; a snapshot, including empty, exclusively replaces it | Promote mechanism justification; this ticket, implemented and unit-covered |
+| CR-C08 | Selection generation and timer/disposal fences | SCN-007, inspect another selected run while prior request is pending | runId/bindingRevision/expanded watch aborts old request, resets generation; success/error check same selection; one settled-request timer; stale-response tests | Promote mechanism justification; this ticket, no new cross-window cache or global poll owner |
+| CR-C09 | DMG packaging failure might imply source not usable for coverage | Supported task-local build/distribution operation | IMP-44 fails hdiutil resize35; source/server/renderer/Electron compile and .app/ZIP stages completed; IMP-45 proves isolated current app usable, provenance and cleanup explicit | Reject **source-defect / executable-readiness inference**; retain actual packaging failure as delivery limitation, not a pass |
+| CR-C04 | Native or fixture-only panel success interpreted as original Codex incident proof | R1/R2 actual conversation/lifecycle acceptance | Native anchors do not own Codex tool commands; intercepted query fixture is not provider→panel evidence; API-04/06 only exact-source scoped results | Reject inference; preserve real composed validation gates |
 
-No new promoted, held or unclear candidate. The fixes implement the established supported contracts, not speculative concurrency or lifetime policy. Example7's independent scenario test remains satisfied by the original preview-stop/system-maintenance and ordinary foreground paths.
+No held/unclear candidate and no open promoted defect. New machinery is tied to approved selected-read and uncertainty contracts, not speculative action combinations. No new or reclassified material premise beyond confirming MP-001..004.
 
 ## Prior Finding Resolution
-| Finding | Prior status | Current status | Independent verification |
+| Finding | Prior | Current | Verification |
 |---|---|---|---|
-| CR-001 | P2 Local Fix / Open | **Resolved** | scope distinguishes `retirement` from `stop`, shares only real stops, publishes queued stop before yielding, awaits prior inspection within original deadline, rechecks retired state then drains. Retirement finally removes only its own promise; stop intent prevents competing RELEASE. IMP-24 reports stopped/no survivors/0 leases; durable tests cover duplicate stop, expired wait without signal and already-releasing empty anchor |
-| CR-002 | P2 Local Fix / Open | **Resolved** | manager owns exact buffer+append callback; release refuses record consumers and detaches both streams otherwise. Executor finally releases after preserving returned output; background-start finally handles no-record launch failure. Explicit record removal releases capture. Tests prove3 foreground commands, both failed-launch forms, late adopted output and completed-background history |
-
-No open finding. The new helper does not change OS termination authority or delete retained background history. `close()` still awaits actual operation promises within its collective3s deadline; no sequential per-process budget extension was introduced.
+| CR-001 | Resolved CRR-002 | Remains resolved | No scope source delta; stop shares only actual stop work, queues retirement within original deadline, prevents RELEASE transfer and preserves queued operation identity |
+| CR-002 | Resolved CRR-002 | Remains resolved | No manager/executor source delta; exact capture listener removed only without record consumers; finally covers foreground/failed launch; retained history preserved |
 
 ## Structural / Design Checks
 | Check | Result | Evidence | Required action |
 |---|---|---|---|
-| Task design health assessment present and preserved | Pass | D3.1 ownership/missing-invariant assessment; IMP-DI-001 replaced with retained anchors | None upstream |
-| Approved supplemental behavior alignment | Pass | No normative supplements; SR-006 limits preserved | Keep acceptance caveats |
-| Data-flow spine inventory clarity/preservation | Pass | D3.1 tool→scope, host→close, desktop→status paths trace in source | None |
-| Ownership boundary preservation/clarity | Pass | Host scope injected by reference; manager owns records; observer only mechanism | CR-001 sequencing corrected in scope |
-| Off-spine concern clarity | Pass | Read-only inspector; static anchor/framing and identity observers serve specific owners | None |
-| Existing capability/subsystem reuse | Pass | Terminal, composition, server/application/updater and localization boundaries reused | None |
-| Reusable owned structures | Pass | One anchored handle; one typed diagnostic; shared host shutdown adapter | None |
-| Shared structures/data-model tightness | Pass | Runtime scope not serialized; discriminated command/cleanup/diagnostic results | None |
-| Repeated coordination ownership | Pass | Scope owns termination policy; desktop captured-child owner owns force policy | Operation kind now distinguishes inspection from stop |
-| Empty indirection | Pass | New boundaries own protocol, deadline, identity, aggregation or lifecycle | None |
-| SoC/file responsibility | Pass | Focused new modules; larger touched owners shrink or remain under limit | None |
-| Ownership-driven dependencies | Pass | Core has no server/Electron dependency; server composes core | None |
-| Authoritative Boundary Rule | Pass | Tools do not signal observer directly; hosts close scope via integration; diagnostics never authorize cleanup | None |
-| File placement | Pass | Command execution, server shutdown and application shutdown live with their owners | None |
-| Flat vs over-split layout | Pass | Small scripts/decoder/identity have concrete platform/protocol responsibilities | None |
-| Interfaces/identity clarity | Pass | Handle, exact distro and captured child identities separated from advisory PID | None |
-| Naming/vocabulary/local readability | Pass | Scope vs output record, result vs cleanup, conflict vs generic error consistent | No stylistic blocker |
-| Unjustified duplication | Pass | Four exact wire strings intentionally paired across separately packaged boundaries and contract-tested | None |
-| Patch-on-patch control | Pass | Old numeric group/marker/signal-only paths replaced, not fallback layers | None |
-| Dead code removal in touched scope | Pass | Removed factory cache/accessor, WSL marker/parser, old observer stop path and fire-and-forget quit | No additional dead symbol established |
-| Relevant test intent/assertions | Pass | Actual owned child absence and listener release; IPC negative cases; localization consumer tests | 8 durable regressions added and reviewed |
-| Fixture/helper reuse/coherence | Pass | Isolated core fixtures and bounded fake transport tests suit their boundaries | Keep platform limits explicit |
-| No stale/compatibility-only tests | Pass | Deleted obsolete unsafe API assertions; new replacement behavior tested | None |
-| API/E2E readiness | Pass | CR-001/002 resolved; scoped foundation reruns and current package available | Independent integrated validation next |
+| Task design health assessment present, evidence-backed and preserved | Pass | D4.1 missing observation + lifecycle coupling require isolated view, not provider lifecycle rewrite | None |
+| Approved behavior-defining supplemental artifacts | Pass | Same-ticket approval, P-011/012 limits, E-025/026 corrections and explicit resume preserved | None |
+| Data-flow spine inventory clarity/preservation | Pass | DS-001..004 unchanged; DS-005/E/R/L each has initiating entry, owner and visible consequence | None |
+| Ownership boundary preservation/clarity | Pass | AgentRun public capability; thread owns RPC sequence; pure view owns facts; composable owns polling | None |
+| Off-spine concerns serve clear owners | Pass | View projection/parser serve thread; GraphQL translates domain result; locale/status visuals serve panel | None |
+| Existing capability/subsystem reuse | Pass | Existing manager, backend/run, GraphQL, panel/event store and window-bound client extended | None |
+| Reusable owned structures | Pass | Domain inspection union and row type, generated query shape, view-only frontend row specialization | None |
+| Shared-structure/data-model tightness | Pass | Observation separated from streamed lifecycle; no kitchen-sink backend optionals; provider handles internal | None |
+| Repeated coordination ownership | Pass | One thread page walk/in-flight read; one selected panel refresh owner; resolver alone owns captured-run recheck | None |
+| Empty indirection | Pass | Manager/registry enforce authority; run adds capability/instance envelope; each added owner has policy/state/projection | None |
+| Separation of concerns/file responsibility | Pass | Pure observation166 nonempty lines separate from existing thread497; frontend observation86 separate from rendering170 | None |
+| Ownership-driven dependencies | Pass | UI→public query→run→backend→thread; no renderer provider client, no lifecycle/event consumer modification | None |
+| Authoritative Boundary Rule | Pass | Resolver depends on manager and public AgentRun, not private registry/Codex internals; backend invokes owned thread | None |
+| File placement | Pass | View with Codex thread; public DTO in agent domain; resolver with GraphQL types; composable with frontend ownership | None |
+| Flat vs over-split layout | Pass | Small concrete boundary/state/projection files; no generic framework or pass-through orchestration layer | None |
+| Interfaces/API/query identity clarity | Pass | Concrete agentRunId, captured run object, runInstanceId, opaque taskId; provider processId never OS authority | None |
+| Naming/vocabulary/local readability | Pass | Inspection vs lifecycle, snapshot vs event-stream, unknown vs terminal, observed rather than fabricated start | None |
+| No unjustified duplication | Pass | One normalized observation owner; schema projection intentionally separate, generated client not handwritten parallel authority | None |
+| Patch-on-patch control | Pass | New observation capability rather than lifecycle-event workaround; no relaxation of transcript gate | None |
+| Dead code removed in touched files/modules | Pass | Misleading Codex comment removed; added symbols have actual production callers; retained R1 removals stand | None established |
+| Relevant tests/assertions requirement-aligned | Pass | Foreground exclusion, late completion/list/turn order, identity, privacy, no pruning, retained rows and empty/error distinctions | Independent composed acceptance next |
+| Fixtures/helpers reasonably reusable and coherent | Pass | Pure view helpers, deferred RPCs and selected-panel query fixture appropriate to unit boundary | Do not call them provider acceptance |
+| No stale/duplicated/compatibility-only tests retained | Pass | Existing stream/gate controls retained for approved preservation; no disabled cases or old-software fallback assertions added | None |
+| API/E2E readiness | Pass | No open source finding;300 unique scoped cases and usable current .app, explicit partial build limitation | Actual query/panel/lifecycle coverage next |
 
 ## Source File Size And Structure Audit
-Independent current source count against original base034bfe51 below. All41 changed production files remain <=500 nonempty lines. Local IR-003 deltas are manager30 additions/15 deletions, scope19/8, executor1/0; none exceeds220. Cumulative >220 churn in the prior replacement files is still justified by the D3.1 clean cut, as reviewed in CRR-001. Tests/fixtures excluded from thresholds. The other38 source files are unchanged from the prior audit `evidence/CR-02-source-audit.json`.
+Independently recounted **61 cumulative authored production files**, all<=500 nonempty lines (maximum497). Full per-file base/current/add/delete/ownership/placement/action inventory: `evidence/CR-03-source-audit.json`. Base is original034bfe51, not a convenient intermediate commit. Tests, fixtures and repository-generated GraphQL are excluded from hard limits. No R2 authored source delta exceeds220; cumulative >220 churn occurs only in the3 previously reviewed clean-cut native replacements below. No forced split justified.
 
-| Source file | Base nonempty | Current nonempty | >500 | Cumulative >220 churn | SoC / placement | Classification / action |
+| Source file | Base nonempty | Current | >500 | Cumulative >220 churn | SoC / placement | Action |
 |---|---:|---:|---|---|---|---|
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 473 | 468 | Pass | 17 — Pass | Pass | None |
-| `autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` | 205 | 209 | Pass | 4 — Pass | Pass | None |
-| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | 406 | 412 | Pass | 25 — Pass | Pass | None |
-| `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | 59 | 62 | Pass | 3 — Pass | Pass | None |
-| `autobyteus-server-ts/src/compositions/native-command-shutdown.ts` | 0 | 21 | Pass | 21 — Pass | Pass | None |
-| `autobyteus-server-ts/src/server-runtime.ts` | 226 | 215 | Pass | 111 — Pass | Pass | None |
-| `autobyteus-server-ts/src/shutdown/server-process-shutdown.ts` | 0 | 59 | Pass | 59 — Pass | Pass | None |
-| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 353 | 358 | Pass | 11 — Pass | Pass | None |
-| `autobyteus-ts/src/agent/context/agent-config.ts` | 110 | 113 | Pass | 3 — Pass | Pass | None |
-| `autobyteus-ts/src/agent/context/agent-context.ts` | 120 | 121 | Pass | 2 — Pass | Pass | None |
-| `autobyteus-ts/src/index.ts` | 34 | 35 | Pass | 2 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/background-process-context.ts` | 24 | 26 | Pass | 4 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/background-process-manager.ts` | 266 | 102 | Pass | 359 — reviewed replacement | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/anchor-control-protocol.ts` | 0 | 56 | Pass | 56 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts` | 0 | 138 | Pass | 138 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/command-deadline.ts` | 0 | 6 | Pass | 6 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts` | 0 | 149 | Pass | 149 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts` | 113 | 103 | Pass | 19 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/posix-command-anchor-script.ts` | 0 | 26 | Pass | 26 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/process-group-observer.ts` | 192 | 73 | Pass | 274 — reviewed replacement | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/process-identity.ts` | 97 | 19 | Pass | 121 — Pass | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts` | 173 | 57 | Pass | 224 — reviewed replacement | Pass | None |
-| `autobyteus-ts/src/tools/terminal/command-execution/wsl-command-anchor-script.ts` | 0 | 28 | Pass | 28 — Pass | Pass | None |
-| `autobyteus-web/components/server/ServerLoading.vue` | 199 | 213 | Pass | 18 — Pass | Pass | None |
-| `autobyteus-web/electron/application/applicationShutdown.ts` | 0 | 29 | Pass | 29 — Pass | Pass | None |
-| `autobyteus-web/electron/application/electronApplication.ts` | 405 | 390 | Pass | 45 — Pass | Pass | None |
-| `autobyteus-web/electron/launch-profile/e2eLaunchPreflight.ts` | 23 | 5 | Pass | 25 — Pass | Pass | None |
-| `autobyteus-web/electron/server/backendPortAvailability.ts` | 0 | 30 | Pass | 30 — Pass | Pass | None |
-| `autobyteus-web/electron/server/baseServerManager.ts` | 448 | 414 | Pass | 128 — Pass | Pass | None |
-| `autobyteus-web/electron/server/managedBackendShutdownClient.ts` | 0 | 61 | Pass | 61 — Pass | Pass | None |
-| `autobyteus-web/electron/server/managedBackendStop.ts` | 0 | 34 | Pass | 34 — Pass | Pass | None |
-| `autobyteus-web/electron/server/portOwnerInspector.ts` | 0 | 29 | Pass | 29 — Pass | Pass | None |
-| `autobyteus-web/electron/server/serverStatusManager.ts` | 163 | 173 | Pass | 20 — Pass | Pass | None |
-| `autobyteus-web/electron/server/windowsServerManager.ts` | 149 | 63 | Pass | 140 — Pass | Pass | None |
-| `autobyteus-web/electron/updater/appUpdater.ts` | 410 | 412 | Pass | 6 — Pass | Pass | None |
-| `autobyteus-web/localization/messages/en/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | None |
-| `autobyteus-web/localization/messages/en/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | None |
-| `autobyteus-web/localization/messages/zh-CN/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | None |
-| `autobyteus-web/localization/messages/zh-CN/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | None |
-| `autobyteus-web/stores/serverStore.ts` | 411 | 417 | Pass | 8 — Pass | Pass | None |
-| `autobyteus-web/types/serverStatus.ts` | 27 | 33 | Pass | 7 — Pass | Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts` | 119 | 120 | Pass | 1 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts` | 52 | 54 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts` | 178 | 179 | Pass | 1 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 473 | 468 | Pass | 17 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts` | 298 | 299 | Pass | 1 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts` | 176 | 177 | Pass | 1 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts` | 255 | 256 | Pass | 3 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-background-task-view.ts` | 0 | 166 | Pass | 177 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts` | 450 | 497 | Pass | 50 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/domain/agent-background-task-view.ts` | 0 | 24 | Pass | 24 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` | 449 | 459 | Pass | 11 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` | 205 | 209 | Pass | 4 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts` | 296 | 298 | Pass | 3 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts` | 364 | 365 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/api/graphql/schema.ts` | 95 | 97 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/api/graphql/types/agent-background-task-view.ts` | 0 | 71 | Pass | 74 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | 406 | 412 | Pass | 25 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | 59 | 62 | Pass | 3 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/compositions/native-command-shutdown.ts` | 0 | 21 | Pass | 21 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/server-runtime.ts` | 226 | 215 | Pass | 111 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/shutdown/server-process-shutdown.ts` | 0 | 59 | Pass | 59 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 353 | 358 | Pass | 11 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/agent/context/agent-config.ts` | 110 | 113 | Pass | 3 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/agent/context/agent-context.ts` | 120 | 121 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/index.ts` | 34 | 35 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/background-process-context.ts` | 24 | 26 | Pass | 4 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/background-process-manager.ts` | 266 | 102 | Pass | 359 — reviewed replacement | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/anchor-control-protocol.ts` | 0 | 56 | Pass | 56 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts` | 0 | 138 | Pass | 138 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/command-deadline.ts` | 0 | 6 | Pass | 6 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts` | 0 | 149 | Pass | 149 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts` | 113 | 103 | Pass | 19 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/posix-command-anchor-script.ts` | 0 | 26 | Pass | 26 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/process-group-observer.ts` | 192 | 73 | Pass | 274 — reviewed replacement | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/process-identity.ts` | 97 | 19 | Pass | 121 — Pass | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts` | 173 | 57 | Pass | 224 — reviewed replacement | Pass / Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/wsl-command-anchor-script.ts` | 0 | 28 | Pass | 28 — Pass | Pass / Pass | None |
+| `autobyteus-web/components/progress/BackgroundTaskPanel.vue` | 151 | 170 | Pass | 55 — Pass | Pass / Pass | None |
+| `autobyteus-web/components/server/ServerLoading.vue` | 199 | 213 | Pass | 18 — Pass | Pass / Pass | None |
+| `autobyteus-web/composables/useBackgroundTaskPanelView.ts` | 0 | 86 | Pass | 92 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/application/applicationShutdown.ts` | 0 | 29 | Pass | 29 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/application/electronApplication.ts` | 405 | 390 | Pass | 45 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/launch-profile/e2eLaunchPreflight.ts` | 23 | 5 | Pass | 25 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/backendPortAvailability.ts` | 0 | 30 | Pass | 30 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/baseServerManager.ts` | 448 | 414 | Pass | 128 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/managedBackendShutdownClient.ts` | 0 | 61 | Pass | 61 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/managedBackendStop.ts` | 0 | 34 | Pass | 34 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/portOwnerInspector.ts` | 0 | 29 | Pass | 29 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/serverStatusManager.ts` | 163 | 173 | Pass | 20 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/server/windowsServerManager.ts` | 149 | 63 | Pass | 140 — Pass | Pass / Pass | None |
+| `autobyteus-web/electron/updater/appUpdater.ts` | 410 | 412 | Pass | 6 — Pass | Pass / Pass | None |
+| `autobyteus-web/graphql/queries/agentBackgroundTaskQueries.ts` | 0 | 15 | Pass | 16 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/en/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/en/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/en/workspace.ts` | 285 | 296 | Pass | 11 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/zh-CN/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/zh-CN/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass / Pass | None |
+| `autobyteus-web/localization/messages/zh-CN/workspace.ts` | 284 | 295 | Pass | 11 — Pass | Pass / Pass | None |
+| `autobyteus-web/stores/serverStore.ts` | 411 | 417 | Pass | 8 — Pass | Pass / Pass | None |
+| `autobyteus-web/types/backgroundTaskView.ts` | 0 | 11 | Pass | 12 — Pass | Pass / Pass | None |
+| `autobyteus-web/types/serverStatus.ts` | 27 | 33 | Pass | 7 — Pass | Pass / Pass | None |
+
+Generated `autobyteus-web/generated/graphql.ts` is full repository regeneration (+1772/-38), not authored production threshold work. Reviewed query/union alignment and removed/generated drift; current repository query/schema inputs remain authority. No independent runtime provider/lifecycle change is hidden in generated breadth. IMP-40 generation and current renderer compilation are evidence, not a standalone strict vue-tsc result.
 
 ## Legacy / Backward-Compatibility Verdict
-| Check | Result | Notes |
+| Check | Result | Evidence |
 |---|---|---|
-| No backward-compatibility mechanisms | Pass | Exact current private IPC contract, no negotiation fallback; unaffected evidence carried forward |
-| No legacy old-behavior retention | Pass | Numeric-group/marker paths removed; correction adds no alternate runtime path |
-| Dead code removed in touched scope | Pass | New capture operation has executor/start/stop callers; operation discriminant consumed by stop/retirement/close; prior removals stand |
-| Approved persisted-data transition followed | Pass | Not Affected; local runtime-only shapes, no stored name or serialization change |
-| No version-specific dual reads/writes | Pass | No persistence or request schema changes |
-| Transition mechanics appropriate | Pass | No migration needed or added; updated naming/migration guidance introduces no extra work here |
+| No backward-compatibility mechanisms in changed scope | Pass | Same-release typed union; unsupported is explicit provider capability, not software-version negotiation |
+| No legacy old-behavior retention | Pass | Event-stream is current Claude/AGY authority, not fallback old Codex path; snapshot does not merge it |
+| Dead code removed in touched scope | Pass | Removed misleading comment; new peek/capability/observer/read/clear methods have production callers; retained native removals unchanged |
+| Approved persisted-data decision followed | Pass | **Not Affected**; only per-runtime view state, no serialized config/state rename |
+| No version-specific dual reads/writes or old-shape runtime fallback | Pass | No persistent history recovery or alternative provider control route |
+| Transition mechanics match design | Pass | No migration needed/introduced; successful current snapshot replaces last-known presentation |
 
-Dead/obsolete source requiring removal: **None established**. No new follow-up.
+Dead/obsolete/legacy items requiring removal: **None established**. No source or durable test fix made by reviewer.
 
 ## Docs-Impact Verdict
-**Yes**, cumulative ticket. Delivery still owns terminal lifetime and desktop conflict/shutdown documentation sync against validated behavior. No new product documentation change is required solely by these bounded correctness fixes. Do not imply install/release or a proven Codex incident fix.
+**Yes.** New Codex mapping and WebSocket protocol paragraphs correctly describe isolated side observation and unchanged lifecycle/admission. Delivery should synchronize user-facing Background Tasks semantics and cumulative shutdown/conflict docs with actual accepted behavior. Never describe the panel as all OS processes, persistent history or process control. Packaging outcome and historical-incident limits remain explicit.
 
 ## Additional Material Premise Validation
-MP-001 (Windows cleanup entry) and MP-002 (continuous anchor/force settlement) **Confirmed**, unchanged from ARCH-REV-003 and CRR-001. No new or reclassified material premise. Source-delta scope does not remove the mandatory downstream native/Codex full-host and desktop evidence.
+MP-001/002 **Confirmed**: retained Windows cleanup entry and continuous native anchor/settlement design/source unaffected. MP-003 **Confirmed**: new peek is map-only, isActive observational, both result/error rechecked without lifecycle getters. MP-004 **Confirmed**: first-entry/reselection uses received rows even when inactive; labels them last-known until authoritative capability result. No new/reclassified material premise. Example7 applied; no independent concurrent cross-window workflow invented from bindingRevision alone.
 
 ## Review Scorecard
-**Overall9.5/10**, simple mean, current template /10-only. All categories meet current>=9.2 threshold. No raw score implies independent runtime acceptance.
+**Overall:9.5/10** (simple mean; not the decision rule). Every category meets>=9.2. These are source-review scores, not API/E2E, platform-certification or release acceptance.
 
-| Priority | Category | Score | Reason | Weakness / drag | Expected improvement |
+| Priority | Category | Score /10 | Why | Weakness / drag | Expected improvement |
 |---|---|---:|---|---|---|
-|1|Data-Flow Spine Inventory and Clarity|9.5|Existing tool/scope/host/desktop spines unchanged; local queue/release explicit|No blocking clarity defect|Preserve trace through validation|
-|2|Ownership Clarity and Boundary Encapsulation|9.5|Scope sequences stop; manager decides output consumers; executor requests owned release|No boundary bypass found|None required|
-|3|API / Interface / Query / Command Clarity|9.5|Local release is handle-specific; typed operation distinguishes stop from inspection|No new shared-contract ambiguity|None required|
-|4|Separation of Concerns and File Placement|9.5|Correction stays in3 established owners; no new framework|No structural defect|None required|
-|5|Shared-Structure / Data-Model Tightness and Reusable Owned Structures|9.5|Private operation and buffer/callback pairs remain semantically tight|No overlapping domain model|None required|
-|6|Naming Quality and Local Readability|9.5|`releaseUnusedCapture` and operation kinds describe actual policy|No evidence-grounded naming defect|None required|
-|7|API/E2E Readiness|9.5|CR-001/002 closed,501 durable scoped tests plus2 probes and current package recorded|Independent composed execution remains next stage, not a source defect|Run required API/E2E scenarios|
-|8|Runtime Correctness And Behavioral Fidelity|9.5|Original-deadline retirement→drain sequencing and preservation tests address CR-C01|No unresolved supported-path source defect in delta|Verify integrated lifetime boundary downstream|
-|9|No Backward-Compatibility / No Legacy Retention|9.5|Clean cut preserved; no compatibility path or persistence fallback|No blocking legacy defect|None required|
-|10|Cleanup Completeness|9.5|Unused capture/listener release now explicit while live/history records retain output; CR-C02 closed|No unresolved local cleanup defect|Validate actual app-owned work and fixture cleanup downstream|
+|1|Data-Flow Spine Inventory and Clarity|9.5|DS-005 user/read/event/return paths explicit; cumulative cleanup/diagnostic spines preserved|No blocking clarity defect found|Preserve traces in acceptance evidence|
+|2|Ownership Clarity and Boundary Encapsulation|9.5|Run public boundary, thread read owner, pure observation and selected panel owner distinct|No bypass found|None required|
+|3|API / Interface / Query / Command Clarity|9.5|Typed capability/GraphQL union and exact identities; no PID authority|No supported contract ambiguity found|Validate actual serialized journey|
+|4|Separation of Concerns and File Placement|9.5|Observation extracted from existing thread; UI polling separated from rendering|No structural defect; thread remains near ceiling without exceeding it|Keep future unrelated concerns out|
+|5|Shared-Structure / Data-Model Tightness and Reusable Owned Structures|9.5|View status isolated from lifecycle; generated query and narrow row specialization|No duplicate business authority found|None required|
+|6|Naming Quality and Local Readability|9.5|Unknown/last-known/current and provider handle/local task identity distinguished|No evidence-grounded naming defect|None required|
+|7|API/E2E Readiness|9.5|300 unique scoped checks, actual current unpacked app usable, no source blocker|Actual conversation/query/panel validation pending; DMG command failed, not needed to start isolated coverage|API validates composed paths; delivery must resolve distribution gate|
+|8|Runtime Correctness And Behavioral Fidelity|9.5|Foreground exclusion, late exact completion merge, whole-list absence and generation fences reviewed|No unresolved source defect; unit fixtures are not composed acceptance|Exercise real provider and current lifecycle boundaries|
+|9|No Backward-Compatibility / No Legacy Retention|9.5|One current capability per backend, no version or history fallback|No blocking legacy issue found|None required|
+|10|Cleanup Completeness|9.5|Thread clear/fence, bounded RPC, terminal cap and frontend abort/timer cleanup; CR-001/002 remain closed|No local cleanup defect found; actual active-work evidence remains scoped/downstream|Retain exact ownership/sentinel cleanup receipts|
 
 ## Findings
-**None open.** CR-001 and CR-002 resolved; historical reproduction, required action and resolution remain in CRR-001/CRR-002 history and original evidence. No further implementation change requested.
+**None open.** CR-001/002 remain resolved; no new Local Fix, Design Impact, Requirement Gap or Unclear source finding established. Packaging command failed; the available evidence does not establish an implementation packaging defect that prevents executable coverage. Do not infer full packaging success from this source pass.
 
-## Checks / Evidence Reviewed (No Reviewer Reruns)
-Read implementation Checks Run and rerun-by-impact plan before deciding execution. Verified no production change between d0338db0b and reviewed HEAD; successful current evidence is reusable. Independently inspected source and assertions instead of repeating completed commands.
-
-| Evidence | Commit | Recorded result / review use |
-|---|---|---|
-| IMP-22 | ffac4611d | Original unchanged reviewer probe reproduces2 failures; cause established in CRR-001 |
-| IMP-23 | d0338db0b | 8 durable regressions pass; both new test files inspected |
-| IMP-24 | d0338db0b | Same reviewer probe passes2/2; stopped/no survivors/0 leases and0 captures/bytes; probe source unchanged |
-| IMP-25 | d0338db0b | 132 existing core cases pass; new8 excluded to avoid duplicate execution |
-| IMP-26/30 | d0338db0b | Production core/shared/server and Electron types pass |
-| IMP-27/28/29 | d0338db0b | 209 server +141 Electron +11 component tests pass |
-| IMP-31 | d0338db0b | Current task-local desktop rebuild completes; not a launch/quit proof |
-| IMP-32 | d0338db0b | Changed3 owner size receipt; independently recounted above |
-| IMP-20 | 10990feb1 | Historical scoped rendered conflict/retry/recovery/no-active-work quit observations; NOT relabelled as current integrated shutdown proof |
-
-Total **501 durable scoped cases +2 reviewer-probe cases**, implementation evidence, not independent API/E2E. Exact commands, environments, logs and failed attempts remain in `implementation-check-ledger.md`; evidence headers and result lines inspected. New tests are coherent by scenario, use owned temporary roots/anchors and finally cleanup, and preserve output/absence/timeout assertions. No source-file thresholds applied to tests.
-
-Reviewer round2 commands were read-only git/source/evidence inspection and source counts, followed by report/history edits only. No provider calls, installed app/data access, fixture launches, dependency/build changes, merge/release/install. Two documented untracked SDK dist prerequisite directories untouched.
+## Checks / Evidence Reviewed
+Read Checks Run before considering execution. No production change after9bd72c208, no inconclusive finding requiring a new probe; therefore **no reviewer test/build rerun**. Static source/diff inspection and cumulative size audit are this round's new evidence.
+- IMP-34/42/43: **276 unique current server/runtime/control cases**, not55+255+10. IMP-42 is251 pass/4 fail; IMP-43's same-realm GraphQL fixture correction passes10 and supersedes that query subset.21 unchanged backend/registry cases reused from IMP-34.
+- IMP-41: **24 web panel/locale cases**; tests use actual composable with controlled query, not provider acceptance. **300 total unique** in R2-scoped foundation. Prior501+2 remain separate exact-source unaffected foundation, not another current round count.
+- IMP-35/38/40/44: production compiler/codegen/boundary checks; full generator uses compiled local schema. No standalone strict vue-tsc execution claimed.
+- IMP-44: **overall build failed** at DMG hdiutil resize35. App/ZIP/server/renderer/Electron stages completed; owned-image recovery receipt shows only exact build device detached. No source build/packaging configuration delta. Current unpacked app can support next isolated validation; distribution packaging is unresolved for delivery.
+- IMP-45: source/package provenance, controlled states and cleanup JSON; independently opened settled English and narrow Chinese screenshots. Readable statuses/counts, safe short labels and no raw expansion; current rendered fixture is **not actual Codex acceptance**. No-active-work fixture normal quit is not active command cleanup proof.
+- API-04/06: preserve earlier d0338db0b real Codex quit and native ended-agent restart/active quit receipts; remaining plan and current R2 impact assessment belong to API/E2E. No API pass inferred.
 
 ## Follow-ups
-Added this round: **None**. FU-001 remains out-of-scope exploratory test-tree typing debt; no score deduction or reopened production-build issue.
+Added this round: **None**. FU-001 remains unrelated exploratory test-tree typing debt, not production build failure or score deduction. FU-002 incorporated into R2, not a separate task. DMG limitation is this ticket's downstream delivery gate, not an out-of-scope follow-up.
 
 ## Classification / Recommended Recipient
-- Decision **Pass**; failure classification **N/A**.
-- Primary recipient: `/software_engineering_team/api_e2e_engineer` under implementation-review pass rule. Independent executable coverage is now authorized.
-- Required informational pass notice after successful primary handoff: `/software_engineering_team/implementation_engineer`, CRR-002, no action required. No duplicate Solution Designer forwarding.
+Decision **Pass**; failure classification **N/A**. Primary returned implementation-review pass rule → `/software_engineering_team/api_e2e_engineer`. Follow the team single-recipient outcome route; no duplicate coordinator or implementation forwarding. Source acceptance does not authorize delivery/release/install.
 
 ## Residual Risks / Required Downstream Evidence
-1. Actual current Studio/standalone and desktop shutdown/restart with native active work, ended initiating run and adopted shell survivors; TERM-resistant descendant, verified PID/listener absence, unrelated sentinel and data preservation. Do not equate OS signal delivery with successful cleanup.
-2. **Actual Codex conversation-launched yielded listener through the full host/desktop lifetime**, including orderly versus incomplete/forced shutdown. Native tests do not intercept that command; SR-006's standalone client.close result is not a composed acceptance result. Deterministic local model fixture is actual tool execution but not paid inference. Concrete ownership gaps return through failure-origin/design recovery, not arbitrary PID/port killing or idle-policy redesign.
-3. Current-build conflict/retry/recovery and stale diagnostic clearing; bounded startup cancellation/failed cleanup, Windows captured-child transport/order/force and updater preparation continuation without installing. Live Windows/WSL remains unrun/unclaimed; preserve that limitation rather than substitute macOS mocks as certification.
-4. API/E2E test-code changes, if successful, return for separate proportionate review; failures return for focused failure-origin review. Delivery retains integration, docs sync, base verification and cleanup responsibility; no release/install authorized.
+1. **Actual Codex conversation → live readonly query → actual panel**, not intercepted query. Verify beyond-turn running, natural completed/nonzero failed, unknown/unavailable recovery, two-run selection/reentry/reload and secrets absent. No paid model required; deterministic local model still means actual tool execution, not live paid inference.
+2. Verify new reads and terminal observations do not alter transcript/Activity admission, background lifecycle publication, idle policy, activation/cleanup or existing Claude/AGY retained display. Current desktop/host native/Codex active/ended-agent cleanup and actual query activity need impact-aware integrated acceptance; preserve exact-source API-04/06 instead of discarding or relabelling them.
+3. Complete unresolved standalone/Codex restart/current conflict/retry and remaining integration cases from canonical API plan; unavailable/force/startup/updater continuation retain approved scope and no-install constraint. Real Windows/WSL remains unrun, not certified by mocks/macOS.
+4. Delivery must retain and resolve/explicitly disposition the DMG packaging failure before any distribution readiness claim, verify integrated base/docs and cleanup. No installed-app/user-data operations, arbitrary process/port cleanup, merge/release/install authorized here.
+5. Reported historical Nuxt/Codex-origin incident is **not established fixed** solely by native anchors, readonly visibility, unit counts or this pass. Concrete composed ownership failures return through failure-origin/design recovery.
 
 ## Latest Authoritative Result
-- **Pass — Implementation Review round2 / CRR-002 / Targeted Delta Review**.
-- Supported Product Scenario Gate: **Pass**. Material-Premise Gate: **Pass**.
-- Score: **9.5/10**, every category>=9.2. Prior findings: CR-001/002 resolved; open findings:none.
-- Large/High unchanged. Next: **API/E2E**, not delivery or terminal acceptance. No claim that the reported Codex-origin incident is fixed.
+**Pass — Implementation Review round3 / CRR-003 / Full Re-Audit**, R2/D4.1/ARCH-REV-004/IR-004, source9bd72c208. Supported Product Scenario Gate: **Pass**; Material-Premise Gate: **Pass**. Overall **9.5/10**, every category>=9.2; no open source findings. Large/High unchanged. Next: **independent API/E2E**, not delivery or overall acceptance.

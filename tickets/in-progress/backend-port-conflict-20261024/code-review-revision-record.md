@@ -5,6 +5,7 @@
 |---|---|---|---|---|---|
 | CRR-001 | code-review-report.md | Implementation Review / IR-002 ready | N/A | Fail — implementation-owned Local Fix | CR-001, CR-002 |
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 correction | Fail — Local Fix | Pass for API/E2E | CR-001, CR-002 resolved |
+| CRR-003 | code-review-report.md | Implementation Review / IR-004 R2 visibility | Pass for D3.1 only | Pass for R2 API/E2E | None open; CR-001/002 remain resolved |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -46,3 +47,25 @@ None.
 - Recommended primary recipient: `/software_engineering_team/api_e2e_engineer`, implementation-review pass rule. Then informational pass notice to Implementation Engineer as skill specifies. No design re-handoff.
 - Remaining risks: actual current full-host/desktop native active/ended-agent and Codex conversation cleanup; external conflict/retry/data/sentinel preservation; failure/force/startup coverage; Windows/WSL limitations; prohibited updater installation.501 scoped cases+2 probes/build do not establish integrated acceptance. IMP-20 remains dated10990feb1.
 - Reviewer changed only report/history; SDK dist prerequisites untouched. No source/test fixes, execution rerun, app launch, paid provider call, merge/release/install.
+
+
+### CRR-003 — R2 read-only Codex visibility, cumulative full re-audit
+- Canonical report: `code-review-report.md`; entry point Implementation Review, round3, **Full Re-Audit**. Prior CRR-002 passed D3.1 only.
+- Trigger IR-004; current source9bd72c20893dedb8c7dc99aacfcb0b732d092d6c; reviewed HEAD/evidencee50cd6b4e. Base034bfe51ab697817773ff545d369e1cfc03a79c5, worktree/branch unchanged.
+- Related requirements R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-004. API-04/06 checkpointc88a6224c remains partial exact-source evidence; completed API-REV and DR N/A. User resume8fd57560d/coordinator3a3fba3a4 lifts testing pause but source review still precedes independent execution.
+- Full-re-audit reason: new DS-005 spans provider facts, shared inspection capability, run/query schema and selected renderer view outside prior finding boundaries. All structural checks/full scorecard re-evaluated; cumulative61 authored files independently counted, all<=500 (max497). Tests/fixtures/generated output excluded;3 old native replacement churn cases remain justified and unchanged.
+- Independently confirmed read-only map lookup, exact active-instance success/error fence, bounded shared paginated list, exact late command completion observations with unchanged transcript gate, foreground exclusion, provisional per-page/turn merge, safe projection, selected generation/poll cleanup and first-entry retained stream rows. No lifecycle/background publication, idle-policy change, control authority, raw arguments/output or persistence introduced.
+- Supported basis BEH-001..006 / SCN-001..008 confirmed; MP-001..004 confirmed. CR-C05..08 mechanisms justified by approved scenarios, no new defect. CR-C09 rejects packaging-failure-as-source-readiness inference while retaining real DMG failure. CR-C04 still rejects historical incident proof from native/panel fixtures. No held/unclear premise.
+
+#### Prior Finding Resolution
+| Finding | Prior status | Current status | Related revisions | Verification |
+|---|---|---|---|---|
+| CR-001 | Resolved | Remains resolved | CRR-002/IR-003 retained through IR-004 | No scope source delta; rechecked operation discrimination, queued stop/original deadline and retirement identity |
+| CR-002 | Resolved | Remains resolved | CRR-002/IR-003 retained through IR-004 | No manager/executor delta; exact listener release only without record consumers, background history preserved |
+
+- Current result: **Pass for independent API/E2E**, Large/High unchanged. No open finding, no new follow-up, no source/test fixes. Score **9.5/10**, every category>=9.2.
+- Evidence: `evidence/CR-03-source-audit.json`; IMP-33..46 ledger/logs/assertions, including300 unique passing scoped cases, production compile/codegen, actual controlled-state rendered screenshots and cleanup. No reviewer test/build/app/provider execution; existing conclusive checks reused by impact, not counted as reruns.
+- Build distinction: IMP-44 overall command **FAILED** at DMG hdiutil resize35; current unpacked app/ZIP available and isolated rendered inspection completed. Not a packaging or distribution pass. Delivery retains that unresolved gate; source review found no packaging-code defect preventing executable coverage.
+- Primary recipient: `/software_engineering_team/api_e2e_engineer`, returned implementation-review-pass rule. Team single-recipient outcome routing, no duplicate forwarding.
+- Remaining: real conversation→query→panel and current lifecycle/noninterference acceptance, unresolved canonical API cases, true Windows/WSL limits, distribution build, delivery docs/integration. Preserve API-04/06 exact-source receipts; no historical Codex/Nuxt incident resolution or overall readiness claim.
+- Reviewer edits only canonical report/history and cumulative audit receipt. Two untracked SDK dist prerequisites untouched. No installed app/data, merge/release/install.
