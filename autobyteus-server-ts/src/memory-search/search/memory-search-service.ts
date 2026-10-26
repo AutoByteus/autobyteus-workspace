@@ -8,7 +8,7 @@ import type {
   MemorySearchMatch,
   MemorySearchRunResult,
 } from "../domain/memory-search-models.js";
-import { containsTerm, queryTerms, toFtsQuery } from "../index/memory-text-normalizer.js";
+import { containsTerm, queryTerms, termTokens, toFtsQuery } from "../index/memory-text-normalizer.js";
 import { MEMORY_CARD_COLLECTION } from "../pipeline/memory-index-pipeline.js";
 import type { MemorySearchStore, StoredCard, TextCandidate } from "../store/memory-search-store.js";
 import { maskSecrets } from "./secret-masker.js";
@@ -43,10 +43,18 @@ type Pointer = {
 const MEANING_STRENGTH: Record<NearestMatch["relevance"], MemoryMatchStrength> = { relevant: "strong", aboveFloor: "fair", below: "weak" };
 const RAW_LINK = / ?\[↗\]\([^)]*\)/g;
 
-/** By the share of the query's distinct terms in the matched text: ≥ 2/3 strong, ≥ 1/3 fair (thresholds of R-016). */
-const textStrength = (text: string, terms: readonly string[]): MemoryMatchStrength => {
-  if (!terms.length) return "weak";
-  const share = terms.filter((term) => containsTerm(text, term)).length / terms.length;
+/** A term's weight: its inverse document frequency in the text index, as BM25 ranks by (never below a tiny floor). */
+const MIN_TERM_WEIGHT = 1e-6;
+
+/**
+ * By the weighted share of the query's distinct terms found in the matched text (UD-019): each term weighs its
+ * rarity in the text index, so common words alone stay weak. ≥ 2/3 strong, ≥ 1/3 fair (thresholds of R-016).
+ */
+const textStrength = (text: string, terms: readonly string[], weights: ReadonlyMap<string, number>): MemoryMatchStrength => {
+  const total = terms.reduce((sum, term) => sum + (weights.get(term) ?? 0), 0);
+  if (total <= 0) return "weak";
+  const found = terms.filter((term) => containsTerm(text, term)).reduce((sum, term) => sum + (weights.get(term) ?? 0), 0);
+  const share = found / total;
   return share >= 2 / 3 ? "strong" : share >= 1 / 3 ? "fair" : "weak";
 };
 
@@ -71,6 +79,7 @@ export class MemorySearchService {
 
   async search(query: string, options: { limit: number; askingRunId?: string | null }): Promise<MemorySearchOutcome> {
     const terms = queryTerms(query);
+    const weights = this.termWeights(terms);
     const runs = new Map(this.deps.store.listRuns().map(({ run }) => [run.runKey, run]));
     const isAsking = (runKey: string): boolean => Boolean(options.askingRunId) && runs.get(runKey)?.runId === options.askingRunId;
 
@@ -94,7 +103,7 @@ export class MemorySearchService {
 
     const results: MemorySearchRunResult[] = [];
     for (const runKey of this.interleave([...textByRun.keys()], [...meaningByRun.keys()], options.limit)) {
-      results.push(await this.toResult(runs.get(runKey)!, terms, textByRun.get(runKey) ?? [], meaningByRun.get(runKey) ?? null));
+      results.push(await this.toResult(runs.get(runKey)!, terms, weights, textByRun.get(runKey) ?? [], meaningByRun.get(runKey) ?? null));
     }
     return { results, meaning: { collection: nearest.collection, readiness: nearest.readiness } };
   }
@@ -114,9 +123,27 @@ export class MemorySearchService {
     return order;
   }
 
+  /**
+   * Each term's weight: its inverse document frequency among the text index's chunks (UD-019), from the index's
+   * own vocabulary. A term of several tokens (`home.example.org`, a two-ideograph phrase) is at least as rare as
+   * its rarest token; a term no chunk holds weighs the most.
+   */
+  private termWeights(terms: readonly string[]): Map<string, number> {
+    const tokensOf = new Map(terms.map((term) => [term, termTokens(term)]));
+    const { counts, chunks } = this.deps.store.tokenChunkCounts([...tokensOf.values()].flat());
+    const weights = new Map<string, number>();
+    for (const [term, tokens] of tokensOf) {
+      if (!tokens.length) continue;
+      const documents = Math.min(...tokens.map((token) => counts.get(token) ?? 0));
+      weights.set(term, Math.max(MIN_TERM_WEIGHT, Math.log((chunks - documents + 0.5) / (documents + 0.5))));
+    }
+    return weights;
+  }
+
   private async toResult(
     run: MemoryRun,
     terms: readonly string[],
+    weights: ReadonlyMap<string, number>,
     textCandidates: readonly TextCandidate[],
     meaning: { journalFile: string; strength: MemoryMatchStrength } | null,
   ): Promise<MemorySearchRunResult> {
@@ -131,7 +158,7 @@ export class MemorySearchService {
     }
     pointers.sort(newestFirst);
     const matches: MemorySearchMatch[] = [];
-    for (const pointer of pointers) matches.push(await this.toMatch(run, pointer, terms));
+    for (const pointer of pointers) matches.push(await this.toMatch(run, pointer, terms, weights));
 
     const days = [...textCandidates.map((candidate) => candidate.day), ...pointers.map((pointer) => pointer.day)].filter((day): day is string => Boolean(day)).sort();
     const fallback = days.length ? null : this.deps.store.runDays(run.runKey);
@@ -163,19 +190,20 @@ export class MemorySearchService {
     return part ? { journalFile, lineStart: part.lineStart, lineEnd: part.lineEnd, day: part.day, rule } : { journalFile, lineStart: 1, lineEnd: 1, day: null, rule };
   }
 
-  private async toMatch(run: MemoryRun, pointer: Pointer, terms: readonly string[]): Promise<MemorySearchMatch> {
+  private async toMatch(run: MemoryRun, pointer: Pointer, terms: readonly string[], weights: ReadonlyMap<string, number>): Promise<MemorySearchMatch> {
     const read = await this.deps.journals.readJournalLines(run.memoryDir, pointer.journalFile, { start: pointer.lineStart, end: pointer.lineEnd });
     const lines = (read?.lines ?? []).map((line) => line.replace(RAW_LINK, "").trim());
     const text = lines.join("\n");
     const firstHit = Math.max(0, lines.findIndex((line) => terms.some((term) => containsTerm(line, term))));
+    // Masked before a line is cut to its display length, so a cut never leaves part of a secret (C-06).
     const snippet = lines.slice(firstHit).filter((line) => line.length > 0).slice(0, SNIPPET_LINES)
-      .map((line) => line.slice(0, SNIPPET_LINE_CHARACTERS)).join("\n");
+      .map((line) => maskSecrets(line).slice(0, SNIPPET_LINE_CHARACTERS)).join("\n");
     return {
       journalFile: this.deps.journals.journalFilePath(run.memoryDir, pointer.journalFile),
       lineStart: pointer.lineStart, lineEnd: pointer.lineEnd, day: pointer.day,
-      snippet: maskSecrets(snippet),
+      snippet,
       matchedBy: pointer.matchedBy,
-      strength: pointer.matchedBy === "meaning" ? pointer.meaningStrength ?? "weak" : textStrength(text, terms),
+      strength: pointer.matchedBy === "meaning" ? pointer.meaningStrength ?? "weak" : textStrength(text, terms, weights),
       pointer: pointer.matchedBy === "meaning" ? pointer.rule ?? null : null,
     };
   }

@@ -123,8 +123,14 @@ is deleted and recreated):
 4. **Matches per run:** its best 2 text chunks; a meaning match points to the same file's best text chunk, else
    to the card part with the most query words, else to the file's first request. A run's matches are listed
    newest day first, then by line.
-5. **Strength:** text by the share of the query's words in the chunk (≥ 2/3 strong, ≥ 1/3 fair, else weak);
-   meaning by the embedding layer's relevance (relevant strong, above the floor fair, else weak).
+5. **Strength:** text by the weighted share of the query's words found in the chunk (≥ 2/3 strong, ≥ 1/3 fair,
+   else weak). Each word weighs its rarity among the chunks, as BM25 ranks: `log((N − n + 0.5) / (n + 0.5))`
+   with `n` from the index's own vocabulary (`chunk_vocab`, an `fts5vocab` table) and a tiny floor, so common
+   words alone stay weak and a word no chunk holds weighs the most. A word of several tokens (`home.example.org`,
+   a two-ideograph phrase) counts as its rarest token. Meaning by the embedding layer's relevance (relevant
+   strong, above the floor fair, else weak).
+6. **Snippet:** 2–3 lines from the first line holding a query word; each line has its secrets masked, then is
+   cut to 200 characters, so a cut never leaves part of a secret.
 
 The facade adds `coverage` and `note`, and asks for a `meaningSync` pass when `nearest` answered `notSynced`.
 

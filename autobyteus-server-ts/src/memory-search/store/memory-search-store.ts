@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS files (
 CREATE TABLE IF NOT EXISTS chunks (chunk_id INTEGER PRIMARY KEY, file_id INTEGER NOT NULL, line_start INTEGER NOT NULL, line_end INTEGER NOT NULL, day TEXT);
 CREATE INDEX IF NOT EXISTS chunks_by_file ON chunks (file_id);
 CREATE VIRTUAL TABLE IF NOT EXISTS chunk_text USING fts5(body, content='', contentless_delete=1, tokenize='unicode61');
+CREATE VIRTUAL TABLE IF NOT EXISTS chunk_vocab USING fts5vocab(chunk_text, 'row');
 CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `;
 
@@ -127,6 +128,17 @@ export class MemorySearchStore {
     const row = this.open().prepare(`SELECT MIN(c.day) AS first, MAX(c.day) AS latest FROM chunks c JOIN files f ON f.file_id = c.file_id WHERE f.run_key = ?`)
       .get(runKey) as { first: string | null; latest: string | null };
     return { firstDay: row.first, latestDay: row.latest };
+  }
+
+  /** How many chunks hold each token (the text index's own vocabulary; absent tokens are left out), and the chunk count. */
+  tokenChunkCounts(tokens: readonly string[]): { counts: Map<string, number>; chunks: number } {
+    const db = this.open();
+    const distinct = [...new Set(tokens)];
+    const rows = distinct.length
+      ? db.prepare(`SELECT term, doc FROM chunk_vocab WHERE term IN (${distinct.map(() => "?").join(", ")})`).all(...distinct) as Array<{ term: string; doc: number }>
+      : [];
+    const chunks = Number((db.prepare("SELECT COUNT(*) AS n FROM chunks").get() as { n: number }).n);
+    return { counts: new Map(rows.map((row) => [row.term, Number(row.doc)])), chunks };
   }
 
   counts(): { runs: number; journalFiles: number; chunks: number } {

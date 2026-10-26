@@ -35,5 +35,12 @@ export const queryTerms = (query: string): string[] => {
 export const toFtsQuery = (terms: readonly string[]): string =>
   terms.map((term) => `"${CJK_WORD.test(term) ? [...term].join(" ") : term.replace(/"/g, "\"\"")}"`).join(" OR ");
 
+/**
+ * A query term as the text index's tokenizer (`unicode61`) stores it: diacritics removed, lower case, split at
+ * anything but letters and digits, each ideograph its own token. `home.example.org` → home, example, org.
+ */
+export const termTokens = (term: string): string[] =>
+  toIndexText(term.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase()).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+
 /** Whether a text contains a term (case-insensitive; ideograph phrases as written). */
 export const containsTerm = (text: string, term: string): boolean => text.toLowerCase().includes(term);

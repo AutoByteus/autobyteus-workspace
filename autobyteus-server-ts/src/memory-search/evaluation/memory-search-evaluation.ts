@@ -5,7 +5,7 @@ import { maskSecrets } from "../search/secret-masker.js";
 /**
  * One known-answer question (R-016): the cue as an agent or the user would write it, the runs that did the
  * work (any one of them answers it; a run ID or a prefix of one), and optionally up to two rephrasings an agent
- * would try next.
+ * would try next. An empty `accept` makes it an off-topic question: no run did that work (AC-007).
  */
 export type EvaluationQuestion = Readonly<{
   id: string;
@@ -26,12 +26,18 @@ export type EvaluationQuestionResult = Readonly<{
 }>;
 
 export type EvaluationReport = Readonly<{
+  /** Answerable questions (gates 1 and 2). */
   questions: number;
   gate1: Readonly<{ passed: number; oneSearchTop10: number; withinThreeSearches: number }>;
   gate2: Readonly<{ number1: number; top3: number; top3Share: number; mrr: number; p90Ms: number; maxMs: number }>;
   meaningPointers: Readonly<{ total: number; textChunk: number; cardPart: number; firstRequest: number; emptySnippet: number }>;
   /** Snippets, over every search, in which a secret pattern is still visible (R-008; should be 0). */
   unmaskedSecrets: number;
+  /**
+   * Off-topic questions (UD-019, AC-007): each must end with the only-weak note (every match weak; no matches
+   * also passes). `failed` lists the IDs that did not.
+   */
+  offTopic: Readonly<{ questions: number; passed: number; failed: readonly string[] }>;
   perQuestion: readonly EvaluationQuestionResult[];
 }>;
 
@@ -45,7 +51,7 @@ export type EvaluationOptions = Readonly<{
   askingRunId?: string | null;
 }>;
 
-/** A question file: a JSON array of `{id, q, accept: [runId or run ID prefix, …], rephrasings?: [text, …], note?}`. */
+/** A question file: a JSON array of `{id, q, accept: [runId or run ID prefix, …] (empty: off-topic), rephrasings?: [text, …], note?}`. */
 export const readEvaluationQuestions = (filePath: string): EvaluationQuestion[] => {
   const parsed: unknown = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   if (!Array.isArray(parsed)) throw new Error("A question file is a JSON array.");
@@ -53,8 +59,8 @@ export const readEvaluationQuestions = (filePath: string): EvaluationQuestion[] 
     const question = value as Record<string, unknown>;
     const accept = question.accept;
     if (typeof question.id !== "string" || typeof question.q !== "string" || !question.q.trim()
-      || !Array.isArray(accept) || !accept.length || !accept.every((id) => typeof id === "string")) {
-      throw new Error(`Question ${index + 1} needs an id, a non-blank q and a non-empty accept list of run IDs.`);
+      || !Array.isArray(accept) || !accept.every((id) => typeof id === "string")) {
+      throw new Error(`Question ${index + 1} needs an id, a non-blank q and an accept list of run IDs (empty for an off-topic question).`);
     }
     const rephrasings = Array.isArray(question.rephrasings) ? question.rephrasings.filter((text): text is string => typeof text === "string") : [];
     return { id: question.id, q: question.q, accept: accept as string[], rephrasings: rephrasings.slice(0, 2) };
@@ -71,13 +77,31 @@ const percentile = (values: readonly number[], share: number): number => {
  * Runs the questions against a built memory index (R-016): gate 1 (the right run in the top 10 within at most 3
  * searches; the first search's top 10 as its proxy), gate 2 (rank and latency of the first search, for the
  * questions that pass gate 1), and the meaning-pointer check (every meaning match points into its file with a
- * snippet; how many each rule resolved), and that no snippet shows a secret pattern.
+ * snippet; how many each rule resolved), that no snippet shows a secret pattern, and that each off-topic question
+ * ends with the only-weak note.
  */
 export const evaluateMemorySearch = async (memory: Search, questions: readonly EvaluationQuestion[], options: EvaluationOptions = {}): Promise<EvaluationReport> => {
   const perQuestion: EvaluationQuestionResult[] = [];
   const pointers = { total: 0, textChunk: 0, cardPart: 0, firstRequest: 0, emptySnippet: 0 };
   let unmaskedSecrets = 0;
-  for (const question of questions) {
+  const countSnippets = (result: MemorySearchResult): void => {
+    for (const match of result.results.flatMap((run) => run.matches)) {
+      if (maskSecrets(match.snippet) !== match.snippet) unmaskedSecrets++;
+      if (match.matchedBy !== "meaning" || !match.pointer) continue;
+      pointers.total++;
+      pointers[match.pointer]++;
+      if (!match.snippet.trim()) pointers.emptySnippet++;
+    }
+  };
+  const offTopic = questions.filter((question) => !question.accept.length);
+  const offTopicFailed: string[] = [];
+  for (const question of offTopic) {
+    const result = await memory.search(question.q, { limit: 10, askingRunId: options.askingRunId ?? null });
+    countSnippets(result);
+    // The note is set exactly when every match is weak (or nothing matched).
+    if (result.note === null) offTopicFailed.push(question.id);
+  }
+  for (const question of questions.filter((item) => item.accept.length)) {
     const isAccepted = (runId: string): boolean => question.accept.some((accepted) => runId.startsWith(accepted));
     let rank: number | null = null;
     let foundAtSearch: number | null = null;
@@ -87,13 +111,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
       const started = performance.now();
       const result = await memory.search(text, { limit: 10, askingRunId: options.askingRunId ?? null });
       if (index === 0) ms = performance.now() - started;
-      for (const match of result.results.flatMap((run) => run.matches)) {
-        if (maskSecrets(match.snippet) !== match.snippet) unmaskedSecrets++;
-        if (match.matchedBy !== "meaning" || !match.pointer) continue;
-        pointers.total++;
-        pointers[match.pointer]++;
-        if (!match.snippet.trim()) pointers.emptySnippet++;
-      }
+      countSnippets(result);
       const position = result.results.findIndex((run) => isAccepted(run.runId));
       if (index === 0 && position >= 0) rank = position + 1;
       if (position >= 0) {
@@ -108,7 +126,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
   const top3 = ranks.filter((rank) => rank !== null && rank <= 3).length;
   const times = perQuestion.map((item) => item.ms);
   return {
-    questions: questions.length,
+    questions: perQuestion.length,
     gate1: { passed: passed.length, oneSearchTop10: perQuestion.filter((item) => item.rank !== null).length, withinThreeSearches: passed.length },
     gate2: {
       number1: ranks.filter((rank) => rank === 1).length,
@@ -120,6 +138,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
     },
     meaningPointers: pointers,
     unmaskedSecrets,
+    offTopic: { questions: offTopic.length, passed: offTopic.length - offTopicFailed.length, failed: offTopicFailed },
     perQuestion,
   };
 };

@@ -9,7 +9,9 @@ folder, and reports:
   search;
 - **meaning pointers**: how many meaning matches each pointer rule resolved (same file's text chunk, best card
   part, first request), and how many had an empty snippet (should be 0);
-- **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0).
+- **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0);
+- **off-topic**: questions with an empty `accept` list (no run did that work) must each end with the only-weak
+  note, every match weak (AC-007); `failed` lists the ones that did not.
 
 A transformation is added or changed only if gate 1 stays at 100% and gate 2 does not get worse.
 
@@ -26,7 +28,8 @@ node autobyteus-server-ts/scripts/evaluate-memory-search.mjs \
 - `--model` chooses the embedding model (catalog id; default: the default model). The model downloads into
   `--index-dir/embeddings` the first time.
 - The question file is a JSON array: `{"id": "Q01", "q": "…", "accept": ["<run id>", …], "rephrasings": ["…"]}`.
-  Any accepted run answers the question; an accepted entry may be a prefix of the run ID.
+  Any accepted run answers the question; an accepted entry may be a prefix of the run ID. An empty `accept`
+  makes it an off-topic question.
 - Before measuring, the command waits until a search answers by meaning too (after a start the first search
   loads the Meaning index's job).
 - `--asking-run <run id>` searches as that run, which leaves its own results out, as for an agent searching.

@@ -15,14 +15,17 @@ const result = (runIds: string[], matches: MemorySearchMatch[] = []): MemorySear
 });
 
 describe("memory search evaluation", () => {
-  it("reads a question file and refuses a question without accepted runs", () => {
+  it("reads a question file (an empty accept list is an off-topic question) and refuses one without an accept list", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-eval-"));
     const good = path.join(dir, "good.json");
     fs.writeFileSync(good, JSON.stringify([{ id: "Q1", q: "ddns", accept: ["r1"], rephrasings: ["a", "b", "c", 4] }]));
     expect(readEvaluationQuestions(good)).toEqual([{ id: "Q1", q: "ddns", accept: ["r1"], rephrasings: ["a", "b"] }]);
     const bad = path.join(dir, "bad.json");
-    fs.writeFileSync(bad, JSON.stringify([{ id: "Q1", q: "ddns", accept: [] }]));
+    fs.writeFileSync(bad, JSON.stringify([{ id: "Q1", q: "ddns" }]));
     expect(() => readEvaluationQuestions(bad)).toThrow(/accept/);
+    const offTopic = path.join(dir, "off-topic.json");
+    fs.writeFileSync(offTopic, JSON.stringify([{ id: "N1", q: "purple elephant", accept: [] }]));
+    expect(readEvaluationQuestions(offTopic)).toEqual([{ id: "N1", q: "purple elephant", accept: [], rephrasings: [] }]);
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -33,6 +36,9 @@ describe("memory search evaluation", () => {
       miss: result(["x"], [match("meaning", "firstRequest", " ")]),
       rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
       never: result([]),
+      // Off-topic: only weak matches (the server's note set) pass; a fair match without a note fails.
+      "purple elephant": { ...result(["x"], [{ ...match("text", null), strength: "weak" }]), note: "Only weak matches; try other words." },
+      "green giraffe": result(["x"], [match("text", null)]),
     };
     const askedAs: Array<string | null | undefined> = [];
     const memory = { search: async (query: string, options: { askingRunId?: string | null }) => { askedAs.push(options.askingRunId); return answers[query] ?? result([]); } };
@@ -42,7 +48,11 @@ describe("memory search evaluation", () => {
       { id: "Q2", q: "second", accept: ["r2"] },
       { id: "Q3", q: "miss", accept: ["r3"], rephrasings: ["rephrased"] },
       { id: "Q4", q: "never", accept: ["r4"], rephrasings: ["never", "never"] },
+      { id: "N1", q: "purple elephant", accept: [] },
+      { id: "N2", q: "green giraffe", accept: [] },
     ], { askingRunId: "author_run" });
+    expect(report.questions).toBe(4);
+    expect(report.offTopic).toEqual({ questions: 2, passed: 1, failed: ["N2"] });
     expect(new Set(askedAs)).toEqual(new Set(["author_run"]));
     expect(report.perQuestion.map(({ id, rank, foundAtSearch }) => ({ id, rank, foundAtSearch }))).toEqual([
       { id: "Q1", rank: 1, foundAtSearch: 1 }, { id: "Q2", rank: 3, foundAtSearch: 1 },

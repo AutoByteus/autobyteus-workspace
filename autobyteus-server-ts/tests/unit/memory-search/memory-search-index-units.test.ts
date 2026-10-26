@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
 import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-card-builder.js";
 import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-chunker.js";
-import { queryTerms, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { queryTerms, termTokens, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
 import { maskSecrets } from "../../../src/memory-search/search/secret-masker.js";
 import {
   normalizeMemorySearchDefaultLimitForPersistence,
@@ -24,6 +24,13 @@ describe("memory text normalizer", () => {
     expect(queryTerms("ddns-updater.sh on port 8080")).toEqual(["ddns-updater.sh", "port", "8080"]);
     expect(queryTerms("兔子和乌龟的游戏")).toEqual(["兔子", "子和", "和乌", "乌龟", "龟的", "的游", "游戏"]);
     expect(queryTerms("龟")).toEqual(["龟"]);
+  });
+
+  it("splits a term into the tokens the text index stores (UD-019 weights)", () => {
+    expect(termTokens("home.example.org")).toEqual(["home", "example", "org"]);
+    expect(termTokens("Café")).toEqual(["cafe"]);
+    expect(termTokens("兔子")).toEqual(["兔", "子"]);
+    expect(termTokens("ddns")).toEqual(["ddns"]);
   });
 
   it("indexes ideographs as single tokens and queries them as phrases", () => {

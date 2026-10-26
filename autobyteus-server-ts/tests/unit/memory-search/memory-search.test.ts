@@ -97,11 +97,9 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     expect(run!.matches.map((match) => [match.matchedBy, match.day])).toEqual([["text", "2026-08-27"], ["text", "2026-08-25"]]);
     const match = run!.matches[1]!;
     expect(match.journalFile).toBe(path.join(memoryDir, "agents/codex_ddns/work_journal/work_journal_active.md"));
-    expect(match.strength).toBe("strong");
     expect(match.snippet).toContain("Set up a DDNS updater");
     expect(run!.matches.map((item) => item.snippet).join("\n")).not.toContain("secret123");
     expect(run!.source).toMatch(/^Codex · run codex_ddns · 2026-08-27 · work_journal_active\.md:\d+-\d+$/);
-    expect(result.note).toBeNull();
     // Without an asking run, the asking agent's own run is found too.
     expect((await memory.search("DDNS updater")).results.map((item) => item.runId)).toContain("asker");
   });
@@ -116,6 +114,31 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     const [match] = meaning.results[0]!.matches;
     expect(match).toMatchObject({ matchedBy: "meaning", strength: "strong", day: "2026-09-01" });
     expect(match!.snippet).toContain("Docker image fails on ARM servers");
+  });
+
+  it("rates a text match by the weighted share of the cue's words: rare words weigh more (UD-019)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    // "updater" is in 3 of the 5 chunks, "rebuilt" in 1: the chunk holding the rare word is strong, the common one weak.
+    const result = await memory.search("updater rebuilt");
+    const strengthOf = (runId: string) => result.results.find((run) => run.runId === runId)?.matches.find((m) => m.matchedBy === "text")?.strength;
+    expect(strengthOf("designer_1")).toBe("strong");
+    expect(strengthOf("codex_ddns")).toBe("weak");
+    // A cue whose rarest word no chunk holds: what is found is only common words, so every match is weak.
+    const offTopic = await memory.search("updater saxophone");
+    expect(offTopic.results.length).toBeGreaterThan(0);
+    expect(offTopic.note).toBe("Only weak matches; try other words.");
+  });
+
+  it("masks a secret before cutting a snippet line, so a cut never leaves part of it (C-06)", async () => {
+    // "[12:00:00] User: " (17) + "Rotate the deploy key " (22) + 145 + " ": the key starts at character 185 of the
+    // journal line. Cut to 200 first, "sk-" and 12 more characters would show, too short for the mask pattern.
+    writeRun(memoryDir, "agents/keys_run", [{ day: "2026-09-05", user: `Rotate the deploy key ${"x".repeat(145)} sk-abcdefghijklmnopqrstuvwxyz0123`, agent: "Rotated." }]);
+    memory.startIndexing();
+    await built(memory);
+    const snippet = (await memory.search("rotate deploy key")).results.find((run) => run.runId === "keys_run")!.matches[0]!.snippet;
+    expect(snippet).toContain("[masked]");
+    expect(snippet).not.toMatch(/sk-[a-z]/);
   });
 
   it("says when nothing matches or only weak matches exist, never that memory is empty", async () => {
