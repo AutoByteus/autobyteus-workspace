@@ -8,7 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
 | IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
-| IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11 | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised (R-9 trigger) before code changes | SR-005, ARCH-REV-003, CRR-003 | Stopped at calibration: constraint 1 cannot be met on the default model because OT-T3 has a fair **text** match; returned to the Solution Designer (IMP-18) |
+| IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11; SR-005b | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised twice (R-9): first OT-T3 (resolved by SR-005b), then LEAF-IR verification | SR-005, SR-005b, ARCH-REV-003, CRR-003 | Implemented (`0f3c2a2d87`); the default model meets all three constraints (IMP-20). LEAF-IR fails constraint 2 for any values because of how a match found by both tiers is merged (IMP-21); returned to the Solution Designer |
 
 ## Revision Entries
 
@@ -78,4 +78,14 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - The lift rule is feasible for the meaning tier at k ≥ 100 (Lf windows with margins ±0.005).
   - OT-T3 has a fair text match (UD-019 rule; "supplier" is rare but present), so constraint 1 fails for any k, Ls, Lf.
 - Next recipient or routing: Solution Designer; implementation continues after the decision.
+- **After SR-005b (option (a): OT-T3 partial; k 200, Lf 0.0477, Ls in the upper range):**
+  - Implemented in `0f3c2a2d87`:
+    - `nearest` returns `{id, score}` only; the relevance field and its computation are removed.
+    - `rateMeaningCandidates` takes the baseline over all candidates, then leaves out unknown and asking runs (R-11); with fewer candidates than *k*, the last one (R-10).
+    - Named constants: `MEANING_BASELINE_RANK` 200, `MEANING_FAIR_LIFT` 0.0477, `MEANING_STRONG_LIFT` 0.0567 (the answerable best lifts' 75th percentile).
+    - R-10: the only-weak note is held back while coverage is incomplete; the page takes only-weak from the server's note.
+    - O-1: the tool description says when to use it.
+    - Tests: R-11 and R-10 discriminate (a mutation run confirmed R-10); embedding test updated; docs updated.
+  - IMP-20 (default model): off-topic 12/12; falseOnlyWeak []; gates unchanged (31/31, top 3 26/31). Margins: Lf +0.0057 (N04) / +0.0058 (Q08); Ls +0.0147 over the largest off-topic lift. Partial-coverage simulation: 50% embedded clean; at 25% and 10%, one off-topic cue rates Fair (R-10 holds the note back).
+  - IMP-21 (LEAF-IR): with the same values, off-topic 0/12 and Q08 a false note. Per-model values can't fix Q08: its best meaning card belongs to a run with weak text matches, and `toResult` drops a meaning pointer that duplicates a text pointer (a merge the design does not define). With a merge where a match found by both tiers carries the stronger strength (rule B), both models are feasible: Granite k 200 Lf ≈ 0.0689 ±0.0078, and LEAF-IR only at k 20 (±0.0022) or k 50 (±0.0011). R-9: returned to the Solution Designer.
 

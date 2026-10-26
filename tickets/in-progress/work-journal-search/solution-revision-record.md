@@ -168,3 +168,15 @@
   - R-9: infeasible calibration is an escalation (Design Impact), never a relaxed constraint;
   - R-10: below full meaning coverage, the coverage note replaces the only-weak note when every match is weak; a partial-coverage evaluation case;
   - R-11: the baseline is computed before the asking run's cards are removed; tested.
+
+### SR-005b — Calibration Escalation Resolved (2026-10-26)
+
+- **Trigger:** the implementation engineer's R-9 escalation (`evidence/IMP-18-meaning-strength-calibration.log`). No k, Ls or Lf met constraint 1, because of OT-T3, whose blocker is a **text** match rated fair.
+- **Finding:** OT-T3 ("…sauerkraut supplier contract?") is not off-topic by the SR-004b count rule: "supplier" df 34, "decide" and "contract" present; only "sauerkraut" is absent. Its fair rating is honest.
+- **Decision (Solution Designer, under the user's delegation): option (a).**
+  - OT-T3 reclassified as partial (private question file).
+  - Implement the lift rule with k = 200, Lf = 0.0477 (widest margin, ±0.0057), and Ls in the upper range of the answerable lifts, recorded with margins.
+  - Verify on LEAF-IR (download and about 1 h of embedding on the isolated copy); a per-model table only if LEAF-IR fails.
+  - Option (b), a new text-tier rule for absent words, is rejected for now: there is no evidence it is needed, and it risks paraphrase questions.
+- **Risk recorded:** thin margins (design § Risks); the evaluation re-check and the R-9 escalation stay the guard.
+- **EmbeddingGemma 2:** not verified in this ticket (no index; noted).

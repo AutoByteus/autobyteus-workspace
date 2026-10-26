@@ -578,6 +578,7 @@ Each file stays under 500 lines (repository rule).
 | --- | --- |
 | First build writes about 1.7 GB of journals, and the raw reader may truncate a crashed run's broken tail (existing behavior) | User's click; backup on the user's machine; progress shown |
 | CPU during the meaning build (about 1 h) | Background; searches first; text search available after about 3 min |
+| Meaning-strength calibration margins are thin (about ±0.005 cosine lift at k = 200; IMP-18) and may drift as memory grows | Constants recorded with their margins; the evaluation command re-checks the three constraints; a failing re-check is an R-9 escalation |
 | Disk: index about 100–300 MB estimated; **measured 610 MB** on the real-size copy (API/E2E O-2), plus about 1.7 GB of journals | Contentless FTS; documented; reducing it is a follow-up (FU-008) |
 | Secrets in snippets | Masking (AC-005 measured); snippets only 2–3 lines |
 | Index and journals diverge after a crash | Fingerprints per file; catch-up on start; "Rebuild" |
@@ -605,6 +606,7 @@ Each file stays under 500 lines (repository rule).
   - For each matched card, **lift** = score − baseline.
   - **Strong** when lift ≥ *Ls*, **Fair** when lift ≥ *Lf*, else **Weak**.
   - The rule is relative to the query's own score distribution, so it does not depend on one model's absolute scale.
+- **Calibrated values (SR-005b, IMP-18):** a window exists only for k ≥ 100; k = 200, *Lf* = 0.0477 (window 0.0420–0.0535); *Ls* sits in the upper range of the answerable lifts. OT-T3 is partial by the count rule.
 - **Calibration:** *k*, *Ls* and *Lf* are constants in `MemorySearchService`, chosen with the evaluation command on the default model under three hard constraints:
   1. every verified off-topic question ends with the only-weak note;
   2. **no answerable question gets a false only-weak note**;
