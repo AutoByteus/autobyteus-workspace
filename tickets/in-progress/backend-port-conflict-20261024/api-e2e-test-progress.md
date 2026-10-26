@@ -54,3 +54,21 @@ Report: api-e2e-execution-coverage-report.md. Plan: api-e2e-coverage-investigati
 | 2026-10-26T09:54:33.608Z | API-10 | Started | | Integrated2c47bcd64; API-10-provider-unavailable.mjs; output evidence/API-REV-002. |
 | 2026-10-26T09:54:48.750Z | API-10 | Completed | Pass, integrated | Exit0, API-10-result.json / run.log; inspect exact proof/cleanup. |
 | 2026-10-26T09:58:46.991494+00:00 | All | Completed | API-REV-002 Pass95.3%, integrated executable stage | All renewed system cases passed first attempt;854 current foundation cases reused. Cleanup35 PIDs/7 roots absent. Proportional harness/evidence review next, no target merge/push/install/release. |
+| 2026-10-26T10:23:51.232395+00:00 | All | Checkpoint | API-REV-003 resumed | CRR007/IR006/DR002 fresh source9b10fcd4d/base0fd9/IMP72 beta10. Same case IDs/run. |
+| 2026-10-26T10:23:51.232395+00:00 | API01/08 | Started | | Current foundation evidence/impact inspection. |
+| 2026-10-26T10:23:51.232395+00:00 | API01/08 | Completed | Pass, repository only |1110 unique current scoped checks reused with actual corrected web/transport limits; no prior confidence inherited. |
+| 2026-10-26T10:23:51.232395+00:00 | API03 | Started | | Rerun unchanged full standalone E2E against current dist. |
+| 2026-10-26T10:24:12.718197+00:00 | API03 | Completed | Pass, fresh-base |1 durable test, full host.close838ms,4 native command/anchor pairs absent, ended+retained/adopted/TERM cases, sentinel/data intact/root removed. |
+| 2026-10-26T10:24:12.786Z | API-05 | Started | | Integrated9b10fcd4d; API-05-conflict-recovery.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:28.721Z | API-05 | Completed | Pass, integrated | Exit0, API-05-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:28.722Z | API-06B | Started | | Integrated9b10fcd4d; API-06B-desktop-native-current.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:37.552Z | API-06B | Completed | Pass, integrated | Exit0, API-06B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:37.553Z | API-07 | Started | | Integrated9b10fcd4d; API-07-packaged-ipc.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:43.748Z | API-07 | Completed | Pass, integrated | Exit0, API-07-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:43.749Z | API-09 | Started | | Integrated9b10fcd4d; API-09-desktop-visibility.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:59.639Z | API-09 | Completed | Pass, integrated | Exit0, API-09-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:59.640Z | API-09B | Started | | Integrated9b10fcd4d; API-09B-selection-lifecycle.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:25:10.907Z | API-09B | Completed | Pass, integrated | Exit0, API-09B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:25:10.907Z | API-10 | Started | | Integrated9b10fcd4d; API-10-provider-unavailable.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:25:26.305Z | API-10 | Completed | Pass, integrated | Exit0, API-10-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:28:49.898502+00:00 | All | Completed | API-REV-003 Pass95.3%, fresh-base executable stage | Seven renewed runners pass first attempt;1110 unique current foundation cases reused. Cleanup35 PIDs/7 roots absent. Proportional orchestration/evidence review next; no target merge/push/install/release. |

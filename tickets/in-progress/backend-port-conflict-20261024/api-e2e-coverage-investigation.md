@@ -1,6 +1,31 @@
 # API/E2E Coverage Investigation
 
-## Current round API-REV-002 - integrated-source plan (completed)
+## Current round API-REV-003 - fresh MCP-base plan (completed)
+CRR-007 Pass / source9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c / review13d7f4293 / IR-006 / DR-002 / base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e. R2/D4.1/SR001..008/ARCH-REV004; Large/High unchanged. Existing run resumed after reading progress, current upstream package/DR002, source delta and current test/build evidence. Prior APIREV00295.3 is exact2c47 history, not current acceptance.
+
+TESTING.md adds test-only GitHub token aliases; read change, no live vault/GitHub scope selected. Other applicable instructions, approved requirements/design and durable standalone tests unchanged. Shared core MCP resolver/config/instance/HTTP/stdio changes trigger foundation rule even with lockfile unchanged. Startup installer binds a synchronous resolver after staged vault init, not a new process/connection owner; actual MCP manager/transport fault coverage in current foundation controls. Full current host/desktop proof still required.
+
+| Cases | Decision before execution | Reason |
+|---|---|---|
+| API01/08 | Still Valid assertions, reuse IMP66..71 current1110 unique passes |246 core+575 server+156 Electron+123 unique web+10 dummy-secret real MCP transport. IMP69 initial110/10 failure retained; IMP70 focused31 supersedes28/adds3, no double count. Exact IMP75 commands and log headers/tails inspected. |
+| API03 | Rerun unchanged gated standalone durable E2E | Current core/host foundation; current dist required. |
+| API02/06B | Rerun current Studio/native once via06B | Ended/retained initiators, adopted/resistant work and actual restart/quit. No duplicate historic06. |
+| API05/07 | Rerun current conflict/recovery and actual packaged IPC/fault paths | Current beta10 shell/backend/startup. |
+| API09/09B/10 | Rerun actual conversation/live query/actual panel and natural/nonzero/selection/reload/timeout/recovery/restart/quit | Current schema/startup/core foundation, no intercepted query or synthetic context. |
+| API04/06 historical | Preserve only | Current equivalents above cover scenario; no duplicate task/run. |
+
+Existing durable/probe assertions remain valid; no removals or product edits planned. New round output under evidence/API-REV-003 via existing evidence-dir controls; prior files untouched. Serial orchestrator copied with round/source constants and a missing-marker assertion before any run. No speculative MCP scenario added; dummy transport is not live-vault/GitHub certification.
+
+IMP70 Node26 localStorage-shadow diagnosis accepted from local dependency/descriptor evidence; preserve NODE_OPTIONS=--no-experimental-webstorage if affected Nuxt suites rerun, no production workaround. No Nuxt suite rerun planned because current receipts sufficient; actual Electron uses browser Storage. IMP72 full unsigned build exit0/DMG VALID/beta10 and5 source/package matches are current build authority. IMP73 controlled interception/no-work quit220ms is not independent active-work acceptance.
+
+Private HOME/CODEX_HOME/data/TMPDIR, assigned ports, local inference only; current task-local app, one heavy run at a time. No paid inference/GitHub, installed app/user data, arbitrary cleanup, target merge/push, release/install. Two SDK dist prerequisites preserved. Delivery owns fresh-base/raw-evidence/docs sync/AC006 finalization.
+
+Post-repository confidence reset50/75/50/75/75/75/95, mean70.7%. Broader Validation Required until all current equivalents complete. No previous95.3 carries forward.
+
+Completion: all seven renewed runners passed first attempt on beta.10/current source; no fixture/product failures or assertion changes. Actual standalone/native/Codex/query/panel/recovery and cleanup evidence is in the current report. Confidence independently reassessed95.3%;35 recorded PIDs and7 private roots absent. No new durable coverage edits. Proportional orchestration/evidence review next; Delivery finalization remains downstream.
+
+
+## Historical API-REV-002 - integrated-source plan (completed)
 CRR-005 Pass / source2c47bcd646ccd371a180dbc510fd1e30aee9144f / reviewf4e7eb4eb / IR-005 / DR-001 / integrated origin/personal67994daba. R2/D4.1/SR001..008/ARCH-REV004, Large/High unchanged. Prior API-REV-00195.3 and CRR-004 are historical exact-source evidence, NOT integrated acceptance.
 
 Read canonical progress first, DR-001 integration rerun plan, IR-005 ledger and check/build provenance, CRR-005 full audit, current requirements/design and prior coverage. No relevant guideline or durable host-test changes since d16a07657; TESTING foundation-change rule applies. Incoming lockfile/core tool-result serialization, entry/node/Memory Sync identities, startup migrations and GraphQL regeneration affect composed execution. Authored ticket core ownership/Codex observation mostly unchanged, but every current system case must rerun on IMP-56 package.

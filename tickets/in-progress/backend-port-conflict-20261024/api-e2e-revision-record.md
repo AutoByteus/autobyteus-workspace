@@ -5,6 +5,7 @@
 |---|---|---|---|---|
 | API-REV-001 | CRR-002 entry, user pause/resume, CRR-003 cumulative R2 review | R2/D4.1;SR-001..008;ARCH-REV-004;IR-004;CRR-003 | N/A | Pass executable-validation stage /95.3% |
 | API-REV-002 | DR-001/CRR-005 integrated rerun | R2/D4.1;ARCH-REV-004;IR-005;CRR-005;DR-001 | API-REV-001 Pass95.3%, old source | Pass integrated executable stage /95.3%, newly assessed |
+| API-REV-003 | DR-002/CRR-007 fresh MCP-base rerun | R2/D4.1;ARCH-REV-004;IR-006;CRR-007;DR-002 | API-REV-002 Pass95.3%, source2c47 | Pass fresh-base executable stage /95.3%, newly assessed |
 
 ## API-REV-001 — current composed lifecycle and read-only visibility
 - First completed API/E2E result; earlier pause preserved partial evidence but was not a validation verdict. Same canonical run resumed after user direction and current review gate.
@@ -36,3 +37,18 @@ DR-001 integration failure was resolved upstream by IR-005 and reviewed CRR-005.
 - Canonical investigation/report/progress current; report Cases/AC Proof and current summary/provenance/cleanup point to raw evidence. Final audit35 recorded PIDs and7 private roots absent. SDK outputs/worktree/build preserved.
 - Recommended owner: Code Reviewer, proportional renewed harness/evidence review; then Delivery's fresh-base/raw-evidence/docs/finalization gates. AC006 finalization remains downstream, not terminal acceptance here.
 - Actual Windows/WSL, paid providers, strict standalone vue-tsc, historical Nuxt incident, target merge/push/release/install not claimed. No long-lived docs or incoming migration policy changes by API role.
+
+## API-REV-003 — fresh MCP-base executable validation
+- Trigger: Delivery DR-002 foundation integration, IR-006/CRR-007. R2/D4.1/SR001..008/ARCH-REV004; Large/High unchanged. Source9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c, review13d7f4293e10c4b0f39114169a2e77455a9ef40e, base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e.
+- Prior APIREV002 Pass95.3 is exact-source2c47 history. Current **Pass95.3%, independently reassessed** from seven renewed runners, Broader Required and completed; no category below90%. No product/fixture failure or case retry this round.
+- Foundation1110 unique current cases reused at exact repository boundaries; IMP69 initial web10 failures retained, IMP70 environment-only correction replaces28/adds3, no double count. Dummy-secret MCP transport not live vault/GitHub. No Nuxt rerun needed; preserve diagnosed NODE_OPTIONS if those suites run later.
+- API03 full standalone host.close838ms; API02/06B full Studio/native ended/adopted/resistant restart2675ms, retained-run full quit1319ms; API05 conflict/retry/data; API07 actual packaged IPC startup/failed/unconfirmed; API09 real conversation/query/panel natural0/reopen/reload; API09B foreground exclusion, two-run selection, nonzero7, inactive read, live Codex restart1591ms and full quit207ms; API10 actual unavailable5008ms/last-known recovery/no extra inference then active quit707ms. Exact PIDs/listeners/sentinels in raw receipts.
+- New evidence/API-REV-003 only; prior evidence untouched. IMP72 beta10 full unsigned build/DMG verify and five direct source/package hash matches. IMP73 intercepted UI/no-work quit not elevated to active-work proof.
+- No product, durable suite or existing probe changes. New sequential orchestration differs by source/output constants and missing-marker guard; preserves progress/stop-on-failure/refusal to duplicate. Durable CRR004 hashes retained.
+
+### Prior failure resolution
+DR002 source integration concerns resolved upstream IR006/CRR007; renewed executable proof now covers the current base. No prior API product failure or new failure IDs. Earlier foundation environment failures remain diagnosed upstream evidence, not silently erased.
+
+- Canonical investigation/report current, progress append-only. Current summary/provenance/build/cleanup plus Cases/AC Proof index raw evidence. Final audit35 recorded test PIDs and7 private roots absent; all desktop cleanup forced=false, ports released; SDK outputs/build/worktree preserved.
+- Next owner Code Reviewer for proportional successful orchestration/evidence review. Delivery retains fresh-base/raw-evidence/docs sync/AC006 finalization. No terminal delivery claim.
+- Actual Windows/WSL, live vault/GitHub, paid inference, strict standalone vue-tsc, historical Nuxt incident, merge/push/release/install not claimed. No follow-up/scope change required.
