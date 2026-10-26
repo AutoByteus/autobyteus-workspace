@@ -1,3 +1,5 @@
+> Superseded scope decision: user approved inclusion in this current ticket on2026-10-26. See background-visibility-scope-approval.md and R2 requirements. The separate-task recommendation below is historical, not current direction.
+
 # Background-work visibility — proposed follow-up intake
 
 Date: 2026-10-26. Originating package: backend-port-conflict-20261024; saved task project_task_8a0359c2-3b8e-47f1-a14a-d18d1459d8ca, requested by /project_task_manager. This is a proposed extension, not an approved amendment to R1/D3.1/SR-006 or implementation-ready design.
