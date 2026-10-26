@@ -185,7 +185,9 @@ suite("Internal agents: hidden unless \"Show internal agents\" is on (real HTTP/
     await setShown("true");
     const shown = await listedIds();
     expect(shown.find((entry) => entry.id === INTERNAL_ID), "shown without a restart").toEqual({ id: INTERNAL_ID, name: INTERNAL_NAME, internal: true });
-    expect(shown.length).toBe(hidden.length + 1);
+    // Shown adds exactly the internal agents: this one and the node's built-in Model Router (autobyteus-32 REQ-008).
+    const added = shown.filter((entry) => !hidden.some((listed) => listed.id === entry.id));
+    expect(added.map((entry) => [entry.id, entry.internal]).sort()).toEqual([["autobyteus-model-router", true], [INTERNAL_ID, true]].sort());
     await setShown("false");
     expect((await listedIds()).map((entry) => entry.id), "hidden again").not.toContain(INTERNAL_ID);
   });

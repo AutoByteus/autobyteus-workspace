@@ -21,6 +21,9 @@ import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability 
  * - LR-2: an agent whose definition lists only this tool calls it; the call succeeds and its result is the node's report
  *   (`{checkedAt, agentRuntimes}`), with the same runtimes (and AutoByteus providers) as the page's GraphQL
  *   `availableAgentRuntimes` read right after; no key or e-mail in it.
+ * - LR-3 (autobyteus-32 QR-001, with RUN_ROUTED_DELEGATION_E2E=1 and a signed-in Codex CLI): with Model Routing on and the
+ *   node's Model Router (a live Codex run) held busy, the agent's delegate_task waits the 40 s routing budget and its
+ *   result (the copy on the agent's own launch, with the "busy" note) still reaches the agent as a tool result.
  * The tool reaches each runtime its own way: AutoByteus as a local tool; Codex through the thread's MCP config; Claude
  * through the SDK's MCP servers and allowed tools; Antigravity through its MCP config file (`call_mcp_tool`); Grok
  * through the ACP session's MCP servers (`search_tool`/`use_tool`).
@@ -48,7 +51,7 @@ type RuntimeCase = Readonly<{
   /** The provider key this case needs from the vault. */
   requiredSecretId?: string;
 }>;
-type WsMessage = { type: string; payload: Record<string, unknown> };
+type WsMessage = { type: string; payload: Record<string, unknown>; at: number };
 type Connection = { socket: WebSocket; messages: WsMessage[] };
 type Record_ = Record<string, unknown>;
 type Report = { checkedAt: string; agentRuntimes: Array<Record_> };
@@ -208,7 +211,7 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
     socket.on("message", (raw) => {
       try {
         const parsed = JSON.parse(raw.toString()) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: asRecord(parsed.payload) ?? {} });
+        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: asRecord(parsed.payload) ?? {}, at: Date.now() });
       } catch { /* ignore non-JSON frames */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
@@ -300,4 +303,91 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
       expect(JSON.stringify(report)).not.toMatch(/[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}\b(?!:)|sk-[A-Za-z0-9_-]{16,}|xai-[A-Za-z0-9]{16,}/);
     }, STEP_TIMEOUT_MS * 3);
   }
+
+  // autobyteus-32 QR-001 (LR-3): a routed delegate_task takes up to the 40 s routing budget; it must come back to the
+  // live agent as a tool result on every runtime (each runtime has its own MCP tool-call time-out). The node's Model
+  // Router is a live Codex run held busy by a user turn (`sleep`), so the routing request waits its whole budget and the
+  // copy falls back to the delegating run's launch with the "busy" note, about 40 s after the call.
+  const ROUTED = process.env.RUN_ROUTED_DELEGATION_E2E === "1" && binaryReady("codex");
+  const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+  const routerRuntime = RUNTIMES.find((runtime) => runtime.runtimeKind === "codex_app_server")!;
+  let routerReady: Promise<{ runId: string; connection: Connection }> | null = null;
+  const holdRouter = async (): Promise<{ connection: Connection; from: number }> => {
+    routerReady ??= (async () => {
+      // The router's choices are the node's report (as on the page), not the model catalog: an unblocked Codex model.
+      const codex = (await pageRead()).agentRuntimes.find((entry) => entry.runtime === "codex_app_server");
+      const offered = (Array.isArray(codex?.models) ? codex!.models : []) as Record_[];
+      const model = routerRuntime.pickModel(offered.filter((entry) => !entry.blocked).map((entry) => String(entry.id)));
+      evidence("LR-3 router", { model, offered: offered.map((entry) => entry.id) });
+      expect(model, `a Codex model for the router in ${JSON.stringify(codex).slice(0, 600)}`).toBeTruthy();
+      await gql(`mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}`, { r: "codex_app_server", m: model });
+      const status = (await gql<{ setModelRoutingEnabled: Record_ }>(`mutation{setModelRoutingEnabled(enabled:true)}`)).setModelRoutingEnabled;
+      expect(status, JSON.stringify(status)).toMatchObject({ enabled: true, active: true });
+      const runId = (await gql<{ openModelRouterAgent: string }>(`mutation{openModelRouterAgent}`)).openModelRouterAgent;
+      const connection = await openSocket(runId);
+      sockets.delete(connection.socket);
+      return { runId, connection };
+    })();
+    const { connection } = await routerReady;
+    const from = await sendTurn(connection, "This is a test of the node, not a routing request. Run exactly this shell command now and wait for it to finish: sleep 55. "
+      + "Then reply DONE. Do not call any other tool.");
+    await waitFor(connection.messages, from, (message) => message.type !== "AGENT_COMMAND_ACK" && JSON.stringify(message.payload).includes("sleep 55"),
+      "the router running sleep", 120_000);
+    return { connection, from };
+  };
+
+  for (const runtime of RUNTIMES) {
+    it.runIf(runtime.enabled && ROUTED)(`${runtime.id ?? runtime.runtimeKind}: LR-3 a routed delegate_task that takes the 40 s routing budget comes back to the live agent as its tool result`, async (ctx) => {
+      if (runtime.requiredSecretId) await requireLiveCapability(ctx, runtime.requiredSecretId);
+      // The delegator's model: one the node's report offers unblocked (AutoByteus: its provider catalog).
+      const reported = ((await pageRead()).agentRuntimes.find((entry) => entry.runtime === runtime.runtimeKind)?.models ?? null) as Record_[] | null;
+      const model = runtime.pickModel(runtime.runtimeKind === "autobyteus" || !Array.isArray(reported) ? await modelsFor(runtime)
+        : reported.filter((entry) => !entry.blocked).map((entry) => String(entry.id)));
+      expect(model).toBeTruthy();
+      const suffix = randomUUID().slice(0, 6);
+      const targetName = `AAR Routed Target ${suffix}`;
+      await createAgentDefinition(targetName, "Reply OK to any task.", []);
+      const hint = (runtime.toolHint ?? "").replaceAll(TOOL, "delegate_task");
+      const delegatorId = await createAgentDefinition(`AAR Delegator ${suffix}`, "You are a precise tool operator. Follow the user's instructions exactly, "
+        + `call only the tools the user names, and keep every reply to one short sentence.${hint}`, []);
+      const delegator = await openSocket(await createAgentRun(delegatorId, runtime.runtimeKind, model!));
+      const router = await holdRouter();
+      const from = await sendTurn(delegator, `Call the delegate_task tool exactly once now with these exact JSON arguments: `
+        + `${JSON.stringify({ recipient_address: `/${segment(targetName)}`, description: "Reply OK." })}. It can take about a minute; wait for its result. `
+        + "Do not call any other tool. Then reply with one short sentence giving the delegated value and the launch_notes text.");
+      const isDelegate = (message: WsMessage) => agentToolName(message.payload).endsWith("delegate_task");
+      // The successful call (a model may first try a wrong tool name, e.g. Grok's use_tool without the server prefix).
+      const done = await waitFor(delegator.messages, from, (message) => message.type === "TOOL_EXECUTION_SUCCEEDED" && isDelegate(message),
+        `${runtime.runtimeKind} delegate_task result`);
+      const failedAttempts = delegator.messages.slice(from, delegator.messages.indexOf(done)).filter((message) => message.type === "TOOL_EXECUTION_FAILED")
+        .map((message) => ({ tool: agentToolName(message.payload), error: JSON.stringify(message.payload.error ?? message.payload.result ?? null).slice(0, 300) }));
+      // The call's own duration where the runtime streams its start (Grok reports a tool call only when it is done:
+      // there the turn's duration bounds it from above, and the "busy" note shows the routing waited its 40 s budget).
+      const turnStartedAt = delegator.messages[from]?.at ?? done.at;
+      // The successful call's first event (its start or approval; not an earlier failed attempt's).
+      const afterFailures = delegator.messages.slice(from, delegator.messages.indexOf(done)).map((message, index) => ({ message, index }))
+        .filter(({ message }) => message.type === "TOOL_EXECUTION_FAILED" && isDelegate(message)).at(-1)?.index ?? -1;
+      const callStartedAt = delegator.messages.slice(from + afterFailures + 1, delegator.messages.indexOf(done))
+        .find((message) => message.type.startsWith("TOOL_") && isDelegate(message))?.at;
+      // A call reported only when done (its start and end arrive together) is timed by its turn.
+      const startedAt = callStartedAt !== undefined && done.at - callStartedAt > 1_000 ? callStartedAt : turnStartedAt;
+      await waitIdle(delegator, delegator.messages.indexOf(done) + 1, "delegator run");
+      const resultText = JSON.stringify(done.payload.result ?? done.payload);
+      const reply = delegator.messages.slice(from).filter((message) => message.type === "SEGMENT_CONTENT").map((message) => String(message.payload.delta ?? message.payload.content ?? "")).join("").slice(-400);
+      evidence(`${runtime.id ?? runtime.runtimeKind} LR-3`, { model, event: done.type, toolMs: callStartedAt ? done.at - callStartedAt : null, turnMs: done.at - turnStartedAt, failedAttempts, result: resultText.slice(0, 1200), agentReplyTail: reply });
+      expect(done.type, resultText.slice(0, 800)).toBe("TOOL_EXECUTION_SUCCEEDED");
+      expect(resultText, "the delegation result reached the agent").toContain("delegated");
+      expect(resultText, "with the busy router's note").toContain("Model Router could not choose (the Model Router was busy)");
+      expect(done.at - startedAt, "the call took the routing budget").toBeGreaterThan(38_000);
+      // The router's own turn ends (sleep done) before the next case holds it again.
+      await waitIdle(router.connection, router.from, "router turn");
+    }, STEP_TIMEOUT_MS * 3);
+  }
+
+  afterAll(async () => {
+    if (!routerReady) return;
+    const router = await routerReady.catch(() => null);
+    router?.connection.socket.close();
+    await gql(`mutation{setModelRoutingEnabled(enabled:false)}`).catch(() => undefined);
+  });
 });

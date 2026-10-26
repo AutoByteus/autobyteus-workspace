@@ -13,6 +13,11 @@ if (arg === "--version") {
     : process.env.AGY_FAKE_CASE === "auto_compaction" ? "1.2.16\n" : "agy version 1.2.11\n");
 } else if (arg === "--help") {
   process.stdout.write("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
+} else if (process.argv.includes("-p") && process.argv.includes("/usage")) {
+  // `agy -p /usage --output-format json`: AGY_FAKE_USAGE_FILE (read on every call) holds the answer, so a test can
+  // script a used-up limit group (autobyteus-32 U4b); without it the command fails, as an unreadable usage does.
+  if (process.env.AGY_FAKE_USAGE_FILE && existsSync(process.env.AGY_FAKE_USAGE_FILE)) process.stdout.write(readFileSync(process.env.AGY_FAKE_USAGE_FILE, "utf8"));
+  else { process.stderr.write("Error: usage unavailable\n"); process.exitCode = 1; }
 } else if (arg === "models") {
   // AGY_FAKE_EXTRA_MODELS (comma-separated ids) lists more models while it is set, so a test can retire a model
   // after a run was configured with it (as a provider retiring a model does).
@@ -147,9 +152,50 @@ if (arg === "--version") {
     reply(turns * 10 + 2, "STARTED");
     emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "STARTED" } });
   };
+  // linked_skills + AGY_FAKE_ROUTER_PLAN (autobyteus-32): this run acts as the node's Model Router agent. A message with
+  // "Routing request <id>." is answered by the plan file (read per request):
+  //   { "mode": "valid" | "invalid_then_valid" | "silent", "delayMs": n, "runtime": "...", "model": "...",
+  //     "invalidModel": "...", "taskKind": "...", "reason": "...", "readRuntimes": true }
+  // "silent" ends the turn without answering. Each request is logged to AGY_FAKE_ROUTER_LOG
+  // (`{requestId, addresses, receivedAt, answeredAt, results}`) so a test can see the order and timing of requests.
+  const routerTurn = async (requestId, content) => {
+    const plan = JSON.parse(readFileSync(process.env.AGY_FAKE_ROUTER_PLAN, "utf8"));
+    const addresses = [...content.matchAll(/^- (\/\S+) — /gm)].map(([, address]) => address);
+    const receivedAt = Date.now();
+    // `crash`: the router's CLI process dies mid-turn (C-05), after logging that it got the request.
+    if (plan.mode === "crash") {
+      if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG, JSON.stringify({ requestId, addresses, receivedAt, crashed: true }) + "\n");
+      process.exit(7);
+    }
+    // `throw`: the turn fails with an error the CLI reports (an uncaught error, as a missing module would be).
+    if (plan.mode === "throw") {
+      if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG, JSON.stringify({ requestId, addresses, receivedAt, threw: true }) + "\n");
+      throw new Error("Scripted router failure: Cannot find package 'scripted-missing-module'");
+    }
+    const results = [];
+    if (plan.readRuntimes) results.push({ tool: "list_available_agent_runtimes", ok: !(await callAgentTool("list_available_agent_runtimes", {})).isError });
+    if (plan.delayMs) await new Promise((resolve) => setTimeout(resolve, plan.delayMs));
+    const choices = (model) => addresses.map((address) => ({ address, runtime: plan.runtime, model,
+      taskKind: plan.taskKind ?? "implementation", reason: plan.reason ?? "Scripted router choice." }));
+    if (plan.mode === "invalid_then_valid") {
+      const invalid = await callAgentTool("submit_launch_choices", { requestId, choices: choices(plan.invalidModel ?? "no-such-model") });
+      results.push({ tool: "submit_launch_choices", isError: invalid.isError === true, text: invalid.content?.[0]?.text ?? null });
+    }
+    if (plan.mode !== "silent") {
+      const valid = await callAgentTool("submit_launch_choices", { requestId, choices: choices(plan.model) });
+      results.push({ tool: "submit_launch_choices", isError: valid.isError === true, text: valid.content?.[0]?.text ?? null });
+    }
+    if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG,
+      JSON.stringify({ requestId, addresses, receivedAt, answeredAt: Date.now(), results }) + "\n");
+    const text = plan.mode === "silent" ? "NOT_ANSWERED" : "ROUTED";
+    reply(turns * 10, text);
+    emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
+  };
   const linkedSkillsTurn = async (line) => {
     let content = "";
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
+    const routingRequest = process.env.AGY_FAKE_ROUTER_PLAN ? /Routing request (\S+?)\./.exec(content) : null;
+    if (routingRequest && !content.includes("CALL_TOOL:")) { await routerTurn(routingRequest[1], content); return; }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
     // `GENERATE_IMAGE:<absolute path>` writes that file and streams the own-MCP generate_image call as AGY 1.2.14 does
