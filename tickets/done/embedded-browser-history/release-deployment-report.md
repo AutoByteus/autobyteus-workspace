@@ -53,7 +53,7 @@ categories meet the 90% floor and overall 95% target. No user-only check needed.
 | AC-004 | API-native/API-05/06/07-result.json; IMP-01/02 | Malformed/unattached requests reject; inactive/unavailable inert; pending network switch/close safe; ERR_EMPTY_RESPONSE settles chrome-error then Forward commits B; empty disabled. Foreign lease/absent-runtime/synchronous throw simulated at owning unit boundary, not claimed native. Proven. |
 | AC-005 | API-native/API-07-result.json and minimum/full-view/mobile-native PNGs; API-04/06 | Keyboard and disabled skip, refresh and preserved controls;384/116 minimum form/input,1184/916 full view; no toolbar/native overlap; mobile390/dpr3. Personally inspected all three native screenshots. Proven. |
 | AC-006 validation portion | IMP-07 excerpt; API-08 cleanup receipts, API-09 audit | Changed worktree build, nine API roots/ports cleaned; forced stops disclosed; no real-app/data/provider/account use. Proven. |
-| AC-006 delivery portion | Delivery finalization and cleanup receipts below | Pending repository finalization/archive/task cleanup; terminal return forbidden until complete. |
+| AC-006 delivery portion | Delivery finalization and cleanup receipts below | Proven: integrated/verified target push, archive and original task cleanup completed; DR-001-finalization.json and final durable receipt. |
 No missing critical runtime proof. Historical probe failures were diagnosed and
 corrected by API; retained failures are not product failures or silent skips.
 No additional API/user evidence requested.
@@ -61,18 +61,49 @@ No additional API/user evidence requested.
 ## Docs / archive / release decision
 Docs sync Updated / Pass: docs-sync-report.md and browser_sessions.md.
 Handoff artifact: handoff-summary.md. Revision artifact: delivery-revision-record.md.
-Archive target `tickets/done/embedded-browser-history` after verification.
+Archived at `tickets/done/embedded-browser-history` after evidence verification, before final ticket commit.
 No release by Task direction and RELEASE.md default. Release notes Not required.
 Release/deployment/rollout/pipeline monitoring: Not required; no hosted deployment.
 Persisted data Not Affected; no migration/reset/compatibility action.
 
-## Finalization and cleanup execution
-Pending; append actual commits/checks/cleanup before terminal handoff.
-Use origin/personal and finalize/embedded-browser-history in dedicated worktree,
-not the shared main checkout or its older personal branch. Push ticket before
-no-ff merge; fetch/check base again before every target push. No force push.
-Remove only task-owned generated outputs/worktree and branches after ancestry
-proof. Export committed archive to durable delivery-receipts before terminal.
+## Finalization and cleanup execution — Completed
+- Ticket commit `015457de89a95f62ff8df96371924f97cf9c04de` pushed to
+  origin/task/embedded-browser-history after 8-commit Secret Gate Pass.
+- Fetched base still `ec92b3c02aa3f949e9bfbf0deb7449ae653fee53`; created
+  finalize/embedded-browser-history from origin/personal in task worktree.
+- `--no-ff` merge `763265ab81fbb58e532bda75d7b374c47dd40e28`, exact tree
+  equality with ticket tip checked; post-merge build/typecheck/native smoke Pass.
+- Evidence-only commit `474fa0a415e412a30d2d4e29e58cbb0c939a5833` pushed to
+  personal after 10-commit merged Secret Gate Pass and fresh unchanged-base check;
+  ls-remote confirmed exact pushed tip. Full archived and merged hygiene checks
+  Pass; licensing Pass. See DR-001-ticket/merged-secret, hygiene and licensing logs.
+- No product/dependency/build-input change after tested merge. This closeout
+  commit updates only ticket documentation/evidence. Its exact final pushed
+  revision is recorded by the external final-delivery-receipt.json.
+- Original task worktree removed after tracked-tree cleanliness, ancestry proof
+  and audit that untracked files were only the two generated SDK dist folders.
+  Ignored task-local build/dependency outputs were removed with it, never staged.
+  Local task ref deleted with expected-value check; remote task ref checked at
+  its exact ticket commit then deleted. Worktree prune dry-run empty.
+  See evidence/DR-001-finalization.json. No unrelated worktree/ref modified.
+- Shared main checkout/local personal intentionally untouched (older and possibly
+  user work). A detached sparse closeout worktree records actual cleanup afterward.
+  Its initial checkout mistakenly selected shared HEAD; corrected immediately to
+  exact pushed revision before copying/writing artifacts; no product/main mutation.
+- A whitespace check found two generated `WARN ` trailing spaces in retained build
+  stdout. The wrapper did not stop before the evidence commit/push; corrected
+  forward here by trimming only line endings, preserving diagnostic content.
+  This documentation-local issue is resolved; final staged diff-check must pass.
+
+### Durable archive and supplementary cleanup
+Committed archive and synced Browser doc are exported under
+`/Users/normy/autobyteus-org/delivery-receipts/embedded-browser-history/`.
+Historical absolute in-progress/worktree references remain provenance: resolve
+files by their archived relative names. Final exact remote push, temporary
+closeout-worktree/finalize-ref removal and export are independently recorded in
+`/Users/normy/autobyteus-org/delivery-receipts/embedded-browser-history/final-delivery-receipt.json`.
+Terminal completion requires that receipt; it is not inferred from this pre-export
+commit. All user app/data/accounts remained untouched; no installation or release.
 
 ## Limits / follow-ups / rollback
 Actual macOS arm64 English only; no Windows/Linux or Chinese runtime certification.
@@ -84,8 +115,14 @@ No deployment to roll back. A future code rollback uses a reviewed revert of the
 finalization merge; future release recovery follows RELEASE.md (never move tags).
 
 ## Status
-Evidence verification Completed; finalization/cleanup Pending. Not yet eligible
-for Delivery Completed. No implementation/design/evidence blocker discovered.
+- Evidence verification: Completed; AC-001–006 proven within stated scope.
+- Repository source finalization: Completed; archive, merge and target push verified.
+- Release/publication/deployment/rollout: Not required, none performed.
+- Original task worktree/local and remote task branch cleanup: Completed.
+- Closeout-only publication/export and auxiliary cleanup: confirmed by final durable
+  receipt before terminal message; do not infer completion from this pre-export commit.
+- Unresolved blocker: None. Successful terminal eligibility requires the final receipt.
+- Terminal message: sent only after receipt to Solution Designer via selected rule.
 
 ## Post-merge checks — Passed
 Merged commit `763265ab81fbb58e532bda75d7b374c47dd40e28` has the exact tree of

@@ -338,7 +338,7 @@ Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyte
 ℹ .nuxt/dist/client/_nuxt/BxHxfnhH.js                                      1,868.36 kB │ gzip:   500.42 kB
 ℹ .nuxt/dist/client/_nuxt/C_876sBQ.js                                      3,984.95 kB │ gzip: 1,246.85 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
@@ -721,7 +721,7 @@ Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyte
 ℹ .nuxt/dist/client/_nuxt/entry.VfamBeh-.js                                   1,869.73 kB │ gzip:   501.07 kB
 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.BEH4bSV2.js                3,987.01 kB │ gzip: 1,248.28 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
