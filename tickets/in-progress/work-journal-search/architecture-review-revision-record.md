@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Solution Designer "Architecture Design Complete" at SR-002 (2026-10-26) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / Solution Designer re-review request for SR-003 (2026-10-26) | SR-003 | Fail | Pass | AR-001…AR-003 (resolved) |
+| ARCH-REV-003 | Round 3 / targeted re-review of SR-005 (F-001 / CRR-003, 2026-10-26) | SR-004, SR-005 | Pass | Pass | None new (R-5 resolved) |
 
 ## Revision Entries
 
@@ -62,3 +63,28 @@ None
 - Material classification changes: none (Large / High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
 - Remaining risks or uncertainty: R-3, R-5…R-7; carried-forward RSKs.
+
+### ARCH-REV-003 — Targeted re-review of SR-005 (meaning strength)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/design-review-report.md`
+- Review round and trigger: round 3. The Solution Designer requested a targeted re-review of SR-005, from API/E2E F-001 → code review CRR-003 (`Design Impact`).
+- Triggering role, report path, and finding IDs: Solution Designer; `design-spec.md` § Meaning Strength (SR-005); `evidence/api-e2e/F-001-02-meaning-scores.txt`; F-001 / CRR-003
+- Relevant solution revision IDs: SR-004, SR-005
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The round-2 acceptance of the layer's three-value `relevance` as the meaning strength is superseded by production evidence. Strength is now the lift over the query's own rank-*k* baseline, owned by `MemorySearchService`.
+  - `nearest` returns scores plus `collection: synced | notSynced`, which resolves R-5.
+  - New notes: R-8 (two stale `relevance` references, L307 and L340), R-9 (calibration infeasible → Design Impact), R-10 (the baseline under partial coverage), R-11 (the asking run and the baseline order).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-003 | Resolved (ARCH-REV-002) | Resolved (unaffected) | SR-003…SR-005 | SR-005 changes only the meaning strength and the `nearest` result shape |
+| R-5 (note) | Open (non-blocking) | Resolved | SR-005 | The `nearest` row (L374): `collection` `synced` / `notSynced` |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large / High)
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: R-3, R-6…R-11; RSKs.

@@ -8,6 +8,7 @@
 | SR-002 | Mixed (Product design integrated; requirements refinement; Design round 2) | Product Team: Design Completed, approved by the user 2026-10-26 | N/A | SR-001 Approved | Approved | R-002, R-009, R-013, R-014; UD-017; design § Product Design Integration, Change Scope, Removal Plan, Interfaces, Tool Contract | The complete package goes to architecture review |
 | SR-003 | Design | Architecture review ARCH-REV-001: Fail, Design Impact | AR-001, AR-002, AR-003 | SR-002 Approved (requirements); design Needs Revision | Requirements Approved (unchanged); design Ready for re-review | DS-001, DS-003, DS-006, § Meaning Step Rules, § Tool Contract, § Removal Plan | Corrections made; back to the architecture reviewer |
 | SR-004 | Mixed (requirements decision; design rule) | Code review CRR-001: CR-003 Requirement Gap; reviewer judgement notes | CR-003 | Requirements Ready for Approval (UD-018 proposed) | Approved (Solution Designer under the user's delegation) | UD-018, UD-019; AC-007; design § Tool Contract (strength, masking order) | Rework round to implementation with CR-001 and CR-002 |
+| SR-005 | Design | API/E2E F-001 → code review CRR-003: Design Impact | F-001 (CRR-003) | Requirements Approved; design Needs Revision | Requirements Approved (AC-007 set widened within intent); design Ready for re-review | design § Meaning Strength (SR-005), Interfaces (`nearest`), Tool Contract, Risks; AC-007 | Targeted architecture re-review, then implementation |
 
 ## Revision Entries
 
@@ -140,3 +141,30 @@
   - private question file updated; a copy of the previous version is in `queries.before-SR-004b.json` in the private folder;
   - `probes/questions-public.json` updated.
 - **Lesson:** a known-answer set's "absent" cases are verified by count before use, like its answers.
+
+### SR-005 — Meaning Strength Rule (2026-10-26)
+
+- **Classification:** Design Impact (code review CRR-003 on API/E2E F-001; owner: Solution Designer).
+- **Evidence:** `evidence/api-e2e/F-001-01`, `-02`, `-03`:
+  - 8 of 10 gated off-topic cues got 4–10 Meaning/Strong matches;
+  - off-topic best 0.745–0.804 (flat, gap ≤ 0.018), real answers 0.890–0.933 (gap 0.10–0.12);
+  - the same with LEAF-IR.
+- **Decision (Solution Designer, under the user's delegation):**
+  - meaning strength = lift over the query's own rank-*k* baseline, owned by `MemorySearchService`, calibrated by the evaluation under three hard constraints (off-topic only-weak; no false only-weak on answerable questions; gates unchanged), verified on Granite and LEAF-IR;
+  - `nearest` returns scores only (three-value relevance removed as dead);
+  - the Project Task relevance rule is unchanged;
+  - the off-topic set widened with API/E2E's verified cues (OT-C1…OT-T3; OT-T2 partial);
+  - tool description says when to use the tool (O-1).
+- **Not a user decision:** the visible labels and their meaning (Strong / Fair / Weak, the only-weak note) are unchanged; only the calibration behind them changes. The user delegated such decisions (2026-10-26).
+- **Follow-ups added:** FU-007 (self-references, O-3), FU-008 (index size, O-2), FU-009 (switch dialog copy, O-4).
+- **Classification:** unchanged, Large/High.
+- **Next:** targeted architecture re-review (the embedding layer's `nearest` contract and the strength ownership changed), then implementation, then targeted code review and API/E2E for F-001.
+
+### SR-005 Addendum — Architecture Review Pass (2026-10-26)
+
+- **ARCH-REV-003: Pass**; the reviewer delivered to implementation (no duplicate forwarding).
+- **Notes applied to the design text (no behavior change):**
+  - R-8: two stale `relevance` references fixed;
+  - R-9: infeasible calibration is an escalation (Design Impact), never a relaxed constraint;
+  - R-10: below full meaning coverage, the coverage note replaces the only-weak note when every match is weak; a partial-coverage evaluation case;
+  - R-11: the baseline is computed before the asking run's cards are removed; tested.

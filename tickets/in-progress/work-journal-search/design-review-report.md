@@ -4,8 +4,8 @@
 
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/requirements-doc.md` (SR-001, approved by the user 2026-10-26; refined by UD-016 and, at SR-002, UD-017)
 - Upstream Investigation Notes: `.../investigation-notes.md` (AE-01…AE-21)
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-003)
-- Reviewed Design Spec: `.../design-spec.md` (SR-003: § Meaning Step Rules, § Primary Execution Spines DS-003/DS-006, § Tool Contract "Pointer of a meaning match", § Removal Plan, § Review Corrections; the rest as in SR-002)
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-005)
+- Reviewed Design Spec: `.../design-spec.md` (SR-005: § Meaning Strength (SR-005), the `nearest` interface row, Tool Contract, Risks; the rest as in SR-003/SR-004)
 - Supplemental Task Artifacts Reviewed:
   - the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md`, normative VIS-001…VIS-024, design repository `personal` @ `d01192275c`;
   - `memory-search-evaluation-report.md`;
@@ -13,13 +13,13 @@
   - `product-design-request.md`;
   - `follow-ups.md`;
   - `handoff-architecture-review.md`.
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003 (corrections for ARCH-REV-001)
+- Relevant Solution Revision IDs: SR-001…SR-003; SR-004 (code review CR-003, UD-018/019); SR-005 (API/E2E F-001 → code review CRR-003, Design Impact)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer re-review request for SR-003 (2026-10-26); requirements unchanged
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, Fail: AR-001…AR-003)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Solution Designer targeted re-review request for SR-005 (2026-10-26). Scope: § Meaning Strength (SR-005), `EmbeddingIndex.nearest`, the strength ownership, AC-007 widening, O-1
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `codex/work-journal-search` @ `ddd6fdcdf6` (no source changes). Opened:
   - `embeddings/embedding-index.ts`:
     - L106–116 `search` syncs, then queries;
@@ -129,7 +129,7 @@
 | `MemorySearch.search/indexStatus/startIndexing/rebuild` | Pass | Pass | Pass | Low | Pass |
 | `WorkJournalService.onJournalChanged`, `listJournalFiles`, `readJournalLines` | Pass | Pass | Pass (`memoryDir` from subject resolution; manifest-validated file) | Low | Pass |
 | `readJournalEntries` | Pass | Pass | Pass | Low | Pass |
-| `EmbeddingIndex.nearest(collection, queryText, {limit})` | Pass | Pass | Pass | Low | Pass (Rule 4; R-5) |
+| `EmbeddingIndex.nearest(collection, queryText, {limit})` | Pass | Pass | Pass | Low | Pass (SR-005: scores plus `collection` synced/notSynced; R-8) |
 | Tool `search_memory` | Pass | Pass | Pass (asking run: native `agentId`, MCP `owner.runId`, both = the folder basename / `agentRunId`) | Low | Pass (pointer rule) |
 | GraphQL `memorySearch`, `memoryIndexStatus`, `startMemoryIndexing`, `rebuildMemoryIndex`, `runFolderWorkJournal`, memory-view Work Journal part | Pass | Pass | Pass (`AGENT` / `TEAM_MEMBER` / `ORG_MEMBER` / `RUN_FOLDER`) | Low | Pass |
 
@@ -280,21 +280,37 @@ Findings rechecked:
   - R-3: line drift limited to the open file's last entry, accepted;
   - R-4: a glossary note for "Words" and "Meaning".
 
+## Round 3 Verification (SR-005)
+
+- **Trigger and evidence.** API/E2E F-001 (code review CRR-003, `Design Impact`). `evidence/api-e2e/F-001-02-meaning-scores.txt` shows the reused Project Task rule (`clearMatchFloor 0.78`, `nearBestMargin 0.02`) marking off-topic cues Strong:
+  - for example `pelicanmarigold9152`: top-5 0.7826…0.7745, with 70 cards "relevant";
+  - off-topic best scores are 0.745–0.804 and flat (best-to-5th gap ≤ 0.018), while real answers are 0.890–0.933 with a gap of 0.10–0.12;
+  - the same happens with LEAF-IR.
+
+  So the round-1/2 premise that the layer's relevance flag could serve memory strength (AE-06; ARCH-REV-002 accepted the three-value `relevance`) is contradicted by production data. The design change is warranted.
+- **Spine and owner, in call order (DS-002 meaning tier):** `MemorySearchService.search → EmbeddingIndex.nearest(cards, q, {limit: 300})` (ranked `{id, score}`, `collection: synced | notSynced`, readiness) `→ MemorySearchService: baseline = score at rank k → lift per card → Strong / Fair / Weak → interleave with text → only-weak note when no strong match`.
+  - The strength fact has one owner, `MemorySearchService` (Principles 11 and 13), and the text tier's strength is owned by the same service.
+  - The embedding layer keeps `selectRelevant` and its calibration for Project Task `search` only, so autobyteus-71 behavior is preserved.
+  - `nearest` loses the three-value `relevance`, which is dead after this change (Principle 7). The new `collection: synced | notSynced` field is the explicit "no job" result asked for in R-5. **R-5 is resolved.**
+- **Requirements.** The labels and the only-weak note are unchanged (R-002, R-009, AC-007). AC-007's "defined set" is widened with the verified off-topic cues, within its intent. The three hard calibration constraints map to AC-007 (only-weak for off-topic), R-009 (no false only-weak) and AC-001/AC-002 (gates unchanged). Per-model constants are a fallback table, not new architecture.
+- **O-1 (tool description):** wording only, consistent with R-001.
+- **Risks and follow-ups:** the index is 610 MB (in the risks); FU-007, FU-008 and FU-009 are recorded in `follow-ups.md`, so no ticket growth.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass`. The behavior basis is confirmed, AR-001…AR-003 are resolved in the current design spec, and no in-scope machinery depends on an unsupported premise. The design is ready for implementation.
+`Pass`. The SR-005 change is coherent with the approved behavior, gives meaning strength one owner, and narrows the `EmbeddingIndex` contract. The design is ready for implementation.
 
 ## Findings
 
-None open. The resolution of AR-001…AR-003 is recorded in `ARCH-REV-002`.
+None open. AR-001…AR-003 stay resolved (ARCH-REV-002). R-5 is resolved by `collection: synced | notSynced`.
 
 ## Classification
 
-N/A — `Pass`. Ticket scope: no prerequisite and no new follow-up.
+N/A — `Pass`. Ticket scope: no prerequisite; FU-007, FU-008 and FU-009 are follow-ups.
 
 ## Recommended Recipient
 
@@ -302,18 +318,18 @@ N/A — `Pass`. Ticket scope: no prerequisite and no new follow-up.
 
 ## Residual Risks
 
-- **R-5 — Make "no job" an explicit result of `nearest`** (Principle 13: no behavior by absence). Rule 4 gives "no job" the same readiness as "job exists, model loading" (`preparing/loading`), while Rule 3 has the facade request `meaningSync` "when `nearest` reports no job". Return a distinct value, for example a `phase: "notLoaded"` or an explicit `job: false`, so the facade's trigger is an explicit rule. Requesting `meaningSync` on any `preparing/loading` would also work (single flight; `sync` is a fingerprint diff), but then the design should say so.
-- **R-6 — Record the Work Journal empty-state copy as a requirements decision** before code review, the way DEC-009 and DEC-011 were recorded in autobyteus-146. "No Work Journal yet. Index your memory to create it.", with the Index-tab link, is a visible state that the normative UI spec doesn't define. Today it sits only in the design's Review Corrections. For a local run it is the default tab for most old runs before the first build.
-- **R-7 — Pointer rule and "newest matching part first"** (R-010). When both of a run's matches resolve to card parts or text chunks, keep them ordered newest day first, and keep that in the evaluation's step-2 check.
-- Carried forward:
-  - R-3: accepted line drift in the open file's last entry;
-  - the first build writes about 1.7 GB, with a backup on the user's machine;
-  - the meaning-build CPU (about 1 h);
-  - secrets in snippets (AC-005);
-  - `node:sqlite` FTS5 on packaged Node versions (AE-16).
+- **R-8 — Two stale references to the removed `relevance`** (fix in the design or in implementation):
+  - § Meaning Step Rules, rule 4 (design-spec L307) still says "ranked fresh vectors with `relevance`";
+  - § Ownership Boundaries (L340) says `EmbeddingIndex` "stays the only owner of … the relevance rule".
+
+  After SR-005, `nearest` returns scores only, and memory-search strength is owned by `MemorySearchService`. The layer's relevance rule serves Project Task search only. Follow the interface row (L374) and § Meaning Strength.
+- **R-9 — When calibration cannot meet the constraints.** If no `k`, `Ls`, `Lf` (or per-model table) meet all three hard constraints on the default model, that is a `Design Impact` back to the Solution Designer, not a relaxed constraint. The design implies this; record it as the escalation trigger in the evaluation report.
+- **R-10 — The baseline while the meaning index is partly built.** With few embedded cards (during the first build, or after a Rebuild), rank *k* falls back to the last candidate, so lifts shrink and most matches read Weak while the coverage note says the meaning index is incomplete. Include a partial-coverage case in the evaluation, so the only-weak note does not mislead during a build.
+- **R-11 — The asking run and the baseline.** Compute the baseline over the candidates *before* removing the asking run's cards. Otherwise one agent's results would rate differently from the same query on the page. Either order works if it is stated and tested.
+- Carried forward: R-3, R-6, R-7; RSKs (index about 610 MB, first-build writes, the meaning-build CPU, secrets in snippets, `node:sqlite` FTS5 on packaged Node).
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. MP-001 and MP-002 are resolved by Rules 1–4 and the pointer rule. MP-003 is resolved by Rule 5.
-- Notes: round 2 redrew DS-003, DS-006 and the post-restart DS-002 in call order, and checked AR-001…AR-003 against the SR-003 design spec. The round-1 verdicts for unaffected sections stand. Rows that failed in round 1 now pass, through the evidence above: DS-001, DS-002, DS-003, DS-006, the `nearest` and `search_memory` interface rows, the result-match structure, the derived consumers and the removal plan.
+- Material-Premise Gate: `Pass`. F-001's production evidence establishes the off-topic premise as observed, not hypothetical, and the response is bounded.
+- Notes: a targeted round-3 review of SR-005 against `F-001-02`, the design spec and the requirements. Other verdicts stand. In the interface verdict, the `nearest` row now reads "scores only, with `collection` synced or not synced".

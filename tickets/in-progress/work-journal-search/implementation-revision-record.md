@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
 | IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
+| IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11 | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised (R-9 trigger) before code changes | SR-005, ARCH-REV-003, CRR-003 | Stopped at calibration: constraint 1 cannot be met on the default model because OT-T3 has a fair **text** match; returned to the Solution Designer (IMP-18) |
 
 ## Revision Entries
 
@@ -67,4 +68,14 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - The optional CJK weighting was not added: N05 already passes.
 - Next recipient or routing: Code Reviewer (targeted review of IR-002; Large/High).
 - Remaining limitations or risks: see `implementation-handoff.md` § Known Risks.
+
+### IR-003 — SR-005 meaning strength: calibration stopped by R-9 (Design Impact)
+
+- Triggering role, report path, and round: Architecture Reviewer ARCH-REV-003 (Pass) for SR-005; Solution Designer clarification R-8…R-11.
+- Classification: `Design Impact` (R-9 trigger), raised before any source change.
+- Evidence: `evidence/IMP-18-meaning-strength-calibration.log`.
+  - The new off-topic cues' key words are absent in the isolated copy.
+  - The lift rule is feasible for the meaning tier at k ≥ 100 (Lf windows with margins ±0.005).
+  - OT-T3 has a fair text match (UD-019 rule; "supplier" is rare but present), so constraint 1 fails for any k, Ls, Lf.
+- Next recipient or routing: Solution Designer; implementation continues after the decision.
 

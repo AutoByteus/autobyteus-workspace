@@ -5,6 +5,7 @@
 - **Classification:** `Architecture Design Complete` at **SR-002** (the Product design integrated), `task_size=Large`, `architectural_risk=High` → independent architecture review (handoff rule).
 - **Supersedes:** the SR-001 handoff that was put on hold at the user's request (the review waited for the UI design).
 - **Round 2 (SR-003, re-review):** ARCH-REV-001 findings AR-001 to AR-003 are corrected. See `design-spec.md` § Review Corrections (with the non-blocking notes R-1 to R-4), § Meaning Step Rules, § Primary Execution Spines (DS-003, DS-006), § Tool Contract (pointer of a meaning match), § Removal Plan and the web mapping (`memory.generated.ts`). Requirements are unchanged.
+- **Round 3 (SR-005, targeted re-review):** API/E2E F-001 → CRR-003 Design Impact. See `design-spec.md` § Meaning Strength (SR-005), the `nearest` row of § Interface Boundary Mapping, § Tool Contract (strength) and § Risks (index size); `solution-revision-record.md` SR-005. Requirements are unchanged in intent (the AC-007 off-topic set is widened).
 - **Ticket folder:** `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/`.
 - **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`, base `origin/personal` @ `ddd6fdcdf6`. No source changes yet. Probe files (`autobyteus-server-ts/probes-wjs/`, `vitest.probe.config.ts`) are untracked and excluded; they are not part of the design.
 

@@ -2,26 +2,34 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-001/SR-002, approved by the user 2026-10-26; UD-016, UD-017)
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Round 2 (`CRR-002`, Pass) is the latest implementation-review result; its sections below are carried forward.
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-004/SR-004b: UD-018 the empty-state copy, UD-019 weighted strength, AC-007 refined; earlier SR-001/SR-002 approvals stand)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (AE-01…AE-21, as cited by the design)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
 - Design Spec Reviewed As Context: `design-spec.md` (SR-003: DS-001…DS-006, § Meaning Step Rules 1–5, § Run Kinds, § Tool Contract, § Review Corrections, § Product Design Integration)
 - Supplemental Task Artifacts Reviewed As Context: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (UXJ-003, state table, exact labels, Implementation Fidelity Boundary); `memory-search-evaluation-report.md`; `follow-ups.md`
-- Relevant Solution Revision IDs: SR-002, SR-003
+- Relevant Solution Revision IDs: SR-002, SR-003, SR-004, SR-004b
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002, Pass; MP-001…MP-003; R-1…R-7)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: implementation engineer handoff for IR-001
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3 (failure-origin; Review Scope `N/A`)
+- Review Scope: `Full Re-Audit` of the changed subsystem (round 1: `Full Review`)
+- Review Scope Evidence (round 2): the delta `c66708b44b..41501c5a41` (source commits `0ca22eaa1c`, `8529960b80`, `41501c5a41`; ticket folder `e183aded53`) changes the pipeline's status semantics and live-update rule (CR-001, CR-002), and adds a requirement change beyond the prior findings: UD-019, rarity-weighted strength, with a new `chunk_vocab` virtual table in the store, a new normalizer function and a new store query. It also changes the evaluation (SR-004b kinds). So the structural checks and the full scorecard were rerun for `src/memory-search/**`. The web is unchanged since round 1 (`git diff --stat` shows no `autobyteus-web` change), so round-1 web evidence carries forward.
+- Trigger: implementation engineer handoff for IR-002 (after SR-004/SR-004b)
+- Prior Review Round Reviewed: round 2 (`CRR-002`, Pass)
+- Latest Authoritative Round: 3
+- Failure-origin context (round 3):
+  - trigger: API-REV-001 (`/software_engineering_team/api_e2e_engineer`), **F-001** (AC-007 / R-009);
+  - code tested: `41501c5a41`, plus test `06fdc1306a`; evidence commits `c7a2f3b972`, `d07abb8ab2`;
+  - reports: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`;
+  - command: `node evidence/api-e2e/probes/API-PROBE-offtopic.mjs <graphqlUrl>`; mechanism: `probes/API-PROBE-meaning-scores.mjs`;
+  - evidence: `evidence/api-e2e/F-001-01-offtopic-cues.txt`, `F-001-02-meaning-scores.txt`, `F-001-03-offtopic-cues-leaf-ir.txt`;
+  - testing guideline: the worktree `TESTING.md`.
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`, `ddd6fdcdf6..c66708b44b` (ticket folder `e031d0d0b8`)
 - Coverage / API/E2E / delivery artifacts: N/A (implementation review)
 
@@ -60,7 +68,94 @@
   - One check of my own, **Measured**: the Teams explorer list on the isolated copy `/tmp/wjs-copy/memory` (101 task teams; never `~/.autobyteus`), using the built `dist`, read-only. `TeamMemoryExplorerService.listAgentTeamsWithMemory` took 537 / 463 / 247 ms at load average 12. The probe script lived in `/tmp/crr-probe` and was removed afterwards.
 - Explicit exclusions: the evaluation command's internals beyond its reported gates; probes and evidence; the regenerated `generated/graphql.ts`; the web components' visual fidelity, which the IMP-12 probe compared with VIS-*.
 
-## Upstream Behavior And Production-Path Basis Confirmation
+## API/E2E Failure-Origin Review (Round 3, CRR-003): F-001
+
+### The failing scenario represents approved behavior
+
+- **Scenario:** a user or an agent asks about work no local run did: a codename, work done on another node, or plain words ("What did we decide about the sauerkraut supplier contract?").
+- **Approved basis:**
+  - R-009: honest results; never "nothing in memory", but weak matches are said to be weak.
+  - AC-007 as refined by SR-004b: off-topic cues, "key words occur in no run, verified by count", end with the only-weak note.
+  - UC-001: an agent asks with a vague cue.
+- **Supported:** the cues meet that definition exactly; API/E2E counted each key word: pelicanmarigold 0, xylophonequartz 0, orchidtundra 0, falconsaffron 0, tortellini 0, bagpipe 0, sauerkraut 0. The trigger is the real one: the page's GraphQL search and real agents (an absent codename was asked in AC-012).
+- **Count correction:** T2 has words that do occur, so it is `partial` (not gated) under SR-004b. The gated result is **8 of 10 off-topic cues fail**, still clearly failing AC-007.
+- This is not an invalid test or a fixture problem. The curated R-016 set (N02, N04, N05) still passes because its cues happen to stay below the floor; the set is too narrow to represent AC-007's definition.
+
+### Origin analysis
+
+- **Mechanism (Measured by API/E2E, consistent with the code I reviewed):**
+  - `MemorySearchService` maps `nearest`'s relevance to strength: `relevant` → Strong, `aboveFloor` → Fair, `below` → Weak.
+  - `EmbeddingIndex.nearest` computes `relevant` with the model's catalog rule (`selectRelevant`: best ≥ `clearMatchFloor`, then everything within `nearBestMargin` of the best). That calibration was made for **Project Tasks** (autobyteus-71).
+  - On journal cards, off-topic cues score 0.77–0.80, right at Granite's floor of 0.78. When the best card just clears the floor, every card within 0.02 is "relevant": 70–84 Strong cards. When it misses by 0.01, there are none. Real answers score 0.89–0.93 with one relevant card.
+  - The same happens with LEAF-IR (floor 0.30). So the threshold transfer is wrong in general, not for one model.
+- **The code matches the reviewed design:**
+  - design § Tool Contract: "meaning: `relevant` → strong, `aboveFloor` → fair, `below` → weak (from `nearest`)";
+  - § Interface Boundary Mapping: "The calibration stays in the layer; memory search maps the three values to Strong / Fair / Weak".
+  - It is not an implementation defect.
+- **Design origin:**
+  - The design reuses a per-model relevance calibration made for one collection (Project Task descriptions) as the strength rule for a different collection (journal cards), with no calibration for cards.
+  - Its "near-best" membership is built for picking matches, not for labelling absolute strength.
+  - The R-016 check, the only calibration evidence, has an off-topic set too narrow to show this.
+  - Fixing it needs a design decision about where per-collection meaning calibration lives. Options the evidence suggests, none decided:
+    - (a) calibration per collection in the embedding layer (changes its contract);
+    - (b) memory search owns its own absolute thresholds on raw scores, calibrated on journal cards (changes the "calibration stays in the layer" boundary);
+    - (c) a strength rule for memory not built on near-best membership, e.g. a meaning match is at most Fair unless the text tier agrees.
+
+    Any option also needs AC-007's evaluation set widened to represent its definition (codenames, absent topics in sentences, plain words) per R-016.
+- **Review gap?**
+  - Round 1 raised off-topic strength in general (C-08, handed to the Solution Designer as a calibration question). The upstream answer (UD-019) addressed only the text tier.
+  - The meaning-tier calibration transfer was a reviewed design decision (ARCH-REV-002). From the source it shows only as reuse of an approved boundary. The failure needs measured card scores, which only exist at runtime on a real-size index. So it was not reasonably detectable as a code defect in source review. I am noting it, not attributing a source defect.
+- **Classification:** `Design Impact` → Solution Designer, which decides the calibration owner and rule; the evaluation set is extended as part of it. Requirements are unchanged (AC-007 as refined is clear); if the remedy changes visible strength semantics, that is the Solution Designer's call with the user.
+
+### Other API/E2E notes (not findings of this round)
+
+- **API-D01:** the new durable test `memory-run-discovery.test.ts` "never finds runs imported from another node by Memory Sync (AC-006)" (commit `06fdc1306a`) waits for the proportional test review after API/E2E passes.
+- **Observations:**
+  - O-1 (tool adoption depends on phrasing) and O-3 (self-references) are product and calibration questions for the Solution Designer.
+  - O-2: the index store is 610 MB against an estimate of 100–300 MB. A risk to note; no requirement sets a disk budget for the index beyond "must not keep a second full copy of the journal text", which holds (contentless FTS5).
+  - O-4 (the Embedding switch dialog doesn't mention the memory index) is autobyteus-146 copy, outside this ticket. The API/E2E engineer, who found it, records it in `follow-ups.md` if it is wanted; this review adds no row.
+  - O-5: dates in a copied data set, not reachable on a normal install.
+- **Disclosed side effects:** one agent ran a read-only `ls` under the user's real `~/.autobyteus`, following an old pointer, and Codex chats listed connectors. These are for the API/E2E engineer's report and the Solution Designer's awareness; they don't affect the origin.
+
+## Round 2 (CRR-002): Full Re-Audit of IR-002
+
+### Prior findings
+
+| Finding | Resolution | Verification (`Read`, plus the recorded tests) |
+| --- | --- | --- |
+| CR-001 | **Resolved** | `onJournalChanged` now drops only notifications from the Journals step's own `ensureCurrent`: the run is held in `ownJournalCalls` only while that call is in flight. Every other change is queued, also during the first build; the timer defers it until a build runs or exists, and a `runs` pass before any build indexes nothing. A live turn serialized just ahead of the pipeline's own call on the same run may be dropped, but that pass's Text step indexes the run afterwards, so nothing is lost (rule 5 holds). Tests: "queues a live change made while a pass runs: during the first build and during a later full pass"; "drops only its own Journals step's notifications". Both fail on the previous code (handoff) |
+| CR-002 | **Resolved** | Only `full`, `rebuild` and `catchUp` are shown (`SHOWN`). `runs` and `meaningSync` use their own `passSteps`, and `status()` reports the settled index while they run. A failure in them changes nothing reported. `meaningSync` is requested only when `canSyncMeaning()` holds, so `modelChanged` starts no pass, and it no longer moves `updatedAt`. Meaning progress counts only the build's own embedding (`buildEmbedding`, cleared when it completes); the facade's meaning note follows. Tests: settled status and no false coverage during a held-open live pass; no `meaningSync` in `modelChanged` |
+| CR-003 | **Resolved upstream** | UD-018 (SR-004) records the copy as built; the implementation already matches |
+| C-06 (note) | Applied | Each snippet line is masked, then cut; test at the cut edge |
+
+### Re-audit of the delta
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| UD-019 strength | Pass | `textStrength` = the weighted share of terms found. Weight = BM25 IDF from the index's own vocabulary (`fts5vocab` 'row' over `chunk_text`), floored at 1e-6; a multi-token term weighs as its rarest token (`termTokens` follows `unicode61`). Thresholds unchanged (2/3, 1/3); the rule stays only in `MemorySearchService`. Test: rare versus common words |
+| Store | Pass | `chunk_vocab` is created with `IF NOT EXISTS` on open. It is a view over the existing FTS index, so stores built earlier need no rebuild and the schema version stays. `tokenChunkCounts` is read-only |
+| Evaluation (R-016, SR-004b) | Pass | Kinds `answerable` / `offTopic` / `partial`; off-topic must end with the only-weak note, and `falseOnlyWeak` lists answerable questions that wrongly did; partial questions are reported, not gated; the file format is documented |
+| Ownership / boundaries | Pass | Unchanged: status and pass kinds stay in the pipeline, notes in the facade, strength in the search service, vocabulary in the store |
+| Size | Pass | Pipeline 277 → 326, search service 163 → 189, store 183 → 194, facade 141, evaluation 160; all under 500, one owner each |
+| Docs | Pass | `memory_search.md`: pass kinds and status, live changes during a pass, strength, snippet order; `evaluate-memory-search.md`: question kinds |
+| Checks | Pass (recorded) | IMP-16 (369 tests including `tests/unit/api`; memory e2e 20 in a clean environment; typecheck). IMP-17 on the isolated copy: gate 1 31/31 (30/31 in one search), gate 2 top 3 26/31, p90 556 ms, max 879 ms, off-topic 3/3, `falseOnlyWeak` [], 0 unmasked. These cover the reviewed code, so none was rerun |
+
+### Candidates (round 2)
+
+| Candidate | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| C-10 | `meaningProgress` clears `buildEmbedding` while computing the status (a small side effect in a read) | Reject (as a finding) | Idempotent, and it only stops counting a finished embedding; no wrong state |
+| C-11 | The partial questions N01 and N03 end with fair matches | Reject | SR-004b scopes them out of AC-007 (their key words describe real work) |
+
+### Score update (round 2, full scorecard)
+
+- API/E2E Readiness 8.7 → 9.3: the findings are fixed and tested; AC-007 has an evaluation check.
+- Runtime Correctness 8.6 → 9.3: live changes are kept and coverage is honest.
+- Shared-Structure 9.3 → 9.4: the page's weak-only rule now has a server counterpart with a calibrated weight.
+- Other categories unchanged.
+- Overall 9.4/10; every category ≥ 9.2.
+
+## Upstream Behavior And Production-Path Basis Confirmation (round 1)
 
 - Approved requirements basis understood: Yes. Episodic memory (Work Journals) becomes findable for agents (`search_memory`) and the user (Memory page), with time-aware pointers. A user-started four-step indexing pipeline keeps itself current. The old per-run episodic, semantic and working-context path is removed.
 - Design-spec behavior map verified against the implementation: Yes, with the exceptions in CR-001 and CR-002.
@@ -239,13 +334,15 @@ Non-blocking notes:
 
 ## Classification
 
-- `Requirement Gap` (CR-003): a visible state's decision is not recorded.
-- `Local Fix` (CR-001, CR-002): bounded pipeline and status corrections inside the design's intent (rule 5's purpose, MP-003, R-009). They go to implementation in the same rework, after the Solution Designer records CR-003.
+- Round 3: `Design Impact` (F-001: meaning-strength calibration for journal cards).
+- Round 2: N/A — `Pass` (CR-001 and CR-002 resolved; CR-003 resolved by UD-018).
+- Round 1: `Requirement Gap` (CR-003), `Local Fix` (CR-001, CR-002).
 
 ## Recommended Recipient
 
-- `/software_engineering_team/solution_designer` (`Requirement Gap` CR-003). It then hands the rework, including CR-001 and CR-002, to implementation.
-- Routing note: after the rework, a targeted code review, then API/E2E.
+- Round 3: `/software_engineering_team/solution_designer` (`Design Impact`, F-001).
+- Round 2: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
+- Round 1: `/software_engineering_team/solution_designer`.
 
 ## Residual Risks
 
@@ -256,11 +353,11 @@ Non-blocking notes:
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 1, full review)
-- Supported Product Scenario Gate: `Pass` (SCN-E and SCN-F added)
-- Material-Premise Gate: `Pass` (MP-003 reclassified, driving CR-001)
-- Score Summary: 9.2/10. Below 9.2: API/E2E Readiness 8.7, Runtime Correctness 8.6.
-- Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/solution_designer` (`Requirement Gap` CR-003; `Local Fix` CR-001, CR-002 to follow in the same rework)
-- Notes: a well-structured, faithful implementation of a large design. Search, pointers, discovery, `nearest`, the journal boundary, the tool in both entry forms and the clean removal are all correct. The two runtime findings sit in the pipeline's handling of concurrent live updates.
+- Review Decision: `Fail` (failure-origin review of API-REV-001)
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 3)
+- Supported Product Scenario Gate: `Pass` (absent-work cues per AC-007 as refined; real triggers)
+- Material-Premise Gate: `Pass`
+- Score Summary: no new scorecard for a failure-origin round (round 2: 9.4/10)
+- Failure Origin: `Design Impact`. Meaning strength reuses the embedding catalog's Project-Task relevance (floor plus near-best margin) for journal cards, with no calibration for them. Off-topic cues sit right at the floor, so 8 of 10 gated off-topic cues return many Meaning/Strong matches with no only-weak note. The code matches the design. Not an implementation defect, not a test problem, and not reasonably detectable in source review
+- Recommended Recipient: `/software_engineering_team/solution_designer`
+- Notes: the Solution Designer decides where per-collection meaning calibration lives and the strength rule (options in the origin analysis), and widens AC-007's evaluation set to its definition (R-016). API-D01 waits for the proportional test review.

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- **Current solution revision:** SR-003 (design round 3: architecture review ARCH-REV-001 findings AR-001 to AR-003 corrected; § Review Corrections).
+- **Current solution revision:** SR-005 (design round 4: meaning strength rule after API/E2E F-001 / code review CRR-003; § Meaning Strength (SR-005)). Earlier: SR-003 review corrections; SR-004 strength by term rarity.
 - **Approved requirements:** `requirements-doc.md` SR-001, approved by the user 2026-10-26 ("do you think we're ready for the design? … If you were ready for the design, please"); refinement UD-016 approved in conversation the same day.
 - **Behavior-defining supplement:** the approved Memory page UI/UX specification, `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md`, with normative screenshots VIS-001 to VIS-024 in `visual-references/`. Approved by the user 2026-10-26 ("Oh, I think that the UI is correct now. I feel it's good."). Design repository `personal` @ `d01192275c`. Integrated in § Product Design Integration (SR-002).
 - **Design status:** `Ready`. Approved by the user 2026-10-26 ("Yes … show me your data flow spine"). The Product design is integrated (SR-002); the complete package goes to architecture review.
@@ -304,7 +304,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
    - **No job for the collection in this process:** `{matches: [], collection: "notSynced", readiness: …}`; nothing started. The explicit `notSynced` flag (review R-5) is what tells memory search to request the meaning sync; it does not have to be inferred from a readiness phase. In every other case `collection` is `"synced"`.
    - **Job exists, the active model's files are not on disk:** `{matches: [], readiness: unavailable("embedding model not downloaded")}`.
    - **Job exists, the model is downloading or loading (started by the pipeline):** `{matches: [], readiness: preparing(...)}`.
-   - **Job exists, model ready:** ranked fresh vectors with `relevance`. A worker stopped by the idle timer restarts from disk on the query, as `embed` does today (`embedding-model-runner.ts`: "restarts a stopped worker").
+   - **Job exists, model ready:** ranked fresh vectors with their scores (SR-005). A worker stopped by the idle timer restarts from disk on the query, as `embed` does today (`embedding-model-runner.ts`: "restarts a stopped worker").
    - Memory search turns each readiness into its coverage note; text results are always returned.
 5. **Notifications from the pipeline's own Journals step (review R-2):** notifications for runs already in the running pass are dropped; others merge into the next pass. Unchanged content hashes make a repeated run a no-op (MP-003).
 - **Text tier inside `MemorySearchService`:** `normalize(query) → terms (stop words removed; CJK as overlapping 2-character phrases) → FTS5 MATCH (OR) ORDER BY bm25 LIMIT 4000 → first chunk per run in rank order`.
@@ -337,7 +337,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 
 - `MemorySearch` is the only public boundary of `memory-search`. Tools, GraphQL and startup depend on it, never on the pipeline, store or search service directly.
 - `WorkJournalService` stays the only reader of raw traces and the only writer and reader of journal files. Memory search reads journal lines through it, not through the file system.
-- `EmbeddingIndex` stays the only owner of vectors and the relevance rule. Memory search passes items to `sync` and asks `nearest`.
+- `EmbeddingIndex` stays the only owner of vectors and of the Project Task relevance rule used by `search` (SR-005). Memory search passes items to `sync`, asks `nearest` for scores, and owns its own meaning strength rule.
 - Run attribution uses existing owners: `AgentMemoryLayout`, `AgentRunMetadataStore`, the team and org location services, the run history catalogs, and the new `TaskTeamRootMemorySource` for task teams. Discovery never parses team or org trees itself.
 - **Admission rule for task teams (explicit):** a task-team root is shown and attributed only while its coordinating run's tree still links it (the existing rule for task agents, AE-21). A detached task team's member folders are still searched as `RUN_FOLDER` runs (R-012).
 
@@ -371,7 +371,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 | `WorkJournalService.onJournalChanged(listener)` | Journals | Notification after a changed journal | `{runId, memoryDir, package}` | Returns unsubscribe |
 | `WorkJournalService.listJournalFiles(memoryDir)` / `readJournalLines(memoryDir, journalFile, {start, end})` | One run's journal | List: per file name, state (`closed` / `open`, shown as Active), size, line count, and days with their first line (from the entry reader). Read: a line range | `memoryDir` from subject resolution; `journalFile` must be a manifest entry | Windows of 300 lines on the page; at most 400 lines per call |
 | `readJournalEntries(markdown)` (agent-work-journal, public reader) | Journal format | Entries with `lineStart`, `lineEnd`, `day`, kind | — | The only parser of the format outside rendering |
-| `EmbeddingIndex.nearest(collection, queryText, { limit })` | One collection | Top `limit` fresh vectors by similarity, each `{id, score, relevance}` with `relevance` = `relevant` (inside the layer's rule, AE-06) / `aboveFloor` (score ≥ the model's clear-match floor) / `below`, plus readiness | Collection key | The calibration stays in the layer; memory search maps the three values to Strong / Fair / Weak |
+| `EmbeddingIndex.nearest(collection, queryText, { limit })` | One collection | Top `limit` fresh vectors by similarity, each `{id, score}`, plus `collection` (`synced` / `notSynced`) and readiness (SR-005: the three-value `relevance` is removed, because no consumer uses it) | Collection key | The Project Task relevance rule (`selectRelevant`, catalog calibration) stays in the layer for `search`. Memory search computes meaning strength from the ranked scores (§ Meaning Strength (SR-005)) |
 | Tool `search_memory` | Memory of this node | Agent contract | `query`, `limit?`; asking run from the session (MCP owner `runId`) or tool `agentId` | § Tool Contract |
 | GraphQL `memorySearch(query, limit)` | Memory of this node | Page search | — | Results carry `subject` |
 | GraphQL `memoryIndexStatus`, `startMemoryIndexing`, `rebuildMemoryIndex` | The memory index | Panel | — | — |
@@ -506,7 +506,7 @@ Each file stays under 500 lines (repository rule).
 - **Rules:**
   - **Strength: three levels, `strong` / `fair` / `weak`** (UD-017):
     - text (SR-004, UD-019): by the **weighted share** of the query's distinct terms found in the matched chunk. Each term weighs its inverse document frequency in the text index: FTS5 document counts, read through an `fts5vocab` table of the same index. Rare terms count more, so common words alone stay weak. ≥ 2/3 strong, ≥ 1/3 fair, else weak; the thresholds are checked with the evaluation;
-    - meaning: `relevant` → strong, `aboveFloor` → fair, `below` → weak (from `nearest`).
+    - meaning (SR-005): by how far the card stands out for this query. § Meaning Strength (SR-005) defines the rule.
     - Thresholds are calibrated with the R-016 evaluation; the rule lives in `MemorySearchService` only.
   - **`note`** appears only when every match is weak.
   - **Pointer of a meaning match (AR-002; owned by `MemorySearchService`).** A card stands for a whole journal file, so its lines, day and snippet are chosen by this ordered rule:
@@ -578,7 +578,7 @@ Each file stays under 500 lines (repository rule).
 | --- | --- |
 | First build writes about 1.7 GB of journals, and the raw reader may truncate a crashed run's broken tail (existing behavior) | User's click; backup on the user's machine; progress shown |
 | CPU during the meaning build (about 1 h) | Background; searches first; text search available after about 3 min |
-| Disk (index about 100–300 MB plus journals) | Contentless FTS; documented |
+| Disk: index about 100–300 MB estimated; **measured 610 MB** on the real-size copy (API/E2E O-2), plus about 1.7 GB of journals | Contentless FTS; documented; reducing it is a follow-up (FU-008) |
 | Secrets in snippets | Masking (AC-005 measured); snippets only 2–3 lines |
 | Index and journals diverge after a crash | Fingerprints per file; catch-up on start; "Rebuild" |
 | Node `node:sqlite` features on Docker or Android | Same Node major as the embedding layer requires; contentless delete verified on 22.23.1 (AE-16); implementation checks the packaged Node versions |
@@ -592,6 +592,32 @@ Each file stays under 500 lines (repository rule).
   - for public tests: a fixture memory folder with the run kinds of § Run Kinds.
 - **Gates:** AC-001 and AC-002 must hold on the evaluation command; any transformation change is measured first (R-016).
 - **Product spec:** the web part waits for the Product Team's approved specification; the server part does not.
+
+## Meaning Strength (SR-005)
+
+- **Finding:** API/E2E F-001 / CRR-003, Design Impact (`evidence/api-e2e/F-001-02-meaning-scores.txt`).
+  - The per-model rule reused from Project Tasks (floor 0.78, near-best margin 0.02) flips on journal cards. Off-topic cues sit at the floor: best 0.745–0.804, flat, with a best-to-5th gap of 0.002–0.018.
+  - Real answers stand out: best 0.890–0.933, gap 0.100–0.120.
+  - The same failure occurs with LEAF-IR.
+- **Rule (owned by `MemorySearchService`; the calibration of the embedding layer is not used for memory search):**
+  - For each query, the meaning candidates come from `nearest` (limit 300, ranked scores).
+  - **baseline** = the score of the candidate at rank *k* (initially 20, or the last candidate when there are fewer).
+  - For each matched card, **lift** = score − baseline.
+  - **Strong** when lift ≥ *Ls*, **Fair** when lift ≥ *Lf*, else **Weak**.
+  - The rule is relative to the query's own score distribution, so it does not depend on one model's absolute scale.
+- **Calibration:** *k*, *Ls* and *Lf* are constants in `MemorySearchService`, chosen with the evaluation command on the default model under three hard constraints:
+  1. every verified off-topic question ends with the only-weak note;
+  2. **no answerable question gets a false only-weak note**;
+  3. gate 1 and gate 2 unchanged.
+  - The choice is then verified with LEAF-IR. If no values meet the constraints on both, per-model constants keyed by model ID in `MemorySearchService` are allowed (a table, not new architecture).
+  - The evaluation report states the values and the margin to each constraint.
+- **Off-topic set (R-016, AC-007):** grows with API/E2E's verified off-topic cues (`F-001-01`: codenames, absent topics inside sentences, plain words; every key word counted absent). It joins N02, N04 and N05 as `kind: offTopic` in the private question file. T2 stays partial.
+- **Order and edge cases (architecture review ARCH-REV-003 notes):**
+  - **R-11:** the baseline is computed over all `nearest` candidates **before** the asking run's cards are removed, so one query rates the same for an agent and on the page. Tested.
+  - **R-10:** with fewer than *k* candidates, the baseline is the last candidate's score. While the Meaning step is incomplete (coverage below 100%), the only-weak note is **not** shown when every match is weak; the coverage note is shown instead ("still indexing"), because weakness may only mean missing cards. The evaluation includes a partial-coverage case.
+  - **R-9:** if no *k*, *Ls*, *Lf* (or per-model table) meets all three hard constraints on the default model, the implementer stops and returns a Design Impact to the Solution Designer; it never relaxes a constraint. The evaluation report states this escalation trigger.
+- **Removal:** the three-value `relevance` of `nearest` and its computation (dead after this change, Principle 7). `selectRelevant` and the catalog calibration stay; `search` still uses them for Project Tasks.
+- **Tool description (API/E2E O-1):** it states when to use the tool: when the user or a task refers to earlier work ("do you remember", "last time", "earlier we", "where is the … we set up"). This is wording only.
 
 ## Review Corrections (SR-003)
 
