@@ -28,6 +28,22 @@ describe('Codex read-only background observation', () => {
     expect(JSON.stringify(rows)).not.toMatch(/SECRET|opaque-process|item-1|thread-1/);
     expect(view.reconcile([listed()], false)[0]?.status).toBe(code === 0 ? 'completed' : 'failed');
   });
+  it('keeps provisional idle-page identity across a new turn and late completion while more pages are pending', () => {
+    const view = new CodexBackgroundTaskView(); view.beginInspection();
+    view.observeListedPage([listed()], null, true);
+    view.observeCompleted('thread-1', end(), false);
+    expect(view.reconcile([listed()], false)).toMatchObject([{ status: 'completed' }]);
+    view.finishInspection();
+  });
+  it('withheld page membership becomes eligible at that turn boundary, not a later foreground completion', () => {
+    const view = new CodexBackgroundTaskView(); view.beginInspection();
+    view.observeListedPage([listed()], 'turn-1', false); finishTurn(view);
+    expect(view.reconcile([listed()], false)).toMatchObject([{ status: 'running' }]); view.finishInspection();
+    const foreground = new CodexBackgroundTaskView(); foreground.beginInspection();
+    foreground.observeListedPage([listed()], 'turn-1', false);
+    foreground.observeCompleted('thread-1', end(), false); finishTurn(foreground);
+    expect(foreground.reconcile([listed()], true)).toEqual([]); foreground.finishInspection();
+  });
   it('absence is unknown and positive evidence restores running, not fabricated success', () => {
     const view = new CodexBackgroundTaskView();
     expect(view.reconcile([listed()], true)[0]?.status).toBe('running');

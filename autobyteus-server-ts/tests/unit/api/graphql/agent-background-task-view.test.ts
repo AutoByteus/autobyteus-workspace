@@ -1,3 +1,7 @@
+import { createRequire } from 'node:module';
+// type-graphql loads CommonJS graphql; use the same realm under Vitest's ESM runner.
+const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
+import { buildSchema } from 'type-graphql';
 import 'reflect-metadata';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentRunManager } from '../../../../src/agent-execution/services/agent-run-manager.js';
@@ -42,5 +46,31 @@ describe('selected-run background query (unit boundary, not API acceptance)', ()
     expect(await resolver.agentBackgroundTaskView('run-1')).toEqual({ kind: 'unavailable', agentRunId: 'run-1', reason: 'inspection_failed' });
     run.inspectBackgroundTasks.mockImplementation(async () => { manager.peekPublishedRun.mockReturnValue(null as never); throw new Error('SECRET'); });
     expect(await resolver.agentBackgroundTaskView('run-1')).toMatchObject({ kind: 'unavailable', reason: 'inactive' });
+  });
+});
+
+
+describe('background view GraphQL serialization', () => {
+  const source = `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
+    __typename
+    ... on AgentBackgroundTaskSnapshot { agentRunId runInstanceId tasks { taskId status command exitCode } }
+    ... on AgentBackgroundTaskEventStream { agentRunId }
+    ... on AgentBackgroundTaskUnsupported { agentRunId reason }
+    ... on AgentBackgroundTaskUnavailable { agentRunId reason }
+  } }`;
+  it.each([
+    { kind: 'snapshot', agentRunId: 'run-1', runInstanceId: 'instance-1', observedAt: 'now', tasks: [
+      { taskId: 'view-1', kind: 'shell', description: 'bash', command: null, exitCode: -1, status: 'failed', startedAt: 'now' },
+    ] },
+    { kind: 'event-stream', agentRunId: 'run-1' },
+    { kind: 'unsupported', agentRunId: 'run-1', reason: 'unsupported' },
+    { kind: 'unavailable', agentRunId: 'run-1', reason: 'incomplete' },
+  ])('serializes $kind through the actual typed union', async view => {
+    const { run } = fixture(); run.inspectBackgroundTasks.mockResolvedValue(view);
+    const schema = await buildSchema({ resolvers: [AgentBackgroundTaskViewResolver] });
+    const result = await graphql({ schema, source, variableValues: { id: 'run-1' } });
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.agentBackgroundTaskView).toMatchObject({ agentRunId: 'run-1' });
+    expect(JSON.stringify(result)).not.toContain('"kind"');
   });
 });

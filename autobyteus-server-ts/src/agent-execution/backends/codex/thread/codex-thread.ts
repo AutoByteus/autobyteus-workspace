@@ -141,6 +141,7 @@ export class CodexThread {
         if (this.backgroundViewClosed || this.threadId !== threadId) return { kind: 'unavailable', reason: 'inactive' };
         const page = parseCodexBackgroundTerminalPage(response);
         if (!page || Date.now() > deadline) return { kind: 'unavailable', reason: 'incomplete' };
+        this.backgroundTaskView.observeListedPage(page.data, this.activeTurnId, this.activeTurnId === null && this.currentStatus === 'IDLE');
         entries.push(...page.data);
         if (page.nextCursor === null) return { kind: 'snapshot', observedAt: new Date().toISOString(),
           tasks: this.backgroundTaskView.reconcile(entries, this.activeTurnId === null && this.currentStatus === 'IDLE') };

@@ -63,18 +63,31 @@ export const parseCodexBackgroundTerminalPage = (value: unknown): {
 export class CodexBackgroundTaskView {
   private readonly commands = new Map<string, Command>();
   private readonly pendingCompletions = new Map<string, Completion>();
+  private readonly pendingMembership = new Map<string, { eligible: boolean; waitingTurnId: string | null }>();
   private inspecting = false;
 
   beginInspection(): void { this.inspecting = true; }
   finishInspection(): void {
     this.inspecting = false;
     this.pendingCompletions.clear();
+    this.pendingMembership.clear();
     for (const [key, command] of this.commands) {
       if (command.terminal && !command.background) this.commands.delete(key);
     }
     this.trimTerminalHistory();
   }
-  clear(): void { this.commands.clear(); this.pendingCompletions.clear(); this.inspecting = false; }
+  clear(): void { this.commands.clear(); this.pendingCompletions.clear(); this.pendingMembership.clear(); this.inspecting = false; }
+
+  /** Provisional page evidence only; absence is authoritative only after the whole read succeeds. */
+  observeListedPage(entries: CodexBackgroundTerminal[], activeTurnId: string | null, idle: boolean): void {
+    for (const entry of entries) {
+      const key = keyOf(entry);
+      if (this.pendingMembership.has(key)) continue;
+      const completion = this.pendingCompletions.get(key);
+      this.pendingMembership.set(key, { eligible: completion ? completion.observedIdle : idle,
+        waitingTurnId: activeTurnId });
+    }
+  }
 
   observeStarted(threadId: string, params: Readonly<JsonObject>): void {
     const item = asObject(params.item);
@@ -91,6 +104,9 @@ export class CodexBackgroundTaskView {
   observeTurnCompleted(threadId: string, params: Readonly<JsonObject>, activeTurnId: string | null): void {
     const turnId = eventTurnId(params);
     if (!turnId || turnId !== activeTurnId || eventThreadId(params) !== threadId) return;
+    for (const [key, membership] of this.pendingMembership) {
+      if (membership.waitingTurnId === turnId && !this.pendingCompletions.has(key)) membership.eligible = true;
+    }
     for (const command of this.commands.values()) {
       if (command.originTurnId === turnId && !command.terminal) command.background = true;
     }
@@ -104,7 +120,7 @@ export class CodexBackgroundTaskView {
     const exitCode = typeof item.exitCode === 'number' && Number.isInteger(item.exitCode) ? item.exitCode : null;
     const status = item.status === 'completed' && exitCode === 0 ? 'completed'
       : item.status === 'failed' || (exitCode !== null && exitCode !== 0) ? 'failed' : 'unknown';
-    const fact: Completion = { itemId, processId, turnId, status, exitCode, observedIdle: idle };
+    const fact: Completion = { itemId, processId, turnId, status, exitCode, observedIdle: idle || this.pendingMembership.get(keyOf({ itemId, processId }))?.eligible === true };
     const key = keyOf(fact), command = this.commands.get(key);
     if (command) {
       if (command.originTurnId && command.originTurnId !== turnId) return;
@@ -126,7 +142,7 @@ export class CodexBackgroundTaskView {
       const completion = this.pendingCompletions.get(key);
       if (!command) {
         // Unknown origins are never classified from RPC membership during an active turn.
-        if (completion ? !completion.observedIdle : !idle) continue;
+        if (completion ? !completion.observedIdle : !(idle || this.pendingMembership.get(key)?.eligible)) continue;
         command = {
           itemId: entry.itemId, processId: entry.processId, originTurnId: completion?.turnId ?? null,
           background: true, terminal: false, row: this.newRow(entry.description),

@@ -3,9 +3,9 @@ import { AgentRunManager } from '../../../agent-execution/services/agent-run-man
 import type { AgentBackgroundTaskView, AgentBackgroundTaskViewStatus } from '../../../agent-execution/domain/agent-background-task-view.js';
 
 const BackgroundTaskViewStatus = { running: 'running', completed: 'completed', failed: 'failed', stopped: 'stopped', unknown: 'unknown' } as const;
-const BackgroundTaskUnavailableReason = { inactive: 'inactive', inspection_failed: 'inspection_failed', incomplete: 'incomplete' } as const;
+const BackgroundTaskViewReason = { unsupported: 'unsupported', inactive: 'inactive', inspection_failed: 'inspection_failed', incomplete: 'incomplete' } as const;
 registerEnumType(BackgroundTaskViewStatus, { name: 'BackgroundTaskViewStatus' });
-registerEnumType(BackgroundTaskUnavailableReason, { name: 'BackgroundTaskUnavailableReason' });
+registerEnumType(BackgroundTaskViewReason, { name: 'BackgroundTaskViewReason' });
 
 @ObjectType()
 export class AgentBackgroundTaskViewRow {
@@ -19,6 +19,7 @@ export class AgentBackgroundTaskViewRow {
 }
 @ObjectType()
 export class AgentBackgroundTaskSnapshot {
+  readonly kind = 'snapshot' as const;
   @Field(() => String) agentRunId!: string;
   @Field(() => String) runInstanceId!: string;
   @Field(() => String) observedAt!: string;
@@ -26,17 +27,20 @@ export class AgentBackgroundTaskSnapshot {
 }
 @ObjectType()
 export class AgentBackgroundTaskEventStream {
+  readonly kind = 'event-stream' as const;
   @Field(() => String) agentRunId!: string;
 }
 @ObjectType()
 export class AgentBackgroundTaskUnsupported {
+  readonly kind = 'unsupported' as const;
   @Field(() => String) agentRunId!: string;
-  @Field(() => String) reason!: 'unsupported';
+  @Field(() => BackgroundTaskViewReason) reason!: 'unsupported';
 }
 @ObjectType()
 export class AgentBackgroundTaskUnavailable {
+  readonly kind = 'unavailable' as const;
   @Field(() => String) agentRunId!: string;
-  @Field(() => BackgroundTaskUnavailableReason) reason!: 'inactive' | 'inspection_failed' | 'incomplete';
+  @Field(() => BackgroundTaskViewReason) reason!: 'inactive' | 'inspection_failed' | 'incomplete';
 }
 const AgentBackgroundTaskViewUnion = createUnionType({
   name: 'AgentBackgroundTaskView',
