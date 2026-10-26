@@ -1,5 +1,5 @@
 <template>
-  <li class="px-4 py-4" :data-testid="`available-runtime-${entry.runtime}`">
+  <li class="py-5" :data-testid="`available-runtime-${entry.runtime}`">
     <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <h4 class="text-base font-semibold text-gray-900">{{ entry.name }}</h4>
       <span
@@ -45,11 +45,11 @@
     <!-- AutoByteus: one row per API provider with a key, or local provider with models -->
     <template v-else-if="autobyteus">
       <p v-if="!autobyteus.providers.length" class="mt-2 text-sm text-gray-500" data-testid="available-runtime-autobyteus-no-providers">{{ t('settings.modelRouting.runtimesNow.providers.none') }}</p>
-      <ul v-else class="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200" :aria-label="t('settings.modelRouting.runtimesNow.providers.listLabel')">
+      <ul v-else class="mt-3 divide-y divide-slate-100" :aria-label="t('settings.modelRouting.runtimesNow.providers.listLabel')">
         <li
           v-for="provider in autobyteus.providers"
           :key="provider.provider"
-          class="available-runtime-grid px-3 py-2.5"
+          class="available-runtime-grid py-2.5"
           data-testid="available-runtime-autobyteus-provider"
           :data-provider="provider.provider"
         >

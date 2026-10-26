@@ -11,7 +11,8 @@ import type {
   TaskExecutionActivationPlan,
   TaskExecutionActivationPreparation,
 } from "../task/root-task-execution-adapter.js";
-import type { SpawnTaskInput, TaskDelegationOutcome } from "../task/task-delegation-command.js";
+import type { SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../task/task-delegation-command.js";
+import type { NewCopyWork } from "../task/new-copy-work.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import {
   resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel, type RemoteStartedRun, type RemoteTargetRoot,
@@ -32,8 +33,14 @@ const remoteLaunchNotes = (launches: readonly RemoteAgentLaunch[]): string[] => 
 export type RemotePlacementTarget = Omit<RemoteAgentPlacement, "work">;
 
 /** The remote placement for `target` with the prepared work. */
-export const remotePlacementWith = (target: RemotePlacementTarget, work: DelegationWork): RemoteAgentPlacement =>
+const remotePlacementWith = (target: RemotePlacementTarget, work: DelegationWork): RemoteAgentPlacement =>
   Object.freeze({ ...target, work });
+
+/** The root lifecycle's two steps of a new copy (DS-001): its work and Task first, then its dispatch to a placement. */
+export type RemoteCopySteps = Readonly<{
+  prepareNewCopyWork(context: TaskDelegationContext, input: SpawnTaskInput): Promise<NewCopyWork>;
+  dispatchNewCopy(context: TaskDelegationContext, work: NewCopyWork, placement: RemoteAgentPlacement): Promise<TaskDelegationOutcome>;
+}>;
 
 /** A refusal before the Task link (by this node's channel or by the peer): nothing is left on this node. */
 export class RemoteDelegationRefusedError extends Error {
@@ -77,17 +84,20 @@ export class RemoteDelegation {
   }
 
   /**
-   * `delegate_task` with `node`: the peer and address, then the root's lifecycle with the input without `node` (it
-   * prepares the work and dispatches the remote placement with it). A delegated result names the peer (CM-11).
+   * `delegate_task` with `node`: the peer and address, then the root's lifecycle with the input without `node`: it
+   * prepares the work, which goes with the remote placement it dispatches (DS-002). A delegated result names the peer
+   * (CM-11).
    */
   async delegate(
     input: SpawnTaskInput & Readonly<{ node: string }>,
-    delegateWith: (input: SpawnTaskInput, target: RemotePlacementTarget) => Promise<TaskDelegationOutcome>,
+    context: TaskDelegationContext,
+    copies: RemoteCopySteps,
   ): Promise<TaskDelegationOutcome> {
     const placement = await this.delegationPlacement(input);
     if (!("kind" in placement)) return placement;
     const { node: _node, ...local } = input;
-    const outcome = await delegateWith(local as SpawnTaskInput, placement);
+    const work = await copies.prepareNewCopyWork(context, local as SpawnTaskInput);
+    const outcome = await copies.dispatchNewCopy(context, work, remotePlacementWith(placement, work.delegation));
     if (!outcome.delegated) return outcome;
     // The peer's launches (REQ-009): a line per routed agent and per skipped layer, as for a copy on this node.
     const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;

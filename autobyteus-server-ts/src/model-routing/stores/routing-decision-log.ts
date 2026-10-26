@@ -43,6 +43,17 @@ const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException |
 
 const nullableString = (value: unknown): value is string | null => value === null || typeof value === "string";
 
+const parseSkipped = (value: unknown): RoutingDecisionRecord["skipped"] | null => {
+  if (!Array.isArray(value)) return null;
+  const layers = value.map((item) => {
+    const layer = item as Record<string, unknown> | null;
+    if (!layer || (layer.layer !== "agent_default" && layer.layer !== "team_default") || typeof layer.detail !== "string"
+      || !nullableString(layer.runtimeKind) || !nullableString(layer.llmModelIdentifier)) return null;
+    return Object.freeze({ layer: layer.layer, runtimeKind: layer.runtimeKind, llmModelIdentifier: layer.llmModelIdentifier, detail: layer.detail });
+  });
+  return layers.every(Boolean) ? Object.freeze(layers as NonNullable<(typeof layers)[number]>[]) : null;
+};
+
 /** One line as a record; null (with the reason) when it is not one. */
 const parseRecord = (value: unknown): RoutingDecisionRecord | string => {
   const record = value as Record<string, unknown> | null;
@@ -56,6 +67,8 @@ const parseRecord = (value: unknown): RoutingDecisionRecord | string => {
   if (record.copyKind !== "agent" && record.copyKind !== "agent_team") return "copyKind is unknown";
   if (!SOURCES.has(record.source as DecisionLaunchSource)) return "source is unknown";
   if (!Array.isArray(record.notes) || record.notes.some((note) => typeof note !== "string")) return "notes are not texts";
+  const skipped = parseSkipped(record.skipped);
+  if (!skipped) return "skipped is not a list of skipped defaults";
   return Object.freeze({
     recordedAt: record.recordedAt as string, taskId: record.taskId as string | null, taskKey: record.taskKey as string | null,
     projectId: record.projectId as string | null, taskTitle: record.taskTitle as string,
@@ -64,7 +77,7 @@ const parseRecord = (value: unknown): RoutingDecisionRecord | string => {
     agentAddress: record.agentAddress as string, runtimeKind: record.runtimeKind as string,
     llmModelIdentifier: record.llmModelIdentifier as string, source: record.source as DecisionLaunchSource,
     taskKind: record.taskKind as string | null, choiceReason: record.choiceReason as string | null,
-    routerFailure: record.routerFailure as string | null, notes: Object.freeze([...(record.notes as string[])]),
+    routerFailure: record.routerFailure as string | null, skipped, notes: Object.freeze([...(record.notes as string[])]),
   });
 };
 

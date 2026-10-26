@@ -16,7 +16,7 @@ const record = (overrides: Partial<RoutingDecisionRecord>): RoutingDecisionRecor
   delegatingRunId: "pm_run", delegatingAgentName: "project_task_manager", fromNode: null,
   copyAddress: "/set", copyKind: "agent_team", agentAddress: "/set/implementation_engineer",
   runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", source: "model_router", taskKind: "implementation",
-  choiceReason: "Codex fits.", routerFailure: null, notes: [],
+  choiceReason: "Codex fits.", routerFailure: null, skipped: [], notes: [],
   ...overrides,
 });
 

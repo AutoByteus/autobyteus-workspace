@@ -79,3 +79,27 @@ delegated run, …) are defined in the
   delegates; opened by ID it works. It is not the same as a **built-in agent**
   (shipped and synced by AutoByteus, e.g. the Daily Assistant), which may or may
   not be internal.
+
+## Model Routing
+
+- **Model Routing:** a node's switch (off by default; Settings → Model Routing) under which its Model Router chooses
+  a runtime and model for the agents of a fresh delegated copy that no usable default covers. Off, delegation behaves
+  as before.
+- **Model Router:** the built-in, internal agent definition `autobyteus-model-router` that makes those choices. Never
+  "router" alone in code.
+- **Model Router agent:** the node's one long-lived run of the Model Router (an ordinary agent run, kept across
+  restarts) in its own internal workspace. The user talks to it ("Talk to the router"); it is never a collaboration
+  member. Never called a "conversation".
+- **Internal workspace:** a workspace under `<appData>/internal-workspaces/`, where an internal agent the server runs
+  works; listed only while internal agents are shown.
+- **Routing request:** one system notice (sender `system.model_router`) sent to the Model Router agent for one
+  delegation, identified by its `requestId`; answered with `submit_launch_choices`. One at a time: the next is sent
+  when the agent is idle.
+- **Launch choice:** the Model Router's answer for one agent: runtime, model, task kind and a one-sentence reason
+  (`choiceReason` in a launch source, because `reason` already names a skipped layer's reason).
+- **Knowledge file:** `knowledge.md` in the Model Router agent's workspace, its own durable memory, which it writes
+  with its file tools; every routing request carries its current text.
+- **Task kind:** the Model Router's short free-text label for a choice (1–40 characters, grouped ignoring letter case),
+  such as "implementation"; nothing for the user to manage.
+- **Decision record:** one line of a node's decision log per agent of a fresh delegated copy resolved on that node
+  while Model Routing was on: the Task it serves, the delegation, the launch, its source, task kind, reason and notes.

@@ -600,8 +600,33 @@ Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runt
 ## Settings: Model Routing
 
 Settings -> **Model Routing** (`?section=model-routing`, right after Agent
-Runtimes). Its first section, **Agent runtimes now**, shows what the node this
-window is bound to can run now: the same answer the opt-in agent tool
+Runtimes) turns Model Routing on or off for the node this window is bound to and
+shows what its Model Router chose (server side:
+[Model Routing](../../autobyteus-server-ts/docs/modules/model_routing.md)).
+
+- **Header.** The switch (`setModelRoutingEnabled`) and a status strip from
+  `modelRoutingStatus`: off; on and active, with the router's runtime and model;
+  or on but not usable, with the reason (no launch set, runtime missing or
+  signed out, model unknown or blocked) and a link to Setup. **Talk to the
+  router** (`openModelRouterAgent`) opens the router's run in the chat.
+- **Tabs** (`?tab=`): **Setup** (the router's runtime, then its model, saved on
+  the model choice with `setModelRouterLaunch`; models come from the node's
+  runtimes now), **Decisions**, **Overview** and **Agent runtimes now**.
+- **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
+  first, pages of 8 from the server, filter All / Model Router / Not the router.
+  Each agent row shows its runtime and model, the source, the task kind and
+  reason when the router chose, the skipped layers and the router's failure. A
+  focus link (`decisionRun`, `decisionCopy`, `decisionAgent`, from run Settings'
+  **View decision**) loads pages until it finds the decision (at most 12) and
+  highlights it, or says it was not found.
+- **Overview** (`modelRoutingStatistics`, 7 days / 30 days / all): who chose the
+  launches (one bar by source), router failures, and per task kind the runtimes
+  and models used; "Not routed" holds defaults and inherited launches. Empty
+  states differ for "no records yet" (with a link to Setup while off) and "none
+  in this period".
+
+The **Agent runtimes now** tab shows what the node can run now: the same answer
+the opt-in agent tool
 `list_available_agent_runtimes` gives, read through the GraphQL query
 `availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
 
@@ -622,10 +647,15 @@ window is bound to can run now: the same answer the opt-in agent tool
 - **States.** Loading, a failed first read (Check again retries), a failed
   later read (the last answer stays, with a note), and an empty node.
 - Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `ModelRoutingStatusStrip`, `ModelRoutingSegmented`, `ModelRoutingSetup`,
+  `ModelRoutingDecisions`, `ModelRoutingOverview`, `modelRoutingPresentation.ts`,
   `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
-  `availableAgentRuntimesPresentation.ts`). Copy:
+  `availableAgentRuntimesPresentation.ts`). GraphQL:
+  `graphql/queries/modelRoutingQueries.ts`, `graphql/mutations/modelRoutingMutations.ts`;
+  types `types/modelRouting.ts`. Copy:
   `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
-- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`;
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`
+  (the page), `AgentRuntimesNowSection.spec.ts`;
   `tests/e2e/model-routing-settings-probe.mjs`
   (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
   section in a real browser against two real nodes on fresh data roots, with
@@ -1446,7 +1476,18 @@ The saved-run view uses the start surfaces' visual language:
     - As configured in this run: a copy of a configured placement. It shows the
       launch it recorded when it started (origin `configured`), not the placement's
       current launch;
-    - Source not recorded: a record from before sources were recorded.
+    - Source not recorded: a record from before sources were recorded;
+    - Model Router · {task kind}: the node's Model Router chose it. The row
+      also shows the router's reason and **View decision**, which opens
+      Settings -> Model Routing on Decisions with that decision in focus
+      (`?section=model-routing&tab=decisions&decisionRun=<delegator run>&decisionCopy=<copy>&decisionAgent=<agent>`).
+      A user's model choice hides both (it is no longer the router's launch).
+  - **Copies another node runs** (`remoteDelegatedLaunchNodes`, from the run's
+    `remote_task_executions` and, for a Team or Org root, `remoteRunsStore`):
+    read-only rows with that node's chip, built from the `launches` the node
+    answered with (runtime, model, source and the router's reason). A copy
+    without launches (started before nodes reported them) has no row; a
+    "View decision" is not offered, since the decision is on that node.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
     {detail}".
   - **Effective values.** Values come from the contract packages' copy launch

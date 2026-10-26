@@ -580,7 +580,7 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
     try {
       const { lifecycle } = notesSetup();
       const routingDecision = { copyAddress: "/worker", copyKind: "agent" as const, agents: [{ agentAddress: "/worker", runtimeKind: "codex_app_server",
-        llmModelIdentifier: "gpt-sol", source: "model_router" as const, taskKind: "writing", choiceReason: "Fits.", routerFailure: null, notes: [] }] };
+        llmModelIdentifier: "gpt-sol", source: "model_router" as const, taskKind: "writing", choiceReason: "Fits.", routerFailure: null, skipped: [], notes: [] }] };
       await delegateNew(lifecycle, { identity: caller }, { recipient_address: "/worker", description: "Write the notes\nwith detail" }, { routingDecision });
       expect(written).toEqual([[expect.objectContaining({
         taskId: "ad_hoc_task_1", taskKey: null, projectId: null, taskTitle: "Write the notes", delegatingRunId: caller.agentRunId,

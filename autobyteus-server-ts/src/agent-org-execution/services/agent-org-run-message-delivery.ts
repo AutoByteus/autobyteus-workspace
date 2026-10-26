@@ -32,7 +32,7 @@ import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js"
 import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { remotePlacementWith, type RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 
 /**
@@ -142,10 +142,7 @@ export class AgentOrgRunMessageDelivery {
   async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, async (local, target) => {
-        const work = await this.options.taskExecutions.prepareNewCopyWork(context, local);
-        return this.options.taskExecutions.dispatchNewCopy(context, work, remotePlacementWith(target, work.delegation));
-      });
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context, this.options.taskExecutions);
     }
     // DS-001: the work and its Task first, then the placement for that work, then the copy.
     const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);

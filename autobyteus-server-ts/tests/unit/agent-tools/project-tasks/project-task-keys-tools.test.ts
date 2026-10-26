@@ -88,7 +88,7 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
   it("delegation resolves a key (any case) or long ID to the stored ID; a Temp-task ID or unknown key is TASK_NOT_FOUND (AC-022, DEC-012)", async () => {
     const a = await create("A");
     const id = await idOfKey(a.taskId);
-    expect(await tasks.resolveAssignment("AutoByteus-1")).toEqual({ taskId: id, taskReference: "autobyteus-1", projectId, description: "A", comments: [], referenceFiles: [] });
+    expect(await tasks.resolveAssignment("AutoByteus-1")).toEqual({ taskId: id, taskReference: "autobyteus-1", projectId, title: expect.any(String), description: "A", comments: [], referenceFiles: [] });
     expect((await tasks.resolveAssignment(id)).taskId).toBe(id);
     const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });

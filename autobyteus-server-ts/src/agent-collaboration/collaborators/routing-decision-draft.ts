@@ -21,6 +21,9 @@ const agentOf = (address: string, launch: AgentLaunchConfiguration, source: Laun
   taskKind: source.origin === "model_router" ? source.taskKind : null,
   choiceReason: source.origin === "model_router" ? source.choiceReason : null,
   routerFailure: source.fallbacks.find((fallback) => fallback.reason === "router_failed")?.detail ?? null,
+  skipped: Object.freeze(source.fallbacks.flatMap((fallback) => fallback.layer === "model_router" ? [] : [Object.freeze({
+    layer: fallback.layer, runtimeKind: fallback.runtimeKind, llmModelIdentifier: fallback.llmModelIdentifier, detail: fallback.detail,
+  })])),
   notes: Object.freeze(launchNotesOf([{ name: getAgentTeamAddressBasename(address) ?? address, subject: "agent", launch, source }])),
 });
 

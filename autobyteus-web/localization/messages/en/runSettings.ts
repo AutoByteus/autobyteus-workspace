@@ -68,6 +68,8 @@ const runSettingsMessages = {
   'runSettings.orgLaunch.failed': "Couldn't start this Agent Org. Try again.",
   'runSettings.orgLaunch.back': 'Back to Agent Orgs',
   'runSettings.orgLaunch.preparing': "Copying the run's settings…",
+  'runSettings.delegated.source.model_router': 'Model Router',
+  'runSettings.delegated.viewDecision': 'View decision',
 } satisfies TranslationCatalog;
 
 export default runSettingsMessages;

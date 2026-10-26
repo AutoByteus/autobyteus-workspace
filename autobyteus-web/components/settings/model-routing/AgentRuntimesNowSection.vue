@@ -1,24 +1,20 @@
 <template>
   <section
-    class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
+    class=""
     data-testid="agent-runtimes-now"
-    aria-labelledby="agent-runtimes-now-heading"
+    :aria-label="t('settings.modelRouting.runtimesNow.title')"
   >
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-      <div class="min-w-0 max-w-3xl">
-        <h3 id="agent-runtimes-now-heading" class="text-xl font-semibold leading-tight text-gray-900">{{ t('settings.modelRouting.runtimesNow.title') }}</h3>
-        <p class="mt-1 text-sm text-gray-500">{{ t('settings.modelRouting.runtimesNow.description') }}</p>
-        <p class="mt-3 text-sm text-gray-500" data-testid="agent-runtimes-now-node">
-          <span class="font-medium text-gray-700">{{ nodeName }}</span>
-          <span class="mx-1.5 text-gray-300" aria-hidden="true">·</span>{{ ownNode ? t('settings.modelRouting.runtimesNow.node.own') : t('settings.modelRouting.runtimesNow.node.remote') }}
-        </p>
-      </div>
-      <div v-if="status !== 'loading'" class="flex flex-shrink-0 items-center gap-3 sm:pt-1">
-        <p v-if="report && !reading" class="text-sm text-gray-500" data-testid="agent-runtimes-now-checked">{{ t('settings.modelRouting.runtimesNow.checkedAt', { time: localTime(report.checkedAt, locale) }) }}</p>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <p class="min-w-0 text-sm text-gray-500" data-testid="agent-runtimes-now-node">
+        <span class="font-medium text-gray-700">{{ nodeName }}</span>
+      </p>
+      <div v-if="status !== 'loading'" class="flex flex-shrink-0 items-center gap-3">
+        <p v-if="report && !reading" class="text-sm text-gray-400" data-testid="agent-runtimes-now-checked">{{ t('settings.modelRouting.runtimesNow.checkedAt', { time: localTime(report.checkedAt, locale) }) }}</p>
         <button
           type="button"
           class="inline-flex min-h-9 items-center whitespace-nowrap rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
           :disabled="reading"
+          :title="t('settings.modelRouting.runtimesNow.description')"
           data-testid="agent-runtimes-now-check-again"
           @click="read()"
         >
@@ -44,8 +40,8 @@
 
     <template v-else-if="report">
       <p v-if="checkFailed" class="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800" role="alert" data-testid="agent-runtimes-now-check-failed">{{ t('settings.modelRouting.runtimesNow.checkFailed') }}</p>
-      <p v-if="!report.agentRuntimes.length" class="mt-5 rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-gray-500" data-testid="agent-runtimes-now-empty">{{ t('settings.modelRouting.runtimesNow.empty') }}</p>
-      <div v-else class="available-runtimes-list mt-5 overflow-hidden rounded-xl border border-slate-200">
+      <p v-if="!report.agentRuntimes.length" class="mt-10 text-center text-sm text-gray-500" data-testid="agent-runtimes-now-empty">{{ t('settings.modelRouting.runtimesNow.empty') }}</p>
+      <div v-else class="available-runtimes-list mt-2">
         <ul class="divide-y divide-slate-100" :aria-label="t('settings.modelRouting.runtimesNow.listLabel')" data-testid="agent-runtimes-now-list">
           <AvailableAgentRuntimeRow v-for="entry in report.agentRuntimes" :key="entry.runtime" :entry="entry" />
         </ul>
@@ -59,7 +55,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
-import { isOwnNodeWindow } from '~/utils/ownNodeWindow'
 import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { AvailableAgentRuntimes } from '~/graphql/queries/availableAgentRuntimesQueries'
@@ -81,7 +76,6 @@ const announcement = ref('')
 let latest = 0
 let disposed = false
 
-const ownNode = computed(() => isOwnNodeWindow(node))
 const nodeName = computed(() => nodeStore.getEntryById(node.entryId)?.name
   || t('settings.components.settings.NodeManager.currentNodeUnknown'))
 

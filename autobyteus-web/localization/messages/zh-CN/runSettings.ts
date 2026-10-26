@@ -67,6 +67,8 @@ const runSettingsMessages = {
   'runSettings.orgLaunch.failed': '无法启动此智能体组织，请重试。',
   'runSettings.orgLaunch.back': '返回智能体组织',
   'runSettings.orgLaunch.preparing': '正在复制该运行的设置…',
+  'runSettings.delegated.source.model_router': '模型路由器',
+  'runSettings.delegated.viewDecision': '查看决策',
 } satisfies TranslationCatalog;
 
 export default runSettingsMessages;

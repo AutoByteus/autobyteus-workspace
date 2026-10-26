@@ -333,6 +333,9 @@ try {
     await page.goto(settingsUrl, { waitUntil: 'domcontentloaded' });
     await locate('settings-nav-model-routing').waitFor({ timeout: 120000 });
     await click('settings-nav-model-routing');
+    // autobyteus-32: the page opens on Setup; "Agent runtimes now" is its Runtimes tab, without its own heading.
+    await locate('model-routing-tab-runtimes').waitFor({ timeout: 60000 });
+    await click('model-routing-tab-runtimes');
     await locate('agent-runtimes-now').waitFor({ timeout: 60000 });
   };
   const click = testId => locate(testId).click();
@@ -345,7 +348,9 @@ try {
     const menu = (await page.locator('[data-testid^="settings-nav-"]').allInnerTexts()).map(item => item.trim()).filter(Boolean);
     evidence.cases['MRP-01-menu'] = menu;
     assert(menu.includes('Model Routing'), `menu: ${menu.join(' | ')}`);
-    assert(/^Embedded Node\s*·\s*This computer$/.test(await text('agent-runtimes-now-node')), `node line ${await text('agent-runtimes-now-node')}`);
+    // autobyteus-32: the node line is the node's name; another node is named in the page's status strip.
+    assert(await text('agent-runtimes-now-node') === 'Embedded Node', `node line ${await text('agent-runtimes-now-node')}`);
+    assert(!(await present('model-routing-node')), 'own node: no node chip in the status strip');
     await waitFor('rows', async () => (await rowsShown()) === 5, 30000);
     assert(await text('agent-runtimes-now-checked') === `Checked ${fmt(new Date().toISOString())}` || /^Checked \d\d:\d\d$/.test(await text('agent-runtimes-now-checked')), `checked line ${await text('agent-runtimes-now-checked')}`);
     await shot('MRP-01a-collapsed-1440');
@@ -448,10 +453,10 @@ try {
     await openFromMenu();
     await waitFor('rows', async () => (await rowsShown()) === 5, 30000);
     await openModelLists();
-    const heading = await page.locator('#agent-runtimes-now-heading').innerText();
-    assert(heading === '当前可用的智能体运行时', `zh heading ${heading}`);
+    const tab = await text('model-routing-tab-runtimes');
+    assert(tab === '运行时', `zh tab ${tab}`);
     assert(await text('agent-runtimes-now-check-again') === '重新检查', 'zh button');
-    assert(/本机$/.test(await text('agent-runtimes-now-node')), `zh node line ${await text('agent-runtimes-now-node')}`);
+    assert((await text('agent-runtimes-now-node')).length > 0, 'zh node line');
     const rows = await pageRows();
     const by = Object.fromEntries(rows.map(row => [row.runtime, row]));
     evidence.cases['MRP-04-page'] = rows;
@@ -471,7 +476,7 @@ try {
     await waitFor('rows', async () => (await rowsShown()) === 5, 30000);
     const reads = reportRequests.length;
     await bindWindow('remote-probe-node', remoteNode.url);
-    await waitFor('remote node line', async () => /·\s*Remote node$/.test(await text('agent-runtimes-now-node')), 20000);
+    await waitFor('remote node named in the status strip', async () => present('model-routing-node'), 20000);
     await waitFor('remote rows', async () => (await rowsShown()) === 1 && await present('available-runtime-autobyteus-no-providers'), 30000);
     assert(reportRequests.some((request, index) => index >= reads && request.url.startsWith(remoteNode.url)), `read from the remote node: ${JSON.stringify(reportRequests.slice(reads))}`);
     const rows = await pageRows();

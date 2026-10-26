@@ -132,6 +132,8 @@ export type RoutingDecisionRecord = Readonly<{
   choiceReason: string | null;
   /** Why the Model Router could not choose for this agent (it then runs on the delegating run's launch); null otherwise. */
   routerFailure: string | null;
+  /** The configured defaults skipped before this launch (Decisions shows them; the notes word them in English). */
+  skipped: readonly RoutingSkippedLayer[];
   notes: readonly string[];
 }>;
 
@@ -143,7 +145,7 @@ export interface RoutingDecisionRecorder {
 /** One agent of a decision record, as launch resolution knows it. */
 export type RoutingDecisionAgent = Pick<
   RoutingDecisionRecord,
-  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "routerFailure" | "notes"
+  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "routerFailure" | "skipped" | "notes"
 >;
 
 /**
