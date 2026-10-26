@@ -1,0 +1,49 @@
+
+> autobyteus@1.5.9-beta.4 test:nuxt /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/progress/__tests__/BackgroundTaskPanel.spec.ts components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/stores/serverStore.ts" is used
+stderr | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/BackgroundTaskPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/BackgroundTaskPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+(node:78374) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78372) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78373) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 2ms
+ ✓ components/progress/__tests__/BackgroundTaskPanel.spec.ts (14 tests) 43ms
+ ✓ components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts (8 tests) 51ms
+
+ Test Files  3 passed (3)
+      Tests  24 passed (24)
+   Start at  09:23:39
+   Duration  6.11s (transform 3.34s, setup 16.35s, collect 144ms, tests 96ms, environment 568ms, prepare 372ms)
+

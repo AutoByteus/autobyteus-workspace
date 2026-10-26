@@ -1,3 +1,4 @@
+import type { AgentBackgroundTaskView } from './agent-background-task-view.js';
 import { AgentRunExecutionAdmissionFence } from "../input/agent-run-execution-admission-fence.js";
 import { randomUUID } from "node:crypto";
 import type { CompactionRetryRequest } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
@@ -152,6 +153,16 @@ export class AgentRun {
   get config() { return this.context.config; }
   isActive(): boolean { return this.backend.isActive(); }
   getPlatformAgentRunId() { return this.backend.getPlatformAgentRunId(); }
+
+  async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
+    const inspection = this.backend.backgroundTaskInspection;
+    if (inspection.kind === 'unsupported') return { kind: 'unsupported', agentRunId: this.runId, reason: 'unsupported' };
+    if (inspection.kind === 'event-stream') return { kind: 'event-stream', agentRunId: this.runId };
+    const observation = await inspection.read();
+    return observation.kind === 'snapshot'
+      ? { ...observation, agentRunId: this.runId, runInstanceId: this.runInstanceId }
+      : { ...observation, agentRunId: this.runId };
+  }
 
   getStatusSnapshot(): AgentStatusPayload {
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());

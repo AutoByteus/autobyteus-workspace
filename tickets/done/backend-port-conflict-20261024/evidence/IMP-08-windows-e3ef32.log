@@ -1,0 +1,22 @@
+IMP-08-windows-e3ef32
+Command (root, clean env): pnpm -C autobyteus-web test:electron --run electron/server/__tests__/WindowsServerManagerShutdown.spec.ts electron/server/__tests__/BaseServerManager.spec.ts electron/server/__tests__/StartupDelayLifecycle.spec.ts
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: e3ef32cc2
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:47:56.771158+00:00
+
+
+> autobyteus@1.5.9-beta.4 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/server/__tests__/WindowsServerManagerShutdown.spec.ts electron/server/__tests__/BaseServerManager.spec.ts electron/server/__tests__/StartupDelayLifecycle.spec.ts
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 6ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 66ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (13 tests) 70ms
+
+ Test Files  3 passed (3)
+      Tests  19 passed (19)
+   Start at  20:47:56
+   Duration  429ms (transform 140ms, setup 0ms, collect 275ms, tests 143ms, environment 0ms, prepare 171ms)

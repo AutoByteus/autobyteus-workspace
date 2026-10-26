@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it } from "vitest";
@@ -56,7 +57,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
         getName: () => "ws_runtime_fresh_definition",
       }),
     };
-    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
+    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService,
       createLLM: async () => ({}) as any,
       agentFactory: {

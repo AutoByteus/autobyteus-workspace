@@ -1,3 +1,5 @@
+import { CodexBackgroundTaskView, parseCodexBackgroundTerminalPage, type CodexBackgroundTerminal } from './codex-background-task-view.js';
+import type { AgentBackgroundTaskObservation } from '../../../domain/agent-background-task-view.js';
 import { submitCodexStartInput, submitCodexAppendInput } from "./codex-thread-input-submission.js";
 import { CodexThreadReleaseScope } from "./codex-thread-release-scope.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -87,6 +89,9 @@ export class CodexThread {
   lastTerminalTurnId: string | null;
   private readonly releaseScope = new CodexThreadReleaseScope(this);
   private pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;
+  private readonly backgroundTaskView = new CodexBackgroundTaskView();
+  private backgroundInspection: Promise<AgentBackgroundTaskObservation> | null = null;
+  private backgroundViewClosed = false;
   private readonly segmentTurnRejections = new CodexSegmentTurnRejectionAccounts();
 
   constructor(input: {
@@ -114,6 +119,41 @@ export class CodexThread {
     this.unbindHandlers = input.unbindHandlers ?? [];
     this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
   }
+
+  inspectBackgroundTasks(): Promise<AgentBackgroundTaskObservation> {
+    if (this.backgroundViewClosed) return Promise.resolve({ kind: 'unavailable', reason: 'inactive' });
+    if (this.backgroundInspection) return this.backgroundInspection;
+    const attempt = this.readBackgroundTasks();
+    this.backgroundInspection = attempt;
+    void attempt.finally(() => { if (this.backgroundInspection === attempt) this.backgroundInspection = null; }).catch(() => undefined);
+    return attempt;
+  }
+  private async readBackgroundTasks(): Promise<AgentBackgroundTaskObservation> {
+    const threadId = this.threadId, deadline = Date.now() + 5_000;
+    const entries: CodexBackgroundTerminal[] = [], cursors = new Set<string>();
+    let cursor: string | null = null;
+    this.backgroundTaskView.beginInspection();
+    try {
+      for (let pageNumber = 0; pageNumber < 100; pageNumber++) {
+        const remaining = deadline - Date.now();
+        if (remaining <= 0) return { kind: 'unavailable', reason: 'incomplete' };
+        const response = await this.client.request('thread/backgroundTerminals/list', { threadId, cursor }, remaining);
+        if (this.backgroundViewClosed || this.threadId !== threadId) return { kind: 'unavailable', reason: 'inactive' };
+        const page = parseCodexBackgroundTerminalPage(response);
+        if (!page || Date.now() > deadline) return { kind: 'unavailable', reason: 'incomplete' };
+        this.backgroundTaskView.observeListedPage(page.data, this.activeTurnId, this.activeTurnId === null && this.currentStatus === 'IDLE');
+        entries.push(...page.data);
+        if (page.nextCursor === null) return { kind: 'snapshot', observedAt: new Date().toISOString(),
+          tasks: this.backgroundTaskView.reconcile(entries, this.activeTurnId === null && this.currentStatus === 'IDLE') };
+        if (cursors.has(page.nextCursor)) return { kind: 'unavailable', reason: 'incomplete' };
+        cursors.add(page.nextCursor); cursor = page.nextCursor;
+      }
+      return { kind: 'unavailable', reason: 'incomplete' };
+    } catch {
+      return { kind: 'unavailable', reason: this.backgroundViewClosed ? 'inactive' : Date.now() >= deadline ? 'incomplete' : 'inspection_failed' };
+    } finally { this.backgroundTaskView.finishInspection(); }
+  }
+  private closeBackgroundTaskView(): void { this.backgroundViewClosed = true; this.backgroundTaskView.clear(); }
 
   get runId(): string { return this.runContext.runId; }
 
@@ -188,6 +228,7 @@ export class CodexThread {
   }
 
   setThreadId(threadId: string): void {
+    if (this.threadId !== threadId) this.backgroundTaskView.clear();
     this.runContext.runtimeContext.threadId = threadId;
   }
 
@@ -215,7 +256,7 @@ export class CodexThread {
   appendInput(message: AgentInputUserMessage, expectedTurnId: string): Promise<CodexInputSubmissionResult> {
     return this.releaseScope.run(() => submitCodexAppendInput(this, message, expectedTurnId));
   }
-  cancelRuntimeInput(): void { this.releaseScope.close(); }
+  cancelRuntimeInput(): void { this.closeBackgroundTaskView(); this.releaseScope.close(); }
   releaseRuntimeInput(): Promise<void> { return this.releaseScope.release(); }
   assertProviderInputAllowed(): void { this.releaseScope.assertOpen(); }
   noteUnknownInputOutcome(): void { this.releaseScope.noteUnknownInputOutcome(); }
@@ -258,6 +299,10 @@ export class CodexThread {
 
   handleAppServerNotification(method: string, params: JsonObject): void {
     const nativeEventName = method.trim();
+    if (!this.backgroundViewClosed && nativeEventName === CodexThreadEventName.ITEM_COMPLETED)
+      this.backgroundTaskView.observeCompleted(this.threadId, params, this.activeTurnId === null && this.currentStatus === 'IDLE');
+    if (!this.backgroundViewClosed && nativeEventName === CodexThreadEventName.TURN_COMPLETED)
+      this.backgroundTaskView.observeTurnCompleted(this.threadId, params, this.activeTurnId);
     if (
       nativeEventName === CodexThreadEventName.TURN_STARTED ||
       nativeEventName === CodexThreadEventName.TURN_COMPLETED
@@ -285,6 +330,8 @@ export class CodexThread {
       admittedParams = admission.paramsWithExactTurn;
     }
 
+    if (!this.backgroundViewClosed && nativeEventName === CodexThreadEventName.ITEM_STARTED)
+      this.backgroundTaskView.observeStarted(this.threadId, admittedParams);
     const nativeMessage = this.createNativeAdmittedEvent(nativeEventName, admittedParams);
     const handling = applyAppServerNotification(this, nativeMessage);
     for (const localEvent of handling.localDerivedEvents) {
@@ -338,6 +385,7 @@ export class CodexThread {
   }
 
   handleClientClosed(error: unknown): void {
+    this.closeBackgroundTaskView();
     const errorMessage =
       error && typeof error === "object" && "message" in error
         ? asString((error as { message?: unknown }).message)

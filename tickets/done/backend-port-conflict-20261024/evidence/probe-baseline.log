@@ -1,0 +1,38 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+ [31m❯[39m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts[2m [ tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts ][22m
+[31m[1mTSConfckParseError[22m: failed to resolve "extends":"./.nuxt/tsconfig.json" in /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/tsconfig.json[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/shared/embeddedServerClientEndpoint.ts[39m
+[90m [2m❯[22m resolveExtends node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5809:8[22m[39m
+[90m [2m❯[22m parseExtends node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5775:71[22m[39m
+[90m [2m❯[22m parse$13 node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5677:23[22m[39m
+[90m [2m❯[22m loadTsconfigJsonForFile node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6302:37[22m[39m
+[90m [2m❯[22m transformWithEsbuild node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6086:55[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6172:20[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m29048:14[22m[39m
+[90m [2m❯[22m loadAndTransform node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m22914:26[22m[39m
+
+[31m[1mCaused by: Error[22m: Cannot find module './.nuxt/tsconfig.json'
+Require stack:
+- /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/tsconfig.json[39m
+[90m [2m❯[22m resolveExtends node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5800:16[22m[39m
+[90m [2m❯[22m parseExtends node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5775:71[22m[39m
+[90m [2m❯[22m parse$13 node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m5677:23[22m[39m
+[90m [2m❯[22m loadTsconfigJsonForFile node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6302:37[22m[39m
+[90m [2m❯[22m transformWithEsbuild node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6086:55[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform node_modules/.pnpm/vite@7.3.7_@types+node@25.3.0_jiti@2.7.0_terser@5.51.2_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:[2m6172:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 14:58:58
+[2m   Duration [22m 335ms[2m (transform 97ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)[22m
+

@@ -1,0 +1,16 @@
+IMP-20 — manual current-build rendered inspection; commit10990feb1, macOS arm64/Electron42.11.16, 2026-10-24; see IMP-20-rendered-notes.md for steps and limitations.
+
+❌
+应用程序错误
+
+后端端口 52677 已被占用。
+
+node（进程 ID：83697）
+
+“重启服务器”仅控制本应用管理的后端，无法停止其他应用的监听进程。请先确认占用端口的应用，停止该应用或更改其配置，然后重试。这里显示的身份信息只是当前快照，请勿据此停止不熟悉的进程。
+
+重置服务器数据不会释放此端口，无需重置您的数据。
+
+重启服务器
+检查服务器健康状况
+Show technical details

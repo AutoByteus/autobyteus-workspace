@@ -1,0 +1,10 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "scope": "no-work current app quit smoke, not active provider acceptance",
+  "requestedViaPreload": true,
+  "appPid": 7080,
+  "appExited": true,
+  "elapsedMs": 220,
+  "controlPortClosed": true,
+  "serverPortClosed": true
+}

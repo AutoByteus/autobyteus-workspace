@@ -1,197 +1,57 @@
-import { spawn } from 'node:child_process';
 import { TerminalResult, type BackgroundProcessInfo } from '../types.js';
 import { BackgroundProcessManager } from '../background-process-manager.js';
 import { NonInteractiveShellResolver } from './non-interactive-shell-resolver.js';
 import { ProcessGroupObserver } from './process-group-observer.js';
-import {
-  HOST_PROCESS_TARGET,
-  ShellProcessIdentityParser,
-  type ProcessExecutionTarget,
-  type ShellProcessIdentity
-} from './process-identity.js';
-
+import { NativeCommandProcessScope } from './native-command-process-scope.js';
+import { type AnchoredCommandHandle, type CommandCompletion } from './anchored-command-launcher.js';
 export interface ShellCommandExecutorOptions {
-  timeoutSeconds?: number;
-  backgroundManager?: BackgroundProcessManager;
-  signal?: AbortSignal | null;
+  timeoutSeconds?: number; backgroundManager?: BackgroundProcessManager; signal?: AbortSignal | null;
 }
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function asBuffer(data: Buffer | string): Buffer {
-  return Buffer.isBuffer(data) ? data : Buffer.from(data, 'utf8');
-}
-
 export class ShellCommandExecutor {
-  constructor(
-    private readonly resolver: NonInteractiveShellResolver = new NonInteractiveShellResolver(),
-    private readonly observer: ProcessGroupObserver = new ProcessGroupObserver()
-  ) {}
-
+  constructor(private readonly resolver = new NonInteractiveShellResolver(),
+    private readonly observer = new ProcessGroupObserver()) {}
   async execute(command: string, cwd: string, options: ShellCommandExecutorOptions = {}): Promise<TerminalResult> {
-    const timeoutSeconds = options.timeoutSeconds ?? 30;
-    const timeoutMs = Math.max(1, timeoutSeconds) * 1000;
     const invocation = this.resolver.resolve(command, cwd);
-    const child = spawn(invocation.executable, invocation.args, {
-      cwd: invocation.cwd,
-      env: invocation.env,
-      detached: true,
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
-
-    const stdoutChunks: Buffer[] = [];
-    const stderrChunks: Buffer[] = [];
-    const backgroundOutputChunks: Buffer[] = [];
-    const identityParser = new ShellProcessIdentityParser(invocation.shellIdentityMarker);
-    let shellExited = false;
-    let timedOut = false;
-    let settled = false;
-
-    const onStdout = (data: Buffer | string) => {
-      const buffer = asBuffer(data);
-      backgroundOutputChunks.push(buffer);
-      if (!shellExited) {
-        stdoutChunks.push(buffer);
-      }
+    const scope = options.backgroundManager?.scope ?? new NativeCommandProcessScope(this.observer);
+    const stdout: Buffer[] = [], stderr: Buffer[] = [];
+    const onOut = (bytes: Buffer) => stdout.push(bytes);
+    const onErr = (bytes: Buffer) => stderr.push(bytes);
+    let handle: AnchoredCommandHandle | undefined, timedOut = false;
+    const interrupt = (reason: 'tool-timeout' | 'tool-abort') => {
+      timedOut = true;
+      if (handle) void scope.stop(handle, reason);
     };
-    const onStderr = (data: Buffer | string) => {
-      const filtered = identityParser.filter(data);
-      if (filtered.length === 0) {
-        return;
-      }
-
-      const buffer = Buffer.from(filtered, 'utf8');
-      backgroundOutputChunks.push(buffer);
-      if (!shellExited) {
-        stderrChunks.push(buffer);
-      }
-    };
-
-    child.stdout?.on('data', onStdout);
-    child.stderr?.on('data', onStderr);
-
-    return new Promise<TerminalResult>((resolve) => {
-      const stopActiveProcess = async (): Promise<void> => {
-        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
-        if (shellIdentity) {
-          const stopped = await this.observer.stopProcess(
-            shellIdentity.pid,
-            shellIdentity.processGroupId,
-            shellIdentity.target
-          );
-          if (stopped) {
-            return;
-          }
-        }
-
-        if (child.pid !== undefined) {
-          try {
-            child.kill('SIGTERM');
-          } catch {
-            // Best effort cancellation cleanup.
-          }
-        }
-      };
-
-      const abortHandler = () => {
-        timedOut = true;
-        void stopActiveProcess();
-      };
-
-      const finalize = async (exitCode: number | null, errorMessage?: string) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        shellExited = true;
-        clearTimeout(timer);
-        options.signal?.removeEventListener('abort', abortHandler);
-
-        const pendingStderr = identityParser.flush();
-        if (pendingStderr.length > 0) {
-          const buffer = Buffer.from(pendingStderr, 'utf8');
-          backgroundOutputChunks.push(buffer);
-          stderrChunks.push(buffer);
-        }
-
-        let backgroundProcesses: BackgroundProcessInfo[] = [];
-        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
-        if (!timedOut && options.backgroundManager && shellIdentity?.processGroupId) {
-          await sleep(75);
-          const survivors = await this.observer.findLiveProcessesInGroup(
-            shellIdentity.processGroupId,
-            [shellIdentity.pid],
-            shellIdentity.target
-          );
-          backgroundProcesses = options.backgroundManager.adoptObservedProcesses({
-            command,
-            effectiveCwd: cwd,
-            processGroupId: shellIdentity.processGroupId,
-            processTarget: shellIdentity.target,
-            processes: survivors,
-            stdout: child.stdout,
-            stderr: child.stderr,
-            initialOutput: Buffer.concat(backgroundOutputChunks)
-          });
-        }
-
-        child.stdout?.off('data', onStdout);
-        child.stderr?.off('data', onStderr);
-
-        const stderr = Buffer.concat(stderrChunks).toString('utf8') + (errorMessage ? `${errorMessage}\n` : '');
-        resolve(new TerminalResult(
-          Buffer.concat(stdoutChunks).toString('utf8'),
-          stderr,
-          exitCode,
-          timedOut,
-          cwd,
-          backgroundProcesses
-        ));
-      };
-
-      const timer = setTimeout(() => {
-        timedOut = true;
-        void stopActiveProcess();
-      }, timeoutMs);
-
-      child.once('exit', (code) => {
-        void finalize(code);
+    const abort = () => interrupt('tool-abort');
+    const timeoutMs = Math.max(1, options.timeoutSeconds ?? 30) * 1000;
+    const timer = setTimeout(() => interrupt('tool-timeout'), timeoutMs);
+    options.signal?.addEventListener('abort', abort, { once: true });
+    let result: CommandCompletion;
+    let backgrounds: BackgroundProcessInfo[] = [];
+    try {
+      handle = await scope.start(invocation, Date.now() + Math.min(1500, timeoutMs), h => {
+        handle = h; h.stdout.on('data', onOut); h.stderr.on('data', onErr);
+        options.backgroundManager?.capture(h);
+        if (options.signal?.aborted) abort();
       });
-
-      child.once('error', (error) => {
-        void finalize(null, error.message);
-      });
-
-      if (options.signal) {
-        if (options.signal.aborted) {
-          abortHandler();
-        } else {
-          options.signal.addEventListener('abort', abortHandler, { once: true });
-        }
+      result = await handle.completion;
+      clearTimeout(timer); options.signal?.removeEventListener('abort', abort);
+      if (result.kind === 'result' && !handle.stopReason && scope.isOpen) {
+        try {
+          const survivors = await scope.members(handle);
+          if (options.backgroundManager) backgrounds = options.backgroundManager.adoptObservedProcesses({
+            command, effectiveCwd: cwd, handle, processes: survivors });
+          await scope.retireCompleted(handle);
+        } catch (error) { stderr.push(Buffer.from(`Command ownership observation failed: ${String(error)}\n`)); }
       }
-    });
-  }
-
-  private getShellIdentity(
-    kind: string,
-    processTarget: ProcessExecutionTarget,
-    childPid: number | undefined,
-    parsedIdentity: ShellProcessIdentity | null
-  ): (ShellProcessIdentity & { target: ProcessExecutionTarget }) | null {
-    if (kind === 'windows-wsl') {
-      return parsedIdentity ? { ...parsedIdentity, target: processTarget } : null;
+    } catch (error) {
+      result = handle?.completed ?? { kind: 'failed', reason: 'launch-failure', message: String(error) };
+    } finally {
+      clearTimeout(timer); options.signal?.removeEventListener('abort', abort);
+      handle?.flushOutput(); handle?.stdout.off('data', onOut); handle?.stderr.off('data', onErr);
+      if (handle) options.backgroundManager?.releaseUnusedCapture(handle);
     }
-
-    if (childPid === undefined) {
-      return null;
-    }
-
-    return {
-      pid: childPid,
-      processGroupId: childPid,
-      target: HOST_PROCESS_TARGET
-    };
+    if (result.kind !== 'result') stderr.push(Buffer.from(`${result.kind === 'failed' ? result.message : result.reason}\n`));
+    return new TerminalResult(Buffer.concat(stdout).toString('utf8'), Buffer.concat(stderr).toString('utf8'),
+      result.kind === 'result' ? result.code : null, timedOut, cwd, backgrounds);
   }
 }

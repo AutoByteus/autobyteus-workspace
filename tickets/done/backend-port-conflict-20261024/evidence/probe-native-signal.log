@@ -1,0 +1,19 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts[2m > [22m[2mSIGTERM plus complete native shutdown reports success yet detached listener survives
+[22m[39m{"case":"native-sigterm","parentPid":80807,"child":{"pid":80810,"port":50025},"exit":[0,null],"ancestryAfter":"80810     1 80810","logs":"Successfully registered tool definition: 'start_background_process'\nAgent 'owned-signal-probe': No LLM instance found in context. Skipping cleanup.\n{\"signal\":\"SIGTERM\",\"nativeShutdownSuccess\":true}\n","listenerSurvived":true,"limitation":"real native shutdown orchestrator in signal harness, not full Studio/Electron"}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts[2m > [22m[2mSIGTERM plus complete native shutdown reports success yet detached listener survives
+[22m[39m{"case":"native-sigterm","cleanup":"exact owned child gone; parent exited; temp root removed"}
+
+ [32m✓[39m tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 302[2mms[22m[39m
+   [33m[2m✓[22m[39m SIGTERM plus complete native shutdown reports success yet detached listener survives [33m 301[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (4)[39m
+[2m   Start at [22m 15:00:48
+[2m   Duration [22m 848ms[2m (transform 121ms, setup 0ms, import 207ms, tests 302ms, environment 0ms)[22m
+
