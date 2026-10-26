@@ -1,61 +1,64 @@
 # Code Review Report — backend-port-conflict-20261024
 
 ## Review Round Meta
-- Entry point: **Implementation Review**, round **1**, **Full Review**, **CRR-001**, 2026-10-24.
-- Decision: **Fail — implementation-owned Local Fix**, CR-001 and CR-002. Do not advance to API/E2E yet.
-- Reviewed HEAD: `0eb15a1374cc8ae0a0ed2272282c171e601c4b8b`; source/check/build baseline `10990feb1`; diff base `034bfe51ab697817773ff545d369e1cfc03a79c5` (`origin/personal`). Source unchanged between validated baseline and reviewed HEAD, independently checked.
-- Workspace: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`.
-- Requirements context: `requirements-doc.md`, **R1 Approved**, including Scope Guardrail, REQ-001..006 / AC-001..006. No behavior-defining supplements.
-- Investigation context: `investigation-notes.md`; `codex-origin-clarification.md`; `codex-background-investigation.md` (SR-006).
-- Solution history/design: `solution-revision-record.md` **SR-001..006**; `design-spec.md` **D3.1**.
-- Architecture context: `design-review-report.md`, `architecture-review-revision-record.md`, **ARCH-REV-003 Pass**; earlier AR-001..003 and IMP-DI-001 resolved in design.
-- Implementation context: `implementation-handoff.md`, `implementation-check-ledger.md`, `implementation-revision-record.md`, **IR-002** (prior IR-001 recovery retained).
-- Supplements/evidence inspected: native anchor source/tests; IMP-13..21 receipts and source inventory; earlier defect/anchor and shutdown transport evidence as linked by design; SR-006 Codex evidence limitations; `follow-ups.md`.
-- Code-review history: `code-review-revision-record.md`, first result, prior result **N/A**. No prior review pass inferred.
-- Coverage investigation/execution report, API-REV, DR: **N/A** (not this entry point; API/E2E has not run).
-- Authorities: code-reviewer skill/templates; shared design-principles, ticket-scope and design-examples Example 7; repository `DESIGN.md`, `TESTING.md`, `AGENTS.md`, applicable server/web AGENTS. No closer DESIGN document found in the affected packages; no policy conflict established.
+- Review entry point: **Implementation Review**, round **2**, **CRR-002**, 2026-10-26.
+- Review scope: **Targeted Delta Review**. Latest authoritative result: **Pass for API/E2E**, not overall acceptance.
+- Reviewed HEAD: `9a0e0892d5ad73bbc9732dc063ff15b2183e33c8`; implementation source/check/build commit `d0338db0b`; implementation evidence commit `9679954db`; HEAD adds only the coordinator's resumption note.
+- Worktree: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`; recorded integration base `origin/personal@034bfe51ab697817773ff545d369e1cfc03a79c5` (Delivery owns integration).
+- Prior result: CRR-001 **Fail**, report/history at `ffac4611d`; prior findings **CR-001/002 independently verified resolved** below. No result inferred from handoff status or test totals.
+- Requirements/design basis: `requirements-doc.md` **R1 Approved**, `design-spec.md` **D3.1**, `solution-revision-record.md` **SR-001..006**, `investigation-notes.md`; approved scope and relevant lifetime/stop contracts carried forward and rechecked. No normative supplements.
+- Architecture context: `design-review-report.md` and `architecture-review-revision-record.md`, **ARCH-REV-003 Pass**. MP-001/002 remain confirmed.
+- Trigger/rework context: `implementation-handoff.md`, `implementation-revision-record.md` **IR-003**, `implementation-check-ledger.md`, prior `code-review-report.md` and `code-review-revision-record.md` CRR-001; `resumption-2026-10-26.md` is coordination-only, not a new design/review result.
+- Supplemental evidence: unchanged reviewer probe, IMP-22..32 logs, both new durable regression files; SR-006 `codex-background-investigation.md` limits and previous rendered evidence remain applicable only at their recorded boundaries/commits.
+- Coverage reports, API-REV and DR: **N/A**, independent API/E2E and delivery not yet performed.
+- Updated skill `references/design-principles.md` and `templates/code-review-report-template.md` reread. Apply current **/10-only score summary, >=9.2 per-category clean-pass target**, and current stored-name/migration guidance. No persistence rename occurs. Original CRR-001 score/history is not retroactively rewritten.
+- Repository DESIGN/TESTING/AGENTS and applicable server/web instructions remain the governing project policies used in CRR-001; no closer DESIGN document or authority conflict established.
 
 ## Routing Classification Review
-- **task_size=Large / architectural_risk=High**, unchanged. Independent implementation-source review required.
-- Cross-package command lifetime, OS signal authority, startup/shutdown sequencing, private IPC and renderer diagnostics justify the classification.
-- Selected rule: source review identifies an implementation-owned Local Fix before executable coverage → `/software_engineering_team/implementation_engineer`.
-- Neither finding changes intended behavior or the reviewed ownership architecture; both are bounded defects inside its assigned owners.
+**task_size=Large / architectural_risk=High**, unchanged. Cross-package process authority, lifecycle, private IPC and diagnostic contract require independent source review. This bounded correction does not downgrade the cumulative ticket. Pass route returned by `get_handoff_rules`: `/software_engineering_team/api_e2e_engineer`.
 
-## Review Scope
-Full changed implementation audit: core command launch/control/observation/admission/stop/retirement and output records; runtime config copy and native provider injection; Studio and standalone host close/partial-build paths; process shutdown readiness/barrier/cleanup transfer; platform desktop start/stop, Windows request/result/exit/force; cached application quit and updater preparation; read-only port diagnosis and all typed/derived renderer consumers. Read relevant current callers, not just diffs; inspected modified tests proportionately.
+## Review Scope And Delta Evidence
+`git diff --name-only ffac4611d HEAD` shows only3 production files,2 new test files, and ticket evidence/docs. The3 source changes are inside CR-001/002's previously identified scope, manager and executor; no new top-level owner, runtime spine, persisted/wire/shared domain contract, platform implementation, provider, renderer or build-configuration change. `ScopeOperation` and `OutputCapture` are private local shapes; `releaseUnusedCapture` is a narrowly owned record/output lifetime operation, not a new shared data contract. Thus **Targeted Delta Review**, not a full re-audit. All mandatory structural checks and the full scorecard remain explicit; unaffected evidence from CRR-001 is carried forward, not claimed freshly executed.
 
-Excluded: provider-policy redesign, ordinary individual-agent/idle behavior changes, crash/daemon escape reclamation, persisted ownership, release/install/merge, and independent API/E2E acceptance. No source or durable test fix was made by the reviewer. New ticket-local probes are evidence only.
+Rechecked the entire changed scope/manager/executor paths and new tests, including original-deadline queueing, duplicate stop, retirement/stop map ownership, already-releasing anchor, close aggregation, detach/retention and both command-start forms. Requirements/design and reviewer probe have no diff since CRR-001. No production/test fix or test/build/app execution by this reviewer in round2; existing conclusive checks were not rerun merely for confirmation.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
-Approved intent and scenario basis **Confirmed**. Implementation defects below do not redefine that basis. No new requirement, missing product approval, or newly invented user journey.
+Approved basis **Confirmed**, no new intended behavior or ambiguity. R1 Scope Guardrail and D3.1 Change Scope preserved.
 
-| Behavior | Status | Current production path / lifecycle evidence | Qualification |
+| Behavior | Current status | Production path/lifecycle evidence | Current conclusion |
 |---|---|---|---|
-| BEH-001 | Confirmed | Desktop launch → `BaseServerManager.startAttempt` → `waitForBackendPort`/post-exit diagnosis → typed `ServerStatusManager` → preload/shared snapshot → store/loading/monitor | Read-only bounded diagnosis; non-address failures retain generic errors; stale-generation guards present |
-| BEH-002 | Confirmed | Renderer Restart → status manager → awaited captured-child stop → fresh availability check/start → fresh diagnostic state | External holder is not signal authority; conflict branch hides reset; real IMP-20 recovery is scoped evidence |
-| BEH-003 | Confirmed basis; local defects | Native tools → context manager / executor → host scope → retained gated anchor → verified observation/drain; host `preClose` → provider/resource cleanup; desktop quit waits backend | CR-001 breaks explicit stop during new maintenance; CR-002 retains completed foreground captures. Host shutdown architecture otherwise follows D3.1 |
-| BEH-004 | Confirmed | Runtime-only injected scope; exact child/group handles; observer gates; standalone/Studio composition; inspection separated from cleanup | No data migration/reset or port-based kill. Codex ownership remains provider-specific; native tests do not prove reported incident fixed |
+| BEH-001 | Confirmed, carried forward | desktop start/bind or post-exit check → read-only inspector → typed snapshot → store/loading/monitor | No delta; no port-to-kill authority |
+| BEH-002 | Confirmed, carried forward | Restart → managed backend stop → fresh port check/start → fresh diagnostic | No delta; external listener/data preservation unchanged |
+| BEH-003 | Confirmed, affected paths rechecked | native tool → executor/manager → host scope → retained anchor → verified stop; scope also receives host close independently of run lifetime | Stop waits inspection then performs real drain; command result and cleanup remain distinct |
+| BEH-004 | Confirmed, affected paths rechecked | runtime scope reference and exact handles; manager capture lifecycle; bounded observer and close; provider-specific owners preserved | No raw PID/port reclamation, data rewrite or ordinary agent/idle policy change |
 
 ## Supported Product Scenario And Reachability Gate
-| Scenario / contract | Kind / initiating basis | Forward path / lifecycle | Expected outcome | Independent authority | Validity / review use |
-|---|---|---|---|---|---|
-| SCN-001/005 | User/System: launch with occupied endpoint, or failed owner inspection | Launch → bind check → advisory lookup → visible typed conflict | Truthful identity/unknown; no external interruption | R1 REQ-001/002/004, AC-001/002; historical conflict and P-001 | Supported Explicit Edge Scenario / Use |
-| SCN-002 | User: resolve other app's conflict and Retry | Restart control → managed stop → fresh launch | Block while occupied, recover after removal | R1 AC-003 and exposed Restart; IMP-20 | Supported Normal Scenario / Use |
-| SCN-003 | User/System: application quit or backend restart after native work | Tools → injected scope → Fastify early drain → remaining cleanup → backend exit → desktop continuation | All owned groups absent or honest bounded failure | User approval, R1 REQ-003/004, AC-004/005, D3.1 DS-003 | Supported Normal Scenario / Use |
-| SCN-004 | System: shell/run ends but native descendants remain | RESULT/agent end → retained scope lease → later shutdown | Ownership outlives agent; unrelated work survives | R1 SCN-004, baseline P-003/005 and IMP-DI-001 | Supported Explicit Edge Scenario / Use |
-| D3.1 native explicit-stop preservation | User via agent: stop an ordinary managed preview after its launching shell returns; automatic maintenance continues independently | `stop_background_process` → manager.stopProcess → scope.stop, while 1s `retireEmpty` inspects that same completed shell's live group | Stop must execute the drain, not return a non-stopping inspection result | R1 REQ-005 preserved tools/lifetimes; D3.1 “same scope stop operation serves explicit stop”; existing tool registration and timer | Supported Normal Scenario / Use; CR-C01 |
-| D3.1 per-agent output lifetime / completed-command retirement | User via agent: ordinary sequential foreground commands in one conversation | `runBash` always passes context manager → executor capture → command completion/no survivors → scope retirement | Preserve returned output; no historical capture retained without a record/consumer | R1 REQ-005 preserved normal commands; D3.1 manager owns per-agent records, immediate empty completion retirement; shared resource ownership principles | Supported Normal Scenario / Use; CR-C02 |
-| D3.1 startup/Windows/quit contract | System: quit/restart during startup or ongoing work | captured child → private request/signal → startup barrier → latest cleanup → complete+exit → app/updater | No late startup, no concurrent initialize/close, no false success on force | R1 REQ-003/004, QR-001; MP-001/002 | Supported Explicit Edge Scenario / Use |
+| Scenario/contract | Initiator / supported event | Forward path and lifecycle / expected outcome | Independent basis | Validity/use |
+|---|---|---|---|---|
+| SCN-001/005 | User launch with occupied endpoint; unavailable inspection | bind check → advisory identity/unknown → visible safe guidance | R1 REQ-001/002/004, AC-001/002 | Supported Explicit Edge Scenario / Use; unchanged |
+| SCN-002 | User resolves external conflict and retries | Restart → managed stop → fresh launch; no unrelated termination | R1 AC-003 and existing Restart surface | Supported Normal Scenario / Use; unchanged |
+| SCN-003/004 | App/backend shutdown after command or agent ends | host scope retains native lease → early drain → remaining provider cleanup → backend exit → desktop continuation | User approval, R1 REQ-003/004 AC-004/005, D3.1 | Supported Normal / Explicit Edge Scenarios respectively / Use |
+| D3.1 explicit-stop preservation | Agent/user stops ordinary preview while autonomous maintenance observes its completed shell | stop-background-process → manager.stopProcess → scope.stop; inspection cannot substitute for drain | R1 REQ-005 and D3.1 shared stop/maintenance contract; production tool and timer | Supported Normal Scenario / Use, CR-C01 |
+| D3.1 output lifetime | Agent executes ordinary foreground commands or supported command launch fails | runBash → capture → result/failure → no background consumer → release; adopted/history records retain output | R1 preserved command behavior; D3.1 record/retirement ownership; CRR-001 | Supported Normal / Explicit Edge Scenarios / Use, CR-C02 |
+| MP-001/002 | Windows orderly shutdown; short-lived shell survivor and expected force | captured request/signal → cleanup barrier/drain → result+exit; retained anchor until absence | Approved D3.1 and architecture review | Supported contracts / Use; unchanged |
 
 ### Candidate Finding And Mechanism Gate
-| Candidate | Observation / mechanism | Scenario / contract; independent trigger | Forward path / lifecycle / consequence | Evidence | Disposition / scope | Response |
-|---|---|---|---|---|---|---|
-| CR-C01 | `stop` shares a pending maintenance result as if it were a drain | D3.1 explicit-stop preservation above; user stops a preview while system maintenance is inspecting it | Completed shell retains child; maintenance stores promise in `operations`; stop returns it at line57; “Group still active” is returned with no TERM/KILL and stop intent suppresses future natural retirement | scope `:52-64,101-117`; tool/manager callers; CR-01 probe first case: survivor84831, unconfirmed “Group still active”, one live lease | **Promote / This ticket** | CR-001: sequence stop after maintenance, recheck retirement and drain within the caller budget; do not share an inspection-only result as stop completion |
-| CR-C02 | Every foreground command creates a permanent strong output-map entry | D3.1 output/retirement contract above; ordinary repeated `run_bash` | executor captures before START; no-survivor completion retires scope but never releases manager capture; no PID record exists to explicitly stop/release it; retained handle and up to1MB output per command accumulate for context lifetime | manager `:14,21-26,64-80`; executor `:27-30,36-42,48-50`; CR-01 probe second case: zero leases/records but3 captures/51 bytes after3 commands | **Promote / This ticket** | CR-002: release unneeded captures without discarding output required by live/adopted or legitimate historical background records; add lifecycle regression |
-| CR-C03 | Hypothesized late platform spawn after pre-spawn cancellation | D3.1 cancellation contract; quit during preflight | Potential await inside launcher would matter, but current macOS/Linux/Windows launch bodies spawn synchronously after final preflight signal check | All3 platform launchers inspected; shell PATH resolution is synchronous | **Reject** | No finding, no new generation machinery prescribed |
-| CR-C04 | Requiring native anchors to prove or replace Codex command ownership | R1 SCN-003/004 and SR-006; reported Codex-launched listener | Native branch does not intercept provider-internal conversation exec; current provider owner is intentionally preserved | Native factory injection, SR-006 actual-client-only results, no Codex source diff | **Reject as source-defect inference** | Preserve integrated Codex validation gate downstream, not a speculative provider rewrite or acceptance claim |
+| Candidate | Observation / mechanism | Independent trigger and forward consequence | Evidence | Disposition / scope / proportionate response |
+|---|---|---|---|---|
+| CR-C01 | Previously promoted inspection-as-stop defect; now local sequencing correction | Explicit preview stop overlaps automatic inspection; wait for inspection, recheck retirement, drain within original budget | scope `:53-73,110-145`; IMP-24 stopped/empty; new stop-retirement tests | **Promote retained historical basis / This ticket / Resolved CR-001**; no further mechanism required |
+| CR-C02 | Previously promoted unused foreground capture retention; now owned release | Normal/failed command returns without record consumer; detach exact append listener and delete capture while preserving record-owned output | manager `:22-49,77-95`, executor `:48-51`; IMP-24 zero captures; output-lifetime tests | **Promote retained historical basis / This ticket / Resolved CR-002**; no further change required |
+| CR-C03 | Previously hypothesized late platform spawn | Current platform launchers are synchronous after final preflight cancellation check; unchanged | CRR-001 source trace plus no platform diff | **Reject**, unchanged; no extra generation machinery |
+| CR-C04 | Native anchors interpreted as Codex ownership proof | Codex internal conversation commands use existing provider owner, not native scope | SR-006; no provider diff | **Reject as source-defect/fix inference**, unchanged; retain downstream composed validation |
 
-Existing and new safety machinery was judged against the established contracts: retained gate before user code, identity revalidation, concurrent collective bounded drain, startup cancellation barrier, result+exit Windows confirmation, generation-safe diagnostic publication and cached app preparation are justified. No unsupported safety mechanism was promoted. No candidate held for missing evidence.
+No new promoted, held or unclear candidate. The fixes implement the established supported contracts, not speculative concurrency or lifetime policy. Example7's independent scenario test remains satisfied by the original preview-stop/system-maintenance and ordinary foreground paths.
+
+## Prior Finding Resolution
+| Finding | Prior status | Current status | Independent verification |
+|---|---|---|---|
+| CR-001 | P2 Local Fix / Open | **Resolved** | scope distinguishes `retirement` from `stop`, shares only real stops, publishes queued stop before yielding, awaits prior inspection within original deadline, rechecks retired state then drains. Retirement finally removes only its own promise; stop intent prevents competing RELEASE. IMP-24 reports stopped/no survivors/0 leases; durable tests cover duplicate stop, expired wait without signal and already-releasing empty anchor |
+| CR-002 | P2 Local Fix / Open | **Resolved** | manager owns exact buffer+append callback; release refuses record consumers and detaches both streams otherwise. Executor finally releases after preserving returned output; background-start finally handles no-record launch failure. Explicit record removal releases capture. Tests prove3 foreground commands, both failed-launch forms, late adopted output and completed-background history |
+
+No open finding. The new helper does not change OS termination authority or delete retained background history. `close()` still awaits actual operation promises within its collective3s deadline; no sequential per-process budget extension was introduced.
 
 ## Structural / Design Checks
 | Check | Result | Evidence | Required action |
@@ -63,12 +66,12 @@ Existing and new safety machinery was judged against the established contracts: 
 | Task design health assessment present and preserved | Pass | D3.1 ownership/missing-invariant assessment; IMP-DI-001 replaced with retained anchors | None upstream |
 | Approved supplemental behavior alignment | Pass | No normative supplements; SR-006 limits preserved | Keep acceptance caveats |
 | Data-flow spine inventory clarity/preservation | Pass | D3.1 tool→scope, host→close, desktop→status paths trace in source | None |
-| Ownership boundary preservation/clarity | Pass | Host scope injected by reference; manager owns records; observer only mechanism | Repair local sequencing, not new owner |
+| Ownership boundary preservation/clarity | Pass | Host scope injected by reference; manager owns records; observer only mechanism | CR-001 sequencing corrected in scope |
 | Off-spine concern clarity | Pass | Read-only inspector; static anchor/framing and identity observers serve specific owners | None |
 | Existing capability/subsystem reuse | Pass | Terminal, composition, server/application/updater and localization boundaries reused | None |
 | Reusable owned structures | Pass | One anchored handle; one typed diagnostic; shared host shutdown adapter | None |
 | Shared structures/data-model tightness | Pass | Runtime scope not serialized; discriminated command/cleanup/diagnostic results | None |
-| Repeated coordination ownership | Pass | Scope owns termination policy; desktop captured-child owner owns force policy | CR-001 fixes local operation-kind confusion |
+| Repeated coordination ownership | Pass | Scope owns termination policy; desktop captured-child owner owns force policy | Operation kind now distinguishes inspection from stop |
 | Empty indirection | Pass | New boundaries own protocol, deadline, identity, aggregation or lifecycle | None |
 | SoC/file responsibility | Pass | Focused new modules; larger touched owners shrink or remain under limit | None |
 | Ownership-driven dependencies | Pass | Core has no server/Electron dependency; server composes core | None |
@@ -80,142 +83,130 @@ Existing and new safety machinery was judged against the established contracts: 
 | Unjustified duplication | Pass | Four exact wire strings intentionally paired across separately packaged boundaries and contract-tested | None |
 | Patch-on-patch control | Pass | Old numeric group/marker/signal-only paths replaced, not fallback layers | None |
 | Dead code removal in touched scope | Pass | Removed factory cache/accessor, WSL marker/parser, old observer stop path and fire-and-forget quit | No additional dead symbol established |
-| Relevant test intent/assertions | Pass | Actual owned child absence and listener release; IPC negative cases; localization consumer tests | Add CR-001/002 regressions |
+| Relevant test intent/assertions | Pass | Actual owned child absence and listener release; IPC negative cases; localization consumer tests | 8 durable regressions added and reviewed |
 | Fixture/helper reuse/coherence | Pass | Isolated core fixtures and bounded fake transport tests suit their boundaries | Keep platform limits explicit |
 | No stale/compatibility-only tests | Pass | Deleted obsolete unsafe API assertions; new replacement behavior tested | None |
-| API/E2E readiness | **Fail** | Two confirmed local source regressions remain despite green focused baseline | Fix CR-001/002 then source review again |
+| API/E2E readiness | Pass | CR-001/002 resolved; scoped foundation reruns and current package available | Independent integrated validation next |
 
 ## Source File Size And Structure Audit
-Independent base/current count in `evidence/CR-02-source-audit.json`: **41 changed implementation files**, none over500 nonempty lines. Tests, fixtures and ticket evidence excluded. Delta counts below are added+deleted lines (conservative churn audit). The3 large deltas are intentional replacements of unsafe command mechanics, not added monoliths. Responsibility/placement checks pass; no size-only finding.
+Independent current source count against original base034bfe51 below. All41 changed production files remain <=500 nonempty lines. Local IR-003 deltas are manager30 additions/15 deletions, scope19/8, executor1/0; none exceeds220. Cumulative >220 churn in the prior replacement files is still justified by the D3.1 clean cut, as reviewed in CRR-001. Tests/fixtures excluded from thresholds. The other38 source files are unchanged from the prior audit `evidence/CR-02-source-audit.json`.
 
-| Source file | Base nonempty | Current nonempty | >500 | >220 delta | SoC / placement | Classification / action |
+| Source file | Base nonempty | Current nonempty | >500 | Cumulative >220 churn | SoC / placement | Classification / action |
 |---|---:|---:|---|---|---|---|
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 473 | 468 | Pass | 17 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` | 205 | 209 | Pass | 4 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | 406 | 412 | Pass | 25 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | 59 | 62 | Pass | 3 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/compositions/native-command-shutdown.ts` | 0 | 21 | Pass | 21 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/server-runtime.ts` | 226 | 215 | Pass | 111 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/shutdown/server-process-shutdown.ts` | 0 | 59 | Pass | 59 — Pass | Pass | No structural change required |
-| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 353 | 358 | Pass | 11 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/agent/context/agent-config.ts` | 110 | 113 | Pass | 3 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/agent/context/agent-context.ts` | 120 | 121 | Pass | 2 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/index.ts` | 34 | 35 | Pass | 2 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/background-process-context.ts` | 24 | 26 | Pass | 4 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/background-process-manager.ts` | 266 | 87 | Pass | 344 — reviewed replacement | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/anchor-control-protocol.ts` | 0 | 56 | Pass | 56 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts` | 0 | 138 | Pass | 138 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/command-deadline.ts` | 0 | 6 | Pass | 6 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts` | 0 | 138 | Pass | 138 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts` | 113 | 103 | Pass | 19 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/posix-command-anchor-script.ts` | 0 | 26 | Pass | 26 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/process-group-observer.ts` | 192 | 73 | Pass | 274 — reviewed replacement | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/process-identity.ts` | 97 | 19 | Pass | 121 — Pass | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts` | 173 | 56 | Pass | 223 — reviewed replacement | Pass | No structural change required |
-| `autobyteus-ts/src/tools/terminal/command-execution/wsl-command-anchor-script.ts` | 0 | 28 | Pass | 28 — Pass | Pass | No structural change required |
-| `autobyteus-web/components/server/ServerLoading.vue` | 199 | 213 | Pass | 18 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/application/applicationShutdown.ts` | 0 | 29 | Pass | 29 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/application/electronApplication.ts` | 405 | 390 | Pass | 45 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/launch-profile/e2eLaunchPreflight.ts` | 23 | 5 | Pass | 25 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/backendPortAvailability.ts` | 0 | 30 | Pass | 30 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/baseServerManager.ts` | 448 | 414 | Pass | 128 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/managedBackendShutdownClient.ts` | 0 | 61 | Pass | 61 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/managedBackendStop.ts` | 0 | 34 | Pass | 34 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/portOwnerInspector.ts` | 0 | 29 | Pass | 29 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/serverStatusManager.ts` | 163 | 173 | Pass | 20 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/server/windowsServerManager.ts` | 149 | 63 | Pass | 140 — Pass | Pass | No structural change required |
-| `autobyteus-web/electron/updater/appUpdater.ts` | 410 | 412 | Pass | 6 — Pass | Pass | No structural change required |
-| `autobyteus-web/localization/messages/en/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | No structural change required |
-| `autobyteus-web/localization/messages/en/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | No structural change required |
-| `autobyteus-web/localization/messages/zh-CN/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | No structural change required |
-| `autobyteus-web/localization/messages/zh-CN/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | No structural change required |
-| `autobyteus-web/stores/serverStore.ts` | 411 | 417 | Pass | 8 — Pass | Pass | No structural change required |
-| `autobyteus-web/types/serverStatus.ts` | 27 | 33 | Pass | 7 — Pass | Pass | No structural change required |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 473 | 468 | Pass | 17 — Pass | Pass | None |
+| `autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts` | 205 | 209 | Pass | 4 — Pass | Pass | None |
+| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | 406 | 412 | Pass | 25 — Pass | Pass | None |
+| `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | 59 | 62 | Pass | 3 — Pass | Pass | None |
+| `autobyteus-server-ts/src/compositions/native-command-shutdown.ts` | 0 | 21 | Pass | 21 — Pass | Pass | None |
+| `autobyteus-server-ts/src/server-runtime.ts` | 226 | 215 | Pass | 111 — Pass | Pass | None |
+| `autobyteus-server-ts/src/shutdown/server-process-shutdown.ts` | 0 | 59 | Pass | 59 — Pass | Pass | None |
+| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 353 | 358 | Pass | 11 — Pass | Pass | None |
+| `autobyteus-ts/src/agent/context/agent-config.ts` | 110 | 113 | Pass | 3 — Pass | Pass | None |
+| `autobyteus-ts/src/agent/context/agent-context.ts` | 120 | 121 | Pass | 2 — Pass | Pass | None |
+| `autobyteus-ts/src/index.ts` | 34 | 35 | Pass | 2 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/background-process-context.ts` | 24 | 26 | Pass | 4 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/background-process-manager.ts` | 266 | 102 | Pass | 359 — reviewed replacement | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/anchor-control-protocol.ts` | 0 | 56 | Pass | 56 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts` | 0 | 138 | Pass | 138 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/command-deadline.ts` | 0 | 6 | Pass | 6 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts` | 0 | 149 | Pass | 149 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts` | 113 | 103 | Pass | 19 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/posix-command-anchor-script.ts` | 0 | 26 | Pass | 26 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/process-group-observer.ts` | 192 | 73 | Pass | 274 — reviewed replacement | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/process-identity.ts` | 97 | 19 | Pass | 121 — Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts` | 173 | 57 | Pass | 224 — reviewed replacement | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/wsl-command-anchor-script.ts` | 0 | 28 | Pass | 28 — Pass | Pass | None |
+| `autobyteus-web/components/server/ServerLoading.vue` | 199 | 213 | Pass | 18 — Pass | Pass | None |
+| `autobyteus-web/electron/application/applicationShutdown.ts` | 0 | 29 | Pass | 29 — Pass | Pass | None |
+| `autobyteus-web/electron/application/electronApplication.ts` | 405 | 390 | Pass | 45 — Pass | Pass | None |
+| `autobyteus-web/electron/launch-profile/e2eLaunchPreflight.ts` | 23 | 5 | Pass | 25 — Pass | Pass | None |
+| `autobyteus-web/electron/server/backendPortAvailability.ts` | 0 | 30 | Pass | 30 — Pass | Pass | None |
+| `autobyteus-web/electron/server/baseServerManager.ts` | 448 | 414 | Pass | 128 — Pass | Pass | None |
+| `autobyteus-web/electron/server/managedBackendShutdownClient.ts` | 0 | 61 | Pass | 61 — Pass | Pass | None |
+| `autobyteus-web/electron/server/managedBackendStop.ts` | 0 | 34 | Pass | 34 — Pass | Pass | None |
+| `autobyteus-web/electron/server/portOwnerInspector.ts` | 0 | 29 | Pass | 29 — Pass | Pass | None |
+| `autobyteus-web/electron/server/serverStatusManager.ts` | 163 | 173 | Pass | 20 — Pass | Pass | None |
+| `autobyteus-web/electron/server/windowsServerManager.ts` | 149 | 63 | Pass | 140 — Pass | Pass | None |
+| `autobyteus-web/electron/updater/appUpdater.ts` | 410 | 412 | Pass | 6 — Pass | Pass | None |
+| `autobyteus-web/localization/messages/en/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | None |
+| `autobyteus-web/localization/messages/en/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | None |
+| `autobyteus-web/localization/messages/zh-CN/index.ts` | 78 | 80 | Pass | 2 — Pass | Pass | None |
+| `autobyteus-web/localization/messages/zh-CN/server.ts` | 0 | 8 | Pass | 8 — Pass | Pass | None |
+| `autobyteus-web/stores/serverStore.ts` | 411 | 417 | Pass | 8 — Pass | Pass | None |
+| `autobyteus-web/types/serverStatus.ts` | 27 | 33 | Pass | 7 — Pass | Pass | None |
 
 ## Legacy / Backward-Compatibility Verdict
-| Check | Result | Evidence |
+| Check | Result | Notes |
 |---|---|---|
-| No backward-compatibility mechanism | Pass | Exact same-version IPC contract; no old-server negotiation/fallback |
-| No old-behavior retention | Pass | Unsafe numeric group authority and Windows purported graceful taskkill removed |
-| Dead code removed in touched scope | Pass | Removed cached native factory accessor and marker/parser; caller search confirms replacement |
-| Persisted-data transition followed | Pass | **Not Affected**; runtime-only reference and transient diagnostic |
-| No version-specific dual read/write/request fallback | Pass | No persisted shape change or old payload path |
-| Transition mechanics appropriate | Pass | No migration warranted/added |
+| No backward-compatibility mechanisms | Pass | Exact current private IPC contract, no negotiation fallback; unaffected evidence carried forward |
+| No legacy old-behavior retention | Pass | Numeric-group/marker paths removed; correction adds no alternate runtime path |
+| Dead code removed in touched scope | Pass | New capture operation has executor/start/stop callers; operation discriminant consumed by stop/retirement/close; prior removals stand |
+| Approved persisted-data transition followed | Pass | Not Affected; local runtime-only shapes, no stored name or serialization change |
+| No version-specific dual reads/writes | Pass | No persistence or request schema changes |
+| Transition mechanics appropriate | Pass | No migration needed or added; updated naming/migration guidance introduces no extra work here |
 
-Dead/obsolete source items requiring removal: **None established**. CR-002 is a live runtime resource-retention defect, not an unused-source-symbol finding.
+Dead/obsolete source requiring removal: **None established**. No new follow-up.
 
 ## Docs-Impact Verdict
-**Yes.** Delivery should synchronize terminal ownership/lifetime and desktop shutdown/conflict recovery documentation against the eventual validated behavior, including limitations. `docs/design-cases.md` already records the anchor lesson. Reviewer reports do not replace Delivery documentation sync. No release/install instructions should imply this task installed the fix.
+**Yes**, cumulative ticket. Delivery still owns terminal lifetime and desktop conflict/shutdown documentation sync against validated behavior. No new product documentation change is required solely by these bounded correctness fixes. Do not imply install/release or a proven Codex incident fix.
 
 ## Additional Material Premise Validation
-| Upstream premise | Status | Current evidence |
-|---|---|---|
-| MP-001 Windows orderly shutdown must reach host cleanup | Confirmed | Actual Windows launcher attaches IPC; server owner exists before async startup; completion+exit client and bounded force path present |
-| MP-002 returned shell needs continuous authority; force can kill result emitter | Confirmed | Gated retained anchors, separate command and cleanup latches, `finishStop` fallback; native real-child checks |
-
-No upstream premise reclassified. New concrete witness CR-C01 is automatic maintenance concurrent with an ordinary explicit tool stop, not two contradictory user actions. Its support is the approved D3.1 timer/stop contract and existing production tool path; the deterministic pause only exposes the real async inspection interval. CR-C02 requires no timing premise. Example7 applied before promoting either candidate.
+MP-001 (Windows cleanup entry) and MP-002 (continuous anchor/force settlement) **Confirmed**, unchanged from ARCH-REV-003 and CRR-001. No new or reclassified material premise. Source-delta scope does not remove the mandatory downstream native/Codex full-host and desktop evidence.
 
 ## Review Scorecard
-Overall **9.1/10 (91/100)**, simple mean; this does **not** override the failed categories/findings.
+**Overall9.5/10**, simple mean, current template /10-only. All categories meet current>=9.2 threshold. No raw score implies independent runtime acceptance.
 
-| Priority | Category | Score | Why | Weakness / drag | Improvement |
+| Priority | Category | Score | Reason | Weakness / drag | Expected improvement |
 |---|---|---:|---|---|---|
-|1|Data-Flow Spine Inventory and Clarity|9.5|Both command forms, both hosts and desktop/status paths are explicit|No blocking clarity defect|Preserve traces through fixes|
-|2|Ownership Clarity and Boundary Encapsulation|9.5|Host-lifetime scope, advisory diagnosis and provider ownership separated|No boundary bypass established|Keep local fixes inside current owners|
-|3|API / Interface / Query / Command Clarity|9.5|Exact handles/targets and distinct outcomes|No blocking interface ambiguity|No new generic process selector|
-|4|Separation of Concerns and File Placement|9.5|Small focused adapters and existing owners|No structural split needed|Maintain current decomposition|
-|5|Shared-Structure / Data-Model Tightness and Reusable Owned Structures|9.5|Single handle/diagnostic models and injected scope|No blocking model duplication|Preserve reference-only config copy|
-|6|Naming Quality and Local Readability|9.5|Ownership and lifecycle vocabulary is consistent|No evidence-grounded naming defect|No style-only rewrite|
-|7|API/E2E Readiness|8.0|Green scoped evidence is credible, but CR-001/002 are uncovered regressions|CR-C01/02 reproduced before independent executable coverage|Fix and add regressions, rerun by shared-core impact|
-|8|Runtime Correctness And Behavioral Fidelity|8.0|Major cleanup/conflict paths follow design; explicit stop can be replaced by maintenance result|CR-C01 / CR-001|Ensure a stop request actually drains after inspection|
-|9|No Backward-Compatibility / No Legacy Retention|9.5|Unsafe old paths removed without compatibility fallback|No blocking legacy defect|Keep clean cut|
-|10|Cleanup Completeness|8.5|OS anchor retirement exists but output captures outlive ordinary commands|CR-C02 / CR-002|Release unconsumed captures/handles within their proper lifetime|
+|1|Data-Flow Spine Inventory and Clarity|9.5|Existing tool/scope/host/desktop spines unchanged; local queue/release explicit|No blocking clarity defect|Preserve trace through validation|
+|2|Ownership Clarity and Boundary Encapsulation|9.5|Scope sequences stop; manager decides output consumers; executor requests owned release|No boundary bypass found|None required|
+|3|API / Interface / Query / Command Clarity|9.5|Local release is handle-specific; typed operation distinguishes stop from inspection|No new shared-contract ambiguity|None required|
+|4|Separation of Concerns and File Placement|9.5|Correction stays in3 established owners; no new framework|No structural defect|None required|
+|5|Shared-Structure / Data-Model Tightness and Reusable Owned Structures|9.5|Private operation and buffer/callback pairs remain semantically tight|No overlapping domain model|None required|
+|6|Naming Quality and Local Readability|9.5|`releaseUnusedCapture` and operation kinds describe actual policy|No evidence-grounded naming defect|None required|
+|7|API/E2E Readiness|9.5|CR-001/002 closed,501 durable scoped tests plus2 probes and current package recorded|Independent composed execution remains next stage, not a source defect|Run required API/E2E scenarios|
+|8|Runtime Correctness And Behavioral Fidelity|9.5|Original-deadline retirement→drain sequencing and preservation tests address CR-C01|No unresolved supported-path source defect in delta|Verify integrated lifetime boundary downstream|
+|9|No Backward-Compatibility / No Legacy Retention|9.5|Clean cut preserved; no compatibility path or persistence fallback|No blocking legacy defect|None required|
+|10|Cleanup Completeness|9.5|Unused capture/listener release now explicit while live/history records retain output; CR-C02 closed|No unresolved local cleanup defect|Validate actual app-owned work and fixture cleanup downstream|
 
 ## Findings
-### CR-001 — P2 / Medium — Do not return a maintenance observation as explicit-stop completion
-- Candidate: **CR-C01**, this ticket; **Local Fix**, implementation owner.
-- Location: `autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts:52-58,101-115`; effect reaches `background-process-manager.ts:64-68` and `tools/stop-background-process.ts`.
-- When a shell has completed but its preview is still live, automatic maintenance puts its inspection promise in `operations`. An explicit tool stop arriving during the awaited snapshot returns that promise immediately. Maintenance correctly sees a live child and returns `unconfirmed: Group still active`, but no drain was attempted. The tool reports cleanup failure and the child keeps running. Because stop intent was set, later maintenance skips this lease until a subsequent explicit stop or host close.
-- Source-grounded reproduced receipt: CR-01 first case returns `unconfirmed`, survivor84831 remains, scope size1. Finally, an actual host close succeeds and scope size0; a separate read-only `ps -p 84831` finds no row.
-- Required correction: serialize against maintenance, then re-evaluate retirement and perform the actual stop if needed, respecting the original bounded deadline and exactly-once settlement. Only actual pending stop work can satisfy another stop. Add a regression at the scope/manager boundary for this supported overlap; preserve empty-retirement, duplicate stop and host-close behavior.
-- This is not a request for a new coordinator, timer, or product lifetime policy. The reviewed scope already owns this sequence.
+**None open.** CR-001 and CR-002 resolved; historical reproduction, required action and resolution remain in CRR-001/CRR-002 history and original evidence. No further implementation change requested.
 
-### CR-002 — P2 / Medium — Release foreground captures that have no background record
-- Candidate: **CR-C02**, this ticket; **Local Fix**, implementation owner.
-- Location: `autobyteus-ts/src/tools/terminal/background-process-manager.ts:14,21-26`; unconditional caller `command-execution/shell-command-executor.ts:27-30`; terminal cleanup `:48-50`; capture deletion exists only in manager explicit stop/stopAll.
-- Every ordinary `run_bash` now captures its entire bounded output through the context manager before launch. After successful foreground-only completion, the scope retires its lease and the executor removes only its own listeners. The manager's strong `outputs` Map still retains the handle, streams and buffer despite having no background-process record. No public PID stop can clear this capture because no record exists. Repeated normal commands therefore accumulate one retained entry (up to1MB of output plus handle state) per command for the context lifetime. This is new retention, not pre-existing background-history policy.
-- CR-01 second case runs3 real foreground-only `printf` commands: **0 live leases, 0 background records, 3 captures, 51 retained bytes**. This is a small correctness/lifetime witness, not an OOM or performance benchmark claim.
-- Required correction: give pre-adoption output capture an explicit release/ownership lifecycle (or an equivalent non-retaining implementation). Preserve live/adopted output and any deliberately retained background record. Add tests proving repeated foreground-only completion and failed launch do not retain unused captures, alongside survivor-output preservation. No application/agent shutdown policy change is needed.
+## Checks / Evidence Reviewed (No Reviewer Reruns)
+Read implementation Checks Run and rerun-by-impact plan before deciding execution. Verified no production change between d0338db0b and reviewed HEAD; successful current evidence is reusable. Independently inspected source and assertions instead of repeating completed commands.
 
-## Checks And Evidence
-Read implementation Checks Run before deciding to execute anything. **No recorded successful suite/build was rerun just for reassurance.** Source unchanged since10990feb1 preserves the supplied IMP-13..18 results:132 core +141 Electron +209 server +11 component =493 passing; production server/core/shared and Electron types/build pass. IMP-19/20 remain implementation self-validation of the packaged conflict/retry/recovery and no-active-work quit only.
+| Evidence | Commit | Recorded result / review use |
+|---|---|---|
+| IMP-22 | ffac4611d | Original unchanged reviewer probe reproduces2 failures; cause established in CRR-001 |
+| IMP-23 | d0338db0b | 8 durable regressions pass; both new test files inspected |
+| IMP-24 | d0338db0b | Same reviewer probe passes2/2; stopped/no survivors/0 leases and0 captures/bytes; probe source unchanged |
+| IMP-25 | d0338db0b | 132 existing core cases pass; new8 excluded to avoid duplicate execution |
+| IMP-26/30 | d0338db0b | Production core/shared/server and Electron types pass |
+| IMP-27/28/29 | d0338db0b | 209 server +141 Electron +11 component tests pass |
+| IMP-31 | d0338db0b | Current task-local desktop rebuild completes; not a launch/quit proof |
+| IMP-32 | d0338db0b | Changed3 owner size receipt; independently recounted above |
+| IMP-20 | 10990feb1 | Historical scoped rendered conflict/retry/recovery/no-active-work quit observations; NOT relabelled as current integrated shutdown proof |
 
-New focused command (from worktree root):
-```bash
-env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" autobyteus-ts/node_modules/.bin/vitest run --config tickets/in-progress/backend-port-conflict-20261024/evidence/probe.config.mjs tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts
-```
-- Output: `evidence/CR-01-native-review.log`; source: `evidence/CR-01-native-review.probe.test.ts`.
-- Result: **2 failed assertions**, each caused by the corresponding source defect above; not environment failures. No rerun or base run needed: exact new code cause established. First probe controls one real observer await to expose the supported maintenance/stop interval; second runs real ordinary commands and inspects retention. They are reviewer investigation artifacts, not API/E2E coverage.
-- Cleanup: both `finally` blocks close their scope and assert no unconfirmed outcomes; temporary roots removed; live lease counts0. First child's absence also checked read-only after completion. No installed app, user data, paid model/provider, or unrelated process was touched.
-- Independent inventory command: git base/current numstat + nonempty counts (recorded `evidence/CR-02-source-audit.json`). Two pre-existing untracked SDK dist directories are untouched; no build outputs staged.
-- Next round: implementation records rerun-by-impact plan. Core changes are a shared-foundation impact under TESTING.md; restore affected scoped checks/types before source re-review, then independent API/E2E. Do not simply reinterpret these failures as passes.
+Total **501 durable scoped cases +2 reviewer-probe cases**, implementation evidence, not independent API/E2E. Exact commands, environments, logs and failed attempts remain in `implementation-check-ledger.md`; evidence headers and result lines inspected. New tests are coherent by scenario, use owned temporary roots/anchors and finally cleanup, and preserve output/absence/timeout assertions. No source-file thresholds applied to tests.
+
+Reviewer round2 commands were read-only git/source/evidence inspection and source counts, followed by report/history edits only. No provider calls, installed app/data access, fixture launches, dependency/build changes, merge/release/install. Two documented untracked SDK dist prerequisite directories untouched.
 
 ## Follow-ups
-- Added by this review: **None**.
-- Existing FU-001 remains separate exploratory full test-tree typing debt, not a production build failure or score deduction.
+Added this round: **None**. FU-001 remains out-of-scope exploratory test-tree typing debt; no score deduction or reopened production-build issue.
 
 ## Classification / Recommended Recipient
-**Fail — Local Fix, implementation-owned**, CR-001/002 → `/software_engineering_team/implementation_engineer` via returned source-review Local Fix rule. No Design Impact/Requirement Gap established. No API/E2E advance or informational pass notification.
+- Decision **Pass**; failure classification **N/A**.
+- Primary recipient: `/software_engineering_team/api_e2e_engineer` under implementation-review pass rule. Independent executable coverage is now authorized.
+- Required informational pass notice after successful primary handoff: `/software_engineering_team/implementation_engineer`, CRR-002, no action required. No duplicate Solution Designer forwarding.
 
-## Residual Risks
-- Actual full-host/desktop Codex conversation-launched yielded listener cleanup is still required. SR-006 standalone client success and native anchors do not establish the reported incident fixed.
-- Full Studio/standalone ended-agent and active native-work shutdown through the changed desktop remains downstream evidence, including TERM resistance, unrelated sentinel/data preservation and honest forced failure.
-- Live Windows/WSL remains unrun; mocked transport/order/argv and macOS feasibility are not platform certification. Actual updater installation is prohibited; preserve continuation testing without installation.
-- Review source evidence does not supersede independent API/E2E, final integration verification, documentation sync or cleanup/release decisions.
+## Residual Risks / Required Downstream Evidence
+1. Actual current Studio/standalone and desktop shutdown/restart with native active work, ended initiating run and adopted shell survivors; TERM-resistant descendant, verified PID/listener absence, unrelated sentinel and data preservation. Do not equate OS signal delivery with successful cleanup.
+2. **Actual Codex conversation-launched yielded listener through the full host/desktop lifetime**, including orderly versus incomplete/forced shutdown. Native tests do not intercept that command; SR-006's standalone client.close result is not a composed acceptance result. Deterministic local model fixture is actual tool execution but not paid inference. Concrete ownership gaps return through failure-origin/design recovery, not arbitrary PID/port killing or idle-policy redesign.
+3. Current-build conflict/retry/recovery and stale diagnostic clearing; bounded startup cancellation/failed cleanup, Windows captured-child transport/order/force and updater preparation continuation without installing. Live Windows/WSL remains unrun/unclaimed; preserve that limitation rather than substitute macOS mocks as certification.
+4. API/E2E test-code changes, if successful, return for separate proportionate review; failures return for focused failure-origin review. Delivery retains integration, docs sync, base verification and cleanup responsibility; no release/install authorized.
 
 ## Latest Authoritative Result
-- Decision: **Fail**; entry point **Implementation Review**, round1 / **CRR-001**, Full Review.
-- Supported Product Scenario Gate: **Pass**; Material-Premise Gate: **Pass**.
-- Score: **9.1/10, 91/100**, with runtime/readiness/cleanup below9 and two blocking local findings.
-- Failure origin: new implementation defects, not an API/E2E failure-origin round.
-- Recipient: **implementation_engineer**. Large/High retained; no source fixes, merge, install or release performed.
+- **Pass — Implementation Review round2 / CRR-002 / Targeted Delta Review**.
+- Supported Product Scenario Gate: **Pass**. Material-Premise Gate: **Pass**.
+- Score: **9.5/10**, every category>=9.2. Prior findings: CR-001/002 resolved; open findings:none.
+- Large/High unchanged. Next: **API/E2E**, not delivery or terminal acceptance. No claim that the reported Codex-origin incident is fixed.
