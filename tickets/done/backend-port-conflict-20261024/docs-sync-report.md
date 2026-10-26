@@ -18,3 +18,7 @@ Per-agent background registry is no longer the only native cleanup owner; host s
 
 ## Continuation
 Docs synchronization **Pass / Updated**, committed in52a3434f5 and unchanged on CRR009 return. DR003 AC002 evidence gap cleared by direct APIREV004 proof; no docs/source correction needed. Fresh base unchanged b5f302a33. Finalization and archive now authorized by approved scope/guide; no release/install. All long-lived docs updates remain confined to this ticket. See release-deployment-report and DR004 verification.
+
+
+## Final archive
+Documentation changes are merged through86bf04a7858d144ba9473095120fbb3fce1273c1. Original task worktree removed after verified push. Durable export and terminal receipt are under `/Users/normy/autobyteus-org/delivery-receipts/backend-port-conflict-20261024/`. No documentation change from the focused AC002 test repair was needed; source behavior unchanged.

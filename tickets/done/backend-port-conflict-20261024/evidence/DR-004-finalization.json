@@ -1,0 +1,25 @@
+{
+  "ticketCommit": "dc5f47074e1555dc4dd41f8a05d5df9563d75af5",
+  "targetMerge": "86bf04a7858d144ba9473095120fbb3fce1273c1",
+  "targetBase": "b5f302a335014ff6d03d6acab7794edb4254475f",
+  "ticketPush": "Completed",
+  "targetPush": "Completed; ls-remote exact merge",
+  "mergeTreeEqualsVerifiedTicket": true,
+  "preCleanupTrackedClean": true,
+  "disposableUntrackedFiles": 64,
+  "disposableDirectories": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "worktree": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024",
+  "release": "Not required / not performed",
+  "recordedAt": "2026-10-26T10:51:30.212142+00:00",
+  "taskWorktreeCleanup": "Completed; exact original path absent",
+  "localTaskBranchCleanup": "Completed; exact task ref absent after merge-ancestry proof",
+  "worktreePrune": "dry-run empty; no stale registrations",
+  "remoteTaskBranchCleanup": "Not required; audit ref retained",
+  "closeoutWorkspace": "/Users/normy/autobyteus-org/delivery-closeout-worktrees/backend-port-conflict-20261024",
+  "closeoutRemovalReceipt": "/Users/normy/autobyteus-org/delivery-receipts/backend-port-conflict-20261024/final-delivery-receipt.json",
+  "mainCheckout": "Not used for finalization or modified",
+  "note": "Source merge pushed before cleanup. This documentation-only closeout will be committed/pushed, exported and its temporary workspace removed; final durable receipt records final tip and completion."
+}

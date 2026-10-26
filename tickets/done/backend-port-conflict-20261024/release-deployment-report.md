@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report
 
-## DR-004 — Evidence verified; finalization in progress
+## DR-004 — Verified repository delivery completed (no release)
 Ticket backend-port-conflict-20261024, 2026-10-26. R2 Approved / D4.1 / SR001..008 / ARCHREV004 / IR006 / CRR007 source Pass / APIREV004 Pass / CRR009 tests Pass. **Large / High**, independent-review route unchanged. DR003's AC002 hold is cleared by Delivery after direct proof inspection; no product defect or design change was required.
 
 ## Project guide and release decision
@@ -24,7 +24,7 @@ Directly opened raw APIREV00303/05/06B/07/09/09B/10 JSON, relevant logs/test bou
 | AC003 | APIREV003/API05 retry preserves external426 and refreshes observation; healthy retry clears diagnostic/overlay, sentinel200/data unchanged | Proven |
 | AC004 | API03 standalone close838ms four commands+anchors absent; API06B ended-run restart2675ms/retained quit1319ms, resistant TERM observations, exact absence/listener release; API09B actual Codex restart1591ms/quit207ms | Proven, scoped macOS |
 | AC005 | Real retained work before host shutdown; API07 complete-before-exit0 versus failed/disconnected-exit1; current foundation identity/Windows-force/updater controls; DR003 source smoke denies unsafe signal on observation failure and preserves unrelated scope | Proven, actual + prescribed deterministic boundaries |
-| AC006 | Current integrated base, builds/provenance, normal startup/restart, sentinels/data preserved,35 PID/7 root API cleanup; final branch/worktree operations recorded below as executed | Runtime/integration proven; finalization receipt pending |
+| AC006 | Current integrated base, builds/provenance, normal startup/restart, sentinels/data preserved,35 PID/7 root API cleanup; final branch/worktree operations recorded below as executed | Proven; target merge/push and original task cleanup completed (DR-004-finalization.json) |
 | AC007 | API09 same task running then natural completed0/calls2; API09B natural failed7/calls4 actual panel | Proven |
 | AC008 | API09 reopen/reload, two exact selected identities API09B; current deterministic stale-node/run/instance fences and map-only lookup | Proven |
 | AC009 | API10 actual5008ms provider timeout, unavailable/last-known count screenshot then same-task recovery without inference; deterministic missing-terminal unknown and inactive paths | Proven |
@@ -40,18 +40,63 @@ Actual Windows/WSL, live vault/GitHub, paid inference, installer/updater executi
 ## Docs synchronization
 Updated four canonical docs, committed in52a3434f5: core terminal_tools, server agent_execution, web electron_packaging and design-cases. They explain host-scoped retained anchors, result/exit distinction, bounded shutdown/IPC, safe conflict recovery, observational Codex query/privacy/unknown states, and remove obsolete pending-implementation claims with platform limits. Source truth checked; no unrelated docs changes. See docs-sync-report.md.
 
-## Finalization and ticket transition (execution pending at this checkpoint)
-Verification is complete before archiving/pushing/target merge. Move ticket to tickets/done/backend-port-conflict-20261024, check portable paths and secrets, commit/push ticket, refresh target, no-ff merge into temporary finalize branch and push personal per guide. Record exact commits and push results after success; block on any remote advance/failure instead of forcing. No main-checkout edits.
+## Repository finalization — Completed
+- Verification was completed before archive/push/target merge. Archived path `tickets/done/backend-port-conflict-20261024`.
+- Ticket archive/finalization commit **dc5f47074e1555dc4dd41f8a05d5df9563d75af5**, pushed to `origin/task/backend-port-conflict-20261024` successfully.
+- Latest target re-fetched and unchanged at **b5f302a335014ff6d03d6acab7794edb4254475f** immediately before target push.
+- Guide's temporary branch `finalize/backend-port-conflict-20261024` created from origin/personal. `--no-ff` merge **86bf04a7858d144ba9473095120fbb3fce1273c1**, tree exactly equals the verified ticket tree; pushed `HEAD:personal`, remote exact tip confirmed by ls-remote.
+- Secret gate:56 new commits Pass before first ticket push; merged state Pass before personal push. Archived and merged-state artifact hygiene Pass; licensing Pass. Logs `DR-004-ticket-secret.log`, `DR-004-merged-secret.log`, `DR-004-hygiene.log`, `DR-004-merged-hygiene.log`, `DR-004-licensing.log`.
+- This subsequent commit records delivery only, no product/runtime/build change. Its exact pushed tip and final cleanup are identified by the durable final receipt below. Final refresh/secret gate still apply to that push; no force push.
+- Main checkout and its local personal branch were not used or reset. No unrelated worktree changed. No release/tag/version/pipeline publication triggered by Delivery.
 
-Preliminary DR003 hygiene and secret scans passed; final scans must cover archived state/new commits. Gitleaks8.30.1 installed per release guide as local scanning prerequisite, no repo dependency change. Preserve all raw historical receipts and their original source/worktree paths; archived paths are authoritative for delivery. Historical absolute paths in probes/logs are provenance, not a claim that removed worktrees remain available.
+## Post-finalization cleanup — task cleanup Completed
+Source-finalization ancestry confirmed before cleanup. Original dedicated worktree
+`/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`
+removed; exact path absent. Local task branch removed with expected-value ref
+check after ancestry proof. Tracked tree was clean;64 untracked files were only
+the two known SDK dist prerequisite directories. These and ignored task-local
+build/dependency outputs were disposable; none committed. Remote task branch
+retained as audit ref (cleanup Not required). Worktree prune dry-run empty.
+`evidence/DR-004-finalization.json` records actual results.
 
-## Cleanup / durable records
-API cleanup35 exact PIDs/7 private roots absent; new inspector fixture afterEach checks listener/data preservation then removes its root, exact deadline child absent. DR0039-case smoke closes owned scopes/directories. No arbitrary PID kills or user-data writes.
+API cleanup35 exact PIDs/7 private roots absent; new inspector fixtures verify
+sentinel/data preservation, remove private roots, and confirm deadline child
+absence. DR003 source suite closes its own scopes/directories. No arbitrary
+process kills, installed app or user-data changes. Persisted data Not Affected;
+no migration/reset. No required rollback action.
 
-After target push, remove the dedicated task worktree and local task branch only once ancestry and saved evidence make it safe; two SDK dist folders/build caches are disposable task-owned output, never source to commit. Preserve a durable export of the archived ticket outside removable worktrees. Remote ticket branch cleanup Not required (retain audit ref). Temporary closeout workspace/ref must also be removed before terminal return. Exact final receipt will identify their outcomes.
+A temporary sparse documentation-closeout worktree was used after removing the
+original task worktree so cleanup could be recorded truthfully without touching
+the main checkout. It and the temporary finalize ref are removed before terminal
+handoff. Their final removal, final remote commit and artifact export are checked
+in the durable receipt:
+`/Users/normy/autobyteus-org/delivery-receipts/backend-port-conflict-20261024/final-delivery-receipt.json`.
+
+## Durable artifacts and evidence paths
+Canonical ticket history is in the repository archive above. A durable export of
+the final committed ticket and the four synced docs is retained under
+`/Users/normy/autobyteus-org/delivery-receipts/backend-port-conflict-20261024/`;
+therefore the terminal attachment paths do not depend on a deleted worktree.
+Historical absolute worktree/in-progress paths in upstream receipts remain
+unchanged as provenance; resolve evidence by its archived relative path. To rerun
+old probes in a new checkout, use their documented output override rather than
+assuming removed fixture/worktree paths exist.
+
+## Follow-ups
+FU001 test-tree typing debt remains nonblocking; FU002 incorporated into R2.
+FU003 records GitHub's aggregate default-branch vulnerability advisory from the
+push response for Solution Designer to triage/deduplicate. It is not an
+independently verified ticket regression and does not establish this ticket
+introduced those vulnerabilities. No security-fix scope was silently added.
 
 ## Rollback / deployment
 No deployment or release to roll back. For a later code rollback use a reviewed revert of the finalization merge on personal; future release rollback follows RELEASE.md, never move/delete a published tag. No migration introduced by this ticket; no data-reset repair.
 
-## Current terminal gate
-Evidence verification **Yes**. Repository finalization **Pending**; safe worktree cleanup **Pending**. Release/deployment/rollout **Not required**. No unresolved product/evidence blocker. Successful terminal package not yet sent; eligibility only after finalization/cleanup receipts. Reports will be updated with actual results, never predeclared success.
+## Final status
+- Evidence verification: **Completed**, DR003 AC002 hold cleared by DR004.
+- Source repository finalization: **Completed** (ticket and personal pushes).
+- Release/publication/deployment/rollout: **Not required**, none performed.
+- Original task worktree/local task branch cleanup: **Completed**.
+- Supplementary closeout cleanup / durable export: confirmed by final-delivery-receipt.json before terminal message; do not infer it from this pre-export commit.
+- Unresolved blocker: **None**; documented out-of-scope limits/follow-ups retained.
+- Successful terminal eligibility: only with the matching final durable receipt confirming final remote push and closeout cleanup. No completion message was sent prematurely.

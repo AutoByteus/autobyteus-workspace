@@ -12,3 +12,12 @@
 - Sent: Not yet sent to Project Task Manager; awaiting user's separate-task scope confirmation. No Task created/delegated.
 
 - Superseding decision2026-10-26: user “do it in this current ticket thanks”. Incorporated as R2/UC-003/REQ-007..009/AC-007..010, not an external follow-up or new Task; prior pending/suggested-separate disposition is historical.
+
+
+## FU-003 — Triage/deduplicate remote default-branch dependency advisory
+- Found by Delivery during the2026-10-26 ticket/personal push response. GitHub reported990 default-branch vulnerabilities (24critical,441high,453moderate,72low), linking its dependency alerts. This is an aggregate remote advisory, **not independently validated**, and not evidence that this ticket introduced a defect.
+- Evidence: successful push tool receipt; same advisory on both pushes. No provider/security scan or remediation was performed by this ticket. Existing source/package validation and secret gate passed at their own boundaries.
+- Outside this ticket: dependency security remediation across the default branch is not the approved port/shutdown/read-only visibility scope. No specific regression or prerequisite established here.
+- Urgent: Yes — triage the critical/high advisory and deduplicate against existing security work before creating new tasks.
+- Suggested Task: assess current dependency alerts and prioritize confirmed reachable risks with owners and scoped remediations.
+- Sent: Not yet; Solution Designer owns follow-up routing when this ticket leaves the team.
