@@ -1,7 +1,7 @@
 # API/E2E Execution Coverage Report
 
 ## Round / Current state
-**Paused at user request; validation incomplete, no overall Pass/Fail/Blocked verdict.** Round1 entered from CRR-002. No active test was interrupted: completed runners had exited before pause arrived. API-REV N/A until first completed validation result. Plan `api-e2e-coverage-investigation.md`; append-only log `api-e2e-test-progress.md`.
+**User lifted testing pause; awaiting implementation completion and source review of expanded R2 package. Validation incomplete; no overall Pass/Fail/Blocked verdict.** Round1 entered from CRR-002. No active test was interrupted: completed runners had exited before pause arrived. API-REV N/A until first completed validation result. Plan `api-e2e-coverage-investigation.md`; append-only log `api-e2e-test-progress.md`.
 R1 Approved/D3.1/SR-001..006/ARCH-REV-003/IR-003/CRR-002. Newly approved read-only background visibility is being authored by Solution Designer as R2/design revision; no expanded-ticket acceptance inferred from these R1 checks. Resume only after user/coordinator direction and current package review.
 Evidence folder: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence`.
 
@@ -45,3 +45,6 @@ Approved persisted-data decision Not Affected. Unique test file remained unchang
 ## Cleanup / resumption
 Both completed probes stopped exact isolated instances using canonical CLI; final stop receipts wasRunning=false/forced=false/controlPortReleased=true/serverPortReleased=true. Model and unrelated-sentinel servers closed, runner sessions exited, owned private roots removed after logs copied. Failed first setup attempt also cleaned its exact instance/root. API-pause-cleanup.json records read-only current absence audit of known PIDs. No remaining test-owned live instance/process/data root known. SDK dist prerequisites and task-local build/worktree intentionally preserved. Only ticket evidence/reports added; no product/suite modification, merge/release/install.
 On resume: read progress first, inspect current authoritative requirements/design, reuse completed case IDs/results by impact. Do not rerun completed cases merely because testing paused. Add current visibility coverage only after approved design/implementation/review package. No new tests started after pause.
+
+## Resume direction — 2026-10-26T08:19:31.075121+00:00
+User directly permits continuation. Current HEAD7bd0bbea4 contains unvalidated R2/D4.1 visibility source; IR-004 explicitly lacks codegen, implementation checks/current build and source review. Prior CRR-002 authorizes only old D3.1. Resume normal implementation → source review → independent API/E2E flow, not execution against stale desktop as current R2 proof. Coordinator asked to carry user direction to pending upstream checks. Completed API-04/06 evidence remains exact-revision evidence; impact plan will be refreshed with incoming reviewed implementation.
