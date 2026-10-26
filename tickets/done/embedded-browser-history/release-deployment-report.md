@@ -86,3 +86,24 @@ finalization merge; future release recovery follows RELEASE.md (never move tags)
 ## Status
 Evidence verification Completed; finalization/cleanup Pending. Not yet eligible
 for Delivery Completed. No implementation/design/evidence blocker discovered.
+
+## Post-merge checks — Passed
+Merged commit `763265ab81fbb58e532bda75d7b374c47dd40e28` has the exact tree of
+verified archive ticket commit `015457de89a95f62ff8df96371924f97cf9c04de`.
+Performed once, serialized, Node22.23.3/pnpm10.28.2/macOS arm64:
+- `pnpm -C autobyteus-web transpile-electron`: exit0 (`DR-001-typecheck.log`).
+- `pnpm -C autobyteus-web build:electron:mac`: exit0; full worktree server/web/
+  Electron/native resource package rebuilt, unsigned DMG/ZIP produced locally
+  (`DR-001-build.log`). No install/upload/release.
+- `pnpm -C autobyteus-web test:e2e:embedded-browser-history --cases API-03
+  --output-dir <ticket>/evidence/DR-native`: Pass, actual committed A/B/C then
+  Back B/A and Forward B/C, length3, correct toolbar flags; JSON inspected.
+- New smoke root/fixture/control/server ports removed/released, canonical stop
+  forced=true disclosed. `DR-native/API-08-result.json`, `DR-001-smoke-audit.log`.
+- Retained nine API roots/ports independently rechecked absent/closed in
+  `DR-001-retained-cleanup.log`. No running-user-app/data operation.
+Build warnings (duplicate imports, peer schema and chunk warnings) are recorded,
+not failures; no source/dependency/lockfile changes resulted. All other cases
+remain valid per plan. Evidence re-verification Passed; no user check required.
+FU-003 records/deduplicates GitHub's aggregate dependency advisory, not a verified
+regression; Solution Designer owns forwarding alongside FU-001/002.

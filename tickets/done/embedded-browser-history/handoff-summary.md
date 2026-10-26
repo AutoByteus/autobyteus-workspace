@@ -23,3 +23,7 @@ Archive: tickets/done/embedded-browser-history. Durable export will be
 Historical in-progress/worktree paths in upstream reports remain provenance;
 resolve them by the archived relative path after cleanup.
 Finalization/cleanup still pending; no successful terminal receipt yet.
+
+Post-merge 763265ab8: Electron transpile, full unsigned packaged rebuild and
+selected native document-history smoke Passed. All smoke resources cleaned
+(forced stop disclosed). See evidence/DR-native and DR-001 logs.
