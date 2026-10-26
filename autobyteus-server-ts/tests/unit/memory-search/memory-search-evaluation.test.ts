@@ -15,17 +15,21 @@ const result = (runIds: string[], matches: MemorySearchMatch[] = []): MemorySear
 });
 
 describe("memory search evaluation", () => {
-  it("reads a question file (an empty accept list is an off-topic question) and refuses one without an accept list", () => {
+  it("reads a question file with kinds (default: answerable with accepted runs, else off-topic) and refuses a bad one", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-eval-"));
     const good = path.join(dir, "good.json");
     fs.writeFileSync(good, JSON.stringify([{ id: "Q1", q: "ddns", accept: ["r1"], rephrasings: ["a", "b", "c", 4] }]));
-    expect(readEvaluationQuestions(good)).toEqual([{ id: "Q1", q: "ddns", accept: ["r1"], rephrasings: ["a", "b"] }]);
+    expect(readEvaluationQuestions(good)).toEqual([{ id: "Q1", q: "ddns", kind: "answerable", accept: ["r1"], rephrasings: ["a", "b"] }]);
     const bad = path.join(dir, "bad.json");
     fs.writeFileSync(bad, JSON.stringify([{ id: "Q1", q: "ddns" }]));
     expect(() => readEvaluationQuestions(bad)).toThrow(/accept/);
     const offTopic = path.join(dir, "off-topic.json");
-    fs.writeFileSync(offTopic, JSON.stringify([{ id: "N1", q: "purple elephant", accept: [] }]));
-    expect(readEvaluationQuestions(offTopic)).toEqual([{ id: "N1", q: "purple elephant", accept: [], rephrasings: [] }]);
+    fs.writeFileSync(offTopic, JSON.stringify([{ id: "N1", q: "purple elephant", accept: [] }, { id: "N2", q: "kubernetes autoscaler", kind: "partial", accept: [] }]));
+    expect(readEvaluationQuestions(offTopic).map(({ id, kind }) => [id, kind])).toEqual([["N1", "offTopic"], ["N2", "partial"]]);
+    for (const wrong of [{ id: "Q2", q: "x", kind: "answerable", accept: [] }, { id: "Q3", q: "x", kind: "other", accept: [] }]) {
+      fs.writeFileSync(bad, JSON.stringify([wrong]));
+      expect(() => readEvaluationQuestions(bad)).toThrow(/kind/);
+    }
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -35,24 +39,29 @@ describe("memory search evaluation", () => {
       second: result(["x", "y", "r2_full_run_id"], [match("meaning", "textChunk")]),
       miss: result(["x"], [match("meaning", "firstRequest", " ")]),
       rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
-      never: result([]),
+      never: { ...result([]), note: "No matches; try other words." },
       // Off-topic: only weak matches (the server's note set) pass; a fair match without a note fails.
       "purple elephant": { ...result(["x"], [{ ...match("text", null), strength: "weak" }]), note: "Only weak matches; try other words." },
       "green giraffe": result(["x"], [match("text", null)]),
+      "cluster autoscaler": result(["x"], [match("text", null)]),
     };
     const askedAs: Array<string | null | undefined> = [];
     const memory = { search: async (query: string, options: { askingRunId?: string | null }) => { askedAs.push(options.askingRunId); return answers[query] ?? result([]); } };
     const report = await evaluateMemorySearch(memory, [
-      { id: "Q1", q: "first", accept: ["r1"] },
+      { id: "Q1", q: "first", kind: "answerable", accept: ["r1"] },
       // A prefix of a run ID accepts the run (question files may hold shortened IDs).
-      { id: "Q2", q: "second", accept: ["r2"] },
-      { id: "Q3", q: "miss", accept: ["r3"], rephrasings: ["rephrased"] },
-      { id: "Q4", q: "never", accept: ["r4"], rephrasings: ["never", "never"] },
-      { id: "N1", q: "purple elephant", accept: [] },
-      { id: "N2", q: "green giraffe", accept: [] },
+      { id: "Q2", q: "second", kind: "answerable", accept: ["r2"] },
+      { id: "Q3", q: "miss", kind: "answerable", accept: ["r3"], rephrasings: ["rephrased"] },
+      { id: "Q4", q: "never", kind: "answerable", accept: ["r4"], rephrasings: ["never", "never"] },
+      { id: "N1", q: "purple elephant", kind: "offTopic", accept: [] },
+      { id: "N2", q: "green giraffe", kind: "offTopic", accept: [] },
+      { id: "P1", q: "cluster autoscaler", kind: "partial", accept: [] },
     ], { askingRunId: "author_run" });
     expect(report.questions).toBe(4);
     expect(report.offTopic).toEqual({ questions: 2, passed: 1, failed: ["N2"] });
+    // Q4's first search ended with a note although the question is answerable: a false note.
+    expect(report.falseOnlyWeak).toEqual(["Q4"]);
+    expect(report.partial).toEqual([{ id: "P1", onlyWeak: false }]);
     expect(new Set(askedAs)).toEqual(new Set(["author_run"]));
     expect(report.perQuestion.map(({ id, rank, foundAtSearch }) => ({ id, rank, foundAtSearch }))).toEqual([
       { id: "Q1", rank: 1, foundAtSearch: 1 }, { id: "Q2", rank: 3, foundAtSearch: 1 },

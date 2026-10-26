@@ -68,6 +68,6 @@ const report = await evaluateMemorySearch(memory, readEvaluationQuestions(questi
 const output = { model: model.id, askingRunId, status: status(), report };
 const out = value("--out");
 if (out) fs.writeFileSync(out, `${JSON.stringify(output, null, 2)}\n`);
-console.log(JSON.stringify({ gate1: report.gate1, gate2: report.gate2, meaningPointers: report.meaningPointers, unmaskedSecrets: report.unmaskedSecrets, offTopic: report.offTopic, questions: report.questions }, null, 2));
+console.log(JSON.stringify({ gate1: report.gate1, gate2: report.gate2, meaningPointers: report.meaningPointers, unmaskedSecrets: report.unmaskedSecrets, offTopic: report.offTopic, falseOnlyWeak: report.falseOnlyWeak, partial: report.partial, questions: report.questions }, null, 2));
 memory.shutdown();
 await embeddings.shutdown();
