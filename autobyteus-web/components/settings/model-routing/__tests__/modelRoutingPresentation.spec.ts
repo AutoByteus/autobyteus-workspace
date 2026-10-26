@@ -1,22 +1,22 @@
-import { describe, expect, it } from 'vitest'
-import en from '~/localization/messages/en/modelRoutingSettings'
-import zh from '~/localization/messages/zh-CN/modelRoutingSettings'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import type { ModelRoutingReasonCode, ModelRoutingStatus } from '~/types/modelRouting'
 import { routerProblem } from '../modelRoutingPresentation'
 
 /** autobyteus-32 supplement § 4: the problem line words each reason code the server gives (CR-002: signed out ≠ missing). */
-const tOf = (messages: Record<string, string>) => (key: string, params: Record<string, unknown> = {}) =>
-  (messages[key] ?? key).replace(/\{\{(\w+)\}\}/g, (_, name: string) => String(params[name] ?? ''))
+const t = (key: string, params?: Record<string, string | number>) => localizationRuntime.translate(key as never, params)
 const status = (reasonCode: ModelRoutingReasonCode, reasonParams: Record<string, string | null> = {}, reasonText: string | null = null): ModelRoutingStatus => ({
   enabled: true, active: false, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol' }, reasonCode, reasonParams, reasonText, agentRunId: null,
 })
 
 describe('routerProblem (the page\'s problem line)', () => {
-  const t = tOf(en as Record<string, string>)
+  beforeEach(async () => { await localizationRuntime.setPreference('en') })
+  afterEach(async () => { await localizationRuntime.setPreference('en') })
 
-  it('SIGNED_OUT says the runtime is signed out and where to sign in, not that it is missing', () => {
+  it('SIGNED_OUT says the runtime is signed out and where to sign in, not that it is missing', async () => {
     expect(routerProblem(status('SIGNED_OUT', { runtime: 'codex_app_server' }), t, 'en')).toBe('Codex is signed out. Sign in under Agent Runtimes.')
-    expect(routerProblem(status('SIGNED_OUT', { runtime: 'codex_app_server' }), tOf(zh as Record<string, string>), 'zh-CN')).toBe('Codex 已退出登录。请在“智能体运行时”中登录。')
+    await localizationRuntime.setPreference('zh-CN')
+    expect(routerProblem(status('SIGNED_OUT', { runtime: 'codex_app_server' }), t, 'zh-CN')).toBe('Codex 已退出登录。请在“智能体运行时”中登录。')
   })
 
   it('every other code keeps its own text', () => {
