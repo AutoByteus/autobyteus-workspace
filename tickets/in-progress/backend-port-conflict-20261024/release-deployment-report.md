@@ -1,71 +1,58 @@
 # Delivery / Release / Deployment Report
 
-## DR-001 — Blocked at initial integration (2026-10-26)
-Ticket: backend-port-conflict-20261024. R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-004 / CRR-003 / API-REV-001 / CRR-004. **task_size=Large; architectural_risk=High**. Selected route remains independent architecture/source review, executable validation and proportional successful-test review. No reclassification.
+## Current result — DR-002: Blocked on new base integration
+2026-10-26, backend-port-conflict-20261024. Resumption after CRR-006; same ticket/delivery workflow, new recorded delivery result. R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-005 / CRR-005 / API-REV-002 / CRR-006. **Large / High** and independent review route unchanged. Prior DR-001 recovery succeeded; this is a new remote-base conflict, not a rejection of the renewed API validation.
 
-## Project guide and release decision
-- Read repository AGENTS.md, TESTING.md and RELEASE.md. Release guide last-change revision: `83e8e12125a9fa32aebb3c6025b00eb8caf70d63`.
-- **No release**: REQ-006 and Scope Guardrail explicitly exclude release/install; RELEASE.md also defaults to finalize only. No tag, publish, updater installation, paid inference or installed-app use authorized/performed.
-- Finalization target: origin/personal. Existing bootstrap branch `task/backend-port-conflict-20261024` retained rather than renaming to the guide's illustrative `codex/` prefix. No other guide deviation or proposed fix.
+## Project guide / release decision
+`RELEASE.md`, last-change revision `83e8e12125a9fa32aebb3c6025b00eb8caf70d63`, and repository AGENTS.md/TESTING.md apply. **No release/install**, per REQ-006 and scope guardrail; guide also defaults to no release. Target origin/personal. Existing bootstrap branch task/backend-port-conflict-20261024 retained instead of illustrative codex prefix. No other deviation or proposed guide fix. No publication, tag, updater/install, paid inference or installed-app/user-data action.
 
-## Initial delivery integration refresh
-- Reviewed candidate: `36589947576fd4cfadc83420694c718aebc6f590`; source review covers production `9bd72c20893dedb8c7dc99aacfcb0b732d092d6c`, tests/evidence `d16a07657`.
-- Bootstrap base: `034bfe51ab697817773ff545d369e1cfc03a79c5`.
-- `git fetch origin personal` succeeded; fetched base `67994daba0adf6eb8c6bc05827b5fab6b2975aa4`; 201 incoming commits not in candidate.
-- `git merge --no-edit origin/personal` stopped with conflicts in `autobyteus-web/generated/graphql.ts` and `docs/design-cases.md`. No successful integrated commit exists.
-- Generated contract conflict includes old `sourceNodeId` versus incoming `memorySyncSourceId`, alongside suspicious textual placement of `failures`. Resolve/regenerate from the integrated authoritative schema and operations; choosing ours/theirs is not evidence of contract correctness. Preserve this ticket's new background-task contract and incoming approved changes.
-- Design-cases conflicts contain independent additions and competing Case 8 entries. Preserve both histories, reconcile numbering/references; do not invent new intended behavior or erase incoming cases.
-- No checkpoint needed: reviewed tracked state was clean; only the two known SDK dist prerequisites were untracked.
-- Saved conflict evidence, then **`git merge --abort` succeeded**, restoring candidate HEAD, no unmerged entries. Build prerequisites preserved. No conflict resolution or product edit attempted.
-- Evidence: `evidence/DR-001-integration.json`, `DR-001-merge-conflicts.diff`, `DR-001-incoming-paths.txt`.
-- Post-integration checks: **Not run / Blocked**, because integration did not complete. This is not a no-impact/no-rerun decision. No stale-build smoke performed.
-- Only blocked-state records were written after abort; no docs sync against an unintegrated candidate and no final handoff claim.
+## Initial resumption refresh
+- Incoming reviewed HEAD: `b16beba9e1b60ffb949853a8bb861ccf5c189bd5`.
+- Reviewed integrated source `2c47bcd646ccd371a180dbc510fd1e30aee9144f`, base `67994daba0adf6eb8c6bc05827b5fab6b2975aa4`; API evidence commit `5f46d5ccf5838680d851dd6258989baf557feed6`.
+- `git fetch origin personal` succeeded; new base `0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e` adds MCP secrets/vault work and inherited beta.10 version. The candidate has not integrated these changes.
+- `git merge --no-edit origin/personal` stopped with conflicts in `autobyteus-web/generated/graphql.ts` and `docs/design-cases.md`. Checkpoint not needed: tracked tree clean; only known SDK dist directories untracked.
+- GraphQL conflict is now import result selection: incoming `storedSecrets` and `needsSecret`. Regenerate/reconcile from integrated authoritative schema/operations, retaining new incoming MCP secret behavior and this ticket's background visibility types. Do not wholesale choose either generated file. This is NOT DR-001's previous sourceNodeId conflict.
+- Design-cases conflict is incoming MCP caller lesson/Notice text versus this ticket's observational-lookup lesson. Preserve both. Pending-implementation wording still awaits truthful docs sync after integration.
+- Saved `evidence/DR-002-integration.json`, `DR-002-merge-conflicts.diff`, `DR-002-incoming-paths.txt`. Then `git merge --abort` succeeded, restored b16beba9e with no unmerged paths. No source edit or new merge commit.
+- Integration: **Blocked**. Post-integration checks: **not run**, because there is no integrated candidate. No unintegrated docs synchronization or stale-build runtime check. Only blocked-stage records updated.
 
-## Rerun-by-impact plan (not executed)
-TESTING.md requires all applicable cases rerun for a shared foundation change. Incoming changes include `pnpm-lock.yaml`, core terminal tool implementations and `tool-result-json.ts`; the complete incoming file list is retained. After resolution, record the actual integrated commit and `git diff --name-only <validated> HEAD`, refresh dependencies, rerun production typechecks and rebuild every output used by the cases. The prior unpacked app/ZIP is stale for the future integrated candidate.
+## Rerun by actual impact — plan, not execution
+The new incoming-only diff is `git diff --name-only b16beba9e...origin/personal`, retained in DR-002-incoming-paths.txt. Unlike DR-001, this incoming delta does **not** change pnpm-lock.yaml. It does change shared `autobyteus-ts/src/tools/mcp/` config types, resolver, server-instance manager, HTTP/stdio/base server boundaries and tests; server runtime/dependencies and generated contract consumers also changed. TESTING.md explicitly treats autobyteus-ts as shared foundation: mark applicable current cases Rerun, not because the diff is large and not because earlier passes failed.
 
-| Prior case group | Last proven source / provenance | Disposition and reason |
+| Case group | Last validated source/provenance | After successful integration |
 | --- | --- | --- |
-| API-01 / IMP-23,25..31 ownership, shutdown, Electron faults, types/build | d0338db0b, implementation ledger | Rerun relevant unique cases: lockfile/core foundation changed; refresh types/build |
-| API-02 and API-06B current Studio/native host | 9bd72c208 / API provenance | Rerun once via composed current Studio restart/quit; no duplicate helper substitute |
-| API-03 durable standalone host | 9bd72c208 source; final test hashes in API-validation-provenance.json, committed d16a07657 | Rerun: core, host and dependencies changed |
-| API-05 visible conflict/retry/recovery | 9bd72c208 / IMP-44 build | Rerun on rebuilt integrated desktop |
-| API-07 actual IPC cancellation/failure transport | 9bd72c208 / IMP-44 build | Rerun on rebuilt integrated backend/Electron |
-| API-08 / IMP-34,41,42,43 R2 deterministic controls | 9bd72c208, implementation ledger | Rerun unique backend, registry and renderer cases; foundation changed |
-| API-09 A natural completion, API-09B selection/nonzero/lifecycle, API-10 timeout/recovery | 9bd72c208 / IMP-44 build | Rerun actual query/panel/provider journeys with current build |
-| Original API-04 and API-06 historical receipts | d0338db0b; historical HEAD5fd30310e | Preserve as historical only; current equivalents above rerun, not duplicate historical execution |
+| API-01/08 foundation 854 unique cases (IMP52..55) | 2c47bcd646; IMP60 exact commands | Rerun applicable unique controls per shared foundation rule, production types and regenerated contracts |
+| API-03 standalone public host/native worker | 2c47bcd646 + unchanged durable files, API-REV-002 | Rerun on rebuilt current dist |
+| API-02 via API-06B Studio/native restart/quit | 2c47bcd646 + IMP56 | Rerun once via composed current case, not duplicate API02 |
+| API-05 visible conflict/retry | 2c47bcd646 + IMP56 | Rerun on rebuilt current desktop |
+| API-07 IPC cancellation/failure | 2c47bcd646 + IMP56 | Rerun current packaged backend/transport |
+| API-09/09B/10 actual Codex query/panel/lifecycle/unavailable | 2c47bcd646 + IMP56 | Rerun current composed journeys |
+| Original historical API-04/06 | d0338db0b | Preserve unchanged; current equivalents above, no duplicate historical run |
 
-No source-fix scope expansion, paid inference or platform certification implied. One heavy run at a time; isolated owned fixtures only. Implementation resolves integration and self-checks, then follows Large/High review/validation routing. API/E2E owns renewed journey proof. Delivery rechecks evidence on return.
+Refresh dependency/build prerequisites as needed; rebuild all outputs used by cases after merge, record exact integrated commit and commands. One heavy run at a time. No automatic paid inference or platform expansion. Implementation resolves integration/self-checks then follows Large/High review/validation routing. Any new design decision returns upstream. Delivery does not silently resolve code conflicts.
 
-## Packaging gate
-Opened `evidence/IMP-44-desktop-build.log`: final command exits 1 after repeated `hdiutil resize` exit 35; ZIP blockmap completed, not DMG success. Opened `IMP-44-owned-image-recovery.json`: exact build-owned temporary image was detached successfully, which does not prove a subsequent package build. No packaging source defect established. Rebuild the integrated state and verify full unsigned task-local DMG packaging; if it still fails, record exact ownership/diagnosis and route a demonstrated code/packaging fix appropriately. Do not install/publish, reuse the old package as integrated proof, or touch arbitrary mounted images.
+## Packaging recovery — accepted for its recorded source
+Opened IMP56 full build tail (`Build completed` with DMG/ZIP/blockmaps), IMP56 hdiutil verification log (`VALID`), provenance and API-build-identity. Independently recomputed current on-disk DMG/ZIP SHA256 and byte counts; both match IMP56 exactly (`evidence/DR-002-package-hash-check.json`). Unsigned, unpublished, uninstalled.
+
+**IMP44 packaging failure is resolved for source2c47/base67994 by IMP56.** It is not a current packaging defect or a reason to replay the old failure. These artifacts are not proof of the newly incoming MCP/base0fd9 integration; rebuilt output will need its own receipts under the after-merge policy. No artifacts mounted or installed during this check.
 
 ## Verify from evidence
-**Not complete / insufficient for integrated delivery.** Opened the execution coverage report and provenance, not every critical raw journey receipt: integration is the earlier blocking gate. Upstream confidence 95.3% is the API stage's scoped assessment, not Delivery acceptance.
+Opened current API execution report/provenance/build identity and packaging evidence. API-REV-002 reports 95.3% recomputed confidence, actual current journeys and 35-PID/7-root cleanup; CRR-006 confirms no durable-test delta. Those successes remain valid for source2c47/base67994, not final acceptance on base0fd9. Full critical raw journey review remains deferred by the mandatory integration gate; no user check requested for this engineering blocker.
 
-| Acceptance criteria | Evidence considered | Delivery judgement |
-| --- | --- | --- |
-| AC-001..005, AC-007..010 | API report proof/case map; source/build provenance; integrated base failed | Not yet independently verified on integrated state; complete raw-proof review after rerun |
-| AC-006 | Actual merge conflict evidence above; API explicitly excludes merged-base/finalization receipt | Not proven; no integrated finalization/cleanup receipt |
+| Criteria | Delivery judgement |
+| --- | --- |
+| AC001..005, AC007..010 | Prior integrated API proofs retained, but new integration not validated; final Delivery verification open |
+| AC006 | Fresh-base integration/finalization and cleanup receipt incomplete; Not Proven for final delivery |
 
-No user check requested: this is an engineering integration blocker, not a user-only environment dependency. Preserve historical Nuxt/Codex provenance: no historical incident-fix claim. Actual Windows/WSL and strict standalone vue-tsc remain unrun; deterministic tests are not platform certification.
+Actual Windows/WSL, strict standalone vue-tsc, paid inference and historical Nuxt incident remain unrun. No platform certification or historical incident-fix claim. IMP57 forced fixture and IMP59 no-work quit are not active-work acceptance.
 
-## Docs, summary and ticket state
-- `docs-sync-report.md`: Blocked, not No impact. `handoff-summary.md`: blocked-state handoff only.
-- `delivery-revision-record.md`: DR-001 baseline, prior result N/A.
-- No long-lived documentation changed. No release notes required for this no-release blocked round.
-- Ticket remains `tickets/in-progress/backend-port-conflict-20261024`; not archived.
+## Docs / handoff / ticket
+`docs-sync-report.md`: Blocked, not No impact. `handoff-summary.md`: updated blocked-state package. `delivery-revision-record.md`: preserves DR001 and appends DR002. No long-lived docs edited; pending implementation wording remains to synchronize after integration. No release notes required in no-release blocked round. Ticket stays in-progress, not archived.
 
-## Repository finalization / release / cleanup
-- No finalization commit, ticket push, target merge or target push performed. New delivery records remain uncommitted for the next owner; reviewed HEAD restored exactly.
-- Secret gate and repository artifact hygiene must pass before eventual pushes/finalization; not executed in this blocked round.
-- Release/publication/deployment/rollout: **Not required** under approved scope; no pipelines triggered, no artifacts published, no version/tag changed.
-- Worktree/local branch cleanup: **Blocked**, still required after eventual verified finalization. Worktree and two SDK dist directories retained intentionally. No validation processes/resources created this round.
-- Persisted data: Not Affected; delivery action None. No migration/reset/user-data action.
-- Recovery: aborted only this failed merge; no finalized or published state to undo. Future finalized rollback follows RELEASE.md; never move a published tag.
+## Finalization / deployment / cleanup
+No finalization commit, ticket push, target merge or target push. Delivery records remain uncommitted for next owner's checkpoint; reviewed HEAD restored exactly. Before later finalization, perform raw evidence verification, docs synchronization, final remote refresh, secret gate and cross-platform artifact hygiene, then guide's branch push/target merge/push sequence. No version or tag changed by Delivery.
 
-## Escalation / reroute
-**Local Fix — integration conflict resolution**, recipient `/software_engineering_team/implementation_engineer`. Resolve source-generated contract integration against fetched base, preserving both approved changes and independent design-history entries; inspect auto-merged runtime boundaries too. Run implementation checks/rebuild and use normal Large/High gates. If intended behavior cannot be preserved without a design decision, return to Solution Designer instead of guessing.
+Release/deployment/rollout: **Not required**, none performed. Worktree/local branch cleanup: **Blocked** pending verified finalization; SDK dist prerequisites and task build preserved. No validation process/root created in this round. Persisted data Not Affected; no migration/reset action. Recovery was only aborting our incomplete merge. No published/finalized state undone.
 
-## Final status
-Verification complete: No. Repository finalization complete: No. Safe cleanup complete: No (worktree retained). Successful terminal package eligible: **No**. Terminal Delivery Completed sent: **No**. Packaging remains unresolved and AC-006 remains open. Next delivery round must refresh base again, finish docs synchronization and raw-evidence verification, then follow the release guide's finalization and cleanup order.
+## Escalation / final status
+**Local Fix**, recipient `/software_engineering_team/implementation_engineer`: resolve new generated-contract integration, retain both design lessons, check auto-merged runtime; then normal checks/review/validation. Final verification, finalization and safe cleanup: No. Successful terminal package eligible: **No**. Delivery Completed not sent. On return refresh base again without blindly repeating unchanged-source successes; apply the recorded foundation rule only to actual new changes.
