@@ -182,8 +182,11 @@ import { useToolManagementStore } from '~/stores/toolManagementStore';
 import type { McpServer } from '~/types/mcpServer';
 import type { ToastType } from '~/composables/useToasts';
 import { useLocalization } from '~/composables/useLocalization';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { mcpSecretReviewState } from '~/utils/mcp/mcpSecretReviewState';
 import {
   applySuggestedLock,
+  unlockedSuggestions,
   rowsFromEntries,
   tokenFromServer,
   type McpConfigRow,
@@ -439,6 +442,7 @@ const save = async () => {
   try {
     // --- SAVE ---
     await store.configureMcpServer(payload);
+    markUnlockedSuggestionsReviewed(payload.serverId);
     emit('show-toast', { message: `Server '${payload.serverId}' saved successfully.`, type: 'success' as ToastType });
     
     // --- SYNC (if requested) ---
@@ -456,6 +460,15 @@ const save = async () => {
   } catch (saveError: any) {
     emit('show-toast', { message: `Failed to save server: ${saveError.message}`, type: 'error' as ToastType });
   }
+};
+
+/** Rows the rule pre-locked that the user unlocked were saved plain on purpose: the move banner skips them (MDEC-006). */
+const nodeContext = useWindowNodeContextStore();
+const markUnlockedSuggestionsReviewed = (serverId: string) => {
+  const rows = form.transportType === 'STDIO' ? { list: envRows.value, kind: 'env' as const } : { list: headerRows.value, kind: 'header' as const };
+  const fields = unlockedSuggestions(rows.list, rows.kind, rule.value).map(field => ({ serverId, field }));
+  if (fields.length === 0) return;
+  mcpSecretReviewState.markReviewed(nodeContext.entryId, fields, [serverId, ...store.getMcpServers.map(server => server.serverId)]);
 };
 
 /** Moves one stored plain value of the saved server to the vault; the row then shows it as stored in the vault. */

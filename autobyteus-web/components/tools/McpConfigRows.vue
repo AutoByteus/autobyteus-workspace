@@ -24,7 +24,16 @@
             data-testid="mcp-row-value"
             @input="onEdit(row)"
           >
+          <!-- A saved plain value the user has not changed becomes a secret only through the move (with its backup). -->
           <button
+            v-if="serverId && offersMove(row)"
+            type="button"
+            class="px-2 py-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 whitespace-nowrap"
+            data-testid="mcp-row-move"
+            @click="$emit('move-to-vault', fieldOf(kind, row.name))"
+          >{{ $t('tools.components.tools.McpConfigRows.move_to_vault') }}</button>
+          <button
+            v-else
             type="button"
             :disabled="alwaysSecret(row)"
             :aria-pressed="row.locked"
@@ -56,10 +65,10 @@
         <p v-if="rowNote(row)" class="text-sm pl-1" :class="rowNote(row)!.tone" data-testid="mcp-row-note">
           {{ rowNote(row)!.text }}
           <button
-            v-if="serverId && moveMatch(row, kind, rule)"
+            v-if="serverId && moveMatch(row, kind, rule) && !offersMove(row)"
             type="button"
             class="ml-1 font-medium text-indigo-600 hover:text-indigo-800 underline"
-            data-testid="mcp-row-move"
+            data-testid="mcp-row-note-move"
             @click="$emit('move-to-vault', fieldOf(kind, row.stored!.name))"
           >{{ $t('tools.components.tools.McpConfigRows.move_to_vault') }}</button>
         </p>
@@ -85,6 +94,7 @@ import {
   isKeepable,
   isStoredHidden,
   moveMatch,
+  offersMove,
   type McpConfigRow,
   type McpRowKind,
   type McpSecretSuggestionRule,

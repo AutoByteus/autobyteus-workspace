@@ -424,6 +424,42 @@ describe('McpServerFormModal secret values', () => {
     ])
   })
 
+  it('offers "Move to vault" instead of a lock toggle on an unchanged saved plain value; a changed value gets its lock back (CR-001)', async () => {
+    const { wrapper, store } = mountComponent(stdioServer([{ name: 'LOG_LEVEL', value: 'debug', state: 'PLAIN' }]))
+    await wrapper.get('#sync-on-save').setValue(false)
+    const row = () => rows(wrapper, 'env')[0]!
+    expect(row().find('[data-testid="mcp-row-lock"]').exists()).toBe(false)
+    expect(row().get('[data-testid="mcp-row-move"]').text()).toBe('tools.components.tools.McpConfigRows.move_to_vault')
+
+    await row().get('[data-testid="mcp-row-value"]').setValue('test-dummy-env-secret-new')
+    expect(row().find('[data-testid="mcp-row-move"]').exists()).toBe(false)
+    await row().get('[data-testid="mcp-row-lock"]').trigger('click')
+    await clickByText(wrapper, 'Save Configuration')
+
+    // A new value saved locked is a new secret (no backup); an unchanged plain value is never sent locked.
+    expect(store.configureMcpServer).toHaveBeenLastCalledWith(expect.objectContaining({
+      stdioConfig: expect.objectContaining({ env: [{ name: 'LOG_LEVEL', secret: true, value: 'test-dummy-env-secret-new' }] }),
+    }))
+  })
+
+  it('marks a pre-locked row the user unlocked and saved as reviewed for the move banner (MDEC-006)', async () => {
+    localStorage.clear()
+    const { wrapper } = mountComponent()
+    await wrapper.get('#serverId').setValue('local')
+    await wrapper.get('#stdio_command').setValue('node')
+    await wrapper.get('#sync-on-save').setValue(false)
+    await clickByText(wrapper, 'Add Variable')
+    const row = rows(wrapper, 'env')[0]!
+    await row.get('[data-testid="mcp-row-name"]').setValue('TOKEN_LIMIT')
+    await row.get('[data-testid="mcp-row-value"]').setValue('4096')
+    expect(row.get('[data-testid="mcp-row-lock"]').attributes('aria-pressed')).toBe('true')
+    await row.get('[data-testid="mcp-row-lock"]').trigger('click')
+
+    await clickByText(wrapper, 'Save Configuration')
+
+    expect(JSON.parse(localStorage.getItem('autobyteus.mcp.secretReview.embedded-local') ?? '[]')).toEqual(['local|env:TOKEN_LIMIT'])
+  })
+
   it('offers "Move to vault" on a stored plain value the rule matches, and then shows it as stored in the vault', async () => {
     const { wrapper, store } = mountComponent(stdioServer([
       { name: 'GITHUB_TOKEN', value: 'test-dummy-env-secret', state: 'PLAIN' },
@@ -453,7 +489,7 @@ describe('McpServerFormModal secret values', () => {
     expect((row.get('[data-testid="mcp-row-value"]').element as HTMLInputElement).value).toBe('')
     expect(row.get('[data-testid="mcp-row-lock"]').attributes('disabled')).toBeDefined()
     expect(row.get('[data-testid="mcp-row-note"]').text()).toContain('Stored as plain text')
-    expect(row.find('[data-testid="mcp-row-move"]').exists()).toBe(true)
+    expect(row.find('[data-testid="mcp-row-note-move"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="mcp-token-move"]').exists()).toBe(true)
   })
 })

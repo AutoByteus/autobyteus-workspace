@@ -95,6 +95,11 @@ export const IMPORT_MCP_SERVER_CONFIGS = gql`
                 serverId
                 field
             }
+            needsSecret {
+                __typename
+                serverId
+                field
+            }
         }
     }
 `;

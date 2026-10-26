@@ -4,9 +4,14 @@
       <span class="flex items-center">
         {{ $t('tools.components.tools.McpSecretMoveBanner.values_look_like_secrets', { count: candidates.length }) }}
       </span>
-      <button type="button" class="ml-4 font-semibold text-indigo-700 hover:text-indigo-900 underline whitespace-nowrap" data-testid="mcp-secret-move-review" @click="openReview">
-        {{ $t('tools.components.tools.McpSecretMoveBanner.review_and_move') }}
-      </button>
+      <span class="ml-4 flex items-center gap-4 whitespace-nowrap">
+        <button type="button" class="font-medium text-gray-600 hover:text-gray-800" data-testid="mcp-secret-move-keep" @click="keepAsTheyAre">
+          {{ $t('tools.components.tools.McpSecretMoveBanner.keep_as_they_are') }}
+        </button>
+        <button type="button" class="font-semibold text-indigo-700 hover:text-indigo-900 underline" data-testid="mcp-secret-move-review" @click="openReview">
+          {{ $t('tools.components.tools.McpSecretMoveBanner.review_and_move') }}
+        </button>
+      </span>
     </div>
 
     <div v-if="reviewOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" role="dialog" aria-modal="true" :aria-label="$t('tools.components.tools.McpSecretMoveBanner.dialog_title')">
@@ -52,8 +57,10 @@
           <button type="button" class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 text-sm font-medium" @click="closeReview">
             {{ result ? $t('tools.components.tools.McpSecretMoveBanner.close') : $t('tools.components.tools.McpSecretMoveBanner.cancel') }}
           </button>
-          <button v-if="!result" type="button" :disabled="selected.length === 0 || store.getLoading" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 text-sm font-semibold" data-testid="mcp-secret-move-confirm" @click="move">
-            {{ $t('tools.components.tools.McpSecretMoveBanner.move_selected', { count: selected.length }) }}
+          <button v-if="!result" type="button" :disabled="store.getLoading" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 text-sm font-semibold" data-testid="mcp-secret-move-confirm" @click="move">
+            {{ selected.length === 0
+              ? $t('tools.components.tools.McpSecretMoveBanner.keep_as_they_are')
+              : $t('tools.components.tools.McpSecretMoveBanner.move_selected', { count: selected.length }) }}
           </button>
         </div>
       </div>
@@ -64,24 +71,37 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { mcpSecretReviewState, reviewKeyOf } from '~/utils/mcp/mcpSecretReviewState';
 import type { McpSecretMoveCandidate, McpSecretMoveResult } from '~/types/mcpServer';
 import type { ToastType } from '~/composables/useToasts';
 
 /**
  * "N values look like secrets but are stored as plain text → Review and move to vault" (a user-triggered
- * maintenance action, never automatic). The dialog lists the candidates (no values), the user unticks rows, and the
- * result names the backup the server wrote first, which holds the plain values.
+ * maintenance action, never automatic). It shows only candidates the user has not reviewed (MDEC-006): unticking one in
+ * the dialog and confirming, or "Keep as they are", marks it reviewed (`mcpSecretReviewState`). The dialog lists the
+ * candidates (no values), and the result names the backup the server wrote first, which holds the plain values.
  */
 const emit = defineEmits<{ (event: 'show-toast', toast: { message: string; type: ToastType }): void }>();
 const store = useToolManagementStore();
 
-const candidates = computed(() => store.getSecretMoveCandidates);
+const nodeContext = useWindowNodeContextStore();
+/** The review state is kept per node, by its entry ID (stable across URL or port changes). */
+const nodeKey = computed(() => nodeContext.entryId);
+const candidates = computed(() => {
+  const reviewed = mcpSecretReviewState.read(nodeKey.value);
+  return store.getSecretMoveCandidates.filter(candidate => !reviewed.has(reviewKeyOf(candidate)));
+});
+const markReviewed = (fields: Array<{ serverId: string; field: string }>) =>
+  mcpSecretReviewState.markReviewed(nodeKey.value, fields, store.getMcpServers.map(server => server.serverId));
 const reviewOpen = ref(false);
 const reviewed = ref<McpSecretMoveCandidate[]>([]);
 const selected = ref<string[]>([]);
 const result = ref<McpSecretMoveResult | null>(null);
 
-const keyOf = (candidate: { serverId: string; field: string }) => `${candidate.serverId}\u0000${candidate.field}`;
+const keyOf = reviewKeyOf;
+
+const keepAsTheyAre = () => markReviewed(candidates.value);
 
 const openReview = () => {
   reviewed.value = [...candidates.value];
@@ -99,6 +119,12 @@ const move = async () => {
   const selection = reviewed.value
     .filter(candidate => selected.value.includes(keyOf(candidate)))
     .map(({ serverId, field }) => ({ serverId, field }));
+  // The rows the user unticked stay plain on purpose: the banner does not offer them again.
+  markReviewed(reviewed.value.filter(candidate => !selected.value.includes(keyOf(candidate))));
+  if (selection.length === 0) {
+    closeReview();
+    return;
+  }
   try {
     result.value = await store.moveMcpSecretsToVault(selection);
   } catch (e: any) {

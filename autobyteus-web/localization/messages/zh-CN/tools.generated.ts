@@ -40,6 +40,8 @@ const messages = {
   'tools.components.tools.McpBulkImportView.the_json_must_have_a_top': 'JSON 必须具有包含服务器配置对象的顶级“mcpServers”键。',
   'tools.components.tools.McpBulkImportView.import_succeeded_with_secrets': '已导入 {{count}} 个 MCP 服务器配置。已存入密钥库：{{fields}}。',
   'tools.components.tools.McpBulkImportView.stored_as_secrets': '以下值已存入密钥库：',
+  'tools.components.tools.McpBulkImportView.needs_secret': '以下值在另一个节点上是密钥，请在此处重新输入（在此之前，这些服务器会显示“需要密钥”）：',
+  'tools.components.tools.McpBulkImportView.import_needs_secret': '请在此节点上重新输入这些密钥：{{fields}}。',
   'tools.components.tools.McpServerCard.command': '命令：',
   'tools.components.tools.McpServerCard.cwd': '连续WD：',
   'tools.components.tools.McpServerCard.prefix': '前缀：',
@@ -117,7 +119,7 @@ const messages = {
   'tools.components.tools.McpConfigRows.header_name': '请求头名称',
   'tools.components.tools.McpConfigRows.leave_empty_to_keep': '留空以保留已存储的值',
   'tools.components.tools.McpConfigRows.lock_store_as_secret': '以明文存储。点击改为作为密钥存储',
-  'tools.components.tools.McpConfigRows.looks_like_a_secret': '看起来像密钥 ·',
+  'tools.components.tools.McpConfigRows.looks_like_a_secret': '看起来像密钥。',
   'tools.components.tools.McpConfigRows.move_to_vault': '移入密钥库',
   'tools.components.tools.McpConfigRows.needs_secret_missing': '需要密钥：未存储值。输入值即可存储。',
   'tools.components.tools.McpConfigRows.needs_secret_vault_unavailable': '需要密钥：密钥库不可用，无法读取已存储的值。',
@@ -143,6 +145,7 @@ const messages = {
   'tools.components.tools.McpSecretMoveBanner.servers_failing': '以下服务器在移动后未能注册其工具：',
   'tools.components.tools.McpSecretMoveBanner.skipped': '未移动（已不再以明文存储）：{{fields}}',
   'tools.components.tools.McpSecretMoveBanner.values_look_like_secrets': '有 {{count}} 个值看起来像密钥，但以明文存储。',
+  'tools.components.tools.McpSecretMoveBanner.keep_as_they_are': '保持原样',
 } satisfies TranslationCatalog;
 
 export default messages;

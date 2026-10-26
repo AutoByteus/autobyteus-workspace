@@ -40,6 +40,8 @@ const messages = {
   'tools.components.tools.McpBulkImportView.the_json_must_have_a_top': 'The JSON must have a top-level `mcpServers` key containing an object of server configurations.',
   'tools.components.tools.McpBulkImportView.import_succeeded_with_secrets': 'MCP server configurations imported: {{count}}. Stored in the vault: {{fields}}.',
   'tools.components.tools.McpBulkImportView.stored_as_secrets': 'These values were stored in the vault:',
+  'tools.components.tools.McpBulkImportView.needs_secret': 'These values were secrets on another node; enter them again here (the servers show "Needs secret" until then):',
+  'tools.components.tools.McpBulkImportView.import_needs_secret': 'Enter these secrets again on this node: {{fields}}.',
   'tools.components.tools.McpServerCard.command': 'Command:',
   'tools.components.tools.McpServerCard.cwd': 'CWD:',
   'tools.components.tools.McpServerCard.prefix': 'Prefix:',
@@ -117,7 +119,7 @@ const messages = {
   'tools.components.tools.McpConfigRows.header_name': 'Header name',
   'tools.components.tools.McpConfigRows.leave_empty_to_keep': 'Leave empty to keep the stored value',
   'tools.components.tools.McpConfigRows.lock_store_as_secret': 'Stored as plain text. Click to store it as a secret',
-  'tools.components.tools.McpConfigRows.looks_like_a_secret': 'Looks like a secret ·',
+  'tools.components.tools.McpConfigRows.looks_like_a_secret': 'Looks like a secret.',
   'tools.components.tools.McpConfigRows.move_to_vault': 'Move to vault',
   'tools.components.tools.McpConfigRows.needs_secret_missing': 'Needs secret: no value is stored. Type a value to store one.',
   'tools.components.tools.McpConfigRows.needs_secret_vault_unavailable': 'Needs secret: the vault is unavailable, so the stored value cannot be read.',
@@ -143,6 +145,7 @@ const messages = {
   'tools.components.tools.McpSecretMoveBanner.servers_failing': 'These servers could not register their tools after the move:',
   'tools.components.tools.McpSecretMoveBanner.skipped': 'Not moved (no longer stored as plain text): {{fields}}',
   'tools.components.tools.McpSecretMoveBanner.values_look_like_secrets': '{{count}} value(s) look like secrets but are stored as plain text.',
+  'tools.components.tools.McpSecretMoveBanner.keep_as_they_are': 'Keep as they are',
 } satisfies TranslationCatalog;
 
 export default messages;

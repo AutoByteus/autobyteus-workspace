@@ -1242,6 +1242,7 @@ export type ImportMcpServerConfigsResult = {
   failures: Array<ImportMcpServerConfigFailure>;
   importedCount: Scalars['Int']['output'];
   message: Scalars['String']['output'];
+  needsSecret: Array<McpServerField>;
   storedSecrets: Array<McpServerField>;
   success: Scalars['Boolean']['output'];
 };
@@ -4331,7 +4332,7 @@ export type ImportMcpServerConfigsMutationVariables = Exact<{
 }>;
 
 
-export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }>, storedSecrets: Array<{ __typename: 'McpServerField', serverId: string, field: string }> } };
+export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }>, storedSecrets: Array<{ __typename: 'McpServerField', serverId: string, field: string }>, needsSecret: Array<{ __typename: 'McpServerField', serverId: string, field: string }> } };
 
 export type MoveMcpSecretsToVaultMutationVariables = Exact<{
   selection: Array<McpServerFieldInput> | McpServerFieldInput;
@@ -8001,6 +8002,11 @@ export const ImportMcpServerConfigsDocument = gql`
       reason
     }
     storedSecrets {
+      __typename
+      serverId
+      field
+    }
+    needsSecret {
       __typename
       serverId
       field

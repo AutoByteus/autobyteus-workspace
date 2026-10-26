@@ -9,12 +9,14 @@ import { describe, expect, it } from 'vitest'
 import {
   fieldsNeedingSecret,
   matchMcpSecret,
+  offersMove,
   rowsFromEntries,
   rowsFromJson,
   rowsToInput,
   rowsToJson,
   tokenFromJson,
   tokenToInput,
+  unlockedSuggestions,
   type McpSecretSuggestionRule,
 } from '../mcpConfigRows'
 
@@ -85,5 +87,20 @@ describe('MCP config rows', () => {
       headers: [{ name: 'X-Key', value: null, state: 'VAULT_UNAVAILABLE' }],
       tokenState: 'MISSING',
     })).toEqual(['env:A', 'header:X-Key', 'token'])
+  })
+
+  it('offers the move, not a lock, for an unchanged saved plain value, and sends it plain', () => {
+    const [row] = rowsFromEntries([{ name: 'GITHUB_TOKEN', value: 'test-dummy', state: 'PLAIN' }], 'env', rule)
+    expect(offersMove(row!)).toBe(true)
+    expect(rowsToInput([{ ...row!, locked: true }], 'env', rule)).toEqual([{ name: 'GITHUB_TOKEN', secret: false, value: 'test-dummy' }])
+    expect(offersMove({ ...row!, value: 'test-dummy-changed' })).toBe(false)
+    expect(rowsToInput([{ ...row!, value: 'test-dummy-changed', locked: true }], 'env', rule))
+      .toEqual([{ name: 'GITHUB_TOKEN', secret: true, value: 'test-dummy-changed' }])
+  })
+
+  it('lists the rows the rule suggested that the user unlocked by hand', () => {
+    const rows = rowsFromJson({ TOKEN_LIMIT: '4096', API_KEY: 'test-dummy', LOG_LEVEL: 'debug' }, 'env', [], rule).rows
+      .map(row => (row.name === 'API_KEY' ? row : { ...row, locked: false, lockTouched: true }))
+    expect(unlockedSuggestions(rows, 'env', rule)).toEqual(['env:TOKEN_LIMIT'])
   })
 })

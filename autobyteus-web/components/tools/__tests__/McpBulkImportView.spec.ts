@@ -15,8 +15,8 @@ const flushPromises = async () => {
   await nextTick()
 }
 
-const mountView = (input: { success: boolean; message: string; importedCount: number; failedCount: number; failures: Failure[]; storedSecrets?: StoredSecret[] }) => {
-  const result = { storedSecrets: [], ...input }
+const mountView = (input: { success: boolean; message: string; importedCount: number; failedCount: number; failures: Failure[]; storedSecrets?: StoredSecret[]; needsSecret?: StoredSecret[] }) => {
+  const result = { storedSecrets: [], needsSecret: [], ...input }
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true, initialState: { toolManagement: { loading: false } } })
   setActivePinia(pinia)
   const wrapper = mount(McpBulkImportView, { global: { plugins: [pinia], mocks: { $t: (key: string) => key } } })
@@ -108,5 +108,19 @@ describe('McpBulkImportView results', () => {
     const stored = wrapper.get('#bulk-import-stored-secrets')
     expect(stored.text()).toContain('These values were stored in the vault:')
     expect(stored.findAll('li').map(item => item.text())).toEqual(['local · env:GITHUB_TOKEN'])
+  })
+
+  it('lists imported secrets this node does not hold, and names them in the toast so they are entered again', async () => {
+    const wrapper = mountView({
+      success: true, message: 'Import complete. Imported: 1, Failed: 0', importedCount: 1, failedCount: 0, failures: [],
+      needsSecret: [{ serverId: 'copied', field: 'env:API_KEY' }],
+    })
+    await runImport(wrapper)
+
+    expect(wrapper.get('#bulk-import-needs-secret').findAll('li').map(item => item.text())).toEqual(['copied · env:API_KEY'])
+    expect(lastToast(wrapper)).toEqual({
+      message: 'MCP server configurations imported: 1. Enter these secrets again on this node: copied env:API_KEY.',
+      type: 'info',
+    })
   })
 })

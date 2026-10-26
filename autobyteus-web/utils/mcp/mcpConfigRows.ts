@@ -91,6 +91,15 @@ export const isStoredHidden = (row: McpConfigRow): boolean =>
 export const isKeepable = (row: McpConfigRow): boolean =>
   row.locked && isStoredHidden(row) && row.stored!.name === row.name;
 
+/**
+ * A saved plain setting the user has not changed. Only the move turns it into a vault entry (with its backup), so
+ * its row offers "Move to vault" instead of a lock toggle, and a save keeps it plain. Changing its value brings the
+ * lock toggle back: locking a new value stores it as a new secret.
+ */
+export const offersMove = (row: McpConfigRow): boolean =>
+  !!row.stored && row.stored.state === 'PLAIN' && row.stored.plainValue !== null
+  && row.stored.name === row.name && row.value === row.stored.plainValue;
+
 /** A stored plain setting the rule matches (or an always-secret field stored plain): offered for the move. */
 export const moveMatch = (row: McpConfigRow, kind: McpRowKind, rule: McpSecretSuggestionRule | null): McpSecretMatch | null => {
   if (!row.stored || row.stored.state !== 'PLAIN' || row.stored.name !== row.name) return null;
@@ -109,10 +118,24 @@ export const applySuggestedLock = (row: McpConfigRow, kind: McpRowKind, rule: Mc
   row.locked = !!row.name && !!matchMcpSecret(rule, field, row.value);
 };
 
+/**
+ * The fields of rows the rule suggested locking that the user unlocked by hand: saved plain on purpose, so they
+ * count as reviewed for the move banner (MDEC-006).
+ */
+export const unlockedSuggestions = (rows: McpConfigRow[], kind: McpRowKind, rule: McpSecretSuggestionRule | null): string[] =>
+  rows
+    .filter(row => row.name.trim() && row.lockTouched && !row.locked)
+    .filter(row => {
+      const match = matchMcpSecret(rule, fieldOf(kind, row.name), row.value);
+      return match === 'NAME' || match === 'VALUE_PREFIX';
+    })
+    .map(row => fieldOf(kind, row.name));
+
 /** The GraphQL input rows; empty names are skipped. A locked row needs a value unless it keeps a stored one. */
 export const rowsToInput = (rows: McpConfigRow[], kind: McpRowKind, rule: McpSecretSuggestionRule | null): McpConfigEntryInput[] =>
   rows.filter(row => row.name.trim()).map(row => {
     const field = fieldOf(kind, row.name);
+    if (offersMove(row)) return { name: row.name, secret: false, value: row.value };
     if (row.locked || isAlwaysSecretField(rule, field)) {
       if (row.value) return { name: row.name, secret: true, value: row.value };
       if (isKeepable(row)) return { name: row.name, secret: true, value: null };
