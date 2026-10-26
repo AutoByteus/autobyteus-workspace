@@ -1,0 +1,7 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts typecheck (tsc -p tsconfig.build.json --noEmit)
+# Commit: bd1ed1a232
+# Environment: macOS Darwin 25.5.0, Node v22.23.1, pnpm
+# Date: 2026-10-26
+
+exit=0

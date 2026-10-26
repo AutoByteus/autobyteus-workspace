@@ -1,4 +1,5 @@
 import type { ProviderApiKeySlot } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 
 /** Who asks the server's vault for a credential; the catalog authorizes each kind. */
 export type SecretConsumerIdentity =
@@ -15,7 +16,9 @@ export type SecretConsumerIdentity =
       kind: "agentRuntime";
       runtimeKind: "claude_agent_sdk";
       credentialSlot: "apiKey";
-    };
+    }
+  /** An MCP server value stored as a vault entry (`mcp.<uuid>`); its owner and field live in `mcps.json`. */
+  | { kind: "mcpServer"; vaultSecretId: SecretId };
 
 export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity): string => {
   switch (consumer.kind) {
@@ -23,6 +26,8 @@ export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity
       return `${consumer.kind}:${consumer.mediaKind}:${consumer.providerId}:${consumer.credentialSlot}`;
     case "agentRuntime":
       return `${consumer.kind}:${consumer.runtimeKind}:${consumer.credentialSlot}`;
+    case "mcpServer":
+      return `${consumer.kind}:${consumer.vaultSecretId}`;
     default:
       return `${consumer.kind}:${consumer.providerId}:${consumer.credentialSlot}`;
   }

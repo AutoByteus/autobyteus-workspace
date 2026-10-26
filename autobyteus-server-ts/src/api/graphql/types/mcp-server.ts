@@ -1,20 +1,21 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import {
-  BaseMcpConfig,
-  StdioMcpServerConfig,
-  StreamableHttpMcpServerConfig,
-} from "autobyteus-ts";
 import { ToolDefinitionConverter } from "../converters/tool-definition-converter.js";
 import { McpServerConverter } from "../converters/mcp-server-converter.js";
+import { McpServerInputMapper } from "../converters/mcp-server-input-mapper.js";
 import { getMcpConfigService } from "../../../mcp-server-management/services/mcp-config-service.js";
+import { McpSecretSuggestionRule as SuggestionRule } from "../../../mcp-server-management/services/mcp-secret-suggestion-rule.js";
 import {
   ConfigureMcpServerResult,
   DeleteMcpServerResult,
   DiscoverAndRegisterMcpServerToolsResult,
   ImportMcpServerConfigsResult,
+  McpSecretMatchEnum,
+  McpSecretMoveCandidate,
+  McpSecretSuggestionRule,
   McpServerConfigUnion,
+  McpServerFieldInput,
   McpServerInput,
-  McpTransportTypeEnum,
+  MoveMcpSecretsToVaultResult,
   StdioMcpServerConfig as StdioMcpServerConfigGraphql,
   StreamableHttpMcpServerConfig as StreamableHttpMcpServerConfigGraphql,
 } from "./mcp-server-config.js";
@@ -24,52 +25,6 @@ import type { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definitio
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   error: (...args: unknown[]) => console.error(...args),
-};
-
-const toStringRecord = (
-  value: Record<string, unknown> | null | undefined,
-): Record<string, string> | undefined => {
-  if (!value) {
-    return undefined;
-  }
-  const result: Record<string, string> = {};
-  for (const [key, val] of Object.entries(value)) {
-    result[key] = typeof val === "string" ? val : String(val);
-  }
-  return result;
-};
-
-const createDomainConfigFromInput = (input: McpServerInput): BaseMcpConfig => {
-  if (input.transportType === McpTransportTypeEnum.STDIO) {
-    if (!input.stdioConfig) {
-      throw new Error("stdioConfig must be provided for STDIO transport type.");
-    }
-    return new StdioMcpServerConfig({
-      server_id: input.serverId,
-      enabled: input.enabled ?? true,
-      tool_name_prefix: input.toolNamePrefix ?? null,
-      command: input.stdioConfig.command,
-      args: input.stdioConfig.args ?? undefined,
-      env: toStringRecord(input.stdioConfig.env),
-      cwd: input.stdioConfig.cwd ?? null,
-    });
-  }
-
-  if (input.transportType === McpTransportTypeEnum.STREAMABLE_HTTP) {
-    if (!input.streamableHttpConfig) {
-      throw new Error("streamableHttpConfig must be provided for STREAMABLE_HTTP transport type.");
-    }
-    return new StreamableHttpMcpServerConfig({
-      server_id: input.serverId,
-      enabled: input.enabled ?? true,
-      tool_name_prefix: input.toolNamePrefix ?? null,
-      url: input.streamableHttpConfig.url,
-      token: input.streamableHttpConfig.token ?? null,
-      headers: toStringRecord(input.streamableHttpConfig.headers),
-    });
-  }
-
-  throw new Error(`Unsupported transport type: ${input.transportType}`);
 };
 
 const toToolDefinitions = (tools: ToolDefinition[]): ReturnType<typeof ToolDefinitionConverter.toGraphql>[] =>
@@ -84,8 +39,8 @@ export class McpServerResolver {
   @Query(() => [McpServerConfigUnion])
   async mcpServers(): Promise<Array<StdioMcpServerConfigGraphql | StreamableHttpMcpServerConfigGraphql>> {
     try {
-      const domainConfigs = await this.mcpConfigService.getAllMcpServers();
-      return domainConfigs.map((config) => McpServerConverter.toGraphql(config));
+      const views = await this.mcpConfigService.listMcpServerViews();
+      return views.map((view) => McpServerConverter.toGraphql(view));
     } catch (error) {
       logger.error(`Error fetching MCP server configurations: ${String(error)}`);
       throw new Error("Unable to fetch MCP server configurations.");
@@ -97,8 +52,8 @@ export class McpServerResolver {
     @Arg("input", () => McpServerInput) input: McpServerInput,
   ): Promise<ReturnType<typeof ToolDefinitionConverter.toGraphql>[]> {
     try {
-      const configObj = createDomainConfigFromInput(input);
-      const toolDefs = await this.mcpConfigService.previewMcpServerTools(configObj);
+      const draft = McpServerInputMapper.toDraft(input);
+      const toolDefs = await this.mcpConfigService.previewMcpServerTools(draft);
       return toToolDefinitions(toolDefs);
     } catch (error) {
       logger.error(`Error previewing tools for MCP server config '${input.serverId}': ${String(error)}`);
@@ -111,10 +66,10 @@ export class McpServerResolver {
     @Arg("input", () => McpServerInput) input: McpServerInput,
   ): Promise<ConfigureMcpServerResult> {
     try {
-      const configObj = createDomainConfigFromInput(input);
-      const savedConfig = await this.mcpConfigService.configureMcpServer(configObj);
+      const draft = McpServerInputMapper.toDraft(input);
+      const savedView = await this.mcpConfigService.configureMcpServer(draft);
       return {
-        savedConfig: McpServerConverter.toGraphql(savedConfig),
+        savedConfig: McpServerConverter.toGraphql(savedView),
       };
     } catch (error) {
       logger.error(`Error configuring MCP server '${input.serverId}': ${String(error)}`);
@@ -164,7 +119,7 @@ export class McpServerResolver {
     @Arg("jsonString", () => String) jsonString: string,
   ): Promise<ImportMcpServerConfigsResult> {
     try {
-      const result = await this.mcpConfigService.importConfigsFromJson(jsonString);
+      const result = await this.mcpConfigService.importMcpServerConfigs(jsonString);
       const success = result.failed_count === 0;
       return {
         success,
@@ -172,6 +127,8 @@ export class McpServerResolver {
         importedCount: result.imported_count,
         failedCount: result.failed_count,
         failures: result.failures.map((failure) => ({ serverId: failure.server_id, reason: failure.reason })),
+        storedSecrets: result.stored_secrets.map(({ serverId, field }) => ({ serverId, field })),
+        needsSecret: result.needs_secret.map(({ serverId, field }) => ({ serverId, field })),
       };
     } catch (error) {
       logger.error(`Error during bulk import of MCP servers: ${String(error)}`);
@@ -181,7 +138,43 @@ export class McpServerResolver {
         importedCount: 0,
         failedCount: 0,
         failures: [],
+        storedSecrets: [],
+        needsSecret: [],
       };
+    }
+  }
+
+  @Query(() => McpSecretSuggestionRule)
+  mcpSecretSuggestionRule(): McpSecretSuggestionRule {
+    const rule = SuggestionRule.data;
+    return {
+      nameKeywords: [...rule.nameKeywords],
+      valuePrefixes: [...rule.valuePrefixes],
+      alwaysSecretFields: [...rule.alwaysSecretFields],
+    };
+  }
+
+  @Query(() => [McpSecretMoveCandidate])
+  async mcpSecretMoveCandidates(): Promise<McpSecretMoveCandidate[]> {
+    const candidates = await this.mcpConfigService.listSecretMoveCandidates();
+    return candidates.map(({ serverId, field, matchedBy }) => ({ serverId, field, matchedBy: McpSecretMatchEnum[matchedBy] }));
+  }
+
+  @Mutation(() => MoveMcpSecretsToVaultResult)
+  async moveMcpSecretsToVault(
+    @Arg("selection", () => [McpServerFieldInput]) selection: McpServerFieldInput[],
+  ): Promise<MoveMcpSecretsToVaultResult> {
+    try {
+      const result = await this.mcpConfigService.moveSecretsToVault(McpServerInputMapper.toFields(selection));
+      return {
+        backupPath: result.backupPath,
+        moved: [...result.moved],
+        skipped: [...result.skipped],
+        serversFailingAfterMove: [...result.serversFailingAfterMove],
+      };
+    } catch (error) {
+      logger.error(`Error moving MCP values to the vault: ${String(error)}`);
+      throw new Error(`Failed to move MCP values to the vault: ${String(error)}`);
     }
   }
 }

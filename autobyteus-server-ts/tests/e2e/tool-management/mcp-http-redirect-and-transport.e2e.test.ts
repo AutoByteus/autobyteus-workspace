@@ -59,7 +59,7 @@ const LIST = `query List { mcpServers { ... on StreamableHttpMcpServerConfig { s
 
 const tokenInput = (serverId: string, url: string, toolNamePrefix: string) => ({
   serverId, transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix,
-  streamableHttpConfig: { url, token: DUMMY, headers: null },
+  streamableHttpConfig: { url, token: { value: DUMMY }, headers: [] },
 });
 
 const callThroughGateway = async (serverUrl: string, name: string) => {

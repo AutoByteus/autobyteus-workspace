@@ -32,6 +32,8 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { installRuntimeMcpSecretResolver } from "../../../src/secret-management/resolution/mcp-secret-resolver.js";
+import { getSecretVaultRuntime, resetSecretVaultRuntimeForTests } from "../../../src/secret-management/secret-vault-runtime.js";
 import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { getCodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -187,11 +189,19 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     url = started.mainUrl;
+    // The token (and an Authorization header) are stored as MCP secrets: as at server startup, open the run
+    // database's own vault and let managed MCP servers resolve through it.
+    await resetSecretVaultRuntimeForTests();
+    await getSecretVaultRuntime().initialize({ kind: "application", location: appConfigProvider.config.getOperationalDatabaseLocation() });
+    installRuntimeMcpSecretResolver();
     for (const input of [
       { serverId: "matrix_stdio", transportType: "STDIO", enabled: true, toolNamePrefix: "matrix_stdio",
-        stdioConfig: { command: process.execPath, args: [FIXTURE], env: { MATRIX_ENV: ENV_VALUE, MCP_TEST_SERVER_PID_FILE: stdioPidFile }, cwd: stdioCwd } },
+        stdioConfig: { command: process.execPath, args: [FIXTURE], env: [
+          { name: "MATRIX_ENV", secret: false, value: ENV_VALUE },
+          { name: "MCP_TEST_SERVER_PID_FILE", secret: false, value: stdioPidFile },
+        ], cwd: stdioCwd } },
       { serverId: "matrix_http", transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix: "matrix_http",
-        streamableHttpConfig: { url: httpServer.url, token: DUMMY, headers: null } },
+        streamableHttpConfig: { url: httpServer.url, token: { value: DUMMY }, headers: [] } },
     ]) {
       await gql("mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }", { input });
       const discovered = await gql<{ discoverAndRegisterMcpServerTools: { success: boolean; message: string } }>(
@@ -211,6 +221,7 @@ suite("Runtime × MCP tool matrix: project tools, external stdio and external HT
       await app.close();
     }
     await httpServer?.close();
+    await resetSecretVaultRuntimeForTests();
     delete process.env["AGY_FAKE_CASE"];
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);
