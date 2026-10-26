@@ -7,6 +7,7 @@ import McpBulkImportView from '../McpBulkImportView.vue'
 import { useToolManagementStore } from '~/stores/toolManagementStore'
 
 type Failure = { serverId: string; reason: string }
+type StoredSecret = { serverId: string; field: string }
 
 const flushPromises = async () => {
   await nextTick()
@@ -14,7 +15,8 @@ const flushPromises = async () => {
   await nextTick()
 }
 
-const mountView = (result: { success: boolean; message: string; importedCount: number; failedCount: number; failures: Failure[] }) => {
+const mountView = (input: { success: boolean; message: string; importedCount: number; failedCount: number; failures: Failure[]; storedSecrets?: StoredSecret[] }) => {
+  const result = { storedSecrets: [], ...input }
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true, initialState: { toolManagement: { loading: false } } })
   setActivePinia(pinia)
   const wrapper = mount(McpBulkImportView, { global: { plugins: [pinia], mocks: { $t: (key: string) => key } } })
@@ -79,5 +81,32 @@ describe('McpBulkImportView results', () => {
     expect(wrapper.find('#bulk-import-failures').exists()).toBe(false)
     expect(lastToast(wrapper)).toEqual({ message: "Error: JSON must contain a top-level 'mcpServers' object.", type: 'error' })
     expect(wrapper.emitted('save-complete')).toBeUndefined()
+  })
+
+  it('names the values stored in the vault in the success toast (the view then closes)', async () => {
+    const wrapper = mountView({
+      success: true, message: 'Import complete. Imported: 1, Failed: 0', importedCount: 1, failedCount: 0, failures: [],
+      storedSecrets: [{ serverId: 'local', field: 'env:API_KEY' }, { serverId: 'remote', field: 'header:Authorization' }],
+    })
+    await runImport(wrapper)
+
+    expect(lastToast(wrapper)).toEqual({
+      message: 'MCP server configurations imported: 1. Stored in the vault: local env:API_KEY, remote header:Authorization.',
+      type: 'success',
+    })
+    expect(wrapper.emitted('save-complete')).toHaveLength(1)
+  })
+
+  it('lists the values stored in the vault next to the failures after a partial import', async () => {
+    const wrapper = mountView({
+      success: false, message: 'Import complete. Imported: 1, Failed: 1', importedCount: 1, failedCount: 1,
+      failures: [{ serverId: 'bad', reason: 'reason' }],
+      storedSecrets: [{ serverId: 'local', field: 'env:GITHUB_TOKEN' }],
+    })
+    await runImport(wrapper)
+
+    const stored = wrapper.get('#bulk-import-stored-secrets')
+    expect(stored.text()).toContain('These values were stored in the vault:')
+    expect(stored.findAll('li').map(item => item.text())).toEqual(['local · env:GITHUB_TOKEN'])
   })
 })

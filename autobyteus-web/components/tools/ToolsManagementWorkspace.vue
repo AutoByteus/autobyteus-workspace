@@ -79,6 +79,7 @@
             @bulk-import="showBulkImportView"
             @discover-tools="discoverTools"
             @view-tools="viewToolsForServer"
+            @show-toast="handleShowToast"
           />
         </div>
         <div

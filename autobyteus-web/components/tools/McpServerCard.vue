@@ -25,6 +25,11 @@
         </div>
       </div>
       
+      <p v-if="needsSecret.length > 0" class="mt-2 inline-flex items-start rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700" data-testid="mcp-card-needs-secret">
+        <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1 flex-shrink-0"></span>
+        {{ $t('tools.components.tools.McpServerCard.needs_secret', { fields: needsSecret.join(', ') }) }}
+      </p>
+
       <!-- Details Section -->
       <div 
         class="mt-4 border-t border-gray-200 pt-4 space-y-2 cursor-pointer hover:bg-gray-50 -mx-4 px-4 pb-2"
@@ -87,11 +92,16 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { McpServer } from '~/stores/toolManagementStore';
+import { fieldsNeedingSecret } from '~/utils/mcp/mcpConfigRows';
 
-defineProps<{
+const props = defineProps<{
   server: McpServer;
 }>();
+
+/** Secret references with no stored value, or that cannot be read while the vault is unavailable. */
+const needsSecret = computed(() => fieldsNeedingSecret(props.server));
 
 defineEmits(['view-tools', 'edit', 'delete', 'discover-tools']);
 </script>

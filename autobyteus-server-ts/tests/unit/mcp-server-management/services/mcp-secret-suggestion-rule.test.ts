@@ -8,9 +8,9 @@ import type { McpSecretField } from "autobyteus-ts/tools/mcp/types.js";
 import { McpSecretSuggestionRule } from "../../../../src/mcp-server-management/services/mcp-secret-suggestion-rule.js";
 
 type Vector = { field: McpSecretField; value: string; expected: string | null };
-const { vectors } = JSON.parse(
+const { rule, vectors } = JSON.parse(
   fs.readFileSync(new URL("../../../../../test-support/fixtures/mcp-secret-suggestion-vectors.json", import.meta.url), "utf8"),
-) as { vectors: Vector[] };
+) as { rule: unknown; vectors: Vector[] };
 
 describe("McpSecretSuggestionRule", () => {
   it.each(vectors.map((vector) => [vector.field, vector.value, vector.expected] as const))(
@@ -25,7 +25,8 @@ describe("McpSecretSuggestionRule", () => {
     expect(McpSecretSuggestionRule.isAlwaysSecret("header:X-Api-Key")).toBe(false);
   });
 
-  it("publishes the approved keywords, prefixes and always-secret fields", () => {
+  it("publishes exactly the rule in the shared vectors (the approved keywords, prefixes and always-secret fields)", () => {
+    expect(McpSecretSuggestionRule.data).toEqual(rule);
     expect(McpSecretSuggestionRule.data).toEqual({
       nameKeywords: ["KEY", "TOKEN", "SECRET", "PASSWORD", "PASS", "CREDENTIAL", "AUTH"],
       valuePrefixes: ["github_pat_", "ghp_", "sk-", "xoxb-", "glpat-", "ATATT", "AKIA"],

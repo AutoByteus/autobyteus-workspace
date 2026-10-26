@@ -16,6 +16,8 @@
       </div>
     </div>
     
+    <McpSecretMoveBanner @show-toast="$emit('show-toast', $event)" />
+
     <div v-if="loading" class="text-center py-8">
       <span class="i-heroicons-arrow-path-20-solid w-8 h-8 text-gray-400 mx-auto animate-spin"></span>
       <p class="text-gray-500 mt-2">{{ $t('tools.components.tools.McpServerList.loading_servers') }}</p>
@@ -43,6 +45,7 @@
 
 <script setup lang="ts">
 import McpServerCard from './McpServerCard.vue';
+import McpSecretMoveBanner from './McpSecretMoveBanner.vue';
 import type { McpServer } from '~/stores/toolManagementStore';
 
 defineProps<{
@@ -50,5 +53,5 @@ defineProps<{
   loading: boolean;
 }>();
 
-defineEmits(['add', 'bulk-import', 'view-tools', 'edit', 'delete', 'discover-tools']);
+defineEmits(['add', 'bulk-import', 'view-tools', 'edit', 'delete', 'discover-tools', 'show-toast']);
 </script>

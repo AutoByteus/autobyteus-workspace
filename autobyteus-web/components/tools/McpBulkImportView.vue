@@ -41,6 +41,16 @@
         </button>
       </div>
 
+    <!-- Values stored in the vault -->
+    <div v-if="storedSecrets.length > 0" id="bulk-import-stored-secrets" class="mt-4 rounded-md border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
+      <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.stored_as_secrets') }}</p>
+      <ul class="mt-2 space-y-1">
+        <li v-for="stored in storedSecrets" :key="`${stored.serverId}:${stored.field}`" class="font-mono">
+          {{ stored.serverId }} · {{ stored.field }}
+        </li>
+      </ul>
+    </div>
+
     <!-- Entries that were not imported -->
     <div v-if="failures.length > 0" id="bulk-import-failures" ref="failuresRef" class="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
       <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.entries_not_imported') }}</p>
@@ -65,6 +75,7 @@ const { t } = useLocalization();
 
 const jsonString = ref('');
 const failures = ref<Array<{ serverId: string; reason: string }>>([]);
+const storedSecrets = ref<Array<{ serverId: string; field: string }>>([]);
 const failuresRef = ref<HTMLElement | null>(null);
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
@@ -99,9 +110,11 @@ watch(jsonString, () => {
 
 const runImport = async () => {
     failures.value = [];
+    storedSecrets.value = [];
     try {
         const result = await store.importMcpServerConfigs(jsonString.value);
         failures.value = result.failures;
+        storedSecrets.value = result.storedSecrets;
         if (failures.value.length > 0) {
             // The list is below a tall editor; bring it into view so the toast's "see below" holds.
             nextTick(() => failuresRef.value?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' }));
@@ -111,7 +124,14 @@ const runImport = async () => {
         const failed = result.failedCount;
 
         if (result.success) {
-            emit('show-toast', { message: t(`${key}.import_succeeded`, { count: imported }), type: 'success' as ToastType });
+            // The view closes on success, so the toast names the values stored in the vault.
+            const message = storedSecrets.value.length > 0
+                ? t(`${key}.import_succeeded_with_secrets`, {
+                    count: imported,
+                    fields: storedSecrets.value.map(stored => `${stored.serverId} ${stored.field}`).join(', '),
+                  })
+                : t(`${key}.import_succeeded`, { count: imported });
+            emit('show-toast', { message, type: 'success' as ToastType });
             // The parent returns to the server list.
             emit('save-complete');
         } else if (failed === 0) {
