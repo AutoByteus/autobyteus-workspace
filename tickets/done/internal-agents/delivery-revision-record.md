@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E: API-REV-001 Pass (direct route) | N/A | Verified from evidence; archived; finalized on `personal`; no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/delivery/DEL-01-internal-agents-e2e-rerun.log` |
+| DR-002 | Solution Designer receipt check (Delivery Receipt Evidence Gap: the Task's "Done when" requires the user's desktop-app check) | DR-001 Verified, finalized, no release; no user check | User waiver recorded; corrected receipt sent | `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -30,3 +31,17 @@
   - None blocking.
   - AC-004 is reachable by no agent (FU-001).
   - The AC-005 "user check" wording is flagged to the Solution Designer.
+
+### DR-002 — The user waives the desktop-app check; corrected receipt
+
+- Delivery round and trigger: round 2. The Solution Designer's receipt check: the saved Task's "Done when" requires "the user has verified it in the desktop app", a condition `handoff-implementation.md` had left out.
+- Prior entry revisited: DR-001 ("User check needed: `No`").
+- Current authoritative result:
+  - The user decided, verbatim: "since you have evidences. then thats good , then its done". This is recorded as a waiver, not as a passed check.
+  - Verification stands on DR-001's evidence.
+  - Finalization (`e34321789d`), no release and cleanup are unchanged.
+- Changed canonical artifacts: `release-deployment-report.md` (section "User Waiver Of The Desktop-App Check (DR-002)", plus pointers in Verification and Final Status).
+- Terminal return to the Solution Designer: `Sent`. The corrected receipt follows this record's push.
+- Next recipient/action: the Solution Designer verifies the corrected receipt.
+- Remaining blockers: none.
+- Unobserved, by the user's decision: the change in the user's own desktop app (not released yet).

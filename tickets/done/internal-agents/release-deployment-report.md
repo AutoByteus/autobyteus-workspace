@@ -60,7 +60,7 @@ The change covers an agent-definition attribute, a server setting, one visibilit
   - The probe takes it after asserting `aria-checked === 'true'` and the server's saved value `true` (`internal-agents-probe.mjs:259–264`).
   - The switch's colour and knob are bound to the same `shown` value as `aria-checked` (`ShowInternalAgentsCard.vue`), so the image is the first frame of its 150 ms transition.
   - The DOM record and `IP-03c` are the proof. Not sent back.
-- User check needed: `No`.
+- User check needed: **corrected to `Yes` in DR-002** (the saved Task's "Done when" requires the user's check in the desktop app; the user waived it, see "User Waiver Of The Desktop-App Check (DR-002)"). The DR-001 text follows. `No`.
   - AC-005's verification intent says "Server + web tests; user check". API/E2E performed it on the real stack in a browser (IP-03/04, screenshots).
   - The Task's constraints, as recorded in `handoff-implementation.md` ("synthesized data only in tests; prove from a clean clone; no release unless asked; clean up"), do not ask the user to check personally.
   - The change is not released, so the user's own app does not have it yet.
@@ -145,10 +145,24 @@ Recorded after the merge in "Finalization Record" below.
 
 ## Final Status
 
-- Verification complete: `Yes` (from the evidence; no user check required, with the AC-005 wording flagged to the Solution Designer)
+- Verification complete: `Yes` (from the evidence; the user's desktop-app check required by the Task was waived by the user in DR-002. DR-001 text: no user check required, with the AC-005 wording flagged to the Solution Designer)
 - Repository finalization complete: `Yes` (`e34321789d` on `personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (no release)
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after this record is pushed
+
+## User Waiver Of The Desktop-App Check (DR-002)
+
+- The Solution Designer's receipt check (2026-10-25, `receipt-verification.md` in `/Users/normy/autobyteus_org/autobyteus-delivery-records/internal-agents-receipt-20261025/`) blocked the DR-001 receipt with a Delivery Receipt Evidence Gap.
+  - The saved Task's "Done when", read with `get_project_task`, includes "the user has verified it in the desktop app".
+  - `handoff-implementation.md` had left that condition out, so DR-001 recorded no user check.
+- The delivery engineer asked the user to check in the desktop app or to waive the check. The user's replies in the delivery conversation:
+  - "so its done?" This was read as a question, not as a waiver.
+  - "Done when: who defined this? do you know that?" Delivery answered that it had only the Solution Designer's quote, that the Task was created by `/project_task_manager` for the user, and that it could not tell whether the user had asked for the condition.
+  - Then, verbatim: **"since you have evidences. then thats good , then its done"**.
+- Recorded as: **the user's explicit decision that the existing evidence is enough and the Task is done without the desktop-app check (waiver).** It is not recorded as a passed check: the user reported no observation in the desktop app.
+- Verification basis that therefore stands: DR-001's evidence judgement. All six critical acceptance criteria are proven, including the Agents page, featured picker, history and the "Internal" badge in a real browser on a real node (API-08, IP-01…05), and DEL-01 5/5.
+- Unobserved, by the user's decision: the change in the user's own desktop app. It is not released yet; it ships with the next release.
+- Result: the gap is resolved. Final status below is unchanged: finalization `e34321789d`, no release, cleanup done.
