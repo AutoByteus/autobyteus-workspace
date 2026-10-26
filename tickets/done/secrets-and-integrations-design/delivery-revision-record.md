@@ -18,7 +18,7 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `67994daba0` → `2c67d4b4c2`, resolving 2 doc conflicts. Builds, typecheck, server unit, MCP and secret e2e, the matrix AGY cell and the web MCP specs pass. Three pre-existing test files fail identically on `personal` (FU-008, FU-009).
-- Verification and finalization state: verified from the evidence, no user check needed. Secret Gate: 14 false positives, confirmed by shape and allowlisted narrowly; then pass. Finalization per `RELEASE.md` (see the report).
+- Verification and finalization state: verified from the evidence, no user check needed. Secret Gate: 14 false positives, confirmed by shape and allowlisted narrowly; then pass. Ticket branch `8ab233885c` pushed; merged `--no-ff` into `personal` as `9eda0fdb75` (`67994daba0..9eda0fdb75`). Beta `v1.5.9-beta.10` published: release commit `0fd9ca4b63`, 4/4 workflows, 17/17 assets, Docker `:1.5.9-beta.10` and `:beta`. Worktree and local branches removed after the record push.
 - Terminal return to the Solution Designer: `Sent` after finalization, the beta and cleanup
 - Terminal return message/reference: the DR-001 message to `/software_engineering_team/solution_designer`
 - Why this baseline was recorded: first completed delivery result

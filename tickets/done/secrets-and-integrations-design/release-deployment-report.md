@@ -67,7 +67,7 @@ Repository finalization of `codex/secrets-and-integrations-design` into `origin/
 - One Codex matrix cell (API-02) ended with its Task `TODO`. Its vault-related checks (env, cwd, the HTTP credential, cleanup) passed, and 5 of 5 reruns passed fully (FU-007). It does not count against this change.
 - More evidence requested: `None`
 - User check needed: `No`
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `Not needed` (target unchanged after verification)
 
 ## Secret Gate
 
@@ -98,20 +98,57 @@ Repository finalization of `codex/secrets-and-integrations-design` into `origin/
 
 ## Version / Tag / Release Commit
 
-- pending
+- Version: `1.5.9-beta.10` (`python3 scripts/release_versions.py next-beta`; the next beta after `v1.5.9-beta.9`)
+- Checks before tagging, on the merged `personal` state: `check_licensing.py` consistent; `check_repository_artifact_hygiene.py` passed (including tracked imports); `scripts/check_secrets.sh v1.5.9-beta.9..HEAD`: 36 commits, `PASS`
+- Release commit: `0fd9ca4b63` "chore(release): bump workspace release version to 1.5.9-beta.10" (`autobyteus-web/package.json`), on `finalize/secrets-and-integrations-design` on top of the merge `9eda0fdb75`
+- Tag: annotated `v1.5.9-beta.10` → `0fd9ca4b63`
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/secrets-and-integrations-design --no-push`, after removing the untracked `*/dist/` folders (clean worktree)
 
 ## Repository Finalization
 
-- pending
+- Bootstrap context source: `handoff.md` (finalization target `origin/personal`) and `RELEASE.md`
+- Ticket branch: `codex/secrets-and-integrations-design`
+- Ticket branch commit result: `8ab233885c` "docs(delivery): sync docs and archive autobyteus-244 MCP secrets in the vault (DR-001)". 102 tracked ticket files; longest ticket path 112 characters; hygiene and licensing checks passed
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD`, 19 commits, `PASS` (after the false-positive entries; see Secret Gate)
+- Ticket branch push result: `origin/codex/secrets-and-integrations-design` → `8ab233885c` (new remote branch; the first push ever)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `67994daba0`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/secrets-and-integrations-design` from `origin/personal` @ `67994daba0`, in the ticket worktree
+- Merge into target result: `git merge --no-ff` → `9eda0fdb75`; tree identical to the ticket branch; hygiene, licensing and `scripts/check_secrets.sh` (merged state) all pass
+- Push target branch result: fetched first (unchanged); `67994daba0..9eda0fdb75`; then the release commit `9eda0fdb75..0fd9ca4b63`. Both times `origin/personal` was checked unchanged first. This record is committed on top and pushed after a fresh fetch
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- pending
+- Applicable: `Yes` (beta)
+- Method: `Project Release Guide` (`RELEASE.md`, "Cutting The Release")
+- Method reference / command: see Version / Tag; `git push origin HEAD:personal`, then `git push origin v1.5.9-beta.10`
+- Pipelines triggered and their results (`gh run watch --exit-status`):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Server Docker Release | `40301178947` | success |
+| Android APK Release | `40301178782` | success |
+| iOS App Store Connect Release | `40301178829` | success |
+| Desktop Release | `40301178861` | success |
+
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.9-beta.10` is a pre-release with 17 assets: macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps (8), Linux x64 and ARM64 AppImages (2), Windows `.exe` (1), `latest*.yml` (4), Android APK and `.sha256` (2).
+  - Docker Hub `autobyteus/autobyteus-server:1.5.9-beta.10` and `:beta` share `sha256:6e01566d2f8d…`; `:latest` is unchanged (`sha256:ff6bf251b33b…`, 2026-10-22).
+  - The TestFlight upload succeeded (iOS workflow).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for the beta (GitHub generated notes); `release-notes.md` is archived for the next stable release
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design`
-- pending
+- Worktree cleanup result: `Completed` after the record push (`git worktree remove --force`; only untracked build output remained)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`codex/…` and `finalize/…` deleted once `origin/personal` contains them)
+- Remote branch cleanup result: `Not required` (merged `codex/*` branches stay on `origin`)
 
 ## Release Notes Summary
 
@@ -139,4 +176,11 @@ Repository finalization of `codex/secrets-and-integrations-design` into `origin/
 
 ## Final Status
 
-- pending
+- Verification complete (from the evidence, or the user's check where needed): `Yes`
+- Repository finalization complete: `Yes` (`9eda0fdb75`; release commit `0fd9ca4b63`; then this record)
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta `v1.5.9-beta.10` `Completed`: 4/4 workflows, 17/17 assets, Docker tags checked)
+- Applicable safe cleanup complete or not required: `Yes` (after the record push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record commit and cleanup
+- Terminal message/reference: the DR-001 message to `/software_engineering_team/solution_designer`
