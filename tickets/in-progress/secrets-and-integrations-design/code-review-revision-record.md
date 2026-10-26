@@ -8,6 +8,7 @@ The latest `code-review-report.md` (and, after API/E2E, `api-e2e-test-review-rep
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail | CR-001, CR-002, CR-003, CR-004 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, SR-008) | Fail | Pass | CR-001…CR-004 resolved |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-001) | N/A (first test review) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -69,3 +70,28 @@ None.
 - Material score or classification changes: average 9.2 → 9.4; Behavioral Fidelity 8.5 → 9.3; Cleanup Completeness 8.8 → 9.4
 - Recommended recipient: API/E2E Engineer (`/software_engineering_team/api_e2e_engineer`); informational notice to the Implementation Engineer
 - Remaining risks or uncertainty: review state is per device (accepted); desktop and Linux checks are left for API/E2E
+
+### CRR-003 — Proportional test-code review after API/E2E pass: no durable test changes
+
+- Canonical review report updated: `tickets/in-progress/secrets-and-integrations-design/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-001; API-R01, API-01…API-09)
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A (first test review; source review CRR-002 Pass)
+- Current authoritative result: `Not Applicable`. Commit `1e8da86930` changes only ticket files; the temporary diagnostic was reverted and never committed.
+- What changed in the review result and why: no durable test file was added, updated or removed. The decision to add none is consistent with the existing durable e2e and specs.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None. O-1 is a product question for the Solution Designer, not a test finding. FU-007 was added by API/E2E.
+- Material score or classification changes: None
+- Recommended recipient: Delivery Engineer (`/software_engineering_team/delivery_engineer`)
+- Remaining risks or uncertainty: Windows not covered; FU-007 (one unreproduced Codex matrix result)
