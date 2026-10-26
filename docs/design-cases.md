@@ -75,7 +75,8 @@ Principle 1.
 - **Again in agent-input-delivery-simplification (ARCH-REV-003 AR3-NB-002; prerequisite ticket DI-001):**
   - The design said package creation on the first message happens in the "standalone/Org" coordinators; only the standalone coordinator does it. Fix: the claim was corrected against `standalone-root-persistence-coordinator.ts`.
   - Earlier, in `delegated-team-member-lazy-activation`, an event was declared to have "no consumer" from a string search. Its consumer was an un-named fall-through branch that turned it into the member's error card. Fix: check consumers by type and exhaustiveness, and give the branch a name with an exhaustive check.
-- **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made.
+- **Again in autobyteus-244 (MCP secrets):** the Solution Designer told the user that each run's MCP server gets its own workspace folder (`AUTOBYTEUS_AGENT_WORKSPACE`), because `McpServerInstanceManager` had `setWorkspacePathProvider` and `applyWorkspaceEnv`. Nothing called `setWorkspacePathProvider`, so the claim was false. Fix: the claim was corrected, and the dead workspace code was removed in this change. Lesson: before stating what the product does, find the caller, not only the function.
+- **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made. A product behavior stated from a function, without a caller.
 
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004)
 

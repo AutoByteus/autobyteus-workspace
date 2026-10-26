@@ -36,11 +36,15 @@ autobyteus-web/
 │   ├── McpManagementTabs.vue           # MCP Servers / MCP Gateway tab switcher
 │   ├── McpGatewayPanel.vue             # General MCP gateway endpoint and client config
 │   ├── McpServerList.vue               # MCP servers listing
-│   ├── McpServerCard.vue               # Individual server display
+│   ├── McpSecretMoveBanner.vue         # "Review and move to vault" banner and dialog
+│   ├── McpServerCard.vue               # Individual server display ("needs secret")
 │   ├── McpServerFormModal.vue          # Add/edit MCP server form
+│   ├── McpConfigRows.vue               # Env and header rows with lock toggles (shared)
 │   └── McpBulkImportView.vue           # JSON bulk import view
 ├── stores/
 │   └── toolManagementStore.ts          # Tools and MCP state management
+├── utils/mcp/
+│   └── mcpConfigRows.ts                # Row model: rule matching, keep markers, inputs
 └── graphql/
     ├── queries/toolQueries.ts          # Tool fetch queries
     ├── queries/mcpServerQueries.ts     # MCP server queries
@@ -153,15 +157,23 @@ interface McpServer {
   // STDIO-specific
   command?: string;
   args?: string[];
-  env?: Record<string, string>;
+  env?: McpConfigEntry[];
   cwd?: string;
 
   // HTTP-specific
   url?: string;
-  token?: string;
-  headers?: Record<string, string>;
+  tokenState?: McpSecretState | null; // null = no token; the value is never returned
+  headers?: McpConfigEntry[];
 }
+
+// `value` only for a plain value of a field that is not always secret.
+interface McpConfigEntry { name: string; value: string | null; state: McpSecretState }
+type McpSecretState = "PLAIN" | "CONFIGURED" | "MISSING" | "VAULT_UNAVAILABLE";
 ```
+
+Secret values (MCP secrets) live in the server's vault, and `mcps.json` holds a
+secret reference in their place. The web never receives a secret's value. See
+[MCP Server Management § Secret Values](../../autobyteus-server-ts/docs/modules/mcp_server_management.md#secret-values).
 
 Discovered MCP tools are registered in the backend tool registry as MCP-origin
 tools. When an agent definition selects those registered tool names, the native
@@ -186,6 +198,8 @@ interface ToolManagementState {
   loading: boolean;
   error: any;
   previewResult: PreviewResult | null;
+  secretSuggestionRule: McpSecretSuggestionRule | null; // read from the server, never defined here
+  secretMoveCandidates: McpSecretMoveCandidate[];
 }
 ```
 
@@ -202,6 +216,9 @@ interface ToolManagementState {
 | `deleteMcpServer(serverId)`                   | Remove MCP server                    |
 | `discoverAndRegisterMcpServerTools(serverId)` | Sync tools from server               |
 | `importMcpServerConfigs(json)`                | Bulk import from JSON string         |
+| `fetchMcpSecretSuggestionRule()`              | Read the server's secret suggestion rule once |
+| `fetchMcpSecretMoveCandidates()`              | Plain values that look like secrets (refreshed with the server list) |
+| `moveMcpSecretsToVault(selection)`            | Move selected plain values to the vault, then refresh |
 | `reloadToolSchema(toolName)`                  | Refresh tool schema from backend     |
 
 ## Core Components
@@ -268,8 +285,21 @@ Full-featured MCP server configuration:
 - JSON tab: Raw standard `mcpServers` JSON input for advanced users
 - Transport type toggle (STDIO / HTTP)
 - STDIO config: command, args, env vars, working directory
-- HTTP config: URL and token (with a hint that it is sent as a Bearer token);
-  headers through the JSON tab
+- HTTP config: URL, token (with a hint that it is sent as a Bearer token) and
+  header rows
+- Secret values (`McpConfigRows.vue`, shared by env and header rows): each row
+  has a lock toggle. A locked row's value is stored in the vault. The server's
+  secret suggestion rule pre-locks a new row as the user types (until the user
+  sets the lock by hand); the token and an `Authorization` header are always
+  locked. A stored secret is never shown: its row starts empty, reads "Stored in
+  the vault", keeps the stored value when left empty and replaces it when a new
+  value is typed. The row says "Needs secret" when the entry is missing or the
+  vault is unavailable. A stored plain value the rule matches reads "Looks like a
+  secret · Move to vault", and an always-secret field stored plain reads
+  "Stored as plain text · … Move to vault"; the per-row move uses the same move
+  as the banner (backup first). A stored token can be kept, replaced or removed.
+  The env hint states that a stdio server still receives its secrets in its
+  environment.
 - Server preview before saving
 - Tool discovery after save
 
@@ -308,6 +338,13 @@ JSON View supports both explicit and inferred transport:
 - accepted aliases include `transportType` / `transport_type` and
   `toolNamePrefix` / `tool_name_prefix`
 
+The JSON View shows a stored value it cannot show as a **keep marker**,
+`{"stored": "vault"}` or `{"stored": "plain"}`: leaving the marker keeps what is
+stored, a string in its place is a new value. A string under an always-secret
+field, or under a row locked on the Form tab, is stored as a secret. When the
+JSON adds a new value the rule matches, Save switches to the Form View with that
+row locked so the user reviews it, and saves on the next click.
+
 **Apply JSON to Form** is only a conversion helper for users who want to switch
 from raw JSON into guided editing. It is not required before previewing or
 saving from JSON View. Disk persistence remains the existing backend-owned
@@ -326,6 +363,21 @@ Import multiple MCP servers from JSON:
   reason (reasons name fields, never env, header or token values), and the view stays open so they can be fixed.
 - The server list refreshes when at least one entry was imported; the view returns to the list only when all entries
   were imported. The toast tells full, partial and no import apart.
+- Values the secret rule matches (and the token or an `Authorization` header) are stored in the vault; the result
+  lists them ("These values were stored in the vault"), and a full import's toast names them. Import takes values: an
+  entry holding a secret reference is reported as failed.
+
+### McpSecretMoveBanner.vue
+
+Shown above the server list while plain values look like secrets ("N values look like secrets but are stored as
+plain text → Review and move to vault"). The dialog lists each candidate by server, field and why it matched (no
+value), the user unticks rows, and "Move to vault" moves the rest. The result names the backup of the previous
+`mcps.json` (it holds the plain values; the user can delete it), any values that were skipped, and servers whose
+tools could not be registered after the move. Nothing moves without the user.
+
+### McpServerCard.vue
+
+Shows "Needs secret: <fields>" when an env or header entry, or the token, is `MISSING` or `VAULT_UNAVAILABLE`.
 
 ## GraphQL API
 
@@ -375,7 +427,7 @@ query GetMcpServers {
       toolNamePrefix
       command
       args
-      env
+      env { name value state }
       cwd
     }
     ... on StreamableHttpMcpServerConfig {
@@ -384,11 +436,15 @@ query GetMcpServers {
       enabled
       toolNamePrefix
       url
-      token
-      headers
+      tokenState
+      headers { name value state }
     }
   }
 }
+
+# The secret suggestion rule, and the plain values offered for the move
+query GetMcpSecretSuggestionRule { mcpSecretSuggestionRule { nameKeywords valuePrefixes alwaysSecretFields } }
+query GetMcpSecretMoveCandidates { mcpSecretMoveCandidates { serverId field matchedBy } }
 
 # Preview server tools before saving
 query PreviewMcpServerTools($input: McpServerInput!) {
@@ -493,7 +549,7 @@ For MCP servers that run as local processes:
 | --------- | ------------------------------------------------ |
 | `command` | Executable path (e.g., `npx`, `python`)          |
 | `args`    | Command arguments (e.g., `["-m", "mcp_server"]`) |
-| `env`     | Environment variables                            |
+| `env`     | Environment variables: rows `{name, secret, value}` (`secret` without a `value` keeps the stored one) |
 | `cwd`     | Working directory                                |
 
 ### Streamable HTTP Transport
@@ -503,15 +559,15 @@ For MCP servers accessed over HTTP:
 | Field     | Description                                                              |
 | --------- | ------------------------------------------------------------------------ |
 | `url`     | Server endpoint URL                                                      |
-| `token`   | Optional token, sent as `Authorization: Bearer <token>`; blank means none |
-| `headers` | Optional headers, sent unchanged on every request (e.g. `Authorization: Basic …`) |
+| `token`   | Optional token, sent as `Authorization: Bearer <token>`: input `{ value }` replaces it, `{ keep: true }` keeps the stored one, absent means none |
+| `headers` | Optional header rows `{name, secret, value}`, sent on every request (e.g. `Authorization: Basic …`) |
 
 The backend sends these credentials on every request to the server
 (initialize, tool listing, preview and tool calls). A server with both a
 `token` and an `Authorization` header (any letter case) is rejected on save,
-preview and import; use one of the two. The Form View has no headers editor:
-the Token field's hint points users to the JSON View for other schemes, and
-switching from Form View to JSON View shows and keeps the saved headers. See
+preview and import; use one of the two. The Token field's hint points users to
+an `Authorization` header row for other schemes. Both are always secret, stored
+in the vault. See
 [MCP Server Management](../../autobyteus-server-ts/docs/modules/mcp_server_management.md#remote-streamable-http-server-credentials).
 
 ## Related Documentation
