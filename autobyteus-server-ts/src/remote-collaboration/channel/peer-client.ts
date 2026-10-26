@@ -9,6 +9,7 @@ import type {
   RemoteRunObservationStream,
   RemoteRunObserver,
   RemoteRunSummaries,
+  RemoteAgentLaunch,
   RemoteStartedRun,
   RemoteStartedRunRef,
   RemoteTargetRoot,
@@ -19,7 +20,9 @@ import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
-import { localRefusalText, peerRefusalText, REMOTE_REFUSAL } from "../domain/remote-refusals.js";
+import { localRefusalText, peerRefusalText, REMOTE_REFUSAL, type PeerRefusalRouting } from "../domain/remote-refusals.js";
+import { parseLaunchConfigurationSource } from "../../run-history/store/launch-configuration-source-schema.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import {
   REMOTE_AGENT_PROJECTION_PATH,
   REMOTE_AVAILABILITY_PATH,
@@ -42,6 +45,11 @@ import { transportFailureReason, type TransportFailureReason } from "./transport
 
 /** QR-102: a call to a peer answers or is refused within this bound, under the runtimes' tool-call timeouts (A-11). */
 export const PEER_REQUEST_TIMEOUT_MS = 20_000;
+/**
+ * autobyteus-32 QR-001: the start request gets its own bound, so the peer's routing (≤ 40 s) and its start fit inside it,
+ * under the runtimes' tool-call time-outs (Codex 60 s).
+ */
+export const PEER_START_REQUEST_TIMEOUT_MS = 50_000;
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Pick<Response, "ok" | "status" | "json">>;
 
@@ -53,8 +61,25 @@ const nonEmpty = (value: unknown): value is string => typeof value === "string" 
  * What the peer started, read strictly from its accepted answer (autobyteus-247 G-7): an Agent run, or a Team run
  * whose coordinator is one of its members. Anything else is `null` (a malformed answer).
  */
+/** The peer's launches, read strictly: each agent's address, runtime, model and a valid launch source; null when malformed. */
+const launchesOf = (value: unknown): readonly RemoteAgentLaunch[] | null => {
+  if (!Array.isArray(value)) return null;
+  try {
+    return Object.freeze(value.map((item: unknown, index): RemoteAgentLaunch => {
+      const entry = item as Record<string, unknown> | null;
+      if (!entry || !nonEmpty(entry.address) || !nonEmpty(entry.runtimeKind) || !nonEmpty(entry.llmModelIdentifier)) throw new Error("launch");
+      return Object.freeze({ address: entry.address, runtimeKind: entry.runtimeKind, llmModelIdentifier: entry.llmModelIdentifier,
+        source: parseLaunchConfigurationSource(entry.source, `launches[${index}].source`) });
+    }));
+  } catch {
+    return null;
+  }
+};
+
 const startedRunOf = (answer: PeerAnswer): Exclude<RemoteStartedRun, { accepted: false }> | null => {
-  if (answer.kind === "agent") return nonEmpty(answer.agentRunId) ? Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId: answer.agentRunId }) : null;
+  const launches = launchesOf(answer.launches);
+  if (!launches) return null;
+  if (answer.kind === "agent") return nonEmpty(answer.agentRunId) ? Object.freeze({ accepted: true as const, kind: "agent" as const, agentRunId: answer.agentRunId, launches }) : null;
   if (answer.kind !== "agent_team" || !nonEmpty(answer.teamRunId) || !nonEmpty(answer.coordinatorAddress) || !Array.isArray(answer.members)) return null;
   const members = answer.members.map((member: unknown) => {
     const entry = member as { address?: unknown; agentRunId?: unknown } | null;
@@ -62,7 +87,7 @@ const startedRunOf = (answer: PeerAnswer): Exclude<RemoteStartedRun, { accepted:
   });
   if (!members.length || members.some((member) => member === null) || !members.some((member) => member!.address === answer.coordinatorAddress)) return null;
   return Object.freeze({ accepted: true as const, kind: "agent_team" as const, teamRunId: answer.teamRunId, coordinatorAddress: answer.coordinatorAddress,
-    members: Object.freeze(members as Readonly<{ address: string; agentRunId: string }>[]) });
+    members: Object.freeze(members as Readonly<{ address: string; agentRunId: string }>[]), launches });
 };
 
 const isKind = (value: unknown): value is "agent" | "agent_team" => value === "agent" || value === "agent_team";
@@ -133,15 +158,18 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   }
 
   async startDelegatedRun(input: Readonly<{
-    nodeId: string; address: string; delegatorAgentRunId: string; coordinatingRun: TaskAgentCoordinatingRun;
+    nodeId: string; address: string; delegatorAgentRunId: string; coordinatingRun: TaskAgentCoordinatingRun; work: DelegationWork;
   }>): Promise<RemoteStartedRun> {
     return this.call(input.nodeId, REMOTE_DELEGATED_RUNS_PATH, (envelope): StartDelegatedRunRequest => ({
       ...envelope,
       address: input.address,
       delegator: { agentRunId: input.delegatorAgentRunId },
       coordinatingRun: { kind: input.coordinatingRun.kind, runId: input.coordinatingRun.runId },
+      task: { text: input.work.text, title: input.work.task.title, taskKey: input.work.task.taskKey,
+        projectId: input.work.task.projectId, taskId: input.work.task.taskId },
     }), "did not answer in time", (answer, peer) => startedRunOf(answer)
-      ?? refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the run it started")));
+      ?? refusal(REMOTE_REFUSAL.PEER_UNREACHABLE, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_UNREACHABLE, "it answered without the run it started")),
+    PEER_START_REQUEST_TIMEOUT_MS);
   }
 
   /** autobyteus-261: whether the peer takes this node's requests now (accepted), or the refusal that says why not. */
@@ -255,6 +283,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     body: (envelope: Readonly<{ fromNodeId: string; toNodeId: string }>) => object,
     timeoutText: string,
     accepted: (answer: PeerAnswer, peer: PeerNode) => TResult | PeerRefusal,
+    timeoutMs: number = this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS,
   ): Promise<TResult | PeerRefusal> {
     if (!this.dependencies.capability.isEnabled()) return refusal(REMOTE_REFUSAL.OFF, localRefusalText.off());
     const peer = await this.dependencies.peers.findByNodeId(nodeId);
@@ -278,7 +307,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId })),
-      });
+      }, timeoutMs);
       if (await isNodeIdentityPendingAnswer(response)) {
         return refusal(REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, peerRefusalText(peer.name, REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, ""));
       }
@@ -294,13 +323,13 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     if (answer.accepted !== true) {
       const code = typeof answer.code === "string" ? answer.code : REMOTE_REFUSAL.BAD_REQUEST;
       return refusal(code, peerRefusalText(peer.name, code, typeof answer.message === "string" ? answer.message : "no reason given",
-        refusalTargetOf(answer.target)));
+        refusalTargetOf(answer.target), refusalRoutingOf(answer)));
     }
     return accepted(answer, peer);
   }
 
-  private fetchJson(url: string, init: RequestInit) {
-    const timeout = AbortSignal.timeout(this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS);
+  private fetchJson(url: string, init: RequestInit, timeoutMs: number = this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS) {
+    const timeout = AbortSignal.timeout(timeoutMs);
     return (this.dependencies.fetch ?? fetch)(url, { ...init, signal: timeout });
   }
 }
@@ -314,6 +343,14 @@ const isNodeIdentityPendingAnswer = async (response: Pick<Response, "json" | "st
   // Only a 503 is read here; a non-OK answer's body is not read again.
   const answer = await response.json().catch(() => null) as { code?: unknown } | null;
   return answer?.code === REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED;
+};
+
+/** The peer's Model Routing state and failed agent on a refusal (autobyteus-32), read leniently: a malformed one is left out. */
+const refusalRoutingOf = (answer: PeerAnswer): PeerRefusalRouting => {
+  const state = answer.modelRouting as { state?: unknown; reason?: unknown } | undefined;
+  const modelRouting = state?.state === "off" ? { state: "off" as const }
+    : state?.state === "not_active" && nonEmpty(state.reason) ? { state: "not_active" as const, reason: state.reason } : undefined;
+  return { ...(modelRouting ? { modelRouting } : {}), ...(nonEmpty(answer.agentName) ? { agentName: answer.agentName } : {}) };
 };
 
 const refusal = (code: string, message: string, reason?: TransportFailureReason): PeerRefusal =>

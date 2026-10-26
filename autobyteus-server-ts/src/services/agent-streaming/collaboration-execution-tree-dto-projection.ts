@@ -31,11 +31,13 @@ const projectLaunch = (value: AgentLaunchConfiguration): TaskAgentExecutionSourc
     workspaceRootPath: value.workspaceRootPath,
   });
 const projectHandoff = ({ from, to, rules }: CollaborationHandoff) => ({ from, to, rules: [...rules] });
-const projectSource = (value: LaunchConfigurationSource): CollaborationLaunchConfigurationSourceDto => ({
-  origin: value.origin,
-  fallbacks: value.fallbacks.map(({ layer, runtimeKind, llmModelIdentifier, reason, detail }) =>
-    ({ layer, runtimeKind, llmModelIdentifier, reason, detail })),
-});
+const projectSource = (value: LaunchConfigurationSource): CollaborationLaunchConfigurationSourceDto => {
+  const fallbacks = value.fallbacks.map(({ layer, runtimeKind, llmModelIdentifier, reason, detail }) =>
+    ({ layer, runtimeKind, llmModelIdentifier, reason, detail }));
+  return value.origin === "model_router"
+    ? { origin: value.origin, fallbacks, choiceReason: value.choiceReason, taskKind: value.taskKind }
+    : { origin: value.origin, fallbacks };
+};
 /** An optional launch source, emitted only when recorded. */
 const projectOptionalSource = <K extends "launchSource" | "defaultLaunchSource">(
   value: Partial<Record<K, LaunchConfigurationSource>>,

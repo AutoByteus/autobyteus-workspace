@@ -11,6 +11,8 @@ import {
 } from "./workspace-registry-store.js";
 import { WorkspaceRemovalGuard } from "./workspace-removal-guard.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
+import { InternalWorkspaces } from "./internal-workspaces.js";
+import { readShowInternalAgents } from "../config/show-internal-agents-setting.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -31,6 +33,7 @@ export class WorkspaceManager {
   private activeWorkspaces: Map<string, FileSystemWorkspace> = new Map();
   private readonly workspaceRegistryStore: WorkspaceRegistryStore;
   private readonly workspaceRemovalGuard: WorkspaceRemovalGuard;
+  private readonly internalWorkspaces = new InternalWorkspaces();
 
   static getInstance(): WorkspaceManager {
     if (!WorkspaceManager.instance) {
@@ -152,13 +155,20 @@ export class WorkspaceManager {
     return entries.map((entry) => this.workspaceFromRegistryEntry(entry));
   }
 
+  /**
+   * The Workspaces list: registered and active workspaces, except internal workspaces while internal agents are hidden
+   * (autobyteus-32 REQ-008; the autobyteus-308 setting, read on each list). Opening a run by ID still resolves its
+   * workspace (`getOrCreateWorkspace`).
+   */
   async listVisibleWorkspaces(): Promise<FileSystemWorkspace[]> {
     const registeredWorkspaces = await this.listRegisteredFilesystemWorkspaces();
     const registeredIds = new Set(registeredWorkspaces.map((workspace) => workspace.workspaceId));
     const transientActiveWorkspaces = Array.from(this.activeWorkspaces.values()).filter(
       (workspace) => !registeredIds.has(workspace.workspaceId),
     );
-    return [...registeredWorkspaces, ...transientActiveWorkspaces];
+    const all = [...registeredWorkspaces, ...transientActiveWorkspaces];
+    if (readShowInternalAgents()) return all;
+    return all.filter((workspace) => !this.internalWorkspaces.isInternal(workspace.getBasePath()));
   }
 
   /** Pure registration snapshot: no workspace activation, filesystem checks or temp cleanup. */

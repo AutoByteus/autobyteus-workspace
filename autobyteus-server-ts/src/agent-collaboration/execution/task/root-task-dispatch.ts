@@ -5,6 +5,11 @@ import type { TaskExecutionAssignmentTarget, TaskExecutionResourcePort } from ".
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { asTaskDelegationError } from "./root-task-execution-resource-scope.js";
 import {
+  decisionRecordsOf, type DelegationTaskIdentity, type DelegationWork, type RoutingDecisionDraft,
+} from "../../../model-routing/domain/model-routing-types.js";
+import { findRoutingDecisionRecorder } from "../../../model-routing/domain/routing-decision-recorder-binding.js";
+import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
+import {
   RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError, TaskDispatchIndeterminateError, delegatedCopyOf,
   type TaskCopyPlacementLaunchNotes, type TaskDelegationContext, type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
@@ -28,6 +33,8 @@ export async function dispatchTaskCopy<T extends TaskCopyPlacementLaunchNotes>(i
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
   context: TaskDelegationContext; placement: T; workPacket?: AgentInputUserMessage;
   join: TaskExecutionJoin; resources: TaskExecutionResourcePort;
+  /** The work and its Task, for the copy's decision records. */
+  delegation: DelegationWork;
   assertAdmitting(): void;
 }): Promise<TaskDelegationOutcome> {
   let plan: TaskExecutionActivationPlan<T> | null = null;
@@ -72,6 +79,11 @@ export async function dispatchTaskCopy<T extends TaskCopyPlacementLaunchNotes>(i
       accepted = true;
     }
     await input.resources.markStarted(exact.target.execution);
+    if (input.placement.routingDecision) {
+      await recordRoutingDecision(input.placement.routingDecision, input.context, {
+        ...input.delegation.task, taskId: input.delegation.task.taskId ?? link.taskId,
+      });
+    }
     const launchNotes = input.placement.launchNotes;
     return { delegated: true, copy: delegatedCopyOf(exact.target), ...(createdTaskId ? { taskId: createdTaskId } : {}),
       ...(launchNotes?.length ? { launchNotes } : {}) };
@@ -90,3 +102,21 @@ export async function dispatchTaskCopy<T extends TaskCopyPlacementLaunchNotes>(i
   }
 }
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
+
+/**
+ * The started copy's decision records (REQ-012), with the Task it serves (a Task with no Project created by this link
+ * gets its new ID). Recording never fails the delegation: a failed write is logged.
+ */
+const recordRoutingDecision = async (draft: RoutingDecisionDraft, context: TaskDelegationContext, task: DelegationTaskIdentity): Promise<void> => {
+  const recorder = findRoutingDecisionRecorder();
+  if (!recorder) return;
+  const identity = context.identity;
+  try {
+    await recorder.record(decisionRecordsOf(draft, {
+      recordedAt: new Date().toISOString(), task, delegatingRunId: identity.agentRunId,
+      delegatingAgentName: getAgentTeamAddressBasename(identity.memberAddress) ?? identity.agentRunId, fromNode: null,
+    }));
+  } catch (error) {
+    console.warn(`Model Routing: the decisions of copy ${draft.copyAddress} could not be recorded: ${errorMessage(error)}`);
+  }
+};

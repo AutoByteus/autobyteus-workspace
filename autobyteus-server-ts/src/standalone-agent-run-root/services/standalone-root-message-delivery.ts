@@ -18,7 +18,7 @@ import { delegateToResolvedTarget } from "../../agent-collaboration/execution/ta
 import { buildTaskAssigneeWorkPacket, buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import { remotePlacementWith, type RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -190,15 +190,19 @@ export class StandaloneRootMessageDelivery {
    * `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the
    * shared resolution, before any placement or Task link). The host is not a delegation placement.
    */
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+  async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteDelegation.delegate({ ...input, node: input.node },
-        (local, placement) => this.options.taskExecutions.delegateToNewCopy(context, local, placement));
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, async (local, target) => {
+        const work = await this.options.taskExecutions.prepareNewCopyWork(context, local);
+        return this.options.taskExecutions.dispatchNewCopy(context, work, remotePlacementWith(target, work.delegation));
+      });
     }
+    // DS-001: the work and its Task first, then the placement for that work, then the copy.
+    const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);
     return delegateToResolvedTarget(
-      () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address),
-      (placement) => this.options.taskExecutions.delegateToNewCopy(context, input, placement),
+      () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation),
+      (placement) => this.options.taskExecutions.dispatchNewCopy(context, work, placement),
     );
   }
 

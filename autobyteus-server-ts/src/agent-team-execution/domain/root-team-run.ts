@@ -40,7 +40,7 @@ import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
 import { RemoteTeamIdleShutdown } from "../services/remote-team-idle-shutdown.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
-import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import { RemoteDelegation, remotePlacementWith } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -322,10 +322,15 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, (local, placement) => this.taskExecutions.delegateToNewCopy(context, local, placement));
+        return this.remoteDelegation.delegate({ ...input, node: input.node }, async (local, target) => {
+          const work = await this.taskExecutions.prepareNewCopyWork(context, local);
+          return this.taskExecutions.dispatchNewCopy(context, work, remotePlacementWith(target, work.delegation));
+        });
       }
-      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
-        this.taskExecutions.delegateToNewCopy(context, input, placement));
+      // DS-001: the work and its Task first, then the placement for that work, then the copy.
+      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
+      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation), (placement) =>
+        this.taskExecutions.dispatchNewCopy(context, work, placement));
     });
   }
 

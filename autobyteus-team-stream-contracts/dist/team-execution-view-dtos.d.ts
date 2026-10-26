@@ -26,15 +26,23 @@ export type ConfiguredAgentExecutionDto = Readonly<{
  * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
  * records written before sources existed ("not recorded").
  */
+export type LaunchConfigurationFallbackDto = Readonly<{
+    layer: "agent_default" | "team_default" | "model_router";
+    runtime_kind: string | null;
+    llm_model_identifier: string | null;
+    reason: "incomplete" | "runtime_unavailable" | "signed_out" | "model_unavailable" | "blocked" | "model_settings_invalid" | "router_not_active" | "router_failed";
+    detail: string;
+}>;
 export type LaunchConfigurationSourceDto = Readonly<{
     origin: "agent_default" | "team_default" | "inherited" | "configured";
-    fallbacks: readonly Readonly<{
-        layer: "agent_default" | "team_default";
-        runtime_kind: string | null;
-        llm_model_identifier: string | null;
-        reason: "incomplete" | "runtime_unavailable" | "model_unavailable" | "model_settings_invalid";
-        detail: string;
-    }>[];
+    fallbacks: readonly LaunchConfigurationFallbackDto[];
+}>
+/** A choice of the node's Model Router (autobyteus-32): its one-sentence reason and task kind. */
+ | Readonly<{
+    origin: "model_router";
+    fallbacks: readonly LaunchConfigurationFallbackDto[];
+    choice_reason: string;
+    task_kind: string;
 }>;
 /**
  * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice

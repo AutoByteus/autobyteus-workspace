@@ -40,13 +40,16 @@ export interface TaskExecutionResourcePort {
    * its description and files. Unknown, DONE, CANCELLED or unreadable Tasks, and Tasks with no Project, reject.
    */
   resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string;
-    /** The Project the Task belongs to (it names the Task in the worker's first message). */ projectId: string; description: string;
+    /** The Project the Task belongs to (it names the Task in the worker's first message). */ projectId: string;
+    /** Its title (routing requests and decision records name the Task by it). */ title: string; description: string;
     /** The Task's comment texts, oldest first (they follow the description in the delegated work). */ comments: string[]; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it
    * joined. An `adHocTask` assignment first creates that Task (no Project) and returns its new ID.
    */
   linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<Readonly<{ taskId: string }>>;
+  /** A Task's identity by its ID (a task agent's own Task, when it delegates part of its work; autobyteus-32 D1). */
+  describeTask(taskId: string): Promise<DelegatedTaskIdentityView>;
   markStarted(execution: TaskExecutionReference): Promise<void>;
   markFailed(execution: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
   /**
@@ -97,6 +100,9 @@ export interface TaskExecutionResourcePort {
    */
   taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void;
 }
+
+/** A Task's key and Project (both null for a Task with no Project) and its title (else its description's first line). */
+export type DelegatedTaskIdentityView = Readonly<{ taskKey: string | null; projectId: string | null; title: string }>;
 
 /** A reactivation request: the assignment's agent run and the run asking for it. */
 export type TaskExecutionReopenInput = Readonly<{ execution: TaskExecutionReference; requestedBy: string }>;

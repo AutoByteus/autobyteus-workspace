@@ -64,3 +64,12 @@ export type AvailableAgentRuntimesReport = Readonly<{
   checkedAt: string;
   agentRuntimes: readonly AvailableAgentRuntimeEntry[];
 }>;
+
+/**
+ * The report and the runtimes the same read found installed but signed out (they are left out of the report). Read by
+ * the launch usability rule (autobyteus-32 U3, U4b); never part of a tool or page answer.
+ */
+export type NodeRuntimesReading = Readonly<{
+  report: AvailableAgentRuntimesReport;
+  signedOutRuntimes: ReadonlySet<string>;
+}>;

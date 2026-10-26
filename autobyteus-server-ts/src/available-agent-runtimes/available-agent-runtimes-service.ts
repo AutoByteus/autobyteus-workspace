@@ -15,7 +15,7 @@ import type { AgentRuntimeStrategy, RuntimeClientHold } from "../runtime-managem
 import type { AgentRuntimeKind } from "../runtime-management/agent-runtimes/agent-runtime-types.js";
 import type {
   AutoByteusEntry, AutoByteusProviderEntry, AvailableAgentRuntimeEntry, AvailableAgentRuntimesReport, AvailableModel,
-  ExternalAgentRuntimeEntry, UnknownText, UsageLimitView,
+  ExternalAgentRuntimeEntry, NodeRuntimesReading, UnknownText, UsageLimitView,
 } from "./available-agent-runtimes-report.js";
 import { resolveLimitCoverage } from "./usage-limit-model-matching.js";
 import {
@@ -51,6 +51,10 @@ const RUNTIME_NAMES: Readonly<Record<AgentRuntimeKind, string>> = {
   [RuntimeKind.ANTIGRAVITY_CLI]: "Antigravity",
   [RuntimeKind.GROK_BUILD]: "Grok",
 };
+
+/** A runtime's display name ("Codex"); the runtime kind itself for AutoByteus or an unknown kind. */
+export const agentRuntimeDisplayName = (runtimeKind: string): string =>
+  runtimeKind === RuntimeKind.AUTOBYTEUS ? "AutoByteus" : RUNTIME_NAMES[runtimeKind as AgentRuntimeKind] ?? runtimeKind;
 
 /** Local model servers have no key: they are usable when they answer with models now. */
 const LOCAL_PROVIDERS: ReadonlySet<string> = new Set([LLMProvider.OLLAMA, LLMProvider.LMSTUDIO]);
@@ -151,7 +155,7 @@ export class AvailableAgentRuntimesService {
   private readonly caps: AvailableAgentRuntimesStepCaps;
   private readonly homeDirectory: string;
   /** The read in progress, shared by every caller until it and its client releases settle (single-flight, SR-006). */
-  private inProgress: Promise<AvailableAgentRuntimesReport> | null = null;
+  private inProgress: Promise<NodeRuntimesReading> | null = null;
 
   constructor(private readonly dependencies: AvailableAgentRuntimesServiceDependencies) {
     this.caps = dependencies.stepCaps ?? AVAILABLE_AGENT_RUNTIMES_STEP_CAPS;
@@ -164,7 +168,15 @@ export class AvailableAgentRuntimesService {
    * the one in progress until its client holds are released, so a following read never meets this read's closing
    * Codex client (CR-004).
    */
-  read(): Promise<AvailableAgentRuntimesReport> {
+  async read(): Promise<AvailableAgentRuntimesReport> {
+    return (await this.readWithSignIn()).report;
+  }
+
+  /**
+   * The same read, with the runtimes it found installed but signed out (left out of the report). The launch usability
+   * rule reads it for U3 "signed out" (autobyteus-32), so that fact is stated, never inferred from a runtime's absence.
+   */
+  readWithSignIn(): Promise<NodeRuntimesReading> {
     if (this.inProgress) return this.inProgress;
     const releases: Promise<void>[] = [];
     const answer = this.readOnce(releases);
@@ -175,13 +187,17 @@ export class AvailableAgentRuntimesService {
     return answer;
   }
 
-  private async readOnce(releases: Promise<void>[]): Promise<AvailableAgentRuntimesReport> {
+  private async readOnce(releases: Promise<void>[]): Promise<NodeRuntimesReading> {
     const checkedAt = new Date().toISOString();
+    const signedOut = new Set<AgentRuntimeKind>();
     const entries = await Promise.all([
-      ...this.dependencies.strategies.map((strategy) => this.readExternalRuntime(strategy, releases)),
+      ...this.dependencies.strategies.map((strategy) => this.readExternalRuntime(strategy, releases, signedOut)),
       this.readAutoByteus(),
     ]);
-    return { checkedAt, agentRuntimes: entries.filter((entry): entry is AvailableAgentRuntimeEntry => entry !== null) };
+    return {
+      report: { checkedAt, agentRuntimes: entries.filter((entry): entry is AvailableAgentRuntimeEntry => entry !== null) },
+      signedOutRuntimes: signedOut,
+    };
   }
 
   /**
@@ -192,6 +208,7 @@ export class AvailableAgentRuntimesService {
   private async readExternalRuntime(
     strategy: AgentRuntimeStrategy,
     releases: Promise<void>[],
+    signedOut: Set<AgentRuntimeKind>,
   ): Promise<ExternalAgentRuntimeEntry | null> {
     let executable: string;
     try {
@@ -204,7 +221,7 @@ export class AvailableAgentRuntimesService {
     if (!install.ok || install.value === null) return null;
     const hold = this.holdClient(strategy);
     try {
-      return await this.readInstalledRuntime(strategy, executable);
+      return await this.readInstalledRuntime(strategy, executable, signedOut);
     } finally {
       if (hold) releases.push(hold.release().catch(() => undefined));
     }
@@ -219,12 +236,19 @@ export class AvailableAgentRuntimesService {
     }
   }
 
-  private async readInstalledRuntime(strategy: AgentRuntimeStrategy, executable: string): Promise<ExternalAgentRuntimeEntry | null> {
+  private async readInstalledRuntime(
+    strategy: AgentRuntimeStrategy,
+    executable: string,
+    signedOut: Set<AgentRuntimeKind>,
+  ): Promise<ExternalAgentRuntimeEntry | null> {
     const kind = strategy.runtimeKind;
     const name = RUNTIME_NAMES[kind];
     const signIn = await runStep(this.caps.signInMs, (deadline) =>
       this.dependencies.signInReader.read(kind, { cwd: this.homeDirectory, deadline }));
-    if (signIn.ok && signIn.value.state === "signedOut") return null;
+    if (signIn.ok && signIn.value.state === "signedOut") {
+      signedOut.add(kind);
+      return null;
+    }
     const signInUnknown = !signIn.ok || signIn.value.state === "unknown";
     const [models, limits] = await Promise.all([
       runStep(this.caps.modelsMs, (deadline) =>

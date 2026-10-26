@@ -143,7 +143,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     expect(release).not.toHaveBeenCalled();
     expect(await resourcesFile(a.taskId)).toBe(bytes);
     expect(tasks.isOpen({ agentRunId: "before" })).toBe(false);
-    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, projectId, description: "A", comments: [], referenceFiles: [] });
+    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, projectId, title: a.title, description: "A", comments: [], referenceFiles: [] });
   });
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {

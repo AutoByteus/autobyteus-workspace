@@ -8,6 +8,8 @@ import { CollaboratorAdmission } from "./collaborator-admission.js";
 import { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
+import { LaunchUsabilityCheck } from "../../launch-preferences/launch-usability-check.js";
+import { NO_MODEL_ROUTING, type ModelRouterPort } from "../../model-routing/domain/model-routing-types.js";
 
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   agents: Pick<AgentDefinitionService, "getAllAgentDefinitions" | "getAgentDefinitionById">;
@@ -21,16 +23,23 @@ export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   isAgentHidden: (definition) => services.visibility.isHidden(definition),
 });
 
-/** Process wiring: one policy and one admission coordinator over the shared catalogs. */
+/**
+ * Process wiring: one policy and one admission coordinator over the shared catalogs. `modelRouter` is the node's Model
+ * Routing (the process composition binds it); a server that does not compose it passes `NO_MODEL_ROUTING`.
+ */
 export const createCollaboratorAdmission = (
   catalog: CollaboratorDefinitionCatalog,
   modelSelectionValidator: RunModelSelectionValidator,
   runtimeAvailability: Pick<RuntimeAvailabilityService, "getRuntimeAvailability">,
+  modelRouter: ModelRouterPort = NO_MODEL_ROUTING,
 ): CollaboratorAdmission =>
   new CollaboratorAdmission({
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
-    launches: new CollaboratorLaunchResolver({ availability: runtimeAvailability, validator: modelSelectionValidator }),
+    launches: new CollaboratorLaunchResolver({
+      usability: new LaunchUsabilityCheck({ availability: runtimeAvailability, validator: modelSelectionValidator }),
+      router: modelRouter,
+    }),
   });
 
 let processAdmission: CollaboratorAdmission | null = null;

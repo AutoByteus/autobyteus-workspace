@@ -4,6 +4,13 @@ import { createRootExecutionIdentity, createCollaborationMemberExecutionIdentity
 import type { RootTaskExecutionAdapter, TaskExecutionActivationPlan, TaskExecutionActivationOperation, RegisteredTaskActivation } from '../../../src/agent-collaboration/execution/task/root-task-execution-adapter.js';
 import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 
+/** `delegate_task` with an address through the lifecycle's two steps (DS-001): prepare the work, then dispatch it. */
+const delegateNew = async <T,>(
+  lifecycle: { prepareNewCopyWork(context: never, input: never): Promise<unknown>; dispatchNewCopy(context: never, work: never, placement: T): Promise<unknown> },
+  context: unknown, input: unknown, placement: T,
+): Promise<any> => lifecycle.dispatchNewCopy(context as never, await lifecycle.prepareNewCopyWork(context as never, input as never) as never, placement);
+
+
 const latch = () => { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; };
 type RootKind = 'agent' | 'agent_team' | 'agent_org';
 
@@ -65,7 +72,7 @@ function fixture(kind: RootKind) {
   /** DONE: the Task side commits closure, then asks this root to stop exactly the closed agent runs. */
   const done = async () => lifecycle.releaseTaskExecutions(resources.close('task-A'));
   return { root, member, resources, linkAtRegistration, adapter, lifecycle, operations, planned, preparation, seed, wait, done,
-    assign: () => lifecycle.delegateToNewCopy({ identity: manager }, { recipient_address: '/worker', task_id: 'task-A' }, 'placement') };
+    assign: () => delegateNew(lifecycle, { identity: manager }, { recipient_address: '/worker', task_id: 'task-A' }, 'placement') };
 }
 
 describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-register Task dispatch under a %s root', kind => {
@@ -126,9 +133,9 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const h = fixture(kind);
     await h.assign();
     const worker = { identity: h.member('copy-1', '/worker') };
-    await expect(h.lifecycle.delegateToNewCopy(worker, { recipient_address: '/sub', task_id: 'task-A' }, 'placement'))
+    await expect(delegateNew(h.lifecycle, worker, { recipient_address: '/sub', task_id: 'task-A' }, 'placement'))
       .rejects.toMatchObject({ code: 'TASK_AGENT_RESOURCE_OWNED_SENDER' });
-    expect(await h.lifecycle.delegateToNewCopy(worker, { recipient_address: '/sub', description: 'sub-work' }, 'placement')).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-2' } });
+    expect(await delegateNew(h.lifecycle, worker, { recipient_address: '/sub', description: 'sub-work' }, 'placement')).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-2' } });
     expect(h.resources.links[1]).toMatchObject({ role: 'delegated', creator: { agentRunId: 'copy-1' } });
     expect(h.resources.entry({ agentRunId: 'copy-2' })).toMatchObject({ taskId: 'task-A', start: 'started', open: true });
   });
@@ -136,7 +143,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
   it('a non-owned sender\'s description-only copy joins a new Task with no Project, returns its task_id, and DONE closes it with its sub-work', async () => {
     const h = fixture(kind);
     const manager = { identity: h.member('manager', '/manager') };
-    const result = await h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/reviewer', description: 'Review it' }, 'placement');
+    const result = await delegateNew(h.lifecycle, manager, { recipient_address: '/reviewer', description: 'Review it' }, 'placement');
     expect(result).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-1' }, taskId: 'ad_hoc_task_1' });
     expect(h.resources.links[0]).toMatchObject({ role: 'assigned', assignedBy: 'manager', adHocTask: { description: 'Review it', referenceFiles: [] },
       hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, execution: { agentRunId: 'copy-1' } });
@@ -144,7 +151,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ taskId: 'ad_hoc_task_1', start: 'started', open: true });
     // The copy is Task work now: its own description-only sub-work stays in that Task and carries no task_id (REQ-010).
     const copy = { identity: h.member('copy-1', '/reviewer') };
-    expect(await h.lifecycle.delegateToNewCopy(copy, { recipient_address: '/sub', description: 'sub-work' }, 'placement')).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-2' } });
+    expect(await delegateNew(h.lifecycle, copy, { recipient_address: '/sub', description: 'sub-work' }, 'placement')).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-2' } });
     expect(h.resources.entry({ agentRunId: 'copy-2' })).toMatchObject({ taskId: 'ad_hoc_task_1', role: 'delegated' });
     // DONE on that Task stops exactly its runs, and the closed copy no longer takes input.
     expect(await h.lifecycle.releaseTaskExecutions(h.resources.close('ad_hoc_task_1'))).toEqual([
@@ -158,8 +165,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const h = fixture(kind);
     expect(await h.assign()).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: 'copy-1' } });
     const manager = { identity: h.member('manager', '/manager') };
-    await h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/reviewer', description: 'Review it' }, 'placement');
-    await expect(h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/w', task_id: 'ad_hoc_task_1' }, 'placement'))
+    await delegateNew(h.lifecycle, manager, { recipient_address: '/reviewer', description: 'Review it' }, 'placement');
+    await expect(delegateNew(h.lifecycle, manager, { recipient_address: '/w', task_id: 'ad_hoc_task_1' }, 'placement'))
       .rejects.toMatchObject({ code: 'TASK_NOT_FOUND' });
     expect(h.resources.links).toHaveLength(2);
   });
@@ -167,16 +174,16 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
   it('a rejected description-only delegation creates no Task; a failure after the link returns no task_id (REQ-004)', async () => {
     const h = fixture(kind);
     const manager = { identity: h.member('manager', '/manager') };
-    await expect(h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/r', description: '  ' }, 'placement')).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
-    await expect(h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/r', description: 'x', reference_files: ['relative.md'] }, 'placement'))
+    await expect(delegateNew(h.lifecycle, manager, { recipient_address: '/r', description: '  ' }, 'placement')).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+    await expect(delegateNew(h.lifecycle, manager, { recipient_address: '/r', description: 'x', reference_files: ['relative.md'] }, 'placement'))
       .rejects.toMatchObject({ code: 'INVALID_REFERENCE_FILE' });
     vi.mocked(h.adapter.planActivation).mockRejectedValueOnce(new Error("Agent '/r' was not found."));
-    expect(await h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/r', description: 'x' }, 'placement'))
+    expect(await delegateNew(h.lifecycle, manager, { recipient_address: '/r', description: 'x' }, 'placement'))
       .toEqual({ delegated: false, message: "Agent '/r' was not found." });
     expect(h.resources.adHocTaskIds()).toEqual([]);
     vi.mocked(h.adapter.beginActivation).mockImplementationOnce(() => ({ cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })),
       prepare: vi.fn(async () => { throw new Error('preparation failed'); }) }) as never);
-    expect(await h.lifecycle.delegateToNewCopy(manager, { recipient_address: '/r', description: 'x' }, 'placement'))
+    expect(await delegateNew(h.lifecycle, manager, { recipient_address: '/r', description: 'x' }, 'placement'))
       .toEqual({ delegated: false, message: 'preparation failed' });
     // The linked copy is recorded failed under its (kept) Task, as for any linked dispatch failure.
     expect(h.resources.adHocTaskIds()).toEqual(['ad_hoc_task_1']);
@@ -187,7 +194,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const h = fixture(kind);
     await h.assign(); await h.done();
     const worker = { identity: h.member('copy-1', '/worker') };
-    const result = await h.lifecycle.delegateToNewCopy(worker, { recipient_address: '/sub', description: 'late' }, 'placement').catch(error => error);
+    const result = await delegateNew(h.lifecycle, worker, { recipient_address: '/sub', description: 'late' }, 'placement').catch(error => error);
     expect(result).toMatchObject({ code: 'TASK_AGENT_RESOURCE_CLOSED' });
     expect(h.adapter.beginActivation).toHaveBeenCalledTimes(1);
   });
@@ -198,13 +205,13 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const worker = { identity: h.member('copy-1', '/worker') };
     // Order 1: the link commits first, then DONE closes it.
     h.wait.prepare = true;
-    const first = h.lifecycle.delegateToNewCopy(worker, { recipient_address: '/sub', description: 'one' }, 'placement');
+    const first = delegateNew(h.lifecycle, worker, { recipient_address: '/sub', description: 'one' }, 'placement');
     await vi.waitFor(() => expect(h.resources.entry({ agentRunId: 'copy-2' })).toBeDefined());
     await h.done(); h.preparation.resolve();
     expect((await first).delegated).toBe(false);
     expect(h.resources.entry({ agentRunId: 'copy-2' })?.open).toBe(false);
     // Order 2: DONE first; the creator is read closed, nothing is linked.
-    await expect(h.lifecycle.delegateToNewCopy(worker, { recipient_address: '/sub', description: 'two' }, 'placement'))
+    await expect(delegateNew(h.lifecycle, worker, { recipient_address: '/sub', description: 'two' }, 'placement'))
       .rejects.toMatchObject({ code: 'TASK_AGENT_RESOURCE_CLOSED' });
     expect([...h.resources.entries.values()].every(entry => !entry.open)).toBe(true);
   });
@@ -212,13 +219,13 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
   it('damaged Task data rejects description-only delegation by a non-owned sender before any planning (Q-3)', async () => {
     const h = fixture(kind);
     h.resources.damaged.add('task-B');
-    await expect(h.lifecycle.delegateToNewCopy({ identity: h.member('manager', '/manager') }, { recipient_address: '/worker', description: 'plain' }, 'placement'))
+    await expect(delegateNew(h.lifecycle, { identity: h.member('manager', '/manager') }, { recipient_address: '/worker', description: 'plain' }, 'placement'))
       .rejects.toMatchObject({ code: 'TASK_AGENT_RESOURCES_UNAVAILABLE' });
     expect(h.adapter.planActivation).not.toHaveBeenCalled();
     // A readable Task still assigns normally.
     expect(await h.assign()).toMatchObject({ delegated: true, copy: { agentRunId: 'copy-1' } });
     h.resources.damaged.add('task-A');
-    await expect(h.lifecycle.delegateToNewCopy({ identity: h.member('manager', '/manager') }, { recipient_address: '/w', task_id: 'task-A' }, 'placement'))
+    await expect(delegateNew(h.lifecycle, { identity: h.member('manager', '/manager') }, { recipient_address: '/w', task_id: 'task-A' }, 'placement'))
       .rejects.toMatchObject({ code: 'TASK_AGENT_RESOURCES_UNAVAILABLE' });
   });
 

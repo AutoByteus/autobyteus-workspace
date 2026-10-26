@@ -359,6 +359,7 @@ export class StandaloneAgentRunLifecycleService {
       llmConfig: metadata.llmConfig,
       applicationExecutionContext: metadata.applicationExecutionContext ?? null,
       memberExecutionContext: input.memberExecutionContext,
+      toolConfinement: metadata.toolConfinement ?? null,
     });
   }
 

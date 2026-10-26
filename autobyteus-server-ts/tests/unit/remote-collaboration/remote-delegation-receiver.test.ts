@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
@@ -68,10 +69,10 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string } = {}) 
     members: [{ address: "/studio_team/publisher", agentRunId: "publisher_t1" }] };
   const startTeam = vi.fn(async () => teamAnswer);
   const receiver = new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(TEMP), agentRuns: { prepareAgentRun },
-    teams: { start: startTeam } });
+    teams: { start: startTeam }, decisions: new PeerStartedRunDecisions() });
   const start = (address: string) => receiver.start({
     fromNodeId: "srv_node_a", toNodeId: "srv_node_b", address,
-    delegator: { agentRunId: "lead_run" }, coordinatingRun: { kind: "agent_team", runId: "team_a" },
+    delegator: { agentRunId: "lead_run" }, coordinatingRun: { kind: "agent_team", runId: "team_a" }, task: { text: "Publish it.", title: "Publish it.", taskKey: null, projectId: null, taskId: null },
   }, { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z" });
   return { start, prepareAgentRun, startTeam, teamAnswer };
 };
@@ -79,7 +80,9 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string } = {}) 
 describe("RemoteDelegationReceiver resolves through the shared catalog admission", () => {
   it("AC-201 / AC-205: prepares a run of the Agent at its catalog address with its default, the temp workspace and auto-approve on", async () => {
     const node = setup();
-    await expect(node.start("/publisher")).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3a" });
+    await expect(node.start("/publisher")).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3a",
+      launches: [{ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus",
+        source: { origin: "agent_default", fallbacks: [] } }] });
     expect(node.prepareAgentRun).toHaveBeenCalledExactlyOnceWith({
       agentDefinitionId: "publisher", workspaceRootPath: TEMP, autoExecuteTools: true,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: { thinking: "on" },
@@ -97,7 +100,8 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
 
   it("autobyteus-247 BEH-301: hands a shared Agent Team's resolved source to the Team starter, with the back-link; prepares no Agent run", async () => {
     const node = setup();
-    await expect(node.start("/studio_team")).resolves.toEqual(node.teamAnswer);
+    await expect(node.start("/studio_team")).resolves.toEqual({ ...node.teamAnswer,
+      launches: [expect.objectContaining({ address: "/studio_team/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus" })] });
     expect(node.startTeam).toHaveBeenCalledExactlyOnceWith({
       address: "/studio_team", name: "Studio Team",
       delegatedFrom: { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run" },
@@ -112,21 +116,23 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
   it("REQ-302 / AC-302: refuses a Team with an agent covered by no default, naming the Team, before anything starts", async () => {
     const node = setup();
     await expect(node.start("/bare_team")).resolves.toEqual({ accepted: false, code: "NO_DEFAULT_RUNTIME",
-      message: "There is no default runtime configured for the target agent team Bare Team", target: { kind: "agent_team", name: "Bare Team" } });
+      message: "There is no default runtime configured for the target agent team Bare Team", target: { kind: "agent_team", name: "Bare Team" },
+      modelRouting: { state: "off" } });
     expect(node.startTeam).not.toHaveBeenCalled();
   });
 
   it("AC-202: refuses an Agent with no default, or an incomplete one, as NO_DEFAULT_RUNTIME, and prepares nothing", async () => {
     const node = setup();
     await expect(node.start("/reviewer")).resolves.toEqual({ accepted: false, code: "NO_DEFAULT_RUNTIME",
-      message: "There is no default runtime configured for the target agent Reviewer", target: { kind: "agent", name: "Reviewer" } });
+      message: "There is no default runtime configured for the target agent Reviewer", target: { kind: "agent", name: "Reviewer" },
+      modelRouting: { state: "off" } });
     await expect(node.start("/drafter")).resolves.toMatchObject({ accepted: false, code: "NO_DEFAULT_RUNTIME", target: { kind: "agent", name: "Drafter" } });
     expect(node.prepareAgentRun).not.toHaveBeenCalled();
   });
 
   it("AC-203: refuses a default that can't run here with its reason, and a run that could not be prepared", async () => {
     await expect(setup({ codexEnabled: false }).start("/coder")).resolves.toEqual({ accepted: false, code: "AGENT_CANNOT_RUN",
-      message: "Codex App Server command 'codex' is not available.", target: { kind: "agent", name: "Coder" } });
+      message: "Codex App Server command 'codex' is not available.", target: { kind: "agent", name: "Coder" }, modelRouting: { state: "off" } });
     await expect(setup({ prepareFails: "The workspace is not writable." }).start("/publisher")).resolves.toEqual({ accepted: false,
       code: "AGENT_CANNOT_RUN", message: "The workspace is not writable.", target: { kind: "agent", name: "Publisher" } });
   });

@@ -3,6 +3,7 @@ import type { TaskExecutionReference } from "../task/task-execution-reference.js
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
+import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type {
   TaskExecutionActivationCommitResult,
@@ -12,8 +13,27 @@ import type {
 } from "../task/root-task-execution-adapter.js";
 import type { SpawnTaskInput, TaskDelegationOutcome } from "../task/task-delegation-command.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
-import { resolveRemoteRunChannel, type RemoteRunChannel, type RemoteStartedRun, type RemoteTargetRoot } from "./remote-run-channel.js";
+import {
+  resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel, type RemoteStartedRun, type RemoteTargetRoot,
+} from "./remote-run-channel.js";
+import { launchNotesOf } from "../../collaborators/launch-configuration-notes.js";
+import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import { beginRemoteTaskActivation } from "./remote-task-activation.js";
+
+/** Notes for a peer's launches: one line per agent the peer's Model Router chose for, one per skipped layer. */
+const remoteLaunchNotes = (launches: readonly RemoteAgentLaunch[]): string[] => launchNotesOf(launches.map((launch) => ({
+  name: getAgentTeamAddressBasename(launch.address) ?? launch.address,
+  subject: "agent" as const,
+  launch: { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier },
+  source: launch.source,
+})));
+
+/** A remote placement before its work is prepared: the peer and the address there. */
+export type RemotePlacementTarget = Omit<RemoteAgentPlacement, "work">;
+
+/** The remote placement for `target` with the prepared work. */
+export const remotePlacementWith = (target: RemotePlacementTarget, work: DelegationWork): RemoteAgentPlacement =>
+  Object.freeze({ ...target, work });
 
 /** A refusal before the Task link (by this node's channel or by the peer): nothing is left on this node. */
 export class RemoteDelegationRefusedError extends Error {
@@ -31,6 +51,8 @@ export class RemoteDelegationRefusedError extends Error {
 export class RemoteDelegation {
   /** A started Team's answer, from planning (its run ID is the plan's target) until its activation records the link. */
   private readonly startedTeams = new Map<string, Extract<RemoteStartedRun, { kind: "agent_team" }>>();
+  /** The launches the peer resolved, by the run ID it started, from planning until the link records them (REQ-009). */
+  private readonly startedLaunches = new Map<string, readonly RemoteAgentLaunch[]>();
 
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
@@ -41,7 +63,7 @@ export class RemoteDelegation {
    * `delegate_task` with `node` (DEC-111): refuses a saved Task or files before anything is sent (REQ-110),
    * resolves the peer by this owner's label, and returns the remote placement for the root's lifecycle.
    */
-  async delegationPlacement(input: SpawnTaskInput & Readonly<{ node: string }>): Promise<RemoteAgentPlacement | TaskDelegationOutcome> {
+  async delegationPlacement(input: SpawnTaskInput & Readonly<{ node: string }>): Promise<RemotePlacementTarget | TaskDelegationOutcome> {
     if (input.task_id !== undefined) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
     if (input.reference_files?.some((file) => file.trim())) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.attachments };
     const channel = this.channel();
@@ -55,18 +77,23 @@ export class RemoteDelegation {
   }
 
   /**
-   * `delegate_task` with `node`: the remote placement, then the root's unchanged lifecycle with the input
-   * without `node`. A delegated result names the peer (CM-11).
+   * `delegate_task` with `node`: the peer and address, then the root's lifecycle with the input without `node` (it
+   * prepares the work and dispatches the remote placement with it). A delegated result names the peer (CM-11).
    */
   async delegate(
     input: SpawnTaskInput & Readonly<{ node: string }>,
-    delegateWith: (input: SpawnTaskInput, placement: RemoteAgentPlacement) => Promise<TaskDelegationOutcome>,
+    delegateWith: (input: SpawnTaskInput, target: RemotePlacementTarget) => Promise<TaskDelegationOutcome>,
   ): Promise<TaskDelegationOutcome> {
     const placement = await this.delegationPlacement(input);
     if (!("kind" in placement)) return placement;
     const { node: _node, ...local } = input;
     const outcome = await delegateWith(local as SpawnTaskInput, placement);
-    return outcome.delegated ? { ...outcome, node: placement.peer.name } : outcome;
+    if (!outcome.delegated) return outcome;
+    // The peer's launches (REQ-009): a line per routed agent and per skipped layer, as for a copy on this node.
+    const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
+    const notes = remoteLaunchNotes(this.startedLaunches.get(runId) ?? []);
+    this.startedLaunches.delete(runId);
+    return { ...outcome, node: placement.peer.name, ...(notes.length ? { launchNotes: notes } : {}) };
   }
 
   /**
@@ -81,8 +108,10 @@ export class RemoteDelegation {
       address: placement.address,
       delegatorAgentRunId: input.identity.agentRunId,
       coordinatingRun: this.coordinatingRun(),
+      work: placement.work,
     });
     if (!started.accepted) throw new RemoteDelegationRefusedError(started.code, started.message);
+    this.startedLaunches.set(started.kind === "agent" ? started.agentRunId : started.teamRunId, started.launches);
     const plan = (execution: TaskExecutionReference, ingressAgentRunId: string): TaskExecutionActivationPlan<TPlacement> => Object.freeze({
       ...input, ownedAgentRunIds: Object.freeze([]), recipientAddress: placement.address,
       target: Object.freeze({ root: this.options.root, execution, ingressAgentRunId }),
@@ -123,7 +152,9 @@ export class RemoteDelegation {
 
   /** The link the activation records: an Agent link, or a Team link with the coordinator and members planning got. */
   private linkOf<TPlacement>(plan: TaskExecutionActivationPlan<TPlacement>, placement: RemoteAgentPlacement): RemoteTaskExecution {
-    const common = { address: placement.address, nodeId: placement.peer.nodeId, delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt };
+    const launches = this.startedLaunches.get("agentRunId" in plan.target.execution ? plan.target.execution.agentRunId : plan.target.execution.teamRunId);
+    const common = { address: placement.address, nodeId: placement.peer.nodeId, delegatorAgentRunId: plan.identity.agentRunId, startedAt: plan.startedAt,
+      ...(launches?.length ? { launches } : {}) };
     const execution = plan.target.execution;
     if ("agentRunId" in execution) return Object.freeze({ kind: "agent", ...common, agentRunId: execution.agentRunId });
     const started = this.startedTeams.get(execution.teamRunId);
