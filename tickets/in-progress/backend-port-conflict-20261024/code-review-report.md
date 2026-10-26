@@ -1,30 +1,31 @@
 # Code Review Report — backend-port-conflict-20261024
 
 ## Review Round Meta
-- Entry point: **Implementation Review**, source round **4 / CRR-005** (fifth cumulative review result), 2026-10-26. Latest result: **Pass for renewed independent API/E2E**, not integrated acceptance or final delivery.
-- Review scope: **Full Re-Audit**. DR-001 required integration with201 incoming commits; shared dependency/core serialization, entry identity, startup composition and generated contracts changed beyond prior findings. All structural checks and ten scores reconsidered for ticket behavior on the integrated base. This is not a review of every unrelated incoming feature.
-- Reviewed integrated source: **2c47bcd646ccd371a180dbc510fd1e30aee9144f**; evidence HEAD **d278f3e89**. Merge parents72476797a (unchanged Delivery records checkpoint) and **67994daba0adf6eb8c6bc05827b5fab6b2975aa4** (fetched origin/personal). Bootstrap034bfe51 is historical, not current integration basis.
-- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`. Integration is into task branch only; no target finalization/push/release/install.
-- Requirements/design: unchanged `requirements-doc.md` **R2 Approved**, `design-spec.md` **D4.1**, investigation E-024..026/P-011/012, same-ticket scope approval, `solution-revision-record.md` **SR-001..008**, architecture report/history **ARCH-REV-004**. Compared authority files: no delta from prior accepted package.
-- Trigger: **DR-001 implementation-owned integration Local Fix** in `release-deployment-report.md`, `delivery-revision-record.md`, conflict evidence and incoming-path inventory. Current implementation **IR-005**, handoff/revision/check ledger IMP-47..60. Prior source result **CRR-003 Pass**; proportional test result **CRR-004 Pass** and **API-REV-001 (95.3%)** remain old-source history, not integrated validation.
-- Relevant supplements: approved visibility scope, Codex investigation, pause/resume record, current resolution/check/artifact/cleanup receipts. Executable validation remains authorized but awaits this current source gate.
-- Authorities reread: code-reviewer skill, design principles and report template; project DESIGN.md now names **GLOSSARY.md**. Read incoming glossary: entryId identifies a client entry, nodeId a server, memorySyncSourceId a Memory Sync import source. These names remain distinct across integration. Earlier “no glossary found” statements are historical. TESTING.md foundation/rerun rules apply; no applicable conflict established.
-- No API failure-origin or successful-test review performed this round. Separate `api-e2e-test-review-report.md` remains its prior completed result; do not treat it as integrated test acceptance.
+- Entry point **Implementation Review**, source round **5 / CRR-007**, 2026-10-26. Decision **Pass for renewed independent API/E2E**, not final delivery.
+- Review scope **Full Re-Audit**: DR-002 integrates21 incoming commits with changed shared core MCP shape/transport and startup binding beyond prior finding scope. Re-evaluated all structural checks and ten scores for this ticket on the current base; not an unrelated MCP feature audit.
+- Source **9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c**; evidence HEAD **ca2f0a86c**. Merge parents **b7ab9e3a4** (Delivery records checkpoint) and **0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e** (fetched origin/personal). Source unchanged after9b10.
+- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`. Task integration only; no target merge/push/finalization/release/install.
+- Requirements **R2 Approved**, design **D4.1**, solution **SR-001..008**, architecture **ARCH-REV-004** unchanged (authority-file comparison empty). Investigation E-024..026/P-011/012 and visibility approval/resume supplements retain prior meaning.
+- Trigger **DR-002** fresh-base integration Local Fix, current **IR-006** with IMP-61..75. Prior source **CRR-005**, API **API-REV-002**, proportional test gate **CRR-006** apply to2c47/base67994 only. Prior95.3% is not current integrated confidence.
+- Read current handoff/check ledger and IMP-75 before deciding execution; no reviewer test/build/app/provider rerun required. Read current shared design principles/template, project DESIGN.md, incoming GLOSSARY MCP terms and TESTING additions. Test-only GitHub credential instructions do not authorize a live call here.
+- Separate successful-test report remains CRR-006; this round neither updates it nor performs failure-origin review.
 
 ## Routing Classification Review
-**task_size=Large / architectural_risk=High**, unchanged. Cumulative process authority, shutdown ordering and observation/API/UI contracts retain this classification. Incoming generated/document volume does not drive it. DR-001 conflict resolution remains within approved behavior; no upstream redesign required. Next route: current implementation source pass → `/software_engineering_team/api_e2e_engineer`, not directly back to Delivery.
+**task_size=Large / architectural_risk=High**, unchanged. Cumulative process authority, shutdown ordering and observation/API/UI contracts retain this classification. Incoming generated/document volume does not drive it. DR-002 conflict resolution remains within approved behavior; no upstream redesign required. Next route: current implementation source pass → `/software_engineering_team/api_e2e_engineer`, not directly back to Delivery.
 
 ## Review Scope
-Reviewed merge resolution against **both parents**, authoritative compiled SDL/operations and current consumers; inspected `git show --remerge-diff` rather than accepting an ours/theirs claim. Generated GraphQL preserves the background union, incoming Memory Sync identity, available runtime query and internal-agent field. `failures` is in ImportMcpServerConfigsResult, not MemoryExplorerSourceInput. Independent generated SHA256 matches IMP-47.
+Reviewed both merge parents and `git show --remerge-diff`: regenerated GraphQL preserves incoming MCP storedSecrets/needsSecret selection and ticket background union/query. Current SDL and repository operations agree; independently computed generated SHA256 matches IMP-61. Both design-case lessons and expanded Notice survive; ticket cases9/10 unchanged.
 
-The61 authored ticket production files were independently compared/count-audited: **57 byte-identical to prior reviewed source;4 changed** (schema registration, ElectronApplication, English/Chinese locale entrypoints). Re-read their integration boundaries and unchanged critical scope/inspection contracts. Adjacent incoming core tool wrappers/serializer, admission reserve/root fence, supervisor catalog binding, runtime-status cleanup, remote composition names, node-entry/store/endpoints/Apollo context, ambient status types and file-migration startup ordering were traced for ticket effects. No new ticket execution or shutdown policy introduced.
+Independent cumulative audit: **61 authored ticket production files,60 byte-identical to2c47,1 changed** (`server-runtime.ts`, incoming resolver import/install). Current base0fd9; all<=500, max497. Relevant incoming core MCP manager/base/HTTP/stdio resolver paths inspected for ticket startup/cleanup impact. No unrelated feature expansion is attributed to this ticket.
 
-All mandatory structural checks below were reconsidered on that combined path; no need to reopen unrelated201-commit functionality. CR-001/002 owners and fixes are unchanged; source after2c47 matches validated code. Independent cumulative audit is `evidence/CR-05-integrated-source-audit.json`, now relative to fetched67994daba.
+Forward startup path: `startConfiguredServer` owns startup settlement → `shutdown.stage(vault.initialize)` completes/checks cancellation → synchronous resolver installer binds existing McpServerInstanceManager → subsequent staged migrations/checkpoint → Studio cleanup ownership transfer/listen. Installer creates no client, timer, process or new cleanup obligation. Later manager creation supplies resolver to existing managed HTTP/stdio owners; connect-time value resolution consults current vault service. Existing instance map/close and host authorities remain in place. No late-start async resolver work is launched at installation.
 
-Read Checks Run before deciding execution. **No reviewer tests/builds/apps/provider runs**: current854-case implementation foundation and integrated build are conclusive at their boundaries; no source defect candidate required a new probe. Independent actual API journeys remain next. Old API-REV-001 confidence and historical API-04/06 are not integrated proof.
+Rechecked unchanged native scope stop/retirement distinction, capture release, host ownership, captured-child shutdown, awaited desktop quit/updater, map-only observation and panel generation/cleanup fences. Incoming MCP cannot be activated or pruned by background inspection. Existing absence/history/projection paths remain byte-identical; reviewed integration does not change provider lifecycle or idle policy.
+
+All structural checks below reconsidered on this cumulative path. Foundation changed despite identical lockfile: current1110 applicable cases and build reviewed, not old green results carried forward as new. Real composed journeys still belong to independent API/E2E. No reviewer execution rerun.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
-**Confirmed on integrated source**. R2 expressly incorporates the user's read-only visibility request in this ticket; FU-002's separate-task proposal is historical. D4.1 corrects the initial mutating lookup and first-entry stream omission. No new behavior or material ambiguity discovered. Incoming glossary/node migration and tool-result representation are preserved, not silently reverted by ticket integration.
+**Confirmed on integrated source**. R2 expressly incorporates the user's read-only visibility request in this ticket; FU-002's separate-task proposal is historical. D4.1 corrects the initial mutating lookup and first-entry stream omission. No new behavior or material ambiguity discovered. Incoming MCP vault bindings/contracts and glossary meanings are preserved, not silently reverted; no new ticket behavior or material ambiguity found.
 
 | Behavior | Status | Current implementation / lifecycle evidence |
 |---|---|---|
@@ -53,10 +54,12 @@ Read Checks Run before deciding execution. **No reviewer tests/builds/apps/provi
 | CR-C06 | Observational lookup and exact active-instance recheck | SCN-008/MP-003, ordinary provider shutdown during an inspection | Resolver uses only peek/isActive; registry peek only activeRuns.get; success and error both fenced; registry/query assertions | Promote mechanism justification; this ticket, D4.1 correction satisfied |
 | CR-C07 | Retained stream rows on first entry and exclusive snapshot authority | MP-004, reopen ordinary idle-stopped Claude/AGY run | Composable reads reactive existing store before successful capability; unavailable labels last-known; a snapshot, including empty, exclusively replaces it | Promote mechanism justification; this ticket, implemented and unit-covered |
 | CR-C08 | Selection generation and timer/disposal fences | SCN-007, inspect another selected run while prior request is pending | runId/bindingRevision/expanded watch aborts old request, resets generation; success/error check same selection; one settled-request timer; stale-response tests | Promote mechanism justification; this ticket, no new cross-window cache or global poll owner |
-| CR-C09 | Historical DMG packaging failure | Supported task-local distribution build | IMP-44 failure retained; new IMP-56 full build exit0, DMG VALID and archive provenance at2c47 | Reject inference of ongoing source/build defect; prior limitation now has current successful packaging evidence, not release permission |
+| CR-C09 | Historical DMG packaging failure | Supported task-local distribution build | IMP-44 historical failure and IMP-56 prior-source success retained; current IMP-72 full build exit0/DMG VALID at9b10 | Reject inference of ongoing source/build defect; prior limitation now has current successful packaging evidence, not release permission |
 | CR-C04 | Native or fixture-only panel success interpreted as original Codex incident proof | R1/R2 actual conversation/lifecycle acceptance | Native anchors do not own Codex tool commands; intercepted query fixture is not provider→panel evidence; API-04/06 only exact-source scoped results | Reject inference; preserve real composed validation gates |
-| CR-C10 | Whole generated-contract and independent design-history resolution | AC-006/DR-001 integration contract: preserve both approved branches | Re-merge diff, integrated SDL/query/generated union and Memory Sync consumers, both design-case additions and upstream case8 preserved, ticket cases9/10 | Promote integration mechanism; this ticket, satisfied without new defect |
+| CR-C10 | Prior whole generated-contract and independent design-history resolution | AC-006/DR-001 integration contract: preserve both approved branches | Re-merge diff, integrated SDL/query/generated union and Memory Sync consumers, both design-case additions and upstream case8 preserved, ticket cases9/10 | Promote historical integration mechanism; still preserved in current merge |
 | CR-C11 | Forced rendered-fixture cleanup mistaken for graceful application quit | AC-004/005 supported application quit, not harness group kill | IMP-57 forced=true came from CLI group termination, no app quit invocation; IMP-59 separately invokes preload startShutdown and exits221ms/no force, no active work | Reject equivalence; retain truthful cleanup distinction and require actual integrated active-work journeys |
+| CR-C12 | Current resolver installation and generated MCP contract integration | AC-006/DR-002 preserve incoming base without breaking startup/shutdown | Vault stage/checkpoint → synchronous installer binds resolver → existing migrations/build/cleanup transfer. HTTP/stdio resolve only when connecting; no install-time resource or second cleanup owner. Both-parent diff/SDL/current consumers reviewed | Promote supported integration mechanism; satisfied, no source defect |
+| CR-C13 | Initial MCP web test failures could be mistaken for product regression or silently green | TESTING failure diagnosis and honest-evidence contract | IMP-69 ten failures at localStorage.clear; local Vitest getWindowKeys skips present Node native key, Nuxt aliases window/global. IMP-70 disables native webstorage for focused runner;31 pass including3 new,123 unique total | Reject product-defect inference on this evidence; preserve failed attempt and exact environment correction, no source workaround |
 
 No held/unclear candidate and no open promoted defect. New machinery is tied to approved selected-read and uncertainty contracts, not speculative action combinations. No new or reclassified material premise beyond confirming MP-001..004.
 
@@ -66,20 +69,20 @@ No held/unclear candidate and no open promoted defect. New machinery is tied to 
 | CR-001 | Resolved CRR-002 | Remains resolved | No scope source delta across integration; stop shares only actual stop work, queues retirement within original deadline, prevents RELEASE transfer and preserves queued operation identity |
 | CR-002 | Resolved CRR-002 | Remains resolved | No manager/executor source delta across integration; exact capture listener removed only without record consumers; finally covers foreground/failed launch; retained history preserved |
 
-DR-001's conflict concerns are independently resolved: generated contract regenerated from current inputs, both document histories preserved and incoming automatic merge boundaries checked. No CR finding ID was assigned to Delivery's integration blocker; this does not rewrite DR-001's historical Blocked result.
+DR-002 conflict concerns resolved at source boundary: current generated MCP import selection and background query retained, both document lessons preserved, startup installer traced through real consumers. DR-001 and DR-002 historical Blocked receipts remain unchanged; no CR finding ID was assigned to those integration blockers.
 
 ## Structural / Design Checks
 | Check | Result | Evidence | Required action |
 |---|---|---|---|
 | Task design health assessment present, evidence-backed and preserved | Pass | D4.1 missing observation + lifecycle coupling require isolated view, not provider lifecycle rewrite | None |
 | Approved behavior-defining supplemental artifacts | Pass | Same-ticket approval, P-011/012 limits, E-025/026 corrections and explicit resume preserved across merged base | None |
-| Data-flow spine inventory clarity/preservation | Pass | DS-001..005 paths preserved; incoming serializer/entry names remain owned transformations, not replacement lifecycle authority | None |
+| Data-flow spine inventory clarity/preservation | Pass | DS-001..005 paths preserved; incoming connect-time resolver remains an owned transport dependency, not replacement lifecycle authority | None |
 | Ownership boundary preservation/clarity | Pass | AgentRun public capability; thread owns RPC sequence; pure view owns facts; composable owns polling | None |
 | Off-spine concerns serve clear owners | Pass | View projection/parser serve thread; GraphQL translates domain result; locale/status visuals serve panel | None |
 | Existing capability/subsystem reuse | Pass | Existing manager, backend/run, GraphQL, panel/event store and window-bound client extended | None |
 | Reusable owned structures | Pass | Domain inspection union and row type, generated query shape, view-only frontend row specialization | None |
 | Shared-structure/data-model tightness | Pass | Observation separated from streamed lifecycle; no kitchen-sink backend optionals; provider handles internal | None |
-| Repeated coordination ownership | Pass | One thread read, one panel refresh, exact resolver recheck; incoming admission reuses reserve checks without changing root fence | None |
+| Repeated coordination ownership | Pass | One thread read, one panel refresh, exact resolver recheck; synchronous startup installer binds one resolver; existing instance/cleanup owner unchanged | None |
 | Empty indirection | Pass | Manager/registry enforce authority; run adds capability/instance envelope; each added owner has policy/state/projection | None |
 | Separation of concerns/file responsibility | Pass | Pure observation166 nonempty lines separate from existing thread497; frontend observation86 separate from rendering170 | None |
 | Ownership-driven dependencies | Pass | UI→query→run→backend→thread; entry-bound client remains endpoint-selected, no renderer provider bypass or incoming lifecycle-event coupling | None |
@@ -87,17 +90,17 @@ DR-001's conflict concerns are independently resolved: generated contract regene
 | File placement | Pass | View with Codex thread; public DTO in agent domain; resolver with GraphQL types; composable with frontend ownership | None |
 | Flat vs over-split layout | Pass | Small concrete boundary/state/projection files; no generic framework or pass-through orchestration layer | None |
 | Interfaces/API/query identity clarity | Pass | Concrete agentRunId, captured run object, runInstanceId, opaque taskId; provider processId never OS authority | None |
-| Naming/vocabulary/local readability | Pass | Inspection vs lifecycle and unknown vs terminal preserved; new GLOSSARY entryId/nodeId/memorySyncSourceId meanings respected | None |
+| Naming/vocabulary/local readability | Pass | Inspection vs lifecycle and unknown vs terminal preserved; GLOSSARY entry/node identities and MCP reference/field/state meanings respected | None |
 | No unjustified duplication | Pass | One normalized observation owner; schema projection intentionally separate, generated client not handwritten parallel authority | None |
 | Patch-on-patch control | Pass | New observation capability rather than lifecycle-event workaround; no relaxation of transcript gate | None |
 | Dead code removed in touched files/modules | Pass | Misleading Codex comment removed; added symbols have actual production callers; retained R1 removals stand | None established |
 | Relevant tests/assertions requirement-aligned | Pass | Foreground exclusion, late completion/list/turn order, identity, privacy, no pruning, retained rows and empty/error distinctions | Independent composed acceptance next |
 | Fixtures/helpers reasonably reusable and coherent | Pass | Pure view helpers, deferred RPCs and selected-panel query fixture appropriate to unit boundary | Do not call them provider acceptance |
 | No stale/duplicated/compatibility-only tests retained | Pass | Existing stream/gate controls retained for approved preservation; no disabled cases or old-software fallback assertions added | None |
-| API/E2E readiness | Pass | No open source finding;854 current scoped cases, rebuilt current .app and full DMG/ZIP success; integrated system journeys still next | Actual query/panel/lifecycle coverage next |
+| API/E2E readiness | Pass | No open source finding;1110 current scoped cases, rebuilt beta.10 .app and full DMG/ZIP success; integrated system journeys still next | Actual query/panel/lifecycle coverage next |
 
 ## Source File Size And Structure Audit
-Independently recounted **61 authored ticket production files** against integrated base67994daba, maximum497 nonempty lines; all<=500. Full receipt `evidence/CR-05-integrated-source-audit.json`. Tests/fixtures/generated GraphQL excluded. Only4 of61 differ from previously reviewed candidate; incoming adjacent foundation files are not misattributed as new ticket authoring. Cumulative >220 churn remains the3 reviewed native replacements, not a new patch layer.
+Independently recounted **61 authored ticket production files**, base0fd9ca4b, maximum497 nonempty lines; all<=500. Receipt `evidence/CR-07-integrated-source-audit.json`.60 unchanged since prior review,1 startup integration delta. Tests/fixtures/generated output excluded. Relevant incoming core owners reviewed separately for integration impact, not misattributed as ticket authoring. The3 cumulative native replacements remain justified, not new patch layers.
 
 | Source file | Integrated base nonempty | Current | >500 | Ticket churn / >220 | SoC / placement | Action |
 |---|---:|---:|---|---|---|---|
@@ -120,7 +123,7 @@ Independently recounted **61 authored ticket production files** against integrat
 | `autobyteus-server-ts/src/compositions/build-studio-server.ts` | 406 | 412 | Pass | 25 — Pass | Pass / Pass | None |
 | `autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts` | 59 | 62 | Pass | 3 — Pass | Pass / Pass | None |
 | `autobyteus-server-ts/src/compositions/native-command-shutdown.ts` | 0 | 21 | Pass | 21 — Pass | Pass / Pass | None |
-| `autobyteus-server-ts/src/server-runtime.ts` | 226 | 215 | Pass | 111 — Pass | Pass / Pass | None |
+| `autobyteus-server-ts/src/server-runtime.ts` | 229 | 218 | Pass | 111 — Pass | Pass / Pass | None |
 | `autobyteus-server-ts/src/shutdown/server-process-shutdown.ts` | 0 | 59 | Pass | 59 — Pass | Pass / Pass | None |
 | `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 353 | 358 | Pass | 11 — Pass | Pass / Pass | None |
 | `autobyteus-ts/src/agent/context/agent-config.ts` | 110 | 113 | Pass | 3 — Pass | Pass / Pass | None |
@@ -163,7 +166,7 @@ Independently recounted **61 authored ticket production files** against integrat
 | `autobyteus-web/types/backgroundTaskView.ts` | 0 | 11 | Pass | 12 — Pass | Pass / Pass | None |
 | `autobyteus-web/types/serverStatus.ts` | 27 | 33 | Pass | 7 — Pass | Pass / Pass | None |
 
-Generated GraphQL: full regeneration (+1794/-27 versus incoming base), not handwritten runtime policy or line-limit work. SDL/query/client shapes agree; full codegen/renderer build passes. No standalone strict vue-tsc result inferred.
+Generated GraphQL remains full repository regeneration, not handcrafted runtime expansion. Background view union/query plus incoming storedSecrets/needsSecret agree with current SDL/operations; generated SHA256 matches IMP-61. Production codegen/build passes, not a standalone strict vue-tsc claim.
 
 ## Legacy / Backward-Compatibility Verdict
 | Check | Result | Evidence |
@@ -178,10 +181,10 @@ Generated GraphQL: full regeneration (+1794/-27 versus incoming base), not handw
 Dead/obsolete/legacy items requiring removal: **None established**. No source or durable test fix made by reviewer.
 
 ## Docs-Impact Verdict
-**Yes.** Both design-case histories survived; incoming case8 retained and ticket cases renumbered9/10, with no live old-heading reference established. New protocol paragraphs preserve the side-view/lifecycle distinction. **Delivery still owns synchronization**, including stale “implementation/verification pending” phrases in the ticket's long-lived design cases and current glossary terminology. This is a known downstream documentation task, not reason to rewrite source or reopen requirements. Incoming project glossary is now authoritative; no new domain meaning is introduced here. Do not describe the view as all OS processes, persistence or control.
+**Yes.** Both incoming MCP no-caller lesson/expanded Notice and ticket observational-lookup lesson retained; cases9/10 unchanged. Delivery owns remaining long-lived synchronization, including “implementation/verification pending” wording and final provenance. Do not describe Codex visibility as all OS processes, control or persistence. Incoming vocabulary applies without changing ticket scope.
 
 ## Additional Material Premise Validation
-MP-001/002 **Confirmed after integration**: retained Windows cleanup entry and continuous native anchor/settlement source unchanged; Electron awaited quit/updater hooks coexist with incoming startup migrations. MP-003 **Confirmed**: new peek is map-only, isActive observational, both result/error rechecked without lifecycle getters. MP-004 **Confirmed**: first-entry/reselection uses received rows even when inactive; labels them last-known until authoritative capability result. No new/reclassified material premise. Example7 independent-origin rule remains applied; no independent concurrent cross-window workflow invented from bindingRevision alone.
+MP-001/002 **Confirmed after integration**: retained Windows cleanup entry and continuous native anchor/settlement source unchanged; Electron awaited quit/updater hooks coexist with staged startup and synchronous MCP resolver installation (CR-C12). MP-003 **Confirmed**: new peek is map-only, isActive observational, both result/error rechecked without lifecycle getters. MP-004 **Confirmed**: first-entry/reselection uses received rows even when inactive; labels them last-known until authoritative capability result. No new/reclassified material premise. Example7 independent-origin rule remains applied; no independent concurrent cross-window workflow invented from bindingRevision alone.
 
 ## Review Scorecard
 **Overall:9.5/10** (simple mean; not the decision rule). Every category meets>=9.2. These are source-review scores, not API/E2E, platform-certification or release acceptance.
@@ -194,44 +197,44 @@ MP-001/002 **Confirmed after integration**: retained Windows cleanup entry and c
 |4|Separation of Concerns and File Placement|9.5|Observation extracted from existing thread; UI polling separated from rendering|No structural defect; thread remains near ceiling without exceeding it|Keep future unrelated concerns out|
 |5|Shared-Structure / Data-Model Tightness and Reusable Owned Structures|9.5|View status isolated from lifecycle; generated query and narrow row specialization|No duplicate business authority found|None required|
 |6|Naming Quality and Local Readability|9.5|Unknown/last-known/current and provider handle/local task identity distinguished|No evidence-grounded naming defect; incoming glossary checked|None required|
-|7|API/E2E Readiness|9.5|854 unique integrated scoped checks, full current build/DMG validation and usable .app, no source blocker|Integrated real journeys pending; old confidence is not current proof|API reruns current equivalents; Delivery verifies evidence/base/docs/finalization|
+|7|API/E2E Readiness|9.5|1110 unique current integrated scoped checks, full beta.10 build/DMG validation and usable .app, no source blocker|Integrated real journeys pending; old confidence is not current proof|API reruns current equivalents; Delivery verifies evidence/base/docs/finalization|
 |8|Runtime Correctness And Behavioral Fidelity|9.5|Foreground exclusion, late exact completion merge, whole-list absence and generation fences reviewed|No unresolved source defect; unit fixtures are not composed acceptance|Exercise real provider and current lifecycle boundaries|
 |9|No Backward-Compatibility / No Legacy Retention|9.5|One current capability per backend, no version or history fallback|No blocking legacy issue found|None required|
 |10|Cleanup Completeness|9.5|Thread clear/fence, bounded RPC, terminal cap and frontend abort/timer cleanup; CR-001/002 remain closed|No local cleanup defect found; actual active-work evidence remains scoped/downstream|Retain exact ownership/sentinel cleanup receipts|
 
 ## Findings
-**None open.** CR-001/002 remain resolved; DR-001 integration concerns resolved within approved intent. No new Local Fix, Design Impact, Requirement Gap or Unclear source finding established. Current unsigned package build and DMG checksum pass; prior IMP-44 failed build remains historical, not retroactively relabelled. This pass is not integrated API acceptance or release readiness.
+**None open.** CR-001/002 remain resolved; DR-002 integration concerns resolved within approved intent. No new Local Fix, Design Impact, Requirement Gap or Unclear source finding established. Current unsigned package build and DMG checksum pass; prior IMP-44 failed build remains historical, not retroactively relabelled. This pass is not integrated API acceptance or release readiness.
 
 ## Checks / Evidence Reviewed
-Read implementation handoff/ledger and machine-readable IMP-60 before considering execution. No source changed after2c47 and no uncertain source consequence required a probe, so **no reviewer test/build rerun**. Static comparisons, generated hash check and new cumulative source count are this round's own evidence.
+Read current handoff/ledger and IMP-75 before considering execution. No source edits after9b10; current foundation/build outcomes sufficiently evidenced at implementation boundary. Reviewer performed source/diff/dependency-code/hash/count inspection only, **no test/build/app/provider execution**.
 
-| Evidence | Reviewed outcome / scope |
+| Evidence | Reviewed result / limits |
 |---|---|
-| IMP-47 / merge remerge diff | Both parents preserved; generated contract and design-case conflicts resolved by authoritative inputs, not blind ours/theirs |
-| IMP-48..51 | Frozen dependency refresh; integrated core/server/SDK build and current SDL/codegen pass; current generated hash independently matches receipt |
-| IMP-52 |146 core/terminal/config/serializer cases pass, including prior capture/stop regressions and false/zero preservation |
-| IMP-53 |503 host/factory/startup/shutdown/Codex/query/input/supervisor control cases pass |
-| IMP-54 |156 Electron lifecycle/diagnosis/IPC/updater/entry/shell cases pass |
-| IMP-55 |49 conflict/panel/locale/node-binding/Memory Sync cases pass; Nuxt preparation current |
-| IMP-56 |Full unsigned desktop build exit0; DMG/ZIP/blockmaps produced, DMG checksum VALID; artifact bytes/hashes and built/packaged server matches recorded. No signing/publication/installation |
-| IMP-57 |Current isolated renderer controlled-state EN/zh/narrow feedback; independently inspected narrow Chinese image. Query interception/fixture contexts are NOT actual provider acceptance. CLI cleanup forced=true, all exact owned resources gone, sentinel/root receipt retained |
-| IMP-59 |Separate actual preload startShutdown invokes app quit; no-work app exits221ms, ports closed, sentinel preserved, registry cleanup forced=false/already stopped. No active-work proof inferred |
-| IMP-58 / CR-05 |Implementation and independent cumulative61-file audits agree on maximum497 |
+| IMP-61 / both-parent remerge | Full regenerated MCP import plus background contract; both design lessons preserved; generated hash independently matches |
+| IMP-62..65 | Frozen dependencies; production server/core/SDK build; current SDL/codegen pass |
+| IMP-66 |246 core terminal/config/serializer/MCP cases pass |
+| IMP-67 |575 server startup/shutdown/native/Codex/query/idle/MCP config/resolver cases pass |
+| IMP-68 |156 Electron lifecycle/diagnostic/IPC/updater/entry/shell cases pass |
+| IMP-69/70 |Initial110 pass/10 fail is retained. Node26 native storage shadows Happy-DOM: read local Vitest getWindowKeys/populateGlobal and Nuxt additionalKeys, plus recorded descriptor diagnosis. NODE_OPTIONS=--no-experimental-webstorage focused rerun31 pass (28 repeated+3 new);123 unique web cases, not151. No production/test workaround |
+| IMP-71 |10 real tiny Node/Python MCP transports with dummy resolver/values; no paid/GitHub acceptance. Private home/cache/venv cleanup recorded |
+| IMP-72 |Full unsigned beta.10 build exit0; DMG VALID, ZIP/blockmaps/current bytes/hashes;5 built/packaged matches including runtime/resolver. No publication/install |
+| IMP-73 |Controlled renderer states/selection/locales/narrow inspection; fixture contexts/read-only query interception, not real provider proof. Actual preload no-work quit220ms; app/control/backend gone, sentinel retained, CLI forced=false/root disposed. Not active-work cleanup |
+| IMP-74 / CR-07 |Independent61-file count agrees maximum497 |
 
-**854 unique current scoped cases**, not old501+300 counts added together. Foundation rule was executed by implementation because dependencies/core changed. API-REV-001 (95.3%), CRR-004 and original API-04/06 remain source-specific history; DR-001 current system-equivalent journeys still must run on this package. Whole-repository suites, real Windows/WSL and standalone strict vue-tsc unclaimed.
+**1110 unique current cases** =246+575+156+123+10. Lockfile unchanged, shared core MCP changed; foundation rerun rule therefore applied. Earlier API-REV-00295.3% remains source2c47 only; current real system journeys next. Whole repository suite, actual Windows/WSL, strict standalone vue-tsc unclaimed.
 
 ## Follow-ups
-Added this round: **None**. FU-001 remains unrelated exploratory test-tree typing debt, not production build failure or score deduction. FU-002 incorporated into R2, not a separate task. Prior DMG limitation has current successful build evidence; independent Delivery verification remains required.
+Added this round: **None**. FU-001 remains unrelated exploratory test-tree typing debt, not production build failure or score deduction. FU-002 incorporated into R2, not a separate task. Current IMP-72 provides successful beta.10 build evidence; independent Delivery verification remains required.
 
 ## Classification / Recommended Recipient
 Decision **Pass**; failure classification **N/A**. Most-specific returned implementation-review pass route → `/software_engineering_team/api_e2e_engineer`. Follow team single-recipient outcome routing; no duplicate Delivery/coordinator forwarding. Integrated system acceptance and subsequent proportional test review precede Delivery return. No release/install authorization.
 
 ## Residual Risks / Required Downstream Evidence
-1. API/E2E must resume its existing run with **current equivalents API-03/05/06B/07/09/09B/10**: standalone, Studio native ended/retained work, conflict/retry, packaged IPC/faults, actual Codex conversation/query/panel, two-run selection, natural/nonzero outcome, provider timeout/recovery and desktop restart/quit. Do not rerun historical API-04/06 separately or reuse old95.3% as integrated proof.
-2. Current854 implementation controls can be reused at their exact current source boundary; they do not replace real integrated journeys. Adapt fixtures to incoming entry/node/Memory Sync names where exercised; no new production hook or behavior scope.
-3. Preserve cleanup distinction: IMP-57 forced CLI group cleanup is not graceful application quit. IMP-59 is only no-work app quit. Require actual active/ended-agent cleanup and unrelated/data sentinels on this reviewed build.
-4. Delivery owns another fresh-base check, raw-evidence verification, docs synchronization, AC-006 finalization and approved no-release workflow. Current full unsigned DMG/ZIP success closes the prior build failure at implementation scope, not Delivery acceptance/signing/publishing/install.
-5. Actual Windows/WSL and strict standalone vue-tsc remain unrun; deterministic Windows/updater checks are not certification. No paid inference, updater installation, installed-app/user-data interaction, arbitrary process/volume cleanup or target push/release authorized by this review. Historical Nuxt/Codex incident not proven reproduced/fixed by these stages.
+1. Resume existing API run: current equivalents **API-03/05/06B/07/09/09B/10**, API02 via06B once. Preserve historical04/06 without duplicate runs. Current native/Codex full-host/desktop active/ended-agent cleanup and actual conversation→query→panel/recovery are independent obligations; prior95.3% cannot stand in for new proof.
+2. Reuse1110 current foundation results at their exact stated boundaries/environments; don't count focused repeats twice. If affected Nuxt storage consumers run again, retain diagnosed Node option rather than introducing a production workaround. MCP dummy transport tests are not live vault/GitHub certification.
+3. IMP-73 controlled renderer and no-work quit are not actual provider/active-work validation. Require exact current listeners/PIDs/sentinels and true application restart/quit paths in API evidence.
+4. Delivery retains fresh-base check, raw-evidence/artifact verification, documentation synchronization and AC-006 finalization. IMP-72 is current unsigned packaging success, not release/install permission; IMP-56 prior success and IMP-44 historical failure remain truthful.
+5. Windows/WSL and strict standalone vue-tsc remain unrun. No paid inference/GitHub, installed-app/user-data use, updater installation, arbitrary process/volume cleanup or target push/release authorized. Historical Nuxt/Codex incident not itself proven reproduced/fixed.
 
 ## Latest Authoritative Result
-**Pass — Implementation Review source round4 / CRR-005 / Full Re-Audit**, R2/D4.1/ARCH-REV-004/IR-005/DR-001, integrated source2c47bcd64 with base67994daba. Supported Product Scenario Gate: **Pass**; Material-Premise Gate: **Pass**. Overall **9.5/10**, every category>=9.2; no open source findings. Large/High unchanged. Next: **renewed independent API/E2E**, then proportional test review; no integrated final acceptance inferred.
+**Pass — Implementation Review source round5 / CRR-007 / Full Re-Audit**, R2/D4.1/ARCH-REV-004/IR-006/DR-002, source9b10fcd4d/base0fd9ca4b. Supported Scenario and Material-Premise Gates **Pass**; no open source finding. Score **9.5/10**, all ten>=9.2. Large/High unchanged. Next **renewed independent API/E2E**, then proportional test gate and Delivery; not final acceptance.

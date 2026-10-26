@@ -9,6 +9,7 @@
 | CRR-004 | api-e2e-test-review-report.md | Proportional successful-test review / API-REV-001 | No prior test-review result | Pass for Delivery | None |
 | CRR-005 | code-review-report.md | Implementation Review / IR-005 DR-001 integration | CRR-003 source Pass, CRR-004 test Pass on prior source | Pass for integrated API/E2E | None; CR-001/002 retained resolved |
 | CRR-006 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-002 | CRR-004 durable Pass; CRR-005 integrated source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
+| CRR-007 | code-review-report.md | Implementation Review / IR-006 DR-002 integration | CRR-005 source Pass / CRR-006 test gate on2c47 | Pass for renewed API/E2E | None; CR-001/002 remain resolved |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -117,3 +118,20 @@ None.
 - Current source-specific standalone/Studio/native/Codex/query/panel/recovery/IPC results replace the missing integrated journey evidence, not historical04/06. Cleanup receipt35 exact PIDs/7 roots absent. IMP-56 current full build succeeds; IMP-44 historical failure retained. Forced IMP-57 and no-work IMP-59 not used as active-work proof.
 - Next recipient `/software_engineering_team/delivery_engineer`, successful post-API review route with N/A gate satisfied. Delivery retains fresh-base/raw-proof/docs synchronization/AC-006 finalization. No automatic target push/release/install or platform certification.
 - Reviewer modified only separate test report/history. Source report, API/Delivery evidence and SDK dist prerequisites untouched; no test/build/app/provider execution.
+
+
+### CRR-007 — Fresh MCP-base integrated source review
+- Canonical source report; source round5 **Full Re-Audit**, triggered DR-002 → IR-006. Source9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c, evidenceca2f0a86c, merge parentsb7ab9e3a4/0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e. R2/D4.1/SR001..008/ARCHREV004 unchanged; prior APIREV002/CRR006 retained at2c47, not current acceptance.
+- Shared core MCP/runtime boundaries justify Full Re-Audit despite60/61 authored ticket files unchanged. Rechecked all structural categories/cumulative size, background observation and host process authority. One changed ticket source is server-runtime installer; incoming MCP ownership traced to both transports and current vault consumer. No new connection/cleanup owner at install, startup cancellation/transfer preserved. Both-parent generated selection and document lessons verified.
+
+| Prior finding / concern | Prior | Current | Verification |
+|---|---|---|---|
+| CR-001 | Resolved | Remains resolved | Scope byte-identical; retirement discriminator/queued original-budget stop retained, current regressions pass |
+| CR-002 | Resolved | Remains resolved | Manager/executor byte-identical; unconsumed capture listener release/history retained, current regressions pass |
+| DR-002 conflict concerns | Delivery Blocked | Resolved at source boundary | Full current generated schema/operations, both lessons/Notice retained, synchronous resolver install and real consumers checked |
+
+- CR-C12 supported integration mechanism satisfied; CR-C13 rejects product-defect inference from diagnosed Node storage host issue, retaining failed run. BEH001..006/SCN001..008/MP001..004 confirmed, no material ambiguity/new behavior/follow-up.
+- Result **Pass**,9.5/10 every category>=9.2; Large/High unchanged. CR-07 audit61 files<=500 max497, generated hash matches IMP61. No reviewer source/test edits or execution reruns.
+-1110 current unique checks:246 core+575 server+156 Electron+123 web+10 dummy-secret real MCP transport. IMP69 initial110/10 failure retained; IMP70 focused31 includes28 repeats+3 new. Local dependency source verifies storage-shadow cause, environment correction not product workaround. Full current IMP72 beta.10 unsigned build/DMG VALID; IMP73 controlled UI/no-work quit220ms not provider/active-work proof.
+- Route source Pass to `/software_engineering_team/api_e2e_engineer` only. Renew03/05/06B/07/09/09B/10,02 via06B; historical04/06 not duplicated, old95.3% not current. Delivery fresh-base/docs/raw evidence/AC006 finalization remains.
+- No paid inference/GitHub, installed app/user data, target merge/push/release/install or platform certification. Only source report/history/new audit modified; test/API/Delivery records and SDK dist prerequisites preserved.
