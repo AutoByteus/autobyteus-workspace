@@ -6,6 +6,7 @@
 | CRR-001 | code-review-report.md | Implementation Review / IR-002 ready | N/A | Fail — implementation-owned Local Fix | CR-001, CR-002 |
 | CRR-002 | code-review-report.md | Implementation Review / IR-003 correction | Fail — Local Fix | Pass for API/E2E | CR-001, CR-002 resolved |
 | CRR-003 | code-review-report.md | Implementation Review / IR-004 R2 visibility | Pass for D3.1 only | Pass for R2 API/E2E | None open; CR-001/002 remain resolved |
+| CRR-004 | api-e2e-test-review-report.md | Proportional successful-test review / API-REV-001 | No prior test-review result | Pass for Delivery | None |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -69,3 +70,17 @@ None.
 - Primary recipient: `/software_engineering_team/api_e2e_engineer`, returned implementation-review-pass rule. Team single-recipient outcome routing, no duplicate forwarding.
 - Remaining: real conversation→query→panel and current lifecycle/noninterference acceptance, unresolved canonical API cases, true Windows/WSL limits, distribution build, delivery docs/integration. Preserve API-04/06 exact-source receipts; no historical Codex/Nuxt incident resolution or overall readiness claim.
 - Reviewer edits only canonical report/history and cumulative audit receipt. Two untracked SDK dist prerequisites untouched. No installed app/data, merge/release/install.
+
+
+### CRR-004 — Successful API/E2E durable test-code review
+- Canonical report: `api-e2e-test-review-report.md`; proportional successful-test review round1. Not failure-origin review or implementation-source re-audit; `code-review-report.md` remains CRR-003 unchanged.
+- Trigger API-REV-001 Pass /95.3% executable-validation confidence, commitd16a07657. Source9bd72c208 unchanged. R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-004 / CRR-003; Delivery revision N/A. Large/High unchanged.
+- Durable scope: added `autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts` and `native-standalone-host-fixture.mjs`. No source/shared-harness changes or test removals. Reviewed both complete files and API-03 final assertions/results; current file hashes match recorded provenance.
+- Supported scenario: ordinary public standalone application agent work, first initiator termination with retained previews, second retained runtime, then public host.close drains resistant/adopted work while preserving unrelated listener/data. Basis SCN-003/004 and AC-004/005 retained by R2, not invented from test internals.
+- Proportional checks all Pass: grouping, meaningful outcome assertions, fixture reuse, clean private environment/ownership, bounded polling and cleanup, no stale/compatibility-only tests, real trigger/public SDK/application path. Scripted inference not confused with paid-provider execution. Temporary desktop scripts/results considered evidence, not durable code scope.
+- Prior test findings: none. CR-001/002 remain resolved in unchanged source history; no reopening. New findings/follow-ups: none. No source scorecard or confidence rescore for this entry point.
+- Result: **Pass**. No rerun: final test1/1,855ms host close/four absent command+anchor pairs/sentinels/cleanup and final hashes are conclusive at this boundary. Reviewer performed read-only inspection/hash comparisons, not executable validation.
+- Cumulative evidence retains actual current Codex conversation/query/panel, selection/reload, native/Codex restart/quit, conflict recovery and IPC/fault coverage at their stated boundaries. Final audit49 exact PIDs/12 roots absent. Original API-04/06 still historical; no silent source relabelling.
+- Selected returned recipient: `/software_engineering_team/delivery_engineer`, successful post-API/E2E test-code-review rule. No duplicate forwarding.
+- Mandatory remaining delivery gates: IMP-44 overall DMG resize35 packaging failure; AC-006 integrated-base/finalization evidence; impact-based reruns/rebuild/docs verification. Actual Windows/WSL and strict standalone vue-tsc unrun, no platform certification. No overall release acceptance/historical incident-fix claim or merge/release/install authorization.
+- Reviewer changes only separate test report and this history. Existing source report, API artifacts and SDK dist prerequisites untouched.
