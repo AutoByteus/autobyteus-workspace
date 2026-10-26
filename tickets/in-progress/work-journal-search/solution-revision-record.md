@@ -1,0 +1,114 @@
+# Solution Revision Record
+
+## Revision Index
+
+| Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SR-001 | Mixed (Requirements, then Design round 1) | Initial coherent baseline after investigation and experiments (2026-10-21 → 2026-10-26) | N/A | N/A | Approved; refined in place the same day (UD-016) | BEH-001 to BEH-005; R-001 to R-016; AC-001 to AC-013; UD-001 to UD-015; DEC-001, DEC-002 | Requirements approved by the user; Product Design requested for the Memory page (R-014); architecture design started |
+| SR-002 | Mixed (Product design integrated; requirements refinement; Design round 2) | Product Team: Design Completed, approved by the user 2026-10-26 | N/A | SR-001 Approved | Approved | R-002, R-009, R-013, R-014; UD-017; design § Product Design Integration, Change Scope, Removal Plan, Interfaces, Tool Contract | The complete package goes to architecture review |
+| SR-003 | Design | Architecture review ARCH-REV-001: Fail, Design Impact | AR-001, AR-002, AR-003 | SR-002 Approved (requirements); design Needs Revision | Requirements Approved (unchanged); design Ready for re-review | DS-001, DS-003, DS-006, § Meaning Step Rules, § Tool Contract, § Removal Plan | Corrections made; back to the architecture reviewer |
+
+## Revision Entries
+
+### SR-001 — Memory search over Work Journals: approved requirements baseline
+
+- **Phase and classification:** Requirements, Initial Baseline.
+- **Trigger:** Project Task `autobyteus-185` (read in full with `get_project_task` on 2026-10-25 and 2026-10-26; no comments), the user's direction in conversation 2026-10-21 → 2026-10-26, and the Project Task Manager's relayed use cases (2026-10-21/22).
+- **Triggering finding IDs:** N/A.
+- **Prior authoritative status:** N/A.
+- **Current status:** requirements `Approved`; design in progress.
+- **IDs affected:** all of `requirements-doc.md`.
+- **Scenario basis:**
+  - DDNS on this node (`codex_45ce…`, 2026-08-25). The Task's original DDNS story happened on another machine (the user, 2026-10-25), so it is out of reach by design (CM-10).
+  - Fresh copy in another workspace (PTM input 2026-10-22).
+  - The 31-question known-answer set (private evidence).
+- **Why recorded:** the first coherent baseline after the experiments (`memory-search-evaluation-report.md`) and all user decisions.
+- **Canonical sections:** `requirements-doc.md` (all); `investigation-notes.md` (all, including Experiment Results, Design Validation, Two-Gate Evaluation, Baseline Without The Index, Scenario sections); `memory-search-evaluation-report.md`; `follow-ups.md` (FU-001, FU-002, FU-003, FU-005).
+- **Supplemental artifacts:**
+  - `memory-search-evaluation-report.md` (evidence);
+  - `probes/` (scripts, public question categories, results by ID);
+  - `product-design-request.md` (Product Design brief).
+- **Product design evidence:** none yet; requested (R-014).
+- **Intended behavior changed:** N/A (baseline).
+- **Approval:** the user, 2026-10-26: "do you think we're ready for the design? … If you were ready for the design, please". This followed the consolidated requirements and the additions R-013 (pipeline), R-016 (quality check) and UD-013 to UD-015. Individual decisions are dated in `requirements-doc.md` § Decisions.
+- **Supplement versions:** as in this worktree on 2026-10-26.
+- **Design or review basis invalidated:** N/A.
+- **Task size and risk:** N/A before design completion.
+- **Handoff:**
+  - Product Design Requested → `/product_team` (the user approved the Product Team for the Memory page design on 2026-10-23); brief `product-design-request.md`. Delegated 2026-10-26 with `delegate_task`: team run `product_team_f4c754df20bf4af0adb9563f9b2e28da`, coordinator `product_ui_ux_designer_6ed6962b6cab4337bd683b3b652952b1`; no separate Task (the Solution Designer works on a delegated Task).
+  - Architecture design continues in parallel.
+- **Downstream impact:** the Memory page UI follows the Product Team's approved specification; the backend design does not depend on its visual choices.
+- **Refinement, same day (2026-10-26, before any design was authoritative):** UD-016, the user. Memory Compactor runs are indexed like any other run, replacing DEC-001. Affected: R-004, R-016, AC-006. Intended behavior changed: Yes, small; approved by the user in conversation.
+- **Remaining gaps:** none blocking.
+- **Next action:** design spec; integrate the Product outcome; classify and hand off.
+
+### SR-001, Design Round 1 — Architecture Design (2026-10-26)
+
+- **Phase:** Design (first complete architecture design on the approved SR-001 requirements).
+- **Artifacts:**
+  - `design-spec.md` (new);
+  - `investigation-notes.md` § Architecture Investigation Findings (AE-01 to AE-21);
+  - `follow-ups.md` (FU-003 narrowed).
+- **Key decisions:**
+  - new `memory-search` subsystem with one public boundary (`MemorySearch`);
+  - indexing pipeline: Find runs → Journals → Text index (contentless FTS5) → Meaning index (journal cards, `EmbeddingIndex`);
+  - search: interleaved tiers, grouped per run, newest part first, snippets through the journal service, secrets masked;
+  - boundary additions: `WorkJournalTarget.runtimeKind` nullable, journal change notification, journal entry reader and read API, `EmbeddingIndex.nearest`;
+  - tool `search_memory` in the manifest pattern (native and MCP; asking run excluded);
+  - Memory page API split by subject plus `RUN_FOLDER`;
+  - `TaskTeamRootMemorySource` for task teams (UD-008; AE-20, AE-21);
+  - removal of the per-run episodic/semantic server path and tabs;
+  - `GLOSSARY.md` Memory section.
+- **Classification:** `task_size=Large`, `architectural_risk=High` (design § Task Size And Architectural Risk).
+- **Product design:** requested; the web mapping completes from the approved Product spec (expected SR-002).
+- **Intended behavior changed:** No (realizes SR-001).
+- **Design approval:** the user, 2026-10-26: "Yes … show me your data flow spine".
+- **Handoff:** `handoff-architecture-review.md` → `/software_engineering_team/architecture_reviewer` (rule: Large/High).
+- **Review on hold (2026-10-26):** the user: "you should wait until the product team finished the ui design". The reviewer was asked to hold. The package goes to review once, complete, after the Product spec is integrated (SR-002).
+- **Next action:** wait for the Product Team's approved UI/UX design; integrate it (SR-002); then send the complete package to architecture review.
+
+### SR-002 — Product Design Integrated (2026-10-26)
+
+- **Classification:** Refinement (behavior-defining supplement approved).
+- **Trigger:** the Product UI/UX designer's Design Completed message (run `product_ui_ux_designer_6ed6962b6cab4337bd683b3b652952b1`). The user approved the UI after four review rounds: "Oh, I think that the UI is correct now. I feel it's good."
+- **Supplement:** `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md`, VIS-001 to VIS-024, design repository `personal` @ `d01192275c`.
+- **Requirements refined (UD-017):**
+  - R-002: three strength levels, Strong / Fair / Weak;
+  - R-009: search available once the Text index has content;
+  - R-014: Browse · Search · Index; run detail Work Journal and Raw Traces; **Working Context removed**; exception-only badges; task-team tag.
+- **Intended behavior changed:** Yes (approved by the user through the Product design).
+- **Design changed:**
+  - answers to the spec's eight open points;
+  - `EmbeddingIndex.nearest` relevance in three values;
+  - index status shape;
+  - journal file listing fields;
+  - result subject with `agentDefinitionId`;
+  - Working Context removal path (memory view and run-history call);
+  - availability with `hasWorkJournal`;
+  - `isTaskTeam` and `startedByAgentName`;
+  - explicit "embedding model changed" rule;
+  - web file mapping.
+- **Delegation:** the Product delegation has no Task of its own to close (the Solution Designer works on a delegated Task).
+- **Classification:** unchanged, `task_size=Large`, `architectural_risk=High`.
+- **Handoff:** `handoff-architecture-review.md` (updated for SR-002) → `/software_engineering_team/architecture_reviewer`.
+
+### SR-003 — Architecture Review Corrections (2026-10-26)
+
+- **Classification:** Design Impact (ARCH-REV-001: Fail; no Requirement Gap; Large/High confirmed).
+- **Trigger:** `design-review-report.md` (architecture reviewer run `architecture_reviewer_a0649733ed664b98994f7a77b7dcdce1`).
+- **Corrections:**
+  - **AR-001:** the Meaning step always syncs the complete card set; when it may run (no download outside the user's click); DS-003 and DS-006 in call order; `nearest` defined for every readiness case; the meaning job after a restart is created by the first search or live update, not at server start.
+  - **AR-002:** ordered pointer rule for meaning matches, card parts with line ranges stored, evaluation check.
+  - **AR-003:** `memory.generated.ts` keys removed in both languages.
+  - **Non-blocking notes R-1 to R-4:** answered in § Review Corrections.
+- **Intended behavior changed:** No. Requirements unchanged (SR-002 approval stands).
+- **Classification:** unchanged, Large/High.
+- **Handoff:** re-review of AR-001 to AR-003 and the sections they touch → `/software_engineering_team/architecture_reviewer`.
+
+### SR-003 Addendum — Architecture Review Pass (2026-10-26)
+
+- **ARCH-REV-002: Pass.** The reviewer delivered the package to `/software_engineering_team/implementation_engineer` (no duplicate forwarding by the Solution Designer).
+- **Non-blocking notes applied to the design text (no behavior change):**
+  - R-5: an explicit `collection: "notSynced"` result from `nearest`;
+  - R-7: matches newest first within a run.
+- **R-6 (Work Journal empty-state copy):** to be recorded as a requirements decision with the user's confirmation before code review.

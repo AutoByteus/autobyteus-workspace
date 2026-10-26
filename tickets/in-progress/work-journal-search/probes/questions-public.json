@@ -1,0 +1,294 @@
+[
+ {
+  "id": "Q01",
+  "category": "infrastructure setup: where is it (the Task's DDNS question)",
+  "language": "en",
+  "accepted_runs": [
+   "codex_45ce1b9e80ea42db869dc86615d51fc3"
+  ]
+ },
+ {
+  "id": "Q02",
+  "category": "infrastructure setup, other words",
+  "language": "en",
+  "accepted_runs": [
+   "codex_45ce1b9e80ea42db869dc86615d51fc3"
+  ]
+ },
+ {
+  "id": "Q03",
+  "category": "infrastructure setup, other words",
+  "language": "en",
+  "accepted_runs": [
+   "codex_45ce1b9e80ea42db869dc86615d51fc3"
+  ]
+ },
+ {
+  "id": "Q04",
+  "category": "a game we made: where",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_0b32b35478f44acdbd1bd472c44157",
+   "daily_assistant_general_agent_1356",
+   "daily_assistant_ca6ba91e5fda457f87cfd7d7905c5d",
+   "daily_assistant_0cac86d0c94d4b8eaf9007df"
+  ]
+ },
+ {
+  "id": "Q05",
+  "category": "a game we made: where",
+  "language": "en",
+  "accepted_runs": [
+   "codex_431f19f1c88d4581829830c83bbc9394",
+   "daily_assistant_b2c1cd14f5304d6a8dab124548",
+   "daily_assistant_677f865b9ce140f9a51557bfc4"
+  ]
+ },
+ {
+  "id": "Q06",
+  "category": "a game we made, described by its characters",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_9784d6c45cd842cda664941b24"
+  ]
+ },
+ {
+  "id": "Q07",
+  "category": "a game we made (Chinese)",
+  "language": "zh",
+  "accepted_runs": [
+   "daily_assistant_6bf3d914e956467cb00f126274"
+  ]
+ },
+ {
+  "id": "Q08",
+  "category": "document analysis",
+  "language": "en",
+  "accepted_runs": [
+   "codex_9c30a8ec5af5437eaa2834a91b85afd3"
+  ]
+ },
+ {
+  "id": "Q09",
+  "category": "document conversion: output location",
+  "language": "en",
+  "accepted_runs": [
+   "codex_c6ca02eb14b94d0fa167f56210793f39"
+  ]
+ },
+ {
+  "id": "Q10",
+  "category": "translation review (Chinese)",
+  "language": "zh",
+  "accepted_runs": [
+   "codex_59fcbed5805544a7983e9ef54e181738"
+  ]
+ },
+ {
+  "id": "Q11",
+  "category": "a calculation for a person",
+  "language": "en",
+  "accepted_runs": [
+   "codex_5c3f921c9ca34f9785a7eda4136701f1"
+  ]
+ },
+ {
+  "id": "Q12",
+  "category": "a personal document: where",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_feb311e786054ec1acd79eae16"
+  ]
+ },
+ {
+  "id": "Q13",
+  "category": "software upgrade, paraphrased (different words)",
+  "language": "en",
+  "accepted_runs": [
+   "codex_df5ad5c0806a4e4fb0bbd972e79ff585"
+  ]
+ },
+ {
+  "id": "Q14",
+  "category": "container image change",
+  "language": "en",
+  "accepted_runs": [
+   "codex_607a888cb8f644adbad30e7ab78c2f17"
+  ]
+ },
+ {
+  "id": "Q15",
+  "category": "browser problem: cause",
+  "language": "en",
+  "accepted_runs": [
+   "codex_767f0aad2cc8475099ef368331ce74ef"
+  ]
+ },
+ {
+  "id": "Q16",
+  "category": "tool error: cause",
+  "language": "en",
+  "accepted_runs": [
+   "codex_c5d6874095f4425982696c85153b0e21"
+  ]
+ },
+ {
+  "id": "Q17",
+  "category": "skill change",
+  "language": "en",
+  "accepted_runs": [
+   "agent_package_creator_95feafdf9cbb4c269df549bf"
+  ]
+ },
+ {
+  "id": "Q18",
+  "category": "agent team quality improvement",
+  "language": "en",
+  "accepted_runs": [
+   "skill_optimizer_1ff79c59025f43bda84fdab3cd",
+   "skill_optimizer_10b53f9202d646429d6a84603b",
+   "skill_optimizer_eec486dbe3c44a1fa66c624a66"
+  ]
+ },
+ {
+  "id": "Q19",
+  "category": "agent team behaviour (Chinese)",
+  "language": "zh",
+  "accepted_runs": [
+   "skill_optimizer_9d7d9ff727c340d2a4d8be2476",
+   "skill_optimizer_ee80d2a9dc4445db8eb2d7064c"
+  ]
+ },
+ {
+  "id": "Q20",
+  "category": "does a team exist",
+  "language": "en",
+  "accepted_runs": [
+   "codex_0eff07c1aca6404c9c57717980e11488"
+  ]
+ },
+ {
+  "id": "Q21",
+  "category": "prototype website: where",
+  "language": "en",
+  "accepted_runs": [
+   "product_prototyper_5e5dfa42520d455a80e1a7e"
+  ]
+ },
+ {
+  "id": "Q22",
+  "category": "web research (Chinese)",
+  "language": "zh",
+  "accepted_runs": [
+   "daily_assistant_general_agent_8613",
+   "2fcd20db-e873-48f6-847c-136b5d49a5e8"
+  ]
+ },
+ {
+  "id": "Q23",
+  "category": "tutorial video work",
+  "language": "en",
+  "accepted_runs": [
+   "codex_29de1fd8ba8e444e8dd8f10e6683a312"
+  ]
+ },
+ {
+  "id": "Q24",
+  "category": "UI fix",
+  "language": "en",
+  "accepted_runs": [
+   "codex_3bb1091f2aa740bf93f18edb31631e9d"
+  ]
+ },
+ {
+  "id": "Q25",
+  "category": "UI consistency work",
+  "language": "en",
+  "accepted_runs": [
+   "codex_5bae2dc0dd50426cb5760b5d5905c677",
+   "solution_designer_032fbe5f173b481cbc6bc7",
+   "delivery_engineer_763ebf7f338e4c68924c07",
+   "product_ui_ux_designer_7c5b22b105584140b"
+  ]
+ },
+ {
+  "id": "Q26",
+  "category": "business application decision, full cue with the new name",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_1d9a4112db55467ea52b85e9b1c34af3",
+   "codex_7e59a8dde05a4b41beebc9d9565d6c64"
+  ]
+ },
+ {
+  "id": "Q27",
+  "category": "current product name (\"what is true now\")",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_1d9a4112db55467ea52b85e9b1c34af3"
+  ]
+ },
+ {
+  "id": "Q28",
+  "category": "business application, vague cue",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_1d9a4112db55467ea52b85e9b1c34af3",
+   "codex_7e59a8dde05a4b41beebc9d9565d6c64",
+   "daily_assistant_eb2df24a45234480be56c5a38e9e448b",
+   "daily_assistant_5e438a1d265b4e32bd802265fcfbb45f",
+   "daily_assistant_3e523bdf41c048ab9a1257e60faf03c4"
+  ]
+ },
+ {
+  "id": "Q29",
+  "category": "business application (Chinese)",
+  "language": "zh",
+  "accepted_runs": [
+   "daily_assistant_1d9a4112db55467ea52b85e9b1c34af3",
+   "codex_7e59a8dde05a4b41beebc9d9565d6c64"
+  ]
+ },
+ {
+  "id": "Q30",
+  "category": "news question; run has no recorded history",
+  "language": "en",
+  "accepted_runs": [
+   "codex_b7185a430f054e518eb9e6543527d0d5"
+  ]
+ },
+ {
+  "id": "Q31",
+  "category": "a personal finance question",
+  "language": "en",
+  "accepted_runs": [
+   "daily_assistant_81a32cf1f60543c2b9ac6077b102d1"
+  ]
+ },
+ {
+  "id": "Q32",
+  "category": "creating a team from an existing team",
+  "language": "en",
+  "accepted_runs": [
+   "skill_optimizer_f89d97c7c69d41b0b0570cf85d"
+  ]
+ },
+ {
+  "id": "N01",
+  "category": "off-topic (infrastructure never done)",
+  "language": "en",
+  "accepted_runs": []
+ },
+ {
+  "id": "N02",
+  "category": "off-topic (recipe)",
+  "language": "en",
+  "accepted_runs": []
+ },
+ {
+  "id": "N03",
+  "category": "off-topic (Chinese)",
+  "language": "zh",
+  "accepted_runs": []
+ }
+]

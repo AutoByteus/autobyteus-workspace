@@ -1,0 +1,284 @@
+# IMP-07 memory search gates (AC-001 to AC-005) on the isolated copy
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --questions <private gate file> [--asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305] --out <private>
+# Commits: run 1 at 0e1e9b5dde (with the build, IMP-06); run 2 at a844d4077a; run 3 at 9dcb4910f8 (runs 2 and 3 reuse the index of run 1; only the evaluation module changed)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy /tmp/wjs-copy/memory; 3,680 runs, 7,426 journal files; model granite-embedding-small-english-r2; host load averages 30-40 during runs 2 and 3 (shared machine; latencies are under that load)
+# Date: 2026-10-26
+# Questions: the private known-answer file (autobyteus-delivery-receipts/work-journal-search-evidence/queries.json): the 31 answerable questions Q01-Q29, Q31, Q32 (Q30 has no recorded history; N01-N03 are off-topic, IMP-11); Q13 with the two rephrasings its agent used (report section 6.2). Only IDs, ranks and counts are recorded here.
+
+## Run 1 (superseded): exact run-ID matching
+The question file stores accepted runs as run-ID prefixes (the probes matched with startswith); exact matching missed every prefixed answer. Fixed in a844d4077a.
+{
+ "questions": 31,
+ "gate1": {
+  "passed": 20,
+  "oneSearchTop10": 19,
+  "withinThreeSearches": 20
+ },
+ "gate2": {
+  "number1": 8,
+  "top3": 17,
+  "top3Share": 0.85,
+  "mrr": 0.6201388888888888,
+  "p90Ms": 544,
+  "maxMs": 872
+ },
+ "meaningPointers": {
+  "total": 67,
+  "textChunk": 21,
+  "cardPart": 25,
+  "firstRequest": 21,
+  "emptySnippet": 0
+ },
+ "unmaskedSecrets": 0
+}
+
+## Run 2: prefix matching
+The text tier's #1 for 15 of the 30 questions diagnosed (Q01, Q06-Q10, Q12, Q14, Q15, Q19, Q21, Q26, Q29, Q31, Q32) is solution_designer_80624588913d473bac3ef7d8c3d4d305 (this ticket's Solution Designer run): its journal quotes all 31 questions verbatim ("queries.json" 52 times). It is the only run that quotes 3 or more of them.
+{
+ "questions": 31,
+ "gate1": {
+  "passed": 31,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 31
+ },
+ "gate2": {
+  "number1": 11,
+  "top3": 26,
+  "top3Share": 0.8387096774193549,
+  "mrr": 0.5960957501280082,
+  "p90Ms": 595,
+  "maxMs": 856
+ },
+ "meaningPointers": {
+  "total": 67,
+  "textChunk": 21,
+  "cardPart": 25,
+  "firstRequest": 21,
+  "emptySnippet": 0
+ },
+ "unmaskedSecrets": 0
+}
+
+## Run 3 (the gate result): searching as the question file's authoring run (--asking-run; its own results left out by the same rule an asking agent gets)
+{
+ "questions": 31,
+ "gate1": {
+  "passed": 31,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 31
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 26,
+  "top3Share": 0.8387096774193549,
+  "mrr": 0.7288018433179723,
+  "p90Ms": 575,
+  "maxMs": 964
+ },
+ "meaningPointers": {
+  "total": 69,
+  "textChunk": 23,
+  "cardPart": 25,
+  "firstRequest": 21,
+  "emptySnippet": 0
+ },
+ "unmaskedSecrets": 0
+}
+
+Per question (rank in the first search's results; foundAtSearch = the search, 1-3, whose top 10 held an accepted run; ms = first search):
+[
+{
+"id": "Q01",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 186
+},
+{
+"id": "Q02",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 88
+},
+{
+"id": "Q03",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 191
+},
+{
+"id": "Q04",
+"rank": 8,
+"foundAtSearch": 1,
+"ms": 96
+},
+{
+"id": "Q05",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 55
+},
+{
+"id": "Q06",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 54
+},
+{
+"id": "Q07",
+"rank": 5,
+"foundAtSearch": 1,
+"ms": 72
+},
+{
+"id": "Q08",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 163
+},
+{
+"id": "Q09",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 299
+},
+{
+"id": "Q10",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 65
+},
+{
+"id": "Q11",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 65
+},
+{
+"id": "Q12",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 103
+},
+{
+"id": "Q13",
+"rank": null,
+"foundAtSearch": 3,
+"ms": 256
+},
+{
+"id": "Q14",
+"rank": 8,
+"foundAtSearch": 1,
+"ms": 575
+},
+{
+"id": "Q15",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 392
+},
+{
+"id": "Q16",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 496
+},
+{
+"id": "Q17",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 497
+},
+{
+"id": "Q18",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 363
+},
+{
+"id": "Q19",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 77
+},
+{
+"id": "Q20",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 324
+},
+{
+"id": "Q21",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 160
+},
+{
+"id": "Q22",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 94
+},
+{
+"id": "Q23",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 85
+},
+{
+"id": "Q24",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 265
+},
+{
+"id": "Q25",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 768
+},
+{
+"id": "Q26",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 964
+},
+{
+"id": "Q27",
+"rank": 7,
+"foundAtSearch": 1,
+"ms": 892
+},
+{
+"id": "Q28",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 206
+},
+{
+"id": "Q29",
+"rank": 1,
+"foundAtSearch": 1,
+"ms": 72
+},
+{
+"id": "Q31",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 164
+},
+{
+"id": "Q32",
+"rank": 2,
+"foundAtSearch": 1,
+"ms": 406
+}
+]
+
+## Reading against the acceptance criteria and the baseline
+- AC-001 gate 1: 31 of 31 within 3 searches; 30 of 31 in one search; Q13 at search 3 by rephrasing (baseline: the same).
+- AC-002 gate 2: top 3 for 26 of 31 = 83.9% (>= 80%); first-search p90 575 ms (<= 1 s), max 964 ms (<= 2 s), under load averages 30-40. Rank against the chosen v1 method's baseline (investigation notes, Design Validation V1: plain 2,000-character chunks + cards, compactor runs excluded: #1 19, top 3 26, MRR 0.744): #1 18, top 3 26, MRR 0.729. UD-016 indexes Memory Compactor runs (recorded as moving one question off #1), which accounts for #1 19 -> 18.
+- AC-003 DDNS: Q01-Q03 at #1.
+- AC-004 Chinese: Q07 #5, Q10 #1, Q19 #1, Q22 #1, Q29 #1 (5 of 5 pass gate 1).
+- AC-005: unmaskedSecrets 0 over every snippet of every search.
+- Meaning pointers (AR-002): 69 meaning matches; textChunk 23, cardPart 25, firstRequest 21; emptySnippet 0.
