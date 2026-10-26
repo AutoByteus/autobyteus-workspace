@@ -74,6 +74,8 @@ Principle 1.
 - **Again in autobyteus-282 (D-1):** the design restored 9 missing frozen files "whole, no trimming" on two unchecked premises: the trimmed versions were unrecoverable, and the frozen layer held whole copies. Both were false. Following the files' imports pulled in 68 library files, the secret vault among them. `tsc` still failed, because tracked siblings had been pruned in 280. 280's pruner was deterministic and still on disk. Fix (SR-002): restore whole, run the same pruner, prove each file a line subset of its source and every tracked file byte-identical, and commit the pruner.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made.
 
+- **Again in backend-port-conflict-20261024 (D4 reviewer lookup question, SR-008):** the design called AgentRunManager.getActiveRun a read-only lookup without following its registry delegate. Inactive discovery actually retires the entry, releases MCP/resources and notifies lifecycle owners. A visibility poll could therefore trigger cleanup. D4.1 specifies a map-only peekPublishedRun boundary plus exact-instance/activity observations before and after the read, leaving existing lifecycle pruning callers unchanged. Notice getter names taken as proof of observational semantics; trace the complete inactive path. Implementation/review of this correction remains pending.
+
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004)
 
 Principle 13.

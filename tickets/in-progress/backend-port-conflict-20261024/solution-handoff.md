@@ -1,7 +1,7 @@
-# Solution Handoff — Architecture Design Complete (R2 / D4 / SR-007)
+# Solution Handoff — Architecture Design Complete (R2 / D4.1 / SR-008)
 
 ## Outcome and requested next action
-Review the revised **R2 Approved / D4 Ready** package for in-ticket read-only Codex background visibility. **task_size: Large; architectural_risk: High.** The user explicitly chose this ticket, not a separate follow-up. This is a new design review, not a duplicate forwarding of ARCH-REV-003/CRR-002. Those passed D3.1/R1 only. No new implementation or expanded acceptance is claimed. Review DS-005 and its interaction with preserved shutdown/idle/turn contracts; route findings or the reviewed package under your rules.
+Review the revised **R2 Approved / D4.1 Ready** package for in-ticket read-only Codex background visibility. **task_size: Large; architectural_risk: High.** The user explicitly chose this ticket, not a separate follow-up. This is a new design review, not a duplicate forwarding of ARCH-REV-003/CRR-002. Those passed D3.1/R1 only. No new implementation or expanded acceptance is claimed. Review DS-005 and its interaction with preserved shutdown/idle/turn contracts; route findings or the reviewed package under your rules.
 
 ## Identity / workspace / base
 - Task project_task_8a0359c2-3b8e-47f1-a14a-d18d1459d8ca; package backend-port-conflict-20261024.
@@ -17,9 +17,9 @@ Historical user-confirmed Codex-launched test server origin is accepted. Exact o
 
 ## Canonical authorities — read before review
 - /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/requirements-doc.md — R2, explicit renewed scope approval and ACs.
-- /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/design-spec.md — D4, DS-001..004 retained; DS-005 is extension.
+- /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/design-spec.md — D4.1, DS-001..004 retained; DS-005 is extension.
 - /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/investigation-notes.md — cumulative evidence including E-024/P-012.
-- /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/solution-revision-record.md — SR-001..007 evolution and review/approval impact.
+- /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/solution-revision-record.md — SR-001..008 evolution and review/approval impact.
 - /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/background-visibility-scope-approval.md — exact in-ticket decision.
 - /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/codex-background-investigation.md — actual Codex P-009..011 with limitations.
 - /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/background-visibility-intake.md — historical separate-ticket recommendation, explicitly superseded.
@@ -50,3 +50,7 @@ Read the saved Task if that tool becomes available; get_project_task was unavail
 
 ## Routing
 Post-persistence get_handoff_rules on2026-10-26 returned Architecture Design Complete with task_size=Large or architectural_risk=High → /software_engineering_team/architecture_reviewer. Selected this sole matching outcome rule; attach this exact file and canonical R2/D4 context. No implementation or delegator duplicate forwarding.
+
+
+## Current ongoing-review correction — SR-008 / D4.1
+Two source-supported reviewer questions are corrected canonically, not implemented. E-025: existing getActiveRun prunes/releases inactive runs, so query must use NEW observational manager/registry peekPublishedRun (activeRuns map-only), captured object/isActive before and after await; never lifecycle lookup or retired-inclusive authority. Existing lifecycle callers stay unchanged. E-026: initial/reselected inactive Claude/AGY panel keeps its existing selected-context event-store rows even without previous composable snapshot, explicitly last-known/unavailable; empty event-store proves nothing about Codex, and successful snapshot is exclusive. Details in D4.1 Interfaces and renderer transition; required regression cases at its end. R2 approval, scope, Large/High and testing pause unchanged. Please continue ongoing review against D4.1; no new overall review verdict assumed.
