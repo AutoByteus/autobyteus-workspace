@@ -798,6 +798,48 @@ runs, or `null` when the runtime does not know one. Claude and Antigravity produ
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
 
+### Read-only Codex background-task inspection
+
+`agentBackgroundTaskView(agentRunId)` inspects an already published, active run.
+The resolver uses map-only `peekPublishedRun`, then checks the exact same run
+instance and activity again after the read. It does not use lifecycle-pruning
+getters, restore/start a run, send input, or trigger cleanup. Inactive or replaced
+runs return unavailable. This lookup matters for local Agent, Team and Org
+members: use the concrete selected `agentRunId`, not a guessed root identity.
+
+Codex reads its provider-tracked shell work that continues beyond a turn;
+foreground command Activity is not a background inventory. Turn completion
+alone is not command completion. Rows carry opaque task identity, a safe shell
+label, time, and confirmed running/completed/failed/stopped state where known.
+A lost command without terminal evidence is unknown. Raw arguments,
+environment, output and logs are excluded; `command` is null. Retained terminal
+observations are bounded to 100 per live thread; live/unknown rows are not
+removed to satisfy that terminal-history bound. This is runtime observation,
+not persistent history or an OS-wide process list.
+
+The selected expanded Background Tasks panel performs a network-only read on
+entry/re-entry and refreshes snapshot views two seconds after a read completes.
+Selection/node-binding generation checks and cancellation reject stale responses.
+Reload re-reads the live runtime without another model turn. Unsupported,
+inactive, failed or incomplete inspection is distinct from an empty successful
+snapshot. The panel retains last-known rows only for the same selection and
+labels their running count unconfirmed until recovery. No process stop button,
+new kill authority, idle timer change or change to `hasRunningBackgroundTasks`
+is introduced. Claude/Antigravity continue through their existing event-stream
+view and `BACKGROUND_TASK_UPDATED` behavior.
+
+### Native command scope at application shutdown
+
+Studio and standalone hosts own `NativeCommandShutdown`, passing its scope into
+native execution independently of individual agent lifetimes. The early close
+hook drains tracked native work; final close collects unconfirmed outcomes and
+still attempts the remaining host cleanup. Adopted shell survivors and work
+from already-ended runs therefore remain covered at backend restart/application
+quit. Ordinary individual-agent stop and idle policies are not changed. See
+[Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#owned-command-lifetime-and-host-shutdown)
+for retained anchors, bounded collective drain and ownership checks. Existing
+provider shutdown owners remain authoritative for non-native runtimes.
+
 Image context files are sent inline as image content blocks. The Codex and
 Claude paths share `agent-execution/shared/context-image-source.ts`. Local
 files are read and base64-encoded (at most 20 MB); http(s) URLs and data URLs

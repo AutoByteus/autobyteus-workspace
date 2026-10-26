@@ -1,0 +1,20 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts[39m
+
+[90mstdout[2m | tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts[2m > [22m[2mNativeCommandProcessScope[2m > [22m[2mforces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT
+[22m[39m{"check":"owned-survivor","pid":9937,"port":61920,"cleanup":{"outcomes":[{"outcome":"stopped"}]},"listenerReleased":true}
+
+ [32m✓[39m tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 7959[2mms[22m[39m
+     [33m[2m✓[22m[39m retains fast shell survivors and drains them after the command/agent context ends [33m 1003[2mms[22m[39m
+     [33m[2m✓[22m[39m forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT [33m 1092[2mms[22m[39m
+     [33m[2m✓[22m[39m fails closed on observation denial, then retains the lease for a verified later close [33m 819[2mms[22m[39m
+     [33m[2m✓[22m[39m returns fast/empty/nonzero commands and retires empty anchors [33m 615[2mms[22m[39m
+     [33m[2m✓[22m[39m settles forced timeout without RESULT and keeps partial output [33m 1781[2mms[22m[39m
+     [33m[2m✓[22m[39m host stop is not a tool timeout and duplicate close shares the promise [33m 900[2mms[22m[39m
+     [33m[2m✓[22m[39m drains multiple groups collectively while an unrelated scope survives [33m 1676[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 11:31:29
+[2m   Duration [22m 8.18s[2m (transform 74ms, setup 35ms, import 60ms, tests 7.96s, environment 0ms)[22m
+
