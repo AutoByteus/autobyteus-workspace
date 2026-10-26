@@ -26,5 +26,7 @@ node autobyteus-server-ts/scripts/evaluate-memory-search.mjs \
 - `--model` chooses the embedding model (catalog id; default: the default model). The model downloads into
   `--index-dir/embeddings` the first time.
 - The question file is a JSON array: `{"id": "Q01", "q": "…", "accept": ["<run id>", …], "rephrasings": ["…"]}`.
-  Any accepted run answers the question. A user's own question file stays private; the repository keeps only
-  this format.
+  Any accepted run answers the question; an accepted entry may be a prefix of the run ID.
+- Before measuring, the command waits until a search answers by meaning too (after a start the first search
+  loads the Meaning index's job).
+- A user's own question file stays private; the repository keeps only this format.

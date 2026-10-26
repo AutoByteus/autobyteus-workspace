@@ -56,6 +56,13 @@ for (;;) {
   console.error(`meaning index ${meaning.done}/${meaning.total}`);
   await new Promise((resolve) => setTimeout(resolve, 10_000));
 }
+// After a start the first search syncs the Meaning index's job (and loads the model): wait until a search answers
+// by meaning too, so every question is measured on both tiers.
+for (let i = 0; i < 120; i++) {
+  const warm = await memory.search("memory search warm-up", { limit: 1 });
+  if (!warm.coverage) break;
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+}
 const report = await evaluateMemorySearch(memory, readEvaluationQuestions(questionsFile));
 const output = { model: model.id, status: status(), report };
 const out = value("--out");

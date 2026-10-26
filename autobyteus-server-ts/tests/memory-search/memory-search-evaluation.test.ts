@@ -29,7 +29,7 @@ describe("memory search evaluation", () => {
   it("scores gate 1 within three searches, gate 2 on the first search, and counts meaning pointers", async () => {
     const answers: Record<string, MemorySearchResult> = {
       first: result(["r1", "x"], [match("text", null), match("meaning", "cardPart")]),
-      second: result(["x", "y", "r2"], [match("meaning", "textChunk")]),
+      second: result(["x", "y", "r2_full_run_id"], [match("meaning", "textChunk")]),
       miss: result(["x"], [match("meaning", "firstRequest", " ")]),
       rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
       never: result([]),
@@ -37,7 +37,8 @@ describe("memory search evaluation", () => {
     const memory = { search: async (query: string) => answers[query] ?? result([]) };
     const report = await evaluateMemorySearch(memory, [
       { id: "Q1", q: "first", accept: ["r1"] },
-      { id: "Q2", q: "second", accept: ["r2", "other"] },
+      // A prefix of a run ID accepts the run (question files may hold shortened IDs).
+      { id: "Q2", q: "second", accept: ["r2"] },
       { id: "Q3", q: "miss", accept: ["r3"], rephrasings: ["rephrased"] },
       { id: "Q4", q: "never", accept: ["r4"], rephrasings: ["never", "never"] },
     ]);

@@ -4,7 +4,8 @@ import { maskSecrets } from "../search/secret-masker.js";
 
 /**
  * One known-answer question (R-016): the cue as an agent or the user would write it, the runs that did the
- * work (any one of them answers it), and optionally up to two rephrasings an agent would try next.
+ * work (any one of them answers it; a run ID or a prefix of one), and optionally up to two rephrasings an agent
+ * would try next.
  */
 export type EvaluationQuestion = Readonly<{
   id: string;
@@ -36,7 +37,7 @@ export type EvaluationReport = Readonly<{
 
 type Search = { search(query: string, options: { limit?: number | null }): Promise<MemorySearchResult> };
 
-/** A question file: a JSON array of `{id, q, accept: [runId, …], rephrasings?: [text, …], note?}`. */
+/** A question file: a JSON array of `{id, q, accept: [runId or run ID prefix, …], rephrasings?: [text, …], note?}`. */
 export const readEvaluationQuestions = (filePath: string): EvaluationQuestion[] => {
   const parsed: unknown = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   if (!Array.isArray(parsed)) throw new Error("A question file is a JSON array.");
@@ -69,7 +70,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
   const pointers = { total: 0, textChunk: 0, cardPart: 0, firstRequest: 0, emptySnippet: 0 };
   let unmaskedSecrets = 0;
   for (const question of questions) {
-    const accepted = new Set(question.accept);
+    const isAccepted = (runId: string): boolean => question.accept.some((accepted) => runId.startsWith(accepted));
     let rank: number | null = null;
     let foundAtSearch: number | null = null;
     let ms = 0;
@@ -85,7 +86,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
         pointers[match.pointer]++;
         if (!match.snippet.trim()) pointers.emptySnippet++;
       }
-      const position = result.results.findIndex((run) => accepted.has(run.runId));
+      const position = result.results.findIndex((run) => isAccepted(run.runId));
       if (index === 0 && position >= 0) rank = position + 1;
       if (position >= 0) {
         foundAtSearch = index + 1;
