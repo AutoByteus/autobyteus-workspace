@@ -10,6 +10,7 @@
 | CRR-005 | code-review-report.md | Implementation Review / IR-005 DR-001 integration | CRR-003 source Pass, CRR-004 test Pass on prior source | Pass for integrated API/E2E | None; CR-001/002 retained resolved |
 | CRR-006 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-002 | CRR-004 durable Pass; CRR-005 integrated source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
 | CRR-007 | code-review-report.md | Implementation Review / IR-006 DR-002 integration | CRR-005 source Pass / CRR-006 test gate on2c47 | Pass for renewed API/E2E | None; CR-001/002 remain resolved |
+| CRR-008 | api-e2e-test-review-report.md | Proportional renewed test review / API-REV-003 | CRR-006 N/A; CRR-007 source Pass | Not Applicable — no durable changes; gate satisfied for Delivery | None |
 
 ## Revision Entries
 ### CRR-001 — Native maintenance-stop and foreground-capture regressions
@@ -135,3 +136,12 @@ None.
 -1110 current unique checks:246 core+575 server+156 Electron+123 web+10 dummy-secret real MCP transport. IMP69 initial110/10 failure retained; IMP70 focused31 includes28 repeats+3 new. Local dependency source verifies storage-shadow cause, environment correction not product workaround. Full current IMP72 beta.10 unsigned build/DMG VALID; IMP73 controlled UI/no-work quit220ms not provider/active-work proof.
 - Route source Pass to `/software_engineering_team/api_e2e_engineer` only. Renew03/05/06B/07/09/09B/10,02 via06B; historical04/06 not duplicated, old95.3% not current. Delivery fresh-base/docs/raw evidence/AC006 finalization remains.
 - No paid inference/GitHub, installed app/user data, target merge/push/release/install or platform certification. Only source report/history/new audit modified; test/API/Delivery records and SDK dist prerequisites preserved.
+
+
+### CRR-008 — Fresh MCP-base successful API/E2E test-review gate
+- Canonical `api-e2e-test-review-report.md`, proportional round3, API-REV-003 Pass atc6975088c78ee301b796304a434fbd5caa09ce7f. R2/D4.1/SR001..008/ARCHREV004/IR006/DR002/CRR007; Large/High unchanged.
+- Source9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c, review13d7f4293, base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e. Diff outside ticket empty; guidelines unchanged since source review. Existing durable two-file suite and six probes unchanged;9 provenance hashes independently match.
+- Result **Not Applicable — no durable test changes; gate satisfied**. No prior unresolved findings, no new finding/follow-up or source reopening. New temporary runner updates source/output constants and guards missing report marker; no behavior assertion weakening. Execution artifacts are not production source or durable scope.
+- Seven current result files Pass/no errors, exact current provenance. API independently reassesses95.3% (Broader Required/completed), not reviewer score.1110 foundation checks reused once; original storage-host failures/correction retained. Current five-file build identity and35 absent PID/7 absent root receipt reviewed. No reviewer tests/build/apps/providers or new cleanup audit.
+- Next `/software_engineering_team/delivery_engineer` for fresh-base/raw-evidence/docs/AC006 finalization. IMP72 current package succeeds; IMP73 fixture/no-work quit remains limited. Actual Windows/WSL/live vault/GitHub/paid inference/strict vue-tsc/historical incident unclaimed. No release/install/target push authorization added.
+- Reviewer changes only canonical test report/history; source/API/Delivery artifacts and two SDK dist prerequisites untouched.
