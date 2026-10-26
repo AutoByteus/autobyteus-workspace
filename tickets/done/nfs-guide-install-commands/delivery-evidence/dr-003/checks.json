@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-26T07:11:37.341047+00:00",
+  "checks": [
+    {
+      "name": "hygiene-input",
+      "command": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "licensing-input",
+      "command": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "secrets-input",
+      "command": [
+        "bash",
+        "scripts/check_secrets.sh",
+        "origin/personal..HEAD"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "hygiene-staged",
+      "command": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "licensing-staged",
+      "command": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "archive": "Verified then moved to tickets/done/nfs-guide-install-commands; upstream authority/evidence bytes preserved",
+  "nonTicketInputsEqualApi": true,
+  "historyPrefixPreserved": true
+}
