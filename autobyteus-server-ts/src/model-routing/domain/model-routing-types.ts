@@ -130,6 +130,8 @@ export type RoutingDecisionRecord = Readonly<{
   source: DecisionLaunchSource;
   taskKind: string | null;
   choiceReason: string | null;
+  /** Why the Model Router could not choose for this agent (it then runs on the delegating run's launch); null otherwise. */
+  routerFailure: string | null;
   notes: readonly string[];
 }>;
 
@@ -141,7 +143,7 @@ export interface RoutingDecisionRecorder {
 /** One agent of a decision record, as launch resolution knows it. */
 export type RoutingDecisionAgent = Pick<
   RoutingDecisionRecord,
-  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "notes"
+  "agentAddress" | "runtimeKind" | "llmModelIdentifier" | "source" | "taskKind" | "choiceReason" | "routerFailure" | "notes"
 >;
 
 /**

@@ -20,6 +20,7 @@ const agentOf = (address: string, launch: AgentLaunchConfiguration, source: Laun
   source: decisionSourceOf(source),
   taskKind: source.origin === "model_router" ? source.taskKind : null,
   choiceReason: source.origin === "model_router" ? source.choiceReason : null,
+  routerFailure: source.fallbacks.find((fallback) => fallback.reason === "router_failed")?.detail ?? null,
   notes: Object.freeze(launchNotesOf([{ name: getAgentTeamAddressBasename(address) ?? address, subject: "agent", launch, source }])),
 });
 

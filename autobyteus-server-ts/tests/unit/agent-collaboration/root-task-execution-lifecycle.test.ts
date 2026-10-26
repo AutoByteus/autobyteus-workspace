@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { configureRoutingDecisionRecorder } from "../../../src/model-routing/domain/routing-decision-recorder-binding.js";
+import type { RoutingDecisionRecord } from "../../../src/model-routing/domain/model-routing-types.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
@@ -570,6 +572,26 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-1" }, taskId: "ad_hoc_task_1", launchNotes: ["worker: fell back"] });
     await expect(delegateNew(lifecycle, { identity: caller }, { recipient_address: "/worker", description: "Again" }, { launchNotes: [] }))
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-2" }, taskId: "ad_hoc_task_2" });
+  });
+
+  it("autobyteus-32 REQ-012: a copy resolved with Model Routing on records its decisions once started, with the Task it created", async () => {
+    const written: RoutingDecisionRecord[][] = [];
+    const binding = configureRoutingDecisionRecorder({ record: async (records) => { written.push([...records]); } });
+    try {
+      const { lifecycle } = notesSetup();
+      const routingDecision = { copyAddress: "/worker", copyKind: "agent" as const, agents: [{ agentAddress: "/worker", runtimeKind: "codex_app_server",
+        llmModelIdentifier: "gpt-sol", source: "model_router" as const, taskKind: "writing", choiceReason: "Fits.", routerFailure: null, notes: [] }] };
+      await delegateNew(lifecycle, { identity: caller }, { recipient_address: "/worker", description: "Write the notes\nwith detail" }, { routingDecision });
+      expect(written).toEqual([[expect.objectContaining({
+        taskId: "ad_hoc_task_1", taskKey: null, projectId: null, taskTitle: "Write the notes", delegatingRunId: caller.agentRunId,
+        fromNode: null, copyAddress: "/worker", agentAddress: "/worker", source: "model_router", taskKind: "writing",
+      })]]);
+      // Without a draft (Model Routing off, or not a fresh catalog copy) nothing is recorded.
+      await delegateNew(lifecycle, { identity: caller }, { recipient_address: "/worker", description: "Again" }, {});
+      expect(written).toHaveLength(1);
+    } finally {
+      binding.close();
+    }
   });
 });
 

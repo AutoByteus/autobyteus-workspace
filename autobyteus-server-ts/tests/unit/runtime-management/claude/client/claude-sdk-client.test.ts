@@ -335,6 +335,26 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
+  it("autobyteus-32: a confined session loads only the user's settings, removes the shell tools and passes its hooks", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn((_input: unknown) => createMockQuery());
+    client.setCachedModuleForTesting({ query: queryFn });
+    const hook = vi.fn();
+    await client.beginStreamingSession({ resolveOptions: () => ({
+      systemPrompt: "",
+      sessionBinding: createSessionBinding(),
+      model: "default",
+      workingDirectory: "/tmp/claude-client-confined",
+      settingSources: ["user"],
+      extraDisallowedTools: ["Bash", "BashOutput", "KillShell"],
+      hooks: { PreToolUse: [{ hooks: [hook] }] },
+    }) }).open();
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(call.options.settingSources).toEqual(["user"]);
+    expect(call.options.disallowedTools).toEqual([...EXPECTED_DISALLOWED_BUILT_IN_TOOLS, "Bash", "BashOutput", "KillShell"]);
+    expect(call.options.hooks).toEqual({ PreToolUse: [{ hooks: [hook] }] });
+  });
+
   it("forwards typed thinking and effort options to the pinned Claude SDK", async () => {
     const client = new ClaudeSdkClient();
     const queryFn = vi.fn(() => createMockQuery());
