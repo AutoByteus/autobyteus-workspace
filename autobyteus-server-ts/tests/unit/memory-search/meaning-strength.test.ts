@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
+import { DEFAULT_EMBEDDING_MODEL_ID } from "../../../src/embeddings/catalog/embedding-model-catalog.js";
 import {
-  MEANING_BASELINE_RANK,
-  MEANING_FAIR_LIFT,
-  MEANING_STRONG_LIFT,
-  rateMeaningCandidates,
+  MEANING_CALIBRATION,
+  meaningCalibrationFor,
+  rateMeaningCandidates as rateWith,
 } from "../../../src/memory-search/search/memory-search-service.js";
+
+/** These tests use a fixed row so their arithmetic stays readable; the table's rows are checked below. */
+const ROW = { baselineRank: 200, fairLift: 0.0477, strongLift: 0.0567 };
+const MEANING_FAIR_LIFT = ROW.fairLift;
+const MEANING_STRONG_LIFT = ROW.strongLift;
+const rateMeaningCandidates = (candidates: Parameters<typeof rateWith>[0], keep: Parameters<typeof rateWith>[1]) => rateWith(candidates, keep, ROW);
 
 const card = (runKey: string, file = "work_journal_active.md") => `${runKey}/work_journal/${file}`;
 /** 300 candidates scored 0.90, 0.8995, …: rank r (1-based) scores 0.90 − 0.0005·(r − 1). */
@@ -12,12 +18,21 @@ const ladder = (idAt: (rank: number) => string) =>
   Array.from({ length: 300 }, (_, i) => ({ id: idAt(i + 1), score: +(0.9 - 0.0005 * i).toFixed(4) }));
 const keepAll = () => true;
 
-describe("meaning strength (SR-005: lift over the query's rank-200 baseline)", () => {
+describe("meaning strength (SR-005: lift over the query's rank-k baseline)", () => {
+  it("has a row per calibrated model; a model without one uses the default model's row, unverified (SR-005c)", () => {
+    expect(MEANING_CALIBRATION[DEFAULT_EMBEDDING_MODEL_ID]).toEqual({ baselineRank: 200, fairLift: 0.0689, strongLift: 0.0999 });
+    expect(MEANING_CALIBRATION["mdbr-leaf-ir"]).toEqual({ baselineRank: 20, fairLift: 0.0429, strongLift: 0.159 });
+    expect(meaningCalibrationFor("mdbr-leaf-ir")).toMatchObject({ row: "mdbr-leaf-ir", verified: true });
+    expect(meaningCalibrationFor("embeddinggemma-2")).toEqual({ row: DEFAULT_EMBEDDING_MODEL_ID, calibration: MEANING_CALIBRATION[DEFAULT_EMBEDDING_MODEL_ID], verified: false });
+    // A row's k is used: rank 20 of a 300-candidate ladder (0.8905) instead of rank 200.
+    const candidates = ladder((rank) => card(`agents/run_${rank}`));
+    expect(rateWith(candidates, keepAll, MEANING_CALIBRATION["mdbr-leaf-ir"]!).get("agents/run_1")?.strength).toBe("weak");
+  });
+
   it("rates a card by its lift over the score at rank 200: Strong, Fair, Weak at the calibrated lifts", () => {
     // Rank 200 scores 0.8005. Rank 1 lifts 0.0995, rank 100 lifts 0.0495, rank 150 lifts 0.0245.
     const candidates = ladder((rank) => card(`agents/run_${rank}`));
     const rated = rateMeaningCandidates(candidates, keepAll);
-    expect(MEANING_BASELINE_RANK).toBe(200);
     expect(rated.get("agents/run_1")?.strength).toBe("strong");
     expect(rated.get("agents/run_100")?.strength).toBe("fair");
     expect(rated.get("agents/run_150")?.strength).toBe("weak");

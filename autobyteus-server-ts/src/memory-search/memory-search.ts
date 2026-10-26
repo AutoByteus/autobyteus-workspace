@@ -43,14 +43,15 @@ export class MemorySearch {
     this.memoryDir = path.resolve(deps.memoryDir);
     const journals = deps.journals ?? getWorkJournalService();
     const embeddings = deps.embeddings ?? getEmbeddingIndex;
+    const activeModelId = deps.activeModelId ?? (() => resolveActiveEmbeddingModel().id);
     this.store = new MemorySearchStore(path.join(deps.appDataDir, "memory-search", "memory-search.sqlite"));
     this.pipeline = new MemoryIndexPipeline({
       store: this.store, journals, embeddings,
       discovery: deps.discovery ?? new MemoryRunDiscovery(deps.memoryDir),
-      activeModelId: deps.activeModelId ?? (() => resolveActiveEmbeddingModel().id),
+      activeModelId,
       quietMs: deps.quietMs,
     });
-    this.searchService = new MemorySearchService({ store: this.store, journals, embeddings });
+    this.searchService = new MemorySearchService({ store: this.store, journals, embeddings, activeModelId });
   }
 
   /** Server start (step 9): follow journal changes; catch up when the index was built before. Loads no model. */

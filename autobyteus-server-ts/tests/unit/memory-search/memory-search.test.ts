@@ -158,6 +158,17 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     expect(snippet).not.toMatch(/sk-[a-z]/);
   });
 
+  it("shows a match found by both tiers once, with the stronger strength and its tier's label (SR-005c)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    // "docker" is a weak text match in designer_1's chunk; its meaning card points at that same chunk and is strong.
+    const result = await memory.search("docker container on a raspberry");
+    const designer = result.results.find((run) => run.runId === "designer_1")!;
+    expect(designer.matches).toHaveLength(1);
+    expect(designer.matches[0]).toMatchObject({ matchedBy: "meaning", strength: "strong", pointer: "textChunk" });
+    expect(result.note).toBeNull();
+  });
+
   it("says when nothing matches or only weak matches exist, never that memory is empty", async () => {
     memory.startIndexing();
     await built(memory);

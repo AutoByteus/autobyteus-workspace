@@ -11,6 +11,7 @@ import type {
 import { containsTerm, queryTerms, termTokens, toFtsQuery } from "../index/memory-text-normalizer.js";
 import { MEMORY_CARD_COLLECTION } from "../pipeline/memory-index-pipeline.js";
 import type { MemorySearchStore, StoredCard, TextCandidate } from "../store/memory-search-store.js";
+import { DEFAULT_EMBEDDING_MODEL_ID } from "../../embeddings/catalog/embedding-model-catalog.js";
 import { maskSecrets } from "./secret-masker.js";
 
 /** Chunks the text index returns per search (report § 8). */
@@ -27,6 +28,8 @@ export type MemorySearchServiceDependencies = Readonly<{
   store: MemorySearchStore;
   journals: Journals;
   embeddings: () => Pick<EmbeddingIndex, "nearest">;
+  /** The active embedding model, for its meaning-strength row. */
+  activeModelId: () => string;
 }>;
 
 /** What one search found, before the facade adds coverage: the meaning tier's state with it. */
@@ -42,15 +45,33 @@ type Pointer = {
 
 /**
  * Meaning strength (SR-005, § Meaning Strength): how far a card stands out from the query's own score distribution.
- * The baseline is the score at rank `MEANING_BASELINE_RANK` among all `nearest` candidates (the last candidate when
- * there are fewer); lift = score − baseline. Calibrated with the R-016 evaluation on the isolated copy (SR-005b,
- * IMP-18/IMP-19): off-topic cues' largest lift 0.0420 and the smallest best lift of an answerable question that
- * relies on meaning 0.0535 at rank 200, so Fair at 0.0477 has a margin of ±0.0057; Strong at 0.0567 is the
- * answerable questions' 75th percentile of best lifts.
+ * The baseline is the score at rank `baselineRank` among all `nearest` candidates (the last candidate when there
+ * are fewer); lift = score − baseline; Strong at `strongLift`, Fair at `fairLift`, else Weak.
  */
-export const MEANING_BASELINE_RANK = 200;
-export const MEANING_FAIR_LIFT = 0.0477;
-export const MEANING_STRONG_LIFT = 0.0567;
+export type MeaningCalibration = Readonly<{ baselineRank: number; fairLift: number; strongLift: number }>;
+
+/**
+ * Per embedding model (SR-005c), calibrated with the R-016 evaluation on the isolated copy (IMP-22, IMP-23) under
+ * the three hard constraints; Fair at the centre of the window between the off-topic cues' largest lift and the
+ * smallest best lift of an answerable question that relies on meaning, Strong at the answerable questions' 75th
+ * percentile of best lifts.
+ * - Granite R2: window (0.0611, 0.0768], margins +0.0078 / +0.0079.
+ * - LEAF-IR: window (0.0407, 0.0451], margins ±0.0022 (a known thin margin of that model).
+ */
+export const MEANING_CALIBRATION: Readonly<Record<string, MeaningCalibration>> = {
+  [DEFAULT_EMBEDDING_MODEL_ID]: { baselineRank: 200, fairLift: 0.0689, strongLift: 0.0999 },
+  "mdbr-leaf-ir": { baselineRank: 20, fairLift: 0.0429, strongLift: 0.159 },
+};
+
+/** The row for a model; a model without one uses the default model's row, unverified. */
+export const meaningCalibrationFor = (modelId: string): Readonly<{ row: string; calibration: MeaningCalibration; verified: boolean }> => {
+  const own = MEANING_CALIBRATION[modelId];
+  return own
+    ? { row: modelId, calibration: own, verified: true }
+    : { row: DEFAULT_EMBEDDING_MODEL_ID, calibration: MEANING_CALIBRATION[DEFAULT_EMBEDDING_MODEL_ID]!, verified: false };
+};
+
+const STRENGTH_RANK: Record<MemoryMatchStrength, number> = { weak: 0, fair: 1, strong: 2 };
 
 /** A run's best card among the meaning candidates, and its strength. */
 export type MeaningMatch = Readonly<{ journalFile: string; strength: MemoryMatchStrength }>;
@@ -60,10 +81,14 @@ export type MeaningMatch = Readonly<{ journalFile: string; strength: MemoryMatch
  * asking run's cards are left out (R-11), so one query rates the same for an agent and on the page. A card with no
  * positive similarity is not a match at all.
  */
-export const rateMeaningCandidates = (candidates: readonly NearestMatch[], keep: (runKey: string) => boolean): Map<string, MeaningMatch> => {
+export const rateMeaningCandidates = (
+  candidates: readonly NearestMatch[],
+  keep: (runKey: string) => boolean,
+  calibration: MeaningCalibration,
+): Map<string, MeaningMatch> => {
   const byRun = new Map<string, MeaningMatch>();
   if (!candidates.length) return byRun;
-  const baseline = candidates[Math.min(MEANING_BASELINE_RANK, candidates.length) - 1]!.score;
+  const baseline = candidates[Math.min(calibration.baselineRank, candidates.length) - 1]!.score;
   for (const match of candidates) {
     if (match.score <= 0) continue;
     const card = parseCardId(match.id);
@@ -71,7 +96,7 @@ export const rateMeaningCandidates = (candidates: readonly NearestMatch[], keep:
     const lift = match.score - baseline;
     byRun.set(card.runKey, {
       journalFile: card.journalFile,
-      strength: lift >= MEANING_STRONG_LIFT ? "strong" : lift >= MEANING_FAIR_LIFT ? "fair" : "weak",
+      strength: lift >= calibration.strongLift ? "strong" : lift >= calibration.fairLift ? "fair" : "weak",
     });
   }
   return byRun;
@@ -127,7 +152,8 @@ export class MemorySearchService {
     }
 
     const nearest = await this.deps.embeddings().nearest(MEMORY_CARD_COLLECTION, query, { limit: MEANING_CANDIDATES });
-    const meaningByRun = rateMeaningCandidates(nearest.matches, (runKey) => runs.has(runKey) && !isAsking(runKey));
+    const { calibration } = meaningCalibrationFor(this.deps.activeModelId());
+    const meaningByRun = rateMeaningCandidates(nearest.matches, (runKey) => runs.has(runKey) && !isAsking(runKey), calibration);
 
     const results: MemorySearchRunResult[] = [];
     for (const runKey of this.interleave([...textByRun.keys()], [...meaningByRun.keys()], options.limit)) {
@@ -178,8 +204,12 @@ export class MemorySearchService {
     const pointers: Pointer[] = textCandidates.slice(0, MATCHES_PER_RUN).map((candidate) => ({ ...candidate, matchedBy: "text" }));
     if (meaning) {
       const pointer = this.meaningPointer(run, meaning.journalFile, terms, textCandidates);
-      const duplicate = pointers.some((existing) => existing.journalFile === pointer.journalFile && existing.lineStart === pointer.lineStart);
-      if (!duplicate) {
+      const duplicate = pointers.find((existing) => existing.journalFile === pointer.journalFile && existing.lineStart === pointer.lineStart);
+      if (duplicate) {
+        // Found by both tiers (SR-005c): one match for those lines, carrying the stronger strength (toMatch).
+        duplicate.meaningStrength = meaning.strength;
+        duplicate.rule = pointer.rule;
+      } else {
         if (pointers.length >= MATCHES_PER_RUN) pointers.pop();
         pointers.push({ ...pointer, matchedBy: "meaning", meaningStrength: meaning.strength });
       }
@@ -226,13 +256,17 @@ export class MemorySearchService {
     // Masked before a line is cut to its display length, so a cut never leaves part of a secret (C-06).
     const snippet = lines.slice(firstHit).filter((line) => line.length > 0).slice(0, SNIPPET_LINES)
       .map((line) => maskSecrets(line).slice(0, SNIPPET_LINE_CHARACTERS)).join("\n");
+    // A match found by both tiers carries the stronger strength, labelled by the tier that gave it (text on a tie).
+    const byWords = pointer.matchedBy === "text" ? textStrength(text, terms, weights) : null;
+    const byMeaning = pointer.meaningStrength ?? null;
+    const meaningWins = byMeaning !== null && (byWords === null || STRENGTH_RANK[byMeaning] > STRENGTH_RANK[byWords]);
     return {
       journalFile: this.deps.journals.journalFilePath(run.memoryDir, pointer.journalFile),
       lineStart: pointer.lineStart, lineEnd: pointer.lineEnd, day: pointer.day,
       snippet,
-      matchedBy: pointer.matchedBy,
-      strength: pointer.matchedBy === "meaning" ? pointer.meaningStrength ?? "weak" : textStrength(text, terms, weights),
-      pointer: pointer.matchedBy === "meaning" ? pointer.rule ?? null : null,
+      matchedBy: meaningWins ? "meaning" : "text",
+      strength: meaningWins ? byMeaning! : byWords ?? "weak",
+      pointer: meaningWins ? pointer.rule ?? null : null,
     };
   }
 }

@@ -131,8 +131,12 @@ is deleted and recreated):
    a two-ideograph phrase) counts as its rarest token. Meaning by how far the run's best card stands out from
    the query's own scores (SR-005): baseline = the score at rank 200 among all `nearest` candidates (the last
    one when there are fewer), taken before the asking run's cards are left out, so an agent and the page rate a
-   query the same; lift = score − baseline; Strong at ≥ 0.0567, Fair at ≥ 0.0477, else Weak
-   (`MEANING_BASELINE_RANK`, `MEANING_STRONG_LIFT`, `MEANING_FAIR_LIFT`, calibrated with the evaluation).
+   query the same; lift = score − baseline. The rank and the Strong and Fair lifts are a row per embedding model
+   (`MEANING_CALIBRATION`, calibrated with the evaluation): Granite R2 (default) rank 200, Fair 0.0689, Strong
+   0.0999; LEAF-IR rank 20, Fair 0.0429, Strong 0.159. A model without a row uses the default model's row and is
+   reported unverified by the evaluation.
+   A meaning match that points at the same lines as one of the run's text matches is shown once, with the
+   stronger of the two strengths, labelled by the tier that gave it (text on a tie).
 6. **Snippet:** 2–3 lines from the first line holding a query word; each line has its secrets masked, then is
    cut to 200 characters, so a cut never leaves part of a secret.
 
