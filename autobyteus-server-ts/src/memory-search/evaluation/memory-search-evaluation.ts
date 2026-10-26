@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import type { MemorySearchResult } from "../domain/memory-search-models.js";
+import { maskSecrets } from "../search/secret-masker.js";
 
 /**
  * One known-answer question (R-016): the cue as an agent or the user would write it, the runs that did the
@@ -28,6 +29,8 @@ export type EvaluationReport = Readonly<{
   gate1: Readonly<{ passed: number; oneSearchTop10: number; withinThreeSearches: number }>;
   gate2: Readonly<{ number1: number; top3: number; top3Share: number; mrr: number; p90Ms: number; maxMs: number }>;
   meaningPointers: Readonly<{ total: number; textChunk: number; cardPart: number; firstRequest: number; emptySnippet: number }>;
+  /** Snippets, over every search, in which a secret pattern is still visible (R-008; should be 0). */
+  unmaskedSecrets: number;
   perQuestion: readonly EvaluationQuestionResult[];
 }>;
 
@@ -59,11 +62,12 @@ const percentile = (values: readonly number[], share: number): number => {
  * Runs the questions against a built memory index (R-016): gate 1 (the right run in the top 10 within at most 3
  * searches; the first search's top 10 as its proxy), gate 2 (rank and latency of the first search, for the
  * questions that pass gate 1), and the meaning-pointer check (every meaning match points into its file with a
- * snippet; how many each rule resolved).
+ * snippet; how many each rule resolved), and that no snippet shows a secret pattern.
  */
 export const evaluateMemorySearch = async (memory: Search, questions: readonly EvaluationQuestion[]): Promise<EvaluationReport> => {
   const perQuestion: EvaluationQuestionResult[] = [];
   const pointers = { total: 0, textChunk: 0, cardPart: 0, firstRequest: 0, emptySnippet: 0 };
+  let unmaskedSecrets = 0;
   for (const question of questions) {
     const accepted = new Set(question.accept);
     let rank: number | null = null;
@@ -75,6 +79,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
       const result = await memory.search(text, { limit: 10 });
       if (index === 0) ms = performance.now() - started;
       for (const match of result.results.flatMap((run) => run.matches)) {
+        if (maskSecrets(match.snippet) !== match.snippet) unmaskedSecrets++;
         if (match.matchedBy !== "meaning" || !match.pointer) continue;
         pointers.total++;
         pointers[match.pointer]++;
@@ -105,6 +110,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
       maxMs: times.length ? Math.max(...times) : 0,
     },
     meaningPointers: pointers,
+    unmaskedSecrets,
     perQuestion,
   };
 };

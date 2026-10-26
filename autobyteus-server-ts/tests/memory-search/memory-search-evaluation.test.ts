@@ -31,7 +31,7 @@ describe("memory search evaluation", () => {
       first: result(["r1", "x"], [match("text", null), match("meaning", "cardPart")]),
       second: result(["x", "y", "r2"], [match("meaning", "textChunk")]),
       miss: result(["x"], [match("meaning", "firstRequest", " ")]),
-      rephrased: result(["r3"]),
+      rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
       never: result([]),
     };
     const memory = { search: async (query: string) => answers[query] ?? result([]) };
@@ -49,5 +49,6 @@ describe("memory search evaluation", () => {
     expect(report.gate2).toMatchObject({ number1: 1, top3: 2, top3Share: 2 / 3, mrr: (1 + 1 / 3) / 3 });
     // Each meaning match of each search counts (Q2's search, Q1's, Q3's first search); the blank one is flagged.
     expect(report.meaningPointers).toEqual({ total: 3, textChunk: 1, cardPart: 1, firstRequest: 1, emptySnippet: 1 });
+    expect(report.unmaskedSecrets).toBe(1);
   });
 });

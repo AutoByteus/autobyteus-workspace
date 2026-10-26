@@ -8,7 +8,8 @@ folder, and reports:
 - **gate 2** (questions that pass gate 1): #1, top 3 (and its share), MRR, p90 and max latency of the first
   search;
 - **meaning pointers**: how many meaning matches each pointer rule resolved (same file's text chunk, best card
-  part, first request), and how many had an empty snippet (should be 0).
+  part, first request), and how many had an empty snippet (should be 0);
+- **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0).
 
 A transformation is added or changed only if gate 1 stays at 100% and gate 2 does not get worse.
 
