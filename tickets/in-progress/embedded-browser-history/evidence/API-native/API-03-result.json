@@ -1,0 +1,219 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:20:30.764Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-03",
+  "instanceId": "iso-49855-1995",
+  "fixtureOrigin": "http://127.0.0.1:49854",
+  "observations": [
+    {
+      "label": "initial A",
+      "time": "2026-10-26T17:20:35.172Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": false,
+            "tab_id": "abdae5",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:49854/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 1,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "A B C",
+      "time": "2026-10-26T17:20:35.278Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "abdae5",
+            "title": "Fixture /C",
+            "url": "http://127.0.0.1:49854/C",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/C",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/C",
+        "title": "Fixture /C",
+        "heading": "Page /C",
+        "state": null,
+        "length": 3,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "Back committed /B/",
+      "time": "2026-10-26T17:20:35.328Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": true,
+            "tab_id": "abdae5",
+            "title": "Fixture /B",
+            "url": "http://127.0.0.1:49854/B",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/B",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/B",
+        "title": "Fixture /B",
+        "heading": "Page /B",
+        "state": null,
+        "length": 3,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "Back committed /A/",
+      "time": "2026-10-26T17:20:35.366Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "abdae5",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:49854/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 3,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "Forward committed /B/",
+      "time": "2026-10-26T17:20:35.408Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": true,
+            "tab_id": "abdae5",
+            "title": "Fixture /B",
+            "url": "http://127.0.0.1:49854/B",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/B",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/B",
+        "title": "Fixture /B",
+        "heading": "Page /B",
+        "state": null,
+        "length": 3,
+        "marker": "base",
+        "loads": "Request 3"
+      }
+    },
+    {
+      "label": "Forward committed /C/",
+      "time": "2026-10-26T17:20:35.450Z",
+      "shell": {
+        "activeTabId": "abdae5",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "abdae5",
+            "title": "Fixture /C",
+            "url": "http://127.0.0.1:49854/C",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:49854/C",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:49854/C",
+        "title": "Fixture /C",
+        "heading": "Page /C",
+        "state": null,
+        "length": 3,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    }
+  ],
+  "startedAt": "2026-10-26T17:20:34.995Z",
+  "result": "Pass",
+  "completedAt": "2026-10-26T17:20:35.462Z"
+}
