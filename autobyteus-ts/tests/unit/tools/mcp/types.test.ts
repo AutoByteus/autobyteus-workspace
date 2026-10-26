@@ -197,7 +197,7 @@ describe('StreamableHttpMcpServerConfig', () => {
   });
 
   it.each([
-    ['a malformed vault secret ID', { vaultSecretId: 'Not A Valid Id' }],
+    ['an empty vault secret ID', { vaultSecretId: '  ' }],
     ['extra keys', { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001', value: 'test-dummy' }],
     ['a non-string ID', { vaultSecretId: 7 }]
   ])('rejects a header reference with %s', (_label, value) => {

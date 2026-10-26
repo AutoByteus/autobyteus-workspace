@@ -1,4 +1,4 @@
-import { secretId, type SecretId } from '../../secrets/vault/secret-id.js';
+import type { SecretId } from '../../secrets/vault/secret-id.js';
 
 export enum McpTransportType {
   STDIO = 'stdio',
@@ -14,19 +14,20 @@ export type McpConfigValue = string | McpSecretReference;
 /** Which value of a server is meant: `env:<NAME>`, `header:<Name>` or `token` (names keep their case). */
 export type McpSecretField = `env:${string}` | `header:${string}` | 'token';
 
-export const isMcpSecretReference = (value: unknown): value is McpSecretReference =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-  && Object.keys(value).length === 1 && typeof (value as { vaultSecretId?: unknown }).vaultSecretId === 'string';
+/**
+ * The shape of a secret reference: exactly `{ vaultSecretId: <non-empty string> }`. The vault owns the ID's format;
+ * an ID it does not know resolves as missing.
+ */
+export const isMcpSecretReference = (value: unknown): value is McpSecretReference => {
+  if (typeof value !== 'object' || value === null || Array.isArray(value) || Object.keys(value).length !== 1) return false;
+  const id = (value as { vaultSecretId?: unknown }).vaultSecretId;
+  return typeof id === 'string' && id.trim().length > 0;
+};
 
-/** A string, or a `{ vaultSecretId }` reference with a valid vault secret ID; anything else is `null`. */
+/** A string or a secret reference; anything else is `null`. */
 const parseMcpConfigValue = (value: unknown): McpConfigValue | null => {
   if (typeof value === 'string') return value;
-  if (!isMcpSecretReference(value)) return null;
-  try {
-    return { vaultSecretId: secretId(value.vaultSecretId) };
-  } catch {
-    return null;
-  }
+  return isMcpSecretReference(value) ? { vaultSecretId: value.vaultSecretId } : null;
 };
 
 const parseMcpConfigValueRecord = (
