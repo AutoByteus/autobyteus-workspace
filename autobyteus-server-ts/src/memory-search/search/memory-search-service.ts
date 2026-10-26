@@ -35,7 +35,10 @@ export type MemorySearchOutcome = Readonly<{
   meaning: Readonly<{ collection: "notSynced" | "synced"; readiness: EmbeddingReadiness }>;
 }>;
 
-type Pointer = { journalFile: string; lineStart: number; lineEnd: number; day: string | null; matchedBy: "text" | "meaning"; meaningStrength?: MemoryMatchStrength };
+type Pointer = {
+  journalFile: string; lineStart: number; lineEnd: number; day: string | null; matchedBy: "text" | "meaning";
+  meaningStrength?: MemoryMatchStrength; rule?: MemorySearchMatch["pointer"];
+};
 
 const MEANING_STRENGTH: Record<NearestMatch["relevance"], MemoryMatchStrength> = { relevant: "strong", aboveFloor: "fair", below: "weak" };
 const RAW_LINK = / ?\[↗\]\([^)]*\)/g;
@@ -150,13 +153,14 @@ export class MemorySearchService {
    */
   private meaningPointer(run: MemoryRun, journalFile: string, terms: readonly string[], textCandidates: readonly TextCandidate[]): Omit<Pointer, "matchedBy"> {
     const sameFile = textCandidates.find((candidate) => candidate.journalFile === journalFile);
-    if (sameFile) return sameFile;
+    if (sameFile) return { ...sameFile, rule: "textChunk" };
     const card: StoredCard | null = this.deps.store.card(run.runKey, journalFile);
     const parts = card?.parts ?? [];
     const scored = parts.map((part) => ({ part, hits: terms.filter((term) => containsTerm(card!.text.slice(part.offset, part.offset + part.length), term)).length }));
     const best = scored.reduce<{ part: JournalCardPart; hits: number } | null>((top, item) => (item.hits > (top?.hits ?? 0) ? item : top), null);
     const part = best?.part ?? parts.find((candidate) => candidate.kind === "request") ?? parts[0];
-    return part ? { journalFile, lineStart: part.lineStart, lineEnd: part.lineEnd, day: part.day } : { journalFile, lineStart: 1, lineEnd: 1, day: null };
+    const rule = best ? "cardPart" : "firstRequest";
+    return part ? { journalFile, lineStart: part.lineStart, lineEnd: part.lineEnd, day: part.day, rule } : { journalFile, lineStart: 1, lineEnd: 1, day: null, rule };
   }
 
   private async toMatch(run: MemoryRun, pointer: Pointer, terms: readonly string[]): Promise<MemorySearchMatch> {
@@ -172,6 +176,7 @@ export class MemorySearchService {
       snippet: maskSecrets(snippet),
       matchedBy: pointer.matchedBy,
       strength: pointer.matchedBy === "meaning" ? pointer.meaningStrength ?? "weak" : textStrength(text, terms),
+      pointer: pointer.matchedBy === "meaning" ? pointer.rule ?? null : null,
     };
   }
 }

@@ -11,7 +11,7 @@ const RESULT: MemorySearchResult = {
     agent: "Codex", team: null, member: null, org: null, runId: "codex_45ce", workspace: "/w/mcps", firstDay: "2026-08-25", latestDay: "2026-08-27",
     source: "Codex · run codex_45ce · 2026-08-27 · work_journal_000004.md:812-860", subject: { kind: "AGENT", runId: "codex_45ce", agentDefinitionId: null },
     matches: [{ journalFile: "/m/agents/codex_45ce/work_journal/work_journal_000004.md", lineStart: 812, lineEnd: 860, day: "2026-08-27",
-      snippet: "User: set up the DDNS updater", matchedBy: "text", strength: "strong" }],
+      snippet: "User: set up the DDNS updater", matchedBy: "text", strength: "strong", pointer: null }],
   }],
   coverage: null,
   note: null,

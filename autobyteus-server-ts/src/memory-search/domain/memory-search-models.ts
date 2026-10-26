@@ -61,6 +61,11 @@ export type MemorySearchMatch = Readonly<{
   snippet: string;
   matchedBy: "text" | "meaning";
   strength: MemoryMatchStrength;
+  /**
+   * How a meaning match's lines were chosen (AR-002): the same file's text chunk, the card part with the most
+   * query terms, or the first request; null for a text match. For the evaluation, not shown to users.
+   */
+  pointer: "textChunk" | "cardPart" | "firstRequest" | null;
 }>;
 
 /** One run found by memory search: who, where, when, a citable source line and its matches (newest first). */
