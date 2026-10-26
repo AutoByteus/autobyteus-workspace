@@ -1,6 +1,23 @@
 # API/E2E Coverage Investigation
 
-## Current round API-REV-003 - fresh MCP-base plan (completed)
+## Current API-REV-004 — DR-003 AC-002 evidence repair plan (completed)
+Delivery's source/log audit is correct: prior AC002 mapping overstated IMP68. Existing tests exercise real occupied/free binds, parser sanitization, cancellation and manager-level mocked-unavailable/stale-result fencing, NOT actual inspector subprocess ENOENT/EACCES/deadline/empty outcomes or a non-EADDRINUSE bind errno. No exact missing receipt located. This is an API-owned coverage/report gap, no product defect established.
+
+R2/D4.1/SR001..008/ARCHREV004/IR006/CRR007/APIREV003/CRR008/DR003; Large/High unchanged. Delivery docs-only merge53423ca retained; its eight pending docs and DR003 evidence checkpointed unchanged52a3434f5. Effective production remains9b10fcd4. Read root/package AGENTS, TESTING.md, Electron Vitest config/package scripts, requirements AC002, delivery gap/plan/proof and production/test boundaries. No foundation/build/test/production delta before this work; no broad1110 rerun or provider/desktop repetition.
+
+| Cases | Validity / decision | Evidence boundary |
+|---|---|---|
+| API01/08 | Still Valid, reuse1110 results but narrow claimed inspector coverage | Actual asserted foundation behaviors only, not missing injection proof. |
+| API03/05/06B/07/09/09B/10;02 via06B | Still Valid, reuse exact APIREV003 receipts/source | No effective source/build/dependency change; Delivery independently matched hashes and current typechecks/smoke. |
+| API11 new | Add durable actual inspector subprocess fault suite | Real inspectPortOwner/execFile, private PATH lsof fixtures: missing executable, denied permission, actual1000ms timeout, output cap, empty/malformed/racing error evidence, fresh recovery. No paid provider/app. Assert bounded unavailable/no stale fabricated identity, signal/data/listener sentinel preservation and exact owned fixture cleanup. macOS/Linux subprocess proof only. |
+| API12 new | Add durable bind boundary injection suite | Real assertBackendPortAvailable/waitForBackendPort, mocked net.createServer emits non-address errnos on valid port; preserve original error, no inspector/signal/data action. EADDRINUSE positive control calls real inspector with execFile failure callback. |
+| Existing BackendPortAvailability/StartupDelayLifecycle | Still Valid; no repeat needed | Same assertions/source, earlier current156 Electron cases reused; new suites do not modify them. |
+
+Run focused source-only Electron Vitest suites once, serially. No rebuild needed: neither uses compiled output. New repository files colocated under electron/server/__tests__; no source refactor or global fixture/config change. Local subprocess fixture replaces only diagnostic executable; OS exec failure/deadline is real. Bind errno injection explicitly deterministic, not Windows/WSL certification. Keep original evidence, update current proof truthfully; failures follow normal origin review. Current Pass withheld pending AC002 proof. Broader product rerun Not Required by impact once new boundary tests pass; prior actual journeys retained. Proportional durable-test review required afterward.
+
+Completion: API11 Pass11/11 (real deadline1010ms/PID23664 absent), API12 Pass5/5, first execution each. No product/fixture failures. New proof repairs AC002; prior mapping explicitly withdrawn in report/history. Final95.3% recomputed over corrected plus retained evidence, broader product rerun Not Required. Tests source-only, no compiled outputs changed.
+
+## Historical API-REV-003 - fresh MCP-base plan (completed)
 CRR-007 Pass / source9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c / review13d7f4293 / IR-006 / DR-002 / base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e. R2/D4.1/SR001..008/ARCH-REV004; Large/High unchanged. Existing run resumed after reading progress, current upstream package/DR002, source delta and current test/build evidence. Prior APIREV00295.3 is exact2c47 history, not current acceptance.
 
 TESTING.md adds test-only GitHub token aliases; read change, no live vault/GitHub scope selected. Other applicable instructions, approved requirements/design and durable standalone tests unchanged. Shared core MCP resolver/config/instance/HTTP/stdio changes trigger foundation rule even with lockfile unchanged. Startup installer binds a synchronous resolver after staged vault init, not a new process/connection owner; actual MCP manager/transport fault coverage in current foundation controls. Full current host/desktop proof still required.
