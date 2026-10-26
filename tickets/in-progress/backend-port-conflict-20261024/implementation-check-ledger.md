@@ -75,3 +75,23 @@ Before-fix reviewer probe re-executed unchanged atffac4611d and failed both inva
 | IMP-32 | Nonempty-line count of changed production owners |d0338db0b|Pass; all3 remain under500; no large new monolith|`evidence/IMP-32-local-fix-size.json`|
 
 **Current result:**501 durable scoped tests pass (140 core including8 new,209 server,141 Electron,11 components), plus2 unchanged reviewer probes. All prescribed scoped production typechecks and current task-local build pass. Commands serialized; no provider calls or app launch in this rework. New regression/probe fixtures close owned anchors and remove their private roots in finally. Prior full test-tree exploratory typing follow-up FU-001 remains unchanged. No API/E2E acceptance, source re-review pass, merge, release or install claimed.
+
+
+# IR-004 — DS-005 authoring checkpoint / validation plan (NOT RUN)
+2026-10-26, parentb903d187e. R2/D4.1/SR-001..008/ARCH-REV-004; Large/High. All executable checks paused by user; coordinator clarification still pending. Static reads/diffs/source edits only. No new numbered executable success/failure receipt exists. Two SDK dist directories and prior build outputs untouched.
+
+| Surface | Prior exact evidence | Disposition after DS-005 | Required authorized next action |
+|---|---|---|---|
+| Core terminal scope/capture/anchor, AgentConfig | IMP-23..25 atd0338db0b | Still valid for unchanged core source | No habitual rerun; investigate if a later shared-foundation change occurs |
+| Codex thread/backend, AgentRun public read, manager/registry | Prior source review D3.1; new DS-005 behavior untested | New/Rerun by changed runtime path | Run authored view/inspection, backend control, registry and query unit files; relevant existing Codex/thread/AgentRun/manager and idle controls |
+| New GraphQL schema/query and generated types | No DS-005 baseline | Incomplete | Use repository codegen from current task-local schema; generated/graphql.ts currently lacks imported new types. No hand-written generated substitutes |
+| Production server types | IMP-26 atd0338db0b | Rerun | Documented server typecheck after permitted prerequisite/generation work |
+| Native compositions/startup/shutdown | IMP-27 atd0338db0b | Prior receipt retained; exact changed integration impact to assess | Do not relabel as DS-005 coverage; no broad rerun merely because another server area changed |
+| Electron lifecycle/diagnosis/IPC/updater | IMP-28/30 atd0338db0b | Still valid for unchanged main/preload source | No installer, no lifecycle-source change this round |
+| ServerLoading/Monitor conflict components | IMP-29 atd0338db0b; IMP-20 rendered at10990feb1 | Still valid for unchanged conflict renderer | Not evidence for BackgroundTaskPanel |
+| BackgroundTaskPanel/composable/locales | New authored unit files and updated stream/catalog control expectations | New/Rerun | `pnpm -C autobyteus-web test:nuxt --run components/progress/__tests__/BackgroundTaskPanel.spec.ts components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts`; applicable web/localization guards/types |
+| Task-local production desktop build | IMP-31 atd0338db0b | Stale for DS-005 | Serialized current task-local build after authorization; no installed substitute |
+| Rendered visibility feedback loop | None | Required / paused | Normal/narrow English/zh-CN; loading/unknown/unavailable/empty/running/terminal and selected-agent transitions; actual interaction and privacy, not screenshots alone |
+| Independent integrated Codex/native + R2 acceptance | API-04/06 scoped receipts in API report at their own source; c88a6224c partial checkpoint | Preserve exact receipts; NOT overall pass, NOT DS-005 coverage | API/E2E owner, separately user-paused. New actual Codex→query→panel journey and changed-runtime cleanup assessment require their authorization and applicable source review |
+
+No test count or result is inferred from authored files. No paid model, provider fixture or server/app launch occurred. Codegen, compilation and rendered inspection remain explicit readiness blockers until authorized and completed.

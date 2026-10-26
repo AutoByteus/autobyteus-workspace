@@ -3,6 +3,7 @@
 ## Revision Index
 | Revision | Trigger | Findings | Classification | Related revisions | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-004 (checkpoint) | Architecture Reviewer ARCH-REV-004 / R2 D4.1 | DS-005 visibility; no open architecture findings | Large/High | SR-001..008; ARCH-REV-004; prior CRR-002; API/E2E partial user-paused; DR N/A | Incomplete: source authoring only, generation/checks/rendering pending authorization |
 | IR-003 | Code Reviewer CRR-001 Fail | CR-001/002 Local Fix | Large/High | SR-001..006; ARCH-REV-003; CRR-001; API-REV/DR N/A | Ready for source re-review; scoped validation passes |
 | IR-002 | Architecture Reviewer ARCH-REV-003 / D3.1; SR-006 evidence | IMP-DI-001 resolved upstream; no new design gap | Large/High | SR-001..006; ARCH-REV-003; CRR/API-REV/DR N/A | Ready for Code Review; overall acceptance outstanding |
 | IR-001 | Architecture Reviewer ARCH-REV-002 Pass / D2 implementation handoff | Incoming N/A; new IMP-DI-001 | Design Impact | SR-001..003; ARCH-REV-002; CRR/API-REV/DR N/A | Ownership-continuity design recovery required; no production changes |
@@ -32,3 +33,12 @@
 - Production d0338db0b: scope operation-kind discrimination, original-deadline retirement→drain sequencing and identity-safe operation removal; manager capture/listener release without consumers; executor/background-start finally release unrecorded captures. Preserves background history/output, ordinary agent lifetimes and host ownership.
 - BEH-003/004, REQ-003/004/005, AC-004/005 affected. No compatibility fallback, new provider policy, user-data mutation or release/install.
 - Eight new durable regressions pass; unchanged reviewer probe reproduced2 failures before fix then2 passes after. Current total501 durable scoped tests, production typechecks and current task-local desktop rebuild pass (IMP-22..32). Shared-foundation rerun plan and exact final evidence in implementation-check-ledger.md. Source review must independently confirm resolution; active-work/full-host/desktop Codex coverage remains outstanding.
+
+
+## IR-004 — read-only Codex visibility (in-progress checkpoint, not a completed handoff)
+- Prior result: IR-003 independently passed CRR-002 at5fd30310e; reviewer forwarded to API/E2E. Its c88a6224c checkpoint is partial and user-paused. Do not re-open resolved CR-001/002 or infer R2 acceptance.
+- Trigger: Architecture Reviewer ARCH-REV-004 Pass at8c4e42d72 of R2/D4.1/SR-008; applicable SR-001..008. DR N/A. Large/High unchanged.
+- Current result: source and focused unit-test authoring checkpoint only. Known incomplete generated GraphQL types, no tests/builds/generator/rendered/provider execution, and no downstream-ready assertion. User pause preserved perb903d187e.
+- Affected BEH-005/006, REQ-007..009, AC-007..010: pure exact-identity Codex view; thread-owned bounded list/late observations/disposal; explicit backend/run capability; observational manager/registry peek and typed GraphQL query; selected-node/run composable and panel states/locales. Existing lifecycle/idle and native shutdown owners unchanged.
+- New durable test sources cover foreground exclusion, beyond-turn evidence, exact late completion, missing/negative exit, unknown/list recovery, conflicts, bounded history, malformed/pages/deadlines/shared read, disposal, inactive/replaced query lookup, no lifecycle publication, first-entry retained stream rows, stale selection/node responses, snapshot replacement/privacy and polling cleanup. These are authored expectations, not passing checks.
+- Canonical handoff and ledger now distinguish this current incomplete round from historical checked IR-003. Resume implementation checks only after explicit authorization; API/E2E remains paused. After successful scoped validation and rendered inspection, return the cumulative Large/High package for independent source review.

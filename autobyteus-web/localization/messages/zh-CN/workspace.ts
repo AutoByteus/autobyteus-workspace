@@ -118,6 +118,17 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "以下为已记录／上次已知状态；运行数量尚未确认。",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "正在检查此智能体的后台任务…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "当前无法检查后台任务。",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "上次运行 {{running}} · 已记录 {{total}}",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "当前数量不可用",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "没有跟踪到的后台命令",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell 命令",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "未知",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · 观测于 {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "退出码 {{code}}",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "后台任务",
   "workspace.components.progress.BackgroundTaskPanel.counts":

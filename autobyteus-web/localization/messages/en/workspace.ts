@@ -118,6 +118,17 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "Tracked commands continuing beyond their turn. Recent runtime observations, not all system processes.",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "Recorded / last-known rows; running counts are unconfirmed.",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "Checking this agent’s background tasks…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "Current background-task inspection is unavailable.",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "{{running}} last-known running · {{total}} recorded",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "Current count unavailable",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "No tracked background commands",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell command",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "Unknown",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · observed {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "Exit code {{code}}",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "Background Tasks",
   "workspace.components.progress.BackgroundTaskPanel.counts":

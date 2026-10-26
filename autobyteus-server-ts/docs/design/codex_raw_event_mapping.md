@@ -558,3 +558,21 @@ Output shape:
 - Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.
 - When new raw Codex event names appear, update this audit table before extending the converter boundary.
+
+## Read-only background-command view
+
+`CodexThread.inspectBackgroundTasks()` owns a shared paginated
+`thread/backgroundTerminals/list` read (5 seconds total, at most 100 pages).
+`codex-background-task-view.ts` retains exact thread/item/process/origin-turn
+observations without command arguments, cwd or output. Membership alone is not
+background evidence: the provider also lists foreground executions. Known
+commands become background candidates only after their exact originating turn
+ends; unknown-origin entries are withheld while a turn is active.
+
+Matched `item/completed` command observations occur before segment-turn admission,
+solely for this read-only view. The normal transcript/Activity gate is unchanged:
+a rejected old-turn notification is still rejected there. Matching terminal facts
+win over stale list replies; absence without terminal evidence is unknown. The
+view neither publishes `BACKGROUND_TASK_UPDATED` nor changes idle work policy.
+Runtime release/client close clears the view and fences pending reads. Only 100
+terminal rows are retained; live/unknown rows are not evicted for that limit.

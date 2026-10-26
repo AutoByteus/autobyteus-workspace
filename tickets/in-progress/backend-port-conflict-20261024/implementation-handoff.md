@@ -1,3 +1,34 @@
+# Implementation Handoff — current IR-004 authoring checkpoint
+
+## Current outcome: incomplete, executable validation remains user-paused
+2026-10-26. DS-005 source and implementation-unit regression authoring is checkpointed against **R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 Pass**. **task_size=Large; architectural_risk=High**, unchanged. This is NOT an implementation-ready or source-review handoff. No new test, typecheck, generator, build, provider, server or app process was run in this round. Static file reads/diffs and source authoring only.
+
+Worktree/branch/base remain as documented below. Latest upstream review8c4e42d72; authorization clarificationb903d187e says all executable checks remain paused pending user answer. No code reviewer/API/E2E run is requested. API/E2E remains independently user-paused atc88a6224c regardless of any future implementation-only authorization.
+
+### Current delta / behavior trace
+- BEH-005 / REQ-007 / AC-007: `codex-background-task-view.ts` owns exact native identity, beyond-turn eligibility, terminal/list merge, unknown absence, safe executable-only labels and bounded runtime terminal history. `CodexThread` owns one shared paginated read, five-second total deadline/100-page refusal, before-gate matched completion observations, admitted starts and exact turn-completion facts. Existing transcript gate is unchanged; no streamed background event or new idle work claim.
+- BEH-005/006 / REQ-008/009 / AC-008..010: explicit backend inspection union (Codex snapshot, Claude/AGY event-stream, native/ACP unsupported); `AgentRun.inspectBackgroundTasks()` supplies its existing runtime-instance identity. GraphQL union query captures manager `peekPublishedRun`, checks observational `isActive` before/after await and discards replaced/inactive results without retry/cleanup. Registry peek reads only its published map; lifecycle getters remain unchanged.
+- Renderer: node/selection-generation-fenced `useBackgroundTaskPanelView`, selected expanded two-second nonoverlapping snapshot/retry polling, collapse/disposal cancellation, read-only query, and snapshot-exclusive authority. First-entry/reselected stream rows remain reactive and labeled recorded/last-known while loading/unavailable. Empty store never fabricates a successful empty Codex result. UI adds unknown, unavailable, observation time/local short ID and numeric exit only; English/zh-CN labels. No stop controls or new raw command/output display.
+- Thread cancellation/client close fences reads and clears observation state without waiting for inspection or altering shutdown sequencing. Codex `hasRunningBackgroundTasks()` stays false; misleading old polling-only comment is replaced. Native/shutdown source from IR-003 is not duplicated or rewritten.
+- Protocol docs describe the side view and explicitly preserve WebSocket lifecycle/turn contracts. Existing stream DTO/store/handler and idle consumers are untouched.
+
+### Known incomplete work / mandatory resume gates
+1. **Repository GraphQL generation has NOT run.** `useBackgroundTaskPanelView` imports the intended generated `AgentBackgroundTaskViewQuery` and variables types, which are not in `generated/graphql.ts` yet. Do not claim this checkout builds. Once authorized, generate from the current schema with the repository codegen configuration; do not hand-author generated types or point at the installed app.
+2. Newly authored pure view/thread/query/registry/backend and panel regressions have NOT run. Existing event-provider panel tests are isolated to their old streamed rendering contract; separate inspection tests exercise the actual composable. Source/type/fixture errors may remain until execution is authorized.
+3. Production typecheck, applicable unit checks, locale guards, changed task-local build and actual rendered inspection are required. No generated build output was touched; prior task-local desktop build does not contain DS-005.
+4. Read `implementation-check-ledger.md` IR-004 plan before running anything. Only explicit clarification may lift the implementation-check pause; independent API/E2E still requires its own direction.
+5. Once implementation checks/rendering finish, update this handoff and round record, carry Large/High and obtain the source-review rule. CRR-002 Pass at5fd30310e applies to D3.1/d0338db0b only, not DS-005. Do not duplicate that completed review's forwarding.
+
+### Preserved evidence and limits
+API-04 actual packaged Codex conversation quit and API-06 native ended-agent restart/active-run quit are scoped receipts at their recorded sources, not overall or R2 acceptance. Keep the canonical API/E2E report/progress unchanged. New runtime/query/UI needs independent expanded acceptance when authorized. No historical Nuxt leak/root cause is claimed solved; provider processId is never OS kill authority. No Windows/WSL certification, installed-app use, data reset, release/install, merge or finalization. Two untracked SDK dist prerequisite directories are preserved.
+
+### Static self-review (not executable verification)
+Owners follow DS-005; no additional execution or cleanup policy introduced. No compatibility layer or persistence added. CodexThread remains below500 effective nonempty lines (496 by text inventory), pure view and composable are separate owned concerns; other changed production files remain below the ceiling in static inspection. New observation owner is below220 lines. No touched dead execution path identified; old misleading comment removed. A complete automated/source-size receipt and rendered verification remain pending, not a pass claim.
+
+---
+# Historical IR-003 handoff (preserved exact-source evidence; not current readiness)
+The section below records the previous D3.1 implementation package. Its pending-review wording is historical: CRR-002 subsequently passed at5fd30310e and forwarded to API/E2E. Its checks/builds are scoped to their recorded commits, not the new DS-005 source.
+
 # Implementation Handoff
 
 ## Current Status / Authoritative Package
