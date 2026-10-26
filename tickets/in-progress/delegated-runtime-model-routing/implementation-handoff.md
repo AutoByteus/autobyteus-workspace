@@ -29,15 +29,19 @@ record, `evidence/implementation/`).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, after code review CRR-001)
 - Implementation revision record: `tickets/in-progress/delegated-runtime-model-routing/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-001..SR-016 (built against SR-015 + SR-016)
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
+- Related solution revision IDs: SR-001..SR-017 (built against SR-015 + SR-016; SR-017 applied in IR-002)
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (Fail, two Low Local Fixes)
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001, CR-002 (CRR-001); SR-017 (design decision on review candidate C-03)
+
+IR-002 delta (commits `161d136c1b`, `03d9860e82`): `delegatingAgentName` is nullable and B writes null for a copy
+started for a peer (CR-001, option 1 as the Solution Designer confirmed; no start-request change); `SIGNED_OUT` has its
+own problem text (CR-002); decision records no longer store rendered `notes` (SR-017). See the revision record.
 
 Built in design sequence order: steps 1–3 and 7 (commit `d384968700`), steps 4–6 and 8 (`930597c730`), step 9 (web),
 docs and the remaining fixes (commit listed under Checks Run). Step 10's live-agents fold is left to API/E2E (see the
@@ -70,7 +74,7 @@ end of this document).
 | DS-007 | Router's `knowledge.md`, first 16 KB in each request | `ModelRouterAgent.readKnowledge`, template `built-in-agents/templates/model-router/agent.md` | Done; the agent writes it with its own file tools. |
 | DS-008 | Internal workspaces hidden while internal agents are hidden | `workspaces/internal-workspaces.ts`, `workspace-manager.ts` `listVisibleWorkspaces` | Done. |
 | REQ-003 / AC-011 | Router tools = template list + runtime file tools; confinement (review point 1–3) | `systemRunOwner` only from `ModelRouterAgent`, kept in metadata and on restore, excluded by `standalone-agent-run-eligibility.ts`; Codex `workspace-write` (`codex-thread-bootstrapper.ts`); Claude `claude-workspace-confinement.ts` (setting sources `["user"]`, `Bash`/`BashOutput`/`KillShell` disallowed, `PreToolUse` write hook) | Done; unit-tested per runtime. Live confinement checks are left to API/E2E (below). |
-| REQ-012 | Records only while Model Routing is on, by the resolving node | `routing-decision-draft.ts` (draft only while on), `stores/routing-decision-log.ts`, `services/routing-statistics.ts` | Done. |
+| REQ-012 | Records only while Model Routing is on, by the resolving node | `routing-decision-draft.ts` (draft only while on), `stores/routing-decision-log.ts`, `services/routing-statistics.ts` | Done. IR-002: no stored `notes` (SR-017); peer-started records carry `fromNode` with null delegating run and name (CR-001). |
 | REQ-014 | CM-12, GLOSSARY, module docs | `autobyteus-server-ts/docs/design/collaboration_model.md`, `GLOSSARY.md`, `autobyteus-server-ts/docs/modules/model_routing.md` (new), `docs/modules/README.md`, `autobyteus-web/docs/settings.md` | Done. |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -110,17 +114,20 @@ Design gaps closed during implementation (none changes approved behavior; review
 1. **Ad-hoc Task on a peer.** A's Task for a description-only delegation is created when the copy dispatches, after
    B's start; so `task.taskId` is nullable in the start request, and B groups such records per delegation
    (Decisions shows that group as its own Task group).
-2. **B's `delegatingAgentName`** is A's delegating run ID (B knows no names of A's agents); `fromNode` names A.
+2. **B's `delegatingAgentName`** is null (B knows none of A's agents); `fromNode` names A. *(Changed in IR-002, CR-001:
+   it was A's run ID.)* The local writer also writes null rather than a run ID if an address has no basename.
 3. **U3 (signed out)** comes from the runtime report's stated signed-out set (`readWithSignIn().signedOutRuntimes`),
    never from a runtime's absence.
 4. **`describeTask`** was added to the task execution resource port so the lifecycle reads the Task title and key for
    the work packet; `resolveAssignment` returns the title too.
 5. **Record fields** `routerFailure` and `skipped` were added so Decisions can show a router failure and the skipped
-   defaults without parsing note text.
+   defaults without parsing note text. *(IR-002, SR-017: records no longer store `notes`; these are the only stored
+   form. An older line's `notes` is ignored.)*
 6. **Result notes** follow supplement § 7 (a line per routed agent and per skipped layer/failure), not VIS-018's
    listing of every agent.
-7. **Status mapping on the page:** `SIGNED_OUT` shows the runtime-missing wording family and `REPORT_UNREADABLE`
-   `problem.unknown`.
+7. **Status mapping on the page:** `REPORT_UNREADABLE` shows `problem.unknown`. *(IR-002, CR-002: `SIGNED_OUT` now has
+   its own text, `problem.signedOut`: "<Runtime> is signed out. Sign in under Agent Runtimes." / zh-CN
+   "<Runtime> 已退出登录。请在“智能体运行时”中登录。". New string not in the UI reference; Product should hear of it.)*
 8. **View decision** always renders for a routed copy on this node (no existence check); the Decisions focus search
    loads at most 12 pages and then says it was not found.
 9. **Remote rows:** an Agent root reads its remote copies from its own view/snapshot; a Team or Org root from
@@ -156,7 +163,8 @@ Design gaps closed during implementation (none changes approved behavior; review
 - Legacy old-behavior retained in scope: `No`
 - Dead code in the touched files and modules removed: `Yes` (`delegateToNewCopy`, the resolver's `check`, the
   section's unused `ownNode`, the remote callbacks in three roots)
-- Dead code found elsewhere, added to `follow-ups.md`: None
+- Dead code found elsewhere, added to `follow-ups.md`: None. A pre-existing broken spec found in IR-002 is FU-006
+  (`stores/__tests__/definitionMutationCache.spec.ts`, from autobyteus-308).
 - Shared structures remain tight: `Yes` (launch source is a discriminated union; the router origin carries
   `choiceReason`/`taskKind` only on that variant)
 - Canonical shared design guidance reapplied: `Yes`
@@ -188,7 +196,9 @@ Design gaps closed during implementation (none changes approved behavior; review
 ## Checks Run
 
 Code commits: `d384968700`, `930597c730`, `4979559f7f`, `0cdaa0d480` (build smoke fix; changes no source under
-test). Evidence folder: `tickets/in-progress/delegated-runtime-model-routing/evidence/implementation/`.
+test); IR-002: `161d136c1b`, `03d9860e82`. IMP-01..08 ran on IR-001; IMP-09 and IMP-10 rerun the checks IR-002 affects.
+IMP-07 and IMP-08 are not rerun: the page's only IR-002 change is the `SIGNED_OUT` text (covered by IMP-10's
+presentation spec), and the Runtimes tab is unchanged. Evidence folder: `tickets/in-progress/delegated-runtime-model-routing/evidence/implementation/`.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -203,6 +213,9 @@ test). Evidence folder: `tickets/in-progress/delegated-runtime-model-routing/evi
 
 - Note on IMP-02: an earlier full run (on the working tree before `4979559f7f`) showed 22 failures in three remote
   delegation files because I changed `RemoteDelegation.delegate` while it ran; the rerun on the commit is the record.
+| IMP-09 | `pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts test:unit` | `03d9860e82` | macOS 26.5.2, node v22.23.1 | all server source and unit suites | CR-001, SR-017 (records, log, receiver) | Pass | `IMP-09-server-typecheck-unit-ir002.log` | `typecheck exit=0`; `Test Files  844 passed \| 4 skipped (848)`, `Tests  7015 passed \| 7 skipped (7022)` |
+| IMP-10 | `(autobyteus-web) NUXT_TEST=true npx vitest run components/settings components/run-settings components/workspace/config utils/runSettings stores localization`; the three web guards | `03d9860e82` | same | page, presentation, rows, stores, copy | CR-002, CR-001 (web types), SR-017 | Pass for every file this branch touches; 1 file fails that this branch does not touch (FU-006) | `IMP-10-web-specs-and-guards-ir002.log` | `Test Files  1 failed \| 194 passed (195)`; the failing file `stores/__tests__/definitionMutationCache.spec.ts` ("Unconfigured GraphQL fixture field: internal", see the note at the end); `guard:localization-boundary exit=0` |
+
 - Not run, and why:
   - Live provider runs (`RUN_CLAUDE_E2E`, `RUN_CODEX_E2E`, live-agents suite): need test-vault keys and real runtime
     sessions; left to API/E2E with the 303 live-agents fold (below).
