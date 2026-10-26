@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "后退",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "前进",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",

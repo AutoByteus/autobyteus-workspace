@@ -12,6 +12,7 @@ import type {
 } from './node';
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -51,6 +52,7 @@ declare global {
       getBrowserShellSnapshot: () => Promise<BrowserShellSnapshot>;
       openBrowserTab: (request: BrowserShellOpenTabRequest) => Promise<BrowserShellSnapshot>;
       navigateBrowserTab: (request: BrowserShellNavigateTabRequest) => Promise<BrowserShellSnapshot>;
+      navigateBrowserHistory: (request: BrowserShellHistoryNavigationRequest) => Promise<BrowserShellSnapshot>;
       reloadBrowserTab: (request: BrowserShellReloadTabRequest) => Promise<BrowserShellSnapshot>;
       focusBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
       setActiveBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;

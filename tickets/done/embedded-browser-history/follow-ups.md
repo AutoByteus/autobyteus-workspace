@@ -1,0 +1,5 @@
+# Follow-ups — embedded-browser-history
+| ID | Found by | What is wrong / where | Evidence | Why outside this ticket | Urgent | Suggested Task | Sent |
+|---|---|---|---|---|---|---|---|
+| FU-001 | Solution Designer, investigation E11 | Manual navigate/open readiness can replace redirected final URL with originally requested URL | Read: browser-tab-navigation.ts:118 assigns requested URL after events; manager navigateSession returns normalized input at :88 | Pre-existing address-navigation issue; native history path need not use loadUrl, so this ticket can meet its goal without changing manual navigation semantics | No | Verify and fix embedded Browser address/result projection following HTTP redirects, with isolated redirect fixtures | Not yet |
+| FU-002 | Solution Designer, design health | BrowserTabManager already 570 lines and combines registry/popup lifecycle | Read: wc -l and manager lifecycle/popup blocks | This ticket extracts observer concern and must not grow manager; broader popup/registry restructuring is unnecessary for history | No | Assess and split BrowserTabManager popup lifecycle ownership with retained popup/lease regressions | Not yet |

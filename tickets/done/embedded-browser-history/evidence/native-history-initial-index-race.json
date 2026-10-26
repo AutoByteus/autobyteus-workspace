@@ -1,0 +1,306 @@
+[
+  {
+    "event": "did-navigate",
+    "eventUrl": "http://127.0.0.1:64285/a",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": false,
+    "index": 0,
+    "length": 1
+  },
+  {
+    "label": "initial",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": false,
+    "index": 0,
+    "length": 1
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": false,
+    "index": 0,
+    "length": 1
+  },
+  {
+    "event": "did-navigate",
+    "eventUrl": "http://127.0.0.1:64285/b",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "label": "linked B",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "event": "did-navigate",
+    "eventUrl": "http://127.0.0.1:64285/a",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": true,
+    "index": 0,
+    "length": 2
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": true,
+    "index": 0,
+    "length": 2
+  },
+  {
+    "label": "back A",
+    "url": "http://127.0.0.1:64285/a",
+    "back": false,
+    "forward": true,
+    "index": 0,
+    "length": 2
+  },
+  {
+    "event": "did-navigate",
+    "eventUrl": "http://127.0.0.1:64285/b",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "label": "forward B",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": false,
+    "index": 1,
+    "length": 2
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/b#anchor",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/b#anchor",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/b#anchor",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "label": "hash",
+    "url": "http://127.0.0.1:64285/b#anchor",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/b",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 3
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 3
+  },
+  {
+    "label": "hash back",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 3
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/spa",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "label": "push after back",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 2,
+    "length": 3
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/spa",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 3,
+    "length": 4
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 3,
+    "length": 4
+  },
+  {
+    "label": "same URL push",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 3,
+    "length": 4
+  },
+  {
+    "label": "same URL back changes flags",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "label": "same URL forward",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": false,
+    "index": 3,
+    "length": 4
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/spa",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/spa",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/replaced",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/replaced",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/replaced",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "label": "replace",
+    "url": "http://127.0.0.1:64285/replaced",
+    "back": true,
+    "forward": true,
+    "index": 2,
+    "length": 4
+  },
+  {
+    "label": "independent tab",
+    "url": "http://127.0.0.1:64285/other",
+    "back": false,
+    "forward": false,
+    "index": 0,
+    "length": 1
+  },
+  {
+    "event": "did-navigate-in-page",
+    "eventUrl": "http://127.0.0.1:64285/b",
+    "isMainFrame": true,
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 4
+  },
+  {
+    "event": "did-stop-loading",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 4
+  },
+  {
+    "label": "SPA back",
+    "url": "http://127.0.0.1:64285/b",
+    "back": true,
+    "forward": true,
+    "index": 1,
+    "length": 4
+  },
+  {
+    "result": "PASS",
+    "electron": "42.11.16",
+    "chromium": "148.0.7778.280",
+    "scope": "native dependency only"
+  }
+]

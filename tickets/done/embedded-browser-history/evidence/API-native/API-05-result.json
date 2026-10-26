@@ -1,0 +1,228 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-04,API-05,API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:20:57.744Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-05",
+  "instanceId": "iso-50065-1066",
+  "fixtureOrigin": "http://127.0.0.1:50064",
+  "observations": [
+    {
+      "request": null,
+      "result": {
+        "ok": false,
+        "error": "Error invoking remote method 'browser-shell:navigate-history': Error: A browser tab ID and back or forward direction are required."
+      }
+    },
+    {
+      "request": {},
+      "result": {
+        "ok": false,
+        "error": "Error invoking remote method 'browser-shell:navigate-history': Error: A browser tab ID and back or forward direction are required."
+      }
+    },
+    {
+      "request": {
+        "tabId": "829a3d",
+        "direction": "invalid"
+      },
+      "result": {
+        "ok": false,
+        "error": "Error invoking remote method 'browser-shell:navigate-history': Error: A browser tab ID and back or forward direction are required."
+      }
+    },
+    {
+      "request": {
+        "tabId": " ",
+        "direction": "back"
+      },
+      "result": {
+        "ok": false,
+        "error": "Error invoking remote method 'browser-shell:navigate-history': Error: A browser tab ID and back or forward direction are required."
+      }
+    },
+    {
+      "request": {
+        "tabId": "not-attached",
+        "direction": "back"
+      },
+      "result": {
+        "ok": false,
+        "error": "Error invoking remote method 'browser-shell:navigate-history': Error: Browser session 'not-attached' is not attached to shell '1'."
+      }
+    },
+    {
+      "label": "inactive and unavailable IPC inert",
+      "time": "2026-10-26T17:21:02.164Z",
+      "shell": {
+        "activeTabId": "829a3d",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "600bf7",
+            "title": "Fixture /B",
+            "url": "http://127.0.0.1:50064/B",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          },
+          {
+            "canGoBack": false,
+            "canGoForward": false,
+            "tab_id": "829a3d",
+            "title": "Fixture /D",
+            "url": "http://127.0.0.1:50064/D",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/D",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/D",
+        "title": "Fixture /D",
+        "heading": "Page /D",
+        "state": null,
+        "length": 1,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "Back committed /A/",
+      "time": "2026-10-26T17:21:02.220Z",
+      "shell": {
+        "activeTabId": "600bf7",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "600bf7",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:50064/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          },
+          {
+            "canGoBack": false,
+            "canGoForward": false,
+            "tab_id": "829a3d",
+            "title": "Fixture /D",
+            "url": "http://127.0.0.1:50064/D",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "pending traversal did not steal selection",
+      "time": "2026-10-26T17:21:02.767Z",
+      "shell": {
+        "activeTabId": "3594bd",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "c4000e",
+            "title": "Fixture /slow",
+            "url": "http://127.0.0.1:50064/slow",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          },
+          {
+            "canGoBack": false,
+            "canGoForward": false,
+            "tab_id": "3594bd",
+            "title": "Fixture /stable",
+            "url": "http://127.0.0.1:50064/stable",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/stable",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/stable",
+        "title": "Fixture /stable",
+        "heading": "Page /stable",
+        "state": null,
+        "length": 1,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "closed pending traversal cannot reselect",
+      "time": "2026-10-26T17:21:02.902Z",
+      "shell": {
+        "activeTabId": "3594bd",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": false,
+            "tab_id": "3594bd",
+            "title": "Fixture /stable",
+            "url": "http://127.0.0.1:50064/stable",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/stable",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/stable",
+        "title": "Fixture /stable",
+        "heading": "Page /stable",
+        "state": null,
+        "length": 1,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    }
+  ],
+  "startedAt": "2026-10-26T17:21:01.788Z",
+  "result": "Pass",
+  "completedAt": "2026-10-26T17:21:02.906Z"
+}
