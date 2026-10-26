@@ -1,0 +1,76 @@
+{
+  "case": "R01",
+  "date": "2026-10-26T06:41:02.411983+00:00",
+  "command": "python3 tickets/in-progress/nfs-guide-install-commands/evidence/R01-03-reuse.py",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "environment": "macOS read-only current repository/evidence audit",
+  "result": "Pass",
+  "attribution": "Implementation executed IMP16/17, API inspected raw evidence/current test assertions; no suite repeated",
+  "testedSource": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "productDiffSinceTested": "",
+  "checks": [
+    {
+      "file": "IMP-16-focused.log",
+      "lookFor": [
+        "Test Files  5 passed (5)",
+        "Tests  56 passed (56)"
+      ],
+      "header": [
+        "# IMP-16; 2026-10-26; input 0c27b150 + five-file R3 working delta; macOS26.5.2 arm64 Node22.23.1 pnpm10.28.2; private HOME/TMP",
+        "# pnpm -C autobyteus-web test:nuxt utils/__tests__/nfsLauncherCommands.spec.ts components/settings/__tests__/NfsGuideCard.spec.ts components/settings/__tests__/NodeManager.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts utils/__tests__/dockerNodeLauncherCommands.spec.ts --run --maxWorkers=2",
+        ""
+      ]
+    },
+    {
+      "file": "IMP-16-static.log",
+      "lookFor": [
+        "guard:web-boundary_exit=0",
+        "guard:localization-boundary_exit=0",
+        "audit:localization-literals_exit=0"
+      ],
+      "header": [
+        "# IMP-16; 2026-10-26; 0c27b150 + five-file R3 delta; macOS26.5.2/Node22.23.1",
+        "# scoped tsc command helper and changed locale catalogs, then three web guards",
+        "localization/runtime/types.ts(20,35): error TS2307: Cannot find module 'vue' or its corresponding type declarations."
+      ]
+    },
+    {
+      "file": "IMP-16-typecheck.log",
+      "lookFor": [
+        "exit=0"
+      ],
+      "header": [
+        "# IMP-16; 2026-10-26; 1f2b346cfb; macOS26.5.2 arm64 Node22.23.1; scoped config extends current Nuxt Vue alias",
+        "# pnpm -C autobyteus-web exec tsc -p <owned scratch>/scoped-tsconfig.json",
+        "exit=0"
+      ]
+    },
+    {
+      "file": "IMP-15-red.log",
+      "lookFor": [
+        "Tests  4 failed | 11 skipped (15)"
+      ],
+      "header": [
+        "# IMP-15; 2026-10-26; macOS26.5.2 arm64 Node22.23.1 pnpm10.28.2; private HOME/TMP",
+        "# Input 0c27b150; RED has changed presentation assertions, original product.",
+        "# pnpm -C autobyteus-web test:nuxt components/settings/__tests__/NfsGuideCard.spec.ts --run --maxWorkers=2 -t 'renders no guide anchors|renders a concise unboxed'"
+      ]
+    }
+  ],
+  "counts": {
+    "files": 5,
+    "tests": 56,
+    "component": 15,
+    "helper": 24,
+    "parent": 10,
+    "docker": 7,
+    "inertShellIncluded": 6
+  },
+  "componentPreviewReused": "IMP17-final null/invalid/partial availability and current footer/lifecycle observations; not Nodes navigation",
+  "limits": [
+    "No whole-project typecheck; scoped Nuxt-alias check only",
+    "Initial tsc exit2 and preview overflow remain failed harness attempts with cause recorded by implementation",
+    "No installer/CLI/NFS/Electron/backend proof",
+    "Old API002 foundation changed; current replaced evidence, never promoted"
+  ]
+}

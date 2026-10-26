@@ -38,3 +38,26 @@
 | 2026-10-24T04:15:28.175Z | C01 | Started | Not Tested | Close only owned Chrome/Nuxt process group/temp root |
 | 2026-10-24T04:15:39.144Z | C01 | Checkpoint | Pass | R02-02-attempt-2: own browser/server/root removed; product source unchanged; final evidence audit pending |
 | 2026-10-24T04:16:15.153962+00:00 | C01 | Completed | Pass | Both attempts owned process groups/ports/root absent, current product and prior history/other-owner files unchanged; ignored deps retained. |
+
+## API-REV-003 — R3 compact footer, 2026-10-26
+
+| Time | Case | Event | Result | Note |
+|---|---|---|---|---|
+| 2026-10-26T06:41:02.346483+00:00 | R01 | Started | Not Tested | Audit current IMP16/17 raw results and exact source; no suite repeat |
+| 2026-10-26T06:41:02.434927+00:00 | R01 | Completed | Pass | Current IMP16 56/5files+scopedtsc/3guards and IMP17 negatives reusable; product diff empty. Actual Nodes R02/R03 still required. |
+| 2026-10-26T06:41:26.411Z | R02 | Started | Not Tested | R02-03-attempt-1: actual Nodes page, fresh owned environment; unrelated feed/health fixtures only |
+| 2026-10-26T06:41:52.719Z | R02 | Checkpoint | Not Tested | R02-03-attempt-1 stopped: localized required text Windows |
+| 2026-10-26T06:41:52.721Z | C01 | Started | Not Tested | Close only owned Chrome/Nuxt process group/temp root |
+| 2026-10-26T06:42:20.266665+00:00 | R02 | Checkpoint | Not Tested | Stale R2 Windows on-page assertion diagnosed against R3; detail belongs in docs. Corrected driver only; original failure retained. |
+| 2026-10-26T06:42:20.717Z | R02 | Started | Not Tested | R02-03-attempt-2: actual Nodes page, fresh owned environment; unrelated feed/health fixtures only |
+| 2026-10-26T06:42:51.895Z | R02 | Completed | Pass | Actual /nodes+language settings, en/zh×1280/390,9exact actual clipboard values each, zeroanchors, exact43wordshortfooter/bilingual safety/no reservedgap/review reminder/accessibility/layout and Docker preserved |
+| 2026-10-26T06:42:51.898Z | R03 | Started | Not Tested | Actual tab lifetime + controlled clipboard boundary; no host command |
+| 2026-10-26T06:42:52.496672+00:00 | C01 | Checkpoint | Not Tested | Attempt1 cleanup had ENOTEMPTY at Node compile cache, not completed receipt. Verified both groups absent, removed only leftover owned root. Final combined cleanup pending. |
+| 2026-10-26T06:42:57.798Z | R03 | Completed | Pass | Enter/nativeclipboard/reset; controlled pending excludes second, leave/late resolve/reenter; denial/missing/manual selection, no browser errors |
+| 2026-10-26T06:42:57.800Z | C01 | Started | Not Tested | Close only owned Chrome/Nuxt process group/temp root |
+| 2026-10-26T07:04:24.899505+00:00 | R03 | Checkpoint | Not Tested | Prior Completed row lacks final raw detail because cleanup ENOTEMPTY aborted save. Preserve attempt2; R03-only rerun for durable evidence, R02 not repeated. |
+| 2026-10-26T07:04:36.433Z | R03 | Started | Not Tested | Actual tab lifetime + controlled clipboard boundary; no host command |
+| 2026-10-26T07:04:43.692Z | R03 | Completed | Pass | Enter/nativeclipboard/reset; controlled pending excludes second, leave/late resolve/reenter; denial/missing/manual selection, no browser errors |
+| 2026-10-26T07:04:43.695Z | C01 | Started | Not Tested | Close only owned Chrome/Nuxt process group/temp root |
+| 2026-10-26T07:04:45.552Z | C01 | Checkpoint | Pass | R02-03-attempt-3: own browser/server/root removed; product source unchanged; final evidence audit pending |
+| 2026-10-26T07:05:35.752611+00:00 | C01 | Completed | Pass | All3owned groups/ports/roots absent; attempt2 residual compile cache removed; source/other-owner/prior history preserved. |
