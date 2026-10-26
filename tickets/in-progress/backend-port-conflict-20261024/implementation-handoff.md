@@ -1,5 +1,48 @@
-# IR-006 — DR-002 integration Local Fix in progress
-New base0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e adds21 commits/MCP vault work. Prior IR-005/CRR-005/API-REV-002/CRR-006 remain exact-source successes at2c47/base67994. Delivery checkpoint preservedb7ab9e3a4; no renewed integrated-ready claim yet. R2/D4.1/SR-001..008/ARCH-REV-004, Large/High unchanged.
+# Implementation Handoff — IR-006
+
+## Current result: Ready for independent source re-review
+**DR-002 integration Local Fix complete at implementation scope.** R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004; **task_size=Large; architectural_risk=High**, unchanged. Prior IR-005/CRR-005/API-REV-002/CRR-006 remain valid for their recorded source2c47/base67994, not this new integrated package. Trigger DR-002, not a reopened earlier packaging or validation failure.
+
+- Current source **9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c**, task-branch merge of fresh fetched `origin/personal@0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e` (21 incoming commits). Delivery's uncommitted records checkpointed unchanged atb7ab9e3a4 before integration.
+- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`. No target-branch merge/push/finalization, release/install or archive. Two SDK dist prerequisites preserved.
+- No requirement/design or ticket behavior change: BEH-001..006 preserved. Select the Large/High Delivery Local Fix → Code Reviewer route, then renewed independent API/E2E/test-review gates and Delivery.
+
+## Integration resolution / production path audit
+- **GraphQL:** regenerated the entire file from the integrated compiled schema and current operations (IMP-64/65), never an arbitrary ours/theirs selection. Incoming MCP `storedSecrets`/`needsSecret` contract and ticket AgentBackgroundTask union/query both present. Current merge delta from prior candidate: generated file258 lines changed; full generated output versus incoming base includes prior generated drift (not additional authored runtime behavior).
+- **Design cases:** both observational-lookup and incoming MCP no-caller lessons retained, including expanded Notice wording. Existing process lifetime/continuity cases9/10 preserved. Delivery still owns overall long-lived-doc synchronization; no historical text discarded to settle conflict.
+- **Auto-merged runtime:** successful staged vault initialization still precedes incoming synchronous `installRuntimeMcpSecretResolver`, then existing staged migrations/cancellation checkpoints/cleanup transfer. Installer stores a resolver, not a client/connection/timer or new cleanup authority. Actual chain: startup installer → McpServerInstanceManager.useSecretResolver → managed HTTP/stdio creation → resolveMcpValue(s) during connection → current vault requireService/resolveForUse(mcpServer). Instance map/close ownership remains in the existing manager. Incoming removal of unused workspace provider retained; no new claim of per-run MCP cwd behavior.
+- Native scope/anchor/host cleanup, captured backend shutdown ownership, awaited desktop quit/updater, observational map-only lookup, strict transcript gate and panel generation fences remain unchanged. Both ambient shared status imports and derived monitor summary preserved. Cumulative61 authored production files versus new base, max497 nonempty lines (IMP-74).
+- No ticket-specific migration or provider/idle-policy expansion. Incoming MCP vault behavior is preserved; all validation uses dummy values/private test data. No real vault credentials, paid model/GitHub calls or installed-app/user-data use.
+
+## Checks Run — current source9b10fcd4d
+Shared core MCP changed even though pnpm-lock.yaml did not; all applicable prior854 controls rerun, plus changed MCP controls. Exact command plan/results in IMP-66-69-plan/result.json and IMP-75-checks.json; detailed ledger below. Build/schema prerequisites ran on the resolved working tree subsequently committed9b10; all tests/rendered/build evidence thereafter uses that commit. No source edit after9b10.
+
+| Check | Current result | Evidence |
+|---|---|---|
+| Frozen dependencies / server-core-SDK production build / SDL/codegen | Pass; tsc/Prisma/assets/bootstrap and repository generator | IMP-62..65 |
+| Core terminal/config/result serialization + MCP units |246 pass | IMP-66-integrated-tests.log |
+| Server native/startup/shutdown/R2/runtime controls + MCP config/mapping/vault resolver units |575 pass | IMP-67-integrated-tests.log |
+| Electron lifecycle/diagnosis/IPC/updater/entry/shell |156 pass | IMP-68-integrated-tests.log |
+| Web conflict/view/locale/binding/Memory Sync and MCP forms/import/review/store |123 unique current cases pass after focused environment correction; IMP-69 itself110 pass/10 fail, NOT all green | IMP-69-integrated-tests.log, IMP-70-focused-web.log, IMP-70-unique-web-counts.json |
+| Core narrow real MCP stdio/HTTP secret-reference transport |10 pass across Python and Node, dummy resolver/values only | IMP-71-secret-transport.log, cleanup.json |
+| Full current unsigned desktop build / production compilers / locale-boundary guards |Pass exit0; app, DMG/ZIP and blockmaps | IMP-72-desktop-build.log |
+| DMG verify and artifact identity |Pass VALID, SHA256/bytes;5 built-packaged files match including new server runtime/resolver | IMP-72-dmg-verify.log, artifact-provenance.json |
+| Current rendered implementation feedback / no-work actual app quit |Pass English/Chinese, status/empty/last-known/selection/collapse/narrow; preload quit220ms, no force, ports closed/sentinel retained/root removed | IMP-73-states.json, screenshots, result.json, stop/cleanup/app.log |
+
+**1,110 unique current passing scoped cases** =246+575+156+123+10. IMP-70's31 passing cases include28 previously executed plus3 new store cases, not31 extra. Nuxt preparation and production compilers are verified; standalone strict Vue vue-tsc and whole repository suites are not claimed.
+
+### Initial web failure — diagnosed environment cause, no production workaround
+Ten cases in3 incoming MCP files failed at `localStorage.clear`. Node26 exposes a native localStorage accessor that returns undefined without --localstorage-file. Local Vitest getWindowKeys skips already-present globals; Nuxt populateGlobal adds only fetch/Request and aliases window to global, leaving Node's accessor instead of Happy-DOM storage. Direct descriptor checks and local dependency implementation establish the cause, not merely a passing rerun. `NODE_OPTIONS=--no-experimental-webstorage` lets the test browser own storage; only affected3 files plus2 new store consumers ran (31 pass). No production or durable-test patch, real storage file, secret or profile was needed. Full initial failure and diagnosis retained in IMP-69/70. Other passing files retain their actual recorded environment.
+
+## Rendered feedback / cleanup / packaging
+IMP-73 uses only the newly built task-local app with private HOME/TMPDIR/data and CLI-returned ports. Frontend-only run contexts and read-only view-query interception drive controlled states; NOT actual provider/query acceptance. Direct visual/interaction inspection confirms readable safe labels/status chips, live versus last-known counts, empty/unknown/terminal rows, selected-run replacement, collapsed polling stopped, English/zh-CN and390px no overflow. No page errors or product UI fixes. Actual `window.electronAPI.startShutdown` closes this no-active-work instance in220ms; subsequent CLI cleanup sees already stopped/forced=false. Sentinel remained before exact root disposal. MCP integration closes its own clients/servers in finally; private home/uv cache/venv removed, no matching fixture processes. No owned validation resource remains.
+
+Prior IMP-56 packaging remains a valid prior-source pass; IMP-44 is NOT reopened. Fresh IMP-72 fully rebuilds inherited beta.10 (not a ticket release bump), yields unsigned DMG/ZIP, verifies DMG checksum and records current hashes. No signing, publication, mounting/installation or updater operation. No old artifact or confidence silently relabeled current.
+
+## Required downstream work / limits
+Independent source review must assess this integration, especially regenerated MCP contract and startup-resolver/cleanup sequencing. API/E2E then reruns DR-002 current equivalents03/05/06B/07/09/09B/10 (02 through06B once), retaining historical04/06 without duplicates. Prior API-REV-00295.3% applies only to2c47/base67994; actual current full-host/desktop native/Codex cleanup and conversation→query→panel remain that owner's work. Current controlled renderer/no-work quit/MCP transport do not substitute for those journeys.
+
+Actual Windows/WSL, paid inference, real GitHub MCP, strict standalone vue-tsc and historical Nuxt incident remain unrun/unclaimed. Delivery still owns fresh-base verification, docs sync/raw-evidence review, AC-006 finalization and cleanup. No terminal or overall acceptance claim.
 
 ---
 # Historical IR-005 handoff
