@@ -408,7 +408,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
       { input: { name: `TDR ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     // Tools name a Project Task by its key; its folder (and `agent_run_resources.json`) by its stored ID.
     const task = async (description: string) => (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`,
-      { input: { projectId, description } })).createProjectTask as { taskId: string; taskKey: string };
+      { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask as { taskId: string; taskKey: string };
     const [taskA, taskB, taskC] = [await task("Docs review A."), await task("Docs review B."), await task("Docs review C.")];
     const root = await startRoot(kind);
     const squad = kind === "org" ? "/squad" : `/${segment(names.squad)}`;
@@ -520,7 +520,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
       closer = await startRoot("agent", ids.closer);
       // Warm the Closer (its first turn starts its runtime) so its DONE lands promptly during the held write.
       await closer.managerCalls(callTool("create_task", { project_id: (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
-        { input: { name: `TDR warm-up ${randomUUID().slice(0, 6)}` } })).createProject.projectId, description: "Warm-up task." }));
+        { input: { name: `TDR warm-up ${randomUUID().slice(0, 6)}` } })).createProject.projectId, title: "Warm-up task.", description: "Warm-up task." }));
     }
     await rootScenario(kind);
   }, 600_000);

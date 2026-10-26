@@ -17,6 +17,10 @@ import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import {
   AgentRunHistoryCatalogService,
 } from "./agent-run-history-catalog-service.js";
+import {
+  getInternalAgentVisibility,
+  type InternalAgentVisibility,
+} from "../../agent-definition/services/internal-agent-visibility.js";
 
 export interface DeleteStoredRunResult {
   success: boolean;
@@ -40,6 +44,7 @@ export class AgentRunHistoryService {
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly statusProjectionService: AgentRunStatusProjectionService;
+  private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
 
   constructor(
     memoryDir: string,
@@ -48,8 +53,11 @@ export class AgentRunHistoryService {
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
       agentRunManager?: AgentRunManager;
+      /** The internal-agent rule; the process rule by default. */
+      visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
     } = {},
   ) {
+    this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
     this.catalogService =
       dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.agentRunManager = dependencies.agentRunManager ?? AgentRunManager.getInstance();
@@ -65,15 +73,16 @@ export class AgentRunHistoryService {
       });
   }
 
+  /** The run history the user browses; runs of internal agents are left out while they are hidden (autobyteus-308). */
   async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
-    const rows = await this.catalogService.listCatalogRows();
+    const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
     const workspaceMap = new Map<string, Map<string, {
       agentDefinitionId: string;
       agentName: string;
       rows: RunHistoryIndexRow[];
     }>>();
     for (const row of rows) {
-      if (row.archivedAt) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId)) {
         continue;
       }
       const workspaceRootPath = canonicalizeWorkspaceRootPath(row.workspaceRootPath);

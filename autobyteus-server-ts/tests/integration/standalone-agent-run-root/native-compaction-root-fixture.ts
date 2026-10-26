@@ -60,6 +60,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
     });
     const catalog = {
       listAgentDefinitions: async () => agents,
+      isAgentHidden: () => false,
       listTeamDefinitions: async () => [team],
       getAgentDefinition: async (id: string) => agents.find(a => a.id === id) ?? null,
       getTeamDefinition: async (id: string) => id === 'team' ? team : null,

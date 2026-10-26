@@ -23,11 +23,13 @@ describe("AgentMemoryExplorerService", () => {
     }
   });
 
-  const createService = () => {
+  const createService = (hidden: string[] = []) => {
     if (!tempDir) {
       throw new Error("tempDir not initialized");
     }
-    return new AgentMemoryExplorerService(new MemoryFileStore(tempDir), tempDir);
+    return new AgentMemoryExplorerService(new MemoryFileStore(tempDir), tempDir, {
+      visibility: { hiddenDefinitionIds: async () => new Set(hidden) },
+    });
   };
 
   const writeMetadata = async (runId: string, agentDefinitionId: string, startedAt: string) => {
@@ -63,6 +65,20 @@ describe("AgentMemoryExplorerService", () => {
     expect(page.entries[0]?.runCount).toBe(2);
     expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
     expect(page.entries[0]?.memory.hasSemantic).toBe(true);
+  });
+
+  it("leaves out an internal agent and its runs while it is hidden (autobyteus-308 AC-002)", async () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-"));
+    await writeMetadata("reviewer-run", "reviewer", "2026-01-01T00:00:00Z");
+    await writeMetadata("router-run", "router", "2026-01-02T00:00:00Z");
+    touch(path.join(tempDir, "agents", "reviewer-run", "raw_traces_active.jsonl"), 1000);
+    touch(path.join(tempDir, "agents", "router-run", "raw_traces_active.jsonl"), 2000);
+
+    const hidden = createService(["router"]);
+    expect((await hidden.listAgentsWithMemory()).entries.map((entry) => entry.agentDefinitionId)).toEqual(["reviewer"]);
+    expect((await hidden.listAgentRunsWithMemory({ attribution: "DEFINITION", agentDefinitionId: "router" })).entries).toEqual([]);
+    const shown = createService([]);
+    expect((await shown.listAgentsWithMemory()).entries.map((entry) => entry.agentDefinitionId).sort()).toEqual(["reviewer", "router"]);
   });
 
   it("keeps metadata-less standalone memory under Unattributed runs", async () => {

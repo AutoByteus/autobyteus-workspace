@@ -16,7 +16,7 @@ import {
   type AgentToolMcpToolAdapter,
 } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import {
-  testMemberTaskCommandCapability,
+  testMemberTaskCapability,
   testMemberExecutionContext,
 } from "../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
@@ -186,12 +186,12 @@ describe("AgentToolMcpSessionService", () => {
 
   it("builds exact Team-member capabilities and rejects mismatched ownership", () => {
     const registry = new AgentToolMcpSessionRegistry();
-    const taskCommands = testMemberTaskCommandCapability("root-team");
+    const taskCapability = testMemberTaskCapability("root-team");
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-team",
       memberAddress: "/researcher",
       agentRunId: "researcher-run",
-      taskCommands,
+      taskCapability,
     });
     const service = buildService(registry);
     const result = service.activateForRun({

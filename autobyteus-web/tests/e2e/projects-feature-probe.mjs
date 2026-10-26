@@ -140,7 +140,9 @@ const gql = async (node, query, variables = {}) => {
   return body.data;
 };
 const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceRootPath displayName description availability }';
-const TASK_FIELDS = 'taskId projectId taskKey description status dependsOnTaskIds createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
+// autobyteus-260: a Project Task has a title; a writer here names a Task by its description's first line.
+const firstLine = description => description.split('\n').map(line => line.trim()).find(Boolean);
+const TASK_FIELDS = 'taskId projectId taskKey title description status dependsOnTaskIds createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
 const api = {
   // projects-always-on: settings are written through the ordinary server-settings API (Advanced).
   setSetting: async (node, key, value) => (await gql(node, 'mutation($k: String!, $v: String!) { updateServerSetting(key: $k, value: $v) }', { k: key, v: value })).updateServerSetting,
@@ -154,10 +156,10 @@ const api = {
   removeWorkspace: async (node, workspaceId) => (await gql(node, 'mutation($i: RemoveWorkspaceInput!) { removeWorkspace(input: $i) { success message } }', { i: { workspaceId } })).removeWorkspace,
   workspaceIds: async node => (await gql(node, '{ workspaces { workspaceId } }')).workspaces.map(item => item.workspaceId),
   tasks: async (node, projectId) => (await gql(node, `query($id: String!) { projectTasks(projectId: $id) { ${TASK_FIELDS} } }`, { id: projectId })).projectTasks,
-  createTask: async (node, projectId, description) => (await gql(node, `mutation($i: CreateProjectTaskInput!) { createProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, description } })).createProjectTask,
+  createTask: async (node, projectId, description, title = firstLine(description)) => (await gql(node, `mutation($i: CreateProjectTaskInput!) { createProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, title, description } })).createProjectTask,
   deleteProject: async (node, projectId) => (await gql(node, 'mutation($id: String!) { deleteProject(projectId: $id) }', { id: projectId })).deleteProject,
   // task-keys-and-dependencies: an edit from another client (GraphQL), to observe live board updates.
-  setDependsOn: async (node, projectId, task, dependsOnTaskIds) => (await gql(node, `mutation($i: UpdateProjectTaskInput!) { updateProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, taskId: task.taskId, description: task.description, dependsOnTaskIds } })).updateProjectTask,
+  setDependsOn: async (node, projectId, task, dependsOnTaskIds) => (await gql(node, `mutation($i: UpdateProjectTaskInput!) { updateProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, taskId: task.taskId, title: task.title, description: task.description, dependsOnTaskIds } })).updateProjectTask,
 };
 const readEnvFile = node => fs.readFile(path.join(node.dataRoot, '.env'), 'utf-8');
 const readWorkspacesJson = node => fs.readFile(path.join(node.dataRoot, 'workspaces.json'), 'utf-8');
@@ -179,10 +181,10 @@ const expectNoOverlay = async () => assert(await page.locator('[role="dialog"]')
 // AC-001/002/005: actual ordinary routes, both catalogs and responsive CSS.
 // Locale storage is test-owned preference setup, not an injected component/runtime double.
 const taskCopy = {
-  en: { new: 'New task', edit: 'Edit task', placeholder: 'Describe the task…', label: 'Description (required)',
+  en: { new: 'New task', edit: 'Edit task', placeholder: 'Describe the task…', label: 'Description (required)', titleLabel: 'Title (required)', titlePlaceholder: 'Name the task in one line',
     context: 'Context Files', hint: 'Drag, paste or upload', attach: 'Attach files', shortcut: 'Ctrl+Enter or ⌘+Enter to save', cancel: 'Cancel', create: 'Create task', save: 'Save changes',
     removed: ['Describe the work to be done.', 'Update the description and context files without changing', "The first line is the task's summary on the board.", 'Files are saved with this task on the selected node.'] },
-  'zh-CN': { new: '新建任务', edit: '编辑任务', placeholder: '描述任务…', label: '描述 （必填）',
+  'zh-CN': { new: '新建任务', edit: '编辑任务', placeholder: '描述任务…', label: '描述 （必填）', titleLabel: '标题 （必填）', titlePlaceholder: '用一行为任务命名',
     context: '上下文文件', hint: '拖动、粘贴或上传', attach: '添加文件', shortcut: 'Ctrl+Enter 或 ⌘+Enter 保存', cancel: '取消', create: '创建任务', save: '保存更改',
     removed: ['描述要完成的工作。', '更新描述和上下文文件，不改变任务标识或状态。', '第一行用作看板上的任务摘要', '文件随任务保存在所选节点。'] },
 };
@@ -223,6 +225,10 @@ const inspectTaskPresentation = async (mode, obs) => {
       const field = page.getByRole('textbox', { name: copy.label, exact: true });
       assert(await field.getAttribute('id') === 'task-page-description', 'Label names actual textarea');
       assert(await field.getAttribute('placeholder') === copy.placeholder && await field.getAttribute('rows') === '8', 'Concise placeholder, usable editor unchanged');
+      // autobyteus-260 REQ-004, DEC-013: a required one-line Title input above the description.
+      const titleField = page.getByRole('textbox', { name: copy.titleLabel, exact: true });
+      assert(await titleField.getAttribute('id') === 'task-page-title' && await titleField.getAttribute('placeholder') === copy.titlePlaceholder
+        && await titleField.evaluate(e => e.tagName === 'INPUT' && e.required && !e.hasAttribute('maxlength')), 'Title label names the required one-line input, no length limit');
       assert(text.includes(copy.context) && text.includes(copy.shortcut), 'Context count and shortcut retained');
       if (mode === 'new') assert(text.includes(copy.hint), 'Empty-context attachment hint retained');
       assert(await page.getByTestId('task-attach-files').getAttribute('aria-label') === copy.attach, 'Attachment control named');
@@ -230,19 +236,19 @@ const inspectTaskPresentation = async (mode, obs) => {
       assert(await page.getByTestId('task-page-save').innerText() === (mode === 'new' ? copy.create : copy.save), 'Save action retained');
       const layout = await surface.evaluate(root => {
         const card = root.querySelector('form > div');
-        const label = card.querySelector('label');
+        const label = card.querySelector('label[for="task-page-title"]'), descriptionLabel = card.querySelector('label[for="task-page-description"]');
         const composer = root.querySelector('[data-testid="task-description-composer"]');
         const rect = e => { const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height }; };
-        const c = rect(card), l = rect(label), editor = rect(composer), cs = getComputedStyle(card);
+        const c = rect(card), l = rect(label), d = rect(descriptionLabel), editor = rect(composer), cs = getComputedStyle(card);
         return { card: c, label: l, composer: editor, padding: parseFloat(cs.paddingTop), border: parseFloat(cs.borderTopWidth), firstChildIsLabel: card.firstElementChild === label,
-          labelOffset: l.top - c.top, composerGap: editor.top - l.bottom,
+          titleAboveDescription: l.bottom <= d.top, labelOffset: l.top - c.top, composerGap: editor.top - d.bottom,
           overflow: root.scrollWidth > root.clientWidth || document.documentElement.scrollWidth > innerWidth,
           fit: { rootScroll: root.scrollWidth, rootClient: root.clientWidth, docScroll: document.documentElement.scrollWidth, innerWidth,
             actions: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].map(e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.right), Math.round(b.width)]; }),
             widest: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > innerWidth + 1).slice(0, 4).map(e => `${e.tagName}.${String(e.className?.baseVal ?? e.className).slice(0, 50)}#${e.getAttribute('data-testid') ?? ''}:${Math.round(e.getBoundingClientRect().right)}`) },
           actionsFit: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].every(e => {const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= 0 && b.right <= innerWidth;}) };
       });
-      assert(layout.firstChildIsLabel && Math.abs(layout.labelOffset - layout.padding - layout.border) <= 1, 'Label immediately follows card padding: no replacement heading spacer');
+      assert(layout.firstChildIsLabel && layout.titleAboveDescription && Math.abs(layout.labelOffset - layout.padding - layout.border) <= 1, 'Title label immediately follows card padding, above the description: no replacement heading spacer');
       assert(layout.composerGap >= 0 && layout.composerGap <= 16, 'No heading-only gap before composer');
       assert(!layout.overflow && layout.actionsFit, `Form/actions fit wide and narrow layout (${mode} ${locale} ${viewport.width}: ${JSON.stringify(layout.fit)})`);
       const association = await assertTaskErrorAssociation(false);
@@ -270,7 +276,8 @@ const runCase = async (id, title, fn) => {
 let writerSequence = 0;
 const toolWrite = async args => {
   const output = path.join(outputDir, `external-tool-${++writerSequence}.json`);
-  await run(process.execPath, [path.join(serverDir, 'tests/fixtures/project-task-tool-writer.mjs'), nodeA.dataRoot, 'task_id' in args ? 'update_task' : 'create_task', JSON.stringify(args), output], serverDir, nodeA.env, path.join(outputDir, 'external-tool.log'));
+  const input = 'task_id' in args || 'title' in args ? args : { ...args, title: firstLine(args.description) };
+  await run(process.execPath, [path.join(serverDir, 'tests/fixtures/project-task-tool-writer.mjs'), nodeA.dataRoot, 'task_id' in args ? 'update_task' : 'create_task', JSON.stringify(input), output], serverDir, nodeA.env, path.join(outputDir, 'external-tool.log'));
   return JSON.parse(await fs.readFile(output, 'utf8')).task;
 };
 /** Agent tools name a Project Task by its key (task-keys REQ-018); board rows and GraphQL use the stored long ID. */
@@ -413,13 +420,23 @@ try {
     // Locale inspection reloads; start the transient-search Cancel journey afterward.
     await page.getByTestId('task-page-cancel').click(); await page.getByTestId('project-task-board').waitFor();
     await search().fill('old search'); await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').waitFor();
+    // autobyteus-260 REQ-004: a blank title is refused first, with the error under the field and focus on it.
+    await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-title-error').waitFor();
+    obs.blankTitle = await page.locator('#task-page-title').evaluate(e => ({ error: document.getElementById('task-page-title-error')?.textContent, invalid: e.getAttribute('aria-invalid'), describedBy: e.getAttribute('aria-describedby'), focused: document.activeElement === e }));
+    assert(obs.blankTitle.error === 'Give the task a title.' && obs.blankTitle.invalid === 'true' && obs.blankTitle.describedBy === 'task-page-title-error' && obs.blankTitle.focused, 'Blank title refused and focused: ' + JSON.stringify(obs.blankTitle));
+    assert(await page.getByTestId('task-page-description-error').count() === 0, 'One error at a time: the title first');
+    await screenshot('task-new-title-required');
+    await page.locator('#task-page-title').fill('   ');
+    await page.getByTestId('task-page-save').click(); assert(await page.getByTestId('task-page-title-error').count() === 1, 'A whitespace-only title is blank');
+    await page.locator('#task-page-title').fill('Corrected title');
+    await waitFor('title error clears after typing', async () => await page.getByTestId('task-page-title-error').count() === 0);
     await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-description-error').waitFor();
     obs.blankAssociation = await assertTaskErrorAssociation(true); await screenshot('task-new-required');
     await page.locator('#task-page-description').fill('Corrected draft');
     await waitFor('required error clears after typing', async () => await page.getByTestId('task-page-description-error').count() === 0);
     await assertTaskErrorAssociation(false);
     await page.getByTestId('task-page-cancel').click(); await page.getByTestId('project-task-board').waitFor(); assert(await search().inputValue() === 'old search', 'Cancel retains search');
-    await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').fill('  Browser task\nFull second line  ');
+    await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-title').fill('  Browser task  '); await page.locator('#task-page-description').fill('  Browser task\nFull second line  ');
     const uploadPattern = '**/rest/projects/*/task-context-drafts/*/context-files';
     const uploadFailure = async route => {
       if (route.request().method() === 'POST') await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ detail: 'Controlled context upload failure. Try attaching again.' }) });
@@ -441,14 +458,17 @@ try {
     assert(await page.getByTestId('task-page-save-error').count() === 0, 'Upload retry clears file failure');
     await page.locator('#task-page-description').press('Control+Enter'); await page.getByTestId('project-task-columns').waitFor(); assert(await search().inputValue() === '', 'Create clears prior search');
     task = (await api.tasks(nodeA, project.projectId)).find(t => t.description.startsWith('Browser task')); assert(task.contextFiles.length === 2 && task.status === 'TODO', 'Saved TODO with real context');
-    assert(task.description === 'Browser task\nFull second line', 'Stored multiline text trimmed only');
-    await row(task.taskId).waitFor(); assert(await row(task.taskId).getByTestId('project-task-row-text').innerText() === 'Browser task', 'First non-empty line board summary unchanged'); obs.task = task;
+    assert(task.description === 'Browser task\nFull second line' && task.title === 'Browser task', 'Stored multiline text and title trimmed only');
+    await row(task.taskId).waitFor(); assert(await row(task.taskId).getByTestId('project-task-row-text').innerText() === 'Browser task', 'The card shows the title');
+    // DEC-018 (3): the preview skips the description's first line when it repeats the title.
+    obs.preview = await row(task.taskId).getByTestId('project-task-row-preview').innerText().catch(() => null);
+    assert(obs.preview === 'Full second line', 'Card preview skips the repeated first line: ' + obs.preview); obs.task = task;
   });
   await runCase('PT-E2E-006', 'Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape', async obs => {
     await row(task.taskId).click(); await page.getByTestId('task-page-heading').waitFor(); await expectNoOverlay();
     assert(await page.getByTestId('task-page-heading').innerText() === 'Task details', 'Generic heading');
     const surface = page.getByTestId('project-task-page'); const text = await surface.innerText(); assert(!text.includes(task.taskId) && !text.includes(task.createdAt), 'No IDs/dates');
-    assert((text.match(/Browser task/g) || []).length === 1, 'Description once');
+    assert(await page.getByTestId('task-page-title').innerText() === 'Browser task' && await page.getByTestId('task-page-description').innerText() === 'Browser task\nFull second line', 'Title above the whole description, each once');
     assert(await page.getByTestId('task-page-edit').innerText() === 'Edit task', 'Adjacent edit action');
     const downloaded = page.waitForEvent('download'); await page.getByTestId('task-context-file-name').filter({ hasText: 'note.txt' }).click();
     const file = await downloaded; assert(await fs.readFile(await file.path(), 'utf8') === 'HTTP browser context', 'Downloaded real saved bytes');
@@ -459,7 +479,8 @@ try {
     await page.locator('#task-page-description').fill('discard edit');
     await waitFor('edit required error clears', async () => await page.getByTestId('task-page-description-error').count() === 0); await assertTaskErrorAssociation(false); await page.getByTestId('task-page-cancel').click(); await page.getByTestId('task-page-heading').waitFor();
     assert((await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId).description === task.description, 'Cancel unchanged');
-    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').fill('Browser task revised\nFull second line');
+    await page.getByTestId('task-page-edit').click(); assert(await page.locator('#task-page-title').inputValue() === 'Browser task', 'Edit form holds the saved title');
+    await page.locator('#task-page-title').fill('Browser task revised'); await page.locator('#task-page-description').fill('Browser task revised\nFull second line');
     const saveFailure = async route => { if (route.request().postDataJSON().query?.includes('updateProjectTask(')) await route.fulfill({ status: 503, body: 'task save temporarily unavailable' }); else await route.continue(); };
     await page.route('**/graphql', saveFailure);
     try { await page.getByTestId('task-page-save').click(); await page.getByTestId('task-page-save-error').waitFor(); }
@@ -469,7 +490,7 @@ try {
     assert((await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId).description === task.description, 'Failed write leaves saved content unchanged');
     await screenshot('task-edit-save-error');
     await page.locator('#task-page-description').press('Meta+Enter'); await waitFor('edit detail route (key URL, task-keys REQ-022)', () => pathname() === `/projects/${project.projectId}/tasks/${task.taskKey}`);
-    const edited = (await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId); assert(edited.description === 'Browser task revised\nFull second line', 'Same failed draft retries successfully'); assert(edited.createdAt === task.createdAt && edited.status === 'TODO' && edited.contextFiles.length === 2, 'Edit identity/status/context preserved');
+    const edited = (await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId); assert(edited.description === 'Browser task revised\nFull second line' && edited.title === 'Browser task revised', 'Same failed draft retries successfully, title included'); assert(edited.createdAt === task.createdAt && edited.status === 'TODO' && edited.contextFiles.length === 2, 'Edit identity/status/context preserved');
     await page.getByTestId('task-page-delete').click(); await page.getByTestId('task-page-delete-cancel').waitFor(); assert(await page.getByTestId('task-page-delete-cancel').evaluate(e => document.activeElement === e), 'Cancel first focus');
     await page.keyboard.press('Escape'); await waitFor('Delete focus restored', async () => page.getByTestId('task-page-delete').evaluate(e => document.activeElement === e)); obs.edited = edited;
     await page.getByTestId('task-back-to-board').click();
@@ -563,7 +584,7 @@ try {
   });
   await runCase('PT-E2E-014', 'Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery', async obs => {
     const p = await blankProject('Keyboard authoring'); await page.getByTestId('project-tasks-new-button').focus(); await page.keyboard.press('Enter');
-    await page.getByTestId('task-page-heading').waitFor(); await page.locator('#task-page-description').focus(); await page.keyboard.type('Keyboard task'); await page.keyboard.press('Meta+Enter');
+    await page.getByTestId('task-page-heading').waitFor(); await page.locator('#task-page-title').focus(); await page.keyboard.type('Keyboard task'); await page.locator('#task-page-description').focus(); await page.keyboard.type('Keyboard task'); await page.keyboard.press('Meta+Enter');
     await page.getByTestId('project-task-columns').waitFor(); const t = (await api.tasks(nodeA, p.projectId))[0];
     await row(t.taskId).getByTestId('project-task-row-link').focus(); await page.keyboard.press('Enter'); await page.getByTestId('task-page-delete').focus(); await page.keyboard.press('Enter');
     await page.getByTestId('task-page-delete-cancel').waitFor(); await page.keyboard.press('Escape'); await page.keyboard.press('Enter');
@@ -699,7 +720,7 @@ try {
     assert(JSON.stringify(stored.find(t => t.taskId === t4.taskId).dependsOnTaskIds) === JSON.stringify([t3.taskId]), 'The other Task unchanged');
 
     // New task with a dependency: the next key and Blocked by on the board (VIS-009b).
-    await board(pid); await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').fill('Follow-up: API examples');
+    await board(pid); await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-title').fill('Follow-up: API examples'); await page.locator('#task-page-description').fill('Follow-up: API examples');
     await page.getByTestId('task-dependency-input').fill('keys-board-2'); await page.getByTestId(`task-dependency-option-${t2.taskId}`).click();
     await page.getByTestId(`task-dependency-selected-${t2.taskId}`).waitFor();
     await screenshot('PT-E2E-017-new-task-chosen');

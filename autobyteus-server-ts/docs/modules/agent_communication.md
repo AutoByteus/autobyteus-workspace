@@ -122,23 +122,22 @@ includes the exact existing AgentRun that accepted the message:
 For a logical Agent address, `target_agent_run_id` is that mounted Agent's
 existing run. For a logical AgentTeam address, it is the mounted Team's existing
 configured coordinator run. For exact-run delivery, it confirms the selected
-active run. Rejection preserves the exact operation code/message and returns no
-successful receiver identity:
+active run. Rejection preserves the exact operation code/message and has no
+receiver identity: `target_agent_run_id` is left out, as every platform tool
+result leaves out a field with no value ([Tool Result Rule](agent_tools.md#tool-result-rule)):
 
 ```json
 {
   "accepted": false,
   "code": "COLLABORATION_TARGET_NOT_FOUND",
-  "message": "Target was not found.",
-  "target_agent_run_id": null
+  "message": "Target was not found."
 }
 ```
 
 The removed generic `result` field and generic communication-result mapper are
 not compatibility surfaces. Native JSON, MCP text JSON, MCP
 `structuredContent`, public types, and advertised post-2025-03 output schemas
-use the same flat field names and null rule. MCP `isError` is set only for
-rejected outcomes.
+use the same flat field names. MCP `isError` is set only for rejected outcomes.
 
 `get_handoff_rules` instead returns the read-only `{ handoffs }` object shown
 above. Its AutoByteus JSON result and MCP `content`/`structuredContent` represent
@@ -427,7 +426,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
   inside its operation gate, before it is posted. Every mention is re-validated
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
-  built-in, not the port's `ownDefinition()`; it may already be in the run) and
+  built-in, not an internal agent while hidden, not the port's `ownDefinition()`;
+  it may already be in the run) and
   answered with its name, kind, address and `presence`, **decided for the agent the
   user is talking to** (the viewer; each root passes `mentionViewerRelation(index,
   focusedAgentRunId)`): `self` (the viewer's own placement, by identity, not by
@@ -502,7 +502,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the Daily Assistant), then
+  policy: shared Agents (minus built-ins such as the Daily Assistant, and
+  internal agents while hidden), then
   shared Agent Teams, in catalog order, **including** definitions already in the
   run; only the port's own definition is left out. That is a Team run's Team.
   For an Agent root, `focusedAgentRunId` is required (omitting it is an error),

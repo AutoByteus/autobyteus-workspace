@@ -1,4 +1,3 @@
-import { toJsonString } from "../json-utils.js";
 import {
   type BrowserToolErrorPayload,
   BrowserToolError,
@@ -21,6 +20,3 @@ export const toBrowserToolErrorPayload = (error: unknown): BrowserToolErrorPaylo
     },
   };
 };
-
-export const toBrowserJsonString = (value: unknown): string =>
-  toJsonString(value, 2);

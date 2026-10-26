@@ -152,6 +152,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     ownershipScope: "shared", nodes: ["lead", "writer"].map((name) => new TeamMember({ memberName: name, ref: name, refScope: "shared" })) } as never);
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => agents, listTeamDefinitions: async () => [team],
+    isAgentHidden: () => false,
     getAgentDefinition: async (id) => agents.find((item) => item.id === id) ?? null, getTeamDefinition: async (id) => id === "studio" ? team : null,
   }, { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: unknown }[]) => inputs.map(({ selection }) => ({ kind: "valid" as const, selection }))) } as never,
   { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
@@ -195,10 +196,10 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
     flatTeamExecutionFactory: new FlatTeamExecutionFactory({ agentRunManager: runtimes as never,
       activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? "present" : "none" }) } as never,
       memoryLocator: new AgentRunMemoryLocator({ memoryDir: dir }) }),
-    memberExecutionContextBuilder: { build: async ({ teamContext, agentNode, taskCommands }: any) => new MemberExecutionContext({
+    memberExecutionContextBuilder: { build: async ({ teamContext, agentNode, taskCapability }: any) => new MemberExecutionContext({
       identity: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity(teamContext.teamRunId), memberAddress: agentNode.address, agentRunId: agentNode.agentRunId }),
       teamScoped: true, collaborationRole: "team_member",
-      collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCommands }) } as never,
+      collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-copy` }),
     taskExecutionResources: new InMemoryTaskExecutionResources(),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,

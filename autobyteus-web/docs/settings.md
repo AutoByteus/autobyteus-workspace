@@ -201,6 +201,53 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Server Settings: Claude Runtime
+
+Settings -> Server Settings -> Basics contains a node-bound **Claude runtime**
+card (`components/settings/ClaudeRuntimeCard.vue`), placed after the Codex full
+access card. Its one switch, **One-hour prompt cache**, asks Claude Code to keep
+the conversation cache for an hour instead of 5 minutes when Claude Code is
+billed through API credits or an API key.
+
+- The switch reads `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` from the
+  server-settings store. Never saved (absent) or any value other than `false`
+  shows it on, matching the server default.
+- Toggling saves `true` or `false` through `serverSettingsStore.updateServerSetting`
+  at once. The switch is disabled while saving; on failure it returns to the
+  previous state and shows the error under the notes.
+- The card explains the cost trade-off in plain words (writing costs a bit more,
+  reading the same; it saves money when agents wait more than 5 minutes), notes
+  that agent conversations on a Claude subscription do not change, that a
+  `promptCacheTtl` in the user's own Claude Code settings takes precedence, and
+  that the change applies to Claude agent sessions started afterwards.
+- Server behavior, precedence and the Claude Code variable are described in
+  [LLM Management: Claude Agent SDK Prompt Cache Lifetime](../../autobyteus-server-ts/docs/modules/llm_management.md#claude-agent-sdk-prompt-cache-lifetime).
+
+## Server Settings: Internal Agents
+
+Settings -> Server Settings -> Basics contains an **Internal agents** card
+(`components/settings/ShowInternalAgentsCard.vue`) with one switch, **Show
+internal agents**. Internal agents are the system's own helpers, such as the
+Model Router (an agent definition with `"internal": true`).
+
+- The switch reads `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` from the server-settings
+  store; never saved (absent) shows it off, matching the server default.
+- Toggling saves `true` or `false` at once, then reloads the agent definitions
+  (`agentDefinitionStore.reloadAllAgentDefinitions`) and the run history
+  (`runHistoryStore.refreshTreeQuietly`), because the server applies the setting
+  on the next read. On failure the switch returns to its previous state and
+  shows the error.
+- While on, the Agents page marks internal agents with an **Internal** badge
+  (`AgentCard.vue`).
+- Server rule and the surfaces it covers:
+  [Agent Definition: Internal Agents](../../autobyteus-server-ts/docs/modules/agent_definition.md#internal-agents).
+- Tests: `components/settings/__tests__/ShowInternalAgentsCard.spec.ts`,
+  `components/agents/__tests__/AgentCard.spec.ts`;
+  `tests/e2e/internal-agents-probe.mjs` (`pnpm test:e2e:internal-agents`, after a
+  server build) drives the Agents page, featured picker, run history and the
+  switch in a real browser against a real node with a file-authored internal
+  agent.
+
 ## Nodes: Manage Nodes (one list)
 
 Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
@@ -549,6 +596,43 @@ versions, and starts the vendor's own update and login commands.
   CLIs and vendor sources (`tests/e2e/fixtures/agent-runtimes-vendor-sources.mjs`).
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
+
+## Settings: Model Routing
+
+Settings -> **Model Routing** (`?section=model-routing`, right after Agent
+Runtimes). Its first section, **Agent runtimes now**, shows what the node this
+window is bound to can run now: the same answer the opt-in agent tool
+`list_available_agent_runtimes` gives, read through the GraphQL query
+`availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
+
+- **When it reads.** When the section opens, on **Check again**, and when
+  another node is bound to the window. It never polls: each read starts short
+  runtime processes on the node (0 tokens). The header shows the node and the
+  time of the last check.
+- **Rows.** One row per available runtime (installed and not known to be
+  signed out): its limits (name, % left with a bar, reset time in local time),
+  the runtime's `limitsNote`, and its models (collapsed list; a blocked model
+  shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
+  checked", "Limits not reported", "Limits unknown: <reason>" and "Models
+  unknown: <reason>" show the server's states. AutoByteus has one sub-row per
+  provider with a key, and per local model server (Ollama, LM Studio) that
+  answers with models now: balance, the reason it cannot run, and its models
+  ("Models unknown: <reason>" for a custom endpoint that cannot be read now).
+  No plan, tier or credit details.
+- **States.** Loading, a failed first read (Check again retries), a failed
+  later read (the last answer stays, with a note), and an empty node.
+- Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
+  `availableAgentRuntimesPresentation.ts`). Copy:
+  `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`;
+  `tests/e2e/model-routing-settings-probe.mjs`
+  (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
+  section in a real browser against two real nodes on fresh data roots, with
+  scripted runtime CLIs and provider endpoints answered inside each node
+  (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
 
 ## Settings: Agent Packages Auto-Refresh
 
@@ -1944,6 +2028,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Visible numbers, currency, percentages, and UTC dates use the active locale while exact token/accounting evidence remains available. English and Simplified Chinese layouts must avoid document-level overflow; keyboard focus and disclosure restoration remain visible.
     - `Run details` preserves the current-run-record investigation path under `tokenUsageRunStatistics`. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
     - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, retained loading/error/empty states, and history-migration guidance remain intact.
+    - The expanded cost disclosure (`TokenUsageCostBreakdown.vue`) splits cache writes like the live Token Meter: **Cache write 5m** and **Cache write 1h** rows with their tokens and costs when the aggregate has them, and one **Cache writes** row for writes outside that split (its cost is the cache-write cost the split rows do not carry). An aggregate without a split keeps the single **Cache writes** row.
     - Run-details labels use token-usage-owned display fields. Model rows show server-owned `modelDisplayName` beside raw `llmModel`; Task rows keep positional `modelDisplayNames` beside raw models. Custom-provider labels prefer persisted provider-name snapshots, with current metadata only as the established no-snapshot fallback.
     - The Task table retains its nine-column scan view (`Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, `Created Time`), accessible sortable headers, and the value-plus-disclosure control for detailed cost status. Complete estimates stay quiet in main rows while non-complete states remain visible.
     - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.

@@ -78,3 +78,41 @@ delegated run, …) are defined in the
   in the review dialog, "Keep as they are", or unlocked after the rule
   pre-locked it). The move banner leaves it out; the per-row hint still offers
   the move. Kept per device and node (`mcpSecretReviewState`).
+
+## Project Tasks
+
+- **Title:** a Project Task's one-line name, given by its writer (an agent's
+  `create_task` / `update_task`, or the app's Title field) and stored with the
+  Task (`title`). It is shown wherever a Task is listed: board cards, rows,
+  pickers, the Workspaces tree, `list_project_tasks` and
+  `search_project_tasks`. A Task with no Project (a Temp task) has no title;
+  its one-line text is its description's first line, which is not called
+  title or summary.
+- **Summary:** a reduced view of something, for example
+  `listProjectSummaries` (a Project without its Tasks) or
+  `TaskWorkerTaskSummary` (a Task worker's Task under its name). A summary is
+  never a Task's one-line name: that is its title.
+
+## Agent Runtimes
+
+- **Agent runtime:** what runs an agent (`RuntimeKind`): AutoByteus, the
+  Claude Agent SDK, Codex, Antigravity or Grok (Settings → Agent Runtimes,
+  `list_available_agent_runtimes`). It is not the LLM runtime (`LLMRuntime`,
+  `ModelInfo.runtime`: how AutoByteus calls a model, e.g. API or Ollama);
+  always say "agent runtime" for the first.
+- **Available agent runtime:** an agent runtime installed on the node and not
+  known to be signed out; for AutoByteus, a provider with an API key, or a
+  local provider (Ollama, LM Studio) that offers models.
+- **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
+  weekly window, a billing period, a money balance), read from the runtime or
+  provider. It is not the launch check of whether a runtime is usable.
+
+## Agent Definitions
+
+- **Internal agent:** an agent definition marked `"internal": true` in its
+  `agent-config.json`: the system's own helper, such as the Model Router. While
+  the server setting "Show internal agents" (`AUTOBYTEUS_SHOW_INTERNAL_AGENTS`)
+  is off, it is left out wherever the user or an agent browses, picks or
+  delegates; opened by ID it works. It is not the same as a **built-in agent**
+  (shipped and synced by AutoByteus, e.g. the Daily Assistant), which may or may
+  not be internal.

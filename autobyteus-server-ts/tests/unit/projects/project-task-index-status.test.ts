@@ -81,8 +81,8 @@ describe("Project index status and index after writes", () => {
   it("reads a Project's Tasks only when they changed, it is new, or the model switched (warm poll: no listTasks)", async () => {
     const alpha = await project("Alpha");
     const beta = await project("Beta");
-    const first = await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
-    const second = await tasks.createTask({ projectId: beta, description: "Show token usage and cost per conversation" });
+    const first = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
+    const second = await tasks.createTask({ projectId: beta, title: "Show token usage and cost per conversation", description: "Show token usage and cost per conversation" });
     listed.length = 0;
     await search.indexStatus();
     expect(listed.sort()).toEqual([alpha, beta].sort());
@@ -110,8 +110,8 @@ describe("Project index status and index after writes", () => {
 
   it("MP-005: after a finished job, an edit shows Needs update on every poll, and Index all includes the Project", async () => {
     const alpha = await project("Alpha");
-    const task = await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
-    await tasks.createTask({ projectId: alpha, description: "Sidebar collapse state is lost after restart" });
+    const task = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
+    await tasks.createTask({ projectId: alpha, title: "Sidebar collapse state is lost after restart", description: "Sidebar collapse state is lost after restart" });
     await search.indexProject(alpha);
     await until(async () => (await status(alpha)).state === "ready");
     await tasks.updateTask({ projectId: alpha, taskId: task.taskId, description: "Docker container crashes on arm64" });
@@ -124,7 +124,7 @@ describe("Project index status and index after writes", () => {
 
   it("MP-006: the poll after the job finishes shows Ready", async () => {
     const alpha = await project("Alpha");
-    await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     await modelOnDisk();
     fake.runner().holdDocuments();
     await search.indexProject(alpha);
@@ -137,7 +137,7 @@ describe("Project index status and index after writes", () => {
 
   it("MP-007: a board search that indexes the Project between polls shows as Ready on the next poll", async () => {
     const alpha = await project("Alpha");
-    await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     expect((await status(alpha)).state).toBe("notIndexed");
     await until(async () => (await search.search(alpha, "docker")).meaningSearch.state === "ready");
     expect(await status(alpha)).toMatchObject({ state: "ready", total: 1 });
@@ -145,15 +145,14 @@ describe("Project index status and index after writes", () => {
 
   it("indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)", async () => {
     await modelOnDisk();
-    // The window restarts on every write; it must outlast the gaps between the three writes below even on a loaded
-    // machine (with 40 ms a slow write split the burst into two runs).
-    start(250);
+    // The window runs from the first write; it must outlast three SQLite writes under full-suite load.
+    start(400);
     const alpha = await project("Alpha");
     const sync = vi.spyOn(fake.index, "sync");
     const search_ = vi.spyOn(fake.index, "search");
-    const task = await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    const task = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     await tasks.updateTask({ projectId: alpha, taskId: task.taskId, description: "Docker container crashes on arm64" });
-    await tasks.createTask({ projectId: alpha, description: "Sidebar collapse state is lost after restart" });
+    await tasks.createTask({ projectId: alpha, title: "Sidebar collapse state is lost after restart", description: "Sidebar collapse state is lost after restart" });
     expect(sync).not.toHaveBeenCalled();
     await until(async () => {
       const current = await status(alpha);
@@ -166,7 +165,7 @@ describe("Project index status and index after writes", () => {
 
   it("loads no model for a write that changes no description (CR-003), and indexes a description edit", async () => {
     const alpha = await project("Alpha");
-    const task = await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    const task = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     await search.indexProject(alpha);
     await until(async () => (await status(alpha)).state === "ready");
     // A restart: the model files are on disk, the model is idle (not loaded), and nothing is pending.
@@ -194,7 +193,7 @@ describe("Project index status and index after writes", () => {
     start(40);
     const alpha = await project("Alpha");
     const sync = vi.spyOn(fake.index, "sync");
-    await tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" });
+    await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
     await sleep(120);
     expect(sync).not.toHaveBeenCalled();
     expect(fake.downloads).toEqual([]);
@@ -203,7 +202,7 @@ describe("Project index status and index after writes", () => {
     // R-14: on disk when scheduled, switched to a model that is not when the run starts.
     await modelOnDisk();
     const downloads = fake.downloads.length;
-    await tasks.createTask({ projectId: alpha, description: "Show token usage and cost per conversation" });
+    await tasks.createTask({ projectId: alpha, title: "Show token usage and cost per conversation", description: "Show token usage and cost per conversation" });
     active = MODEL_B;
     await sleep(120);
     expect(sync).not.toHaveBeenCalled();
@@ -217,18 +216,18 @@ describe("Project index status and index after writes", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     // R-15: a Project gone by the time the run starts (PROJECT_NOT_FOUND) is skipped silently.
     listFailure = new ProjectError("PROJECT_NOT_FOUND", "Project not found.");
-    await expect(tasks.createTask({ projectId: alpha, description: "Docker image fails on ARM servers" })).resolves.toBeTruthy();
+    await expect(tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" })).resolves.toBeTruthy();
     await sleep(120);
     expect(warn).not.toHaveBeenCalled();
     // Any other failure is logged, never thrown.
     listFailure = new Error("disk unavailable");
-    await tasks.createTask({ projectId: alpha, description: "Sidebar collapse state is lost after restart" });
+    await tasks.createTask({ projectId: alpha, title: "Sidebar collapse state is lost after restart", description: "Sidebar collapse state is lost after restart" });
     await until(async () => warn.mock.calls.length > 0);
     expect(warn).toHaveBeenCalledWith("PROJECT_TASK_INDEX_AFTER_WRITE_FAILED", { projectId: alpha, error: "disk unavailable" });
     listFailure = null;
     // Shutdown (and a deleted Project) drop a pending run.
     const sync = vi.spyOn(fake.index, "sync");
-    await tasks.createTask({ projectId: alpha, description: "Show token usage and cost per conversation" });
+    await tasks.createTask({ projectId: alpha, title: "Show token usage and cost per conversation", description: "Show token usage and cost per conversation" });
     releaseProjectTaskSearchService();
     await sleep(120);
     expect(sync).not.toHaveBeenCalled();

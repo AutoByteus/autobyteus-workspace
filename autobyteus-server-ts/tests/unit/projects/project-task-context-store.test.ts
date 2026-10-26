@@ -28,7 +28,7 @@ describe("Task-owned context transaction", () => {
   const save = async () => {
     const draft = await tasks.beginContextDraft(projectId);
     const file = await tasks.uploadContextFile(projectId, draft.draftId, upload());
-    const task = await tasks.createTask({projectId, description: "Saved", contextDraft: {draftId: draft.draftId, storedFilenames: [file.storedFilename]}});
+    const task = await tasks.createTask({projectId, title: "Saved", description: "Saved", contextDraft: {draftId: draft.draftId, storedFilenames: [file.storedFilename]}});
     return {task, draft, file};
   };
   it("copies real bytes, persists metadata only, projects restart references and retains on Done", async () => {
@@ -57,7 +57,7 @@ describe("Task-owned context transaction", () => {
   });
   it("rejects wrong owner, traversal, symlink descendants, MIME and truncated streams", async () => {
     const {task} = await save(); const file = task.contextFiles[0]!;
-    const other = await tasks.createTask({projectId, description: "Other"});
+    const other = await tasks.createTask({projectId, title: "Other", description: "Other"});
     await expect(tasks.readSavedContextFile(projectId, other.taskId, file.storedFilename)).rejects.toMatchObject({code: "TASK_CONTEXT_NOT_FOUND"});
     await expect(tasks.readSavedContextFile(projectId, task.taskId, "../note.txt")).rejects.toMatchObject({code: "TASK_CONTEXT_NOT_FOUND"});
     const draft = await tasks.beginContextDraft(projectId, other.taskId);
@@ -92,7 +92,7 @@ describe("Task-owned context transaction", () => {
       if (String(file).endsWith(`${path.sep}task.json.lock`)) throw new Error("release failure");
       return originalUnlink(file);
     });
-    const task = await tasks.createTask({projectId, description: "Committed", contextDraft: {draftId: draft.draftId, storedFilenames: [file.storedFilename]}});
+    const task = await tasks.createTask({projectId, title: "Committed", description: "Committed", contextDraft: {draftId: draft.draftId, storedFilenames: [file.storedFilename]}});
     expect((await store.listTasks(projectId))[0]!.taskId).toBe(task.taskId);
     expect(await fs.readFile(task.contextFiles[0]!.localPath!, "utf8")).toBe("committed bytes");
     unlink.mockRestore(); await fs.unlink(`${layout.taskFile(projectId, task.taskId)}.lock`);

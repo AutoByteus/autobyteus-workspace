@@ -1,0 +1,14 @@
+{
+  "extends": "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "files": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/utils/nfsLauncherCommands.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/localization/messages/en/settings.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/localization/messages/zh-CN/settings.ts"
+  ],
+  "include": [],
+  "exclude": []
+}

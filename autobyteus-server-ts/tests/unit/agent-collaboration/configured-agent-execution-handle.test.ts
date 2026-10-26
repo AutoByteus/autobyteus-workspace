@@ -18,10 +18,10 @@ import {
   MemberExecutionContext,
 } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 
-const taskCommands = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
+const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
   root,
   delegateToNewCopy: vi.fn(),
-  assignToExistingCopy: vi.fn(),
+  ownedTaskOf: () => null, assignToExistingCopy: vi.fn(),
   submitTaskResult: vi.fn(),
   reviewTaskResult: vi.fn(),
 });
@@ -49,7 +49,7 @@ const build = (
     collaboration: new MemberCollaborationContext({
       deliverLogicalMessage: async () => ({ accepted: true }),
     }),
-    tasks: taskCommands(root),
+    tasks: taskCapability(root),
   });
   const activity = { kind: "none" as "none" | "present" };
   const fakeRun = {

@@ -13,7 +13,7 @@ import { RuntimeKind } from '../../../../src/runtime-management/runtime-kind-enu
 import type { AgentRunEvent } from '../../../../src/agent-execution/domain/agent-run-event.js';
 import type { TokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenPriceConfigProvider } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
-import { testMemberTaskCommandCapability } from '../../../fixtures/current-team-run-fixtures.js';
+import { testMemberTaskCapability } from '../../../fixtures/current-team-run-fixtures.js';
 import { buildClaudeTokenUsageEvent } from '../../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js';
 
 const runContext = new AgentRunContext({
@@ -33,7 +33,7 @@ const runContext = new AgentRunContext({
         agentRunId: 'member-run-1',
       },
       collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-      tasks: testMemberTaskCommandCapability('team-run-1'),
+      tasks: testMemberTaskCapability('team-run-1'),
     }),
   }),
 });

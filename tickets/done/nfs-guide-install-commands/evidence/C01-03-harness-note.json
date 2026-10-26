@@ -1,0 +1,12 @@
+{
+  "case": "C01/R03",
+  "date": "2026-10-26T07:04:24.899505+00:00",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "command": "Inspect cleanup exceptions / missing final-save path, correct ticket-owned probe only",
+  "environment": "Mac Node22.23.1",
+  "cause": "Old driver waited only pnpm wrapper then removed private TMP while descendant Node compile cache was still flushing; fs.rm ENOTEMPTY aborted final save",
+  "observed": "R02 four current view receipts and completion remain durable. R03 Completed row was emitted but its detailed in-memory assertions were not saved before cleanup error. Do not infer missing raw receipt.",
+  "correction": "Persist before cleanup; wait recorded server group absence and retry only owned directory removal. R03-only execution to produce durable direct evidence, not replay passed R02/R01. No product change.",
+  "attempt2Aggregate": "Not Tested raw remains unchanged; not rewritten as total pass",
+  "cleanup": "Own leftover attempt2 directory will be removed after verified group absence."
+}

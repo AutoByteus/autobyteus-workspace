@@ -9,10 +9,8 @@ import {
 } from "./task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "./task-delegation-tool-manifest.js";
 import { buildDelegateTaskParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
-import {
-  toTaskDelegationJsonString,
-  toTaskDelegationToolErrorPayload,
-} from "./task-delegation-tool-serialization.js";
+import { toTaskDelegationToolErrorPayload } from "./task-delegation-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { getTaskDelegationToolService } from "./task-delegation-tool-service.js";
 
 export class DelegateTaskTool extends BaseTool<unknown, Record<string, unknown>, string> {
@@ -47,9 +45,9 @@ export class DelegateTaskTool extends BaseTool<unknown, Record<string, unknown>,
         this.taskDelegationContext,
         entry.parseInput(kwargs),
       );
-      return toTaskDelegationJsonString(result);
+      return toToolResultJson(result);
     } catch (error) {
-      throw new Error(toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(error)));
+      throw new Error(toToolResultJson(toTaskDelegationToolErrorPayload(error)));
     }
   }
 }

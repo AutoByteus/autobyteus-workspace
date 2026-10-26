@@ -41,6 +41,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       memoryLocator,
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
+        isAgentHidden: () => false,
         getAgentDefinition: async () => null, getTeamDefinition: async () => null,
       }, { validate: async () => { throw new Error("unused"); }, validateMany: async () => [] } as never),
     },

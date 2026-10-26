@@ -1,0 +1,21 @@
+# API-10 — clean-clone proof: git clone --branch codex/internal-agents --single-branch <repo> /tmp/ia-clean (HEAD 17a6904e70), then the documented setup and checks in the fresh clone
+# Setup (TESTING.md): pnpm install --offline --frozen-lockfile (exit 0); pnpm -C autobyteus-ts build (exit 0); pnpm -C autobyteus-server-ts prebuild (exit 0); pnpm -C autobyteus-web exec nuxt prepare (exit 0)
+# macOS darwin 25.5, Node v22.23.1; 2026-10-25T21:41Z
+
+## 1. pnpm -C autobyteus-server-ts typecheck
+typecheck exit 0
+
+## 2. focused server unit tests: tests/unit/agent-collaboration/collaborators/internal-agent-eligibility.test.ts tests/unit/agent-definition/internal-agents.test.ts tests/unit/agent-memory/agent-memory-explorer-service.test.ts tests/unit/agent-tools/agent-management/list-agent-definitions.test.ts tests/unit/run-history/services/agent-run-history-service.test.ts tests/unit/services/server-settings-service.test.ts 
+ Test Files  6 passed (6)
+      Tests  73 passed (73)
+
+## 3. web: vitest run components/settings/__tests__/ShowInternalAgentsCard.spec.ts components/agents/__tests__/AgentCard.spec.ts
+ ✓ components/agents/__tests__/AgentCard.spec.ts (5 tests) 15ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts (4 tests) 32ms
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+
+## 4. server E2E internal-agents.e2e.test.ts (env -i, scripted AGY)
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2018ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

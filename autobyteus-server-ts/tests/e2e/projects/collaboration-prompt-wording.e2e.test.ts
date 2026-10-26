@@ -320,7 +320,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     // task-keys-and-dependencies (design SR-003 REC-005): the named Task is resolved before the copy checks, so the
     // wrong-run-ID refusals below need a real open Task; an unknown task_id would be refused first.
     const keyProject = (await h.graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: `CPW keys ${Date.now()}` } })).createProject.projectId as string;
-    const openTask = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskKey}}`, { input: { projectId: keyProject, description: "Reply OK." } })).createProjectTask.taskKey as string;
+    const openTask = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskKey}}`, { input: { projectId: keyProject, title: "Reply OK.", description: "Reply OK." } })).createProjectTask.taskKey as string;
     await check("M-34", root.managerRunId, "delegate_task", { target_agent_run_id: "not_my_task_agent", task_id: openTask },
       ["not_my_task_agent is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."]);
     await check("M-35", root.managerRunId, "delegate_task", { target_agent_run_id: coordinatorId, task_id: openTask },

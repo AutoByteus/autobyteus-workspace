@@ -1,0 +1,23 @@
+# IMP-04 reproduction (design Guidance: Claude discovery must not send a string prompt, C-15)
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts --no-watch -t "settings-source policy for model discovery"
+# date: 2026-10-25
+
+## Before the change (base a2faf424d6 + the test edit only)
+     × uses user settings-source policy for model discovery 27ms
+AssertionError: expected 'string' not to be 'string' // Object.is equality
+
+## After the change (commit 5135bb73dc)
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > keeps a concurrent health request responsive while model discovery waits 591ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Antigravity > classifies sign-in from model discovery and reads the manifest version 718ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Codex: account/rateLimits/read on the home-folder app-server, lease released 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Codex: a request that never answers ends at the deadline and releases the lease (AR-002) 302ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Claude: the SDK usage answer through the client; a failure is classified, its text dropped 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Antigravity: agy -p /usage --output-format json; a failed or hanging command ends as unknown 387ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > a sign-in or version command under a passed deadline does not start 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > opens the CLI with an input that never yields a message, and closes it after use (AR-001) 19ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > never yields while the control request runs 52ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > closes the CLI at the deadline when the control request does not answer (AC-011) 102ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > closes a query that opens only after the deadline 183ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > ClaudeSdkClient.readUsage > asks the SDK's usage control request with behaviors skipped, on a query that sends no message 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > ClaudeSdkClient.readUsage > throws when the SDK has no usage request 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > uses user settings-source policy for model discovery 1ms

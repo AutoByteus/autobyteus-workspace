@@ -1,0 +1,406 @@
+# API-01…06 round 2 — server E2E tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (AAR-01…AAR-06), third consecutive run
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: 5a87647318 (source 7ece4e2069) + this round's test edits; macOS darwin 25.5, Node v22.23.1; 2026-10-25T09:18Z
+# Runs 1 and 2 of the same file this round:  /  Tests 6 passed (6)
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:70960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts > list_available_agent_runtimes / availableAgentRuntimes e2e (real studio server, scripted runtime CLIs)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/available-agent-runtimes-tool/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/memory
+============================================================
+
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-25T09:18:13.715Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 26 predefined settings
+(node:70960) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:70960) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts > list_available_agent_runtimes / availableAgentRuntimes e2e (real studio server, scripted runtime CLIs)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+(node:70960) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:70960) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1792919893887,"pid":70960,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59330"}
+{"level":30,"time":1792919893911,"pid":70960,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59331"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919894216,"pid":70960,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":295.5051249999997,"msg":"http request completed"}
+AAR-EVIDENCE AAR-01 cold-read {"ms":305,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]}
+{"level":30,"time":1792919894225,"pid":70960,"hostname":"MacBookPro","reqId":"req-2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.1174580000006245,"msg":"http request completed"}
+{"level":30,"time":1792919894231,"pid":70960,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.1752919999998994,"msg":"http request completed"}
+{"level":30,"time":1792919894236,"pid":70960,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.602375000000393,"msg":"http request completed"}
+{"level":30,"time":1792919894242,"pid":70960,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.0976250000003347,"msg":"http request completed"}
+{"level":30,"time":1792919894254,"pid":70960,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.733165999999983,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919894458,"pid":70960,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":198.42891699999927,"msg":"http request completed"}
+AAR-EVIDENCE AAR-01 report {"checkedAt":"2026-10-25T09:18:14.260Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":[{"name":"Weekly","remainingPercent":0,"resetsAt":"2026-10-30T19:57:53.000Z"}],"models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)","blocked":{"until":"2026-10-30T19:57:53.000Z","by":"Weekly"}}]},{"runtime":"claude_agent_sdk","name":"Claude","limits":[{"name":"5-hour","remainingPercent":13,"resetsAt":"2026-10-24T21:10:00.354Z"},{"name":"Weekly","remainingPercent":78,"resetsAt":"2026-10-31T16:00:00.354Z"},{"name":"Weekly · Fable","remainingPercent":100,"resetsAt":"2026-10-31T16:00:00.000Z"}],"models":[{"id":"claude-fake-sonnet","name":"Claude Fake Sonnet"}]},{"runtime":"antigravity_cli","name":"Antigravity","limits":[{"name":"Gemini Models · weekly","remainingPercent":99,"resetsAt":"2026-10-31T04:59:08.000Z"},{"name":"Gemini Models · 5-hour","remainingPercent":98,"resetsAt":"2026-10-24T21:45:12.000Z"},{"name":"Claude and GPT models · weekly","remainingPercent":0,"resetsAt":"2026-10-26T10:22:39.000Z"},{"name":"Gemini 4 Argon · weekly","remainingPercent":40,"resetsAt":"2026-10-26T12:35:29.000Z"}],"models":[{"id":"claude-sonnet-5-5-medium","name":"Claude Sonnet 5.5 (Medium)","blocked":{"until":"2026-10-26T10:22:39.000Z","by":"Claude and GPT models · weekly"}},{"id":"gemini-3.8-flash-high","name":"Gemini 3.8 Flash (High)"}]},{"runtime":"grok_build","name":"Grok","limits":[{"name":"Billing period","remainingPercent":null,"resetsAt":"2026-10-29T00:00:00.000Z"}],"limitsNote":"Grok does not report how much of the period is used.","models":[{"id":"grok-4.7","name":"Grok 4.7","contextTokens":256000}]},{"runtime":"autobyteus","name":"AutoByteus","providers":[{"provider":"Anthropic","blocked":"credit balance too low","models":[{"id":"claude-fable-5","name":"claude-fable-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-fable-5-1","name":"claude-fable-5-1","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-haiku-5-5","name":"claude-haiku-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.7","name":"claude-opus-4.7","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.8","name":"claude-opus-4.8","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5","name":"claude-opus-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5-5","name":"claude-opus-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-4.6","name":"claude-sonnet-4.6","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5","name":"claude-sonnet-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5-5","name":"claude-sonnet-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}}]},{"provider":"DeepSeek","balance":"0.14 USD","models":[{"id":"deepseek-v4-flash","name":"deepseek-v4-flash","contextTokens":1000000},{"id":"deepseek-v4-pro","name":"deepseek-v4-pro","contextTokens":1000000}]},{"provider":"Grok","models":[{"id":"grok-4.7","name":"grok-4.7","contextTokens":500000}]},{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":[{"id":"kimi-k3","name":"kimi-k3","contextTokens":1000000,"blocked":{"until":null,"by":"no balance left"}}]},{"provider":"OpenAI","limits":"not reported","models":[{"id":"gpt-5.4","name":"gpt-5.4","contextTokens":1000000},{"id":"gpt-5.4-mini","name":"gpt-5.4-mini","contextTokens":400000},{"id":"gpt-5.5","name":"gpt-5.5","contextTokens":1050000},{"id":"gpt-5.6-luna","name":"gpt-5.6-luna","contextTokens":1050000},{"id":"gpt-5.6-sol","name":"gpt-5.6-sol","contextTokens":1050000},{"id":"gpt-5.6-terra","name":"gpt-5.6-terra","contextTokens":1050000},{"id":"gpt-6-astra","name":"gpt-6-astra","contextTokens":1050000},{"id":"gpt-6-luna","name":"gpt-6-luna","contextTokens":1050000},{"id":"gpt-6-sol","name":"gpt-6-sol","contextTokens":1050000}]}]}]}
+AAR-EVIDENCE AAR-01 elapsed-ms 203
+AAR-EVIDENCE AAR-01 claude-stdin-frames ["control_request initialize","control_request get_usage"]
+AAR-EVIDENCE AAR-01 providers {"Anthropic":{"provider":"Anthropic","blocked":"credit balance too low","models":"10 models, 10 blocked"},"DeepSeek":{"provider":"DeepSeek","balance":"0.14 USD","models":"2 models, 0 blocked"},"Grok":{"provider":"Grok","models":"1 models, 0 blocked"},"Kimi":{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":"1 models, 1 blocked"},"OpenAI":{"provider":"OpenAI","limits":"not reported","models":"9 models, 0 blocked"}}
+AAR-EVIDENCE AAR-01 provider-requests ["GET http://lmstudio.e2e.test:1234/api/v1/models","GET http://lmstudio.e2e.test:1234/api/v1/models","POST https://api.anthropic.com/v1/messages/count_tokens","GET https://api.deepseek.com/user/balance","GET https://api.x.ai/v1/api-key","GET https://api.moonshot.ai/v1/users/me/balance"]
+AAR-EVIDENCE AAR-01 refused-outside-urls []
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919894656,"pid":70960,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":190.62391599999864,"msg":"http request completed"}
+AAR-EVIDENCE AAR-02 signed-out-missing-unchecked [{"runtime":"codex_app_server","signIn":"not checked"},{"runtime":"antigravity_cli"},{"runtime":"autobyteus"}]
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919894850,"pid":70960,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":190.23304100000132,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919895046,"pid":70960,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":192.67683299999953,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919909096,"pid":70960,"hostname":"MacBookPro","reqId":"req-b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":14046.208958,"msg":"http request completed"}
+AAR-EVIDENCE AAR-03 elapsed-ms 14050
+AAR-EVIDENCE AAR-03 report {"checkedAt":"2026-10-25T09:18:15.050Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":"unknown: Codex usage limits timed out","models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)"}]},{"runtime":"claude_agent_sdk","name":"Claude","limits":[{"name":"5-hour","remainingPercent":13,"resetsAt":"2026-10-24T21:10:00.354Z"},{"name":"Weekly","remainingPercent":78,"resetsAt":"2026-10-31T16:00:00.354Z"},{"name":"Weekly · Fable","remainingPercent":100,"resetsAt":"2026-10-31T16:00:00.000Z"}],"models":[{"id":"claude-fake-sonnet","name":"Claude Fake Sonnet"}]},{"runtime":"antigravity_cli","name":"Antigravity","signIn":"not checked","limits":"unknown: Antigravity usage limits timed out","models":"unknown: Antigravity model list timed out"},{"runtime":"autobyteus","name":"AutoByteus","providers":[{"provider":"Anthropic","blocked":"credit balance too low","models":[{"id":"claude-fable-5","name":"claude-fable-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-fable-5-1","name":"claude-fable-5-1","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-haiku-5-5","name":"claude-haiku-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.7","name":"claude-opus-4.7","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-4.8","name":"claude-opus-4.8","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5","name":"claude-opus-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-opus-5-5","name":"claude-opus-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-4.6","name":"claude-sonnet-4.6","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5","name":"claude-sonnet-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}},{"id":"claude-sonnet-5-5","name":"claude-sonnet-5-5","contextTokens":1000000,"blocked":{"until":null,"by":"credit balance too low"}}]},{"provider":"DeepSeek","balance":"0.14 USD","models":[{"id":"deepseek-v4-flash","name":"deepseek-v4-flash","contextTokens":1000000},{"id":"deepseek-v4-pro","name":"deepseek-v4-pro","contextTokens":1000000}]},{"provider":"Grok","models":[{"id":"grok-4.7","name":"grok-4.7","contextTokens":500000}]},{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":[{"id":"kimi-k3","name":"kimi-k3","contextTokens":1000000,"blocked":{"until":null,"by":"no balance left"}}]},{"provider":"OpenAI","limits":"not reported","models":[{"id":"gpt-5.4","name":"gpt-5.4","contextTokens":1000000},{"id":"gpt-5.4-mini","name":"gpt-5.4-mini","contextTokens":400000},{"id":"gpt-5.5","name":"gpt-5.5","contextTokens":1050000},{"id":"gpt-5.6-luna","name":"gpt-5.6-luna","contextTokens":1050000},{"id":"gpt-5.6-sol","name":"gpt-5.6-sol","contextTokens":1050000},{"id":"gpt-5.6-terra","name":"gpt-5.6-terra","contextTokens":1050000},{"id":"gpt-6-astra","name":"gpt-6-astra","contextTokens":1050000},{"id":"gpt-6-luna","name":"gpt-6-luna","contextTokens":1050000},{"id":"gpt-6-sol","name":"gpt-6-sol","contextTokens":1050000}]}]}]}
+AAR-EVIDENCE AAR-03 hung [{"runtime":"grok","step":"version","pid":71351},{"runtime":"codex","step":"rateLimits","pid":71352},{"runtime":"agy","step":"models","pid":71357},{"runtime":"agy","step":"usage","pid":71366},{"runtime":"agy","step":"models","pid":71367}]
+AAR-EVIDENCE AAR-03 cli-calls ["1792919894926 71341 agy --help","1792919894964 71344 agy models","1792919895003 71345 agy --help","1792919895003 71346 agy -p /usage --output-format json","1792919895041 71347 agy models","1792919895085 71351 grok --version","1792919895088 71350 agy --version","1792919895125 71354 agy --help","1792919895162 71357 agy models","1792919901134 71366 agy -p /usage --output-format json","1792919901134 71365 agy --help","1792919901172 71367 agy models"]
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919909373,"pid":70960,"hostname":"MacBookPro","reqId":"req-c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":215.78962500000125,"msg":"http request completed"}
+Agent Definition created successfully with ID: router-agent
+{"level":30,"time":1792919909394,"pid":70960,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":17.559375000000728,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace.
+Created and registered workspace ID: agent_ws_5d34c02520a372fb2cfc0096018be066d3efe2e2eb78e73d74dc41a1784e99f8
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace.
+Reusing registered workspace ID: agent_ws_5d34c02520a372fb2cfc0096018be066d3efe2e2eb78e73d74dc41a1784e99f8
+{"level":30,"time":1792919909484,"pid":70960,"hostname":"MacBookPro","reqId":"req-e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":87.59195800000089,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 with-tool enabled_tools ["list_available_agent_runtimes","send_message_to","delegate_task"]
+{"level":30,"time":1792919909487,"pid":70960,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_FkwRFhEo_YC9KabvwONZvPTiB38elWUzdZctW2pUTMk","statusCode":200,"elapsedMs":1.1005000000004657,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919909677,"pid":70960,"hostname":"MacBookPro","reqId":"req-2","method":"POST","url":"/mcp/agent-tools/agtrun_FkwRFhEo_YC9KabvwONZvPTiB38elWUzdZctW2pUTMk","statusCode":200,"elapsedMs":189.09204099999988,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919909872,"pid":70960,"hostname":"MacBookPro","reqId":"req-f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":193.1779170000009,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 mcp-report-runtimes ["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919910063,"pid":70960,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_FkwRFhEo_YC9KabvwONZvPTiB38elWUzdZctW2pUTMk","statusCode":200,"elapsedMs":187.0760420000006,"msg":"http request completed"}
+{"level":30,"time":1792919910063,"pid":70960,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":189.06516599999668,"msg":"http request completed"}
+{"level":30,"time":1792919910063,"pid":70960,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":185.24787500000093,"msg":"http request completed"}
+{"level":30,"time":1792919910063,"pid":70960,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":184.39524999999776,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 parallel {"wallMs":191,"appServersStarted":1,"calls":[{"ms":191,"checkedAt":"2026-10-25T09:18:29.874Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}},{"ms":191,"checkedAt":"2026-10-25T09:18:29.874Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}},{"ms":191,"checkedAt":"2026-10-25T09:18:29.874Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}},{"ms":190,"checkedAt":"2026-10-25T09:18:29.874Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}}]}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919910253,"pid":70960,"hostname":"MacBookPro","reqId":"req-j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":187.7500420000033,"msg":"http request completed"}
+{"level":30,"time":1792919910253,"pid":70960,"hostname":"MacBookPro","reqId":"req-k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":184.80587500000183,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919910548,"pid":70960,"hostname":"MacBookPro","reqId":"req-l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":191.29129099999773,"msg":"http request completed"}
+{"level":30,"time":1792919910548,"pid":70960,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":189.24500000000262,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919910846,"pid":70960,"hostname":"MacBookPro","reqId":"req-n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":193.2690419999999,"msg":"http request completed"}
+{"level":30,"time":1792919910846,"pid":70960,"hostname":"MacBookPro","reqId":"req-o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":190.70879100000093,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919911141,"pid":70960,"hostname":"MacBookPro","reqId":"req-p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":191.69145800000115,"msg":"http request completed"}
+{"level":30,"time":1792919911141,"pid":70960,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":189.42312499999753,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919911456,"pid":70960,"hostname":"MacBookPro","reqId":"req-r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":212.0095840000031,"msg":"http request completed"}
+{"level":30,"time":1792919911457,"pid":70960,"hostname":"MacBookPro","reqId":"req-s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":210.1396249999998,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919911762,"pid":70960,"hostname":"MacBookPro","reqId":"req-t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":202.3857919999973,"msg":"http request completed"}
+{"level":30,"time":1792919911762,"pid":70960,"hostname":"MacBookPro","reqId":"req-u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":200.24420800000007,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919912071,"pid":70960,"hostname":"MacBookPro","reqId":"req-v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":206.88016700000298,"msg":"http request completed"}
+{"level":30,"time":1792919912071,"pid":70960,"hostname":"MacBookPro","reqId":"req-w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":204.99674999999843,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919912405,"pid":70960,"hostname":"MacBookPro","reqId":"req-x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":230.1958749999976,"msg":"http request completed"}
+{"level":30,"time":1792919912405,"pid":70960,"hostname":"MacBookPro","reqId":"req-y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":228.1417909999982,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919912708,"pid":70960,"hostname":"MacBookPro","reqId":"req-z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":199.81308300000092,"msg":"http request completed"}
+{"level":30,"time":1792919912708,"pid":70960,"hostname":"MacBookPro","reqId":"req-10","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":197.5505000000012,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919913004,"pid":70960,"hostname":"MacBookPro","reqId":"req-11","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":193.03387499999735,"msg":"http request completed"}
+{"level":30,"time":1792919913004,"pid":70960,"hostname":"MacBookPro","reqId":"req-12","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":191.18887499999983,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919913316,"pid":70960,"hostname":"MacBookPro","reqId":"req-13","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":208.52266699999745,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919913517,"pid":70960,"hostname":"MacBookPro","reqId":"req-14","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":198.84358300000167,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919913708,"pid":70960,"hostname":"MacBookPro","reqId":"req-15","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":189.15395799999897,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 two-reader-rounds {"rounds":[[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}],[{"limits":"read","models":"read"},{"limits":"read","models":"read"}]],"sequential":[{"limits":"read","models":"read"},{"limits":"read","models":"read"},{"limits":"read","models":"read"}]}
+{"level":30,"time":1792919913731,"pid":70960,"hostname":"MacBookPro","reqId":"req-16","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":20.721833999999944,"msg":"http request completed"}
+Agent Definition created successfully with ID: plain-agent
+{"level":30,"time":1792919913749,"pid":70960,"hostname":"MacBookPro","reqId":"req-17","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":15.572125000002416,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace.
+Reusing registered workspace ID: agent_ws_5d34c02520a372fb2cfc0096018be066d3efe2e2eb78e73d74dc41a1784e99f8
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/available-agent-runtimes-e2e-PRLoOv/data/workspace.
+Reusing registered workspace ID: agent_ws_5d34c02520a372fb2cfc0096018be066d3efe2e2eb78e73d74dc41a1784e99f8
+{"level":30,"time":1792919913836,"pid":70960,"hostname":"MacBookPro","reqId":"req-18","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":84.64079200000197,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 without-tool enabled_tools ["list_available_agents","send_message_to","delegate_task"]
+{"level":30,"time":1792919913837,"pid":70960,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_WR8oITpoFqGeWK7xZ264lZLpwLy1QrpGDNlBMVKB6ik","statusCode":200,"elapsedMs":0.26341599999796017,"msg":"http request completed"}
+{"level":30,"time":1792919913840,"pid":70960,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_WR8oITpoFqGeWK7xZ264lZLpwLy1QrpGDNlBMVKB6ik","statusCode":200,"elapsedMs":0.25649999999950523,"msg":"http request completed"}
+AAR-EVIDENCE AAR-04 without-tool call {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Tool is not enabled for this session"}}
+{"level":30,"time":1792919913855,"pid":70960,"hostname":"MacBookPro","reqId":"req-19","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":13.73054200000115,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919914053,"pid":70960,"hostname":"MacBookPro","reqId":"req-1a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":194.91712499999994,"msg":"http request completed"}
+AAR-EVIDENCE AAR-06 lmstudio-answering {"provider":"LM Studio","limits":"not reported","models":[{"id":"google/gemma-4-26b-a4b:lmstudio@lmstudio.e2e.test:1234","name":"google/gemma-4-26b-a4b","contextTokens":131072},{"id":"qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.e2e.test:1234","name":"qwen/qwen3.6-35b-a3b","contextTokens":262144}]}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919914283,"pid":70960,"hostname":"MacBookPro","reqId":"req-1b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":228.1317080000008,"msg":"http request completed"}
+{"level":30,"time":1792919914298,"pid":70960,"hostname":"MacBookPro","reqId":"req-1c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":12.197958000000654,"msg":"http request completed"}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919914496,"pid":70960,"hostname":"MacBookPro","reqId":"req-1d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":196.62162499999977,"msg":"http request completed"}
+AAR-EVIDENCE AAR-06 custom-answering {"provider":"E2E Gateway","limits":"not reported","models":[{"id":"openai-compatible:provider_e2e_gateway:gateway-model-a","name":"gateway-model-a"},{"id":"openai-compatible:provider_e2e_gateway:gateway-model-b","name":"gateway-model-b"}]}
+Discovering LM Studio models from host: http://lmstudio.e2e.test:1234
+Discovering Ollama models from host: http://127.0.0.1:9
+Could not connect to LM Studio at http://lmstudio.e2e.test:1234. Ensure the server is running. LM Studio native model discovery failed with status 503
+Could not connect to Ollama server at http://127.0.0.1:9. Ensure it's running. fetch failed
+{"level":30,"time":1792919914693,"pid":70960,"hostname":"MacBookPro","reqId":"req-1e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":194.03450000000157,"msg":"http request completed"}
+AAR-EVIDENCE AAR-06 custom-not-answering {"provider":"E2E Gateway","limits":"not reported","models":"unknown: E2E Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE"}
+AAR-EVIDENCE AAR-05 scanned {"responses":55,"outputChunks":262,"files":[".env","agents/autobyteus-daily-assistant/agent-config.json","agents/autobyteus-daily-assistant/agent.md","agents/plain-agent/agent-config.json","agents/plain-agent/agent.md","agents/router-agent/agent-config.json","agents/router-agent/agent.md","application-packages/platform/applications/.gitkeep","llm/custom-llm-providers.json","logs/server.log","memory/agents/plain_agent_134e6080393b4a8985212afde8becd87/raw_traces_active.jsonl","memory/agents/plain_agent_134e6080393b4a8985212afde8becd87/run_metadata.json","memory/agents/plain_agent_134e6080393b4a8985212afde8becd87/seen_skill_versions.json","memory/agents/router_agent_24ab52072f9448938d195a9d91336ba4/raw_traces_active.jsonl","memory/agents/router_agent_24ab52072f9448938d195a9d91336ba4/run_metadata.json","memory/agents/router_agent_24ab52072f9448938d195a9d91336ba4/seen_skill_versions.json","memory/run_history_index.json","workspaces.json"],"secrets":11}
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 21519ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  550ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  586ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14326ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)  4482ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  837ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  10:18:04
+   Duration  30.96s (transform 6.77s, setup 45ms, import 8.94s, tests 21.52s, environment 0ms)
+

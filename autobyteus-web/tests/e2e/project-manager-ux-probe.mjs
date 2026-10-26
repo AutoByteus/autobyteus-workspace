@@ -175,9 +175,11 @@ const ensureWorkspace = async () => {
   }
 };
 const createProject = async (name) => (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name } })).createProject.projectId;
+/** autobyteus-260: a Project Task has a title; here its description's first line, as its writer would name it. */
+const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
 const createTask = async (projectId, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-  { input: { projectId, description } })).createProjectTask.taskId;
-const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot{kind runId}}}}', { id: projectId })).projectTasks;
+  { input: { projectId, title: firstLine(description), description } })).createProjectTask.taskId;
+const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot{kind runId}}}}', { id: projectId })).projectTasks;
 const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress start closed status}}}')).tasksWithoutProject;
 const createRoot = async (kind, ids) => {
   if (kind === 'agent') {
@@ -304,7 +306,7 @@ const listAndBoardLive = async () => {
     await page.getByTestId(`project-card-${s.projectId}`).click();
     await row(page, s.taskA).waitFor({ timeout: 30000 });
     assert(await rootLine(page, s.taskA).count() === 0, 'an unassigned Task shows no root line');
-    s.input.send(callTool('create_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
+    s.input.send(callTool('create_task', { project_id: s.projectId, title: 'Agent-created follow-up', description: 'Agent-created follow-up' }));
     const arrived = await until('agent-created Task arrives', async () => {
       const rows = await page.locator('[data-live="arrived"]').evaluateAll((es) => es.map((e) => e.getAttribute('data-testid')));
       return rows.length ? rows : null;
@@ -883,7 +885,7 @@ const createTaskWithFile = async (projectId, description) => {
   const data = new FormData(); data.set('file', new Blob(['Launch checklist bytes'], { type: 'text/plain' }), 'checklist.txt');
   const file = await (await fetch(`${stack.backendUrl}/rest/projects/${projectId}/task-context-drafts/${draft.draftId}/context-files`, { method: 'POST', body: data })).json();
   return (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId, description, contextDraft: { draftId: draft.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask.taskId;
+    { input: { projectId, title: firstLine(description), description, contextDraft: { draftId: draft.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask.taskId;
 };
 /** Every part of a card must be inside the card and on screen (nothing pushed out, nothing overflowing sideways). */
 const cardLayout = (page, taskId) => row(page, taskId).evaluate((element) => {
@@ -994,9 +996,11 @@ const projectsTab = async () => {
   await shot(page, 'pmu-015-tab-board');
   // The manager adds a Task while its chat stays in the center.
   const chatUrl = page.url();
-  input.send(callTool('create_task', { project_id: projectId, description: 'Agent-added from the chat' }));
+  input.send(callTool('create_task', { project_id: projectId, title: 'Agent-added from the chat', description: 'Agent-added from the chat\nWith a second line.' }));
   const added = await until('Task arrives in the tab live', async () => (await projectTasks(projectId)).find((t) => t.taskId !== existing)?.taskId, 30000);
   await panelRow(added).waitFor({ timeout: 15000 });
+  // autobyteus-260 REQ-006: the panel's card shows the agent's title.
+  assert(await panelRow(added).getByTestId('project-task-row-text').innerText() === 'Agent-added from the chat', 'the tab card shows the title');
   assert(page.url() === chatUrl, 'the chat stays in the center');
   // A worker opens in the center; the Projects tab stays selected.
   input.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, task_id: existing }));
@@ -1004,6 +1008,9 @@ const projectsTab = async () => {
   await workerLine.waitFor({ timeout: 60000 });
   await workerLine.click();
   await until('worker conversation in the center', async () => /You have a new task from/.test(await centerText(page)), 30000);
+  // autobyteus-260 REQ-017, AC-015: the worker's first message names its Task and Project (rendered in the center).
+  const firstMessageKey = (await projectTasks(projectId)).find((t) => t.taskId === existing).taskKey;
+  assert((await centerText(page)).includes(`Task: ${firstMessageKey} in Project ${projectId}`) && (await centerText(page)).includes('If you have get_project_task, it reads this Task again, including comments added later.'), 'the first message names the Task and Project', { firstMessageKey });
   assert(await tabButton().getAttribute('aria-selected') === 'true' && await panel.isVisible(), 'the Projects tab stays selected');
   await shot(page, 'pmu-015-worker-open-tab-kept');
   // Card → detail in the tab → back, with search kept.
@@ -1012,6 +1019,8 @@ const projectsTab = async () => {
   await panel.getByTestId('projects-panel-task').waitFor();
   const detail = await panel.getByTestId('projects-panel-task-description').innerText();
   assert(detail === 'Prepare the launch checklist', 'full description in the tab', { detail });
+  // autobyteus-260 DEC-018 (2): the tab's Task view shows the title above the description.
+  assert(await panel.getByTestId('projects-panel-task-title').innerText() === 'Prepare the launch checklist', 'title in the tab Task view');
   // task-keys-and-dependencies (REQ-022): in-app Task links use the key URL.
   const existingKey = (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey}}', { id: projectId })).projectTasks.find((t) => t.taskId === existing).taskKey;
   assert(await panel.getByTestId('projects-panel-task-open-page').getAttribute('href') === `/projects/${projectId}/tasks/${existingKey}`, 'Open in Projects links the Task page by key');

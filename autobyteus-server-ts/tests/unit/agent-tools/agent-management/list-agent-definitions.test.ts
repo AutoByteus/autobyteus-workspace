@@ -48,6 +48,24 @@ describe("listAgentDefinitionsTool", () => {
     expect(data[0]?.name).toBe("Agent1");
   });
 
+  it("leaves out internal agents while \"Show internal agents\" is off (autobyteus-308 AC-004)", async () => {
+    mockService.getAllAgentDefinitions.mockResolvedValue([
+      new AgentDefinition({ id: "reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x" }),
+      new AgentDefinition({ id: "router", name: "Model Router", description: "Routes", instructions: "x", internal: true }),
+    ]);
+    const tool = registerListAgentDefinitionsTool();
+    const listed = () => tool.execute({ agentId: "test-agent" } as any, {}).then((result: string) =>
+      (JSON.parse(result) as Array<{ id: string }>).map((entry) => entry.id));
+    vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "false");
+    try {
+      expect(await listed()).toEqual(["reviewer"]);
+      vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "true");
+      expect(await listed()).toEqual(["reviewer", "router"]);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
   it("returns empty array string when no definitions exist", async () => {
     mockService.getAllAgentDefinitions.mockResolvedValue([]);
 

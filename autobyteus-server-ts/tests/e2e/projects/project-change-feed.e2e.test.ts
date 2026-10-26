@@ -34,7 +34,7 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
-const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt
+const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey title description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
 const PROJECT = `query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt
@@ -137,7 +137,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
   const createProject = async (name: string) => (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
     { input: { name } })).createProject.projectId as string;
   const createTask = async (projectId: string, description: string) => (await graphql(
-    `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description } })).createProjectTask.taskId as string;
+    `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask.taskId as string;
   const gqlTask = async (projectId: string, taskId: string) =>
     ((await graphql(PROJECT_TASKS, { id: projectId })).projectTasks as any[]).find((task) => task.taskId === taskId) ?? null;
   const gqlTempTask = async (taskId: string) =>
@@ -356,7 +356,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     await expect(fs.stat(path.join(dataDir, "missing #?雪"))).rejects.toMatchObject({code: "ENOENT"});
     // AC-002: the agent creates a Task; it arrives with no root; the Project's counts follow.
     from = monitor.frames.length;
-    const taskCreated = await root.managerCalls(callTool("create_task", { project_id: projectId,
+    const taskCreated = await root.managerCalls(callTool("create_task", { project_id: projectId, title: "Ask the helper for an OK",
       description: callTool("delegate_task", { recipient_address: `/${segment(names.helper)}`, description: "Reply OK." }) }));
     // Tools name a Project Task by its key; the feed and GraphQL carry its stored ID and the key.
     const taskKey = (JSON.stringify(taskCreated).match(/"taskId":"([^"]+)"/) ?? [])[1]!;
@@ -524,7 +524,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     // A UI write under this load: time from the mutation's response to its feed event.
     const sentAt = Date.now();
     await graphql(`mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}`,
-      { input: { projectId, taskId: taskIds[59], description: "Edited under load." } });
+      { input: { projectId, taskId: taskIds[59], title: "Edited under load.", description: "Edited under load." } });
     await until(() => monitor.frames.some((f) => f.type === "task_upserted" && f.task.taskId === taskIds[59]
       && f.task.description === "Edited under load."), "edit arrives", 2_000);
     const latencyMs = Date.now() - sentAt;

@@ -28,6 +28,17 @@ const buildAgentDefinition = (overrides: Partial<AgentDefinition> = {}): AgentDe
 })
 
 describe('AgentCard', () => {
+  it('marks an internal agent "Internal" (shown only while "Show internal agents" is on); a normal agent has no mark (autobyteus-308)', () => {
+    const mountCard = (agentDef: AgentDefinition) => mount(AgentCard, {
+      props: { agentDef },
+      global: { mocks: { $t: (key: string) => ({ 'agents.components.agents.AgentCard.internalBadge': 'Internal' } as Record<string, string>)[key] ?? key } },
+    })
+    const internal = mountCard(buildAgentDefinition({ id: 'model-router', name: 'Model Router', internal: true }))
+    expect(internal.get('[data-testid="agent-card-internal-badge"]').text()).toBe('Internal')
+    const normal = mountCard(buildAgentDefinition())
+    expect(normal.find('[data-testid="agent-card-internal-badge"]').exists()).toBe(false)
+  })
+
   it('renders the owning team line for team-local agents and hides sync', () => {
     const wrapper = mount(AgentCard, {
       props: {

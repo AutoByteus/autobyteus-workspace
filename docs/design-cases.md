@@ -25,7 +25,7 @@ Principles 2 and 13.
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
 - **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
-### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002)
+### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003)
 
 Principle 1.
 
@@ -35,6 +35,8 @@ Principle 1.
 - **Again in autobyteus-278 (AR-401):** following a remote run's live output read "the run's root publisher" for both kinds of peer-started run. That holds for a Team root. A remote Agent's output, commands and readiness live on its host AgentRun: the standalone root's publisher carries only its children, and idle shutdown replaces the host while the root stays registered. The fix gave each root kind its own `observePairedAgents` / `executeOwnerCommand` behind one interface (Agent: the host via `onHostReady`; Team: the publisher and the directory listener).
 - **Again in autobyteus-280 (AR-002):** the design narrowed a startup block to "custom providers unavailable" and traced only provider listing; run start and model resolution, runtime sync, Settings CRUD and token-usage display lookups also read the store, and the owner was written "the store and its callers". The fix: one gate in the store and a table giving each entry form's outcome while pending.
 - **Again in agent-input-delivery-simplification (C-1, Project Task `project_task_17bfe0fe`):** the design gave the shared delivery engine one "not accepting messages" rejection per root and used it for every entry form. The Team returns `TEAM_RUN_NOT_ACCEPTING_MESSAGES` only for same-root `deliver`, through its service's pre-check. `acceptFromRemote` and `prepareRemoteSend` skip the service and return the generic `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES`. The designer's self-validation found it before review. Fix: a `deliverNotAccepting` rejection used by `deliver` only, and an entry-form table in the design with each form's checks, publish and present rules.
+- **Again in autobyteus-303 (AR-003):** the design reused `RuntimeAvailabilityService` for "installed" across four agent runtimes. It checks something different for each: `which`/`--version` via `spawnSync` for Codex and Claude, `agy --help` + `agy models` for Antigravity (so a signed-out Antigravity was left out and the "sign-in could not be checked" rule could never apply), a version + help probe for Grok. Fix: one rule for all, the Agent Runtimes page's `strategy.readVersion(...) !== null`.
+- **Again in autobyteus-303 (CR-003, found by API/E2E):** AutoByteus models were taken from the factory's loaded list, traced for static providers only. Discovered providers (Ollama, LM Studio, custom endpoints) are loaded once per configuration by another path and not retried, so a local server serving 4 models was missing. Fix: the read reloads discovered providers through the catalog's own refresh, with a rule per provider kind.
 - **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several.
 
 ### Case 3: A Reader Of Derived Data Left Out (autobyteus-191, F-002; autobyteus-275, CR-002; autobyteus-269, F-001; autobyteus-278, F-005; autobyteus-280, AR-003)
@@ -60,7 +62,7 @@ Principle 13.
 - **Why it mattered:** a behavior reached through a failed lookup works by accident and breaks silently when the lookup changes.
 - **Notice it by:** "finds no X, so …", "counts as".
 
-### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1)
+### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007)
 
 Principle 1.
 
@@ -76,9 +78,11 @@ Principle 1.
   - The design said package creation on the first message happens in the "standalone/Org" coordinators; only the standalone coordinator does it. Fix: the claim was corrected against `standalone-root-persistence-coordinator.ts`.
   - Earlier, in `delegated-team-member-lazy-activation`, an event was declared to have "no consumer" from a string search. Its consumer was an un-named fall-through branch that turned it into the member's error card. Fix: check consumers by type and exhaustiveness, and give the branch a name with an exhaustive check.
 - **Again in autobyteus-244 (MCP secrets):** the Solution Designer told the user that each run's MCP server gets its own workspace folder (`AUTOBYTEUS_AGENT_WORKSPACE`), because `McpServerInstanceManager` had `setWorkspacePathProvider` and `applyWorkspaceEnv`. Nothing called `setWorkspacePathProvider`, so the claim was false. Fix: the claim was corrected, and the dead workspace code was removed in this change. Lesson: before stating what the product does, find the caller, not only the function.
+- **Again in autobyteus-303 (AR-001):** the design reused Claude's model-discovery control query "unchanged" for a zero-token usage read. The SDK writes a string prompt to the CLI as a user turn and drops `maxTurns: 0` (only truthy values are passed), so the "zero-token" query actually sent "Enumerate supported models only." on every catalog read. The probe had used an idle input stream; the design copied the production call instead. Fix: one control query with an input that never yields, used by model discovery and usage alike.
+- **Again in autobyteus-303 (SR-007, code reviewer):** the design dropped the `models(modelIds)` limit scope because "no parser can fill it", while the Codex parser fills it from `normalModelSlug` (`codex-usage-limits.ts:49`), covered by a test. Without it, a Codex id would have been matched as a display-name family. Fix: keep the variant; check every producer of a type before removing a variant.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made. A product behavior stated from a function, without a caller.
 
-### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004)
+### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)
 
 Principle 13.
 
@@ -86,6 +90,7 @@ Principle 13.
 - **The fix:** one owner, `applyCapabilityReadiness(readiness)` with `markCapabilitiesPending()`, called by all three paths, the pending state set explicitly right after the schema check.
 - **Why it mattered:** three copies drift. The next capability added would land in one host and not the other, and the state before the answer depended on which default each consumer had.
 - **Notice it by:** "the same shape in each host" or "each caller configures …", and a state that exists only because nothing set it yet.
+- **Again in autobyteus-260 (design, 2026-10-25):** agent tool results were turned into text by each tool family on each route (about ten owners): pretty JSON in some, compact in others; empty fields kept in some, dropped by hand in others, and required as `null` by `send_message_to`. The fix: one rule (`autobyteus-ts/src/tools/tool-result-json.ts`) that every platform adapter calls on both routes, the family serializers removed, and an architecture test that fails on a tool result serialized another way. Notice it by: a helper per family that wraps the same library call with different options.
 
 
 ### Case 7: One Word, Two Meanings (autobyteus-191, autobyteus-261; autobyteus-290)
@@ -105,5 +110,17 @@ Principle 15.
   - Memory Sync's typed identity became `memorySyncSourceId`;
   - stored names were migrated by sealed migrations SM-1 … SM-10 on the server, desktop, browser and phone apps, with backups (`DESIGN.md` rule 10). A failed identity migration holds remote features back (`NODE_IDENTITY_NOT_MIGRATED`) and never mints a new node ID.
 - **Again in autobyteus-290 itself (CRR-001 F-001):** the design renamed Memory Sync's "source node id" to `sourceId`, judging the name only against Memory Sync's files. `sourceId` already named three other IDs (a skill source, an update notification's source, a package source; 145 uses). The code review caught it; the fix took the feature's full prefix, which the user chose, matching the feature's other types (`MemorySyncConfig`, `MemorySyncManifest`).
+- **Again in autobyteus-260 (design, 2026-10-25):** "summary" named a Task's one-liner derived from its description (`search_project_tasks` `summary`, the app's `taskSummary` helpers) and a reduced view (`listProjectSummaries`, `TaskWorkerTaskSummary`). With a stored title, the one-liner is **title** everywhere and "summary" keeps only the reduced-view meaning, both in `GLOSSARY.md`.
 - **Why it mattered:** a word with two meanings makes readers and agents mix up IDs, which is a correctness risk, not only a readability one.
 - **Notice it by:** an identifier whose meaning depends on the file it is in; "X, also called Y"; a qualifier that repeats or contradicts the noun; a new name checked only against its own feature's files, especially a common word ("source", "status", "config") without the feature's prefix.
+
+
+### Case 8: A Whole-Run Prerequisite Widens A Narrow Failure (autobyteus-260, CR-001)
+
+Principle 5; Data Migration Guideline § 1 ("Gate narrowly").
+
+- **The design said:** the new `project-task-titles` migration runs after `project-task-keys-v1` (`prerequisiteMigrationIds`), and reads sources with the keyed frozen reader. The current reader requires both `taskKey` and `title`.
+- **What happened:** keys-v1 fails per Project by design (an unkeyable Project is preserved and hidden; the others are listed; a restart retries). The runner runs a migration only when its prerequisites succeeded, so one unkeyable Project left titles `NOT_RUN`, and then no Project listed any Task, on every start, until the data was fixed by hand. The API/E2E startup test caught it; design, architecture review and the first code review had not.
+- **The fix:** titles depends only on what it needs: the per-folder files (`projects-per-folder-v1`, whose failure already holds all Projects), and accepts Task files with or without a key, because a title comes only from the description. keys-v1 keeps the title when it keys a Task later.
+- **Why it mattered:** a whole-run prerequisite turns a predecessor's narrow, contained failure into a global one.
+- **Notice it by:** a prerequisite on a migration that can fail for one item while others succeed; a source validator that requires a field the migration does not use.

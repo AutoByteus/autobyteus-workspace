@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 
 const NonBlankAgentRunIdSchema = z.string().trim().min(1);
@@ -14,7 +15,6 @@ const SendMessageToRejectedResultSchema = z.strictObject({
   accepted: z.literal(false),
   code: z.string(),
   message: z.string(),
-  target_agent_run_id: z.null(),
 });
 
 export const SendMessageToResultSchema = z.discriminatedUnion("accepted", [
@@ -30,12 +30,12 @@ export const toSendMessageToResult = (
   accepted: result.accepted,
   code: result.code ?? (result.accepted ? "DELIVERED" : "SEND_MESSAGE_TO_FAILED"),
   message: result.message ?? (result.accepted ? "Message delivered." : "send_message_to failed."),
-  target_agent_run_id: result.accepted ? result.agentRunId : null,
+  ...(result.accepted ? { target_agent_run_id: result.agentRunId } : {}),
 });
 
 export const serializeSendMessageToResult = (
   result: SendMessageToResult,
-): string => JSON.stringify(SendMessageToResultSchema.parse(result));
+): string => toToolResultJson(SendMessageToResultSchema.parse(result));
 
 export const sendMessageToRejection = (
   code: string,
@@ -44,5 +44,4 @@ export const sendMessageToRejection = (
   accepted: false,
   code,
   message,
-  target_agent_run_id: null,
 });

@@ -65,7 +65,11 @@ const PROJECT_FIELDS = `
   workspaces { workspaceRootPath displayName description availability }
   openTaskCount
 `;
-const TASK_FIELDS = "taskId projectId description status createdAt updatedAt";
+const TASK_FIELDS = "taskId projectId title description status createdAt updatedAt";
+// autobyteus-260: a Project Task has a title (REQ-003/004). The app's forms send it on create and on every edit; here a new
+// Task is named by its description's first line and an edit keeps a fixed saved title.
+const firstLine = (description: string) => description.split("\n").map((line) => line.trim()).find(Boolean) ?? "A titled Task";
+const SAVED_TITLE = "Saved title";
 
 type TaskResult = {
   taskId: string;
@@ -214,7 +218,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   const createTask = async (projectId: string, description: string) =>
     (await execOk<{ createProjectTask: TaskResult }>(
       `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${TASK_FIELDS} } }`,
-      { input: { projectId, description } },
+      { input: { projectId, title: firstLine(description), description } },
     )).createProjectTask;
 
   const listTasks = async (projectId: string) =>
@@ -490,15 +494,22 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const first = await createTask(project.projectId, "  Write release notes for 1.4.87\nInclude Projects and Tasks  ");
     expect(first).toMatchObject({
       projectId: project.projectId,
+      title: "Write release notes for 1.4.87",
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
     });
+    // autobyteus-260 REQ-004: a blank title is refused with its code (a missing one is a schema error), nothing written.
+    const beforeTitles = snapshotProjectsDir();
+    await expectErrorCode(CREATE, { input: { projectId: project.projectId, title: "  \n ", description: "x" } }, "TASK_TITLE_REQUIRED");
+    expect((await exec(CREATE, { input: { projectId: project.projectId, description: "x" } })).errors?.[0]?.message).toContain("title");
+    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: first.taskId, title: "", description: "x" } }, "TASK_TITLE_REQUIRED");
+    expect(snapshotProjectsDir()).toEqual(beforeTitles);
     expect(first.taskId).toMatch(/^project_task_/);
     const second = await createTask(project.projectId, "Fix the release pipeline");
     const third = await createTask(project.projectId, "Plan the Tasks admission work");
 
-    await expectErrorCode(CREATE, { input: { projectId: project.projectId, description: " \n  " } }, "TASK_DESCRIPTION_REQUIRED");
-    await expectErrorCode(CREATE, { input: { projectId: "project_missing", description: "x" } }, "PROJECT_NOT_FOUND");
+    await expectErrorCode(CREATE, { input: { projectId: project.projectId, title: "Has a title", description: " \n  " } }, "TASK_DESCRIPTION_REQUIRED");
+    await expectErrorCode(CREATE, { input: { projectId: "project_missing", title: "x", description: "x" } }, "PROJECT_NOT_FOUND");
     const missingList = await exec(`query { projectTasks(projectId: "project_missing") { taskId } }`);
     expect(missingList.errors?.[0]?.extensions?.code).toBe("PROJECT_NOT_FOUND");
 
@@ -508,13 +519,13 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     // Editing moves the Task to the top (most recently updated first) and changes only the description.
     await new Promise((resolve) => setTimeout(resolve, 5));
     const edited = (await execOk<{ updateProjectTask: TaskResult }>(UPDATE, {
-      input: { projectId: project.projectId, taskId: first.taskId, description: "Write release notes for 1.4.87 and 1.4.88" },
+      input: { projectId: project.projectId, taskId: first.taskId, title: SAVED_TITLE, description: "Write release notes for 1.4.87 and 1.4.88" },
     })).updateProjectTask;
     expect(edited).toMatchObject({ taskId: first.taskId, status: "TODO", createdAt: first.createdAt });
     expect(Date.parse(edited.updatedAt)).toBeGreaterThan(Date.parse(first.updatedAt));
     expect((await listTasks(project.projectId))[0]?.taskId).toBe(first.taskId);
-    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: first.taskId, description: "   " } }, "TASK_DESCRIPTION_REQUIRED");
-    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: "project_task_missing", description: "x" } }, "TASK_NOT_FOUND");
+    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: first.taskId, title: SAVED_TITLE, description: "   " } }, "TASK_DESCRIPTION_REQUIRED");
+    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: "project_task_missing", title: SAVED_TITLE, description: "x" } }, "TASK_NOT_FOUND");
 
     // Task writes never touch the Project's own fields or updatedAt; the view exposes the open count only.
     const projectAfterTasks = await getProject(project.projectId);
@@ -538,7 +549,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     );
     expect(indexMutations.every((name) => mutationFields.includes(name))).toBe(true);
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
-    expect(updateInputFields.sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "taskId"]);
+    expect(updateInputFields.sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "partOfTaskId", "projectId", "taskId", "title"]);
     expect(schema.getType("Task")).toBeUndefined();
     expect(schema.getType("TaskStatus")).toBeUndefined();
   });
@@ -573,10 +584,10 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     type KeyedTask = { taskId: string; taskKey: string; status: string; dependsOnTaskIds: string[]; updatedAt: string };
     const create = async (projectId: string, description: string, dependsOnTaskIds?: string[]) => (await execOk<{ createProjectTask: KeyedTask }>(
       `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`,
-      { input: { projectId, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).createProjectTask;
+      { input: { projectId, title: firstLine(description), description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).createProjectTask;
     const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`;
     const update = async (projectId: string, taskId: string, dependsOnTaskIds?: string[]) =>
-      (await execOk<{ updateProjectTask: KeyedTask }>(UPDATE, { input: { projectId, taskId, description: "edited", ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).updateProjectTask;
+      (await execOk<{ updateProjectTask: KeyedTask }>(UPDATE, { input: { projectId, taskId, title: SAVED_TITLE, description: "edited", ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).updateProjectTask;
     const keyed = async (projectId: string) => (await execOk<{ projectTasks: KeyedTask[] }>(
       `query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId })).projectTasks;
 
@@ -598,10 +609,10 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const before = snapshotProjectsDir();
     // Itself, an unknown Task, another Project's Task, and a loop (B already depends on A).
     for (const dependsOnTaskIds of [[a.taskId], ["project_task_missing"], [foreign.taskId], [b.taskId]]) {
-      await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: a.taskId, description: "x", dependsOnTaskIds } }, "TASK_DEPENDENCY_INVALID");
+      await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: a.taskId, title: SAVED_TITLE, description: "x", dependsOnTaskIds } }, "TASK_DEPENDENCY_INVALID");
     }
     await expectErrorCode(`mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { taskId } }`,
-      { input: { projectId: project.projectId, description: "D", dependsOnTaskIds: [foreign.taskId] } }, "TASK_DEPENDENCY_INVALID");
+      { input: { projectId: project.projectId, title: "D", description: "D", dependsOnTaskIds: [foreign.taskId] } }, "TASK_DEPENDENCY_INVALID");
     expect(snapshotProjectsDir()).toEqual(before);
 
     // Omitted keeps, a list replaces, [] clears.
@@ -626,10 +637,10 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const CREATE = `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`;
     const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`;
     const create = async (projectId: string, description: string, extra: Record<string, unknown> = {}) =>
-      (await execOk<{ createProjectTask: PartTask }>(CREATE, { input: { projectId, description, ...extra } })).createProjectTask;
+      (await execOk<{ createProjectTask: PartTask }>(CREATE, { input: { projectId, title: firstLine(description), description, ...extra } })).createProjectTask;
     // As the app's Edit task Save sends it: the description plus the relation fields it changes.
     const update = async (projectId: string, taskId: string, extra: Record<string, unknown> = {}) =>
-      (await execOk<{ updateProjectTask: PartTask }>(UPDATE, { input: { projectId, taskId, description: "edited", ...extra } })).updateProjectTask;
+      (await execOk<{ updateProjectTask: PartTask }>(UPDATE, { input: { projectId, taskId, title: SAVED_TITLE, description: "edited", ...extra } })).updateProjectTask;
     const listed = async (projectId: string) => (await execOk<{ projectTasks: PartTask[] }>(
       `query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId })).projectTasks;
     const one = async (projectId: string, taskId: string) => (await listed(projectId)).find((task) => task.taskId === taskId)!;
@@ -663,7 +674,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const kept = await update(p, part.taskId);
     expect(kept.partOfTaskId).toBe(parent.taskId);
     const inline = await execOk<{ updateProjectTask: PartTask }>(
-      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", description: "inline" }) { ${FIELDS} } }`);
+      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", title: "Saved title", description: "inline" }) { ${FIELDS} } }`);
     expect(inline.updateProjectTask.partOfTaskId).toBe(parent.taskId);
     // AC-002: an ID replaces; both parents' parts follow; the change bumps updatedAt.
     await pause();
@@ -677,7 +688,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(await partsOf(p, second.taskId)).toEqual([]);
     await update(p, part.taskId, { partOfTaskId: parent.taskId });
     const inlineNull = await execOk<{ updateProjectTask: PartTask }>(
-      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", description: "inline", partOfTaskId: null }) { ${FIELDS} } }`);
+      `mutation { updateProjectTask(input: { projectId: "${p}", taskId: "${part.taskId}", title: "Saved title", description: "inline", partOfTaskId: null }) { ${FIELDS} } }`);
     expect(inlineNull.updateProjectTask.partOfTaskId).toBeNull();
     // AC-004 (last): re-saving the same parent succeeds.
     await update(p, part.taskId, { partOfTaskId: parent.taskId });
@@ -697,15 +708,15 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const foreign = await create(other.projectId, "Foreign");
     const before = snapshotProjectsDir();
     const refusals: Array<[string, Record<string, unknown>, string]> = [
-      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: part.taskId }, "A Task cannot be part of itself."],
-      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: "project_task_missing" }, "Task 'project_task_missing' is not a current Task of this Project."],
-      [UPDATE, { projectId: p, taskId: part.taskId, description: "x", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
+      [UPDATE, { projectId: p, taskId: part.taskId, title: SAVED_TITLE, description: "x", partOfTaskId: part.taskId }, "A Task cannot be part of itself."],
+      [UPDATE, { projectId: p, taskId: part.taskId, title: SAVED_TITLE, description: "x", partOfTaskId: "project_task_missing" }, "Task 'project_task_missing' is not a current Task of this Project."],
+      [UPDATE, { projectId: p, taskId: part.taskId, title: SAVED_TITLE, description: "x", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
       // C part of B, where B is part of A.
-      [UPDATE, { projectId: p, taskId: loose.taskId, description: "x", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
+      [UPDATE, { projectId: p, taskId: loose.taskId, title: SAVED_TITLE, description: "x", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
       // A (has parts) part of D.
-      [UPDATE, { projectId: p, taskId: parent.taskId, description: "x", partOfTaskId: second.taskId }, "This Task has parts, so it can't be part of another Task."],
-      [CREATE, { projectId: p, description: "never created", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
-      [CREATE, { projectId: p, description: "never created", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
+      [UPDATE, { projectId: p, taskId: parent.taskId, title: SAVED_TITLE, description: "x", partOfTaskId: second.taskId }, "This Task has parts, so it can't be part of another Task."],
+      [CREATE, { projectId: p, title: "never created", description: "never created", partOfTaskId: foreign.taskId }, `Task '${foreign.taskId}' is not a current Task of this Project.`],
+      [CREATE, { projectId: p, title: "never created", description: "never created", partOfTaskId: part.taskId }, "parts-3 is itself part of parts-1; a part can't have parts of its own."],
     ];
     for (const [source, input, message] of refusals) {
       const result = await exec(source, { input });
@@ -720,8 +731,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     // AC-004 / QR-001: concurrent "X part of Y" and "Y part of X" cannot both succeed.
     const [x, y] = [loose, next];
     const raced = await Promise.all([
-      exec(UPDATE, { input: { projectId: p, taskId: x.taskId, description: "race", partOfTaskId: y.taskId } }),
-      exec(UPDATE, { input: { projectId: p, taskId: y.taskId, description: "race", partOfTaskId: x.taskId } }),
+      exec(UPDATE, { input: { projectId: p, taskId: x.taskId, title: SAVED_TITLE, description: "race", partOfTaskId: y.taskId } }),
+      exec(UPDATE, { input: { projectId: p, taskId: y.taskId, title: SAVED_TITLE, description: "race", partOfTaskId: x.taskId } }),
     ]);
     expect(raced.filter((result) => !result.errors?.length)).toHaveLength(1);
     expect(raced.filter((result) => result.errors?.[0]?.extensions?.code === "TASK_PARENT_INVALID")).toHaveLength(1);
@@ -735,7 +746,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(await one(p, part.taskId)).toEqual({ ...partBefore, partOfTaskId: null, dependsOnTaskIds: [] });
     const taskFile = (taskId: string) => path.join(appDataDir, "projects", p, "tasks", taskId, "task.json");
     expect(Object.keys(JSON.parse(fs.readFileSync(taskFile(part.taskId), "utf8")))).toEqual(
-      ["taskId", "projectId", "taskKey", "description", "status", "dependsOnTaskIds", "partOfTaskId", "createdAt", "updatedAt", "contextFiles", "comments"]);
+      ["taskId", "projectId", "taskKey", "title", "description", "status", "dependsOnTaskIds", "partOfTaskId", "createdAt", "updatedAt", "contextFiles", "comments"]);
 
     // AC-016: a Task file in the step-1 shape (no partOfTaskId) reads with no parent and is not rewritten until its next save.
     const oldTask = await create(p, "Step-1 Task");
@@ -748,7 +759,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(fs.readFileSync(taskFile(oldTask.taskId), "utf8")).toBe(releasedBytes);
     const saved = await update(p, oldTask.taskId, { description: "ordinary save" });
     expect(saved.partOfTaskId).toBeNull();
-    expect(JSON.parse(fs.readFileSync(taskFile(oldTask.taskId), "utf8"))).toEqual({ ...released, description: "ordinary save", updatedAt: saved.updatedAt, partOfTaskId: null });
+    expect(JSON.parse(fs.readFileSync(taskFile(oldTask.taskId), "utf8"))).toEqual({ ...released, title: SAVED_TITLE, description: "ordinary save", updatedAt: saved.updatedAt, partOfTaskId: null });
   });
 
   // task-comments: the app's add (Task page and tab) through the GraphQL boundary; existing data without comments.
@@ -769,7 +780,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const other = await createProject("Comments Other");
     const p = project.projectId;
     const create = async (projectId: string, description: string) => (await execOk<{ createProjectTask: CommentedTask }>(
-      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`, { input: { projectId, description } })).createProjectTask;
+      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`, { input: { projectId, title: firstLine(description), description } })).createProjectTask;
     const add = async (taskId: string, text: string, projectId = p) => (await execOk<{ addProjectTaskComment: CommentedTask }>(ADD, { input: { projectId, taskId, text } })).addProjectTaskComment;
     const listed = async () => (await execOk<{ projectTasks: CommentedTask[] }>(`query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId: p })).projectTasks;
     const task = await create(p, "Release notes for 1.5.6\nCollect the changes.");
@@ -803,7 +814,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
 
     // An ordinary edit of the description keeps the thread.
     const edited = (await execOk<{ updateProjectTask: CommentedTask }>(`mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`,
-      { input: { projectId: p, taskId: task.taskId, description: "Release notes for 1.5.6 (edited)" } })).updateProjectTask;
+      { input: { projectId: p, taskId: task.taskId, title: SAVED_TITLE, description: "Release notes for 1.5.6 (edited)" } })).updateProjectTask;
     expect(edited.comments).toEqual(two.comments);
 
     // AC-011: a task.json as a release before this one wrote it (no `comments`) reads as none, is not rewritten by other Tasks'

@@ -181,6 +181,7 @@ const buildNode = async (input: Readonly<{
   const models = { available: true };
   const admission = createCollaboratorAdmission({
     listAgentDefinitions: async () => definitions, listTeamDefinitions: async () => [],
+    isAgentHidden: () => false,
     getAgentDefinition: async (id) => definitions.find((item) => item.id === id) ?? null, getTeamDefinition: async () => null,
   }, { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) => inputs.map(({ selection }) =>
     models.available ? { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } } : { kind: "model_unavailable" as const })) } as never,

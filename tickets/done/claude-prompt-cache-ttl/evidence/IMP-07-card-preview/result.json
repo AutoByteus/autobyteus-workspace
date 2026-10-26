@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-10-22T18:25:23.008Z",
+  "result": "Pass",
+  "cases": {
+    "layout": [
+      {
+        "x": 308,
+        "y": 1028,
+        "width": 522,
+        "height": 358,
+        "top": 1028,
+        "right": 830,
+        "bottom": 1386,
+        "left": 308
+      },
+      {
+        "x": 850,
+        "y": 1028,
+        "width": 522,
+        "height": 358,
+        "top": 1028,
+        "right": 1372,
+        "bottom": 1386,
+        "left": 850
+      }
+    ],
+    "CARD-01": {
+      "title": "Fresh node: card after Codex card, toggle on although never saved",
+      "result": "Pass"
+    },
+    "CARD-02": {
+      "title": "Turn off: saves false to .env, switch off",
+      "result": "Pass"
+    },
+    "CARD-03": {
+      "title": "Keyboard: focus and Space turns it back on, saves true",
+      "result": "Pass"
+    },
+    "CARD-04": {
+      "title": "zh-CN texts",
+      "result": "Pass"
+    },
+    "CARD-05": {
+      "title": "Narrow 390px layout without horizontal overflow",
+      "result": "Pass"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:18654",
+    "backend": "terminated:18629",
+    "tempRoot": "removed"
+  },
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-card-k04alW",
+    "backend": "http://127.0.0.1:60462",
+    "frontend": "http://127.0.0.1:60491"
+  },
+  "finishedAt": "2026-10-22T18:25:53.966Z"
+}

@@ -1,0 +1,27 @@
+API-11c project-manager-ux browser probe (probe-owned stack: dist/app.js backend, Nuxt dev frontend, headless Chrome, scripted AGY) — autobyteus-260
+Command (from the worktree root): node autobyteus-web/tests/e2e/project-manager-ux-probe.mjs --output-dir <fresh dir>
+Commit: source 17d631c704 (web unchanged since 24fee53dc9) + this round's probe edits; server dist built 08:05; macOS arm64; 2026-10-25
+
+Result: 12 Pass, 13 Fail; cleanup receipt: browser closed, frontend and backend terminated, data root removed
+ FAIL PMU-002 | Timed out: worker conversation opened
+ FAIL PMU-003 | Timed out: coordinator conversation opened
+ FAIL PMU-007 | needs PMU-003 (team-hosted root)
+ FAIL PMU-015 | locator.waitFor: Timeout 60000ms exceeded.
+ FAIL PMU-016 | team: Projects is the first tab
+ FAIL PMU-018 | locator.waitFor: Timeout 60000ms exceeded.
+ FAIL PMU-019 | Timed out: nested task Team member row
+ FAIL PMU-020 | locator.click: Timeout 30000ms exceeded.
+ FAIL PMU-021 | locator.click: Timeout 30000ms exceeded.
+ FAIL PMU-022 | locator.click: Timeout 30000ms exceeded.
+ FAIL PMU-023 | locator.click: Timeout 30000ms exceeded.
+ FAIL PMU-024 | locator.click: Timeout 30000ms exceeded.
+ FAIL PMU-025 | locator.waitFor: Timeout 30000ms exceeded.
+
+Every failure screenshot (PMU-002/003/015/016/018-025) shows the same page:
+  Error 500 — TypeError: Cannot read properties of undefined (reading 'length')
+    at boundTaskText (utils/projects/taskText.ts:6:12)
+    at taskTitleLabel (utils/projects/taskText.ts:21:42)
+    at taskWorkerTaskLabel (utils/projects/taskText.ts:23:118)
+    at ComputedRefImpl.fn (components/workspace/history/WorkspaceTransientExecutionRow.vue:68:95)
+
+Cause (read in code): autobyteus-web/stores/taskWorkerTaskStore.ts flush() (lines 60-64) rebuilds each answer as { taskId, projectId, description, status } and drops the 'title' the GetTaskWorkerTasks query reads (graphql/queries/projectTaskQueries.ts:47-51). taskWorkerTaskLabel(task) uses task.title for a Project Task (projectId set) -> boundTaskText(undefined) throws while the Workspaces tree renders a Project-Task worker's row (TaskWorkerTaskSummary / WorkspaceTransientExecutionRow), and Nuxt replaces the whole app with Error 500.

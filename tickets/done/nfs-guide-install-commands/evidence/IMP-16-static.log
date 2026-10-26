@@ -1,0 +1,28 @@
+# IMP-16; 2026-10-26; 0c27b150 + five-file R3 delta; macOS26.5.2/Node22.23.1
+# scoped tsc command helper and changed locale catalogs, then three web guards
+localization/runtime/types.ts(20,35): error TS2307: Cannot find module 'vue' or its corresponding type declarations.
+localization/runtime/types.ts(21,35): error TS2307: Cannot find module 'vue' or its corresponding type declarations.
+localization/runtime/types.ts(22,35): error TS2307: Cannot find module 'vue' or its corresponding type declarations.
+typecheck_exit=2
+
+> autobyteus@1.5.9-beta.9 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+guard:web-boundary_exit=0
+
+> autobyteus@1.5.9-beta.9 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+guard:localization-boundary_exit=0
+
+> autobyteus@1.5.9-beta.9 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:50916) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+audit:localization-literals_exit=0

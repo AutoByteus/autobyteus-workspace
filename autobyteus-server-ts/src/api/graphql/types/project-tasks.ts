@@ -90,6 +90,10 @@ export class ProjectTask {
   @Field(() => String)
   taskKey!: string;
 
+  /** The Task's one-line name, given by its writer. */
+  @Field(() => String)
+  title!: string;
+
   @Field(() => String)
   description!: string;
 
@@ -122,6 +126,9 @@ export class CreateProjectTaskInput {
   projectId!: string;
 
   @Field(() => String)
+  title!: string;
+
+  @Field(() => String)
   description!: string;
 
   /** Same-Project Task IDs; omitted means none. */
@@ -141,6 +148,9 @@ export class UpdateProjectTaskInput {
 
   @Field(() => String)
   taskId!: string;
+
+  @Field(() => String)
+  title!: string;
 
   @Field(() => String)
   description!: string;
@@ -187,6 +197,8 @@ export class TaskWithoutProject {
 export class TaskWorkerTaskView {
   @Field(() => String) taskId!: string;
   @Field(() => String, { nullable: true }) projectId!: string | null;
+  /** A Project Task's title; null for a Temp task, which has none. */
+  @Field(() => String, { nullable: true }) title!: string | null;
   @Field(() => String) description!: string;
   @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
 }
@@ -209,6 +221,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   taskId: task.taskId,
   projectId: task.projectId,
   taskKey: task.taskKey,
+  title: task.title,
   description: task.description,
   status: task.status as ProjectTaskStatus,
   dependsOnTaskIds: [...task.dependsOnTaskIds],
@@ -220,7 +233,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
 
 /**
  * Transport for Project Tasks. There is deliberately no status mutation here:
- * users only create, edit the description of, and delete Tasks.
+ * users only create, edit the title and description of, and delete Tasks.
  */
 @Resolver()
 export class ProjectTaskResolver {
