@@ -107,6 +107,18 @@ describe("MemoryRunDiscovery", () => {
     expect(runs.map((run) => run.subject)).toEqual([{ kind: "RUN_FOLDER", runKey: "agent_teams/team_1/member_1" }]);
     expect(warn).toHaveBeenCalledWith("MEMORY_SEARCH_DISCOVERY_SOURCE_FAILED", { source: "team runs", error: "tree unreadable" });
   });
+
+  it("never finds runs imported from another node by Memory Sync (AC-006)", async () => {
+    writeRun(memoryDir, "agents/local_run_1", turn);
+    // Memory Sync stores a source node's runs under imports/<memorySyncSourceId>/ in the same family folders.
+    writeRun(memoryDir, "imports/docker-node-1/agents/imported_run_1", turn);
+    writeRun(memoryDir, "imports/docker-node-1/agent_teams/team_9/member_9", turn);
+    const runs = await new MemoryRunDiscovery(memoryDir, {
+      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
+    }).findRuns();
+    expect(runs.map((run) => run.runKey)).toEqual(["agents/local_run_1"]);
+  });
 });
 
 describe("TaskTeamRootMemorySource", () => {
