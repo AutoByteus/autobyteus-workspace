@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
 import { MemorySearch, MEMORY_INDEX_NOT_BUILT } from "../../../src/memory-search/memory-search.js";
+import { MemoryIndexPipeline } from "../../../src/memory-search/pipeline/memory-index-pipeline.js";
 import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 import { appendTurns, writeRun } from "../../helpers/memory-search-fixtures.js";
@@ -133,6 +134,95 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     // What the run updater does after a turn.
     await journals.ensureCurrent({ runId: "designer_1", memoryDir: path.join(memoryDir, "agents/designer_1"), runtimeKind: null });
     await until(async () => (await memory.search("cloudflare tunnel")).results[0]?.runId === "designer_1");
+  });
+
+  it("queues a live change made while a pass runs: during the first build and during a later full pass (CR-001)", async () => {
+    const designer = path.join(memoryDir, "agents/designer_1");
+    const read = journals.readJournalFile.bind(journals);
+    let designerIndexed = false;
+    let pending: (() => Promise<void>) | null = null;
+    // The Text step reads each changed journal file: an agent's turn lands after designer_1 was indexed, inside the pass.
+    vi.spyOn(journals, "readJournalFile").mockImplementation(async (dir, file) => {
+      if (path.resolve(dir) === path.resolve(designer)) designerIndexed = true;
+      else if (designerIndexed && pending) {
+        const change = pending;
+        pending = null;
+        await change();
+      }
+      return read(dir, file);
+    });
+    const agentTurn = (user: string) => async () => {
+      appendTurns(designer, [{ day: "2026-09-03", user, agent: "Done." }]);
+      await journals.ensureCurrent({ runId: "designer_1", memoryDir: designer, runtimeKind: null });
+    };
+
+    pending = agentTurn("Open a cloudflare tunnel");
+    memory.startIndexing();
+    await built(memory);
+    expect(pending).toBeNull();
+    await until(async () => (await memory.search("cloudflare tunnel")).results[0]?.runId === "designer_1");
+
+    // A later full pass: game_bot changed, so the Text step reads it after designer_1 (indexed before).
+    appendTurns(path.join(memoryDir, "agents/game_bot"), [{ day: "2026-09-04", user: "Add a high score table", agent: "Added." }]);
+    pending = agentTurn("Rotate the wireguard keys");
+    expect(memory.startIndexing()).toBe(true);
+    await until(() => pending === null);
+    await until(async () => (await memory.search("wireguard keys")).results[0]?.runId === "designer_1");
+  });
+
+  it("drops only its own Journals step's notifications: a build is not followed by a live pass of every run", async () => {
+    const versions = vi.spyOn(journals, "journalFileVersions");
+    memory.startIndexing();
+    await built(memory);
+    const calls = versions.mock.calls.length;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(versions.mock.calls.length).toBe(calls);
+  });
+
+  it("reports the settled index while a live update runs; a search during it claims no missing coverage (CR-002)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    const settled = memory.indexStatus();
+    const versions = journals.journalFileVersions.bind(journals);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const held = vi.spyOn(journals, "journalFileVersions").mockImplementation(async (dir) => { await gate; return versions(dir); });
+    const designer = path.join(memoryDir, "agents/designer_1");
+    appendTurns(designer, [{ day: "2026-09-03", user: "Open a cloudflare tunnel", agent: "The cloudflare tunnel is up." }]);
+    await journals.ensureCurrent({ runId: "designer_1", memoryDir: designer, runtimeKind: null });
+    await until(() => held.mock.calls.length > 0);
+
+    // The live pass is running (held in its Text step).
+    expect(memory.startIndexing()).toBe(false);
+    const during = memory.indexStatus();
+    expect(during).toMatchObject({ state: "ready", runCount: 4, journalFileCount: 4, updatedAt: settled.updatedAt });
+    expect(during.steps.map((step) => [step.step, step.state, step.done, step.total])).toEqual([
+      ["findRuns", "done", 4, 4], ["journals", "done", 4, 4], ["textIndex", "done", 4, 4], ["meaningIndex", "done", 4, 4],
+    ]);
+    expect((await memory.search("DDNS updater")).coverage).toBeNull();
+
+    release();
+    await until(async () => (await memory.search("cloudflare tunnel")).results[0]?.runId === "designer_1");
+    // Its one re-embedded card is upkeep: the status keeps saying ready, the meaning step complete.
+    expect(memory.indexStatus().steps[3]).toMatchObject({ state: "done", done: 4, total: 4 });
+  });
+
+  it("in modelChanged, a search after a restart asks for no meaning sync, and nothing shows as building (CR-002)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    memory.shutdown();
+    await fake.index.shutdown();
+    fake = await createFakeEmbeddingIndex({ filesPresent: true, rootDir: path.join(appDataDir, "embeddings") });
+    activeModel = "fake-model-b";
+    memory = create();
+    memory.start();
+    await until(() => memory.indexStatus().state === "modelChanged");
+    const updatedAt = memory.indexStatus().updatedAt;
+    const requests = vi.spyOn(MemoryIndexPipeline.prototype, "request");
+    const result = await memory.search("container on a raspberry");
+    expect(result.coverage).toContain("The meaning index was built with fake-model-a");
+    expect(requests).not.toHaveBeenCalled();
+    expect(memory.indexStatus()).toMatchObject({ state: "modelChanged", updatedAt });
   });
 
   it("after a restart catches up without loading the model; the first search syncs the meaning index", async () => {

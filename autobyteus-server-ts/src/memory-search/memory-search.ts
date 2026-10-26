@@ -66,7 +66,8 @@ export class MemorySearch {
       return { results: [], coverage: status.state === "building" ? this.buildingCoverage(status) ?? MEMORY_INDEX_NOT_BUILT : MEMORY_INDEX_NOT_BUILT, note: null };
     }
     const outcome = await this.searchService.search(query, { limit, askingRunId: options.askingRunId ?? null });
-    if (outcome.meaning.collection === "notSynced" && this.pipeline.isBuilt() && !this.pipeline.isRunning()) {
+    // Only when the Meaning step would embed: with another model or no model files it would skip (CR-002).
+    if (outcome.meaning.collection === "notSynced" && this.pipeline.isBuilt() && !this.pipeline.isRunning() && this.pipeline.canSyncMeaning()) {
       void this.pipeline.request({ kind: "meaningSync" }).catch(() => undefined);
     }
     const matches = outcome.results.flatMap((result) => result.matches);
@@ -129,8 +130,10 @@ export class MemorySearch {
     } else if (readiness.state === "unavailable") {
       notes.push(`Meaning search is unavailable (${readiness.reason}): results are by words only.`);
     } else if (readiness.state === "preparing") {
+      // The build's embedding is progress; a live update's few cards are upkeep and say nothing.
       const meaning = status.steps.find((step) => step.step === "meaningIndex");
-      notes.push(meaning?.total ? `The meaning index covers ${meaning.done} of ${meaning.total} journal files.` : "The meaning index is being built.");
+      if (meaning?.total && meaning.done < meaning.total) notes.push(`The meaning index covers ${meaning.done} of ${meaning.total} journal files.`);
+      else if (!meaning?.total) notes.push("The meaning index is being built.");
     }
     return notes.length ? notes.join(" ") : null;
   }

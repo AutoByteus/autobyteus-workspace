@@ -50,6 +50,12 @@ type StepRecord = { -readonly [K in keyof MemoryIndexStep]: MemoryIndexStep[K] }
 
 const STEP_ORDER: readonly MemoryIndexStepName[] = ["findRuns", "journals", "textIndex", "meaningIndex"];
 const RANK: Record<PassRequest["kind"], number> = { meaningSync: 0, runs: 1, catchUp: 2, full: 3, rebuild: 4 };
+/**
+ * Passes the status shows as building, with their own step progress: the user's builds and the catch-up after
+ * a start. Live updates and the meaning sync only keep the index current; while they run, the settled index is
+ * reported (CR-002).
+ */
+const SHOWN: ReadonlySet<PassRequest["kind"]> = new Set(["full", "rebuild", "catchUp"]);
 
 const freshSteps = (): StepRecord[] => STEP_ORDER.map((step) => ({
   step, state: "waiting", done: 0, total: 0, unit: step === "findRuns" || step === "journals" ? "runs" : "journalFiles", failureMessage: null,
@@ -70,14 +76,21 @@ const merge = (a: PassRequest | null, b: PassRequest): PassRequest => {
  * Meaning index was built with, on disk; never a download then.
  */
 export class MemoryIndexPipeline {
+  /** The steps the status reports: the last shown pass's. */
   private steps: StepRecord[] = freshSteps();
+  /** The running pass's steps (the reported ones for a shown pass, its own for a quiet one). */
+  private passSteps: StepRecord[] = this.steps;
+  private shownRunning = false;
   private running: Promise<void> | null = null;
   private next: PassRequest | null = null;
   private lastFailure: string | null = null;
   private meaningNote: string | null = null;
   private cardFingerprints: ItemFingerprints | null = null;
   private cardCount = 0;
-  private inPass = new Set<string>();
+  /** True while the build's own meaning embedding runs (shown in the status); a live update's few cards are not. */
+  private buildEmbedding = false;
+  /** Run folders whose journal the Journals step is making current now: their notifications are its own. */
+  private readonly ownJournalCalls = new Set<string>();
   private readonly liveQueue = new Set<string>();
   private liveTimer: ReturnType<typeof setTimeout> | null = null;
   private unsubscribe: (() => void) | null = null;
@@ -119,14 +132,14 @@ export class MemoryIndexPipeline {
     const activeModelId = this.deps.activeModelId();
     const meaningIndexModelId = store.getState(MEANING_MODEL_KEY);
     const built = this.isBuilt();
-    const steps = this.running || !built ? this.steps : this.settledSteps(counts.runs, counts.journalFiles);
+    const steps = this.shownRunning || !built ? this.steps : this.settledSteps(counts.runs, counts.journalFiles);
     let state: MemoryIndexState;
-    if (this.running) state = "building";
+    if (this.shownRunning) state = "building";
     else if (this.lastFailure) state = "failed";
     else if (!built) state = "notIndexed";
     else state = meaningIndexModelId && meaningIndexModelId !== activeModelId ? "modelChanged" : "ready";
     return {
-      state, steps: steps.map((step): MemoryIndexStep => step.step === "meaningIndex" && !this.running && built ? this.meaningProgress(step) : { ...step }),
+      state, steps: steps.map((step): MemoryIndexStep => step.step === "meaningIndex" && !this.shownRunning && built ? this.meaningProgress(step) : { ...step }),
       runCount: counts.runs, journalFileCount: counts.journalFiles, updatedAt: store.getState(UPDATED_AT_KEY),
       textIndexHasContent: counts.chunks > 0, activeModelId, meaningIndexModelId,
       meaningNote: meaningIndexModelId && meaningIndexModelId !== activeModelId
@@ -135,15 +148,19 @@ export class MemoryIndexPipeline {
     };
   }
 
-  /** The card fingerprints of the last Meaning step, for the meaning coverage (null before it ran in this process). */
+  /**
+   * The build's meaning embedding, from the card fingerprints of the last Meaning step (unchanged before it ran in
+   * this process, and once that embedding is done: a live update's few cards are upkeep, not progress).
+   */
   meaningProgress(step: MemoryIndexStep): MemoryIndexStep {
-    if (!this.cardFingerprints) return step;
+    if (!this.cardFingerprints || !this.buildEmbedding) return step;
     const status = this.deps.embeddings().collectionStatus(MEMORY_CARD_COLLECTION, this.cardFingerprints);
     const total = this.cardCount;
     const pending = status.state === "indexing" ? status.total - status.done
       : status.state === "waiting" ? status.total
         : status.state === "needsUpdate" ? status.changed
           : status.state === "notIndexed" ? total : 0;
+    if (pending === 0 && status.state !== "unavailable") this.buildEmbedding = false;
     return { ...step, state: status.state === "unavailable" ? "failed" : step.state, done: Math.max(0, total - pending), total,
       failureMessage: status.state === "unavailable" ? "The embedding model is unavailable." : step.failureMessage };
   }
@@ -154,15 +171,21 @@ export class MemoryIndexPipeline {
     });
   }
 
+  /**
+   * A journal change. Only the Journals step's own calls are dropped (its pass indexes that run next, rule 5);
+   * every other change is queued, also while a pass or the first build runs (CR-001): a run indexed twice costs
+   * nothing, its content hashes are unchanged.
+   */
   private onJournalChanged(change: WorkJournalChange): void {
-    if (this.disposed || !this.isBuilt()) return;
+    if (this.disposed) return;
     const memoryDir = path.resolve(change.memoryDir);
-    // The pipeline's own Journals step changed it: the running pass indexes it already (rule 5).
-    if (this.inPass.has(memoryDir)) return;
+    if (this.ownJournalCalls.has(memoryDir)) return;
     this.liveQueue.add(memoryDir);
     if (this.liveTimer) clearTimeout(this.liveTimer);
     this.liveTimer = setTimeout(() => {
       this.liveTimer = null;
+      // Before the first build only the build indexes; while it runs, the changes follow it.
+      if (!this.isBuilt() && !this.isRunning()) return;
       const memoryDirs = new Set(this.liveQueue);
       this.liveQueue.clear();
       void this.request({ kind: "runs", memoryDirs }).catch(() => undefined);
@@ -179,15 +202,22 @@ export class MemoryIndexPipeline {
       }
     } finally {
       this.running = null;
-      this.inPass = new Set();
+      this.shownRunning = false;
     }
   }
 
   private async pass(request: PassRequest): Promise<void> {
     const { store } = this.deps;
+    // A live update after a failed or never finished first build waits for the user's build.
+    if (request.kind === "runs" && !this.isBuilt()) return;
     const userClick = request.kind === "full" || request.kind === "rebuild";
-    this.lastFailure = null;
-    this.steps = freshSteps();
+    const shown = SHOWN.has(request.kind);
+    this.passSteps = freshSteps();
+    if (shown) {
+      this.lastFailure = null;
+      this.steps = this.passSteps;
+    }
+    this.shownRunning = shown;
     try {
       if (request.kind === "rebuild") {
         store.clear();
@@ -199,23 +229,31 @@ export class MemoryIndexPipeline {
         await this.journalsStep(request, runs);
         await this.textIndexStep(runs);
       } else {
-        for (const step of this.steps.slice(0, 3)) Object.assign(step, { state: "done" });
+        for (const step of this.passSteps.slice(0, 3)) Object.assign(step, { state: "done" });
       }
       // After a restart the Meaning step waits for the first search or live update (rule 3): no model at start.
       if (request.kind === "catchUp") Object.assign(this.step("meaningIndex"), { state: "done" });
-      else await this.meaningStep(userClick);
+      else if (await this.meaningStep(userClick) && request.kind !== "runs") this.buildEmbedding = true;
       if (request.kind === "full" || request.kind === "rebuild") store.setState(BUILT_KEY, "1");
-      store.setState(UPDATED_AT_KEY, (this.deps.now?.() ?? new Date()).toISOString());
+      // The meaning sync changes no index content.
+      if (request.kind !== "meaningSync") store.setState(UPDATED_AT_KEY, (this.deps.now?.() ?? new Date()).toISOString());
     } catch (error) {
-      this.lastFailure = error instanceof Error ? error.message : String(error);
-      const failing = this.steps.find((step) => step.state === "running");
-      if (failing) Object.assign(failing, { state: "failed", failureMessage: this.lastFailure });
-      console.warn("MEMORY_SEARCH_PASS_FAILED", { kind: request.kind, error: this.lastFailure });
+      const message = error instanceof Error ? error.message : String(error);
+      const failing = this.passSteps.find((step) => step.state === "running");
+      if (failing) Object.assign(failing, { state: "failed", failureMessage: message });
+      // A live update or meaning sync that fails changes nothing reported; the next change or start tries again.
+      if (shown) this.lastFailure = message;
+      console.warn("MEMORY_SEARCH_PASS_FAILED", { kind: request.kind, error: message });
     }
   }
 
+  /** Whether a meaning sync would embed now (the recorded model is active and on disk); else asking for one is a no-op. */
+  canSyncMeaning(): boolean {
+    return this.deps.store.getState(MEANING_MODEL_KEY) === this.deps.activeModelId() && this.deps.embeddings().activeModelOnDisk();
+  }
+
   private step(name: MemoryIndexStepName): StepRecord {
-    return this.steps.find((step) => step.step === name)!;
+    return this.passSteps.find((step) => step.step === name)!;
   }
 
   /** Find runs: every run folder for a full pass; for live changes the known runs, plus a full find when one is new. */
@@ -246,8 +284,18 @@ export class MemoryIndexPipeline {
     Object.assign(step, { state: "running", total: runs.length, done: 0 });
     if (request.kind !== "runs") {
       const stored = new Map(this.deps.store.listRuns().map(({ run, rawFingerprint }) => [run.runKey, rawFingerprint]));
-      this.inPass = new Set(runs.map((run) => path.resolve(run.memoryDir)));
-      const kept = await makeJournalsCurrent(this.deps.journals,
+      const ownCalls = {
+        ensureCurrent: async (target: Parameters<Journals["ensureCurrent"]>[0]) => {
+          const memoryDir = path.resolve(target.memoryDir);
+          this.ownJournalCalls.add(memoryDir);
+          try {
+            return await this.deps.journals.ensureCurrent(target);
+          } finally {
+            this.ownJournalCalls.delete(memoryDir);
+          }
+        },
+      };
+      const kept = await makeJournalsCurrent(ownCalls,
         runs.map((run) => ({ run, storedFingerprint: stored.get(run.runKey) ?? null })),
         (done) => { step.done = done; }, () => this.disposed);
       for (const [runKey, fingerprint] of kept) this.deps.store.setRawFingerprint(runKey, fingerprint);
@@ -274,8 +322,9 @@ export class MemoryIndexPipeline {
   /**
    * Meaning index: the complete card set to the embedding index, which embeds what changed in the background.
    * On the user's click always (recording the model); otherwise only with the recorded model, on disk.
+   * Returns whether it synced.
    */
-  private async meaningStep(userClick: boolean): Promise<void> {
+  private async meaningStep(userClick: boolean): Promise<boolean> {
     const step = this.step("meaningIndex");
     const embeddings = this.deps.embeddings();
     const activeModelId = this.deps.activeModelId();
@@ -284,12 +333,12 @@ export class MemoryIndexPipeline {
       if (recorded !== activeModelId) {
         this.meaningNote = null;
         Object.assign(step, { state: "done" });
-        return;
+        return false;
       }
       if (!embeddings.activeModelOnDisk()) {
         this.meaningNote = "The embedding model is not downloaded: download it on Server Settings → Embedding.";
         Object.assign(step, { state: "done" });
-        return;
+        return false;
       }
     }
     Object.assign(step, { state: "running" });
@@ -300,5 +349,6 @@ export class MemoryIndexPipeline {
     this.meaningNote = null;
     if (userClick) this.deps.store.setState(MEANING_MODEL_KEY, activeModelId);
     Object.assign(step, { state: "done", done: cards.length, total: cards.length });
+    return true;
   }
 }

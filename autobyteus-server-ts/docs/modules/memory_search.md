@@ -77,7 +77,19 @@ Pass kinds (one pass at a time; requests made while one runs merge into the next
 | `rebuild` | Rebuild | drops the index and the card collection, then all |
 | `catchUp` | server start, when the index was built before | all but Meaning (no model is loaded at start) |
 | `runs` | journal changes (`onJournalChanged`, 20 s quiet time) | the changed runs only |
-| `meaningSync` | the first search after a start (`nearest` answered `notSynced`) | Meaning only |
+| `meaningSync` | the first search after a start (`nearest` answered `notSynced`), only when the Meaning step would embed (recorded model active and on disk) | Meaning only |
+
+The status shows `building`, with the pass's own step progress, only for `full`, `rebuild` and `catchUp`. While
+a `runs` or `meaningSync` pass runs, it reports the settled index (its state, counts and complete steps), so a
+search's coverage note never claims missing coverage because a turn is being indexed. A failed `runs` or
+`meaningSync` pass is logged (`MEMORY_SEARCH_PASS_FAILED`) and leaves the reported state as it was; the next
+change or start tries again. The Meaning step's progress counts the build's own embedding; a live update's few
+re-embedded cards are upkeep and do not show.
+
+Journal changes are queued whenever they happen, also while a pass or the first build runs; only the
+notifications caused by the Journals step's own `ensureCurrent` calls are dropped (that pass indexes the run
+next). A queued change waits for the running pass; before the first build, nothing is indexed until the user
+starts it.
 
 Meaning step rules: on the user's click it always syncs (a download, if the model is missing, is the embedding
 layer's preparation) and records `meaningIndexModelId`. Otherwise it syncs only when the active model is the
