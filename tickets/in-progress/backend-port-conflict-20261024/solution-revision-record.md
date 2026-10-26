@@ -78,3 +78,7 @@
 - E-025 corrects E-024 factual lookup claim. New observational manager→registry peekPublishedRun with exact-map/instance checks and pure isActive reads; preserve all existing lifecycle/pruning callers. No fake read through getActiveRun/hasActiveRun/listActiveRuns or retired-inclusive predicate.
 - E-026 preserves actual event-derived rows on initial panel entry/reselection despite unavailable runtime, with explicit recorded/last-known labeling. Empty store never proves Codex empty; successful snapshot/event-stream result selects one authority, no merge or provider guessing.
 - Canonical design, investigation, handoff and project Case5 updated; added future regression obligations for inactive/replaced instances and retained first-entry rows. No production edits or tests; user testing pause preserved. Continue same independent review via configured Large/High route, no duplicate implementation forwarding.
+
+
+### SR-008 downstream checkpoint — ARCH-REV-004
+Architecture Reviewer passed R2/D4.1 at8c4e42d72 and already sent the primary implementation handoff. Recorded informationally; no duplicate forwarding. Implementation Engineer subsequently asks about permitted executable checks under the user pause. User clarification is pending in validation-pause-clarification.md; all executable checks stay paused meanwhile. Approval of feature scope is not treated as an implicit revocation. No architecture or requirements revision.
