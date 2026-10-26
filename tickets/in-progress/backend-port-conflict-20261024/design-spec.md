@@ -1,5 +1,7 @@
 # Design Spec — backend-port-conflict-20261024
 
+> Workflow update2026-10-26: ARCH-REV-004 passed this D4.1 design at8c4e42d72. The user subsequently lifted executable-testing pause, recorded in validation-pause-clarification.md and API/E2E8fd57560d. Historical pause statements below no longer restrict authorized implementation checks and the normal reviewed validation route. Technical design/R2 scope unchanged.
+
 ## Solution And Approval Basis
 - Current solution revision: SR-008; technical baseline D4.1; Design status: Ready for independent review against R2. ARCH-REV-003/CRR-002 remain valid only for previous D3.1/R1 scope.
 - Requirements: R2/SR-007 Approved, extending R1/SR-001 with the user’s “do it in this current ticket thanks” for read-only Codex background visibility (background-visibility-scope-approval.md). Original shutdown approval: user's application-shutdown confirmation plus Solution Designer's bounded within-direction decisions, recorded verbatim in requirements-doc.md. No behavior-defining supplements or Product Design request.

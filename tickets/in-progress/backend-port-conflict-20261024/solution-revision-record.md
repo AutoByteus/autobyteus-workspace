@@ -82,3 +82,7 @@
 
 ### SR-008 downstream checkpoint — ARCH-REV-004
 Architecture Reviewer passed R2/D4.1 at8c4e42d72 and already sent the primary implementation handoff. Recorded informationally; no duplicate forwarding. Implementation Engineer subsequently asks about permitted executable checks under the user pause. User clarification is pending in validation-pause-clarification.md; all executable checks stay paused meanwhile. Approval of feature scope is not treated as an implicit revocation. No architecture or requirements revision.
+
+
+### SR-008 downstream checkpoint — user resumes testing
+API/E2E relays exact user instruction “i asked you to pause or? i think we could continue now?”, persisted8fd57560d. Read its progress/report and IR-004 incomplete handoff7bd0bbea4. Pause clarification is resolved: implementation may complete generation/checks/build/rendered inspection, then use normal Large/High source-review→independent API/E2E route. API/E2E readiness remains pending, not paused; no stale build/current acceptance inference or review bypass. Updated validation-pause-clarification.md and canonical workflow banners; no intended-behavior/design change, new SR architecture round or duplicate review forwarding. Specialist-owned reports/source unchanged.

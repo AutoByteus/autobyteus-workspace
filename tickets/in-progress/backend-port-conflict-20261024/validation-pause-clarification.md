@@ -1,5 +1,14 @@
-# Executable-check authorization clarification — pending user answer
+# Executable-check authorization clarification — RESUMED
 2026-10-26, backend-port-conflict-20261024, R2/D4.1/SR-008.
+
+## Current authorization — supersedes pause below
+User directly told API/E2E: “i asked you to pause or? i think we could continue now?” API/E2E relayed that exact instruction to Solution Designer and persisted it at8fd57560d in api-e2e-test-progress.md (2026-10-26T08:19:31.075121+00:00) and api-e2e-execution-coverage-report.md. This lifts the testing pause for the normal ticket workflow, not only implementation checks. No further clarification is required.
+Implementation Engineer may resume required repository GraphQL generation, unit/regression checks, typechecks, locale checks, task-local build and isolated rendered inspection for current R2/D4.1 DS-005 under existing constraints. Complete IR-004 WIP7bd0bbea4 and resolve implementation-owned failures; return material design/requirement findings to Solution Designer. Do not call WIP buildable/ready before generation/checks succeed.
+Then apply the normal Large/High source-review route; independent API/E2E resumes executable acceptance only on the resulting ready/reviewed current package. It already knows the user resumed testing and is awaiting package readiness. No review bypass or stale D3.1 build as R2 evidence. Reuse API-04/06 only for exact-source/unchanged-path claims; extend and rerun affected checks by impact. No paid inference, user-data reset, unrelated-process termination, installed-app disruption, release or install is newly authorized.
+This resolves the earlier unanswered question and supersedes pause statements in historical design/review/implementation/API checkpoints; those artifacts remain evidence of their time. No requirements/design change or repeated architecture handoff. Solution Designer sends this recorded authorization to Implementation Engineer, not an implementation-ready verdict.
+
+## Historical pending clarification (superseded)
+
 Implementation Engineer received ARCH-REV-004 Pass and asks whether implementation-scoped unit tests/typechecks/build/rendered inspection may run while independent API/E2E remains paused.
 Reviewed design-review-report.md and architecture-review-revision-record.md at8c4e42d72: ARCH-REV-004 passes R2/D4.1, already forwarded to implementation; expressly does not resume user-paused executable validation. api-e2e-test-progress.md records no further tests/builds/provider/app runs. The user's in-ticket feature approval does not clearly revoke that separate pause. No contrary authorization is inferred.
 Solution Designer asks the user directly: “The background-task visibility design has passed review. Should implementation checks (unit tests, typechecks, builds and isolated UI inspection) resume, while independent API/E2E testing stays paused?” Options: resume implementation checks only; keep all executable checks paused. No answer received at this checkpoint.

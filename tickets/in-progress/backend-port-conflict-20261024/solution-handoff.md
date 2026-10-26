@@ -1,6 +1,9 @@
 # Solution Handoff — Architecture Design Complete (R2 / D4.1 / SR-008)
 
-## Outcome and requested next action
+## Current workflow checkpoint — testing resumed
+User's direct API/E2E instruction “i asked you to pause or? i think we could continue now?” is recorded at8fd57560d. See validation-pause-clarification.md for current authorization: resume IR-004 implementation generation/checks/build/rendered inspection, then normal Large/High source review → independent API/E2E. ARCH-REV-004 already passed D4.1 and forwarded implementation; no repeat architecture handoff. Later authorization supersedes historical pause language below. Current WIP7bd0bbea4 is incomplete and not current acceptance evidence.
+
+## Historical design-review handoff outcome and requested next action
 Review the revised **R2 Approved / D4.1 Ready** package for in-ticket read-only Codex background visibility. **task_size: Large; architectural_risk: High.** The user explicitly chose this ticket, not a separate follow-up. This is a new design review, not a duplicate forwarding of ARCH-REV-003/CRR-002. Those passed D3.1/R1 only. No new implementation or expanded acceptance is claimed. Review DS-005 and its interaction with preserved shutdown/idle/turn contracts; route findings or the reviewed package under your rules.
 
 ## Identity / workspace / base
