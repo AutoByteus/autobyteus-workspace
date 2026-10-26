@@ -66,7 +66,7 @@ export class WorkJournalStore {
     const manifest = asRecord(parsed);
     if (!manifest) return null;
     const { run_id: runId, runtime_kind: runtimeKind, renderer_revision: revision, files } = manifest;
-    if (typeof runId !== "string" || typeof runtimeKind !== "string" || typeof revision !== "number") return null;
+    if (typeof runId !== "string" || (typeof runtimeKind !== "string" && runtimeKind !== null) || typeof revision !== "number") return null;
     return {
       run_id: runId,
       runtime_kind: runtimeKind,
@@ -94,6 +94,15 @@ export class WorkJournalStore {
 
   async writeJournalFile(memoryDir: string, journalFile: string, markdown: string): Promise<void> {
     await this.writeAtomically(this.filePath(memoryDir, journalFile), markdown);
+  }
+
+  /** A journal file's text; null when it does not exist. */
+  async readJournalFile(memoryDir: string, journalFile: string): Promise<string | null> {
+    try {
+      return await fs.readFile(this.filePath(memoryDir, journalFile), "utf-8");
+    } catch {
+      return null;
+    }
   }
 
   async journalFileExists(memoryDir: string, journalFile: string): Promise<boolean> {
