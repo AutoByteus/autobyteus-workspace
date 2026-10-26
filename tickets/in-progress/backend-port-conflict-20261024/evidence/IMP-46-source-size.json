@@ -1,0 +1,107 @@
+{
+  "source": "9bd72c20893dedb8c7dc99aacfcb0b732d092d6c",
+  "base": "b903d187e",
+  "excluded": "Tests and repository-generated GraphQL output (full regeneration syncs earlier schema/query drift as well as DS-005)",
+  "files": [
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "nonempty": 120,
+      "priorNonempty": 119
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts",
+      "nonempty": 54,
+      "priorNonempty": 52
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "nonempty": 179,
+      "priorNonempty": 178
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "nonempty": 299,
+      "priorNonempty": 298
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts",
+      "nonempty": 177,
+      "priorNonempty": 176
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "nonempty": 256,
+      "priorNonempty": 255
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-background-task-view.ts",
+      "nonempty": 166,
+      "priorNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "nonempty": 497,
+      "priorNonempty": 450
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/domain/agent-background-task-view.ts",
+      "nonempty": 24,
+      "priorNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "nonempty": 459,
+      "priorNonempty": 449
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "nonempty": 298,
+      "priorNonempty": 296
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "nonempty": 365,
+      "priorNonempty": 364
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/schema.ts",
+      "nonempty": 97,
+      "priorNonempty": 95
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/types/agent-background-task-view.ts",
+      "nonempty": 71,
+      "priorNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/components/progress/BackgroundTaskPanel.vue",
+      "nonempty": 170,
+      "priorNonempty": 151
+    },
+    {
+      "file": "autobyteus-web/composables/useBackgroundTaskPanelView.ts",
+      "nonempty": 86,
+      "priorNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/graphql/queries/agentBackgroundTaskQueries.ts",
+      "nonempty": 15,
+      "priorNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/localization/messages/en/workspace.ts",
+      "nonempty": 296,
+      "priorNonempty": 285
+    },
+    {
+      "file": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "nonempty": 295,
+      "priorNonempty": 284
+    },
+    {
+      "file": "autobyteus-web/types/backgroundTaskView.ts",
+      "nonempty": 11,
+      "priorNonempty": 0
+    }
+  ]
+}

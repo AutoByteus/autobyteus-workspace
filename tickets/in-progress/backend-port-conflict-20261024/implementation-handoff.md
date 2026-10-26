@@ -1,9 +1,13 @@
-# Implementation Handoff — current IR-004 authoring checkpoint
+# Implementation Handoff — IR-004
 
-## Current outcome: incomplete, executable validation remains user-paused
-2026-10-26. DS-005 source and implementation-unit regression authoring is checkpointed against **R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 Pass**. **task_size=Large; architectural_risk=High**, unchanged. This is NOT an implementation-ready or source-review handoff. No new test, typecheck, generator, build, provider, server or app process was run in this round. Static file reads/diffs and source authoring only.
+## Current outcome: Ready for independent Code Review
+2026-10-26. **R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 Pass**. **task_size=Large; architectural_risk=High**, unchanged. DS-005 read-only Codex visibility is implemented and implementation-scoped validation is complete, with the explicitly retained packaging and independent-acceptance limitations below. This is not an API/E2E, release, or reported-incident resolution claim.
 
-Worktree/branch/base remain as documented below. Latest upstream review8c4e42d72; authorization clarificationb903d187e says all executable checks remain paused pending user answer. No code reviewer/API/E2E run is requested. API/E2E remains independently user-paused atc88a6224c regardless of any future implementation-only authorization.
+- Production source: **9bd72c20893dedb8c7dc99aacfcb0b732d092d6c**, following WIP7bd0bbea4. No production edits after this source commit during build/rendered inspection.
+- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`; bootstrap/finalization `origin/personal@034bfe51ab697817773ff545d369e1cfc03a79c5`. Delivery owns integration verification.
+- User pause was lifted in API/E2E8fd57560d and coordinator3a3fba3a4 (`validation-pause-clarification.md`). Both implementation checks and independent validation are authorized again; API/E2E awaits the current applicable source-review pass.
+- Trigger: ARCH-REV-004 / SR-007..008; prior CRR-002 covered D3.1 only. Existing partial API/E2E checkpointc88a6224c and scoped API-04/06 remain exact-source evidence, not current R2 acceptance. Delivery revision N/A.
+- Independent Code Reviewer must assess this delta on the cumulative existing source before API/E2E advances. No duplicate initial native implementation or old CRR-002 forwarding.
 
 ### Current delta / behavior trace
 - BEH-005 / REQ-007 / AC-007: `codex-background-task-view.ts` owns exact native identity, beyond-turn eligibility, terminal/list merge, unknown absence, safe executable-only labels and bounded runtime terminal history. `CodexThread` owns one shared paginated read, five-second total deadline/100-page refusal, before-gate matched completion observations, admitted starts and exact turn-completion facts. Existing transcript gate is unchanged; no streamed background event or new idle work claim.
@@ -12,18 +16,40 @@ Worktree/branch/base remain as documented below. Latest upstream review8c4e42d72
 - Thread cancellation/client close fences reads and clears observation state without waiting for inspection or altering shutdown sequencing. Codex `hasRunningBackgroundTasks()` stays false; misleading old polling-only comment is replaced. Native/shutdown source from IR-003 is not duplicated or rewritten.
 - Protocol docs describe the side view and explicitly preserve WebSocket lifecycle/turn contracts. Existing stream DTO/store/handler and idle consumers are untouched.
 
-### Known incomplete work / mandatory resume gates
-1. **Repository GraphQL generation has NOT run.** `useBackgroundTaskPanelView` imports the intended generated `AgentBackgroundTaskViewQuery` and variables types, which are not in `generated/graphql.ts` yet. Do not claim this checkout builds. Once authorized, generate from the current schema with the repository codegen configuration; do not hand-author generated types or point at the installed app.
-2. Newly authored pure view/thread/query/registry/backend and panel regressions have NOT run. Existing event-provider panel tests are isolated to their old streamed rendering contract; separate inspection tests exercise the actual composable. Source/type/fixture errors may remain until execution is authorized.
-3. Production typecheck, applicable unit checks, locale guards, changed task-local build and actual rendered inspection are required. No generated build output was touched; prior task-local desktop build does not contain DS-005.
-4. Read `implementation-check-ledger.md` IR-004 plan before running anything. Only explicit clarification may lift the implementation-check pause; independent API/E2E still requires its own direction.
-5. Once implementation checks/rendering finish, update this handoff and round record, carry Large/High and obtain the source-review rule. CRR-002 Pass at5fd30310e applies to D3.1/d0338db0b only, not DS-005. Do not duplicate that completed review's forwarding.
+### Implementation refinements during authorized checks
+- Concrete GraphQL classes retain their discriminant for type-safe union resolution. Both reason-bearing union variants use the same finite GraphQL reason enum. Initial compiler/generator failures are retained in IMP-33/37; they were corrected, not suppressed.
+- Pending paginated inspection captures per-page eligibility and matching completion facts, so an idle-page candidate is not lost if another turn starts before later pages arrive. Foreground-only completion remains excluded; new durable page/turn-race regressions pass. This implements D4.1 late-list merging, not new lifecycle policy.
+- Repository codegen ran against the current compiled schema, not an installed server. `generated/graphql.ts` fully regenerated (1772 additions/38 deletions), synchronizing existing schema/query drift as well as DS-005. No handwritten generated compatibility types; this generated-only breadth adds no unrelated runtime behavior.
+- GraphQL serialization test uses the same CJS GraphQL realm as external type-graphql (`createRequire`), following existing repository fixtures. Initial four realm failures and successful rerun are both retained.
 
-### Preserved evidence and limits
-API-04 actual packaged Codex conversation quit and API-06 native ended-agent restart/active-run quit are scoped receipts at their recorded sources, not overall or R2 acceptance. Keep the canonical API/E2E report/progress unchanged. New runtime/query/UI needs independent expanded acceptance when authorized. No historical Nuxt leak/root cause is claimed solved; provider processId is never OS kill authority. No Windows/WSL certification, installed-app use, data reset, release/install, merge or finalization. Two untracked SDK dist prerequisite directories are preserved.
+### Checks Run / current evidence
+All commands and rerun-by-impact dispositions are in `implementation-check-ledger.md` IR-004. Tests ran in the working tree subsequently committed as9bd72c208; build/rendered evidence ran at that commit. Unchanged passing paths are reused rather than repeatedly rerun.
 
-### Static self-review (not executable verification)
-Owners follow DS-005; no additional execution or cleanup policy introduced. No compatibility layer or persistence added. CodexThread remains below500 effective nonempty lines (496 by text inventory), pure view and composable are separate owned concerns; other changed production files remain below the ceiling in static inspection. New observation owner is below220 lines. No touched dead execution path identified; old misleading comment removed. A complete automated/source-size receipt and rendered verification remain pending, not a pass claim.
+| Check | Result | Evidence |
+|---|---|---|
+| Codex view/thread/backend, observational registry/query, AgentRun/manager/idle controls, Claude/AGY controls | **276 unique current passing cases**, after focused correction/rerun; IMP-42 itself is251 pass/4 fail, NOT all green | IMP-34 (21 unchanged backend/registry cases reused), IMP-42 (255 cases), IMP-43 (10-case query rerun replaces the failed subset, not added twice) |
+| Panel/composable/stream compatibility/locales | **24 pass**; combined current scoped total **300 unique cases** | IMP-41-panel-tests.log |
+| Server/core/contracts/backend SDK production types; Electron main/preload/build types | Pass through direct compiler and current build stages | IMP-35/38, IMP-44-desktop-build.log |
+| Current SDL + repository GraphQL generation | Pass after shared enum correction | IMP-39-schema.graphql, IMP-40-codegen.log |
+| Web boundary/localization boundary/literal audit | Pass; zero unresolved literal findings | IMP-44-desktop-build.log |
+| Task-local unsigned macOS build | Current server/renderer/Electron **unpacked app and ZIP produced**, inspected app usable. **Overall command failed** at DMG hdiutil resize35 (busy build-owned image); no full packaging pass claimed | IMP-44-desktop-build.log, IMP-44-owned-image-recovery.json |
+| Changed isolated desktop rendered feedback loop | Pass for controlled read-only view states and interactions, English/zh-CN, narrow390px/no horizontal overflow; no page errors | IMP-45-control.mjs, IMP-45-states.json, IMP-45-settled.json, screenshots |
+| Isolated rendered instance cleanup | Normal quit, forced=false, both owned ports closed, captured app exited, sentinel unchanged; exact private root disposed after evidence copied | IMP-45-stop.json, IMP-45-cleanup.json, IMP-45-app.log |
+| Production source size / change inventory | 20 changed production files, maximum497 nonempty lines; no authored production delta above220. Generated output/tests excluded | IMP-46-source-size.json |
+
+### Rendered feedback and build limitation
+Used only the current worktree `.app` under `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`, with a private HOME/data/TMPDIR and ports53420/53421. Packaged CodexThread and GraphQL-view JS matched the built current server files. Frontend-only fixture contexts plus intercepted **AgentBackgroundTaskView only** supplied controlled states; no real model conversation or background process was created. This exercises the actual built panel/composable/query selection but is NOT provider→query→panel acceptance.
+
+Directly inspected and interacted with running/failed(-1)/completed(0)/unknown rows, safe label/ID/time display and no raw commands, unavailable last-known counts, authoritative empty, collapse/no polling, reopen, selected-run replacement, real locale-settings switch, normal and narrow layout. Labels, hierarchy, row spacing/status chips and clipping were acceptable; no product UI correction was needed. Initial English capture caught the expand animation; `IMP-45-snapshot-en-settled.png` is the settled1280px view. A second capture attempt initially omitted the Language settings tab; fixture-only navigation error and successful correction are retained. Loading/first-entry stream fallback and stale-node fencing are unit-tested, not claimed as actual-provider rendered evidence.
+
+The DMG stage failed after the app/ZIP had been assembled. The exact build-owned image path was independently matched to `/dev/disk13` and detached; no other volume touched. No packaging-source defect was established and no full pipeline rerun/pass is claimed. Current unpacked app remains available for downstream isolated validation; distribution DMG packaging is an explicit limitation for delivery, not a release-ready claim. No installer was run.
+
+### Self-review / scope / remaining work
+- Production spine: selected panel → typed GraphQL resolver → observational manager peek → captured active AgentRun → explicit backend capability → thread-owned bounded inspection/state projection → generated response → generation-fenced panel. No registry bypass, lifecycle getter, retry against replacement, resource cleanup, raw PID authority, write/stop controls or new idle event.
+- Data **Not Affected**: no persisted view, migration, user reset or historical compatibility read. Existing streamed DTOs/stores and native host/shutdown owners remain unchanged. Only obsolete misleading Codex comment removed; no additional touched dead path identified. Pure view and composable remain separate concrete concerns; CodexThread497 lines, all changed authored files under500. Large/High remains justified by cumulative lifecycle/contracts and the new concurrent query boundary, not generated file volume.
+- No standalone strict Vue `vue-tsc` check was run (no repository script/installed executable); Nuxt compilation, typed codegen, production server/Electron compilers, unit and rendered checks are the actual evidence. Full repository suites were not run. Existing FU-001 unrelated strict test-tree typing debt remains unchanged.
+- Independent source review is REQUIRED for R2. Independent API/E2E must cover the actual Codex conversation → live query → panel path and current-runtime cleanup effects, preserving API-04/06's scoped provenance. Full-host/desktop native/Codex acceptance remains with that owner; do not substitute these panel fixtures or native/P-004 evidence.
+- No real Windows/WSL execution, historical Nuxt-root-cause proof, installed-app use, unrelated process kill/data change, merge/release/install/finalization. Untracked SDK dist prerequisites are preserved. No overall acceptance claimed.
 
 ---
 # Historical IR-003 handoff (preserved exact-source evidence; not current readiness)

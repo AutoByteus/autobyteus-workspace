@@ -1,0 +1,4 @@
+Fixture navigation failure; not product defect. exec session10049 exit1.
+locator.selectOption: Timeout 30000ms exceeded.
+waiting for getByTestId('settings-language-select')
+Control helper had opened Settings but omitted selecting Language. Actual page inspect confirmed API key tab, Language button present. Fixed helper to click Language before select; no production edits.

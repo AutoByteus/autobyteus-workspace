@@ -1,0 +1,26 @@
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+src/api/graphql/types/agent-background-task-view.ts(44,3): error TS2322: Type '(value: AgentBackgroundTaskView) => typeof AgentBackgroundTaskEventStream' is not assignable to type 'TypeResolver<AgentBackgroundTaskSnapshot | AgentBackgroundTaskEventStream | AgentBackgroundTaskUnsupported | AgentBackgroundTaskUnavailable, any>'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'AgentBackgroundTaskSnapshot | AgentBackgroundTaskEventStream | AgentBackgroundTaskUnsupported | AgentBackgroundTaskUnavailable' is not assignable to type 'AgentBackgroundTaskView'.
+      Type 'AgentBackgroundTaskSnapshot' is not assignable to type 'AgentBackgroundTaskView'.
+        Property 'kind' is missing in type 'AgentBackgroundTaskSnapshot' but required in type '{ kind: "snapshot"; agentRunId: string; runInstanceId: string; observedAt: string; tasks: AgentBackgroundTaskViewRow[]; }'.
+ ELIFECYCLE  Command failed with exit code 2.

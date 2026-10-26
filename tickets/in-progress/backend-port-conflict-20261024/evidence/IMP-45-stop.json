@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-53420-4cb4",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp45-6aG24H/data",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp45-6aG24H/autobyteus-isolated-app/iso-53420-4cb4.log"
+  }
+}

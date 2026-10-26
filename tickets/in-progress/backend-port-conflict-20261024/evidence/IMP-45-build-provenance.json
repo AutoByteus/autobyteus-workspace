@@ -1,0 +1,18 @@
+{
+  "source": "9bd72c20893dedb8c7dc99aacfcb0b732d092d6c",
+  "productionEditsAfterBuild": false,
+  "files": [
+    {
+      "built": "autobyteus-server-ts/dist/agent-execution/backends/codex/thread/codex-thread.js",
+      "packaged": "autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/thread/codex-thread.js",
+      "sha256": "a93a2b12994f7378be3f4f1e8959bccfc31e562a64c720ab17c38c1abbe16abf",
+      "equal": true
+    },
+    {
+      "built": "autobyteus-server-ts/dist/api/graphql/types/agent-background-task-view.js",
+      "packaged": "autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/agent-background-task-view.js",
+      "sha256": "f0033a3c364ddc984563a45d334c2ed64520d59973e1a479bc5ae4fbd1697869",
+      "equal": true
+    }
+  ]
+}
