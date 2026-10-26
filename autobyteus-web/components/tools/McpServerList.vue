@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import McpServerCard from './McpServerCard.vue';
 import McpSecretMoveBanner from './McpSecretMoveBanner.vue';
-import type { McpServer } from '~/stores/toolManagementStore';
+import type { McpServer } from '~/types/mcpServer';
 
 defineProps<{
   servers: McpServer[];

@@ -32,12 +32,8 @@ import type {
   MoveMcpSecretsToVaultMutation,
   MoveMcpSecretsToVaultMutationVariables,
 } from '~/generated/graphql';
-import type {
-  McpConfigEntry,
-  McpSecretMatch,
-  McpSecretState,
-  McpSecretSuggestionRule,
-} from '~/utils/mcp/mcpConfigRows';
+import type { McpSecretMatch, McpSecretSuggestionRule } from '~/utils/mcp/mcpConfigRows';
+import type { McpSecretMoveCandidate, McpSecretMoveResult, McpServer, McpServerField } from '~/types/mcpServer';
 
 // --- Interfaces ---
 
@@ -64,42 +60,6 @@ export interface Tool {
 export interface ToolCategoryGroup {
   categoryName: string;
   tools: Tool[];
-}
-
-export interface McpServer {
-  __typename: 'StdioMcpServerConfig' | 'StreamableHttpMcpServerConfig';
-  serverId: string;
-  transportType: 'STDIO' | 'STREAMABLE_HTTP';
-  enabled: boolean;
-  toolNamePrefix: string;
-  // Stdio
-  command?: string;
-  args?: string[];
-  /** Env values with their secret state; a secret's value is never returned. */
-  env?: McpConfigEntry[];
-  cwd?: string;
-  // HTTP
-  url?: string;
-  /** The token's state (`null` = no token); its value is never returned. */
-  tokenState?: McpSecretState | null;
-  headers?: McpConfigEntry[];
-}
-
-/** One value of one server (`field` is `env:<NAME>`, `header:<Name>` or `token`). */
-export interface McpServerField {
-  serverId: string;
-  field: string;
-}
-
-export interface McpSecretMoveCandidate extends McpServerField {
-  matchedBy: McpSecretMatch;
-}
-
-export interface McpSecretMoveResult {
-  backupPath: string | null;
-  moved: McpServerField[];
-  skipped: McpServerField[];
-  serversFailingAfterMove: Array<{ serverId: string; reason: string }>;
 }
 
 interface PreviewResult {

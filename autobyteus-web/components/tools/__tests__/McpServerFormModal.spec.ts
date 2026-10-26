@@ -11,7 +11,8 @@ import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import McpServerFormModal from '../McpServerFormModal.vue'
-import { useToolManagementStore, type McpServer } from '~/stores/toolManagementStore'
+import { useToolManagementStore } from '~/stores/toolManagementStore'
+import type { McpServer } from '~/types/mcpServer'
 
 // Vitest runs from autobyteus-web; the shared vectors carry the server's rule.
 const { rule } = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), '../test-support/fixtures/mcp-secret-suggestion-vectors.json'), 'utf8'))

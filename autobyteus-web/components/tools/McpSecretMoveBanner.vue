@@ -63,7 +63,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useToolManagementStore, type McpSecretMoveCandidate, type McpSecretMoveResult } from '~/stores/toolManagementStore';
+import { useToolManagementStore } from '~/stores/toolManagementStore';
+import type { McpSecretMoveCandidate, McpSecretMoveResult } from '~/types/mcpServer';
 import type { ToastType } from '~/composables/useToasts';
 
 /**

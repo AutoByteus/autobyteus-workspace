@@ -179,41 +179,26 @@
 import { ref, watch, computed, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import McpConfigRows from './McpConfigRows.vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
-import type { McpServer } from '~/stores/toolManagementStore';
+import type { McpServer } from '~/types/mcpServer';
 import type { ToastType } from '~/composables/useToasts';
 import { useLocalization } from '~/composables/useLocalization';
 import {
   applySuggestedLock,
   rowsFromEntries,
-  rowsFromJson,
-  rowsToInput,
-  rowsToJson,
-  tokenFromJson,
   tokenFromServer,
-  tokenToInput,
-  tokenToJson,
   type McpConfigRow,
   type McpTokenDraft,
 } from '~/utils/mcp/mcpConfigRows';
+import {
+  formStateFromJson,
+  formStateToInput,
+  formStateToJson,
+  type FormTransport,
+  type McpServerFormInput,
+  type McpServerFormState,
+} from '~/utils/mcp/mcpServerFormState';
 
 type ArgItem = { id: number; value: string };
-type FormTransport = 'STDIO' | 'STREAMABLE_HTTP';
-type McpServerFormInput = Record<string, any> & { serverId: string; transportType: FormTransport };
-
-/** Everything the form edits; the Form tab and the JSON tab both read and write it. */
-type FormState = {
-  serverId: string;
-  transportType: FormTransport;
-  toolNamePrefix: string;
-  enabled: boolean;
-  command: string;
-  args: string[];
-  cwd: string;
-  url: string;
-  envRows: McpConfigRow[];
-  headerRows: McpConfigRow[];
-  token: McpTokenDraft;
-};
 
 const props = defineProps<{
   server: McpServer | null;
@@ -288,7 +273,7 @@ watch(activeTab, (newTab) => {
     }
 });
 
-const currentState = (): FormState => ({
+const currentState = (): McpServerFormState => ({
   serverId: form.serverId,
   transportType: form.transportType,
   toolNamePrefix: form.toolNamePrefix,
@@ -302,135 +287,15 @@ const currentState = (): FormState => ({
   token: { ...token },
 });
 
-/** The JSON tab shows values as strings and stored values it cannot show as keep markers. */
 const updateJsonFromForm = () => {
-    const serverId = form.serverId || 'new-server';
-    const config: any = {
-        transportType: form.transportType.toLowerCase(),
-        enabled: form.enabled,
-    };
-    if (form.toolNamePrefix) {
-        config.toolNamePrefix = form.toolNamePrefix;
-    }
-
-    if (form.transportType === 'STDIO') {
-        const env = rowsToJson(envRows.value);
-        Object.assign(config, {
-            command: form.stdioConfig.command,
-            args: form.stdioConfig.args.length > 0 ? form.stdioConfig.args : undefined,
-            env: Object.keys(env).length > 0 ? env : undefined,
-            cwd: form.stdioConfig.cwd || undefined,
-        });
-    } else { // STREAMABLE_HTTP
-        const headers = rowsToJson(headerRows.value);
-        Object.assign(config, {
-            url: form.streamableHttpConfig.url,
-            token: tokenToJson(token),
-            headers: Object.keys(headers).length > 0 ? headers : undefined,
-        });
-    }
-
-    const output = {
-        mcpServers: {
-            [serverId]: config
-        }
-    };
-    jsonInput.value = JSON.stringify(output, null, 2);
+  jsonInput.value = formStateToJson(currentState());
 };
 
-const isRecord = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
+/** The form state from the JSON tab; `needsReview` asks for a look at the Form tab before saving. */
+const parseJsonState = () =>
+  formStateFromJson(jsonInput.value, currentState(), rule.value, isEditMode.value ? props.server!.serverId : null);
 
-const normalizeTransport = (config: Record<string, any>): FormTransport => {
-  const rawTransport = config.transportType ?? config.transport_type;
-  if (typeof rawTransport === 'string' && rawTransport.trim()) {
-    const normalized = rawTransport.trim().replace(/-/g, '_').toUpperCase();
-    if (normalized === 'STDIO' || normalized === 'STREAMABLE_HTTP') {
-      return normalized;
-    }
-    throw new Error(`Unsupported MCP transport type '${rawTransport}'.`);
-  }
-  if (typeof config.url === 'string' && config.url.trim()) return 'STREAMABLE_HTTP';
-  if (typeof config.command === 'string' && config.command.trim()) return 'STDIO';
-  throw new Error("MCP server JSON must include either 'command' for STDIO or 'url' for HTTP.");
-};
-
-const readStringArray = (value: unknown, fieldName: string): string[] => {
-  if (value === undefined || value === null) return [];
-  if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
-    throw new Error(`'${fieldName}' must be an array of strings.`);
-  }
-  return value;
-};
-
-/**
- * The form state from the JSON tab, against the current rows (which know what is stored). `needsReview` is set when
- * the rule locked a new value, which the user then reviews on the Form tab before saving.
- */
-const parseJsonState = (): { state: FormState; needsReview: boolean } => {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(jsonInput.value);
-  } catch {
-    throw new Error('Invalid JSON syntax.');
-  }
-  if (!isRecord(parsed) || !isRecord(parsed.mcpServers)) {
-    throw new Error("Invalid JSON structure. Must contain a top-level 'mcpServers' object.");
-  }
-
-  const serverIds = Object.keys(parsed.mcpServers);
-  if (serverIds.length === 0) throw new Error("The 'mcpServers' object is empty.");
-  if (serverIds.length > 1) throw new Error('This form edits one MCP server at a time. Provide exactly one server or use Bulk Import.');
-
-  const jsonServerId = serverIds[0];
-  const config = parsed.mcpServers[jsonServerId];
-  if (!jsonServerId.trim()) throw new Error('MCP server ID cannot be empty.');
-  if (!isRecord(config)) throw new Error(`MCP server '${jsonServerId}' must be a JSON object.`);
-
-  const transportType = normalizeTransport(config);
-  const state: FormState = {
-    ...currentState(),
-    serverId: isEditMode.value ? props.server!.serverId : jsonServerId,
-    transportType,
-    toolNamePrefix: (config.toolNamePrefix ?? config.tool_name_prefix) || '',
-    enabled: config.enabled !== false,
-    envRows: [],
-    headerRows: [],
-    token: tokenFromJson(undefined, token),
-  };
-
-  if (transportType === 'STDIO') {
-    if (typeof config.command !== 'string' || !config.command.trim()) {
-      throw new Error("STDIO MCP server JSON must include a non-empty 'command'.");
-    }
-    const env = rowsFromJson(config.env, 'env', envRows.value, rule.value);
-    return {
-      state: {
-        ...state,
-        command: config.command,
-        args: readStringArray(config.args, 'args'),
-        cwd: typeof config.cwd === 'string' ? config.cwd : '',
-        envRows: env.rows,
-      },
-      needsReview: env.needsReview,
-    };
-  }
-
-  if (typeof config.url !== 'string' || !config.url.trim()) {
-    throw new Error("HTTP MCP server JSON must include a non-empty 'url'.");
-  }
-  const headers = rowsFromJson(config.headers, 'header', headerRows.value, rule.value);
-  return {
-    state: {
-      ...state,
-      url: config.url,
-      headerRows: headers.rows,
-      token: tokenFromJson(config.token, token),
-    },
-    needsReview: headers.needsReview,
-  };
-};
-
-const applyStateToForm = (state: FormState) => {
+const applyStateToForm = (state: McpServerFormState) => {
   Object.assign(form, createFreshForm());
   form.serverId = state.serverId;
   form.transportType = state.transportType;
@@ -516,31 +381,7 @@ onUnmounted(() => {
     store.clearPreviewResult();
 });
 
-const buildInputFromState = (state: FormState): McpServerFormInput => {
-    const input: McpServerFormInput = {
-        serverId: state.serverId,
-        transportType: state.transportType,
-        toolNamePrefix: state.toolNamePrefix || null,
-        enabled: state.enabled,
-        stdioConfig: null,
-        streamableHttpConfig: null,
-    };
-    if (state.transportType === 'STDIO') {
-        input.stdioConfig = {
-          command: state.command,
-          args: state.args,
-          env: rowsToInput(state.envRows, 'env', rule.value),
-          cwd: state.cwd || null,
-        };
-    } else if (state.transportType === 'STREAMABLE_HTTP') {
-        input.streamableHttpConfig = {
-          url: state.url,
-          token: tokenToInput(state.token),
-          headers: rowsToInput(state.headerRows, 'header', rule.value),
-        };
-    }
-    return input;
-}
+const buildInputFromState = (state: McpServerFormState): McpServerFormInput => formStateToInput(state, rule.value);
 
 const setPreviewError = (message: string) => {
   store.$patch(state => {

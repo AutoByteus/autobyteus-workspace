@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import McpServerCard from '../McpServerCard.vue'
-import type { McpServer } from '~/stores/toolManagementStore'
+import type { McpServer } from '~/types/mcpServer'
 
 const mountCard = (server: McpServer) => mount(McpServerCard, {
   props: { server },

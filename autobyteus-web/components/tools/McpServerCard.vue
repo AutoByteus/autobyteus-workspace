@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { McpServer } from '~/stores/toolManagementStore';
+import type { McpServer } from '~/types/mcpServer';
 import { fieldsNeedingSecret } from '~/utils/mcp/mcpConfigRows';
 
 const props = defineProps<{
