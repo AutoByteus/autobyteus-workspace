@@ -94,6 +94,11 @@ export class WorkJournalService {
     return summaries;
   }
 
+  /** Where a run's journal file is, to open it with a file tool. */
+  journalFilePath(memoryDir: string, journalFile: string): string {
+    return this.store.filePath(path.resolve(memoryDir), journalFile);
+  }
+
   /** A whole journal file the manifest names; null when it is not one of the run's files. */
   async readJournalFile(memoryDir: string, journalFile: string): Promise<string | null> {
     const dir = path.resolve(memoryDir);
