@@ -1,5 +1,46 @@
-# IR-005 — Integration Local Fix in progress
-DR-001 returned the package after origin/personal advanced201 commits to67994daba0adf6eb8c6bc05827b5fab6b2975aa4. Prior IR-004/CRR-003/API-REV-001/CRR-004 remain exact-source successes, not integrated readiness. Delivery checkpoint preserved at72476797a. R2/D4.1/SR-001..008/ARCH-REV-004 and Large/High unchanged. Current merge resolution, dependency refresh, regeneration and foundation rerun plan are in implementation-check-ledger.md. No delivery/independent validation pass for integrated source yet; no release/install.
+# Implementation Handoff — IR-005
+
+## Current outcome: Ready for independent source re-review
+**DR-001 integration Local Fix complete at implementation scope.** R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004; **task_size=Large; architectural_risk=High**, unchanged. Applicable prior source review CRR-003, successful validation API-REV-001, test review CRR-004, Delivery DR-001. Those remain exact-source history, not integrated acceptance.
+
+- Current integrated source **2c47bcd646ccd371a180dbc510fd1e30aee9144f**, merging fetched `origin/personal@67994daba0adf6eb8c6bc05827b5fab6b2975aa4` (201 incoming commits). Bootstrap base034bfe51 remains historical. Delivery artifacts checkpointed unchanged72476797a before merge.
+- Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`; branch `task/backend-port-conflict-20261024`. Integration is into the task branch only; no target-branch finalization, push, release or install.
+- Requirements/design/classification unchanged. Behavior BEH-001..006 preserved across the integrated base; no newly inferred product behavior, provider/idle policy, process ownership or migration mechanism.
+- Selected next route: implementation-owned Delivery Local Fix / Large-High → independent Code Reviewer, then API/E2E on applicable reviewed integrated source. Delivery will refresh and verify again on return; this is not terminal completion.
+
+## Resolution and behavior preservation
+1. **Generated GraphQL:** compiled the authoritative integrated server and exported its SDL; ran the repository codegen with integrated operations. No ours/theirs contract choice or manual generated patch. The AgentBackgroundTask view union/query survives; incoming `memorySyncSourceId`, runtime catalog and other features survive; `failures` belongs to ImportMcpServerConfigsResult. Full regeneration still includes pre-existing generated drift (1794 additions/27 deletions versus integrated base); review as generated output, not new handwritten policy. IMP-50/51 retain SDL/generator receipt.
+2. **Design-case histories:** retained both independent additions to cases2/5 and incoming case8; ticket process-resource and continuous-ownership cases become9/10. No live old heading-anchor reference found. No history dropped or behavioral decision changed. Delivery still owns overall long-lived-doc synchronization.
+3. **Automatic merge audit:** schema registers both background-view and available-runtime resolvers. ElectronApplication keeps awaited quit/updater preparation with incoming entry/node naming and file-migration startup ordering. Both ambient shared status imports and derived monitor summary remain. Native tool wrappers adopt incoming empty-field pruning while manager/scope/anchor ownership is unchanged; serializer retains false/zero. Published-run observation, Codex side-view and strict transcript gate remain unchanged. Renderer bindingRevision still advances on entry or endpoint change. Incoming admission delegates reserve checks without removing root shutdown fencing; supervisor adds catalog visibility only. See IMP-47-resolution.json.
+4. **Data:** no ticket-specific migration added; incoming base migrations are preserved, not undone. Executed only on private test roots/databases. No production data/config/installed app access, unrelated checkout edit, arbitrary signal or volume detach.
+
+## Checks Run — integrated source2c47bcd64
+Foundation rule applies: refreshed lockfile/dependencies and core terminal serialization; all applicable unique implementation cases rerun, no silent reuse of old green results. Exact commands/provenance in implementation-check-ledger.md and IMP-60-checks.json.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Frozen dependency refresh / integrated server-core-SDK build / schema / codegen | Pass; production tsc and smoke pass, current SDL generated | IMP-48..51 |
+| Core native terminal/config + incoming tool-result serialization | **146 pass** | IMP-52-integrated-core.log |
+| Server native factory/composition/startup/shutdown, Codex/R2 query/runtime/idle controls, incoming input/supervisor boundary controls | **503 pass** | IMP-53-integrated-server.log |
+| Electron lifecycle/diagnosis/IPC/updater + entry/registry/shell controls | **156 pass** | IMP-54-integrated-electron.log |
+| Web conflict/panel/composable/locale + selected-node/Memory Sync controls | **49 pass** | IMP-55-integrated-web.log |
+| Current full unsigned macOS build, production compilers and locale/boundary guards | **Pass exit0**, unpacked app + DMG + ZIP and blockmaps; no publishing | IMP-56-integrated-desktop-build.log |
+| DMG verification and artifact identity | **Pass**, hdiutil checksum VALID; SHA256/bytes and built-packaged server matches recorded | IMP-56-dmg-verify.log, IMP-56-artifact-provenance.json |
+| Integrated isolated rendered implementation feedback | Pass, English/Chinese live/last-known/empty/unknown/terminal, selection/reopen/no collapsed polling,390px no overflow/no page errors | IMP-57-control.mjs, states.json, screenshots |
+| Fixture cleanup / no-work application quit | IMP-57 CLI **forced=true** (NOT graceful proof); all owned resources gone/sentinel preserved. Separate actual preload app quit IMP-59 passed221ms, ports closed, CLI registry cleanup already stopped/forced=false | IMP-57-stop/cleanup/app.log; IMP-59-result/stop/cleanup/app.log |
+| Cumulative authored production source size |61 files, maximum497 nonempty lines (tests/generated excluded) | IMP-58-integrated-source-size.json |
+
+**854 unique current scoped cases pass** (146+503+156+49). No failing unit assertion in this integration round; earlier failures remain historical. Production server/core/SDK and Electron/build compilers run through standard build scripts; no separate strict Vue vue-tsc run claimed. Dependency install warned about unused application-devkit bins lacking dist and ignored @google/genai install script; no relevant required command failed. Existing duplicate Nuxt getter warnings retained.
+
+## Rendered feedback and cleanup distinction
+Only the newly built worktree app was launched with private HOME/data/TMPDIR and CLI-returned ports. Frontend-only run contexts plus interception of **AgentBackgroundTaskView only** supplied view states; this is actual built renderer/composable feedback, not Codex/provider/query acceptance. Direct image inspection found readable status chips, safe labels/time/IDs, clear unconfirmed counts, and correct narrow layout; no product UI fix needed. Current node binding and schema behavior are covered by unit controls and require independent real journeys next.
+
+The rendered fixture's CLI stop invoked POSIX group SIGTERM, then its bounded SIGKILL fallback (`instanceLifecycle.endInstanceProcess` → `processGroupControl`), not preload app.quit/will-quit. Receipt says forced=true; do not reinterpret it as graceful shutdown. Group/process/ports were confirmed gone and sentinel retained before disposing only that fixture root. To distinguish this cleanup route from the supported application quit path, a separate no-work integrated instance invoked `window.electronAPI.startShutdown`; app/backend exited in221ms, no force required, second sentinel retained and exact root removed. This scoped smoke does NOT substitute for active/ended-agent native/Codex journey reruns. No validation instance remains.
+
+## Packaging and downstream obligations
+Previous IMP-44 resize35 failure did not recur. **Current full package command and DMG checksum pass**, with both archive hashes in IMP-56; no packaging-source change, signature, publication or installer execution. Old app/ZIP and API confidence are not relabeled integrated. Incoming version1.5.9-beta.9 is inherited from base, not a release bump by this ticket.
+
+Code Reviewer independently reviews the integrated cumulative package and conflict resolution; API/E2E then reruns DR-001's current equivalents API-03/05/06B/07/09/09B/10 with applicable updated fixtures, not duplicate historical API-04/06. Prior API-REV-00195.3% and CRR-004 apply only to their recorded source. Full-host/desktop active native/Codex cleanup and real conversation→query→panel coverage remain unproven on this integrated source until that stage. Actual Windows/WSL, paid inference and historical Nuxt incident reproduction remain excluded/unrun. AC-006 final integrated delivery/docs/raw-evidence verification and finalization remain Delivery-owned. No terminal readiness or release/install claim.
 
 ---
 # Historical IR-004 handoff

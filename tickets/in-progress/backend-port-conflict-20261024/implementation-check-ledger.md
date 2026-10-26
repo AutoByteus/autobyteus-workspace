@@ -131,3 +131,28 @@ Plan BEFORE checks: foundation changed (lockfile, core terminal tool-result cont
 API/E2E owns renewed API-03/05/06B/07/09/09B/10 actual journeys on source-reviewed integrated build; all marked Rerun by DR-001. Do NOT rerun historical API-04/06 separately or relabel prior95.3% as integrated proof. No paid inference, installed app/data or release/install.
 
 Conflict plan: regenerate entire GraphQL from authoritative integrated compiled schema plus current operations (no ours/theirs contract choice). Preserve both independent design-case histories: incoming Case8 retained, ticket cases renumber9/10; reconcile anchors/references where present. Inspect schema and ElectronApplication auto-merge plus native wrappers, manager/context, ambient shared imports and node binding consumers. No new behavior authorization inferred.
+
+## IR-005 integrated execution result — source2c47bcd646ccd371a180dbc510fd1e30aee9144f
+Plan above completed at implementation scope. Fresh fetch remained67994daba0. Integration resolution receipt IMP-47; all incoming paths retained. R2/D4.1/ARCH-REV-004, Large/High unchanged. Exact full commands, clean-env prefix, source note and counts are machine-readable in **evidence/IMP-60-checks.json**.
+
+| Check | Result | Current evidence |
+|---|---|---|
+| IMP-48 dependencies | Frozen install exit0. Missing unused devkit-bin/ignored genai-script warnings retained; no task check failure | IMP-48-dependencies.log |
+| IMP-49 server/core/SDK build | Pass, production tsc/Prisma/assets/bootstrap smoke; resolved integration working tree later committed2c47 | IMP-49-integrated-server-build.log |
+| IMP-50/51 SDL/codegen | Pass. Authoritative integrated schema exported; all operations validated/full GraphQL generated, no ours/theirs shortcut | IMP-50-integrated-schema.graphql, IMP-50-schema-export.log, IMP-51-integrated-codegen.log |
+| IMP-52 core terminal/config/serializer |146 pass,23 files | IMP-52-integrated-core.log |
+| IMP-53 server host/factory/startup/shutdown/R2/input/supervisor controls |503 pass,41 files, no duplicate path execution | IMP-53-integrated-server.log |
+| IMP-54 Electron lifecycle/faults/updater/entry/shell |156 pass,23 files | IMP-54-integrated-electron.log |
+| IMP-55 Nuxt preparation + conflict/view/locale/binding/Memory Sync |49 pass,10 files | IMP-55-nuxt-prepare.log, IMP-55-integrated-web.log |
+| IMP-56 full unsigned current desktop build |Pass exit0: core/contracts/backend/server/mobile/renderer/Electron outputs, production compilers, guards, full DMG and ZIP/blockmaps. Previous resize35 did not recur | IMP-56-integrated-desktop-build.log |
+| IMP-56 checksum/provenance |hdiutil verify exit0 VALID; SHA256/bytes of both archives; three current built/packaged server files match | IMP-56-dmg-verify.log, IMP-56-artifact-provenance.json |
+| IMP-57 rendered implementation feedback |Pass controlled live/unknown/terminal/empty/last-known, selection/collapse/reopen, English/Chinese,390px no overflow/no page errors. No actual model/provider acceptance | IMP-57-control.mjs, states.json, screenshots |
+| IMP-57 fixture teardown |CLI process-group cleanup **forced=true**; captured app absent/ports closed/sentinel retained before exact root disposal. NOT graceful quit success | IMP-57-stop.json, cleanup.json, app.log |
+| IMP-58 cumulative size |61 authored production ticket-delta files versus integrated base, max497 nonempty; generated/tests excluded | IMP-58-integrated-source-size.json |
+| IMP-59 actual no-work app quit |Preload startShutdown→app quit:221ms, app/backend ports gone; subsequent CLI registry stop already not running/forced=false. Sentinel preserved, exact second root removed | IMP-59-quiet-quit.mjs, result.json, stop.json, cleanup.json, app.log |
+
+**854 unique current passing scoped tests** (146+503+156+49). No in-round unit failures/retries or source correction after2c47. Production compilers are standard build stages, not standalone strict Vue type proof. Old codegen/build/test failures remain untouched. New generated output includes earlier schema drift as full repository generation requires; no manually edited generated types.
+
+Cleanup diagnosis: IMP-57 used `instanceLifecycle.endInstanceProcess → createPosixProcessGroupController`, which sends group SIGTERM and escalates after its10s deadline; it does NOT invoke the application's preload/quit barrier. The forced receipt is authoritative, not a normal app quit assertion. Separate IMP-59 specifically exercised the real supported quit boundary with no active work and passed, without repeating rendered cases. No app/helper/root remains. No arbitrary process/volume action or installed app/user-data contact.
+
+Rerun-by-impact outstanding: all DR-001 API-owned current equivalents still require independent execution after applicable integrated source review (API-03/05/06B/07/09/09B/10). Prior API95.3% and historical API-04/06 remain exact-source only. No Windows/WSL, paid inference, updater install, whole repository suite or standalone vue-tsc claimed. Delivery still owns base refresh/docs sync/raw evidence/finalization AC-006; no push, target merge, release or terminal claim.
