@@ -35,7 +35,11 @@
             data-testid="mcp-row-lock"
             @click="toggleLock(row)"
           >
-            <span :class="row.locked ? 'i-heroicons-lock-closed-20-solid' : 'i-heroicons-lock-open-20-solid'" class="w-5 h-5"></span>
+            <!-- Heroicons 20/solid lock-closed / lock-open, inline so they render offline. -->
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path v-if="row.locked" fill-rule="evenodd" clip-rule="evenodd" d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z" />
+              <path v-else fill-rule="evenodd" clip-rule="evenodd" d="M14.5 1A4.5 4.5 0 0 0 10 5.5V9H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1.5V5.5a3 3 0 1 1 6 0v2.75a.75.75 0 0 0 1.5 0V5.5A4.5 4.5 0 0 0 14.5 1Z" />
+            </svg>
           </button>
           <button
             type="button"
@@ -43,7 +47,10 @@
             class="p-2 text-gray-500 hover:text-red-600 rounded-full"
             @click="removeRow(row.id)"
           >
-            <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
+            <!-- Heroicons 20/solid trash. -->
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" />
+            </svg>
           </button>
         </div>
         <p v-if="rowNote(row)" class="text-sm pl-1" :class="rowNote(row)!.tone" data-testid="mcp-row-note">
@@ -63,7 +70,7 @@
       class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
       @click="addRow"
     >
-      <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ addLabel }}</button>
+      {{ addLabel }}</button>
   </div>
 </template>
 

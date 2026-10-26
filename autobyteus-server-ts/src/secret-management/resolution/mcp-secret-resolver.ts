@@ -5,6 +5,7 @@ import {
   type McpSecretResolver,
 } from 'autobyteus-ts/tools/mcp/mcp-secret-resolver.js';
 import type { McpSecretReference } from 'autobyteus-ts/tools/mcp/types.js';
+import { McpServerInstanceManager } from 'autobyteus-ts/tools/mcp/server-instance-manager.js';
 import { SecretVaultError } from 'autobyteus-ts/secrets/vault/secret-vault-types.js';
 import { getSecretVaultRuntime } from '../secret-vault-runtime.js';
 import type { SecretManagementService } from '../services/secret-management-service.js';
@@ -28,6 +29,11 @@ export class SecretManagementMcpSecretResolver implements McpSecretResolver {
   }
 }
 
-/** The resolver bound to the server's vault runtime, whichever source it opened (looked up at each resolve). */
-export const createRuntimeMcpSecretResolver = (): McpSecretResolver =>
-  new SecretManagementMcpSecretResolver(() => getSecretVaultRuntime().requireService());
+/**
+ * Server startup, once the vault runtime is initialized: managed MCP servers resolve their secret references through
+ * the server's vault runtime, whichever source it opened (looked up at each resolve, never earlier).
+ */
+export const installRuntimeMcpSecretResolver = (): void => {
+  const resolver: McpSecretResolver = new SecretManagementMcpSecretResolver(() => getSecretVaultRuntime().requireService());
+  McpServerInstanceManager.getInstance().useSecretResolver(resolver);
+};

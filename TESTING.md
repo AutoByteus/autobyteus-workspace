@@ -208,6 +208,11 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   never pick it) and prints the setting to use. Configured keys are skipped; `--replace`
   replaces them. `pnpm test-vault status` shows the location and the configured and missing
   secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
+- **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
+  the source file maps to a test-only secret ID: `AUTOBYTEUS_TEST_GITHUB_TOKEN=…` is stored as
+  `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) reads and sends
+  once to a server with its own vault. Only `test-vault setup` accepts these aliases;
+  `secrets:import` into an application vault refuses them.
 - **Read-only, like a test database.** A server started with the variable reads the test vault
   instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
   isolated instance, a server you start yourself. Settings saves fail with
@@ -232,6 +237,7 @@ AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_MCP_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts --no-watch
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
 ```
 

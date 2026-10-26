@@ -2,7 +2,6 @@
   <div v-if="candidates.length > 0 || reviewOpen" class="mb-4">
     <div v-if="candidates.length > 0" class="flex items-center justify-between rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" data-testid="mcp-secret-move-banner">
       <span class="flex items-center">
-        <span class="i-heroicons-lock-open-20-solid w-5 h-5 mr-2 text-amber-600 flex-shrink-0"></span>
         {{ $t('tools.components.tools.McpSecretMoveBanner.values_look_like_secrets', { count: candidates.length }) }}
       </span>
       <button type="button" class="ml-4 font-semibold text-indigo-700 hover:text-indigo-900 underline whitespace-nowrap" data-testid="mcp-secret-move-review" @click="openReview">

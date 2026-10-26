@@ -26,7 +26,6 @@
       </div>
       
       <p v-if="needsSecret.length > 0" class="mt-2 inline-flex items-start rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700" data-testid="mcp-card-needs-secret">
-        <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1 flex-shrink-0"></span>
         {{ $t('tools.components.tools.McpServerCard.needs_secret', { fields: needsSecret.join(', ') }) }}
       </p>
 
