@@ -36,3 +36,21 @@ Report: api-e2e-execution-coverage-report.md. Plan: api-e2e-coverage-investigati
 | 2026-10-26T09:13:41.519793+00:00 | API-03 | Started | | Final test-only safety refinement: global90s execution deadline reserves cleanup before outer timeout; generic durable evidence naming and recorded host PID. Rerun this one new case because helper changed. Prior success retained pre-safety. |
 | 2026-10-26T09:14:33.131089+00:00 | API-03 | Completed | Pass, final test files | One gated test passed after safety-only helper refinement. Final source paths unchanged except own tests; final report/host logs renamed API-03 for ticket evidence. |
 | 2026-10-26T09:18:29.368948+00:00 | All | Completed | API-REV-001 Pass95.3%, validation stage | Canonical report/AC proof and revision record complete. Cleanup audit49 PIDs/12 roots absent. New two-file standalone durable coverage requests proportional review; no final delivery/build/package/Windows certification. |
+| 2026-10-26T09:52:45.428712+00:00 | All | Checkpoint | API-REV-002 resumed | CRR-005/IR-005/DR-001 integrated source2c47bcd64 buildIMP56; same run/case IDs, prior95.3 not current. |
+| 2026-10-26T09:52:45.428712+00:00 | API-01/08 | Started | | Inspect current foundation receipts/impact. |
+| 2026-10-26T09:52:45.428712+00:00 | API-01/08 | Completed | Pass, reused repository |854 unique current cases; no actual provider/host acceptance inferred. |
+| 2026-10-26T09:52:45.428712+00:00 | API-03 | Started | | Integrated exact durable standalone test; no test source changes. |
+| 2026-10-26T09:53:34.864703+00:00 | API-03 | Completed | Pass, integrated |1 durable test, real standalone host.close836ms;4 native command/anchor pairs absent, TERM/resistant/adopted/ended+retained cases, data/sentinel intact; own root removed. |
+| 2026-10-26T09:53:34.937Z | API-05 | Started | | Integrated2c47bcd64; API-05-conflict-recovery.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:53:52.337Z | API-05 | Completed | Pass, integrated | Exit0, API-05-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:53:52.338Z | API-06B | Started | | Integrated2c47bcd64; API-06B-desktop-native-current.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:00.495Z | API-06B | Completed | Pass, integrated | Exit0, API-06B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:00.496Z | API-07 | Started | | Integrated2c47bcd64; API-07-packaged-ipc.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:06.600Z | API-07 | Completed | Pass, integrated | Exit0, API-07-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:06.601Z | API-09 | Started | | Integrated2c47bcd64; API-09-desktop-visibility.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:21.767Z | API-09 | Completed | Pass, integrated | Exit0, API-09-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:21.768Z | API-09B | Started | | Integrated2c47bcd64; API-09B-selection-lifecycle.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:33.607Z | API-09B | Completed | Pass, integrated | Exit0, API-09B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:33.608Z | API-10 | Started | | Integrated2c47bcd64; API-10-provider-unavailable.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:48.750Z | API-10 | Completed | Pass, integrated | Exit0, API-10-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:58:46.991494+00:00 | All | Completed | API-REV-002 Pass95.3%, integrated executable stage | All renewed system cases passed first attempt;854 current foundation cases reused. Cleanup35 PIDs/7 roots absent. Proportional harness/evidence review next, no target merge/push/install/release. |

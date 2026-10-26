@@ -1,5 +1,29 @@
 # API/E2E Coverage Investigation
 
+## Current round API-REV-002 - integrated-source plan (completed)
+CRR-005 Pass / source2c47bcd646ccd371a180dbc510fd1e30aee9144f / reviewf4e7eb4eb / IR-005 / DR-001 / integrated origin/personal67994daba. R2/D4.1/SR001..008/ARCH-REV004, Large/High unchanged. Prior API-REV-00195.3 and CRR-004 are historical exact-source evidence, NOT integrated acceptance.
+
+Read canonical progress first, DR-001 integration rerun plan, IR-005 ledger and check/build provenance, CRR-005 full audit, current requirements/design and prior coverage. No relevant guideline or durable host-test changes since d16a07657; TESTING foundation-change rule applies. Incoming lockfile/core tool-result serialization, entry/node/Memory Sync identities, startup migrations and GraphQL regeneration affect composed execution. Authored ticket core ownership/Codex observation mostly unchanged, but every current system case must rerun on IMP-56 package.
+
+| Case | Validity / execution decision | Reason |
+|---|---|---|
+| API-01/08 | Still Valid assertions; Reuse current IMP-52/53/54/55,854 unique total | Current integrated foundation checks already rerun146+503+156+49; headers/tails and exact IMP-60 commands inspected. No redundant suite execution. |
+| API-02/06B | Rerun once through current packaged Studio/native ended/resistant/adopted restart and retained-run quit | Integrated foundation and shell/startup changed. No duplicate historical API-06. |
+| API-03 | Still Valid durable test; Rerun exact gated standalone E2E | Real public host/app-worker/SDK/native composition on integrated build. No product edit planned. |
+| API-05 | Rerun current conflict/visible retry/recovery | Incoming entry/node identity and current compiled shell/client. |
+| API-07 | Rerun actual packaged IPC startup cancellation/complete/fault/disconnected transport | Current packaged backend and Electron binary; Windows force/updater still deterministic only. |
+| API-09/09B | Rerun actual conversation/query/panel running/natural/nonzero/foreground, selection/reopen/reload, live restart/quit | Current generated contracts, client bindings and foundation. No intercepted query/fake context or paid inference. |
+| API-10 | Rerun actual captured-provider timeout/last-known/recovery and quit | Current bound client and runtime; SIGSTOP only exact owned ancestor, always SIGCONT before cleanup. |
+| API-04/06 historical | Preserve, do NOT execute separately | Current equivalents cover same scope. |
+
+Existing coverage decisions remain valid; no obsolete test/removal/new product scenario. Only necessary fixture identity/setup adaptations if observed. Temporary probes gain TEST_API_EVIDENCE_DIR output override to retain prior receipts unchanged; current evidence in evidence/API-REV-002, same case IDs. Durable E2E uses existing TEST_NATIVE_SHUTDOWN_EVIDENCE_DIR.
+
+IMP-56 full unsigned build exit0 and DMG VALID now resolve prior packaging execution failure; available archives not installed/released. IMP-57 intercepted renderer/forced cleanup and IMP-59 no-work quit are not current active-work acceptance. Test only private roots/current worktree app, serialize heavy runs, preserve SDK dist. No target merge/push/release/install or user data. Delivery still owns fresh-base/raw-evidence/docs/finalization AC-006.
+
+Post-repository confidence reset: requirement50,boundary75,cross-boundary50,environment75,failure75,user75,durable95; mean70.7%. Broader Validation Required: all integrated composed journeys above. No prior percentage carries forward.
+
+## Prior API-REV-001 investigation (exact-source historical basis)
+
 ## Investigation Meta / Authority
 Round 1 resumed at CRR-003 Pass, 2026-10-26. Current authority R2 Approved / D4.1 / SR-001..008 / ARCH-REV-004 / IR-004; source9bd72c208, review HEADa201abe848. Original entry follows for provenance: CRR-002 Pass handoff, 2026-10-26. R1 Approved; D3.1; SR-001..006; ARCH-REV-003; IR-003; CRR-002. Prior API/Delivery revisions: N/A. Large/High reviewed route unchanged. Worktree `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024`, branch `task/backend-port-conflict-20261024`, HEAD5fd30310e, source/build d0338db0b. Delivery owns origin/personal integration.
 Upstream: requirements-doc.md, investigation-notes.md, solution-revision-record.md, design-spec.md, design-review-report.md, architecture-review-revision-record.md, implementation-handoff.md, implementation-revision-record.md, implementation-check-ledger.md, code-review-report.md, code-review-revision-record.md; supplements codex-origin-clarification.md, codex-background-investigation.md and their recorded probes; follow-ups.md and resumption-2026-10-26.md. No normative supplement. Baseline probes asserting old defects are not regression tests.
@@ -72,3 +96,6 @@ API-10 refinement before execution: pause only the actual Codex app-server ances
 
 ## Completed investigation disposition - API-REV-001
 R2 executable validation Pass95.3%; current report is authoritative for completed Cases/AC proof. No durable coverage removed or product source changed. New standalone gated test/fixture passes at final hashes; current Studio proof through API-06B, so no redundant Studio fixture added. Actual CLI/query/UI unavailable and recovery tested without interception. Other fault/selection/unknown/platform controls reused at their precise deterministic boundaries. Unknown/missing-terminal handling is not mislabelled live-provider certification. No new behavior scope or user-only check. All planned executable cases resolved; downstream AC-006 merged-base receipt/DMG packaging remain Delivery gates.
+
+## API-REV-002 completion disposition
+All seven planned integrated runners pass without corrections/retries;854 foundation tests reused at current source. No durable suite changes; output-only probe parameter and serialized runner preserve prior evidence. Current direct proofs and confidence independently recomputed in execution report, Pass95.3%. Cleanup35 exact PIDs/7 roots absent. No new unsupported scenario/finding. Current IMP56 packaging success retained as implementation provenance; Delivery finalization/docs/fresh-base/raw-proof review still required.

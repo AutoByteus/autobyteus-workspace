@@ -1,0 +1,25 @@
+{
+  "source": "2c47bcd646ccd371a180dbc510fd1e30aee9144f",
+  "review": "f4e7eb4eb1d4e600b286f2e22ca381e3903894ca",
+  "buildReceipt": "IMP-56-artifact-provenance.json",
+  "directChecks": [
+    {
+      "path": "agent-execution/backends/codex/thread/codex-thread.js",
+      "matchesImplementationReceipt": true,
+      "compiledEqualsPackaged": true,
+      "sha256": "a93a2b12994f7378be3f4f1e8959bccfc31e562a64c720ab17c38c1abbe16abf"
+    },
+    {
+      "path": "api/graphql/types/agent-background-task-view.js",
+      "matchesImplementationReceipt": true,
+      "compiledEqualsPackaged": true,
+      "sha256": "f0033a3c364ddc984563a45d334c2ed64520d59973e1a479bc5ae4fbd1697869"
+    },
+    {
+      "path": "api/graphql/schema.js",
+      "matchesImplementationReceipt": true,
+      "compiledEqualsPackaged": true,
+      "sha256": "81fc07ebefbc1d7e2b3e37bfa30881ef5cfeab8e3130e0495620e625351f8bd6"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ import {tmpdir} from 'node:os';
 import {spawn,execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
-const root=process.cwd(), evidence=resolve('tickets/in-progress/backend-port-conflict-20261024/evidence');
+const root=process.cwd(), evidence=resolve(process.env.TEST_API_EVIDENCE_DIR ?? 'tickets/in-progress/backend-port-conflict-20261024/evidence');
 const require=createRequire(join(root,'autobyteus-web/package.json'));
 const {chromium}=require('playwright-core'), WebSocket=require('ws');
 const own=await fs.realpath(await fs.mkdtemp(join(tmpdir(),'ab-api09-')));

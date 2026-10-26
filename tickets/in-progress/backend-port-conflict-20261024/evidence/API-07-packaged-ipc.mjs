@@ -2,7 +2,7 @@
  * Windows parent/taskkill ordering remains deterministic repository coverage, not platform certification.
  */
 import fs from 'node:fs/promises';import{join,resolve}from'node:path';import{tmpdir}from'node:os';import{pathToFileURL}from'node:url';import{spawn,execFileSync}from'node:child_process';import assert from'node:assert/strict';
-const evidence=resolve('tickets/in-progress/backend-port-conflict-20261024/evidence'),app=resolve('autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents'),exe=join(app,'MacOS/AutoByteus'),server=join(app,'Resources/server');
+const evidence=resolve(process.env.TEST_API_EVIDENCE_DIR ?? 'tickets/in-progress/backend-port-conflict-20261024/evidence'),app=resolve('autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents'),exe=join(app,'MacOS/AutoByteus'),server=join(app,'Resources/server');
 const own=await fs.realpath(await fs.mkdtemp(join(tmpdir(),'ab-api07-'))),wire='autobyteus.embedded-server.shutdown.v1:';
 const record={case:'API-07',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),own,date:new Date().toISOString(),cases:[]};const delay=ms=>new Promise(r=>setTimeout(r,ms));
 const wait=async(fn,label,ms=40000)=>{const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await delay(50)}throw Error('timeout '+label)};
