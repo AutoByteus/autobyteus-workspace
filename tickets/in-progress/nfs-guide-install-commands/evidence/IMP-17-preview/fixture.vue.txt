@@ -1,0 +1,12 @@
+<!-- IMP-17; 2026-10-26; source 1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708; owned temporary preview fixture (removed). -->
+<template><main class="mx-auto max-w-6xl bg-slate-100 p-4"><nav class="mb-3 flex gap-3"><button @click="setPreference('en')" id="en">English</button><button @click="setPreference('zh-CN')" id="zh">中文</button><button @click="mode='null'" id="null">Unavailable fixture</button><button @click="mode='partial'" id="partial">Partial fixture</button><button @click="mode='invalid'" id="invalid">Invalid fixture</button><button @click="mode='published'" id="published">Published</button></nav><NfsGuideCard :release="release" /></main></template>
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import NfsGuideCard from '~/components/settings/NfsGuideCard.vue';
+import { nfsPublishedRelease } from '~/utils/nfsLauncherCommands';
+import { useLocalization } from '~/composables/useLocalization';
+definePageMeta({ layout: false });
+const { setPreference } = useLocalization();
+const mode = ref('published');
+const release = computed(() => mode.value === 'null' ? null : mode.value === 'invalid' ? {...nfsPublishedRelease, downloadUrl: 'http://unsafe'} : mode.value === 'partial' ? {...nfsPublishedRelease, availableComputers: ['macos'] as const} : nfsPublishedRelease);
+</script>
