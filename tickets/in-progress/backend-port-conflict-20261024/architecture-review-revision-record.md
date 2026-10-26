@@ -5,8 +5,8 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | 1 / first independent Large/High review | SR-001, SR-002 | N/A | Fail — Design Impact | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | 2 / D2 correction re-review | SR-001, SR-002, SR-003 | Fail — Design Impact | Pass | AR-001, AR-002, AR-003 resolved |
-
 | ARCH-REV-003 | 3 / implementation continuity finding and in-round settlement clarification | SR-001 through SR-005 | Pass (D2 only) | Pass (D3.1) | AR-001..003 retained resolved; IMP-DI-001 resolved |
+| ARCH-REV-004 | 4 / approved Codex visibility extension and observational corrections | SR-001..008 | Pass (D3.1/R1 only) | Pass (D4.1/R2) | Prior findings retained resolved; two in-round questions corrected |
 
 ## Revision Entries
 ### ARCH-REV-001 — Missing Windows cleanup entry and small completeness corrections
@@ -75,3 +75,25 @@ None.
 - Remaining risks: actual WSL and Electron packaging, admission/retirement/force races, terminal/control framing and output ordering, collective budgets, startup cancellation, updater continuation and complete UI/host acceptance. Tests must assert cleanup independently from command completion. Existing old-defect probes are not regression success.
 - Recommended recipient: Implementation Engineer via configured primary pass rule, carrying D3.1 and current review artifacts; do not use ARCH-REV-002 as authorization for the changed mechanism.
 - Reviewed package commit: fb0de461cd551f3426b653f89c3516395efca9f8. Source/doc/primary-contract review and supplied evidence review only; no new runtime test/build, production edit, installed-app operation, merge or release. Only reviewer-owned report/history changed; upstream and implementation artifacts preserved.
+
+
+### ARCH-REV-004 — Read-only Codex visibility with observational lookup and retained rows
+- Canonical report: `design-review-report.md`; reviewed 2026-10-26, round4.
+- Trigger: Solution Designer R2/D4/SR-007, approved user direction “do it in this current ticket thanks”; continued on D4.1/SR-008 after two source-grounded questions.
+- Prior decision: ARCH-REV-003 Pass for R1/D3.1 only. Current decision: **Pass for R2/D4.1**, Large/High retained.
+- Reviewed commits: initial a63c250602103395c40436bf318898f4c40ab051; authoritative corrected package08b864988fae7395e4430e05e73252687ff91caa. Related SR-001..008; implementation d0338db0b / IR-003 / CRR-002 and paused API/E2E c88a6224c are distinct prior-scope evidence.
+- Delta: DS-005 active-runtime inspection capability/query; CodexThread-owned exact command/turn facts plus bounded paginated list; view-only statuses and safe labels; selected-panel polling/provenance. Existing stream contracts, idle consumers, strict transcript gate and native shutdown authority remain unchanged.
+
+#### Prior Finding Resolution
+| Finding / concern | Prior status | Current status | Revision | Independently checked evidence |
+| --- | --- | --- | --- | --- |
+| AR-001..003 | Resolved in design | Retained resolved | SR-003 retained through D4.1 | Windows shutdown bridge, status consumer inventory and dead accessor removal remain in retained DS-001..004; no D4 replacement of these decisions. Earlier source pass is CRR-002, not inferred from this report. |
+| IMP-DI-001 | Resolved in design | Retained resolved | SR-004/005 | Anchored native lifetime/settlement design unchanged; implemented native corrections reviewed at CRR-002. |
+| In-round lookup question (no AR ID) | Initial D4 assumes getActiveRun is read-only | Resolved before completed verdict | SR-008 / E-025 / MP-003 | Registry lookup prunes, release starts MCP cleanup and detaches resources. Canonical new peekPublishedRun only reads exact map; observational isActive pre/post-await checked across backend forms; no retired identity/replacement retry. |
+| In-round retained-row question (no AR ID) | Initial D4 omits inactive first-entry stream rows | Resolved before completed verdict | SR-008 / E-026 / MP-004 | Existing panel reads store regardless of backend activity; store retains received rows. Explicit recorded/last-known first-entry rule now preserves them without provider guessing or treating empty store as Codex empty. |
+
+- Material-premise gate: Pass. MP-003/004 trace approved unavailable-runtime and ordinary retained-panel scenarios through real source; neither is an invented hidden-state mutation. P-012 logs support excluding current-turn entries despite provider list naming.
+- New/open findings: none. No requirements ambiguity, prerequisite or new follow-up established. FU-001 retained; FU-002 incorporated into approved R2.
+- Recommended primary recipient: Implementation Engineer for DS-005 delta, not initial implementation duplication. **No authorization to resume user-paused executable validation**; preserve API-04/06 scoped receipts and exact-source limitations.
+- Remaining risks: no-side-effect lookup, late terminal/list reconciliation, safe labels/unknown semantics, selected node/run/instance freshness, retained streamed-row transitions, actual query/UI journey and lifecycle noninterference. Test obligations remain downstream when authorized; no added control/history/lifetime scope.
+- Evidence boundary: static/source and supplied-artifact review only. No tests/builds/apps/process fixtures or paid provider runs, production edits, installed-app/data operations, merge/release/install. Only reviewer report/history updated; two untracked SDK dist prerequisites and all specialist artifacts preserved.
