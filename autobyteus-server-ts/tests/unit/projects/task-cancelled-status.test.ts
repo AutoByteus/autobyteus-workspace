@@ -44,10 +44,10 @@ describe("Task status vocabulary (CANCELLED)", () => {
 
   it("the current readers accept all four values and still reject unknown ones; the frozen migration reader stays 3-value", () => {
     for (const status of PROJECT_TASK_STATUSES) {
-      expect(readTaskFile({ taskId: "t", projectId: "p", taskKey: "p-1", description: "d", status, createdAt: at, updatedAt: at }, "p", "t")?.status).toBe(status);
+      expect(readTaskFile({ taskId: "t", projectId: "p", taskKey: "p-1", title: "T", description: "d", status, createdAt: at, updatedAt: at }, "p", "t")?.status).toBe(status);
       expect(readAdHocTaskFile({ taskId: "a", description: "d", status, referenceFiles: [], createdAt: at, updatedAt: at }, "a")?.status).toBe(status);
     }
-    expect(readTaskFile({ taskId: "t", projectId: "p", taskKey: "p-1", description: "d", status: "ARCHIVED", createdAt: at, updatedAt: at }, "p", "t")).toBeNull();
+    expect(readTaskFile({ taskId: "t", projectId: "p", taskKey: "p-1", title: "T", description: "d", status: "ARCHIVED", createdAt: at, updatedAt: at }, "p", "t")).toBeNull();
     expect(readAdHocTaskFile({ taskId: "a", description: "d", status: "ARCHIVED", createdAt: at, updatedAt: at }, "a")).toBeNull();
     const released = { taskId: "t", projectId: "p", description: "d", createdAt: at, updatedAt: at, contextFiles: [] };
     expect(readReleasedTaskFileV1({ ...released, status: "DONE" }, "p", "t"))
@@ -58,7 +58,7 @@ describe("Task status vocabulary (CANCELLED)", () => {
   it("the change feed accepts a CANCELLED Task upsert for both scopes", () => {
     const root = null;
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "project", projectId: "p" }, task: {
-      contextFiles: [], taskId: "t", projectId: "p", taskKey: "p-1", description: "d", status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null, comments: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
+      contextFiles: [], taskId: "t", projectId: "p", taskKey: "p-1", title: "T", description: "d", status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null, comments: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "no_project" }, task: {
       taskId: "a", description: "d", status: "CANCELLED", referenceFiles: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
   });
@@ -88,8 +88,8 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   afterEach(async () => { await settle(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   it("a Project Task: closes agent runs first, then writes CANCELLED, then asks each host root to stop them; repeating retries (AC-001, AC-004)", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
-    const b = await tasks.createTask({ projectId, description: "B" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     await assign(a.taskId, "worker-a"); await assign(a.taskId, "worker-a2", otherRoot); await assign(b.taskId, "worker-b");
     const observed: string[] = [];
     release.mockImplementation(async (root, agentRuns) => {
@@ -101,7 +101,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
       expect(tasks.isOpen({ agentRunId: "worker-a" })).toBe(false); // closure committed before the status write
       return ProjectStore.prototype.updateTask.apply(store, args);
     });
-    expect(await setStatus(a.taskId, "CANCELLED")).toEqual({ projectId, taskId: a.taskId, taskReference: a.taskKey, status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null });
+    expect(await setStatus(a.taskId, "CANCELLED")).toEqual({ projectId, taskId: a.taskId, taskReference: a.taskKey, title: a.title, status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null });
     await settle();
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker-a" }]);
     expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker-a2" }]);
@@ -116,7 +116,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   });
 
   it("DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE: no resource file change, the stop is requested again", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "worker-a");
     await setStatus(a.taskId, "DONE"); await settle();
     const bytes = await resourcesFile(a.taskId);
@@ -130,7 +130,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   });
 
   it("refuses new assignment while CANCELLED, naming the status; a reopen writes only and starts nothing (AC-003, AC-005)", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "before");
     await setStatus(a.taskId, "CANCELLED");
     const refusal = { code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." };
@@ -143,11 +143,11 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     expect(release).not.toHaveBeenCalled();
     expect(await resourcesFile(a.taskId)).toBe(bytes);
     expect(tasks.isOpen({ agentRunId: "before" })).toBe(false);
-    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, description: "A", comments: [], referenceFiles: [] });
+    expect(await tasks.resolveAssignment(a.taskId)).toEqual({ taskId: a.taskId, taskReference: a.taskKey, projectId, description: "A", comments: [], referenceFiles: [] });
   });
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
-    const task = await tasks.createTask({ projectId, description: "A" });
+    const task = await tasks.createTask({ projectId, title: "A", description: "A" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await setStatus(task.taskId, "CANCELLED");
@@ -181,7 +181,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   it("list_project_tasks filtering: CANCELLED returns only Cancelled Tasks; unfiltered returns all four (AC-006)", async () => {
     const ids: Record<string, string> = {};
     for (const status of PROJECT_TASK_STATUSES) {
-      ids[status] = (await tasks.createTask({ projectId, description: status })).taskId;
+      ids[status] = (await tasks.createTask({ projectId, title: status, description: status })).taskId;
       if (status !== "TODO") await setStatus(ids[status]!, status);
     }
     expect((await tasks.listTasks(projectId, "CANCELLED")).map((t) => t.taskId)).toEqual([ids.CANCELLED]);

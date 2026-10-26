@@ -112,9 +112,14 @@ describe("task tool exposure and schemas across runtimes", () => {
             "description": "Project identity on the current node.",
             "type": "string",
           },
+          "title": {
+            "description": "The Task's one-line name: trimmed, non-empty; no length limit.",
+            "type": "string",
+          },
         },
         "required": [
           "project_id",
+          "title",
           "description",
         ],
         "type": "object",
@@ -161,6 +166,10 @@ describe("task tool exposure and schemas across runtimes", () => {
           },
           "task_id": {
             "description": "The Task's ID: a Project Task's key (e.g. autobyteus-42), or the Task ID of a Task with no Project.",
+            "type": "string",
+          },
+          "title": {
+            "description": "Project Tasks only: the Task's new one-line name, trimmed non-empty; omit to preserve.",
             "type": "string",
           },
         },

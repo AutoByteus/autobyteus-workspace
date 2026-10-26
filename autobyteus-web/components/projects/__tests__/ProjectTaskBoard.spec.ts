@@ -19,6 +19,7 @@ const task = (taskId: string, description: string, updatedAt: string, status: Pr
   root: null,
   taskId,
   projectId: 'p1',
+  title: description.split('\n')[0]!.trim(),
   description,
   status,
   contextFiles: [],

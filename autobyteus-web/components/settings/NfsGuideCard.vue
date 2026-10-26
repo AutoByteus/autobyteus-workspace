@@ -49,15 +49,12 @@
         </div>
       </div>
     </div>
-    <a href="https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md" target="_blank" rel="noopener noreferrer" class="mt-3 inline-block text-sm font-semibold text-blue-700 underline underline-offset-4">{{ t('settings.components.settings.NfsGuideCard.advanced') }}</a>
-    <p class="mt-5 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">{{ t('settings.components.settings.NfsGuideCard.workspaceHint') }}</p>
-    <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
+    <p data-testid="nfs-folder-tip" class="mt-5 text-sm leading-6 text-slate-600">{{ t('settings.components.settings.NfsGuideCard.workspaceHint') }}</p>
+    <div data-testid="nfs-safety-note" class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
       <p class="font-semibold">{{ t('settings.components.settings.NfsGuideCard.trustTitle') }}</p>
       <p class="mt-1">{{ t('settings.components.settings.NfsGuideCard.trustDetail') }}</p>
       <p class="mt-2">{{ t('settings.components.settings.NfsGuideCard.outageDetail') }}</p>
     </div>
-    <p class="mt-4 text-xs leading-5 text-slate-500">{{ t('settings.components.settings.NfsGuideCard.limitations') }}</p>
-    <p class="mt-2 text-xs leading-5 text-slate-500">{{ t('settings.components.settings.NfsGuideCard.deferred') }}</p>
   </section>
 </template>
 

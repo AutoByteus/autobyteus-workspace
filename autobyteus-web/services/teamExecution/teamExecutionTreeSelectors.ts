@@ -29,6 +29,10 @@ export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: strin
   return segment !== undefined && !tree.root_team.members.some((member) => firstSegment(member.address) === segment);
 };
 
+/** The name a Team run shows for the agent or Team at `address` (F-03 / D-7): rows, contexts and Settings. */
+export const teamMemberName = (tree: TeamRunExecutionTreeDto, address: string): string =>
+  readsAsDisplayName(tree, address) ? memberDisplayName(address) : memberAddressBasename(address);
+
 /** Teams are flat: the root Team's configured members are its Agents. */
 export const collectConfiguredAgents = (
   tree: TeamRunExecutionTreeDto,
@@ -93,10 +97,7 @@ export const projectNavigationRows = (inputTree: {
   contexts: ReadonlyMap<string, AgentContext>;
 }): readonly TeamExecutionNavigationRow[] => {
   const input = inputTree;
-  // F-03 / CR-002: catalog-copy rows (and their members) read as spaced names.
-  const nameOf = (address: AgentTeamAddress): string => readsAsDisplayName(input.tree, address)
-    ? memberDisplayName(address)
-    : memberAddressBasename(address);
+  const nameOf = (address: AgentTeamAddress): string => teamMemberName(input.tree, address);
   const rows: TeamExecutionNavigationRow[] = [];
   const addressesByAgentRunId = new Map(collectAgentExecutionLocations(input.tree)
     .map((location) => [location.agentRunId, location.memberAddress]));

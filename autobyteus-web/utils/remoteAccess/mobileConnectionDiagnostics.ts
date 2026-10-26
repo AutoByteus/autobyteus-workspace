@@ -37,12 +37,6 @@ const diagnostics: Record<MobileConnectionFailureKind, MobileConnectionDiagnosti
     message: 'This area uses Electron or desktop-only capabilities that are not available on phone.',
     recoveryAction: 'Use this feature from the desktop app.',
   },
-  server_version_incompatible: {
-    kind: 'server_version_incompatible',
-    title: 'Desktop version is incompatible',
-    message: 'The mobile client and desktop server do not support the same Remote Access protocol.',
-    recoveryAction: 'Update AutoByteus on desktop and reload this page.',
-  },
 };
 
 export function diagnosticForKind(kind: MobileConnectionFailureKind): MobileConnectionDiagnostic {
@@ -58,9 +52,6 @@ export function diagnosticFromHttpStatus(status: number, code?: string): MobileC
   }
   if (status === 401 || code === 'REMOTE_ACCESS_AUTH_REQUIRED' || code === 'REMOTE_ACCESS_AUTH_INVALID') {
     return diagnosticForKind('auth_required');
-  }
-  if (status === 426 || code === 'REMOTE_ACCESS_VERSION_UNSUPPORTED') {
-    return diagnosticForKind('server_version_incompatible');
   }
   return diagnosticForKind('network_unreachable');
 }

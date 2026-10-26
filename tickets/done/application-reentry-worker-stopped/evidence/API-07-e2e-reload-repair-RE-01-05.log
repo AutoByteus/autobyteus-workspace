@@ -1,0 +1,10 @@
+# API-07 run 2 2026-10-25T04:03:17Z commit 1103e38619 + RE-04/RE-05 (uncommitted)
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-reload-repair.e2e.test.ts --no-watch --reporter=verbose
+  RE-01 an ACTIVE application stays usable after a package reload (AC-001) 1411ms
+  RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002) 689ms
+  RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004) 1015ms
+  RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001) 1139ms
+  RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002) 1433ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+exit=0

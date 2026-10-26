@@ -1,0 +1,91 @@
+# Root workspace pnpm audit: base ddd6fdcdf6 lockfile (audited in a scratch dir holding only base's lockfile, workspace file and package.json files) vs branch lockfile; scripts in probes/audit-summary.mjs, probes/audit-diff.mjs
+# Check: IMP-12
+# Command: echo '## branch totals'; node /tmp/ab-impl/audit-summary.mjs < /tmp/ab-impl/audit-branch.json | tail -1; echo '## base totals'; node /tmp/ab-impl/audit-summary.mjs < /tmp/ab-impl/audit-base.json | tail -1; echo '## diff by package + advisory id'; node /tmp/ab-impl/audit-diff.mjs /tmp/ab-impl/audit-base.json /tmp/ab-impl/audit-branch.json; echo '## branch: any advisory on fastify / find-my-way / @fastify/* / mercurius / undici@5 / xlsx?'; node /tmp/ab-impl/audit-summary.mjs < /tmp/ab-impl/audit-branch.json | grep -E ' (fastify|find-my-way|@fastify/[a-z-]+|mercurius|xlsx)@| undici@5' || echo 'none'; echo '## branch high/critical list'; node /tmp/ab-impl/audit-summary.mjs < /tmp/ab-impl/audit-branch.json | grep -E '^(high|critical)'
+# Commit: 5c7ab7426c
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T20:07:44Z
+
+## branch totals
+TOTAL {"info":0,"low":12,"moderate":31,"high":38,"critical":7}
+## base totals
+TOTAL {"info":0,"low":20,"moderate":45,"high":51,"critical":7}
+## diff by package + advisory id
+REMOVED (in base, not in branch):
+  moderate undici@5.28.3 GHSA-c76h-2ccp-4975
+  high xlsx@0.18.5 GHSA-4r6h-8v6p-xvw6
+  high xlsx@0.18.5 GHSA-5pgg-2g8v-p4x9
+  low undici@5.28.3 GHSA-9qxr-qj54-h672
+  low undici@5.28.3 GHSA-m4v8-wqvr-p9f7
+  moderate undici@5.28.3 GHSA-g9mf-h72j-4rw9
+  low fastify@4.29.1 GHSA-mrq3-vjjr-p77c
+  high fastify@4.29.1 GHSA-jx2c-rxcm-jvmq
+  low undici@5.28.3 GHSA-cxrh-j4jr-qwg3
+  moderate mercurius@13.4.1 GHSA-v66j-6wwf-jc57
+  low mercurius@13.4.1 GHSA-m4h2-mjfm-mp55
+  moderate undici@5.28.3 GHSA-2mjp-6q6p-2qxm
+  high undici@5.28.3 GHSA-vrm6-8vpv-qv8q
+  high undici@5.28.3 GHSA-v9p9-hfj2-hcw8
+  moderate undici@5.28.3 GHSA-4992-7rv2-5pvq
+  moderate fastify@4.29.1 GHSA-444r-cwp2-x5xf
+  moderate undici@5.28.3 GHSA-p88m-4jfj-68fv
+  high undici@5.28.3 GHSA-vxpw-j846-p89q
+  low undici@5.28.3 GHSA-g8m3-5g58-fq7m
+  high find-my-way@8.2.2 GHSA-c96f-x56v-gq3h
+  moderate @fastify/static@7.0.4 GHSA-8pvw-jcv7-9cmj
+  high @fastify/static@7.0.4 GHSA-83w8-p2f5-377r
+  low undici@5.28.3 GHSA-35p6-xmwp-9g52
+  moderate fastify@4.29.1 GHSA-w2qp-rph6-63g4
+  moderate fastify@4.29.1 GHSA-4mh8-r7rc-xpvc
+  high fastify@4.29.1 GHSA-667r-xxjv-c9mm
+  high fastify@4.29.1 GHSA-p68q-wchp-6fh7
+  high fastify@4.29.1 GHSA-hwr6-493r-vm6h
+  high fastify@4.29.1 GHSA-9q9j-q6p8-xq58
+  high @fastify/busboy@2.1.1 GHSA-x8mw-p69m-v3mx
+  moderate @fastify/busboy@2.1.1 GHSA-gxm5-99cw-xjw9
+ADDED (in branch, not in base):
+## branch: any advisory on fastify / find-my-way / @fastify/* / mercurius / undici@5 / xlsx?
+none
+## branch high/critical list
+critical  dompurify@3.4.7 GHSA-cg2g-xh64-v4q7 (paths: 1)
+critical  form-data@2.3.3 GHSA-fjxv-7rqg-78g4 (paths: 1)
+critical  happy-dom@15.11.7 GHSA-37j7-fg3j-429f (paths: 1)
+critical  minimist@0.0.8 GHSA-xvch-5gv4-984h (paths: 1)
+critical  tar@6.2.1 GHSA-23hp-3jrh-7fpw (paths: 1)
+critical  tinypool@1.1.1 GHSA-5gmw-xhrv-c9v3 (paths: 1)
+critical  tinypool@1.1.1 GHSA-85c8-ppgw-ccpr (paths: 1)
+high      @graphql-tools/utils@11.0.0,10.11.0 GHSA-c4qx-w738-7hr3 (paths: 2)
+high      @graphql-tools/utils@11.0.0,10.11.0,9.2.1 GHSA-7mx3-vvmw-hjmv (paths: 3)
+high      app-builder-lib@25.1.8 GHSA-7g7r-gx96-252g (paths: 1)
+high      body-parser@2.3.0 GHSA-27r3-jxmh-p828 (paths: 1)
+high      builder-util-runtime@9.2.10 GHSA-p2f4-r6v6-j797 (paths: 1)
+high      dompurify@3.4.7 GHSA-mrv2-3pqr-j5jr (paths: 1)
+high      form-data@2.3.3 GHSA-hmw2-7cc7-3qxx (paths: 1)
+high      happy-dom@15.11.7 GHSA-6q6h-j7hj-3r64 (paths: 1)
+high      happy-dom@15.11.7 GHSA-w4gp-fjgq-3q4g (paths: 1)
+high      http-cache-semantics@4.2.0 GHSA-ch52-4w7c-c8xp (paths: 1)
+high      immutable@3.7.6 GHSA-v56q-mh7h-f735 (paths: 1)
+high      immutable@3.7.6 GHSA-wf6x-7x77-mvgw (paths: 1)
+high      immutable@3.7.6 GHSA-xvcm-6775-5m9r (paths: 1)
+high      jpeg-js@0.2.0,0.1.2 GHSA-xvf7-4v9q-58w6 (paths: 2)
+high      lodash@4.17.23 GHSA-r5fr-rjxr-66jc (paths: 1)
+high      minimatch@9.0.1 GHSA-23c5-xmqv-rm74 (paths: 1)
+high      minimatch@9.0.1 GHSA-3ppc-4f35-3m26 (paths: 1)
+high      minimatch@9.0.1 GHSA-7r86-cg39-jmmj (paths: 1)
+high      node-forge@1.4.0 GHSA-86w9-cpqp-85rv (paths: 1)
+high      sharp@0.33.5 GHSA-f88m-g3jw-g9cj (paths: 1)
+high      sharp@0.33.5 GHSA-rgj7-g3m4-5g8c (paths: 1)
+high      sharp@0.33.5 GHSA-wq5f-xc86-pv6w (paths: 1)
+high      tar@6.2.1 GHSA-34x7-hfp2-rc4v (paths: 1)
+high      tar@6.2.1 GHSA-83g3-92jg-28cx (paths: 1)
+high      tar@6.2.1 GHSA-8qq5-rm4j-mr97 (paths: 1)
+high      tar@6.2.1 GHSA-8x88-c5mf-7j5w (paths: 1)
+high      tar@6.2.1 GHSA-9ppj-qmqm-q256 (paths: 1)
+high      tar@6.2.1 GHSA-qffp-2rhf-9h96 (paths: 1)
+high      tar@6.2.1 GHSA-r292-9mhp-454m (paths: 1)
+high      tar@6.2.1 GHSA-r6q2-hw4h-h46w (paths: 1)
+high      undici@6.27.0 GHSA-rfgv-xxqx-mfg5 (paths: 1)
+high      undici@6.27.0 GHSA-xjj6-f33q-929c (paths: 1)
+high      url-regex@3.2.0 GHSA-v4rh-8p82-6h5w (paths: 1)
+high      zod@4.3.6 GHSA-mrhx-c7xc-m3w5 (paths: 1)
+
+# exit code: 0

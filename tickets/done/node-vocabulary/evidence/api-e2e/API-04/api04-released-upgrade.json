@@ -1,0 +1,842 @@
+{
+  "releasedApp": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nv-released-c78ffb15a2/autobyteus-server-ts/dist/app.js",
+  "currentApp": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-server-ts/dist/app.js",
+  "steps": {
+    "releasedStatusKeys": [
+      "compatibilityVersion",
+      "pairingAvailable",
+      "phoneAccessEnabled",
+      "serverInstanceId",
+      "serverName"
+    ],
+    "released": {
+      "ids": {
+        "alpha": "srv_lE2Df3dSDMpWdJmY44JgJedCnudML_ab",
+        "beta": "srv_ubk307f0wMg-bxefA7PN_1MrOtXYpjGL"
+      },
+      "synced": {
+        "committedBatches": 1
+      }
+    },
+    "releasedShapes": {
+      "alpha": {
+        "identity(released)": {
+          "keys": [
+            "createdAt",
+            "serverInstanceId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "sourceNodeId",
+            "updatedAt"
+          ]
+        },
+        "state": {
+          "keys": [
+            "files",
+            "hubBaseUrl",
+            "hubKey",
+            "lastError",
+            "lastJobState",
+            "lastSuccessfulSyncAt",
+            "schemaVersion",
+            "sourceNodeId"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      },
+      "beta": {
+        "identity(released)": {
+          "keys": [
+            "createdAt",
+            "serverInstanceId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "sourceNodeId",
+            "updatedAt"
+          ]
+        },
+        "credentials": {
+          "keys": [
+            [
+              "boundSourceNodeId",
+              "createdAt",
+              "credentialHash",
+              "credentialId",
+              "label",
+              "lastUsedAt",
+              "revokedAt"
+            ]
+          ]
+        },
+        "import source(released)": {
+          "keys": [
+            "displayName",
+            "firstImportedAt",
+            "lastError",
+            "lastImportedAt",
+            "lastKnownEndpoint",
+            "lastSyncStatus",
+            "schemaVersion",
+            "sourceNodeId",
+            "sourceServerVersion"
+          ]
+        },
+        "manifest": {
+          "keys": [
+            "batchDigests",
+            "files",
+            "lastCommittedAt",
+            "lastCommittedBatchId",
+            "recentBatches",
+            "schemaVersion",
+            "sourceNodeId",
+            "totals"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      }
+    },
+    "backups": [
+      "alpha/memory-sync/memory-sync-config.json.backup-2026-10-24T12-32-10-118Z",
+      "alpha/memory-sync/source-state/e2be2c801e86c0c24dcb1b67--api04-source.json.backup-2026-10-24T12-32-10-120Z",
+      "alpha/remote-access/server-instance.json.backup-2026-10-24T12-32-10-113Z",
+      "beta/memory/imports/api04-source/source-node.json.backup-2026-10-24T12-32-10-121Z",
+      "beta/memory/imports/api04-source/sync-manifest.json.backup-2026-10-24T12-32-10-122Z",
+      "beta/memory-sync/hub-credentials.json.backup-2026-10-24T12-32-10-120Z",
+      "beta/memory-sync/memory-sync-config.json.backup-2026-10-24T12-32-10-118Z",
+      "beta/remote-access/server-instance.json.backup-2026-10-24T12-32-10-113Z"
+    ],
+    "convertedShapes": {
+      "alpha": {
+        "identity": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "state": {
+          "keys": [
+            "files",
+            "hubBaseUrl",
+            "hubKey",
+            "lastError",
+            "lastJobState",
+            "lastSuccessfulSyncAt",
+            "memorySyncSourceId",
+            "schemaVersion"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      },
+      "beta": {
+        "identity": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "credentials": {
+          "keys": [
+            [
+              "boundMemorySyncSourceId",
+              "createdAt",
+              "credentialHash",
+              "credentialId",
+              "label",
+              "lastUsedAt",
+              "revokedAt"
+            ]
+          ]
+        },
+        "import source": {
+          "keys": [
+            "displayName",
+            "firstImportedAt",
+            "lastError",
+            "lastImportedAt",
+            "lastKnownEndpoint",
+            "lastSyncStatus",
+            "memorySyncSourceId",
+            "schemaVersion",
+            "sourceServerVersion"
+          ]
+        },
+        "manifest": {
+          "keys": [
+            "batchDigests",
+            "files",
+            "lastCommittedAt",
+            "lastCommittedBatchId",
+            "memorySyncSourceId",
+            "recentBatches",
+            "schemaVersion",
+            "totals"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      }
+    },
+    "freshShapes": {
+      "alpha": {
+        "identity": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "state": {
+          "keys": [
+            "files",
+            "hubBaseUrl",
+            "hubKey",
+            "lastError",
+            "lastJobState",
+            "lastSuccessfulSyncAt",
+            "memorySyncSourceId",
+            "schemaVersion"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      },
+      "beta": {
+        "identity": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "config": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "credentials": {
+          "keys": [
+            [
+              "boundMemorySyncSourceId",
+              "createdAt",
+              "credentialHash",
+              "credentialId",
+              "label",
+              "lastUsedAt",
+              "revokedAt"
+            ]
+          ]
+        },
+        "import source": {
+          "keys": [
+            "displayName",
+            "firstImportedAt",
+            "lastError",
+            "lastImportedAt",
+            "lastKnownEndpoint",
+            "lastSyncStatus",
+            "memorySyncSourceId",
+            "schemaVersion",
+            "sourceServerVersion"
+          ]
+        },
+        "manifest": {
+          "keys": [
+            "batchDigests",
+            "files",
+            "lastCommittedAt",
+            "lastCommittedBatchId",
+            "memorySyncSourceId",
+            "recentBatches",
+            "schemaVersion",
+            "totals"
+          ]
+        },
+        "peers": {
+          "keys": [
+            "peers"
+          ]
+        }
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "the released build wrote server-instance.json {serverInstanceId, createdAt}",
+      "ok": true,
+      "detail": {
+        "keys": [
+          "createdAt",
+          "serverInstanceId"
+        ]
+      }
+    },
+    {
+      "name": "the released config has source.sourceNodeId",
+      "ok": true,
+      "detail": {
+        "keys": [
+          "hub",
+          "schemaVersion",
+          "source"
+        ],
+        "sourceKeys": [
+          "backgroundEnabled",
+          "batchSize",
+          "displayName",
+          "enabled",
+          "hubBaseUrl",
+          "hubToken",
+          "intervalMs",
+          "sourceNodeId",
+          "updatedAt"
+        ]
+      }
+    },
+    {
+      "name": "the released state has sourceNodeId",
+      "ok": true,
+      "detail": {
+        "keys": [
+          "files",
+          "hubBaseUrl",
+          "hubKey",
+          "lastError",
+          "lastJobState",
+          "lastSuccessfulSyncAt",
+          "schemaVersion",
+          "sourceNodeId"
+        ]
+      }
+    },
+    {
+      "name": "the released credentials have boundSourceNodeId",
+      "ok": true,
+      "detail": {
+        "keys": [
+          [
+            "boundSourceNodeId",
+            "createdAt",
+            "credentialHash",
+            "credentialId",
+            "label",
+            "lastUsedAt",
+            "revokedAt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "the released import has source-node.json {sourceNodeId}",
+      "ok": true,
+      "detail": {
+        "keys": [
+          "displayName",
+          "firstImportedAt",
+          "lastError",
+          "lastImportedAt",
+          "lastKnownEndpoint",
+          "lastSyncStatus",
+          "schemaVersion",
+          "sourceNodeId",
+          "sourceServerVersion"
+        ]
+      }
+    },
+    {
+      "name": "the released manifest has sourceNodeId",
+      "ok": true,
+      "detail": {
+        "keys": [
+          "batchDigests",
+          "files",
+          "lastCommittedAt",
+          "lastCommittedBatchId",
+          "recentBatches",
+          "schemaVersion",
+          "sourceNodeId",
+          "totals"
+        ]
+      }
+    },
+    {
+      "name": "alpha keeps its node ID",
+      "ok": true,
+      "detail": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_lE2Df3dSDMpWdJmY44JgJedCnudML_ab",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "name": "beta keeps its node ID",
+      "ok": true,
+      "detail": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_ubk307f0wMg-bxefA7PN_1MrOtXYpjGL",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "name": "alpha → beta: the peer is recognized",
+      "ok": true,
+      "detail": {
+        "entries": [],
+        "refusalCode": null
+      }
+    },
+    {
+      "name": "beta → alpha: the peer is recognized",
+      "ok": true,
+      "detail": {
+        "entries": [],
+        "refusalCode": null
+      }
+    },
+    {
+      "name": "Memory Sync: the hub knows the same source",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "authenticated": true,
+        "memorySyncSourceId": "api04-source"
+      }
+    },
+    {
+      "name": "Memory Sync continues: only the new file is sent",
+      "ok": true,
+      "detail": {
+        "committedBatches": 1,
+        "changedFiles": 1,
+        "deferredFiles": 0
+      }
+    },
+    {
+      "name": "one import folder, the same one",
+      "ok": true,
+      "detail": [
+        "api04-source"
+      ]
+    },
+    {
+      "name": "backups: identity ×2, config, state, credentials, import source, manifest",
+      "ok": true,
+      "detail": [
+        "alpha/memory-sync/memory-sync-config.json.backup-2026-10-24T12-32-10-118Z",
+        "alpha/memory-sync/source-state/e2be2c801e86c0c24dcb1b67--api04-source.json.backup-2026-10-24T12-32-10-120Z",
+        "alpha/remote-access/server-instance.json.backup-2026-10-24T12-32-10-113Z",
+        "beta/memory/imports/api04-source/source-node.json.backup-2026-10-24T12-32-10-121Z",
+        "beta/memory/imports/api04-source/sync-manifest.json.backup-2026-10-24T12-32-10-122Z",
+        "beta/memory-sync/hub-credentials.json.backup-2026-10-24T12-32-10-120Z",
+        "beta/memory-sync/memory-sync-config.json.backup-2026-10-24T12-32-10-118Z",
+        "beta/remote-access/server-instance.json.backup-2026-10-24T12-32-10-113Z"
+      ]
+    },
+    {
+      "name": "a third start changes no stored file",
+      "ok": true
+    },
+    {
+      "name": "alpha identity: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        }
+      }
+    },
+    {
+      "name": "alpha config: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        }
+      }
+    },
+    {
+      "name": "alpha state: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "files",
+            "hubBaseUrl",
+            "hubKey",
+            "lastError",
+            "lastJobState",
+            "lastSuccessfulSyncAt",
+            "memorySyncSourceId",
+            "schemaVersion"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "files",
+            "hubBaseUrl",
+            "hubKey",
+            "lastError",
+            "lastJobState",
+            "lastSuccessfulSyncAt",
+            "memorySyncSourceId",
+            "schemaVersion"
+          ]
+        }
+      }
+    },
+    {
+      "name": "alpha peers: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "peers"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "peers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "alpha: no released file left",
+      "ok": true
+    },
+    {
+      "name": "beta identity: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "createdAt",
+            "nodeId"
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta config: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "hub",
+            "schemaVersion",
+            "source"
+          ],
+          "sourceKeys": [
+            "backgroundEnabled",
+            "batchSize",
+            "displayName",
+            "enabled",
+            "hubBaseUrl",
+            "hubToken",
+            "intervalMs",
+            "memorySyncSourceId",
+            "updatedAt"
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta credentials: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            [
+              "boundMemorySyncSourceId",
+              "createdAt",
+              "credentialHash",
+              "credentialId",
+              "label",
+              "lastUsedAt",
+              "revokedAt"
+            ]
+          ]
+        },
+        "fresh": {
+          "keys": [
+            [
+              "boundMemorySyncSourceId",
+              "createdAt",
+              "credentialHash",
+              "credentialId",
+              "label",
+              "lastUsedAt",
+              "revokedAt"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta import source: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "displayName",
+            "firstImportedAt",
+            "lastError",
+            "lastImportedAt",
+            "lastKnownEndpoint",
+            "lastSyncStatus",
+            "memorySyncSourceId",
+            "schemaVersion",
+            "sourceServerVersion"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "displayName",
+            "firstImportedAt",
+            "lastError",
+            "lastImportedAt",
+            "lastKnownEndpoint",
+            "lastSyncStatus",
+            "memorySyncSourceId",
+            "schemaVersion",
+            "sourceServerVersion"
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta manifest: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "batchDigests",
+            "files",
+            "lastCommittedAt",
+            "lastCommittedBatchId",
+            "memorySyncSourceId",
+            "recentBatches",
+            "schemaVersion",
+            "totals"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "batchDigests",
+            "files",
+            "lastCommittedAt",
+            "lastCommittedBatchId",
+            "memorySyncSourceId",
+            "recentBatches",
+            "schemaVersion",
+            "totals"
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta peers: converted keys equal the current writer's",
+      "ok": true,
+      "detail": {
+        "converted": {
+          "keys": [
+            "peers"
+          ]
+        },
+        "fresh": {
+          "keys": [
+            "peers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "beta: no released file left",
+      "ok": true
+    }
+  ],
+  "result": "Pass",
+  "error": null,
+  "cleanup": {
+    "rootRemoved": true
+  }
+}

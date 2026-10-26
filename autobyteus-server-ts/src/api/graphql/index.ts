@@ -9,7 +9,6 @@ export async function registerGraphql(app: FastifyInstance): Promise<void> {
   await app.register(mercurius, {
     schema,
     path: "/graphql",
-    graphiql: true,
     subscription: true,
     context: createGraphqlRequestContext,
   });

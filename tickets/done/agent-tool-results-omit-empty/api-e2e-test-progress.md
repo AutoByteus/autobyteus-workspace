@@ -1,0 +1,51 @@
+# API/E2E Test Progress — agent-tool-results-omit-empty (autobyteus-260)
+
+Read this first whenever the run is picked back up. Only add rows.
+
+- Execution coverage report: [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md)
+- Planned cases: [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md) Planned Cases (same case IDs)
+- Scratch logs (full, uncommitted): `/tmp/api-e2e-260/`; committed copies and excerpts in `evidence/API-*`
+
+| Time | Case ID | Event | Result | Note |
+| --- | --- | --- | --- | --- |
+| 2026-10-25 08:05 | — | Checkpoint | — | `pnpm -C autobyteus-server-ts build` on `45a0a7ea08` passed (`/tmp/api-e2e-260/build-1.log`) |
+| 2026-10-25 08:06 | API-00 | Started | — | gated baseline `vitest run tests/e2e` (RUN_AGY_FAILURE_E2E=1), JSON to `/tmp/api-e2e-260/baseline-e2e.json` |
+| 2026-10-25 08:27 | API-00 | Checkpoint | — | 122 of ~195 files done; durable edits made only to files whose baseline run had completed (originals in `/tmp/api-e2e-260/orig/`), plus the two new files and the web probes; waiting for the end of the run |
+| 2026-10-25 08:30 | API-00 | Completed | Pass | baseline done: 27 failed / 118 passed / 50 skipped files (`evidence/API-00-baseline-e2e-failures.txt`) |
+| 2026-10-25 08:31 | API-00b | Started | — | unexplained failures: launch-config, agy-native-image, skill-update-notice; temp diagnostic in launch-config (removed) |
+| 2026-10-25 08:36 | API-01 | Started | — | per-file runs of updated in-process files (`/tmp/api-e2e-260/run.sh`) |
+| 2026-10-25 08:37 | API-03 | Completed | Fail | keys-v1 FAILED case: titles NOT_RUN, other Projects' Tasks unlisted (F-001); diagnostic removed |
+| 2026-10-25 08:38 | API-01 | Completed | Pass | after fixing two of my own expectations (GraphQL blank description, locality link) |
+| 2026-10-25 08:40 | API-02 | Started | — | gated AGY journeys |
+| 2026-10-25 08:58 | API-02 | Completed | Pass | after updating Temp-task acks (no projectId), existing-copy list/get split |
+| 2026-10-25 08:59 | API-07 | Completed | Pass | remote two-server 37/37 |
+| 2026-10-25 09:01 | API-05 | Completed | Pass | new startup E2E (summary is a string; details from the log) |
+| 2026-10-25 09:02 | API-06 | Completed | Pass | new worker-scope E2E 6/6; receipt copied |
+| 2026-10-25 09:05 | API-00b | Completed | Pass | base build `fc06a7355d`: same failures → FU-002/003/004; base worktree removed |
+| 2026-10-25 09:06 | API-10 | Started | — | full gated regression |
+| 2026-10-25 09:37 | API-10 | Completed | Pass | 4 failed files = F-001 + FU-002/003/004 |
+| 2026-10-25 09:38 | API-09 | Completed | Pass | Codex MCP-client lane Pass; Codex routing case blocked (FU-005); throwaway CODEX_HOME removed |
+| 2026-10-25 09:41 | API-11a | Completed | Pass | run 2 17/17 (run 1: my two probe misses fixed; PT-E2E-013 timing FU-006) |
+| 2026-10-25 09:47 | API-11b | Completed | Pass | embedding probe 8/8 |
+| 2026-10-25 10:20 | API-11c | Completed | Fail | 13/25 fail, all Error 500 from taskWorkerTaskStore dropping title (F-002) |
+| 2026-10-25 10:21 | API-11d, API-12 | Completed | Not Tested | blocked by F-002; next round |
+| 2026-10-25 10:22 | API-13, API-14, API-15 | Completed | Pass | sizes table, AC-009 grep (docs note), AC-010 review |
+| 2026-10-25 (round 2) | — | Checkpoint | — | round 2 on fccf1227a6 (CR-001 dfbd2621bb, CR-002 52cbc28442, CR-003 56ceef568a); server rebuilt; API-05 fixture `task_invalid` made invalid by status (taskKey now optional, SR-012) |
+| 2026-10-25 (round 2) | API-05 | Started | — | titles startup E2E alone |
+| 2026-10-25 (round 2) | API-05 | Completed | Pass | after fixture/disposition update |
+| 2026-10-25 (round 2) | API-10 | Started | — | full gated regression on fccf1227a6 build (JSON /tmp/api-e2e-260/r2-regression-e2e.json) |
+| 2026-10-25 (round 2) | API-10 | Completed | Pass | 4 failed files: FU-002/003/004 + FU-007 (race, passes alone); F-001 resolved (projects-startup-migration 6/6) |
+| 2026-10-25 (round 2) | API-11c | Started | — | project-manager-ux probe rerun |
+| 2026-10-25 (round 2) | API-11c | Completed | Pass | 24/25 then PMU-024 rerun Pass after my probe fix (renames send the title) |
+| 2026-10-25 (round 2) | API-11d | Started | — | task-closure-tree, team-status-live, delegated-team-default-collapse (chained) |
+| 2026-10-25 (round 2) | API-11d | Checkpoint | Pass | closure-tree 16/16, team-status-live 7/7, default-collapse 7/7; next: large-hub seed + measure --live |
+| 2026-10-25 (round 2) | API-11d | Completed | Pass | large-hub seed (9 Teams, 20 unrelated) + measure --live Pass; rows show titles |
+| 2026-10-25 (round 2) | API-12 | Started | — | isolated-app start --build on a copy of the large-hub seed (/tmp/api-e2e-260/desktop-copy/server-data) |
+| 2026-10-25 (round 2) | API-12 | Completed | Pass | isolated desktop on the seed copy: tree titles, Projects tab, Task page, blank title refused, rename followed in tree and board, delete confirmation; instance stopped, copies removed |
+| 2026-10-25 (round 2) | — | Checkpoint | — | round 2 result Pass, 95%; reports updated; handoff to code reviewer for test-code review |
+| 2026-10-25 (round 3) | — | Checkpoint | — | delivery re-entry DR-001 (merge 54cd6803f4, fix 7c60cb4909); plan in the investigation's Round 3 Plan |
+| 2026-10-25 (round 3) | API-10 | Started | — | rebuild dist, then full gated regression (JSON /tmp/api-e2e-260/r3-regression-e2e.json) |
+| 2026-10-25 (round 3) | API-10 | Completed | Pass | 3 failed files = FU-002/003/004; runtimes E2E 6/6 incl. AAR-04 (MCP) |
+| 2026-10-25 (round 3) | API-R3W | Started | — | web localization guards + unit tests (projects, workspace, settings, utils/projects, stores) |
+| 2026-10-25 (round 3) | API-R3W | Completed | Pass | guards Passed; audit zero findings; 2044 web unit tests passed |
+| 2026-10-25 (round 3) | — | Checkpoint | — | round 3 result Pass, 95%; reports updated |

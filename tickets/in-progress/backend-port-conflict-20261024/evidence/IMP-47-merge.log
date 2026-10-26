@@ -1,0 +1,12 @@
+Auto-merging autobyteus-server-ts/src/api/graphql/schema.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+Auto-merging autobyteus-web/electron/application/electronApplication.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+CONFLICT (content): Merge conflict in autobyteus-web/generated/graphql.ts
+Auto-merging autobyteus-web/localization/messages/en/index.ts
+Auto-merging autobyteus-web/localization/messages/zh-CN/index.ts
+Auto-merging docs/design-cases.md
+CONFLICT (content): Merge conflict in docs/design-cases.md
+Automatic merge failed; fix conflicts and then commit the result.

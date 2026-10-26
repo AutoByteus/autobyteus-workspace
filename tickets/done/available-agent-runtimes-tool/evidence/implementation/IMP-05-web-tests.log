@@ -1,0 +1,80 @@
+# IMP-05
+# command: pnpm -C autobyteus-web test:nuxt components/settings/model-routing pages/__tests__/settings.spec.ts localization --run
+# commit: 5135bb73dc (code identical to the run)
+# environment: macOS darwin 25.5, Node v22.23.1, pnpm; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > uses concise task placeholders and removes only superseded authoring copy 2ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > provide the same keys in en and zh-CN 1ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > label the navigation destination 0ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > label every Project Task status in both locales (REQ-003, REQ-015) 0ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > no longer carries the rejected two-pane, status-filter or row copy 0ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > say on the Task page that the agent or team stops when its last open Task is Done or Cancelled (AC-011) 0ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts > Projects catalogs > describe each Project card with open tasks and workspaces (REQ-009) 0ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts > localizationRuntime > initializes from system mode and activates the resolved locale catalog 10ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts > localizationRuntime > falls back to English and releases the product UI gate when initialization fails 17ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts > localizationRuntime > persists manual overrides and rerenders from the new locale catalog 49ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts > localizationRuntime > decodes HTML entities after interpolation while keeping translated output as plain text 7ms
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts > AppLocalizationGate > renders product UI content when localization is ready 9ms
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts > AppLocalizationGate > renders the neutral gate placeholder while localization is booting 3ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts > zh-CN glossary consistency > keeps shared agent and team terminology aligned with the approved glossary 1ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts > zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs 71ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts > run settings localization > keeps the run-settings catalog in en/zh-CN parity and translated 2ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts > run settings localization > no longer carries the removed copy 1ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts > run settings localization > removed the superseded launch forms and the run-preparation composable 0ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > flags raw literals in mixed templates instead of suppressing the whole file 4ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > flags raw user-facing labels in producer ts files 6ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > flags raw literals returned from vue script setup blocks 3ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > flags raw toast strings in broad store producer files 2ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > strictly audits Agent Org template text, interpolation, bound attributes, and script feedback 4ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts > auditLocalizationLiterals > accepts localized Agent Org template and script presentation 3ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts > AgentTeamDefinitionForm handoff localization > renders both native handoff endpoint groups from the zh-CN catalog 53ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > reads the node on open, behind a loading state, with one GraphQL query for the tool's answer 83ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > shows the same runtimes, limits, reset times, notes and models as the tool (AC-010) 40ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > shows AutoByteus providers with balance, block and limit texts 26ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > keeps models collapsed until opened 19ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > Check again reads the node again and shows the new answer 16ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > a failed first read shows the error with Check again; a failed later read keeps the rows 18ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > says when no runtime is available 2ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > a remote-node window names that node 12ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > shows server settings section in remote windows 20ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > gives navigation and content usable full-width regions at narrow viewports while preserving the desktop row 6ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > renders the original Settings layout with an overlaid semantic separator at 256px 16ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > defines the exact workspace-gray separator feedback and focus state precedence 0ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > keeps direct Token Statistics at the default manual width 5ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports zero, partial, and restored widths without remounting the active manager 39ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > retains the manual width across section selection and resets it on remount 17ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > treats legacy nodes section query as invalid and falls back to the default settings section 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > normalizes legacy server-status route query to server-settings in remote windows 9ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > defaults to server-settings when embedded server is not running 5ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > renders the server settings manager without a separate top-level applications card shell 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > normalizes legacy server-status route query to server-settings in embedded windows 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports server settings migrations mode query 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports the server settings embedding mode query and lists Embedding after Basics 8ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > keeps the default section for an unknown section query 7ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports language section query and activates language section 4ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports display section query and activates the display settings section 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports updates section query and activates updates section 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > maps legacy about section query to updates section 9ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports mcp-servers section query and activates mcp-servers section 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports application-packages section query and activates application-packages section 4ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports agent-packages section query and activates agent-packages section 4ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > supports extensions section query and activates extensions section 3ms
+ ✓ pages/__tests__/settings.spec.ts > settings page > navigates back to workspace when back item is clicked 5ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts > systemLocaleResolver > normalizes supported Chinese variants to zh-CN 1ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts > systemLocaleResolver > falls back unsupported Traditional Chinese variants to English 0ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts > systemLocaleResolver > prefers Electron locale when available in system mode 1ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts > systemLocaleResolver > uses browser locales when Electron locale is unavailable 0ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts > Agent Org ticket surface localization catalogs > keeps every Agent Org management key complete in English and Simplified Chinese 3ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts > Agent Org ticket surface localization catalogs > keeps Agent Org launch, history, and return navigation copy bilingual 1ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts > Agent Org ticket surface localization catalogs > keeps shared handoff authoring chrome and feedback complete in both catalogs 0ms
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts > Background Tasks panel localization > names the section Background Tasks in English and Simplified Chinese with the same keys 2ms
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts > Background Tasks panel localization > has no To-Do panel entries left (REQ-005) 0ms
+ ✓ localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts > Agent Runtimes settings localization > has the same keys in English and Simplified Chinese 1ms
+ ✓ localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts > Agent Runtimes settings localization > words remote sign-in in both languages, naming the workspace's VNC Viewer tab as it is labelled 0ms
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts > Event Monitor feed localization > keeps only the approved non-visual names and exposes no internal page count 1ms
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts > flat Team and AgentOrg localization catalogs > keeps the audited product copy complete in English and Simplified Chinese 6ms
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts > zh-CN shell catalog > uses the approved 智能体 glossary for shared navigation labels 1ms
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts > zh-CN action-label consistency > keeps shared run and action labels translated in the swept catalogs 1ms
+ Test Files  17 passed (17)
+      Tests  72 passed (72)

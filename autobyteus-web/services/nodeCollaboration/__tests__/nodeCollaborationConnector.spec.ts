@@ -12,7 +12,7 @@ const B = 'srv_node8003BBBBBBBBBBBBBBBBBBBBBBBBBBBB'
 const peer = (nodeId: string, name: string, baseUrl = 'http://x'): PeerNode => ({ nodeId, name, baseUrl, addedAt: '2026-10-23T08:00:00.000Z' })
 const refusal = (code: string, extra: Record<string, unknown> = {}) => new NodeSettingsError({ code, message: code, ...extra })
 
-const target: NodeChangeTarget = { rowKey: B, name: '8003', nodeId: B, desktopIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
+const target: NodeChangeTarget = { rowKey: B, name: '8003', nodeId: B, entryIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
 const here = { name: 'Embedded Node', nodeId: A, windowAddress: 'http://127.0.0.1:29695' }
 
 const world = (input: { hereOn?: boolean; herePeers?: PeerNode[]; thereOn?: boolean; therePeers?: PeerNode[]; thereDown?: boolean } = {}) => {
@@ -185,7 +185,7 @@ describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
   it('AR-007: remove with an unreachable node there still removes the list entries, and reports it', async () => {
     const f = world({ herePeers: [peer(B, '8003')], therePeers: [peer(A, 'Embedded Node')] })
     vi.mocked(f.there.removePeer).mockRejectedValueOnce(refusal('PEER_UNREACHABLE', { reason: 'refused' }))
-    const plan = await f.connector.plan('remove', { ...target, desktopIds: ['remote-8003', 'remote-8003-old'] }, here)
+    const plan = await f.connector.plan('remove', { ...target, entryIds: ['remote-8003', 'remote-8003-old'] }, here)
     await f.connector.run(plan)
     expect(statuses(plan)).toEqual(['removeHere:done', 'removeThere:failed', 'removeFromList:done'])
     expect(f.calls).toContain('list.remove(remote-8003)')

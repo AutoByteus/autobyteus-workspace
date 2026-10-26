@@ -75,10 +75,10 @@ const createMemberExecutionContext = (
   taskAgentContext: TaskAgentContextFacts | null = null,
   sendMessageToEnabled = true,
 ) => {
-  const taskCommands = Object.freeze({
+  const taskCapability = Object.freeze({
     root: createTeamRootExecutionIdentity("team-1"),
     delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" }, taskId: "task_0008" })),
-    assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+    ownedTaskOf: () => null, assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
     submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
     reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
   });
@@ -88,7 +88,7 @@ const createMemberExecutionContext = (
     agentRunId: taskAgentContext?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
     deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
-    taskCommands,
+    taskCapability,
   });
   return context;
 };
@@ -571,7 +571,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         message_type: "direct_message",
         reference_files: ["/tmp/server-reference.md"],
       }),
-    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","target_agent_run_id":null}');
+    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable."}');
     expect(deliverInterAgentMessage).toHaveBeenCalledWith({
         recipientAddress: "/writer",
         content: "Please investigate.",
@@ -654,17 +654,17 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       taskAgentRunId: "team-1__professor__task_0007",
       taskId: "task_0007",
     };
-    const taskCommands = Object.freeze({
+    const taskCapability = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
       delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })),
-      assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+      ownedTaskOf: () => null, assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
     });
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
       memberAddress: "/professor",
       agentRunId: taskAgentContext.taskAgentRunId,
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-      taskCommands,
+      taskCapability,
     });
     const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
@@ -740,7 +740,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       recipient_address: "/reviewer",
       description: "Review the exact task result.",
     });
-    expect(taskCommands.delegateToNewCopy).toHaveBeenCalledWith(
+    expect(taskCapability.delegateToNewCopy).toHaveBeenCalledWith(
       {
         root: createTeamRootExecutionIdentity("team-1"),
         memberAddress: "/professor",

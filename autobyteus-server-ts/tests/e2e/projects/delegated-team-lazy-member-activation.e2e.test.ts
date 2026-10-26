@@ -434,7 +434,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
         { input: { name: `DTL ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
       taskId = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-        { input: { projectId, description: "Team work. Marker LEAD-FIRST." } })).createProjectTask.taskId as string;
+        { input: { projectId, title: "Team work. Marker LEAD-FIRST.", description: "Team work. Marker LEAD-FIRST." } })).createProjectTask.taskId as string;
       work = { task_id: taskId };
     } else work = { description: "Team work. Marker LEAD-FIRST." };
 

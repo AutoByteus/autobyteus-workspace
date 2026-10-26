@@ -1,5 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
@@ -59,7 +60,7 @@ export async function getAgentTeamDefinition(
       throw new Error(`Agent team definition with ID ${definition_id} not found.`);
     }
 
-    return JSON.stringify(serializeDefinition(definition), null, 2);
+    return toToolResultJson(serializeDefinition(definition));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Error getting agent team definition ID '${definition_id}': ${message}`);

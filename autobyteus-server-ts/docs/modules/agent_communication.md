@@ -51,16 +51,19 @@ do not cross this shared message/task placement boundary.
 ## `recipient_address` Team Route
 
 `recipient_address` is the logical Team route. It requires an active
-`MemberTeamContext` with `send_message_to` enabled and delegates to the root
-Team delivery boundary owned by `TeamRun` / `MixedTeamManager`. Child managers
-forward root-bound delivery intent without rewriting it into flat names or
-synthetic representative identities.
+`MemberTeamContext` with `send_message_to` enabled and delegates to the sender's
+root (`RootTeamRun`, `AgentOrgRun` or `StandaloneAgentRunRoot`), which resolves
+the address and hands the message to the one
+[teammate delivery path](#teammate-delivery-path). Child managers forward
+root-bound delivery intent without rewriting it into flat names or synthetic
+representative identities.
 
 Accepted team-route deliveries are the only `send_message_to` path that creates
 Team Communication projection:
 
-- recipient input is admitted through the resolved member/team handle into the
-  exact target AgentRun FIFO;
+- recipient input is held in the exact target AgentRun FIFO through the resolved
+  member/team handle, and becomes eligible only after the message is saved to the
+  root's log;
 - accepted `INTER_AGENT_MESSAGE` events carry the team context needed by the Team
   Communication processor to build address-first `senderAddress` and
   `receiverAddress` values;
@@ -72,7 +75,7 @@ Team Communication projection:
 Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
 attempt. It does not mean a provider turn has completed and does not synchronously
 wait for a next-turn-only backend. Team Communication/member-input projection is
-created once at admission; forwarding and terminal lifecycle facts do not
+created once, when the saved message is committed to the recipient; forwarding and terminal lifecycle facts do not
 republish it.
 
 Team-owned internals may still use task-agent/recovery machinery for task
@@ -119,27 +122,93 @@ includes the exact existing AgentRun that accepted the message:
 For a logical Agent address, `target_agent_run_id` is that mounted Agent's
 existing run. For a logical AgentTeam address, it is the mounted Team's existing
 configured coordinator run. For exact-run delivery, it confirms the selected
-active run. Rejection preserves the exact operation code/message and returns no
-successful receiver identity:
+active run. Rejection preserves the exact operation code/message and has no
+receiver identity: `target_agent_run_id` is left out, as every platform tool
+result leaves out a field with no value ([Tool Result Rule](agent_tools.md#tool-result-rule)):
 
 ```json
 {
   "accepted": false,
   "code": "COLLABORATION_TARGET_NOT_FOUND",
-  "message": "Target was not found.",
-  "target_agent_run_id": null
+  "message": "Target was not found."
 }
 ```
 
 The removed generic `result` field and generic communication-result mapper are
 not compatibility surfaces. Native JSON, MCP text JSON, MCP
 `structuredContent`, public types, and advertised post-2025-03 output schemas
-use the same flat field names and null rule. MCP `isError` is set only for
-rejected outcomes.
+use the same flat field names. MCP `isError` is set only for rejected outcomes.
 
 `get_handoff_rules` instead returns the read-only `{ handoffs }` object shown
 above. Its AutoByteus JSON result and MCP `content`/`structuredContent` represent
 that same object; it is not wrapped in an operation result.
+
+## Teammate Delivery Path
+
+Every message an agent of a root receives from another agent, and the sender's
+record of a message to a remote run, is saved and delivered by one
+implementation for the standalone Agent root, the AgentOrg root and the Team
+root: `RootCommunicationEngine` (`agent-collaboration/execution/communication`).
+It is the only owner of the root's message list.
+
+`SendMessageToDispatcher -> member collaboration context -> root message delivery (resolve recipient, live lease) -> RootCommunicationEngine -> port.reserveRecipientInput (member handle -> AgentRun.reserveUserMessage) -> port.commitMessageAppend (the root's persistence coordinator: lock -> append.prepare -> log append -> append.commitAfterDurability) -> result`
+
+Entry forms, all through the engine:
+
+| Entry form | Used by | Root-view publish | Recipient |
+| --- | --- | --- | --- |
+| `deliver` | `send_message_to` by address or by run ID, handoffs, and the work of an existing-copy Task assignment | Yes | Its slot is held, then committed, presented and released |
+| `acceptFromRemote` | A message from a linked run on a peer node | No (the view shows the root's own agents) | As for `deliver` |
+| `commitSentToRemote` | The sender's record after the peer accepted a message | No | None (the peer stores its side) |
+
+1. The root's message delivery resolves the recipient and takes the live lease.
+   Address resolution stays root-specific. An existing-copy Task assignment
+   (`delegate_task` naming a copy) goes the same way:
+   `RootTaskExecutionLifecycle.assignToExistingCopy` hands the Task's work
+   message to the root's `deliverToRunId`.
+2. The engine checks the message: the root accepts messages, sender and receiver
+   are exact live executions of this root, the target is not the sender, the
+   Task scope allows the pair, and the content is not empty. It builds the
+   message record and the recipient input, and holds a slot in the recipient's
+   FIFO with `reserveUserMessage`.
+3. The engine builds one `RootMessageAppend` and hands it to the root's
+   coordinator (`commitMessageAppend`). Under the root's lock the append checks
+   again that the root is open, the message ID is not in the list, and the Task
+   scope still allows the pair; it then names the logs the message belongs to.
+   The coordinator appends one line to each of those logs (and, for a run a peer
+   node started, first creates its package).
+4. Not written: the slot is cancelled and the sender gets
+   `*_MESSAGE_HISTORY_COMMIT_FAILED` with the write's own message. Written but
+   not finalized (indeterminate): the root enters persistence fail-stop, the
+   slot is cancelled and the coordinator's error is thrown.
+5. Written: the engine updates its list, commits the slot, publishes the message
+   to the root view (when the entry form publishes), presents it to the
+   recipient and releases the slot. The recipient therefore runs a message only
+   after it is saved.
+6. The Task may close, or the recipient may stop accepting input, between the
+   log write and the slot commit (REQ-012). The saved record stays and is shown
+   in the root view (when the form publishes), the recipient never gets the
+   input, and the root keeps working. The sender gets the same Task refusal
+   `{ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" | "TASK_AGENT_RESOURCE_CONFLICT", message }`
+   it gets before the slot is held, or
+   `{ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }`.
+   Only a failure of the list update, the publish or the presentation itself
+   still fail-stops the root.
+
+Each root supplies its differences as a small `RootCommunicationPort`
+(`standalone-root-communication-port.ts`, `agent-org-communication-port.ts`,
+`team-communication-port.ts`). The port carries data and effects only; the
+engine decides the order:
+
+| Root | Recipient input | Root-view event, then presentation | Codes: `deliver` not accepting / conflict / not saved |
+| --- | --- | --- | --- |
+| Standalone Agent | Generic builder | `communication`, then the recipient's presentation | `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES` / `AGENT_ROOT_MESSAGE_COMMIT_CONFLICT` / `AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED` |
+| AgentOrg | Generic builder | `communication`, then the member presentation | `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES` / `AGENT_ORG_MESSAGE_COMMIT_CONFLICT` / `AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED` |
+| Team | Team builder | `COMMUNICATION`, then `MEMBER_INPUT` | `TEAM_RUN_NOT_ACCEPTING_MESSAGES` / `TEAM_MESSAGE_COMMIT_CONFLICT` / `TEAM_MESSAGE_HISTORY_COMMIT_FAILED` |
+
+The remote forms of every root use `COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES`.
+A root's `getCommunicationSnapshot()` builds its message envelope from the
+engine's list.
 
 ## `target_agent_run_id` Global Direct Route
 
@@ -229,8 +298,8 @@ They cannot use `recipient_address` unless they are running with an active
 semantics stay identical across AutoByteus, Codex, Claude, and the
 server-hosted Agent Tools MCP surface.
 
-All runtime projections end at the same `AgentRun.postUserMessage(...)`
-admission owner. Codex, Claude, AutoByteus, Team routing, external callers, and
+All runtime projections end at the same `AgentRun` input admission:
+`postUserMessage(...)`, or `reserveUserMessage(...)` for teammate delivery. Codex, Claude, AutoByteus, Team routing, external callers, and
 the command registry do not select start/append/wait behavior themselves.
 
 Configured Team members receive `get_handoff_rules` through the same runtime
@@ -264,8 +333,9 @@ unowned sender by the Task with no Project that its delegation created. So two
 copies owned by different Tasks cannot message each other by run ID; messages to
 and from their delegators and configured members work. The refusal (a different
 Task, or a closed Task) is returned to the sender as `{accepted: false, code, message}`
-by `RootCommunicationEngine.deliver`, so the agent reads the next step; only that first
-delivery-scope check returns it, and the later re-checks inside reservation and commit still throw.
+by `RootCommunicationEngine.deliver`, so the agent reads the next step. The same refusal is
+returned when the Task closes later, while the message waits for the root's history lock or after its
+log line is written (DEC-005; see [Teammate Delivery Path](#teammate-delivery-path)).
 
 A Task-owned sender resolves an address exactly like any other sender (below).
 There is no per-Task helper bring-in any more: `broughtIn` records already stored
@@ -356,7 +426,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
   inside its operation gate, before it is posted. Every mention is re-validated
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
-  built-in, not the port's `ownDefinition()`; it may already be in the run) and
+  built-in, not an internal agent while hidden, not the port's `ownDefinition()`;
+  it may already be in the run) and
   answered with its name, kind, address and `presence`, **decided for the agent the
   user is talking to** (the viewer; each root passes `mentionViewerRelation(index,
   focusedAgentRunId)`): `self` (the viewer's own placement, by identity, not by
@@ -372,7 +443,7 @@ startup into ordinary, unowned delegated runs of the same root (migration
   offers the host, and a task agent can mention it. A host self-mention is still
   rejected ("… is this run's own definition."). The `@` caller (Team, Org and
   collaboration stream handlers, and the standalone host path
-  `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
+  `AgentRunCommandCoordinator.postUserMessage` → `StandaloneAgentRunRoot.postHostUserMessage` →
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned agents]` note, one
   line per mention: `- <Name> (agent|agent team) at <address>[, in your team]: <guidance>`.
   The guidance depends on the presence: `not_in_run` → "delegate the task to it with
@@ -421,8 +492,9 @@ startup into ordinary, unowned delegated runs of the same root (migration
   sender is the viewer: a copy member's list holds the host at its host address plus
   exactly the host's own list, and the host's list never holds itself. Listing
   never writes, so a standalone run that only lists gets no `collaboration/`
-  package. With `node`, the tool lists a peer node's offer instead, and the opt-in
-  `list_available_nodes` lists the peers with their status (autobyteus-261; see
+  package. With `node`, the tool lists a peer node's offer instead (a *peer* is a
+  remote node registered with this node; see the [Glossary](../../../GLOSSARY.md#nodes)),
+  and the opt-in `list_peer_nodes` lists the peers with their status (autobyteus-261; see
   [Remote Collaboration](./remote_collaboration.md#discovery)); neither goes through
   the sender's root.
 - **In the run.** Configured placements and a standalone run's host count as in the
@@ -430,7 +502,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the Daily Assistant), then
+  policy: shared Agents (minus built-ins such as the Daily Assistant, and
+  internal agents while hidden), then
   shared Agent Teams, in catalog order, **including** definitions already in the
   run; only the port's own definition is left out. That is a Team run's Team.
   For an Agent root, `focusedAgentRunId` is required (omitting it is an error),

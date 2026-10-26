@@ -39,7 +39,8 @@ export interface TaskExecutionResourcePort {
    * or ID): its `taskId` (the only identity used afterwards), its agent-facing `taskReference` (for texts), and
    * its description and files. Unknown, DONE, CANCELLED or unreadable Tasks, and Tasks with no Project, reject.
    */
-  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string; description: string;
+  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string;
+    /** The Project the Task belongs to (it names the Task in the worker's first message). */ projectId: string; description: string;
     /** The Task's comment texts, oldest first (they follow the description in the delegated work). */ comments: string[]; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it

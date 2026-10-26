@@ -5,6 +5,11 @@
 The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-10 … CM-12, § 4);
 this document describes the mechanics.
 
+Vocabulary ([Glossary](../../../GLOSSARY.md#nodes)): a *node* is one server with its node ID (`nodeId`, `srv_…`);
+*remote* says where a node is; a *peer* is a remote node registered with this node (`PeerNode`, `peers.json`,
+`list_peer_nodes`). In this module `nodeId` always means a node's ID, and a request's network address is its
+*client address*, never a peer.
+
 `src/remote-collaboration/` lets an agent on one node delegate a text task to any shared Agent or shared Agent
 Team of another node, and lets the delegator and the remote run (every member of a remote Team) message each
 other by run ID. With the discovery tools, an agent also finds the peers and what each offers (autobyteus-261).
@@ -29,7 +34,7 @@ on Task closure and peer authentication come in later slices.
 | Peer nodes `{nodeId, name, baseUrl, addedAt}` | `<data>/remote-collaboration/peers.json` | `PeerDirectory` |
 
 - Adding a peer names the node it means (`{nodeId, name, baseUrl}`), contacts `GET <baseUrl>/rest/remote-access/status`
-  and pins that `serverInstanceId` as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
+  and pins that node ID as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
   needs the switch on. `name` is this owner's label, the `node` agents pass. Changing a peer's address
   (`changePeerAddress`) checks the pinned node answers at the new one.
 - **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,
@@ -47,7 +52,8 @@ on Task closure and peer authentication come in later slices.
   are unchanged.
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
   as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
-  Agent Orgs, team-local or application-owned definitions.
+  Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
+  ([Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 - How a remote run runs is decided in one place, `NodeCatalogPort`
   (`agent-collaboration/collaborators/node-catalog-port.ts`): each agent's own default runtime, model and
   model settings, and for a Team member without one the Team's default (no inherited layer; see
@@ -63,12 +69,12 @@ on Task closure and peer authentication come in later slices.
   list of nodes, and turning collaboration on or off for a node registers or removes both sides after one
   confirmation (the other node decides through its own settings API; no node writes another node's peers).
 - `peerNodeOffer(nodeId)` answers `{entries: [{name, kind, description}]}` (no address; `description` null when
-  absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `RemoteNodeDiscovery.listAvailableAgentsOf(nodeId)`:
+  absent) or `{refusalCode, unreachableReason}`, exactly one of the two kinds, through `PeerNodeDiscovery.listAvailableAgentsOf(nodeId)`:
   the same path as `list_available_agents` with `node`. The window never asks a peer for its offer (only this
   node's server does); the page words the
   refusal code itself. It takes at most about 20 s (the peer request bound). `peerNodeAvailability(nodeId)` answers
-  `{available, refusalCode, unreachableReason}` through `RemoteNodeDiscovery.checkAvailabilityOf(nodeId)`, the
-  availability question `list_available_nodes` asks, for one peer.
+  `{available, refusalCode, unreachableReason}` through `PeerNodeDiscovery.checkAvailabilityOf(nodeId)`, the
+  availability question `list_peer_nodes` asks, for one peer.
 
 ## Between nodes
 
@@ -130,16 +136,23 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 The refusal codes are one list next to the port (`agent-collaboration/execution/remote/remote-refusal-codes.ts`);
 the agent-facing texts are in `domain/remote-refusals.ts`.
 
+While this node's identity waits for its data migration (autobyteus-290, capability `node_identity`), nothing is sent
+or admitted: the gateway answers HTTP 503 `NODE_IDENTITY_NOT_MIGRATED` (with no `nodeId`), the client refuses with the
+same code ("This node's identity is waiting for its data migration, so nothing was sent to another node."), and
+adding a peer or resolving an address is refused with it as a settings error. A peer that answers 503 with the code is
+named as waiting for its data migration (a refusal, a probe's settings error, an address attempt `identity_pending`),
+not as unreachable or "not an AutoByteus node".
+
 ## Discovery
 
 autobyteus-261. An agent with the opt-in tools (see [Agent Tools](agent_tools.md)) finds its node's peers and what
 each offers, then delegates with `delegate_task` without being told an address.
 
-- **`RemoteDiscoveryChannel`** (`agent-collaboration/execution/remote/remote-discovery-channel.ts`): the port the
-  tools use, owned by `agent-collaboration`, implemented by **`RemoteNodeDiscovery`**
-  (`discovery/remote-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
+- **`PeerDiscoveryChannel`** (`agent-collaboration/execution/remote/peer-discovery-channel.ts`): the port the
+  tools use, owned by `agent-collaboration`, implemented by **`PeerNodeDiscovery`**
+  (`discovery/peer-node-discovery.ts`) and bound at composition, as `RemoteRunChannel` is. The listing does not
   go through the roots: a peer's offer does not depend on the asking run.
-- `listNodes()` (`list_available_nodes`): with the switch on, the registered peers in registration order, all
+- `listPeerNodes()` (`list_peer_nodes`): with the switch on, the registered peers in registration order, all
   asked for *availability* at the same time, each within the 20 s bound, so the whole call takes at most about
   20 s. An accepted answer is `available`; anything else (switch off there, this node not registered there, the
   wrong node, an HTTP error, a transport failure, a timeout) is `unavailable`.

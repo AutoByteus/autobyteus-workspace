@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.9-beta.4",
+  "version": "1.5.9-beta.9",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -56,6 +56,7 @@
     "test:e2e:remote-runs-in-tree": "node tests/e2e/remote-runs-in-tree-probe.mjs",
     "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",
     "test:e2e:remote-nodes-page": "node tests/e2e/remote-nodes-page-probe.mjs",
+    "test:e2e:node-vocabulary": "node tests/e2e/node-vocabulary-probe.mjs",
     "test:e2e:nodes-docker-address": "node tests/e2e/nodes-docker-address-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
@@ -72,6 +73,8 @@
     "test:e2e:projects-navigation": "node tests/e2e/projects-primary-navigation-probe.mjs",
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",
+    "test:e2e:internal-agents": "node tests/e2e/internal-agents-probe.mjs",
+    "test:e2e:model-routing-settings": "node tests/e2e/model-routing-settings-probe.mjs",
     "test:e2e:agent-runtimes-settings": "node tests/e2e/agent-runtimes-settings-probe.mjs",
     "test:e2e:project-manager-ux": "node tests/e2e/project-manager-ux-probe.mjs",
     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
@@ -130,7 +133,7 @@
     "tar": "^7.5.22",
     "uuid": "^11.0.3",
     "vue-pdf-embed": "^2.1.3",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*",

@@ -1,0 +1,201 @@
+{
+  "startedAt": "2026-10-22T19:12:13.316Z",
+  "result": "Pass",
+  "model": "haiku",
+  "cases": {
+    "P-01": {
+      "title": "Run A, toggle never saved: spawned CLI has the variable; writes 1h",
+      "result": "Pass"
+    },
+    "P-02": {
+      "title": "Card switched off by a click: saved false, switch off",
+      "result": "Pass"
+    },
+    "P-03": {
+      "title": "Run B after the click, no restart: spawned CLI has no variable",
+      "result": "Pass"
+    },
+    "P-04": {
+      "title": "Card on again; run C with workspace promptCacheTtl 5m: variable present, writes 5m",
+      "result": "Pass"
+    },
+    "P-05": {
+      "title": "Token Statistics run details: each run shows its real split rows with tokens and cost",
+      "result": "Pass"
+    }
+  },
+  "runs": {
+    "A": {
+      "runId": "cache_ttl_probe_a_default_on_1c1a0f9121ab40e6bcb99154ff4b569a",
+      "definitionName": "cache-ttl-probe-a-default-on",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-A-kHt5U5",
+      "projectSettings": null,
+      "calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input": 2,
+          "cacheRead": 9747,
+          "cacheCreation": 5092,
+          "cacheCreation5m": 0,
+          "cacheCreation1h": 5092,
+          "output": 6
+        }
+      ],
+      "spawnedCli": [
+        {
+          "pid": 50375,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": "1"
+        }
+      ],
+      "written5m": 0,
+      "written1h": 5092,
+      "cacheRead": 9747
+    },
+    "B": {
+      "runId": "cache_ttl_probe_b_card_off_93c3f2e1adfd4c0a83b8598d50c9e099",
+      "definitionName": "cache-ttl-probe-b-card-off",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-B-FB9cqz",
+      "projectSettings": null,
+      "calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input": 2,
+          "cacheRead": 12051,
+          "cacheCreation": 5838,
+          "cacheCreation5m": 0,
+          "cacheCreation1h": 5838,
+          "output": 6
+        }
+      ],
+      "spawnedCli": [
+        {
+          "pid": 50449,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": null
+        }
+      ],
+      "written5m": 0,
+      "written1h": 5838,
+      "cacheRead": 12051
+    },
+    "C": {
+      "runId": "cache_ttl_probe_c_ttl_5m_85f4f21db1a14ceca8dc64d0c3387796",
+      "definitionName": "cache-ttl-probe-c-ttl-5m",
+      "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-C-wxgoyL",
+      "projectSettings": {
+        "promptCacheTtl": "5m"
+      },
+      "calls": [
+        {
+          "model": "claude-haiku-5-5",
+          "input": 2,
+          "cacheRead": 12054,
+          "cacheCreation": 5838,
+          "cacheCreation5m": 5838,
+          "cacheCreation1h": 0,
+          "output": 6
+        }
+      ],
+      "spawnedCli": [
+        {
+          "pid": 50557,
+          "executable": "/Users/normy/.local/bin/claude",
+          "oneHourVariable": "1"
+        }
+      ],
+      "written5m": 5838,
+      "written1h": 0,
+      "cacheRead": 12054
+    }
+  },
+  "breakdowns": {
+    "A": [
+      [
+        "Uncached / full-price input",
+        "1,180",
+        "$0.0001"
+      ],
+      [
+        "Cache hits / discounted input",
+        "9,747",
+        "$0.0001"
+      ],
+      [
+        "Cache write 1h",
+        "5,092",
+        "$0.0010"
+      ],
+      [
+        "Total input cost",
+        "16,019",
+        "$0.0012"
+      ]
+    ],
+    "B": [
+      [
+        "Uncached / full-price input",
+        "1,180",
+        "$0.0001"
+      ],
+      [
+        "Cache hits / discounted input",
+        "12,051",
+        "$0.0001"
+      ],
+      [
+        "Cache write 1h",
+        "5,838",
+        "$0.0012"
+      ],
+      [
+        "Total input cost",
+        "19,069",
+        "$0.0014"
+      ]
+    ],
+    "C": [
+      [
+        "Uncached / full-price input",
+        "1,180",
+        "$0.0001"
+      ],
+      [
+        "Cache hits / discounted input",
+        "12,054",
+        "$0.0001"
+      ],
+      [
+        "Cache write 5m",
+        "5,838",
+        "$0.0007"
+      ],
+      [
+        "Total input cost",
+        "19,072",
+        "$0.0010"
+      ]
+    ]
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:50259",
+    "backend": "terminated:50231",
+    "spawnedCliLeft": 0,
+    "tempRoot": "removed",
+    "workspaces": [
+      "removed",
+      "removed",
+      "removed"
+    ]
+  },
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-273-probe-uhmha3",
+    "backend": "http://127.0.0.1:65228",
+    "frontend": "http://127.0.0.1:65243",
+    "backendPid": 50231,
+    "authMode": "cli (subscription)"
+  },
+  "finishedAt": "2026-10-22T19:12:47.335Z"
+}

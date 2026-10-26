@@ -209,7 +209,9 @@ describe("RootTaskExecutionLifecycle saved-Task work text (task-comments REQ-012
     resources.tasks.get("project_task_7")!.comments = ["Dispatched with this direction.", "User decided: beta only."];
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", task_id: "autobyteus-7" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
-    expect(packet.content.split("\n").slice(3)).toEqual(["Description:", "Ship the relay", "", "Comments:",
+    // The Task line names the Task and its Project (REQ-017, AC-015), then the description and the comments.
+    expect(packet.content.split("\n").slice(3)).toEqual(["Task: autobyteus-7 in Project project_fixture",
+      "If you have get_project_task, it reads this Task again, including comments added later.", "Description:", "Ship the relay", "", "Comments:",
       "- Dispatched with this direction.", "- User decided: beta only."]);
     const plain = setup();
     plain.resources.addTask("project_task_8", "Write the notes", "autobyteus-8");

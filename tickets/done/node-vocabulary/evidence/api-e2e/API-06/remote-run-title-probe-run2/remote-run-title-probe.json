@@ -1,0 +1,121 @@
+{
+  "startedAt": "2026-10-24T12:50:33.346Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 58662,
+      "nodeId": "srv_yfD7a0bNu5ZmcyZjqiC2sxbcztsVpZHZ"
+    },
+    "alpha": {
+      "port": 58661,
+      "nodeId": "srv_4Urfz2NP-u5TnvCoorf0ThKpHwrKIo_D"
+    }
+  },
+  "runs": {
+    "delegatorRun": "delegator_96b59df8670e47279ace741c5527ec6a",
+    "peerAgentRun": "publisher_ed9ea40ad8c64c88a3760ba8f8766089",
+    "peerTeamRun": "studio_team_88d1f7d421a14cbe98a18288b2077844",
+    "peerCoordinator": "publisher_d7321dd50a664e5b97de1b0993d6f4e4",
+    "plainRun": "writer_3bc43590624249f8b2ee0f04da6b92fd",
+    "skillRun": "writer_1949588b0ebe4452a7e4e7877e99e8ba"
+  },
+  "storedTitles": {
+    "publisher_ed9ea40ad8c64c88a3760ba8f8766089": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+    "studio_team_88d1f7d421a14cbe98a18288b2077844": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+    "writer_1949588b0ebe4452a7e4e7877e99e8ba": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE.",
+    "writer_3bc43590624249f8b2ee0f04da6b92fd": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE."
+  },
+  "cases": {
+    "RRT-01": {
+      "result": "Pass",
+      "stored": {
+        "publisher_ed9ea40ad8c64c88a3760ba8f8766089": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "studio_team_88d1f7d421a14cbe98a18288b2077844": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "writer_3bc43590624249f8b2ee0f04da6b92fd": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "writer_1949588b0ebe4452a7e4e7877e99e8ba": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE."
+      }
+    },
+    "RRT-02": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_ed9ea40ad8c64c88a3760ba8f8766089",
+        "writer_1949588b0ebe4452a7e4e7877e99e8ba",
+        "writer_3bc43590624249f8b2ee0f04da6b92fd"
+      ]
+    },
+    "RRT-03": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_ed9ea40ad8c64c88a3760ba8f8766089",
+        "writer_1949588b0ebe4452a7e4e7877e99e8ba",
+        "writer_3bc43590624249f8b2ee0f04da6b92fd"
+      ]
+    },
+    "RRT-04": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "centerPaneTop": [
+        "P",
+        "Cut the launch trailer and have it checke…",
+        "Idle"
+      ],
+      "storedAfter": "Cut the launch trailer and have it checked. Marker AGENT-TITLE."
+    },
+    "RRT-05": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "teamRowSeen": [
+        {
+          "atMs": 2,
+          "text": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+        }
+      ],
+      "storedAfter": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+    },
+    "RRT-06": {
+      "result": "Pass",
+      "terminateStatus": 200,
+      "stoppedRow": "Draft a note about owls. Marker SKILL-TITLE.",
+      "stoppedAfterReload": "Draft a note about owls. Marker SKILL-TITLE.",
+      "liveContexts": [
+        "publisher_ed9ea40ad8c64c88a3760ba8f8766089",
+        "writer_3bc43590624249f8b2ee0f04da6b92fd"
+      ]
+    }
+  },
+  "browserErrors": [
+    "console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "console: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue",
+    "console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: browser errors: console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) | console: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue | console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:45:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:313:3",
+  "finishedAt": "2026-10-24T12:51:34.157Z"
+}

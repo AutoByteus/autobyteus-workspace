@@ -1,0 +1,90 @@
+# IMP-04 web component tests + guards (autobyteus-308 IR-001, codex/internal-agents (IR-001 tree, committed as 813f7208d2), macOS darwin 25.5, v22.23.1, 2026-10-25T21:07:35Z)
+stderr | components/settings/__tests__/ShowInternalAgentsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ShowInternalAgentsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts > PhoneSetupGuideCard > renders macOS-only setup, mobile URL shape, and app-direct Serve commands 15ms
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts > PhoneSetupGuideCard > copies the app-direct macOS Serve command and shows copied feedback 18ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > persists valid inclusive interval 100 34ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > persists valid inclusive interval 2000 10ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > rejects invalid interval 99 without a write 5ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > rejects invalid interval 2001 without a write 4ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > rejects invalid interval 500.5 without a write 3ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > rejects invalid interval  without a write 3ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > resets a changed draft to the 500 ms default 5ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts > LiveResponseStreamingCard > disables editing when the bound server has no effective value 3ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts > ShowInternalAgentsCard > is off when the setting was never saved (the server default), with its one-sentence explanation 11ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts > ShowInternalAgentsCard > reflects a saved true 4ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts > ShowInternalAgentsCard > saves the setting and then refreshes the agent list and run history 9ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts > ShowInternalAgentsCard > keeps the previous value and shows the error when saving fails; nothing is refreshed 7ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > composes only current endpoint and focused Basics cards 52ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts > ServerSettingsBasicsPanel > owns Basics notifications emitted by endpoint and web search cards 18ms
+stdout | components/settings/__tests__/LanguageSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts > LanguageSettingsManager > renders all language options 8ms
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts > LanguageSettingsManager > persists a changed preference through the runtime boundary 7ms
+ ✓ components/settings/__tests__/LanguageSettingsManager.integration.spec.ts > LanguageSettingsManager integration > renders real catalog copy and switches to Simplified Chinese with persisted override 22ms
+ ✓ components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts > UpdateChecksCard GitHub wait on open (CR-001) > shows a wait the node learned after the settings were first read 48ms
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts > TokenUsageStatistics > opens Analytics by default and keeps Run details separate 19ms
+
+ Test Files  35 passed (35)
+      Tests  205 passed (205)
+   Start at  22:07:38
+   Duration  15.75s (transform 6.32s, setup 108.05s, collect 8.33s, tests 2.05s, environment 7.71s, prepare 5.01s)
+
+vitest exit 0
+[guard:web-boundary] Passed.
+guard:web-boundary exit 0
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit 0
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/internal-agents/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+audit:localization-literals exit 0

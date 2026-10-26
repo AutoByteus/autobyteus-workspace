@@ -1,0 +1,994 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:33128) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/.env
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T04:49:15.500Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-sE7nKK/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-10T04:49:15.658Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39m[2026-10-10T04:49:15.659Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID claude-ping-60366913-5e42-476c-ad57-e53861969c07.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mAgent Definition created successfully with ID: claude-ping-60366913-5e42-476c-ad57-e53861969c07
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID claude-pong-60366913-5e42-476c-ad57-e53861969c07.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mAgent Definition created successfully with ID: claude-pong-60366913-5e42-476c-ad57-e53861969c07
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID claude-ping-60366913-5e42-476c-ad57-e53861969c07.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mAgent Definition with ID claude-ping-60366913-5e42-476c-ad57-e53861969c07 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID claude-pong-60366913-5e42-476c-ad57-e53861969c07.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[22m[39mAgent Definition with ID claude-pong-60366913-5e42-476c-ad57-e53861969c07 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2minterrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[22m[39mIn-memory cache: Added new agent definition with ID claude-interrupt-worker-5c8d5b59-7fcd-445b-9624-996f5d33438d.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2minterrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[22m[39mAgent Definition created successfully with ID: claude-interrupt-worker-5c8d5b59-7fcd-445b-9624-996f5d33438d
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2minterrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[22m[39mIn-memory cache: Removed agent definition with ID claude-interrupt-worker-5c8d5b59-7fcd-445b-9624-996f5d33438d.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2minterrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[22m[39mAgent Definition with ID claude-interrupt-worker-5c8d5b59-7fcd-445b-9624-996f5d33438d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Added new agent definition with ID claude-parent-a2d42d25-fa42-4e35-bdc3-92f380d15ab7.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mAgent Definition created successfully with ID: claude-parent-a2d42d25-fa42-4e35-bdc3-92f380d15ab7
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Added new agent definition with ID claude-specialist-a2d42d25-fa42-4e35-bdc3-92f380d15ab7.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mAgent Definition created successfully with ID: claude-specialist-a2d42d25-fa42-4e35-bdc3-92f380d15ab7
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Removed agent definition with ID claude-parent-a2d42d25-fa42-4e35-bdc3-92f380d15ab7.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mAgent Definition with ID claude-parent-a2d42d25-fa42-4e35-bdc3-92f380d15ab7 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Removed agent definition with ID claude-specialist-a2d42d25-fa42-4e35-bdc3-92f380d15ab7.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[22m[39mAgent Definition with ID claude-specialist-a2d42d25-fa42-4e35-bdc3-92f380d15ab7 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-dBVzTK
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-dBVzTK.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mCreated and registered workspace ID: agent_ws_f451e805b3c44217095a385b9ee9165944ceacbef5e74020de0bae6ea2b46ab9
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mIn-memory cache: Added new agent definition with ID claude-professor-03708867-9ac1-46b2-90f0-95b2cfcf536d.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mAgent Definition created successfully with ID: claude-professor-03708867-9ac1-46b2-90f0-95b2cfcf536d
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mIn-memory cache: Removed agent definition with ID claude-professor-03708867-9ac1-46b2-90f0-95b2cfcf536d.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[22m[39mAgent Definition with ID claude-professor-03708867-9ac1-46b2-90f0-95b2cfcf536d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-fQEvDZ
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-fQEvDZ.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mCreated and registered workspace ID: agent_ws_d4c0761f772554705c90c044fcd78bf03f282bdce3535d12ccdff51b5e5f03c4
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID claude-projection-professor-eef047bf-0e82-4a6c-9c3d-df12350025e1.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mAgent Definition created successfully with ID: claude-projection-professor-eef047bf-0e82-4a6c-9c3d-df12350025e1
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID claude-projection-student-eef047bf-0e82-4a6c-9c3d-df12350025e1.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mAgent Definition created successfully with ID: claude-projection-student-eef047bf-0e82-4a6c-9c3d-df12350025e1
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID claude-projection-professor-eef047bf-0e82-4a6c-9c3d-df12350025e1.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mAgent Definition with ID claude-projection-professor-eef047bf-0e82-4a6c-9c3d-df12350025e1 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID claude-projection-student-eef047bf-0e82-4a6c-9c3d-df12350025e1.
+
+[90mstdout[2m | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mClaude team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in claude team runtime
+[22m[39mAgent Definition with ID claude-projection-student-eef047bf-0e82-4a6c-9c3d-df12350025e1 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 5153[2mms[22m[39m
+[31m     [31m×[31m routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime[39m[33m 1034[2mms[22m[39m
+[31m     [31m×[31m interrupts a pending Claude team turn and accepts a follow-up on the same websocket[39m[33m 973[2mms[22m[39m
+[31m     [31m×[31m creates a nested team definition and routes live Claude inter-agent messaging between leaf members[39m[33m 1114[2mms[22m[39m
+[31m     [31m×[31m preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId[39m[33m 883[2mms[22m[39m
+[31m     [31m×[31m serves every team member projection after terminate, restore, and continue in claude team runtime[39m[33m 900[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:35513) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/.env
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T04:49:23.495Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-ogH7LA/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-10T04:49:23.643Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39m[2026-10-10T04:49:23.643Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:49:24.046875Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mIn-memory cache: Added new agent definition with ID codex-ping-a116466b-d939-4263-a70e-d6bb08c91684.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mAgent Definition created successfully with ID: codex-ping-a116466b-d939-4263-a70e-d6bb08c91684
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mIn-memory cache: Added new agent definition with ID codex-pong-a116466b-d939-4263-a70e-d6bb08c91684.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mAgent Definition created successfully with ID: codex-pong-a116466b-d939-4263-a70e-d6bb08c91684
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mIn-memory cache: Removed agent definition with ID codex-ping-a116466b-d939-4263-a70e-d6bb08c91684.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mAgent Definition with ID codex-ping-a116466b-d939-4263-a70e-d6bb08c91684 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mIn-memory cache: Removed agent definition with ID codex-pong-a116466b-d939-4263-a70e-d6bb08c91684.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[22m[39mAgent Definition with ID codex-pong-a116466b-d939-4263-a70e-d6bb08c91684 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:49:24.507474Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Added new agent definition with ID codex-parent-fe7fd5ea-d0ff-438a-9038-9cbe919229f7.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mAgent Definition created successfully with ID: codex-parent-fe7fd5ea-d0ff-438a-9038-9cbe919229f7
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Added new agent definition with ID codex-specialist-fe7fd5ea-d0ff-438a-9038-9cbe919229f7.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mAgent Definition created successfully with ID: codex-specialist-fe7fd5ea-d0ff-438a-9038-9cbe919229f7
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Removed agent definition with ID codex-parent-fe7fd5ea-d0ff-438a-9038-9cbe919229f7.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mAgent Definition with ID codex-parent-fe7fd5ea-d0ff-438a-9038-9cbe919229f7 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mIn-memory cache: Removed agent definition with ID codex-specialist-fe7fd5ea-d0ff-438a-9038-9cbe919229f7.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[22m[39mAgent Definition with ID codex-specialist-fe7fd5ea-d0ff-438a-9038-9cbe919229f7 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:49:24.920202Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID codex-professor-0348d456-9c21-4f64-bbe0-0b31076b5650.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mAgent Definition created successfully with ID: codex-professor-0348d456-9c21-4f64-bbe0-0b31076b5650
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID codex-student-0348d456-9c21-4f64-bbe0-0b31076b5650.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mAgent Definition created successfully with ID: codex-student-0348d456-9c21-4f64-bbe0-0b31076b5650
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID codex-professor-0348d456-9c21-4f64-bbe0-0b31076b5650.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mAgent Definition with ID codex-professor-0348d456-9c21-4f64-bbe0-0b31076b5650 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID codex-student-0348d456-9c21-4f64-bbe0-0b31076b5650.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[22m[39mAgent Definition with ID codex-student-0348d456-9c21-4f64-bbe0-0b31076b5650 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:49:25.215757Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-uhBtel
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-workspaceid-e2e-uhBtel.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mCreated and registered workspace ID: agent_ws_d62e1cd965fb5c0ad1af7782c533b8324efce821e123264b4721aa9698e22cca
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mIn-memory cache: Added new agent definition with ID codex-professor-7a0a3611-54ed-4bfe-9877-d99158806239.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mAgent Definition created successfully with ID: codex-professor-7a0a3611-54ed-4bfe-9877-d99158806239
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mIn-memory cache: Removed agent definition with ID codex-professor-7a0a3611-54ed-4bfe-9877-d99158806239.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[22m[39mAgent Definition with ID codex-professor-7a0a3611-54ed-4bfe-9877-d99158806239 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:49:25.515925Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID codex-projection-professor-d98ac874-fc13-4cd7-a302-e78628d4eac2.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mAgent Definition created successfully with ID: codex-projection-professor-d98ac874-fc13-4cd7-a302-e78628d4eac2
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mIn-memory cache: Added new agent definition with ID codex-projection-student-d98ac874-fc13-4cd7-a302-e78628d4eac2.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mAgent Definition created successfully with ID: codex-projection-student-d98ac874-fc13-4cd7-a302-e78628d4eac2
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID codex-projection-professor-d98ac874-fc13-4cd7-a302-e78628d4eac2.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mAgent Definition with ID codex-projection-professor-d98ac874-fc13-4cd7-a302-e78628d4eac2 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mIn-memory cache: Removed agent definition with ID codex-projection-student-d98ac874-fc13-4cd7-a302-e78628d4eac2.
+
+[90mstdout[2m | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22m[2mCodex team inter-agent roundtrip e2e (live transport)[2m > [22m[2mserves every team member projection after terminate, restore, and continue in codex team runtime
+[22m[39mAgent Definition with ID codex-projection-student-d98ac874-fc13-4cd7-a302-e78628d4eac2 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 2156[2mms[22m[39m
+[31m     [31m×[31m preserves send_message_to ping->pong->ping invariants with ultra reasoning[39m[33m 494[2mms[22m[39m
+[31m     [31m×[31m creates a nested team definition and routes live Codex inter-agent messaging between leaf members[39m[33m 448[2mms[22m[39m
+[31m     [31m×[31m streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime[39m[33m 387[2mms[22m[39m
+[31m     [31m×[31m preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath[39m[32m 270[2mms[22m[39m
+[31m     [31m×[31m serves every team member projection after terminate, restore, and continue in codex team runtime[39m[33m 326[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:35867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/.env
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T04:49:28.322Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-Spz2Vc/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-10T04:49:28.450Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39m[2026-10-10T04:49:28.450Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mIn-memory cache: Added new agent definition with ID busy-delivery-sender-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Definition created successfully with ID: busy-delivery-sender-80de3dc3-9564-4999-b4a4-0763dce779fd
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mIn-memory cache: Added new agent definition with ID busy-delivery-worker-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Definition created successfully with ID: busy-delivery-worker-80de3dc3-9564-4999-b4a4-0763dce779fd
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39m[2026-10-10T04:49:28.569Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID busy-delivery-team-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Team Definition created successfully with ID: busy-delivery-team-80de3dc3-9564-4999-b4a4-0763dce779fd
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mCreated and registered workspace ID: agent_ws_eb15f1b6573bc8e522007910e626c78283531e853f06b07f5bb3228ae7d399b8
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent team websocket attached for team run busy_delivery_team_80de3dc3_9564_4999_b4a4_0763d_b547e8d6ba174282aaf47ad948fed4fe
+Created agent session 9fc537b6-5a00-4109-96b9-48f8cbc184d8 for run busy_delivery_team_80de3dc3_9564_4999_b4a4_0763d_b547e8d6ba174282aaf47ad948fed4fe
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Team WebSocket connected: session=9fc537b6-5a00-4109-96b9-48f8cbc184d8, run=busy_delivery_team_80de3dc3_9564_4999_b4a4_0763d_b547e8d6ba174282aaf47ad948fed4fe
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mReusing registered workspace ID: agent_ws_eb15f1b6573bc8e522007910e626c78283531e853f06b07f5bb3228ae7d399b8
+
+(node:35867) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-hwZkqS.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mReusing registered workspace ID: agent_ws_eb15f1b6573bc8e522007910e626c78283531e853f06b07f5bb3228ae7d399b8
+
+(node:35867) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39m[AC-004 claude worker] worker/sender stream: [{"index":3,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":4,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":5,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":6,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":8,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":9,"type":"TURN_STARTED","run":"worker"},{"index":10,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":11,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":12,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"worker"},{"index":13,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":14,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":15,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":16,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":18,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":19,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":20,"type":"TOOL_EXECUTION_STARTED","run":"worker","tool":"Bash","args":{"command":"python3 -c \"import time; time.sleep(25); print('WORK_DONE')\"","description":"Run python sleep and print WORK_DONE"}},{"index":21,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":22,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":23,"type":"TOOL_APPROVED","run":"worker","tool":"Bash"},{"index":24,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":25,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":26,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":27,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":28,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":30,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":31,"type":"TURN_STARTED","run":"sender"},{"index":32,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":33,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":34,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"sender"},{"index":35,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":36,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":37,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":38,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":40,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":41,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":42,"type":"TOOL_EXECUTION_STARTED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender 80de3d: your final reply must include the word PINEAPPLE.","message_type":"direct"}},{"index":43,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":46,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":47,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":48,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":50,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":51,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":52,"type":"TOOL_EXECUTION_SUCCEEDED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender 80de3d: your final reply must include the word PINEAPPLE.","message_type":"direct"},"result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /worker.\",\"target_agent_run_id\":\"busy_delivery_worker_80de3dc3_9564_4999_b4a4_076_78fa26ca29"},{"index":53,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":54,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":56,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":57,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":59,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":60,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":62,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":63,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":65,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":66,"type":"TURN_COMPLETED","run":"sender"},{"index":67,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":68,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":69,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":71,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":72,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":73,"type":"TOOL_EXECUTION_SUCCEEDED","run":"worker","tool":"Bash","args":{"command":"python3 -c \"import time; time.sleep(25); print('WORK_DONE')\"","description":"Run python sleep and print WORK_DONE"},"result":"WORK_DONE"},{"index":74,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":75,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":77,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":78,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":80,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":81,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":83,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":84,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":86,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":87,"type":"TURN_COMPLETED","run":"worker"},{"index":88,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":89,"type":"AGENT_INPUT_STATE","run":"worker"}]
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39m[AC-004 claude worker] worker turn busy_delivery_worker_80de3dc3_9564_4999_b4a4_076_78fa26ca2945426f8c4dec2dac925703:turn:95b0652e-ee7d-4de0-a760-beac6b40d7e6: receipt@44 < completed@87
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mClosed agent session 9fc537b6-5a00-4109-96b9-48f8cbc184d8
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39m[2026-10-10T04:50:09.106Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID busy-delivery-team-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Team Definition with ID busy-delivery-team-80de3dc3-9564-4999-b4a4-0763dce779fd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mIn-memory cache: Removed agent definition with ID busy-delivery-sender-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Definition with ID busy-delivery-sender-80de3dc3-9564-4999-b4a4-0763dce779fd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mIn-memory cache: Removed agent definition with ID busy-delivery-worker-80de3dc3-9564-4999-b4a4-0763dce779fd.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (claude worker)
+[22m[39mAgent Definition with ID busy-delivery-worker-80de3dc3-9564-4999-b4a4-0763dce779fd deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mIn-memory cache: Added new agent definition with ID busy-delivery-sender-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Definition created successfully with ID: busy-delivery-sender-dcaaef74-f197-45d8-b132-91d86074d945
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mIn-memory cache: Added new agent definition with ID busy-delivery-worker-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Definition created successfully with ID: busy-delivery-worker-dcaaef74-f197-45d8-b132-91d86074d945
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39m[2026-10-10T04:50:09.156Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID busy-delivery-team-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Team Definition created successfully with ID: busy-delivery-team-dcaaef74-f197-45d8-b132-91d86074d945
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mCreated and registered workspace ID: agent_ws_32cccd224a259f987aef6637359fce3f9c6874a382840712c365a357d2070e35
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent team websocket attached for team run busy_delivery_team_dcaaef74_f197_45d8_b132_91d86_3f31d516662842c392a99a572b2348be
+Created agent session 3f88eeea-b7ab-43c6-b43f-24f9cad454e4 for run busy_delivery_team_dcaaef74_f197_45d8_b132_91d86_3f31d516662842c392a99a572b2348be
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Team WebSocket connected: session=3f88eeea-b7ab-43c6-b43f-24f9cad454e4, run=busy_delivery_team_dcaaef74_f197_45d8_b132_91d86_3f31d516662842c392a99a572b2348be
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mReusing registered workspace ID: agent_ws_32cccd224a259f987aef6637359fce3f9c6874a382840712c365a357d2070e35
+
+[90mstderr[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-10T04:50:09.515957Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mReusing registered workspace ID: agent_ws_32cccd224a259f987aef6637359fce3f9c6874a382840712c365a357d2070e35
+
+(node:35867) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39m[AC-004 codex worker] worker/sender stream: [{"index":3,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":4,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":5,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":6,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":8,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":9,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"worker"},{"index":10,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":11,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":12,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":13,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":14,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":15,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":16,"type":"TURN_STARTED","run":"worker"},{"index":17,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":18,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":20,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":22,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":23,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":25,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":27,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":28,"type":"TOOL_EXECUTION_STARTED","run":"worker","tool":"run_bash","args":{"command":"/bin/bash -lc \"python3 -c \\\"import time; time.sleep(25); print('WORK_DONE')\\\"\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988"}},{"index":29,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":30,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":31,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":32,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":33,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":35,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":36,"type":"TURN_STARTED","run":"sender"},{"index":37,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":38,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":39,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"sender"},{"index":40,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":41,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":42,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":43,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":45,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":46,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":47,"type":"TOOL_EXECUTION_STARTED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender dcaaef: your final reply must include the word PINEAPPLE.","message_type":"direct"}},{"index":48,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":51,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":52,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":53,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":55,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":56,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":57,"type":"TOOL_EXECUTION_SUCCEEDED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender dcaaef: your final reply must include the word PINEAPPLE.","message_type":"direct"},"result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /worker.\",\"target_agent_run_id\":\"busy_delivery_worker_dcaaef74_f197_45d8_b132_91d_5376fb9275"},{"index":58,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":59,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":61,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":62,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":64,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":65,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":67,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":68,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":70,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":71,"type":"TURN_COMPLETED","run":"sender"},{"index":72,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":73,"type":"AGENT_INPUT_STATE","run":"sender"},{"index":74,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":75,"type":"TOOL_EXECUTION_SUCCEEDED","run":"worker","tool":"run_bash","args":{"command":"/bin/bash -lc \"python3 -c \\\"import time; time.sleep(25); print('WORK_DONE')\\\"\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-PI4988"},"result":"WORK_DONE\n"},{"index":76,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":78,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":79,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":81,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":82,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":84,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":86,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":87,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":89,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":91,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":92,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":94,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":95,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":97,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":98,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":100,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":101,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":103,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":104,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":106,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":107,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":109,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":110,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":112,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":113,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":114,"type":"AGENT_INPUT_STATE","run":"worker"},{"index":115,"type":"TURN_COMPLETED","run":"worker"},{"index":116,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":117,"type":"AGENT_INPUT_STATE","run":"worker"}]
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39m[AC-004 codex worker] worker turn 01a12425-a88f-7f23-944b-bbbe5e5a6bba: receipt@49 < completed@115
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mClosed agent session 3f88eeea-b7ab-43c6-b43f-24f9cad454e4
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39m[2026-10-10T04:50:52.406Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID busy-delivery-team-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Team Definition with ID busy-delivery-team-dcaaef74-f197-45d8-b132-91d86074d945 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mIn-memory cache: Removed agent definition with ID busy-delivery-sender-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Definition with ID busy-delivery-sender-dcaaef74-f197-45d8-b132-91d86074d945 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mIn-memory cache: Removed agent definition with ID busy-delivery-worker-dcaaef74-f197-45d8-b132-91d86074d945.
+
+[90mstdout[2m | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts[2m > [22m[2mTeammate message to a busy member (live team E2E)[2m > [22m[2mdelivers a teammate message into the busy member's running turn (codex worker)
+[22m[39mAgent Definition with ID busy-delivery-worker-dcaaef74-f197-45d8-b132-91d86074d945 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 84110[2mms[22m[39m
+     [33m[2m✓[22m[39m delivers a teammate message into the busy member's running turn (claude worker) [33m 40603[2mms[22m[39m
+     [33m[2m✓[22m[39m delivers a teammate message into the busy member's running turn (codex worker) [33m 43299[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 10 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mClaude team inter-agent roundtrip e2e (live transport)[2m > [22mroutes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mClaude team inter-agent roundtrip e2e (live transport)[2m > [22minterrupts a pending Claude team turn and accepts a follow-up on the same websocket
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mClaude team inter-agent roundtrip e2e (live transport)[2m > [22mcreates a nested team definition and routes live Claude inter-agent messaging between leaf members
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mClaude team inter-agent roundtrip e2e (live transport)[2m > [22mpreserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mClaude team inter-agent roundtrip e2e (live transport)[2m > [22mserves every team member projection after terminate, restore, and continue in claude team runtime
+[41m[1m FAIL [22m[49m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mCodex team inter-agent roundtrip e2e (live transport)[2m > [22mpreserves send_message_to ping->pong->ping invariants with ultra reasoning
+[41m[1m FAIL [22m[49m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mCodex team inter-agent roundtrip e2e (live transport)[2m > [22mcreates a nested team definition and routes live Codex inter-agent messaging between leaf members
+[41m[1m FAIL [22m[49m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mCodex team inter-agent roundtrip e2e (live transport)[2m > [22mstreams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+[41m[1m FAIL [22m[49m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mCodex team inter-agent roundtrip e2e (live transport)[2m > [22mpreserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+[41m[1m FAIL [22m[49m tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts[2m > [22mCodex team inter-agent roundtrip e2e (live transport)[2m > [22mserves every team member projection after terminate, restore, and continue in codex team runtime
+[31m[1mGraphQLError[22m: Variable "$input" got invalid value { memberName: "ping", ref: "claude-ping-60366913-5e42-476c-ad57-e53861969c07", refType: "AGENT", refScope: "SHARED" } at "input.nodes[0]"; Field "refType" is not defined by type "TeamMemberInput". Did you mean "refScope"?[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m137:11[22m[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m49:14[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m75:16[22m[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m73:20[22m[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m49:14[22m[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m120:34[22m[39m
+[90m [2m❯[22m coerceInputValueImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m49:14[22m[39m
+[90m [2m❯[22m coerceInputValue ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/coerceInputValue.js:[2m32:10[22m[39m
+[90m [2m❯[22m coerceVariableValues ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/values.js:[2m132:69[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 06:49:04
+[2m   Duration [22m 107.55s[2m (transform 7.09s, setup 54ms, import 15.16s, tests 91.42s, environment 2ms)[22m
+
+exit 1

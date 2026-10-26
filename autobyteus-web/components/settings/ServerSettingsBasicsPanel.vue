@@ -6,7 +6,9 @@
       <ApplicationsFeatureToggleCard />
       <MediaDefaultModelsCard />
       <CodexFullAccessCard />
+      <ClaudeRuntimeCard />
       <LiveResponseStreamingCard />
+      <ShowInternalAgentsCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
       <CompactionConfigCard />
@@ -27,6 +29,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
+import ClaudeRuntimeCard from '~/components/settings/ClaudeRuntimeCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItemsCard.vue'
@@ -34,6 +37,7 @@ import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
 import UpdateChecksCard from '~/components/settings/UpdateChecksCard.vue'
 import LiveResponseStreamingCard from '~/components/settings/LiveResponseStreamingCard.vue'
+import ShowInternalAgentsCard from '~/components/settings/ShowInternalAgentsCard.vue'
 import WebSearchConfigurationCard from '~/components/settings/WebSearchConfigurationCard.vue'
 
 type NotificationType = 'success' | 'error'

@@ -14,6 +14,8 @@ describe('nodeConnectionErrorText', () => {
     expect(causeText(t, 'not_found', 'host.docker.internal:29695', 'docker')).toBe("host.docker.internal can't be found from docker.")
     expect(causeText(t, 'not_autobyteus', 'x')).toBe("Something answers there, but it isn't an AutoByteus node.")
     expect(causeText(t, 'unreachable', 'x')).not.toMatch(/fetch failed/)
+    // autobyteus-290 N-910: a node whose identity waits for its data migration.
+    expect(causeText(t, 'identity_pending', 'x')).toBe("This node's identity is waiting for its data migration.")
   })
 
   it('words a refused change by its code, an address lookup by its first attempt', () => {
@@ -24,6 +26,9 @@ describe('nodeConnectionErrorText', () => {
     expect(failureText(t, { code: 'REMOTE_COLLABORATION_OFF', message: 'x' }, { node: 'studio' })).toBe('Remote collaboration is off on studio.')
     expect(failureText(t, { code: 'PEER_NAME_TAKEN', message: 'x' }, { node: '8003', name: 'Embedded Node' })).toBe('8003 already has a node named Embedded Node.')
     expect(failureText(t, { code: 'PEER_IDENTITY_MISMATCH', message: 'x' }, { node: 'spare' })).toBe('A different node answers there than the one registered.')
+    expect(failureText(t, { code: 'NODE_IDENTITY_NOT_MIGRATED', message: 'x' }, { node: 'spare' })).toBe("This node's identity is waiting for its data migration.")
+    expect(failureText(t, { code: 'PEER_UNREACHABLE', message: 'x', attempts: [{ address: 'http://spare:29695', result: 'identity_pending' }] }, { node: 'spare' }))
+      .toBe("This node's identity is waiting for its data migration.")
   })
 
   it('the Docker hint only for a node in a container whose first address was loopback, with host.docker.internal on that port', () => {

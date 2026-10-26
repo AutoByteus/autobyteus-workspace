@@ -115,6 +115,10 @@ export class AgentDefinition {
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfig | null;
 
+  /** An internal agent (the system's own helper); listed only while "Show internal agents" is on. */
+  @Field(() => Boolean)
+  internal!: boolean;
+
   /** Set when the definition is served from its last working version; names the file and reason. */
   @Field(() => DefinitionLoadIssue, { nullable: true })
   loadIssue?: DefinitionLoadIssue | null;

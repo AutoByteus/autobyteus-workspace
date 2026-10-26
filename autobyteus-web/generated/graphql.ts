@@ -89,6 +89,7 @@ export type AgentDefinition = {
   id: Scalars['String']['output'];
   inputProcessorNames: Array<Scalars['String']['output']>;
   instructions: Scalars['String']['output'];
+  internal: Scalars['Boolean']['output'];
   lifecycleProcessorNames: Array<Scalars['String']['output']>;
   llmResponseProcessorNames: Array<Scalars['String']['output']>;
   loadIssue?: Maybe<DefinitionLoadIssue>;
@@ -980,7 +981,7 @@ export type CreateAgentTeamRunResult = {
 };
 
 export type CreateMemoryHubCredentialInput = {
-  boundSourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  boundMemorySyncSourceId?: InputMaybe<Scalars['String']['input']>;
   label?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -996,6 +997,7 @@ export type CreateProjectTaskInput = {
   description: Scalars['String']['input'];
   partOfTaskId?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type CreateSkillInput = {
@@ -1485,7 +1487,7 @@ export type MemoryAvailabilitySummary = {
 };
 
 export type MemoryExplorerSourceInput = {
-  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  memorySyncSourceId?: InputMaybe<Scalars['String']['input']>;
   type: MemoryExplorerSourceType;
 };
 
@@ -1496,8 +1498,8 @@ export type MemoryExplorerSourceOption = {
   label: Scalars['String']['output'];
   lastImportedAt?: Maybe<Scalars['String']['output']>;
   lastSyncStatus?: Maybe<Scalars['String']['output']>;
+  memorySyncSourceId?: Maybe<Scalars['String']['output']>;
   readOnly: Scalars['Boolean']['output'];
-  sourceNodeId?: Maybe<Scalars['String']['output']>;
   type: MemoryExplorerSourceType;
 };
 
@@ -1532,9 +1534,9 @@ export type MemoryHubConnectionTestResultGql = {
   __typename?: 'MemoryHubConnectionTestResultGql';
   authenticated: Scalars['Boolean']['output'];
   hubEnabled: Scalars['Boolean']['output'];
+  memorySyncSourceId: Scalars['String']['output'];
   message?: Maybe<Scalars['String']['output']>;
   ok: Scalars['Boolean']['output'];
-  sourceNodeId: Scalars['String']['output'];
 };
 
 export type MemoryHubCredentialMutationResultGql = {
@@ -1545,7 +1547,7 @@ export type MemoryHubCredentialMutationResultGql = {
 
 export type MemoryHubCredentialSummaryGql = {
   __typename?: 'MemoryHubCredentialSummaryGql';
-  boundSourceNodeId?: Maybe<Scalars['String']['output']>;
+  boundMemorySyncSourceId?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   credentialId: Scalars['String']['output'];
   label?: Maybe<Scalars['String']['output']>;
@@ -1565,7 +1567,7 @@ export type MemoryImportSummaryGql = {
   lastImportedAt?: Maybe<Scalars['String']['output']>;
   lastKnownEndpoint?: Maybe<Scalars['String']['output']>;
   lastSyncStatus?: Maybe<Scalars['String']['output']>;
-  sourceNodeId: Scalars['String']['output'];
+  memorySyncSourceId: Scalars['String']['output'];
   totalBytes: Scalars['Float']['output'];
 };
 
@@ -1607,7 +1609,7 @@ export type MemorySyncSourceConfigGql = {
   hubTokenConfigured: Scalars['Boolean']['output'];
   hubTokenPreview?: Maybe<Scalars['String']['output']>;
   intervalMs: Scalars['Int']['output'];
-  sourceNodeId?: Maybe<Scalars['String']['output']>;
+  memorySyncSourceId?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2490,6 +2492,7 @@ export type ProjectTask = {
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
   taskKey: Scalars['String']['output'];
+  title: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -2624,6 +2627,7 @@ export type Query = {
   applicationPackageDetails?: Maybe<ApplicationPackageDetails>;
   applicationPackages: Array<ApplicationPackage>;
   applicationsCapability: ApplicationsCapability;
+  availableAgentRuntimes: Scalars['JSON']['output'];
   availableOptionalInputProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLifecycleProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLlmResponseProcessorNames: Array<Scalars['String']['output']>;
@@ -3573,6 +3577,7 @@ export type TaskWorkerTaskView = {
   projectId?: Maybe<Scalars['String']['output']>;
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type TeamCommunicationMessageObject = {
@@ -3685,8 +3690,8 @@ export type TerminateAgentTeamRunResult = {
 
 export type TestMemoryHubConnectionInput = {
   hubBaseUrl?: InputMaybe<Scalars['String']['input']>;
+  memorySyncSourceId?: InputMaybe<Scalars['String']['input']>;
   mode: MemoryHubConnectionTestMode;
-  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -4078,7 +4083,7 @@ export type UpdateMemorySyncSourceConfigInput = {
   hubBaseUrl?: InputMaybe<Scalars['String']['input']>;
   hubToken?: InputMaybe<Scalars['String']['input']>;
   intervalMs?: InputMaybe<Scalars['Int']['input']>;
-  sourceNodeId?: InputMaybe<Scalars['String']['input']>;
+  memorySyncSourceId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateNotification = {
@@ -4131,6 +4136,7 @@ export type UpdateProjectTaskInput = {
   partOfTaskId?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['String']['input'];
   taskId: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type UpdateProjectWorkspaceInput = {
@@ -4788,49 +4794,49 @@ export type ImportMcpServerConfigsMutationVariables = Exact<{
 
 export type ImportMcpServerConfigsMutation = { __typename?: 'Mutation', importMcpServerConfigs: { __typename: 'ImportMcpServerConfigsResult', success: boolean, message: string, importedCount: number, failedCount: number, failures: Array<{ __typename: 'ImportMcpServerConfigFailure', serverId: string, reason: string }> } };
 
-export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
+export type MemorySyncStatusFieldsFragment = { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> };
 
 export type UpdateMemoryHubConfigMutationVariables = Exact<{
   input: UpdateMemoryHubConfigInput;
 }>;
 
 
-export type UpdateMemoryHubConfigMutation = { __typename?: 'Mutation', updateMemoryHubConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type UpdateMemoryHubConfigMutation = { __typename?: 'Mutation', updateMemoryHubConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type UpdateMemorySyncSourceConfigMutationVariables = Exact<{
   input: UpdateMemorySyncSourceConfigInput;
 }>;
 
 
-export type UpdateMemorySyncSourceConfigMutation = { __typename?: 'Mutation', updateMemorySyncSourceConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type UpdateMemorySyncSourceConfigMutation = { __typename?: 'Mutation', updateMemorySyncSourceConfig: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type CreateMemoryHubSourceCredentialMutationVariables = Exact<{
   input?: InputMaybe<CreateMemoryHubCredentialInput>;
 }>;
 
 
-export type CreateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', createMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
+export type CreateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', createMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
 
 export type RegenerateMemoryHubSourceCredentialMutationVariables = Exact<{
   credentialId: Scalars['String']['input'];
 }>;
 
 
-export type RegenerateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', regenerateMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
+export type RegenerateMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', regenerateMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialMutationResultGql', plaintextToken?: string | null, credential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } } };
 
 export type RevokeMemoryHubSourceCredentialMutationVariables = Exact<{
   credentialId: Scalars['String']['input'];
 }>;
 
 
-export type RevokeMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', revokeMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } };
+export type RevokeMemoryHubSourceCredentialMutation = { __typename?: 'Mutation', revokeMemoryHubSourceCredential: { __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string } };
 
 export type TestMemoryHubConnectionMutationVariables = Exact<{
   input: TestMemoryHubConnectionInput;
 }>;
 
 
-export type TestMemoryHubConnectionMutation = { __typename?: 'Mutation', testMemoryHubConnection: { __typename?: 'MemoryHubConnectionTestResultGql', ok: boolean, hubEnabled: boolean, sourceNodeId: string, authenticated: boolean, message?: string | null } };
+export type TestMemoryHubConnectionMutation = { __typename?: 'Mutation', testMemoryHubConnection: { __typename?: 'MemoryHubConnectionTestResultGql', ok: boolean, hubEnabled: boolean, memorySyncSourceId: string, authenticated: boolean, message?: string | null } };
 
 export type StartMemorySyncMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -4884,21 +4890,21 @@ export type CreateProjectTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type AddProjectTaskCommentMutationVariables = Exact<{
   input: AddProjectTaskCommentInput;
 }>;
 
 
-export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -5049,7 +5055,7 @@ export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availabl
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
 
 export type GetAgentOrgDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5116,6 +5122,11 @@ export type GetApplicationByIdQueryVariables = Exact<{
 
 
 export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, localApplicationId: string, packageId: string, writable: boolean, executionResourceSlots: Array<{ __typename?: 'ApplicationExecutionResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationExecutionResource', kind: ApplicationExecutionResourceKind, localId: string, definitionId: string }> } | null };
+
+export type AvailableAgentRuntimesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AvailableAgentRuntimesQuery = { __typename?: 'Query', availableAgentRuntimes: any };
 
 export type ListCollaborationRootHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5240,7 +5251,7 @@ export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServe
 export type ListMemoryExplorerSourcesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListMemoryExplorerSourcesQuery = { __typename?: 'Query', listMemoryExplorerSources: Array<{ __typename?: 'MemoryExplorerSourceOption', key: string, type: MemoryExplorerSourceType, label: string, sourceNodeId?: string | null, displayName?: string | null, readOnly: boolean, lastImportedAt?: string | null, lastSyncStatus?: string | null }> };
+export type ListMemoryExplorerSourcesQuery = { __typename?: 'Query', listMemoryExplorerSources: Array<{ __typename?: 'MemoryExplorerSourceOption', key: string, type: MemoryExplorerSourceType, label: string, memorySyncSourceId?: string | null, displayName?: string | null, readOnly: boolean, lastImportedAt?: string | null, lastSyncStatus?: string | null }> };
 
 export type ListAgentsWithMemoryQueryVariables = Exact<{
   source?: InputMaybe<MemoryExplorerSourceInput>;
@@ -5308,7 +5319,7 @@ export type ListAgentOrgRunsWithMemoryQuery = { __typename?: 'Query', listAgentO
 export type GetMemorySyncStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMemorySyncStatusQuery = { __typename?: 'Query', getMemorySyncStatus: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, sourceNodeId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', sourceNodeId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
+export type GetMemorySyncStatusQuery = { __typename?: 'Query', getMemorySyncStatus: { __typename?: 'MemorySyncStatusGql', oneTimePlaintextToken?: string | null, hub: { __typename?: 'MemorySyncHubConfigGql', enabled: boolean, advertisedHubBaseUrl?: string | null, updatedAt?: string | null }, source: { __typename?: 'MemorySyncSourceConfigGql', enabled: boolean, memorySyncSourceId?: string | null, displayName?: string | null, hubBaseUrl?: string | null, hubTokenConfigured: boolean, hubTokenPreview?: string | null, backgroundEnabled: boolean, intervalMs: number, batchSize: number, updatedAt?: string | null }, connectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> }, sourceState?: { __typename?: 'MemorySyncSourceStateGql', jobState: string, lastSuccessfulSyncAt?: string | null, lastError?: string | null, trackedFileCount: number } | null, imports: Array<{ __typename?: 'MemoryImportSummaryGql', memorySyncSourceId: string, displayName?: string | null, lastKnownEndpoint?: string | null, firstImportedAt?: string | null, lastImportedAt?: string | null, lastSyncStatus?: string | null, lastError?: string | null, fileCount: number, totalBytes: number, lastCommittedBatchId?: string | null, lastCommittedAt?: string | null }> } };
 
 export type ListMemoryHubUrlCandidatesQueryVariables = Exact<{
   currentNodeBaseUrl?: InputMaybe<Scalars['String']['input']>;
@@ -5321,7 +5332,7 @@ export type ListMemoryHubUrlCandidatesQuery = { __typename?: 'Query', listMemory
 export type GetMemoryHubConnectionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMemoryHubConnectionInfoQuery = { __typename?: 'Query', getMemoryHubConnectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundSourceNodeId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> } };
+export type GetMemoryHubConnectionInfoQuery = { __typename?: 'Query', getMemoryHubConnectionInfo: { __typename?: 'MemoryHubConnectionInfoGql', hubEnabled: boolean, advertisedHubBaseUrl?: string | null, ingestEndpointUrl?: string | null, healthEndpointUrl?: string | null, secureTransportWarning?: string | null, credentials: Array<{ __typename?: 'MemoryHubCredentialSummaryGql', credentialId: string, label?: string | null, boundMemorySyncSourceId?: string | null, createdAt: string, lastUsedAt?: string | null, revokedAt?: string | null, status: string }> } };
 
 export type GetAgentRunMemoryViewQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -5389,14 +5400,14 @@ export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: '
 
 export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
 
 export type GetTaskWorkerTasksQueryVariables = Exact<{
   agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -5404,7 +5415,7 @@ export type GetTaskWorkerTasksQueryVariables = Exact<{
 }>;
 
 
-export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, description: string, status: ProjectTaskStatus } | null }> };
+export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, title?: string | null, description: string, status: ProjectTaskStatus } | null }> };
 
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6163,7 +6174,7 @@ export const MemorySyncStatusFieldsFragmentDoc = gql`
   }
   source {
     enabled
-    sourceNodeId
+    memorySyncSourceId
     displayName
     hubBaseUrl
     hubTokenConfigured
@@ -6182,7 +6193,7 @@ export const MemorySyncStatusFieldsFragmentDoc = gql`
     credentials {
       credentialId
       label
-      boundSourceNodeId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -6196,7 +6207,7 @@ export const MemorySyncStatusFieldsFragmentDoc = gql`
     trackedFileCount
   }
   imports {
-    sourceNodeId
+    memorySyncSourceId
     displayName
     lastKnownEndpoint
     firstImportedAt
@@ -6369,6 +6380,7 @@ export const ProjectTaskFieldsFragmentDoc = gql`
     fragment ProjectTaskFields on ProjectTask {
   taskId
   projectId
+  title
   description
   status
   createdAt
@@ -9009,7 +9021,7 @@ export const CreateMemoryHubSourceCredentialDocument = gql`
     credential {
       credentialId
       label
-      boundSourceNodeId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -9047,7 +9059,7 @@ export const RegenerateMemoryHubSourceCredentialDocument = gql`
     credential {
       credentialId
       label
-      boundSourceNodeId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -9083,7 +9095,7 @@ export const RevokeMemoryHubSourceCredentialDocument = gql`
   revokeMemoryHubSourceCredential(credentialId: $credentialId) {
     credentialId
     label
-    boundSourceNodeId
+    boundMemorySyncSourceId
     createdAt
     lastUsedAt
     revokedAt
@@ -9118,7 +9130,7 @@ export const TestMemoryHubConnectionDocument = gql`
   testMemoryHubConnection(input: $input) {
     ok
     hubEnabled
-    sourceNodeId
+    memorySyncSourceId
     authenticated
     message
   }
@@ -10130,6 +10142,7 @@ export const GetAgentDefinitionsDocument = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    internal
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind
@@ -10610,6 +10623,31 @@ export function useGetApplicationByIdLazyQuery(variables?: GetApplicationByIdQue
   return VueApolloComposable.useLazyQuery<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>(GetApplicationByIdDocument, variables, options);
 }
 export type GetApplicationByIdQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>;
+export const AvailableAgentRuntimesDocument = gql`
+    query AvailableAgentRuntimes {
+  availableAgentRuntimes
+}
+    `;
+
+/**
+ * __useAvailableAgentRuntimesQuery__
+ *
+ * To run a query within a Vue component, call `useAvailableAgentRuntimesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableAgentRuntimesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useAvailableAgentRuntimesQuery();
+ */
+export function useAvailableAgentRuntimesQuery(options: VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>(AvailableAgentRuntimesDocument, {}, options);
+}
+export function useAvailableAgentRuntimesLazyQuery(options: VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>(AvailableAgentRuntimesDocument, {}, options);
+}
+export type AvailableAgentRuntimesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AvailableAgentRuntimesQuery, AvailableAgentRuntimesQueryVariables>;
 export const ListCollaborationRootHistoryDocument = gql`
     query ListCollaborationRootHistory {
   listCollaborationRootHistory {
@@ -11240,7 +11278,7 @@ export const ListMemoryExplorerSourcesDocument = gql`
     key
     type
     label
-    sourceNodeId
+    memorySyncSourceId
     displayName
     readOnly
     lastImportedAt
@@ -11675,7 +11713,7 @@ export const GetMemorySyncStatusDocument = gql`
     }
     source {
       enabled
-      sourceNodeId
+      memorySyncSourceId
       displayName
       hubBaseUrl
       hubTokenConfigured
@@ -11694,7 +11732,7 @@ export const GetMemorySyncStatusDocument = gql`
       credentials {
         credentialId
         label
-        boundSourceNodeId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -11708,7 +11746,7 @@ export const GetMemorySyncStatusDocument = gql`
       trackedFileCount
     }
     imports {
-      sourceNodeId
+      memorySyncSourceId
       displayName
       lastKnownEndpoint
       firstImportedAt
@@ -11793,7 +11831,7 @@ export const GetMemoryHubConnectionInfoDocument = gql`
     credentials {
       credentialId
       label
-      boundSourceNodeId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -12188,6 +12226,7 @@ export const GetTaskWorkerTasksDocument = gql`
     task {
       taskId
       projectId
+      title
       description
       status
     }

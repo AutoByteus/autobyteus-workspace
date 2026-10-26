@@ -66,7 +66,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, projectId: "project_fixture", description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);

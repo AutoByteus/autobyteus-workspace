@@ -25,6 +25,7 @@ import nodesPageMessages from './nodesPage';
 import remoteRunsMessages from './remoteRuns';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
+import modelRoutingSettingsMessages from './modelRoutingSettings';
 import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
@@ -66,6 +67,7 @@ const zhCnMessages: TranslationCatalog = {
   ...remoteRunsMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
+  ...modelRoutingSettingsMessages,
   ...projectMessages,
   ...generatedShellMessages,
   ...shellMessages,

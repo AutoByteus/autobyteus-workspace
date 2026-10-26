@@ -1,0 +1,80 @@
+
+> autobyteus@1.5.9-beta.3 dev /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 192.168.2.158 --port 55886
+
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+ 
+              █▀▀▀▀▀▀▀██▀██▀██▀▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ █ ▀▀  █▀ ▄█ █▀▀▀█ █
+              █ █   █ █▀▄▄▄█▀█▀██ █   █ █
+              █ ▀▀▀▀▀ █ ▄▀▄▀▄▀▄▀█ ▀▀▀▀▀ █
+              █▀▀█▀██▀▀▄▄▀█ ▀▄█▄█▀▀▀█▀▀██
+              ██▄▄█ ▀▀█▀▀ ▄█▀ ███ ▄▀██▀ █
+              █ ██▀▄ ▀▀▀██    ▀ █  █▀█▀▀█
+              █▀█▄▄  ▀▀█ ▄▀▀ ▄█ ▄▄▀█▄ █ █
+              █▀ ▄▄▄█▀ █▄ █▄▄▀ ▀   ▀ ▀▄██
+              █▀▀▀▀▀▀▀█ ▀█▄▀▄█▀ █▀█ ▄▄▀ █
+              █ █▀▀▀█ ██▀▄▄█▀▄▄ ▀▀▀ ▄▄▀▄█
+              █ █   █ █▄▀▀█▀ ▄ ▄ █▀ ▀ █▀█
+              █ ▀▀▀▀▀ █ ▄▄▀█ ▀█ ▀▀▀█▄█▀▀█
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Network:  http://192.168.2.158:55886/ [QR code]
+  ➜ Network:  http://192.168.64.1:55886/
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 112ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 656ms
+[nitro] ✔ Nuxt Nitro server built in 927ms
+ℹ Vite client warmed up in 1ms
+
+ ERROR  [unhandledRejection] read ECONNRESET
+
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+    at TCP.callbackTrampoline (node:internal/async_hooks:130:17)
+
+
+ 
+              █▀▀▀▀▀▀▀██▀██▀██▀▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ █ ▀▀  █▀ ▄█ █▀▀▀█ █
+              █ █   █ █▀▄▄▄█▀█▀██ █   █ █
+              █ ▀▀▀▀▀ █ ▄▀▄▀▄▀▄▀█ ▀▀▀▀▀ █
+              █▀▀█▀██▀▀▄▄▀█ ▀▄█▄█▀▀▀█▀▀██
+              ██▄▄█ ▀▀█▀▀ ▄█▀ ███ ▄▀██▀ █
+              █ ██▀▄ ▀▀▀██    ▀ █  █▀█▀▀█
+              █▀█▄▄  ▀▀█ ▄▀▀ ▄█ ▄▄▀█▄ █ █
+              █▀ ▄▄▄█▀ █▄ █▄▄▀ ▀   ▀ ▀▄██
+              █▀▀▀▀▀▀▀█ ▀█▄▀▄█▀ █▀█ ▄▄▀ █
+              █ █▀▀▀█ ██▀▄▄█▀▄▄ ▀▀▀ ▄▄▀▄█
+              █ █   █ █▄▀▀█▀ ▄ ▄ █▀ ▀ █▀█
+              █ ▀▀▀▀▀ █ ▄▄▀█ ▀█ ▀▀▀█▄█▀▀█
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Network:  http://192.168.2.158:55886/ [QR code]
+  ➜ Network:  http://192.168.64.1:55886/
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite client built in 115ms
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite server built in 664ms
+[nitro] ✔ Nuxt Nitro server built in 1074ms
+ℹ Vite client warmed up in 1ms

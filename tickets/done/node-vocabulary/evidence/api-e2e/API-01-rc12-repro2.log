@@ -1,0 +1,187 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 1] 2026-10-24T13:23:52.656Z
+[DIAG RC-12 2] 2026-10-24T13:23:52.656Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 3] 2026-10-24T13:23:52.761Z
+[DIAG RC-12 5] 2026-10-24T13:23:52.761Z
+[DIAG RC-12 6] 2026-10-24T13:23:52.761Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 9] 2026-10-24T13:23:52.981Z
+[DIAG RC-12 10] 2026-10-24T13:23:52.981Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 11] 2026-10-24T13:24:13.897Z
+[DIAG RC-12 12] 2026-10-24T13:24:13.897Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 13] 2026-10-24T13:24:13.898Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 14] 2026-10-24T13:24:14.231Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 15] 2026-10-24T13:24:14.234Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 16] 2026-10-24T13:24:14.235Z
+[DIAG RC-12 17] 2026-10-24T13:24:14.235Z
+[DIAG RC-12 18] 2026-10-24T13:24:14.235Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 20] 2026-10-24T13:25:07.762Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 21] 2026-10-24T13:25:07.977Z
+[DIAG RC-12 22] 2026-10-24T13:25:07.977Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 24] 2026-10-24T13:26:23.270Z
+[DIAG RC-12 25] 2026-10-24T13:26:23.270Z
+[DIAG RC-12 26] 2026-10-24T13:26:23.270Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 30] 2026-10-24T13:26:23.276Z
+[DIAG RC-12 31] 2026-10-24T13:26:23.276Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 34] 2026-10-24T13:26:23.280Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 35] 2026-10-24T13:26:23.280Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 36] 2026-10-24T13:26:23.597Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 37] 2026-10-24T13:26:23.599Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 38] 2026-10-24T13:26:23.599Z
+[DIAG RC-12 39] 2026-10-24T13:26:23.599Z
+
+[90mstdout[2m | tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22m[2mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22m[2mRC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation
+[22m[39m[DIAG RC-12 40] 2026-10-24T13:26:23.599Z
+[DIAG RC-12 41] 2026-10-24T13:26:23.599Z
+
+ [32m✓[39m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts [2m([22m[2m37 tests[22m[2m | [22m[33m16 skipped[39m[2m)[22m[33m 198671[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent [33m 553[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha [33m 2308[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open) [33m 3321[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted [33m 4191[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears [33m 1973[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing [33m 2014[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent [33m 1942[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered [33m 5020[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent [33m 4303[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts [33m 762[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused [33m 2896[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta [33m 5012[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it [33m 440[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window [33m 2315[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline [33m 1021[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member [33m 333[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start [33m 4315[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation [33m 150943[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m21 passed[39m[22m[2m | [22m[33m16 skipped[39m[90m (37)[39m
+[2m   Start at [22m 15:23:05
+[2m   Duration [22m 199.38s[2m (transform 133ms, setup 45ms, import 180ms, tests 198.67s, environment 0ms)[22m
+
+EXIT=0

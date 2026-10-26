@@ -201,7 +201,60 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Server Settings: Claude Runtime
+
+Settings -> Server Settings -> Basics contains a node-bound **Claude runtime**
+card (`components/settings/ClaudeRuntimeCard.vue`), placed after the Codex full
+access card. Its one switch, **One-hour prompt cache**, asks Claude Code to keep
+the conversation cache for an hour instead of 5 minutes when Claude Code is
+billed through API credits or an API key.
+
+- The switch reads `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` from the
+  server-settings store. Never saved (absent) or any value other than `false`
+  shows it on, matching the server default.
+- Toggling saves `true` or `false` through `serverSettingsStore.updateServerSetting`
+  at once. The switch is disabled while saving; on failure it returns to the
+  previous state and shows the error under the notes.
+- The card explains the cost trade-off in plain words (writing costs a bit more,
+  reading the same; it saves money when agents wait more than 5 minutes), notes
+  that agent conversations on a Claude subscription do not change, that a
+  `promptCacheTtl` in the user's own Claude Code settings takes precedence, and
+  that the change applies to Claude agent sessions started afterwards.
+- Server behavior, precedence and the Claude Code variable are described in
+  [LLM Management: Claude Agent SDK Prompt Cache Lifetime](../../autobyteus-server-ts/docs/modules/llm_management.md#claude-agent-sdk-prompt-cache-lifetime).
+
+## Server Settings: Internal Agents
+
+Settings -> Server Settings -> Basics contains an **Internal agents** card
+(`components/settings/ShowInternalAgentsCard.vue`) with one switch, **Show
+internal agents**. Internal agents are the system's own helpers, such as the
+Model Router (an agent definition with `"internal": true`).
+
+- The switch reads `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` from the server-settings
+  store; never saved (absent) shows it off, matching the server default.
+- Toggling saves `true` or `false` at once, then reloads the agent definitions
+  (`agentDefinitionStore.reloadAllAgentDefinitions`) and the run history
+  (`runHistoryStore.refreshTreeQuietly`), because the server applies the setting
+  on the next read. On failure the switch returns to its previous state and
+  shows the error.
+- While on, the Agents page marks internal agents with an **Internal** badge
+  (`AgentCard.vue`).
+- Server rule and the surfaces it covers:
+  [Agent Definition: Internal Agents](../../autobyteus-server-ts/docs/modules/agent_definition.md#internal-agents).
+- Tests: `components/settings/__tests__/ShowInternalAgentsCard.spec.ts`,
+  `components/agents/__tests__/AgentCard.spec.ts`;
+  `tests/e2e/internal-agents-probe.mjs` (`pnpm test:e2e:internal-agents`, after a
+  server build) drives the Agents page, featured picker, run history and the
+  switch in a real browser against a real node with a file-authored internal
+  agent.
+
 ## Nodes: Manage Nodes (one list)
+
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
 
 Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
 Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
@@ -223,8 +276,11 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   windows this desktop can open, addresses as the desktop reaches them) and this node's peers
   (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
   reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
-  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
-  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
   a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a
@@ -540,6 +596,43 @@ versions, and starts the vendor's own update and login commands.
   CLIs and vendor sources (`tests/e2e/fixtures/agent-runtimes-vendor-sources.mjs`).
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
+
+## Settings: Model Routing
+
+Settings -> **Model Routing** (`?section=model-routing`, right after Agent
+Runtimes). Its first section, **Agent runtimes now**, shows what the node this
+window is bound to can run now: the same answer the opt-in agent tool
+`list_available_agent_runtimes` gives, read through the GraphQL query
+`availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
+
+- **When it reads.** When the section opens, on **Check again**, and when
+  another node is bound to the window. It never polls: each read starts short
+  runtime processes on the node (0 tokens). The header shows the node and the
+  time of the last check.
+- **Rows.** One row per available runtime (installed and not known to be
+  signed out): its limits (name, % left with a bar, reset time in local time),
+  the runtime's `limitsNote`, and its models (collapsed list; a blocked model
+  shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
+  checked", "Limits not reported", "Limits unknown: <reason>" and "Models
+  unknown: <reason>" show the server's states. AutoByteus has one sub-row per
+  provider with a key, and per local model server (Ollama, LM Studio) that
+  answers with models now: balance, the reason it cannot run, and its models
+  ("Models unknown: <reason>" for a custom endpoint that cannot be read now).
+  No plan, tier or credit details.
+- **States.** Loading, a failed first read (Check again retries), a failed
+  later read (the last answer stays, with a note), and an empty node.
+- Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
+  `availableAgentRuntimesPresentation.ts`). Copy:
+  `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`;
+  `tests/e2e/model-routing-settings-probe.mjs`
+  (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
+  section in a real browser against two real nodes on fresh data roots, with
+  scripted runtime CLIs and provider endpoints answered inside each node
+  (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
 
 ## Settings: Agent Packages Auto-Refresh
 
@@ -1342,8 +1435,10 @@ The saved-run view uses the start surfaces' visual language:
   - These cards are locked while the copy runs and editable while it is stopped
     (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. Names follow Members: the role,
-    else the last address segment.
+    can hold several copies. A row is named as the sidebar names the copy: in a
+    Team run a catalog copy and its members by display name (`scribe 5083`), a
+    copy of a configured member by its address basename (`code_reviewer`)
+    (`teamMemberName`); in Org and Agent runs every copy by display name.
   - **Source labels:**
     - Agent default;
     - Team default;
@@ -1395,8 +1490,11 @@ The saved-run view uses the start surfaces' visual language:
     "Settings were saved, but could not be refreshed. Refresh before making more
     changes." It locks editing and offers **Refresh** rather than showing stale
     "Saved" or treating committed changes as unsaved. Refresh rereads the same
-    canonical snapshot without another Save or starting/resuming the run. Cancel
-    before Save writes nothing; repeated edits start from the accepted values.
+    canonical snapshot without another Save or starting/resuming the run. A
+    running Org's view reloading during the readback does not fail it: the Org
+    reads its settings again, up to three times (`agentOrgContextsStore.readRunConfig`);
+    only a closed Org, a switched node or a pending Org operation fails the readback.
+    Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is
@@ -1930,6 +2028,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Visible numbers, currency, percentages, and UTC dates use the active locale while exact token/accounting evidence remains available. English and Simplified Chinese layouts must avoid document-level overflow; keyboard focus and disclosure restoration remain visible.
     - `Run details` preserves the current-run-record investigation path under `tokenUsageRunStatistics`. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
     - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, retained loading/error/empty states, and history-migration guidance remain intact.
+    - The expanded cost disclosure (`TokenUsageCostBreakdown.vue`) splits cache writes like the live Token Meter: **Cache write 5m** and **Cache write 1h** rows with their tokens and costs when the aggregate has them, and one **Cache writes** row for writes outside that split (its cost is the cache-write cost the split rows do not carry). An aggregate without a split keeps the single **Cache writes** row.
     - Run-details labels use token-usage-owned display fields. Model rows show server-owned `modelDisplayName` beside raw `llmModel`; Task rows keep positional `modelDisplayNames` beside raw models. Custom-provider labels prefer persisted provider-name snapshots, with current metadata only as the established no-snapshot fallback.
     - The Task table retains its nine-column scan view (`Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, `Created Time`), accessible sortable headers, and the value-plus-disclosure control for detailed cost status. Complete estimates stay quiet in main rows while non-complete states remain visible.
     - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.

@@ -44,3 +44,9 @@
 - Scoped validation:300 unique current passing cases, production server/core/SDK/Electron types, repository codegen and locale/boundary guards. Failures/rerun-by-impact retained in IMP-33..43. Current build IMP-44 produced the unpacked app and ZIP but overall command failed at DMG busy-image resize35; exact owned image detached. No full packaging pass.
 - Current isolated app controlled-state rendered inspection IMP-45 passes English/Chinese, unknown/terminal/empty/unavailable, collapse/reopen/selection and narrow layout. It uses frontend-only contexts and read-only query interception, not real-provider acceptance. Normal owned-instance quit/ports/sentinel/root cleanup recorded. Source-size IMP-46 maximum497 lines.
 - Required next route: cumulative Large/High source review, then independent API/E2E on applicable passed source. Preserve full-host/desktop native/Codex outstanding coverage and exact-source API-04/06 limitations. No Windows/WSL certification, historical incident fix claim, merge/release/install or installed-app/data effects.
+
+## IR-005 — DR-001 integration Local Fix (in progress)
+- Trigger Delivery DR-001 blocked merge at base67994daba0; prior source9bd72c208 passed CRR-003 and API-REV-001, test-only d16a07657 passed CRR-004 at365899475. Delivery artifacts preserved unchanged at72476797a.
+- Requirements R2/design D4.1/SR-001..008/ARCH-REV-004 unchanged; Large/High independent route. Behavior preservation across all BEH-001..006, no expanded product behavior.
+- Current work: reconcile integrated schema/operation generated contract and independent case histories, inspect auto-merges, refresh dependencies, all applicable implementation checks/type/build outputs rerun because shared foundation changed. Packaging success still unproven. API/E2E owns renewed current equivalents after source review.
+- No ready/pass claim, finalization, push/release/install, installed-app/data action.

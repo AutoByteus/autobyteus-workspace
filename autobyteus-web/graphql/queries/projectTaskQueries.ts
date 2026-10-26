@@ -18,6 +18,7 @@ export const ProjectTaskFields = gql`
   fragment ProjectTaskFields on ProjectTask {
     taskId
     projectId
+    title
     description
     status
     createdAt
@@ -46,7 +47,7 @@ export const GetTaskWorkerTasks = gql`
     taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
       workerKind
       workerRunId
-      task { taskId projectId description status }
+      task { taskId projectId title description status }
     }
   }
 `

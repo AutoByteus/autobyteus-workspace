@@ -58,7 +58,7 @@ export const buildRunHistoryTeamExecutionRows = (
   const navigationByKey = new Map(navigationRows.map((row) => [row.key, row]));
   const descendantRows = navigationRows.filter((row) => row !== rootRow).map((row) => {
     const parent = row.parentKey ? navigationByKey.get(row.parentKey) : undefined;
-    // Only sidebar task-Agent leaves become peers. Shared navigation and real
+    // Only sidebar task-Agent leaves are lifted to their parent's level, as its siblings. Shared navigation and real
     // Team/task-Team containment remain authoritative everywhere else.
     if (row.kind === 'task_agent'
       && (parent?.kind === 'configured_agent' || parent?.kind === 'task_team_agent')) {

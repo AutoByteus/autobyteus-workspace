@@ -44,6 +44,7 @@ import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
 import { UpdateNotificationResolver } from './types/update-notifications.js';
 import { AgentRuntimesResolver } from './types/agent-runtimes.js';
+import { AvailableAgentRuntimesResolver } from './types/available-agent-runtimes.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -92,6 +93,7 @@ export async function buildGraphqlSchema() {
       ProjectTaskSearchResolver,
       EmbeddingModelResolver,
       AgentRuntimesResolver,
+      AvailableAgentRuntimesResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

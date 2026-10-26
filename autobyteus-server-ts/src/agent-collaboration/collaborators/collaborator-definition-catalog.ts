@@ -1,4 +1,5 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { InternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
@@ -11,11 +12,13 @@ import type { RuntimeAvailabilityService } from "../../runtime-management/runtim
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   agents: Pick<AgentDefinitionService, "getAllAgentDefinitions" | "getAgentDefinitionById">;
   teams: Pick<AgentTeamDefinitionService, "getAllDefinitions" | "getDefinitionById">;
+  visibility: Pick<InternalAgentVisibility, "isHidden">;
 }>): CollaboratorDefinitionCatalog => Object.freeze({
   listAgentDefinitions: () => services.agents.getAllAgentDefinitions(),
   listTeamDefinitions: () => services.teams.getAllDefinitions(),
   getAgentDefinition: (id) => services.agents.getAgentDefinitionById(id),
   getTeamDefinition: (id) => services.teams.getDefinitionById(id),
+  isAgentHidden: (definition) => services.visibility.isHidden(definition),
 });
 
 /** Process wiring: one policy and one admission coordinator over the shared catalogs. */

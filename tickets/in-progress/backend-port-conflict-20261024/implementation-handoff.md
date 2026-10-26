@@ -1,3 +1,8 @@
+# IR-005 — Integration Local Fix in progress
+DR-001 returned the package after origin/personal advanced201 commits to67994daba0adf6eb8c6bc05827b5fab6b2975aa4. Prior IR-004/CRR-003/API-REV-001/CRR-004 remain exact-source successes, not integrated readiness. Delivery checkpoint preserved at72476797a. R2/D4.1/SR-001..008/ARCH-REV-004 and Large/High unchanged. Current merge resolution, dependency refresh, regeneration and foundation rerun plan are in implementation-check-ledger.md. No delivery/independent validation pass for integrated source yet; no release/install.
+
+---
+# Historical IR-004 handoff
 # Implementation Handoff — IR-004
 
 ## Current outcome: Ready for independent Code Review

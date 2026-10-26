@@ -28,7 +28,7 @@ const buildSession = () => ({
 }) as never;
 
 describe("collaboration public result contracts", () => {
-  it("requires exact existing-run identity for send success and null for rejection", () => {
+  it("requires exact existing-run identity for send success and no receiver identity for rejection", () => {
     expect(toSendMessageToResult({
       accepted: true,
       code: "DELIVERED",
@@ -49,7 +49,6 @@ describe("collaboration public result contracts", () => {
       accepted: false,
       code: "TARGET_NOT_FOUND",
       message: "Missing.",
-      target_agent_run_id: null,
     });
     expect(() => toSendMessageToResult({ accepted: true })).toThrow();
     expect(() => SendMessageToResultSchema.parse({
@@ -132,8 +131,14 @@ describe("collaboration public result contracts", () => {
         accepted: false,
         code: "TARGET_NOT_FOUND",
         message: "Missing.",
-        target_agent_run_id: null,
       })).toBe(true);
+      // A rejection never names a receiver (REQ-001: absent = none).
+      expect(ajv.validate(sendSchema, {
+        accepted: false,
+        code: "TARGET_NOT_FOUND",
+        message: "Missing.",
+        target_agent_run_id: null,
+      })).toBe(false);
       expect(ajv.validate(delegateSchema, {
         delegated: true, target_kind: "agent", target_agent_run_id: "fresh-task-ingress",
       })).toBe(true);

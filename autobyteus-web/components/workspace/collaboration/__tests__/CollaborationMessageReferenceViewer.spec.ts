@@ -44,8 +44,7 @@ const baseReference = {
 };
 
 const storedSession = (): MobileNodeSession => ({
-  version: 1,
-  nodeId: 'mobile-paired-node',
+  entryId: 'mobile-paired-node',
   serverBaseUrl: 'http://127.0.0.1:4100',
   credential: 'mra_secret',
   pairedAt: '2026-05-16T00:00:00.000Z',

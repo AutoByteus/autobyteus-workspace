@@ -77,6 +77,7 @@ const services = () => host!;
 const policy = () => new CollaboratorCandidatePolicy(createCollaboratorDefinitionCatalog({
   agents: services().agentDefinitionService,
   teams: services().agentTeamDefinitionService,
+  visibility: { isHidden: () => false },
 }));
 /** What `list_available_agents` returns: the eligible names, agents and Teams. */
 const listAvailable = async () => (await policy().listEligible(port)).map((entry) => `${entry.kind}:${entry.name}`);

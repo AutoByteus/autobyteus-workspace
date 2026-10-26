@@ -11,6 +11,10 @@ import {
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
 import {
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+} from "../runtime-management/claude/claude-prompt-cache-setting.js";
+import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
@@ -31,6 +35,10 @@ import {
   normalizeTaskExecutionIdleShutdownGraceForPersistence,
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
+import {
+  normalizeShowInternalAgentsForPersistence,
+  SHOW_INTERNAL_AGENTS_SETTING_KEY,
+} from "../config/show-internal-agents-setting.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
   EMBEDDING_MODEL_SETTING_DESCRIPTION,
@@ -163,6 +171,16 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+      "Claude runtime: request Claude Code's one-hour prompt cache for agent sessions started afterwards (true/false, default true). A promptCacheTtl in the user's Claude Code settings, CLAUDE_CODE_PROMPT_CACHE_TTL or FORCE_PROMPT_CACHING_5M take precedence.",
+      true,
+      {
+        allowedValues: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+        trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
       STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
       "Milliseconds between live response content updates. Smaller values update more frequently; larger values reduce UI and transport work. Recommended default: 500.",
       true,
@@ -177,6 +195,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      SHOW_INTERNAL_AGENTS_SETTING_KEY,
+      "Show internal agents (the system's own helpers, such as the Model Router) in the Agents list, agent pickers, run history, the Memory page and to other agents (true/false). Default: false. Takes effect on the next list. Set in Server Settings → Basics.",
+      true,
+      {
+        normalizeForPersistence: normalizeShowInternalAgentsForPersistence,
       },
     );
 

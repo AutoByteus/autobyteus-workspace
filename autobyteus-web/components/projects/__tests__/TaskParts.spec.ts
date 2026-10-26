@@ -15,7 +15,7 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
 
 /** task-part-of UI/UX spec: Parts card, card pill and "Part of" line, Part of field (UXJ-001 to UXJ-004, UXJ-006). */
 const task = (n: number, status: ProjectTaskStatus = 'TODO', partOfTaskId: string | null = null, extra: Partial<ProjectTask> = {}): ProjectTask => ({
-  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, description: `Task ${n} summary\nmore`, status, dependsOnTaskIds: [], partOfTaskId,
+  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, title: `Task ${n} summary`, description: `Task ${n} summary\nmore`, status, dependsOnTaskIds: [], partOfTaskId,
   contextFiles: [], createdAt: '', updatedAt: '', root: null, ...extra,
 })
 const seed = (tasks: ProjectTask[]) => {

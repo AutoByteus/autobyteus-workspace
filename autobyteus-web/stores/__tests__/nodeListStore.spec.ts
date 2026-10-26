@@ -32,7 +32,7 @@ vi.mock('~/services/nodeCollaboration/nodeCollaborationApi', () => ({
   },
 }))
 vi.mock('~/stores/nodeStore', () => ({ useNodeStore: () => h.nodeStore }))
-vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ nodeId: 'embedded-local' }) }))
+vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ entryId: 'embedded-local' }) }))
 vi.mock('~/stores/remoteCollaborationStore', () => ({ useRemoteCollaborationStore: () => h.peers }))
 vi.mock('~/stores/remoteCollaborationOffersStore', () => ({ useRemoteCollaborationOffersStore: () => h.offers }))
 vi.mock('~/stores/remoteCollaborationCapabilityStore', () => ({ useRemoteCollaborationCapabilityStore: () => h.capability }))
@@ -41,7 +41,7 @@ vi.mock('~/services/nodeCollaboration/windowNodeCollaborationConnector', () => (
 import { useNodeListStore } from '../nodeListStore'
 
 const entry = (id: string, name: string, baseUrl: string, extra: Record<string, unknown> = {}) => ({
-  id, name, baseUrl, nodeType: id === 'embedded-local' ? 'embedded' : 'remote', isSystem: id === 'embedded-local',
+  id, name, baseUrl, nodeType: id === 'embedded-local' ? 'embedded' : 'remote',
   createdAt: `2026-10-0${extra.order ?? 1}T00:00:00.000Z`, updatedAt: 'x', ...extra,
 })
 const peer = (nodeId: string, name: string, baseUrl: string) => ({ nodeId, name, baseUrl, addedAt: 'x' })
@@ -58,16 +58,16 @@ describe('nodeListStore', () => {
       nodes: [
         entry('embedded-local', 'Embedded Node', 'http://127.0.0.1:29695'),
         entry('remote-ba22', 'http://localhost:8001', 'http://localhost:8001', { order: 2 }),
-        entry('remote-8003', 'http://localhost:8003', 'http://localhost:8003', { order: 3, serverInstanceId: D3 }),
+        entry('remote-8003', 'http://localhost:8003', 'http://localhost:8003', { order: 3, nodeId: D3 }),
       ],
       initializeRegistry: vi.fn(async () => undefined),
-      getNodeById(id: string) { return this.nodes.find((node: any) => node.id === id) ?? null },
-      identifyNode: vi.fn(async (id: string, serverInstanceId: string) => {
+      getEntryById(id: string) { return this.nodes.find((node: any) => node.id === id) ?? null },
+      identifyNode: vi.fn(async (id: string, nodeId: string) => {
         const node = h.nodeStore.nodes.find((candidate: any) => candidate.id === id)
-        if (node) node.serverInstanceId = serverInstanceId
+        if (node) node.nodeId = nodeId
       }),
       addRemoteNode: vi.fn(async (input: any) => {
-        const added = entry(`remote-${h.nodeStore.nodes.length}`, input.name, input.baseUrl, { order: 9, ...(input.serverInstanceId ? { serverInstanceId: input.serverInstanceId } : {}) })
+        const added = entry(`remote-${h.nodeStore.nodes.length}`, input.name, input.baseUrl, { order: 9, ...(input.nodeId ? { nodeId: input.nodeId } : {}) })
         h.nodeStore.nodes.push(added)
         return added
       }),
@@ -78,9 +78,9 @@ describe('nodeListStore', () => {
     })
     h.offers = reactive({ peers: {} as Record<string, unknown>, ask: vi.fn(async (id: string) => { h.offers.peers[id] = { phase: 'available', entries: [], checkedAt: 'x' } }), clear: vi.fn() })
     h.capability = reactive({ isEnabled: true, status: 'resolved', ensureResolved: vi.fn(async () => null), setEnabled: vi.fn(async () => null) })
-    h.probes.set('http://127.0.0.1:29695', { ok: true, serverInstanceId: A })
-    h.probes.set('http://localhost:8001', { ok: true, serverInstanceId: D1 })
-    h.probes.set('http://localhost:8003', { ok: true, serverInstanceId: D3 })
+    h.probes.set('http://127.0.0.1:29695', { ok: true, nodeId: A })
+    h.probes.set('http://localhost:8001', { ok: true, nodeId: D1 })
+    h.probes.set('http://localhost:8003', { ok: true, nodeId: D3 })
     h.remote.set('http://localhost:8001', { switchOn: true, peers: [peer(A, 'electron', 'http://host.docker.internal:29695')] })
     h.remote.set('http://localhost:8003', { switchOn: false, peers: [] })
     Object.defineProperty(window, 'electronAPI', { configurable: true, writable: true, value: { openNodeWindow: vi.fn() } })
@@ -91,7 +91,7 @@ describe('nodeListStore', () => {
     await store.open()
     await flush()
     expect(h.nodeStore.identifyNode).toHaveBeenCalledWith('remote-ba22', D1)
-    expect(store.rows.map((row) => [row.key, row.name, row.desktopIds, row.peer?.name ?? null])).toEqual([
+    expect(store.rows.map((row) => [row.key, row.name, row.entryIds, row.peer?.name ?? null])).toEqual([
       [D1, 'docker', ['remote-ba22'], 'docker'],
       [D3, 'http://localhost:8003', ['remote-8003'], null],
       [NAS, 'nas', [], 'nas'],
@@ -109,11 +109,11 @@ describe('nodeListStore', () => {
   })
 
   it('two desktop entries of one node join into one row, the first-created first; its Remove covers both', async () => {
-    h.nodeStore.nodes.push(entry('remote-dup', 'docker again', 'http://127.0.0.1:8001', { order: 4, serverInstanceId: D1 }))
+    h.nodeStore.nodes.push(entry('remote-dup', 'docker again', 'http://127.0.0.1:8001', { order: 4, nodeId: D1 }))
     const store = useNodeListStore()
     await store.open()
     await flush()
-    expect(store.rowByKey(D1)?.desktopIds).toEqual(['remote-ba22', 'remote-dup'])
+    expect(store.rowByKey(D1)?.entryIds).toEqual(['remote-ba22', 'remote-dup'])
   })
 
   it('AR-009: "it → this node" via the address the other node has for this node, read from its peers', async () => {
@@ -136,7 +136,7 @@ describe('nodeListStore', () => {
   })
 
   it('TR-703: another address of a listed node is refused by its node ID; invalid fields are refused', async () => {
-    h.probes.set('http://192.168.2.20:8001', { ok: true, serverInstanceId: D1 })
+    h.probes.set('http://192.168.2.20:8001', { ok: true, nodeId: D1 })
     const store = useNodeListStore()
     await store.open()
     await flush()
@@ -146,15 +146,15 @@ describe('nodeListStore', () => {
 
   it('TR-702: adding stores the node with its node ID, opens no window, and asks for the confirmation only when reachable and the switch is on', async () => {
     const E = 'srv_newNodeEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'
-    h.probes.set('http://localhost:8004', { ok: true, serverInstanceId: E })
+    h.probes.set('http://localhost:8004', { ok: true, nodeId: E })
     const store = useNodeListStore()
     await store.open()
     await flush()
     await expect(store.addNode({ address: 'localhost:8004', name: '8004', collaborate: true })).resolves.toEqual({ ok: true, key: E, confirm: true })
-    expect(h.nodeStore.addRemoteNode).toHaveBeenCalledWith({ name: '8004', baseUrl: 'http://localhost:8004', serverInstanceId: E })
+    expect(h.nodeStore.addRemoteNode).toHaveBeenCalledWith({ name: '8004', baseUrl: 'http://localhost:8004', nodeId: E })
     expect(window.electronAPI.openNodeWindow).not.toHaveBeenCalled()
     await expect(store.addNode({ address: 'localhost:8005', name: '8005', collaborate: true })).resolves.toMatchObject({ ok: true, confirm: false })
-    expect(h.nodeStore.addRemoteNode).toHaveBeenLastCalledWith({ name: '8005', baseUrl: 'http://localhost:8005', serverInstanceId: undefined })
+    expect(h.nodeStore.addRemoteNode).toHaveBeenLastCalledWith({ name: '8005', baseUrl: 'http://localhost:8005', nodeId: undefined })
     await expect(store.addNode({ address: 'localhost:8006', name: '8006', collaborate: false })).resolves.toMatchObject({ ok: true, confirm: false })
   })
 
@@ -177,7 +177,7 @@ describe('nodeListStore', () => {
     await store.open()
     await flush()
     expect(store.changeSubjectOf(D1)).toEqual({
-      target: { rowKey: D1, name: 'docker', nodeId: D1, desktopIds: ['remote-ba22'], windowAddress: 'http://localhost:8001' },
+      target: { rowKey: D1, name: 'docker', nodeId: D1, entryIds: ['remote-ba22'], windowAddress: 'http://localhost:8001' },
       here: { name: 'Embedded Node', nodeId: A, windowAddress: 'http://127.0.0.1:29695' },
     })
     expect(store.changeSubjectOf('missing')).toBeNull()
@@ -198,13 +198,13 @@ describe('nodeListStore', () => {
   })
 
   it('DEC-706: a node only this node knows has Open once this window reaches it; its first Open adds a desktop entry', async () => {
-    h.probes.set('http://192.168.2.55:29695', { ok: true, serverInstanceId: NAS })
+    h.probes.set('http://192.168.2.55:29695', { ok: true, nodeId: NAS })
     const store = useNodeListStore()
     await store.open()
     await flush()
     expect(store.canOpen(NAS)).toBe(true)
     await store.openNode(NAS)
-    expect(h.nodeStore.addRemoteNode).toHaveBeenCalledWith({ name: 'nas', baseUrl: 'http://192.168.2.55:29695', serverInstanceId: NAS })
+    expect(h.nodeStore.addRemoteNode).toHaveBeenCalledWith({ name: 'nas', baseUrl: 'http://192.168.2.55:29695', nodeId: NAS })
     expect(window.electronAPI.openNodeWindow).toHaveBeenCalledWith('remote-3')
   })
 

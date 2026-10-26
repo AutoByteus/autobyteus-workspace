@@ -102,7 +102,19 @@ if (arg === "--version") {
     const client = new Client({ name: "agy-fake-cli", version: "1.0.0" });
     await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl),
       { requestInit: { headers: server.headers ?? {} } }));
-    try { return await client.callTool({ name, arguments: args }); } finally { await client.close(); }
+    // AGY_FAKE_TOOL_TIMEOUT_MS raises the MCP client's 60 s request timeout for tests that hold a tool call open on purpose.
+    const timeout = Number(process.env.AGY_FAKE_TOOL_TIMEOUT_MS) || undefined;
+    // AGY_FAKE_TOOL_LOG: one JSON line per tool call with its result or the error the MCP client raised, so a test can
+    // read the exact outcome the agent saw (a protocol error ends the scripted turn with no `CALLED:` reply).
+    const log = (entry) => { if (process.env.AGY_FAKE_TOOL_LOG) appendFileSync(process.env.AGY_FAKE_TOOL_LOG, JSON.stringify({ name, arguments: args, ...entry }) + "\n"); };
+    try {
+      const result = await client.callTool({ name, arguments: args }, undefined, timeout ? { timeout } : undefined);
+      log({ result });
+      return result;
+    } catch (error) {
+      log({ error: { message: String(error?.message ?? error), code: error?.code ?? null } });
+      throw error;
+    } finally { await client.close(); }
   };
   // linked_skills: `LIST_TOOLS` replies `TOOLS:[{name, description, inputSchema}, …]`, the agent tools this run's
   // Agent Tools MCP session exposes, so a test can prove which tools (and which texts) an agent actually has.

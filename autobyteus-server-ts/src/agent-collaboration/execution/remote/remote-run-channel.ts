@@ -2,7 +2,7 @@ import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/ag
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
 
 /** A registered peer as roots see it: its pinned server ID and this owner's label for it. */
-export type RemotePeer = Readonly<{ nodeId: string; name: string }>;
+export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
 
 /** A refusal by this node's channel or by the peer; `message` is the text the agent reads. */
 export type RemoteChannelRefusal = Readonly<{ accepted: false; code: string; message: string }>;
@@ -78,7 +78,7 @@ export type RemoteRunObservationStream = Readonly<{ close(): void }>;
  */
 export interface RemoteRunChannel {
   /** The registered peer with this name (DEC-111: the `node` of `delegate_task`), or a refusal. */
-  findPeer(name: string): Promise<RemotePeer | RemoteChannelRefusal>;
+  findPeer(name: string): Promise<PeerNodeRef | RemoteChannelRefusal>;
   /** This owner's label for a peer, for headers and texts; the node ID itself when it is no longer registered. */
   peerName(nodeId: string): Promise<string>;
   startDelegatedRun(input: Readonly<{

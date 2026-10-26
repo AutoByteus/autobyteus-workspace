@@ -1,5 +1,6 @@
 import { getMemorySyncConfigService } from "./memory-sync-config-service.js";
 import { getMemorySyncService } from "./memory-sync-service.js";
+import { isMemorySyncReady } from "../shared/memory-sync-capability.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -33,6 +34,10 @@ export class MemorySyncWorker {
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = null;
+    }
+    // While Memory Sync is held back (autobyteus-290 `memory_sync`), the background loop does not run.
+    if (!isMemorySyncReady()) {
+      return;
     }
     const config = await getMemorySyncConfigService().getConfig();
     if (!config.source.enabled || !config.source.backgroundEnabled) {

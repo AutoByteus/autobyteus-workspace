@@ -5,6 +5,7 @@ import type {
 import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
 import type { ApplicationCatalogReconciliationService } from "../../application-platform/runtime/application-catalog-reconciliation-service.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "../../application-platform/runtime/application-definition-runtime-readiness.js";
+import type { ApplicationStorageLifecycleService } from "../../application-storage/services/application-storage-lifecycle-service.js";
 import {
   buildApplicationCatalogTransitionPlan,
 } from "../domain/application-catalog-transition-plan.js";
@@ -36,6 +37,10 @@ export class ApplicationCatalogTransitionService {
     catalogReconciliation: ApplicationCatalogReconciliationService;
     definitionReadiness: ApplicationDefinitionRuntimeReadiness;
     availabilityService: ApplicationAvailabilityService;
+    storageLifecycleService: Pick<
+      ApplicationStorageLifecycleService,
+      "ensureRuntimeDirectoryPrepared"
+    >;
   }>) {}
 
   runPackageTransition<T>(mutation: ApplicationPackageCatalogMutation<T>): Promise<T> {
@@ -134,6 +139,11 @@ export class ApplicationCatalogTransitionService {
     this.dependencies.bundleService.commitPreparedCatalogSlice(bundlePlan);
     this.dependencies.applicationAgentToolCatalog.commitPreparedDelta(toolDelta);
 
+    // As at startup: readiness runs each application's runtime in its runtime folder.
+    for (const applicationId of transitionPlan.currentApplicationIds) {
+      await this.dependencies.storageLifecycleService
+        .ensureRuntimeDirectoryPrepared(applicationId);
+    }
     const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
     await this.dependencies.catalogReconciliation.reconcile(snapshot);
     let readinessFailure: unknown = null;
@@ -142,14 +152,16 @@ export class ApplicationCatalogTransitionService {
     } catch (error) {
       readinessFailure = error;
     }
-    const recoverableApplicationIds = transitionPlan.currentApplicationIds.filter(
-      (applicationId) => this.dependencies.definitionReadiness
-        .isApplicationReady(applicationId),
-    );
+    // Each not-ready application's reason, as readiness states it; reentry quarantines with it.
+    const setupRequiredDetails = new Map<string, string>();
+    for (const applicationId of transitionPlan.currentApplicationIds) {
+      const detail = this.dependencies.definitionReadiness.getSetupRequiredDetail(applicationId);
+      if (detail) setupRequiredDetails.set(applicationId, detail);
+    }
     await this.dependencies.reentryService.recoverParticipants(
       token,
       transitionPlan.currentApplicationIds,
-      recoverableApplicationIds,
+      setupRequiredDetails,
       recoveryOptions,
     );
     if (readinessFailure) throw readinessFailure;

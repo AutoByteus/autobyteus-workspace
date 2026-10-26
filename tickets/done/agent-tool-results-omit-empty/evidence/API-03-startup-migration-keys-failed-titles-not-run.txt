@@ -1,0 +1,14 @@
+API-03 projects-startup-migration (keys-v1 FAILED case) — reproduction and temporary diagnostic (removed after the run)
+Command: /tmp/api-e2e-260/run.sh (env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>) pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/projects-startup-migration.e2e.test.ts [-t "get Task keys"] --no-watch
+Commit: source 17d631c704 (dist built 08:05); macOS arm64; 2026-10-25
+
+== Updated test (titles added for the title-shape changes), whole file:
+ FAIL  tests/e2e/projects/projects-startup-migration.e2e.test.ts > released Projects data is upgraded once at both actual startup entrypoints (SR-024) > Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it
+AssertionError: expected [] to deeply equal [ …(2) ]
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+
+== Temporary diagnostic in the case (logged the migration ledger, project_main's GraphQL Tasks and task_late's task.json on the first start):
+TEMP-DIAG first start (keys FAILED for project_blocked) {"ledger":[{"migrationId":"20261017_project_task_keys_v1","status":"FAILED","attempts":1,"errorMessage":"project_blocked: Task 'task_blocked' already holds key 'other-9', not 'blocked-1'."},{"migrationId":"20261025_project_task_titles","status":"NOT_RUN","attempts":0,"errorMessage":null}],"mainTasks":[],"taskLateFile":{"taskId":"task_late","projectId":"project_main","description":"Task task_late","status":"DONE","createdAt":"2026-10-01T03:00:00.000Z","updatedAt":"2026-10-01T03:00:00.000Z","contextFiles":[],"taskKey":"autobyteus-2"}}
+
+== Runner rule (src/app-data-migrations/app-data-migration-runner.ts:145-157): assertPrerequisites throws unless each prerequisite is SUCCEEDED or SUCCEEDED_WITH_WARNINGS

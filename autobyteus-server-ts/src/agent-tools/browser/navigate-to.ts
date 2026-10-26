@@ -6,7 +6,8 @@ import {
 } from "./browser-tool-contract.js";
 import { getBrowserToolManifestEntry } from "./browser-tool-manifest.js";
 import { buildNavigateToParameterSchema } from "./browser-tool-parameter-schemas.js";
-import { toBrowserToolErrorPayload, toBrowserJsonString } from "./browser-tool-serialization.js";
+import { toBrowserToolErrorPayload } from "./browser-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { getBrowserToolService } from "./browser-tool-service.js";
 
 const DESCRIPTION = getBrowserToolManifestEntry(NAVIGATE_TO_TOOL_NAME).description;
@@ -37,11 +38,11 @@ export async function navigateTo(
       url,
       wait_until: wait_until ?? "load",
     });
-    return toBrowserJsonString(result);
+    return toToolResultJson(result);
   } catch (error) {
     const payload = toBrowserToolErrorPayload(error);
     logger.error(`navigate_to failed for agent run ${agentRunId}: ${payload.error.message}`);
-    throw new Error(toBrowserJsonString(payload));
+    throw new Error(toToolResultJson(payload));
   }
 }
 

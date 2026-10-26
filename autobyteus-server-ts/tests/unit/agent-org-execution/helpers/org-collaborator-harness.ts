@@ -52,6 +52,7 @@ export const admission = (runnable = true) => {
   })];
   return createCollaboratorAdmission({
     listAgentDefinitions: async () => agents,
+    isAgentHidden: () => false,
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
@@ -72,8 +73,10 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   ] });
   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
+  // The coordinator's fail-stop callback, observable by tests (the Org root reads its latch on the next write).
+  const enterPersistenceFailStop = vi.fn();
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
+    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();
@@ -108,5 +111,5 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     taskExecutionResources: resources,
   });
   run.activate();
-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
+  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources, enterPersistenceFailStop };
 };

@@ -27,7 +27,7 @@ describe("Project Task comments (services)", () => {
   const now = () => new Date(Date.UTC(2026, 9, 22, 8, 0, tick++));
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string) => layout.taskFile(projectId, taskId);
-  const create = (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
+  const create = (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, title: description, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
   const stored = async (taskId: string) => (await store.readTask(projectId, taskId))!;
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
 
@@ -57,7 +57,7 @@ describe("Project Task comments (services)", () => {
       const task = await create("Cross-node collaboration");
       expect(await readJson(taskFile(task.taskId))).toMatchObject({ comments: [] });
       const ack = await tasks.updateTaskById({ taskId: "AutoByteus-1", addComment: "  Decision: use X  " });
-      expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: "autobyteus-1", status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
+      expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: "autobyteus-1", title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
       await tasks.updateTaskById({ taskId: task.taskId, addComment: "Second thought" });
       const saved = await stored(task.taskId);
       expect(saved.comments).toEqual([
@@ -118,7 +118,7 @@ describe("Project Task comments (services)", () => {
       await tasks.addComment({ projectId, taskId: task.taskId, text: "second" });
       await publisher.idle();
       expect(upserts().filter((t) => t.taskId === task.taskId).at(-1)!.comments.map((c) => [c.id, c.text])).toEqual([[1, "first"], [2, "second"]]);
-      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", description: "A",
+      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", projectId, description: "A",
         comments: ["first", "second"], referenceFiles: [] });
     });
   });

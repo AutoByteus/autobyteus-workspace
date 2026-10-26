@@ -29,8 +29,8 @@ export interface NodeCollaborationConnectorDependencies {
     changePeerAddress(nodeId: string, baseUrl: string): Promise<unknown>
   }
   list: {
-    rename(desktopId: string, name: string): Promise<void>
-    remove(desktopId: string): Promise<void>
+    rename(entryId: string, name: string): Promise<void>
+    remove(entryId: string): Promise<void>
   }
   there(windowAddress: string): NodeCollaborationApi
 }
@@ -120,7 +120,7 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
     const steps: NodeChangeStep[] = []
     if (registeredHere) steps.push(step('removeHere'))
     if (registeredThere) steps.push(step('removeThere'))
-    if (kind === 'remove' && target.desktopIds.length) steps.push(step('removeFromList'))
+    if (kind === 'remove' && target.entryIds.length) steps.push(step('removeFromList'))
     return { kind, target, here, steps, phase: 'confirm', candidates: { here: [], there: [] } }
   }
 
@@ -128,7 +128,7 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
     const herePeers = target.nodeId ? await deps.here.loadPeers() : []
     const steps: NodeChangeStep[] = []
     if (herePeers.some((peer) => peer.nodeId === target.nodeId)) steps.push(step('renameHere', { name }))
-    if (target.desktopIds.length) steps.push(step('renameInList', { name }))
+    if (target.entryIds.length) steps.push(step('renameInList', { name }))
     return { kind: 'rename', target, here, steps, phase: 'confirm', candidates: { here: [], there: [] } }
   }
 
@@ -176,13 +176,13 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
       case 'removeHere': return deps.here.removePeer(requireId(nodeId, plan.target.name))
       case 'removeThere': return api(plan).removePeer(requireId(plan.here.nodeId, plan.here.name))
       case 'removeFromList':
-        for (const desktopId of plan.target.desktopIds) await deps.list.remove(desktopId)
+        for (const entryId of plan.target.entryIds) await deps.list.remove(entryId)
         return
       case 'renameHere':
         await deps.here.renamePeer(requireId(nodeId, plan.target.name), current.name!)
         return
       case 'renameInList':
-        for (const desktopId of plan.target.desktopIds) await deps.list.rename(desktopId, current.name!)
+        for (const entryId of plan.target.entryIds) await deps.list.rename(entryId, current.name!)
         return
       case 'changeAddressHere':
         await deps.here.changePeerAddress(requireId(nodeId, plan.target.name), current.address!)

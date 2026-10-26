@@ -195,11 +195,11 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {
-          build: vi.fn(async ({ teamContext, agentNode, taskCommands }) => testMemberExecutionContext({
+          build: vi.fn(async ({ teamContext, agentNode, taskCapability }) => testMemberExecutionContext({
             memberAddress: agentNode.address,
             rootTeamRunId: teamContext.rootIdentity.rootRunId,
             agentRunId: agentNode.agentRunId,
-            taskCommands,
+            taskCapability,
           })),
         } as never,
         taskExecutionIdentity,

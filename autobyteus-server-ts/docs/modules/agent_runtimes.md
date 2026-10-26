@@ -8,6 +8,12 @@ It also starts the vendor's own update and login commands. This is the server
 side of Settings -> Agent Runtimes (see
 [Settings](../../../autobyteus-web/docs/settings.md#settings-agent-runtimes)).
 
+It also answers "what can run on this node now": every available agent
+runtime with its offered models and its live usage limits, read with 0 tokens
+(see [Available Agent Runtimes](#available-agent-runtimes)). That is the server
+side of the opt-in tool `list_available_agent_runtimes` and of Settings ->
+Model Routing -> "Agent runtimes now".
+
 Out of scope:
 
 - Installing runtimes. The user installs them; the page links to each vendor's
@@ -129,9 +135,109 @@ status read that times out now takes 10 s and gives the reason "Command timed
 out after 10000ms.". Grok and Antigravity application readiness are still
 `unsupported` (see [Grok Build Runtime](./grok_build_runtime.md#known-limits)).
 
+## Available Agent Runtimes
+
+`src/available-agent-runtimes/available-agent-runtimes-service.ts` —
+`AvailableAgentRuntimesService.read()`, the one boundary for the tool `list_available_agent_runtimes`
+(`src/agent-tools/agent-runtimes/`, AutoByteus local tool and Agent Tools MCP
+adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
+(`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
+same report the tool returns, which the tool gives by the one tool result rule:
+its null values are left out). The composition builds it from the same
+strategies and sign-in reader as the status service and binds it until
+`close()`. The folder `src/available-agent-runtimes/` (service, report,
+`usage-limit-model-matching.ts`) sits above `runtime-management` and
+`llm-management`, which it reads; neither imports it. Every call reads the runtimes again; nothing is cached, polled or
+stored. Reads are single-flight: callers that arrive while a read is in
+progress (several agents, the page) share it, so their runtime processes never
+overlap. The answer resolves as soon as it is complete; the read stays the one
+in progress until its client holds are released.
+
+**Available** means installed (`strategy.readVersion(...) !== null`, the
+Agent Runtimes page's rule) and not known to be signed out. A runtime whose
+sign-in could not be read is listed with `signIn: "not checked"`. For
+AutoByteus, per provider kind:
+
+| Provider kind | Listed when | Models |
+| --- | --- | --- |
+| Static, keyed (OpenAI, Anthropic, DeepSeek, …) | its key is configured | the AutoByteus catalog's models of that provider |
+| Discovered, local (Ollama, LM Studio) | it answers with at least one model now | the reload's models; not answering, an error or a time-out → left out |
+| Discovered, keyed (custom endpoint) | its key is configured | the reload's models; a failed reload (`ERROR` / `STALE_ERROR`) → `"unknown: <name> model list could not be read: <source's safe message>"`, a time-out → `"unknown: <name> model list timed out"`, no model → `"unknown: <name> model list could not be read: the endpoint listed no models"` |
+
+Discovered providers are reloaded on every read through
+`ModelCatalogService.reloadProviderModelCatalog(id, "autobyteus")` (the
+settings' own reload; it refreshes the shared catalog, and a failed reload
+keeps the previous rows for launch lists).
+
+**Steps and caps.** All runtimes are read in parallel. Per runtime: install
+(4 s) → sign-in (6 s) → models ‖ limits (8 s each), at most 18 s; AutoByteus:
+provider list (4 s) → per provider its discovered models ‖ its usage (8 s
+each), all providers in parallel. Each cap is a `ReadDeadline`
+(`src/runtime-management/read-deadline.ts`, an end time) that every command,
+probe, handshake and request inside the step shares: each gets its usual
+time-out cut to the time left, and nothing starts once it has passed, so the
+step's own processes stop. Codex requests race the deadline and release their
+lease in `finally`. Callers without a deadline (this page, launch paths) keep
+their usual time-outs.
+
+**Failures.** Strategies' `readUsageLimits`, catalogs and provider readers
+return their answer or throw; the service alone words a failed step (REQ-007):
+"<subject> timed out" when `isDeadlineExceeded(error)` (or a provider reader's
+time-out signal); "<subject> could not be read: <reason>" for an answer a
+parser or reader classified as unusable (`UsageLimitsUnreadableError`,
+`ProviderUsageUnreadableError`); otherwise "<subject> could not be read". The
+error's own text is never shown. Subjects: "<Runtime> usage limits",
+"<Runtime> model list", "<Provider> usage", "<Provider> model list".
+
+**Time-outs.** A step stopped by its own deadline surfaces a
+`DeadlineExceededError` (from `raceDeadline`, the command runner, or as the
+`cause` of a helper's own time-out diagnostic). A command's bound is
+`commandBound(deadline, usualMs)`: its usual time-out cut to the time left,
+`byDeadline` when the time left set it. Only then is its time-out the step's;
+an ordinary per-command time-out (e.g. Antigravity's 3 s `--help` probe) is an
+ordinary failure ("could not be read"). The rule is never decided by reading
+the clock afterwards (timers and `Date.now()` can disagree by a millisecond).
+
+**Codex client hold.** After the install step the service holds the runtime's
+shared client for the rest of the read (`AgentRuntimeStrategy.holdClient`, Codex
+only: a home-folder lease taken without `acquire()`), so sign-in, models and
+limits start the app-server once and no step meets another's close; the hold
+is released when the read is done. Another Codex user of the same folder
+closing it meanwhile still gives that step's reason (follow-up FU-003). A failed or timed-out step
+gives: install → left out; sign-in → `signIn: "not checked"`; models →
+`"unknown: …"` (an empty model list is never "no models"); limits →
+`"unknown: …"`.
+
+**Limits** (`AgentRuntimeStrategy.readUsageLimits`, parsers in
+`usage-limits/`; plans, tiers, credits, account data and vendor texts are
+dropped):
+
+| Runtime | Source (0 tokens) | Limits | A model is blocked when |
+| --- | --- | --- | --- |
+| Codex | app-server `account/rateLimits/read` (home-folder app-server) | each window: "5-hour", "Weekly" (a model-specific entry adds " · <model>"); remaining = 100 − used % | its window is used up and the account has no credits; with credits, `limitsNote` says Codex runs on paid credits |
+| Claude | Agent SDK `get_usage` control request on a query opened with an input that never yields (`claude/client/claude-sdk-control-query.ts`; model discovery uses the same query) | `rate_limits.limits[]`: "5-hour", "Weekly", "Weekly · <model>"; no plan limits (API key) → `not reported` | a covering limit is at 100 % |
+| Antigravity | `agy -p "/usage" --output-format json` | each enabled bucket: "<group> · weekly" / "<group> · 5-hour" | its group (by the model families the group lists, or the group name; most specific wins) has 0 % left |
+| Grok | ACP extension `_x.ai/billing` after `initialize` on a short process (`runAcpExtensionRequest`) | "Billing period", resets at the period end; remaining only when Grok reports `creditUsagePercent`, else null with a `limitsNote` | its remaining is 0 % |
+
+Remaining percentages are whole numbers rounded down (99.7 → 99); a limit's
+exhaustion is decided on the unrounded value. A limit that maps to no offered
+model covers the whole runtime. A limit names what it covers in its source's
+terms (`appliesTo`): the whole runtime, model ids (Codex), or display-name
+families (Claude, Antigravity; a family covers a model when its words appear in
+the display name in order from the first word, and an id is never matched as
+a family). Each model is given to its most specific family across all of the
+runtime's limits; only then do the used-up limits block it. The service
+derives each model's `blocked: {until, by}` (until the latest reset of the
+used-up limits covering it). AutoByteus providers are read by
+`src/llm-management/provider-usage/` (see
+[LLM Management](llm_management.md#provider-usage)).
+
 ## Tests
 
-- Unit: `tests/unit/runtime-management/agent-runtimes/`,
+- Unit: `tests/unit/runtime-management/agent-runtimes/` (including
+  `usage-limits/`, from the recorded answers in
+  `tests/fixtures/usage-limits/`), `tests/unit/available-agent-runtimes/`
+  (service, concurrency, matching, dependency direction),
   `tests/unit/api/graphql/agent-runtimes-resolver.test.ts`,
   `tests/unit/application-platform/`.
 - E2E on a real studio server with scripted CLIs
@@ -140,5 +246,10 @@ out after 10000ms.". Grok and Antigravity application readiness are still
   `ANTIGRAVITY_CLI_COMMAND`, `GROK_BUILD_COMMAND`):
   `tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts` and
   `tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts` (the latter
-  needs `pnpm test:integration:prepare` for Brief Studio). Run them with a
+  needs `pnpm test:integration:prepare` for Brief Studio), and
+  `tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts` (AAR-01…06:
+  the `availableAgentRuntimes` answer with 0 tokens, sign-in and install rules,
+  step time-outs, the tool over Agent Tools MCP and shared reads, no secrets
+  in any output, discovered providers; provider endpoints, LM Studio and a
+  custom endpoint are answered by an in-process stub). Run them with a
   clean environment and a temporary `HOME`, so no real account is read.

@@ -33,6 +33,7 @@ import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migratio
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data/remove-external-messaging-data-migration.js";
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import { ProjectTaskKeysV1AppDataMigration } from "./migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
+import { ProjectTaskTitlesAppDataMigration } from "./migrations/project-task-titles/project-task-titles-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-migration.js";
 import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
@@ -40,6 +41,8 @@ import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-onl
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports/remove-work-trace-exports-migration.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
+import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
+import { MemorySyncSourceIdNamesMigration } from "./migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.js";
 
 /**
  * Definition names as the application resolves them. The definition providers are loaded only when a migration needs a
@@ -127,6 +130,9 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new ProjectsPerFolderV1AppDataMigration(appDataDir),
     // Keys existing Project Tasks; needs the per-Project folders.
     new ProjectTaskKeysV1AppDataMigration(appDataDir),
+    // Titles existing Project Tasks from their descriptions' first lines; needs the per-Project folders, not the
+    // Task keys (SR-012): an unkeyable Project must not leave every Project untitled. keys-v1 keeps a title it finds.
+    new ProjectTaskTitlesAppDataMigration(appDataDir),
     new RemoveBuiltInProjectTaskManagerMigration(
       path.join(config.getAgentsDir(), "autobyteus-project-task-manager"),
     ),
@@ -146,6 +152,10 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
       memoryDir,
       config.getAgentsDir(),
     ),
+    // The node identity file follows the code's name (autobyteus-290 SM-1); holds back `node_identity`.
+    new NodeIdentityFileNameMigration(appDataDir),
+    // Memory Sync's stored names follow the code (autobyteus-290 SM-2 … SM-5); holds back `memory_sync`.
+    new MemorySyncSourceIdNamesMigration(appDataDir, memoryDir),
   ];
 };
 

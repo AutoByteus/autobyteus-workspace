@@ -13,6 +13,8 @@ export type CollaboratorDefinitionCatalog = Readonly<{
   listTeamDefinitions(): Promise<readonly AgentTeamDefinition[]>;
   getAgentDefinition(id: string): Promise<AgentDefinition | null>;
   getTeamDefinition(id: string): Promise<AgentTeamDefinition | null>;
+  /** The internal-agent rule (`InternalAgentVisibility.isHidden`): a hidden agent is not a collaborator now. */
+  isAgentHidden(definition: AgentDefinition): boolean;
 }>;
 
 export type CollaboratorCandidate =
@@ -72,7 +74,8 @@ const hasId = <T extends { id?: string | null }>(definition: T): definition is T
 /**
  * The single owner of `@` and catalog eligibility. Candidates are shared standalone Agent
  * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
- * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates. Two checks: `requireEligible`
+ * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates; internal
+ * agents are not while "Show internal agents" is off (autobyteus-308). Two checks: `requireEligible`
  * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
  * `requireAdmissible` may be delegated to as a fresh catalog copy (not already in the run).
  * `list_available_agents` lists every eligible definition once, at its in-run address or at its
@@ -203,7 +206,8 @@ export class CollaboratorCandidatePolicy {
   }
 
   private isEligibleAgent(definition: AgentDefinition): definition is AgentDefinition & { id: string } {
-    return hasId(definition) && definition.ownershipScope === "shared" && !EXCLUDED_AGENT_DEFINITION_IDS.has(definition.id);
+    return hasId(definition) && definition.ownershipScope === "shared" && !EXCLUDED_AGENT_DEFINITION_IDS.has(definition.id)
+      && !this.catalog.isAgentHidden(definition);
   }
 
   private isEligibleTeam(definition: AgentTeamDefinition): definition is AgentTeamDefinition & { id: string } {

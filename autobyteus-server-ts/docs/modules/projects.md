@@ -40,7 +40,7 @@ the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
 an agent package root. A managing Agent typically selects the Project/Task
-tools (`list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`,
+tools (`list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`,
 `update_project`, `create_task`, `update_task`) plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
@@ -112,8 +112,17 @@ key allocation state:
 `projectId, name, description, createdAt, updatedAt, workspaces[], taskKeys{prefix, lastNumber}`.
 
 `task.json` holds the released Task fields plus `projectId`, its key, its
-dependencies, its parent and its comments:
-`taskId, projectId, taskKey, description, status, dependsOnTaskIds[], partOfTaskId, createdAt, updatedAt, contextFiles[], comments[]`.
+title, its dependencies, its parent and its comments:
+`taskId, projectId, taskKey, title, description, status, dependsOnTaskIds[], partOfTaskId, createdAt, updatedAt, contextFiles[], comments[]`.
+The title is the Task's one-line name, given by its writer: trimmed, not blank,
+no length or line limit. The reader requires it; Tasks saved before titles got
+theirs once at startup from their description's first non-empty line, cut to
+200 characters with "…" (migration `project-task-titles`, after
+`projects-per-folder-v1`; nothing else in the file changes). It titles keyed and
+unkeyed Task files alike, so a Project that `project-task-keys-v1` could not key
+is titled too and is listed with its titles once a later start keys it (keys-v1
+keeps the title). A Task file without a title that the migration could not
+convert stays unchanged and is not listed.
 
 Tasks with no Project live outside the Projects root, so no Project scan or the
 Projects migration gate ever sees them. `AdHocTasksLayout` owns
@@ -456,7 +465,7 @@ in-memory index (no scan of Task files); otherwise null. It never throws.
 `ProjectTaskService.currentTasksOfTaskWorkers(workers)` is the only Projects
 read built on it (delegated-copy-task-locator). It waits for `load()`, then for
 each `{agentRunId}` or `{teamRunId}` reads the Task's change view and answers
-`{execution, task: {taskId, projectId, description, status} | null}`
+`{execution, task: {taskId, projectId, title, description, status} | null}` (`title` null for a Temp task)
 (`TaskWorkerTaskResult` / `TaskWorkerTaskView` in `domain/models.ts`;
 `projectId` null means a Task with no Project). `task` is null when the copy is
 no Task's root, or when its Task or that Task's Project no longer exists. A
@@ -499,12 +508,13 @@ is selected per agent definition; none is added automatically.
 | Tool | Exact input / behavior | Result object |
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
-| `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
-| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, summary, match, commentCount?}], meaningSearch: {state, note?}}` |
+| `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}`: short entries |
+| `get_project_task` | Required `project_id` and `task_id` (a key in any letter case, or the long ID, of that Project); a worker reads only the Task it works on (see below) | the Task in full `{projectId, taskId, title, status, description, dependsOn, partOf, parts, comments, contextFiles, assignments, closedAssignments}` |
+| `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, title, match, commentCount}], meaningSearch?: {state, note}}` |
 | `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
-| `create_task` | `{project_id, description, context_files?, depends_on?, part_of?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
-| `update_task` | `{task_id, description?, status?, context_files?, depends_on?, part_of?, add_comment?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
+| `create_task` | `{project_id, title, description, context_files?, depends_on?, part_of?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key; a missing or blank title fails with `TASK_TITLE_REQUIRED` | `{task: {...}}` |
+| `update_task` | `{task_id, title?, description?, status?, context_files?, depends_on?, part_of?, add_comment?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
 `update_project` preserves omitted fields. A blank Project
 description clears it; unknown IDs never create. `create_project` rejects
@@ -524,13 +534,35 @@ patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
 contains committed metadata and path/description links, not Task counts,
 availability or a work assessment.
 
+Every result follows the [Tool Result Rule](agent_tools.md#tool-result-rule): a
+field with no value (`null`, `""`, `[]`, `{}`) is absent, and the JSON is compact.
+
 `list_project_tasks` stays global: it returns every Task in the Project, with
-an optional `status` filter. Each Task has `projectId`, `taskId` (its key), the
-full `description`, `status`, `dependsOn` (the keys of the Tasks it depends on
-that still exist), `partOf` (its parent's key, or `null`), `parts` (the keys of
-its parts, in key number order), `contextFiles` and, only when it has any,
-`comments` (their texts, oldest first; no numbers or times), plus **one** of:
-- `assignments` and `closedAssignments`: the Task's open `role: assigned`
+an optional `status` filter, `projectId` once at the top. By default each Task
+is a **short entry**: `taskId` (its key), `title`, `status`, `dependsOn` (the keys
+of the Tasks it depends on that still exist), `partOf` (its parent's key),
+`parts` (the keys of its parts, in key number order), `commentCount`, and its
+open `assignments` (or `assignmentsUnavailable`).
+
+`get_project_task` reads **one Task in full**: the short entry's fields plus the
+full `description`, `comments` (their texts, oldest first; no numbers or times),
+`contextFiles: [{name, path}]` (the display name and the local path to read it
+by) and `closedAssignments`. Its `task_id` is resolved within `project_id`; a Task
+of another Project, an unknown one or a Task with no Project fails with
+`TASK_NOT_FOUND`. **Scope:** a caller that works on a Task reads only that Task:
+the Task its copy works on now, as `ownerOf` answers for the caller's run (a task
+agent, every member of a task team, the agents a worker delegated to; a copy
+holding several open Tasks works on the latest given to it). Any other Task,
+its parent included, fails with `TASK_READ_OUT_OF_SCOPE` ("You work on <key>; you
+can read only that Task.") and no data. When the caller's Task can't be told
+(damaged run data) the call fails with `TASK_AGENT_RESOURCES_UNAVAILABLE`; it is
+never read without a scope. A caller on no Task reads any Project Task. The
+member's Task capability (`MemberTaskCapability.ownedTaskOf`) answers the scope on
+both routes. A worker's first message for a saved Task names it: `Task: <key> in
+Project <projectId>`, and says `get_project_task` reads it again.
+
+Assignments:
+- `assignments` (and `closedAssignments` from `get_project_task`): the Task's open `role: assigned`
   entries (`closedAt: null`), from any Manager, and every closed one (one per
   earlier assignment period, in link order). Each names the copy for what it
   is:
@@ -549,12 +581,12 @@ give the copy that did a DONE Task a follow-up Task with `delegate_task` and its
 `teamRunId` / `agentRunId` (see [Follow-up Task to an existing
 copy](#follow-up-task-to-an-existing-copy)).
 
-`create_task` and `update_task` return `{task: {projectId, taskId, status, dependsOn, partOf}}`
-(`taskId` is the key; `dependsOn` lists keys; `partOf` is the parent's key or `null`), and
-`{task: {projectId: null, taskId, status}}` for a Task with no Project (its ID; no `dependsOn`
-or `partOf`). When the call attached context files, `task` also has
-`attachedContextFiles: [{storedFilename, displayName}]`: exactly the files this call attached,
-in argument order. When an `update_task` that set a parent to DONE or CANCELLED also closed
+`create_task` and `update_task` return `{task: {projectId, taskId, title, status, dependsOn, partOf}}`
+(`taskId` is the key; `dependsOn` lists keys; `partOf` is the parent's key), and
+`{task: {taskId, status}}` for a Task with no Project (its ID; no `projectId`, `title`, `dependsOn`
+or `partOf`; a `title` for it fails with `TASK_TITLE_INVALID`). When the call attached context files, `task` also has
+`attachedContextFiles: [{name, path}]`: exactly the files this call attached,
+in argument order, in the same shape as full list entries. When an `update_task` that set a parent to DONE or CANCELLED also closed
 its open parts, `task` has `closedParts`: the keys of the parts it closed (absent when none),
 and `partsNotClosed`: the keys of the parts it could not close (absent when none). An added
 comment adds nothing to the result: a successful call means the comment was added.
@@ -613,14 +645,15 @@ Project-only boundary; local paths never travel on those GraphQL commands.
 - A later `delegate_task({task_id})` hands the saved copies to the worker as
   reference files, like files attached in the app.
 
-Each listed context file exposes its saved metadata and a relative HTTP
-locator. `localPath` is included only when the Task authority validates the
-physical saved bytes. It is a server-local path, not guaranteed to be reachable
-by a remote consumer. Missing bytes never produce a fabricated `localPath`.
+Each listed context file is `{name, path}`: its display name and its local
+path. `path` is included only when the Task authority validates the physical
+saved bytes. It is a server-local path, not guaranteed to be reachable by a
+remote consumer. Missing bytes never produce a fabricated `path`.
 
 Task input validation (Project rules are above):
 - Presence matters: a null or blank `project_id` or `task_id` is invalid, not a request to
-  create. A null, blank or non-string `description` is invalid.
+  create. A null, blank or non-string `title` or `description` is invalid
+  (`TASK_TITLE_REQUIRED` / `TASK_DESCRIPTION_REQUIRED` for a blank one).
 - Unknown input keys are rejected. `project_id` together with `task_id` is an
   unsupported argument (`PROJECT_TOOL_ARGUMENT_INVALID`); create without
   `project_id` fails the same way. Unknown Task IDs fail with `TASK_NOT_FOUND`.
@@ -668,23 +701,22 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
 the Project's current Tasks from `ProjectTaskService` on every search, so deleted Tasks never appear and statuses are
 current, and returns matches best-first in two tiers:
 
-1. **Exact:** every Task whose description or one of whose comments contains the trimmed query, case-insensitively.
+1. **Exact:** every Task whose title, description or one of whose comments contains the trimmed query, case-insensitively.
    They are ordered by meaning score when meaning search is ready, then latest update first.
 2. **Meaning:** the Tasks the [embedding layer](./embeddings.md) finds nearly as relevant as the best one (at most 20,
    and none when even the best one is not clearly relevant), over all of the Project's Tasks, Cancelled ones included.
 
-Only the description is indexed (open Tasks first, then the most recently updated); comments are found by exact text
+Only the description is indexed (the title is found by exact text; open Tasks first, then the most recently updated); comments are found by exact text
 only, and adding one changes nothing in the index. The first search of a Project, or
 the first after a model change, indexes its Tasks in the background; meanwhile, and whenever meaning search is
 unavailable, the exact tier still answers. Once the model is on disk, a created or edited Task's Project is also
 indexed in the background about 3 s after the write, with no search (see [embeddings.md](./embeddings.md)). An edited Task is found by its new text at once by exact match and by
 meaning when it is indexed again (a second or two for the default model); it is never matched by its old text.
 
-The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `summary` the
-description's first line (at most 160 characters), `match` `exact` or `meaning`, and `commentCount` when the Task has
-comments. On first use it waits up to 30 s for
-meaning search to be ready. `meaningSearch` is `{state: "ready"}`, or `preparing`/`unavailable` with a `note` saying
-why and which results are exact text matches only. A blank `query`, unknown arguments and a `limit` outside 1–30 fail
+The tool returns at most `limit` Tasks: `taskId` is the Task's key, `status` its current status, `title` its title,
+`match` `exact` or `meaning`, and `commentCount` when the Task has comments. On first use it waits up to 30 s for
+meaning search to be ready. `meaningSearch` is absent when meaning search was used, or `preparing`/`unavailable` with
+a `note` saying why and which results are exact text matches only. A blank `query`, unknown arguments and a `limit` outside 1–30 fail
 with `PROJECT_TOOL_ARGUMENT_INVALID`; an unknown Project fails with `PROJECT_NOT_FOUND`.
 
 ## Saved-ID Delegation And Agent Run Resources
@@ -1136,7 +1168,7 @@ Project queries and mutations keep their names; there is no Projects capability 
 `workspaces`.
 
 - `projectTasks(projectId)` returns full ProjectTask records with
-  `taskKey`, `dependsOnTaskIds`, `partOfTaskId` (nullable), `comments` (`[{id, createdAt, text}]`), `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
+  `taskKey`, `title`, `dependsOnTaskIds`, `partOfTaskId` (nullable), `comments` (`[{id, createdAt, text}]`), `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
   do not list the other assignments.
 - `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
   change first: `taskId, description, status, referenceFiles, createdAt,
@@ -1144,14 +1176,14 @@ Project queries and mutations keep their names; there is no Projects capability 
 - `taskWorkerTasks(agentRunIds: [String!]!, teamRunIds: [String!]!)` returns
   `[TaskWorkerTask!]!`, one per listed run (agents first, then teams):
   `workerKind` (`agent` | `team`), `workerRunId` and a nullable `task`
-  `{taskId, projectId, description, status}`. It is the batched
+  `{taskId, projectId, title, description, status}` (`title` null for a Temp task). It is the batched
   [current Task of a Task worker](#current-task-of-a-task-worker) read used by
   the web app's Workspaces tree; an ID that is no Task's root answers
   `task: null`.
-- `createProjectTask({projectId, description, contextDraft?, dependsOnTaskIds?, partOfTaskId?})` creates a TODO
-  Task with the Project's next key.
-- `updateProjectTask({projectId, taskId, description, contextChanges?, dependsOnTaskIds?, partOfTaskId?})` edits
-  text, context, dependencies (supplied = replace, `[]` = clear, omitted = keep) and the parent
+- `createProjectTask({projectId, title, description, contextDraft?, dependsOnTaskIds?, partOfTaskId?})` creates a TODO
+  Task with the Project's next key; a blank title fails with `TASK_TITLE_REQUIRED`.
+- `updateProjectTask({projectId, taskId, title, description, contextChanges?, dependsOnTaskIds?, partOfTaskId?})` edits
+  title, text, context, dependencies (supplied = replace, `[]` = clear, omitted = keep) and the parent
   (an ID = replace, `null` = clear, omitted = keep), preserving status.
   Invalid dependencies fail with `TASK_DEPENDENCY_INVALID`, an invalid parent with `TASK_PARENT_INVALID`. **There is no GraphQL or manual UI
   status mutation.**

@@ -26,6 +26,7 @@ export const GetAgentDefinitions = gql`
       ownerApplicationName
       ownerPackageId
       ownerLocalApplicationId
+      internal
       defaultLaunchConfig {
         llmModelIdentifier
         runtimeKind

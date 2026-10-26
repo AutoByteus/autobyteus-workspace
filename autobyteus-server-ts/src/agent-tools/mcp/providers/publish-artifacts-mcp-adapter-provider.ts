@@ -4,7 +4,7 @@ import {
   normalizePublishArtifactsToolInput,
 } from "../../../services/published-artifacts/published-artifact-tool-contract.js";
 import { buildPublishArtifactsParameterSchema } from "../../published-artifacts/publish-artifacts-tool.js";
-import { toJsonString } from "../../json-utils.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import type {
   AgentToolMcpAdapterProvider,
   AgentToolMcpToolAdapter,
@@ -47,10 +47,10 @@ export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterPr
                   session.executionContext.applicationExecutionContext ?? null,
               },
             });
-            return createAgentToolsMcpSuccessResult(toJsonString({ success: true, artifacts }));
+            return createAgentToolsMcpSuccessResult(toToolResultJson({ success: true, artifacts }));
           } catch (error) {
             return createAgentToolsMcpErrorResult(
-              toJsonString(buildErrorPayload(error)),
+              toToolResultJson(buildErrorPayload(error)),
               "publish_artifacts_failed",
             );
           }

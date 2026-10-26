@@ -184,10 +184,10 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
   }
   // "Depends on" and "Part of" are saved with the Task (same-Project Task IDs); on update a supplied list replaces the stored one,
   // a supplied `partOfTaskId` replaces the parent and `null` clears it (omitted keeps it).
-  const createTask = (projectId: string, description: string, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, CreateProjectTask,
-    {projectId, description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId ? {partOfTaskId} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
-  const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, UpdateProjectTask,
-    {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId !== undefined ? {partOfTaskId} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  const createTask = (projectId: string, text: {title: string; description: string}, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, CreateProjectTask,
+    {projectId, title: text.title, description: text.description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId ? {partOfTaskId} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
+  const updateTask = (projectId: string, taskId: string, text: {title: string; description: string}, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, UpdateProjectTask,
+    {projectId, taskId, title: text.title, description: text.description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId !== undefined ? {partOfTaskId} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
   // A comment is only added: the server sets its number and time and returns the Task, which replaces the listed one.
   const addComment = (projectId: string, taskId: string, text: string, eligible?: () => boolean) => mutate<ProjectTask>(projectId, AddProjectTaskComment,
     {projectId, taskId, text}, 'addProjectTaskComment', (tasks, result) => tasks.map((t) => t.taskId === taskId ? result : t), eligible)

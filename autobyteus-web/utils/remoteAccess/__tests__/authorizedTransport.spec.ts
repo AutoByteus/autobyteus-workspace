@@ -9,8 +9,7 @@ import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialSt
 import type { MobileNodeSession } from '~/types/remoteAccess';
 
 const mobileSession = (): MobileNodeSession => ({
-  version: 1,
-  nodeId: 'mobile-paired-node',
+  entryId: 'mobile-paired-node',
   serverBaseUrl: 'http://desktop-private.local:29695',
   credential: 'mra_mobile_secret',
   pairedAt: '2026-05-16T00:00:00.000Z',

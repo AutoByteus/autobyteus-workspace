@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+// autobyteus-308 API-07 (temporary live probe; a copy is kept in the ticket's evidence): a live AutoByteus agent (local LM
+// Studio model, no paid tokens) calls list_agent_definitions with "Show internal agents" off, then on (Settings API, no
+// restart). A built node on a fresh data root holds a synthesized internal agent (files written before start).
+// Usage: node list-agent-definitions-live.mjs <worktree> <out-dir>
+import { spawn, execFileSync } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+const [worktree, outDir] = process.argv.slice(2);
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const WebSocket = createRequire(path.join(serverDir, 'package.json'))('ws');
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const out = { startedAt: new Date().toISOString(), head: execFileSync('git', ['-C', worktree, 'rev-parse', '--short', 'HEAD']).toString().trim(), steps: {} };
+await fs.mkdir(outDir, { recursive: true });
+const port = await new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'ia-live-')));
+const dataRoot = path.join(root, 'node');
+for (const folder of ['db', 'logs', 'memory', 'temp_workspace', 'home', 'workspace', 'agents/probe-internal-helper']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+await fs.writeFile(path.join(dataRoot, 'agents/probe-internal-helper/agent.md'), ['---', 'name: Probe Internal Helper', 'description: The system\'s own helper (probe)', 'role: assistant', '---', '', 'Help.'].join('\n'));
+await fs.writeFile(path.join(dataRoot, 'agents/probe-internal-helper/agent-config.json'), JSON.stringify({ internal: true, toolNames: [], skillNames: [] }, null, 2));
+const url = `http://127.0.0.1:${port}`;
+const db = pathToFileURL(path.join(dataRoot, 'db', 'node.db')).href;
+const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_') && !k.startsWith('ENABLE_') && !/_API_KEY$/.test(k))),
+  HOME: path.join(dataRoot, 'home'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
+  AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace') };
+await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${db}\nAUTOBYTEUS_SERVER_HOST=${url}\n`);
+execFileSync('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { env: { ...env, HOME: os.homedir() }, stdio: 'ignore' });
+const log = createWriteStream(path.join(root, 'server.log'));
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+server.stdout.pipe(log); server.stderr.pipe(log);
+const gql = async (query, variables = {}) => { const r = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }).then((x) => x.json()); if (r.errors) throw new Error(JSON.stringify(r.errors)); return r.data; };
+try {
+  while (!(await fetch(`${url}/rest/health`).then((r) => r.ok).catch(() => false))) { if (server.exitCode !== null) throw new Error('server exited'); await sleep(250); }
+  const models = (await gql('mutation { ensureProviderModelCatalog(providerId: "LMSTUDIO", runtimeKind: "autobyteus") { llmModels { modelIdentifier } } }')).ensureProviderModelCatalog.llmModels.map((m) => m.modelIdentifier);
+  const model = models.find((m) => /qwen/i.test(m) && !/embed/i.test(m));
+  const definitionId = (await gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: `Agent Manager ${randomUUID().slice(0, 4)}`, role: 'assistant', description: 'autobyteus-308 API-07',
+    instructions: 'You are a precise tool operator. Call only the tools the user names and keep replies to one short sentence.', toolNames: ['list_agent_definitions'] } })).createAgentDefinition.id;
+  const created = (await gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: definitionId, workspaceRootPath: path.join(dataRoot, 'workspace'), llmModelIdentifier: model, llmConfig: null, autoExecuteTools: true, runtimeKind: 'autobyteus' } })).createAgentRun;
+  if (!created.success) throw new Error(created.message);
+  out.steps.run = { model, runId: created.runId };
+  const socket = new WebSocket(`ws://127.0.0.1:${port}/ws/agent/${created.runId}`);
+  const frames = []; socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  while (!frames.some((f) => f.type === 'CONNECTED')) await sleep(100);
+  const ask = async (label) => {
+    const from = frames.length;
+    const id = `ia-${randomUUID()}`;
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: created.runId, content: 'Call the list_agent_definitions tool exactly once now with these exact JSON arguments: {}. Then reply with one short sentence giving how many agent definitions it returned.', message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [] } }));
+    const t0 = Date.now();
+    let done;
+    while (Date.now() - t0 < 180000) {
+      done = frames.slice(from).find((f) => ['TOOL_EXECUTION_SUCCEEDED', 'TOOL_EXECUTION_FAILED'].includes(f.type) && String(f.payload?.tool_name ?? '').endsWith('list_agent_definitions'));
+      if (done && frames.slice(frames.indexOf(done)).some((f) => f.type === 'AGENT_STATUS' && f.payload?.status === 'idle')) break;
+      await sleep(500);
+    }
+    out.steps[`${label}-frames`] = { types: [...new Set(frames.slice(from).map((f) => f.type))], tools: frames.slice(from).filter((f) => f.type.startsWith('TOOL_')).map((f) => `${f.type}:${f.payload?.tool_name}`),
+      text: frames.slice(from).filter((f) => f.type === 'SEGMENT_CONTENT').map((f) => String(f.payload?.delta ?? f.payload?.content ?? '')).join('').slice(-800),
+      errors: frames.slice(from).filter((f) => /ERROR|FAIL/.test(f.type)).map((f) => JSON.stringify(f).slice(0, 400)) };
+    if (!done) throw new Error(`${label}: no list_agent_definitions result`);
+    const text = typeof done.payload.result === 'string' ? done.payload.result : JSON.stringify(done.payload.result);
+    out.steps[label] = { event: done.type, ms: Date.now() - t0, includesInternal: text.includes('probe-internal-helper') || text.includes('Probe Internal Helper'),
+      definitionCount: (text.match(/"id"\s*:/g) ?? []).length || null, resultHead: text.slice(0, 600) };
+  };
+  await ask('off');
+  await gql('mutation { updateServerSetting(key: "AUTOBYTEUS_SHOW_INTERNAL_AGENTS", value: "true") }');
+  await ask('on');
+  await gql('mutation { updateServerSetting(key: "AUTOBYTEUS_SHOW_INTERNAL_AGENTS", value: "false") }');
+  socket.close();
+  await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: created.runId }).catch(() => undefined);
+} catch (error) {
+  out.error = error.stack || String(error);
+} finally {
+  try { process.kill(-server.pid, 'SIGTERM'); } catch {}
+  await sleep(3000);
+  try { process.kill(-server.pid, 'SIGKILL'); } catch {}
+  out.cleanup = { serverExited: server.exitCode !== null || server.signalCode !== null };
+  await fs.rm(root, { recursive: true, force: true });
+  out.cleanup.tempRoot = 'removed';
+  await fs.writeFile(path.join(outDir, 'list-agent-definitions-live.json'), JSON.stringify(out, null, 2));
+  console.log(JSON.stringify(out, null, 1));
+}
