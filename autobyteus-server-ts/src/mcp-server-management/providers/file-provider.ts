@@ -13,10 +13,9 @@ import {
   readJsonFile,
   updateJsonFile,
 } from "../../persistence/file/store-utils.js";
-import { fieldLocation, fieldValuesOf } from "../domain/mcp-config-fields.js";
+import { fieldLocation } from "../domain/mcp-config-fields.js";
 
 const logger = {
-  info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
@@ -132,14 +131,10 @@ const withValueAt = (entry: McpConfigEntry, field: McpSecretField, value: McpCon
   return { ...entry, [location.container]: copy };
 };
 
-/** Whether saving `config` over the stored `entry` replaces a plain value with a secret reference. */
-const replacesPlainValue = (entry: McpConfigEntry | undefined, config: BaseMcpConfig): boolean =>
-  entry !== undefined && fieldValuesOf(config).some(({ field, value }) =>
-    isMcpSecretReference(value) && typeof storedValueAt(entry, field) === "string");
-
 /**
  * Copies `mcps.json`, as it is on disk, to `mcps.json.backup-before-vault-move-<timestamp>` (mode 0600, never
- * overwriting). Called under the file lock, before the file is rewritten. The backup holds the plain values.
+ * overwriting). Called only by the move, under the file lock, before the file is rewritten. The backup holds the
+ * plain values.
  */
 const writeBackup = async (filePath: string): Promise<string> => {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -200,20 +195,15 @@ export class FileMcpServerConfigProvider {
     return parseEntry(domainObj.server_id, entry);
   }
 
-  /** Writes the backup first when a stored plain value becomes a secret reference. */
+  /** Writes no backup: only the move (`replaceWithReferences`) turns stored plain values into references. */
   async update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
     const entry = toStandardEntry(domainObj);
-    const filePath = resolveFilePath();
-    await updateJsonFile<McpConfigFile>(filePath, EMPTY_FILE, async (existing) => {
+    await updateJsonFile<McpConfigFile>(resolveFilePath(), EMPTY_FILE, (existing) => {
       const next: McpConfigFile = {
         mcpServers: { ...(existing.mcpServers ?? {}) },
       };
       if (!Object.prototype.hasOwnProperty.call(next.mcpServers, domainObj.server_id)) {
         throw new Error(`MCP server '${domainObj.server_id}' does not exist.`);
-      }
-      if (replacesPlainValue(next.mcpServers[domainObj.server_id], domainObj)) {
-        const backupPath = await writeBackup(filePath);
-        logger.info(`Backed up mcps.json to ${backupPath} before replacing a plain value of '${domainObj.server_id}' with a secret reference.`);
       }
       next.mcpServers[domainObj.server_id] = entry;
       return next;

@@ -261,6 +261,10 @@ export class ImportMcpServerConfigsResult {
   /** The imported values stored as MCP secrets. */
   @Field(() => [McpServerField])
   storedSecrets!: McpServerField[];
+
+  /** Imported secret references this node does not hold: saved as needing a secret, to be entered here. */
+  @Field(() => [McpServerField])
+  needsSecret!: McpServerField[];
 }
 
 /** The secret suggestion rule, as the web reads it (it never defines the rule itself). */

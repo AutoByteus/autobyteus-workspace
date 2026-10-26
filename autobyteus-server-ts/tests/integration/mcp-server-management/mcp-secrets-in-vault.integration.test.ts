@@ -8,7 +8,9 @@
  * - keep, replace and unlock; delete removes the entries; preview stores nothing;
  * - states: CONFIGURED / MISSING, and VAULT_UNAVAILABLE while the vault is locked or not open (the list still works);
  * - the move: backup (0600), references in the file and the cache at once, servers re-registered; when the file
- *   write fails, the new entries are removed and the file is unchanged;
+ *   write fails, the new entries are removed and the file is unchanged; only the move writes a backup;
+ * - import of references: a foreign one becomes a fresh `MISSING` reference (`needs_secret`); a server that holds a
+ *   reference at that field keeps its own (re-importing an older copy of its file never removes a working secret);
  * - no value appears in `mcps.json` (once locked), in a view, or in any console line.
  * Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/integration/mcp-server-management/mcp-secrets-in-vault.integration.test.ts
  * Values: dummy only.
@@ -302,16 +304,45 @@ describe("MCP server secrets in the vault", () => {
     expect((await fs.readdir(appData.dir)).filter((name) => name.includes("backup"))).toEqual([]);
   });
 
-  it("writes the backup when a form save locks a stored plain value", async () => {
+  it("writes no backup when a form save locks a stored plain value (only the move backs up)", async () => {
     await service.configureMcpServer(stdioDraft("local", [["API_KEY", plain("test-dummy-env-secret-7")]]));
-    const plainFile = await storedFile();
 
     await service.configureMcpServer(stdioDraft("local", [["API_KEY", newSecret("test-dummy-env-secret-7")]]));
 
-    const backups = (await fs.readdir(appData.dir)).filter((name) => name.startsWith("mcps.json.backup-before-vault-move-"));
-    expect(backups).toHaveLength(1);
-    expect(await fs.readFile(path.join(appData.dir, backups[0] as string), "utf8")).toBe(plainFile);
+    expect((await fs.readdir(appData.dir)).filter((name) => name.includes("backup"))).toEqual([]);
     expect(await storedFile()).not.toMatch(DUMMY_PATTERN);
+    expect([...(await viewOf("local"))!.states]).toEqual([["env:API_KEY", "CONFIGURED"]]);
+  });
+
+  it("imports a foreign secret reference as needing a secret: a fresh empty reference, never the foreign ID", async () => {
+    const foreign = "mcp.00000000-0000-4000-8000-0000000000f1";
+
+    const result = await service.importMcpServerConfigs(JSON.stringify({
+      mcpServers: { copied: { command: process.execPath, args: [NODE_FIXTURE], env: { API_KEY: { vaultSecretId: foreign }, MODE: "test" } } },
+    }));
+
+    expect(result).toMatchObject({ imported_count: 1, failed_count: 0, stored_secrets: [], needs_secret: [{ serverId: "copied", field: "env:API_KEY" }] });
+    const reference = (await storedEntry("copied")).env.API_KEY.vaultSecretId as string;
+    expect(reference).toMatch(/^mcp\.[0-9a-f-]{36}$/);
+    expect(reference).not.toBe(foreign);
+    expect(await repository.countEntries()).toBe(0);
+    expect([...(await viewOf("copied"))!.states]).toEqual([["env:API_KEY", "MISSING"], ["env:MODE", "PLAIN"]]);
+  });
+
+  it("keeps the server's own working secret when an older copy of its file carries another reference (AR-016)", async () => {
+    await service.configureMcpServer(stdioDraft("local", [["API_KEY", newSecret(ENV_SECRET)]]));
+    const olderFile = await storedFile();
+    // Replace the value after the copy was taken: the saved reference is now a different ID.
+    await service.configureMcpServer(stdioDraft("local", [["API_KEY", newSecret(ENV_SECRET_2)]]));
+    const current = (await storedEntry("local")).env.API_KEY.vaultSecretId as SecretId;
+    expect(JSON.parse(olderFile).mcpServers.local.env.API_KEY.vaultSecretId).not.toBe(current);
+
+    const result = await service.importMcpServerConfigs(olderFile);
+
+    expect(result).toMatchObject({ imported_count: 1, failed_count: 0, needs_secret: [], stored_secrets: [] });
+    expect((await storedEntry("local")).env.API_KEY.vaultSecretId).toBe(current);
+    expect(await resolveStored(current)).toBe(ENV_SECRET_2);
+    expect([...(await viewOf("local"))!.states]).toEqual([["env:API_KEY", "CONFIGURED"]]);
   });
 
   it("imports always-secret values and rule matches straight into the vault", async () => {

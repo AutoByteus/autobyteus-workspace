@@ -32,6 +32,9 @@ export type StoredMcpServerDraft = Readonly<{
 
 type ValueFor = (field: McpSecretField, value: DraftValue) => Promise<McpConfigValue>;
 
+/** A new `mcp.<uuid>` reference. Until a value is saved under it, it has no vault entry (state `MISSING`). */
+const missingReference = (): McpSecretReference => ({ vaultSecretId: secretId(`mcp.${randomUUID()}`) });
+
 const referencesOf = (config: BaseMcpConfig): SecretId[] =>
   fieldValuesOf(config).flatMap(({ value }) => (isMcpSecretReference(value) ? [value.vaultSecretId] : []));
 
@@ -60,6 +63,7 @@ export class McpServerSecretFields {
     const created: SecretId[] = [];
     try {
       const config = await this.buildConfig(draft, async (field, value) => {
+        if (value.kind === "missingSecret") return missingReference();
         if (value.kind !== "newSecret") return this.storedOrPlain(draft.serverId, field, value, saved);
         const reference = await this.save(value.value);
         created.push(reference.vaultSecretId);
@@ -79,10 +83,11 @@ export class McpServerSecretFields {
    * secret stays a reference and is resolved at connect). Nothing is stored.
    */
   async toPreviewConfig(draft: McpServerDraft, saved: BaseMcpConfig | null): Promise<BaseMcpConfig> {
-    return this.buildConfig(draft, async (field, value) =>
-      value.kind === "newSecret"
-        ? value.value.revealToTrustedConsumer()
-        : this.storedOrPlain(draft.serverId, field, value, saved));
+    return this.buildConfig(draft, async (field, value) => {
+      if (value.kind === "newSecret") return value.value.revealToTrustedConsumer();
+      if (value.kind === "missingSecret") return missingReference();
+      return this.storedOrPlain(draft.serverId, field, value, saved);
+    });
   }
 
   /** The secret state of every value of every config, by server ID. Never throws for vault state. */
@@ -136,9 +141,9 @@ export class McpServerSecretFields {
   }
 
   private async save(value: SecretValue): Promise<McpSecretReference> {
-    const id = secretId(`mcp.${randomUUID()}`);
-    await this.management().saveForConsumer({ consumer: { kind: "mcpServer", vaultSecretId: id }, value });
-    return { vaultSecretId: id };
+    const reference = missingReference();
+    await this.management().saveForConsumer({ consumer: { kind: "mcpServer", vaultSecretId: reference.vaultSecretId }, value });
+    return reference;
   }
 
   private async referenceState(reference: McpSecretReference): Promise<McpSecretState> {
@@ -155,7 +160,7 @@ export class McpServerSecretFields {
   private storedOrPlain(
     serverId: string,
     field: McpSecretField,
-    value: Exclude<DraftValue, { kind: "newSecret" }>,
+    value: Extract<DraftValue, { kind: "plain" | "keep" }>,
     saved: BaseMcpConfig | null,
   ): McpConfigValue {
     if (value.kind === "plain") {

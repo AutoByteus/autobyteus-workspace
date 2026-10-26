@@ -5,12 +5,15 @@ import { McpTransportType } from "autobyteus-ts/tools/mcp/types.js";
  * One value of a server as the user sent it:
  * - `plain`: stored as plain text (a setting);
  * - `newSecret`: a new value to store as an MCP secret;
- * - `keep`: keep what is stored for this field (valid only when the saved server has it).
+ * - `keep`: keep what is stored for this field (valid only when the saved server has it);
+ * - `missingSecret`: a secret this node does not hold (an imported foreign reference); it is stored as a fresh
+ *   reference with no vault entry, so its state is `MISSING`. Only import produces it; GraphQL input cannot.
  */
 export type DraftValue =
   | Readonly<{ kind: "plain"; value: string }>
   | Readonly<{ kind: "newSecret"; value: SecretValue }>
-  | Readonly<{ kind: "keep" }>;
+  | Readonly<{ kind: "keep" }>
+  | Readonly<{ kind: "missingSecret" }>;
 
 /** One env or header row: its name (case kept) and its value. */
 export type DraftEntry = Readonly<{ name: string; value: DraftValue }>;

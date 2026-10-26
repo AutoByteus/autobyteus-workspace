@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { McpTransportType } from "autobyteus-ts/tools/mcp/types.js";
+import { secretId } from "autobyteus-ts/secrets/vault/secret-id.js";
+import { McpTransportType, StdioMcpServerConfig } from "autobyteus-ts/tools/mcp/types.js";
 import { McpConfigService } from "../../../../src/mcp-server-management/services/mcp-config-service.js";
 import { McpServerResolver } from "../../../../src/api/graphql/types/mcp-server.js";
 
@@ -70,7 +71,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importMcpServerConfigs(VALID_JSON_IMPORT_STRING);
 
-    expect(result).toEqual({ imported_count: 2, failed_count: 0, failures: [], stored_secrets: [] });
+    expect(result).toEqual({ imported_count: 2, failed_count: 0, failures: [], stored_secrets: [], needs_secret: [] });
     expect(configureSpy).toHaveBeenCalledTimes(2);
 
     const stdioCall = configureSpy.mock.calls[0]?.[0];
@@ -120,7 +121,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importMcpServerConfigs('{"mcpServers": {}}');
 
-    expect(result).toEqual({ imported_count: 0, failed_count: 0, failures: [], stored_secrets: [] });
+    expect(result).toEqual({ imported_count: 0, failed_count: 0, failures: [], stored_secrets: [], needs_secret: [] });
     expect(configureSpy).not.toHaveBeenCalled();
   });
 
@@ -132,7 +133,7 @@ describe("McpConfigService import", () => {
 
     const result = await service.importMcpServerConfigs(CAMEL_CASE_JSON_IMPORT_STRING);
 
-    expect(result).toEqual({ imported_count: 1, failed_count: 0, failures: [], stored_secrets: [] });
+    expect(result).toEqual({ imported_count: 1, failed_count: 0, failures: [], stored_secrets: [], needs_secret: [] });
     expect(configureSpy).toHaveBeenCalledTimes(1);
 
     const call = configureSpy.mock.calls[0]?.[0];
@@ -198,20 +199,35 @@ describe("McpConfigService import", () => {
     expect(JSON.stringify(configureSpy.mock.calls)).not.toMatch(/test-dummy-[a-z]+-secret|ghp_TESTDUMMYPREFIX/);
   });
 
-  it("refuses a secret reference in imported JSON, for that server only", async () => {
+  it("imports a foreign secret reference as needing a secret, and keeps the server's own reference at a field that holds one", async () => {
     const service = new McpConfigService();
     const configureSpy = vi.spyOn(service, "configureMcpServer").mockResolvedValue({} as any);
+    // "mine" exists here and holds its own reference at env:API_KEY; "copied" does not exist here.
+    const saved = new StdioMcpServerConfig({
+      server_id: "mine", command: "node",
+      env: { API_KEY: { vaultSecretId: secretId("mcp.00000000-0000-4000-8000-0000000000aa") }, LOG_LEVEL: "debug" },
+    });
+    (service as any).provider.getByServerId.mockImplementation(async (id: string) => (id === "mine" ? saved : null));
     const json = JSON.stringify({
       mcpServers: {
         copied: { command: "node", env: { API_KEY: { vaultSecretId: "mcp.00000000-0000-4000-8000-000000000001" } } },
-        ok: { command: "node" },
+        mine: { command: "node", env: {
+          API_KEY: { vaultSecretId: "mcp.00000000-0000-4000-8000-0000000000bb" },
+          LOG_LEVEL: { vaultSecretId: "mcp.00000000-0000-4000-8000-0000000000cc" },
+        } },
       },
     });
 
     const result = await service.importMcpServerConfigs(json);
 
-    expect(result.failures).toEqual([{ server_id: "copied", reason: "MCP server 'copied' env:API_KEY: import takes values, not secret references." }]);
-    expect(configureSpy).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({
+      imported_count: 2, failed_count: 0, failures: [], stored_secrets: [],
+      needs_secret: [{ serverId: "copied", field: "env:API_KEY" }, { serverId: "mine", field: "env:LOG_LEVEL" }],
+    });
+    const [copied, mine] = configureSpy.mock.calls.map((call) => call[0]) as any[];
+    expect(copied.env).toEqual([{ name: "API_KEY", value: { kind: "missingSecret" } }]);
+    // The server keeps its own reference whatever the import carries; a field that holds a plain value here does not.
+    expect(mine.env).toEqual([{ name: "API_KEY", value: { kind: "keep" } }, { name: "LOG_LEVEL", value: { kind: "missingSecret" } }]);
   });
 });
 
@@ -232,6 +248,7 @@ describe("McpServerResolver.importMcpServerConfigs", () => {
       failedCount: 1,
       failures: [{ serverId: "empty", reason: expect.stringContaining("needs 'command' (stdio) or 'url'") }],
       storedSecrets: [],
+      needsSecret: [],
     });
   });
 
@@ -240,7 +257,7 @@ describe("McpServerResolver.importMcpServerConfigs", () => {
     ["a missing mcpServers object", '{"servers": {}}'],
   ])("reports %s as before, with an empty failure list", async (_label, json) => {
     const result = await new McpServerResolver().importMcpServerConfigs(json);
-    expect(result).toMatchObject({ success: false, importedCount: 0, failedCount: 0, failures: [], storedSecrets: [] });
+    expect(result).toMatchObject({ success: false, importedCount: 0, failedCount: 0, failures: [], storedSecrets: [], needsSecret: [] });
     expect(result.message).toBeTruthy();
   });
 });

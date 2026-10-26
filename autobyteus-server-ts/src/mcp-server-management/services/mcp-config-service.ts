@@ -2,6 +2,7 @@ import { McpConfigService as CoreMcpConfigService, McpToolRegistrar } from "auto
 import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import {
   McpTransportType,
+  isMcpSecretReference,
   type BaseMcpConfig,
   type McpConfigValue,
   type McpSecretField,
@@ -10,6 +11,7 @@ import {
 } from "autobyteus-ts/tools/mcp/types.js";
 import type { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import type { DraftEntry, DraftValue, McpServerDraft } from "../domain/mcp-server-draft.js";
+import { fieldValueOf } from "../domain/mcp-config-fields.js";
 import type {
   McpSecretMoveCandidate,
   McpSecretMoveResult,
@@ -36,30 +38,36 @@ export type McpConfigImportResult = {
   failures: McpConfigImportFailure[];
   /** The values stored as MCP secrets (always-secret fields and values the suggestion rule matched). */
   stored_secrets: McpServerField[];
+  /** Imported secret references this node does not hold: saved as `MISSING`, to be entered again here. */
+  needs_secret: McpServerField[];
 };
 
 const errorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error));
 
 /**
- * An imported value becomes a draft value: a non-blank value that is always secret or that the suggestion rule
- * matches is stored as a secret; anything else stays plain. Import takes values, never secret references.
+ * An imported value becomes a draft value (MDEC-004, MDEC-007):
+ * - a non-blank value that is always secret or that the suggestion rule matches is stored as a secret; any other
+ *   value stays plain;
+ * - a secret reference is `keep` when the server with this ID already holds a reference at this field (it keeps its
+ *   own, whatever the import carries, so re-importing an older copy of its file never removes a working secret);
+ *   any other reference is `missingSecret`: a foreign ID is never adopted, so no two servers share an entry.
  */
-const importedDraftValue = (serverId: string, field: McpSecretField, value: McpConfigValue): DraftValue => {
+const importedDraftValue = (field: McpSecretField, value: McpConfigValue, saved: BaseMcpConfig | null): DraftValue => {
   if (typeof value !== "string") {
-    throw new Error(`MCP server '${serverId}' ${field}: import takes values, not secret references.`);
+    return saved && isMcpSecretReference(fieldValueOf(saved, field)) ? { kind: "keep" } : { kind: "missingSecret" };
   }
   return value.trim() && McpSecretSuggestionRule.match(field, value)
     ? { kind: "newSecret", value: SecretValue.fromString(value) }
     : { kind: "plain", value };
 };
 
-/** The draft for one imported (parsed) server. */
-const importedDraft = (config: BaseMcpConfig): McpServerDraft => {
+/** The draft for one imported (parsed) server, given the saved server with that ID, if any. */
+const importedDraft = (config: BaseMcpConfig, saved: BaseMcpConfig | null): McpServerDraft => {
   const common = { serverId: config.server_id, enabled: config.enabled, toolNamePrefix: config.tool_name_prefix };
   const entries = (values: Record<string, McpConfigValue>, kind: "env" | "header"): DraftEntry[] =>
     Object.entries(values).map(([name, value]) => ({
       name,
-      value: importedDraftValue(config.server_id, `${kind}:${name}`, value),
+      value: importedDraftValue(`${kind}:${name}`, value, saved),
     }));
   if (config.transport_type === McpTransportType.STDIO) {
     const stdio = config as StdioMcpServerConfig;
@@ -78,11 +86,12 @@ const importedDraft = (config: BaseMcpConfig): McpServerDraft => {
     transportType: McpTransportType.STREAMABLE_HTTP,
     url: http.url,
     headers: entries(http.headers, "header"),
-    token: http.token === null ? null : importedDraftValue(config.server_id, "token", http.token),
+    token: http.token === null ? null : importedDraftValue("token", http.token, saved),
   };
 };
 
-const secretFieldsOfDraft = (draft: McpServerDraft): McpServerField[] => {
+/** The fields of a draft whose value is of `kind`. */
+const draftFieldsOfKind = (draft: McpServerDraft, kind: DraftValue["kind"]): McpServerField[] => {
   const entries = draft.transportType === McpTransportType.STDIO
     ? draft.env.map((entry) => ({ field: `env:${entry.name}` as McpSecretField, value: entry.value }))
     : [
@@ -90,7 +99,7 @@ const secretFieldsOfDraft = (draft: McpServerDraft): McpServerField[] => {
       ...(draft.token ? [{ field: "token" as McpSecretField, value: draft.token }] : []),
     ];
   return entries
-    .filter((entry) => entry.value.kind === "newSecret")
+    .filter((entry) => entry.value.kind === kind)
     .map((entry) => ({ serverId: draft.serverId, field: entry.field }));
 };
 
@@ -338,6 +347,7 @@ export class McpConfigService {
     let importedCount = 0;
     const failures: McpConfigImportFailure[] = [];
     const storedSecrets: McpServerField[] = [];
+    const needsSecret: McpServerField[] = [];
 
     for (const [serverId, configDetails] of Object.entries(configs as Record<string, unknown>)) {
       try {
@@ -345,10 +355,12 @@ export class McpConfigService {
         const entry = configDetails && typeof configDetails === "object" && !Array.isArray(configDetails)
           ? { server_id: serverId, ...(configDetails as Record<string, unknown>) }
           : configDetails;
-        const draft = importedDraft(CoreMcpConfigService.parseMcpConfigDict({ [serverId]: entry }));
+        const parsed = CoreMcpConfigService.parseMcpConfigDict({ [serverId]: entry });
+        const draft = importedDraft(parsed, await this.provider.getByServerId(serverId));
         await this.configureMcpServer(draft);
         importedCount += 1;
-        storedSecrets.push(...secretFieldsOfDraft(draft));
+        storedSecrets.push(...draftFieldsOfKind(draft, "newSecret"));
+        needsSecret.push(...draftFieldsOfKind(draft, "missingSecret"));
       } catch (error) {
         const reason = errorMessage(error);
         logger.error(`Failed to import configuration for server '${serverId}': ${reason}`);
@@ -356,8 +368,14 @@ export class McpConfigService {
       }
     }
 
-    logger.info(`Bulk import complete. Imported: ${importedCount}, Failed: ${failures.length}, stored as secrets: ${storedSecrets.length}`);
-    return { imported_count: importedCount, failed_count: failures.length, failures, stored_secrets: storedSecrets };
+    logger.info(`Bulk import complete. Imported: ${importedCount}, Failed: ${failures.length}, stored as secrets: ${storedSecrets.length}, needing a secret: ${needsSecret.length}`);
+    return {
+      imported_count: importedCount,
+      failed_count: failures.length,
+      failures,
+      stored_secrets: storedSecrets,
+      needs_secret: needsSecret,
+    };
   }
 }
 

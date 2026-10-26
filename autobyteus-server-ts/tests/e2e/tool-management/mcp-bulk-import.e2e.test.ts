@@ -5,9 +5,10 @@
  *   - a mixed import reports each failed entry with its server id and reason, and no env, header or token value
  *     appears anywhere in the result (AC-001); a value the secret rule matches is stored in the server's vault, the
  *     result lists it (`storedSecrets`), and `mcps.json` holds only its reference;
- *   - importing the content of the app's own `mcps.json` (entries without `transport_type`) imports every entry with
- *     plain values and saves the same entries again (AC-002); an entry holding a secret reference is refused with its
- *     reason, because import takes values (a reference belongs to one server's field on one node).
+ *   - importing the content of the app's own `mcps.json` (entries without `transport_type`) imports every entry and
+ *     saves the same entries again (AC-002). A secret reference is kept when the server already holds one at that
+ *     field; otherwise (for example after the server was deleted) it imports as needing a secret (`needsSecret`, a
+ *     fresh `MISSING` reference), because a foreign vault ID is never adopted (MDEC-007).
  * Prerequisites: a current build of this worktree (`pnpm -C autobyteus-ts build`, then `pnpm -C autobyteus-server-ts
  * build`). The test owns its server process, port, runtime root and database (and so its own vault). No MCP server is
  * started: import only saves.
@@ -32,6 +33,7 @@ type ImportResult = {
   failedCount: number;
   failures: Array<{ serverId: string; reason: string }>;
   storedSecrets: Array<{ serverId: string; field: string }>;
+  needsSecret: Array<{ serverId: string; field: string }>;
 };
 
 const DUMMY_SECRET = /test-dummy-[a-z]+-secret/;
@@ -50,7 +52,7 @@ describe("MCP bulk import through GraphQL", () => {
     return body.data;
   };
   const importJson = async (json: string) => (await gql<{ importMcpServerConfigs: ImportResult }>(
-    "mutation($json: String!) { importMcpServerConfigs(jsonString: $json) { success message importedCount failedCount failures { serverId reason } storedSecrets { serverId field } } }",
+    "mutation($json: String!) { importMcpServerConfigs(jsonString: $json) { success message importedCount failedCount failures { serverId reason } storedSecrets { serverId field } needsSecret { serverId field } } }",
     { json })).importMcpServerConfigs;
   const storedText = async () => fs.readFile(path.join(runtimeRoot, "mcps.json"), "utf8");
   const storedFile = async () => JSON.parse(await storedText()) as { mcpServers: Record<string, any> };
@@ -87,6 +89,7 @@ describe("MCP bulk import through GraphQL", () => {
       { serverId: "both", reason: expect.stringContaining("sets both 'token' and an 'Authorization' header; use one of them.") },
     ]);
     expect(result.storedSecrets).toEqual([{ serverId: "ok", field: "env:API_KEY" }]);
+    expect(result.needsSecret).toEqual([]);
     expect(JSON.stringify(result)).not.toMatch(DUMMY_SECRET);
     const stored = await storedFile();
     expect(Object.keys(stored.mcpServers)).toEqual(["ok"]);
@@ -95,7 +98,7 @@ describe("MCP bulk import through GraphQL", () => {
     await deleteServer("ok");
   });
 
-  it("imports the content of the app's own mcps.json and saves the same plain entries again", async () => {
+  it("imports the content of the app's own mcps.json, keeping its own references and marking foreign ones as needing a secret", async () => {
     for (const input of [
       { serverId: "local", transportType: "STDIO", enabled: false, toolNamePrefix: "lc",
         stdioConfig: { command: "node", args: ["server.js", "--flag"], env: [{ name: "DUMMY", secret: false, value: "test-dummy" }], cwd: runtimeRoot } },
@@ -110,17 +113,34 @@ describe("MCP bulk import through GraphQL", () => {
     expect(Object.keys(original.mcpServers).sort()).toEqual(["local", "remote-headers", "remote-token"]);
     expect(JSON.stringify(original)).not.toContain("transport_type");
     expect(JSON.stringify(original)).not.toMatch(DUMMY_SECRET);
+    const tokenReference = original.mcpServers["remote-token"].token.vaultSecretId as string;
+
+    // Re-importing while the servers exist: every entry is saved again as it was, the token reference is kept.
+    const again = await importJson(JSON.stringify(original));
+    expect(again).toEqual({
+      success: true, message: "Import complete. Imported: 3, Failed: 0", importedCount: 3, failedCount: 0,
+      failures: [], storedSecrets: [], needsSecret: [],
+    });
+    expect((await storedFile()).mcpServers).toEqual(original.mcpServers);
+
+    // After deleting them, the token's reference is foreign here: the entry imports, its token needs a secret.
     for (const serverId of Object.keys(original.mcpServers)) await deleteServer(serverId);
     expect((await storedFile()).mcpServers).toEqual({});
 
     const result = await importJson(JSON.stringify(original));
 
     expect(result).toEqual({
-      success: false, message: "Import complete. Imported: 2, Failed: 1", importedCount: 2, failedCount: 1,
-      failures: [{ serverId: "remote-token", reason: "MCP server 'remote-token' token: import takes values, not secret references." }],
-      storedSecrets: [],
+      success: true, message: "Import complete. Imported: 3, Failed: 0", importedCount: 3, failedCount: 0,
+      failures: [], storedSecrets: [], needsSecret: [{ serverId: "remote-token", field: "token" }],
     });
-    const { "remote-token": _withReference, ...plainEntries } = original.mcpServers;
-    expect((await storedFile()).mcpServers).toEqual(plainEntries);
+    const stored = (await storedFile()).mcpServers;
+    const { "remote-token": originalToken, ...plainEntries } = original.mcpServers;
+    const { "remote-token": importedToken, ...importedPlain } = stored;
+    expect(importedPlain).toEqual(plainEntries);
+    expect(importedToken).toEqual({ ...originalToken, token: { vaultSecretId: expect.stringMatching(/^mcp\.[0-9a-f-]{36}$/) } });
+    expect(importedToken.token.vaultSecretId).not.toBe(tokenReference);
+    const listed = await gql<{ mcpServers: Array<{ serverId: string; tokenState?: string | null }> }>(
+      "query { mcpServers { ... on StreamableHttpMcpServerConfig { serverId tokenState } } }");
+    expect(listed.mcpServers.find((entry) => entry.serverId === "remote-token")?.tokenState).toBe("MISSING");
   });
 });

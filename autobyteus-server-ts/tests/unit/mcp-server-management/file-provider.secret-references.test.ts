@@ -1,7 +1,7 @@
 /**
- * `mcps.json` with secret references: the file provider stores and reloads references, writes the backup (mode
- * 0600) before a stored plain value becomes a reference, rewrites the file for the move in one locked write, and
- * skips an invalid entry with a warning that names the server and never a value. Dummy values only.
+ * `mcps.json` with secret references: the file provider stores and reloads references, writes a backup (mode 0600)
+ * only for the move, where it rewrites the file in one locked write, and skips an invalid entry with a warning that
+ * names the server and never a value. Dummy values only.
  */
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -64,28 +64,15 @@ describe("FileMcpServerConfigProvider secret references", () => {
     expect(reloaded.headers).toEqual({ "X-Api-Key": REF_A, "X-Toolsets": "repos" });
   });
 
-  it("writes a 0600 backup of the plain file before an update turns a plain value into a reference", async () => {
+  it("writes no backup on update, even when a stored plain value becomes a reference (only the move backs up)", async () => {
     const provider = new FileMcpServerConfigProvider();
     await provider.create(stdio({ API_KEY: "test-dummy-env-secret", LOG_LEVEL: "debug" }));
-    const before = await fs.readFile(filePath(), "utf8");
-
     await provider.update(stdio({ API_KEY: REF_A, LOG_LEVEL: "debug" }));
-
-    const [backup, ...others] = await backups();
-    expect(others).toEqual([]);
-    expect(await fs.readFile(path.join(appData.dir, backup as string), "utf8")).toBe(before);
-    expect((await fs.stat(path.join(appData.dir, backup as string))).mode & 0o777).toBe(0o600);
-    expect((await readStoredFile()).mcpServers.local?.env).toEqual({ API_KEY: { vaultSecretId: REF_A.vaultSecretId }, LOG_LEVEL: "debug" });
-    expect(await fs.readFile(filePath(), "utf8")).not.toContain("test-dummy-env-secret");
-  });
-
-  it("writes no backup when no plain value becomes a reference", async () => {
-    const provider = new FileMcpServerConfigProvider();
-    await provider.create(stdio({ API_KEY: REF_A }));
-    await provider.update(stdio({ API_KEY: REF_B, LOG_LEVEL: "debug" }));
+    await provider.update(stdio({ API_KEY: REF_B }));
     await provider.update(stdio({ API_KEY: "test-dummy-unlocked" }));
 
     expect(await backups()).toEqual([]);
+    expect((await readStoredFile()).mcpServers.local?.env).toEqual({ API_KEY: "test-dummy-unlocked" });
   });
 
   it("replaces plain values with references in one write, after writing the backup", async () => {
