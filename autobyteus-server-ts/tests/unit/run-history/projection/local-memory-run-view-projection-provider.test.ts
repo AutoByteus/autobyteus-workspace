@@ -75,9 +75,6 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     });
 
     expect(getRunMemoryView).toHaveBeenCalledWith("server-run-1", {
-      includeWorkingContext: false,
-      includeEpisodic: false,
-      includeSemantic: false,
       includeRawTraces: true,
       includeArchive: false,
     });

@@ -22,6 +22,7 @@ import { ToolManagementResolver } from './types/tool-management.js';
 import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
+import { MemorySearchResolver } from './types/memory-search.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
 import { RemoteCollaborationSettingsResolver } from './types/remote-collaboration-settings.js';
 import { RunHistoryResolver } from './types/run-history.js';
@@ -70,6 +71,7 @@ export async function buildGraphqlSchema() {
       McpServerResolver,
       MemoryExplorerResolver,
       MemoryViewResolver,
+      MemorySearchResolver,
       MemorySyncResolver,
       RemoteCollaborationSettingsResolver,
       RunHistoryResolver,

@@ -1,10 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  EPISODIC_MEMORY_FILE_NAME,
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
-  SEMANTIC_MEMORY_FILE_NAME,
-  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { RAW_TRACES_MANIFEST_FILE_NAME } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
@@ -123,11 +120,6 @@ export class MemoryFileStore {
     return records;
   }
 
-  readWorkingContextSnapshot(runId: string): Record<string, unknown> | null {
-    const filePath = path.join(this.getRunDir(runId), WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
-    return this.readJson(filePath);
-  }
-
   readRawTracesActive(runId: string, limit?: number): Array<Record<string, unknown>> {
     const filePath = path.join(this.getRunDir(runId), RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
     return this.readJsonl(filePath, limit);
@@ -190,15 +182,5 @@ export class MemoryFileStore {
 
   readRawTraceCorpus(runId: string, limit?: number): Array<Record<string, unknown>> {
     return new RunMemoryFileStore(this.getRunDir(runId)).readCompleteRawTraceCorpusDicts(limit);
-  }
-
-  readEpisodic(runId: string, limit?: number): Array<Record<string, unknown>> {
-    const filePath = path.join(this.getRunDir(runId), EPISODIC_MEMORY_FILE_NAME);
-    return this.readJsonl(filePath, limit);
-  }
-
-  readSemantic(runId: string, limit?: number): Array<Record<string, unknown>> {
-    const filePath = path.join(this.getRunDir(runId), SEMANTIC_MEMORY_FILE_NAME);
-    return this.readJsonl(filePath, limit);
   }
 }

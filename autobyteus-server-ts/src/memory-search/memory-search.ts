@@ -37,8 +37,10 @@ export class MemorySearch {
   private readonly store: MemorySearchStore;
   private readonly pipeline: MemoryIndexPipeline;
   private readonly searchService: MemorySearchService;
+  private readonly memoryDir: string;
 
   constructor(deps: MemorySearchDependencies) {
+    this.memoryDir = path.resolve(deps.memoryDir);
     const journals = deps.journals ?? getWorkJournalService();
     const embeddings = deps.embeddings ?? getEmbeddingIndex;
     this.store = new MemorySearchStore(path.join(deps.appDataDir, "memory-search", "memory-search.sqlite"));
@@ -77,6 +79,17 @@ export class MemorySearch {
 
   indexStatus(): MemoryIndexStatus {
     return this.pipeline.status();
+  }
+
+  /**
+   * The memory folder of a run the index knows only by its folder (`RUN_FOLDER`); null for any other key, and for
+   * a key that does not resolve inside this node's memory folder.
+   */
+  runFolderMemoryDir(runKey: string): string | null {
+    const run = this.store.listRuns().find((entry) => entry.run.subject.kind === "RUN_FOLDER" && entry.run.runKey === runKey)?.run;
+    if (!run) return null;
+    const memoryDir = path.resolve(this.memoryDir, run.runKey);
+    return memoryDir.startsWith(`${this.memoryDir}${path.sep}`) ? memoryDir : null;
   }
 
   /** Index now / Try again: a pass that resumes (finished work is skipped by fingerprints). Ignored while one runs. */

@@ -6,17 +6,6 @@ describe("MemoryViewConverter", () => {
   it("maps domain view to graphql view", () => {
     const domain: AgentMemoryView = {
       runId: "agent-1",
-      workingContext: [
-        {
-          role: "user",
-          content: "hello",
-          reasoning: null,
-          toolPayload: null,
-          ts: null,
-        },
-      ],
-      episodic: [{ episode: "a" }],
-      semantic: [{ fact: "b" }],
       rawTraces: [
         {
           scope: "turn",
@@ -57,7 +46,6 @@ describe("MemoryViewConverter", () => {
 
     const gql = MemoryViewConverter.toGraphql(domain);
     expect(gql.runId).toBe("agent-1");
-    expect(gql.workingContext?.[0]?.role).toBe("user");
     expect(gql.rawTraces?.[0]?.turnId).toBe("t1");
     expect(gql.rawTraces?.[1]).toEqual(expect.objectContaining({
       scope: "run",

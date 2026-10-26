@@ -27,7 +27,7 @@ describe("AgentMemoryService", () => {
     }
   });
 
-  it("returns working context, episodic, semantic, and raw traces", () => {
+  it("returns raw traces only: the old working-context, episodic and semantic files are not read", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
     const runId = "agent-123";
     const agentDir = path.join(tempDir, "agents", runId);
@@ -66,16 +66,9 @@ describe("AgentMemoryService", () => {
     ]);
 
     const service = new AgentMemoryService(new MemoryFileStore(tempDir));
-    const view = service.getRunMemoryView(runId, {
-      includeWorkingContext: true,
-      includeEpisodic: true,
-      includeSemantic: true,
-      includeRawTraces: true,
-    });
+    const view = service.getRunMemoryView(runId, { includeRawTraces: true });
 
-    expect(view.workingContext?.[0]?.role).toBe("user");
-    expect(view.episodic?.[0]?.episode).toBe("a");
-    expect(view.semantic?.[0]?.fact).toBe("b");
+    expect(Object.keys(view).sort()).toEqual(["rawTraceFiles", "rawTraces", "runId", "selectedRawTraceFileName"]);
     expect(view.rawTraces?.length).toBe(3);
     expect(view.rawTraces?.[1]?.toolCallId).toBe("1");
   });
@@ -222,7 +215,7 @@ describe("AgentMemoryService", () => {
     expect(fs.existsSync(runDir)).toBe(false);
   });
 
-  it("respects include flags", () => {
+  it("reads raw traces only when asked", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
     const runId = "agent-789";
     const agentDir = path.join(tempDir, "agents", runId);
@@ -232,17 +225,8 @@ describe("AgentMemoryService", () => {
     ]);
 
     const service = new AgentMemoryService(new MemoryFileStore(tempDir));
-    const view = service.getRunMemoryView(runId, {
-      includeWorkingContext: false,
-      includeEpisodic: false,
-      includeSemantic: false,
-      includeRawTraces: true,
-    });
-
-    expect(view.workingContext).toBeNull();
-    expect(view.episodic).toBeNull();
-    expect(view.semantic).toBeNull();
-    expect(view.rawTraces?.length).toBe(1);
+    expect(service.getRunMemoryView(runId).rawTraces).toBeNull();
+    expect(service.getRunMemoryView(runId, { includeRawTraces: true }).rawTraces?.length).toBe(1);
   });
 });
 

@@ -87,8 +87,6 @@ const readView = (memoryDir: string) =>
   new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
     .getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
-      includeEpisodic: false,
-      includeSemantic: false,
     });
 
 describe("AgentRunMemoryRecorder", () => {
@@ -111,7 +109,7 @@ describe("AgentRunMemoryRecorder", () => {
       ["user", "hello"],
       ["assistant", "hi there"],
     ]);
-    expect(readView(memoryDir).workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 
@@ -203,7 +201,7 @@ describe("AgentRunMemoryRecorder", () => {
     });
     expect(traces[1]?.toolArgs).toBeNull();
     expect(traces[1]?.toolName).toBe("send_message_to");
-    expect(readView(memoryDir).workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 });

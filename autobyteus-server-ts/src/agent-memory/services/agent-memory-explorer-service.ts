@@ -130,7 +130,7 @@ export class AgentMemoryExplorerService {
 
     for (const runId of this.store.listRunDirs()) {
       const memory = this.summaryBuilder.build(runId);
-      if (!hasMemoryAvailability(memory.availability)) {
+      if (!hasMemoryAvailability(memory)) {
         continue;
       }
       const metadata = await this.metadataStore.readMetadata(runId);
