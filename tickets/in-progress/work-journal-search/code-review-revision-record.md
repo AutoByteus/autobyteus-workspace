@@ -12,6 +12,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit (IR-003/IR-004, SR-006 Match Facts) | Fail — Design Impact | Fail — Local Fix | F-001 (resolved by SR-006), CR-004, CR-005 |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5, Targeted Delta Review (IR-005) | Fail — Local Fix | Pass | CR-004, CR-005 (resolved) |
 | CRR-006 | `api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review, round 1 (API-REV-002 Pass; API-D01) | Pass (implementation review) | Pass | None |
+| CRR-007 | `code-review-report.md` | Implementation Review, round 6, Targeted Delta Review (IR-006 latest-base merge, delivery DR-001) | Pass | Pass | None |
+| CRR-008 | `api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review, round 2 (API-REV-003 Pass on the merge; API-D01) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -249,3 +251,70 @@ None (no prior test-review findings).
   - O-1, O-3, O-6;
   - C-12;
   - R-13 and R-3 (accepted).
+
+### CRR-007 — Targeted delta review of the latest-base merge (IR-006, delivery DR-001)
+
+- Canonical review report updated: `code-review-report.md` (meta; § Round 6; classification, recipient, latest result)
+- Review entry point and round: Implementation Review, round 6
+- Review scope: `Targeted Delta Review` of `3204aa2455..3d209177ec`. The memory-search source, the journal service and the web memory code are unchanged by the merge. Reviewed: the tool serialization (three files), the auto-merged wiring, the regenerated web types, the conflict in `docs/modules/README.md`, and two test updates.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-006); delivery DR-001
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-005; test review CRR-006 Pass)
+- Current authoritative result: `Pass`, sent to API/E2E
+- What changed in the review result and why:
+  - `search_memory` uses the platform's one tool result rule (`toToolResultJson` / `toAgentToolsMcpStructuredJsonResult` on the object), and the local `present` is removed. The pruning is the same, except that an empty `results` is now left out as well (platform rule).
+  - Wiring deltas against the base are only this ticket's.
+  - The regenerated types also catch up on the base's model-routing lag, which is correct.
+  - Loader and architecture tests updated soundly.
+  - IMP-32 is green, except FU-010 and FU-011, which fail identically on the base.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (9.4/10)
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty:
+  - FU-010 and FU-011 (base);
+  - AC-008 needs user approval and a backup;
+  - idle-machine latency;
+  - the Windows, Linux and macOS x64 builds;
+  - C-12;
+  - R-13 and R-3 (accepted).
+
+### CRR-008 — Proportional test-code review after API/E2E round 3 on the merged state (API-D01)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (meta; round 2 delta; latest result)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 2
+- Review scope: `N/A` (test-code review): API-D01. It is unchanged since CRR-006, and round 3 changed no durable test code.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-003 Pass, 94%); API-D01, AC-006
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-006; implementation review CRR-007 Pass)
+- Current authoritative result: `Pass`, sent to delivery
+- What changed in the review result and why: nothing in the test. The merged code it exercises is unchanged (`src/memory-search` diff empty), and IMP-32's full `test:unit` ran it green on the merge.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - AC-008 needs user approval and a backup;
+  - no idle reference machine (top 3 at 80.6%, the bar, under load and self-reference);
+  - the Windows, Linux and macOS x64 builds;
+  - O-1, O-3, O-6;
+  - C-12;
+  - FU-010 and FU-011 (base).

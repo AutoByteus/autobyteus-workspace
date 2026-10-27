@@ -2,25 +2,25 @@
 
 ## Review Meta
 
-- Review Round: 1 (after API/E2E round 2, API-REV-002 Pass)
-- Trigger: `/software_engineering_team/api_e2e_engineer`, API-REV-002 Pass on `5b16e1fe4a` (code `3204aa2455`); proportional review of API-D01
+- Review Round: 2 (after API/E2E round 3, API-REV-003 Pass, on the latest-base merge `3d209177ec`); round 1 after API-REV-002
+- Trigger: `/software_engineering_team/api_e2e_engineer`, API-REV-003 Pass on `3d209177ec` (evidence `d5562f346f`, `ac33fc6c3d`); proportional review of API-D01. Round 1: API-REV-002 on `5b16e1fe4a`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-006; AC-006 imported runs excluded)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (as cited by the design)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-006)
 - Design Spec Reviewed As Context: `design-spec.md` (§ Run Kinds, discovery; § Match Facts)
 - Supplemental Task Artifacts Reviewed As Context: `follow-ups.md`
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md` (ARCH-REV-004)
-- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-005)
-- Original Code Review Report: `code-review-report.md` (CRR-005, Pass)
+- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-005, IR-006)
+- Original Code Review Report: `code-review-report.md` (CRR-007, Pass, round 6 merge review)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
+- Current Code Review Revision ID: `CRR-008` (round 1: `CRR-006`)
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001…API-REV-003)
 - Delivery Revision Record Reviewed As Context (delivery re-entry only): N/A
-- API/E2E Result: `Pass` (API-REV-002)
+- API/E2E Result: `Pass` (API-REV-003)
 - Final Validation Confidence: 94% (no category below 90%)
-- Prior unresolved test-review findings rechecked: none (first test review)
+- Prior unresolved test-review findings rechecked: none (round 1 had none)
 - Project testing guideline(s) applied (from the coverage investigation): the worktree `TESTING.md` (isolated memory copies only, never `~/.autobyteus`). The changed test uses a temporary memory folder, which complies. No conflicts.
 - Supported Product Scenario Basis Confirmed: `Yes`. AC-006 says runs imported by Memory Sync from another node (`imports/<sourceId>/…`) are never indexed or searched as local runs.
 
@@ -31,6 +31,12 @@
 | `autobyteus-server-ts/tests/unit/memory-search/memory-run-discovery.test.ts` | Updated: one test added, "never finds runs imported from another node by Memory Sync (AC-006)" (`06fdc1306a`, +12 lines) | AC-006 | Yes: run discovery, beside the other discovery tests | The only durable test change in API/E2E rounds 1–2; `git diff --stat 5b16e1fe4a..HEAD` outside `tickets/` is empty |
 
 - No durable test file changed: `No`
+
+**Round 2 delta (Read):**
+- `memory-run-discovery.test.ts` is unchanged since round 1 (`git diff --stat 5b16e1fe4a..HEAD` is empty).
+- API/E2E round 3 (`d5562f346f`, `ac33fc6c3d`) changed only ticket evidence and reports; no durable test code changed.
+- The discovery source is unchanged by the merge (`src/memory-search` diff empty, CRR-007), and IMP-32's full `test:unit` (7,171 passed) ran this test on the merged code.
+- So round 1's checks below still hold as recorded.
 
 ## Proportional Test-Code Checks
 
@@ -60,19 +66,19 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-server-ts/tests/unit/memory-search/memory-run-discovery.test.ts` (API-D01)
+- Result: `Pass` (round 2)
+- Changed durable test paths reviewed: `autobyteus-server-ts/tests/unit/memory-search/memory-run-discovery.test.ts` (API-D01; unchanged since round 1)
 - Unresolved finding IDs: none
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
 - Notes:
-  - Residual risks for delivery, from API-REV-002 and CRR-005:
+  - API-REV-003 validated the merged state: both `search_memory` entry forms in all four states, AC-013 opt-in, AC-009, the page smoke, AC-007 over GraphQL, the HTTP gates, restart, model change and Rebuild, licensing.
+  - Residual risks:
     - AC-008 on the user's own memory needs the user's approval and a backup;
-    - latency on an idle reference machine is not measured (measured at load 10–17: p90 742 ms in-process, 678 ms over HTTP; max ≤ 1.2 s);
-    - Windows, Linux and macOS x64 builds are not built;
-    - O-1: agents need "search your memory" phrasing;
-    - O-3: same-topic runs compete in the ranking;
-    - O-6: "No matches" outranks the absent-words note right after a restart;
-    - C-12: link-only tokens can be named as found words;
-    - R-13 and R-3 (accepted).
+    - no idle reference machine (HTTP gates at load 7.5: p90 537 ms, max 1,013 ms; top 3 25/31 = 80.6%, at the 80% bar, Q01 affected by the round's own test chats, O-3);
+    - the Windows, Linux and macOS x64 builds are not built;
+    - O-1 (tool use depends on how the request is phrased), O-3 (earlier questions outrank the run that did the work), O-6;
+    - C-12;
+    - R-13 and R-3 (accepted);
+    - FU-010 and FU-011 (base failures).
   - Design-spec § Match Facts wording (items 1 and 4) is with the Solution Designer.
   - My review reports are uncommitted.

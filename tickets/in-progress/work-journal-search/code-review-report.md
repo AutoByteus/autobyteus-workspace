@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 5). Rounds 1–4 are kept below as history; round 5's section is authoritative.
+- Review Entry Point: `Implementation Review` (round 6, the latest-base merge for delivery DR-001). Rounds 1–5 are kept below as history; round 6's section is authoritative.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-006: UD-020 strength labels removed, UD-021 the Memory page revision, UD-022 R-010 kept; R-002, R-009 and AC-007 as revised)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (as cited; § Freshness for UD-022)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-006)
@@ -12,19 +12,20 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-004, Pass; R-12…R-15)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-004
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-005 for round 5; IR-004; IR-003 superseded except `nearest` `{id, score}` and the O-1 tool wording)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-006 for round 6; IR-005 for round 5; IR-004; IR-003 superseded except `nearest` `{id, score}` and the O-1 tool wording)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-003, IR-004, IR-005
+- Relevant Implementation Revision IDs: IR-003, IR-004, IR-005, IR-006
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: 5
-- Review Scope: `Targeted Delta Review` (round 5); round 4: `Full Re-Audit` of the changed areas (round 1: `Full Review`; round 2: `Full Re-Audit`; round 3: failure-origin)
+- Current Code Review Revision ID: `CRR-007` (CRR-006 is the test review in `api-e2e-test-review-report.md`)
+- Current Review Round: 6
+- Review Scope: `Targeted Delta Review` of the merge integration (round 6); round 5: `Targeted Delta Review`; round 4: `Full Re-Audit` of the changed areas (round 1: `Full Review`; round 2: `Full Re-Audit`; round 3: failure-origin)
 - Review Scope Evidence (round 5): the delta `716563012f..5b16e1fe4a` (code `3204aa2455`) touches only the normalizer (`containsTerm`, `queryTerms`), one call site in `toMatch`, the evaluation counter, two docs and the tests: the files and behavior of CR-004 and CR-005. No shape, GraphQL, tool, web or pipeline change.
 - Review Scope Evidence (round 4): the last source I reviewed is `41501c5a41` (round 2). The net source delta `41501c5a41..716563012f` (41 files, IR-003's `0f3c2a2d87`, `5617a04d02` and IR-004's `e7a15930c3`, `606d13b937`) changes shared data shapes: the domain match and result, the tool result, the GraphQL types, the generated web types, the store schema (`chunk_vocab` removed, `hasChunk` added), the normalizer, the search sequence, the facade's note, and the page. So I re-audited the net delta, not only `9fa2e072ba..716563012f`, and reran the structural checks and the full scorecard for it. The pipeline is unchanged since round 2.
-- Trigger: implementation engineer handoff for IR-005 (CRR-004 Local Fix: CR-004, CR-005); round 4: IR-004 (SR-006, Match Facts)
-- Prior Review Round Reviewed: round 4 (`CRR-004`, `Fail`, `Local Fix`)
-- Latest Authoritative Round: 5
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`; round 5: `716563012f..5b16e1fe4a`; round 4: `41501c5a41..716563012f` (requested range `9fa2e072ba..716563012f`)
+- Review Scope Evidence (round 6): `3204aa2455..3d209177ec` merges `origin/personal` `f56365c809` (238 commits) and `8c31e530d6`. Against the pre-merge code, `src/memory-search`, `src/agent-work-journal` and the web memory components, stores and page are unchanged (`git diff --stat` is empty). The ticket's own change in the merge is the tool result serialization (three files) moving to the base's one tool result rule, the wiring re-applied in auto-merged files, the regenerated web types and two test updates. The re-audit covered exactly those.
+- Trigger: implementation engineer handoff for IR-006 (delivery DR-001 Local Fix: latest-base merge); round 5: IR-005 (CRR-004 Local Fix: CR-004, CR-005); round 4: IR-004 (SR-006, Match Facts)
+- Prior Review Round Reviewed: round 5 (`CRR-005`, `Pass`), then the test review `CRR-006` (`Pass`)
+- Latest Authoritative Round: 6
+- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`; round 6: `3204aa2455..3d209177ec` (not pushed); round 5: `716563012f..5b16e1fe4a`; round 4: `41501c5a41..716563012f` (requested range `9fa2e072ba..716563012f`)
 - Coverage / API/E2E / delivery artifacts: N/A (implementation review)
 
 ## Routing Classification Review
@@ -61,6 +62,38 @@
   - The implementer's Checks Run (IMP-01…IMP-12) were recorded on the code under review, so none was rerun.
   - One check of my own, **Measured**: the Teams explorer list on the isolated copy `/tmp/wjs-copy/memory` (101 task teams; never `~/.autobyteus`), using the built `dist`, read-only. `TeamMemoryExplorerService.listAgentTeamsWithMemory` took 537 / 463 / 247 ms at load average 12. The probe script lived in `/tmp/crr-probe` and was removed afterwards.
 - Explicit exclusions: the evaluation command's internals beyond its reported gates; probes and evidence; the regenerated `generated/graphql.ts`; the web components' visual fidelity, which the IMP-12 probe compared with VIS-*.
+
+## Round 6 (CRR-007): Targeted Delta Review of the latest-base merge (IR-006, delivery DR-001)
+
+**1. `search_memory` on the base's one tool result rule (autobyteus-260):**
+- Native: `toToolResultJson(result)`, and errors through `toToolResultJson(memoryToolError(…))`. MCP: `toAgentToolsMcpStructuredJsonResult(object)`, which derives both the text and `structuredContent` from one `toToolResultJson` value; errors use `{ isError: true }`. No `JSON.stringify` of a tool result remains, as the base's architecture test requires.
+- The manifest's local `present` was removed, which is right (Principle 15, one rule). The shared rule prunes `null`, `undefined`, `""`, `[]` and `{}` at any depth, a superset of `present` plus the explicit empty-array handling. So empty `matchedWords`, `wordsNotFound`, `coverage`, `note`, `day` and so on are left out exactly as before, and `TOOL_RESULT` passes unchanged.
+- **One visible difference (not a finding):** with no results, `results: []` is now left out too, so the tool returns `{"note":"No matches; try other words."}`, or `{"coverage": "Memory index not built yet…"}` before the first build. The rule is the platform's ("an absent field means none") and R-002 adopts it by citing autobyteus-260. The note still tells the agent what happened.
+
+**2. Conflicts:**
+- `generated/graphql.ts` was regenerated from the merged schema. Against the base it adds this ticket's types and removes `MemoryMessage` and the include flags (deliberate). It also adds the base's model-routing operation types (`ModelRoutingStatus`, `SetModelRoutingEnabled`, …): the base's web already had those queries (`graphql/mutations/modelRoutingMutations.ts`, `components/settings/model-routing/*`), but its generated file lagged. Catching up on that lag is correct. The handoff's "only this ticket's additions" is slightly too narrow, and IR-002's note had already recorded the lag.
+- `docs/modules/README.md` keeps both rows.
+
+**3. Auto-merged wiring (Read, diff against `8c31e530d6`):** the ticket's deltas are only:
+- `build-studio-server.ts`: `shutdownMemorySearch()`;
+- `agent-tool-loader.ts`: the `memory` unit;
+- `default-agent-tool-mcp-adapter-providers.ts`: `MemoryToolsMcpAdapterProvider`;
+- `server-settings-service.ts`: the default-limit setting with its normalizer;
+- `schema.ts`: `MemorySearchResolver`;
+- `agent-memory-explorer-service.ts`: `hasMemoryAvailability(memory)` (the ticket's availability change).
+
+No server source uses a removed memory field. The `workingContext` hits are a base app-data migration for external-runtime snapshots, unrelated to the removed memory-view fields. The web has no use of the removed fields outside `generated/`.
+
+**4. Test updates:**
+- The loader test now counts `specs.length` / `specs.length - 1` rather than fixed numbers, which decouples it from the unit count without weakening it.
+- The architecture test's unit list now includes `memory`. That fills a gap this ticket should have closed.
+
+**Checks:**
+- IMP-32 ran on the merged code: build, typecheck, 1,256 focused server tests, 20 memory e2e, 7,171 `test:unit`, 161 web memory and localization tests, 3 guards. None was rerun.
+- The 2 architecture assertions (FU-010) and the 3 live compaction tests (FU-011) are recorded as failing identically on a detached `origin/personal`. That makes them base problems, which are follow-ups and outside this ticket.
+- The evaluation and the page probe weren't rerun, correctly: the code they exercise is unchanged.
+
+**Score:** unchanged from round 5 (9.4/10). The tool path now follows the platform rule, which strengthens Shared-Structure, but no category moves enough to change.
 
 ## Round 5 (CRR-005): Targeted Delta Review of the CR-004 / CR-005 fix (IR-005)
 
@@ -438,6 +471,7 @@ Non-blocking notes:
 
 ## Classification
 
+- Round 6: N/A — `Pass` (merge integration correct).
 - Round 5: N/A — `Pass` (CR-004 and CR-005 resolved).
 - Round 4: `Local Fix` (CR-004, CR-005), owned by implementation. F-001 is resolved by SR-006.
 - Round 3: `Design Impact` (F-001: meaning-strength calibration for journal cards).
@@ -446,6 +480,7 @@ Non-blocking notes:
 
 ## Recommended Recipient
 
+- Round 6: `/software_engineering_team/api_e2e_engineer` (validation on the merged state as API/E2E judges by impact); `/software_engineering_team/implementation_engineer` (informational).
 - Round 5: `/software_engineering_team/api_e2e_engineer` (primary pass handoff: re-run AC-001, AC-002, AC-007; API-D01 test review afterwards); `/software_engineering_team/implementation_engineer` (informational).
 - Round 4: `/software_engineering_team/implementation_engineer` (`Local Fix`, CR-004, CR-005).
 - Round 3: `/software_engineering_team/solution_designer` (`Design Impact`, F-001).
@@ -462,11 +497,15 @@ Non-blocking notes:
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 5)
-- Review Entry Point: `Implementation Review` (round 5, `Targeted Delta Review` of `716563012f..5b16e1fe4a`)
+- Review Decision: `Pass` (round 6)
+- Review Entry Point: `Implementation Review` (round 6, `Targeted Delta Review` of the latest-base merge `3204aa2455..3d209177ec`)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10; every category ≥ 9.2
-- Findings: CR-004 and CR-005 resolved (IR-005 `3204aa2455`); no open findings
+- Score Summary: 9.4/10; every category ≥ 9.2 (unchanged from round 5)
+- Findings: none
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`; informational to `/software_engineering_team/implementation_engineer`
-- Notes: API/E2E re-runs AC-001, AC-002 (re-measure latency on an idle machine if possible) and AC-007. Then the proportional test review covers API-D01 and any new API/E2E tests. Design-spec § Match Facts wording (items 1 and 4) is with the Solution Designer.
+- Notes:
+  - On the merged state, the code paths that changed are `search_memory`'s serialization in both entry forms and the wiring. A focused check of the native and MCP results is the proportionate re-validation; the gates, census and page are unaffected.
+  - The no-results tool result now omits `results` (platform rule).
+  - FU-010 and FU-011 are base problems and do not block.
+  - Nothing is pushed.
