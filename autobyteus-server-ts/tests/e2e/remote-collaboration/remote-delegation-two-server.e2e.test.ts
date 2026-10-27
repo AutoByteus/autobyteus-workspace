@@ -1872,10 +1872,11 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(textOf(offTeam)).toBe(`There is no default runtime configured for the target agent team Hollow Team on node "${node}", and Model Routing is off on node "${node}".`);
     expect(answers.map((answer) => [answer.code, answer.modelRouting]), "beta's answer carries its state").toEqual([
       ["NO_DEFAULT_RUNTIME", { state: "off" }], ["NO_DEFAULT_RUNTIME", { state: "off" }]]);
-    // On, but its router launch is on Codex, which beta does not have: not usable, with the reason.
-    await betaRouting.router("codex_app_server", "gpt-5.5");
+    // On, but its router launch is on Claude, which is installed and signed out on beta (its disposable HOME): not usable,
+    // with the reason. (A launch on a runtime or model beta does not offer is refused when saved, autobyteus-313 REQ-002.)
+    await betaRouting.router("claude_agent_sdk", "haiku");
     const notUsable = await betaRouting.enable(true);
-    expect(notUsable, JSON.stringify(notUsable)).toMatchObject({ enabled: true, active: false });
+    expect(notUsable, JSON.stringify(notUsable)).toMatchObject({ enabled: true, active: false, reasonCode: "SIGNED_OUT" });
     const reason = String(notUsable.reasonText);
     const notUsableAgent = await delegateTo("/blank_slate");
     expect(textOf(notUsableAgent)).toBe(`There is no default runtime configured for the target agent Blank Slate on node "${node}", and the Model Router on node "${node}" is not usable (${reason.replace(/\.$/, "")}).`);
