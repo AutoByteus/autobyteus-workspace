@@ -48,6 +48,10 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Isolated desktop instance | The real desktop app of a worktree build, driven like a user | `pnpm --silent isolated-app start --build`; see [Isolated AutoByteus Instances](docs/isolated-app-instances.md) |
 | iOS wrapper (macOS + Xcode) | Release contract, core unit tests, simulator smoke | See [autobyteus-ios/README.md](autobyteus-ios/README.md) |
 
+Web specs that exercise HTML sanitisation (DOMPurify) declare `// @vitest-environment jsdom`: the
+default happy-dom lets DOMPurify skip nodes, so injected markup survives there although a real DOM
+removes it.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the layer that
