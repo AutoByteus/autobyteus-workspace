@@ -130,7 +130,9 @@ is deleted and recreated):
 4. **Matches per run:** its best 2 text chunks; a meaning match points to the same file's best text chunk, else
    to the card part with the most query words, else to the file's first request. A run's matches are listed
    newest day first, then by line.
-5. **Match facts:** a text match names the search terms its lines hold (`containsTerm`). A meaning match that
+5. **Match facts:** a text match names the search terms its lines hold, by the index's own rule (`containsTerm`:
+   the term's `unicode61` tokens in a row, case and diacritics folded, so `memory_search` is in "Memory search").
+   A search term needs a letter or digit (`...` is no term). A meaning match that
    points at the same lines as one of the run's text matches is listed once, as the text match. Then each term
    is checked once against the whole index (`hasChunk`) for `wordsNotFound`. No score threshold, baseline or
    calibration exists: meaning candidates count only by their `nearest` order.

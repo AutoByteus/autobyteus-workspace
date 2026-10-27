@@ -134,6 +134,22 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     expect(none).toMatchObject({ wordsNotFound: ["container", "raspberry"], note: "None of these words appear in your memory: container, raspberry." });
   });
 
+  it("names a text match's words by the index's rule: separator variants count; punctuation is no word (CR-004, CR-005)", async () => {
+    writeRun(memoryDir, "agents/docs_run", [
+      { day: "2026-09-06", user: "Document the Memory search page", agent: "Updated docs/modules/memory-search.md." },
+    ]);
+    memory.startIndexing();
+    await built(memory);
+    const result = await memory.search("memory_search");
+    const docs = result.results.find((run) => run.runId === "docs_run")!;
+    const textMatches = docs.matches.filter((match) => match.matchedBy === "text");
+    expect(textMatches.length).toBeGreaterThan(0);
+    for (const match of textMatches) expect(match.matchedWords).toEqual(["memory_search"]);
+    expect(result).toMatchObject({ wordsNotFound: [], note: null });
+    // "..." and "--" are no search terms: never named as not found.
+    expect(await memory.search("updater ... --")).toMatchObject({ wordsNotFound: [], note: null });
+  });
+
   it("names no word as not found while the text index is incomplete: a shown pass is still indexing", async () => {
     memory.startIndexing();
     await built(memory);

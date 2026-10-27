@@ -42,6 +42,8 @@ export type EvaluationReport = Readonly<{
   meaningPointers: Readonly<{ total: number; textChunk: number; cardPart: number; firstRequest: number; emptySnippet: number }>;
   /** Snippets, over every search, in which a secret pattern is still visible (R-008; should be 0). */
   unmaskedSecrets: number;
+  /** Shown text matches, over every search, and those naming no query word (CR-004; should be 0). */
+  textMatches: Readonly<{ total: number; withoutWords: number }>;
   /**
    * Words not found (AC-007, SR-006), for every question's first search, against the independent census of the
    * journals: `mismatches` lists a question whose `wordsNotFound` names a word that occurs (`named`) or leaves out
@@ -109,9 +111,14 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
   const perQuestion: EvaluationQuestionResult[] = [];
   const pointers = { total: 0, textChunk: 0, cardPart: 0, firstRequest: 0, emptySnippet: 0 };
   let unmaskedSecrets = 0;
+  const textMatches = { total: 0, withoutWords: 0 };
   const countSnippets = (result: MemorySearchResult): void => {
     for (const match of result.results.flatMap((run) => run.matches)) {
       if (maskSecrets(match.snippet) !== match.snippet) unmaskedSecrets++;
+      if (match.matchedBy === "text") {
+        textMatches.total++;
+        if (!match.matchedWords.length) textMatches.withoutWords++;
+      }
       if (match.matchedBy !== "meaning" || !match.pointer) continue;
       pointers.total++;
       pointers[match.pointer]++;
@@ -176,6 +183,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
     },
     meaningPointers: pointers,
     unmaskedSecrets,
+    textMatches,
     wordsNotFound: absent ? {
       questions: questions.length, mismatches, offTopic: questions.filter((question) => question.kind === "offTopic").length, offTopicUnnamed,
     } : null,

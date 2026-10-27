@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
 import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-card-builder.js";
 import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-chunker.js";
-import { queryTerms, toFtsPhrase, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { containsTerm, queryTerms, toFtsPhrase, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
 import { bestCardPerRun } from "../../../src/memory-search/search/memory-search-service.js";
 import { maskSecrets } from "../../../src/memory-search/search/secret-masker.js";
 import {
@@ -25,6 +25,23 @@ describe("memory text normalizer", () => {
     expect(queryTerms("ddns-updater.sh on port 8080")).toEqual(["ddns-updater.sh", "port", "8080"]);
     expect(queryTerms("兔子和乌龟的游戏")).toEqual(["兔子", "子和", "和乌", "乌龟", "龟的", "的游", "游戏"]);
     expect(queryTerms("龟")).toEqual(["龟"]);
+    // A term needs a letter or digit: punctuation alone is no word (CR-005).
+    expect(queryTerms("the cloudflare ... ddns -- _ .x")).toEqual(["cloudflare", "ddns", ".x"]);
+  });
+
+  it("finds a term in a text as the text index does: its tokens in a row, case and diacritics folded (CR-004)", () => {
+    for (const text of ["Memory search", "the memory-search module", "{'memory':'Search'}", "MEMORY_SEARCH"]) {
+      expect(containsTerm(text, "memory_search")).toBe(true);
+    }
+    expect(containsTerm("search memory", "memory_search")).toBe(false);
+    expect(containsTerm("memorysearch", "memory_search")).toBe(false);
+    expect(containsTerm("set up home.example.org", "home.example.org")).toBe(true);
+    expect(containsTerm("Café notes", "cafe")).toBe(true);
+    expect(containsTerm("做一个兔子游戏", "兔子")).toBe(true);
+    expect(containsTerm("子兔", "兔子")).toBe(false);
+    // A word inside a longer token is not a match, as in the index.
+    expect(containsTerm("updaters", "updater")).toBe(false);
+    expect(containsTerm("anything", "...")).toBe(false);
   });
 
   it("makes one term its own FTS phrase: a two-ideograph term as its two tokens, quotes doubled (SR-006)", () => {

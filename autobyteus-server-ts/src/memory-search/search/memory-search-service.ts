@@ -172,7 +172,8 @@ export class MemorySearchService {
   private async toMatch(run: MemoryRun, pointer: Pointer, terms: readonly string[]): Promise<MemorySearchMatch> {
     const read = await this.deps.journals.readJournalLines(run.memoryDir, pointer.journalFile, { start: pointer.lineStart, end: pointer.lineEnd });
     const lines = (read?.lines ?? []).map((line) => line.replace(RAW_LINK, "").trim());
-    const text = lines.join("\n");
+    // The lines as the index holds them (links included), matched by the index's own rule (CR-004).
+    const indexed = (read?.lines ?? []).join("\n");
     const firstHit = Math.max(0, lines.findIndex((line) => terms.some((term) => containsTerm(line, term))));
     // Masked before a line is cut to its display length, so a cut never leaves part of a secret (C-06).
     const snippet = lines.slice(firstHit).filter((line) => line.length > 0).slice(0, SNIPPET_LINES)
@@ -183,7 +184,7 @@ export class MemorySearchService {
       snippet,
       matchedBy: pointer.matchedBy,
       // A text match names the query words its lines hold, in query order (UD-020); a meaning match names none.
-      matchedWords: pointer.matchedBy === "text" ? terms.filter((term) => containsTerm(text, term)) : [],
+      matchedWords: pointer.matchedBy === "text" ? terms.filter((term) => containsTerm(indexed, term)) : [],
       pointer: pointer.matchedBy === "meaning" ? pointer.rule ?? null : null,
     };
   }

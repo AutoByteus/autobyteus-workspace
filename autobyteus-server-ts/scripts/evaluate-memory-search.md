@@ -10,6 +10,8 @@ folder, and reports:
 - **meaning pointers**: how many meaning matches each pointer rule resolved (same file's text chunk, best card
   part, first request), and how many had an empty snippet (should be 0);
 - **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0);
+- **text matches**: shown text matches over every search, and those naming no query word (`withoutWords`, should
+  be 0: a text match names the words the index matched, by the index's own rule);
 - **words not found** (AC-007): every question's `wordsNotFound` against an independent census of the
   journals (read from the journal files, tokenized as the text index's `unicode61` does; a term of several
   tokens counts only as those tokens in a row): `mismatches` lists named words that occur and absent words that

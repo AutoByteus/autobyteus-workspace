@@ -36,7 +36,7 @@ describe("memory search evaluation", () => {
 
   it("scores gate 1 within three searches, gate 2 on the first search, and counts meaning pointers", async () => {
     const answers: Record<string, MemorySearchResult> = {
-      first: result(["r1", "x"], [match("text", null), match("meaning", "cardPart")]),
+      first: result(["r1", "x"], [{ ...match("text", null), matchedWords: ["first"] }, match("meaning", "cardPart")]),
       second: result(["x", "y", "r2_full_run_id"], [match("meaning", "textChunk")]),
       miss: result(["x"], [match("meaning", "firstRequest", " ")]),
       rephrased: result(["r3"], [match("text", null, "token: [masked] and sk-abcdefghijklmnopqrstuv")]),
@@ -74,6 +74,8 @@ describe("memory search evaluation", () => {
       mismatches: [{ id: "N2", named: ["green"], missing: ["giraffe"] }],
     });
     expect(report.unmaskedSecrets).toBe(1);
+    // Text matches over every search; those naming no query word are counted (CR-004).
+    expect(report.textMatches).toEqual({ total: 3, withoutWords: 2 });
   });
 
   it("counts words absent from the journals as the text index tokenizes them, independently of the index (R-14)", () => {

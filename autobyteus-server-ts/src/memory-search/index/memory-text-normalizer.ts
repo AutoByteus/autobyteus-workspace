@@ -24,7 +24,8 @@ export const queryTerms = (query: string): string[] => {
       const chars = [...word];
       if (chars.length === 1) terms.push(word);
       for (let i = 0; i + 1 < chars.length; i++) terms.push(`${chars[i]}${chars[i + 1]}`);
-    } else if (!STOP_WORDS.has(word) && word.length > 1) {
+    } else if (!STOP_WORDS.has(word) && word.length > 1 && /[a-z0-9]/.test(word)) {
+      // A term needs a letter or digit: `...` or `--` is no word, and the index holds no token for it (CR-005).
       terms.push(word);
     }
   }
@@ -37,5 +38,24 @@ export const toFtsPhrase = (term: string): string => `"${CJK_WORD.test(term) ? [
 /** The FTS5 query for the terms: any term (OR). */
 export const toFtsQuery = (terms: readonly string[]): string => terms.map(toFtsPhrase).join(" OR ");
 
-/** Whether a text contains a term (case-insensitive; ideograph phrases as written). */
-export const containsTerm = (text: string, term: string): boolean => text.toLowerCase().includes(term);
+/**
+ * The tokens the text index makes of a text (its `unicode61` tokenizer, which removes diacritics): each ideograph
+ * its own token, case folded, split at anything but letters and digits.
+ */
+const textTokens = (text: string): string[] =>
+  toIndexText(text).normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+
+/**
+ * Whether a text holds a term as the text index matches it: the term's tokens in a row, as its FTS phrase does
+ * (`memory_search` is in "Memory search" and "memory-search"; `兔子` in "兔子"). The one rule for the words a text
+ * match names (CR-004).
+ */
+export const containsTerm = (text: string, term: string): boolean => {
+  const wanted = textTokens(term);
+  if (!wanted.length) return false;
+  const tokens = textTokens(text);
+  for (let i = 0; i + wanted.length <= tokens.length; i++) {
+    if (wanted.every((token, k) => tokens[i + k] === token)) return true;
+  }
+  return false;
+};
