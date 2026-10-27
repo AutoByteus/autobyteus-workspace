@@ -370,7 +370,7 @@ export const buildStudioServer = async (input: {
     const app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),
       logController: new LogController({ disableRequestLogging: true }),
-      maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+      routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     nativeShutdown.install(app);
     app.addHook("onClose", async () => nativeShutdown.close(async () => {

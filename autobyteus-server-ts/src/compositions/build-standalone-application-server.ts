@@ -18,7 +18,7 @@ export const buildStandaloneApplicationServer = async (input: {
   const app = fastify({
     logger: getFastifyLoggerOptions(input.loggingConfig),
     logController: new LogController({ disableRequestLogging: true }),
-    maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+    routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
   });
   app.addHook("onClose", async () => input.applicationRuntime.lifecycle.stop());
   try {

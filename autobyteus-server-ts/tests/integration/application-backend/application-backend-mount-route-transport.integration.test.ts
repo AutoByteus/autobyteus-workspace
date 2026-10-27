@@ -168,7 +168,7 @@ describe("Application backend mount route transport integration", () => {
 
     applicationBackendState.apiGatewayService = engineRuntime.backendGateway;
 
-    app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
+    app = fastify({ routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
     await app.register(async (restApp) => {
       await registerApplicationBackendRoutes(restApp, {
         gateway: applicationBackendState.apiGatewayService!,

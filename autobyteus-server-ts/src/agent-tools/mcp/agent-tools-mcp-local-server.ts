@@ -30,7 +30,7 @@ export class AgentToolsMcpLocalServer {
     this.app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),
       logController: new LogController({ disableRequestLogging: true }),
-      maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+      routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     registerHttpAccessLogPolicy(this.app, {
       mode: input.loggingConfig.httpAccessLogMode,
