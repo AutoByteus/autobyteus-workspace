@@ -6,14 +6,20 @@
 - **Supersedes:** the SR-001 handoff that was put on hold at the user's request (the review waited for the UI design).
 - **Round 2 (SR-003, re-review):** ARCH-REV-001 findings AR-001 to AR-003 are corrected. See `design-spec.md` § Review Corrections (with the non-blocking notes R-1 to R-4), § Meaning Step Rules, § Primary Execution Spines (DS-003, DS-006), § Tool Contract (pointer of a meaning match), § Removal Plan and the web mapping (`memory.generated.ts`). Requirements are unchanged.
 - **Round 3 (SR-005, targeted re-review):** API/E2E F-001 → CRR-003 Design Impact. See `design-spec.md` § Meaning Strength (SR-005), the `nearest` row of § Interface Boundary Mapping, § Tool Contract (strength) and § Risks (index size); `solution-revision-record.md` SR-005. Requirements are unchanged in intent (the AC-007 off-topic set is widened).
+- **Round 4 (SR-006, targeted re-review, 2026-10-27):** the user removed the Strong / Fair / Weak labels (UD-020); the Product Team revised the page and the user approved it (UD-021). See:
+  - `design-spec.md` § Match Facts (SR-006): `matchedWords`, `wordsNotFound` by an exact `MATCH` per term, the note rule, the incomplete-Text-step rule, and the removal list;
+  - § Tool Contract; § Removal Plan (strength row); § Risks; § Product Design Integration (revised spec, open point 4, card cleanup);
+  - `requirements-doc.md` R-002, R-009, AC-007, UD-020, UD-021;
+  - `solution-revision-record.md` SR-006 and its addendum.
+  - Ranking is unchanged. Implementation resumes from `9fa2e072ba`.
 - **Ticket folder:** `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/`.
-- **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`, base `origin/personal` @ `ddd6fdcdf6`. No source changes yet. Probe files (`autobyteus-server-ts/probes-wjs/`, `vitest.probe.config.ts`) are untracked and excluded; they are not part of the design.
+- **Worktree:** `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`, base `origin/personal` @ `ddd6fdcdf6`; implementation at `9fa2e072ba` (paused). Probe files (`autobyteus-server-ts/probes-wjs/`, `vitest.probe.config.ts`) are untracked and excluded; they are not part of the design.
 
 ## Approval Basis
 
 - **Requirements:** `requirements-doc.md` SR-001, approved by the user 2026-10-26, refined the same day (UD-016).
 - **Design:** approved by the user 2026-10-26 ("Yes … show me your data flow spine"), after a summary of the design and the staged plan.
-- **Product design (behavior-defining supplement):** `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` with VIS-001 to VIS-024, approved by the user 2026-10-26; requirements refined accordingly (UD-017).
+- **Product design (behavior-defining supplement):** `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` with VIS-001 to VIS-024, approved by the user 2026-10-26; requirements refined accordingly (UD-017). Revised for SR-006, approved 2026-10-27 (UD-021); VIS-001 to VIS-026.
 
 ## What To Review
 

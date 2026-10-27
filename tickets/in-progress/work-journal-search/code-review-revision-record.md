@@ -9,6 +9,9 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001 handoff) | N/A | Fail — Requirement Gap (+ Local Fix) | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2, Full Re-Audit (IR-002, SR-004/SR-004b) | Fail — Requirement Gap (+ Local Fix) | Pass | CR-001, CR-002, CR-003 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001, F-001) | Pass | Fail — Design Impact | F-001 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit (IR-003/IR-004, SR-006 Match Facts) | Fail — Design Impact | Fail — Local Fix | F-001 (resolved by SR-006), CR-004, CR-005 |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5, Targeted Delta Review (IR-005) | Fail — Local Fix | Pass | CR-004, CR-005 (resolved) |
+| CRR-006 | `api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review, round 1 (API-REV-002 Pass; API-D01) | Pass (implementation review) | Pass | None |
 
 ## Revision Entries
 
@@ -133,3 +136,116 @@ None.
   - AC-008 on the user's own memory needs the user's approval and a backup;
   - untested Windows, Linux and macOS x64 builds;
   - API-D01 awaits test review.
+
+### CRR-004 — Full re-audit of SR-006 Match Facts (IR-003 superseded parts; IR-004)
+
+- Canonical review report updated: `code-review-report.md` (meta; § Round 4; Findings CR-004, CR-005; follow-ups, classification, recipient, risks, latest result)
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit` of the net source delta `41501c5a41..716563012f`, which is wider than the requested `9fa2e072ba..716563012f` because IR-003's source was never reviewed. Shared shapes changed: the domain, tool, GraphQL and web types, the store schema, the normalizer, the search sequence and the page. The pipeline is unchanged since round 2.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-004); F-001; the three requested points
+- Relevant solution revision IDs: SR-005 (superseded), SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004 (R-12…R-15)
+- Relevant implementation revision IDs: IR-003, IR-004
+- Relevant API/E2E revision IDs: API-REV-001 (F-001)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail`, `Design Impact` (CRR-003)
+- Current authoritative result: `Fail`, `Local Fix` → implementation
+- What changed in the review result and why:
+  - F-001 is resolved by design. No grade exists, and AC-007 is now a fact check that IMP-27 measures (0 mismatches over 47 questions; N02 is the deliberate R-15 case).
+  - The removal is complete (grep); ownership is clean; the Text-step gate, R-13 and R-15 are tested; the census is independent of FTS.
+  - Requested points:
+    1. "No matches": keep (design-quote drift);
+    2. the tool omits empty fields: fine;
+    3. amber/gray: equivalent to the server's rule on the page.
+  - CR-004 (**Measured**): `matchedWords` uses a literal substring while text candidates match by `unicode61` tokens. For `memory_search`, 15 of 19 shown text matches carry no words ("Memory search", "memory-search"), so they read as meaning matches and contradict the tool description (R-12, R-14).
+  - CR-005 (**Reproduced**): `...` or `--` become search terms with no tokens and are named "Not found in your memory".
+- Supported product scenario / material-premise basis changes: none new. Candidates: C-10 promoted (CR-004), C-11 promoted (CR-005), C-12 link markup in the index rejected (pre-existing; 0 of 80 visible effects for common words), C-13 and C-14 rejected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001 | Open (Design Impact) | Resolved by SR-006 | UD-020, IR-004 `e7a15930c3` | No strength anywhere (grep); IMP-27: `wordsNotFound` mismatches [], 11 of 12 off-topic named (N02 = R-15) |
+| CR-001, CR-002, CR-003 | Resolved | Resolved (pipeline unchanged) | — | — |
+
+- New or remaining finding IDs: CR-004, CR-005 (`Local Fix`)
+- Material score or classification changes: overall 9.3/10; API / Interface Clarity 9.0 and Runtime Correctness 8.8 are below 9.2; classification `Local Fix`
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty:
+  - gate-2 latency under load;
+  - R-13 window (accepted);
+  - C-12 link markup in the index;
+  - AC-012/AC-013, AC-009 in the app, and the Electron page;
+  - API-D01 awaits test review.
+
+### CRR-005 — Targeted delta review of the CR-004 / CR-005 fix (IR-005)
+
+- Canonical review report updated: `code-review-report.md` (meta; § Round 5; finding headings; classification, recipient, risks, latest result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` of `716563012f..5b16e1fe4a` (code `3204aa2455`). It touches only the normalizer, one `toMatch` call site, the evaluation counter, docs and tests, which are the files and behavior of CR-004/CR-005.
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` (IR-005); CR-004, CR-005
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail`, `Local Fix` (CRR-004)
+- Current authoritative result: `Pass`, sent to API/E2E
+- What changed in the review result and why: one token-based matching rule in the normalizer, used at all three call sites and applied to the lines as indexed; punctuation-only words are no longer search terms. Recorded IMP-29…IMP-31: 0 of 698 and 0 of 35 text matches without words; mismatches []; gates identical; mutations M4/M5 each fail 2 tests. Latency (p90 737 ms, max 1,339 ms, under load) is within AC-002.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-004 | Open (Local Fix) | Resolved | IR-005 `3204aa2455` | Token rule in `containsTerm`; `matchedWords` on indexed lines; IMP-31 `textMatches.withoutWords` 0; M4 fails 2 tests |
+| CR-005 | Open (Local Fix) | Resolved | IR-005 `3204aa2455` | `queryTerms` letter-or-digit rule; tests; M5 fails 2 tests |
+
+- New or remaining finding IDs: none
+- Material score or classification changes:
+  - API / Interface Clarity 9.0 → 9.4;
+  - Shared-Structure 9.3 → 9.4;
+  - API/E2E Readiness 9.2 → 9.4;
+  - Runtime Correctness 8.8 → 9.3;
+  - overall 9.4/10.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty:
+  - gate-2 latency to re-measure;
+  - C-12 (link-only tokens named as found words);
+  - R-13 window (accepted);
+  - AC-012/AC-013, AC-009 in the app, and the Electron page;
+  - API-D01 awaits test review.
+
+### CRR-006 — Proportional test-code review after API/E2E pass (API-D01)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test-code review): the one durable test added during API/E2E, in `memory-run-discovery.test.ts` (`06fdc1306a`)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass, 94%); API-D01, AC-006
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-005, implementation review)
+- Current authoritative result: `Pass`, sent to delivery
+- What changed in the review result and why:
+  - The test asserts AC-006's observable rule through the real `findRuns()` trigger with Memory Sync's real layout.
+  - Control 2 (walk the whole folder without skipping `imports`) makes it fail.
+  - Control 1 shows the `imports` entry in `SKIPPED_FOLDERS` is redundant today (the walk starts at the family roots). That is harmless and not a finding.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none (no scorecard for test-code review)
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - AC-008 needs user approval and a backup;
+  - idle-machine latency;
+  - the Windows, Linux and macOS x64 builds;
+  - O-1, O-3, O-6;
+  - C-12;
+  - R-13 and R-3 (accepted).

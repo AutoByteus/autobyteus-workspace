@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- **Current solution revision:** SR-005 (design round 4: meaning strength rule after API/E2E F-001 / code review CRR-003; § Meaning Strength (SR-005)). Earlier: SR-003 review corrections; SR-004 strength by term rarity.
+- **Current solution revision:** SR-006 (2026-10-27: the Strong / Fair / Weak labels are removed by the user's decision UD-020; results carry facts instead; § Match Facts (SR-006)). Earlier: SR-005 meaning strength by lift (superseded); SR-004 text strength by term rarity (superseded); SR-003 review corrections.
 - **Approved requirements:** `requirements-doc.md` SR-001, approved by the user 2026-10-26 ("do you think we're ready for the design? … If you were ready for the design, please"); refinement UD-016 approved in conversation the same day.
 - **Behavior-defining supplement:** the approved Memory page UI/UX specification, `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md`, with normative screenshots VIS-001 to VIS-024 in `visual-references/`. Approved by the user 2026-10-26 ("Oh, I think that the UI is correct now. I feel it's good."). Design repository `personal` @ `d01192275c`. Integrated in § Product Design Integration (SR-002).
 - **Design status:** `Ready`. Approved by the user 2026-10-26 ("Yes … show me your data flow spine"). The Product design is integrated (SR-002); the complete package goes to architecture review.
@@ -94,6 +94,7 @@ Add memory search over this node's Work Journals:
     - task teams in the Teams explorer (UD-008, AE-20, AE-21).
   - `autobyteus-web` Memory page (per the Product spec);
   - `GLOSSARY.md`;
+  - `docs/design-cases.md`: the case in `design-case-entry.md` (added at finalization on the then-current `personal`);
   - module docs;
   - an evaluation command.
 - **Derived consumers (Principle 11):**
@@ -153,7 +154,7 @@ Add memory search over this node's Work Journals:
   | Persisted-data transition (Principle 5) | **Yes** | New derived store; manifests with null runtime. → § Persisted Data. |
   | Vocabulary drift (Principle 15) | **Yes** | Episodic/semantic. → Removal plus `GLOSSARY.md`. |
   | Split sequence (Principles 2, 13) | **Checked** | Journal changes reach the index by notification (DS-003), not by a function passed into the updater or the service; the pipeline owns its sequence. |
-  | Behavior by absence (Principle 13) | **Checked** | "Not recorded" runtime is an explicit `null` with its own rule (AE-02); "weak matches" is an explicit result; runs without records are an explicit kind. |
+  | Behavior by absence (Principle 13) | **Checked** | "Not recorded" runtime is an explicit `null` with its own rule (AE-02); words found in no journal are an explicit, checked result (SR-006); runs without records are an explicit kind. |
   | Ambiguous boundary (Principle 10) | **Checked** | Results carry an explicit subject; the Work Journal read is split by subject (AE-10). |
   | Empty indirection (Principle 13) | **Checked** | The `MemorySearch` facade owns the public sequence choice (search vs indexing commands) and settings resolution; it is not a pass-through (§ Thin Entry Facades). |
 
@@ -222,7 +223,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 | Spine | Narrative | Main nodes | Owner | Key off-spine concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | <ol><li>The user starts a build.</li><li>The pipeline lists every run folder with its recorded names and runtime.</li><li>It makes each changed run's journal current through the journal service.</li><li>It re-chunks journal files whose content hash changed into the text index.</li><li>It rebuilds those files' cards and syncs the card collection to the embedding index, which embeds what changed in the background.</li><li>Each step reports progress; the build ends when every step is done.</li></ol> | Pipeline, discovery, journal service, chunker, card builder, store, embedding index | `MemoryIndexPipeline` | Progress state, run attribution, text normalization |
-| DS-002 | <ol><li>A query arrives from an agent (with its run ID) or the page.</li><li>The service asks the text index for the best chunks and the embedding index for the nearest cards, then alternates the two candidate lists.</li><li>It keeps the best match per run, leaving out the asking run.</li><li>For each run it lists its newest matching part first, with days.</li><li>It reads 2–3 snippet lines from the journal, masks secrets, and returns at most `limit` runs, with a coverage note while indexing is incomplete and a weak-match note when no match is strong.</li></ol> | Search service, store, embedding index, journal service | `MemorySearchService` | Settings (default limit), secret masking, normalization |
+| DS-002 | <ol><li>A query arrives from an agent (with its run ID) or the page.</li><li>The service asks the text index for the best chunks and the embedding index for the nearest cards, then alternates the two candidate lists.</li><li>It keeps the best match per run, leaving out the asking run.</li><li>For each run it lists its newest matching part first, with days.</li><li>It reads 2–3 snippet lines from the journal, masks secrets, and returns at most `limit` runs, with a coverage note while indexing is incomplete and a note naming the query words found in no journal (SR-006).</li></ol> | Search service, store, embedding index, journal service | `MemorySearchService` | Settings (default limit), secret masking, normalization |
 | DS-003 | <ol><li>After a turn, the updater makes the journal current (unchanged).</li><li>The journal service notifies that run's journal changed.</li><li>The pipeline queues the run and, after a short quiet period (default 20 s), re-indexes that run's changed files (text, then cards), then runs the Meaning step with the complete card set (§ Meaning Step Rules).</li></ol> | Journal service, pipeline | `MemoryIndexPipeline` | Debounce queue |
 | DS-004 | <ol><li>The page asks for a run's journal by the run's subject identity.</li><li>The existing subject resolution gives its memory folder.</li><li>The journal service lists the run's journal files and returns the requested lines.</li></ol> | GraphQL memory view, journal service | `WorkJournalService` | Subject resolution |
 
@@ -249,7 +250,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 | `JournalChunker` | Groups a journal file's entries (from the journal module's entry reader) into chunks of ≤ 2,000 characters; a longer entry is split by lines; each chunk carries file, line range and day. |
 | `JournalCardBuilder` | Builds the card for one journal file (agent as recorded, first 6 requests, first 8 reply openings, 25 distinct actions; ≤ 2,400 characters; ordered so token truncation drops the least important tail). |
 | `MemorySearchStore` | `memory-search.sqlite`: schema, writes per run and file, contentless FTS5 queries (BM25), card rows, pipeline state; delete-and-rebuild. |
-| `MemorySearchService` | The search sequence (DS-002): candidate retrieval from both tiers, interleaving, grouping, newest-first per run, snippet reading, masking, strength labels, notes. |
+| `MemorySearchService` | The search sequence (DS-002): candidate retrieval from both tiers, interleaving, grouping, newest-first per run, snippet reading, masking, match facts (found words, words found in no journal; § Match Facts (SR-006)). |
 | `EmbeddingIndex` (existing, extended) | Models, vectors, background embedding; new `nearest` query with the layer's own relevant flag. |
 
 ## Thin Entry Facades / Public Wrappers
@@ -270,6 +271,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 | Web `EpisodicTab.vue`, `SemanticTab.vue`; their use in `MemoryInspector.vue`; badges in `MemoryBadges.vue`; fields in `types/memory.ts`, `memoryInspectorStore.ts`, `memoryExplorerStore.ts`, `graphql/queries/memoryViewQueries.ts`, `memoryExplorerQueries.ts`, `generated/graphql.ts` | Tabs removed | Work Journal view, per the Product spec | Their specs and tests too |
 | Localization keys of the removed tabs and badges in `localization/messages/{en,zh-CN}/memory.generated.ts` | Dead after the tab removal (R-015, Principle 7; AR-003) | — | Both languages |
 | `workingContext` in the memory view and `includeWorkingContext` (`memory-view.ts`, `memory-view-converter.ts`, `agent-memory-service.ts`); web `WorkingContextTab.vue` and its uses | Working Context tab removed (UD-017); run history passes `false` (AE-10, `local-memory-run-view-projection-provider.ts:40-45`) | — | The snapshot file and its runtime readers stay |
+| Match strength (SR-004/SR-005 code: text IDF strength, meaning lift and per-model table, merge rule B, weak-only note, `strength` fields, `chunk_vocab`, their evaluation checks and tests) | Removed by UD-020: the labels cannot be made reliable with embeddings | Match facts (`matchedWords`; a meaning match without a label; `wordsNotFound`) | Full list in § Match Facts (SR-006); unreleased, no migration |
 | FU-003 (rewritten) | — | — | The per-run episodic/semantic classes in `autobyteus-ts` stay until that follow-up |
 
 ## Return Or Event Spine
@@ -337,7 +339,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 
 - `MemorySearch` is the only public boundary of `memory-search`. Tools, GraphQL and startup depend on it, never on the pipeline, store or search service directly.
 - `WorkJournalService` stays the only reader of raw traces and the only writer and reader of journal files. Memory search reads journal lines through it, not through the file system.
-- `EmbeddingIndex` stays the only owner of vectors and of the Project Task relevance rule used by `search` (SR-005). Memory search passes items to `sync`, asks `nearest` for scores, and owns its own meaning strength rule.
+- `EmbeddingIndex` stays the only owner of vectors and of the Project Task relevance rule used by `search` (SR-005). Memory search passes items to `sync` and asks `nearest` for ranked candidates. It grades nothing (SR-006).
 - Run attribution uses existing owners: `AgentMemoryLayout`, `AgentRunMetadataStore`, the team and org location services, the run history catalogs, and the new `TaskTeamRootMemorySource` for task teams. Discovery never parses team or org trees itself.
 - **Admission rule for task teams (explicit):** a task-team root is shown and attributed only while its coordinating run's tree still links it (the existing rule for task agents, AE-21). A detached task team's member folders are still searched as `RUN_FOLDER` runs (R-012).
 
@@ -371,7 +373,7 @@ Safety on the user's machine (Task rule): before the first "Index now" on the us
 | `WorkJournalService.onJournalChanged(listener)` | Journals | Notification after a changed journal | `{runId, memoryDir, package}` | Returns unsubscribe |
 | `WorkJournalService.listJournalFiles(memoryDir)` / `readJournalLines(memoryDir, journalFile, {start, end})` | One run's journal | List: per file name, state (`closed` / `open`, shown as Active), size, line count, and days with their first line (from the entry reader). Read: a line range | `memoryDir` from subject resolution; `journalFile` must be a manifest entry | Windows of 300 lines on the page; at most 400 lines per call |
 | `readJournalEntries(markdown)` (agent-work-journal, public reader) | Journal format | Entries with `lineStart`, `lineEnd`, `day`, kind | — | The only parser of the format outside rendering |
-| `EmbeddingIndex.nearest(collection, queryText, { limit })` | One collection | Top `limit` fresh vectors by similarity, each `{id, score}`, plus `collection` (`synced` / `notSynced`) and readiness (SR-005: the three-value `relevance` is removed, because no consumer uses it) | Collection key | The Project Task relevance rule (`selectRelevant`, catalog calibration) stays in the layer for `search`. Memory search computes meaning strength from the ranked scores (§ Meaning Strength (SR-005)) |
+| `EmbeddingIndex.nearest(collection, queryText, { limit })` | One collection | Top `limit` fresh vectors by similarity, each `{id, score}`, plus `collection` (`synced` / `notSynced`) and readiness (SR-005: the three-value `relevance` is removed, because no consumer uses it) | Collection key | The Project Task relevance rule (`selectRelevant`, catalog calibration) stays in the layer for `search`. Memory search uses only the rank order: each run's best card is its first card in that order (SR-006) |
 | Tool `search_memory` | Memory of this node | Agent contract | `query`, `limit?`; asking run from the session (MCP owner `runId`) or tool `agentId` | § Tool Contract |
 | GraphQL `memorySearch(query, limit)` | Memory of this node | Page search | — | Results carry `subject` |
 | GraphQL `memoryIndexStatus`, `startMemoryIndexing`, `rebuildMemoryIndex` | The memory index | Panel | — | — |
@@ -484,7 +486,7 @@ Each file stays under 500 lines (repository rule).
   - It searches the memory of all agent runs on this node (their Work Journals) by words and by meaning, in any language.
   - It returns up to `limit` runs (default from the server setting, 10), best first.
   - Each result has who, run ID, workspace, first and latest day, a `source` line, and matches with journal file, lines, day, snippet and match kind.
-  - Results are pointers, not facts: open the best match's lines with your file tool before answering, and before searching again. Answer from the run you read and cite its `source`. When several runs differ, prefer the latest mention and say so. If matches are weak, try other words.
+  - Results are pointers, not facts: open a run's first match (its newest) with your file tool before answering, and the second when the first does not answer, before searching again. Answer from the run you read and cite its `source`. When several runs differ, prefer the latest mention and say so. A text match lists the query words it contains (`matchedWords`); a match without `matchedWords` was found by meaning. Words the result names as not found occur in no indexed journal. If what you read does not answer the question, try other words.
 - **Result (JSON; only fields with a value):**
 
 ```json
@@ -495,28 +497,28 @@ Each file stays under 500 lines (repository rule).
       "source": "Codex · run codex_45ce… · 2026-08-27 · work_journal_000004.md:812-860",
       "matches": [
         { "journalFile": "/…/memory/agents/codex_45ce…/work_journal/work_journal_000004.md",
-          "lines": "812-860", "day": "2026-08-27", "snippet": "…", "matchedBy": "text", "strength": "strong" } ] },
+          "lines": "812-860", "day": "2026-08-27", "snippet": "…", "matchedBy": "text", "matchedWords": ["ddns", "cloudflare"] } ] },
     { "agent": "Solution Designer", "team": "Software Engineering Team", "member": "solution_designer", "runId": "…", "…": "…" }
   ],
   "coverage": "Meaning index covers 2,100 of 7,385 journal files; text index complete.",
-  "note": "Only weak matches; try other words."
+  "wordsNotFound": ["porkbun"],
+  "note": "Not found in your memory: porkbun."
 }
 ```
 
 - **Rules:**
-  - **Strength: three levels, `strong` / `fair` / `weak`** (UD-017):
-    - text (SR-004, UD-019): by the **weighted share** of the query's distinct terms found in the matched chunk. Each term weighs its inverse document frequency in the text index: FTS5 document counts, read through an `fts5vocab` table of the same index. Rare terms count more, so common words alone stay weak. ≥ 2/3 strong, ≥ 1/3 fair, else weak; the thresholds are checked with the evaluation;
-    - meaning (SR-005): by how far the card stands out for this query. § Meaning Strength (SR-005) defines the rule.
-    - Thresholds are calibrated with the R-016 evaluation; the rule lives in `MemorySearchService` only.
-  - **`note`** appears only when every match is weak.
+  - **Match facts, no strength label (UD-020; § Match Facts (SR-006)):**
+    - a text match carries `matchedWords`: the query's search terms that occur in its chunk, in query order;
+    - a meaning match carries no grade and no label: only `matchedBy: "meaning"`;
+    - the result carries `wordsNotFound` (the query's search terms that no chunk of the text index holds) and the `note` that names them.
   - **Pointer of a meaning match (AR-002; owned by `MemorySearchService`).** A card stands for a whole journal file, so its lines, day and snippet are chosen by this ordered rule:
-    1. **Text chunk:** the best text-candidate chunk of **the same journal file** for this query, if there is one. It gives that chunk's lines, day and snippet; the match stays `meaning` with the meaning strength.
+    1. **Text chunk:** the best text-candidate chunk of **the same journal file** for this query, if there is one. It gives that chunk's lines, day and snippet. Because those lines are also a text match of the run, the run lists them **once**, as the text match with its `matchedWords` (SR-006; replaces SR-005c's "stronger strength").
     2. **Card part:** otherwise, the card part (one of the requests, replies or actions the card was built from) that contains the most query terms, at least one. It gives that part's entry lines and day; the snippet is read from those lines.
     3. **First request:** otherwise, the card's first request entry, or the file's first entry when the card has no request.
     - **Ordering within a run (review R-7, R-010):** a run's matches, from either tier, are listed newest first by their day, then by line. The run's position in the result list still comes from its best match.
     - **Store data this needs:** each card row keeps its parts: `[{kind: request|reply|action, lineStart, lineEnd, day, offset, length}]`, where offset and length locate the part's text inside the card text. No journal text is copied beyond the card.
     - **Evaluation (R-016, step 2 of the check):** every meaning-only match must point inside its file, with a non-empty snippet. The report shows how many meaning matches each rule resolved.
-    - **Evaluation (UD-019):** the off-topic questions (N01–N03 categories) must end with the only-weak `note`. This is part of the gate report.
+    - **Evaluation (AC-007, SR-006):** for each question, the reported `wordsNotFound` equals the terms with zero occurrences counted independently on the copy; every off-topic question names its absent key words. This is part of the gate report.
     - **Snippet masking order:** secrets are masked **before** a snippet line is cut to its display length, so a cut never leaves a partial secret (code review C-06).
   - **`coverage`** appears only while a step is incomplete or the index was never built ("Memory index not built yet: ask the user to start it on the Memory page"). In that last case `results` is empty, which is an explicit state, not absence.
 - **Exposure:** opt-in per agent definition (session-owned selection, AE-08). The asking run is excluded from its own results.
@@ -578,7 +580,7 @@ Each file stays under 500 lines (repository rule).
 | --- | --- |
 | First build writes about 1.7 GB of journals, and the raw reader may truncate a crashed run's broken tail (existing behavior) | User's click; backup on the user's machine; progress shown |
 | CPU during the meaning build (about 1 h) | Background; searches first; text search available after about 3 min |
-| Meaning-strength calibration margins are thin (about ±0.005 cosine lift at k = 200; IMP-18) and may drift as memory grows | Constants recorded with their margins; the evaluation command re-checks the three constraints; a failing re-check is an R-9 escalation |
+| An agent may over-trust a meaning-only match now that no label warns it | The tool description says results are pointers to read first; a match without `matchedWords` is stated to be found by meaning; words found in no journal are stated as fact (SR-006). Embedding scores cannot grade a match reliably (F-001; report § 5.3) |
 | Disk: index about 100–300 MB estimated; **measured 610 MB** on the real-size copy (API/E2E O-2), plus about 1.7 GB of journals | Contentless FTS; documented; reducing it is a follow-up (FU-008) |
 | Secrets in snippets | Masking (AC-005 measured); snippets only 2–3 lines |
 | Index and journals diverge after a crash | Fingerprints per file; catch-up on start; "Rebuild" |
@@ -594,32 +596,35 @@ Each file stays under 500 lines (repository rule).
 - **Gates:** AC-001 and AC-002 must hold on the evaluation command; any transformation change is measured first (R-016).
 - **Product spec:** the web part waits for the Product Team's approved specification; the server part does not.
 
-## Meaning Strength (SR-005)
+## Match Facts (SR-006)
 
-- **Finding:** API/E2E F-001 / CRR-003, Design Impact (`evidence/api-e2e/F-001-02-meaning-scores.txt`).
-  - The per-model rule reused from Project Tasks (floor 0.78, near-best margin 0.02) flips on journal cards. Off-topic cues sit at the floor: best 0.745–0.804, flat, with a best-to-5th gap of 0.002–0.018.
-  - Real answers stand out: best 0.890–0.933, gap 0.100–0.120.
-  - The same failure occurs with LEAF-IR.
-- **Rule (owned by `MemorySearchService`; the calibration of the embedding layer is not used for memory search):**
-  - For each query, the meaning candidates come from `nearest` (limit 300, ranked scores).
-  - **baseline** = the score of the candidate at rank *k* (initially 20, or the last candidate when there are fewer).
-  - For each matched card, **lift** = score − baseline.
-  - **Strong** when lift ≥ *Ls*, **Fair** when lift ≥ *Lf*, else **Weak**.
-  - The rule is relative to the query's own score distribution, so it does not depend on one model's absolute scale.
-- **Calibrated values (SR-005b, IMP-18):** a window exists only for k ≥ 100; k = 200, *Lf* = 0.0477 (window 0.0420–0.0535); *Ls* sits in the upper range of the answerable lifts. OT-T3 is partial by the count rule.
-- **Calibration:** *k*, *Ls* and *Lf* are constants in `MemorySearchService`, chosen with the evaluation command on the default model under three hard constraints:
-  1. every verified off-topic question ends with the only-weak note;
-  2. **no answerable question gets a false only-weak note**;
-  3. gate 1 and gate 2 unchanged.
-  - The choice is then verified with LEAF-IR. If no values meet the constraints on both, per-model constants keyed by model ID in `MemorySearchService` are allowed (a table, not new architecture).
-  - The evaluation report states the values and the margin to each constraint.
-- **Off-topic set (R-016, AC-007):** grows with API/E2E's verified off-topic cues (`F-001-01`: codenames, absent topics inside sentences, plain words; every key word counted absent). It joins N02, N04 and N05 as `kind: offTopic` in the private question file. T2 stays partial.
-- **Order and edge cases (architecture review ARCH-REV-003 notes):**
-  - **R-11:** the baseline is computed over all `nearest` candidates **before** the asking run's cards are removed, so one query rates the same for an agent and on the page. Tested.
-  - **R-10:** with fewer than *k* candidates, the baseline is the last candidate's score. While the Meaning step is incomplete (coverage below 100%), the only-weak note is **not** shown when every match is weak; the coverage note is shown instead ("still indexing"), because weakness may only mean missing cards. The evaluation includes a partial-coverage case.
-  - **R-9:** if no *k*, *Ls*, *Lf* (or per-model table) meets all three hard constraints on the default model, the implementer stops and returns a Design Impact to the Solution Designer; it never relaxes a constraint. The evaluation report states this escalation trigger.
-- **Removal:** the three-value `relevance` of `nearest` and its computation (dead after this change, Principle 7). `selectRelevant` and the catalog calibration stay; `search` still uses them for Project Tasks.
-- **Tool description (API/E2E O-1):** it states when to use the tool: when the user or a task refers to earlier work ("do you remember", "last time", "earlier we", "where is the … we set up"). This is wording only.
+- **Decision:** UD-020 (the user, 2026-10-27). Embedding scores have no reliable absolute meaning: off-topic and real results overlap (F-001; report § 5.3; `autobyteus-71` FO-001). Three calibration rounds (SR-005, SR-005b, SR-005c) passed the known set only with margins of ±0.0078 (Granite) and ±0.0022 (LEAF-IR). A label that cannot be trusted is removed; results state facts the index can check.
+- **What a result says (owned by `MemorySearchService`; the facade only composes the note text):**
+  1. **Text match:** `matchedWords` = the query's search terms (`queryTerms`, the same terms the search uses: stop words removed, ideograph runs as two-character phrases) that occur in the chunk, by the existing `containsTerm`. Shown as "Words: ddns, cloudflare".
+  2. **Meaning match:** `matchedBy: "meaning"`, no other field. The page shows no label for it (Product revision SR-006: a card part without "Words:" is a meaning match).
+  3. **Words found in no journal:** `wordsNotFound` = each search term for which the text index holds **no chunk**, checked by one `MATCH` of that term's own FTS phrase (`SELECT 1 … WHERE chunk_text MATCH ? LIMIT 1`, the same phrase form as `toFtsQuery`). This is exact for phrases such as `home.example.org` and two-ideograph terms, unlike token counts.
+  4. **`note`** (one of, in this order):
+     - no results: "No matches in memory." (unchanged);
+     - every search term not found and results exist: "None of these words appear in your memory: X, Y." (the Product revision drops the method sentence; a match without `matchedWords` is a meaning match, which the tool description states);
+     - some terms not found: "Not found in your memory: X.";
+     - otherwise none.
+  - **Incomplete Text step:** while the text index does not yet cover every journal file, absence is not a fact. `wordsNotFound` is empty and only the coverage note is shown (replaces R-10's rule).
+  - A query with no search terms (only stop words) has no `wordsNotFound` and no note beyond the standard ones.
+  - **Live-update window (ARCH-REV-004 R-13; accepted and documented):** absence is checked against the text index as it stands. Lines written in the last turn are indexed after the live debounce (≤ 20 s, R-006), so a word only in those lines may be named as not found for that window. A queued live pass does **not** suppress `wordsNotFound`, because some run is live almost whenever an agent asks (its own journal included), so suppression would hide the fact nearly always. The tool description says words named as not found occur in no **indexed** journal. A unit test pins it.
+  - **The asking run counts (R-15):** a word present only in the asking run's journal is not named as absent, although that run is excluded from the results. Absence is a fact about the whole memory; a unit test pins it.
+- **Ranking is unchanged:** text candidates by BM25, meaning candidates by `nearest` order, alternated run by run; each run's best card is its first card in `nearest` order. No score threshold, baseline or calibration remains. Gates 1 and 2 are therefore unchanged and are re-run only to confirm (AC-001, AC-002).
+- **One match found by both tiers:** per § Tool Contract, pointer rule case 1: listed once, as the text match.
+- **GraphQL and web:** `MemorySearchMatch.strength` is replaced by `matchedWords: [String!]!` (empty for meaning matches); `MemorySearchResult` (the whole search response, beside `coverage` and `note`; not per run) gains `wordsNotFound: [String!]!`; the `note` string stays for agents. The page's copy, note colors and placement follow the Product revision of 2026-10-27 (§ Product Design Integration).
+- **Removed (Principle 7, no dead code; the store is unreleased, so no migration):**
+  - `rateMeaningCandidates`' baseline, lift and grading, and `meaningCalibrationFor` with the per-model table (`MEANING_BASELINE_RANK`, the Fair and Strong lifts);
+  - `textStrength`, `termWeights`, `MIN_TERM_WEIGHT`, the store's `tokenChunkCounts` and the `chunk_vocab` (`fts5vocab`) table;
+  - the "stronger of two strengths" merge (SR-005c) and `STRENGTH_RANK`;
+  - `MemoryMatchStrength`, the `strength` field in the domain model, tool result, GraphQL type, generated web types and `types/memorySearch.ts`;
+  - the `WEAK_ONLY` note and its R-10 suppression;
+  - the evaluation's `offTopic`-ends-weak and `falseOnlyWeak` checks and the calibration sweep; the `meaning-strength` unit tests;
+  - the `activeModelId` dependency of `MemorySearchService` if nothing else uses it.
+- **Kept:** `nearest` returns `{id, score}` ranked (SR-005's removal of the three-value `relevance` stands); R-11's rule is moot (no baseline). The tool description's "when to use" wording (API/E2E O-1) stays.
+- **Evaluation (R-016, AC-007):** the gate report adds, per question, `wordsNotFound` against an independent count of each term on the isolated copy (an `rg` count of the term in the journal files, case-folded). Every off-topic question must name its verified-absent key words; no named word may occur. The previous strength checks are removed. **Tokenizer-aware (R-14):** the independent count matches a term the way the text index does (`unicode61`: case- and diacritic-folded, split at non-alphanumerics, a multi-token term as its tokens adjacent with only separators between, each ideograph its own token), not a literal substring; and off-topic key words are chosen as single tokens, verified absent by that count.
 
 ## Review Corrections (SR-003)
 
@@ -645,7 +650,8 @@ Non-blocking notes:
 
 ## Product Design Integration (SR-002)
 
-- **Approved spec:** `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (approved 2026-10-26). Screenshots VIS-001 to VIS-024 are normative.
+- **Approved spec:** `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (approved 2026-10-26; **revised for SR-006 and approved by the user 2026-10-27**, design repository `personal` @ `a0b6410395`). Screenshots VIS-001 to VIS-026 are normative (recaptured VIS-006, 007, 008, 017, 022, 024; new VIS-025 some words not found, VIS-026 Work Journal from a meaning match).
+- **Card cleanup in the same revision (UD-021, page only, no API change):** the date without a "Mentioned" prefix; run ID and workspace on one line; a match's own day only when the card's date does not already show it; no "Open" button, the whole match is the click target; subtitle "N runs · Pointers to check in the Work Journal, not facts".
 - **Runnable reference:** the design repository root at `d01192275c` (`corepack pnpm dev`, entry `/memory`, scenarios in its runbook). Its stores, fixtures and scripted search are mocks, not architecture (spec § Implementation Fidelity Boundary).
 
 **Answers to the spec's open points (decided here):**
@@ -655,7 +661,7 @@ Non-blocking notes:
 | 1 | Result addressing | Every result carries its subject: `AGENT {runId, agentDefinitionId?}`, `TEAM_MEMBER {teamRunId, agentRunId}`, `ORG_MEMBER {orgRunId, agentRunId}`, `RUN_FOLDER {runKey}`. A `RUN_FOLDER` run (an old-format team folder or an agent-root collaboration member) opens in the same run detail (UIS-007) with the folder name as heading and only "Back to search results"; the spec has no browse path to such runs, so none is added. |
 | 2 | Search readiness | Search is available as soon as the Text index has content (`textIndexHasContent`), with the coverage note. |
 | 3 | Rebuild semantics | Rebuild drops the index first; search covers less while it runs. The spec's sentence stays. |
-| 4 | Strength | Three levels decided by the server (§ Tool Contract). The page shows the level it receives. |
+| 4 | Strength | **Superseded by UD-020 (SR-006):** no strength. The page shows the facts it receives (`matchedWords`; no label for a meaning match; `wordsNotFound` as a gray "Not found in your memory: X." or an amber "None of these words appear in your memory: X, Y.", neither while the Text step is incomplete), per the Product revision of 2026-10-27. |
 | 5 | Task team tag | `isTaskTeam` and `startedByAgentName` at run and definition level (§ Change Scope, derived consumers). |
 | 6 | Static times | Kept as static copy (measured on the reference machine). |
 | 7 | Working Context | Removed from the page and from the memory-view API (§ Removal Plan). The snapshot file and its runtime use stay. Showing live context elsewhere would be a new request. |

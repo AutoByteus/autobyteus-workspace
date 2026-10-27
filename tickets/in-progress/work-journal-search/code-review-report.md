@@ -2,35 +2,29 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Round 2 (`CRR-002`, Pass) is the latest implementation-review result; its sections below are carried forward.
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-004/SR-004b: UD-018 the empty-state copy, UD-019 weighted strength, AC-007 refined; earlier SR-001/SR-002 approvals stand)
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (AE-01…AE-21, as cited by the design)
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
-- Design Spec Reviewed As Context: `design-spec.md` (SR-003: DS-001…DS-006, § Meaning Step Rules 1–5, § Run Kinds, § Tool Contract, § Review Corrections, § Product Design Integration)
-- Supplemental Task Artifacts Reviewed As Context: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (UXJ-003, state table, exact labels, Implementation Fidelity Boundary); `memory-search-evaluation-report.md`; `follow-ups.md`
-- Relevant Solution Revision IDs: SR-002, SR-003, SR-004, SR-004b
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002, Pass; MP-001…MP-003; R-1…R-7)
+- Review Entry Point: `Implementation Review` (round 5). Rounds 1–4 are kept below as history; round 5's section is authoritative.
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-006: UD-020 strength labels removed, UD-021 the Memory page revision, UD-022 R-010 kept; R-002, R-009 and AC-007 as revised)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (as cited; § Freshness for UD-022)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-006)
+- Design Spec Reviewed As Context: `design-spec.md` (SR-006: § Match Facts, § Removal Plan row, § Product Design Integration point 4; SR-003 sections otherwise)
+- Supplemental Task Artifacts Reviewed As Context: the UI/UX spec revised for SR-006 (design repository `a0b6410395`; VIS-025, VIS-026); `memory-search-evaluation-report.md`; `follow-ups.md`
+- Relevant Solution Revision IDs: SR-005 (superseded), SR-006
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-004, Pass; R-12…R-15)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
+- Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-004
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-005 for round 5; IR-004; IR-003 superseded except `nearest` `{id, score}` and the O-1 tool wording)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-003, IR-004, IR-005
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3 (failure-origin; Review Scope `N/A`)
-- Review Scope: `Full Re-Audit` of the changed subsystem (round 1: `Full Review`)
-- Review Scope Evidence (round 2): the delta `c66708b44b..41501c5a41` (source commits `0ca22eaa1c`, `8529960b80`, `41501c5a41`; ticket folder `e183aded53`) changes the pipeline's status semantics and live-update rule (CR-001, CR-002), and adds a requirement change beyond the prior findings: UD-019, rarity-weighted strength, with a new `chunk_vocab` virtual table in the store, a new normalizer function and a new store query. It also changes the evaluation (SR-004b kinds). So the structural checks and the full scorecard were rerun for `src/memory-search/**`. The web is unchanged since round 1 (`git diff --stat` shows no `autobyteus-web` change), so round-1 web evidence carries forward.
-- Trigger: implementation engineer handoff for IR-002 (after SR-004/SR-004b)
-- Prior Review Round Reviewed: round 2 (`CRR-002`, Pass)
-- Latest Authoritative Round: 3
-- Failure-origin context (round 3):
-  - trigger: API-REV-001 (`/software_engineering_team/api_e2e_engineer`), **F-001** (AC-007 / R-009);
-  - code tested: `41501c5a41`, plus test `06fdc1306a`; evidence commits `c7a2f3b972`, `d07abb8ab2`;
-  - reports: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`;
-  - command: `node evidence/api-e2e/probes/API-PROBE-offtopic.mjs <graphqlUrl>`; mechanism: `probes/API-PROBE-meaning-scores.mjs`;
-  - evidence: `evidence/api-e2e/F-001-01-offtopic-cues.txt`, `F-001-02-meaning-scores.txt`, `F-001-03-offtopic-cues-leaf-ir.txt`;
-  - testing guideline: the worktree `TESTING.md`.
-- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`, `ddd6fdcdf6..c66708b44b` (ticket folder `e031d0d0b8`)
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 5
+- Review Scope: `Targeted Delta Review` (round 5); round 4: `Full Re-Audit` of the changed areas (round 1: `Full Review`; round 2: `Full Re-Audit`; round 3: failure-origin)
+- Review Scope Evidence (round 5): the delta `716563012f..5b16e1fe4a` (code `3204aa2455`) touches only the normalizer (`containsTerm`, `queryTerms`), one call site in `toMatch`, the evaluation counter, two docs and the tests: the files and behavior of CR-004 and CR-005. No shape, GraphQL, tool, web or pipeline change.
+- Review Scope Evidence (round 4): the last source I reviewed is `41501c5a41` (round 2). The net source delta `41501c5a41..716563012f` (41 files, IR-003's `0f3c2a2d87`, `5617a04d02` and IR-004's `e7a15930c3`, `606d13b937`) changes shared data shapes: the domain match and result, the tool result, the GraphQL types, the generated web types, the store schema (`chunk_vocab` removed, `hasChunk` added), the normalizer, the search sequence, the facade's note, and the page. So I re-audited the net delta, not only `9fa2e072ba..716563012f`, and reran the structural checks and the full scorecard for it. The pipeline is unchanged since round 2.
+- Trigger: implementation engineer handoff for IR-005 (CRR-004 Local Fix: CR-004, CR-005); round 4: IR-004 (SR-006, Match Facts)
+- Prior Review Round Reviewed: round 4 (`CRR-004`, `Fail`, `Local Fix`)
+- Latest Authoritative Round: 5
+- Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search`, branch `codex/work-journal-search`; round 5: `716563012f..5b16e1fe4a`; round 4: `41501c5a41..716563012f` (requested range `9fa2e072ba..716563012f`)
 - Coverage / API/E2E / delivery artifacts: N/A (implementation review)
 
 ## Routing Classification Review
@@ -67,6 +61,91 @@
   - The implementer's Checks Run (IMP-01…IMP-12) were recorded on the code under review, so none was rerun.
   - One check of my own, **Measured**: the Teams explorer list on the isolated copy `/tmp/wjs-copy/memory` (101 task teams; never `~/.autobyteus`), using the built `dist`, read-only. `TeamMemoryExplorerService.listAgentTeamsWithMemory` took 537 / 463 / 247 ms at load average 12. The probe script lived in `/tmp/crr-probe` and was removed afterwards.
 - Explicit exclusions: the evaluation command's internals beyond its reported gates; probes and evidence; the regenerated `generated/graphql.ts`; the web components' visual fidelity, which the IMP-12 probe compared with VIS-*.
+
+## Round 5 (CRR-005): Targeted Delta Review of the CR-004 / CR-005 fix (IR-005)
+
+| Finding | Prior Status | Current Status | Evidence |
+| --- | --- | --- | --- |
+| CR-004 | Open (Local Fix) | **Resolved** | See below |
+| CR-005 | Open (Local Fix) | **Resolved** | See below |
+
+**CR-004 (Read, plus recorded checks):**
+- `containsTerm` is now the one rule in the normalizer: `unicode61`-style tokens (ideographs split as `toIndexText` does, NFKD with marks removed, case folded, split at anything but letters and digits), and a term matches as its tokens in a row. That is what the term's FTS phrase matches.
+- The service uses it at all three call sites: `matchedWords`, the snippet's first hit, and the card-part choice. No literal rule remains.
+- `matchedWords` is computed on the lines as read, links included, which is the text the index holds. So a text match names at least one word, except under the accepted R-3 drift.
+- The census keeps its independent tokenizer (R-14).
+- Recorded results:
+  - IMP-31: text matches without words, 0 of 698 on the private set and 0 of 35 on my cues; `wordsNotFound` mismatches [].
+  - IMP-29: mutation M4 (a literal substring) fails 2 tests.
+- The meaning-pointer shift (cardPart 33 → 28) follows from the same rule ("updater" no longer matches inside "updaters", as in the index). It affects pointer choice only; gates 1 and 2 are identical (31/31, #1 18, top 3 26, MRR 0.7288).
+
+**CR-005 (Read, plus recorded checks):** `queryTerms` keeps a non-ideograph word only when it holds a letter or digit. Tests pin `"the cloudflare ... ddns -- _ .x"` → `["cloudflare", "ddns", ".x"]`, and `updater ... --` gives no `wordsNotFound` and no note. Mutation M5 fails 2 tests.
+
+**Notes (not findings):**
+- **Latency:** IMP-31 p90 737 ms and max 1,339 ms (IMP-27: 605 / 1,041) on a shared host under load. Both are within AC-002 (p90 ≤ 1 s, max ≤ 2 s). The added tokenization is bounded: ≤ 20 shown matches × terms over ≤ 2,000-character chunks, plus card parts of the meaning runs. API/E2E re-measures it.
+- **C-12 effect:** because matching uses the lines as indexed, a token that occurs only in link markup (for example `rt`) is now named as a found word, though the snippet hides the link. That is consistent with the index (truthful about the file). It is recorded by the implementer as a residual risk.
+- **Design wording:** the handoff asks the Solution Designer to align § Match Facts items 1 and 4. That is documentation only.
+- **Checks:** IMP-29…IMP-31 ran on `3204aa2455`, the code under review, so none was rerun. The web, GraphQL and tool shapes are unchanged, so the round-4 web evidence (IMP-25, IMP-28) carries forward.
+
+### Score (round 5, revalidated)
+
+- Overall: **9.4/10**; every category ≥ 9.2.
+- Changed scores:
+  - API / Interface Clarity 9.0 → 9.4 (the "no `matchedWords` = meaning" rule now holds);
+  - Shared-Structure 9.3 → 9.4 (one matching rule);
+  - API/E2E Readiness 9.2 → 9.4 (the `textMatches` counter; mutation-checked tests);
+  - Runtime Correctness 8.8 → 9.3 (CR-004 and CR-005 resolved).
+- The others carry over from round 4: Data-Flow 9.4, Ownership 9.5, Separation 9.4, Naming 9.4, No Legacy 9.6, Cleanup 9.6.
+
+## Round 4 (CRR-004): Full Re-Audit of SR-006 Match Facts (IR-003, IR-004)
+
+### Basis
+
+- **Behavior basis:** UD-020 (the user's decision) removes strength; R-002 says a text match carries the query words found in it and a meaning match carries no label; R-009 says words that occur in no journal are named, "checked against the text index, never estimated"; AC-007 says every word named as absent has no occurrence in the text index.
+- **Design basis:** § Match Facts (SR-006); ARCH-REV-004 R-12 (one wording: "a match without `matchedWords` was found by meaning"), R-13 (live window accepted), R-14 (matching "the way the text index does", not by literal substring), R-15 (the asking run counts).
+- **F-001 (round 3):** resolved by design, not by calibration. No grade exists, so off-topic cues can no longer be called Strong. AC-007 is now a fact check, which IMP-27 measures: 0 `wordsNotFound` mismatches over 47 questions; 11 of 12 off-topic questions name their words, and N02 is the deliberate R-15 case.
+
+### What I checked
+
+- **Removal (Principle 7):** a grep of the server `src`/`scripts` and the web `components`/`stores`/`types`/`pages`/`localization`/`graphql` finds no `strength`, `weakOnly`, `WEAK_ONLY`, `chunk_vocab`, `termTokens`, `tokenChunkCounts` or `termWeights`. The only hits are two unrelated skill files. `meaning-strength.test.ts` and the evaluation's strength checks are gone. `nearest` keeps `{id, score}`. The service has no `activeModelId`.
+- **Ownership:** the service owns the facts (`matchedWords`, `wordsNotFound`, `terms`); the facade owns only the Text-step gate and the note text. `bestCardPerRun` is a pure, tested extraction. The store's `hasChunk` is a single bound `MATCH … LIMIT 1` with the same phrase form as the search (`toFtsPhrase`, now shared by `toFtsQuery`). It has one owner and no duplicated quoting.
+- **Facade gate:** `wordsNotFound` is emptied unless the `textIndex` step is `done`. A shown pass resets the steps, so a first build, catch-up or rebuild suppresses it, and a quiet live pass does not (R-13 as documented). The facts are tested both ways. The note order matches § Match Facts.
+- **Tool and GraphQL shapes:** GraphQL arrays are always present (`[String!]!`). The tool omits empty `matchedWords` and `wordsNotFound` through the existing `present` rule, which R-002 asks for ("only fields that have a value"). The description states the rule an agent needs. **Requested point 2: fine as built**, but CR-004 makes the rule untrue for some text matches.
+- **Page:** the amber/gray rule (`every match is a meaning match` → amber) and the server's rule (`every term not found` → "None of these words…") are different tests of one fact. On the page they agree: the page sends no asking run, so a found term always yields a text candidate, and text runs come first in the interleave, so at least one text match is shown. They cannot disagree there. The page cannot localize the server's English `note`, so deriving it locally is acceptable. **Requested point 3: correct as built** (a weakness in Shared-Structure, not a finding). `showMatchDay` implements UD-021's rule. Strings exist in en and zh-CN, and the spec covers both note states.
+- **Census (R-14):** `indexTokens` tokenizes as `unicode61` does, a term matches as its tokens in a row, and it reads `entry.text` the way the index does. It is independent of FTS, as R-14 asks. Placing it under `evaluation/` is right.
+- **Requested point 1, "No matches":** the design says `"No matches in memory." (unchanged)`. The approved design never had that string. The code has had `No matches; try other words.` since `bc374d4b7c`, and R-009 only forbids saying nothing is in memory. "(unchanged)" is the intent, so keeping the string is correct. The quotation in § Match Facts is design-doc drift for the Solution Designer to align. It is not a code finding.
+- **Sizes:** `memory-search-service.ts` 190, `memory-search.ts` 167, `memory-search-evaluation.ts` 184, `journal-term-census.ts` 66, `MemorySearchResults.vue` 124. All shrank or are new and small.
+- **Checks:** the recorded IMP-25…IMP-28 ran on `e7a15930c3`/`606d13b937`, the code under review, so none was rerun. My own checks, all read-only, on the isolated index `/tmp/wjs-eval/index` and copy `/tmp/wjs-copy/memory` (never `~/.autobyteus`), with probes in `/tmp/crr-probe-004`, removed afterwards:
+  - **Measured:** for the shown text matches (top 10 runs, up to 2 per run, as the service builds them), I counted those whose lines, with links stripped as `toMatch` does, contain no query term by `containsTerm`. Results: `memory_search` 15 of 19; `work-journal` 2 of 20; `rt` 1 of 19 (a link token). These had 0: `raw traces`, `jsonl`, `active kubernetes cluster`, `traces of the deploy`, `cloudflare ddns`, `node.js`, `package.json`, `e2e`.
+  - **Read** of the `memory_search` chunks: the matched forms are "Memory search", "memory-search", "memory':'Search" and "memory search". `unicode61` splits at `_`, `-`, `.`, `'` and spaces, so the FTS phrase matches them, but the literal substring does not.
+  - **Reproduced** (in-memory FTS5 with the built normalizer): `queryTerms("the cloudflare ... ddns")` gives `["cloudflare", "...", "ddns"]`, and `hasChunk('"..."')` is false even for a text that contains `...`; `--` behaves the same.
+
+### Candidates (round 4)
+
+| ID | Candidate | Disposition | Why |
+| --- | --- | --- | --- |
+| C-10 | A text match can carry no `matchedWords` (separator variants) | **Promote → CR-004** | Supported scenario: a user or agent writes a term with `_`, `-` or `.` (`memory_search`, `work-journal`, file and package names are common in this memory). Measured 15 of 19 shown matches |
+| C-11 | Punctuation-only query words are named as not found | **Promote → CR-005** | Supported: free text in the page box; `...` and `--` occur in typed queries. Named as a fact although it is no word and the census disagrees |
+| C-12 | Link markup (`[↗](../raw_traces_active.jsonl#rt_…)`) is indexed: about half the journal lines holding "active", and about 66% holding "traces", hold them only in link markup | **Reject as a finding of this ticket** (observation) | Pre-existing (round 1 index content). The shown matches had words in 0 of 80 probe matches for common words (BM25 prefers real content); link-only tokens (`rt`, record IDs) are not plausible query words; "active" and "traces" also occur in real text, so `wordsNotFound` is still truthful about the files |
+| C-13 | Page and server use different rules for amber vs "None of these words" | Reject | Equivalent on the page (above) |
+| C-14 | "No matches" quotation | Reject (design-doc drift) | Above |
+
+### Score (round 4, full scorecard)
+
+- Overall: 9.3/10, but **not a pass**: two categories are below 9.2.
+
+| Priority | Category | Score | Why | Weak | Improve |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | DS-002 unchanged in shape; facts added at their owner | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Service owns facts, facade owns gate and note text, store owns the phrase check | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.0 | Shapes clear and documented | The stated rule "no `matchedWords` = meaning" is false for some text matches (CR-004) | Fix CR-004 |
+| 4 | Separation of Concerns and File Placement | 9.4 | Census under `evaluation/`; normalizer shares the phrase form | — | — |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | One `toFtsPhrase`; values-only shapes | The page derives amber from kinds (equivalent, see above); two term-matching rules (CR-004) | — |
+| 6 | Naming Quality and Local Readability | 9.4 | `matchedWords`, `wordsNotFound`, `hasChunk` read as facts | — | — |
+| 7 | API/E2E Readiness | 9.2 | IMP-25…28 broad; R-13 and R-15 pinned; census independent | The evaluation checks `wordsNotFound` but not `matchedWords` against the index; the census skips zero-token terms that the service names | Add the `matchedWords` check (CR-004) |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.8 | Gate, note order, both-tier dedupe, R-13/R-15 correct | CR-004 (measured), CR-005 (reproduced) | Fix both |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean cut, no migration (unreleased store) | — | — |
+| 10 | Cleanup Completeness | 9.6 | Every SR-005 artifact removed | — | — |
 
 ## API/E2E Failure-Origin Review (Round 3, CRR-003): F-001
 
@@ -289,6 +368,31 @@ None open.
 
 ## Findings
 
+### CR-004 — A text match found through a separator variant carries no `matchedWords`, so it reads as a meaning match (Local Fix, implementation; round 4) — Resolved in round 5 (IR-005 `3204aa2455`)
+
+- **Protects:** R-002 (a text match carries the query words found in it); ARCH-REV-004 R-12 (the one wording, now in the tool description: "a match without `matchedWords` was found by meaning"); the Product revision (a card part without "Words:" is a meaning match); R-14 ("match a term the way the text index does, not a literal substring").
+- **Evidence:**
+  - **Read:** text candidates come from the FTS phrase (`toFtsPhrase`, `unicode61` tokens in a row), but `toMatch` computes `matchedWords` with `containsTerm`, a lowercase literal substring (`memory-search-service.ts` L186, `memory-text-normalizer.ts` L41). That leaves two rules for one fact.
+  - **Measured** on the isolated index: for `memory_search`, 15 of 19 shown text matches carry no words, because their lines say "Memory search", "memory-search" and so on. For `work-journal`, 2 of 20 carry none.
+  - **Consequences:** the page shows such a match without a "Words:" label, so it looks like a meaning match. The tool sends `matchedBy: "text"` with no `matchedWords`, which contradicts its own description. The "lines a–b · Words: …" banner of the Work Journal view has nothing to show.
+  - The cause is the design's own mechanism ("by the existing `containsTerm`"), which contradicts the design's stated rules (R-12, R-14). The fix stays inside the approved intent, so it is a bounded implementation fix plus a one-line alignment of the design's wording.
+- **Required action:**
+  - Compute `matchedWords` with the text index's matching rule (a term matches as its `unicode61` tokens in a row) on the lines as the index holds them. One owner for that rule, in the normalizer.
+  - The census may keep its own independent tokenizer (R-14 wants it independent of FTS), but the service must not keep a second literal rule.
+  - A text match must then name at least one word. The only exception is the accepted R-3 drift, where a file changed since indexing.
+  - Tests:
+    - a unit test: lines holding "Memory search" or "memory-search", queried `memory_search`, give `matchedWords: ["memory_search"]`;
+    - an evaluation check: shown text matches with no `matchedWords` = 0.
+  - Note in the handoff, for the Solution Designer: § Match Facts item 1 ("by the existing `containsTerm`") and item 4 (the quoted "No matches in memory.") need wording alignment.
+
+### CR-005 — Punctuation-only query words are named as not found (Local Fix, implementation; round 4) — Resolved in round 5 (IR-005 `3204aa2455`)
+
+- **Protects:** R-009 / AC-007: a word named as absent is a word that occurs in no journal, as the text index sees it. The census, the independent oracle, skips such terms, so the evaluation cannot see this.
+- **Evidence (Reproduced):** `QUERY_WORD` (`[a-z0-9_\-.]+`, length > 1) turns `...` or `--` into terms. Each is a phrase with no tokens, so `hasChunk` is false. As a result:
+  - "the cloudflare ... ddns" gives the note "Not found in your memory: ....";
+  - a query of only such characters gives the amber "None of these words appear in your memory: …".
+- **Required action:** a search term must contain at least one letter or digit, so a term with no index tokens is not a search term (in `queryTerms`, the one owner). The census already skips such terms, so the two agree. Add a unit test.
+
 ### CR-001 — Live journal changes are lost while a full, rebuild or catch-up pass runs, and during the first build (Local Fix, implementation)
 
 - **Protects:** R-006 / AC-009 (a turn's change is findable by text within about a minute), R-013 ("afterwards the pipeline keeps itself current"), and MP-003's own premise ("wasted work, not wrong state").
@@ -330,34 +434,39 @@ Non-blocking notes:
 
 ## Follow-ups
 
-- Follow-ups this review added: None. FU-003 and FU-006 were already recorded by the Solution Designer and the implementer.
+- Follow-ups this review added: None. C-12 (link markup in the text index) is an observation. If the Solution Designer wants it tracked, it belongs with FU-002 (search quality), not with this ticket's findings.
 
 ## Classification
 
+- Round 5: N/A — `Pass` (CR-004 and CR-005 resolved).
+- Round 4: `Local Fix` (CR-004, CR-005), owned by implementation. F-001 is resolved by SR-006.
 - Round 3: `Design Impact` (F-001: meaning-strength calibration for journal cards).
 - Round 2: N/A — `Pass` (CR-001 and CR-002 resolved; CR-003 resolved by UD-018).
 - Round 1: `Requirement Gap` (CR-003), `Local Fix` (CR-001, CR-002).
 
 ## Recommended Recipient
 
+- Round 5: `/software_engineering_team/api_e2e_engineer` (primary pass handoff: re-run AC-001, AC-002, AC-007; API-D01 test review afterwards); `/software_engineering_team/implementation_engineer` (informational).
+- Round 4: `/software_engineering_team/implementation_engineer` (`Local Fix`, CR-004, CR-005).
 - Round 3: `/software_engineering_team/solution_designer` (`Design Impact`, F-001).
 - Round 2: `/software_engineering_team/api_e2e_engineer` (primary pass handoff); `/software_engineering_team/implementation_engineer` (informational).
 - Round 1: `/software_engineering_team/solution_designer`.
 
 ## Residual Risks
 
-- Gate 2 latency was measured under load 30–40 (p90 575 ms, max 964 ms); API/E2E should re-measure on an idle reference machine.
-- AC-012 and AC-013 (real agents; tool selection), the Electron page, and AC-009 in the running app are downstream.
-- `listJournalFiles` reads every journal file of a run on each Work Journal read (multi-MB runs). Acceptable for the page; a cache keyed by `content_sha256` is the next step if it is measured slow.
+- Gate 2 latency: IMP-31 p90 737 ms, max 1,339 ms (IMP-27: 605 / 1,041), shared host under load; within AC-002, and API/E2E re-measures it.
+- R-13 (accepted): a word only in the last turn's lines is named as not found for up to the live debounce.
+- C-12: link markup is indexed. It inflates common tokens (`active`, `traces`, `raw`, `jsonl`) in BM25 and keeps them from ever being named as not found. Since round 5, a link-only token is named as a found word although the snippet hides the link. No visible defect was measured for real query words.
+- AC-012 and AC-013 (real agents), the Electron page, and AC-009 in the running app are downstream. API-D01 waits for the proportional test review.
 - R-3 (accepted): line drift in the open file's last entry.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure-origin review of API-REV-001)
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3)
-- Supported Product Scenario Gate: `Pass` (absent-work cues per AC-007 as refined; real triggers)
+- Review Decision: `Pass` (round 5)
+- Review Entry Point: `Implementation Review` (round 5, `Targeted Delta Review` of `716563012f..5b16e1fe4a`)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: no new scorecard for a failure-origin round (round 2: 9.4/10)
-- Failure Origin: `Design Impact`. Meaning strength reuses the embedding catalog's Project-Task relevance (floor plus near-best margin) for journal cards, with no calibration for them. Off-topic cues sit right at the floor, so 8 of 10 gated off-topic cues return many Meaning/Strong matches with no only-weak note. The code matches the design. Not an implementation defect, not a test problem, and not reasonably detectable in source review
-- Recommended Recipient: `/software_engineering_team/solution_designer`
-- Notes: the Solution Designer decides where per-collection meaning calibration lives and the strength rule (options in the origin analysis), and widens AC-007's evaluation set to its definition (R-016). API-D01 waits for the proportional test review.
+- Score Summary: 9.4/10; every category ≥ 9.2
+- Findings: CR-004 and CR-005 resolved (IR-005 `3204aa2455`); no open findings
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`; informational to `/software_engineering_team/implementation_engineer`
+- Notes: API/E2E re-runs AC-001, AC-002 (re-measure latency on an idle machine if possible) and AC-007. Then the proportional test review covers API-D01 and any new API/E2E tests. Design-spec § Match Facts wording (items 1 and 4) is with the Solution Designer.

@@ -2,10 +2,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/requirements-doc.md` (SR-001, approved by the user 2026-10-26; refined by UD-016 and, at SR-002, UD-017)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/requirements-doc.md` (SR-006, Approved: UD-020 by the user 2026-10-27; UD-021 and the Product revision approved 2026-10-27)
 - Upstream Investigation Notes: `.../investigation-notes.md` (AE-01…AE-21)
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-005)
-- Reviewed Design Spec: `.../design-spec.md` (SR-005: § Meaning Strength (SR-005), the `nearest` interface row, Tool Contract, Risks; the rest as in SR-003/SR-004)
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001…SR-006 and the SR-006 Addendum)
+- Reviewed Design Spec: `.../design-spec.md` (SR-006: § Match Facts, § Tool Contract, § Removal Plan, § Product Design Integration; the rest as before)
 - Supplemental Task Artifacts Reviewed:
   - the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md`, normative VIS-001…VIS-024, design repository `personal` @ `d01192275c`;
   - `memory-search-evaluation-report.md`;
@@ -13,13 +13,13 @@
   - `product-design-request.md`;
   - `follow-ups.md`;
   - `handoff-architecture-review.md`.
-- Relevant Solution Revision IDs: SR-001…SR-003; SR-004 (code review CR-003, UD-018/019); SR-005 (API/E2E F-001 → code review CRR-003, Design Impact)
+- Relevant Solution Revision IDs: SR-001…SR-005; SR-006 (UD-020, labels removed) and its Addendum (Product revision, UD-021)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Solution Designer targeted re-review request for SR-005 (2026-10-26). Scope: § Meaning Strength (SR-005), `EmbeddingIndex.nearest`, the strength ownership, AC-007 widening, O-1
-- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass)
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: Solution Designer targeted re-review request for SR-006 (2026-10-27); implementation paused at `9fa2e072ba`
+- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, Pass)
+- Latest Authoritative Round: 4
 - Current-State Evidence Basis: worktree `codex/work-journal-search` @ `ddd6fdcdf6` (no source changes). Opened:
   - `embeddings/embedding-index.ts`:
     - L106–116 `search` syncs, then queries;
@@ -166,7 +166,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `WorkJournalTarget.runtimeKind: RuntimeKind \| null` | Pass | Pass | Pass | N/A | Pass | `null` = not recorded (AE-02) |
 | `MemoryAvailabilitySummary` (`hasWorkJournal` added; the three old flags removed) | Pass | Pass | Pass | N/A | Pass | — |
-| Result match `{journalFile, lines, day, snippet, matchedBy, strength}` | Pass | Pass | Pass | N/A | Pass | Meaning pointer rule; card parts stored |
+| Result match `{journalFile, lines, day, snippet, matchedBy, matchedWords}` | Pass | Pass | Pass | N/A | Pass | SR-006: `strength` removed; `wordsNotFound` on the response |
 
 Derived consumers of a changed structure, listed with a decision for each (Principle 11): `Pass` (`memory.generated.ts` added in SR-003).
 
@@ -296,21 +296,47 @@ Findings rechecked:
 - **O-1 (tool description):** wording only, consistent with R-001.
 - **Risks and follow-ups:** the index is 610 MB (in the risks); FU-007, FU-008 and FU-009 are recorded in `follow-ups.md`, so no ticket growth.
 
+## Round 4 Verification (SR-006)
+
+- **Basis.** UD-020 (the user, 2026-10-27) removes Strong / Fair / Weak and the weak-only note. R-002, R-009 and AC-007 are rewritten. The Product revision (UD-021, VIS-001…VIS-026, design `a0b6410395`) is approved by the user. This review does not reopen those decisions. The requirement the round-3 strength machinery served no longer exists, so its removal is required (Principles 7 and 8), not optional.
+- **DS-002 result step, in call order:** `MemorySearchService.search → textCandidates (BM25) + nearest (scores, ranked) → interleave run by run (unchanged) → per text match: matchedWords = queryTerms ∩ containsTerm(chunk) → per meaning match: matchedBy "meaning" only → if the Text step is complete: wordsNotFound = terms whose own FTS phrase MATCH … LIMIT 1 finds no chunk → facade composes the note (ordered rule) → result`.
+  - One owner (`MemorySearchService`) derives each fact. The facade only words the note.
+  - No threshold, baseline or calibration remains, so ranking and the gates are untouched; AC-001 and AC-002 are re-run only to confirm.
+- **`wordsNotFound` is exact in the safe direction.** An FTS phrase `MATCH` on the contentless index finds a term wherever its tokens are adjacent. It therefore finds at least what a literal case-folded `rg` count finds, so every word it names as absent is literally absent. That is the direction AC-007's "no named word may occur" relies on. It is suppressed while the Text step is incomplete (absence is not a fact then), which replaces R-10.
+- **Interfaces and data:**
+  - GraphQL `MemorySearchMatch.strength` → `matchedWords: [String!]!`;
+  - `MemorySearchResult.wordsNotFound` lives on the whole response, as the Product question asked;
+  - `nearest` stays scores-only;
+  - the store's `chunk_vocab` is dropped. The store is unreleased, so there is no migration (Principle 5: Discard or Rebuild unchanged).
+- **Removal Plan (Principle 7):** complete for the code at `9fa2e072ba`:
+  - the lift baseline and per-model table;
+  - text IDF strength, `termWeights` and `tokenChunkCounts`;
+  - merge rule B and `STRENGTH_RANK`;
+  - `MemoryMatchStrength` and `strength` in the domain, tool, GraphQL and web types;
+  - the `WEAK_ONLY` note;
+  - the strength evaluation checks and the `meaning-strength` tests;
+  - `activeModelId` in the service, if unused.
+
+  The code currently has 15 `strength` references under `src/memory-search`, all inside that list.
+- **Earlier notes:**
+  - R-8, R-9, R-10 and R-11 are moot (no `relevance`, no calibration, no baseline);
+  - R-3, R-6 and R-7 stand. R-7's newest-first ordering is unchanged.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass`. The SR-005 change is coherent with the approved behavior, gives meaning strength one owner, and narrows the `EmbeddingIndex` contract. The design is ready for implementation.
+`Pass`. The SR-006 change follows the user's decision, replaces the unreliable grading with facts the index can check, and removes all of the strength machinery. Ranking, boundaries and the gates are unchanged. The design is ready for implementation to resume.
 
 ## Findings
 
-None open. AR-001…AR-003 stay resolved (ARCH-REV-002). R-5 is resolved by `collection: synced | notSynced`.
+None open. AR-001…AR-003 stay resolved.
 
 ## Classification
 
-N/A — `Pass`. Ticket scope: no prerequisite; FU-007, FU-008 and FU-009 are follow-ups.
+N/A — `Pass`. Ticket scope: no prerequisite and no new follow-up.
 
 ## Recommended Recipient
 
@@ -318,18 +344,14 @@ N/A — `Pass`. Ticket scope: no prerequisite; FU-007, FU-008 and FU-009 are fol
 
 ## Residual Risks
 
-- **R-8 — Two stale references to the removed `relevance`** (fix in the design or in implementation):
-  - § Meaning Step Rules, rule 4 (design-spec L307) still says "ranked fresh vectors with `relevance`";
-  - § Ownership Boundaries (L340) says `EmbeddingIndex` "stays the only owner of … the relevance rule".
-
-  After SR-005, `nearest` returns scores only, and memory-search strength is owned by `MemorySearchService`. The layer's relevance rule serves Project Task search only. Follow the interface row (L374) and § Meaning Strength.
-- **R-9 — When calibration cannot meet the constraints.** If no `k`, `Ls`, `Lf` (or per-model table) meet all three hard constraints on the default model, that is a `Design Impact` back to the Solution Designer, not a relaxed constraint. The design implies this; record it as the escalation trigger in the evaluation report.
-- **R-10 — The baseline while the meaning index is partly built.** With few embedded cards (during the first build, or after a Rebuild), rank *k* falls back to the last candidate, so lifts shrink and most matches read Weak while the coverage note says the meaning index is incomplete. Include a partial-coverage case in the evaluation, so the only-weak note does not mislead during a build.
-- **R-11 — The asking run and the baseline.** Compute the baseline over the candidates *before* removing the asking run's cards. Otherwise one agent's results would rate differently from the same query on the page. Either order works if it is stated and tested.
+- **R-12 — One wording for a meaning match** (Principle 15). UD-020 and the Removal Plan row say "related by meaning", while R-002 and the Product revision say a meaning match has no page label (a card part without "Words:"). The tool result carries only `matchedBy: "meaning"`. Use one wording: no page label, and in the tool description "a match without `matchedWords` was found by meaning". Align UD-020's text, or note it as superseded wording.
+- **R-13 — The live-update window for `wordsNotFound`.** Words from a turn's newest journal lines are indexed after the 20 s debounce (R-006). In that window a word can be reported "not found in your memory" although the latest journal has it. Either treat the Text step as incomplete while a live pass is queued for some run, or accept and document the window. A test should pin the choice.
+- **R-14 — FTS tokenization vs the evaluation's `rg` count.** For an off-topic key word that is literally absent but whose tokens occur adjacently elsewhere (for example a dotted name split by the tokenizer), FTS will not name it as absent. AC-007's "names the absent words" check could then fail on that edge. Choose off-topic key words that are single tokens, or make the evaluation's independent count tokenizer-aware.
+- **R-15 — The asking run's journal still counts for `wordsNotFound`.** A word present only in the asking run's own journal is not named as absent, although that run is excluded from the results. This is correct as a fact ("in your memory"); keep it in a unit test so it is deliberate.
 - Carried forward: R-3, R-6, R-7; RSKs (index about 610 MB, first-build writes, the meaning-build CPU, secrets in snippets, `node:sqlite` FTS5 on packaged Node).
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. F-001's production evidence establishes the off-topic premise as observed, not hypothetical, and the response is bounded.
-- Notes: a targeted round-3 review of SR-005 against `F-001-02`, the design spec and the requirements. Other verdicts stand. In the interface verdict, the `nearest` row now reads "scores only, with `collection` synced or not synced".
+- Material-Premise Gate: `Pass`. No new machinery depends on an unsupported premise; the change removes machinery.
+- Notes: a targeted round-4 review of SR-006 and its Addendum against the requirements (R-002, R-009, AC-007, UD-020, UD-021) and the code at `9fa2e072ba`. Other verdicts stand. The result-match structure now reads `{journalFile, lines, day, snippet, matchedBy, matchedWords}`, and the response adds `wordsNotFound`.

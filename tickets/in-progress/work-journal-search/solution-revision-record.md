@@ -9,6 +9,8 @@
 | SR-003 | Design | Architecture review ARCH-REV-001: Fail, Design Impact | AR-001, AR-002, AR-003 | SR-002 Approved (requirements); design Needs Revision | Requirements Approved (unchanged); design Ready for re-review | DS-001, DS-003, DS-006, § Meaning Step Rules, § Tool Contract, § Removal Plan | Corrections made; back to the architecture reviewer |
 | SR-004 | Mixed (requirements decision; design rule) | Code review CRR-001: CR-003 Requirement Gap; reviewer judgement notes | CR-003 | Requirements Ready for Approval (UD-018 proposed) | Approved (Solution Designer under the user's delegation) | UD-018, UD-019; AC-007; design § Tool Contract (strength, masking order) | Rework round to implementation with CR-001 and CR-002 |
 | SR-005 | Design | API/E2E F-001 → code review CRR-003: Design Impact | F-001 (CRR-003) | Requirements Approved; design Needs Revision | Requirements Approved (AC-007 set widened within intent); design Ready for re-review | design § Meaning Strength (SR-005), Interfaces (`nearest`), Tool Contract, Risks; AC-007 | Targeted architecture re-review, then implementation |
+| SR-005c | Design | Implementation R-9 escalation on LEAF-IR (IMP-21) | — | Design: merge of a match found by both tiers undefined | Rule B; per-model calibration table | design § Meaning Strength; AC-001 scope note | Back to implementation |
+| SR-006 | Mixed (requirements decision by the user; design) | The user's decision UD-020 after the strength calibration rounds (SR-005, SR-005b, SR-005c) showed thin margins | — (F-001 lineage) | SR-005c Approved; implementation paused | Requirements Approved (UD-020); design Ready for Product revision, then targeted architecture re-review | R-002, R-009, AC-007; UD-017 (strength part), UD-019 superseded; design § Match Facts (SR-006), Tool Contract, Removal Plan, Risks, Product Design Integration #4 | Product Team revises the approved spec; then architecture re-review; then implementation |
 
 ## Revision Entries
 
@@ -180,3 +182,50 @@
   - Option (b), a new text-tier rule for absent words, is rejected for now: there is no evidence it is needed, and it risks paraphrase questions.
 - **Risk recorded:** thin margins (design § Risks); the evaluation re-check and the R-9 escalation stay the guard.
 - **EmbeddingGemma 2:** not verified in this ticket (no index; noted).
+
+### SR-005c — Merge Rule And Per-Model Calibration (2026-10-26)
+
+- **Trigger:** the implementation engineer's second R-9 escalation (`evidence/IMP-20`, `IMP-21`). The default model meets all three constraints. On LEAF-IR, Q08 gets a false only-weak note for any values, because a meaning pointer that resolves to a listed text match's lines was dropped (an undefined merge; the IR-001 choice).
+- **Decision (Solution Designer, under the user's delegation):**
+  - **Rule B for every model:** one match for those lines, with the stronger strength, labelled by the tier that gave it.
+  - **Recalibrate:** Granite k 200, Lf ≈ 0.0689 (±0.0078), Ls in the upper range.
+  - **LEAF-IR row:** k 20, Lf ≈ 0.0429 (±0.0022). Thin margin and Q14's gate-1 miss are recorded as LEAF-IR limits.
+  - **Models without a row:** use the default row, and are reported as unverified.
+  - Options (2) and (3) are rejected, because the merge rule must not depend on the model.
+- **Visible behavior:** within the approved labels. A match found by both tiers shows the stronger evidence. The gates are acceptance-measured on the default model (AC-001 scope note).
+
+### SR-006 — Strength Labels Removed; Results State Facts (2026-10-27)
+
+- **Trigger:** the user's question "is it really possible to know strong or weak match using embedding?" and decision "yess. lets remove it. otherwise later during testing we still fail" (UD-020).
+- **Why:** embedding scores have no reliable absolute meaning; off-topic and real results overlap (F-001; evaluation report § 5.3; `autobyteus-71` FO-001). Three calibration rounds passed the known set only with margins of ±0.0078 (Granite) and ±0.0022 (LEAF-IR), with a model-specific table. A label that a new question or a growing memory can flip is not a behavior we can promise.
+- **Origin of the labels (for the record):** the Task asked for "how strong and by what kind of match (text or meaning)"; the Solution Designer carried it into R-002 without challenging feasibility although the evidence was already at hand; the Product design made it three levels (decision 7), approved under UD-017. **Lesson:** a requirement that grades results from embedding scores needs a feasibility check against measured score distributions before it is approved.
+- **Requirements:** R-002 (matches carry found words, or no label for a meaning match; no strength), R-009 (a checked note naming query words found in no journal), AC-007 (the note is checked against independent counts). UD-019 and UD-017's strength part are superseded.
+- **Design:** § Match Facts (SR-006): `matchedWords`, `wordsNotFound` (an exact `MATCH` per term), the note rule, the incomplete-Text-step rule; the full removal list (strength rules, calibration table, merge rule B, `chunk_vocab`, evaluation checks). Ranking and the gates are unchanged.
+- **Product:** the approved spec's decision 7 (strength chips) and the weak-only note need the Product Team's revision before the web part changes.
+- **Classification:** unchanged, Large/High. **Next:** Product revision → targeted architecture re-review → implementation (resumes from 9fa2e072ba) → targeted code review → API/E2E re-run of AC-001, AC-002, AC-007.
+
+- **Process lesson (the user, 2026-10-27):** the Solution Designer owns taking the requirements to 100%. It fills in what is missing and challenges, with evidence and an alternative before approval, any requested outcome its investigation shows is infeasible. This applies whoever wrote the requirement. After a second failed fix of the same behavior, it re-examines the requirement instead of tuning again. A skill change was requested from the Project Task Manager (`skill-improvement-request.md`).
+  - **Created:** `autobyteus-agents-67` (AutoByteus Agents project, dispatched to the Agent Package Creator), 2026-10-27. **Pending for this side:** once the Project Task Manager reports the package merged, add the AutoByteus case (`autobyteus-185`, UD-020, strength labels from embedding scores) to the product repository's `docs/design-cases.md`; the package keeps a neutral example.
+
+### SR-006 Addendum — Product Revision Integrated (2026-10-27)
+
+- **Product Team: Design Completed**, approved by the user 2026-10-27 ("its done"); design repository `personal` @ `a0b6410395` (revision `a55923a3f2`). VIS-001 to VIS-026 are normative.
+- **Integrated:**
+  - meaning matches carry no page label;
+  - the none-found note without the method sentence (the tool's `note` aligned to it);
+  - gray and amber notes, both hidden while the Text step is incomplete;
+  - card cleanup (UD-021, page only).
+- **Product question answered:** `wordsNotFound` is one list on the whole search response (`MemorySearchResult`), not per run.
+- **Requirements:** R-002 and R-009 wording aligned; UD-021 added. **Design:** § Match Facts and § Product Design Integration updated.
+- **Next:** targeted architecture re-review (Large/High rule).
+
+### SR-006 Addendum 2 — Architecture Review Pass (2026-10-27)
+
+- **ARCH-REV-004: Pass.** No findings; R-8 to R-11 are obsolete. The reviewer delivered to implementation (no duplicate forwarding).
+- **Notes applied (design text, no behavior change beyond what is stated):**
+  - R-12: one wording, no label for a meaning match;
+  - R-13: the live-debounce window accepted and documented ("no indexed journal"), not suppressed; a unit test;
+  - R-14: the evaluation's independent count is tokenizer-aware; off-topic key words are single tokens;
+  - R-15: the asking run's journal counts for absence; a unit test.
+- **Design case:** `design-case-entry.md` goes into `docs/design-cases.md` at finalization (the Project Task Manager's request; skill change `autobyteus-agents-67`).
+- **R-010 reviewed (UD-022, 2026-10-27):** kept on measured evidence (Q26–Q29). The tool description now says "open a run's first match (its newest)" instead of "the best match", because without grades "best" has no meaning within a run.

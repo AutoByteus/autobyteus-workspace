@@ -9,6 +9,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-001 | Round 1 / Solution Designer "Architecture Design Complete" at SR-002 (2026-10-26) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / Solution Designer re-review request for SR-003 (2026-10-26) | SR-003 | Fail | Pass | AR-001…AR-003 (resolved) |
 | ARCH-REV-003 | Round 3 / targeted re-review of SR-005 (F-001 / CRR-003, 2026-10-26) | SR-004, SR-005 | Pass | Pass | None new (R-5 resolved) |
+| ARCH-REV-004 | Round 4 / targeted re-review of SR-006 (UD-020, UD-021; 2026-10-27) | SR-006 | Pass | Pass | None new (R-8…R-11 obsolete) |
 
 ## Revision Entries
 
@@ -88,3 +89,29 @@ None
 - Material classification changes: none (Large / High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
 - Remaining risks or uncertainty: R-3, R-6…R-11; RSKs.
+
+### ARCH-REV-004 — Targeted re-review of SR-006 (strength labels removed; match facts)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/design-review-report.md`
+- Review round and trigger: round 4. The Solution Designer requested a targeted re-review of SR-006 and its Addendum after UD-020 (the user removed Strong / Fair / Weak) and UD-021 (Product revision); implementation is paused at `9fa2e072ba`.
+- Triggering role, report path, and finding IDs: Solution Designer; `design-spec.md` § Match Facts (SR-006), § Tool Contract, § Removal Plan, § Product Design Integration; N/A
+- Relevant solution revision IDs: SR-006 and the SR-006 Addendum
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The round-3 meaning-strength design (lift baseline) is superseded by the user's decision. Results carry `matchedWords` and `wordsNotFound` (an exact per-term FTS `MATCH`, suppressed while the Text step is incomplete).
+  - The strength machinery is removed completely. Ranking and the gates are unchanged.
+  - R-8…R-11 are moot.
+  - New notes: R-12 (one wording for a meaning match), R-13 (`wordsNotFound` during the live debounce window), R-14 (FTS tokenization vs the `rg` count in AC-007), R-15 (the asking run's journal and `wordsNotFound`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-003 | Resolved (ARCH-REV-002) | Resolved (unaffected) | SR-003…SR-006 | SR-006 changes only the match facts and the removals |
+| R-8…R-11 (notes) | Open (non-blocking) | Obsolete | SR-006 | No `relevance`, calibration or baseline remains |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large / High)
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary), `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: R-3, R-6, R-7, R-12…R-15; RSKs.
