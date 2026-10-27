@@ -269,7 +269,7 @@ the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`,
-`list_available_agents`, `list_peer_nodes` and `list_available_agent_runtimes` tool families by delegating to their existing family manifests/services instead
+`list_available_agents`, `list_peer_nodes`, `list_available_agent_runtimes` and model-routing (`submit_launch_choices`, the Model Router agent's; see [Model Routing](model_routing.md)) tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the

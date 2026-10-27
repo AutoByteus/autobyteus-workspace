@@ -150,3 +150,8 @@ them on shutdown.
 `tests/unit/model-routing/` (queue, sessions, router, agent, log, tools,
 submit tool and records), `tests/unit/agent-collaboration/collaborator-launch-resolver-model-routing.test.ts`,
 and the remote collaboration tests for `task`, `launches` and `modelRouting`.
+E2E: `tests/e2e/model-routing/model-routing-delegation.e2e.test.ts` (MR-01…09, scripted AGY CLI with
+`RUN_AGY_FAILURE_E2E=1`), RC-39…41 in `tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts`, and
+LR-3 in the gated live test `tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts`
+(`RUN_ROUTED_DELEGATION_E2E=1` with the runtimes' `RUN_*_E2E` flags). Web: the browser probe
+`autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs` (`pnpm test:e2e:model-routing-decisions`).

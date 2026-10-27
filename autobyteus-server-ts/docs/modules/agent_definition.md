@@ -168,6 +168,8 @@ Built-in templates are centralized under `src/built-in-agents/templates/`. Every
 
 - `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant** and role **General Agent**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file` for cataloged `SKILL.md` files and opt-in `list_available_agents` for accessible specialist agents and teams) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
 
+- `model-router/` syncs `agents/autobyteus-model-router/` (`MODEL_ROUTER_AGENT_DEFINITION_ID`), the **Model Router** agent: marked `"internal": true`, so it is hidden while "Show internal agents" is off, and run only by Model Routing in its own internal workspace (see [Model Routing](model_routing.md)).
+
 Daily Assistant is a displayed name, not a new definition:
 `autobyteus-daily-assistant`, the `daily-assistant/` template directory and
 `DAILY_ASSISTANT_AGENT_DEFINITION_ID` stay unchanged. Normal startup refreshes

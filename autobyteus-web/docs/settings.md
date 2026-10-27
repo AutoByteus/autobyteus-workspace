@@ -607,11 +607,12 @@ shows what its Model Router chose (server side:
 - **Header.** The switch (`setModelRoutingEnabled`) and a status strip from
   `modelRoutingStatus`: off; on and active, with the router's runtime and model;
   or on but not usable, with the reason (no launch set, runtime missing or
-  signed out, model unknown or blocked) and a link to Setup. **Talk to the
+  signed out, model unknown or blocked) and a link to Configuration. **Talk to the
   router** (`openModelRouterAgent`) opens the router's run in the chat.
-- **Tabs** (`?tab=`): **Setup** (the router's runtime, then its model, saved on
+- **Tabs** (`?tab=`): **Configuration** (`setup`: the router's runtime, then its model, saved on
   the model choice with `setModelRouterLaunch`; models come from the node's
-  runtimes now), **Decisions**, **Overview** and **Agent runtimes now**.
+  runtimes now), **Decisions** (`decisions`), **Overview** (`overview`) and
+  **Runtimes** (`runtimes`, the "Agent runtimes now" section).
 - **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
   first, pages of 8 from the server, filter All / Model Router / Not the router.
   Each agent row shows its runtime and model, the source, the task kind and
@@ -622,10 +623,10 @@ shows what its Model Router chose (server side:
 - **Overview** (`modelRoutingStatistics`, 7 days / 30 days / all): who chose the
   launches (one bar by source), router failures, and per task kind the runtimes
   and models used; "Not routed" holds defaults and inherited launches. Empty
-  states differ for "no records yet" (with a link to Setup while off) and "none
+  states differ for "no records yet" (with a link to Configuration while off) and "none
   in this period".
 
-The **Agent runtimes now** tab shows what the node can run now: the same answer
+The **Runtimes** tab ("Agent runtimes now") shows what the node can run now: the same answer
 the opt-in agent tool
 `list_available_agent_runtimes` gives, read through the GraphQL query
 `availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
