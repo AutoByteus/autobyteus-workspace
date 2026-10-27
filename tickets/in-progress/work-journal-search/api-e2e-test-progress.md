@@ -95,3 +95,4 @@
 | 10-27 10:01 | API-L05r3 | Completed | Pass | both forms: before build, results, no results, error |
 | 10-27 10:01 | API-L10r3 | Completed | Pass | MODEL_CHANGED, words only, Rebuild READY in 146 s with LEAF-IR |
 | 10-27 10:03 | (round 3) | Completed | Pass | report updated; API-REV-003 |
+| 10-27 10:03 | API-R05r3 | Completed | Pass | licensing + hygiene |
