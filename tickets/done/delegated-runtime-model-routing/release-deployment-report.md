@@ -69,7 +69,7 @@ Model Routing (switch, Model Router agent, one-at-a-time routing, decision log a
 | AC-009 | API-14 MRD-01…08 (r3), no browser errors | Configuration, Decisions, Overview, en and zh-CN | Proven |
 | AC-011 | MR-08 `["list_available_agent_runtimes","submit_launch_choices"]`; L-05 `collaborationToolsNamed: []` | No collaboration tools on any runtime | Proven |
 | AC-012 | MR-02 sources; RC-40; API-14 MRD-04 | Settings rows with runtime, model, source and reason | Proven |
-| Done-when: "the user has verified it in the desktop app" | API-15 r3 (final build smoke); DEL-04 | Prepared and smoke-checked by API/E2E and delivery | **User Check — open** |
+| Done-when: "the user has verified it in the desktop app" | API-15 r3 (final build smoke); DEL-04; the user's check on the released beta (DR-002) | The user runs the released build with Model Routing and considers it done; one UI issue found and made a follow-up (FU-012) | **User Check — done (DR-002)** |
 
 - More evidence requested: DEL-F1/F2 as code fixes (resolved). No more evidence was needed.
 - User check needed: **`Yes`**. The Task's "Done when" requires it; the user is asked after the beta is published.
@@ -161,14 +161,26 @@ Recorded below after the merge and the release.
 ## Post-Finalization Cleanup
 
 - Release worktree `…/delegated-runtime-model-routing-release` and the local `finalize/delegated-runtime-model-routing` branch: removed after this record is pushed.
-- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing` and the local `codex/delegated-runtime-model-routing` branch: **kept until the user's desktop check**, because the check guide can start the isolated app `--from-worktree` from its `electron-dist`. They are removed once the check is recorded.
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing` and the local `codex/delegated-runtime-model-routing` branch: kept until the user's check, then **removed in DR-002**. Only untracked/ignored build output remained, including `electron-dist`; no isolated instance, process or container used it; the branch was contained in `origin/personal`. It was removed with `git worktree remove --force` and `git branch -D`.
 - Remote branch: `origin/codex/delegated-runtime-model-routing` is kept as pushed ticket history.
 
 ## Final Status
 
-- Verification complete: evidence `Yes`; **the user's desktop check (Task "Done when"): open**
+- Verification complete: `Yes` (evidence; the user's desktop check is recorded in DR-002, "User Check (DR-002)" below)
 - Repository finalization complete: `Yes` (merge `3c751828cb`, release commit `f56365c809` on `personal`)
 - Applicable release complete: `Yes` (beta v1.5.9-beta.11, complete, all four workflows)
-- Applicable safe cleanup complete: partly. The release worktree is removed; the ticket worktree is kept for the user's check.
-- Unresolved blocker: the user's desktop-app check (or the user's explicit waiver)
-- Successful terminal package eligible for return: `No`, until the user's check is recorded
+- Applicable safe cleanup complete: `Yes` (release worktree at DR-001; ticket worktree and local branch at DR-002)
+- Unresolved blocker: `None` (the user's check is recorded in DR-002)
+- Successful terminal package eligible for return: `Yes` (DR-002)
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to the address from `get_handoff_rules`, right after the DR-002 record was pushed
+
+## User Check (DR-002)
+
+- The Task's "Done when" requires "the user has verified it in the desktop app". The beta v1.5.9-beta.11 put the change into the user's own desktop app.
+- Relayed by the Solution Designer (2026-10-27), the user's own words in the Solution Designer conversation:
+  - "I'm already running the latest version, which already have the model router deployed in the latest version, already have the functionality."
+  - "since it's released, then it's already done, right? … It's already released … which means that it's going to be a follow-up ticket … Why is the ticket is not closed yet?"
+- Recorded as: **the user's check is done.** The user runs the released build with Model Routing in their own desktop app and considers autobyteus-32 done.
+- The user found one issue during that check, recorded as the Task's 2026-10-27 comment. On Configuration, the Model Router's runtime and model are plain dropdowns rather than the app's standard runtime/model selector with its launch options, and the naming may not match ("Claude" versus "Claude Agent SDK").
+  - The user decided this is a follow-up Task, not part of autobyteus-32.
+  - Recorded as FU-012. The Solution Designer is sending it to the Project Task Manager.
