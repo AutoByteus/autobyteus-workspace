@@ -522,18 +522,9 @@ const extensionStatusMessage = computed(() => {
 });
 
 function handleLanguageModeChange(event: Event): void {
-  const target = event.target as HTMLSelectElement | null;
-  if (!target) {
-    return;
-  }
-  if (isLanguageMode(target.value)) {
-    emit('updateLanguageMode', target.value);
-  }
-}
-
-/** The select's options (auto, en, zh). */
-function isLanguageMode(value: string): value is VoiceInputLanguageMode {
-  return value === 'auto' || value === 'en' || value === 'zh';
+  // The select's options: auto, en, zh.
+  const value = (event.target as HTMLSelectElement | null)?.value;
+  if (value === 'auto' || value === 'en' || value === 'zh') emit('updateLanguageMode', value);
 }
 
 function handleAudioInputDeviceChange(event: Event): void {

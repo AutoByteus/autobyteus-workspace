@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import SearchableSelect from '~/components/common/SearchableSelect.vue'

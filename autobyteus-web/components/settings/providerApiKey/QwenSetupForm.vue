@@ -143,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { QwenConfigurationInput, QwenSetupStatus } from '~/stores/llmProviderConfig'

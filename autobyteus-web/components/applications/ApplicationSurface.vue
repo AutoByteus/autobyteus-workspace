@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue'
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import {
   APPLICATION_IFRAME_READY_EVENT,

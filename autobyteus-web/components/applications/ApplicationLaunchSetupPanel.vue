@@ -194,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import type {
   ApplicationLaunchConfigurationView,
@@ -220,10 +220,7 @@ import {
   type ApplicationSlotDraft,
   type ApplicationSlotEditorReadiness,
 } from '~/utils/application/applicationLaunchProfile'
-import {
-  buildLaunchSetupGateState,
-  type ApplicationLaunchSetupGateState,
-} from '~/utils/application/applicationSetupGate'
+import { buildLaunchSetupGateState, type ApplicationLaunchSetupGateState } from '~/utils/application/applicationSetupGate'
 
 const props = withDefaults(defineProps<{
   applicationId: string

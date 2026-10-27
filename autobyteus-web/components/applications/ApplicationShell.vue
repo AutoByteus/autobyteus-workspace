@@ -293,7 +293,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import ApplicationImmersiveControlPanel from '~/components/applications/ApplicationImmersiveControlPanel.vue'
 import ApplicationLaunchSetupPanel from '~/components/applications/ApplicationLaunchSetupPanel.vue'
