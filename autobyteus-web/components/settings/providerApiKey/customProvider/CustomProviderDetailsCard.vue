@@ -23,8 +23,14 @@
       <span class="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 font-medium text-blue-700">
         {{ provider.providerType }}
       </span>
-      <span class="rounded-full border border-gray-100 bg-gray-50 px-2.5 py-1 font-medium text-gray-600">
-        {{ $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: provider.totalModels }) }}
+      <span
+        class="rounded-full border border-gray-100 bg-gray-50 px-2.5 py-1 font-medium text-gray-600"
+        data-testid="custom-provider-model-count"
+        :aria-label="provider.totalModels === null ? $t('settings.components.settings.ProviderAPIKeyManager.model_count_loading') : undefined"
+      >
+        {{ provider.totalModels === null
+          ? '—'
+          : $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: provider.totalModels }) }}
       </span>
     </div>
   </section>
