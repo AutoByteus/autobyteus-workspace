@@ -49,7 +49,12 @@ The latest docs sync report, handoff summary and release/publication/deployment 
   - No user check is needed. The user's own first build is a rollout step: back up first (UD-001).
   - Privacy check passed: no private question text tracked, and the screenshots are fixture data.
 - Release decision: `Beta`, decided by the user in advance (2026-10-27).
-- Finalization, release and cleanup: `release-deployment-report.md` § Repository Finalization, § Release / Publication / Deployment, § Final Status.
-- Terminal return to the Solution Designer: § Final Status.
+- Finalization:
+  - merge `ce988481ff` pushed to `origin/personal`.
+- Release:
+  - `801f2ab437` and tag `v1.5.9-beta.12`; 4/4 workflows succeeded, 17/17 assets;
+  - Docker `1.5.9-beta.12` with `:beta` on the same digest; TestFlight upload done.
+- Cleanup: worktrees and local branches removed.
+- Terminal return to the Solution Designer: `Sent` (Delivery Completed).
 - Next recipient/action: the Solution Designer (terminal receipt). The design spec § Match Facts wording (items 1 and 4) is theirs to align.
 - Remaining blockers: none. Residual risks are in `handoff-summary.md`.

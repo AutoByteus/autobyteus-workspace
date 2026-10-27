@@ -69,7 +69,7 @@ Current delivery revision: `DR-002`. DR-001 (integration blocked, `Local Fix`) i
   - the probe screenshots (IMP-12, IMP-28) use the probe's fixture memory;
   - `probes/questions-public.json` and `probes/results/summary-batch-costs.json` hold only IDs, categories, opaque run IDs and counts, written as the public form (`investigation-notes.md`);
   - no `~/.autobyteus` path appears in the delivery evidence.
-- Re-verification after later re-integration: recorded in Repository Finalization.
+- Re-verification after later re-integration: `Not needed` (the target did not advance).
 
 ## Release Decision
 
@@ -88,15 +88,37 @@ Current delivery revision: `DR-002`. DR-001 (integration blocked, `Local Fix`) i
 
 ## Version / Tag / Release Commit
 
-- Recorded after release.
+- `801f2ab437 chore(release): bump workspace release version to 1.5.9-beta.12` (`autobyteus-web/package.json`) and the annotated tag `v1.5.9-beta.12`. The version was checked first: `next-beta` → `1.5.9-beta.12`; `android-version-code` → `10050912`.
 
 ## Repository Finalization
 
-- Recorded after finalization.
+- Bootstrap context source: incoming package (branch `codex/work-journal-search`) and `RELEASE.md` § Finalization Target.
+- Ticket branch `codex/work-journal-search` @ `6b5d755987` (archive commit). Commit: `Completed`; no build output committed.
+- Ticket branch push: `Completed` (`origin/codex/work-journal-search`, new).
+- Finalization target: `origin` / `personal`.
+- Target advanced after verification: `No` (`8c31e530d6` before the merge and before the push).
+- Re-integration: `Not needed`.
+- Merge: `git checkout -b finalize/work-journal-search origin/personal` then `git merge --no-ff` → `ce988481ff`. The merge tree equals the ticket tree.
+- Push: `8c31e530d6..ce988481ff HEAD -> personal`.
+- Checks before the final commit: `check_licensing.py` → `Licensing is consistent.`; `check_repository_artifact_hygiene.py` → passed (exit 0).
+- Status: `Completed`.
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes` (Beta). Method: `Project Release Guide`. Recorded after release.
+- Applicable: `Yes` (Beta). Method: `Project Release Guide`.
+- Command: in a fresh worktree `finalize/work-journal-search-beta` from `origin/personal` `ce988481ff`:
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` passed on the merged state;
+  - `bash scripts/desktop-release.sh beta --branch finalize/work-journal-search-beta --no-push`;
+  - refetched `personal` (unchanged), then `git push origin HEAD:personal` (`ce988481ff..801f2ab437`, fast-forward) and `git push origin v1.5.9-beta.12`.
+- Pipelines:
+  - Desktop Release `40478783439`: success.
+  - Android APK Release `40478783325`: success.
+  - iOS App Store Connect Release `40478783311`: success, including Archive And Upload To App Store Connect.
+  - Server Docker Release `40478783352`: success.
+- Published artifacts:
+  - GitHub pre-release `v1.5.9-beta.12` (published 2026-10-27T09:14:36Z) has 17/17 assets: macOS arm64/x64 dmg+zip with blockmaps, Linux x64/arm64 AppImages, Windows exe, four `latest*.yml`, the APK and `.sha256`.
+  - Docker Hub `autobyteus/autobyteus-server:1.5.9-beta.12` (amd64, arm64); `:beta` has the same digest `sha256:fddac855…`.
+- Result: `Completed`.
 - Release notes: `Not required`. A pre-release tag uses GitHub generated notes.
 
 ## Environment Or Persisted-Data Transition Notes
@@ -109,6 +131,19 @@ Current delivery revision: `DR-002`. DR-001 (integration blocked, `Local Fix`) i
 - Roll back if the Memory page, search or the `search_memory` tool break normal use, if indexing degrades the app (CPU or memory) beyond the measured footprint, or if journal generation damages run folders.
 - Method: revert the merge on `personal` and cut the next beta. Desktop never downgrades. The index store can be deleted safely, since it is rebuildable. Generated Work Journals are additive files beside the raw traces.
 
+## Post-Finalization Cleanup
+
+- Worktrees `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search` and `…/release-wjs-beta`: removed after this record was pushed, with their untracked build output. Prune `Completed`.
+- Local branches `codex/work-journal-search`, `finalize/work-journal-search` and `finalize/work-journal-search-beta`: deleted.
+- Remote ticket branch: kept as a reference.
+- Private evidence folder `autobyteus-delivery-receipts/work-journal-search-evidence/`: kept, outside the repository.
+
 ## Final Status
 
-- Recorded after release.
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `ce988481ff`)
+- Release complete: `Yes`. Beta `v1.5.9-beta.12`: 4/4 workflows succeeded, 17/17 assets, Docker and `:beta` updated, TestFlight upload done.
+- Safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record was pushed (Delivery Completed, DR-002).
