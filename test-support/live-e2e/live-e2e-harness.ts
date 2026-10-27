@@ -10,6 +10,7 @@ import {
   LLMFactory,
   LLMRuntime,
   MemoryType,
+  NativeCommandProcessScope,
 } from '../../autobyteus-ts/src/index.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
 import { parseCompactionSummary } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-parser.js';
@@ -585,11 +586,14 @@ export class LiveE2eScenarioExecution {
       getWorkspaceById: () => undefined,
       getOrCreateTempWorkspace: async () => workspace,
     } as unknown as WorkspaceManager;
+    // The run's native command scope, closed after the backend ends (as the server's NativeCommandShutdown does).
+    const nativeCommandProcessScope = new NativeCommandProcessScope();
     const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: (modelIdentifier, configInput) =>
         LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver),
       workspaceManager,
+      nativeCommandProcessScope,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
@@ -607,6 +611,7 @@ export class LiveE2eScenarioExecution {
         evidenceObserver,
       });
     } finally {
+      await nativeCommandProcessScope.close();
       await workspace.close();
       await fs.rm(ownedRoot, { recursive: true, force: true });
     }
@@ -705,6 +710,8 @@ export class LiveE2eScenarioExecution {
       : {};
     let primaryLlm: BaseLLM | null = null;
     let invocationCapture: InvocationCaptureExtension | null = null;
+    // The run's native command scope, closed after the backend ends (as the server's NativeCommandShutdown does).
+    const nativeCommandProcessScope = new NativeCommandProcessScope();
     const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: async (modelIdentifier, configInput) => {
@@ -715,6 +722,7 @@ export class LiveE2eScenarioExecution {
         return llm;
       },
       workspaceManager,
+      nativeCommandProcessScope,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
@@ -1125,6 +1133,7 @@ export class LiveE2eScenarioExecution {
       } finally {
       unsubscribe();
       if (backend) await backend.terminate().catch(() => undefined);
+      await nativeCommandProcessScope.close();
       await workspace.close();
       await fs.rm(ownedRoot, { recursive: true, force: true });
       }
