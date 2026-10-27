@@ -71,3 +71,4 @@
 | 10-27 08:09 | API-L11r2 | Started | — | start again on the same root; first-search notes |
 | 10-27 08:10 | API-L11r2 | Completed | Pass | catch-up: no absence claimed; then named; meaning loads on first search |
 | 10-27 08:12 | (round 2) | Completed | Pass | report rewritten; API-REV-002; final 94% |
+| 10-27 08:12 | API-R05 | Completed | Pass | round 2 licensing + hygiene |

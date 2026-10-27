@@ -1,0 +1,9 @@
+# API-R05 (round 2): repository checks after the evidence commit
+# Commit: 1fb56a6b8c; 2026-10-27 08:12
+## python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 7316
+## python3 scripts/check_repository_artifact_hygiene.py
+Tracked files scanned: 78350
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
