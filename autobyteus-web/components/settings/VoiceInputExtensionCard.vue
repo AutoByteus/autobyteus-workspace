@@ -4,7 +4,7 @@
       <div class="space-y-3">
         <div class="flex items-center gap-3">
           <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-            <span class="i-heroicons-microphone-20-solid h-5 w-5"></span>
+            <Icon icon="heroicons:microphone-20-solid" class="h-5 w-5" />
           </div>
           <div>
             <h3 class="text-lg font-semibold text-gray-900">{{ extension.name }}</h3>
@@ -267,6 +267,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { ManagedExtensionState, VoiceInputLanguageMode } from '~/electron/extensions/types';

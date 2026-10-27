@@ -22,8 +22,8 @@
               data-testid="mcp-gateway-copy-endpoint"
               @click="copyEndpoint"
             >
-              <span v-if="endpointCopied" class="i-heroicons-check-20-solid h-4 w-4" aria-hidden="true" />
-              <span v-else class="i-heroicons-document-duplicate-20-solid h-4 w-4" aria-hidden="true" />
+              <Icon v-if="endpointCopied" icon="heroicons:check-20-solid" aria-hidden="true" class="h-4 w-4" />
+              <Icon v-else icon="heroicons:document-duplicate-20-solid" aria-hidden="true" class="h-4 w-4" />
               <span>{{ endpointCopyLabel }}</span>
             </button>
           </div>
@@ -54,8 +54,8 @@
             data-testid="mcp-gateway-copy-json"
             @click="copyConfigSnippet"
           >
-            <span v-if="configCopied" class="i-heroicons-check-20-solid h-4 w-4" aria-hidden="true" />
-            <span v-else class="i-heroicons-document-duplicate-20-solid h-4 w-4" aria-hidden="true" />
+            <Icon v-if="configCopied" icon="heroicons:check-20-solid" aria-hidden="true" class="h-4 w-4" />
+            <Icon v-else icon="heroicons:document-duplicate-20-solid" aria-hidden="true" class="h-4 w-4" />
             <span>{{ configCopyLabel }}</span>
           </button>
         </div>
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useLocalization } from '~/composables/useLocalization';

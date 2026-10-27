@@ -68,13 +68,13 @@
 
             <div class="space-y-2 pt-2">
               <button @click="selectAgentToRun(agentDef)" class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center">
-                <span class="block i-heroicons-play-20-solid w-5 h-5 mr-2"></span>{{ $t('agents.components.agents.AgentDetail.run_agent') }}</button>
+                <Icon icon="heroicons:play-20-solid" class="block w-5 h-5 mr-2" />{{ $t('agents.components.agents.AgentDetail.run_agent') }}</button>
               <button @click="$emit('navigate', { view: 'edit', id: agentDef.id })" class="w-full px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center">
-                <span class="block i-heroicons-pencil-square-20-solid w-5 h-5 mr-2"></span>
+                <Icon icon="heroicons:pencil-square-20-solid" class="block w-5 h-5 mr-2" />
                 {{ $t('agents.components.agents.AgentDetail.edit') }}
               </button>
               <button v-if="isShared" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
-                <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
+                <Icon icon="heroicons:trash-20-solid" class="block w-5 h-5 mr-2" />
                 {{ $t('agents.components.agents.AgentDetail.delete') }}
               </button>
             </div>
@@ -98,6 +98,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { ref, computed, onMounted, toRefs, watch } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
