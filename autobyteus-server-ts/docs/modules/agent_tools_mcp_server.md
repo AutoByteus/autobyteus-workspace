@@ -244,14 +244,18 @@ exact same object.
 `AgentToolMcpCatalog` is adapter-backed for server-owned tool families and
 registry-backed for configured MCP-origin tools. Each server-owned adapter
 supplies the MCP tool definition, availability gate, and execution delegate for
-one canonical AutoByteus tool name. The default adapter set currently covers:
+one canonical AutoByteus tool name. The default adapter set
+(`buildDefaultAgentToolMcpAdapterProviders` in
+`src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts`) covers:
 
-- `send_message_to`
-- `get_handoff_rules`
+- `send_message_to` and `get_handoff_rules` from `src/agent-tools/agent-communication`
 - browser tools from `src/agent-tools/browser`
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
-- `publish_artifacts`
+- `publish_artifacts` from `src/agent-tools/published-artifacts`
+- `list_available_agents` and `list_peer_nodes` from `src/agent-tools/agent-discovery`
+- `list_available_agent_runtimes` from `src/agent-tools/agent-runtimes`
+- `submit_launch_choices` (the Model Router's decision tool) from `src/agent-tools/model-routing`
 - `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,
   `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
