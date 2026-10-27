@@ -9,6 +9,7 @@ import { formatTaskKey } from "../domain/task-keys.js";
 import { isSafeSegment, ProjectsLayout } from "./projects-layout.js";
 
 const isNonEmptyString = (value: unknown): value is string => typeof value === "string" && value.length > 0;
+const isNonBlankString = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 const isValidLink = (link: unknown): link is ProjectWorkspaceLink => {
   const c = link as Partial<ProjectWorkspaceLink> | null;
   return Boolean(c) && isNonEmptyString(c?.workspaceRootPath)
@@ -46,12 +47,12 @@ export const readProjectFile = (raw: unknown, projectId: string): Project | null
       workspaceRootPath: l.workspaceRootPath, description: l.description })),
     taskKeys: { prefix: c.taskKeys.prefix, lastNumber: c.taskKeys.lastNumber } };
 };
-/** Current tolerant reader of `task.json`; its ids must match its folders. An absent `partOfTaskId` means no parent, absent `comments` none. */
+/** Current tolerant reader of `task.json`; its ids must match its folders and it has a non-blank `title`. An absent `partOfTaskId` means no parent, absent `comments` none. */
 export const readTaskFile = (raw: unknown, projectId: string, taskId: string): ProjectTask | null => {
   const c = raw as (Partial<ProjectTask> & { projectId?: unknown }) | null;
-  if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.taskKey) || !isNonEmptyString(c.description)
+  if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.taskKey) || !isNonBlankString(c.title) || !isNonEmptyString(c.description)
     || !isProjectTaskStatus(c.status) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
-  return { taskId, taskKey: c.taskKey, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
+  return { taskId, taskKey: c.taskKey, title: c.title, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
     contextFiles: normalizeContextFiles(c.contextFiles), dependsOnTaskIds: normalizeDependsOn(c.dependsOnTaskIds),
     partOfTaskId: isNonEmptyString(c.partOfTaskId) ? c.partOfTaskId : null, comments: normalizeComments(c.comments) };
 };
@@ -60,8 +61,8 @@ export const projectFileContent = (p: Project) => ({ projectId: p.projectId, nam
   createdAt: p.createdAt, updatedAt: p.updatedAt, workspaces: p.workspaces.map((l) => ({
     workspaceRootPath: l.workspaceRootPath, description: l.description })),
   taskKeys: { prefix: p.taskKeys.prefix, lastNumber: p.taskKeys.lastNumber } });
-export const taskFileContent = (projectId: string, t: ProjectTask) => ({ taskId: t.taskId, projectId, taskKey: t.taskKey, description: t.description,
-  status: t.status, dependsOnTaskIds: [...t.dependsOnTaskIds], partOfTaskId: t.partOfTaskId, createdAt: t.createdAt, updatedAt: t.updatedAt,
+export const taskFileContent = (projectId: string, t: ProjectTask) => ({ taskId: t.taskId, projectId, taskKey: t.taskKey, title: t.title,
+  description: t.description, status: t.status, dependsOnTaskIds: [...t.dependsOnTaskIds], partOfTaskId: t.partOfTaskId, createdAt: t.createdAt, updatedAt: t.updatedAt,
   contextFiles: normalizeContextFiles(t.contextFiles ?? []), comments: t.comments.map(({ id, createdAt, text }) => ({ id, createdAt, text })) });
 
 const notFound = (projectId: string) => new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);

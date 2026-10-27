@@ -139,7 +139,7 @@ const terminalReadableStatus = (status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS")
 describe("Studio app-data migration startup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(process, "once").mockReturnValue(process);
+    vi.spyOn(process, "on").mockReturnValue(process);
     vi.spyOn(process, "exit").mockImplementation(((code: number) => {
       throw new Error(`process.exit:${code}`);
     }) as never);
@@ -278,4 +278,31 @@ describe("Studio app-data migration startup", () => {
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
+  it.each(['prisma', 'build', 'prepare', 'listen', 'recover', 'background'] as const)(
+    'cancels during %s without concurrent cleanup or subsequent startup stages', async phase => {
+      const handlers = new Map<string, (...args: any[]) => void>();
+      vi.mocked(process.on).mockImplementation(((event: string, handler: (...args: any[]) => void) => {
+        handlers.set(event, handler); return process;
+      }) as never);
+      vi.mocked(process.exit).mockImplementation((() => undefined) as never);
+      const stage = { prisma: mocks.initializePrisma, build: mocks.buildStudioServer,
+        prepare: mocks.lifecycle.prepareBeforeListen, listen: mocks.app.listen,
+        recover: mocks.lifecycle.recoverAfterListen, background: mocks.scheduleStudioBackgroundTasks }[phase];
+      let enter!: () => void, finish!: (value: any) => void;
+      const entered = new Promise<void>(resolve => enter = resolve);
+      stage.mockImplementationOnce((() => { enter(); return new Promise(resolve => finish = resolve); }) as never);
+      const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
+      await entered; handlers.get('SIGTERM')!();
+      expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost } : undefined);
+      await starting; await new Promise(resolve => setImmediate(resolve));
+      if (phase === 'prisma') {
+        expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
+      } else {
+        expect(mocks.app.close).toHaveBeenCalledOnce(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+      }
+      expect(process.exit).toHaveBeenCalledWith(0);
+      if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();
+    });
+
 });

@@ -3,6 +3,8 @@ import { EventEmitter } from 'events'
 import type { BrowserWindowConstructorOptions, Rectangle, WebContents, WebContentsView } from 'electron'
 import { DEFAULT_BROWSER_VIEW_BOUNDS } from './browser-view-factory'
 import { BrowserDeviceEmulationController, cloneBrowserDeviceEmulationState, DEFAULT_BROWSER_DEVICE_EMULATION_STATE } from './browser-device-emulation'
+import { attachBrowserTabObservers } from './browser-tab-observers'
+import type { BrowserHistoryDirection, BrowserHistoryState } from './browser-tab-types'
 import { BrowserTabNavigation } from './browser-tab-navigation'
 import { BrowserTabPageOperations } from './browser-tab-page-operations'
 import { logger } from '../logger'
@@ -186,6 +188,14 @@ export class BrowserTabManager extends EventEmitter {
     return this.toSessionSummary(this.getOpenSessionOrThrow(browserSessionId))
   }
 
+  getSessionHistoryState(browserSessionId: string): BrowserHistoryState {
+    return this.navigation.getHistoryState(this.getOpenSessionOrThrow(browserSessionId))
+  }
+
+  navigateHistory(browserSessionId: string, direction: BrowserHistoryDirection): void {
+    this.navigation.navigateHistory(this.getOpenSessionOrThrow(browserSessionId), direction)
+  }
+
   getSessionView(browserSessionId: string): WebContentsView {
     return this.getOpenSessionOrThrow(browserSessionId).view
   }
@@ -244,30 +254,10 @@ export class BrowserTabManager extends EventEmitter {
       this.handlePopupRequest(session, details),
     )
 
-    session.view.webContents.on('page-title-updated', (_event, title) => {
-      if (session.customTitle) {
-        return
-      }
-      session.title = title?.trim() || session.url
-      this.emitSessionUpserted(session)
-    })
-
-    session.view.webContents.on('did-navigate', (_event, url) => {
-      session.url = url
-      if (!session.customTitle) {
-        session.title = session.view.webContents.getTitle()?.trim() || url
-      }
-      this.emitSessionUpserted(session)
-    })
-
-    session.view.webContents.on('did-navigate-in-page', (_event, url) => {
-      session.url = url
-      this.emitSessionUpserted(session)
-    })
-
-    session.view.webContents.on('destroyed', () => {
-      this.handleWindowClosed(session.id)
-    })
+    attachBrowserTabObservers(session,
+      () => this.emitSessionUpserted(session),
+      () => this.handleWindowClosed(session.id),
+    )
   }
 
   private handlePopupRequest(

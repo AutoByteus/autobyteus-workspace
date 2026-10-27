@@ -4,7 +4,7 @@ import { CollaborationAgentActivationError } from "../../agent-collaboration/exe
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -59,10 +59,11 @@ export class AgentOrgExecutionScopeBuilder {
       identity: Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>[0];
       event: Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>[1];
     }>> = [];
-    const taskCommands: MemberTaskCommandCapability = Object.freeze({
+    const taskCapability: MemberTaskCapability = Object.freeze({
       root,
       delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
       assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
+      ownedTaskOf: (caller) => this.requireActive(run).ownedTaskOf({ identity: caller }),
     });
     // Delegated copies join after launch, so member contexts read the live tree.
     const liveTree = (): AgentOrgRunExecutionTreeSnapshot => run?.getExecutionTreeSnapshot() ?? input.state.executionTree;
@@ -102,7 +103,7 @@ export class AgentOrgExecutionScopeBuilder {
             ? run.listAvailableAgents(identity)
             : Promise.reject(new Error("AgentOrg construction is incomplete.")),
         }),
-        tasks: taskCommands,
+        tasks: taskCapability,
       });
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({

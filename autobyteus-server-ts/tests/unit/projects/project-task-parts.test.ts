@@ -29,7 +29,7 @@ describe("Project Task parts (services)", () => {
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string) => layout.taskFile(projectId, taskId);
   const create = (description: string, extra: { partOfTaskId?: string | null; dependsOnTaskIds?: string[] } = {}, project = projectId) =>
-    tasks.createTask({ projectId: project, description, ...extra });
+    tasks.createTask({ projectId: project, title: description, description, ...extra });
   const setParent = (taskId: string, partOfTaskId: string | null | undefined, description = "edited") =>
     tasks.updateTask({ projectId, taskId, description, ...(partOfTaskId !== undefined ? { partOfTaskId } : {}) });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
@@ -164,7 +164,7 @@ describe("Project Task parts (services)", () => {
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, partOf: "autobyteus-1" })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       await expect(tasks.updateTaskById({ taskId: a.taskId, partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
-      await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "B", localContextFiles: [], partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
+      await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "B", description: "B", localContextFiles: [], partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       expect((await stored(a.taskId)).partOfTaskId).toBeNull();
     });
   });
@@ -193,7 +193,7 @@ describe("Project Task parts (services)", () => {
         await publisher.idle();
         emitted.length = 0;
         const ack = await setStatus(parent.taskId, status);
-        expect(ack).toEqual({ projectId, taskId: parent.taskId, taskReference: parent.taskKey, status, dependsOnTaskIds: [], partOfTaskId: null,
+        expect(ack).toEqual({ projectId, taskId: parent.taskId, taskReference: parent.taskKey, title: parent.title, status, dependsOnTaskIds: [], partOfTaskId: null,
           closedPartReferences: [todo.taskKey, running.taskKey] });
         expect((await stored(todo.taskId)).status).toBe(status);
         expect((await stored(running.taskId)).status).toBe(status);

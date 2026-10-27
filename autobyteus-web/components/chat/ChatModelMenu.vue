@@ -10,8 +10,8 @@
       :class="['hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
-      :aria-label="$t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel })"
-      :title="popover.open.value ? undefined : `${modelLabel} · ${runtimeLabel}`"
+      :aria-label="runtimeKind ? $t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel }) : $t('chat.model.chooseModel')"
+      :title="popover.open.value || !runtimeKind ? undefined : `${modelLabel} · ${runtimeLabel}`"
       @click="onToggle"
     >
       <span class="truncate whitespace-nowrap font-medium" :class="modelLabel ? 'text-gray-800' : 'text-amber-700'">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
@@ -305,8 +305,9 @@ const lockedSearchResults = computed<ChatModelOption[]>(() => {
 
 const runtimeLabelFor = (runtimeKind: string) => runtimeKindToLabel(runtimeKind)
 const runtimeShortLabelFor = (runtimeKind: string) => toRuntimeShortLabel(runtimeKind)
-const runtimeLabel = computed(() => runtimeLabelFor(props.runtimeKind))
-const runtimeShortLabel = computed(() => runtimeShortLabelFor(props.runtimeKind))
+/** No runtime chosen yet (e.g. the Model Router before it is set): no runtime name, only "Choose a model". */
+const runtimeLabel = computed(() => (props.runtimeKind ? runtimeLabelFor(props.runtimeKind) : ''))
+const runtimeShortLabel = computed(() => (props.runtimeKind ? runtimeShortLabelFor(props.runtimeKind) : ''))
 const isCurrent = (model: ChatModelOption) =>
   model.runtimeKind === props.runtimeKind && model.llmModelIdentifier === props.llmModelIdentifier
 

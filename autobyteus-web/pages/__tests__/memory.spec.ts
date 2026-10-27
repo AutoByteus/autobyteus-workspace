@@ -61,7 +61,7 @@ describe('memory page', () => {
       displayName: 'Codex',
       stableId: 'codex',
       runCount: 1,
-      memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
+      memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
     });
     await nextTick();
 
@@ -80,7 +80,7 @@ describe('memory page', () => {
 
     expect(routerMock.push).toHaveBeenCalledWith({
       path: '/memory',
-      query: { view: 'home', tab: 'teams' },
+      query: { view: 'home', section: 'browse', tab: 'teams' },
     });
   });
 
@@ -110,7 +110,7 @@ describe('memory page', () => {
       stableId: 'codex',
       runCount: 2,
       latestMemoryAt: '2026-06-19T10:06:04.000Z',
-      memory: { latestMemoryAt: '2026-06-19T10:06:04.000Z', hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false },
+      memory: { latestMemoryAt: '2026-06-19T10:06:04.000Z', hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false },
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
@@ -119,11 +119,11 @@ describe('memory page', () => {
     expect(wrapper.find('h1').exists()).toBe(false);
     expect(wrapper.text()).not.toMatch(/inspect stored agent and team memories/i);
     expect(wrapper.text()).toContain('Codex');
-    expect(wrapper.text()).toMatch(/working/i);
-    expect(wrapper.text()).toMatch(/raw traces/i);
+    // Availability says nothing while nothing is missing.
+    expect(wrapper.text()).not.toMatch(/working|raw traces|work journal/i);
 
-    await wrapper.find('input').setValue('codex');
-    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    await wrapper.find('[data-test="memory-browse-filter"]').setValue('codex');
+    await wrapper.find('[data-test="memory-browse-filter"]').trigger('keyup.enter');
     expect(store.setAgentsSearch).toHaveBeenCalledWith('codex');
 
     await wrapper.findAll('button').find((button) => button.text() === 'Next')!.trigger('click');
@@ -143,7 +143,7 @@ describe('memory page', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryExplorerStore();
     const inspectorStore = useMemoryInspectorStore();
-    store.selectedAgent = { attribution: 'DEFINITION', agentDefinitionId: 'codex', displayName: 'Codex', stableId: 'codex', runCount: 1, memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } };
+    store.selectedAgent = { attribution: 'DEFINITION', agentDefinitionId: 'codex', displayName: 'Codex', stableId: 'codex', runCount: 1, memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } };
     store.agentRuns.total = 1;
     store.agentRuns.entries = [{
       runId: 'run-1',
@@ -152,15 +152,14 @@ describe('memory page', () => {
       summary: 'Useful run',
       workspaceRootPath: '/tmp/project',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
-      memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false },
+      memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false },
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
     await nextTick();
 
     expect(wrapper.text()).toContain('Useful run');
-    expect(wrapper.text()).toMatch(/working/i);
-    expect(wrapper.text()).toMatch(/raw traces/i);
+    expect(wrapper.text()).not.toMatch(/working|raw traces|work journal/i);
 
     await flushPromises();
     expect(store.fetchAgentRuns).toHaveBeenCalledTimes(1);
@@ -189,7 +188,7 @@ describe('memory page', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryExplorerStore();
     const inspectorStore = useMemoryInspectorStore();
-    store.selectedTeam = { teamDefinitionId: 'team', teamDefinitionName: 'Software Team', teamRunCount: 1, memberMemoryCount: 1, memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } };
+    store.selectedTeam = { teamDefinitionId: 'team', teamDefinitionName: 'Software Team', teamRunCount: 1, memberMemoryCount: 1, memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } };
     store.teamRuns.total = 1;
     store.teamRuns.entries = [{
       teamRunId: 'team-run-1',
@@ -198,8 +197,8 @@ describe('memory page', () => {
       summary: 'Planning run',
       workspaceRootPath: '/tmp/team-project',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
-      memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false },
-      memberTargets: [{ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
+      memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false },
+      memberTargets: [{ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } }],
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
@@ -208,13 +207,13 @@ describe('memory page', () => {
     expect(store.setSelectedTeamFromRoute).toHaveBeenCalledWith('team', 'Software Team');
     expect(store.fetchTeamRuns).toHaveBeenCalledTimes(1);
     expect(store.fetchTeamRuns).toHaveBeenCalledWith('team');
-    expect(wrapper.find('section h1').text()).toBe('Software Team');
+    expect(wrapper.find('h1').text()).toBe('Software Team');
     expect(wrapper.text()).toContain('Planning run');
     expect(wrapper.text()).toContain('Lead');
-    expect(wrapper.text()).toMatch(/raw traces/i);
+    expect(wrapper.text()).not.toMatch(/raw traces/i);
 
     await wrapper.find('input').setValue('plan');
-    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    await wrapper.find('input').trigger('keyup.enter');
     expect(store.setTeamRunsSearch).toHaveBeenCalledWith('team', 'plan');
 
     await wrapper.findAll('button').find((button) => button.text().includes('Lead'))!.trigger('click');
@@ -244,7 +243,7 @@ describe('memory page', () => {
 
     wrapper.findComponent({ name: 'MemoryHome' }).vm.$emit('select-team', {
       teamDefinitionId: 'team', teamDefinitionName: 'Software Team', teamRunCount: 1, memberMemoryCount: 1,
-      memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
+      memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
     });
     await flushPromises();
 
@@ -261,7 +260,7 @@ describe('memory page', () => {
     await flushPromises();
     home.findComponent({ name: 'MemoryHome' }).vm.$emit('select-org', {
       orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', orgRunCount: 1, memberMemoryCount: 1,
-      memory: { hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
+      memory: { hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
     });
     expect(useMemoryExplorerStore().fetchOrgRuns).not.toHaveBeenCalled();
     expect(routerMock.push).toHaveBeenCalledWith({
@@ -275,7 +274,7 @@ describe('memory page', () => {
     const detailPinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryExplorerStore();
     const inspectorStore = useMemoryInspectorStore();
-    store.selectedOrg = { orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', orgRunCount: 1, memberMemoryCount: 1, memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } };
+    store.selectedOrg = { orgDefinitionId: 'org-a', orgDefinitionName: 'Alpha Org', orgRunCount: 1, memberMemoryCount: 1, memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false } };
     store.orgRuns.totalPages = 2;
     store.orgRuns.entries = [{
       orgRunId: 'org-run-1',
@@ -284,8 +283,8 @@ describe('memory page', () => {
       summary: 'Quarterly plan',
       workspaceRootPath: null,
       lastUpdatedAt: '2026-09-01T01:00:00.000Z',
-      memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
-      memberTargets: [{ memberAddress: '/engineering/solution_designer', displayName: 'engineering/solution_designer', agentRunId: 'designer-run', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }],
+      memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false },
+      memberTargets: [{ memberAddress: '/engineering/solution_designer', displayName: 'engineering/solution_designer', agentRunId: 'designer-run', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false } }],
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [detailPinia] } });
@@ -295,13 +294,13 @@ describe('memory page', () => {
     expect(store.fetchOrgRuns).toHaveBeenCalledTimes(1);
     expect(store.fetchOrgRuns).toHaveBeenCalledWith('org-a');
     expect(store.fetchTeamRuns).not.toHaveBeenCalled();
-    expect(wrapper.find('section h1').text()).toBe('Alpha Org');
+    expect(wrapper.find('h1').text()).toBe('Alpha Org');
     expect(wrapper.text()).toContain('Quarterly plan');
 
     await wrapper.findAll('button').find((button) => button.text() === 'Next')!.trigger('click');
     expect(store.changeOrgRunsPage).toHaveBeenCalledWith('org-a', 2);
     await wrapper.find('input').setValue('designer');
-    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    await wrapper.find('input').trigger('keyup.enter');
     expect(store.setOrgRunsSearch).toHaveBeenCalledWith('org-a', 'designer');
 
     await wrapper.findAll('button').find((button) => button.text().includes('engineering/solution_designer'))!.trigger('click');
@@ -372,8 +371,64 @@ describe('memory page', () => {
   });
 });
 
+describe('memory page: opening a memory search result', () => {
+  beforeEach(() => {
+    routeMock.query = { view: 'home', section: 'search', q: 'ddns' };
+    routeMock.fullPath = '/memory?view=home&section=search&q=ddns';
+    routerMock.push.mockClear();
+  });
+
+  const match = { file: 'work_journal_active.md', fromLine: 812, toLine: 814, day: '2026-08-27', snippet: [], kind: 'text', matchedWords: ['ddns', 'home'] };
+  const base = { runId: 'run-1', agentName: 'Codex', team: null, member: null, workspace: '/w/home', firstDay: null, latestDay: null, matches: [match] };
+  const lines = { q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', words: 'ddns,home' };
+
+  const open = async (result: Record<string, unknown>) => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const { useMemorySearchStore } = await import('~/stores/memorySearchStore');
+    useMemorySearchStore().query = 'ddns';
+    const wrapper = shallowMount(MemoryPage, { global: { plugins: [pinia] } });
+    wrapper.findComponent({ name: 'MemoryHome' }).vm.$emit('open-result', result, match);
+    await nextTick();
+    return routerMock.push.mock.calls.at(-1)?.[0];
+  };
+
+  it('opens each run kind at the matched lines by its subject; the cue stays in the address for Back', async () => {
+    expect(await open({ ...base, subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: 'codex' } })).toEqual({ path: '/memory', query: {
+      view: 'agent-inspector', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex', runId: 'run-1', runLabel: 'run-1', workspace: '/w/home', ...lines,
+    } });
+    expect(await open({ ...base, subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: null } })).toMatchObject({ query: { agentAttribution: 'UNATTRIBUTED' } });
+    expect(await open({ ...base, team: { name: 'Software Team', kind: 'team' }, member: 'lead', subject: { kind: 'TEAM_MEMBER', teamRunId: 'team-1', agentRunId: 'run-1' } })).toEqual({ path: '/memory', query: {
+      view: 'team-inspector', teamName: 'Software Team', teamRunId: 'team-1', agentRunId: 'run-1', memberName: 'lead', ...lines,
+    } });
+    expect(await open({ ...base, team: { name: 'Alpha Org', kind: 'org' }, subject: { kind: 'ORG_MEMBER', orgRunId: 'org-1', agentRunId: 'run-1' } })).toEqual({ path: '/memory', query: {
+      view: 'org-inspector', orgName: 'Alpha Org', orgRunId: 'org-1', agentRunId: 'run-1', memberName: 'Codex', ...lines,
+    } });
+    expect(await open({ ...base, team: { name: 'old_team', kind: 'team' }, subject: { kind: 'RUN_FOLDER', runKey: 'agent_teams/old_team/run-1' } })).toEqual({ path: '/memory', query: {
+      view: 'folder-inspector', runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', teamName: 'old_team', ...lines,
+    } });
+  });
+
+  it('opens a run known only by its folder on its Work Journal, and goes back to the search results', async () => {
+    routeMock.query = { view: 'folder-inspector', runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', words: 'ddns,home' };
+    routeMock.fullPath = '/memory?view=folder-inspector&runKey=agent_teams%2Fold_team%2Frun-1';
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const { useMemoryJournalStore } = await import('~/stores/memoryJournalStore');
+    const journal = useMemoryJournalStore();
+    const inspectorStore = useMemoryInspectorStore();
+    const wrapper = shallowMount(MemoryPage, { global: { plugins: [pinia] } });
+    await flushPromises();
+    expect(journal.open).toHaveBeenCalledWith({ kind: 'folder', runKey: 'agent_teams/old_team/run-1' }, 'run-1', { file: 'work_journal_active.md', fromLine: 812, toLine: 814, cue: 'ddns', kind: 'text', words: ['ddns', 'home'] });
+    expect(inspectorStore.inspect).not.toHaveBeenCalled();
+    const inspector = wrapper.findComponent({ name: 'MemoryInspector' });
+    expect(inspector.props('folderRun')).toEqual({ runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', groupName: null });
+    expect(inspector.props('backLabel')).toBe('Back to search results');
+    inspector.vm.$emit('back');
+    expect(routerMock.push).toHaveBeenCalledWith({ path: '/memory', query: { view: 'home', section: 'search', q: 'ddns' } });
+  });
+});
+
 type Operation = { name: string; variables: Record<string, unknown> };
-const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 const page = <T>(entries: T[]) => ({ entries, total: entries.length, page: 1, pageSize: 25, totalPages: 1 });
 const localSourceOption = { key: 'local', type: 'LOCAL', label: 'Local Memory', memorySyncSourceId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
 const importedSourceOption = { ...localSourceOption, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', memorySyncSourceId: 'finance', readOnly: true };
@@ -416,19 +471,22 @@ describe('memory page route sync request ownership (REQ-011)', () => {
 
   it('sends exactly one request and no sources request for detail and inspector navigation (AC-012)', async () => {
     const runs = () => Promise.resolve({ listAgentTeamRunsWithMemory: page([]), listAgentOrgRunsWithMemory: page([]), listAgentRunsWithMemory: page([]) });
-    const view = () => Promise.resolve({ getTeamMemberRunMemoryView: { runId: 'm' }, getAgentOrgMemberRunMemoryView: { runId: 'm' }, getAgentRunMemoryView: { runId: 'm' } });
+    // The run detail opens on its Work Journal: one journal read; the view is read when Raw Traces are opened.
+    const view = () => Promise.resolve({ getTeamMemberRunMemoryView: { runId: 'm', workJournal: null }, getAgentOrgMemberRunMemoryView: { runId: 'm', workJournal: null }, getAgentRunMemoryView: { runId: 'm', workJournal: null } });
     const routes: Array<[Record<string, string>, string]> = [
       [{ view: 'team-detail', teamDefinitionId: 'team', teamName: 'Team' }, 'ListAgentTeamRunsWithMemory'],
       [{ view: 'org-detail', orgDefinitionId: 'org', orgName: 'Org' }, 'ListAgentOrgRunsWithMemory'],
       [{ view: 'agent-detail', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex' }, 'ListAgentRunsWithMemory'],
-      [{ view: 'team-inspector', teamRunId: 'team-run', agentRunId: 'member' }, 'GetTeamMemberRunMemoryView'],
-      [{ view: 'org-inspector', orgRunId: 'org-run', agentRunId: 'member' }, 'GetAgentOrgMemberRunMemoryView'],
-      [{ view: 'agent-inspector', runId: 'run-1' }, 'GetAgentRunMemoryView'],
+      [{ view: 'team-inspector', teamRunId: 'team-run', agentRunId: 'member' }, 'GetTeamMemberRunWorkJournal'],
+      [{ view: 'org-inspector', orgRunId: 'org-run', agentRunId: 'member' }, 'GetAgentOrgMemberRunWorkJournal'],
+      [{ view: 'agent-inspector', runId: 'run-1' }, 'GetAgentRunWorkJournal'],
+      [{ view: 'folder-inspector', runKey: 'agent_teams/old/member', runId: 'member' }, 'GetRunFolderWorkJournal'],
     ];
     for (const [query, expected] of routes) {
       const operations = recordOperations({
         ListAgentTeamRunsWithMemory: runs, ListAgentOrgRunsWithMemory: runs, ListAgentRunsWithMemory: runs,
-        GetTeamMemberRunMemoryView: view, GetAgentOrgMemberRunMemoryView: view, GetAgentRunMemoryView: view,
+        GetTeamMemberRunWorkJournal: view, GetAgentOrgMemberRunWorkJournal: view, GetAgentRunWorkJournal: view,
+        GetRunFolderWorkJournal: () => Promise.resolve({ runFolderWorkJournal: null }),
       });
       setRoute(query);
       mountWithRealStores();
@@ -462,7 +520,8 @@ describe('memory page route sync request ownership (REQ-011)', () => {
     const { wrapper, store } = mountWithRealStores();
     await flushPromises();
 
-    expect(operations.map((operation) => operation.name).sort()).toEqual(['ListAgentsWithMemory', 'ListMemoryExplorerSources']);
+    // The Index tab's badge reads the memory index status once.
+    expect(operations.map((operation) => operation.name).sort()).toEqual(['ListAgentsWithMemory', 'ListMemoryExplorerSources', 'MemoryIndexStatus']);
     expect(wrapper.text()).toContain('Codex');
     expect(store.sourceLoading).toBe(true);
 

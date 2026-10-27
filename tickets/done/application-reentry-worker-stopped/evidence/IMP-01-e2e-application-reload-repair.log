@@ -1,0 +1,11 @@
+# IMP-01 durable reload/repair e2e (AC-001..AC-004)
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-reload-repair.e2e.test.ts --no-watch
+# commit: 6950a24e1b  env: macOS (darwin), Node v22.23.1  date: 2026-10-25T03:49Z
+
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (3 tests) 3829ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1415ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  671ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  977ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Duration  14.68s (transform 7.30s, setup 54ms, import 10.23s, tests 3.83s, environment 0ms)

@@ -1,0 +1,52 @@
+# API-07 blocker check: core AnthropicLLM simple completion with the test-vault Anthropic key (no Claude Code involved)
+# cmd: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=$HOME/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_LIVE_STRICT=1 pnpm exec vitest run tests/integration/llm/api/anthropic-llm.test.ts -t 'simple completion'
+# cwd: autobyteus-ts; commit: 62bfd7ed51; date: 2026-10-22T19:03:30Z
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-ts[39m
+
+(node:84220) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstderr[2m | tests/integration/llm/api/anthropic-llm.test.ts[2m > [22m[2mAnthropicLLM Integration[2m > [22m[2mshould successfully make a simple completion call
+[22m[39m[live provider skip] provider refused Anthropic: quota_or_billing_blocked
+
+ [31m❯[39m tests/integration/llm/api/anthropic-llm.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m4 skipped[39m[2m)[22m[33m 523[2mms[22m[39m
+[31m     [31m×[31m should successfully make a simple completion call[39m[33m 522[2mms[22m[39m
+     [2m[90m↓[39m[22m should stream response incrementally
+     [2m[90m↓[39m[22m should support public sendUserMessage
+     [2m[90m↓[39m[22m should support public streamUserMessage
+     [2m[90m↓[39m[22m should filter logicalConversationId from public streamUserMessage provider requests
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/llm/api/anthropic-llm.test.ts[2m > [22mAnthropicLLM Integration[2m > [22mshould successfully make a simple completion call
+[31m[1mError[22m: LIVE_PROVIDER_UNAVAILABLE: provider refused Anthropic: quota_or_billing_blocked[39m
+[36m [2m❯[22m reportUnavailable ../test-support/test-vault/live-provider-test.ts:[2m57:21[22m[39m
+    [90m 55|[39m )[33m:[39m never [33m=>[39m {
+    [90m 56|[39m   console[33m.[39m[34mwarn[39m([32m`[live provider skip] [39m[36m${[39mreason[36m}[39m[32m`[39m)[33m;[39m
+    [90m 57|[39m   if (strict) throw new Error(`LIVE_PROVIDER_UNAVAILABLE: ${reason}`, …
+    [90m   |[39m                     [31m^[39m
+    [90m 58|[39m   [35mreturn[39m context[33m.[39m[34mskip[39m(reason)[33m;[39m
+    [90m 59|[39m }[33m;[39m
+[90m [2m❯[22m ../test-support/test-vault/live-provider-test.ts:[2m90:11[22m[39m
+
+[31m[1mCaused by: Error[22m: Error in Anthropic API: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CgHo54oKsSEF3ZMmPbhz1"}[39m
+[36m [2m❯[22m AnthropicLLM._sendMessagesToLLM src/llm/api/anthropic-llm.ts:[2m344:13[22m[39m
+[90m [2m❯[22m tests/integration/llm/api/anthropic-llm.test.ts:[2m25:24[22m[39m
+[90m [2m❯[22m ../test-support/test-vault/live-provider-test.ts:[2m86:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m4 skipped[39m[90m (5)[39m
+[2m   Start at [22m 21:03:31
+[2m   Duration [22m 1.37s[2m (transform 503ms, setup 44ms, import 662ms, tests 523ms, environment 0ms)[22m
+
+exit=1
+
+# Recheck 2026-10-25 05:53 CET, same command, commit 62bfd7ed51:
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[31m[1mCaused by: Error[22m: Error in Anthropic API: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CgNMgcL6us6hgHE5ReGaB"}[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m4 skipped[39m[90m (5)[39m
+[2m   Duration [22m 1.07s[2m (transform 257ms, setup 77ms, import 457ms, tests 416ms, environment 0ms)[22m
+exit=1

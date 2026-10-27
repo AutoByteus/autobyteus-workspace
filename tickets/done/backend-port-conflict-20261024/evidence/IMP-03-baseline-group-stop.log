@@ -1,0 +1,27 @@
+Check: IMP-03
+Commit: 956405c80778083455256a5dbe4edb2f583811db
+Environment: Darwin arm64
+v26.12.0
+Date: 2026-10-24T18:18:06Z
+Command: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" autobyteus-ts/node_modules/.bin/vitest run --config tickets/in-progress/backend-port-conflict-20261024/evidence/probe.config.mjs -t "group leader exit"
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts[2m > [22m[2mgroup leader exit currently hides a TERM-resistant owned listener from stopAll
+[22m[39m{"case":"leader-exit","leader":63116,"child":{"pid":63117,"port":49797},"stopAllReported":1,"listenerSurvived":true}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts[2m > [22m[2mgroup leader exit currently hides a TERM-resistant owned listener from stopAll
+[22m[39m{"case":"leader-exit","cleanup":"exact owned child killed; shell exited; private root removed"}
+
+ [32m✓[39m tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 447[2mms[22m[39m
+   [33m[2m✓[22m[39m group leader exit currently hides a TERM-resistant owned listener from stopAll [33m 447[2mms[22m[39m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[2m | [22m[33m4 skipped[39m[90m (5)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (6)[39m
+[2m   Start at [22m 20:18:06
+[2m   Duration [22m 1.27s[2m (transform 139ms, setup 0ms, import 252ms, tests 447ms, environment 0ms)[22m
+

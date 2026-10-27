@@ -4,12 +4,15 @@ import {
   ClaudeSdkClient,
   getClaudeSdkClient,
 } from "../../runtime-management/claude/client/claude-sdk-client.js";
+import type { ReadDeadline } from "../../runtime-management/read-deadline.js";
+
+type CatalogReadOptions = Readonly<{ deadline?: ReadDeadline }>;
 
 export class ClaudeModelCatalog {
   constructor(private readonly sdkClient: ClaudeSdkClient = getClaudeSdkClient()) {}
 
-  async selectionCatalog(): Promise<{ offeredModels: ModelInfo[]; findExactCurrent: (id: string) => ModelInfo | null }> {
-    const raw = await this.sdkClient.listModels() as ModelInfoWithSelectionPresentation[];
+  async selectionCatalog(options: CatalogReadOptions = {}): Promise<{ offeredModels: ModelInfo[]; findExactCurrent: (id: string) => ModelInfo | null }> {
+    const raw = await this.sdkClient.listModels(options) as ModelInfoWithSelectionPresentation[];
     // The SDK adapter proves the default/sibling identity from resolved model IDs.
     // Filtering belongs here, not in raw SDK transport or Web presentation.
     const defaultRow = raw.find((row) => row.model_identifier === "default");
@@ -21,8 +24,8 @@ export class ClaudeModelCatalog {
     };
   }
 
-  async listModels(): Promise<ModelInfo[]> {
-    return (await this.selectionCatalog()).offeredModels;
+  async listModels(options: CatalogReadOptions = {}): Promise<ModelInfo[]> {
+    return (await this.selectionCatalog(options)).offeredModels;
   }
 }
 

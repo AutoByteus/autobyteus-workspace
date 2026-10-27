@@ -15,6 +15,9 @@ import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-t
 import type { PeerHandlerRefusal, StartedRunAnswer } from "../channel/peer-gateway.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 
+/** The Team run created (its launches are added by the receiver, which resolved them). */
+export type StartedTeamRun = Omit<Extract<StartedRunAnswer, { kind: "agent_team" }>, "launches">;
+
 /** What changed between resolving the Team and creating it (N-302): the delegating node reads it as the reason. */
 export const TEAM_CHANGED_WHILE_STARTING = "the Agent Team changed while it was being started.";
 
@@ -54,7 +57,7 @@ export class RemoteTeamRunStarter {
     /** The Team definition's name, for the refusal texts. */
     name: string;
     delegatedFrom: DelegatedFrom;
-  }>): Promise<StartedRunAnswer | PeerHandlerRefusal> {
+  }>): Promise<StartedTeamRun | PeerHandlerRefusal> {
     const refuse = (message: string): PeerHandlerRefusal =>
       Object.freeze({ accepted: false, code: REMOTE_REFUSAL.AGENT_CANNOT_RUN, message, target: Object.freeze({ kind: "agent_team" as const, name: input.name }) });
     const memberConfigs: TeamRunMemberConfigInput[] = input.source.members.map((member) => ({

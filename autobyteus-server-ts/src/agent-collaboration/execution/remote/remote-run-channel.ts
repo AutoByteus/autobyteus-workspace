@@ -1,5 +1,7 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
 import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
 
 /** A registered peer as roots see it: its pinned server ID and this owner's label for it. */
 export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
@@ -13,10 +15,15 @@ export type RemoteTargetRoot = TaskAgentCoordinatingRun;
 /** A member of a Team run the peer started: its address and the run ID the peer allocated. */
 export type RemoteStartedTeamMember = Readonly<{ address: string; agentRunId: string }>;
 
-/** What the peer started: an Agent run, or a Team run with its coordinator and every member. */
+export type { RemoteAgentLaunch };
+
+/** What the peer started: an Agent run, or a Team run with its coordinator and every member; each agent's launch. */
 export type RemoteStartedRun =
-  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string }>
-  | Readonly<{ accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RemoteStartedTeamMember[] }>
+  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string; launches: readonly RemoteAgentLaunch[] }>
+  | Readonly<{
+      accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly RemoteStartedTeamMember[];
+      launches: readonly RemoteAgentLaunch[];
+    }>
   | RemoteChannelRefusal;
 export type RemoteDeliveryReceipt = Readonly<{ accepted: true }> | RemoteChannelRefusal;
 
@@ -87,6 +94,8 @@ export interface RemoteRunChannel {
     address: string;
     delegatorAgentRunId: string;
     coordinatingRun: TaskAgentCoordinatingRun;
+    /** The work and its Task: the peer's Model Router is told it (DS-002). */
+    work: DelegationWork;
   }>): Promise<RemoteStartedRun>;
   deliverMessage(input: RemoteMessageTransmission): Promise<RemoteDeliveryReceipt>;
   /** autobyteus-278: the titles and statuses of these runs on that node (one request per node). */

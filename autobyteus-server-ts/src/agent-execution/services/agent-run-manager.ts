@@ -182,6 +182,8 @@ export class AgentRunManager {
 
   hasActiveRun(runId: string): boolean { return this.getActiveRun(runId) !== null; }
 
+  peekPublishedRun(runId: string): AgentRun | null { return this.activationRegistry.peekPublishedRun(runId.trim()); }
+
   getActiveRun(runId: string): AgentRun | null {
     return this.activationRegistry.getActiveRun(runId.trim());
   }

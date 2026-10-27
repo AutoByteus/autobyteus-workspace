@@ -1,0 +1,10 @@
+# IMP-07 (server build smoke, part of pnpm dev)
+# Command: pnpm dev (worktree root; builds autobyteus-server-ts with build:full)
+# Commit: 0cdaa0d480 (the build and the stack ran on the working tree that became this commit)
+# Date: 2026-10-26T15:13:44Z
+
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000

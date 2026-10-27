@@ -1,0 +1,8 @@
+IMP-06 web unit/component suites (projects, workspace history, stores, composables, utils, pages)
+Command: pnpm -C autobyteus-web test:nuxt --run components/projects utils/projects composables/projects components/workspace/history stores pages
+Commit: 24fee53dc9 (code exercised unchanged since the run; working-tree run before commit)
+Environment: macOS arm64, node v22.23.1, pnpm
+Date: 2026-10-25
+---
+ Test Files  165 passed (165)
+      Tests  1587 passed (1587)

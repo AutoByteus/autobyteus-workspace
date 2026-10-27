@@ -1,4 +1,5 @@
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { delegationTargetUnavailableMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
 import { resolveDelegationPlacement, sourcedPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
@@ -33,14 +34,14 @@ export class AgentOrgRecipientResolver {
   }
 
   /** CM-1 refusal first, then a configured placement outside the sender's own Team, then a catalog copy. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<ResolvedAgentOrgRecipient> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork): Promise<ResolvedAgentOrgRecipient> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
       resolveInRun: () => this.resolveInRunDelegationPlacement(address),
-      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId }),
+      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work }),
     });
   }
 

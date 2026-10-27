@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs/promises";
@@ -75,7 +76,7 @@ describe("AgentRunService real memory layout integration", () => {
     const activeIds = factory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => factory.removeAgent(id).catch(() => false)));
 
-    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
+    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: factory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () =>

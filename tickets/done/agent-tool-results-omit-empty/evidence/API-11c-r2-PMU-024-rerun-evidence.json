@@ -1,0 +1,120 @@
+{
+  "startedAt": "2026-10-25T10:13:08.315Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-024": {
+      "result": "Pass",
+      "description": "Live summaries without reload: rename; feed lost then reconnect re-read; follow-up Task by run ID (earlier in Done); cancelled just before the click → Cancelled lane and slate-300 pill, then the row leaves; Task delete; Project delete",
+      "durationMs": 15182,
+      "details": {
+        "whileOffline": "Write the changelog for 1.6",
+        "followUp": {
+          "first": {
+            "taskId": "project_task_e2b9f86f-dd23-4b0c-904d-05dae5540d82",
+            "taskKey": "locate-live-5a52b6-1",
+            "title": "Write the changelog while offline",
+            "status": "DONE",
+            "root": {
+              "kind": "agent",
+              "recipientAddress": "/release_notes_writer_pmulocate_2e51",
+              "ingressAgentRunId": "release_notes_writer_pmulocate_2e51_c35011febc5d44e19285b6ba9d4920b0",
+              "teamRunId": null,
+              "start": "started",
+              "closed": true,
+              "status": "offline",
+              "hostRoot": {
+                "kind": "agent",
+                "runId": "manager_pmulocate_2e51_ac8c91666074453aa21b802ff3e105b2"
+              }
+            }
+          },
+          "followUp": {
+            "taskId": "project_task_82062a9b-ba75-4b93-8464-75f8544e29f6",
+            "taskKey": "locate-live-5a52b6-2",
+            "title": "Publish the changelog to the docs site",
+            "status": "TODO",
+            "root": {
+              "kind": "agent",
+              "recipientAddress": "/release_notes_writer_pmulocate_2e51",
+              "ingressAgentRunId": "release_notes_writer_pmulocate_2e51_c35011febc5d44e19285b6ba9d4920b0",
+              "teamRunId": null,
+              "start": "starting",
+              "closed": false,
+              "status": "initializing",
+              "hostRoot": {
+                "kind": "agent",
+                "runId": "manager_pmulocate_2e51_ac8c91666074453aa21b802ff3e105b2"
+              }
+            }
+          }
+        },
+        "followUpLocated": {
+          "path": "/chat?id=manager_pmulocate_2e51_ac8c91666074453aa21b802ff3e105b2",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_0eab493c-0972-4d68-b9a5-7101d9662283",
+          "located": [
+            "project-task-row-project_task_82062a9b-ba75-4b93-8464-75f8544e29f6"
+          ],
+          "focused": "project-task-row-project_task_82062a9b-ba75-4b93-8464-75f8544e29f6"
+        },
+        "followUpDoneCard": "project-task-column-DONE",
+        "cancelled": {
+          "path": "/chat?id=manager_pmulocate_2e51_ac8c91666074453aa21b802ff3e105b2",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_0eab493c-0972-4d68-b9a5-7101d9662283",
+          "located": [
+            "project-task-row-project_task_82062a9b-ba75-4b93-8464-75f8544e29f6"
+          ],
+          "focused": "project-task-row-project_task_82062a9b-ba75-4b93-8464-75f8544e29f6"
+        },
+        "cancelledLane": "project-task-column-CANCELLED",
+        "cancelledToggle": "true",
+        "cancelledPill": {
+          "text": "Cancelled",
+          "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px inset, rgb(203, 213, 225) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "heldClosureFrames": 2,
+        "noReload": true
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 87810,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 87785,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 121,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 49,
+      "task_upserted": 47,
+      "task_worker_status": 22,
+      "task_removed": 1,
+      "project_removed": 1
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:51936",
+    "frontendUrl": "http://127.0.0.1:51937",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-8IQIGE"
+  },
+  "browserVersion": "156.0.8078.47",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-25T10:14:03.437Z"
+}

@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
@@ -196,7 +197,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
-    backendFactory = new AutoByteusAgentRunBackendFactory({
+    backendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: agentFactory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () =>
@@ -465,7 +466,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       await fsPromises.mkdir(path.dirname(artifactAbsolutePath), { recursive: true });
       await fsPromises.writeFile(artifactAbsolutePath, artifactBody, "utf8");
 
-      const publishBackendFactory = new AutoByteusAgentRunBackendFactory({
+      const publishBackendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
         agentFactory: agentFactory as any,
         agentDefinitionService: {
           getAgentDefinitionById: async () =>

@@ -1,0 +1,31 @@
+# API-D01: discovery never finds imported runs (AC-006); new test + control
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search/memory-run-discovery.test.ts --no-watch
+# Commit: 41501c5a41 + the new test (uncommitted at run time); macOS arm64, Node v22.23.1; 2026-10-26 18:14
+
+## With the product code as reviewed
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+## Control: 'imports' removed from SKIPPED_FOLDERS (temporary, reverted)
+40:const SKIPPED_FOLDERS = new Set(["work_journal"]);
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+## Reverted
+40:const SKIPPED_FOLDERS = new Set(["work_journal", "imports"]);
+
+## Control 2 (temporary, reverted): the walk starts at the memory folder itself and 'imports' is not skipped
+-    for (const root of [this.layout.getStandaloneRootDirPath(), this.layout.getTeamRootDirPath(), this.layout.getOrgRootDirPath()]) {
+-      for (const entry of await this.subfolders(root)) await walk(path.join(root, entry), 1);
+-    }
++    await walk(this.memoryDir, 0);
+     × never finds runs imported from another node by Memory Sync (AC-006) 9ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/memory-search/memory-run-discovery.test.ts > MemoryRunDiscovery > never finds runs imported from another node by Memory Sync (AC-006)
++   "imports/docker-node-1/agent_teams/team_9/member_9",
++   "imports/docker-node-1/agents/imported_run_1",
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+
+## Reverted
+(no diff = product file restored)

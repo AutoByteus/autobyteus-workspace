@@ -5,6 +5,7 @@ import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   type DelegatedFrom,
   type AgentRunMetadata,
+  type SystemRunOwner,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
   AgentRunMetadataService,
@@ -39,6 +40,8 @@ export interface CreateAgentRunInput {
   } | null;
   /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
   delegatedFrom?: DelegatedFrom;
+  /** autobyteus-32: the server service that owns the run (never a collaboration member). */
+  systemRunOwner?: SystemRunOwner;
 }
 
 export interface CreateAgentRunResult {

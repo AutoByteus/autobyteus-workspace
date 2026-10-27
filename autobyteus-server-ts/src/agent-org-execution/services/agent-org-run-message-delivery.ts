@@ -139,14 +139,17 @@ export class AgentOrgRunMessageDelivery {
   }
 
   /** `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the shared resolution). */
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+  async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteDelegation.delegate({ ...input, node: input.node },
-        (local, placement) => this.options.taskExecutions.delegateToNewCopy(context, local, placement));
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context, this.options.taskExecutions);
     }
-    return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
-      this.options.taskExecutions.delegateToNewCopy(context, input, placement));
+    // DS-001: the work and its Task first, then the placement for that work, then the copy.
+    const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);
+    return delegateToResolvedTarget(
+      () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation),
+      (placement) => this.options.taskExecutions.dispatchNewCopy(context, work, placement),
+    );
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */

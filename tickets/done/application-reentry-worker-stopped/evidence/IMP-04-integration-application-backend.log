@@ -1,0 +1,7 @@
+# IMP-04 application-backend integration (real launcher/controller with Brief Studio)
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/integration/application-backend --no-watch
+# commit: 6950a24e1b  env: macOS (darwin), Node v22.23.1  date: 2026-10-25T03:49Z
+
+ Test Files  14 passed (14)
+      Tests  34 passed (34)
+   Duration  22.65s (transform 7.14s, setup 206ms, import 18.18s, tests 2.57s, environment 1ms)

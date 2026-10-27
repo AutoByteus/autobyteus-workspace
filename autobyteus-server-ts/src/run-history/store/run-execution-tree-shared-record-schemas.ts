@@ -11,6 +11,7 @@ import {
   type ConfiguredAgentExecutionNode,
   type ConfiguredExecutionNode,
   type ConfiguredTeamExecutionNode,
+  type RemoteAgentLaunch,
   type RemoteTaskExecution,
   type RemoteTeamMember,
   type TaskExecution,
@@ -18,7 +19,7 @@ import {
   type TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
-import { parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
+import { parseLaunchConfigurationSource, parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -248,6 +249,25 @@ const parseRemoteTeamMembers = (value: unknown, label: string): RemoteTeamMember
  * A remote link as stored: a `taskExecutions` entry with `nodeId` and exact keys, without `kind`. An entry with
  * `teamRunId` is a Team link (its coordinator must be one of its members); otherwise an Agent link.
  */
+/**
+ * A remote link's optional launches (autobyteus-32): absent on links recorded before them, so the field is spread only
+ * when present; present values are validated exactly.
+ */
+const parseOptionalRemoteLaunches = (value: unknown, label: string): { launches?: readonly RemoteAgentLaunch[] } => {
+  if (value === undefined) return {};
+  return { launches: Object.freeze(requiredArray(value, label).map((item, index) => {
+    const at = `${label}[${index}]`;
+    const launch = objectRecord(item, at);
+    requireKeys(launch, ["address", "runtimeKind", "llmModelIdentifier", "source"], at);
+    return Object.freeze({
+      address: requiredString(launch.address, `${at}.address`),
+      runtimeKind: requiredString(launch.runtimeKind, `${at}.runtimeKind`),
+      llmModelIdentifier: requiredString(launch.llmModelIdentifier, `${at}.llmModelIdentifier`),
+      source: parseLaunchConfigurationSource(launch.source, `${at}.source`),
+    });
+  })) };
+};
+
 export const parseStoredRemoteTaskExecution = (value: unknown, label: string): RemoteTaskExecution => {
   const link = objectRecord(value, label);
   if (link.teamRunId === undefined) {
@@ -259,6 +279,7 @@ export const parseStoredRemoteTaskExecution = (value: unknown, label: string): R
       nodeId: requiredString(link.nodeId, `${label}.nodeId`),
       delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
       startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
+      ...parseOptionalRemoteLaunches(link.launches, `${label}.launches`),
     });
   }
   requireKeys(link, ["address", "teamRunId", "nodeId", "coordinatorAddress", "members", "delegatorAgentRunId", "startedAt"], label);
@@ -276,6 +297,7 @@ export const parseStoredRemoteTaskExecution = (value: unknown, label: string): R
     members: Object.freeze(members),
     delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
     startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
+    ...parseOptionalRemoteLaunches(link.launches, `${label}.launches`),
   });
 };
 

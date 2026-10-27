@@ -1,0 +1,9 @@
+# API-07 run 1 2026-10-25T04:00:17Z commit 1103e38619 + RE-04/RE-05 (uncommitted)
+  RE-01 an ACTIVE application stays usable after a package reload (AC-001) 1461ms
+  RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002) 682ms
+  RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004) 936ms
+  RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001) 1097ms
+  RE-05 an event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002) 714ms
+   → {"terminateAgentTeamRun":{"success":false,"message":"Agent team run not found."}}: expected { success: false, …(1) } to match object { success: true }
+      Tests  1 failed | 4 passed (5)
+exit=1

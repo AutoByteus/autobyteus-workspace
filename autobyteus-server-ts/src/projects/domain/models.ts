@@ -11,11 +11,13 @@ export interface ProjectWorkspaceLink {
 
 export type { ProjectTaskStatus } from "./task-status.js";
 
-/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). It has no title; the description is the content. */
+/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). Its title is its one-line name; the description is the content. */
 export interface ProjectTask {
   taskId: string;
   /** The readable key `<prefix>-<number>`, assigned at creation and never changed. */
   taskKey: string;
+  /** The Task's one-line name, given by its writer: trimmed, not blank, no length limit. */
+  title: string;
   description: string;
   status: ProjectTaskStatus;
   contextFiles?: ProjectTaskContextFile[];
@@ -45,13 +47,15 @@ export interface TaskAcknowledgementView {
   taskId: string;
   /** The agent-facing Task ID: a Project Task's key, or a Task with no Project's ID. */
   taskReference: string;
+  /** A Project Task's title; absent for a Task with no Project. */
+  title?: string;
   status: ProjectTaskStatus;
   /** A Project Task's dependencies (stored long IDs); absent for a Task with no Project. */
   dependsOnTaskIds?: string[];
   /** A Project Task's parent (stored long ID or null); absent for a Task with no Project. */
   partOfTaskId?: string | null;
-  /** The saved context files this update attached, in request order; present only when it attached any. */
-  attachedContextFiles?: ProjectTaskContextFile[];
+  /** The saved context files this update attached, in request order, with their local paths; present only when it attached any. */
+  attachedContextFiles?: ProjectTaskContextFileView[];
   /** The keys of the open parts this update closed with their parent (DONE or CANCELLED); present only when it closed any. */
   closedPartReferences?: string[];
   /** The keys of the open parts this update tried to close with their parent but could not; present only when any. */
@@ -135,6 +139,8 @@ export interface TaskWithoutProjectView {
 export interface TaskWorkerTaskView {
   taskId: string;
   projectId: string | null;
+  /** A Project Task's title; null for a Temp task, which has none. */
+  title: string | null;
   description: string;
   status: ProjectTaskStatus;
 }
@@ -188,6 +194,7 @@ export interface RemoveProjectWorkspaceCommand {
 export interface CreateProjectTaskCommand {
   contextDraft?: ProjectTaskContextDraft | null;
   projectId: string;
+  title: string;
   description: string;
   /** Same-Project Task IDs; omitted or null means none. */
   dependsOnTaskIds?: string[] | null;
@@ -198,6 +205,7 @@ export interface CreateProjectTaskCommand {
 export interface UpdateProjectTaskCommand {
   projectId: string;
   taskId: string;
+  title?: string;
   description?: string;
   status?: ProjectTaskStatus;
   contextChanges?: ProjectTaskContextChanges | null;
@@ -213,6 +221,7 @@ export interface UpdateProjectTaskCommand {
  */
 export interface CreateTaskWithLocalContextFilesCommand {
   projectId: string;
+  title: string;
   description: string;
   /** Normalized absolute node-local file paths; may be empty. */
   localContextFiles: string[];
@@ -228,6 +237,8 @@ export interface CreateTaskWithLocalContextFilesCommand {
  */
 export interface UpdateTaskByIdCommand {
   taskId: string;
+  /** A Project Task's new title; a Task with no Project has none (TASK_TITLE_INVALID). */
+  title?: string;
   description?: string;
   status?: ProjectTaskStatus;
   localContextFiles?: string[];

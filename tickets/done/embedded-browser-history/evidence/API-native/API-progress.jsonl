@@ -1,0 +1,37 @@
+{"caseId": "API-00", "event": "Evidence header", "commit": "e51d4b103", "environment": "macOS arm64 Node 22.23.3; worktree Electron 42.11.16", "date": "2026-10-26", "command": "Exact command/receipts in API-environments.json; per-case result JSON"}
+{"time":"2026-10-26T17:19:19.469Z","caseId":"SETUP","event":"Fail","error":"locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Browser', exact: true })\u001b[22m\n\n    at /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:278:131"}
+{"time":"2026-10-26T17:19:19.470Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:19:29.759Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:20:08.173Z","caseId":"SETUP","event":"Fail","error":"Error: hydrated tools panel\n    at until (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:283:3"}
+{"time":"2026-10-26T17:20:08.181Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:20:18.416Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:20:34.995Z","caseId":"API-03","event":"Started"}
+{"time":"2026-10-26T17:20:35.463Z","caseId":"API-03","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:20:35.463Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:20:45.687Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:21:01.207Z","caseId":"API-04","event":"Started"}
+{"time":"2026-10-26T17:21:01.787Z","caseId":"API-04","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:21:01.788Z","caseId":"API-05","event":"Started"}
+{"time":"2026-10-26T17:21:02.906Z","caseId":"API-05","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:21:02.907Z","caseId":"API-06","event":"Started"}
+{"time":"2026-10-26T17:21:16.875Z","caseId":"API-06","event":"Completed","result":"Fail","error":"Error: native failed history navigation (r.url is not a function)\n    at until (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:53:9)\n    at async API-06 (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:229:5)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:295:30"}
+{"time":"2026-10-26T17:21:16.875Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:21:27.090Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:21:33.061Z","caseId":"API-06","event":"Started"}
+{"time":"2026-10-26T17:21:33.369Z","caseId":"API-06","event":"Completed","result":"Fail","error":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at flags (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:71:19)\n    at async API-06 (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:230:5)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:295:30"}
+{"time":"2026-10-26T17:21:33.371Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:21:43.593Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:22:16.029Z","caseId":"API-06","event":"Started"}
+{"time":"2026-10-26T17:22:17.868Z","caseId":"API-06","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:22:17.869Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:22:28.093Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:22:55.350Z","caseId":"API-06","event":"Started"}
+{"time":"2026-10-26T17:22:56.056Z","caseId":"API-06","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:22:56.056Z","caseId":"API-07","event":"Started"}
+{"time":"2026-10-26T17:23:07.860Z","caseId":"API-07","event":"Completed","result":"Fail","error":"locator.boundingBox: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-right-resize-handle\"]')\u001b[22m\n\n    at API-07 (/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:256:28)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:301:30"}
+{"time":"2026-10-26T17:23:07.860Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:23:18.087Z","caseId":"API-08","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:24:03.950Z","caseId":"API-07","event":"Started"}
+{"time":"2026-10-26T17:24:08.268Z","caseId":"API-07","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:24:08.268Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:24:18.516Z","caseId":"API-08","event":"Completed","result":"Pass"}

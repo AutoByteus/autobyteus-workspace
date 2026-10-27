@@ -1,0 +1,15 @@
+# IMP-03
+# Command: env -i PATH HOME=$(mktemp -d) TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/model-routing/model-routing-delegation.e2e.test.ts --no-watch
+# Commit: 09f99eed32 (ran on the working tree that became it; server files identical)
+# Environment: macOS 26.5.2, node v22.23.1; scripted Antigravity CLI, disposable HOME, no network
+# Date: 2026-10-27T12:06:36Z
+
+ [32m✓[39m tests/e2e/model-routing/model-routing-delegation.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 397765[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002) [33m 1096[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012) [33m 18575[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004) [33m 80520[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006) [33m 85654[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003) [33m 17339[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002) [33m 42117[2mms[22m[39m
+     [33m[2m✓[22m[39m MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again [33m 148820[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m

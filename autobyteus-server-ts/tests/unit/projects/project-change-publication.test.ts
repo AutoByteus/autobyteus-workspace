@@ -59,7 +59,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
     await publisher.idle();
     expect(emitted).toEqual([expect.objectContaining({ type: "project_upserted", project: expect.objectContaining({ projectId, taskCount: 0 }) })]);
     emitted.length = 0;
-    const { taskId } = await tasks.createTask({ projectId, description: "Draft notes" });
+    const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/release_writer", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle();
@@ -72,7 +72,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
 
   it("DONE emits views in commit order, ending with the DONE view, an Offline root and fresh counts (P-002)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
-    const { taskId } = await tasks.createTask({ projectId, description: "Draft notes" });
+    const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle(); emitted.length = 0;
@@ -88,7 +88,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
 
   it("the first status after a wake is read after the dispatch: Running, not the transient Initializing (P-001)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
-    const { taskId } = await tasks.createTask({ projectId, description: "Draft notes" });
+    const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle(); emitted.length = 0;
@@ -130,7 +130,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
 
   it("load() publishes nothing; only committed writes after it do (AR-003)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
-    const { taskId } = await tasks.createTask({ projectId, description: "Draft notes" });
+    const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await publisher.idle(); emitted.length = 0;
     tasks = await boot();
@@ -140,7 +140,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
 
   it("deleting a Project or a Task publishes its removal", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
-    const { taskId } = await tasks.createTask({ projectId, description: "Draft notes" });
+    const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
     await publisher.idle(); emitted.length = 0;
     await tasks.deleteTask({ projectId, taskId });
     await projects.deleteProject(projectId);

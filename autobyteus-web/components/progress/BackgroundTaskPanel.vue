@@ -29,6 +29,13 @@
 
     <!-- Content -->
     <div v-show="!collapsed" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+      <p v-if="snapshotView" class="px-3 pt-3 text-xs text-gray-500" data-test="background-tasks-scope">
+        {{ $t('workspace.components.progress.BackgroundTaskPanel.trackedExplanation') }}
+      </p>
+      <p v-if="!confirmed" class="px-3 py-3 text-xs text-gray-600" role="status" data-test="background-tasks-availability">
+        {{ availabilityLabel }}
+        <span v-if="tasks.length">{{ $t('workspace.components.progress.BackgroundTaskPanel.lastKnown') }}</span>
+      </p>
       <ul v-if="tasks.length > 0" data-test="background-tasks-list">
         <li
           v-for="task in tasks"
@@ -56,6 +63,12 @@
           </div>
           <div class="mt-1 pl-6 flex min-w-0 items-start gap-1 text-xs text-gray-500" data-test="background-task-kind-line">
             <span class="flex-shrink-0">{{ $t(`workspace.components.progress.BackgroundTaskPanel.kind.${task.kind}`) }}</span>
+            <template v-if="snapshotView">
+              <span aria-hidden="true">·</span>
+              <span class="min-w-0 break-words" data-test="background-task-observed">
+                {{ $t('workspace.components.progress.BackgroundTaskPanel.observed', { id: task.taskId.slice(0, 8), time: observedTime(task.startedAt) }) }}
+              </span>
+            </template>
             <template v-if="commandOf(task)">
               <span class="flex-shrink-0">·</span>
               <button
@@ -69,6 +82,9 @@
               >{{ commandOf(task) }}</button>
             </template>
           </div>
+          <p v-if="'exitCode' in task && task.exitCode !== null" class="mt-1 pl-6 text-xs text-gray-600" data-test="background-task-exit">
+            {{ $t('workspace.components.progress.BackgroundTaskPanel.exitCode', { code: task.exitCode }) }}
+          </p>
           <button
             v-if="task.status !== 'running' && task.summary"
             type="button"
@@ -84,8 +100,8 @@
         </li>
       </ul>
 
-      <div v-else class="p-8 text-center text-gray-700 text-sm" data-test="background-tasks-empty">
-        {{ $t('workspace.components.progress.BackgroundTaskPanel.empty') }}
+      <div v-else-if="confirmed" class="p-8 text-center text-gray-700 text-sm" data-test="background-tasks-empty">
+        {{ $t(snapshotView ? 'workspace.components.progress.BackgroundTaskPanel.trackedEmpty' : 'workspace.components.progress.BackgroundTaskPanel.empty') }}
       </div>
     </div>
   </div>
@@ -95,11 +111,11 @@
 import { computed, reactive } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
+import { useBackgroundTaskPanelView } from '~/composables/useBackgroundTaskPanelView';
 import { useLocalization } from '~/composables/useLocalization';
-import type { BackgroundTask, BackgroundTaskStatus } from '~/types/backgroundTask';
+import type { BackgroundTaskPanelRow, BackgroundTaskPanelStatus } from '~/types/backgroundTaskView';
 
-defineProps<{
+const props = defineProps<{
   collapsed?: boolean;
 }>();
 
@@ -107,31 +123,29 @@ defineEmits<{
   (e: 'toggle'): void;
 }>();
 
-const backgroundTaskStore = useAgentBackgroundTaskStore();
 const activeContextStore = useActiveContextStore();
 const { t } = useLocalization();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 
-const tasks = computed(() => currentAgentRunId.value ? backgroundTaskStore.getTasks(currentAgentRunId.value) : []);
-const counts = computed(() => currentAgentRunId.value
-  ? backgroundTaskStore.getCounts(currentAgentRunId.value)
-  : { running: 0, total: 0 });
-const countsLabel = computed(() => t('workspace.components.progress.BackgroundTaskPanel.counts', {
-  running: counts.value.running,
-  total: counts.value.total,
-}));
+const { tasks, counts, mode, confirmed, snapshotView } = useBackgroundTaskPanelView(currentAgentRunId, computed(() => !props.collapsed));
+const countsLabel = computed(() => confirmed.value
+  ? t('workspace.components.progress.BackgroundTaskPanel.counts', counts.value)
+  : tasks.value.length ? t('workspace.components.progress.BackgroundTaskPanel.recordedCounts', counts.value)
+    : t('workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts'));
+const availabilityLabel = computed(() => t(`workspace.components.progress.BackgroundTaskPanel.${mode.value === 'loading' ? 'loading' : 'unavailable'}`));
+const observedTime = (iso: string): string => new Date(iso).toLocaleString();
 
-const descriptionOf = (task: BackgroundTask): string =>
-  task.description.trim() || t('workspace.components.progress.BackgroundTaskPanel.untitled');
+const descriptionOf = (task: BackgroundTaskPanelRow): string =>
+  task.description.trim() || t(snapshotView.value ? 'workspace.components.progress.BackgroundTaskPanel.shellCommand' : 'workspace.components.progress.BackgroundTaskPanel.untitled');
 
 /** The command, unless unknown, blank, or already shown as the title (AGY titles are the command). */
-const commandOf = (task: BackgroundTask): string | null => {
+const commandOf = (task: BackgroundTaskPanelRow): string | null => {
   const command = task.command?.trim();
   return command && command !== descriptionOf(task) ? task.command : null;
 };
 
-const statusVisuals: Record<BackgroundTaskStatus, { icon: string; iconClass: string; chipClass: string }> = {
+const statusVisuals: Record<BackgroundTaskPanelStatus, { icon: string; iconClass: string; chipClass: string }> = {
   running: {
     icon: 'heroicons:arrow-path',
     iconClass: 'text-blue-500 motion-safe:animate-spin',
@@ -146,6 +160,11 @@ const statusVisuals: Record<BackgroundTaskStatus, { icon: string; iconClass: str
     icon: 'heroicons:x-circle-solid',
     iconClass: 'text-red-500',
     chipClass: 'bg-red-50 text-red-700 border-red-200',
+  },
+  unknown: {
+    icon: 'heroicons:question-mark-circle',
+    iconClass: 'text-amber-600',
+    chipClass: 'bg-amber-50 text-amber-800 border-amber-200',
   },
   stopped: {
     icon: 'heroicons:stop-circle-solid',

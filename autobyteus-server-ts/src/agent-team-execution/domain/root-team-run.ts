@@ -322,10 +322,12 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, (local, placement) => this.taskExecutions.delegateToNewCopy(context, local, placement));
+        return this.remoteDelegation.delegate({ ...input, node: input.node }, context, this.taskExecutions);
       }
-      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
-        this.taskExecutions.delegateToNewCopy(context, input, placement));
+      // DS-001: the work and its Task first, then the placement for that work, then the copy.
+      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
+      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation), (placement) =>
+        this.taskExecutions.dispatchNewCopy(context, work, placement));
     });
   }
 
@@ -339,6 +341,8 @@ export class RootTeamRun {
   }
   /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
   teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
+  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
+  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
 
   /** `send_message_to(address)`: delivers to a standing instance; never creates a run. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

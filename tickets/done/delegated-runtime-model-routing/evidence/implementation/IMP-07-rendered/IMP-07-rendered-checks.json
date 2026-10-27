@@ -1,0 +1,55 @@
+{
+  "cases": {
+    "setup-off": {
+      "ok": true,
+      "detail": "switch off, Talk disabled without a launch, no problem line"
+    },
+    "decisions-off-history": {
+      "ok": true,
+      "detail": {
+        "groups": 3
+      }
+    },
+    "decisions-open": {
+      "ok": true,
+      "detail": "failure note, inherited row, skipped default, Open run, no overflow"
+    },
+    "decisions-filter-router": {
+      "ok": true,
+      "detail": "only router rows"
+    },
+    "decisions-focus": {
+      "ok": true,
+      "detail": {
+        "focused": 1,
+        "focusText": "demo-1 Add CSV export to reports Oct 24, 03:07 PM Open run software engineering team solution_designer Claude · claude-opus-4-1 Agent default implementation_engineer Codex · gpt-5-codex Codex handles "
+      }
+    },
+    "overview": {
+      "ok": true,
+      "detail": "7 delegated agents in this period Model Router 4 57% Agent default 1 14% Team default 1 14% Inherited from the run 1 14% 1 ran on the delegating run's launch after the router failed. By task kind Codex Claude Antigravity Implementation 2 agents Code review 1 agent Writing 1 agent Not routed Defaults"
+    },
+    "overview-details": {
+      "ok": true,
+      "detail": "models of a kind"
+    },
+    "switch-on-not-set": {
+      "ok": true,
+      "detail": "choose a runtime and model for the router.\nGo to Configuration"
+    },
+    "switch-off-again": {
+      "ok": true,
+      "detail": "restored"
+    },
+    "zh-CN": {
+      "ok": true,
+      "detail": "概览"
+    },
+    "narrow-390": {
+      "ok": true,
+      "detail": "no horizontal overflow at 390"
+    }
+  },
+  "browserErrors": [],
+  "failures": []
+}

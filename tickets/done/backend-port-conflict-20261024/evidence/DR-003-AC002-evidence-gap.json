@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-26T10:37:33.000038+00:00",
+  "criterion": "AC-002",
+  "classification": "Insufficient validation evidence, no product defect established",
+  "claimedProof": "API-REV-003 execution report: Current IMP68 inspector unavailable/timeout/denied/empty/race/non-address-bind controls",
+  "examined": [
+    "autobyteus-web/electron/server/__tests__/BackendPortAvailability.spec.ts",
+    "autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts",
+    "autobyteus-web/electron/server/portOwnerInspector.ts",
+    "evidence/IMP-68-integrated-tests.log"
+  ],
+  "observations": [
+    "BackendPortAvailability tests real occupied/free loopback, invalid port/cancellation and one parser sanitization case.",
+    "StartupDelayLifecycle mocks inspectPortOwner to return unavailable and tests delayed old diagnosis fencing; it does not call the real inspector through ENOENT/EACCES/deadline/empty outcomes.",
+    "Production inspector uses execFile(lsof) with1000ms/32768byte bounds and catch-to-unavailable, but source inspection is not executable failure-injection proof.",
+    "Search of current test sources and ticket probes found no direct inspectPortOwner missing-binary/denied/deadline tests. Invalid port is not an injected non-EADDRINUSE bind errno."
+  ],
+  "request": "Point to existing exact proving receipts if they exist; otherwise add focused deterministic tests at real inspector execFile/bind boundaries for approved AC002 cases and record actual results. No broader repeat suite or provider/UI rerun without a product change."
+}

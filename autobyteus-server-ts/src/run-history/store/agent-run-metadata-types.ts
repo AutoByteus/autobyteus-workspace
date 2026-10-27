@@ -20,7 +20,15 @@ export type AgentRunMetadata = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
   /** Present only on a run a peer node delegated to this node (CM-10): its back-link; absent means none. */
   delegatedFrom?: DelegatedFrom;
+  /**
+   * autobyteus-32: the server service that created and owns this run (a system-owned run); absent means an ordinary run.
+   * A system-owned run is never a collaboration member.
+   */
+  systemRunOwner?: SystemRunOwner;
 };
+
+/** The services that own system runs: the Model Router agent's. */
+export type SystemRunOwner = "model_router";
 
 /** The run a task agent is part of (contract §3.1): it records the link, hosts, idles, wakes and stops it. */
 export type TaskAgentCoordinatingRun = Readonly<{

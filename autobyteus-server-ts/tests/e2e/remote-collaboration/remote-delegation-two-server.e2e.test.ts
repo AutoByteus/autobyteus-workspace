@@ -63,6 +63,8 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  *   black-holed within the bound, identity mismatch);
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
+ * 308: beta also has a file-authored internal agent (Hidden Helper, `"internal": true`): RC-26's exact offer leaves it out
+ *   while beta hides it (the default); RC-38 shows it on beta (no restart), delegates it, and hides it again.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -531,6 +533,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     return out;
   };
+  /** autobyteus-32 REQ-009: the peer's launch of Publisher, recorded on the link (its own default, nothing skipped). */
+  const publisherLaunches = () => [{ address: "/publisher", runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL, source: { origin: "agent_default", fallbacks: [] } }];
   const remoteLinksIn = (tree: Rec | undefined) => ((tree?.taskExecutions ?? []) as Rec[]).filter((entry) => typeof entry.nodeId === "string");
 
   // Definitions and runs.
@@ -563,6 +567,18 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   const delegateRemote = (actor: Actor, description: string, extra: Rec = {}) =>
     calls(actor, "delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description, ...extra });
   const composeOnBeta = (remoteRunId: string) => standaloneActor(beta, remoteRunId, `beta remote run ${remoteRunId}`);
+  /** autobyteus-32: beta's scripted router plan and its log of answered routing requests (one JSON line per request). */
+  const routerPlanFile = () => path.join(root, "beta", "router-plan.json");
+  const routerLogFile = () => path.join(root, "beta", "router-log.jsonl");
+  const routerLog = async (): Promise<Rec[]> => (await fsp.readFile(routerLogFile(), "utf8").catch(() => "")).trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  const setRouterPlan = (plan: Rec) => fsp.writeFile(routerPlanFile(), JSON.stringify(plan));
+  const betaRouting = {
+    enable: async (on: boolean) => (await beta.gql(`mutation($e:Boolean!){setModelRoutingEnabled(enabled:$e)}`, { e: on })).setModelRoutingEnabled as Rec,
+    router: async (runtimeKind: string, model: string) => (await beta.gql(`mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}`,
+      { r: runtimeKind, m: model })).setModelRouterLaunch as Rec,
+    status: async () => (await beta.gql(`{modelRoutingStatus}`)).modelRoutingStatus as Rec,
+    records: async () => objectsIn((await beta.gql(`{modelRoutingDecisions(limit:50)}`)).modelRoutingDecisions).filter((record) => typeof record.agentAddress === "string"),
+  };
 
   beforeAll(async () => {
     root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "remote-collab-two-server-")));
@@ -573,12 +589,20 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     if (!fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "brief-studio", "application.json"))) {
       throw new Error(`Brief Studio's importable package is missing (${BRIEF_STUDIO_PACKAGE}); run pnpm -C autobyteus-server-ts test:integration:prepare`);
     }
+    // autobyteus-32: beta's Model Router (a scripted AGY run) answers routing requests as beta's plan file says.
+    await fsp.mkdir(path.join(root, "beta"), { recursive: true });
+    await fsp.writeFile(routerPlanFile(), JSON.stringify({ mode: "valid", runtime: "antigravity_cli", model: "alt-model" }));
     beta = new NodeServer("beta", root, betaPort, { CODEX_APP_SERVER_COMMAND: path.join(root, "beta", "missing", "codex"), AGY_FAKE_EXTRA_MODELS: "alt-model",
-      AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: BRIEF_STUDIO_PACKAGE });
+      AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: BRIEF_STUDIO_PACKAGE, AGY_FAKE_ROUTER_PLAN: routerPlanFile(), AGY_FAKE_ROUTER_LOG: routerLogFile() });
     // 261: a file-authored shared Agent with no description (its listed entry has no description field, REQ-405).
     await fsp.mkdir(path.join(beta.dataDir, "agents", "plain-helper"), { recursive: true });
     await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent.md"), ["---", "name: Plain Helper", "role: assistant", "---", "", "Help."].join("\n"));
     await fsp.writeFile(path.join(beta.dataDir, "agents", "plain-helper", "agent-config.json"), JSON.stringify({ toolNames: [], skillNames: [] }, null, 2));
+    // 308: a file-authored internal agent (`"internal": true`) with a complete default, so only its visibility can refuse it.
+    await fsp.mkdir(path.join(beta.dataDir, "agents", "hidden-helper"), { recursive: true });
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "hidden-helper", "agent.md"), ["---", "name: Hidden Helper", "description: Beta's own helper (internal agents E2E)", "role: assistant", "---", "", "Help."].join("\n"));
+    await fsp.writeFile(path.join(beta.dataDir, "agents", "hidden-helper", "agent-config.json"), JSON.stringify({ internal: true, toolNames: [], skillNames: [],
+      defaultLaunchConfig: { runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL, llmConfig: null } }, null, 2));
     // Before beta starts: a file-authored Team with a team-local Agent (a complete default, so only eligibility can refuse
     // it), and a published-agents.json left from slice 1 whose entries would change the results if it were read (245 AC-207).
     const fieldTeam = path.join(beta.dataDir, "agent-teams", "field-team");
@@ -666,7 +690,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   }, 120_000);
 
   const inboundStart = (fromNodeId: string, toNodeId: string) => ({ fromNodeId, toNodeId, address: "/publisher",
-    delegator: { agentRunId: "agent_probe" }, coordinatingRun: { kind: "agent", runId: "agent_probe" } });
+    delegator: { agentRunId: "agent_probe" }, coordinatingRun: { kind: "agent", runId: "agent_probe" },
+    task: { text: "x", title: "x", taskKey: null, projectId: null, taskId: null } });
   const inboundMessage = (fromNodeId: string, toNodeId: string, messageId: string) => ({ fromNodeId, toNodeId, kind: "message", messageId,
     targetRoot: { kind: "agent", runId: "agent_probe_target" },
     sender: { agentRunId: "agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
@@ -768,7 +793,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const publishQuery = await beta.gqlRaw(`query{publishedAgents{address}}`);
     expect(publishQuery.errors?.[0]?.message, JSON.stringify(publishQuery)).toMatch(/Cannot query field "publishedAgents"/);
     const oldField = await beta.post(PATHS.runs, { fromNodeId: alpha.nodeId, toNodeId: beta.nodeId, publishedAddress: "/publisher",
-      delegator: { agentRunId: "agent_probe" }, coordinatingRun: { kind: "agent", runId: "agent_probe" } });
+      delegator: { agentRunId: "agent_probe" }, coordinatingRun: { kind: "agent", runId: "agent_probe" },
+    task: { text: "x", title: "x", taskKey: null, projectId: null, taskId: null } });
     expect(oldField.status, JSON.stringify(oldField)).toBe(400);
     expect(oldField.answer).toMatchObject({ accepted: false, nodeId: beta.nodeId, code: "REMOTE_REQUEST_INVALID" });
     expect((await fsp.readdir(path.join(beta.dataDir, "remote-collaboration"))).sort(), "beta writes only peers.json").toEqual(["peers.json", "published-agents.json"]);
@@ -794,19 +820,19 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const notFound = (address: string) => TEXT_261.notFound(node, address);
     const cases: Array<[string, string, string | RegExp]> = [
       // AC-202: no default, and only a runtime (incomplete). Blank Slate is also "published" in the leftover file (AC-207).
-      ["/blank_slate", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Blank Slate on node "${node}".`],
-      ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}".`],
+      ["/blank_slate", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Blank Slate on node "${node}", and Model Routing is off on node "${node}".`],
+      ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}", and Model Routing is off on node "${node}".`],
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
-      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on antigravity_cli.`],
+      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on antigravity_cli, and Model Routing is off on node "${node}".`],
       // AC-204: a built-in, an Agent Org, a team-local Agent and an unknown address are not delegable targets.
       ["/daily_assistant", "AGENT_NOT_FOUND", notFound("/daily_assistant")],
       ["/remote_org_b", "AGENT_NOT_FOUND", notFound("/remote_org_b")],
       ["/local_scout", "AGENT_NOT_FOUND", notFound("/local_scout")],
       ["/nobody_here", "AGENT_NOT_FOUND", notFound("/nobody_here")],
       // 247 AC-302: a Team with an agent covered by no default, and a Team default on an unavailable runtime (261 AC-406 wording).
-      ["/hollow_team", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent team Hollow Team on node "${node}".`],
-      ["/codex_team", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Team Codex Team on node "${node}" cannot run there: Codex App Server command '.+' is not available\\.$`)],
+      ["/hollow_team", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent team Hollow Team on node "${node}", and Model Routing is off on node "${node}".`],
+      ["/codex_team", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Team Codex Team on node "${node}" cannot run there: Codex App Server command '.+' is not available, and Model Routing is off on node "${node}"\\.$`)],
     ];
     // 261 DEC-407: beta's refusal names the target's kind and name (`target`, which replaced `targetName`).
     const targets: Record<string, Rec> = { "/blank_slate": { kind: "agent", name: "Blank Slate" }, "/half_set": { kind: "agent", name: "Half Set" },
@@ -855,8 +881,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // On alpha: the link in the delegator's tree (exact keys) and the Task record of the remote run.
     const tree = await readJson(path.join(alpha.memory, "agents", ids.solo, "collaboration", "collaboration_tree.json"));
     const links = remoteLinksIn(tree);
-    expect(links).toEqual([{ address: "/publisher", agentRunId: r1, nodeId: beta.nodeId, delegatorAgentRunId: ids.solo, startedAt: expect.any(String) }]);
-    expect(sortedKeys(links[0]!)).toEqual(["address", "agentRunId", "delegatorAgentRunId", "nodeId", "startedAt"]);
+    expect(links).toEqual([{ address: "/publisher", agentRunId: r1, nodeId: beta.nodeId, delegatorAgentRunId: ids.solo, startedAt: expect.any(String), launches: publisherLaunches() }]);
+    expect(sortedKeys(links[0]!)).toEqual(["address", "agentRunId", "delegatorAgentRunId", "launches", "nodeId", "startedAt"]);
     const resources = await taskResourcesWith(alpha, r1);
     expect(resources, JSON.stringify(resources)).toHaveLength(1);
     expect(resources[0]!.entry).toMatchObject({ role: "assigned", hostRoot: { kind: "agent", runId: ids.solo }, agentRun: { kind: "agent", agentRunId: r1 }, start: "started" });
@@ -937,7 +963,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await neverReceives(remote, "MATE-TO-REMOTE", 2_000);
 
     const tree = await readJson(path.join(alpha.memory, "agent_teams", teamRunId, "team_run_execution_tree.json"));
-    expect(remoteLinksIn(tree.rootTeam)).toEqual([{ address: "/publisher", agentRunId: r2, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String) }]);
+    expect(remoteLinksIn(tree.rootTeam)).toEqual([{ address: "/publisher", agentRunId: r2, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String), launches: publisherLaunches() }]);
     const sequences = sequenceCheck(view.frames, "TEAM_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
@@ -979,7 +1005,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await until(() => view.frames.some((frame) => frame.type !== "ROOT_EXECUTION_VIEW_SNAPSHOT" && JSON.stringify(frame.payload).includes("LOCAL-AFTER-REMOTE-ORG")), "local message on the Org view", 20_000);
 
     const tree = await readJson(path.join(alpha.memory, "agent_orgs", orgRunId, "agent_org_run_execution_tree.json"));
-    expect(remoteLinksIn(tree.rootOrg)).toEqual([{ address: "/publisher", agentRunId: r5, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String) }]);
+    expect(remoteLinksIn(tree.rootOrg)).toEqual([{ address: "/publisher", agentRunId: r5, nodeId: beta.nodeId, delegatorAgentRunId: lead.runId, startedAt: expect.any(String), launches: publisherLaunches() }]);
     const sequences = sequenceCheck(view.frames, "ROOT_EXECUTION_VIEW_SNAPSHOT");
     expect(sequences.gaps, JSON.stringify(sequences)).toEqual([]);
     expect(sequences.errorFrames).toEqual([]);
@@ -1032,7 +1058,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const file = path.join(alpha.workspace, "draft.txt");
     await fsp.writeFile(file, "draft");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-09 project" } })).createProject.projectId as string;
-    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description: "Saved work." } })).createProjectTask.taskId as string;
+    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved work.", description: "Saved work." } })).createProjectTask.taskId as string;
     const sentBefore = captured.length;
     const runsBefore = await remoteRunDirs();
     const withFiles = await delegateRemote(solo, "With a file.", { reference_files: [file] });
@@ -1056,7 +1082,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
   it("RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered", async () => {
     const manager = await createStandalone(alpha, defs.manager, "alpha manager");
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-10 project" } })).createProject.projectId as string;
-    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId,
+    const taskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Delegate the project work to beta",
       description: callTool("delegate_task", { node: LABEL.beta, recipient_address: "/publisher", description: "Project work. Marker PROJECT-PACKET." }) } })).createProjectTask.taskId as string;
     const assigned = await calls(manager, "delegate_task", { recipient_address: "/remote_worker", task_id: taskId });
     expect(assigned, JSON.stringify(assigned)).toMatchObject({ delegated: true });
@@ -1083,7 +1109,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(resources[0]!.file).toContain(path.join("projects", projectId, "tasks"));
     expect(resources[0]!.entry).toMatchObject({ role: "delegated", hostRoot: { kind: "agent", runId: manager.runId }, agentRun: { kind: "agent", agentRunId: r3 } });
     const tree = await readJson(path.join(alpha.memory, "agents", manager.runId, "collaboration", "collaboration_tree.json"));
-    expect(remoteLinksIn(tree), "the topmost coordinating root holds the link").toEqual([{ address: "/publisher", agentRunId: r3, nodeId: beta.nodeId, delegatorAgentRunId: workerRunId, startedAt: expect.any(String) }]);
+    expect(remoteLinksIn(tree), "the topmost coordinating root holds the link").toEqual([{ address: "/publisher", agentRunId: r3, nodeId: beta.nodeId, delegatorAgentRunId: workerRunId, startedAt: expect.any(String), launches: publisherLaunches() }]);
 
     expect(await calls(remote, "send_message_to", { target_agent_run_id: workerRunId, content: "BEFORE-DONE-TO-WORKER" })).toMatchObject({ accepted: true });
     await receives(worker, "BEFORE-DONE-TO-WORKER");
@@ -1140,7 +1166,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     // Alpha: the Team link in the delegating root's tree (beside its remote Agent link R2), exact on-disk keys.
     const alphaTree = await readJson(path.join(alpha.memory, "agent_teams", ids.team.teamRunId, "team_run_execution_tree.json"));
     const teamLink = remoteLinksIn(alphaTree.rootTeam).find((link) => link.teamRunId === studioRunId)!;
-    expect(sortedKeys(teamLink)).toEqual(["address", "coordinatorAddress", "delegatorAgentRunId", "members", "nodeId", "startedAt", "teamRunId"]);
+    expect(sortedKeys(teamLink)).toEqual(["address", "coordinatorAddress", "delegatorAgentRunId", "launches", "members", "nodeId", "startedAt", "teamRunId"]);
     expect(teamLink).toMatchObject({ address: "/studio_team", nodeId: beta.nodeId, coordinatorAddress: "/studio_team/lead", delegatorAgentRunId: lead.runId });
     const members = Object.fromEntries((teamLink.members as Rec[]).map((member) => [member.address, member.agentRunId as string]));
     expect(Object.keys(members).sort()).toEqual(["/studio_team/checker", "/studio_team/lead"]);
@@ -1239,7 +1265,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     await receives(coordinator, "CLOSURE-PACKET");
     // A saved Project Task, to the running remote Team copy and to a new remote Team: refused, nothing sent or started.
     const projectId = (await alpha.gql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: "RC-23 project" } })).createProject.projectId as string;
-    const savedTaskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description: "Saved Team work." } })).createProjectTask.taskId as string;
+    const savedTaskId = (await alpha.gql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, title: "Saved Team work.", description: "Saved Team work." } })).createProjectTask.taskId as string;
     const sentBefore = captured.length;
     const teamRunsBefore = await betaTeamRunDirs();
     const savedTaskRefusal = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead.";
@@ -1321,7 +1347,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const snapshot = view.frames.find((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as Rec;
     const rows = objectsIn(snapshot).find((record) => Array.isArray(record.remote_task_executions))?.remote_task_executions as Rec[];
     expect(rows.find((row) => row.agent_run_id === r9), JSON.stringify(rows)).toEqual({ kind: "agent", address: "/publisher", agent_run_id: r9, node_id: beta.nodeId,
-      node_name: LABEL.beta, delegator_agent_run_id: delegator.runId, started_at: expect.any(String) });
+      node_name: LABEL.beta, delegator_agent_run_id: delegator.runId, started_at: expect.any(String),
+      // autobyteus-32 REQ-009: the peer's launch, as run Settings rows read it.
+      launches: [{ address: "/publisher", runtime_kind: "antigravity_cli", llm_model_identifier: MODEL, source: { origin: "agent_default", fallbacks: [] } }] });
     await until(() => remoteSummariesIn(view.frames, r9).length > 0, "r9's summary", 25_000);
     const firstSummary = remoteSummariesIn(view.frames, r9)[0]!;
     expect(firstSummary).toMatchObject({ node_id: beta.nodeId, run_id: r9, reachable: true, title: "Tree work. Marker TREE-PACKET." });
@@ -1797,6 +1825,144 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       betaCatalog, delegations, pageOffer });
   }, 300_000);
 
+  it("RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, refused again", async () => {
+    const scout = await createStandalone(alpha, defs.scout, "alpha scout (308)");
+    const hidden = { name: "Hidden Helper", kind: "agent", address: "/hidden_helper", description: "Beta's own helper (internal agents E2E)" };
+    const SETTING = "AUTOBYTEUS_SHOW_INTERNAL_AGENTS";
+    const setShown = (value: string) => beta.gql(`mutation($k:String!,$v:String!){ updateServerSetting(key:$k, value:$v) }`, { k: SETTING, v: value });
+    const offerNames = async () => ((await calls(scout, "list_available_agents", { node: LABEL.beta })).agents as Rec[]);
+    const pageNames = async () => ((await peerNodeOffer(alpha, beta.nodeId)).offer.entries as Rec[]).map((entry) => entry.name as string);
+    const delegate = () => calls(scout, "delegate_task", { node: LABEL.beta, recipient_address: hidden.address, description: "Internal helper work. Marker HIDDEN." });
+    // It exists on beta (by ID), but beta's setting is off (the default).
+    expect((await beta.gql(`{ agentDefinition(id: "hidden-helper") { id internal } }`)).agentDefinition).toEqual({ id: "hidden-helper", internal: true });
+    const hiddenOffer = await offerNames();
+    expect(hiddenOffer.map((entry) => entry.name), "not offered while hidden").not.toContain(hidden.name);
+    expect(await pageNames(), "nor on alpha's Nodes page").not.toContain(hidden.name);
+    const refused = await delegate();
+    expect(refused.delegated, JSON.stringify(refused)).not.toBe(true);
+    expect(textOf(refused), "today's not-found text: nothing says it is internal").toBe(TEXT_261.notFound(LABEL.beta, hidden.address));
+
+    // Beta's owner shows internal agents: the next listing and delegation follow, without a restart.
+    await setShown("true");
+    const shownOffer = await offerNames();
+    expect(shownOffer.find((entry) => entry.name === hidden.name), JSON.stringify(shownOffer)).toEqual(hidden);
+    expect(shownOffer.length).toBe(hiddenOffer.length + 1);
+    expect(await pageNames()).toContain(hidden.name);
+    const accepted = await delegate();
+    expect(accepted, JSON.stringify(accepted)).toMatchObject({ delegated: true, target_kind: "agent" });
+
+    // Hidden again: refused again, with the same text.
+    await setShown("false");
+    expect((await offerNames()).map((entry) => entry.name)).not.toContain(hidden.name);
+    expect(textOf(await delegate())).toBe(TEXT_261.notFound(LABEL.beta, hidden.address));
+    record("RC-38", { hiddenOffer, shownOffer, refused: textOf(refused), accepted: { delegated: accepted.delegated, target_kind: accepted.target_kind } });
+  }, 300_000);
+
+  it("RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason", async () => {
+    const delegatorRun = await createStandalone(alpha, defs.delegator, "alpha delegator (32 off)");
+    const node = LABEL.beta;
+    const runsBefore = await remoteRunDirs();
+    const delegateTo = (address: string) => calls(delegatorRun, "delegate_task", { node, recipient_address: address, description: `Routing state for ${address}.` });
+    expect(await betaRouting.status(), "off by default").toMatchObject({ enabled: false, active: false, reasonCode: "OFF" });
+    const sentBefore = captured.length;
+    const offAgent = await delegateTo("/blank_slate");
+    const offTeam = await delegateTo("/hollow_team");
+    const answers = remoteRequests(sentBefore).filter((entry) => entry.path === PATHS.runs).map((entry) => entry.answer as Rec);
+    expect(textOf(offAgent)).toBe(`There is no default runtime configured for the target agent Blank Slate on node "${node}", and Model Routing is off on node "${node}".`);
+    expect(textOf(offTeam)).toBe(`There is no default runtime configured for the target agent team Hollow Team on node "${node}", and Model Routing is off on node "${node}".`);
+    expect(answers.map((answer) => [answer.code, answer.modelRouting]), "beta's answer carries its state").toEqual([
+      ["NO_DEFAULT_RUNTIME", { state: "off" }], ["NO_DEFAULT_RUNTIME", { state: "off" }]]);
+    // On, but its router launch is on Claude, which is installed and signed out on beta (its disposable HOME): not usable,
+    // with the reason. (A launch on a runtime or model beta does not offer is refused when saved, autobyteus-313 REQ-002.)
+    await betaRouting.router("claude_agent_sdk", "haiku");
+    const notUsable = await betaRouting.enable(true);
+    expect(notUsable, JSON.stringify(notUsable)).toMatchObject({ enabled: true, active: false, reasonCode: "SIGNED_OUT" });
+    const reason = String(notUsable.reasonText);
+    const notUsableAgent = await delegateTo("/blank_slate");
+    expect(textOf(notUsableAgent)).toBe(`There is no default runtime configured for the target agent Blank Slate on node "${node}", and the Model Router on node "${node}" is not usable (${reason.replace(/\.$/, "")}).`);
+    expect(await remoteRunDirs(), "nothing started on beta").toEqual(runsBefore);
+    await betaRouting.enable(false);
+    record("RC-39", { offAgent: textOf(offAgent), offTeam: textOf(offTeam), answers, notUsable, notUsableAgent: textOf(notUsableAgent) });
+  }, 300_000);
+
+  it("RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, the link); beta records the copies from alpha's node", async () => {
+    const delegatorRun = await createStandalone(alpha, defs.delegator, "alpha delegator (32 on)");
+    const node = LABEL.beta;
+    await betaRouting.router("antigravity_cli", MODEL);
+    await setRouterPlan({ mode: "valid", runtime: "antigravity_cli", model: "alt-model", taskKind: "writing", reason: "Gemini has limit left on beta.", readRuntimes: true });
+    const on = await betaRouting.enable(true);
+    expect(on, JSON.stringify(on)).toMatchObject({ enabled: true, active: true });
+    const routedBefore = (await routerLog()).length;
+
+    const agent = await calls(delegatorRun, "delegate_task", { node, recipient_address: "/blank_slate", description: "Write the release note. Marker ROUTED-PEER." });
+    expect(agent, JSON.stringify(agent)).toMatchObject({ delegated: true, target_kind: "agent", node });
+    const notes = (agent.launch_notes ?? []) as string[];
+    expect(notes.join("\n"), JSON.stringify(agent)).toContain("antigravity_cli / alt-model, chosen by the Model Router (writing): Gemini has limit left on beta.");
+    const runId = agent.target_agent_run_id as string;
+    expect(await betaMetadata(runId)).toMatchObject({ runtimeKind: "antigravity_cli", llmModelIdentifier: "alt-model" });
+    await receives(composeOnBeta(runId), "ROUTED-PEER");
+    expect((await beta.launches()).some((launch) => launch.cwd.includes(runId) && launch.argv.includes("alt-model")), "started on the router's model").toBe(true);
+    const tree = await readJson(path.join(alpha.memory, "agents", delegatorRun.runId, "collaboration", "collaboration_tree.json"));
+    const link = remoteLinksIn(tree).find((entry) => entry.agentRunId === runId);
+    expect(link?.launches, JSON.stringify(link)).toEqual([{ address: "/blank_slate", runtimeKind: "antigravity_cli", llmModelIdentifier: "alt-model",
+      source: expect.objectContaining({ origin: "model_router", taskKind: "writing", choiceReason: "Gemini has limit left on beta." }) }]);
+
+    const team = await calls(delegatorRun, "delegate_task", { node, recipient_address: "/hollow_team", description: "Draft the team plan. Marker ROUTED-TEAM." });
+    expect(team, JSON.stringify(team)).toMatchObject({ delegated: true, target_kind: "team", node });
+    expect(((team.launch_notes ?? []) as string[]).join("\n"), JSON.stringify(team)).toContain("chosen by the Model Router (writing)");
+    const teamLink = remoteLinksIn(await readJson(path.join(alpha.memory, "agents", delegatorRun.runId, "collaboration", "collaboration_tree.json")))
+      .find((entry) => entry.teamRunId === team.target_team_run_id);
+    expect((teamLink?.launches as Rec[] | undefined)?.map((launch) => [launch.runtimeKind, launch.llmModelIdentifier, launch.source?.origin]), JSON.stringify(teamLink))
+      .toEqual([["antigravity_cli", "alt-model", "model_router"]]);
+
+    // Beta's router was asked once per delegation, and read the runtimes first.
+    const asked = (await routerLog()).slice(routedBefore);
+    expect(asked.map((entry) => entry.addresses.length), JSON.stringify(asked)).toEqual([1, 1]);
+    expect(asked.every((entry) => entry.results[0]?.tool === "list_available_agent_runtimes" && entry.results[0]?.ok), JSON.stringify(asked)).toBe(true);
+    // Beta's decision records: from alpha's node, with no delegating run or name on beta (REQ-012).
+    let records: Rec[] = [];
+    await until(async () => (records = (await betaRouting.records()).filter((record) => record.source === "model_router")).length >= 2, "beta's decision records", 30_000);
+    expect(records.map((record) => ({ copyKind: record.copyKind, fromNode: record.fromNode, delegatingRunId: record.delegatingRunId,
+      delegatingAgentName: record.delegatingAgentName, runtimeKind: record.runtimeKind, llmModelIdentifier: record.llmModelIdentifier })).sort((a, b) => a.copyKind.localeCompare(b.copyKind)))
+      .toEqual([
+        { copyKind: "agent", fromNode: LABEL.alpha, delegatingRunId: null, delegatingAgentName: null, runtimeKind: "antigravity_cli", llmModelIdentifier: "alt-model" },
+        { copyKind: "agent_team", fromNode: LABEL.alpha, delegatingRunId: null, delegatingAgentName: null, runtimeKind: "antigravity_cli", llmModelIdentifier: "alt-model" }]);
+    expect(records.map((record) => record.taskTitle).sort().join(" | ")).toContain("Write the release note.");
+    // Alpha records no decision of its own for a copy on beta.
+    expect(objectsIn((await alpha.gql(`{modelRoutingDecisions(limit:50)}`)).modelRoutingDecisions).filter((record) => typeof record.agentAddress === "string"), "none on alpha").toEqual([]);
+    ids.routedOnBeta = runId;
+    record("RC-40", { agent: { notes, runId, link }, team: { notes: team.launch_notes, link: teamLink }, asked, records });
+  }, 300_000);
+
+  it("RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start bound, nothing started", async () => {
+    const delegatorRun = await createStandalone(alpha, defs.delegator, "alpha delegator (32 slow)");
+    const node = LABEL.beta;
+    expect(await betaRouting.status()).toMatchObject({ enabled: true, active: true });
+    await setRouterPlan({ mode: "valid", delayMs: 30_000, runtime: "antigravity_cli", model: "alt-model", taskKind: "writing", reason: "Slow but valid." });
+    const slow = await calls(delegatorRun, "delegate_task", { node, recipient_address: "/blank_slate", description: "Slow routing. Marker SLOW-PEER." }, 120_000);
+    expect(slow, JSON.stringify(slow)).toMatchObject({ delegated: true, target_kind: "agent", node });
+    expect(slow.elapsedMs, "past the former 20 s bound, under the 50 s one").toBeGreaterThan(30_000);
+    expect(slow.elapsedMs).toBeLessThan(50_000);
+
+    const runsBefore = await remoteRunDirs();
+    const logBefore = (await routerLog()).length;
+    await setRouterPlan({ mode: "silent", delayMs: 55_000 });
+    const sentBefore = captured.length;
+    const failed = await calls(delegatorRun, "delegate_task", { node, recipient_address: "/blank_slate", description: "Silent router." }, 120_000);
+    const answer = remoteRequests(sentBefore).find((entry) => entry.path === PATHS.runs)?.answer as Rec | undefined;
+    expect(failed.delegated, JSON.stringify(failed)).toBe(false);
+    expect(textOf(failed)).toBe(`The Model Router on node "${node}" could not choose a runtime for Blank Slate: no valid answer within 40 seconds.`);
+    expect(answer?.code, JSON.stringify(answer)).toBe("MODEL_ROUTER_FAILED");
+    expect(failed.elapsedMs, "refused within the 50 s start bound").toBeLessThan(50_000);
+    expect(failed.elapsedMs).toBeGreaterThan(39_000);
+    expect(await remoteRunDirs(), "nothing started on beta").toEqual(runsBefore);
+    // The silent turn ends before the next case (no bleed into later routing).
+    await until(async () => (await routerLog()).length > logBefore, "the silent router turn ended", 60_000);
+    await betaRouting.enable(false);
+    await setRouterPlan({ mode: "valid", runtime: "antigravity_cli", model: "alt-model" });
+    record("RC-41", { slow: { elapsedMs: slow.elapsedMs, notes: slow.launch_notes }, failed: { text: textOf(failed), elapsedMs: failed.elapsedMs, answer } });
+  }, 300_000);
+
   it("RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound", async () => {
     const scout = standaloneActor(alpha, ids.scout, "alpha scout");
     const extra = { gamma: new NodeServer("gamma", root, await getFreePort()), delta: new NodeServer("delta", root, await getFreePort()),
@@ -1990,7 +2156,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     } finally { toBeta.mode = "forward"; toBeta.releaseHeld(); }
     expect(textOf(partitionedDelegation)).toBe(`Node "${LABEL.beta}" could not be reached (it did not answer in time).`);
     expect(textOf(partitionedMessage)).toBe(`Node "${LABEL.beta}" could not be reached (it did not answer in time; the message may have been delivered).`);
-    for (const result of [partitionedDelegation, partitionedMessage]) expect(result.elapsedMs, "refused within the bound (QR-102 ≤ 30 s)").toBeLessThan(30_000);
+    // autobyteus-32 QR-001: a start request is bounded at 50 s (the peer's routing fits inside it); a message at 20 s.
+    expect(partitionedDelegation.elapsedMs, "a start refused within its 50 s bound").toBeLessThan(55_000);
+    expect(partitionedMessage.elapsedMs, "refused within the bound (QR-102 ≤ 30 s)").toBeLessThan(30_000);
 
     await beta.stop();
     await toBeta.close();
@@ -2032,7 +2200,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(updated.defaultLaunchConfig).toEqual({ runtimeKind: "antigravity_cli", llmModelIdentifier: "retired-model" });
     const runsBefore = await remoteRunDirs();
     const refused = await delegateRemote(solo, "After the default changed.");
-    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: The model 'retired-model' is not available on antigravity_cli.`);
+    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: The model 'retired-model' is not available on antigravity_cli, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");
@@ -2096,7 +2264,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
     const keysByKind: Record<string, string[]> = {
-      [PATHS.runs]: ["address", "coordinatingRun", "delegator", "fromNodeId", "toNodeId"],
+      [PATHS.runs]: ["address", "coordinatingRun", "delegator", "fromNodeId", "task", "toNodeId"],
       // 261: the discovery requests are the envelope only.
       [PATHS.availability]: ["fromNodeId", "toNodeId"],
       [PATHS.availableAgents]: ["fromNodeId", "toNodeId"],

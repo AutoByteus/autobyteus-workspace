@@ -4,7 +4,10 @@
  * Purpose: a server configured with a fixed `Authorization` header or with the token receives that credential on
  * every request AutoByteus makes: GraphQL preview, save + discover, import, tool calls through `/mcp/gateway`, and
  * the startup registration after a real process restart. A token together with an `Authorization` header is
- * rejected on save, preview and import, and nothing is saved. Credential values never reach the server's output.
+ * rejected on save, preview and import, and nothing is saved. The token and the `Authorization` header are stored in the
+ * server's vault (autobyteus-244): `mcps.json` holds only secret references, `mcpServers` returns states and never a
+ * value, and after the restart the references are resolved from the vault. Credential values never reach the server's
+ * output or `mcps.json`.
  * Prerequisites: a current build of this worktree (`pnpm -C autobyteus-ts build`, then
  * `pnpm -C autobyteus-server-ts build`). The test owns its server processes, port, runtime root and database.
  * Values: dummy only (`test-dummy`, `test-wrong`). The local MCP servers record only whether `Authorization` was
@@ -49,12 +52,16 @@ const DISCOVER = `mutation Discover($serverId: String!) {
   discoverAndRegisterMcpServerTools(serverId: $serverId) { success message discoveredTools { name } } }`;
 const IMPORT = `mutation Import($jsonString: String!) {
   importMcpServerConfigs(jsonString: $jsonString) { success message importedCount failedCount } }`;
-const LIST = `query List { mcpServers { ... on StreamableHttpMcpServerConfig { serverId url token headers toolNamePrefix } } }`;
+const LIST = `query List { mcpServers { ... on StreamableHttpMcpServerConfig { serverId url tokenState headers { name value state } toolNamePrefix } } }`;
 
 const httpInput = (serverId: string, url: string, credentials: { token?: string | null; headers?: Record<string, string> },
   toolNamePrefix: string | null = null) => ({
   serverId, transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix,
-  streamableHttpConfig: { url, token: credentials.token ?? null, headers: credentials.headers ?? null },
+  streamableHttpConfig: {
+    url,
+    token: credentials.token === undefined || credentials.token === null ? null : { value: credentials.token },
+    headers: Object.entries(credentials.headers ?? {}).map(([name, value]) => ({ name, secret: true, value })),
+  },
 });
 
 /** Lists and calls every tool through the server's `/mcp/gateway`, as an external MCP client does. */
@@ -182,19 +189,28 @@ describe("Remote MCP server credentials through the built server", () => {
       expect(discovered.data!.discoverAndRegisterMcpServerTools.discoveredTools.map((tool) => tool.name)).toEqual([toolName(serverId)]);
     }
 
-    // Saved state: nothing from the rejected attempts; token and headers kept as separate fields.
-    const listed = await graphql<{ mcpServers: Array<{ serverId: string; token: string | null; headers: Record<string, string> | null }> }>(url, LIST);
+    // Saved state: nothing from the rejected attempts; token and headers kept as separate fields, as states only.
+    type Entry = { name: string; value: string | null; state: string };
+    const listed = await graphql<{ mcpServers: Array<{ serverId: string; tokenState: string | null; headers: Entry[] }> }>(url, LIST);
     const byId = new Map(listed.data!.mcpServers.map((entry) => [entry.serverId, entry]));
     expect([...byId.keys()].sort()).toEqual(["hdr", "imp", "open", "tok"]);
-    expect(byId.get("tok")).toMatchObject({ token: DUMMY, headers: {} });
-    expect(byId.get("hdr")).toMatchObject({ token: null, headers: { Authorization: `Basic ${DUMMY}` } });
-    type StoredEntry = { url?: string; token?: string; headers?: Record<string, string>; tool_name_prefix?: string };
-    const stored = JSON.parse(fs.readFileSync(path.join(runtimeRoot, "mcps.json"), "utf8")) as {
+    expect(byId.get("tok")).toMatchObject({ tokenState: "CONFIGURED", headers: [] });
+    expect(byId.get("hdr")).toMatchObject({ tokenState: null, headers: [{ name: "Authorization", value: null, state: "CONFIGURED" }] });
+    expect(byId.get("imp")).toMatchObject({ tokenState: null, headers: [{ name: "Authorization", value: null, state: "CONFIGURED" }] });
+    expect(byId.get("open")).toMatchObject({ tokenState: null, headers: [] });
+    expect(JSON.stringify(listed)).not.toContain(DUMMY);
+    const reference = { vaultSecretId: expect.stringMatching(/^mcp\.[0-9a-f-]{36}$/) };
+    type StoredEntry = { url?: string; token?: unknown; headers?: Record<string, unknown>; tool_name_prefix?: string };
+    const storedText = fs.readFileSync(path.join(runtimeRoot, "mcps.json"), "utf8");
+    const stored = JSON.parse(storedText) as {
       mcpServers: { hdr: StoredEntry; tok: StoredEntry; imp: StoredEntry; open: StoredEntry } };
     expect(Object.keys(stored.mcpServers).sort()).toEqual(["hdr", "imp", "open", "tok"]);
     expect(Object.keys(stored.mcpServers.tok).sort()).toEqual(["token", "tool_name_prefix", "url"]);
-    expect(stored.mcpServers.tok.token).toBe(DUMMY);
+    expect(stored.mcpServers.tok.token).toEqual(reference);
     expect(Object.keys(stored.mcpServers.hdr).sort()).toEqual(["headers", "tool_name_prefix", "url"]);
+    expect(stored.mcpServers.hdr.headers).toEqual({ Authorization: reference });
+    expect(stored.mcpServers.imp.headers).toEqual({ Authorization: reference });
+    expect(storedText).not.toContain(DUMMY);
 
     // Tool calls through the gateway: each remote server sees its credential on the tools/call request itself.
     const { listed: gatewayTools, results } = await callThroughGateway(url, allTools);

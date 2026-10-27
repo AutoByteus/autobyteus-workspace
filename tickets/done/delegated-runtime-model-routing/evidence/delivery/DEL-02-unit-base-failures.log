@@ -1,0 +1,15 @@
+# DEL-02 — 3 unit failures, the same on the base and on the integrated branch (not this ticket; FU-010)
+# Base: clean detached checkout of origin/personal 50e93c2108 at /tmp/mr-base-check (pnpm install --frozen-lockfile --offline; autobyteus-ts build; server prebuild), 2026-10-27
+# Command (both): env -i PATH HOME=<mktemp -d> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/unit/secret-management/live-e2e-compaction-boundary.test.ts tests/unit/secret-management/live-e2e-compaction-observation.test.ts --no-watch
+
+## On origin/personal 50e93c2108
+AssertionError: expected Error: Native command host scope is requi… to be Error: AGENT_SETUP_REACHED_WITHOUT_GENERA… // Object.is equality
+AssertionError: expected Error: Native command host scope is requi… to be Error: synthetic-private-value { …(1) } // Object.is equality
+      Tests  3 failed | 9 passed (12)
+
+## Full server unit suite on the integrated branch (357936966c)
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+ FAIL  tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+ Test Files  2 failed | 851 passed | 4 skipped (857)
+      Tests  3 failed | 7125 passed | 7 skipped (7135)

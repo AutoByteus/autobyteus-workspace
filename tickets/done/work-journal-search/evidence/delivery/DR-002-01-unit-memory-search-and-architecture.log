@@ -1,0 +1,72 @@
+# DR-002 delivery smoke on HEAD cea80ab972 (tree outside tickets/ = merge 3d209177ec; base origin/personal 8c31e530d6); Tue Oct 27 10:07:57 CET 2026
+# cmd: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/architecture/application-framework-boundaries.test.ts --no-watch
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+ ❯ tests/architecture/application-framework-boundaries.test.ts (20 tests | 2 failed) 2859ms
+     × keeps required tool registration behind the single lifecycle readiness owner 1451ms
+     × guards the exact SR-011 host definition and public/general run authority 123ms
+(node:35014) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner
+AssertionError: expected [ { key: 'core', …(3) }, …(10) ] to deeply equal [ { key: 'core', …(3) }, …(9) ]
+- Expected
++ Received
+@@ -40,10 +40,16 @@
+      "key": "agent_discovery",
+      "modulePath": "../agent-tools/agent-discovery/register-agent-discovery-tools.js",
+      "name": undefined,
+    },
+    {
++     "exportName": "registerAgentRuntimesTools",
++     "key": "agent_runtimes",
++     "modulePath": "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js",
++     "name": undefined,
++   },
++   {
+      "exportName": "registerPublishedArtifactTools",
+      "key": "published_artifact",
+      "modulePath": "../agent-tools/published-artifacts/register-published-artifact-tools.js",
+      "name": undefined,
+    },
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2113:41
+    2111|       "autobyteus-server-ts/src/startup/agent-tool-loader.ts",
+    2112|     );
+    2113|     expect(collectSpecs(readinessPath)).toEqual([
+       |                                         ^
+    2114|       { key: "core", name: undefined, modulePath: "autobyteus-ts/tools…
+    2115|       { key: "project_tasks", name: undefined, modulePath: "../agent-t…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+AssertionError: expected [ …(24) ] to deeply equal [ …(23) ]
+- Expected
++ Received
+@@ -1,6 +1,7 @@
+  [
++   "autobyteus-server-ts/src/agent-definition/services/internal-agent-visibility.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+    "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
+ ❯ tests/architecture/application-framework-boundaries.test.ts:2998:41
+    2996|       );
+    2997|     }).sort();
+    2998|     expect(definitionGetterOccurrences).toEqual([
+       |                                         ^
+    2999|       "autobyteus-server-ts/src/agent-execution/backends/autobyteus/au…
+    3000|       "autobyteus-server-ts/src/agent-execution/backends/claude/backen…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+ Test Files  1 failed | 5 passed (6)
+      Tests  2 failed | 56 passed (58)
+   Start at  10:05:06
+   Duration  9.47s (transform 2.54s, setup 82ms, import 4.41s, tests 3.93s, environment 0ms)

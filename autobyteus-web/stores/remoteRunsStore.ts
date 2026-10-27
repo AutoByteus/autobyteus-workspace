@@ -49,6 +49,8 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const runs = shallowReactive(new Map<string, RemoteRunInfo>())
   const runOfAgent = shallowReactive(new Map<string, string>())
   const adapters = new Map<string, RemoteRunRetryAdapter>()
+  /** autobyteus-32: each run's link as its root registered it (its launches feed the run's Settings rows). */
+  const executions = shallowReactive(new Map<string, RemoteTaskExecutionDto>())
 
   /** A root's remote execution, with the way to ask its node again; an answer it already had stays. */
   const register = (execution: RemoteTaskExecutionDto, adapter: RemoteRunRetryAdapter): void => {
@@ -61,7 +63,12 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
     }))
     agentRunIds.forEach((agentRunId) => runOfAgent.set(agentRunId, runId))
     adapters.set(runId, adapter)
+    executions.set(runId, execution)
   }
+
+  /** The remote runs delegated by these agent runs (a root's agents), as their links were registered. */
+  const executionsDelegatedBy = (agentRunIds: ReadonlySet<string>): RemoteTaskExecutionDto[] =>
+    [...executions.values()].filter((execution) => agentRunIds.has(execution.delegator_agent_run_id))
 
   const update = (runId: string, change: Partial<Pick<RemoteRunInfo, 'reachable' | 'checking' | 'title'>>): void => {
     const current = runs.get(runId)
@@ -102,8 +109,9 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
     runs.clear()
     runOfAgent.clear()
     adapters.clear()
+    executions.clear()
   }
   watch(() => useWindowNodeContextStore().bindingRevision, clear, { flush: 'sync' })
 
-  return { register, applySummary, markReachable, retry, run, runOfAgentRun, clear }
+  return { register, applySummary, markReachable, retry, run, runOfAgentRun, executionsDelegatedBy, clear }
 })

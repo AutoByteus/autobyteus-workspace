@@ -1,0 +1,23 @@
+# API-L12: imported memory (AC-006, R-004, UD-018 imported view) through a real Memory Sync
+# Hub: desktop iso-53567-504c (graphql 53568). Source: a second isolated instance iso-59036-3979 (--from-worktree, same build, own temp data root)
+# 2026-10-26 17:43–17:47 UTC
+## Source data
+On the source (UI, Daily Assistant, Codex GPT-6.1-Sol) one real turn: "Please write a one-line note for my records: the greenhouse irrigation controller is codenamed pelicanmarigold9152 and runs on the garage Raspberry Pi. …"
+Before the sync, the hub's local memory has no file containing "pelicanmarigold" (grep: marigold 0 journal files).
+## Sync (setup through GraphQL, /private/tmp/wjs-api/sync.mjs: hub credential bound to source id api-e2e-source-node; hub enabled at http://127.0.0.1:53568; source configured; testMemoryHubConnection(SAVED) {"ok":true}; startMemorySync)
+Hub files afterwards (imports/…):
+Oct 26 18:43:41 2026 336 imports/api-e2e-source-node/memory-sync-source.json
+Oct 26 18:43:41 2026 4416 imports/api-e2e-source-node/agents/daily_assistant_b7049c63e5bc47ada9efb777ee620596/raw_traces_active.jsonl
+Oct 26 18:43:41 2026 840 imports/api-e2e-source-node/agents/daily_assistant_b7049c63e5bc47ada9efb777ee620596/run_metadata.json
+Oct 26 18:43:41 2026 19 imports/api-e2e-source-node/agents/daily_assistant_b7049c63e5bc47ada9efb777ee620596/seen_skill_versions.json
+Oct 26 18:43:41 2026 814 imports/api-e2e-source-node/agents/daily_assistant_b7049c63e5bc47ada9efb777ee620596/work_journal/work_journal_active.md
+Oct 26 18:43:41 2026 403 imports/api-e2e-source-node/agents/daily_assistant_b7049c63e5bc47ada9efb777ee620596/work_journal/work_journal_manifest.json
+Oct 26 18:43:41 2026 3235 imports/api-e2e-source-node/sync-manifest.json
+listMemoryImports: [{"memorySyncSourceId":"api-e2e-source-node","displayName":"API E2E source"}]
+## Search on the hub (GraphQL memorySearch, as the page)
+"pelicanmarigold9152": 10 results; none is daily_assistant_b7049c63… and no match path is under imports/ (all results are local runs, all MEANING; see F-001 for their strength)
+"greenhouse irrigation controller garage Raspberry Pi": 5 results, none from imports; note "Only weak matches; try other words."
+## Page (screenshots API-L12-01-browse-imported-source.png, API-L12-02-imported-run-work-journal.png)
+Browse shows the memory-source picker only now that two sources exist: ["local=Local Memory", "imported:api-e2e-source-node=Imported: API E2E source"]
+Imported source: "Imported · read-only"; Daily Assistant · 1 runs; run detail tabs ['Work Journal', 'Raw Traces']; Work Journal shows the source's own journal (it was synced with the run): "work_journal_active.md · Active · 6 lines · 1 KB", "Lines 1–6 of 6"
+Not reachable here: an imported run without a journal ("No Work Journal"): a synced live run always brings its journal; the copy is covered by the web component specs (IMP-09)

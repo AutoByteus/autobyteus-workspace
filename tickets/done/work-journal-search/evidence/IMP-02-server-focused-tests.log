@@ -1,0 +1,9 @@
+# IMP-02 server focused tests (memory search, journal reads, embeddings nearest, search_memory, tool loader)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/agent-work-journal tests/unit/embeddings tests/unit/agent-tools/memory tests/unit/startup --no-watch
+# Commit: ecbf5a57bd
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1
+# Date: 2026-10-26
+# tests/agent-work-journal is outside test:unit (FU-006), so it is run here by path; perf/ included.
+
+ Test Files  26 passed | 1 skipped (27)
+      Tests  208 passed | 2 skipped (210)

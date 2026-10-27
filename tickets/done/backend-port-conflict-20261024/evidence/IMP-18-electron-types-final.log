@@ -1,0 +1,9 @@
+IMP-18-electron-types-final
+Command (root): autobyteus-web/node_modules/.bin/tsc --noEmit -p autobyteus-web/electron/tsconfig.json
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 10990feb1 (production unchanged through these checks; documentation edits pending)
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:54:21.730114+00:00
+
+
+No output; shell exit0.

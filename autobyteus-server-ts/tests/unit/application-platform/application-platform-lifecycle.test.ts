@@ -18,8 +18,8 @@ const createDependencies = () => ({
     bootstrapBuiltInAgents: vi.fn(async () => undefined),
     definitionRuntimeReadiness: {
       prepare: vi.fn(async () => undefined),
-      isApplicationReady: vi.fn(() => true),
-      getDiagnosticsByApplicationId: vi.fn(() => new Map()),
+      isApplicationReady: vi.fn((_applicationId: string) => true),
+      getSetupRequiredDetail: vi.fn((_applicationId: string): string | null => null),
     },
   },
   executionReadiness: { assertReady: vi.fn() },
@@ -129,6 +129,25 @@ describe("ApplicationPlatformLifecycle", () => {
     expect(dependencies.applicationAgentToolCallLifecycle.open)
       .toHaveBeenCalledExactlyOnceWith("selected-app");
     await expect(lifecycle.awaitReady()).resolves.toBeUndefined();
+  });
+
+  it("quarantines each selected not-ready application with readiness's setup-required detail (autobyteus-296, AC-006)", async () => {
+    const dependencies = createDependencies();
+    const detail = "Application setup is required: selected-app/slot:draftingTeam: Codex authentication is unavailable: no logged-in account.";
+    const readiness = dependencies.preparation.definitionRuntimeReadiness;
+    readiness.isApplicationReady.mockImplementation((applicationId: string) => applicationId !== "selected-app");
+    readiness.getSetupRequiredDetail.mockImplementation((applicationId: string) =>
+      applicationId === "selected-app" ? detail : null);
+    const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
+
+    await lifecycle.prepareBeforeListen();
+    await lifecycle.recoverAfterListen();
+
+    expect(dependencies.availabilityService.quarantineApplication).toHaveBeenCalledExactlyOnceWith("selected-app", detail);
+    // Only the selected catalog applications are asked; the dormant one is not.
+    expect(readiness.getSetupRequiredDetail).not.toHaveBeenCalledWith("dormant-app");
+    expect(dependencies.eventDispatchService.resumePendingEventsForApplication).not.toHaveBeenCalled();
+    expect(dependencies.applicationAgentToolCallLifecycle.open).not.toHaveBeenCalled();
   });
 
   it("materializes a fresh selected application runtime cwd before definition/provider readiness", async () => {

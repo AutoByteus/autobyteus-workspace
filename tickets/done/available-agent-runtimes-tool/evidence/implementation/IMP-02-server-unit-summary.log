@@ -1,0 +1,10 @@
+# IMP-02
+# command: pnpm -C autobyteus-server-ts test:unit (excerpt: summary; full log was /tmp/ar303-logs/server-unit.log,      624 lines, not committed)
+# commit: 5135bb73dc (code identical to the run)
+# environment: macOS darwin 25.5, Node v22.23.1, pnpm; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  826 passed | 4 skipped (830)
+      Tests  6869 passed | 7 skipped (6876)
+unit exit 0

@@ -38,8 +38,6 @@ const readView = (memoryDir: string, includeArchive = false) =>
     .getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
       includeArchive,
-      includeEpisodic: false,
-      includeSemantic: false,
     });
 
 const createAccumulator = (
@@ -122,7 +120,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
         ["tool_call", "", "tool-2"],
       ]);
     expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
   it("rejects segment lifecycle without an exact turn instead of inventing a fallback turn", async () => {
@@ -143,7 +141,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
     const view = readView(memoryDir);
     expect(view.rawTraces).toEqual([]);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
   it("persists one trace for adjacent reasoning deltas and a new trace after a tool boundary", async () => {
@@ -229,7 +227,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["reasoning", "because ", "turn-1"],
       ["assistant", "hello", "turn-1"],
     ]);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
   it("persists open reasoning before a following tool call without duplicating later flushes", async () => {
@@ -571,7 +569,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["reasoning", "think before answer"],
       ["assistant", "visible answer"],
     ]);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
   it("persists open reasoning before assistant complete output", async () => {
@@ -607,7 +605,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["assistant", "final complete answer"],
     ]);
     expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
 
@@ -992,7 +990,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       "assistant",
       "provider_compaction_boundary",
     ]);
-    expect(fullView.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
   });
 
   it("dedupes replayed provider boundaries without dropping post-boundary active records", async () => {

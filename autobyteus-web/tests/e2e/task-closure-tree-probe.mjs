@@ -168,9 +168,11 @@ const ensureWorkspace = async () => {
 };
 /** Each created Task's key: agent-facing texts name Project Tasks by key, not by taskId (task-keys REQ-018). */
 const taskKeys = new Map();
-const createTask = async (projectId, description) => {
+/** autobyteus-260: a Project Task has a title; by default its description's first line. */
+const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
+const createTask = async (projectId, description, title = firstLine(description)) => {
   const created = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}',
-    { input: { projectId, description } })).createProjectTask;
+    { input: { projectId, title, description } })).createProjectTask;
   taskKeys.set(created.taskId, created.taskKey);
   return created.taskId;
 };
@@ -179,7 +181,7 @@ const assignedText = (taskId) => `New Task assigned to you: ${taskKeys.get(taskI
 const createProject = async (label) => {
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
     { input: { name: `Prototype Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
-  const task = (description) => createTask(projectId, description);
+  const task = (description, title) => createTask(projectId, description, title);
   return { projectId, task };
 };
 const taskStatus = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status}}', { id: projectId }))
@@ -244,7 +246,7 @@ const setupRoot = async (kind, label, { withB = true, withPlain = true } = {}) =
   const { projectId, task } = await createProject(label);
   const at = (member, catalogName) => (kind !== 'org' ? `/${segment(catalogName)}` : `/${member}`);
   const taskA = await task(callTool('delegate_task', { recipient_address: at('helper', names.helper),
-    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }));
+    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }), 'Prepare the release notes.');
   const taskB = await task('Review the docs site.');
   const root = await createRoot(kind, ids);
   const input = await managerInput(root);

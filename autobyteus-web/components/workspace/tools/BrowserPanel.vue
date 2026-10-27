@@ -63,6 +63,19 @@
             <Icon icon="heroicons:plus" class="h-4 w-4" />
           </button>
 
+          <button
+            v-for="direction in (['back', 'forward'] as const)"
+            :key="direction"
+            class="shrink-0 rounded-md border border-gray-200 px-2 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            :title="$t(`workspace.components.workspace.tools.BrowserPanel.${direction}`)"
+            :aria-label="$t(`workspace.components.workspace.tools.BrowserPanel.${direction}`)"
+            :disabled="!browserAvailable || !activeSession || !(direction === 'back' ? activeSession.canGoBack : activeSession.canGoForward)"
+            @click="handleHistoryNavigation(direction)"
+          >
+            <Icon :icon="direction === 'back' ? 'heroicons:arrow-left' : 'heroicons:arrow-right'" class="h-4 w-4" />
+          </button>
+
           <input
             v-model="addressValue"
             class="min-w-0 flex-1 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-800 outline-none transition-colors focus:border-blue-400"
@@ -274,6 +287,12 @@ const handleAddressSubmit = async (): Promise<void> => {
   await syncHostBounds()
 }
 
+const handleHistoryNavigation = async (direction: 'back' | 'forward'): Promise<void> => {
+  const session = activeSession.value
+  if (!session || !(direction === 'back' ? session.canGoBack : session.canGoForward)) return
+  await browserShellStore.navigateHistory({ tabId: session.tab_id, direction })
+}
+
 const handleRefresh = async (): Promise<void> => {
   if (!activeTabId.value) {
     return
@@ -352,9 +371,7 @@ onBeforeUnmount(() => {
   void browserShellStore.updateHostBounds(null)
 })
 
-watch(activeSession, () => {
-  syncAddressValue()
-})
+watch([activeTabId, () => activeSession.value?.url], syncAddressValue)
 
 watch(
   () => [

@@ -99,6 +99,8 @@ export class AgentContext {
     return this.state.customData;
   }
 
+  get nativeCommandProcessScope() { return this.config.nativeCommandProcessScope; }
+
   get workspaceRootPath(): string | null {
     return this.state.workspaceRootPath;
   }

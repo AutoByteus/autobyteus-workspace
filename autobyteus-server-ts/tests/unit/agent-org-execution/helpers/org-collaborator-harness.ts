@@ -52,6 +52,7 @@ export const admission = (runnable = true) => {
   })];
   return createCollaboratorAdmission({
     listAgentDefinitions: async () => agents,
+    isAgentHidden: () => false,
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,

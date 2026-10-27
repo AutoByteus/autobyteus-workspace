@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import { RemoteMessageReceiver, type RemoteRootDirectory } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import type { DeliverRemoteMessageRequest } from "../../../src/remote-collaboration/domain/remote-requests.js";
 import type { StoredRemoteLinkCheck } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
@@ -26,7 +27,7 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     org: vi.fn(async () => roots.org),
   } satisfies RemoteRootDirectory;
   const titles = { recordFirstMessage: vi.fn(async () => undefined) }
-  return { receiver: new RemoteMessageReceiver(directory, titles), directory, roots, titles };
+  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions()), directory, roots, titles };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {

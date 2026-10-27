@@ -1,0 +1,48 @@
+# IMP-12 (IR-004: DEL-F1, DEL-F2)
+# Command: (autobyteus-web) NUXT_TEST=true npx vitest run utils/agents utils/collaborators components/settings/model-routing components/run-settings utils/runSettings localization; the three web guards
+# Commit: f48af0176a
+# Environment: macOS 26.5.2, node v22.23.1 (merged base origin/personal 50e93c2108)
+# Date: 2026-10-27T04:47:39Z
+
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests) 73ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts (6 tests) 24ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts (1 test) 109ms
+ ✓ components/settings/model-routing/__tests__/AgentRuntimesNowSection.spec.ts (8 tests) 283ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 66ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 52ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 134ms
+ ✓ components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (6 tests) 148ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts (8 tests) 246ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts (4 tests) 21ms
+ ✓ components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts (3 tests) 14ms
+ ✓ localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts (2 tests) 2ms
+ ✓ components/run-settings/__tests__/RunMemberRowModelRouting.spec.ts (2 tests) 24ms
+ ✓ utils/runSettings/__tests__/runMemberTree.spec.ts (5 tests) 22ms
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts (2 tests) 33ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (7 tests) 4ms
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 3ms
+ ✓ utils/runSettings/__tests__/memberLaunchDefaults.spec.ts (6 tests) 16ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts (4 tests) 6ms
+ ✓ utils/runSettings/__tests__/delegatedCopyChoices.spec.ts (5 tests) 10ms
+ ✓ utils/collaborators/__tests__/collaboratorMentionText.spec.ts (8 tests) 6ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts (5 tests) 8ms
+ ✓ utils/runSettings/__tests__/startModelDefaults.spec.ts (7 tests) 5ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts (4 tests) 8ms
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 2ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts (3 tests) 3ms
+ ✓ utils/collaborators/__tests__/draftMentionEligibility.spec.ts (4 tests) 5ms
+ ✓ utils/runSettings/__tests__/modelOptions.spec.ts (5 tests) 3ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 7ms
+ ✓ utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts (1 test) 5ms
+ ✓ utils/runSettings/__tests__/launchReadiness.spec.ts (5 tests) 3ms
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 1ms
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts (1 test) 2ms
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts (1 test) 2ms
+ Test Files  34 passed (34)
+      Tests  137 passed (137)
+[guard:web-boundary] Passed.
+guard:web-boundary exit=0
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit=0
+[audit:localization-literals] Passed with zero unresolved findings.
+audit:localization-literals exit=0

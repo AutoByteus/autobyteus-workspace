@@ -1,0 +1,48 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "base": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "buildExitCode": 0,
+  "dmgVerifyExitCode": 0,
+  "signed": false,
+  "published": false,
+  "installed": false,
+  "artifacts": [
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.dmg",
+      "bytes": 494925731,
+      "sha256": "6a555aba8483dce084764ee0782513008d1539ce9ad6f7d6a16df016897720e0"
+    },
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.zip",
+      "bytes": 491435572,
+      "sha256": "5f2b08dfa84f3bd2bc28e0c5a1ffdb201888b4309222356aa377bb117854291f"
+    }
+  ],
+  "compiledPackagedMatches": [
+    {
+      "path": "server-runtime.js",
+      "sha256": "f7245815d4cfd2cb062a8bc5bfb5a1028519fc3d0adbe2041b57557e28d08843",
+      "equal": true
+    },
+    {
+      "path": "secret-management/resolution/mcp-secret-resolver.js",
+      "sha256": "b9895d15afbd2d867937bb016e9fa8eaf136d2370aa3a35aec114b33ecdc05c6",
+      "equal": true
+    },
+    {
+      "path": "agent-execution/backends/codex/thread/codex-thread.js",
+      "sha256": "a93a2b12994f7378be3f4f1e8959bccfc31e562a64c720ab17c38c1abbe16abf",
+      "equal": true
+    },
+    {
+      "path": "api/graphql/types/agent-background-task-view.js",
+      "sha256": "f0033a3c364ddc984563a45d334c2ed64520d59973e1a479bc5ae4fbd1697869",
+      "equal": true
+    },
+    {
+      "path": "api/graphql/schema.js",
+      "sha256": "81fc07ebefbc1d7e2b3e37bfa30881ef5cfeab8e3130e0495620e625351f8bd6",
+      "equal": true
+    }
+  ]
+}

@@ -35,12 +35,21 @@ access.
 
 ## Main Service
 
-- `src/mcp-server-management/services/mcp-config-service.ts`
+- `src/mcp-server-management/services/mcp-config-service.ts`: the configure,
+  preview, import, delete, list and move sequences, and the service write lock
+  that runs every config write one at a time.
+- `src/mcp-server-management/services/mcp-server-secret-fields.ts`
+  (`McpServerSecretFields`): the only MCP code that writes MCP secrets to the
+  vault or reads their state.
+- `src/mcp-server-management/services/mcp-secret-suggestion-rule.ts`: the
+  secret suggestion rule.
+- `src/mcp-server-management/domain/mcp-server-draft.ts`: the server draft every
+  save and preview starts from.
 
 ## Remote (Streamable HTTP) Server Credentials
 
 A streamable HTTP server entry in `<appDataDir>/mcps.json` may carry two
-credential fields, stored as the user entered them:
+credential fields:
 
 - `headers`: sent unchanged on every request (initialize, tool listing, tool
   calls). Use it for any fixed header, such as `Authorization: Basic …`.
@@ -50,9 +59,76 @@ credential fields, stored as the user entered them:
 Setting both `token` and an `Authorization` header (any letter case) is rejected
 on save, preview and import, so neither silently overrides the other. The
 effective request headers are derived in one place,
-`StreamableHttpMcpServerConfig.requestHeaders()` in `autobyteus-ts`, and the
-client passes them to the MCP SDK as `requestInit.headers`. Both values are
-currently stored in plain text, like stdio `env` values.
+`StreamableHttpMcpServerConfig.requestHeaders(resolved)` in `autobyteus-ts`,
+from the values resolved at connect, and the client passes them to the MCP SDK
+as `requestInit.headers`. Both are always-secret fields: stored in the vault
+(see [Secret Values](#secret-values)).
+
+## Secret Values
+
+An env value (stdio), a header value or the token (HTTP) is either a plain
+string or a **secret reference**, `{ "vaultSecretId": "mcp.<uuid>" }`, whose
+value is an **MCP secret** in the server's vault (consumer kind `mcpServer`).
+`mcps.json` never holds a secret's value. Plain strings stay a supported shape:
+they are settings until the user locks or moves them.
+
+- **Which values are secret.** The HTTP `token` and an `Authorization` header
+  (any letter case) are always secret: no value of theirs is ever returned, even
+  while one is still stored plain. Any other value is secret when the user locks
+  its row. The **secret suggestion rule** pre-locks a new row and selects move
+  candidates: a name containing `KEY`, `TOKEN`, `SECRET`, `PASSWORD`, `PASS`,
+  `CREDENTIAL` or `AUTH` (any case), or a value starting with `github_pat_`,
+  `ghp_`, `sk-`, `xoxb-`, `glpat-`, `ATATT` or `AKIA`. It is a suggestion only
+  (for example `TOKEN_LIMIT=4096` is matched and can be unlocked). The web reads
+  it from `mcpSecretSuggestionRule` and never defines it; shared vectors in
+  `test-support/fixtures/mcp-secret-suggestion-vectors.json` keep both sides the
+  same.
+- **Saving (configure, the JSON tab, import).** GraphQL input rows
+  (`McpConfigEntryInput {name, secret, value}`, `McpTokenInput {value | keep}`)
+  become a server draft: `plain`, `newSecret` (a value to store) or `keep` (what
+  is stored for that field); import can also produce `missingSecret` (below),
+  which the GraphQL input cannot express. A new secret is saved under a new
+  `mcp.<uuid>` before the file is written; the entries the server no longer
+  references (replaced, unlocked or removed fields) are removed after the write
+  commits; if the write fails, the new entries are removed instead. A save
+  writes no backup: only the move does.
+- **Showing.** `mcpServers` and the configure result return each env or header
+  row as `McpConfigEntry {name, value, state}` and the token as `tokenState`.
+  `value` is set only for a plain value of a field that is not always secret.
+  The state is `PLAIN`, `CONFIGURED` (entry present), `MISSING` (no entry) or
+  `VAULT_UNAVAILABLE` (the vault is not READY); a vault that is not READY never
+  fails the query.
+- **Using.** A managed MCP server resolves its references when it connects, and
+  never earlier, through the `McpSecretResolver` that `server-runtime.ts`
+  installs once the vault is initialized (`installRuntimeMcpSecretResolver`).
+  A missing entry or an unavailable vault fails the connect with `MCP server
+  '<id>' needs secret: <field> (no value is stored | the vault is unavailable).`,
+  with no value; there is no plain fallback. A stdio server receives its secrets
+  in its process environment, where its own process can read them (the UI says
+  so).
+- **Preview** never stores anything: new values are used in memory, kept
+  secrets are resolved from the saved server's references.
+- **Delete** removes the server's vault entries once the file write commits.
+- **Move to vault** (`mcpSecretMoveCandidates`, `moveMcpSecretsToVault`): a
+  maintenance action the user triggers, never automatic. Candidates are plain
+  values of always-secret fields and plain values the rule matches (no value or
+  part of one is returned). The move saves each selected value that is still
+  plain as a new MCP secret, then the provider, in one locked write, writes the
+  backup `mcps.json.backup-before-vault-move-<timestamp>` (mode 0600, next to
+  `mcps.json`; it holds the plain values) and rewrites the file with the
+  references; the cache follows. If that write fails, the new entries are
+  removed and the file is unchanged. After the service lock is released, each
+  changed server is added again and its tools are re-registered. The result
+  names the backup path, the moved and skipped fields, and servers whose tools
+  could not be registered again.
+- **Import** stores always-secret values and values the rule matches as MCP
+  secrets and lists them in `storedSecrets`. An entry holding a secret reference
+  always imports (MDEC-007): when the server with that ID already holds a
+  reference at that field, it keeps its own (so re-importing an older copy of
+  its file never removes a working secret); any other reference becomes
+  `missingSecret`, a fresh `mcp.<uuid>` with no vault entry (state `MISSING`,
+  "needs secret"), listed in `needsSecret`. A foreign vault ID is never adopted,
+  so no two servers share an entry.
 
 ### Redirects
 
@@ -90,12 +166,14 @@ Any other `transport_type`, such as `websocket`, is rejected with
 
 Bulk import (`importMcpServerConfigs`) imports each entry on its own. The
 result keeps `success`, `message`, `importedCount` and `failedCount`, and adds
-`failures`: one `{ serverId, reason }` per entry that was not imported.
+`failures`: one `{ serverId, reason }` per entry that was not imported, and
+`storedSecrets`: one `{ serverId, field }` per value stored as an MCP secret, and
+`needsSecret`: one per imported secret reference this node does not hold.
 Reasons name fields and never contain env, header or token values. A
 whole-input error (invalid JSON, no top-level `mcpServers`) returns
-`success: false` with its message and an empty `failures` list. At startup, a
-stored entry that does not parse is skipped, and the other entries still
-register.
+`success: false` with its message and empty lists. At startup, a stored entry
+that does not parse is skipped with a warning that names the server and the
+error (never a value), and the other entries still register.
 
 ## Server Instance Lifetime
 
@@ -182,8 +260,15 @@ runtime. Rerun these with the new SDK:
   endpoints.
 - `tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts` and
   `mcp-http-redirect-and-transport.e2e.test.ts` (ungated; need a current
-  server build): credentials on every request, the redirect rule and the
-  transport set.
+  server build): credentials on every request (stored in the vault, resolved
+  again after a restart), the redirect rule and the transport set.
+- `tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts` (ungated; needs
+  a current server build): a plain `mcps.json` from before the vault, the move
+  with its backup, a locked save, resolution through `/mcp/gateway` after a
+  restart, and no value in any response, output or file.
+- `tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts` (gated:
+  `RUN_GITHUB_MCP_E2E=1` with `AUTOBYTEUS_TEST_VAULT`): GitHub's remote MCP
+  server with its token stored as an MCP secret; see `TESTING.md` "Test vault".
 - `tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts` (gated per runtime;
   every case skips without its gate, and a skip is not a pass): each runtime
   calls the project tools `create_task`/`update_task`, an external stdio tool

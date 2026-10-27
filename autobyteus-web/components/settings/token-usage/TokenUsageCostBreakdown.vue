@@ -69,7 +69,41 @@ const props = defineProps<{
 const { t: $t, resolvedLocale } = useLocalization();
 const formatter = createTokenUsageStatisticsFormatter($t, () => resolvedLocale.value);
 
-const inputRows = computed(() => [
+interface InputRow {
+  label: string;
+  tokens: number;
+  cost: number | null;
+}
+
+// Cache-write rows follow TokenUsageMeterPanel: 5-minute and 1-hour writes get their own rows;
+// the unsplit "Cache writes" row keeps tokens outside the split, priced as the part of the
+// cache-write cost the split rows do not carry.
+const cacheWriteRows = (aggregate: TokenUsageCostSummaryAggregate): InputRow[] => {
+  const split5m = aggregate.cacheCreation5mInputTokens;
+  const split1h = aggregate.cacheCreation1hInputTokens;
+  const unsplitTokens = Math.max(aggregate.cacheCreationInputTokens - split5m - split1h, 0);
+  const unsplitCost = aggregate.estimatedApiCacheCreationInputCost === null
+    ? null
+    : Math.max(
+      aggregate.estimatedApiCacheCreationInputCost
+        - (aggregate.estimatedApiCacheCreation5mInputCost ?? 0)
+        - (aggregate.estimatedApiCacheCreation1hInputCost ?? 0),
+      0,
+    );
+  const rows: InputRow[] = [];
+  if ((split5m === 0 && split1h === 0) || unsplitTokens > 0) {
+    rows.push({ label: $t('shell.tokenUsage.cacheWrites'), tokens: unsplitTokens, cost: unsplitCost });
+  }
+  if (split5m > 0 || aggregate.estimatedApiCacheCreation5mInputCost !== null) {
+    rows.push({ label: $t('shell.tokenUsage.cacheWrite5m'), tokens: split5m, cost: aggregate.estimatedApiCacheCreation5mInputCost });
+  }
+  if (split1h > 0 || aggregate.estimatedApiCacheCreation1hInputCost !== null) {
+    rows.push({ label: $t('shell.tokenUsage.cacheWrite1h'), tokens: split1h, cost: aggregate.estimatedApiCacheCreation1hInputCost });
+  }
+  return rows;
+};
+
+const inputRows = computed<InputRow[]>(() => [
   {
     label: $t('shell.tokenUsage.uncachedInput'),
     tokens: props.aggregate.standardInputTokens,
@@ -80,11 +114,7 @@ const inputRows = computed(() => [
     tokens: props.aggregate.cacheReadInputTokens,
     cost: props.aggregate.estimatedApiCacheReadInputCost,
   },
-  {
-    label: $t('shell.tokenUsage.cacheWrites'),
-    tokens: props.aggregate.cacheCreationInputTokens,
-    cost: props.aggregate.estimatedApiCacheCreationInputCost,
-  },
+  ...cacheWriteRows(props.aggregate),
   {
     label: $t('shell.tokenUsage.totalInputCost'),
     tokens: props.aggregate.grossInputTokens,

@@ -1,19 +1,41 @@
-# Delivery handoff — DR002 reopened NFS guide link removal
+# Delivery handoff — DR003 / R3 concise NFS Guide
 
-Task **autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**; reopened **nfs-guide-install-commands**, R2/SR003 Approved / SR004 Ready / IR002 / API002 Pass95.71%. **Small / Low / Direct Low-Risk** unchanged; architecture/source review N/A—not selected, test review Not Required. No release.
+**autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**, package
+nfs-guide-install-commands. R3/SR005 Approved / SR006 Ready / IR003 / API003
+Pass95.71%; **Small / Low / Direct Low-Risk**. Independent architecture/source
+reviews N/A, test review Not Required. **NO RELEASE**.
 
-## Scope and result
-Two redundant installation anchors/labels removed in English and Chinese. Advanced README, nine exact commands, version visibility (including partial availability), clipboard lifecycle, Docker guide and safety/deferred notices retained. Evidence sufficient for all AC001–006; no user repeat check required.
+Current worktree /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3;
+ticket branch codex/nfs-guide-install-commands-r3, final target origin/personal.
+Input3d63afcec9574fa4d98e71b674de37f981a29040, source1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708,
+API-testedccc0c56d2d4fdf48815a19d73870798dcd8fadb9. Fresh fetch/merge of
+d74f75a51ab7dc47d42a13f33e0f943c3a230ad7 Already up to date; no shared foundation
+or exercised input changed, so no duplicate suite or browser/host campaign.
 
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2`, branch codex/nfs-guide-install-commands-r2. Source3d95a5c4 / API-tested4e308b7 / intake04951598bf70cda1f77d5d961597fc370a63f26b. Final target origin/personal. Fresh base8b34e8ae108a281b0c93c679c60883df28a30773 already integrated; all non-ticket inputs match API-tested state. No additional integration tests justified absent drift.
+## Scope / evidence judgement
+Removed advanced CLI link and oversized end-of-guide text. Now43English words
+and equivalentChinese: unboxed folder tip plus compact private-network/unencrypted/
+outage warning. All nine exact commands, v0.1.0 pin/digest, version/availability,
+clipboard behavior and adjacent Docker preserved. Detailed limits stay in guide docs.
+All AC001–007 Proven from actual raw cases, not score alone. Delivery inspected
+IMP16 56tests/5files+scoped alias tsc/3guards, IMP17 availability, current API driver,
+four Nodes views/36 actual clipboard comparisons, separate lifecycle result and
+six supporting images. See delivery-evidence/dr-003/verification.json and report.
 
-## Verification
-Read current implementation Checks Run first, raw54tests/5files, helper tsc/3guards, IMP11 partial/null driver/result, API002 full real-page driver/result and screenshots. Four en/zh-CN desktop/narrow views,36 actual clipboard comparisons+Enter, exact sole advanced link and removed labels/no gap, pending/unmount/denial/missing and Docker checks Pass. API95.71 is bounded renderer confidence. `delivery-evidence/dr-002/verification.json` gives AC-specific judgments and selected raw hashes.
+Attempt2 aggregate remains Not Tested: R02 is separately proven by four saved
+current receipts and completed boundary after Docker checks; attempt2 lost R03
+detail not credited. Only fresh attempt3 R03 Pass is relied on. Stale assertion,
+Node-cache cleanup failures and initial alias-typecheck failure remain historical
+failed attempts, not product defects or silent passes. Final API owned cleanup complete.
+Unrelated read services/feeds emulated, clipboard negatives controlled; actual
+page/normal clipboard real and sandboxed. No backend/Electron/installer/NFS/field/
+provider/user proof. No mandatory user repeat. Persisted data Not Affected.
 
-Unrelated read services/feeds/identity and clipboard failure controls emulated; success clipboard/page/router/catalog real. Final current API browser explicitly sandboxed. Failed initial fixture/sandbox attempt remains historical Fail; corrected attempt2 zero errors, own helpers cleanup recorded. No backend/Electron/installer/NFS/physical/provider/user qualification. Existing autobyteus-nfs-4 unchanged.
-
-## Delivery
-Docs sync Pass, no extra source/test/long-lived doc edit by Delivery. Root RELEASE83e8e121 governs --no-ff, secret before first ticket push and merged target push; freshness guards required. Archive to tickets/done/nfs-guide-install-commands after verification. Initial status: verification/docs complete; finalization/cleanup pending actual receipt. No release/version/tag/deployment. See release-deployment-report.md and DR002 receipt for actual final operations.
-
-## Prior custody
-DR001 completion is verified read-only at prior detached worktree6d90a825; its remote pre-finalization snapshot is historical, not an unresolved new blocker. Do not replay old pushes. Prior local checkout, canonical dirty checkout/PM/NFS repo untouched. No new follow-up, mandatory field/user check or TaskDone claim.
+## Delivery / custody
+Docs sync Pass; long-lived guide already synchronized in IR003. No Delivery source,
+test, version, NFS repository, user install, canonical dirtycheckout or PM edit.
+Initial finalization snapshot: verified; archive/secret-gated ticket/--no-ff target
+pushes and cleanup to be recorded in release-deployment-report.md and dr-003 receipt.
+No release/tag/deployment, no TaskDone or user-verification claim. No new follow-up.
+DR001/DR002 completed historical results reconciled from old retained receipts,
+not their incomplete remote snapshots; do not replay them. Existing nfs-4 unchanged.

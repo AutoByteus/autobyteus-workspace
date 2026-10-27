@@ -52,7 +52,8 @@ on Task closure and peer authentication come in later slices.
   are unchanged.
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
   as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
-  Agent Orgs, team-local or application-owned definitions.
+  Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
+  ([Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 - How a remote run runs is decided in one place, `NodeCatalogPort`
   (`agent-collaboration/collaborators/node-catalog-port.ts`): each agent's own default runtime, model and
   model settings, and for a Team member without one the Team's default (no inherited layer; see
@@ -87,7 +88,11 @@ detail; `target` the target definition there, for `NO_DEFAULT_RUNTIME` and `AGEN
 node words it as an Agent or an Agent Team), a malformed body `400`. A delegated-run request names its target by `address`, its catalog address on the
 called node; its answer is `{accepted: true, nodeId, kind: "agent", agentRunId}` or `{accepted: true, nodeId,
 kind: "agent_team", teamRunId, coordinatorAddress, members: [{address, agentRunId}]}` (the member addresses
-as the delegating node addresses them, under the catalog address). Every message and work packet carries
+as the delegating node addresses them, under the catalog address). A delegated-run request also carries the Task
+(`task`: text, title, key and IDs), so the called node can route its agents; both accepted answers carry `launches`
+(each agent's address, runtime, model and launch source), and a refusal may carry `modelRouting {state}` and
+`agentName` (code `MODEL_ROUTER_FAILED` for a failed routing with no fallback; see
+[Model Routing: Across nodes](./model_routing.md#across-nodes)). Every message and work packet carries
 `targetRoot: {kind: "agent" | "agent_team" | "agent_org", runId}`, the root that receives it on the called
 node: towards a remote run, that run's root; back towards the delegator, the coordinating run its
 `delegatedFrom` names. The two discovery requests carry the envelope only: *availability* is answered
@@ -96,7 +101,8 @@ description?}]}`. There is no version field and no request ID; nothing retries. 
 build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
 
 - **`PeerClient`** (`channel/peer-client.ts`, implements `RemoteRunChannel`): applies this node's switch
-  and the registration, sends with a 20 s bound (QR-102), refuses an answer from a server that is not the
+  and the registration, sends with a 20 s bound (QR-102; a delegated-run start request waits up to 50 s,
+  `PEER_START_REQUEST_TIMEOUT_MS`, to fit the called node's 40 s routing), refuses an answer from a server that is not the
   pinned peer, and words every refusal for the agent with the peer's name. It reads a peer's list strictly:
   each entry has exactly `name`, `kind`, `address` and, optionally, `description`; anything else (for example
   a `members` field) makes the answer malformed, read as unreachable "it answered without its list".

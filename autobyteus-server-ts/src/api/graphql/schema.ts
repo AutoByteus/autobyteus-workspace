@@ -1,3 +1,4 @@
+import { AgentBackgroundTaskViewResolver } from './types/agent-background-task-view.js';
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
@@ -22,6 +23,7 @@ import { ToolManagementResolver } from './types/tool-management.js';
 import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
+import { MemorySearchResolver } from './types/memory-search.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
 import { RemoteCollaborationSettingsResolver } from './types/remote-collaboration-settings.js';
 import { RunHistoryResolver } from './types/run-history.js';
@@ -43,6 +45,8 @@ import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
 import { UpdateNotificationResolver } from './types/update-notifications.js';
 import { AgentRuntimesResolver } from './types/agent-runtimes.js';
+import { AvailableAgentRuntimesResolver } from './types/available-agent-runtimes.js';
+import { ModelRoutingResolver } from './types/model-routing.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -53,6 +57,7 @@ export async function buildGraphqlSchema() {
       ApplicationCapabilityResolver,
       SkillResolver,
       AgentRunResolver,
+      AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
       DelegatedLaunchSelectionResolver,
       WorkspaceResolver,
@@ -70,6 +75,7 @@ export async function buildGraphqlSchema() {
       McpServerResolver,
       MemoryExplorerResolver,
       MemoryViewResolver,
+      MemorySearchResolver,
       MemorySyncResolver,
       RemoteCollaborationSettingsResolver,
       RunHistoryResolver,
@@ -90,6 +96,8 @@ export async function buildGraphqlSchema() {
       ProjectTaskSearchResolver,
       EmbeddingModelResolver,
       AgentRuntimesResolver,
+      AvailableAgentRuntimesResolver,
+      ModelRoutingResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

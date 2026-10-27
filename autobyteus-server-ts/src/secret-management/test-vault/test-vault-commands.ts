@@ -14,6 +14,7 @@ import {
   LocalEnvironmentSecretImportError,
   type LocalEnvironmentSecretImportResult,
 } from "../provisioning/local-environment-secret-import.js";
+import { LocalEnvironmentSourceReader } from "../provisioning/local-environment-source-reader.js";
 import { openReadOnlyTestVault } from "./read-only-test-vault.js";
 import {
   currentPathPolicyEnvironment,
@@ -66,7 +67,10 @@ const sidecarPaths = (location: TestVaultLocation): string[] => [
  */
 export class TestVaultCommands {
   constructor(
-    private readonly importer = new LocalEnvironmentSecretImportService(),
+    // The test vault also accepts the test-only aliases (for example the live-check GitHub token).
+    private readonly importer = new LocalEnvironmentSecretImportService(
+      new LocalEnvironmentSourceReader(undefined, undefined, "testVault"),
+    ),
   ) {}
 
   location(context: TestVaultCommandContext): TestVaultLocation {

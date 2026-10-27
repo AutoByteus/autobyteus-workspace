@@ -1,0 +1,80 @@
+# API/E2E Test Progress
+Report: api-e2e-execution-coverage-report.md. Plan: api-e2e-coverage-investigation.md.
+| Time | Case | Event | Result | Note |
+|---|---|---|---|---|
+| 2026-10-26T05:01:46.830813+00:00 | API-01 | Started | | Reuse impact/evidence validation |
+| 2026-10-26T05:01:46.830813+00:00 | API-01 | Completed | Pass | 501 durable cases+types/build; no exercised source changed |
+| 2026-10-26T05:01:46.830813+00:00 | API-04 | Started | | Current isolated desktop Codex conversation; prioritize largest composed ownership gap |
+| 2026-10-26T05:03Z | API-04 | Checkpoint | | Attempt1 fixture used native-only ensureProviderModelCatalog on Codex. Source requireProvider rejects by design; use external-runtime snapshot query. No command launched; exact instance force-cleaned by CLI, both ports released, root removed. Retained attempt1 logs; rerun only this case. |
+| 2026-10-26T05:04Z | API-04 | Completed | Pass | Actual Codex tool/turn→desktop quit807ms; child88332 absent/listener gone, sentinel200, data unchanged; CLI no force, own ports released/root removed. Restart separate follow-on. |
+| 2026-10-26T05:06Z | API-06 | Started | | Actual native dual tool commands, ended agent then restart; active run then quit. |
+| 2026-10-26T05:05:08.960871+00:00 | API-06 | Completed | Pass | Finished before pause: actual ended-run restart2696ms and active-run quit1316ms,4 command+4 anchor PIDs absent, listener ports released, TERM resistance observed, sentinel/data preserved. |
+| 2026-10-26T05:05:08.960871+00:00 | All | Checkpoint | Not Tested | User-requested testing PAUSE relayed by Code Reviewer. No active case interrupted; API-02/03/05/07 never started. No further tests/builds/provider/app runs. Earlier progress entries use manually entered approximate labels; authoritative actual event times are in result JSON (API-04 finished05:02:22Z; API-06 finished05:03:20Z). |
+| 2026-10-26T05:05:08.960871+00:00 | Scope | Checkpoint | | Solution Designer advises approved read-only background visibility expansion and R2/design in progress. Preserve R1 source evidence, no expanded-ticket pass/delivery or speculative UI tests. |
+| 2026-10-26T08:19:31.075121+00:00 | All | Checkpoint | | User directly says “i asked you to pause or? i think we could continue now?”; testing pause lifted. Read progress and current HEAD7bd0bbea4: R2/D4.1 implementation IR-004 is explicitly incomplete, generated GraphQL/types/checks/build/source review pending. No new execution against unreviewed WIP or stale package. Ask coordinator to resume implementation checks then normal source-review/API route; retain completed evidence by source revision. |
+| 2026-10-26T08:58:14.290201+00:00 | All | Checkpoint | | Resumed same run after CRR-003; R2/D4.1/source9bd72c208 current app; DMG packaging failure retained. |
+| 2026-10-26T08:58:14.290201+00:00 | API-08 | Started | | Inspect current implementation test receipts and source impact. |
+| 2026-10-26T08:58:14.290201+00:00 | API-08 | Completed | Pass, repository only | 300 unique R2 cases reused; actual provider/panel not proven. |
+| 2026-10-26T08:58:45Z | API-09 | Started | | Actual Codex conversation/live query/current desktop panel; no intercepted view or synthetic context. |
+| 2026-10-26T08:59:43.932467+00:00 | API-09 | Completed | Pass, phase A | Real current conversation/live query/panel running→natural0 completed, reopen/reload; model calls stay2, no fake view/context; cleanup normal/roots removed. Remaining planned nonzero/two-run and active-work restart/quit are phase B, not inferred. |
+| 2026-10-26T09:00:42Z | API-09 | Started | | Phase B nonzero/foreground/two live selections and current Codex active-work restart/quit; separate exact-source receipt, phase A not repeated. |
+| 2026-10-26T09:02:08.538184+00:00 | API-09 | Checkpoint | Fixture correction | Phase B attempt1 timed out selecting B: helper observed old route surface before asynchronous hydration and toggled Activity incorrectly. A/B real queries correctly running with foreground excluded; not a product failure. Wait for exact selected run hydration before panel action. Prior failure/cleanup preserved attempt1; CLI forced cleanup, both children/ports absent/root removed, not graceful proof. Rerun affected phase B only. |
+| 2026-10-26T09:02:53.203128+00:00 | API-09 | Completed | Pass, phase B | Actual two-run identity/selection, foreground exclusion, natural exit7 failed, inactive unavailable; current Codex live-work restart and quit, no model polling, own PID/listener absence and sentinels; cleanup no force/root removed. |
+| 2026-10-26T09:03:28Z | API-05 | Started | | Actual current desktop captured backend failure and external426 conflict/retry/recovery. |
+| 2026-10-26T09:04:17.357817+00:00 | API-05 | Checkpoint | Fixture correction | After clean captured backend SIGTERM no error overlay is guaranteed. Initiate actual preload restart to encounter externally held port, then retry via visible UI. Prior setup timeout preserved attempt1; not product failure. CLI cleanup forced, own roots/ports removed. |
+| 2026-10-26T09:05:24.488426+00:00 | API-05 | Completed | Pass | Current external426 conflict identifies own fixture PID/node, repeated UI retry refreshes observedAt without killing fixture, release and retry clears diagnostic/overlay; sentinel/data preserved; normal quit/cleanup. |
+| 2026-10-26T09:05:24.488426+00:00 | API-06 | Started | | Current-source impact follow-on B: shared AgentRun/manager changed in R2; rerun real native ended/adopted/resistant restart and retained active-run quit on current package, preserve original receipt. |
+| 2026-10-26T09:07:17.608606+00:00 | API-06 | Completed | Pass, current follow-on B | Full current native ended-run/resistant/adopted restart and active-run quit pass;4 listeners+4 anchors absent, sentinels preserved; no force cleanup/root removed. |
+| 2026-10-26T09:08:15Z | API-03 | Started | | Added gated full standalone E2E; real app command/SDK launch, native tools and public host.close. Current dist from IMP-44 reused. |
+| 2026-10-26T09:08:59.407695+00:00 | API-03 | Checkpoint | Fixture correction | Standalone constructed, internal model catalog uses model_identifier (GraphQL exposes modelIdentifier). Fix setup field only; no tools launched, host process exited/root removed. Prior attempt1 logs retained. |
+| 2026-10-26T09:10:03.888361+00:00 | API-03 | Completed | Pass | New durable full standalone E2E: public app command/SDK and real native model/tools, terminated initiator leaves previews, active+ended four commands/anchors absent after host.close, TERM observed/sentinel/data preserved/root removed. |
+| 2026-10-26T09:10:36Z | API-07 | Started | | Actual packaged Electron-Node IPC complete-before-exit, early cancellation, injected cleanup failure and disconnected transport reporting; no Windows certification/update installation. |
+| 2026-10-26T09:10:51.598756+00:00 | API-07 | Checkpoint | Fixture correction | Direct packaged backend (outside ServerManager) requires private .env seed. First child correctly rejected missing config before IPC setup, no workload; preserved attempt1, root removed. Added owned APP_ENV/base URL bootstrap. |
+| 2026-10-26T09:12:24.834338+00:00 | API-07 | Completed | Pass | Current packaged Electron-Node IPC ready/request complete-before-exit; early cancellation0, injected cleanup-unconfirmed failed/exit1, disconnected transport exit1/no false complete; all ports closed/data preserved/root removed. |
+| 2026-10-26T09:12:24.834338+00:00 | API-10 | Started | | Real captured provider unresponsiveness, bounded live query, actual panel last-known/unavailable, recovery without model calls, then normal active-work quit. |
+| 2026-10-26T09:13:41.519793+00:00 | API-10 | Completed | Pass | Exact own Codex app-server SIGSTOP: live query unavailable in5005ms, panel retained labelled last-known row/count; SIGCONT same identity recovered via normal poll, calls2 unchanged; active-work quit602ms and cleanup clean. |
+| 2026-10-26T09:13:41.519793+00:00 | API-03 | Started | | Final test-only safety refinement: global90s execution deadline reserves cleanup before outer timeout; generic durable evidence naming and recorded host PID. Rerun this one new case because helper changed. Prior success retained pre-safety. |
+| 2026-10-26T09:14:33.131089+00:00 | API-03 | Completed | Pass, final test files | One gated test passed after safety-only helper refinement. Final source paths unchanged except own tests; final report/host logs renamed API-03 for ticket evidence. |
+| 2026-10-26T09:18:29.368948+00:00 | All | Completed | API-REV-001 Pass95.3%, validation stage | Canonical report/AC proof and revision record complete. Cleanup audit49 PIDs/12 roots absent. New two-file standalone durable coverage requests proportional review; no final delivery/build/package/Windows certification. |
+| 2026-10-26T09:52:45.428712+00:00 | All | Checkpoint | API-REV-002 resumed | CRR-005/IR-005/DR-001 integrated source2c47bcd64 buildIMP56; same run/case IDs, prior95.3 not current. |
+| 2026-10-26T09:52:45.428712+00:00 | API-01/08 | Started | | Inspect current foundation receipts/impact. |
+| 2026-10-26T09:52:45.428712+00:00 | API-01/08 | Completed | Pass, reused repository |854 unique current cases; no actual provider/host acceptance inferred. |
+| 2026-10-26T09:52:45.428712+00:00 | API-03 | Started | | Integrated exact durable standalone test; no test source changes. |
+| 2026-10-26T09:53:34.864703+00:00 | API-03 | Completed | Pass, integrated |1 durable test, real standalone host.close836ms;4 native command/anchor pairs absent, TERM/resistant/adopted/ended+retained cases, data/sentinel intact; own root removed. |
+| 2026-10-26T09:53:34.937Z | API-05 | Started | | Integrated2c47bcd64; API-05-conflict-recovery.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:53:52.337Z | API-05 | Completed | Pass, integrated | Exit0, API-05-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:53:52.338Z | API-06B | Started | | Integrated2c47bcd64; API-06B-desktop-native-current.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:00.495Z | API-06B | Completed | Pass, integrated | Exit0, API-06B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:00.496Z | API-07 | Started | | Integrated2c47bcd64; API-07-packaged-ipc.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:06.600Z | API-07 | Completed | Pass, integrated | Exit0, API-07-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:06.601Z | API-09 | Started | | Integrated2c47bcd64; API-09-desktop-visibility.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:21.767Z | API-09 | Completed | Pass, integrated | Exit0, API-09-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:21.768Z | API-09B | Started | | Integrated2c47bcd64; API-09B-selection-lifecycle.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:33.607Z | API-09B | Completed | Pass, integrated | Exit0, API-09B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:54:33.608Z | API-10 | Started | | Integrated2c47bcd64; API-10-provider-unavailable.mjs; output evidence/API-REV-002. |
+| 2026-10-26T09:54:48.750Z | API-10 | Completed | Pass, integrated | Exit0, API-10-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T09:58:46.991494+00:00 | All | Completed | API-REV-002 Pass95.3%, integrated executable stage | All renewed system cases passed first attempt;854 current foundation cases reused. Cleanup35 PIDs/7 roots absent. Proportional harness/evidence review next, no target merge/push/install/release. |
+| 2026-10-26T10:23:51.232395+00:00 | All | Checkpoint | API-REV-003 resumed | CRR007/IR006/DR002 fresh source9b10fcd4d/base0fd9/IMP72 beta10. Same case IDs/run. |
+| 2026-10-26T10:23:51.232395+00:00 | API01/08 | Started | | Current foundation evidence/impact inspection. |
+| 2026-10-26T10:23:51.232395+00:00 | API01/08 | Completed | Pass, repository only |1110 unique current scoped checks reused with actual corrected web/transport limits; no prior confidence inherited. |
+| 2026-10-26T10:23:51.232395+00:00 | API03 | Started | | Rerun unchanged full standalone E2E against current dist. |
+| 2026-10-26T10:24:12.718197+00:00 | API03 | Completed | Pass, fresh-base |1 durable test, full host.close838ms,4 native command/anchor pairs absent, ended+retained/adopted/TERM cases, sentinel/data intact/root removed. |
+| 2026-10-26T10:24:12.786Z | API-05 | Started | | Integrated9b10fcd4d; API-05-conflict-recovery.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:28.721Z | API-05 | Completed | Pass, integrated | Exit0, API-05-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:28.722Z | API-06B | Started | | Integrated9b10fcd4d; API-06B-desktop-native-current.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:37.552Z | API-06B | Completed | Pass, integrated | Exit0, API-06B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:37.553Z | API-07 | Started | | Integrated9b10fcd4d; API-07-packaged-ipc.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:43.748Z | API-07 | Completed | Pass, integrated | Exit0, API-07-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:43.749Z | API-09 | Started | | Integrated9b10fcd4d; API-09-desktop-visibility.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:24:59.639Z | API-09 | Completed | Pass, integrated | Exit0, API-09-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:24:59.640Z | API-09B | Started | | Integrated9b10fcd4d; API-09B-selection-lifecycle.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:25:10.907Z | API-09B | Completed | Pass, integrated | Exit0, API-09B-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:25:10.907Z | API-10 | Started | | Integrated9b10fcd4d; API-10-provider-unavailable.mjs; output evidence/API-REV-003. |
+| 2026-10-26T10:25:26.305Z | API-10 | Completed | Pass, integrated | Exit0, API-10-result.json / run.log; inspect exact proof/cleanup. |
+| 2026-10-26T10:28:49.898502+00:00 | All | Completed | API-REV-003 Pass95.3%, fresh-base executable stage | Seven renewed runners pass first attempt;1110 unique current foundation cases reused. Cleanup35 PIDs/7 roots absent. Proportional orchestration/evidence review next; no target merge/push/install/release. |
+| 2026-10-26T10:39:15.271216+00:00 | All | Checkpoint | API-REV-004 resumed / AC002 hold | DR003 gap confirmed; preserve/reuse all unaffected receipts, checkpoint Delivery52a3434f5. New API11 real subprocess and API12 bind fault suites planned before edits. |
+| 2026-10-26T10:40:21.818686+00:00 | API11 | Started | | Focused real inspector execFile faults; new durable suite on effective source9b10/checkpoint52a3434f5. |
+| 2026-10-26T10:40:38.951019+00:00 | API11 | Completed | Pass11/11 | Real subprocess ENOENT/EACCES/deadline1010ms/output limit/empty/malformed/race/recovery; exact deadline PID23664 absent; per-case sentinel/data preserved/roots removed. |
+| 2026-10-26T10:40:38.951019+00:00 | API12 | Started | | New durable net bind boundary injection suite, actual wait/inspector functions. |
+| 2026-10-26T10:41:09.921470+00:00 | API12 | Completed | Pass5/5 | Valid-port EACCES/EADDRNOTAVAIL/EMFILE and wildcard error preserve exact error/no inspector; EADDRINUSE positive control executes real inspector callback with1000ms/32KiB bounds. No process.kill calls. |
+| 2026-10-26T10:42:53.762002+00:00 | All | Completed | API-REV-004 Pass95.3%, AC002 evidence repaired |16 new durable cases pass first attempt;1110 foundation/seven actual-system receipts retained by impact. Broader product rerun Not Required. Proportional durable-test review next. |

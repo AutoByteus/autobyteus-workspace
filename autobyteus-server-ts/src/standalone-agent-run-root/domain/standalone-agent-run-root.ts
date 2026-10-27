@@ -343,6 +343,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
   teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
+  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
+  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {

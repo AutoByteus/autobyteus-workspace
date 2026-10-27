@@ -1,0 +1,281 @@
+[
+ {
+  "id": "Q01",
+  "keywords": 3,
+  "rg_seconds": 0.57,
+  "output_lines": 136804,
+  "runs_matched": 2357,
+  "rank_by_hits": 133,
+  "rank_by_distinct": 2
+ },
+ {
+  "id": "Q02",
+  "keywords": 3,
+  "rg_seconds": 0.34,
+  "output_lines": 133672,
+  "runs_matched": 2468,
+  "rank_by_hits": 40,
+  "rank_by_distinct": 10
+ },
+ {
+  "id": "Q03",
+  "keywords": 6,
+  "rg_seconds": 0.57,
+  "output_lines": 321096,
+  "runs_matched": 2849,
+  "rank_by_hits": 12,
+  "rank_by_distinct": 2
+ },
+ {
+  "id": "Q04",
+  "keywords": 4,
+  "rg_seconds": 0.42,
+  "output_lines": 44072,
+  "runs_matched": 1757,
+  "rank_by_hits": 239,
+  "rank_by_distinct": 5
+ },
+ {
+  "id": "Q05",
+  "keywords": 4,
+  "rg_seconds": 0.41,
+  "output_lines": 161204,
+  "runs_matched": 3079,
+  "rank_by_hits": 31,
+  "rank_by_distinct": 3
+ },
+ {
+  "id": "Q06",
+  "keywords": 3,
+  "rg_seconds": 0.33,
+  "output_lines": 7488,
+  "runs_matched": 216,
+  "rank_by_hits": 2,
+  "rank_by_distinct": 1
+ },
+ {
+  "id": "Q07",
+  "keywords": 12,
+  "rg_seconds": 0.23,
+  "output_lines": 1670,
+  "runs_matched": 127,
+  "rank_by_hits": 4,
+  "rank_by_distinct": 40
+ },
+ {
+  "id": "Q08",
+  "keywords": 5,
+  "rg_seconds": 0.67,
+  "output_lines": 406981,
+  "runs_matched": 3543,
+  "rank_by_hits": 261,
+  "rank_by_distinct": 32
+ },
+ {
+  "id": "Q09",
+  "keywords": 6,
+  "rg_seconds": 1.1,
+  "output_lines": 399959,
+  "runs_matched": 3243,
+  "rank_by_hits": 1347,
+  "rank_by_distinct": 90
+ },
+ {
+  "id": "Q10",
+  "keywords": 12,
+  "rg_seconds": 0.23,
+  "output_lines": 5616,
+  "runs_matched": 338,
+  "rank_by_hits": 3,
+  "rank_by_distinct": 1
+ },
+ {
+  "id": "Q11",
+  "keywords": 4,
+  "rg_seconds": 0.39,
+  "output_lines": 121268,
+  "runs_matched": 2061,
+  "rank_by_hits": 37,
+  "rank_by_distinct": 2
+ },
+ {
+  "id": "Q12",
+  "keywords": 4,
+  "rg_seconds": 0.42,
+  "output_lines": 332707,
+  "runs_matched": 3098,
+  "rank_by_hits": 32,
+  "rank_by_distinct": 3
+ },
+ {
+  "id": "Q13",
+  "keywords": 6,
+  "rg_seconds": 0.48,
+  "output_lines": 465859,
+  "runs_matched": 3011,
+  "rank_by_hits": 93,
+  "rank_by_distinct": 339
+ },
+ {
+  "id": "Q14",
+  "keywords": 7,
+  "rg_seconds": 1.75,
+  "output_lines": 3057573,
+  "runs_matched": 3543,
+  "rank_by_hits": 988,
+  "rank_by_distinct": 515
+ },
+ {
+  "id": "Q15",
+  "keywords": 8,
+  "rg_seconds": 2.21,
+  "output_lines": 3287883,
+  "runs_matched": 3416,
+  "rank_by_hits": 103,
+  "rank_by_distinct": 76
+ },
+ {
+  "id": "Q16",
+  "keywords": 7,
+  "rg_seconds": 2.71,
+  "output_lines": 2601323,
+  "runs_matched": 3251,
+  "rank_by_hits": 173,
+  "rank_by_distinct": 48
+ },
+ {
+  "id": "Q17",
+  "keywords": 8,
+  "rg_seconds": 2.65,
+  "output_lines": 3562962,
+  "runs_matched": 3200,
+  "rank_by_hits": 132,
+  "rank_by_distinct": 134
+ },
+ {
+  "id": "Q18",
+  "keywords": 6,
+  "rg_seconds": 1.67,
+  "output_lines": 2547157,
+  "runs_matched": 3186,
+  "rank_by_hits": 24,
+  "rank_by_distinct": 18
+ },
+ {
+  "id": "Q19",
+  "keywords": 15,
+  "rg_seconds": 0.28,
+  "output_lines": 8095,
+  "runs_matched": 335,
+  "rank_by_hits": 4,
+  "rank_by_distinct": 1
+ },
+ {
+  "id": "Q20",
+  "keywords": 4,
+  "rg_seconds": 0.97,
+  "output_lines": 2476716,
+  "runs_matched": 3146,
+  "rank_by_hits": 318,
+  "rank_by_distinct": 39
+ },
+ {
+  "id": "Q21",
+  "keywords": 5,
+  "rg_seconds": 0.68,
+  "output_lines": 723593,
+  "runs_matched": 2849,
+  "rank_by_hits": 625,
+  "rank_by_distinct": 406
+ },
+ {
+  "id": "Q22",
+  "keywords": 8,
+  "rg_seconds": 1.03,
+  "output_lines": 2210283,
+  "runs_matched": 3396,
+  "rank_by_hits": 393,
+  "rank_by_distinct": 1
+ },
+ {
+  "id": "Q23",
+  "keywords": 5,
+  "rg_seconds": 0.64,
+  "output_lines": 88736,
+  "runs_matched": 1911,
+  "rank_by_hits": 24,
+  "rank_by_distinct": 9
+ },
+ {
+  "id": "Q24",
+  "keywords": 6,
+  "rg_seconds": 1.29,
+  "output_lines": 2004990,
+  "runs_matched": 3301,
+  "rank_by_hits": 132,
+  "rank_by_distinct": 123
+ },
+ {
+  "id": "Q25",
+  "keywords": 6,
+  "rg_seconds": 4.55,
+  "output_lines": 9666528,
+  "runs_matched": 3544,
+  "rank_by_hits": 48,
+  "rank_by_distinct": 36
+ },
+ {
+  "id": "Q26",
+  "keywords": 18,
+  "rg_seconds": 3.12,
+  "output_lines": 8775739,
+  "runs_matched": 3543,
+  "rank_by_hits": 80,
+  "rank_by_distinct": 2
+ },
+ {
+  "id": "Q27",
+  "keywords": 8,
+  "rg_seconds": 1.71,
+  "output_lines": 1284489,
+  "runs_matched": 3360,
+  "rank_by_hits": 16,
+  "rank_by_distinct": 4
+ },
+ {
+  "id": "Q28",
+  "keywords": 4,
+  "rg_seconds": 0.62,
+  "output_lines": 725842,
+  "runs_matched": 2870,
+  "rank_by_hits": 33,
+  "rank_by_distinct": 3
+ },
+ {
+  "id": "Q29",
+  "keywords": 15,
+  "rg_seconds": 0.28,
+  "output_lines": 5433,
+  "runs_matched": 147,
+  "rank_by_hits": 7,
+  "rank_by_distinct": 4
+ },
+ {
+  "id": "Q31",
+  "keywords": 7,
+  "rg_seconds": 0.87,
+  "output_lines": 785902,
+  "runs_matched": 3171,
+  "rank_by_hits": 1123,
+  "rank_by_distinct": 122
+ },
+ {
+  "id": "Q32",
+  "keywords": 7,
+  "rg_seconds": 1.26,
+  "output_lines": 2436955,
+  "runs_matched": 3102,
+  "rank_by_hits": 682,
+  "rank_by_distinct": 107
+ }
+]

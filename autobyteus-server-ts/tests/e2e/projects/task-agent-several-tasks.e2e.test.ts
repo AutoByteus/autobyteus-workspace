@@ -105,7 +105,7 @@ suite("A task agent with several Tasks: parts on one copy, sub-work ownership, g
   const keyOfTask = new Map<string, string>();
   const k = (taskId: string) => keyOfTask.get(taskId)!;
   const createTask = async (description: string) => {
-    const created = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`, { input: { projectId, description } })).createProjectTask;
+    const created = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`, { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask;
     keyOfTask.set(created.taskId, created.taskKey);
     return created.taskId as string;
   };
@@ -195,8 +195,8 @@ suite("A task agent with several Tasks: parts on one copy, sub-work ownership, g
 
   it("SEV-E2E-001: a parent and two of its parts given to one Team copy (each message names the other open Tasks); the parent's CANCELLED closes all three and stops the copy once, after the last (AC-002, AC-005)", async () => {
     const parent = await createTask("Cross-node collaboration (bigger Task).");
-    const part1 = (await root.calls(callTool("create_task", { project_id: projectId, description: "Part 1: the relay.", part_of: parent }))).task.taskId as string;
-    const part2 = (await root.calls(callTool("create_task", { project_id: projectId, description: "Part 2: the docs.", part_of: parent }))).task.taskId as string;
+    const part1 = (await root.calls(callTool("create_task", { project_id: projectId, title: "Part 1: the relay.", description: "Part 1: the relay.", part_of: parent }))).task.taskId as string;
+    const part2 = (await root.calls(callTool("create_task", { project_id: projectId, title: "Part 2: the docs.", description: "Part 2: the docs.", part_of: parent }))).task.taskId as string;
     // Tool results name Project Tasks by key; map the keys to their long IDs.
     const byKey = Object.fromEntries(((await graphql(`query($id:String!){projectTasks(projectId:$id){taskId taskKey}}`, { id: projectId })).projectTasks as any[]).map((t) => [t.taskKey, t.taskId]));
     for (const key of [part1, part2]) keyOfTask.set(byKey[key], key);

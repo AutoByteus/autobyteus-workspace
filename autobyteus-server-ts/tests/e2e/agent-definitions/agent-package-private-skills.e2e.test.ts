@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -323,7 +324,7 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
     getBasePath: () => workspaceRoot,
   };
 
-  const factory = new AutoByteusAgentRunBackendFactory({
+  const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
     agentDefinitionService: AgentDefinitionService.getInstance(),
     skillService: SkillService.getInstance(),
     createLLM: vi.fn(async () => ({})),

@@ -128,7 +128,7 @@ describe("accepted user attachment filesystem -> record -> cold/page GraphQL -> 
         expect(row.trace_type).toBe("user");
         expect(row.media.images).toEqual([runtimeKind === RuntimeKind.AUTOBYTEUS ? providerMessage.contextFiles![1].uri : files[1].locator]);
         memoryView = MemoryViewConverter.toGraphql(new AgentMemoryService(new MemoryFileStore(path.dirname(dir), { runRootSubdir: "" }))
-          .getRunMemoryView(path.basename(dir), { includeRawTraces: true, includeWorkingContext: false }));
+          .getRunMemoryView(path.basename(dir), { includeRawTraces: true }));
         const providerInput = { source: { runId: target.id, runtimeKind, memoryDir: dir, workspaceRootPath: null, platformRunId: null, metadata: null } };
         const projection = await new LocalMemoryRunViewProjectionProvider(memoryDir).buildProjection(providerInput);
         const cold = await new LocalMemoryRunViewProjectionProvider(memoryDir).buildProjection(providerInput);

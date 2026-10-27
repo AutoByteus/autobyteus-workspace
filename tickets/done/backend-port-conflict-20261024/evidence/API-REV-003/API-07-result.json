@@ -1,0 +1,103 @@
+{
+  "case": "API-07",
+  "commit": "13d7f4293e10c4b0f39114169a2e77455a9ef40e",
+  "own": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-r0DMnU",
+  "date": "2026-10-26T10:24:37.635Z",
+  "cases": [
+    {
+      "mode": "startup-cancel",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T10:24:38.541Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:complete",
+          "at": "2026-10-26T10:24:38.838Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T10:24:37.637Z",
+      "pid": 8692,
+      "exit": 0,
+      "signal": null,
+      "elapsedMs": 305,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "complete",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T10:24:39.735Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:complete",
+          "at": "2026-10-26T10:24:40.318Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T10:24:38.859Z",
+      "pid": 8699,
+      "url": "http://127.0.0.1:61326",
+      "exit": 0,
+      "signal": null,
+      "elapsedMs": 51,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "cleanup-unconfirmed",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T10:24:41.349Z",
+          "childExited": false
+        },
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:failed",
+          "at": "2026-10-26T10:24:42.008Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T10:24:40.360Z",
+      "pid": 8707,
+      "url": "http://127.0.0.1:61331",
+      "exit": 1,
+      "signal": null,
+      "elapsedMs": 51,
+      "data": "unchanged",
+      "result": "Pass"
+    },
+    {
+      "mode": "transport-unconfirmed",
+      "messages": [
+        {
+          "message": "autobyteus.embedded-server.shutdown.v1:ready",
+          "at": "2026-10-26T10:24:43.037Z",
+          "childExited": false
+        }
+      ],
+      "start": "2026-10-26T10:24:42.049Z",
+      "pid": 8715,
+      "url": "http://127.0.0.1:61336",
+      "exit": 1,
+      "signal": null,
+      "elapsedMs": 51,
+      "data": "unchanged",
+      "result": "Pass"
+    }
+  ],
+  "result": "Pass",
+  "rootRemoved": true,
+  "validationProvenance": {
+    "round": "API-REV-003",
+    "productionSource": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+    "reviewHead": "13d7f4293e10c4b0f39114169a2e77455a9ef40e",
+    "integratedBase": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+    "caseId": "API-07"
+  }
+}

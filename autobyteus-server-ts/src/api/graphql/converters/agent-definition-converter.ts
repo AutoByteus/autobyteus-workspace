@@ -62,6 +62,7 @@ export class AgentDefinitionConverter {
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
+        internal: domainDefinition.internal === true,
         loadIssue: toGraphqlDefinitionLoadIssue(loadIssue),
       };
     } catch (error) {

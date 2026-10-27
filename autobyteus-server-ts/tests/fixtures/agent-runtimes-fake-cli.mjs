@@ -15,8 +15,24 @@
 //   <codex|grok>-login           write `complete` to let a waiting login finish signed in
 //   codex-models                 comma-separated model ids for app-server `model/list` (default gpt-5.6-luna)
 // The Claude Agent SDK's own start (stream-json) gets one model, `claude-fake-sonnet`.
+// Usage limits (autobyteus-303 `list_available_agent_runtimes`), answered from the recorded, redacted answers in
+// `tests/fixtures/usage-limits/`:
+//   Codex app-server `account/rateLimits/read`, Claude SDK control request `get_usage`, `agy -p /usage --output-format
+//   json`, Grok ACP (`grok agent --no-leader stdio`: `initialize` with its models, then `_x.ai/billing`).
+//   codex-account                also `error` (account/read answers a JSON-RPC error: sign-in can't be told)
+//   codex-rate-limits            exhausted (recorded: weekly used up, no credits) | credits (same, with credits) | hang
+//   claude-usage                 recorded (default) | hang
+//   claude-auth                  hang (`auth status` never ends)
+//   agy-models                   the `agy models` lines when signed in (default `gemini-3.8-flash-low\tGemini test`)
+//   agy-models-mode / agy-usage  hang (never ends) | fail (exit 1)        (agy-usage default: the recorded answer)
+//   grok-version-mode            hang (`grok --version` never ends)
+//   grok-acp-models              JSON array of ACP `availableModels` (default one model, grok-4.7)
 // Records: <runtime>-<command>.pid (pid of a running login/update), emitted-secrets.log (every secret-looking
-// value this fake printed, so a secret scan can prove it had something to find), app-server-requests.log.
+// value this fake printed, so a secret scan can prove it had something to find), app-server-requests.log,
+// codex-thread-start-configs.jsonl (each `thread/start` params.config, e.g. its Agent Tools MCP server),
+// claude-stdin-frames.log (`<type> <subtype>` of every frame the SDK wrote to the CLI, so a test can prove no `user`
+// message was sent), grok-acp-requests.log, hung-pids.log (`<runtime> <step> <pid>` of every call told to hang), and
+// codex-app-server.pids (every app-server started), cli-calls.log (`<epoch ms> <pid> <runtime> <args>` of every call).
 // `grok login --oauth` ignores SIGTERM, as a CLI that keeps waiting for its browser callback does.
 import fs from "node:fs";
 import path from "node:path";
@@ -40,6 +56,12 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const secret = (value) => { fs.appendFileSync(path.join(stateDir, "emitted-secrets.log"), `${value}\n`); return value; };
 const recordPid = (label) => write(`${name}-${label}.pid`, String(process.pid));
 const waitFor = async (file) => { while (state(file, "wait") !== "complete") await sleep(200); write(file, "wait"); };
+const append = (file, line) => fs.appendFileSync(path.join(stateDir, file), `${line}\n`);
+/** A call told to hang: records its pid and never ends (until it is killed). */
+const hang = (step) => { append("hung-pids.log", `${name} ${step} ${process.pid}`); return new Promise(() => setInterval(() => undefined, 60_000)); };
+// Every call: `<epoch ms> <pid> <runtime> <args>` (cli-calls.log), so a test can see what ran and when.
+append("cli-calls.log", `${Date.now()} ${process.pid} ${name} ${joined}`);
+const usageFixture = (file) => fs.readFileSync(path.join(path.dirname(fs.realpathSync(process.argv[1])), "usage-limits", file), "utf8");
 
 const DEFAULT_VERSIONS = { codex: "0.150.0", claude: "2.1.200", agy: "1.4.3", grok: "1.0.62" };
 const version = () => state(`${name}-version`, DEFAULT_VERSIONS[name]);
@@ -48,6 +70,7 @@ const codexAppServer = () => {
   const send = (value) => out(`${JSON.stringify(value)}\n`);
   let thread = 0;
   let turn = 0;
+  append("codex-app-server.pids", String(process.pid));
   readline.createInterface({ input: process.stdin }).on("line", (line) => {
     const message = JSON.parse(line);
     fs.appendFileSync(path.join(stateDir, "app-server-requests.log"), `${message.method}\n`);
@@ -59,6 +82,7 @@ const codexAppServer = () => {
         break;
       case "account/read": {
         const account = state("codex-account", "signedOut");
+        if (account === "error") { send({ id: message.id, error: { code: -32603, message: "account service unavailable" } }); return; }
         result = account === "signedIn"
           ? { account: { type: "chatgpt", email: secret("FAKE-SECRET-codex-user@example.invalid"), planType: "plus" }, requiresOpenaiAuth: true, workspaceRouting: null }
           : { account: null, requiresOpenaiAuth: account !== "notRequired", workspaceRouting: null };
@@ -74,7 +98,22 @@ const codexAppServer = () => {
           nextCursor: null,
         };
         break;
+      case "account/rateLimits/read": {
+        const mode = state("codex-rate-limits", "exhausted");
+        if (mode === "hang") { append("hung-pids.log", `codex rateLimits ${process.pid}`); return; }
+        const answer = JSON.parse(usageFixture("codex-rate-limits-exhausted.json"));
+        if (mode === "credits") {
+          for (const entry of [answer.rateLimits, ...Object.values(answer.rateLimitsByLimitId)]) entry.credits = { hasCredits: true, unlimited: false, balance: "12" };
+          answer.ordinaryUsageAllowed = true;
+        }
+        result = answer;
+        break;
+      }
       case "thread/start":
+        append("codex-thread-start-configs.jsonl", JSON.stringify(message.params?.config ?? null));
+        thread += 1;
+        result = { thread: { id: `fake-thread-${process.pid}-${thread}` } };
+        break;
       case "thread/resume":
         thread += 1;
         result = { thread: { id: `fake-thread-${process.pid}-${thread}` } };
@@ -99,7 +138,27 @@ const codexAppServer = () => {
   }).on("close", () => process.exit(0));
 };
 
+/** Grok's ACP agent over stdio: `initialize` (its models in `_meta.modelState`) and the `_x.ai/billing` extension. */
+const grokAcpAgent = () => {
+  const send = (value) => out(`${JSON.stringify(value)}\n`);
+  readline.createInterface({ input: process.stdin }).on("line", (line) => {
+    if (!line.trim()) return;
+    const message = JSON.parse(line);
+    append("grok-acp-requests.log", message.method ?? "response");
+    if (message.id === undefined || !message.method) return;
+    if (message.method === "initialize") {
+      const availableModels = JSON.parse(state("grok-acp-models",
+        JSON.stringify([{ modelId: "grok-4.7", name: "Grok 4.7", _meta: { totalContextTokens: 256000 } }])));
+      return send({ jsonrpc: "2.0", id: message.id, result: { protocolVersion: 1, agentCapabilities: { loadSession: true }, authMethods: [],
+        _meta: { modelState: { currentModelId: availableModels[0]?.modelId ?? null, availableModels } } } });
+    }
+    if (message.method === "_x.ai/billing") return send({ jsonrpc: "2.0", id: message.id, result: JSON.parse(usageFixture("grok-billing.json")) });
+    send({ jsonrpc: "2.0", id: message.id, error: { code: -32601, message: `fake grok: ${message.method} not scripted` } });
+  }).on("close", () => process.exit(0));
+};
+
 const main = async () => {
+  if (name === "grok" && joined === "--version" && state("grok-version-mode", "") === "hang") return hang("version");
   if (joined === "--version") {
     if (name === "codex") return out(`codex-cli ${version()}\n`);
     if (name === "claude") return out(`${version()} (Claude Code)\n`);
@@ -130,7 +189,14 @@ const main = async () => {
     if (args.includes("--input-format") && args.includes("stream-json")) {
       readline.createInterface({ input: process.stdin }).on("line", (line) => {
         const frame = JSON.parse(line);
+        append("claude-stdin-frames.log", `${frame.type} ${frame.request?.subtype ?? frame.message?.role ?? "-"}`);
         if (frame.type !== "control_request") return;
+        if (frame.request?.subtype === "get_usage") {
+          if (state("claude-usage", "recorded") === "hang") { append("hung-pids.log", `claude get_usage ${process.pid}`); return; }
+          out(`${JSON.stringify({ type: "control_response", response: { subtype: "success", request_id: frame.request_id,
+            response: JSON.parse(usageFixture("claude-get-usage.json")) } })}\n`);
+          return;
+        }
         out(`${JSON.stringify({ type: "control_response", response: { subtype: "success", request_id: frame.request_id,
           response: { commands: [], models: [{ value: "claude-fake-sonnet", displayName: "Claude Fake Sonnet", description: "Scripted test model." }],
             account: {}, output_style: "default", available_output_styles: [] } } })}\n`);
@@ -138,6 +204,7 @@ const main = async () => {
       return;
     }
     if (joined === "auth status --json") {
+      if (state("claude-auth", "") === "hang") return hang("auth");
       if (state("claude-account", "signedOut") === "signedIn") {
         out(`${JSON.stringify({ loggedIn: true, authMethod: "claude.ai", apiProvider: "firstParty", email: secret("FAKE-SECRET-claude-user@example.invalid"), orgId: secret("FAKE-SECRET-claude-org"), subscriptionType: "max" }, null, 2)}\n`);
         return;
@@ -158,11 +225,20 @@ const main = async () => {
   if (name === "agy") {
     if (joined === "--help") return out("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
     if (joined === "models") {
-      if (state("agy-account", "signedOut") === "signedIn") return out("gemini-3.8-flash-low\tGemini test\n");
+      const mode = state("agy-models-mode", "");
+      if (mode === "hang") return hang("models");
+      if (mode === "fail") { err("Error: model service unavailable\n"); process.exitCode = 1; return; }
+      if (state("agy-account", "signedOut") === "signedIn") return out(`${state("agy-models", "gemini-3.8-flash-low\tGemini test").replace(/\\t/g, "\t").replace(/\\n/g, "\n")}\n`);
       // agy 1.4.3 signed out (empty HOME).
       err("Fetching available models...\nError: Please sign in to view available models. Launch the CLI without arguments to sign in.\n");
       process.exitCode = 1;
       return;
+    }
+    if (joined === "-p /usage --output-format json") {
+      const mode = state("agy-usage", "recorded");
+      if (mode === "hang") return hang("usage");
+      if (mode === "fail") { err("Error: usage unavailable\n"); process.exitCode = 1; return; }
+      return out(usageFixture("antigravity-usage.json"));
     }
     if (joined === "update") {
       recordPid("update");
@@ -175,6 +251,10 @@ const main = async () => {
     }
   }
   if (name === "grok") {
+    if (args[0] === "agent" && args.includes("--help")) {
+      return out("Run the agent over ACP.\n\nUsage: grok agent [OPTIONS] <COMMAND>\n\nCommands:\n  stdio  Serve ACP over stdio\n\nOptions:\n  -m, --model <MODEL>\n      --reasoning-effort <EFFORT>\n      --no-leader\n");
+    }
+    if (args[0] === "agent" && args.at(-1) === "stdio") return grokAcpAgent();
     if (joined === "models") {
       // grok 1.0.62 in an empty HOME prints this with exit 0.
       if (state("grok-account", "signedOut") === "signedOut") return out("You are not authenticated.\n\nDefault model: grok-4.6\n\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n");

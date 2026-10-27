@@ -42,7 +42,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });
 
   it("links `starting` before resources, writes the exact documented file, and settles start once", async () => {
-    const task = await tasks.createTask({ projectId, description: "A" });
+    const task = await tasks.createTask({ projectId, title: "A", description: "A" });
     await expect(fs.access(layout.taskExecutionResourcesFile(projectId, task.taskId))).rejects.toThrow();
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "team-1" }, teamCoordinatorAgentRunId: "lead-1" });
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "team-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
@@ -77,8 +77,8 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("DONE closes agent runs first (fences at once), then task.json, then asks each host root to stop all closed runs", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
-    const b = await tasks.createTask({ projectId, description: "B" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     await assign(a.taskId, "worker-a"); await assign(a.taskId, "worker-a2", otherRoot); await assign(b.taskId, "worker-b");
     const observed: string[] = [];
     release.mockImplementation(async (root, agentRuns) => {
@@ -105,7 +105,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("a failed stop is logged, never persisted; a metadata failure after closure still requests the stop", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "worker-a");
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
     release.mockResolvedValueOnce([{ execution: { agentRunId: "worker-a" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "still running" } }]);
@@ -123,14 +123,14 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("assignment link vs DONE, both orders: linked before (then closed) or rejected after; never open after DONE", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "before");
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
     expect(tasks.isOpen({ agentRunId: "before" })).toBe(false);
     await expect(assign(a.taskId, "after")).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     await expect(tasks.resolveAssignment(a.taskId)).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     // Concurrent: DONE is serialized with the assignment link of the same Task.
-    const b = await tasks.createTask({ projectId, description: "B" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     const [linked, done] = await Promise.allSettled([assign(b.taskId, "racing"), tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" })]);
     expect(done.status).toBe("fulfilled");
     if (linked.status === "fulfilled") expect(tasks.isOpen({ agentRunId: "racing" })).toBe(false);
@@ -138,7 +138,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("an inherited link racing DONE reads the creator under the file lock: closed by DONE or rejected", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "worker");
     const results = await Promise.allSettled([
       tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "worker" }, hostRoot, execution: { agentRunId: "child" } }),
@@ -152,7 +152,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("reopen lists only the new assignment; Delete keeps the records so closed stays closed after restart", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "old-worker");
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
@@ -168,7 +168,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("stored legacy `broughtIn` entries stay readable, count as owned work and close with their Task (DEC-007)", async () => {
-    const task = await tasks.createTask({ projectId, description: "A" });
+    const task = await tasks.createTask({ projectId, title: "A", description: "A" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
     const file = layout.taskExecutionResourcesFile(projectId, task.taskId);
     const stored = JSON.parse(await fs.readFile(file, "utf8"));
@@ -182,8 +182,8 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("a damaged file fails closed for its Task and for unknown copies only; the app starts and other Tasks work (Q-3)", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
-    const b = await tasks.createTask({ projectId, description: "B" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     await assign(a.taskId, "worker-a"); await assign(b.taskId, "worker-b");
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "{ truncated");
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -201,7 +201,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     await restarted.updateTask({ projectId, taskId: a.taskId, description: "editing still works" });
     await restarted.updateTask({ projectId, taskId: b.taskId, status: "DONE" });
     expect(restarted.isOpen({ agentRunId: "worker-b" })).toBe(false);
-    await restarted.createTask({ projectId, description: "creating still works" });
+    await restarted.createTask({ projectId, title: "creating still works", description: "creating still works" });
     // Recovery: fix or restore the file and restart; no self-repair happened meanwhile.
     expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8")).toBe("{ truncated");
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), JSON.stringify({ taskId: a.taskId, agentRunResources: [] }));
@@ -212,9 +212,9 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("closedTaskExecutionsIn answers a root's closed runs from the view: per host root, after restart and delete, never for a damaged Task", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
-    const b = await tasks.createTask({ projectId, description: "B" });
-    const c = await tasks.createTask({ projectId, description: "C" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
+    const c = await tasks.createTask({ projectId, title: "C", description: "C" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "a-team" }, teamCoordinatorAgentRunId: "a-lead" });
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-sub" } });
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-helper" } });
@@ -245,8 +245,8 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const scan = async (taskId: string, root = hostRoot) => (await resourcesFile(taskId)).agentRunResources
       .filter((entry: any) => entry.closedAt !== null && entry.hostRoot.runId === root.rootRunId)
       .map((entry: any) => entry.agentRun.kind === "agent" ? { agentRunId: entry.agentRun.agentRunId } : { teamRunId: entry.agentRun.teamRunId });
-    const a = await tasks.createTask({ projectId, description: "A" });
-    const b = await tasks.createTask({ projectId, description: "B" });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     await assign(a.taskId, "a-first");
     expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });

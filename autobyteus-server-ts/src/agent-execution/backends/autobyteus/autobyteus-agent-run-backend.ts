@@ -80,6 +80,7 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 });
 
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
+  readonly backgroundTaskInspection = { kind: 'unsupported' } as const;
   readonly runId: string;
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   readonly compactionRecovery: Extract<AgentRunCompactionRecoveryCapability, { kind: "supported" }> = {

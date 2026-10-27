@@ -66,7 +66,14 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, projectId: "project_fixture", title: task.description.split("\n")[0]!.trim(), description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
+  }
+  /** autobyteus-32: a Task's identity (a Task with no Project: no key, its description's first line as title). */
+  async describeTask(taskId: string) {
+    const task = this.tasks.get(taskId);
+    if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
+    const title = task.description.split("\n")[0]!.trim();
+    return task.adHoc ? { taskKey: null, projectId: null, title } : { taskKey: task.taskKey ?? taskId, projectId: "project_fixture", title };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);

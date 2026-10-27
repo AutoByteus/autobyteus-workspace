@@ -35,6 +35,30 @@ Browser-tool support has two explicit source families:
   `dynamicTools` path and old Claude `autobyteus_browser` MCP server path are
   not retained for these migrated tools
 
+## Tool Result Rule
+
+Every platform tool result, success and refusal, on the native and the MCP
+route, follows one rule owned by `autobyteus-ts/src/tools/tool-result-json.ts`
+(autobyteus-260):
+
+- a field whose value is `null`, `""`, `[]` or `{}` (after the rule is applied
+  inside it) is left out, at any depth; an absent field means "none";
+- `false`, `0` and every other value stay; array elements keep their positions;
+- the result is compact JSON (no indentation); values pass through their
+  `toJSON` first, so a `Date` is its ISO string.
+
+`toToolResultJson(value)` turns a result into text; `omitEmptyToolResultFields(value)`
+returns the pruned JSON value for core tools whose runtime renders an object
+(`get_background_processes`, `get_process_output`, `start_background_process`,
+`stop_background_process`). Each family's native tool and MCP provider calls it
+after its manifest returns the result object; on MCP,
+`toAgentToolsMcpStructuredJsonResult(value)` builds the text copy and
+`structuredContent` from the one pruned value. No family keeps its own
+serializer; `tests/architecture/agent-tool-result-boundaries.test.ts` fails on
+any other `JSON.stringify` of a tool result in `src/agent-tools/**`. Configured
+third-party MCP tools and application-defined tools pass their results through
+unchanged.
+
 ## Runtime Exposure Resolution
 
 `src/agent-execution/shared/runtime-agent-tool-exposure.ts` is the common
@@ -63,6 +87,8 @@ under an Agent root is not Team-scoped and has no `get_handoff_rules`.
 Application-owned runs have no member context and keep their
 explicitly configured set. Browser, media, publishing, `list_available_agents`,
 `list_peer_nodes` and configured MCP-origin tools remain explicitly selected and availability-gated.
+`list_available_agent_runtimes` is explicitly selected too; it is always offered
+when selected (see [Agent Runtimes Tool](#agent-runtimes-tool)).
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -196,6 +222,23 @@ The tools control discovery only. Any agent may delegate to an available address
 with `delegate_task` whether or not it has the tool (REQ-006); `send_message_to`
 reaches only addresses already in its run.
 
+## Agent Runtimes Tool
+
+`list_available_agent_runtimes` (`src/agent-tools/agent-runtimes/`, registered by
+`register-agent-runtimes-tools.ts`, category System) is an **opt-in** tool: it is in the
+tool picker, and an agent gets it only when its definition's `toolNames` list it. It takes
+no arguments and needs no member context, so standalone agents can use it too. It returns
+this node's `AvailableAgentRuntimesReport` as JSON by the one tool result rule (a null
+`remainingPercent`, `resetsAt` or `until` is left out): every available agent runtime with its
+models (`blocked: {until, by}` when a model cannot run now) and its usage limits, read live
+with 0 tokens (see [Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). AutoByteus
+runs a local tool instance; Codex, Claude, AGY and Grok receive it through the Agent Tools
+MCP adapter (`list-available-agent-runtimes-mcp-adapter-provider.ts`,
+`toAgentToolsMcpStructuredJsonResult`).
+On a server that does not compose the service it answers "list_available_agent_runtimes is
+not available on this server." (on AutoByteus as the tool's error, over MCP as an error
+result).
+
 ## Server-Hosted Agent Tools MCP Server
 
 `src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
@@ -226,7 +269,7 @@ the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`,
-`list_available_agents` and `list_peer_nodes` tool families by delegating to their existing family manifests/services instead
+`list_available_agents`, `list_peer_nodes`, `list_available_agent_runtimes` and model-routing (`submit_launch_choices`, the Model Router agent's; see [Model Routing](model_routing.md)) tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the

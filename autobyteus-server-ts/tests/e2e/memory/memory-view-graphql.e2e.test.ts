@@ -92,9 +92,6 @@ describe("Memory view GraphQL e2e", () => {
       getAgentRunMemoryView(
         runId: $runId
         source: $source
-        includeWorkingContext: false
-        includeEpisodic: false
-        includeSemantic: false
         includeRawTraces: true
         includeRawTraceFiles: $includeRawTraceFiles
         includeArchive: $includeArchive
@@ -151,7 +148,7 @@ describe("Memory view GraphQL e2e", () => {
     });
   };
 
-  it("returns memory view with conversation and raw traces", async () => {
+  it("returns memory view with raw traces", async () => {
     const agentId = "memory-view-agent";
     createdAgentIds.push(agentId);
 
@@ -160,8 +157,6 @@ describe("Memory view GraphQL e2e", () => {
       messages: [{ role: "user", content: "hello", reasoning_content: "why" }],
     });
 
-    writeJsonl(path.join(agentDir, "episodic.jsonl"), [{ summary: "episode" }]);
-    writeJsonl(path.join(agentDir, "semantic.jsonl"), [{ fact: "fact" }]);
 
     const runStore = new RunMemoryFileStore(agentDir);
     runStore.appendRawTrace(new RawTraceItem({
@@ -186,21 +181,17 @@ describe("Memory view GraphQL e2e", () => {
       query MemoryView($runId: String!) {
         getAgentRunMemoryView(runId: $runId, includeRawTraces: true, includeArchive: true) {
           runId
-          workingContext { role content reasoning }
-          episodic
-          semantic
           rawTraces { id traceType sourceEvent content toolName toolCallId toolArgs toolResult toolError }
         }
       }
     `;
 
-    const data = await execGraphql<{ getAgentRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null; toolName: string | null; toolCallId: string | null; toolArgs: unknown; toolResult: unknown; toolError: string | null }> } }>(
+    const data = await execGraphql<{ getAgentRunMemoryView: { runId: string; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null; toolName: string | null; toolCallId: string | null; toolArgs: unknown; toolResult: unknown; toolError: string | null }> } }>(
       query,
       { runId: agentId },
     );
 
     expect(data.getAgentRunMemoryView.runId).toBe(agentId);
-    expect(data.getAgentRunMemoryView.workingContext[0]?.role).toBe("user");
     expect(data.getAgentRunMemoryView.rawTraces.length).toBeGreaterThan(0);
     expect(data.getAgentRunMemoryView.rawTraces.map((trace) => [trace.id, trace.traceType, trace.sourceEvent])).toEqual([
       ["rt-archive", "assistant", "SEGMENT_END"],
@@ -234,9 +225,6 @@ describe("Memory view GraphQL e2e", () => {
       query SystemInstructionMemoryView($runId: String!) {
         getAgentRunMemoryView(
           runId: $runId
-          includeWorkingContext: false
-          includeEpisodic: false
-          includeSemantic: false
           includeRawTraces: true
           includeArchive: false
         ) {
@@ -274,7 +262,7 @@ describe("Memory view GraphQL e2e", () => {
     }]);
   });
 
-  it("returns absent external WorkingContext after success, retained stale content after failure, independent raws, and native content", async () => {
+  it("returns each run's own raw traces, whether or not a working-context snapshot exists", async () => {
     const runFixtures = [
       {
         runId: "external-working-context-absent",
@@ -331,13 +319,9 @@ describe("Memory view GraphQL e2e", () => {
       query ExternalMemoryOutcome($runId: String!) {
         getAgentRunMemoryView(
           runId: $runId
-          includeWorkingContext: true
           includeRawTraces: true
-          includeEpisodic: false
-          includeSemantic: false
         ) {
           runId
-          workingContext { role content }
           rawTraces { traceType content }
         }
       }
@@ -345,29 +329,21 @@ describe("Memory view GraphQL e2e", () => {
     type MemoryOutcome = {
       getAgentRunMemoryView: {
         runId: string;
-        workingContext: Array<{ role: string; content: string | null }> | null;
         rawTraces: Array<{ traceType: string; content: string | null }> | null;
       };
     };
 
     const absent = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[0].runId });
-    expect(absent.getAgentRunMemoryView.workingContext).toBeNull();
     expect(absent.getAgentRunMemoryView.rawTraces).toEqual([
       { traceType: "assistant", content: "codex current raw" },
     ]);
 
     const retained = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[1].runId });
-    expect(retained.getAgentRunMemoryView.workingContext).toEqual([
-      expect.objectContaining({ role: "assistant", content: "claude stale retained snapshot" }),
-    ]);
     expect(retained.getAgentRunMemoryView.rawTraces).toEqual([
       { traceType: "assistant", content: "claude current raw" },
     ]);
 
     const native = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[2].runId });
-    expect(native.getAgentRunMemoryView.workingContext).toEqual([
-      expect.objectContaining({ role: "assistant", content: "native current context" }),
-    ]);
     expect(native.getAgentRunMemoryView.rawTraces).toEqual([
       { traceType: "assistant", content: "native current raw" },
     ]);

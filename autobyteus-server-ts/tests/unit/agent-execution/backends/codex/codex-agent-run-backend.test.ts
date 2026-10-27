@@ -133,6 +133,17 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("CodexAgentRunBackend", () => {
+  it("exposes read-only snapshots without changing idle work policy or publishing lifecycle events", async () => {
+    const inspectBackgroundTasks = vi.fn().mockResolvedValue({ kind: 'snapshot', observedAt: 'now', tasks: [] });
+    const { backend } = createBackend({ inspectBackgroundTasks });
+    const listener = vi.fn(); backend.subscribeToSourceEventBatches(listener);
+    expect(backend.hasRunningBackgroundTasks()).toBe(false);
+    expect(backend.backgroundTaskInspection.kind).toBe('snapshot');
+    expect(await backend.backgroundTaskInspection.read()).toEqual({ kind: 'snapshot', observedAt: 'now', tasks: [] });
+    expect(inspectBackgroundTasks).toHaveBeenCalledTimes(1);
+    expect(listener).not.toHaveBeenCalled();
+    expect(backend.hasRunningBackgroundTasks()).toBe(false);
+  });
   it("publishes the committed system instruction after listener binding and before the first input exactly once", async () => {
     const order: string[] = [];
     const { backend, codexThread } = createBackend({

@@ -152,14 +152,16 @@ export class ApplicationCatalogTransitionService {
     } catch (error) {
       readinessFailure = error;
     }
-    const recoverableApplicationIds = transitionPlan.currentApplicationIds.filter(
-      (applicationId) => this.dependencies.definitionReadiness
-        .isApplicationReady(applicationId),
-    );
+    // Each not-ready application's reason, as readiness states it; reentry quarantines with it.
+    const setupRequiredDetails = new Map<string, string>();
+    for (const applicationId of transitionPlan.currentApplicationIds) {
+      const detail = this.dependencies.definitionReadiness.getSetupRequiredDetail(applicationId);
+      if (detail) setupRequiredDetails.set(applicationId, detail);
+    }
     await this.dependencies.reentryService.recoverParticipants(
       token,
       transitionPlan.currentApplicationIds,
-      recoverableApplicationIds,
+      setupRequiredDetails,
       recoveryOptions,
     );
     if (readinessFailure) throw readinessFailure;

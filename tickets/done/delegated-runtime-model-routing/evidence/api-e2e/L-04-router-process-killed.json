@@ -1,0 +1,99 @@
+{
+  "case": "L-04 C-05 on live Claude: the router's claude process killed (SIGKILL), then two routings",
+  "commit": "75ca9c82ff",
+  "command": "env -i PATH HOME(real, CLI sign-ins only; nothing in ~/.claude ~/.codex ~/.grok written) USER LOGNAME TMPDIR [MR_PHASES=\u2026] node router-live-probe.mjs <worktree> <out>",
+  "environment": "ENV-3",
+  "date": "2026-10-26",
+  "what_to_look_for": "killed: one /Users/\u2026/claude process with --model sonnet; first/second delegate_task SUCCEEDED in ~22 s with \"chosen by the Model Router\"; processesNow shows claude --resume",
+  "killed": [
+    {
+      "pid": 33316,
+      "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyte"
+    }
+  ],
+  "afterKill": [],
+  "statusAfterKill": {
+    "enabled": true,
+    "routerLaunch": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    },
+    "active": true,
+    "reasonCode": null,
+    "reasonParams": {},
+    "reasonText": null,
+    "agentRunId": "model_router_c8f9e18874854e9188e31a3b5433e606"
+  },
+  "first": {
+    "ms": 27093,
+    "tools": [
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "tool": "delegate_task",
+        "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write a one-line changelog entry for version 2.0.1. Reply OK.\"}",
+        "result": "null",
+        "at": 1719
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "tool": "delegate_task",
+        "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write a one-line changelog entry for version 2.0.1. Reply OK.\"}",
+        "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f374_5a9d558620364537b8dab4173e11ae19\\\",\\\"task_id\\\":\\\"ad_hoc_task_869dbf87-6401-476e-b2a0-277f60273948\\\",\\\"launch_notes\\\":[\\\"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-fla",
+        "at": 24089
+      }
+    ],
+    "text": "The launch notes say: \"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-flash-low.\"",
+    "errors": []
+  },
+  "statusAfterFirst": {
+    "enabled": true,
+    "routerLaunch": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    },
+    "active": true,
+    "reasonCode": null,
+    "reasonParams": {},
+    "reasonText": null,
+    "agentRunId": "model_router_c8f9e18874854e9188e31a3b5433e606"
+  },
+  "second": {
+    "ms": 24574,
+    "tools": [
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "tool": "delegate_task",
+        "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write a one-line changelog entry for version 2.0.2. Reply OK.\"}",
+        "result": "null",
+        "at": 2363
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "tool": "delegate_task",
+        "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write a one-line changelog entry for version 2.0.2. Reply OK.\"}",
+        "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f374_e3398d65817b4a7f94a756b7369102a2\\\",\\\"task_id\\\":\\\"ad_hoc_task_a6025490-ec81-401c-9ef5-be8c44cdb1e3\\\",\\\"launch_notes\\\":[\\\"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-fla",
+        "at": 21107
+      }
+    ],
+    "text": "The launch notes say: \"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-flash-low.\"",
+    "errors": []
+  },
+  "statusAfterSecond": {
+    "enabled": true,
+    "routerLaunch": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    },
+    "active": true,
+    "reasonCode": null,
+    "reasonParams": {},
+    "reasonText": null,
+    "agentRunId": "model_router_c8f9e18874854e9188e31a3b5433e606"
+  },
+  "processesNow": [
+    {
+      "pid": 35788,
+      "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model sonnet --permission-prompt-tool stdio --resume=65bdeef6-fdd6-4dec-9350-b12e0f14e841 --allowedToo"
+    }
+  ]
+}

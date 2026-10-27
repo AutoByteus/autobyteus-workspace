@@ -62,9 +62,9 @@ describe("Project Task search with the real embedding layer when the model host 
     throw new Error("meaning search stayed in preparation");
   };
   const createTask = async (projectId: string, description: string) => (await gql<{ createProjectTask: { taskId: string; taskKey: string } }>(
-    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, description } })).createProjectTask;
+    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, title: description, description } })).createProjectTask;
   const updateTask = async (projectId: string, taskId: string, description: string) => (await gql<{ updateProjectTask: { description: string } }>(
-    "mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){description}}", { i: { projectId, taskId, description } })).updateProjectTask;
+    "mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){description}}", { i: { projectId, taskId, title: description, description } })).updateProjectTask;
   const deleteTask = async (projectId: string, taskId: string) => (await gql<{ deleteProjectTask: boolean }>(
     "mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId } })).deleteProjectTask;
   const createProject = async (name: string) => (await gql<{ createProject: { projectId: string } }>(

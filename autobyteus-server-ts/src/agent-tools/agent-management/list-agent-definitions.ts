@@ -1,7 +1,9 @@
 import { tool, ParameterSchema, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 
 const DESCRIPTION = "Lists all available agent definitions, providing a summary for discovery.";
 
@@ -39,13 +41,15 @@ export async function listAgentDefinitions(context: AgentContextLike): Promise<s
 
   try {
     const service = AgentDefinitionService.getInstance();
-    const definitions = await service.getAllAgentDefinitions();
+    // Internal agents are left out while "Show internal agents" is off (autobyteus-308); reading one by ID still works.
+    const visibility = getInternalAgentVisibility();
+    const definitions = (await service.getAllAgentDefinitions()).filter((definition) => !visibility.isHidden(definition));
 
     if (!definitions || definitions.length === 0) {
       return "[]";
     }
 
-    return JSON.stringify(definitions.map(serializeDefinition), null, 2);
+    return toToolResultJson(definitions.map(serializeDefinition));
   } catch (error) {
     logger.error(`An unexpected error occurred while listing agent definitions: ${String(error)}`);
     throw error;

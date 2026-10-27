@@ -28,6 +28,8 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { installRuntimeMcpSecretResolver } from "../../../src/secret-management/resolution/mcp-secret-resolver.js";
+import { getSecretVaultRuntime, resetSecretVaultRuntimeForTests } from "../../../src/secret-management/secret-vault-runtime.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -125,9 +127,14 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     url = started.mainUrl;
+    // The token (and an Authorization header) are stored as MCP secrets: as at server startup, open the run
+    // database's own vault and let managed MCP servers resolve through it.
+    await resetSecretVaultRuntimeForTests();
+    await getSecretVaultRuntime().initialize({ kind: "application", location: appConfigProvider.config.getOperationalDatabaseLocation() });
+    installRuntimeMcpSecretResolver();
     for (const [serverId, target, credentials] of [
-      ["hdr", hdr, { token: null, headers: { Authorization: `Basic ${DUMMY}` } }],
-      ["tok", tok, { token: DUMMY, headers: null }],
+      ["hdr", hdr, { token: null, headers: [{ name: "Authorization", secret: true, value: `Basic ${DUMMY}` }] }],
+      ["tok", tok, { token: { value: DUMMY }, headers: [] }],
     ] as const) {
       await graphql(`mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }`,
         { input: { serverId, transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix: serverId,
@@ -154,6 +161,7 @@ suite("Agents call tools of credential-protected remote MCP servers", () => {
     }
     await hdr?.close();
     await tok?.close();
+    await resetSecretVaultRuntimeForTests();
     delete process.env["AGY_FAKE_CASE"];
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);

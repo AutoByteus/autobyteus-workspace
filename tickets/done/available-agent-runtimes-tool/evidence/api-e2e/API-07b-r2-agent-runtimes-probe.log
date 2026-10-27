@@ -1,0 +1,15 @@
+# API-07b round 2 — autobyteus-web/tests/e2e/agent-runtimes-settings-probe.mjs --skip-server-build (dist at source 7ece4e2069), compared with round 1's base run (a2faf424d6)
+# macOS darwin 25.5, headless Chrome; 2026-10-25
+Fail            ARP-01  base: Fail            same-error-as-base: True  Antigravity while its source is slow: up_to_date
+Pass            ARP-02  base: Pass            same-error-as-base: True  
+Pass            ARP-03  base: Pass            same-error-as-base: True  
+Fail            ARP-04  base: Fail            same-error-as-base: True  Timed out waiting for up to date after re-check
+Pass            ARP-05  base: Pass            same-error-as-base: True  
+Pass            ARP-06  base: Pass            same-error-as-base: True  
+Pass            ARP-07  base: Pass            same-error-as-base: True  
+Not applicable  ARP-08  base: Not applicable  same-error-as-base: True  a darwin node always has a desktop browser
+Fail            ARP-09  base: Fail            same-error-as-base: True  error copy
+Fail            ARP-11  base: Fail            same-error-as-base: True  status shown, update not offered
+Pass            ARP-12  base: Pass            same-error-as-base: True  
+Pass            ARP-10  base: Pass            same-error-as-base: True  
+Result: Fail browserErrors: [] cleanup: {'browser': 'closed', 'frontend': 'terminated:81216', 'backend': 'terminated:81146', 'desktopBackend': 'terminated:81192', 'tempRoot': 'removed'}

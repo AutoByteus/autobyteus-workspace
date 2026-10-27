@@ -16,21 +16,43 @@ export class CollaboratorMentionError extends Error {
  */
 export class CollaboratorAddError extends Error {
   readonly code = "COLLABORATOR_ADD_FAILED";
-  constructor(readonly collaboratorName: string, readonly reason: string) {
+  constructor(
+    readonly collaboratorName: string,
+    readonly reason: string,
+    /**
+     * A `defaults_only` copy refused because no layer could run it: why the node's Model Router did not choose either
+     * (the delegating node words it, supplement § 6). Absent for every other refusal.
+     */
+    readonly routerState?: CopyRouterState,
+  ) {
     super(reason);
     this.name = "CollaboratorAddError";
   }
 }
 
+/** Why the node's Model Router did not choose for an agent no layer covers: Model Routing is off, or why it is not active. */
+export type CopyRouterState = Readonly<{ kind: "off" }> | Readonly<{ kind: "not_active"; reason: string }>;
+
 /**
  * A target with no configured default runtime and model where there is nothing to inherit (the
- * `defaults_only` launch base): no configured layer, or only an incomplete one. It is an add failure, so
- * every existing caller still sees `CollaboratorAddError`.
+ * `defaults_only` launch base): no configured layer, or only an incomplete one, and no active Model Router. It is an
+ * add failure, so every existing caller still sees `CollaboratorAddError`.
  */
 export class CollaboratorNoDefaultLaunchError extends CollaboratorAddError {
-  constructor(collaboratorName: string, readonly targetKind: "agent" | "agent_team") {
-    super(collaboratorName, `There is no default runtime configured for the target ${targetKind === "agent" ? "agent" : "agent team"} ${collaboratorName}`);
+  constructor(collaboratorName: string, readonly targetKind: "agent" | "agent_team", routerState: CopyRouterState) {
+    super(collaboratorName, `There is no default runtime configured for the target ${targetKind === "agent" ? "agent" : "agent team"} ${collaboratorName}`, routerState);
     this.name = "CollaboratorNoDefaultLaunchError";
+  }
+}
+
+/**
+ * A `defaults_only` copy whose agents the node's Model Router could not choose for (supplement § 5): nothing starts.
+ * `agentName` is the first agent it was asked about; `failure` the router's reason.
+ */
+export class CollaboratorRouterFailedError extends CollaboratorAddError {
+  constructor(collaboratorName: string, readonly agentName: string, readonly failure: string) {
+    super(collaboratorName, failure);
+    this.name = "CollaboratorRouterFailedError";
   }
 }
 

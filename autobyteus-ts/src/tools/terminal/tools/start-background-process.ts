@@ -5,16 +5,16 @@ import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../ut
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
 import { resolveExecutionCwd } from '../execution-cwd.js';
-import type { BackgroundProcessInfo } from '../types.js';
+import { omitEmptyToolResultFields, type ToolResultJsonValue } from '../../tool-result-json.js';
 
 export async function startBackgroundProcess(
   context: AgentContextLike | null,
   command: string,
   cwd?: string | null
-): Promise<BackgroundProcessInfo> {
+): Promise<ToolResultJsonValue> {
   const manager = getBackgroundManager(context);
   const resolvedCwd = resolveExecutionCwd(context, cwd);
-  return manager.startCommand(command, resolvedCwd);
+  return omitEmptyToolResultFields(await manager.startCommand(command, resolvedCwd));
 }
 
 const argumentSchema = new ParameterSchema();

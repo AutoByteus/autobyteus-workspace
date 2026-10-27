@@ -19,13 +19,14 @@ import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-suppo
 const project = (projectId: string, updatedAt: string): Project => ({ projectId, name: projectId, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 1, taskCount: 1 })
 const projectTask = (taskId: string, projectId: string, description: string, status: ProjectTaskStatus = 'TODO', minute = 0): ProjectTask => ({
-  taskId, projectId, description, status, contextFiles: [], createdAt: '2026-10-07T00:00:00.000Z',
+  taskId, projectId, title: description, description, status, contextFiles: [], createdAt: '2026-10-07T00:00:00.000Z',
   updatedAt: `2026-10-07T00:${String(minute).padStart(2, '0')}:00.000Z`, root: null })
 const tempTask = (taskId: string, description: string, status: ProjectTaskStatus = 'TODO', minute = 0): TaskWithoutProject => ({
   taskId, description, status, referenceFiles: [], createdAt: '2026-10-07T00:00:00.000Z',
   updatedAt: `2026-10-07T00:${String(minute).padStart(2, '0')}:00.000Z`, root: null })
 const target = (task: ProjectTask | TaskWithoutProject): TaskWorkerTask =>
-  ({ taskId: task.taskId, projectId: 'projectId' in task ? task.projectId : null, description: task.description, status: task.status })
+  ('projectId' in task ? { taskId: task.taskId, projectId: task.projectId, title: task.title, description: task.description, status: task.status }
+    : { taskId: task.taskId, projectId: null, title: null, description: task.description, status: task.status })
 
 /** Server lists by list id; a list set to `deferred` answers when `release(id)` is called. */
 let server: Record<string, unknown[]>
@@ -105,7 +106,7 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
     server.p2 = [projectTask('b1', 'p2', 'Dropped work', 'CANCELLED')]
     hold('p2')
 
-    const seq = locate({ taskId: 'b1', projectId: 'p2', description: 'Dropped work', status: 'CANCELLED' })
+    const seq = locate({ taskId: 'b1', projectId: 'p2', title: 'Dropped work', description: 'Dropped work', status: 'CANCELLED' })
     await settle()
     expect(useTaskLocatorStore().request).toMatchObject({ seq, step: 'revealed' })
     expect(row(wrapper, 'b1').classes()).not.toContain('is-located')
@@ -174,7 +175,7 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
     expect(row(wrapper, 'a2').classes()).toContain('is-located')
 
     vi.useFakeTimers()
-    const seq = locate({ taskId: 'gone', projectId: 'p1', description: 'Deleted', status: 'TODO' })
+    const seq = locate({ taskId: 'gone', projectId: 'p1', title: 'Deleted', description: 'Deleted', status: 'TODO' })
     await vi.advanceTimersByTimeAsync(100)
     expect(useTaskLocatorStore().request).toMatchObject({ seq, step: 'revealed' })
     await vi.advanceTimersByTimeAsync(TASK_LOCATE_EXPIRY_MS)

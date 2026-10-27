@@ -227,10 +227,10 @@
         {
           "kind": "communication",
           "message": {
-            "messageId": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu",
+            "messageId": "collabmsg_cl29T2RsVo1oRM5_Rlp5p0ldp6MqQr8x",
             "senderAgentRunId": "research-assistant-run",
             "receiverAgentRunId": "code-reviewer-run-1",
-            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
             "messageType": "task_assignment",
             "referenceFiles": [],
             "createdAt": "2026-10-24T08:00:02.000Z"
@@ -249,34 +249,34 @@
           "message": {
             "type": "MEMBER_INPUT_MESSAGE",
             "payload": {
-              "message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
-              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
-              "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+              "message_id": "memberinput_jEfIAA14Byq0uW5W6kBemw7V5fhDxAE8",
+              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_jEfIAA14Byq0uW5W6kBemw7V5fhDxAE8",
+              "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
               "input_origin": "inter_agent_delivery",
               "received_at": "2026-10-24T08:00:02.000Z",
               "context_file_paths": [],
               "sender_agent_run_id": "research-assistant-run",
-              "parent_communication_message_id": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu"
+              "parent_communication_message_id": "collabmsg_cl29T2RsVo1oRM5_Rlp5p0ldp6MqQr8x"
             }
           }
         }
       ],
       "transmissions": [],
       "files": {
-        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_cl29T2RsVo1oRM5_Rlp5p0ldp6MqQr8x\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask: B in Project project_fixture\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
         "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
         "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
-        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n"
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_cl29T2RsVo1oRM5_Rlp5p0ldp6MqQr8x\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask: B in Project project_fixture\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n"
       }
     },
     "existingCopyRecipientInput": {
-      "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
       "senderType": "agent",
       "contextFiles": null,
       "metadata": {
-        "message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
-        "recipient_input_message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
-        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+        "message_id": "memberinput_jEfIAA14Byq0uW5W6kBemw7V5fhDxAE8",
+        "recipient_input_message_id": "memberinput_jEfIAA14Byq0uW5W6kBemw7V5fhDxAE8",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_jEfIAA14Byq0uW5W6kBemw7V5fhDxAE8",
         "input_origin": "inter_agent_delivery",
         "sender_agent_id": "research-assistant-run",
         "sender_agent_name": "research_assistant",
@@ -285,7 +285,7 @@
         "original_message_type": "task_assignment",
         "root_subject_kind": "agent",
         "root_run_id": "research-assistant-run",
-        "parent_communication_message_id": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu",
+        "parent_communication_message_id": "collabmsg_cl29T2RsVo1oRM5_Rlp5p0ldp6MqQr8x",
         "reference_files": []
       },
       "recordingFileAttachments": null
@@ -683,10 +683,10 @@
         {
           "kind": "communication",
           "message": {
-            "messageId": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC",
+            "messageId": "collabmsg_4gbcLMdaUmuK6aH6xPSXXOq0JMQXjA3Y",
             "senderAgentRunId": "director",
             "receiverAgentRunId": "task-agent-1",
-            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
             "messageType": "task_assignment",
             "referenceFiles": [],
             "createdAt": "2026-10-24T08:00:02.000Z"
@@ -705,32 +705,32 @@
           "message": {
             "type": "MEMBER_INPUT_MESSAGE",
             "payload": {
-              "message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
-              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
-              "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+              "message_id": "memberinput_BFCcevBg6JiBaPODwVJZNwt0VcshIKXX",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_BFCcevBg6JiBaPODwVJZNwt0VcshIKXX",
+              "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
               "input_origin": "inter_agent_delivery",
               "received_at": "2026-10-24T08:00:02.000Z",
               "context_file_paths": [],
               "sender_agent_run_id": "director",
-              "parent_communication_message_id": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC"
+              "parent_communication_message_id": "collabmsg_4gbcLMdaUmuK6aH6xPSXXOq0JMQXjA3Y"
             }
           }
         }
       ],
       "transmissions": [],
       "files": {
-        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_4gbcLMdaUmuK6aH6xPSXXOq0JMQXjA3Y\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask: B in Project project_fixture\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
         "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
       }
     },
     "existingCopyRecipientInput": {
-      "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
       "senderType": "agent",
       "contextFiles": null,
       "metadata": {
-        "message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
-        "recipient_input_message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
-        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+        "message_id": "memberinput_BFCcevBg6JiBaPODwVJZNwt0VcshIKXX",
+        "recipient_input_message_id": "memberinput_BFCcevBg6JiBaPODwVJZNwt0VcshIKXX",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_BFCcevBg6JiBaPODwVJZNwt0VcshIKXX",
         "input_origin": "inter_agent_delivery",
         "sender_agent_id": "director",
         "sender_agent_name": "director",
@@ -739,7 +739,7 @@
         "original_message_type": "task_assignment",
         "root_subject_kind": "agent_org",
         "root_run_id": "org-collaborators",
-        "parent_communication_message_id": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC",
+        "parent_communication_message_id": "collabmsg_4gbcLMdaUmuK6aH6xPSXXOq0JMQXjA3Y",
         "reference_files": []
       },
       "recordingFileAttachments": null
@@ -1151,10 +1151,10 @@
         {
           "eventSourceType": "COMMUNICATION",
           "payload": {
-            "messageId": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU",
+            "messageId": "collabmsg_ksYmzDAWj7JfHThrOwXmFrqbmG9QBszJ",
             "senderAgentRunId": "run-coordinator",
             "receiverAgentRunId": "code-reviewer-run-1",
-            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
             "messageType": "task_assignment",
             "referenceFiles": [],
             "createdAt": "2026-10-24T08:00:02.000Z"
@@ -1165,33 +1165,33 @@
           "agentRunId": "code-reviewer-run-1",
           "payload": {
             "recipientAgentRunId": "code-reviewer-run-1",
-            "messageId": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
-            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
-            "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "messageId": "memberinput_uqHt6nuzHNs_xnH3Thv7tdqV2E3tguKR",
+            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_uqHt6nuzHNs_xnH3Thv7tdqV2E3tguKR",
+            "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
             "inputOrigin": "inter_agent_delivery",
             "receivedAt": "2026-10-24T08:00:02.000Z",
             "contextFilePaths": [],
             "senderAgentRunId": "run-coordinator",
-            "parentCommunicationMessageId": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU"
+            "parentCommunicationMessageId": "collabmsg_ksYmzDAWj7JfHThrOwXmFrqbmG9QBszJ"
           }
         }
       ],
       "transmissions": [],
       "files": {
-        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_ksYmzDAWj7JfHThrOwXmFrqbmG9QBszJ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask: B in Project project_fixture\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
         "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
-        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_ksYmzDAWj7JfHThrOwXmFrqbmG9QBszJ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nTask: B in Project project_fixture\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
         "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
       }
     },
     "existingCopyRecipientInput": {
-      "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nTask: B in Project project_fixture\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nFollow-up cleanup",
       "senderType": "agent",
       "contextFiles": null,
       "metadata": {
-        "message_id": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
-        "recipient_input_message_id": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
-        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+        "message_id": "memberinput_uqHt6nuzHNs_xnH3Thv7tdqV2E3tguKR",
+        "recipient_input_message_id": "memberinput_uqHt6nuzHNs_xnH3Thv7tdqV2E3tguKR",
+        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_uqHt6nuzHNs_xnH3Thv7tdqV2E3tguKR",
         "input_origin": "inter_agent_delivery",
         "sender_agent_id": "run-coordinator",
         "sender_agent_name": "coordinator",
@@ -1199,7 +1199,7 @@
         "receiver_member_address": "/code_reviewer",
         "original_message_type": "task_assignment",
         "team_run_id": "team-root-collaborators",
-        "parent_communication_message_id": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU",
+        "parent_communication_message_id": "collabmsg_ksYmzDAWj7JfHThrOwXmFrqbmG9QBszJ",
         "reference_files": []
       },
       "recordingFileAttachments": null

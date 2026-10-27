@@ -36,6 +36,7 @@ const CHECK_OPERATIONS: Readonly<Record<AppUpdateCheckSource | 'manual', AppUpda
 };
 
 type AppUpdaterOptions = {
+  prepareForInstall?: () => Promise<void>;
   /** The launch check's delay (8 s by default). */
   autoCheckDelayMs?: number;
   /** Whether the machine is online; Electron's `net.isOnline()` by default. */
@@ -58,7 +59,7 @@ export class AppUpdater implements AppUpdateController {
   private readonly testFeedUrl: string | null;
   private readonly appUpdateConfigPath: string | null;
 
-  constructor(options: AppUpdaterOptions = {}) {
+  constructor(private readonly options: AppUpdaterOptions = {}) {
     this.autoCheckDelayMs = options.autoCheckDelayMs;
     this.isOnline = options.isOnline ?? (() => net.isOnline());
     this.testFeedUrl = options.testFeedUrl ?? null;
@@ -269,8 +270,9 @@ export class AppUpdater implements AppUpdateController {
       errorOperation: null,
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
+        await this.options.prepareForInstall?.();
         autoUpdater.quitAndInstall(false, true);
       } catch (error) {
         this.handleError(error, 'Failed to install update and restart.', 'install');

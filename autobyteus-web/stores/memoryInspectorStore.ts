@@ -25,9 +25,6 @@ type ViewVariables = {
   orgRunId?: string;
   agentRunId?: string;
   source?: MemoryExplorerSourceInput;
-  includeWorkingContext?: boolean;
-  includeEpisodic?: boolean;
-  includeSemantic?: boolean;
   includeRawTraces?: boolean;
   includeRawTraceFiles?: boolean;
   includeArchive?: boolean;
@@ -67,7 +64,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
   state: (): MemoryInspectorState => ({
     target: null,
     memoryView: null,
-    activeTab: 'working',
+    activeTab: 'journal',
     rawTraceLimit: 500,
     includeRawTraces: false,
     selectedRawTraceFileName: null,
@@ -80,11 +77,13 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
     async inspect(target: MemoryInspectTarget): Promise<RunMemoryView | null> {
       if (!sameTarget(this.target, target)) {
         this.memoryView = null;
-        this.activeTab = 'working';
+        this.activeTab = 'journal';
         this.includeRawTraces = false;
         this.selectedRawTraceFileName = null;
       }
       this.target = target;
+      // The Work Journal tab (the default) reads its own lines; the view is read when Raw Traces are shown.
+      if (!this.includeRawTraces) return this.memoryView;
       return await this.fetchMemoryView();
     },
 
@@ -141,9 +140,6 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
     buildVariables(target: MemoryInspectTarget): ViewVariables {
       const common = {
         source: target.source ?? { type: 'LOCAL' as const },
-        includeWorkingContext: true,
-        includeEpisodic: true,
-        includeSemantic: true,
         includeRawTraces: this.includeRawTraces,
         includeRawTraceFiles: this.includeRawTraces,
         includeArchive: false,
@@ -161,7 +157,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
       this.error = null;
       this.includeRawTraces = false;
       this.selectedRawTraceFileName = null;
-      this.activeTab = 'working';
+      this.activeTab = 'journal';
     },
   },
 });

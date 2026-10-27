@@ -16,7 +16,7 @@ runPosix('NonInteractiveShellResolver', () => {
 });
 
 describe('NonInteractiveShellResolver WSL construction', () => {
-  it('builds WSL invocations with Linux PID marker and process target metadata', () => {
+  it('resolves WSL command data separately from its exclusive anchor launch', () => {
     const resolver = new NonInteractiveShellResolver({
       platform: 'win32',
       ensureWslAvailable: () => 'wsl.exe',
@@ -27,11 +27,9 @@ describe('NonInteractiveShellResolver WSL construction', () => {
     const invocation = resolver.resolve('npm run dev > server.log 2>&1 &', 'C:\\project');
 
     expect(invocation.kind).toBe('windows-wsl');
-    expect(invocation.executable).toBe('wsl.exe');
-    expect(invocation.args.slice(0, 5)).toEqual(['-d', 'Ubuntu', '--cd', '/mnt/c/project', '--exec']);
+    expect(invocation.executable).toBe('bash');
+    expect(invocation.wslCwd).toBe('/mnt/c/project');
     expect(invocation.processTarget).toEqual({ kind: 'wsl', wslExecutable: 'wsl.exe', distro: 'Ubuntu' });
-    expect(invocation.shellIdentityMarker).toMatch(/^__AUTOBYTEUS_SHELL_ID_/);
-    expect(invocation.args.at(-1)).toContain(invocation.shellIdentityMarker);
     expect(invocation.args.at(-1)).toContain('npm run dev > server.log 2>&1 &');
   });
 });

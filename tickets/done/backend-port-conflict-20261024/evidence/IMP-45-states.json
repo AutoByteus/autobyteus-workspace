@@ -1,0 +1,68 @@
+{
+  "scope": "implementation-only rendered state fixtures; not real Codex/API acceptance",
+  "source": "9bd72c208",
+  "requests": [
+    {
+      "id": "imp45-view-a",
+      "mode": "snapshot"
+    },
+    {
+      "id": "imp45-view-a",
+      "mode": "unavailable"
+    },
+    {
+      "id": "imp45-view-a",
+      "mode": "empty"
+    },
+    {
+      "id": "imp45-view-a",
+      "mode": "snapshot"
+    },
+    {
+      "id": "imp45-view-a",
+      "mode": "snapshot"
+    },
+    {
+      "id": "imp45-view-b",
+      "mode": "snapshot"
+    },
+    {
+      "id": "imp45-view-a",
+      "mode": "snapshot"
+    }
+  ],
+  "steps": [
+    {
+      "name": "snapshot-en",
+      "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nRV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n1 running · 4 total\n\nTracked commands continuing beyond their turn. Recent runtime observations, not all system processes.\n\nbash\n\nRunning\nShell\n·\nlocal-ru · observed 26.10.2026, 09:34:49\n\nnode\n\nFailed\nShell\n·\nlocal-fa · observed 26.10.2026, 09:34:49\n\nExit code -1\n\nShell command\n\nUnknown\nShell\n·\nlocal-un · observed 26.10.2026, 09:34:49\n\npython\n\nCompleted\nShell\n·\nlocal-co · observed 26.10.2026, 09:34:49\n\nExit code 0\n\nActivity\n0 Events"
+    },
+    {
+      "name": "unavailable-en",
+      "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nRV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n1 last-known running · 4 recorded\n\nTracked commands continuing beyond their turn. Recent runtime observations, not all system processes.\n\nCurrent background-task inspection is unavailable. Recorded / last-known rows; running counts are unconfirmed.\n\nbash\n\nRunning\nShell\n·\nlocal-ru · observed 26.10.2026, 09:34:49\n\nnode\n\nFailed\nShell\n·\nlocal-fa · observed 26.10.2026, 09:34:49\n\nExit code -1\n\nShell command\n\nUnknown\nShell\n·\nlocal-un · observed 26.10.2026, 09:34:49\n\npython\n\nCompleted\nShell\n·\nlocal-co · observed 26.10.2026, 09:34:49\n\nExit code 0\n\nActivity\n0 Events"
+    },
+    {
+      "name": "empty-en",
+      "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nRV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n0 running · 0 total\n\nTracked commands continuing beyond their turn. Recent runtime observations, not all system processes.\n\nNo tracked background commands\nActivity\n0 Events"
+    },
+    {
+      "name": "selection-b",
+      "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nRV\nRead-only view fixture B - EW-B\nOffline\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n0 running · 0 total\n\nTracked commands continuing beyond their turn. Recent runtime observations, not all system processes.\n\nNo tracked background commands\nActivity\n0 Events"
+    },
+    {
+      "name": "snapshot-zh",
+      "text": "对话\n智能体\n智能体团队\n智能体组织\n项目\n技能\n记忆\n节点\nWorkspaces\nTemp Workspace\n设置\nRV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n（拖动、粘贴或上传）\n项目\n文件\n终端\n活动\nToken\n产物\n浏览器\nVNC 查看器\n后台任务\n1 个运行中 · 共 4 个\n\n跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。\n\nbash\n\n运行中\n命令行\n·\nlocal-ru · 观测于 26.10.2026, 09:34:49\n\nnode\n\n失败\n命令行\n·\nlocal-fa · 观测于 26.10.2026, 09:34:49\n\n退出码 -1\n\nShell 命令\n\n未知\n命令行\n·\nlocal-un · 观测于 26.10.2026, 09:34:49\n\npython\n\n已完成\n命令行\n·\nlocal-co · 观测于 26.10.2026, 09:34:49\n\n退出码 0\n\nActivity\n0 Events"
+    },
+    {
+      "name": "narrow-zh",
+      "text": "RV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n（拖动、粘贴或上传）\n项目\n文件\n终端\n活动\nToken\n产物\n浏览器\nVNC 查看器\n后台任务\n1 个运行中 · 共 4 个\n\n跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。\n\nbash\n\n运行中\n命令行\n·\nlocal-ru · 观测于 26.10.2026, 09:34:49\n\nnode\n\n失败\n命令行\n·\nlocal-fa · 观测于 26.10.2026, 09:34:49\n\n退出码 -1\n\nShell 命令\n\n未知\n命令行\n·\nlocal-un · 观测于 26.10.2026, 09:34:49\n\npython\n\n已完成\n命令行\n·\nlocal-co · 观测于 26.10.2026, 09:34:49\n\n退出码 0\n\nActivity\n0 Events"
+    }
+  ],
+  "pageErrors": [],
+  "narrow": {
+    "client": 390,
+    "scroll": 390,
+    "bodyClient": 390,
+    "bodyScroll": 390
+  },
+  "result": "passed"
+}

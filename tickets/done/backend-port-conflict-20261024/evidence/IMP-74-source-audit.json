@@ -1,0 +1,312 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "base": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "scope": "cumulative authored production ticket delta; excludes tests/generated/evidence",
+  "files": [
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "nonempty": 120,
+      "baseNonempty": 119
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts",
+      "nonempty": 54,
+      "baseNonempty": 52
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "nonempty": 179,
+      "baseNonempty": 178
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "nonempty": 468,
+      "baseNonempty": 473
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "nonempty": 299,
+      "baseNonempty": 298
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts",
+      "nonempty": 177,
+      "baseNonempty": 176
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "nonempty": 256,
+      "baseNonempty": 255
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-background-task-view.ts",
+      "nonempty": 166,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts",
+      "nonempty": 497,
+      "baseNonempty": 450
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/domain/agent-background-task-view.ts",
+      "nonempty": 24,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "nonempty": 459,
+      "baseNonempty": 449
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "nonempty": 209,
+      "baseNonempty": 205
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "nonempty": 298,
+      "baseNonempty": 296
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "nonempty": 365,
+      "baseNonempty": 364
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/schema.ts",
+      "nonempty": 99,
+      "baseNonempty": 97
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/types/agent-background-task-view.ts",
+      "nonempty": 71,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/compositions/build-studio-server.ts",
+      "nonempty": 412,
+      "baseNonempty": 406
+    },
+    {
+      "file": "autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts",
+      "nonempty": 62,
+      "baseNonempty": 59
+    },
+    {
+      "file": "autobyteus-server-ts/src/compositions/native-command-shutdown.ts",
+      "nonempty": 21,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/server-runtime.ts",
+      "nonempty": 218,
+      "baseNonempty": 229
+    },
+    {
+      "file": "autobyteus-server-ts/src/shutdown/server-process-shutdown.ts",
+      "nonempty": 59,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts",
+      "nonempty": 358,
+      "baseNonempty": 353
+    },
+    {
+      "file": "autobyteus-ts/src/agent/context/agent-config.ts",
+      "nonempty": 113,
+      "baseNonempty": 110
+    },
+    {
+      "file": "autobyteus-ts/src/agent/context/agent-context.ts",
+      "nonempty": 121,
+      "baseNonempty": 120
+    },
+    {
+      "file": "autobyteus-ts/src/index.ts",
+      "nonempty": 35,
+      "baseNonempty": 34
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/background-process-context.ts",
+      "nonempty": 26,
+      "baseNonempty": 24
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/background-process-manager.ts",
+      "nonempty": 102,
+      "baseNonempty": 266
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/anchor-control-protocol.ts",
+      "nonempty": 56,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts",
+      "nonempty": 138,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/command-deadline.ts",
+      "nonempty": 6,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope.ts",
+      "nonempty": 149,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts",
+      "nonempty": 103,
+      "baseNonempty": 113
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/posix-command-anchor-script.ts",
+      "nonempty": 26,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/process-group-observer.ts",
+      "nonempty": 73,
+      "baseNonempty": 192
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/process-identity.ts",
+      "nonempty": 19,
+      "baseNonempty": 97
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts",
+      "nonempty": 57,
+      "baseNonempty": 173
+    },
+    {
+      "file": "autobyteus-ts/src/tools/terminal/command-execution/wsl-command-anchor-script.ts",
+      "nonempty": 28,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/components/progress/BackgroundTaskPanel.vue",
+      "nonempty": 170,
+      "baseNonempty": 151
+    },
+    {
+      "file": "autobyteus-web/components/server/ServerLoading.vue",
+      "nonempty": 213,
+      "baseNonempty": 199
+    },
+    {
+      "file": "autobyteus-web/composables/useBackgroundTaskPanelView.ts",
+      "nonempty": 86,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/application/applicationShutdown.ts",
+      "nonempty": 29,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/application/electronApplication.ts",
+      "nonempty": 392,
+      "baseNonempty": 407
+    },
+    {
+      "file": "autobyteus-web/electron/launch-profile/e2eLaunchPreflight.ts",
+      "nonempty": 5,
+      "baseNonempty": 23
+    },
+    {
+      "file": "autobyteus-web/electron/server/backendPortAvailability.ts",
+      "nonempty": 30,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/server/baseServerManager.ts",
+      "nonempty": 414,
+      "baseNonempty": 448
+    },
+    {
+      "file": "autobyteus-web/electron/server/managedBackendShutdownClient.ts",
+      "nonempty": 61,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/server/managedBackendStop.ts",
+      "nonempty": 34,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/server/portOwnerInspector.ts",
+      "nonempty": 29,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/electron/server/serverStatusManager.ts",
+      "nonempty": 173,
+      "baseNonempty": 163
+    },
+    {
+      "file": "autobyteus-web/electron/server/windowsServerManager.ts",
+      "nonempty": 63,
+      "baseNonempty": 149
+    },
+    {
+      "file": "autobyteus-web/electron/updater/appUpdater.ts",
+      "nonempty": 412,
+      "baseNonempty": 410
+    },
+    {
+      "file": "autobyteus-web/graphql/queries/agentBackgroundTaskQueries.ts",
+      "nonempty": 15,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/localization/messages/en/index.ts",
+      "nonempty": 82,
+      "baseNonempty": 80
+    },
+    {
+      "file": "autobyteus-web/localization/messages/en/server.ts",
+      "nonempty": 8,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/localization/messages/en/workspace.ts",
+      "nonempty": 296,
+      "baseNonempty": 285
+    },
+    {
+      "file": "autobyteus-web/localization/messages/zh-CN/index.ts",
+      "nonempty": 82,
+      "baseNonempty": 80
+    },
+    {
+      "file": "autobyteus-web/localization/messages/zh-CN/server.ts",
+      "nonempty": 8,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/localization/messages/zh-CN/workspace.ts",
+      "nonempty": 295,
+      "baseNonempty": 284
+    },
+    {
+      "file": "autobyteus-web/stores/serverStore.ts",
+      "nonempty": 417,
+      "baseNonempty": 411
+    },
+    {
+      "file": "autobyteus-web/types/backgroundTaskView.ts",
+      "nonempty": 11,
+      "baseNonempty": 0
+    },
+    {
+      "file": "autobyteus-web/types/serverStatus.ts",
+      "nonempty": 33,
+      "baseNonempty": 27
+    }
+  ]
+}

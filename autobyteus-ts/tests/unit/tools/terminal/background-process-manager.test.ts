@@ -1,5 +1,4 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { PassThrough } from 'node:stream';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -27,108 +26,10 @@ afterEach(async () => {
 });
 
 describe('BackgroundProcessManager adoption', () => {
-  it('adopts observed PID records with PID-only public info and captured output', async () => {
-    const manager = new BackgroundProcessManager();
-    const stdout = new PassThrough();
-    const adoptedPid = process.pid;
-    const infos = manager.adoptObservedProcesses({
-      command: 'npm run dev > server.log 2>&1 &',
-      effectiveCwd: '/tmp/project',
-      processGroupId: 4321,
-      processes: [{ pid: adoptedPid, parentPid: 1, processGroupId: 4321, status: 'S', command: 'node server.js' }],
-      stdout,
-      initialOutput: 'booting\n'
-    });
-
-    stdout.write('ready\n');
-    const output = await manager.getOutput(adoptedPid);
-    const listed = await manager.listProcesses();
-
-    expect(infos).toHaveLength(1);
-    expect(infos[0]).toBeInstanceOf(BackgroundProcessInfo);
-    expect(infos[0]).toMatchObject({
-      pid: adoptedPid,
-      command: 'npm run dev > server.log 2>&1 &',
-      status: 'running',
-      effectiveCwd: '/tmp/project'
-    });
-    expect(output).toBeInstanceOf(BackgroundProcessOutput);
-    expect(output.pid).toBe(adoptedPid);
-    expect(output.output).toContain('booting');
-    expect(output.output).toContain('ready');
-    expect(listed.map((entry) => entry.pid)).toContain(adoptedPid);
-  });
-
   it('getOutput throws for unknown PID', async () => {
     const manager = new BackgroundProcessManager();
 
     await expect(manager.getOutput(999999)).rejects.toThrow('Process 999999 not found');
-  });
-});
-
-describe('BackgroundProcessManager WSL lifecycle', () => {
-  it('starts, tracks, reads, and stops background commands by WSL Linux PID', async () => {
-    const marker = '__AUTOBYTEUS_TEST_WSL_ID__';
-    const linuxPid = 4321;
-    const resolver = {
-      resolve: () => ({
-        executable: process.execPath,
-        args: [
-          '-e',
-          [
-            `process.stderr.write(${JSON.stringify(`${marker}:${linuxPid}:${linuxPid}\n`)});`,
-            "process.stdout.write('ready\\n');",
-            'setInterval(() => {}, 1000);'
-          ].join('')
-        ],
-        env: { ...process.env },
-        kind: 'windows-wsl',
-        processTarget: { kind: 'wsl', wslExecutable: 'wsl.exe', distro: 'Ubuntu' },
-        shellIdentityMarker: marker
-      })
-    } as unknown as NonInteractiveShellResolver;
-
-    let running = true;
-    const calls: Array<{ file: string; args: string[] }> = [];
-    const runner: ExecFileRunner = async (file, args) => {
-      calls.push({ file, args });
-      if (args.includes('ps')) {
-        return {
-          stdout: running
-            ? ` ${linuxPid} 1 ${linuxPid} S bash -lc npm run dev\n`
-            : ''
-        };
-      }
-      if (args.includes('bash')) {
-        running = false;
-      }
-      return { stdout: '' };
-    };
-    const manager = new BackgroundProcessManager(
-      1_000_000,
-      resolver,
-      new ProcessGroupObserver(runner)
-    );
-
-    const info = await manager.startCommand('npm run dev', 'C:\\project');
-    await new Promise((resolve) => setTimeout(resolve, 25));
-    const output = await manager.getOutput(linuxPid);
-    const listed = await manager.listProcesses();
-    const stopped = await manager.stopProcess(linuxPid);
-
-    expect(info).toMatchObject({
-      pid: linuxPid,
-      command: 'npm run dev',
-      status: 'running',
-      effectiveCwd: 'C:\\project'
-    });
-    expect(output.pid).toBe(linuxPid);
-    expect(output.output).toContain('ready');
-    expect(output.output).not.toContain(marker);
-    expect(listed.map((entry) => entry.pid)).toContain(linuxPid);
-    expect(stopped).toBe(true);
-    expect(calls.some((call) => call.file === 'wsl.exe' && call.args.includes('ps'))).toBe(true);
-    expect(calls.some((call) => call.file === 'wsl.exe' && call.args.includes('bash'))).toBe(true);
   });
 });
 

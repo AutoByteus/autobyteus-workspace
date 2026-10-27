@@ -104,8 +104,8 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(UpdateProjectTool.getDescription()).toMatch(/^Update a known Project by its project_id.*replaces ALL links \(\[\] unlinks all/);
   });
 
-  it("has exactly the seven Project/Task tools (the six plus search_project_tasks) on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)", () => {
-    const current = ["list_projects", "list_project_tasks", "search_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+  it("has exactly the eight Project/Task tools (the six plus search_project_tasks and get_project_task) on the contract, the MCP adapters and the native registry; the removed create_or_update_project is unknown (REQ-001, REQ-002)", () => {
+    const current = ["list_projects", "list_project_tasks", "search_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"];
     expect([...PROJECT_TASK_TOOL_NAMES]).toEqual(current);
     expect(provider.getAdapters().map(a => a.definition.name)).toEqual(current);
     expect(defaultToolRegistry.listToolNames().filter(name => isProjectTaskToolName(name) || /project/.test(name)).sort()).toEqual([...current].sort());
@@ -114,8 +114,8 @@ describe("Project data tools — actual native preparation/execute and selected 
 
   it("documents one optional additive context_files string array on create_task and update_task, identical on native and MCP (AC-011)", async () => {
     for (const [Tool, name, keys, required] of [
-      [CreateTaskTool, "create_task", ["project_id", "description", "context_files", "depends_on", "part_of"], ["project_id", "description"]],
-      [UpdateTaskTool, "update_task", ["task_id", "description", "status", "context_files", "depends_on", "part_of", "add_comment"], ["task_id"]],
+      [CreateTaskTool, "create_task", ["project_id", "title", "description", "context_files", "depends_on", "part_of"], ["project_id", "title", "description"]],
+      [UpdateTaskTool, "update_task", ["task_id", "title", "description", "status", "context_files", "depends_on", "part_of", "add_comment"], ["task_id"]],
     ] as const) {
       const native = Tool.getArgumentSchema().toJsonSchema() as {properties: Record<string, any>, required?: string[]};
       expect(native).toEqual(buildProjectTaskToolSchema(name).toJsonSchema());
@@ -125,21 +125,24 @@ describe("Project data tools — actual native preparation/execute and selected 
       expect(native.properties.context_files.description).toMatch(/Absolute local file paths.*25 MiB/);
       const listed = provider.getAdapters().find(a => a.definition.name === name)!.definition;
       expect(listed.description).toBe(Tool.getDescription());
-      expect(listed.description).toMatch(/context_files.*attachedContextFiles/);
+      expect(listed.description).toMatch(/context_files.*attachedContextFiles \[\{name, path\}\]/);
+      expect(listed.description).not.toMatch(/storedFilename|is null/);
     }
     expect(provider.getAdapters().map(a => a.definition.name)).not.toContain("create_or_update_task");
     expect(UpdateTaskTool.getDescription()).toMatch(/appended, never removed.*not for a Task with no Project/);
     expect(parseUpdateTaskInput({task_id: " t ", context_files: [" /tmp/a.png ", "/tmp/b.md"]}))
       .toEqual({task_id: "t", context_files: ["/tmp/a.png", "/tmp/b.md"]});
-    expect(parseCreateTaskInput({project_id: "p", description: "x", context_files: []}))
-      .toEqual({project_id: "p", description: "x", context_files: []});
+    expect(parseCreateTaskInput({project_id: "p", title: " T ", description: "x", context_files: []}))
+      .toEqual({project_id: "p", title: "T", description: "x", context_files: []});
     expect(parseProjectTaskToolInput("update_task", {task_id: "t", status: "DONE"})).toEqual({task_id: "t", status: "DONE"});
-    expect(parseProjectTaskToolInput("create_task", {project_id: "p", description: "x"})).toEqual({project_id: "p", description: "x"});
+    expect(parseProjectTaskToolInput("update_task", {task_id: "t", title: " New "})).toEqual({task_id: "t", title: "New"});
+    expect(parseProjectTaskToolInput("create_task", {project_id: "p", title: "T", description: "x"})).toEqual({project_id: "p", title: "T", description: "x"});
   });
 
   it("create_project and update_project return today's compact saved Project results through native and MCP (AC-001, AC-002)", async () => {
     const created = JSON.parse(await new CreateProjectTool().execute(null, {name: " New project ", description: " Goal "}));
-    expect(created).toEqual({project: {projectId: expect.any(String), name: "New project", description: "Goal", workspaces: []}});
+    // No links: `workspaces` is absent (REQ-001).
+    expect(created).toEqual({project: {projectId: expect.any(String), name: "New project", description: "Goal"}});
     const update = new UpdateProjectTool();
     const args = {project_id: created.project.projectId, name: " Renamed "};
     const patched = JSON.parse(await update.execute(null, args));
@@ -148,11 +151,13 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(described.structuredContent).toEqual({project: {...patched.project, description: "Updated"}});
     expect(JSON.parse((described.content[0]!.text as string))).toEqual(described.structuredContent);
     const clear = JSON.parse(await update.execute(null, {project_id: args.project_id, description: " "}));
-    expect(clear).toEqual({project: {...patched.project, description: ""}});
+    const {description: _cleared, ...withoutDescription} = patched.project;
+    expect(clear).toEqual({project: withoutDescription});
+    expect((await getProjectService().getProject(args.project_id))?.description).toBe("");
     const defaults = (await mcp("create_project", {name: "Defaults"})).structuredContent as typeof created;
-    expect(defaults.project).toEqual({projectId: expect.any(String), name: "Defaults", description: "", workspaces: []});
+    expect(defaults.project).toEqual({projectId: expect.any(String), name: "Defaults"});
     const listed = JSON.parse(await new ListProjectsTool().execute(null));
-    expect(listed.projects).toContainEqual({projectId: args.project_id, name: "Renamed", description: ""});
+    expect(listed.projects).toContainEqual({projectId: args.project_id, name: "Renamed"});
     expect((await getProjectService().getProject(args.project_id))?.name).toBe("Renamed");
     await expect(new CreateProjectTool().execute(null, {name: "Abort"}, {signal: AbortSignal.abort()})).rejects.toThrow("aborted before start");
     expect((await getProjectService().listProjectSummaries()).some(p => p.name === "Abort")).toBe(false);
@@ -177,8 +182,9 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect((await mcp("update_project", args)).structuredContent).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
     expect((await store.readProject(args.project_id))!.workspaces).toEqual([saved!.workspaces[0]]);
     expect((await mcp("update_project", {project_id: args.project_id, workspaces: [{workspace_path: wsA, description: " "}]})).structuredContent)
-      .toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: ""}]}});
-    expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, workspaces: []}))).toEqual({project: {...created.project, workspaces: []}});
+      .toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA}]}});
+    const {workspaces: _unlinked, ...withoutWorkspaces} = created.project;
+    expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, workspaces: []}))).toEqual({project: withoutWorkspaces});
     expect(tasks).not.toHaveBeenCalled();
     expect(lookup).not.toHaveBeenCalled();
     await expect(fs.access(wsA)).rejects.toThrow();
@@ -309,16 +315,18 @@ describe("Project data tools — actual native preparation/execute and selected 
   it("shares business reads and compact TODO create/known-ID status acknowledgements", async () => {
     const catalog = JSON.parse(await new ListProjectsTool().execute(null));
     expect((await mcp("list_projects", {})).structuredContent).toEqual(catalog);
-    expect(catalog.projects).toEqual([{projectId, name: "Tools fixture", description: ""}]);
-    const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: " hello "}));
-    // A Project Task's agent-facing taskId is its key (REQ-018).
-    expect(created.task).toEqual({projectId, taskId: "tools-fixture-1", status: "TODO", dependsOn: [], partOf: null});
+    expect(catalog.projects).toEqual([{projectId, name: "Tools fixture"}]);
+    const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, title: " Say hello ", description: " hello "}));
+    // A Project Task's agent-facing taskId is its key (REQ-018); a field with no value is absent (REQ-001).
+    expect(created.task).toEqual({projectId, taskId: "tools-fixture-1", title: "Say hello", status: "TODO"});
     const patched = await mcp("update_task", {task_id: created.task.taskId, status: "DONE"});
     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
-    expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", parts: [], contextFiles: [], assignments: [], closedAssignments: []}]);
-    expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
+    const {projectId: _project, ...shortEntry} = created.task;
+    expect(listed).toEqual({projectId, tasks: [{...shortEntry, status: "DONE"}]});
+    expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId});
+    expect((await mcp("get_project_task", {project_id: projectId, task_id: created.task.taskId})).structuredContent).toEqual({...created.task, status: "DONE", description: "hello"});
   });
   it("documents and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)", async () => {
     for (const name of ["update_task", "list_project_tasks"] as const) {
@@ -327,8 +335,8 @@ describe("Project data tools — actual native preparation/execute and selected 
     }
     expect(UpdateTaskTool.getDescription()).toMatch(/status \(TODO, IN_PROGRESS, DONE, CANCELLED\).*CANCELLED means the Task was dropped as not needed \(not finished\)\. Both end this Task's work for its task agents; a task agent is stopped when this was its last open Task.*first set the Task to TODO or IN_PROGRESS.*To give a task agent another Task, also while its other Tasks are open, use delegate_task/s);
     expect(ListProjectTasksTool.getDescription()).toMatch(/TODO, IN_PROGRESS, DONE or CANCELLED status \(CANCELLED = dropped as not needed\)/);
-    const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: "unneeded"}));
-    const kept = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, description: "kept"}));
+    const created = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, title: "unneeded", description: "unneeded"}));
+    const kept = JSON.parse(await new CreateTaskTool().execute(null, {project_id: projectId, title: "kept", description: "kept"}));
     expect((await mcp("update_task", {task_id: created.task.taskId, status: "CANCELLED"})).structuredContent)
       .toEqual({task: {...created.task, status: "CANCELLED"}});
     const closed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "CANCELLED"}));
@@ -350,16 +358,24 @@ describe("Project data tools — actual native preparation/execute and selected 
     ["create_task", {project_id: "p", task_id: "t", status: "DONE"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["update_task", {project_id: "p", task_id: "t", status: "DONE"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     // Create still needs a Project (AC-006).
-    ["create_task", {description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    ["create_task", {project_id: "p", description: ""}, "TASK_DESCRIPTION_REQUIRED"],
-    ["create_task", {project_id: "p", description: "x", status: "TODO"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
-    ["create_task", {project_id: "p", description: "x", status: "CANCELLED"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
+    ["create_task", {title: "T", description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_task", {project_id: "p", title: "T", description: ""}, "TASK_DESCRIPTION_REQUIRED"],
+    ["create_task", {project_id: "p", title: "T", description: "x", status: "TODO"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
+    ["create_task", {project_id: "p", title: "T", description: "x", status: "CANCELLED"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
+    // A title is required on create, trimmed and not blank (REQ-003, REQ-004, AC-003).
+    ["create_task", {project_id: "p", description: "x"}, "TASK_TITLE_REQUIRED"],
+    ["create_task", {project_id: "p", title: " \n ", description: "x"}, "TASK_TITLE_REQUIRED"],
+    ["create_task", {project_id: "p", title: 5, description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["update_task", {task_id: "t", title: ""}, "TASK_TITLE_REQUIRED"],
+    ["update_task", {task_id: "t", title: null}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    // list_project_tasks has no task_ids (REQ-007, DEC-021); one Task in full is get_project_task.
+    ["list_project_tasks", {project_id: "p", task_ids: ["p-1"]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["update_task", {task_id: "t"}, "TASK_PATCH_REQUIRED"],
     // context_files: one additive array of non-blank path strings in both modes (AC-004, AC-008).
     ["update_task", {task_id: "t", context_files: []}, "TASK_PATCH_REQUIRED"],
-    ["create_task", {project_id: "p", description: "x", context_files: "/a.md"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    ["create_task", {project_id: "p", description: "x", context_files: null}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    ["create_task", {project_id: "p", description: "x", context_files: {path: "/a.md"}}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_task", {project_id: "p", title: "T", description: "x", context_files: "/a.md"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_task", {project_id: "p", title: "T", description: "x", context_files: null}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_task", {project_id: "p", title: "T", description: "x", context_files: {path: "/a.md"}}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["update_task", {task_id: "t", context_files: [123]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["update_task", {task_id: "t", context_files: [null]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["update_task", {task_id: "t", context_files: [" "]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
@@ -382,7 +398,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     const error = await new UpdateTaskTool().execute(null, args).catch((e) => JSON.parse(e.message));
     expect(error.error.code).toBe("TASK_NOT_FOUND");
     expect((await mcp("update_task", args)).structuredContent).toEqual(error);
-    expect(JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId})).tasks).toEqual([]);
+    expect(JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId}))).toEqual({projectId});
     await expect(new ListProjectsTool().execute(null, {}, {signal: AbortSignal.abort()})).rejects.toThrow("aborted before start");
   });
   it("exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases", () => {

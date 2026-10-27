@@ -2,7 +2,7 @@ import type { TaskExecutionResourcePort } from "../../agent-collaboration/execut
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -62,10 +62,11 @@ export const materializeTeamRoot = async (
     }
     return root;
   };
-  const taskCommands: MemberTaskCommandCapability = Object.freeze({
+  const taskCapability: MemberTaskCapability = Object.freeze({
     root: rootIdentity,
     delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
     assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
+    ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
     assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
@@ -80,7 +81,7 @@ export const materializeTeamRoot = async (
       runtimeContext: null,
     }),
     memberExecutionContextBuilder: input.memberExecutionContextBuilder,
-    taskCommands,
+    taskCapability,
     publish: (event) => publisher.publish(event),
     deliverInterAgentMessage: (intent) => root
       ? root.deliverInterAgentMessage(intent)

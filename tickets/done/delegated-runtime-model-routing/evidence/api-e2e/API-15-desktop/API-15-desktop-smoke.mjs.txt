@@ -1,0 +1,30 @@
+// API-15 smoke: the isolated desktop instance of this worktree build (Electron) shows Settings → Model Routing,
+// driven over its loopback CDP control port; GraphQL read from its own embedded server.
+import { createRequire } from 'node:module';
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-web/package.json');
+const { chromium } = require('playwright-core');
+const [controlPort, backendUrl, outDir] = process.argv.slice(2);
+const out = { checks: {} };
+const gql = async (q) => (await (await fetch(`${backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: q }) })).json()).data;
+out.checks.status = (await gql('{ modelRoutingStatus }')).modelRoutingStatus;
+out.checks.runtimes = (await gql('{ availableAgentRuntimes }')).availableAgentRuntimes.agentRuntimes.map((e) => ({ runtime: e.runtime, models: Array.isArray(e.models) ? e.models.length : e.models, signIn: e.signIn ?? e.signedIn ?? null }));
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${controlPort}`);
+const page = browser.contexts()[0].pages().find((p) => !p.url().startsWith('devtools')) ?? browser.contexts()[0].pages()[0];
+out.checks.windowUrl = page.url();
+const errors = []; page.on('pageerror', (e) => errors.push(e.message));
+const base = new URL(page.url());
+const settings = base.protocol === 'file:' ? null : `${base.origin}/settings`;
+await page.evaluate(() => { window.location.hash = ''; });
+// Navigate in-app (the renderer router) to Settings → Model Routing.
+await page.evaluate(() => { const r = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$router; return r.push({ path: '/settings', query: { section: 'model-routing', tab: 'setup' } }); });
+await page.locator('[data-testid="settings-model-routing-panel"]').waitFor({ timeout: 60000 });
+await page.waitForTimeout(3000);
+out.checks.switch = await page.locator('[data-testid="model-routing-switch"]').getAttribute('aria-checked');
+out.checks.runtimeOptions = await page.locator('[data-testid="model-routing-router-runtime"] option').allInnerTexts();
+await page.screenshot({ path: `${outDir}/API-15-desktop-model-routing-setup.png` });
+await page.locator('[data-testid="model-routing-tab-decisions"]').click(); await page.waitForTimeout(1500);
+out.checks.decisions = (await page.locator('[data-testid="model-routing-decisions"]').innerText()).replace(/\s+/g, ' ').trim().slice(0, 300);
+await page.screenshot({ path: `${outDir}/API-15-desktop-model-routing-decisions.png` });
+out.checks.browserErrors = errors;
+await browser.close();
+console.log(JSON.stringify(out, null, 2));

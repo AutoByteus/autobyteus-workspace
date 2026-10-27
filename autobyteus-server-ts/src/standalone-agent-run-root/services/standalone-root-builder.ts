@@ -181,6 +181,7 @@ export class StandaloneRootBuilder {
         root: input.identity.root,
         delegateToNewCopy: (caller, command) => input.requireRun().delegateToNewCopy({ identity: caller }, command),
         assignToExistingCopy: (caller, command) => input.requireRun().assignToExistingCopy({ identity: caller }, command),
+        ownedTaskOf: (caller) => input.requireRun().ownedTaskOf({ identity: caller }),
       }),
     });
   }

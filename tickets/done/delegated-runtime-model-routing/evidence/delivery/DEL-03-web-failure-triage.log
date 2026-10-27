@@ -1,0 +1,17 @@
+# DEL-03 — web failures triaged against a clean checkout of origin/personal 50e93c2108 (/tmp/mr-base-check)
+# Command: pnpm -C autobyteus-web exec vitest run <the 7 failing files>
+
+## On the base
+ ✓ utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts (1 test) 2ms
+ ❯ electron/launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test | 1 failed) 12ms
+ ❯ electron/server/__tests__/platformServerEnvironment.spec.ts (2 tests | 2 failed) 17ms
+ ❯ electron/server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests | 2 failed) 14ms
+ ❯ stores/__tests__/definitionMutationCache.spec.ts (10 tests | 3 failed) 56ms
+ ✓ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (2 tests) 60ms
+ Test Files  5 failed | 2 passed (7)
+      Tests  8 failed | 10 passed (18)
+
+## Classification
+- Fail on base too (not this ticket): definitionMutationCache.spec.ts (FU-006, from autobyteus-308), e2eLaunchPreflight.spec.ts, platformServerEnvironment.spec.ts, WindowsServerManagerShutdown.spec.ts, BackendPortBindFaults.spec.ts (file-level error)
+- Load flake, passes alone on the merged branch: codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+- NEW after the merge (this ticket x base DI-002): builtInAgentDefinitionIds.contract.spec.ts — expected [ 'autobyteus-daily-assistant' ] to deeply equal [ 'autobyteus-daily-assistant', 'autobyteus-model-router' ]  -> DEL-F1, Local Fix for implementation
