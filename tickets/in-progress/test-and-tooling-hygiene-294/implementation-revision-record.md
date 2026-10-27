@@ -27,7 +27,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Approved behavior or requirement IDs affected: BEH-001..007, 009..012, 014, 016, 018..020, 022..028, 030..032; REQ-001..007, 009..012, 014, 016..019, 021..027, 029, 031, 032.
 - Implementation delta: as designed, plus the deviations recorded in the handoff's "Deviations and additions" (two hidden architecture-list lags, typed Apollo client as the root fix of the implicit-any rows, extra dead code removed in touched files, two pre-existing web test-runner failures fixed under TESTING.md Rule 9, the gated Codex integration test and the gated Claude live test moved off removed APIs).
 - Changed files or areas: `autobyteus-server-ts` (architecture test, `test:unit`, removed agent-management tools and 55 `.js` twins, Claude client, Fastify compositions, E2E files, docs), `test-support/live-e2e`, `autobyteus-web` (type gate, dependency declarations, Nuxt config, type fixes, BEH-032 fixes, dead code, icons, probes, specs), `autobyteus-message-gateway` (scripts removed), `TESTING.md` (four `docs(testing)` commits), `pnpm-lock.yaml`.
-- Local validation and result: see the handoff's Checks Run (IMP-01..IMP-20).
+- Local validation and result: see the handoff's Checks Run (IMP-01..IMP-18).
 - Next recipient or routing: Code Reviewer (Large / High).
 - Remaining limitations or risks: browser probes, the packaged isolation probe, the live Codex runs (RUN_CODEX_E2E) and a clean-clone run are left to API/E2E; see the handoff.
 
