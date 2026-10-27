@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from code review (CRR-005, API-REV-002, CRR-006 Pass) | N/A | Blocked — `Local Fix` (integration conflicts with `origin/personal` @ `f56365c809`) | `release-deployment-report.md`, `delivery-revision-record.md` |
 | DR-002 | Delivery package on the merge (IR-006, CRR-007, API-REV-003, CRR-008 Pass) | Blocked (DR-001) | Delivery Completed — verified, finalized, beta released (details in the release report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `follow-ups.md` (FU-012) |
+| DR-003 | Solution Designer's receipt check: Delivery Receipt Evidence Gap (docs only) | Delivery Completed (DR-002), receipt `Blocked` | Delivery Completed — gap corrected in one docs commit; no re-release | `docs/design-cases.md`, archived `design-spec.md`, `docs-sync-report.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -58,3 +59,16 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Terminal return to the Solution Designer: `Sent` (Delivery Completed).
 - Next recipient/action: the Solution Designer (terminal receipt). The design spec § Match Facts wording (items 1 and 4) is theirs to align.
 - Remaining blockers: none. Residual risks are in `handoff-summary.md`.
+
+### DR-003 — Receipt correction: the design case and the design-spec wording
+
+- Trigger: the Solution Designer's receipt verification (`/Users/normy/autobyteus_org/autobyteus-delivery-receipts/work-journal-search/receipt-verification.md`) classified DR-002's receipt as `Blocked`, `Delivery Receipt Evidence Gap`, docs only. The design's Change Scope lists `docs/design-cases.md` with `design-case-entry.md` (Project Task Manager request, skill change `autobyteus-agents-67`). The case was not on `origin/personal`, and the DR-002 docs sync did not mention it.
+- Prior authoritative result: DR-002 `Delivery Completed`. Its release, artifacts and behaviour are verified and unchanged.
+- Current authoritative result: `Delivery Completed`. One docs commit on `personal` (RELEASE.md: finalize from a fresh worktree; fetch-check before the push):
+  - `docs/design-cases.md`: appended **Case 12: A Requirement Kept Against Its Own Evidence** (autobyteus-185, R-002, F-001, UD-020) from `design-case-entry.md`, renumbered from the entry's Case 11 because Case 11 is autobyteus-32's. No existing case covered it.
+  - Archived `design-spec.md` § Match Facts, with the Solution Designer's exact text: item 1 → "that the match's lines hold, as `autobyteus-server-ts/docs/modules/memory_search.md` defines"; item 4 → "no results: \"No matches; try other words.\"".
+  - `docs-sync-report.md` notes both.
+- Why the gap happened: DR-002's docs sync reviewed the long-lived docs the change touched but did not cross-check the design spec's Change Scope, which named `docs/design-cases.md`. That check belongs in every docs sync.
+- No re-release: docs and ticket records only. `v1.5.9-beta.12` stands; these docs ship with the next release.
+- Terminal return to the Solution Designer: `Sent` (Delivery Completed, DR-003).
+- Remaining blockers: none.

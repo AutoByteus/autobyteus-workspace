@@ -24,6 +24,7 @@
 | `autobyteus-server-ts/scripts/evaluate-memory-search.md` (new) | Evaluation command (R-016) | No change | It says to run on an isolated copy, never `~/.autobyteus` |
 | `autobyteus-web/docs/memory.md` | Memory page Search and Index tabs, match facts (UD-020, UD-021) | No change | Matches API-L02r3 |
 | `GLOSSARY.md` | Changed by both sides | No change | Merged entries present |
+| `docs/design-cases.md` | The design's Change Scope lists it with `design-case-entry.md` (requested by the Project Task Manager, skill change `autobyteus-agents-67`) | Updated (delivery, DR-003) | Missed in DR-002 and caught by the Solution Designer's receipt check. Appended as **Case 12: A Requirement Kept Against Its Own Evidence** (Case 11 on `personal` is autobyteus-32's); no existing case covered it |
 
 ## Docs Updated
 
@@ -32,6 +33,7 @@
 | `autobyteus-server-ts/docs/modules/memory_search.md` | New (change) | Memory search module | New module |
 | `autobyteus-server-ts/docs/modules/agent_memory.md`, `agent_work_journal.md`, `embeddings.md`, `README.md`, `scripts/evaluate-memory-search.md`, `autobyteus-web/docs/memory.md`, `GLOSSARY.md` | Updated / new (change) | Journals for all runs, Memory page, index, evaluation | The change |
 | `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md` | Updated (delivery) | `search_memory` in the default MCP adapter list | The change adds that adapter |
+| `docs/design-cases.md` | Appended (delivery, DR-003) | Case 12 from `design-case-entry.md`, renumbered from the entry's Case 11 | The design's Change Scope; the receipt check's gap |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -52,6 +54,9 @@
 - `design-spec.md` § Match Facts items 1 and 4 still quote the earlier wording: "by the existing `containsTerm`", and the note "No matches in memory." (unchanged). The code and `memory_search.md` follow the intent: the existing string `No matches; try other words.` is kept unchanged, and the index's token rule is used.
 - The implementation handoff and code review (C-14, rejected as design-doc drift) asked the Solution Designer to align the wording. It is not done yet.
 - The design spec is the Solution Designer's document. Delivery leaves it to them and names it in the terminal package. It does not affect behavior or the long-lived docs.
+- **DR-003:** at the Solution Designer's request (receipt verification), delivery applied their exact wording in the same docs commit.
+  - Item 1 now reads "that the match's lines hold, as `autobyteus-server-ts/docs/modules/memory_search.md` defines".
+  - Item 4 now reads "no results: \"No matches; try other words.\"".
 
 ## Delivery Continuation
 

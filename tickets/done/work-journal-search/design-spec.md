@@ -600,11 +600,11 @@ Each file stays under 500 lines (repository rule).
 
 - **Decision:** UD-020 (the user, 2026-10-27). Embedding scores have no reliable absolute meaning: off-topic and real results overlap (F-001; report § 5.3; `autobyteus-71` FO-001). Three calibration rounds (SR-005, SR-005b, SR-005c) passed the known set only with margins of ±0.0078 (Granite) and ±0.0022 (LEAF-IR). A label that cannot be trusted is removed; results state facts the index can check.
 - **What a result says (owned by `MemorySearchService`; the facade only composes the note text):**
-  1. **Text match:** `matchedWords` = the query's search terms (`queryTerms`, the same terms the search uses: stop words removed, ideograph runs as two-character phrases) that occur in the chunk, by the existing `containsTerm`. Shown as "Words: ddns, cloudflare".
+  1. **Text match:** `matchedWords` = the query's search terms (`queryTerms`, the same terms the search uses: stop words removed, ideograph runs as two-character phrases) that the match's lines hold, as `autobyteus-server-ts/docs/modules/memory_search.md` defines. Shown as "Words: ddns, cloudflare".
   2. **Meaning match:** `matchedBy: "meaning"`, no other field. The page shows no label for it (Product revision SR-006: a card part without "Words:" is a meaning match).
   3. **Words found in no journal:** `wordsNotFound` = each search term for which the text index holds **no chunk**, checked by one `MATCH` of that term's own FTS phrase (`SELECT 1 … WHERE chunk_text MATCH ? LIMIT 1`, the same phrase form as `toFtsQuery`). This is exact for phrases such as `home.example.org` and two-ideograph terms, unlike token counts.
   4. **`note`** (one of, in this order):
-     - no results: "No matches in memory." (unchanged);
+     - no results: "No matches; try other words.";
      - every search term not found and results exist: "None of these words appear in your memory: X, Y." (the Product revision drops the method sentence; a match without `matchedWords` is a meaning match, which the tool description states);
      - some terms not found: "Not found in your memory: X.";
      - otherwise none.
