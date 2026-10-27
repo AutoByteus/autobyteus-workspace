@@ -171,6 +171,15 @@ test, not its whole suite. A second full run of a suite proves nothing the first
     `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
   - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
     `/compact`.
+
+  Prove compaction with the deterministic layers: the core library and server unit tests
+  (including the shared live-compaction boundary tests, which make no provider calls) and
+  scripted runtimes with a lowered threshold. A live compaction run against a real model is not
+  required proof for a ticket and not a gate: it needs a real provider key or signed-in CLI and
+  enough input to reach the compaction threshold, and its outcome depends on the model, so a live
+  failure alone is not a defect. Run one only when the user asks for it. This applies to
+  compaction only: other real-provider runs with a small input keep the rule under Gates (run
+  them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
   bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
