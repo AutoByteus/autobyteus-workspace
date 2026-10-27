@@ -60,5 +60,6 @@
 
 ## Delivery Continuation
 
-- Result: `Pass` (docs). Delivery itself is blocked on DEL-F1 (see `release-deployment-report.md`).
-- Next delivery action: after the implementation fix, recheck the touched docs and continue.
+- Result: `Pass`
+- Next delivery action: finalization and beta.
+- Notes: rechecked after IR-004 (`f48af0176a`: copy and the web built-in ID mirror). No doc change was needed; `settings.md` already says "Configuration".
