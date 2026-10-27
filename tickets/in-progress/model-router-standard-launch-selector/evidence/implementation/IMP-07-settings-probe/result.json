@@ -1,0 +1,1539 @@
+{
+  "startedAt": "2026-10-27T12:33:41.139Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "MRP-01-menu": [
+      "Back to Workspace",
+      "Agent Runtimes",
+      "Model Routing",
+      "Display",
+      "Language",
+      "Application Packages",
+      "Agent Packages",
+      "Server Settings",
+      "Extensions",
+      "Updates"
+    ],
+    "MRP-01-page": [
+      {
+        "runtime": "codex_app_server",
+        "name": "Codex App Server",
+        "signIn": null,
+        "limits": [
+          "Weekly 0% left · resets Oct 30, 08:57 PM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 model · 1 blocked",
+        "models": [
+          {
+            "id": "gpt-5.6-luna",
+            "blocked": "Blocked until Oct 30, 08:57 PM (Weekly)"
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "claude_agent_sdk",
+        "name": "Claude Agent SDK",
+        "signIn": null,
+        "limits": [
+          "5-hour 13% left · resets Oct 24, 11:10 PM",
+          "Weekly 78% left · resets Oct 31, 05:00 PM",
+          "Weekly · Fable 100% left · resets Oct 31, 05:00 PM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 model",
+        "models": [
+          {
+            "id": "claude-fake-sonnet",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "antigravity_cli",
+        "name": "Antigravity CLI",
+        "signIn": null,
+        "limits": [
+          "Gemini Models · weekly 99% left · resets Oct 31, 05:59 AM",
+          "Gemini Models · 5-hour 98% left · resets Oct 24, 11:45 PM",
+          "Claude and GPT models · weekly 0% left · resets Oct 26, 11:22 AM",
+          "Gemini 4 Argon · weekly 40% left · resets Oct 26, 01:35 PM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "2 models · 1 blocked",
+        "models": [
+          {
+            "id": "claude-sonnet-5-5-medium",
+            "blocked": "Blocked until Oct 26, 11:22 AM (Claude and GPT models · weekly)"
+          },
+          {
+            "id": "gemini-3.8-flash-high",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "grok_build",
+        "name": "Grok Build",
+        "signIn": null,
+        "limits": [
+          "Billing period remaining not reported · resets Oct 29, 01:00 AM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": "Grok does not report how much of the period is used.",
+        "modelsSummary": "1 model",
+        "models": [
+          {
+            "id": "grok-4.7",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "autobyteus",
+        "name": "AutoByteus",
+        "signIn": null,
+        "limits": [],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": null,
+        "models": [],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": [
+          {
+            "provider": "Anthropic",
+            "balance": null,
+            "blocked": "Cannot run: credit balance too low",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Anthropic Cannot run: credit balance too low",
+            "models": [
+              {
+                "id": "claude-fable-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-fable-5-1",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-haiku-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-4.7",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-4.8",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-4.6",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              }
+            ]
+          },
+          {
+            "provider": "DeepSeek",
+            "balance": "Balance 0.14 USD",
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "DeepSeek Balance 0.14 USD",
+            "models": [
+              {
+                "id": "deepseek-v4-flash",
+                "blocked": null
+              },
+              {
+                "id": "deepseek-v4-pro",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Grok",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Grok",
+            "models": [
+              {
+                "id": "grok-4.7",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Kimi",
+            "balance": "Balance 0 USD",
+            "blocked": "Cannot run: no balance left",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Kimi Balance 0 USD Cannot run: no balance left",
+            "models": [
+              {
+                "id": "kimi-k3",
+                "blocked": "Blocked (no balance left)"
+              }
+            ]
+          },
+          {
+            "provider": "OpenAI",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "OpenAI Limits not reported",
+            "models": [
+              {
+                "id": "gpt-5.4",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.4-mini",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.5",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-sol",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-terra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-astra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-sol",
+                "blocked": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "MRP-01-api": {
+      "checkedAt": "2026-10-27T12:34:11.571Z",
+      "agentRuntimes": [
+        {
+          "runtime": "codex_app_server",
+          "name": "Codex",
+          "limits": [
+            {
+              "name": "Weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-30T19:57:53.000Z"
+            }
+          ],
+          "models": [
+            {
+              "id": "gpt-5.6-luna",
+              "name": "GPT-5.6-LUNA (default reasoning: medium)",
+              "blocked": {
+                "until": "2026-10-30T19:57:53.000Z",
+                "by": "Weekly"
+              }
+            }
+          ]
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "name": "Claude",
+          "limits": [
+            {
+              "name": "5-hour",
+              "remainingPercent": 13,
+              "resetsAt": "2026-10-24T21:10:00.354Z"
+            },
+            {
+              "name": "Weekly",
+              "remainingPercent": 78,
+              "resetsAt": "2026-10-31T16:00:00.354Z"
+            },
+            {
+              "name": "Weekly · Fable",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-31T16:00:00.000Z"
+            }
+          ],
+          "models": [
+            {
+              "id": "claude-fake-sonnet",
+              "name": "Claude Fake Sonnet"
+            }
+          ]
+        },
+        {
+          "runtime": "antigravity_cli",
+          "name": "Antigravity",
+          "limits": [
+            {
+              "name": "Gemini Models · weekly",
+              "remainingPercent": 99,
+              "resetsAt": "2026-10-31T04:59:08.000Z"
+            },
+            {
+              "name": "Gemini Models · 5-hour",
+              "remainingPercent": 98,
+              "resetsAt": "2026-10-24T21:45:12.000Z"
+            },
+            {
+              "name": "Claude and GPT models · weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-26T10:22:39.000Z"
+            },
+            {
+              "name": "Gemini 4 Argon · weekly",
+              "remainingPercent": 40,
+              "resetsAt": "2026-10-26T12:35:29.000Z"
+            }
+          ],
+          "models": [
+            {
+              "id": "claude-sonnet-5-5-medium",
+              "name": "Claude Sonnet 5.5 (Medium)",
+              "blocked": {
+                "until": "2026-10-26T10:22:39.000Z",
+                "by": "Claude and GPT models · weekly"
+              }
+            },
+            {
+              "id": "gemini-3.8-flash-high",
+              "name": "Gemini 3.8 Flash (High)"
+            }
+          ]
+        },
+        {
+          "runtime": "grok_build",
+          "name": "Grok",
+          "limits": [
+            {
+              "name": "Billing period",
+              "remainingPercent": null,
+              "resetsAt": "2026-10-29T00:00:00.000Z"
+            }
+          ],
+          "limitsNote": "Grok does not report how much of the period is used.",
+          "models": [
+            {
+              "id": "grok-4.7",
+              "name": "Grok 4.7",
+              "contextTokens": 256000
+            }
+          ]
+        },
+        {
+          "runtime": "autobyteus",
+          "name": "AutoByteus",
+          "providers": [
+            {
+              "provider": "Anthropic",
+              "blocked": "credit balance too low",
+              "models": [
+                {
+                  "id": "claude-fable-5",
+                  "name": "claude-fable-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-fable-5-1",
+                  "name": "claude-fable-5-1",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-haiku-5-5",
+                  "name": "claude-haiku-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-4.7",
+                  "name": "claude-opus-4.7",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-4.8",
+                  "name": "claude-opus-4.8",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-5",
+                  "name": "claude-opus-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-5-5",
+                  "name": "claude-opus-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-4.6",
+                  "name": "claude-sonnet-4.6",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-5",
+                  "name": "claude-sonnet-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-5-5",
+                  "name": "claude-sonnet-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                }
+              ]
+            },
+            {
+              "provider": "DeepSeek",
+              "balance": "0.14 USD",
+              "models": [
+                {
+                  "id": "deepseek-v4-flash",
+                  "name": "deepseek-v4-flash",
+                  "contextTokens": 1000000
+                },
+                {
+                  "id": "deepseek-v4-pro",
+                  "name": "deepseek-v4-pro",
+                  "contextTokens": 1000000
+                }
+              ]
+            },
+            {
+              "provider": "Grok",
+              "models": [
+                {
+                  "id": "grok-4.7",
+                  "name": "grok-4.7",
+                  "contextTokens": 500000
+                }
+              ]
+            },
+            {
+              "provider": "Kimi",
+              "balance": "0 USD",
+              "blocked": "no balance left",
+              "models": [
+                {
+                  "id": "kimi-k3",
+                  "name": "kimi-k3",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "no balance left"
+                  }
+                }
+              ]
+            },
+            {
+              "provider": "OpenAI",
+              "limits": "not reported",
+              "models": [
+                {
+                  "id": "gpt-5.4",
+                  "name": "gpt-5.4",
+                  "contextTokens": 1000000
+                },
+                {
+                  "id": "gpt-5.4-mini",
+                  "name": "gpt-5.4-mini",
+                  "contextTokens": 400000
+                },
+                {
+                  "id": "gpt-5.5",
+                  "name": "gpt-5.5",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-luna",
+                  "name": "gpt-5.6-luna",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-sol",
+                  "name": "gpt-5.6-sol",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-terra",
+                  "name": "gpt-5.6-terra",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-astra",
+                  "name": "gpt-6-astra",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-luna",
+                  "name": "gpt-6-luna",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-sol",
+                  "name": "gpt-6-sol",
+                  "contextTokens": 1050000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "MRP-01-layout": {
+      "windowWidth": 1440,
+      "gridColumns": [
+        2
+      ],
+      "pageOverflowX": false,
+      "sectionOverflowX": false
+    },
+    "MRP-01": {
+      "title": "Open from the Settings menu: every runtime row, limits and reset times, blocked models, the limits note, provider sub-rows; the same data as the node's answer; no polling (AC-010, REQ-009)",
+      "result": "Pass",
+      "ms": 9085
+    },
+    "MRP-02-page": [
+      {
+        "runtime": "codex_app_server",
+        "name": "Codex App Server",
+        "signIn": "Sign-in could not be checked",
+        "limits": [
+          "Weekly 0% left · resets Oct 30, 08:57 PM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 model · 1 blocked",
+        "models": [
+          {
+            "id": "gpt-5.6-luna",
+            "blocked": "Blocked until Oct 30, 08:57 PM (Weekly)"
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "claude_agent_sdk",
+        "name": "Claude Agent SDK",
+        "signIn": "Sign-in could not be checked",
+        "limits": [
+          "5-hour 13% left · resets Oct 24, 11:10 PM",
+          "Weekly 78% left · resets Oct 31, 05:00 PM",
+          "Weekly · Fable 100% left · resets Oct 31, 05:00 PM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 model",
+        "models": [
+          {
+            "id": "claude-fake-sonnet",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "antigravity_cli",
+        "name": "Antigravity CLI",
+        "signIn": null,
+        "limits": [],
+        "limitsUnknown": "Limits unknown: Antigravity usage limits could not be read",
+        "limitsNote": null,
+        "modelsSummary": "2 models",
+        "models": [
+          {
+            "id": "claude-sonnet-5-5-medium",
+            "blocked": null
+          },
+          {
+            "id": "gemini-3.8-flash-high",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "grok_build",
+        "name": "Grok Build",
+        "signIn": null,
+        "limits": [
+          "Billing period remaining not reported · resets Oct 29, 01:00 AM"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": "Grok does not report how much of the period is used.",
+        "modelsSummary": null,
+        "models": [],
+        "modelsUnknown": "Models unknown: Grok model list could not be read",
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "autobyteus",
+        "name": "AutoByteus",
+        "signIn": null,
+        "limits": [],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": null,
+        "models": [],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": [
+          {
+            "provider": "Anthropic",
+            "balance": null,
+            "blocked": "Cannot run: credit balance too low",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Anthropic Cannot run: credit balance too low",
+            "models": [
+              {
+                "id": "claude-fable-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-fable-5-1",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-haiku-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-4.7",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-4.8",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-opus-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-4.6",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-5",
+                "blocked": "Blocked (credit balance too low)"
+              },
+              {
+                "id": "claude-sonnet-5-5",
+                "blocked": "Blocked (credit balance too low)"
+              }
+            ]
+          },
+          {
+            "provider": "DeepSeek",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": "Limits unknown: DeepSeek usage could not be read: unexpected answer (500)",
+            "modelsUnknown": null,
+            "text": "DeepSeek Limits unknown: DeepSeek usage could not be read: unexpected answer (500)",
+            "models": [
+              {
+                "id": "deepseek-v4-flash",
+                "blocked": null
+              },
+              {
+                "id": "deepseek-v4-pro",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Grok",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Grok",
+            "models": [
+              {
+                "id": "grok-4.7",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Kimi",
+            "balance": "Balance 0 USD",
+            "blocked": "Cannot run: no balance left",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Kimi Balance 0 USD Cannot run: no balance left",
+            "models": [
+              {
+                "id": "kimi-k3",
+                "blocked": "Blocked (no balance left)"
+              }
+            ]
+          },
+          {
+            "provider": "LM Studio",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "LM Studio Limits not reported",
+            "models": [
+              {
+                "id": "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.probe.test:1234",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "OpenAI",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "OpenAI Limits not reported",
+            "models": [
+              {
+                "id": "gpt-5.4",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.4-mini",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.5",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-sol",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-terra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-astra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-sol",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Probe Gateway",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": "Models unknown: Probe Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE",
+            "text": "Probe Gateway Limits not reported",
+            "models": []
+          }
+        ]
+      }
+    ],
+    "MRP-02-api": {
+      "checkedAt": "2026-10-27T12:34:26.162Z",
+      "agentRuntimes": [
+        {
+          "runtime": "codex_app_server",
+          "name": "Codex",
+          "signIn": "not checked",
+          "limits": [
+            {
+              "name": "Weekly",
+              "remainingPercent": 0,
+              "resetsAt": "2026-10-30T19:57:53.000Z"
+            }
+          ],
+          "models": [
+            {
+              "id": "gpt-5.6-luna",
+              "name": "GPT-5.6-LUNA (default reasoning: medium)",
+              "blocked": {
+                "until": "2026-10-30T19:57:53.000Z",
+                "by": "Weekly"
+              }
+            }
+          ]
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "name": "Claude",
+          "signIn": "not checked",
+          "limits": [
+            {
+              "name": "5-hour",
+              "remainingPercent": 13,
+              "resetsAt": "2026-10-24T21:10:00.354Z"
+            },
+            {
+              "name": "Weekly",
+              "remainingPercent": 78,
+              "resetsAt": "2026-10-31T16:00:00.354Z"
+            },
+            {
+              "name": "Weekly · Fable",
+              "remainingPercent": 100,
+              "resetsAt": "2026-10-31T16:00:00.000Z"
+            }
+          ],
+          "models": [
+            {
+              "id": "claude-fake-sonnet",
+              "name": "Claude Fake Sonnet"
+            }
+          ]
+        },
+        {
+          "runtime": "antigravity_cli",
+          "name": "Antigravity",
+          "limits": "unknown: Antigravity usage limits could not be read",
+          "models": [
+            {
+              "id": "claude-sonnet-5-5-medium",
+              "name": "Claude Sonnet 5.5 (Medium)"
+            },
+            {
+              "id": "gemini-3.8-flash-high",
+              "name": "Gemini 3.8 Flash (High)"
+            }
+          ]
+        },
+        {
+          "runtime": "grok_build",
+          "name": "Grok",
+          "limits": [
+            {
+              "name": "Billing period",
+              "remainingPercent": null,
+              "resetsAt": "2026-10-29T00:00:00.000Z"
+            }
+          ],
+          "limitsNote": "Grok does not report how much of the period is used.",
+          "models": "unknown: Grok model list could not be read"
+        },
+        {
+          "runtime": "autobyteus",
+          "name": "AutoByteus",
+          "providers": [
+            {
+              "provider": "Anthropic",
+              "blocked": "credit balance too low",
+              "models": [
+                {
+                  "id": "claude-fable-5",
+                  "name": "claude-fable-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-fable-5-1",
+                  "name": "claude-fable-5-1",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-haiku-5-5",
+                  "name": "claude-haiku-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-4.7",
+                  "name": "claude-opus-4.7",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-4.8",
+                  "name": "claude-opus-4.8",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-5",
+                  "name": "claude-opus-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-opus-5-5",
+                  "name": "claude-opus-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-4.6",
+                  "name": "claude-sonnet-4.6",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-5",
+                  "name": "claude-sonnet-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                },
+                {
+                  "id": "claude-sonnet-5-5",
+                  "name": "claude-sonnet-5-5",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "credit balance too low"
+                  }
+                }
+              ]
+            },
+            {
+              "provider": "DeepSeek",
+              "limits": "unknown: DeepSeek usage could not be read: unexpected answer (500)",
+              "models": [
+                {
+                  "id": "deepseek-v4-flash",
+                  "name": "deepseek-v4-flash",
+                  "contextTokens": 1000000
+                },
+                {
+                  "id": "deepseek-v4-pro",
+                  "name": "deepseek-v4-pro",
+                  "contextTokens": 1000000
+                }
+              ]
+            },
+            {
+              "provider": "Grok",
+              "models": [
+                {
+                  "id": "grok-4.7",
+                  "name": "grok-4.7",
+                  "contextTokens": 500000
+                }
+              ]
+            },
+            {
+              "provider": "Kimi",
+              "balance": "0 USD",
+              "blocked": "no balance left",
+              "models": [
+                {
+                  "id": "kimi-k3",
+                  "name": "kimi-k3",
+                  "contextTokens": 1000000,
+                  "blocked": {
+                    "until": null,
+                    "by": "no balance left"
+                  }
+                }
+              ]
+            },
+            {
+              "provider": "LM Studio",
+              "limits": "not reported",
+              "models": [
+                {
+                  "id": "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.probe.test:1234",
+                  "name": "qwen/qwen3.6-35b-a3b",
+                  "contextTokens": 262144
+                }
+              ]
+            },
+            {
+              "provider": "OpenAI",
+              "limits": "not reported",
+              "models": [
+                {
+                  "id": "gpt-5.4",
+                  "name": "gpt-5.4",
+                  "contextTokens": 1000000
+                },
+                {
+                  "id": "gpt-5.4-mini",
+                  "name": "gpt-5.4-mini",
+                  "contextTokens": 400000
+                },
+                {
+                  "id": "gpt-5.5",
+                  "name": "gpt-5.5",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-luna",
+                  "name": "gpt-5.6-luna",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-sol",
+                  "name": "gpt-5.6-sol",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-5.6-terra",
+                  "name": "gpt-5.6-terra",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-astra",
+                  "name": "gpt-6-astra",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-luna",
+                  "name": "gpt-6-luna",
+                  "contextTokens": 1050000
+                },
+                {
+                  "id": "gpt-6-sol",
+                  "name": "gpt-6-sol",
+                  "contextTokens": 1050000
+                }
+              ]
+            },
+            {
+              "provider": "Probe Gateway",
+              "limits": "not reported",
+              "models": "unknown: Probe Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE"
+            }
+          ]
+        }
+      ]
+    },
+    "MRP-02-discovered": {
+      "gateway": {
+        "provider": "Probe Gateway",
+        "balance": null,
+        "blocked": null,
+        "limitsUnknown": null,
+        "modelsUnknown": "Models unknown: Probe Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE",
+        "text": "Probe Gateway Limits not reported",
+        "models": []
+      },
+      "lmStudio": {
+        "provider": "LM Studio",
+        "balance": null,
+        "blocked": null,
+        "limitsUnknown": null,
+        "modelsUnknown": null,
+        "text": "LM Studio Limits not reported",
+        "models": [
+          {
+            "id": "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.probe.test:1234",
+            "blocked": null
+          }
+        ]
+      }
+    },
+    "MRP-02": {
+      "title": "Check again: rows kept and the button busy while reading, then sign-in not checked, limits unknown, models unknown, a provider's limits unknown, and the checked announcement (AC-010, REQ-007 UI states)",
+      "result": "Pass",
+      "ms": 12603
+    },
+    "MRP-03-layout": {
+      "windowWidth": 420,
+      "gridColumns": [
+        1
+      ],
+      "pageOverflowX": false,
+      "sectionOverflowX": false
+    },
+    "MRP-03": {
+      "title": "Narrow window (420 px): limits above models, nothing overflows",
+      "result": "Pass",
+      "ms": 484
+    },
+    "MRP-04-page": [
+      {
+        "runtime": "codex_app_server",
+        "name": "Codex App Server",
+        "signIn": null,
+        "limits": [
+          "Weekly 剩余 0% · 10月30日 20:57 重置"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 个模型 · 1 个不可用",
+        "models": [
+          {
+            "id": "gpt-5.6-luna",
+            "blocked": "10月30日 20:57 前不可用（Weekly）"
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "claude_agent_sdk",
+        "name": "Claude Agent SDK",
+        "signIn": null,
+        "limits": [
+          "5-hour 剩余 13% · 10月24日 23:10 重置",
+          "Weekly 剩余 78% · 10月31日 17:00 重置",
+          "Weekly · Fable 剩余 100% · 10月31日 17:00 重置"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "1 个模型",
+        "models": [
+          {
+            "id": "claude-fake-sonnet",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "antigravity_cli",
+        "name": "Antigravity CLI",
+        "signIn": null,
+        "limits": [
+          "Gemini Models · weekly 剩余 99% · 10月31日 05:59 重置",
+          "Gemini Models · 5-hour 剩余 98% · 10月24日 23:45 重置",
+          "Claude and GPT models · weekly 剩余 0% · 10月26日 11:22 重置",
+          "Gemini 4 Argon · weekly 剩余 40% · 10月26日 13:35 重置"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": "2 个模型 · 1 个不可用",
+        "models": [
+          {
+            "id": "claude-sonnet-5-5-medium",
+            "blocked": "10月26日 11:22 前不可用（Claude and GPT models · weekly）"
+          },
+          {
+            "id": "gemini-3.8-flash-high",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "grok_build",
+        "name": "Grok Build",
+        "signIn": null,
+        "limits": [
+          "Billing period 未报告剩余量 · 10月29日 01:00 重置"
+        ],
+        "limitsUnknown": null,
+        "limitsNote": "Grok does not report how much of the period is used.",
+        "modelsSummary": "1 个模型",
+        "models": [
+          {
+            "id": "grok-4.7",
+            "blocked": null
+          }
+        ],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": []
+      },
+      {
+        "runtime": "autobyteus",
+        "name": "AutoByteus",
+        "signIn": null,
+        "limits": [],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": null,
+        "models": [],
+        "modelsUnknown": null,
+        "noProviders": null,
+        "providers": [
+          {
+            "provider": "Anthropic",
+            "balance": null,
+            "blocked": "无法运行：credit balance too low",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Anthropic 无法运行：credit balance too low",
+            "models": [
+              {
+                "id": "claude-fable-5",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-fable-5-1",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-haiku-5-5",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-opus-4.7",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-opus-4.8",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-opus-5",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-opus-5-5",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-sonnet-4.6",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-sonnet-5",
+                "blocked": "不可用（credit balance too low）"
+              },
+              {
+                "id": "claude-sonnet-5-5",
+                "blocked": "不可用（credit balance too low）"
+              }
+            ]
+          },
+          {
+            "provider": "DeepSeek",
+            "balance": "余额 0.14 USD",
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "DeepSeek 余额 0.14 USD",
+            "models": [
+              {
+                "id": "deepseek-v4-flash",
+                "blocked": null
+              },
+              {
+                "id": "deepseek-v4-pro",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Grok",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Grok",
+            "models": [
+              {
+                "id": "grok-4.7",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Kimi",
+            "balance": "余额 0 USD",
+            "blocked": "无法运行：no balance left",
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "Kimi 余额 0 USD 无法运行：no balance left",
+            "models": [
+              {
+                "id": "kimi-k3",
+                "blocked": "不可用（no balance left）"
+              }
+            ]
+          },
+          {
+            "provider": "LM Studio",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "LM Studio 未报告限额",
+            "models": [
+              {
+                "id": "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.probe.test:1234",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "OpenAI",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": null,
+            "text": "OpenAI 未报告限额",
+            "models": [
+              {
+                "id": "gpt-5.4",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.4-mini",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.5",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-sol",
+                "blocked": null
+              },
+              {
+                "id": "gpt-5.6-terra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-astra",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-luna",
+                "blocked": null
+              },
+              {
+                "id": "gpt-6-sol",
+                "blocked": null
+              }
+            ]
+          },
+          {
+            "provider": "Probe Gateway",
+            "balance": null,
+            "blocked": null,
+            "limitsUnknown": null,
+            "modelsUnknown": "模型未知：Probe Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE",
+            "text": "Probe Gateway 未报告限额",
+            "models": []
+          }
+        ]
+      }
+    ],
+    "MRP-04": {
+      "title": "zh-CN: section texts, limits, models and providers in Chinese",
+      "result": "Pass",
+      "ms": 896
+    },
+    "MRP-05-page": [
+      {
+        "runtime": "autobyteus",
+        "name": "AutoByteus",
+        "signIn": null,
+        "limits": [],
+        "limitsUnknown": null,
+        "limitsNote": null,
+        "modelsSummary": null,
+        "models": [],
+        "modelsUnknown": null,
+        "noProviders": "No API provider has a key on this node.",
+        "providers": []
+      }
+    ],
+    "MRP-05-api": {
+      "checkedAt": "2026-10-27T12:34:35.010Z",
+      "agentRuntimes": [
+        {
+          "runtime": "autobyteus",
+          "name": "AutoByteus",
+          "providers": []
+        }
+      ]
+    },
+    "MRP-05": {
+      "title": "A remote node window shows that node: all CLIs signed out or missing and no key → AutoByteus without providers; rebinding back re-reads (AC-010 remote)",
+      "result": "Pass",
+      "ms": 1806
+    },
+    "MRP-06": {
+      "title": "A node that can't be read: the load error with Check again",
+      "result": "Pass",
+      "ms": 10305
+    },
+    "MRP-07-scan": {
+      "secrets": 29,
+      "graphqlResponses": 799,
+      "dataFiles": 2239,
+      "hits": [],
+      "providerRequests": [
+        "REFUSED GET http://lmstudio.probe.test:1234/api/v1/models",
+        "POST https://api.anthropic.com/v1/messages/count_tokens",
+        "GET https://api.deepseek.com/user/balance",
+        "GET https://api.x.ai/v1/api-key",
+        "GET https://api.moonshot.ai/v1/users/me/balance",
+        "GET https://gateway.probe.test/v1/models",
+        "GET http://lmstudio.probe.test:1234/api/v1/models"
+      ]
+    },
+    "MRP-07": {
+      "title": "No key, e-mail or account value in the page, its GraphQL responses, the nodes' output, logs or data files; providers asked only at their usage endpoints (REQ-008)",
+      "result": "Pass",
+      "ms": 505
+    }
+  },
+  "observations": {
+    "zhServerTexts": {
+      "limitName": "Weekly 剩余 0% · 10月30日 20:57 重置",
+      "grokNote": "Grok does not report how much of the period is used.",
+      "providerReason": "无法运行：credit balance too low"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:72214",
+    "backend": "terminated:72157",
+    "remoteBackend": "terminated:72192",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-model-routing-e2e-n7potj",
+    "backend": "http://127.0.0.1:55116",
+    "remoteBackend": "http://127.0.0.1:55139",
+    "frontend": "http://127.0.0.1:55155"
+  },
+  "browserVersion": "156.0.8078.48",
+  "finishedAt": "2026-10-27T12:34:48.911Z"
+}
